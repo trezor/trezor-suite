@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626, isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 import {
     enhanceTokensWithRates,
     getTokens,
@@ -28,6 +30,15 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
     const { account, network } = selectedAccount;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
+
+    // The yield badge only makes sense where vaults can exist; the per-vault kill switch
+    // is checked down in the row hook, this global one just gates the query.
+    const yieldDepositMessageSystem = useMessageSystemYield('deposit');
+    const isYieldBadgeRelevant =
+        account.networkType === 'ethereum' && !yieldDepositMessageSystem.isDisabled;
+    const { data: yieldOpportunities } = useAllYieldOpportunities({
+        enabled: isYieldBadgeRelevant,
+    });
 
     const enhancedTokens = useMemo(() => {
         const accountTokens = account.tokens?.filter(token => !isErc4626(token));
@@ -71,6 +82,7 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
             tokensWithoutBalance={tokens.shownWithoutBalance}
             network={network}
             searchQuery={searchQuery}
+            yieldOpportunities={isYieldBadgeRelevant ? yieldOpportunities : undefined}
         />
     ) : (
         <NoTokens

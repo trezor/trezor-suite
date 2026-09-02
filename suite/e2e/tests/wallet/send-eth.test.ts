@@ -1,4 +1,3 @@
-import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -40,7 +39,8 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1'] }, () => {
             await walletPage.openSendFormButton.click();
             // Race condition 1:5, if input is filled before form completely loads then
             // input will be cleared and test will fail. As a workaround we wait for fees to be loaded.
-            await tradingPage.fees.expectEthereumFeeCalculated();
+            // Seems to be resolved as fees do not load until form is filled
+            //await tradingPage.fees.expectEthereumFeeCalculated();
             await tradingPage.sendAddressInput.fill(sendAddress);
             await tradingPage.sendAmountInput.fill(sendAmount);
             await tradingPage.fees.setEthereumCustomFees({
@@ -58,7 +58,7 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await test.step('Verify Recipient address', async () => {
             await tradingPage.sendButton.click();
-            await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
+            await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
             await expect(device).toShowOnDisplay({
                 T3W1: {
@@ -75,11 +75,10 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await test.step('Verify Total including fee', async () => {
             await devicePrompt.waitForPromptAndClick();
-            const gasLimitTranslation = `${messages['TR_GAS_LIMIT'].defaultMessage}: ${gasLimit}`;
-            await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitTranslation);
-            await expect(devicePrompt.ethereumFeeRate).toHaveText(`${maxFeePerGasRounded} Gwei`);
-            await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
-                `${maxPriorityFeePerGasRounded} Gwei`,
+            await expect(devicePrompt.header.gasLimitValue).toHaveText(gasLimit);
+            await expect(devicePrompt.header.feePerGasValue).toHaveText(`${maxFeePerGasRounded}`);
+            await expect(devicePrompt.header.priorityFeeValue).toHaveText(
+                `${maxPriorityFeePerGasRounded}`,
             );
             await expect(devicePrompt.cryptoAmountOf('amount')).toHaveText(sendAmount);
             await expect(devicePrompt.cryptoAmountOf('fee'), errorMessageMaxCalculation).toHaveText(

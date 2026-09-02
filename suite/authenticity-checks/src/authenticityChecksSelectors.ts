@@ -1,3 +1,4 @@
+import { type RouterRootState, selectRouterApp } from '@suite/router';
 import {
     type SuiteSettingsRootState,
     selectAreDeviceMetaChecksEnabled,
@@ -17,6 +18,7 @@ import {
     getFirmwareAuthenticityCheckErrors,
     getIsHardHashCheckError,
     getIsHardRevisionCheckError,
+    getIsRetriableRevisionCheckError,
     getIsSkippedHashCheckError,
     getIsSkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
@@ -26,9 +28,12 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 
+import { SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS } from './config';
+
 export type AuthenticityChecksRootState = SuiteSettingsRootState &
     DeviceRootState &
-    MessageSystemRootState;
+    MessageSystemRootState &
+    RouterRootState;
 
 export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AuthenticityChecksRootState) => {
     const device = selectSelectedDevice(state);
@@ -44,6 +49,10 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AuthenticityChe
 
     return revisionCheckError;
 };
+
+export const selectShouldRetryFirmwareRevisionCheckError = (
+    state: AuthenticityChecksRootState,
+): boolean => getIsRetriableRevisionCheckError(selectFirmwareRevisionCheckErrorIfEnabled(state));
 
 export const selectFirmwareHashCheckErrorIfEnabled = (state: AuthenticityChecksRootState) => {
     const device = selectSelectedDevice(state);
@@ -158,3 +167,12 @@ export const selectShouldDisplayDeviceCompromised = (
         isDeviceIdCheckFailed || isDeviceInvariabilityCheckFailed || isFirmwareCheckEnabledAndFailed
     );
 };
+
+export const selectShouldRouterAppSkipAuthenticityCheck = (state: RouterRootState): boolean =>
+    SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS[selectRouterApp(state)];
+
+export const selectShouldDisplayDeviceCompromisedOnRoute = (
+    state: AuthenticityChecksRootState,
+): boolean =>
+    !selectShouldRouterAppSkipAuthenticityCheck(state) &&
+    selectShouldDisplayDeviceCompromised(state);

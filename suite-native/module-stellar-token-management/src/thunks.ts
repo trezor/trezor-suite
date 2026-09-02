@@ -3,6 +3,9 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
+    type ComposeSendFormTransactionFeeLevelsThunkState,
+    type FeesRootState,
     type FormDraftRootState,
     composeSendFormTransactionFeeLevelsThunk,
     formDraftActions,
@@ -13,6 +16,8 @@ import {
 import {
     type AccountKey,
     type FormState,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
     type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
@@ -37,20 +42,21 @@ export const getStellarTokenFormDraftKey = (accountKey: AccountKey, tokenContrac
  * Updates the selected fee level for Stellar token operations.
  * Stores the updated form draft in Redux.
  */
-export const updateStellarTokenSelectedFeeLevelThunk = createThunk(
+export type UpdateStellarTokenSelectedFeeLevelThunkState = FormDraftRootState;
+
+export const updateStellarTokenSelectedFeeLevelThunk = createThunk<
+    void,
+    UpdateSelectedFeeLevelThunkParams,
+    { state: UpdateStellarTokenSelectedFeeLevelThunkState }
+>(
     `${STELLAR_TOKEN_MODULE_PREFIX}/updateSelectedFeeLevel`,
-    (
-        { feeLevelLabel, feePerUnit, formDraftKey }: UpdateSelectedFeeLevelThunkParams,
-        { dispatch, getState },
-    ) => {
+    ({ feeLevelLabel, feePerUnit, formDraftKey }, { dispatch, getState }) => {
         if (!formDraftKey) {
             return;
         }
 
-        const formDraft = selectDeepCopyOfFormDraft(
-            getState() as FormDraftRootState,
-            formDraftKey,
-        ) as FormState | undefined;
+        const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
+            FormState | undefined;
 
         if (!formDraft) {
             return;
@@ -103,15 +109,23 @@ type ComposeStellarTrustlineFeesParams = {
     tokenContract: TokenAddress;
 };
 
+export type ComposeStellarTrustlineFeesThunkState = AccountsRootState &
+    FeesRootState &
+    ComposeSendFormTransactionFeeLevelsThunkState;
+
 /**
  * Composes fee levels for Stellar trustline operations (activation/deactivation).
  * This should be called BEFORE navigating to the fee screen to ensure feeLevels
  * are available in Redux when the screen renders.
  */
-export const composeStellarTrustlineFeesThunk = createThunk(
+export const composeStellarTrustlineFeesThunk = createThunk<
+    PrecomposedLevels | PrecomposedLevelsCardano,
+    ComposeStellarTrustlineFeesParams,
+    { rejectValue: string; state: ComposeStellarTrustlineFeesThunkState }
+>(
     `${STELLAR_TOKEN_MODULE_PREFIX}/composeTrustlineFees`,
     async (
-        { accountKey, tokenContract }: ComposeStellarTrustlineFeesParams,
+        { accountKey, tokenContract },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);

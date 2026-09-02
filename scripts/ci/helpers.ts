@@ -4,43 +4,39 @@ import fs from 'node:fs';
 import path from 'node:path';
 import semver from 'semver';
 
+import { getTrezorPackageDir } from './trezor-package-path.js';
+
+export { getTrezorPackageDir, getTrezorPackageRelativePath } from './trezor-package-path.js';
+
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
 const updateNeeded: string[] = [];
 
-export const gettingNpmDistributionTags = async (packageName: string) => {
+export const gettingNpmDistributionTags = async (
+    packageName: string,
+): Promise<Record<string, string> | undefined> => {
     const npmRegistryUrl = `https://registry.npmjs.org/${packageName}`;
     const response = await fetch(npmRegistryUrl);
     const data = await response.json();
+    // Package does not exist on NPM yet (e.g. a newly added or renamed package).
     if (data.error) {
-        return { success: false };
+        return undefined;
     }
 
     return data['dist-tags'];
 };
 
 export const getNpmRemoteGreatestVersion = async (moduleName: string) => {
-    try {
-        const distributionTags = await gettingNpmDistributionTags(moduleName);
+    const distributionTags = await gettingNpmDistributionTags(moduleName);
 
-        const versionArray: string[] = Object.values(distributionTags);
-        const greatestVersion = versionArray.reduce((max, current) =>
-            semver.gt(current, max) ? current : max,
-        );
-
-        return greatestVersion;
-    } catch (error) {
-        console.error('error:', error);
-        throw new Error('Not possible to get remote greatest version');
+    const versionArray = distributionTags ? Object.values(distributionTags) : [];
+    // No published versions/dist-tags (new, renamed or unpublished package) means there is
+    // nothing to compare against, so there is no remote greatest version.
+    if (versionArray.length === 0) {
+        return undefined;
     }
-};
 
-export const getTrezorPackageDir = (packageName: string) => {
-    const networkMatch = packageName.match(/^network-([^-]+)(-(.+))?$/);
-
-    return networkMatch
-        ? path.join(ROOT, 'networks', networkMatch[1]!, packageName)
-        : path.join(ROOT, 'packages', packageName);
+    return versionArray.reduce((max, current) => (semver.gt(current, max) ? current : max));
 };
 
 export const getTrezorDependencies = async (packageNameWithoutTrezorPrefix: string) => {

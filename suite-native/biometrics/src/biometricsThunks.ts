@@ -4,8 +4,8 @@ import { isRejected } from '@reduxjs/toolkit';
 import * as LocalAuthentication from 'expo-local-authentication';
 import type { LocalAuthenticationResult } from 'expo-local-authentication';
 
-import { createThunk } from '@suite-common/redux-utils';
-import { asTypedNativeAnalytics, events } from '@suite-native/analytics';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 
 import {
     selectGoneToBackgroundAtTimestamp,
@@ -15,7 +15,7 @@ import {
     selectShouldUserBeAuthenticated,
 } from './biometricsSelectors';
 import { getIsBiometricsFeatureAvailable, getShouldRevokeAuth } from './biometricsUtils';
-import { AuthenticateError } from './types';
+import { AuthenticateError, type BiometricsSliceRootState } from './types';
 
 export enum BiometricsToggleResult {
     Enabled = 'enabled',
@@ -29,8 +29,7 @@ export type BiometricsToggleFulfilledResult = Extract<
 >;
 
 type BiometricsToggleRejectReason =
-    | BiometricsToggleResult.BiometricsNotAvailable
-    | AuthenticateError;
+    BiometricsToggleResult.BiometricsNotAvailable | AuthenticateError;
 
 export type BiometricsAppStateChangePayload = {
     isUserAuthenticated?: boolean;
@@ -61,10 +60,18 @@ export const authenticateUserThunk = createThunk<
     return result;
 });
 
+type ToggleBiometricsSettingsThunkState = BiometricsSliceRootState;
+
+type ToggleBiometricsSettingsThunkDeps = WithServices<NativeAnalyticsDep>;
+
 export const toggleBiometricsSettingsThunk = createThunk<
     BiometricsToggleFulfilledResult,
     void,
-    { rejectValue: BiometricsToggleRejectReason }
+    {
+        rejectValue: BiometricsToggleRejectReason;
+        state: ToggleBiometricsSettingsThunkState;
+        extra: ToggleBiometricsSettingsThunkDeps;
+    }
 >(
     `${BIOMETRICS_THUNK_PREFIX}/toggleBiometricsSettings`,
     async (_, { getState, rejectWithValue, dispatch, extra }) => {
@@ -84,7 +91,7 @@ export const toggleBiometricsSettingsThunk = createThunk<
         const isBiometricsEnabled = selectIsBiometricsEnabled(getState());
 
         if (isBiometricsEnabled) {
-            asTypedNativeAnalytics(services.analytics).report({
+            services.analytics.report({
                 type: events.biometricsChangeEvent.name,
                 payload: { enabled: false, origin: 'settingsToggle' },
             });
@@ -92,7 +99,7 @@ export const toggleBiometricsSettingsThunk = createThunk<
             return BiometricsToggleResult.Disabled;
         }
 
-        asTypedNativeAnalytics(services.analytics).report({
+        services.analytics.report({
             type: events.biometricsChangeEvent.name,
             payload: { enabled: true, origin: 'settingsToggle' },
         });
@@ -101,10 +108,15 @@ export const toggleBiometricsSettingsThunk = createThunk<
     },
 );
 
+type HandleBiometricsAppStateChangeThunkState = BiometricsSliceRootState;
+
 export const handleBiometricsAppStateChangeThunk = createThunk<
     BiometricsAppStateChangePayload | undefined,
     { nextAppState: AppStateStatus },
-    { rejectValue: BiometricsAppStateChangeRejectReason }
+    {
+        rejectValue: BiometricsAppStateChangeRejectReason;
+        state: HandleBiometricsAppStateChangeThunkState;
+    }
 >(
     `${BIOMETRICS_THUNK_PREFIX}/handleAppStateChange`,
     ({ nextAppState }, { getState, dispatch, rejectWithValue }) => {

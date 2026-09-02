@@ -3,19 +3,21 @@ import { memo, useCallback } from 'react';
 import { type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { type TradingTradeType } from '@suite-common/trading';
+import {
+    type TradingTradeType,
+    selectTradingExchangeProviders,
+    selectTradingProvidersByTradeType,
+} from '@suite-common/trading';
 import { CardList, Column, Row, Skeleton, Text } from '@trezor/components';
 
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
-    getCryptoQuoteAmountProps,
-    getProvidersInfoProps,
-    isTradingExchangeContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 import { useTradingOfferRate } from './useTradingOfferRate';
 import { TradingUtilsProvider } from '../TradingUtils/TradingUtilsProvider';
 import { TradingUtilsProviderKyc } from '../TradingUtils/TradingUtilsProviderKyc';
+import { useTradingQuoteAmounts } from '../hooks/useTradingQuoteAmounts';
 
 type TradingOffersModalItemProps = {
     quote: TradingTradeType;
@@ -31,19 +33,22 @@ const ProviderWrapper = styled.div`
 
 const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItemProps) => {
     const context = useTradingFormContext();
-    const providers = getProvidersInfoProps(context);
+    const providers = useSelector(reduxState =>
+        selectTradingProvidersByTradeType(reduxState, context.type),
+    );
+    const exchangeProviders = useSelector(selectTradingExchangeProviders);
     const {
         form: {
             state: { isFormLoading },
         },
     } = context;
-    const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
+    const cryptoAmountProps = useTradingQuoteAmounts(quote, context.type);
     const formattedRate = useTradingOfferRate(quote);
     const { exchange } = quote;
     const exchangeComparatorProps = isTradingExchangeContext(context)
         ? {
               isDex: (quote as ExchangeTrade).isDex,
-              providers: context.exchangeInfo?.providerInfos,
+              providers: exchangeProviders,
           }
         : undefined;
 

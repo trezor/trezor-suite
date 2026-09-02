@@ -5,7 +5,8 @@ import { StellarOperation } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
-import { isNotUndefined, throwError } from '@trezor/utils';
+import { exhaustive } from '@trezor/type-utils';
+import { throwError } from '@trezor/utils';
 
 import type { TypedCall } from '../../device/DeviceCommands';
 
@@ -40,7 +41,7 @@ const transformSignMessage = (
 };
 
 // transform incoming parameters to protobuf messages format
-const transformOperation = (op: StellarOperation): StellarOperationMessage | undefined => {
+const transformOperation = (op: StellarOperation): StellarOperationMessage => {
     Assert(StellarOperation, op);
 
     switch (op.type) {
@@ -190,7 +191,24 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
                 balance_id: op.balanceId,
             };
 
-        // no default
+        case 'invokeHostFunction':
+            // `function` and `auth` are already in protobuf shape (built by network-stellar).
+            return {
+                type: 'StellarInvokeHostFunctionOp',
+                source_account: op.source,
+                function: op.function,
+                auth: op.auth,
+            };
+
+        case 'inflation':
+            // There is no StellarInflationOp protobuf message, so the device cannot sign it.
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'Stellar inflation operation is not supported',
+            );
+
+        default:
+            return exhaustive(op);
     }
 };
 
@@ -202,7 +220,7 @@ export const stellarSignTx = async (
     payment_req?: PROTO.PaymentRequest,
 ) => {
     const message = transformSignMessage(tx, { address_n, network_passphrase, payment_req });
-    const operations = tx.operations.map(transformOperation).filter(isNotUndefined);
+    const operations = tx.operations.map(transformOperation);
 
     await typedCall('StellarSignTx', 'StellarTxOpRequest', message);
 
@@ -218,6 +236,29 @@ export const stellarSignTx = async (
                 `Stellar transaction doesn't include any valid operation.`,
             ),
         );
+
+    // Soroban (InvokeHostFunction) transactions carry a transaction extension
+    // (SorobanTransactionData). After the final operation the device requests it via
+    // StellarTxExtRequest and only then returns the signature.
+    const isSoroban = operations.some(o => o.type === 'StellarInvokeHostFunctionOp');
+
+    if (isSoroban) {
+        if (!tx.sorobanData) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'Soroban transaction is missing sorobanData (SorobanTransactionData XDR).',
+            );
+        }
+
+        await typedCall(type, 'StellarTxExtRequest', op);
+
+        const response = await typedCall('StellarTxExt', 'StellarSignedTx', {
+            v: 1,
+            soroban_data: tx.sorobanData,
+        });
+
+        return response.message;
+    }
 
     const response = await typedCall(type, 'StellarSignedTx', op);
 

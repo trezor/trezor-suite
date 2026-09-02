@@ -5,11 +5,12 @@ import styled from 'styled-components';
 
 import { coinjoinAccountUpdateAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner, Icon, motionEasing } from '@trezor/components';
 import { UserIcon, UsersFourIcon, UsersIcon, UsersThreeIcon } from '@trezor/icons';
 
 import { AnonymityStatus } from 'src/constants/suite/coinjoin';
-import { useAnonymityStatus, useDispatch } from 'src/hooks/suite';
+import { useAnonymityStatus } from 'src/hooks/suite';
 
 import { SetupSlider } from './SetupSlider/SetupSlider';
 import {

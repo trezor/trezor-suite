@@ -20,7 +20,6 @@ import type {
     AsyncResultWithTypedError,
     BridgeCommonErrors,
     Descriptor,
-    MessageResponse,
     Session,
 } from '../types';
 import { bridgeApiCall } from '../utils/bridgeApiCall';
@@ -64,16 +63,23 @@ type IncompleteRequestOptions = {
 
 type BridgeConstructorParameters = AbstractTransportParams & { port?: number };
 
-type BridgeReadWriteError =
-    | BridgeCommonErrors
-    | typeof ERRORS.ABORTED_BY_SIGNAL
-    | typeof ERRORS.ABORTED_BY_TIMEOUT
-    | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
-    | typeof ERRORS.DEVICE_NOT_FOUND
-    | typeof ERRORS.INTERFACE_DATA_TRANSFER
-    | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
-    | typeof ERRORS.OTHER_CALL_IN_PROGRESS
-    | typeof PROTOCOL_MALFORMED;
+type BridgeInitResult = ReturnType<AbstractTransport['init']>;
+
+type BridgeListenResult = ReturnType<AbstractTransport['listen']>;
+
+type BridgeEnumerateResult = ReturnType<AbstractTransport['enumerate']>;
+
+type BridgeAcquireResult = ReturnType<AbstractTransport['acquire']>;
+
+type BridgeReleaseResult = ReturnType<AbstractTransport['release']>;
+
+type BridgeReleaseDeviceResult = ReturnType<AbstractTransport['releaseDevice']>;
+
+type BridgeCallResult = ReturnType<AbstractTransport['call']>;
+
+type BridgeSendResult = ReturnType<AbstractTransport['send']>;
+
+type BridgeReceiveResult = ReturnType<AbstractTransport['receive']>;
 
 export class BridgeTransport extends AbstractTransport {
     private useAbortEndpoint: boolean = false;
@@ -94,7 +100,7 @@ export class BridgeTransport extends AbstractTransport {
         return ping(`${this.url}/`).catch(() => false);
     }
 
-    public init({ signal }: AbstractTransportMethodParams<'init'> = {}) {
+    public init({ signal }: AbstractTransportMethodParams<'init'> = {}): BridgeInitResult {
         return this.scheduleAction(
             async signal => {
                 const response = await this.post('/', {
@@ -116,7 +122,7 @@ export class BridgeTransport extends AbstractTransport {
         );
     }
 
-    public listen() {
+    public listen(): BridgeListenResult {
         if (this.listening) {
             return error({ code: ERRORS.ALREADY_LISTENING });
         }
@@ -142,11 +148,16 @@ export class BridgeTransport extends AbstractTransport {
         }
     }
 
-    public enumerate({ signal }: AbstractTransportMethodParams<'enumerate'> = {}) {
+    public enumerate({
+        signal,
+    }: AbstractTransportMethodParams<'enumerate'> = {}): BridgeEnumerateResult {
         return this.scheduleAction(signal => this.post('/enumerate', { signal }), { signal });
     }
 
-    public acquire({ input, signal }: AbstractTransportMethodParams<'acquire'>) {
+    public acquire({
+        input,
+        signal,
+    }: AbstractTransportMethodParams<'acquire'>): BridgeAcquireResult {
         return this.scheduleAction(
             async signal => {
                 const response = await this.post('/acquire', {
@@ -164,7 +175,11 @@ export class BridgeTransport extends AbstractTransport {
         );
     }
 
-    public release({ path: _, session, signal }: AbstractTransportMethodParams<'release'>) {
+    public release({
+        path: _,
+        session,
+        signal,
+    }: AbstractTransportMethodParams<'release'>): BridgeReleaseResult {
         return this.scheduleAction(
             async signal => {
                 const response = await this.post('/release', {
@@ -186,7 +201,7 @@ export class BridgeTransport extends AbstractTransport {
         }
     }
 
-    public releaseDevice() {
+    public releaseDevice(): BridgeReleaseDeviceResult {
         return Promise.resolve(success(undefined));
     }
 
@@ -226,10 +241,7 @@ export class BridgeTransport extends AbstractTransport {
         thpState,
         signal,
         timeout,
-    }: AbstractTransportMethodParams<'call'>): AsyncResultWithTypedError<
-        MessageResponse,
-        BridgeReadWriteError
-    > {
+    }: AbstractTransportMethodParams<'call'>): BridgeCallResult {
         return this.scheduleAction(
             async signal => {
                 const protocol = this.getProtocol(customProtocol);
@@ -287,10 +299,7 @@ export class BridgeTransport extends AbstractTransport {
         thpState,
         signal,
         timeout,
-    }: AbstractTransportMethodParams<'send'>): AsyncResultWithTypedError<
-        undefined,
-        BridgeReadWriteError
-    > {
+    }: AbstractTransportMethodParams<'send'>): BridgeSendResult {
         return this.scheduleAction(
             async signal => {
                 const protocol = this.getProtocol(customProtocol);
@@ -328,10 +337,7 @@ export class BridgeTransport extends AbstractTransport {
         thpState,
         signal,
         timeout,
-    }: AbstractTransportMethodParams<'receive'>): AsyncResultWithTypedError<
-        MessageResponse,
-        BridgeReadWriteError
-    > {
+    }: AbstractTransportMethodParams<'receive'>): BridgeReceiveResult {
         return this.scheduleAction(
             async signal => {
                 const protocol = this.getProtocol(customProtocol);

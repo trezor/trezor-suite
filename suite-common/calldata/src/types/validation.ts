@@ -24,5 +24,6 @@ export type IssueCode =
     | 'EXCEEDS_UINT64'
     | 'EXCEEDS_UINT256'
     | 'INVALID_BYTES32'
+    | 'INVALID_BYTES'
     | 'ARRAYS_LENGTH_MISMATCH'
     | 'ENCODING_FAILED';

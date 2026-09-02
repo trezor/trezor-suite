@@ -7,7 +7,6 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
-        { "path": "../../suite-common/flags" },
         {
             "path": "../../suite-common/formatters"
         },
@@ -18,6 +17,7 @@
             "path": "../../suite-common/message-system"
         },
         { "path": "../../suite-common/mev" },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -71,7 +71,7 @@
             "path": "../module-stellar-token-management"
         },
         { "path": "../navigation" },
-        { "path": "../toasts" },
+        { "path": "../scrollview" },
         { "path": "../tokens" },
         { "path": "../trading-analytics" },
         { "path": "../trading-atoms" },
@@ -92,6 +92,9 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"

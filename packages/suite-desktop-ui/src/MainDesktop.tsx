@@ -78,9 +78,7 @@ export const init = async (container: HTMLElement) => {
     if (preloadAction?.type === STORAGE.LOAD && preloadAction.payload.debug?.showDebugMenu) {
         desktopApi.configLogger({
             level: 'debug',
-            options: {
-                writeToDisk: true,
-            },
+            writeToDisk: true,
         });
     }
 

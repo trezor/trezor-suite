@@ -1,7 +1,7 @@
 import { type Reducer, type UnknownAction, combineReducers } from 'redux';
 
 import { selectedAccountReducer } from '@suite/account';
-import { type CoinjoinAction, type CoinjoinState, coinjoinReducer } from '@suite/coinjoin';
+import { type CoinjoinState, coinjoinReducer } from '@suite/coinjoin';
 import { type TradingState, prepareTradingReducer } from '@suite-common/trading';
 import {
     type AccountsRefreshTimeState,
@@ -11,10 +11,10 @@ import {
     type FormDraftState,
     type PhishingState,
     type SendState,
-    type StablecoinYieldState,
     type StakeState,
     type TransactionsState,
     type TronStakeReducerState,
+    type YieldState,
     accountsRefreshTimeReducer,
     feesReducer,
     prepareAccountsReducer,
@@ -27,8 +27,8 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
-    stablecoinYieldReducer,
     tronStakeReducer,
+    yieldReducer,
 } from '@suite-common/wallet-core';
 import {
     type BlockchainNetworks,
@@ -39,7 +39,6 @@ import {
 } from '@suite-common/wallet-types';
 
 import { extraDependencies } from 'src/support/extraDependencies';
-import { type Action } from 'src/types/suite';
 
 import accountSearchReducer, { type AccountSearchState } from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
@@ -76,13 +75,13 @@ export type WalletState = {
     coinjoin: CoinjoinState;
     stake: StakeState;
     settings: WalletSettings;
-    stablecoinYield: StablecoinYieldState;
+    stablecoinYield: YieldState;
     tronStake: TronStakeReducerState;
 };
 
 export const walletReducers: Reducer<
     WalletState,
-    Action | UnknownAction | CoinjoinAction,
+    UnknownAction,
     Partial<Omit<WalletState, 'graph' | 'coinjoin'>>
 > = combineReducers({
     fiat: fiatRatesReducer,
@@ -103,6 +102,6 @@ export const walletReducers: Reducer<
     coinjoin: coinjoinReducer,
     stake: stakeReducer,
     settings: walletSettingsReducer,
-    stablecoinYield: stablecoinYieldReducer,
+    stablecoinYield: yieldReducer,
     tronStake: tronStakeReducer,
 });

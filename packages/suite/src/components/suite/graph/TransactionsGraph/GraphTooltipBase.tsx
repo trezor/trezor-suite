@@ -12,32 +12,14 @@ import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/
 // Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;
 
-// When the Tooltip gets triggered near to the horizontal boundaries, it might overflow outside of the screen
-// These positioning functions are used to align it properly from each side
-const calculateXPosition = (x: number, offset = 0) => `calc(${x}px - ${x / 2}px + ${offset}px)`;
-const calculateXPositionRight = (x: number, offset = 0) => `calc(${x}px + 25% + ${offset}px)`;
+// The Tooltip is centered above the hovered point, but ancestors of the chart clip horizontal
+// overflow (the app content is a scroll container), so the box is clamped to the chart's left
+// edge and only the arrow keeps following the cursor
+const getTooltipXPosition = (x: number, width: number): string =>
+    x >= width - OFFSET_LIMIT_HORIZONTAL ? `calc(${x}px + 25%)` : `max(0px, calc(${x}px - 50%))`;
 
-// Tooltip should be centered and above the chart bars but should not overflow horizontally thanks to the positioning functions
-const getTooltipXPosition = (x: number, width: number): string => {
-    if (x <= OFFSET_LIMIT_HORIZONTAL) {
-        return calculateXPosition(x, -30);
-    }
-
-    if (x >= width - OFFSET_LIMIT_HORIZONTAL) {
-        return calculateXPositionRight(x);
-    }
-
-    return `calc(${x}px - 50%)`;
-};
-
-// Align the triangle arrow in a similar manner
-const getTooltipArrowXPosition = (x: number, width: number): string => {
-    if (x <= OFFSET_LIMIT_HORIZONTAL) {
-        return `left: ${calculateXPosition(x, -30)};`;
-    }
-
-    return x >= width - OFFSET_LIMIT_HORIZONTAL ? `left: calc(75% + 1px);` : `left: 50%;`;
-};
+const getTooltipArrowXPosition = (x: number, width: number): string =>
+    x >= width - OFFSET_LIMIT_HORIZONTAL ? `left: calc(75% + 1px);` : `left: min(${x}px, 50%);`;
 
 interface WrapperProps {
     $positionX: number;
@@ -65,8 +47,7 @@ const CustomTooltipWrapper = styled.div<WrapperProps>`
         content: '';
         top: 100%;
         ${({ $positionX, $boxWidth }) => getTooltipArrowXPosition($positionX, $boxWidth)}
-        margin-left: ${({ $positionX }) =>
-            $positionX <= OFFSET_LIMIT_HORIZONTAL ? `50px` : `-10px`};
+        margin-left: -10px;
         width: 0;
         height: 0;
         /* stylelint-disable trezor/dimension-token-values -- These borders construct the tooltip arrow. */

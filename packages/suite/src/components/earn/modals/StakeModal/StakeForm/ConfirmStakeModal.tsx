@@ -4,6 +4,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -15,7 +16,7 @@ import { ClockIcon, HandIcon } from '@trezor/icons';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const getStakeEnteringMessage = (networkType?: NetworkType) => {
     if (networkType === 'ethereum') return 'TR_STAKE_ENTERING_POOL_MAY_TAKE';

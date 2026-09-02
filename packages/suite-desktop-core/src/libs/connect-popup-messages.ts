@@ -6,7 +6,7 @@
 import type { ConnectPopupResponse } from '@trezor/suite-desktop-api';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
-import { ipcMain } from '../typed-electron';
+import { ipcMain } from '../ipcMain';
 
 const LOG_PREFIX = 'connect-popup-messages';
 

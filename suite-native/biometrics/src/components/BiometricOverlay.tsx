@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, iconSizes } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -13,7 +13,7 @@ const overlayWrapperStyle = prepareNativeStyle(utils => ({
     ...StyleSheet.absoluteFill,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 const bottomWrapperStyle = prepareNativeStyle(utils => ({

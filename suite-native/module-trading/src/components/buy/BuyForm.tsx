@@ -78,7 +78,7 @@ const BuyFormMemoized = memo(
 
 export const BuyForm = ({ shouldAnimateEntering }: BuyFormProps) => {
     const buyForm = useBuyFormContext();
-    const isAmountInputActiveDebounced = useFocusedValueWatch(buyForm.watch);
+    const isAmountInputActiveDebounced = useFocusedValueWatch(buyForm.control);
     useBuyQuotes(buyForm);
 
     return (

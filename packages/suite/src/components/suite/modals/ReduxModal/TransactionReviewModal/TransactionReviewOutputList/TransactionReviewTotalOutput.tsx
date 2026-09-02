@@ -13,6 +13,7 @@ import {
     getIsUpdatedEthereumSendFlow,
     getIsUpdatedSendFlow,
     isClearSignedEvmTradingSwapTransaction,
+    isClearSignedWrappedNativeTransaction,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
     isTestnet,
@@ -20,7 +21,7 @@ import {
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 
 import {
@@ -38,6 +39,7 @@ interface GetLinesParams {
     stakeType?: StakeType;
     nativeToken?: TokenInfo;
     isClearSignedTradingSwap: boolean;
+    isClearSignedWrapUnwrap: boolean;
     isTronStakeFreeze: boolean;
     tronResourceLabel: string;
 }
@@ -51,6 +53,7 @@ const getLines = ({
     stakeType,
     nativeToken,
     isClearSignedTradingSwap,
+    isClearSignedWrapUnwrap,
     isTronStakeFreeze,
     tronResourceLabel,
 }: GetLinesParams): OutputElementLine[] => {
@@ -129,7 +132,10 @@ const getLines = ({
         const isFeeOnly =
             isUnknownStakingValue ||
             (isEvmApprovalTx(precomposedForm.transactionData) && isApprovalFlowSupported(device)) ||
-            isYieldOrClaimOperation;
+            isYieldOrClaimOperation ||
+            // A clear-signed wrap/unwrap already confirms the amount on its own row, and the
+            // device leaves it off its summary screen for the same reason.
+            isClearSignedWrapUnwrap;
 
         return isFeeOnly ? [feeLine] : [amountLine, feeLine];
     }
@@ -222,6 +228,12 @@ export const TransactionReviewTotalOutput = ({
         transactionData: precomposedForm.transactionData,
         trading: precomposedForm.trading,
     });
+    const isClearSignedWrapUnwrap = isClearSignedWrappedNativeTransaction({
+        account,
+        device,
+        precomposedTx,
+        transactionData: precomposedForm.transactionData,
+    });
     const lines = getLines({
         device,
         networkType,
@@ -231,12 +243,14 @@ export const TransactionReviewTotalOutput = ({
         stakeType,
         nativeToken,
         isClearSignedTradingSwap,
+        isClearSignedWrapUnwrap,
         isTronStakeFreeze,
         tronResourceLabel,
     });
 
     const titleId = (() => {
-        if (isClearSignedTradingSwap) return 'TR_NETWORK_FEE';
+        // Both list the fee alone, so "Total including fee" would be misleading.
+        if (isClearSignedTradingSwap || isClearSignedWrapUnwrap) return 'TR_NETWORK_FEE';
         if (precomposedForm.trading?.isSlip24Active) return 'TR_SUMMARY';
         if (isTronStakeFreeze) return 'TR_SUMMARY';
 

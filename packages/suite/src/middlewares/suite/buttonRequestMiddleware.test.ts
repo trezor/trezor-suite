@@ -1,0 +1,143 @@
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { debugInitialState } from '@suite/debug';
+import { lockDevice } from '@suite/locks';
+import { routerReducer } from '@suite/router';
+import { suiteSettingsInitialState } from '@suite/settings';
+import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
+import {
+    mockConnectInitHooks,
+    mockConnectInitSettings,
+    mockCreateTransports,
+    mockGetDebugSettings,
+    mockGetThpSettings,
+} from '@suite-common/connect-init/mocks';
+import { deviceActions } from '@suite-common/device';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
+import {
+    mockGetAllowPrerelease,
+    mockGetBinFilesBaseUrl,
+    mockSuiteDevice,
+} from '@suite-common/suite-types/mocks';
+import { createTestStore, testMocks } from '@suite-common/test-utils';
+import { defaultTrezorUIEventHandlerThunk, observeSelectedDevice } from '@suite-common/wallet-core';
+import { UI_EVENT, UI_EVENTS, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
+import { noopCreateLogger } from '@trezor/connect-common';
+
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
+import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+
+const device = mockSuiteDevice();
+
+const getInitialState = () => ({
+    router: routerReducer(undefined, { type: 'foo' } as any),
+    suite: {
+        ...suiteReducer(undefined, { type: 'foo' } as any),
+    },
+    suiteSettings: suiteSettingsInitialState,
+    debug: debugInitialState,
+    wallet: {
+        settings: {
+            enabledNetworks: [],
+        },
+    },
+    device: {
+        devices: [device],
+        selectedDevice: device,
+    },
+    messageSystem: messageSystemInitialState,
+    firmware: { firmwareChannel: 'production' },
+});
+
+type State = ReturnType<typeof getInitialState>;
+
+const connectInitThunkDeps: ConnectInitThunkDeps = {
+    actions: { lockDevice },
+    services: {
+        analytics: mockDesktopAnalytics(),
+        connectInitHooks: mockConnectInitHooks(),
+        connectInitSettings: mockConnectInitSettings(),
+        createLogger: noopCreateLogger,
+        createTransports: mockCreateTransports(),
+        getAllowPrerelease: mockGetAllowPrerelease(),
+        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+        getDebugSettings: mockGetDebugSettings(),
+        getThpSettings: mockGetThpSettings(),
+    },
+};
+
+const initStore = (state: State) => {
+    const store = createTestStore({
+        extra: {
+            ...connectInitThunkDeps,
+            actions: { lockDevice },
+        },
+        middleware: [
+            prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),
+            buttonRequestMiddleware,
+        ],
+        preloadedState: state,
+    });
+
+    return store;
+};
+
+describe('buttonRequest middleware', () => {
+    it('see what happens on pin change call', async () => {
+        const store = initStore(getInitialState());
+        const { dispatch } = store;
+        await dispatch(connectInitThunk());
+        const call = dispatch(deviceSettingsActions.changePin({ remove: false }));
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
+        // fake few ui events, just like when user is changing PIN
+        emitTestEvent(UI_EVENT, {
+            type: UI_EVENTS.BUTTON_REQUEST,
+            payload: { code: 'ButtonRequest_ProtectCall' },
+        });
+        emitTestEvent(UI_REQUEST, {
+            type: UI_REQUESTS.REQUEST_PIN,
+            payload: { type: 'PinMatrixRequestType_NewFirst', device },
+        });
+
+        await call;
+
+        // Not interested in noisy lifecycle actions from reduxJS toolkit
+        const unrelatedActionTypes = [
+            observeSelectedDevice.pending.type,
+            observeSelectedDevice.fulfilled.type,
+        ];
+        const actions = store
+            .getActions()
+            .filter(action => !unrelatedActionTypes.includes(action.type));
+
+        // not interested in the last action (its from changePin mock);
+        actions.pop();
+
+        expect(actions).toMatchObject([
+            { type: connectInitThunk.pending.type, payload: undefined },
+            { type: connectInitThunk.fulfilled.type, payload: undefined },
+            { type: lockDevice.type, payload: true },
+            { type: defaultTrezorUIEventHandlerThunk.pending.type },
+            { type: UI_EVENTS.BUTTON_REQUEST, payload: { code: 'ButtonRequest_ProtectCall' } },
+            {
+                type: deviceActions.addButtonRequest.type,
+                payload: { buttonRequest: { code: 'ButtonRequest_ProtectCall' }, device },
+            },
+            { type: defaultTrezorUIEventHandlerThunk.pending.type },
+            {
+                type: UI_REQUESTS.REQUEST_PIN,
+                payload: { type: 'PinMatrixRequestType_NewFirst', device },
+            },
+            {
+                type: deviceActions.addButtonRequest.type,
+                payload: { buttonRequest: { code: 'PinMatrixRequestType_NewFirst' }, device },
+            },
+            { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
+            { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
+            { type: lockDevice.type, payload: false },
+            { type: deviceActions.removeButtonRequests.type, payload: { device } },
+        ]);
+    });
+});

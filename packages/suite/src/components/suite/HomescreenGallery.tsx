@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Grid } from '@trezor/components';
 import {
     DeviceModelInternal,
@@ -13,7 +14,6 @@ import { versionUtils } from '@trezor/utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
-import { useDispatch } from 'src/hooks/suite';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
 
 type HomescreensType = ReturnType<typeof getHomescreens>;

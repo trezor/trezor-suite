@@ -31,10 +31,12 @@ export enum EthereumABIType {
     ABI_UINT16 = 14,
     ABI_UINT8 = 15,
     ABI_BOOL = 16,
+    ABI_INT160 = 17,
     ABI_BYTES32 = 20,
     ABI_BYTES16 = 21,
     ABI_BYTES8 = 22,
     ABI_BYTES4 = 23,
+    ABI_BYTES20 = 24,
     ABI_BYTES = 30,
     ABI_STRING = 31,
 }
@@ -58,6 +60,8 @@ export enum EthereumERC7730FieldFormatterType {
     FORMATTER_UNIT = 3,
     FORMATTER_RAW = 4,
     FORMATTER_DATE = 5,
+    FORMATTER_CALLDATA = 6,
+    FORMATTER_ENUM = 7,
 }
 
 export type EnumEthereumERC7730FieldFormatterType = Static<
@@ -65,11 +69,23 @@ export type EnumEthereumERC7730FieldFormatterType = Static<
 >;
 export const EnumEthereumERC7730FieldFormatterType = Type.Enum(EthereumERC7730FieldFormatterType);
 
+export type EthereumERC7730EnumEntry = Static<typeof EthereumERC7730EnumEntry>;
+export const EthereumERC7730EnumEntry = Type.Object(
+    {
+        key: Type.Number(),
+        value: Type.String(),
+    },
+    { $id: 'EthereumERC7730EnumEntry' },
+);
+
 export type EthereumERC7730Path = Static<typeof EthereumERC7730Path>;
 export const EthereumERC7730Path = Type.Object(
     {
         path: Type.Array(Type.Number()),
         container_path: Type.Optional(EnumEthereumERC7730ContainerPath),
+        const_value: Type.Optional(Type.String()),
+        slice_start: Type.Optional(Type.Number()),
+        slice_end: Type.Optional(Type.Number()),
     },
     { $id: 'EthereumERC7730Path' },
 );
@@ -86,6 +102,9 @@ export const EthereumERC7730FieldInfo = Type.Object(
         base: Type.Optional(Type.String()),
         prefix: Type.Optional(Type.Boolean()),
         const_token_address: Type.Optional(Type.String()),
+        callee_path: Type.Optional(EthereumERC7730Path),
+        selector: Type.Optional(Type.String()),
+        enum_values: Type.Array(EthereumERC7730EnumEntry),
     },
     { $id: 'EthereumERC7730FieldInfo' },
 );

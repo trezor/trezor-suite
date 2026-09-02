@@ -1,12 +1,13 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
-import { cryptoIdToSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
+import { useDispatch } from '@suite-common/redux-utils';
+import { cryptoIdToNetworkSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { IconCircle, Row } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
@@ -21,7 +22,7 @@ export const TradingReceiveAccountAddSuiteOption = () => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingUtils();
 
-    const symbol = cryptoIdToSymbol(cryptoId);
+    const symbol = cryptoIdToNetworkSymbol(cryptoId);
 
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const networkName = contractAddress
@@ -38,7 +39,6 @@ export const TradingReceiveAccountAddSuiteOption = () => {
                 type: 'add-account',
                 device,
                 symbol,
-                noRedirect: true,
                 isCoinjoinDisabled: true,
                 isBackClickDisabled: true,
                 onConfirm: () => {

@@ -1,3 +1,10 @@
+export {
+    isSupportedTronNetwork,
+    supportedTronNetworks,
+    toTronNetworkSymbol,
+} from './networkSymbol';
+export type { TronNetworkSymbol } from './networkSymbol';
+
 export const TRON_DECIMALS = 6;
 
 // Tron protocol constant: 1000 SUN per byte, charged when available bandwidth is insufficient

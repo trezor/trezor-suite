@@ -99,8 +99,17 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             const newAccountLabelId = `m/84'/0'/${newAccountIndex}'` as AccountLabelId;
             await walletPage.openAccount();
             await walletPage.addAccountButton.click();
-            await settingsPage.coinsTab.networkAddButton('btc').click();
-            await page.getByTestId('@add-account').click();
+            await expect(walletPage.addAccountNetworkSearchInput).toBeVisible();
+            await walletPage.addAccountNetworkSearchInput.fill('btc');
+            await expect(walletPage.addAccountNetworkButton('eth')).toBeHidden();
+            await walletPage.addAccountNetworkButton('btc').click();
+            await walletPage.addAccountConfirmButton.click();
+            await walletPage.closeAddAccountModal();
+            await walletPage.openAccount({
+                symbol: 'btc',
+                type: 'normal',
+                atIndex: newAccountIndex,
+            });
             await metadataPage.account.changeLabel({
                 accountId: newAccountLabelId,
                 label: 'adding label to a newly added account. does it work?',

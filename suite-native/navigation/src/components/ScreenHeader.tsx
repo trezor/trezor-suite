@@ -3,8 +3,8 @@ import { type ReactNode } from 'react';
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { GoBackIcon } from './GoBackIcon';
 import { type CloseActionType } from '../navigators';
+import { GoBackIcon } from './GoBackIcon';
 import { ScreenHeaderContent, type ScreenHeaderContentProps } from './ScreenHeaderContent';
 
 export type ScreenHeaderProps = ScreenHeaderContentProps &
@@ -22,12 +22,15 @@ export type ScreenHeaderProps = ScreenHeaderContentProps &
         rightIcon?: ReactNode;
     };
 
-const ICON_SIZE = 40;
+const ICON_SIZE = 40; // i.e. medium IconButton size
 
 const headerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    // With `space-between` this only engages once the row is full, i.e. exactly when wide
+    // content would otherwise butt against the side icons on a narrow screen.
+    gap: utils.spacings.sp12,
     paddingTop: utils.spacings.sp8,
     paddingHorizontal: utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
@@ -36,8 +39,7 @@ const headerStyle = prepareNativeStyle(utils => ({
 }));
 
 const iconWrapperStyle = prepareNativeStyle(() => ({
-    width: ICON_SIZE,
-    height: ICON_SIZE,
+    minWidth: ICON_SIZE,
 }));
 
 export const ScreenHeader = ({
@@ -64,7 +66,6 @@ export const ScreenHeader = ({
                 )}
             </Box>
             <ScreenHeaderContent title={title} customContent={customContent} />
-
             <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-right">
                 {rightIcon}
             </Box>

@@ -1,24 +1,21 @@
-/* eslint-disable prefer-destructuring */
-import * as electron from 'electron';
+import {
+    type BrowserWindow,
+    type Event,
+    type IpcRenderer,
+    type WebContents,
+    app as baseElectronApp,
+    ipcRenderer as baseIpcRenderer,
+} from 'electron';
 
 import type * as desktopApi from '@trezor/suite-desktop-api';
 
-export type StrictIpcMain = desktopApi.StrictIpcMain<
-    Omit<Electron.IpcMain, 'handle' | 'handleOnce' | 'removeHandler'>,
-    Electron.IpcMainInvokeEvent
->;
-
 export type StrictIpcRenderer = desktopApi.StrictIpcRenderer<
-    Omit<electron.IpcRenderer, 'invoke' | 'send'>,
-    Electron.Event
+    Omit<IpcRenderer, 'invoke' | 'send'>,
+    Event
 >;
 
-export type StrictBrowserWindow = desktopApi.StrictBrowserWindow<
-    Electron.BrowserWindow,
-    Electron.WebContents
->;
+export type StrictBrowserWindow = desktopApi.StrictBrowserWindow<BrowserWindow, WebContents>;
 
-export const { app } = electron;
+export const app = baseElectronApp;
 
-export const ipcMain: StrictIpcMain = electron.ipcMain;
-export const ipcRenderer: StrictIpcRenderer = electron.ipcRenderer;
+export const ipcRenderer: StrictIpcRenderer = baseIpcRenderer;

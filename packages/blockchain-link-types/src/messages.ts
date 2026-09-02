@@ -137,11 +137,10 @@ export interface PushTransaction {
     };
 }
 
-export interface ValidateEvmRpc {
-    type: typeof MESSAGES.VALIDATE_EVM_RPC;
+export interface GetEvmChainId {
+    type: typeof MESSAGES.GET_EVM_CHAIN_ID;
     payload: {
         url: string;
-        chainId: number;
     };
 }
 
@@ -171,5 +170,5 @@ export type Message =
     | ChannelMessage<Subscribe>
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<PushTransaction>
-    | ChannelMessage<ValidateEvmRpc>
+    | ChannelMessage<GetEvmChainId>
     | ChannelMessage<GetContractInfo>;

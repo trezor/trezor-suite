@@ -4,13 +4,12 @@ import { type FiatCurrencyCode } from 'invity-api';
 
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
+    FiatCurrencyIcon,
     PaymentMethodTranslation,
     TradeInfoHeader,
     TradeInfoRow,
 } from '@suite-native/trading-atoms';
 import type { ExtendedSellCryptoPaymentMethod } from '@suite-native/trading-types';
-
-import { FiatCurrencyIcon } from '../FiatCurrencyIcon';
 
 export type TradeFiatSideCardProps = {
     paymentMethod: ExtendedSellCryptoPaymentMethod;

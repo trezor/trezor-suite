@@ -1,0 +1,46 @@
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+
+import { ReviewOutputItemValues, type ReviewOutputItemValuesProps } from './ReviewOutputItemValues';
+import { ETH_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
+
+const oneUsdc = '1000000'; // 1 USDC in smallest unit
+
+describe('ReviewOutputItemValues', () => {
+    const renderReviewOutputItemValues = async (
+        props: Partial<ReviewOutputItemValuesProps> = {},
+        preloadedState = {},
+    ) =>
+        await renderWithStoreProvider(
+            <ReviewOutputItemValues
+                accountKey={ETH_ACCOUNT_KEY}
+                value={oneUsdc}
+                translationKey="transactionManagement.review.outputs.summary.totalAmount"
+                {...props}
+            />,
+            {
+                preloadedState,
+            },
+        );
+
+    it('should render translated title', async () => {
+        const { getByText } = await renderReviewOutputItemValues({}, { wallet: getWalletState() });
+
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.summary.totalAmount')),
+        ).toBeOnTheScreen();
+    });
+
+    it('should render token balance', async () => {
+        const { getByText } = await renderReviewOutputItemValues(
+            {
+                tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
+            },
+            { wallet: getWalletState() },
+        );
+
+        expect(getByText('1 usdc')).toBeOnTheScreen();
+        expect(getByText('$0.99')).toBeOnTheScreen();
+    });
+});

@@ -21,13 +21,17 @@ export type AnimatedDoubleViewProps = {
     onViewSwitch?: (activeView: ActiveView) => void;
     switchLabel?: string;
     activeView?: ActiveView;
+    // Layout overrides for taller views (e.g. the stacked amount inputs) that
+    // would otherwise overlap at the default spacing. See AnimatedViewWrapper.
+    unfocusedOffset?: number;
+    wrapperHeight?: number;
 };
 
 export const ANIMATED_DOUBLE_VIEW_SWITCH_ANIMATION_DURATION = ANIMATION_DURATION;
 export const ANIMATED_DOUBLE_VIEW_WRAPPER_HEIGHT = 108;
 
-const viewsWrapperStyle = prepareNativeStyle(() => ({
-    height: ANIMATED_DOUBLE_VIEW_WRAPPER_HEIGHT,
+const viewsWrapperStyle = prepareNativeStyle<{ wrapperHeight: number }>((_, { wrapperHeight }) => ({
+    height: wrapperHeight,
     justifyContent: 'space-between',
 }));
 
@@ -37,6 +41,8 @@ export const AnimatedDoubleView = ({
     onViewSwitch = noop,
     switchLabel,
     activeView: controlledActiveView,
+    unfocusedOffset,
+    wrapperHeight = ANIMATED_DOUBLE_VIEW_WRAPPER_HEIGHT,
 }: AnimatedDoubleViewProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -54,17 +60,22 @@ export const AnimatedDoubleView = ({
     }, [activeView, controlledActiveView, onViewSwitch]);
 
     return (
-        <Animated.View layout={LinearTransition} style={applyStyle(viewsWrapperStyle)}>
+        <Animated.View
+            layout={LinearTransition}
+            style={applyStyle(viewsWrapperStyle, { wrapperHeight })}
+        >
             <AnimatedViewWrapper
                 renderView={renderPrimary}
                 focused={activeView === 'primary'}
                 handleViewSwitch={handleViewSwitch}
+                unfocusedOffset={unfocusedOffset}
             />
             <SwitchViewsButton onPress={handleViewSwitch} label={switchLabel} />
             <AnimatedViewWrapper
                 renderView={renderSecondary}
                 focused={activeView === 'secondary'}
                 handleViewSwitch={handleViewSwitch}
+                unfocusedOffset={unfocusedOffset}
             />
         </Animated.View>
     );

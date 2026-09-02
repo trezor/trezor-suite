@@ -1,8 +1,6 @@
 import { vi } from 'vitest';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect from '@trezor/connect';
-
+import TrezorConnect, { UI_REQUESTS, UI_RESPONSE } from '../../../src';
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();
@@ -210,9 +208,9 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             },
         });
 
-        TrezorConnect.on('ui-request_passphrase', () => {
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, () => {
             TrezorConnect.uiResponse({
-                type: 'ui-receive_passphrase',
+                type: UI_RESPONSE.RECEIVE_PASSPHRASE,
                 payload: {
                     passphraseOnDevice: false,
                     value: 'a',

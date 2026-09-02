@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -15,6 +14,8 @@ import {
 import { Banner } from '@trezor/components';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
+
+import { useSelector } from 'src/hooks/suite';
 
 interface SolanaStakingLimitBannerProps {
     account: Account;

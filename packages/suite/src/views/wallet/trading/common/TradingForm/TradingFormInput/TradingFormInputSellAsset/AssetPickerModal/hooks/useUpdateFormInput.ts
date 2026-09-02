@@ -6,8 +6,9 @@ import {
     useTradingAssets,
 } from '@suite-common/trading';
 import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 
-import { type AssetPickerListItem } from 'src/components/suite/asset-picker/hooks';
+import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 export interface UseUpdateFormInputProps {
     closeModal: () => void;
@@ -17,32 +18,34 @@ export interface UseUpdateFormInputProps {
 export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormInputProps) {
     const { resolveAssetTokenOption } = useTradingAssets();
 
-    const handleAssetClick = useCallback(
-        (asset: AssetPickerListItem) => {
-            switch (asset.type) {
-                case 'account': {
-                    onAssetSelect({
-                        ...createAssetNativeTokenOption(
-                            asset.account.symbol as NetworkConfigWithoutTestnets['symbol'],
-                        ),
-                        accountKey: asset.account.key,
-                    });
-                    break;
-                }
+    const handleAccountClick = useCallback(
+        (account: Account) => {
+            onAssetSelect({
+                ...createAssetNativeTokenOption(
+                    account.symbol as NetworkConfigWithoutTestnets['symbol'],
+                ),
+                accountKey: account.key,
+            });
 
-                case 'token': {
-                    onAssetSelect({
-                        ...resolveAssetTokenOption(asset.account.symbol, asset.token),
-                        accountKey: asset.account.key,
-                    });
-                    break;
-                }
-            }
+            closeModal();
+        },
+        [closeModal, onAssetSelect],
+    );
+
+    const handleTokenClick = useCallback(
+        (token: TokensWithRates, account: Account) => {
+            onAssetSelect({
+                ...resolveAssetTokenOption(account.symbol, token),
+                accountKey: account.key,
+            });
 
             closeModal();
         },
         [closeModal, onAssetSelect, resolveAssetTokenOption],
     );
 
-    return handleAssetClick;
+    return {
+        handleAccountClick,
+        handleTokenClick,
+    } as const;
 }

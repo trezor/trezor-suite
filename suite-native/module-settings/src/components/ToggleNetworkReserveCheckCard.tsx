@@ -1,6 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getNetworksWithNativeTokenReserve } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -15,6 +16,8 @@ export const ToggleNetworkReserveCheckCard = () => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const openLink = useOpenLink();
+
+    const supportedNetworks = getNetworksWithNativeTokenReserve();
 
     const toggleNetworkReserve = (value: boolean) => {
         analytics.report({
@@ -35,12 +38,16 @@ export const ToggleNetworkReserveCheckCard = () => {
             icon="graph"
             text={<Translation id="moduleSettings.advanced.networkReserve.title" />}
             accessibilityLabel="network reserve"
-            description={<Translation id="moduleSettings.advanced.networkReserve.subtitle" />}
-            additionalInfo={
+            description={
                 <Translation
-                    id="moduleSettings.availableOn"
-                    values={{ supportedNetworks: getNetworksWithNativeTokenReserve() }}
+                    id="moduleSettings.advanced.networkReserve.subtitle"
+                    values={{
+                        supportedNetworks,
+                    }}
                 />
+            }
+            additionalInfo={
+                <Translation id="moduleSettings.availableOn" values={{ supportedNetworks }} />
             }
             onLearnMorePress={handleLearnMorePress}
             isChecked={isNetworkReserveEnabled}

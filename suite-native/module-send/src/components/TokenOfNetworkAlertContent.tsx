@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
@@ -75,7 +75,7 @@ export const TokenOfNetworkAlertBody = ({
                     />
                 }
             />
-            <InlineAlertBox
+            <BannerInline
                 title={<Translation id="moduleSend.outputs.tokenOfNetworkSheet.warning" />}
                 intent="warning"
             />

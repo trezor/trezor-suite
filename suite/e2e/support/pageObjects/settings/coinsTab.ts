@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol, ServerType } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
@@ -19,7 +19,7 @@ export class CoinsTab {
     readonly networkSymbolAdvanceSettingsButton = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}/advance`);
     readonly coinBackendSelector: Locator;
-    readonly coinBackendSelectorOption = (backend: BackendType) =>
+    readonly coinBackendSelectorOption = (backend: ServerType) =>
         this.page.getByTestId(`@settings/advance/select-type/option/${backend}`);
     readonly coinAddressInput: Locator;
     readonly coinAdvanceSettingSaveButton: Locator;
@@ -35,8 +35,8 @@ export class CoinsTab {
     }
 
     @step()
-    async openNetworkAdvanceSettings(symbol: NetworkSymbol) {
-        if (!(await this.isNetworkEnabled(symbol))) {
+    async openNetworkAdvanceSettings(symbol: NetworkSymbol, { autoEnable = true } = {}) {
+        if (autoEnable && !(await this.isNetworkEnabled(symbol))) {
             await this.enableNetwork(symbol);
         }
         await this.networkButton(symbol).hover();
@@ -65,6 +65,11 @@ export class CoinsTab {
     }
 
     @step()
+    async expectNoCustomBackendIndicator(symbol: NetworkSymbol) {
+        await expect(this.networkBackendStatus(symbol)).toBeHidden();
+    }
+
+    @step()
     async enableNetwork(symbol: NetworkSymbol) {
         const networkSwitch = this.networkSwitch(symbol);
         if (!(await this.isNetworkEnabled(symbol))) {
@@ -83,10 +88,17 @@ export class CoinsTab {
     }
 
     @step()
-    async changeBackend(backend: BackendType, backendUrl: string) {
+    async changeBackend(backend: ServerType, backendUrl: string) {
         await this.coinBackendSelector.click();
         await this.coinBackendSelectorOption(backend).click();
         await this.coinAddressInput.fill(backendUrl);
+        await this.coinAdvanceSettingSaveButton.click();
+    }
+
+    @step()
+    async revertToDefaultBackend() {
+        await this.coinBackendSelector.click();
+        await this.coinBackendSelectorOption('default').click();
         await this.coinAdvanceSettingSaveButton.click();
     }
 }

@@ -4,15 +4,15 @@ import { createThunk } from '@suite-common/redux-utils';
 import { unique } from '@trezor/utils';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { type SellInfo } from '../../reducers/sellReducer';
 import { regional } from '../../regional';
+import { tradeApi } from '../../tradeApi';
 import { toTradingCountryCode } from '../../utils/countryUtils';
 
-export const loadSellInfoThunk = createThunk<SellInfo>(
+export const loadSellInfoThunk = createThunk<SellInfo, void, void>(
     `${TRADING_SELL_THUNK_PREFIX}/loadInfo`,
     async (_, { fulfillWithValue }) => {
-        const sellList = await invityAPI.getSellList();
+        const sellList = await tradeApi.getSellList();
         const providerInfos: { [name: string]: SellProviderInfo } = {};
         const supportedFiatCurrencies: FiatCurrencyCode[] = [];
         const supportedCryptoCurrencies: CryptoId[] = [];

@@ -1,11 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { type ServerType, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { useAlert } from '@suite-native/alerts';
-import { Button, Card, HStack, InlineAlertText, Select, Text, VStack } from '@suite-native/atoms';
-import { Form, TextInputField } from '@suite-native/forms';
-import { Icon } from '@suite-native/icons';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
     Screen,
@@ -15,37 +13,28 @@ import {
 } from '@suite-native/navigation';
 
 import { ConnectionInfoButton } from '../components/ConnectionInfoButton';
-import { useBackendServersForm } from '../hooks/useBackendServersForm';
+import { NetworkBackendCard } from '../components/NetworkBackendCard';
+import { NetworkExplorerCard } from '../components/NetworkExplorerCard';
+import { useNetworkBackendForm } from '../hooks/useNetworkBackendForm';
+import { useNetworkExplorerForm } from '../hooks/useNetworkExplorerForm';
 
 export const NetworkBackendsScreen = ({
     route,
 }: StackProps<SettingsStackParamList, SettingsStackRoutes.SettingsNetworkBackends>) => {
     const { showAlert } = useAlert();
-    const { translate } = useTranslate();
     const navigation = useNavigation();
 
     const network = getNetwork(route.params.networkSymbol);
-    const {
-        form,
-        serverTypes,
-        selectedServerType,
-        setServerType,
-        serverAddressExample,
-        isConnected,
-        isConnecting,
-        submit,
-        discard,
-    } = useBackendServersForm(network);
-
-    const { isDirty } = form.formState;
+    const networkBackendForm = useNetworkBackendForm(network);
+    const networkExplorerForm = useNetworkExplorerForm(network);
 
     const discardChanges = () => {
-        discard();
+        networkBackendForm.discard();
         navigation.goBack();
     };
 
     const closeAction = () => {
-        if (isDirty) {
+        if (networkBackendForm.isDirty || networkExplorerForm.isDirty) {
             showAlert({
                 title: <Translation id="moduleSettings.networkBackends.closeAction.title" />,
                 description: (
@@ -81,59 +70,12 @@ export const NetworkBackendsScreen = ({
                     closeAction={closeAction}
                 />
             }
+            focusedInputBottomOffset={123} // ensures the input below the focused one is also visible
         >
-            <Card>
-                <VStack spacing="sp16">
-                    <HStack alignItems="center" justifyContent="space-between">
-                        <HStack>
-                            <Icon name="database" size="mediumLarge" />
-                            <Text variant="body-md">
-                                <Translation id="moduleSettings.networkBackends.servers.title" />
-                            </Text>
-                        </HStack>
-                        {!isDirty &&
-                            (isConnected ? (
-                                <InlineAlertText variant="success">
-                                    <Translation id="moduleSettings.networkBackends.servers.status.connected" />
-                                </InlineAlertText>
-                            ) : (
-                                <InlineAlertText variant="critical">
-                                    <Translation id="moduleSettings.networkBackends.servers.status.disconnected" />
-                                </InlineAlertText>
-                            ))}
-                    </HStack>
-                    <Form form={form}>
-                        <Select<ServerType>
-                            title={
-                                <Translation id="moduleSettings.networkBackends.servers.serverType.label" />
-                            }
-                            items={serverTypes}
-                            value={selectedServerType}
-                            onSelectItem={setServerType}
-                            isLabelShown
-                        />
-                        {selectedServerType !== 'default' && (
-                            <TextInputField
-                                name="serverAddress"
-                                label={translate(
-                                    'moduleSettings.networkBackends.servers.serverAddress.label',
-                                )}
-                                hint={translate(
-                                    'moduleSettings.networkBackends.servers.serverAddress.hint',
-                                    { example: serverAddressExample },
-                                )}
-                                autoCapitalize="none"
-                                keyboardType="url"
-                            />
-                        )}
-                        {(isDirty || !isConnected) && (
-                            <Button onPress={submit} isLoading={isConnecting}>
-                                <Translation id="moduleSettings.networkBackends.servers.connectButton" />
-                            </Button>
-                        )}
-                    </Form>
-                </VStack>
-            </Card>
+            <VStack spacing="sp16">
+                <NetworkBackendCard form={networkBackendForm} />
+                <NetworkExplorerCard form={networkExplorerForm} />
+            </VStack>
         </Screen>
     );
 };

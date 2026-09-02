@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
@@ -25,7 +26,7 @@ import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trez
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { Pagination } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';

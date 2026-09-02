@@ -1,12 +1,9 @@
+import { type ActionCreatorWithPayload, type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
+
 import { type RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type Account,
-    type AccountKey,
-    type AddressType,
-    type EvmSelectedFee,
-} from '@suite-common/wallet-types';
-import { type UI_REQUEST } from '@trezor/connect';
+import { type Account, type AddressType, type EvmSelectedFee } from '@suite-common/wallet-types';
+import { type UI_EVENTS } from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
 import { type TrezorDevice } from './device';
@@ -25,23 +22,11 @@ export type UserContextPayload =
           decision: Deferred<string>;
       }
     | {
-          type: 'unverified-address';
-          accountKey: AccountKey;
-          value: string;
-          addressPath: string;
-      }
-    | {
           type: 'unverified-xpub';
       }
     | {
           type: 'unverified-address-proceed';
           value: string;
-      }
-    | {
-          type: 'address';
-          value: string;
-          addressPath: string;
-          isConfirmed?: boolean;
       }
     | {
           type: 'xpub';
@@ -51,7 +36,6 @@ export type UserContextPayload =
           type: 'add-account';
           device: TrezorDevice;
           symbol?: Account['symbol'];
-          noRedirect?: boolean;
           isCoinjoinDisabled?: boolean;
           isBackClickDisabled?: boolean;
           onCancel?: () => void;
@@ -91,7 +75,7 @@ export type UserContextPayload =
           type: 'pin-mismatch';
       }
     | {
-          type: typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED;
+          type: typeof UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED;
       }
     | {
           type: 'device-authenticity-check-opt-out';
@@ -260,13 +244,13 @@ export type UserContextPayload =
           >;
       }
     | {
-          type: 'wrap-native-token';
-          account: Account;
-          /** Max native amount that can be wrapped (balance minus the gas reserve), display units. */
-          maxWrapAmount: string;
-          nativeSymbol: string;
-          wrappedSymbol: string;
-      }
-    | {
           type: 'wipe-device-success';
       };
+
+export type OpenModalDep = {
+    openModal: ActionCreatorWithPayload<UserContextPayload>;
+};
+
+export type OnModalCancelDep = {
+    onModalCancel: ActionCreatorWithoutPayload;
+};

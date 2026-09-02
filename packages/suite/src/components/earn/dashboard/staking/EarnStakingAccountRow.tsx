@@ -4,6 +4,7 @@ import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -21,12 +22,12 @@ import {
     getStakingLimitsByNetworkSymbol,
     isPending,
 } from '@suite-common/wallet-utils';
-import { Card, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
+import { Card, Column, Icon, Paragraph, Row, Table, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -224,7 +225,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     } as const;
 
     const minStakeParagraph = (
-        <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
+        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
             <Translation
                 id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
                 values={{ amount: minStakingAmount?.toString(), displaySymbol }}
@@ -233,7 +234,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     );
 
     const maxStakeParagraph = (
-        <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
+        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
             <Translation id="TR_EARN_STAKING_DASHBOARD_MAXIMUM_STAKE" />
         </Paragraph>
     );
@@ -325,7 +326,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         {apyAvailable ? (
                             <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
                         ) : (
-                            <Translation id="TR_EARN_NOT_AVAILABLE" />
+                            <Text typographyStyle="body-sm">
+                                <Translation id="TR_EARN_NOT_AVAILABLE" />
+                            </Text>
                         )}
                     </Row>
 
@@ -422,7 +425,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 {apyAvailable ? (
                     <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
                 ) : (
-                    <Translation id="TR_EARN_NOT_AVAILABLE" />
+                    <Text typographyStyle="body-sm">
+                        <Translation id="TR_EARN_NOT_AVAILABLE" />
+                    </Text>
                 )}
             </Table.Cell>
 

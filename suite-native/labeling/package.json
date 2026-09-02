@@ -12,7 +12,6 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",
-        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
@@ -24,7 +23,7 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.85.3",
+        "react-native": "0.86.0",
         "react-redux": "9.3.0"
     }
 }

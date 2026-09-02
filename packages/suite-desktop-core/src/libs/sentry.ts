@@ -7,10 +7,11 @@ import {
 import { session } from 'electron';
 
 import { SENTRY_CONFIG } from '@suite/sentry';
-import { TorStatus } from '@suite/tor';
+import { TorStatus } from '@suite/tor-types';
 
 import type { Store } from './store';
 import type { MainThreadEmitter } from '../modules';
+import { hasSwitch } from './process-switches';
 
 interface InitSentryParams {
     mainThreadEmitter: MainThreadEmitter;
@@ -19,6 +20,8 @@ interface InitSentryParams {
 
 const ELECTRON_MAIN_SENTRY_CONFIG = {
     ...SENTRY_CONFIG,
+    // Force turn off Sentry in offline mode, because prevent noise from Sentry (blocked domains).
+    enabled: SENTRY_CONFIG.enabled && !hasSwitch('offline-mode'),
     // Important: must be a function to keep default Sentry integrations; an array would mean ONLY those specific integrations.
     integrations: defaults => [
         ...defaults.filter(i => i.name !== 'MainProcessSession'),

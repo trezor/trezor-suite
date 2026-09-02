@@ -39,11 +39,12 @@ export const TransactionReviewOutputTimer = ({
                     size="small"
                     isDisabled={isSending || disabled}
                     onClick={() => handleClick(() => onTryAgain(true))}
+                    data-testid="@modal/header/try-again-button"
                 >
                     <Translation id="TR_TRY_AGAIN" />
                 </Button>
                 <Badge intent="warning">
-                    <TimerBox>
+                    <TimerBox data-testid="@modal/header/timer">
                         {isSending ? (
                             <Translation id="TR_CONFIRMING_TX" />
                         ) : (

@@ -12,7 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native": "7.1.31",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/intl": "workspace:*",
@@ -21,11 +21,11 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "expo-haptics": "~56.0.3",
-        "expo-linear-gradient": "~56.0.4",
+        "expo-haptics": "~57.0.1",
+        "expo-linear-gradient": "~57.0.1",
         "react": "19.2.3",
-        "react-native": "0.85.3",
-        "react-native-gesture-handler": "2.31.1",
-        "react-native-reanimated": "4.3.1"
+        "react-native": "0.86.0",
+        "react-native-gesture-handler": "~2.32.0",
+        "react-native-reanimated": "4.5.0"
     }
 }

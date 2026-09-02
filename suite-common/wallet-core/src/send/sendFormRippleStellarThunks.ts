@@ -17,6 +17,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type RipplePayment, type TokenInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { XRP_FLAG } from '@trezor/network-ripple/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
@@ -29,7 +30,10 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../settings/walletSettingsReducer';
 
 const calculate = (
     availableBalance: string,
@@ -108,10 +112,15 @@ const calculate = (
     return payloadData;
 };
 
+type ComposeRippleStellarTransactionFeeLevelsThunkState = void;
+
 export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeRippleStellarTransactionFeeLevelsThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeRippleStellarTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { rejectWithValue }) => {
@@ -146,7 +155,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
         if (address) {
             const accountResponse = await TrezorConnect.getAccountInfo({
                 descriptor: address,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 suppressBackupWarning: true,
             });
             if (accountResponse.success && accountResponse.payload.empty) {
@@ -231,10 +240,15 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type SignRippleStellarSendFormTransactionThunkState = WalletSettingsRootState;
+
 export const signRippleStellarSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    {
+        rejectValue: SignTransactionError;
+        state: SignRippleStellarSendFormTransactionThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signRippleStellarSendFormTransactionThunk`,
     async (
@@ -282,7 +296,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
         } else if (selectedAccount.networkType === 'stellar') {
             const destinationAccount = await TrezorConnect.getAccountInfo({
                 descriptor: firstSignOutput.address,
-                coin: selectedAccount.symbol,
+                coin: asCoinSymbol(selectedAccount.symbol),
                 suppressBackupWarning: true,
             });
 

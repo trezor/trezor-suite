@@ -1,0 +1,179 @@
+import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+
+import { type SearchAccountLabels } from './searchLabels';
+import { simpleSearchTransactions } from './simpleSearchTransactions';
+
+const { getWalletTransaction } = testMocks;
+const ethSymbol = asNetworkSymbol('eth');
+
+const sharedAddress = 'tb1q4nytpy37cuz8yndtfqpau4nzsva0jh787ny3yg';
+
+const getTransactionForAddress = (txid: string, address: string): WalletAccountTransaction => {
+    const transaction = getWalletTransaction({ txid });
+    const [target] = transaction.targets;
+    const [vin] = transaction.details.vin;
+    const [vout] = transaction.details.vout;
+
+    return {
+        ...transaction,
+        txid,
+        targets: target ? [{ ...target, addresses: [address] }] : [],
+        details: {
+            ...transaction.details,
+            vin: vin ? [{ ...vin, addresses: [address] }] : [],
+            vout: vout ? [{ ...vout, addresses: [address] }] : [],
+        },
+    };
+};
+
+const emptyLabels: SearchAccountLabels = {
+    outputLabels: new Map(),
+    addressLabels: new Map(),
+    accountLabel: null,
+};
+
+describe(simpleSearchTransactions.name, () => {
+    it('finds transactions with native balance change by native display symbol', () => {
+        const transaction = getWalletTransaction({ txid: 'aaa1' });
+
+        const result = simpleSearchTransactions([transaction], emptyLabels, 'BTC');
+
+        expect(result).toEqual([transaction]);
+    });
+
+    it('does not match token-only transactions by native display symbol', () => {
+        const transaction = getWalletTransaction({
+            symbol: ethSymbol,
+            txid: 'aaa2',
+            amount: '0',
+            tokens: [
+                {
+                    type: 'sent',
+                    standard: 'ERC20',
+                    contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+                    name: 'Tether',
+                    symbol: 'USDT',
+                    decimals: 6,
+                    amount: '100',
+                    from: '0x1',
+                    to: '0x2',
+                },
+            ],
+        });
+
+        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH')).toEqual([]);
+    });
+
+    it('does not match token-only transactions by native display symbol even when token symbol or name contain it', () => {
+        const transaction = getWalletTransaction({
+            symbol: ethSymbol,
+            txid: 'aaa6',
+            type: 'contract',
+            amount: '0',
+            tokens: [
+                {
+                    type: 'sent',
+                    standard: 'ERC20',
+                    contract: '0xfc36ca4a35b0a10a521bd08bfe4e26df94e364f5',
+                    name: 'Trezor Staked ETH',
+                    symbol: 'trSHETHp',
+                    decimals: 18,
+                    amount: '0.00033333',
+                    from: '0x1',
+                    to: '0x2',
+                },
+                {
+                    type: 'recv',
+                    standard: 'ERC20',
+                    contract: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                    name: 'Wrapped Ether',
+                    symbol: 'WETH',
+                    decimals: 18,
+                    amount: '0.000334',
+                    from: '0x2',
+                    to: '0x1',
+                },
+            ],
+        });
+
+        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH')).toEqual([]);
+    });
+
+    it('matches contract transactions with native amount by native display symbol', () => {
+        const transaction = getWalletTransaction({
+            symbol: ethSymbol,
+            txid: 'aaa7',
+            type: 'contract',
+            amount: '1.5',
+        });
+
+        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH')).toEqual([transaction]);
+    });
+
+    it('does not match fee-only self transactions by native display symbol', () => {
+        const transaction = getWalletTransaction({ txid: 'aaa3', type: 'self', amount: '144' });
+
+        expect(simpleSearchTransactions([transaction], emptyLabels, 'BTC')).toEqual([]);
+    });
+
+    it('matches transactions with native internal transfers by native display symbol', () => {
+        const transaction = getWalletTransaction({
+            symbol: ethSymbol,
+            txid: 'aaa4',
+            amount: '0',
+            internalTransfers: [{ type: 'recv', from: '0x1', to: '0x2', amount: '5' }],
+        });
+
+        const result = simpleSearchTransactions([transaction], emptyLabels, 'ETH');
+
+        expect(result).toEqual([transaction]);
+    });
+
+    it('still finds token transactions by token symbol', () => {
+        const transaction = getWalletTransaction({
+            symbol: ethSymbol,
+            txid: 'aaa5',
+            amount: '0',
+            tokens: [
+                {
+                    type: 'sent',
+                    standard: 'ERC20',
+                    contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+                    name: 'Tether',
+                    symbol: 'USDT',
+                    decimals: 6,
+                    amount: '100',
+                    from: '0x1',
+                    to: '0x2',
+                },
+            ],
+        });
+
+        const result = simpleSearchTransactions([transaction], emptyLabels, 'USDT');
+
+        expect(result).toEqual([transaction]);
+    });
+    it('finds every transaction sharing a searched address', () => {
+        const first = getTransactionForAddress('aaa8', sharedAddress);
+        const second = getTransactionForAddress('aaa9', sharedAddress);
+
+        const result = simpleSearchTransactions([first, second], emptyLabels, sharedAddress);
+
+        expect(result).toEqual([first, second]);
+    });
+
+    it('finds transactions by a partial, differently cased address label', () => {
+        const transaction = getTransactionForAddress('aaa10', sharedAddress);
+        const labels: SearchAccountLabels = {
+            outputLabels: new Map(),
+            addressLabels: new Map([[sharedAddress, 'Savings']]),
+            accountLabel: null,
+        };
+
+        const result = simpleSearchTransactions([transaction], labels, 'sAvIn');
+
+        expect(result).toEqual([transaction]);
+    });
+});

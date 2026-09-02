@@ -69,18 +69,19 @@ yarn workspace @trezor/suite-desktop build:linux
 appimage-run ./packages/suite-desktop/build-electron/Trezor-Suite[version].AppImage
 ```
 
-_Note: If build fails on a missing cache file _(.cache/\*\*/mksquashfsthis)_ additionally run `./nixos-fix-binaries.sh` script and repeat build step._
+_Note: If build fails on a missing cache file *(.cache/\*\*/mksquashfsthis)* additionally run `./nixos-fix-binaries.sh` script and repeat build step._
 
 ---
 
 ## User data dir
 
 Location of data directory depends on platform:
-| Platform | User data dir path |
-| --------------------- | ------------------------------------------------------------------- |
-| linux | `/home/<user>/.config/` |
-| macOS | `~/Library/Application Support/` |
-| Windows | `C:\Users\<user>\AppData\Roaming\` |
+
+| Platform | User data dir path                 |
+| -------- | ---------------------------------- |
+| linux    | `/home/<user>/.config/`            |
+| macOS    | `~/Library/Application Support/`   |
+| Windows  | `C:\Users\<user>\AppData\Roaming\` |
 
 Name of data directory [depends on environment](../../docs/packages/suite-desktop/index.md/#app-id-and-name-by-environment) and it's `@trezor/suite-desktop`, `@trezor/suite-desktop-dev` or `@trezor/suite-desktop-local`.
 

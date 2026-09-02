@@ -19,6 +19,7 @@
         { "path": "../../suite/router" },
         { "path": "../connect" },
         { "path": "../connect-common" },
+        { "path": "../env-utils" },
         { "path": "../suite" },
         { "path": "../transport-common" },
         { "path": "../transport-web" },

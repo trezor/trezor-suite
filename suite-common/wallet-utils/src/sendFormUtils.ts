@@ -601,9 +601,7 @@ export const getSendFormDraftKey = (
     tokenAddress ? (`${accountKey}-${tokenAddress}` as SendFormDraftKey) : accountKey;
 
 type AmountValidationResult =
-    | { type: 'ok' }
-    | { type: 'not_enough' }
-    | { type: 'reserve'; reserve: string };
+    { type: 'ok' } | { type: 'not_enough' } | { type: 'reserve'; reserve: string };
 
 interface GetAmountValidationResultParams {
     amount: string | undefined;

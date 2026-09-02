@@ -59,3 +59,4 @@ VStack.displayName = 'VStack';
 HStack.displayName = 'HStack';
 
 export const AnimatedVStack = Animated.createAnimatedComponent(VStack);
+export const AnimatedHStack = Animated.createAnimatedComponent(HStack);

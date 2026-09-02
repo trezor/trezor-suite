@@ -1,17 +1,29 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import type { AnyAction, Dispatch, MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI, Dispatch as ReduxDispatch, UnknownAction } from 'redux';
 
-import { lockDevice, selectIsDeviceOrUiLocked } from '@suite/locks';
-import { routerLocationChange, selectRouteName, selectSettingsBackRoute } from '@suite/router';
-import { selectTorState, torActions } from '@suite/tor';
+import { type SelectedAccountRootState } from '@suite/account';
+import { type LocksRootState, lockDevice, selectIsDeviceOrUiLocked } from '@suite/locks';
+import { type ModalRootState } from '@suite/modal';
+import {
+    type RouterRootState,
+    routerLocationChange,
+    selectRouteName,
+    selectSettingsBackRoute,
+} from '@suite/router';
+import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
+import { type TorRootState, selectIsTorEnabled, torActions } from '@suite/tor';
+import { type DeviceRootState, deviceActions } from '@suite-common/device';
 import {
     Feature,
+    type MessageSystemRootState,
     messageSystemActions,
     selectFeatureConfig,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { addToast } from '@suite-common/toast-notifications';
 import {
+    type AccountsRootState,
     accountsActions,
     blockchainActions,
     discoveryActions,
@@ -20,20 +32,14 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
-import { DEVICE, UI_REQUEST } from '@trezor/connect';
+import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 import { arrayDistinct, typedObjectKeys } from '@trezor/utils';
 
-import { type CoinjoinAccountAction } from './coinjoinAccountActions';
 import * as coinjoinAccountActions from './coinjoinAccountActions';
-import { type CoinjoinClientAction } from './coinjoinClientActions';
 import * as coinjoinClientActions from './coinjoinClientActions';
 import {
-    CLIENT_SESSION_PHASE,
-    SESSION_ROUND_CHANGED,
-    SESSION_TX_BROADCASTED,
-} from './coinjoinConstants';
-import {
     type CoinjoinRootState,
+    type SuiteOnlineRootState,
     selectCoinjoinAccountByKey,
     selectCoinjoinSessionBlockerByAccountKey,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
@@ -42,21 +48,23 @@ import {
 import { CoinjoinService } from './coinjoinService';
 import { isCoinjoinSupportedSymbol } from './coinjoinUtils';
 
-// suite app lifecycle action types, referenced by literal to avoid a dependency on the suite app
-const SUITE = {
-    INIT: '@suite/init',
-    READY: '@suite/ready',
-    ONLINE_STATUS: '@suite/online-status',
-} as const;
-
-type Action = CoinjoinAccountAction | CoinjoinClientAction | AnyAction;
+type CoinjoinMiddlewareState = AccountsRootState &
+    CoinjoinRootState &
+    DeviceRootState &
+    LocksRootState &
+    MessageSystemRootState &
+    ModalRootState &
+    RouterRootState &
+    SelectedAccountRootState &
+    SuiteOnlineRootState &
+    TorRootState;
 
 export const coinjoinMiddleware =
-    (api: MiddlewareAPI<Dispatch, CoinjoinRootState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
+    (api: MiddlewareAPI<Dispatch, CoinjoinMiddlewareState>) =>
+    (next: ReduxDispatch) =>
+    (action: UnknownAction): UnknownAction => {
         // cancel discovery for each CoinjoinBackend
-        if (action.type === routerLocationChange.type && action.payload.app !== 'wallet') {
+        if (routerLocationChange.match(action) && action.payload.app !== 'wallet') {
             CoinjoinService.getInstances().forEach(({ backend }) => backend.cancel());
         }
 
@@ -65,14 +73,14 @@ export const coinjoinMiddleware =
         const allowedModals = ['coinjoin-success', 'more-rounds-needed', 'critical-coinjoin-phase'];
 
         if (
-            action.type === UI_REQUEST.CLOSE_UI_WINDOW &&
+            isUiEventOfType(action, UI_EVENTS.CLOSE_UI_WINDOW) &&
             'payload' in modal &&
             allowedModals.includes(modal.payload?.type)
         ) {
             return action;
         }
 
-        if (action.type === SUITE.INIT) {
+        if (onSuiteInit.match(action)) {
             api.dispatch(coinjoinAccountActions.logCoinjoinAccounts());
         }
 
@@ -98,7 +106,10 @@ export const coinjoinMiddleware =
         }
 
         // catch broadcasted transactions and create prepending transaction(s) for each account
-        if (action.type === SESSION_TX_BROADCASTED && action.payload.round.broadcastedTxDetails) {
+        if (
+            coinjoinClientActions.clientSessionTxBroadcasted.match(action) &&
+            action.payload.round.broadcastedTxDetails
+        ) {
             const {
                 accountKeys,
                 round: { broadcastedTxDetails },
@@ -124,9 +135,9 @@ export const coinjoinMiddleware =
             );
         }
 
-        if (action.type === SUITE.READY) {
+        if (onSuiteReady.match(action)) {
             const state = api.getState();
-            const isCoinjoinBlockedByTor = !selectTorState(state).isTorEnabled;
+            const isCoinjoinBlockedByTor = !selectIsTorEnabled(state);
             if (!isCoinjoinBlockedByTor) {
                 api.dispatch(coinjoinAccountActions.restoreCoinjoinAccounts());
             }
@@ -135,11 +146,10 @@ export const coinjoinMiddleware =
         // todo: startDiscovery is now fired under different context
         if (isAnyOf(discoveryActions.startDiscovery, blockchainActions.synced)(action)) {
             const state = api.getState();
-            const symbol =
-                action.type === discoveryActions.startDiscovery.type
-                    ? undefined
-                    : action.payload.symbol;
-            const isCoinjoinBlockedByTor = !selectTorState(state).isTorEnabled;
+            const symbol = discoveryActions.startDiscovery.match(action)
+                ? undefined
+                : action.payload.symbol;
+            const isCoinjoinBlockedByTor = !selectIsTorEnabled(state);
             if (!isCoinjoinBlockedByTor) {
                 // find all coinjoin accounts (for specific network when initiating action is network-specific)
                 const coinjoinAccounts = state.wallet.accounts.filter(
@@ -153,13 +163,13 @@ export const coinjoinMiddleware =
 
         // Pause coinjoin session when device disconnects.
         // This is not treated a temporary interruption with automatic restore because the user probably disconnects the device willingly.
-        if (action.type === DEVICE.DISCONNECT && action.payload.id) {
+        if (deviceActions.deviceDisconnect.match(action) && action.payload.id) {
             api.dispatch(coinjoinAccountActions.stopCoinjoinSessionByDeviceId(action.payload.id));
         }
 
         // Pause/restore coinjoin session when Suite goes offline/online.
         // This is just UX improvement as the session could not continue offline anyway.
-        if (action.type === SUITE.ONLINE_STATUS) {
+        if (updateOnlineStatus.match(action)) {
             if (action.payload === false) {
                 if (selectIsAnySessionInCriticalPhase(api.getState())) {
                     api.dispatch(
@@ -178,7 +188,7 @@ export const coinjoinMiddleware =
 
         // Pause/restore coinjoin session based on Tor status.
         // Continuing coinjoin would be a privacy risk.
-        if (action.type === torActions.setTorStatus.type) {
+        if (torActions.setTorStatus.match(action)) {
             if (['Disabling', 'Disabled', 'Error'].includes(action.payload)) {
                 if (selectIsAnySessionInCriticalPhase(api.getState())) {
                     api.dispatch(
@@ -217,7 +227,7 @@ export const coinjoinMiddleware =
 
         // Pause/restore coinjoin session depending on current route.
         // Device may be locked by another connect call, so check on LOCK_DEVICE action as well.
-        if (action.type === routerLocationChange.type || action.type === lockDevice.type) {
+        if (routerLocationChange.match(action) || lockDevice.match(action)) {
             const state = api.getState();
             const isDeviceOrUiLocked = selectIsDeviceOrUiLocked(state);
             if (!isDeviceOrUiLocked) {
@@ -240,7 +250,7 @@ export const coinjoinMiddleware =
             }
         }
 
-        if (action.type === messageSystemActions.updateValidMessages.type) {
+        if (messageSystemActions.updateValidMessages.match(action)) {
             const state = api.getState();
 
             const incomingConfig = selectFeatureConfig(state, Feature.coinjoin);
@@ -269,8 +279,8 @@ export const coinjoinMiddleware =
         }
 
         if (
-            action.type === messageSystemActions.updateValidMessages.type ||
-            action.type === SESSION_ROUND_CHANGED
+            messageSystemActions.updateValidMessages.match(action) ||
+            coinjoinClientActions.clientSessionRoundChanged.match(action)
         ) {
             const state = api.getState();
 
@@ -282,7 +292,7 @@ export const coinjoinMiddleware =
             if (isCoinjoinDisabledByFeatureFlag) {
                 const isAnySessionInCriticalPhase = selectIsAnySessionInCriticalPhase(state);
                 const hasCriticalPhaseJustEnded =
-                    action.type === SESSION_ROUND_CHANGED &&
+                    coinjoinClientActions.clientSessionRoundChanged.match(action) &&
                     action.payload.round.phase === RoundPhase.Ended;
 
                 if (!isAnySessionInCriticalPhase || hasCriticalPhaseJustEnded) {
@@ -291,7 +301,7 @@ export const coinjoinMiddleware =
             }
         }
 
-        if (action.type === CLIENT_SESSION_PHASE) {
+        if (coinjoinClientActions.clientSessionPhase.match(action)) {
             const { accountKeys } = action.payload;
             const isAlreadyPaused = api
                 .getState()

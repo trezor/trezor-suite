@@ -1,10 +1,15 @@
 import { useMemo } from 'react';
 
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetworkByYieldXyzId,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import {
     doTokensMatch,
     getConvertedOutputTokenBalanceToInputTokenAmount,
+    getYieldDepositableBalance,
     selectDeviceSupportedNetworks,
 } from '@suite-common/wallet-core';
 import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
@@ -15,6 +20,7 @@ import {
     compareEarnByNetworkTokenOrder,
     getApyPercent,
 } from '@suite-common/wallet-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -57,7 +63,7 @@ const getMatchedAccountToken = ({
     );
 };
 
-const getYieldOpportunityData = ({
+export const getYieldOpportunityData = ({
     account,
     networkSymbol,
     vault,
@@ -84,9 +90,19 @@ const getYieldOpportunityData = ({
         outputTokenBalance: matchedOutputToken?.balance,
         pricePerShareState: vault.state?.pricePerShareState,
     });
-    const additionalDepositAmount = matchedInputToken?.balance ?? '0';
+    // For a wrapped-native (WETH) vault the wrappable native balance counts in too, minus the
+    // fee reserve kept for the follow-up wrap + approve + deposit fees.
+    const additionalDepositAmount = getYieldDepositableBalance({
+        networkSymbol,
+        nativeFormattedBalance: account.formattedBalance,
+        vaultTokenAddress: vault.token.address,
+        matchedTokenBalance: matchedInputToken?.balance,
+    });
     const hasRewardsData =
         new BigNumber(depositedAmount).gt(0) || new BigNumber(additionalDepositAmount).gt(0);
+    // A wrapped-native vault is presented as its native asset (see #29881), so amounts are
+    // denominated in the native symbol and no token contract is exposed to the formatters.
+    const isWrappedNativeVault = isWrappedNativeToken(networkSymbol, vault.token.address);
 
     return {
         matchedInputToken,
@@ -94,15 +110,14 @@ const getYieldOpportunityData = ({
         hasRewardsData,
         depositedAmount,
         additionalDepositAmount,
-        depositedSymbol: matchedInputToken?.symbol ?? toTokenSymbol(vault.token.symbol),
-        depositedContractAddress: matchedInputToken?.contract ?? vault.token.address ?? null,
+        depositedSymbol: isWrappedNativeVault
+            ? toTokenSymbol(getNetworkDisplaySymbol(networkSymbol))
+            : (matchedInputToken?.symbol ?? toTokenSymbol(vault.token.symbol)),
+        depositedContractAddress: isWrappedNativeVault
+            ? null
+            : (matchedInputToken?.contract ?? vault.token.address ?? null),
     };
 };
-
-const getAvailableBalanceForSorting = (opportunity: YieldAccountOpportunity) =>
-    opportunity.matchedInputToken
-        ? opportunity.additionalDepositAmount
-        : (opportunity.account?.formattedBalance ?? '0');
 
 const toNetworkTokenSortKey = (opportunity: YieldAccountOpportunity) =>
     opportunity.account && {
@@ -154,7 +169,6 @@ export const useYieldTableData = ({
         const noBalanceOpportunities: YieldAccountOpportunity[] = [];
 
         allOpportunities.forEach(opportunity => {
-            const hasMatchedInputToken = opportunity.matchedInputToken !== undefined;
             const hasDepositableBalance = new BigNumber(opportunity.additionalDepositAmount).gt(0);
 
             if (opportunity.hasVaultPosition) {
@@ -163,7 +177,7 @@ export const useYieldTableData = ({
                 return;
             }
 
-            if (hasMatchedInputToken && hasDepositableBalance) {
+            if (hasDepositableBalance) {
                 depositableOpportunities.push(opportunity);
 
                 return;
@@ -177,7 +191,9 @@ export const useYieldTableData = ({
                 .toSorted(compareEarnByAmountDesc(opportunity => opportunity.depositedAmount))
                 .toSorted(compareEarnByNetwork(opportunity => opportunity.account?.symbol)),
             ...depositableOpportunities
-                .toSorted(compareEarnByAmountDesc(getAvailableBalanceForSorting))
+                .toSorted(
+                    compareEarnByAmountDesc(opportunity => opportunity.additionalDepositAmount),
+                )
                 .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenSortKey)),
             ...noBalanceOpportunities.toSorted(
                 compareEarnByNetworkTokenOrder(toNetworkTokenSortKey),

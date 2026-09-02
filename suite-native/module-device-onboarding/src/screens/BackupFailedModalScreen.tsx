@@ -56,7 +56,7 @@ export const BackupFailedModalScreen = () => {
                 <VStack spacing="sp24">
                     <IconListTextItem
                         icon="plugs"
-                        variant="red"
+                        variant="critical"
                         textVariant="body-md-strong"
                         iconSize="large"
                     >
@@ -65,7 +65,7 @@ export const BackupFailedModalScreen = () => {
 
                     <IconListTextItem
                         icon="chatCircle"
-                        variant="red"
+                        variant="critical"
                         textVariant="body-md-strong"
                         iconSize="large"
                     >

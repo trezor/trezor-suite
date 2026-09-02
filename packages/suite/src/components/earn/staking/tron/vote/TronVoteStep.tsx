@@ -1,6 +1,7 @@
 import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Column } from '@trezor/components';
 
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
@@ -13,10 +14,12 @@ import { TronVoteRepresentativeSelect } from './TronVoteRepresentativeSelect';
 import { TronVoteSubmitButton } from './TronVoteSubmitButton';
 
 export const TronVoteStep = () => {
-    const { form, actions, account } = useTronStakeContext();
-    const { error } = actions;
+    const { form, actions, account, fees } = useTronStakeContext();
+    const { error, pendingTxid } = actions;
 
     const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
+
+    const hasInsufficientFunds = fees.composedLevels?.normal?.type === 'error';
 
     return (
         <FormProvider {...form.methods}>
@@ -28,6 +31,20 @@ export const TronVoteStep = () => {
                 <TronVoteApr />
 
                 <TronStakeFees />
+
+                {hasInsufficientFunds && pendingTxid === null && (
+                    <Banner
+                        intent="warning"
+                        description={
+                            <Translation
+                                id="AMOUNT_NOT_ENOUGH_CURRENCY_FEE"
+                                values={{
+                                    networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                }}
+                            />
+                        }
+                    />
+                )}
 
                 {error && (
                     <Banner

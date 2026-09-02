@@ -3,30 +3,38 @@ import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,
     selectAccountFormattedBalance,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import type { UseFormReturn } from '@suite-native/forms';
+import { type Control, type FieldValues, type Path, useWatch } from '@suite-native/forms';
 import { selectAccountTokenBalance } from '@suite-native/tokens';
-import {
-    type ExchangeFormType,
-    type ExchangeFormValues,
-    type SellFormType,
-    type SellFormValues,
-} from '@suite-native/trading-types';
+import { type ExchangeFormValues } from '@suite-native/trading-types';
 
-export const useSendAccountAssetBalance = (
-    form: ExchangeFormType | SellFormType,
-    setBalance: (balance: string | undefined) => unknown,
-    setSendSymbol: (currency: string | undefined) => unknown,
-    setContractAddress: (contractAddress: TokenAddress | undefined) => unknown,
-    setAccountKey: (accountKey: AccountKey | undefined) => void,
-) => {
-    const { watch } = form as UseFormReturn<ExchangeFormValues | SellFormValues>;
-    const [sendAccount, sendAsset] = watch(['sendAccount', 'sendAsset']);
+type UseSendAccountAssetBalanceParams<TFieldValues extends FieldValues> = {
+    control: Control<TFieldValues>;
+    setBalance: (balance: string | undefined) => unknown;
+    setSendNetworkSymbol: (networkSymbol: NetworkSymbol | undefined) => unknown;
+    setSendAssetSymbol: (symbol: string | undefined) => unknown;
+    setContractAddress: (contractAddress: TokenAddress | undefined) => unknown;
+    setAccountKey: (accountKey: AccountKey | undefined) => void;
+};
+
+export const useSendAccountAssetBalance = <TFieldValues extends FieldValues>({
+    control,
+    setBalance,
+    setSendNetworkSymbol,
+    setSendAssetSymbol,
+    setContractAddress,
+    setAccountKey,
+}: UseSendAccountAssetBalanceParams<TFieldValues>) => {
+    const [sendAccount, sendAsset] = useWatch({
+        control,
+        name: ['sendAccount', 'sendAsset'] as Path<TFieldValues>[],
+    }) as unknown as [ExchangeFormValues['sendAccount'], ExchangeFormValues['sendAsset']];
     const accountKey = sendAccount?.key;
 
     const balance = useSelector(
@@ -53,14 +61,17 @@ export const useSendAccountAssetBalance = (
     }, [setBalance, balance]);
 
     useEffect(() => {
-        setSendSymbol(sendAccount?.symbol);
+        setSendNetworkSymbol(sendAccount?.symbol);
+        setSendAssetSymbol(sendAsset?.symbol);
         setContractAddress(sendAsset?.contractAddress);
         setAccountKey(accountKey);
     }, [
-        setSendSymbol,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
         setContractAddress,
         setAccountKey,
         sendAsset?.contractAddress,
+        sendAsset?.symbol,
         sendAccount?.symbol,
         accountKey,
     ]);

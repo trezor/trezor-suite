@@ -11,6 +11,7 @@ import {
     COINJOIN_NETWORK_TAG,
     COINJOIN_REPORT_TAG,
     type ChainableBeforeSend,
+    redactInvalidParameterValue,
     redactSentryEvent,
 } from '@suite-common/sentry';
 import { isDevEnv } from '@suite-common/suite-utils';
@@ -69,7 +70,7 @@ const redactCoinjoinData: ChainableBeforeSend = event => {
 };
 
 const beforeSend: ChainableBeforeSend = event =>
-    redactSentryEvent(redactUserPath(redactCoinjoinData(event)));
+    redactSentryEvent(redactInvalidParameterValue(redactUserPath(redactCoinjoinData(event))));
 
 const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     // filter out analytics requests and image fetches

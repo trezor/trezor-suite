@@ -20,6 +20,7 @@ export class TradingActions {
             | 'exchange-fees'
             | 'outputs-review'
             | 'sell-preview'
+            | 'sell-completion'
             | 'sell-fees',
     ) {
         this.testIdPrefix = `@trading/${screenPrefix}/`;

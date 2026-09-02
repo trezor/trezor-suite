@@ -22,12 +22,7 @@ type GetIndexedDbValueParams = {
 type IndexedDbValuePath = string | Array<string | number>;
 
 type ExpectedIndexedDbValue =
-    | string
-    | number
-    | boolean
-    | Record<string, unknown>
-    | unknown[]
-    | null;
+    string | number | boolean | Record<string, unknown> | unknown[] | null;
 
 type ExpectIndexedDbValueParams = GetIndexedDbValueParams & {
     valuePath?: IndexedDbValuePath;

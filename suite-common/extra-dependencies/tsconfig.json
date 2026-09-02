@@ -1,0 +1,26 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../address" },
+        { "path": "../analytics" },
+        { "path": "../bip329-types" },
+        {
+            "path": "../delegated-identity-key-types"
+        },
+        { "path": "../dependency-injection" },
+        { "path": "../metadata-types" },
+        { "path": "../networks" },
+        { "path": "../platform-encryption" },
+        { "path": "../redux-utils" },
+        {
+            "path": "../suite-rbf-labels-migrations-types"
+        },
+        { "path": "../suite-sync-types" },
+        { "path": "../suite-types" },
+        { "path": "../wallet-config" },
+        { "path": "../wallet-types" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/requirements" }
+    ]
+}

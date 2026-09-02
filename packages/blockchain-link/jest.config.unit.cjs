@@ -6,16 +6,10 @@ const { testPathIgnorePatterns, ...baseConfig } = require('../../jest.config.bas
 
 module.exports = {
     ...baseConfig,
-    testMatch: ['**/tests/unit/**/*.test.ts'],
+    testMatch: ['<rootDir>/src/**/*.test.ts', '!**/*.integration.test.ts'],
     collectCoverage: true,
-    collectCoverageFrom: ['**/src/**/*.ts'],
-    testPathIgnorePatterns: [
-        ...testPathIgnorePatterns,
-        'src/types',
-        'src/ui',
-        'fixtures',
-        'unit/worker/index.ts',
-    ],
-    setupFiles: ['./tests/setup.js'],
+    collectCoverageFrom: ['**/src/**/*.ts', '!**/*.test.ts', '!**/__fixtures__/**'],
+    testPathIgnorePatterns: [...testPathIgnorePatterns, 'src/types', 'src/ui'],
+    setupFiles: ['./setup.js'],
     testEnvironment: '../../JestCustomEnv.js',
 };

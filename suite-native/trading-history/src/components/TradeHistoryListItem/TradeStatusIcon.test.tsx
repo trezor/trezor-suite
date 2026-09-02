@@ -1,0 +1,63 @@
+import { getTranslation } from '@suite-native/intl';
+
+import { TradeStatusIcon, getTradeStatusIconConfig } from './TradeStatusIcon';
+import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
+
+describe('TradeStatusIcon', () => {
+    it.each([
+        ['SUCCESS', 'check', 'brand'],
+        ['ERROR', 'warningCircle', 'critical'],
+        ['BLOCKED', 'warningCircle', 'critical'],
+        ['REFUNDED', 'warningCircle', 'critical'],
+        ['CANCELLED', 'warning', 'warning'],
+        ['KYC', 'warning', 'warning'],
+        ['SUBMITTED', 'spinner', 'warning'],
+        ['CONVERTING', 'spinner', 'warning'],
+    ] as const)('maps %s to %s with %s intent', (status, iconName, intent) => {
+        expect(getTradeStatusIconConfig(status)).toMatchObject({ iconName, intent });
+    });
+
+    it.each([
+        'LOGIN_REQUEST',
+        'REQUESTING',
+        'APPROVAL_PENDING',
+        'WAITING_FOR_USER',
+        'SITE_ACTION_REQUEST',
+        'SEND_CRYPTO',
+        'PENDING',
+        'LOADING',
+        'CONFIRM',
+        'SENDING',
+        'CONFIRMING',
+        'APPROVAL_REQ',
+        'SIGN_DATA',
+    ] as const)('maps %s to the spinner', status => {
+        expect(getTradeStatusIconConfig(status)).toMatchObject({
+            iconName: 'spinner',
+            intent: 'warning',
+        });
+    });
+
+    it('renders no icon for an undefined status', async () => {
+        expect(getTradeStatusIconConfig(undefined)).toBeUndefined();
+
+        const { toJSON } = await renderWithTradingHistoryProvider(
+            <TradeStatusIcon status={undefined} />,
+        );
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it.each([
+        ['SUCCESS', 'moduleTrading.tradeHistory.statusIcon.success'],
+        ['ERROR', 'moduleTrading.tradeHistory.statusIcon.error'],
+        ['CANCELLED', 'moduleTrading.tradeHistory.statusIcon.warning'],
+        ['SUBMITTED', 'moduleTrading.tradeHistory.statusIcon.pending'],
+    ] as const)('provides an accessible label for %s', async (status, labelId) => {
+        const { getByLabelText } = await renderWithTradingHistoryProvider(
+            <TradeStatusIcon status={status} />,
+        );
+
+        expect(getByLabelText(getTranslation(labelId))).toBeTruthy();
+    });
+});

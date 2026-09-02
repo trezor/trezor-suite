@@ -12,10 +12,10 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",
-        "@react-navigation/native": "7.1.28",
-        "@reduxjs/toolkit": "2.12.0",
+        "@react-navigation/native": "7.1.31",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",
@@ -30,8 +30,8 @@
         "@trezor/connect": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.85.3",
-        "react-native-reanimated": "4.3.1",
+        "react-native": "0.86.0",
+        "react-native-reanimated": "4.5.0",
         "react-redux": "9.3.0"
     }
 }

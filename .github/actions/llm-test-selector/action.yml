@@ -5,9 +5,12 @@ description: >
   fetch the PR head as 'pr-head' before invoking this action.
   Only code from the trusted checkout is installed and executed.
 inputs:
-  claude-api-key:
-    description: "Anthropic API key for the LLM test selector"
+  openrouter-api-key:
+    description: "OpenRouter API key for the LLM test selector"
     required: true
+  slack-webhook:
+    description: "Slack webhook for selector failure alerts. Absent on fork PRs."
+    required: false
 outputs:
   spec-list:
     description: "Comma-separated list of recommended test file paths (repo-root-relative)"
@@ -34,7 +37,8 @@ runs:
     - name: Run LLM test selector
       shell: bash
       env:
-        CLAUDE_API_KEY: ${{ inputs.claude-api-key }}
+        OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key }}
+        SLACK_WEBHOOK: ${{ inputs.slack-webhook }}
       run: |
         yarn workspace @trezor/e2e-utils select-tests-llm --head-ref pr-head > llm-selection.json
         echo "LLM test selector output:"

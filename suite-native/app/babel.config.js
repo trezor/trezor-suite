@@ -10,6 +10,7 @@ module.exports = function (api) {
         presets: [['babel-preset-expo', { transformImportMeta: true }]],
         plugins: [
             ['@babel/plugin-transform-class-static-block'],
+            ['inline-import', { extensions: ['.md'] }],
             // react-native-reanimated plugin has to be listed last
             ['react-native-worklets/plugin', { globals: ['__scanCodes'] }],
         ],

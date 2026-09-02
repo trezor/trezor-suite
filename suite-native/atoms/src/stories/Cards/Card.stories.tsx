@@ -2,9 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { COLOR_TOKENS } from '@trezor/theme';
 
+import { ALERT_BOX_INTENTS, type AlertBoxIntent } from '../../BannerFull/types';
+import { type BannerInlineProps } from '../../BannerInline/BannerInline';
 import { Card as CardComponent, type CardProps } from '../../Card/Card';
-import { ALERT_BOX_INTENTS, type AlertBoxIntent } from '../../FullAlertBox/types';
-import { type InlineAlertBoxProps } from '../../InlineAlertBox/InlineAlertBox';
 import { Text } from '../../Text';
 
 type CardStory = StoryObj<CardProps>;
@@ -58,7 +58,7 @@ export const Card: CardStory = {
 
                     return acc;
                 },
-                {} as Record<AlertBoxIntent, InlineAlertBoxProps>,
+                {} as Record<AlertBoxIntent, BannerInlineProps>,
             ),
         },
     },

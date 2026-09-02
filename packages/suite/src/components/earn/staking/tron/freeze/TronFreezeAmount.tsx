@@ -1,10 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { TRON_STAKING_RESERVE } from '@suite-common/wallet-constants';
 import { composeTronFreezeFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
     asAmountSubunit,
@@ -18,7 +20,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import {
     validateDecimals,
     validateMin,
@@ -36,6 +38,8 @@ export const TronFreezeAmount = () => {
     const { control, setValue } = form.methods;
     const { errors } = useFormState({ control });
     const isDisabled = !!actions.pendingTxid;
+
+    const [isMaxActive, setIsMaxActive] = useState(false);
 
     const {
         currency,
@@ -56,16 +60,21 @@ export const TronFreezeAmount = () => {
 
     const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
 
+    const amount = form.methods.watch('amount');
     const resourceType = form.methods.watch('resourceType');
 
     const maxFreezeAmount = useMemo(async () => {
-        const availableBalance = subunitsToUnits({
+        const availableBalanceUnits = subunitsToUnits({
             value: asAmountSubunit(new BigNumber(account.availableBalance)),
             symbol: account.symbol,
         }).toString();
 
         const levels = await dispatch(
-            composeTronFreezeFeeLevelsThunk({ account, amount: availableBalance, resourceType }),
+            composeTronFreezeFeeLevelsThunk({
+                account,
+                amount: availableBalanceUnits,
+                resourceType,
+            }),
         )
             .unwrap()
             .catch(() => undefined);
@@ -73,12 +82,10 @@ export const TronFreezeAmount = () => {
         const feeInSun = levels?.normal?.type === 'final' ? levels.normal.fee : '0';
         const maxInSun = BigNumber.max(new BigNumber(account.availableBalance).minus(feeInSun), 0);
 
-        const maxAmount = subunitsToUnits({
+        return subunitsToUnits({
             value: asAmountSubunit(maxInSun),
             symbol: account.symbol,
         }).toString();
-
-        return maxAmount;
     }, [account, resourceType, dispatch]);
 
     const cryptoInputRules = {
@@ -111,7 +118,9 @@ export const TronFreezeAmount = () => {
                     maxFreezeAmountInUnits &&
                     new BigNumber(value).isGreaterThan(maxFreezeAmountInUnits)
                 ) {
-                    return translationString('AMOUNT_IS_NOT_ENOUGH');
+                    return translationString('AMOUNT_NOT_ENOUGH_CURRENCY_FEE', {
+                        networkDisplaySymbol,
+                    });
                 }
             },
         },
@@ -154,16 +163,33 @@ export const TronFreezeAmount = () => {
                     maxFreezeAmountInFiat &&
                     new BigNumber(value).isGreaterThan(maxFreezeAmountInFiat)
                 ) {
-                    return translationString('AMOUNT_IS_NOT_ENOUGH');
+                    return translationString('AMOUNT_NOT_ENOUGH_CURRENCY_FEE', {
+                        networkDisplaySymbol,
+                    });
                 }
             },
         },
     };
 
+    const handleCryptoAmountChange = (value: string) => {
+        setIsMaxActive(false);
+        onCryptoAmountChange(value);
+    };
+
+    const handleFiatAmountChange = (value: string) => {
+        setIsMaxActive(false);
+        onFiatAmountChange(value);
+    };
+
     const handleSetMax = async () => {
         form.methods.clearErrors(['amount', 'fiatAmount']);
+        setIsMaxActive(true);
 
-        const maxAmount = await maxFreezeAmount;
+        const maxFreezeAmountInUnits = await maxFreezeAmount;
+        const maxAmount = BigNumber.max(
+            new BigNumber(maxFreezeAmountInUnits).minus(TRON_STAKING_RESERVE),
+            0,
+        ).toString();
 
         form.methods.setValue('amount', maxAmount, { shouldValidate: true });
 
@@ -180,6 +206,17 @@ export const TronFreezeAmount = () => {
     const hasError = !!errors.amount || !!errors.fiatAmount;
     const errorMessage = errors.amount?.message ?? errors.fiatAmount?.message;
 
+    const amountBn = new BigNumber(amount || '0');
+
+    const showLeftReserveBanner = isMaxActive && amountBn.isGreaterThan(0);
+
+    const showRecommendedReserveBanner =
+        !isMaxActive &&
+        !hasError &&
+        !!minStakingAmount &&
+        amountBn.isGreaterThanOrEqualTo(minStakingAmount) &&
+        new BigNumber(availableBalance).minus(amountBn).isLessThan(TRON_STAKING_RESERVE);
+
     const numberInputProps = {
         name: currency === 'crypto' ? 'amount' : 'fiatAmount',
         locale,
@@ -188,7 +225,7 @@ export const TronFreezeAmount = () => {
         maxLength: currency === 'crypto' ? formInputsMaxLength.amount : formInputsMaxLength.fiat,
         isDisabled,
         hasError,
-        onChange: currency === 'crypto' ? onCryptoAmountChange : onFiatAmountChange,
+        onChange: currency === 'crypto' ? handleCryptoAmountChange : handleFiatAmountChange,
         rightContent: (
             <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                 {currency === 'crypto' ? networkDisplaySymbol : baseCurrencyCode.toUpperCase()}
@@ -243,6 +280,36 @@ export const TronFreezeAmount = () => {
 
             {!!errorMessage && (
                 <Banner intent="warning" description={<Text>{errorMessage}</Text>} />
+            )}
+
+            {showLeftReserveBanner && (
+                <Banner
+                    intent="info"
+                    description={
+                        <Translation
+                            id="TR_EARN_TRON_RESERVE_LEFT_FOR_VOTING"
+                            values={{
+                                amount: TRON_STAKING_RESERVE.toString(),
+                                networkDisplaySymbol,
+                            }}
+                        />
+                    }
+                />
+            )}
+
+            {showRecommendedReserveBanner && (
+                <Banner
+                    intent="info"
+                    description={
+                        <Translation
+                            id="TR_EARN_TRON_RESERVE_RECOMMENDED_FOR_VOTING"
+                            values={{
+                                amount: TRON_STAKING_RESERVE.toString(),
+                                networkDisplaySymbol,
+                            }}
+                        />
+                    }
+                />
             )}
         </Column>
     );

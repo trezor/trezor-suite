@@ -1,5 +1,4 @@
-import { useDispatch } from 'react-redux';
-
+import { useDispatch } from '@suite-common/redux-utils';
 import { nativeFirmwareActions } from '@suite-native/firmware';
 import { ThpPairingSuccessScreenContent } from '@suite-native/thp';
 

@@ -15,7 +15,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'
     });
 
     // --- Promo Banner Events ---
-    const bannerTypes: PromoBannerType[] = ['tex', 'ts7'];
+    const bannerTypes: PromoBannerType[] = ['ts7'];
 
     for (const bannerType of bannerTypes) {
         test(

@@ -1,7 +1,6 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect from '@trezor/connect';
 import { BridgeTransport } from '@trezor/transport-common';
 
+import TrezorConnect from '../../../src';
 import { getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();

@@ -80,9 +80,7 @@ export const TransactionIcon = ({
     return (
         <Box>
             <RoundedIcon name={iconName} intent={intent} size={size} />
-            {isAnimated && (
-                <CircularSpinner size={size} color="legacyBackgroundAlertYellowBold" width={3} />
-            )}
+            {isAnimated && <CircularSpinner size={size} color="elementFillWarningBold" width={3} />}
             {iconSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>
                     <TokenIcon symbol={iconSymbol} contractAddress={contractAddress} size="tiny" />

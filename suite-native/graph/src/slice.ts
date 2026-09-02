@@ -16,6 +16,13 @@ import { type TimeframeHoursValue } from './types';
 // Default is 720 hours (1 month).
 export const DEFAULT_GRAPH_TIMEFRAME_HOURS = 720;
 
+// `null` is a valid timeframe meaning "All" (see the `all` option in TimeSwitch), so we must not
+// treat it as a missing value. Only fall back to the default when no timeframe has been stored yet.
+export const getGraphTimeframeOrDefault = (
+    timeframeHours: TimeframeHoursValue | undefined,
+): TimeframeHoursValue =>
+    timeframeHours === undefined ? DEFAULT_GRAPH_TIMEFRAME_HOURS : timeframeHours;
+
 export type GraphInstanceState = {
     timeframeHours: TimeframeHoursValue;
     isLoading?: boolean;

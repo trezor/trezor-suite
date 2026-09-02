@@ -1,19 +1,6 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-export enum TorStatus {
-    Enabled = 'Enabled',
-    Disabled = 'Disabled',
-    Disabling = 'Disabling',
-    Enabling = 'Enabling',
-    Error = 'Error',
-    Slow = 'Slow',
-}
-
-export interface TorBootstrap {
-    current: number;
-    total: number;
-    isSlow?: boolean;
-}
+import { type TorBootstrap, TorStatus } from '@suite/tor-types';
 
 export type TorState = {
     torStatus: TorStatus;
@@ -43,5 +30,4 @@ export type TorRootState = {
 };
 
 export const torActions = torSlice.actions;
-export type TorAction = ReturnType<(typeof torActions)[keyof typeof torActions]>;
 export const torReducer = torSlice.reducer;

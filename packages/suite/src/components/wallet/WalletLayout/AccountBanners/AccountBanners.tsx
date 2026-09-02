@@ -1,4 +1,5 @@
 import { ContextMessage } from '@suite/message-system';
+import { selectRouter } from '@suite/router';
 import { Context } from '@suite-common/message-system';
 import {
     isSupportedAdaStakingNetworkSymbol,
@@ -28,7 +29,7 @@ type AccountBannersProps = {
 };
 
 export const AccountBanners = ({ account }: AccountBannersProps) => {
-    const { route } = useSelector(state => state.router);
+    const { route } = useSelector(selectRouter);
 
     return (
         <Column gap={12}>

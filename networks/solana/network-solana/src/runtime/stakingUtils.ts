@@ -170,8 +170,7 @@ export const getFeeSummary = (
         TransactionMessageWithBlockhashLifetime,
 ) => {
     const compiledMessage = compileTransactionMessage(transactionMessage) as
-        | LegacyCompiledTransactionMessage
-        | V0CompiledTransactionMessage;
+        LegacyCompiledTransactionMessage | V0CompiledTransactionMessage;
 
     const baseFeeLamports = SOL_BASE_FEE * BigInt(compiledMessage.header.numSignerAccounts);
 

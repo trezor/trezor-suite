@@ -2,7 +2,7 @@ import type { ProviderMetadata } from 'invity-api';
 
 import type {
     TradingState as CommonTradingState,
-    InvityServerEnvironment,
+    TradeServerEnvironment,
     TradingCountryCode,
     TradingTypeWithConcierge,
 } from '@suite-common/trading';
@@ -25,7 +25,7 @@ export type TradingResidenceRootState = {
 
 export interface TradingState extends CommonTradingState {
     residence: TradingResidenceState;
-    tradingEnvironment: InvityServerEnvironment;
+    tradingEnvironment: TradeServerEnvironment;
     tradeOrderIdToBeOpened: string | undefined;
     isAmountInputActive: boolean;
     activeTradingType: TradingTypeWithConcierge | undefined;

@@ -8,6 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
+        "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -22,12 +23,17 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:^",
+        "@trezor/crypto-utils": "workspace:*",
+        "@trezor/network-solana": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
         "@trezor/type-utils": "workspace:^",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
         "@types/react": "19.2.14"
     }
 }

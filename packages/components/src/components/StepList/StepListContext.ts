@@ -11,6 +11,7 @@ type StepListContextValue = {
     bulletSize: BulletSize;
     lineWidth: StepLineWidth;
     isOrdered: boolean;
+    isContentFullWidth: boolean;
     direction: StepListDirection;
 };
 
@@ -20,6 +21,7 @@ export const StepListContext = createContext<StepListContextValue>({
     bulletGap: 24,
     bulletSize: 'large',
     isOrdered: false,
+    isContentFullWidth: false,
     lineWidth: 2,
     direction: 'vertical',
 });

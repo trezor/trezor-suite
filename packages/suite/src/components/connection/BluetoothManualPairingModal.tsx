@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Modal, Paragraph } from '@trezor/components';
 
 import { setBluetoothDeviceNeedsManualPairing } from 'src/actions/bluetooth//desktopBluetoothReducer';
-import { useDispatch } from 'src/hooks/suite';
 
 type BluetoothManualPairingModalProps = {
     onCancel: () => void;

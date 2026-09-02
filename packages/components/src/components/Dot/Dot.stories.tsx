@@ -1,6 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Dot as DotComponent, dotIntents } from './Dot';
+import { Dot as DotComponent } from './Dot';
+import { dotIntents } from './types';
 
 const meta: Meta<typeof DotComponent> = {
     title: 'Dot',
@@ -19,7 +20,10 @@ export const Dot: StoryObj<typeof meta> = {
         },
         intent: {
             options: dotIntents,
-            control: 'radio',
+            control: 'select',
+        },
+        isAnimated: {
+            control: 'boolean',
         },
     },
 };

@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import type {
     AccountInfo,
     AccountUtxo,
@@ -55,6 +55,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 { name: 'marker', type: 'object' },
                 { name: 'protocols', type: 'array' },
                 { name: 'confirmedNonce', type: 'boolean' },
+                { name: 'privatePending', type: 'object' },
                 { name: 'defaultAccountType', type: 'string' },
                 { name: 'derivationType', type: 'number' },
                 { name: 'suppressBackupWarning', type: 'boolean' },
@@ -67,7 +68,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             // validate path if exists
             let address_n: number[] = [];
             if (batch.path) {
-                address_n = validatePath(batch.path, 3);
+                // Length 2 to allow root paths of single-account types.
+                address_n = validatePath(batch.path, 2);
                 // since there is no descriptor device will be used
                 willUseDevice = typeof batch.descriptor !== 'string';
             }
@@ -148,7 +150,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             if (!this.hasBundle || this.getDevice()?.getCurrentSession().isDisposed()) return;
             // send progress to UI
             context.sendCoreMessage(
-                createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                     total: this.params.length,
                     progress,
                     response,
@@ -245,6 +247,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     tokenAccountsPubKeys: request.tokenAccountsPubKeys,
                     protocols: request.protocols,
                     confirmedNonce: request.confirmedNonce,
+                    privatePending: request.privatePending,
                 });
 
                 if (this.disposed) break;
@@ -260,11 +263,16 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
                 if (this.disposed) break;
 
+                // EVM descriptors may be names (.eth and other TLDs) which the backend resolved to hex
+                const isNamedEvmDescriptor =
+                    request.coinInfo.type === 'ethereum' && descriptor.includes('.');
+
                 // add account to responses
                 const account: AccountInfo = {
                     path: request.path,
                     ...info,
-                    descriptor, // override descriptor (otherwise eth checksum is lost)
+                    // override descriptor (otherwise eth checksum is lost)
+                    descriptor: isNamedEvmDescriptor ? info.descriptor : descriptor,
                     legacyXpub,
                     utxo,
                     descriptorChecksum,

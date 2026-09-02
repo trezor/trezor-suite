@@ -15,6 +15,7 @@ export const Badge: StoryObj<typeof meta> = {
         children: 'Placeholder',
         intent: 'brand',
         size: 'small',
+        isAnimated: false,
         ...getFramePropsStory(allowedBadgeFrameProps).args,
     },
     argTypes: {
@@ -29,6 +30,11 @@ export const Badge: StoryObj<typeof meta> = {
                 type: 'select',
             },
             options: badgeSizes,
+        },
+        isAnimated: {
+            control: {
+                type: 'boolean',
+            },
         },
         ...getFramePropsStory(allowedBadgeFrameProps).argTypes,
     },

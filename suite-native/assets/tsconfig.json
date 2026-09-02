@@ -3,10 +3,14 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/assets" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/redux-utils"
         },

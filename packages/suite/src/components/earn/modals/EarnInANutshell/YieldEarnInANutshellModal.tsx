@@ -9,10 +9,12 @@ import {
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import {
@@ -62,12 +64,23 @@ export const YieldEarnInANutshellModal = ({
     const yieldApy =
         vault?.rewardRate?.total != null ? getApyPercent(vault.rewardRate.total) : null;
 
+    // Wrapped-native vaults (e.g. an ETH vault holding WETH) get extra wrap/unwrap education:
+    // an intro highlight plus a wrap step on deposit and an unwrap step on withdrawal.
+    const isWrappedNativeVault =
+        vault !== undefined && isWrappedNativeToken(account.symbol, vault.token.address);
+    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+
     const processes: EarnInANutshellProcess[] = [
         {
             processType: 'deposit',
             'data-testid': '@modal/earn-in-a-nutshell/deposit-process',
             heading: <Translation id="TR_EARN_DEPOSITING_PROCESS" />,
-            badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
+            badge: (
+                <Translation
+                    id="TR_TX_FEE_COUNT"
+                    values={{ count: isWrappedNativeVault ? 3 : 2 }}
+                />
+            ),
             content: (
                 <YieldDepositingInfo
                     apy={yieldApy}
@@ -75,6 +88,8 @@ export const YieldEarnInANutshellModal = ({
                     networkSymbol={account.symbol}
                     depositSymbol={depositSymbol}
                     vaultSymbol={vaultSymbol}
+                    isWrappedNativeVault={isWrappedNativeVault}
+                    nativeSymbol={nativeSymbol}
                 />
             ),
         },
@@ -82,8 +97,19 @@ export const YieldEarnInANutshellModal = ({
             processType: 'withdraw',
             'data-testid': '@modal/earn-in-a-nutshell/withdraw-process',
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
-            badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
-            content: <YieldWithdrawingInfo depositSymbol={depositSymbol} />,
+            badge: (
+                <Translation
+                    id="TR_TX_FEE_COUNT"
+                    values={{ count: isWrappedNativeVault ? 2 : 1 }}
+                />
+            ),
+            content: (
+                <YieldWithdrawingInfo
+                    depositSymbol={depositSymbol}
+                    isWrappedNativeVault={isWrappedNativeVault}
+                    nativeSymbol={nativeSymbol}
+                />
+            ),
         },
         ...(rewardsSymbols !== undefined && rewardsSymbols.length > 0
             ? [
@@ -148,11 +174,14 @@ export const YieldEarnInANutshellModal = ({
             onCancel={handleOnCancel}
             actionType={actionType}
             onAction={handleOnAction}
+            hasCancelButton={actionType !== 'close'}
         >
             <YieldEarnInANutshellHighlights
                 depositSymbol={depositSymbol}
                 vaultSymbol={vaultSymbol}
                 rewardsSymbols={rewardsSymbols}
+                isWrappedNativeVault={isWrappedNativeVault}
+                nativeSymbol={nativeSymbol}
             />
             <Divider margin={{ top: 24, bottom: 16 }} />
             <EarnInANutshellProcesses items={processes} onItemToggle={handleProcessToggle} />

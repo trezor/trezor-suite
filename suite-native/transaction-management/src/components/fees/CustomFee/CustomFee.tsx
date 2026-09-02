@@ -4,7 +4,7 @@ import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { CustomFeeBottomSheet } from './CustomFeeBottomSheet';
@@ -45,13 +45,17 @@ const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: Cust
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const {
-        watch,
+        control,
         getValues,
         reset,
         formState: { defaultValues },
     } = useFormContext<FeesFormValues>();
 
-    const isCustomFeeSelected = watch('feeLevel') === 'custom';
+    const isCustomFeeSelected = useWatch({
+        control,
+        name: 'feeLevel',
+        compute: feeLevel => feeLevel === 'custom',
+    });
     const lastSavedValuesRef = useRef<FeesFormValues>(undefined);
     const initialFormValuesRef = useRef<FeesFormValues>(undefined);
 

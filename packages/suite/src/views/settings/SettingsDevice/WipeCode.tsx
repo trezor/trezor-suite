@@ -1,16 +1,15 @@
-import { useSelector } from 'react-redux';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceProtectedByWipeCode } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
 import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface Props {
     isDeviceLocked: boolean;

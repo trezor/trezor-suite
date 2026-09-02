@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { selectIsActivateAssetsBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { preserveModal, removePreserveModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     changeCoinVisibility,
@@ -16,7 +17,7 @@ import { InfoIcon } from '@trezor/icons';
 
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 

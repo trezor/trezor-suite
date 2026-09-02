@@ -5,18 +5,21 @@ import {
     type SellTradeStatus,
 } from 'invity-api';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { selectCountryCode } from '@suite-common/geolocation';
 import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { FeedbackCard } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 
 interface TradingDetailFeedbackProps {
@@ -40,6 +43,14 @@ export const TradingDetailFeedback = ({
     const dispatch = useDispatch();
     const geolocation = useSelector(selectCountryCode);
     const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+
+    const handleRatingSelect = (rating: Rating) => {
+        analytics.report({
+            type: events.feedbackRatingSelectedEvent.name,
+            payload: { rating, category: 'trade', context: type, provider },
+        });
+    };
 
     const handleSubmit = (rating: Rating, description: string) => {
         const userData = buildUserFeedbackData(device);
@@ -66,6 +77,11 @@ export const TradingDetailFeedback = ({
                 },
             }),
         );
+
+        analytics.report({
+            type: events.feedbackSentEvent.name,
+            payload: { category: 'trade', context: type, provider },
+        });
     };
 
     return (
@@ -76,6 +92,7 @@ export const TradingDetailFeedback = ({
             successHeading={<Translation id="TR_FEEDBACK_CARD_SUCCESS_TITLE" />}
             successDescription={<Translation id="TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION" />}
             onSubmit={handleSubmit}
+            onRatingSelect={handleRatingSelect}
         />
     );
 };

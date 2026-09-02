@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, type BezierDefinition, type Variants, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Column, Grid, Row } from '@trezor/components';
+import { Box, Column, Grid, Row } from '@trezor/components';
 
 import { CarouselIndicator } from './CarouselIndicator';
 
@@ -75,24 +75,33 @@ export const BannerCarousel = ({ banners, onClose, onCTAClick }: BannerCarouselP
 
     return (
         <Column alignItems="center" width="100%">
-            <Grid columns="1fr" width="100%" borderRadius={12} overflow="hidden">
-                <AnimatePresence initial={false} custom={direction}>
-                    <Slide
-                        key={activeBanner.key}
-                        custom={direction}
-                        variants={slideVariants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={slideTransition}
-                    >
-                        {activeBanner.render({
-                            onClose: handleClose,
-                            onCTAClick: handleCTAClick,
-                        })}
-                    </Slide>
-                </AnimatePresence>
-            </Grid>
+            <Box
+                borderRadius={16}
+                overflow="hidden"
+                width="100%"
+                borderWidth={1}
+                backgroundColor="surfaceFillRaised"
+                borderColor="surfaceBorderSunken"
+            >
+                <Grid columns="1fr">
+                    <AnimatePresence initial={false} custom={direction}>
+                        <Slide
+                            key={activeBanner.key}
+                            custom={direction}
+                            variants={slideVariants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={slideTransition}
+                        >
+                            {activeBanner.render({
+                                onClose: handleClose,
+                                onCTAClick: handleCTAClick,
+                            })}
+                        </Slide>
+                    </AnimatePresence>
+                </Grid>
+            </Box>
             {banners.length > 1 && (
                 <Row margin={{ top: 10, bottom: 2 }}>
                     <CarouselIndicator

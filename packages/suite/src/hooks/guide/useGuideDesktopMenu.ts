@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { open, setView } from 'src/actions/suite/guideActions';
-import { useDispatch } from 'src/hooks/suite';
 
 // Opens the in-app guide on the right view when triggered from the desktop application
 // menu (Help → Support & feedback / Keyboard shortcuts).

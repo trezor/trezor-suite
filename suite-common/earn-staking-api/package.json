@@ -15,7 +15,7 @@
         "api:update": "yarn api:generate && yarn lint:js --fix && yarn format"
     },
     "dependencies": {
-        "@sentry/core": "10.62.0",
+        "@sentry/core": "10.69.0",
         "@suite-common/http-client": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -24,6 +24,6 @@
     },
     "devDependencies": {
         "orval": "8.19.0",
-        "prettier": "^3.8.4"
+        "prettier": "^3.9.6"
     }
 }

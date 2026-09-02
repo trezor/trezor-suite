@@ -197,6 +197,24 @@ export const TYPE_PATCH = {
     'StellarChangeTrustOp.limit': UINT_TYPE,
     'StellarManageDataOp.value': 'Buffer | string',
     'StellarBumpSequenceOp.bump_to': UINT_TYPE,
+    // Soroban SCVal 128/256-bit integer limbs are raw uint64/sint64 halves that
+    // routinely exceed Number.MAX_SAFE_INTEGER, so they must accept string bignums.
+    'StellarUInt128Parts.hi': UINT_TYPE,
+    'StellarUInt128Parts.lo': UINT_TYPE,
+    'StellarInt128Parts.hi': SINT_TYPE,
+    'StellarInt128Parts.lo': UINT_TYPE,
+    'StellarUInt256Parts.hi_hi': UINT_TYPE,
+    'StellarUInt256Parts.hi_lo': UINT_TYPE,
+    'StellarUInt256Parts.lo_hi': UINT_TYPE,
+    'StellarUInt256Parts.lo_lo': UINT_TYPE,
+    'StellarInt256Parts.hi_hi': SINT_TYPE,
+    'StellarInt256Parts.hi_lo': UINT_TYPE,
+    'StellarInt256Parts.lo_hi': UINT_TYPE,
+    'StellarInt256Parts.lo_lo': UINT_TYPE,
+    // Soroban authorization nonces are random sint64 values that routinely exceed
+    // Number.MAX_SAFE_INTEGER, so they must accept string bignums to sign correctly.
+    'StellarSorobanAddressCredentials.nonce': SINT_TYPE,
+    'StellarSorobanAuthorizationWithAddress.nonce': SINT_TYPE,
     'TezosContractID.tag': 'number',
     'TezosContractID.hash': 'Uint8Array',
     'TezosRevealOp.source': 'Uint8Array',
@@ -234,6 +252,7 @@ export const DEFINITION_PATCH = {
     TxOutputType: () => readPatch('./TxOutputType.ts'),
     TxAck: () => readPatch('./TxAck.ts'),
     ThpCreateNewSession: () => readPatch('./ThpCreateNewSession.ts'),
+    StellarSCVal: () => readPatch('./StellarSCVal.ts'),
 };
 
 // skip unnecessary types
@@ -243,6 +262,7 @@ export const SKIP = [
     'TransactionType', // connect uses custom definition
     'TxInput', // declared in TxInputType patch
     'TxOutput', // declared in TxOutputType patch
+    'StellarSCValMapEntry', // inlined into the StellarSCVal patch (see StellarSCVal.ts)
     // not implemented
     'DebugSwipeDirection',
     'DebugLinkDecision',

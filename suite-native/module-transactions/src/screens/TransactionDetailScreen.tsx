@@ -10,8 +10,7 @@ import {
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
+import { Button, HStack, VStack } from '@suite-native/atoms';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import {
@@ -24,14 +23,14 @@ import {
 import { useTransactionDetails } from '@suite-native/transaction-management';
 import {
     InstantStakeBanner,
-    TransactionName,
-    UnstakeTransactionDetailTitle,
     getUnstakeTxAmount,
     useFetchMissingTransactionFiatRates,
 } from '@suite-native/transactions';
 
+import { CancelEvmTransactionButton } from '../components/CancelEvmTransactionButton';
 import { TransactionDetailData } from '../components/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetailHeader';
+import { TransactionDetailTitle } from '../components/TransactionDetailTitle';
 
 export const TransactionDetailScreen = ({
     route,
@@ -72,8 +71,7 @@ export const TransactionDetailScreen = ({
 
     if (!transaction) return null;
 
-    const unstakeAmount = getUnstakeTxAmount(transaction);
-    const isUnstakeTransaction = unstakeAmount !== undefined;
+    const isUnstakeTransaction = getUnstakeTxAmount(transaction) !== undefined;
 
     const handleOpenBlockchain = () => {
         analytics.report({
@@ -91,36 +89,11 @@ export const TransactionDetailScreen = ({
                     closeActionType={closeActionType}
                     customContent={
                         <HStack spacing="sp8" alignItems="center" justifyContent="center">
-                            {isUnstakeTransaction ? (
-                                <UnstakeTransactionDetailTitle
-                                    unstakeAmount={unstakeAmount}
-                                    symbol={transaction.symbol}
-                                    variant="body-md-strong"
-                                />
-                            ) : (
-                                <>
-                                    <TokenIcon
-                                        symbol={transaction.symbol}
-                                        contractAddress={tokenTransfer?.contract}
-                                        showNetworkIcon
-                                    />
-                                    <Text variant="body-md-strong">
-                                        <Translation
-                                            id="transactions.detail.header"
-                                            values={{
-                                                transactionType: () => (
-                                                    <TransactionName
-                                                        key={transaction.txid}
-                                                        transaction={transaction}
-                                                        isPending={isPending}
-                                                        variant="body-md-strong"
-                                                    />
-                                                ),
-                                            }}
-                                        />
-                                    </Text>
-                                </>
-                            )}
+                            <TransactionDetailTitle
+                                transaction={transaction}
+                                isPending={isPending}
+                                tokenTransfer={tokenTransfer}
+                            />
                         </HStack>
                     }
                 />
@@ -142,6 +115,7 @@ export const TransactionDetailScreen = ({
                         tokenTransfer={tokenTransfer}
                     />
                 </VStack>
+                <CancelEvmTransactionButton accountKey={accountKey} transaction={transaction} />
                 <Button
                     iconRight="arrowUpRight"
                     onPress={handleOpenBlockchain}

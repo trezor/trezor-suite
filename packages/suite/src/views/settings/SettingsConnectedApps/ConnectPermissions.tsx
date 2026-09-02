@@ -12,6 +12,7 @@ import {
     permissionIcons,
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Card,
@@ -27,7 +28,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { type MethodPermission, type PermissionRequest } from '@trezor/connect';
+import { type CoinSymbol, type MethodPermission, type PermissionRequest } from '@trezor/connect';
 import {
     BellSlashIcon,
     BroadcastIcon,
@@ -43,7 +44,6 @@ import {
     NotePencilIcon,
     SealCheckIcon,
     SignatureIcon,
-    SlidersHorizontalIcon,
     WalletIcon,
     XCircleIcon,
 } from '@trezor/icons';
@@ -51,8 +51,7 @@ import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
+import { useSelector } from 'src/hooks/suite';
 // The remove button sits next to the permission text and is only revealed when
 // the row is hovered or a child receives keyboard focus, to reduce clutter.
 // Mirrors the reveal styling of EditableText's ActionsContainer.
@@ -77,7 +76,6 @@ const permissionIconsLocalMap: Record<keyof typeof permissionIcons, IconComponen
     read_address: EyeIcon,
     read_xpub: KeyIcon,
     read_account_info: WalletIcon,
-    read_settings: SlidersHorizontalIcon,
     read_features: CpuIcon,
     sign: SignatureIcon,
     sign_message: NotePencilIcon,
@@ -100,8 +98,6 @@ export const getPermissionText = (permissionType: MethodPermission | string) => 
             return <Translation id="TR_PERMISSION_READ_XPUB" />;
         case 'read_account_info':
             return <Translation id="TR_PERMISSION_READ_ACCOUNT_INFO" />;
-        case 'read_settings':
-            return <Translation id="TR_PERMISSION_READ_SETTINGS" />;
         case 'read_features':
             return <Translation id="TR_PERMISSION_READ_FEATURES" />;
         case 'sign':
@@ -167,8 +163,11 @@ const PermissionPreview = ({ permissions }: { permissions: MethodPermission[] })
     );
 };
 
+// The e2e testID convention allows no underscores; connectPermissionsModal.ts mirrors this.
+const permissionTestId = (permission: MethodPermission) => permission.replace(/_/g, '-');
+
 type PermissionGroupProps = {
-    coin?: string;
+    coin?: CoinSymbol;
     permissions: MethodPermission[];
     defaultIsOpen: boolean;
     onRemovePermission?: (permission: PermissionRequest) => void;
@@ -184,7 +183,7 @@ const PermissionGroup = ({
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
 
     return (
-        <Collapsible isOpen={isOpen}>
+        <Collapsible isOpen={isOpen} data-testid={`@connect-permissions/group/${coin ?? 'device'}`}>
             <Collapsible.Toggle onClick={() => setIsOpen(!isOpen)}>
                 <Row justifyContent="space-between" gap={12} padding={{ vertical: 8 }}>
                     <Row gap={16}>
@@ -202,7 +201,10 @@ const PermissionGroup = ({
             <Collapsible.Content>
                 <Column gap={8} margin={{ top: 4, bottom: 8 }}>
                     {permissions.map(permission => (
-                        <PermissionRow key={permission}>
+                        <PermissionRow
+                            key={permission}
+                            data-testid={`@connect-permissions/permission/${permissionTestId(permission)}`}
+                        >
                             <Row gap={12}>
                                 <PermissionIcon permission={permission} />
                                 <Text typographyStyle="body-sm">

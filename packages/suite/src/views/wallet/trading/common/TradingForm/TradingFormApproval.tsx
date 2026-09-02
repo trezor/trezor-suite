@@ -5,9 +5,11 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
     requiresTokenApproval,
+    selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
     tokenSupportsIncreasingAllowance,
     useApprovalStep,
@@ -20,7 +22,7 @@ import { PendingTransactionInfo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
@@ -49,8 +51,6 @@ export const TradingFormApproval = () => {
         revokeApproval,
         refreshQuotes,
         confirmApproval,
-        resetSelectedOffer,
-        selectedQuote,
         isScheduledQuotesRefresh,
         isComposing,
         form: {
@@ -58,6 +58,7 @@ export const TradingFormApproval = () => {
             helpers,
         },
     } = context;
+    const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'exchange'));
 
     const { exchangeType, rateType } = watch();
@@ -171,7 +172,6 @@ export const TradingFormApproval = () => {
             },
         });
 
-        resetSelectedOffer();
         await refreshQuotes();
     };
 
@@ -276,6 +276,7 @@ export const TradingFormApproval = () => {
                         </>
                     ) : (
                         <Button
+                            data-testid="@trading/form/approve-button"
                             onClick={() => handleApproveClick(onApproveTransactionClick)}
                             intent="brand"
                             size="large"
@@ -325,7 +326,13 @@ export const TradingFormApproval = () => {
             )}
 
             {approvalStep === 'LOADING' && (
-                <Button intent="brand" size="large" width="100%" isDisabled={true}>
+                <Button
+                    data-testid="@trading/form/swap-button"
+                    intent="brand"
+                    size="large"
+                    width="100%"
+                    isDisabled={true}
+                >
                     <Translation id="TR_TRADING_SWAP" />
                 </Button>
             )}
@@ -362,6 +369,7 @@ export const TradingFormApproval = () => {
                                 value={tx.approvalTxid}
                                 intent="brand"
                                 typographyStyle="body-md"
+                                data-testid="@pending-transaction/txid/value"
                             />
                         ) : (
                             <Translation id="TR_UNKNOWN" />

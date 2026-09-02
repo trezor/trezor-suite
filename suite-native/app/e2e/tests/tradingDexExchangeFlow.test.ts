@@ -24,7 +24,7 @@ const prepareDexExchangeForm = async () => {
     await tradingExchangeActions.selectSendAsset('USDC', 'Ethereum', 'USD Coin');
     await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum', 'Tether');
     await tradingExchangeActions.setSendCryptoAmount('6');
-    await tradingExchangeActions.selectProvider(dexProviderName, 'DEX');
+    await tradingExchangeActions.selectProvider(dexProviderName, 'dex');
     await tradingExchangeActions.expectValidExchangeForm();
 };
 

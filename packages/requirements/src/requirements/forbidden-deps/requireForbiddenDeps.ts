@@ -2,10 +2,11 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { type PackageJson, readPackageJson } from '@trezor/node-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 import type { AllowedOnlyInRule, ForbiddenDepsConfig } from './forbiddenDepsTypes';
-import { getWorkspaceDirectoryMap, readPackageJson } from '../../workspaces';
+import { getWorkspaceDirectoryMap } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
 const FORBIDDEN_DEPS_CONFIG_FILE = 'forbiddenDeps.config.ts';
@@ -20,13 +21,6 @@ const DEPENDENCY_FIELDS = [
 ] as const;
 
 type DependencyField = (typeof DEPENDENCY_FIELDS)[number];
-
-type PackageJson = {
-    readonly dependencies?: Record<string, string>;
-    readonly devDependencies?: Record<string, string>;
-    readonly optionalDependencies?: Record<string, string>;
-    readonly peerDependencies?: Record<string, string>;
-};
 
 type DependencyOccurrence = {
     readonly field: DependencyField;
@@ -63,10 +57,18 @@ const createForbiddenDepsMap = (
     forbiddenDeps: NonNullable<ForbiddenDepsConfig['forbidden-deps']>,
 ) =>
     new Map(
-        forbiddenDeps.map(forbiddenDependency => [
-            forbiddenDependency.packageName,
-            forbiddenDependency,
-        ]),
+        forbiddenDeps.flatMap(forbiddenDependency =>
+            forbiddenDependency.packageName === undefined
+                ? []
+                : [[forbiddenDependency.packageName, forbiddenDependency] as const],
+        ),
+    );
+
+const getForbiddenDependencyPrefixes = (
+    forbiddenDeps: NonNullable<ForbiddenDepsConfig['forbidden-deps']>,
+) =>
+    forbiddenDeps.flatMap(forbiddenDependency =>
+        forbiddenDependency.packageNamePrefix === undefined ? [] : [forbiddenDependency],
     );
 
 const formatAllowedOnlyInPackages = (allowedOnlyInRule: AllowedOnlyInRule) =>
@@ -107,6 +109,10 @@ const getInvalidConfiguredPackagesErrors = ({
     const errors: string[] = [];
 
     for (const forbiddenDependency of dependencyRule?.['forbidden-deps'] ?? []) {
+        if (forbiddenDependency.packageName === undefined) {
+            continue;
+        }
+
         if (workspaceDirectories.has(forbiddenDependency.packageName)) {
             continue;
         }
@@ -135,15 +141,22 @@ type ForbiddenDependencyErrorsParams = {
     readonly workspaceName: string;
 };
 
-const getForbiddenDependencyErrors = ({
+export const getForbiddenDependencyErrors = ({
     dependencyOccurrences,
     dependencyRule,
     workspaceName,
 }: ForbiddenDependencyErrorsParams): ReadonlyArray<string> => {
     const forbiddenDepsMap = createForbiddenDepsMap(dependencyRule?.['forbidden-deps'] ?? []);
+    const forbiddenDependencyPrefixes = getForbiddenDependencyPrefixes(
+        dependencyRule?.['forbidden-deps'] ?? [],
+    );
 
     return dependencyOccurrences.flatMap(dependencyOccurrence => {
-        const forbiddenDependency = forbiddenDepsMap.get(dependencyOccurrence.name);
+        const forbiddenDependency =
+            forbiddenDepsMap.get(dependencyOccurrence.name) ??
+            forbiddenDependencyPrefixes.find(({ packageNamePrefix }) =>
+                dependencyOccurrence.name.startsWith(packageNamePrefix),
+            );
 
         if (forbiddenDependency === undefined) {
             return [];

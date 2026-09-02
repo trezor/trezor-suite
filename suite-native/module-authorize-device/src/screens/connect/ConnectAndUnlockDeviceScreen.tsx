@@ -35,7 +35,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
                         <IconListTextItem
                             icon="trezorPassword"
                             iconSize="large"
-                            variant="blue"
+                            variant="info"
                             textVariant="body-md"
                         >
                             <Translation id="moduleConnectDevice.helpModal.connect.hint1" />
@@ -43,7 +43,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
                         <IconListTextItem
                             icon="cableUsbC"
                             iconSize="large"
-                            variant="blue"
+                            variant="info"
                             textVariant="body-md"
                         >
                             <Translation id="moduleConnectDevice.helpModal.connect.hint2" />
@@ -51,7 +51,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
                         <IconListTextItem
                             icon="arrowsClockwise"
                             iconSize="large"
-                            variant="blue"
+                            variant="info"
                             textVariant="body-md"
                         >
                             <Translation id="moduleConnectDevice.helpModal.connect.hint3" />

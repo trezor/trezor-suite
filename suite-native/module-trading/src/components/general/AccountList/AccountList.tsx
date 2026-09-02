@@ -1,46 +1,35 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
-import { type TradingType, tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { Divider } from '@suite-native/atoms';
 import {
     type RootStackParamList,
-    type RootStackRoutes,
+    RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useSectionList } from '@suite-native/trading-atoms';
-import {
-    selectBuySelectedReceiveAccount,
-    selectExchangeSelectedReceiveAccount,
-} from '@suite-native/trading-state';
+import { type SectionListData, useSectionList } from '@suite-native/trading-atoms';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AccountListAddressItem } from './AccountListAddressItem';
 import { AccountListFooter } from './AccountListFooter';
 import { AccountListItem } from './AccountListItem';
 import { NoAccountsComponent } from './NoAccountsComponent';
-import {
-    type ReceiveAccountsListMode,
-    useReceiveAccountsListData,
-} from '../../../hooks/general/useReceiveAccountsListData';
-import { isFullySelectedReceiveAccount } from '../../../utils/general/receiveAccountUtils';
+import { useTradingReceiveAccountSelection } from '../../../hooks/general/useTradingReceiveAccountSelection';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveAccounts>;
 
 export type AccountsListProps = {
+    data: SectionListData<ReceiveAccount>;
     symbol: NetworkSymbol;
-    pickerMode: ReceiveAccountsListMode;
     onAddAccountTap: () => void;
-    onSetPickerMode: (mode: ReceiveAccountsListMode) => void;
     tradingType: Exclude<TradingType, 'sell'>;
 };
-
-const DEFAULT_INSET_BOTTOM = 25;
 
 const contentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
@@ -51,60 +40,30 @@ const contentContainerStyle = prepareNativeStyle<{
 export const keyExtractor = (item: ReceiveAccount) =>
     `${item.account.key}_${item.address?.address ?? 'address_undefined'}`;
 
-export const AccountList = ({
-    symbol,
-    pickerMode,
-    onAddAccountTap,
-    onSetPickerMode,
-    tradingType,
-}: AccountsListProps) => {
+export const AccountList = ({ data, symbol, onAddAccountTap, tradingType }: AccountsListProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { applyStyle } = useNativeStyles();
-    const dispatch = useDispatch();
-    const { bottom: insetsBottom } = useSafeAreaInsets();
-    const selectReceiveAccount =
-        tradingType === 'buy'
-            ? selectBuySelectedReceiveAccount
-            : selectExchangeSelectedReceiveAccount;
-    const selectedReceiveAccount = useSelector(selectReceiveAccount);
+    const { bottom: insetBottom } = useSafeAreaInsets();
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
-
-    const data =
-        useReceiveAccountsListData({
-            symbol,
-            selectedAccount: selectedReceiveAccount?.account,
-            mode: pickerMode,
-        }) ?? [];
+    const selectReceiveAccount = useTradingReceiveAccountSelection(tradingType);
 
     const onItemSelect = (receiveAccount: ReceiveAccount) => {
-        const accountAction =
-            tradingType === 'buy'
-                ? tradingBuyActions.setTradingAccountKey(receiveAccount.account.key)
-                : tradingExchangeActions.setReceiveAccountKey(receiveAccount.account.key);
-        const addressAction =
-            tradingType === 'buy'
-                ? tradingBuyActions.setReceiveAddress(receiveAccount.address?.address)
-                : tradingExchangeActions.setReceiveAddress(receiveAccount.address?.address);
-        dispatch(accountAction);
-        dispatch(addressAction);
-        if (tradingType === 'buy') {
-            dispatch(tradingBuyActions.setReceiveAccountKey(receiveAccount.account.key));
+        if (receiveAccount.account.addresses) {
+            navigation.navigate(RootStackRoutes.TradingReceiveAddress, {
+                accountKey: receiveAccount.account.key,
+                tradingType,
+            });
+
+            return;
         }
-        const hasAddresses = receiveAccount.account.addresses;
-        if (receiveAccount.account && hasAddresses) {
-            onSetPickerMode('address');
-        }
-        if (isFullySelectedReceiveAccount(receiveAccount)) {
-            navigation.popToTop();
-        }
+
+        selectReceiveAccount(receiveAccount);
+        navigation.popToTop();
     };
 
-    const renderItem = (item: ReceiveAccount) =>
-        pickerMode === 'account' ? (
-            <AccountListItem receiveAccount={item} onPress={() => onItemSelect(item)} />
-        ) : (
-            <AccountListAddressItem receiveAccount={item} onPress={() => onItemSelect(item)} />
-        );
+    const renderItem = (item: ReceiveAccount) => (
+        <AccountListItem receiveAccount={item} onPress={() => onItemSelect(item)} />
+    );
 
     const {
         data: internalData,
@@ -116,24 +75,26 @@ export const AccountList = ({
         keyExtractor,
         renderItem,
         noSingletonSectionHeader: true,
-        isLastItemRounded: isDeviceInViewOnlyMode || pickerMode === 'address',
+        isLastItemRounded: true,
     });
 
-    const insetBottom = Math.max(insetsBottom, DEFAULT_INSET_BOTTOM);
-
-    const shouldHaveFooter = !isDeviceInViewOnlyMode && pickerMode === 'account';
+    const shouldHaveFooter = !isDeviceInViewOnlyMode;
 
     const footer = shouldHaveFooter ? (
-        <AccountListFooter hasTextualDivider={itemsCount > 0} onAddAccountTap={onAddAccountTap} />
-    ) : null;
+        <AccountListFooter onAddAccountTap={onAddAccountTap} />
+    ) : undefined;
+
+    if (itemsCount === 0) {
+        return <NoAccountsComponent symbol={symbol} onActivateAccount={onAddAccountTap} />;
+    }
 
     return (
         <FlashList
             contentContainerStyle={applyStyle(contentContainerStyle, {
                 insetBottom,
             })}
-            ListEmptyComponent={<NoAccountsComponent isBottomRounded={isDeviceInViewOnlyMode} />}
             renderItem={internalRenderItem}
+            ItemSeparatorComponent={Divider}
             ListFooterComponent={footer}
             data={internalData}
             keyExtractor={internalKeyExtractor}

@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
@@ -9,7 +10,7 @@ import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { throwError } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type ClaimContextValues, type ClaimFormState } from 'src/types/earn/claimForm';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 
@@ -124,10 +125,18 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransaction(values, composedTx));
+            try {
+                const result = await dispatch(signTransaction(values, composedTx));
 
-            if (result?.success) {
-                clearForm();
+                if (result?.success) {
+                    clearForm();
+                }
+            } catch (error) {
+                // The sign thunk reaches TrezorConnect, whose rejection messages may embed the
+                // composed account payload, and `signTx` is submitted fire-and-forget. Handling the
+                // rejection here keeps it from being reported verbatim by Sentry's global
+                // unhandled-rejection handler. Only the error name, never its message, is safe to log.
+                console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
     }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);

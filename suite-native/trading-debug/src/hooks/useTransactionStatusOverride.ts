@@ -5,11 +5,7 @@ import type { TransactionStatus } from '@suite-common/trading';
 import { useTradingDebugModeFlag } from './useTradingDebugModeFlag';
 
 type TransactionStatusOverrideType =
-    | 'none'
-    | 'isConfirmed'
-    | 'isFailed'
-    | 'isPending'
-    | 'no-override';
+    'none' | 'isConfirmed' | 'isFailed' | 'isPending' | 'no-override';
 
 export type TransactionStatusWithOverride = {
     status: TransactionStatus;

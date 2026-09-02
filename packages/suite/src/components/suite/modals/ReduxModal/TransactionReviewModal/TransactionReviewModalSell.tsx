@@ -1,7 +1,7 @@
+import { useDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';

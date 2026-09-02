@@ -6,6 +6,7 @@ import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks
 import { TrafficLightOffset } from '@suite/macos';
 import { suiteSettingsActions } from '@suite/settings';
 import { selectIsAnyDeviceSelected, selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, ResizableBox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogoIcon } from '@trezor/icons';
@@ -14,7 +15,7 @@ import { zIndices } from '@trezor/theme';
 
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { Navigation } from './Navigation';

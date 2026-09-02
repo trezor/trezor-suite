@@ -1,8 +1,8 @@
 import {
+    type BannerInlineProps,
     Box,
     Button,
     Card,
-    type InlineAlertBoxProps,
     Text,
     resetLetterSpacingOnAndroidStyle,
 } from '@suite-native/atoms';
@@ -48,7 +48,7 @@ export const BluetoothDeviceCard = ({
 
     const isConnecting = variant === 'connect' && device.connectionStatus.type !== 'disconnected';
     const isPairingInProgress = variant === 'connect' && device.connectionStatus.type === 'pairing';
-    const pairingHintInlineAlert: InlineAlertBoxProps = {
+    const pairingHintInlineAlert: BannerInlineProps = {
         title: <Translation id="bluetooth.deviceCard.connect.pairingHint" />,
         intent: 'info',
     };

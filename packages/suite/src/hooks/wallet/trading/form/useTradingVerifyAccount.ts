@@ -4,8 +4,9 @@ import { useForm } from 'react-hook-form';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     getUnusedAddressFromAccount,
     parseCryptoId,
     selectTradingAccountKeyByTradeType,
@@ -13,11 +14,12 @@ import {
     selectTradingBuyReceiveAccountKey,
     selectTradingExchangeAccountKey,
 } from '@suite-common/trading';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import {
     type TradingGetTranslationIdsProps,
@@ -56,7 +58,7 @@ const useTradingVerifyAccount = ({
                 ? selectTradingExchangeAccountKey
                 : selectTradingBuyReceiveAccountKey,
         ) || formAccountKey;
-    const accounts = useSelector(state => state.wallet.accounts);
+    const accounts = useSelector(selectAccounts);
     const isDebug = useSelector(selectIsDebugModeActive);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
@@ -72,7 +74,7 @@ const useTradingVerifyAccount = ({
     const [hasSelectionInitialized, setHasSelectionInitialized] = useState(false);
 
     const networkId = cryptoId && parseCryptoId(cryptoId).networkId;
-    const symbol = cryptoId && cryptoIdToSymbol(cryptoId);
+    const symbol = cryptoId && cryptoIdToNetworkSymbol(cryptoId);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
         network => network.symbol === symbol,
@@ -136,7 +138,6 @@ const useTradingVerifyAccount = ({
                 type: 'add-account',
                 device,
                 symbol,
-                noRedirect: true,
                 isCoinjoinDisabled: true,
                 isBackClickDisabled: true,
             }),

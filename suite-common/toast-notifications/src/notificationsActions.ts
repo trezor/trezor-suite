@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { createActionWithExtraDeps } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
 
 import { selectVisibleNotificationsByType } from './notificationsSelectors';
 import {
@@ -8,6 +8,7 @@ import {
     type NotificationEntry,
     type NotificationEventPayload,
     type NotificationId,
+    type NotificationsRootState,
     type ToastPayload,
 } from './types';
 
@@ -46,16 +47,15 @@ export const addToast = createAction(
     }),
 );
 
-// Adds a Toast if there is not one of same type visible.
-export const addToastOnce = createActionWithExtraDeps(
-    `${ACTION_PREFIX}/addToastOnce`,
-    (payload: ToastPayload, { getState }): NotificationEntry | undefined => {
-        const notifications = selectVisibleNotificationsByType(getState(), payload.type);
-        if (notifications.length > 0) {
-            return;
-        }
+type AddToastOnceThunkState = NotificationsRootState;
 
-        return toastPayloadTransform(payload);
+// Adds a Toast if there is not one of same type visible.
+export const addToastOnceThunk = createThunk<void, ToastPayload, { state: AddToastOnceThunkState }>(
+    `${ACTION_PREFIX}/addToastOnce`,
+    (payload, { getState, dispatch }) => {
+        const notifications = selectVisibleNotificationsByType(getState(), payload.type);
+        if (notifications.length > 0) return;
+        dispatch(addToast(payload));
     },
 );
 
@@ -76,5 +76,4 @@ export const notificationsActions = {
     remove,
     addToast,
     addEvent,
-    addToastOnce,
 };

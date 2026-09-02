@@ -1,5 +1,5 @@
-import { type Locale } from 'date-fns';
 import {
+    type Locale,
     differenceInCalendarMonths,
     differenceInMonths,
     eachDayOfInterval,
@@ -18,18 +18,20 @@ export const formatDurationStrict = (seconds: number, locale?: Locale) =>
     formatDistanceStrict(0, seconds * 1000, { locale });
 
 export const calcTicks = (startDate: Date, endDate: Date) => {
-    let timestamps = [];
-    if (differenceInMonths(endDate, startDate) <= 1) {
-        timestamps = eachDayOfInterval({ start: startDate, end: endDate });
-    } else {
-        timestamps = eachMonthOfInterval({ start: startDate, end: endDate });
-    }
+    const timestamps =
+        differenceInMonths(endDate, startDate) <= 1
+            ? eachDayOfInterval({ start: startDate, end: endDate })
+            : eachMonthOfInterval({ start: startDate, end: endDate });
 
     return timestamps;
 };
 
 export const calcTicksFromData = (data: { time: number }[]) => {
-    if (!data || data.length < 1) return [];
+    // without datapoints there is no interval to derive ticks from
+    // anchor the axis to the current month so that an empty or still-loading account
+    // does not end up with an axis around the unix epoch
+    if (!data || data.length < 1) return [startOfMonth(new Date())];
+
     const firstTime = data[0]?.time ?? 0;
     const startDate = data.reduce(
         (min, current) => (current.time < min ? current.time : min),

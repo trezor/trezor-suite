@@ -1,6 +1,4 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import {
     selectDeviceByStaticSessionId,
     selectDevices,
@@ -15,14 +13,14 @@ import {
     ProviderErrorAction,
     type WalletLabels,
 } from '@suite-common/metadata-types';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { cloneObject, throwError } from '@trezor/utils';
 
-import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
 import * as metadataDataThunks from './metadataDataThunks';
@@ -32,12 +30,18 @@ import {
     type MetadataRootState,
     selectLabelableEntities,
     selectMetadata,
+    selectMetadataEnabled,
+    selectMetadataError,
+    selectMetadataInitiating,
     selectSelectedProviderForLabels,
 } from './metadataReducer';
 import * as metadataUtils from './metadataUtils';
 
+type GetLabelableEntitiesThunkState = MetadataRootState;
+
 const getLabelableEntities =
-    (deviceState: StaticSessionId) => (_dispatch: Dispatch, getState: () => MetadataRootState) =>
+    (deviceState: StaticSessionId) =>
+    (_dispatch: Dispatch, getState: () => GetLabelableEntitiesThunkState) =>
         selectLabelableEntities(getState(), deviceState);
 
 type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntities>>[number];
@@ -104,9 +108,11 @@ const fetchMetadata =
         };
     };
 
+type SetAccountMetadataKeyThunkState = MetadataRootState;
+
 export const setAccountMetadataKey =
     (account: Account, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => SetAccountMetadataKeyThunkState) => {
         const device = selectDeviceByStaticSessionId(getState(), account.deviceState);
         const deviceMetaKey = device?.metadata[encryptionVersion]?.key;
 
@@ -139,16 +145,18 @@ export const setAccountMetadataKey =
         return account;
     };
 
+type SyncMetadataKeysThunkState = MetadataRootState;
+
 /**
  * Fill any record in reducer that may have metadata with metadata keys (not values).
  */
 const syncMetadataKeys =
     (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => SyncMetadataKeysThunkState) => {
         if (!device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) {
             return;
         }
-        const targetAccounts = getState().wallet.accounts.filter(
+        const targetAccounts = selectAccounts(getState()).filter(
             acc =>
                 !acc.metadata[encryptionVersion]?.fileName &&
                 acc.deviceState === device.state?.staticSessionId,
@@ -162,9 +170,11 @@ const syncMetadataKeys =
         // keys sooner when enabling labeling on device;
     };
 
+type FetchAndSaveMetadataThunkState = MetadataRootState;
+
 export const fetchAndSaveMetadata =
     (deviceStateArg?: StaticSessionId) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    async (dispatch: Dispatch, getState: () => FetchAndSaveMetadataThunkState) => {
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
 
@@ -268,8 +278,10 @@ export const fetchAndSaveMetadata =
         }
     };
 
+type FetchAndSaveMetadataForAllDevicesThunkState = MetadataRootState;
+
 export const fetchAndSaveMetadataForAllDevices =
-    () => (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    () => (dispatch: Dispatch, getState: () => FetchAndSaveMetadataForAllDevicesThunkState) => {
         const metadata = selectMetadata(getState());
         if (!metadata.enabled) {
             return;
@@ -285,9 +297,11 @@ export const fetchAndSaveMetadataForAllDevices =
         });
     };
 
+type AddDeviceMetadataThunkState = MetadataRootState;
+
 export const addDeviceMetadata =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => AddDeviceMetadataThunkState) => {
         const devices = selectDevices(getState());
         const device = devices.find(d => d.state?.staticSessionId === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
@@ -347,6 +361,8 @@ export const addDeviceMetadata =
         });
     };
 
+type AddAccountMetadataThunkState = MetadataRootState;
+
 /**
  * @param payload - metadata payload
  * @param save - should metadata be saved into persistent storage? this is useful when you are updating multiple records
@@ -354,8 +370,8 @@ export const addDeviceMetadata =
  */
 export const addAccountMetadata =
     (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
-        const account = getState().wallet.accounts.find(a => a.key === payload.entityKey);
+    (dispatch: Dispatch, getState: () => AddAccountMetadataThunkState) => {
+        const account = selectAccounts(getState()).find(({ key }) => key === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
 
         if (!account || !provider) {
@@ -464,12 +480,14 @@ export const addAccountMetadata =
         });
     };
 
+type SetDeviceMetadataKeyThunkState = MetadataRootState;
+
 /**
  * Generate device master-key
  * */
 export const setDeviceMetadataKey =
     (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    async (dispatch: Dispatch, getState: () => SetDeviceMetadataKeyThunkState) => {
         if (!device.state?.staticSessionId || !device.connected) return;
 
         const result = await TrezorConnect.cipherKeyValue({
@@ -483,10 +501,8 @@ export const setDeviceMetadataKey =
         });
 
         if (result.success) {
-            if (!getState().metadata.enabled) {
-                dispatch({
-                    type: METADATA.ENABLE,
-                });
+            if (!selectMetadataEnabled(getState())) {
+                dispatch(metadataActions.enableMetadata());
             }
 
             const { walletDescriptor } = parseStaticSessionId(device.state.staticSessionId);
@@ -494,9 +510,8 @@ export const setDeviceMetadataKey =
             const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
             const aesKey = metadataUtils.deriveAesKey(metaKey);
 
-            dispatch({
-                type: METADATA.SET_DEVICE_METADATA,
-                payload: {
+            dispatch(
+                metadataActions.setDeviceMetadata({
                     deviceState: device.state?.staticSessionId,
                     metadata: {
                         ...device.metadata,
@@ -506,8 +521,8 @@ export const setDeviceMetadataKey =
                             key: result.payload.value,
                         },
                     },
-                },
-            });
+                }),
+            );
 
             return { success: true };
         }
@@ -515,9 +530,11 @@ export const setDeviceMetadataKey =
         return { success: false };
     };
 
+type AddMetadataThunkState = MetadataRootState;
+
 export const addMetadata =
     (payload: MetadataAddPayload) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState): Promise<boolean> => {
+    async (dispatch: Dispatch, getState: () => AddMetadataThunkState): Promise<boolean> => {
         const result = await dispatch(
             payload.type === 'walletLabel'
                 ? addDeviceMetadata(payload)
@@ -562,6 +579,10 @@ export const addMetadata =
         return result.success;
     };
 
+export type InitMetadataDeps = WithServices<DesktopAnalyticsDep>;
+
+const selectIsSuiteOnline = (state: MetadataRootState) => state.suite.online;
+
 /**
  * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
  * consists of number of steps of which not all have to necessarily happen. For example
@@ -571,9 +592,13 @@ export const addMetadata =
  * are skipped and user will be asked again either after authorization process or when user
  * tries to add new label.
  */
+type InitThunkState = MetadataRootState;
+
+type InitThunkDeps = InitMetadataDeps;
+
 export const init =
     (force: boolean, deviceStateArg?: StaticSessionId) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState, extra: ExtraDependencies) => {
+    async (dispatch: Dispatch, getState: () => InitThunkState, extra: InitThunkDeps) => {
         let device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
             : selectSelectedDevice(getState());
@@ -582,24 +607,23 @@ export const init =
             return false;
         }
 
-        if (!force && getState().metadata.error?.[device.state.staticSessionId]) {
+        if (!force && selectMetadataError(getState())?.[device.state.staticSessionId]) {
             return false;
         }
 
         dispatch({ type: METADATA.SET_INITIATING, payload: true });
-        if (getState().metadata.error?.[device.state.staticSessionId]) {
+        if (selectMetadataError(getState())?.[device.state.staticSessionId]) {
             // remove error note about failed migration potentially set in a previous run
-            dispatch({
-                type: METADATA.SET_ERROR_FOR_DEVICE,
-                payload: {
+            dispatch(
+                metadataActions.setErrorForDevice({
                     deviceState: device.state.staticSessionId,
                     failed: false,
-                },
-            });
+                }),
+            );
         }
 
         // 1. set metadata enabled globally
-        const globalLabelingEnabledBeforeToggle = getState().metadata.enabled;
+        const globalLabelingEnabledBeforeToggle = selectMetadataEnabled(getState());
         if (!globalLabelingEnabledBeforeToggle) {
             dispatch(metadataActions.enableMetadata());
         }
@@ -611,13 +635,12 @@ export const init =
             if (!result?.success) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
                 dispatch({ type: METADATA.SET_EDITING, payload: undefined });
-                dispatch({
-                    type: METADATA.SET_ERROR_FOR_DEVICE,
-                    payload: {
+                dispatch(
+                    metadataActions.setErrorForDevice({
                         deviceState: device.state.staticSessionId,
                         failed: true,
-                    },
-                });
+                    }),
+                );
 
                 // NOTE: when the request for the device fails / is cancelled on the device
                 // disable metadata labeling for all but only when it was off before this invocation
@@ -642,7 +665,7 @@ export const init =
         if (!selectSelectedProviderForLabels(getState())) {
             const providerResult = await dispatch(metadataProviderActions.initProvider());
             if (!providerResult) {
-                asTypedDesktopAnalytics(extra.services.analytics).report({
+                extra.services.analytics.report({
                     type: events.settingsGeneralLabelingProviderEvent.name,
                     payload: {
                         provider: 'missing-provider',
@@ -667,7 +690,7 @@ export const init =
         await dispatch(fetchAndSaveMetadata(device.state?.staticSessionId));
 
         // now we may allow user to edit labels. everything is ready, local data is synced with provider
-        if (getState().metadata.initiating) {
+        if (selectMetadataInitiating(getState())) {
             dispatch({ type: METADATA.SET_INITIATING, payload: false });
         }
 
@@ -692,7 +715,7 @@ export const init =
             // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
             metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
                 const device = selectSelectedDevice(getState());
-                if (!getState().suite.online || !device?.state?.staticSessionId) {
+                if (!selectIsSuiteOnline(getState()) || !device?.state?.staticSessionId) {
                     return;
                 }
                 dispatch(fetchAndSaveMetadata(device.state.staticSessionId));
@@ -701,8 +724,3 @@ export const init =
 
         return true;
     };
-
-export const setEditing = (payload: string | undefined): MetadataAction => ({
-    type: METADATA.SET_EDITING,
-    payload,
-});

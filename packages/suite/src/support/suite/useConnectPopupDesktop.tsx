@@ -15,16 +15,20 @@ import {
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import TrezorConnect, {
     type CallMethodKeys,
     type CallMethodPayload,
-    UI_REQUEST,
+    type PermissionRequest,
+    UI_EVENTS,
+    UI_REQUESTS,
 } from '@trezor/connect';
 import { isMacOs } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 
 export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
@@ -33,7 +37,7 @@ export const useConnectPopupDesktop = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const selectedDeviceRef = useRef(selectedDevice);
     selectedDeviceRef.current = selectedDevice;
-    const lifecycle = useSelector(state => state.suite.lifecycle);
+    const lifecycle = useSelector(selectSuiteLifecycle);
     const initialized = useRef(false);
 
     useEffect(() => {
@@ -116,6 +120,9 @@ export const useConnectPopupDesktop = () => {
                                   },
                                   origin: params.origin,
                                   manifest: params.manifest,
+                                  // Cast across the IPC boundary, same as `params.method` above.
+                                  requestedPermissions: params.requestedPermissions as
+                                      PermissionRequest[] | undefined,
                               },
                     }),
                 );
@@ -175,11 +182,11 @@ export const useConnectPopupDesktop = () => {
 
         return (
             [
-                UI_REQUEST.REQUEST_PIN,
-                UI_REQUEST.INVALID_PIN,
-                UI_REQUEST.REQUEST_PASSPHRASE,
-                UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE,
-                UI_REQUEST.REQUEST_WORD,
+                UI_REQUESTS.REQUEST_PIN,
+                UI_EVENTS.PIN_INVALID,
+                UI_REQUESTS.REQUEST_PASSPHRASE,
+                UI_EVENTS.PASSPHRASE_ON_DEVICE,
+                UI_REQUESTS.REQUEST_WORD,
             ] as string[]
         ).includes(modal.windowType);
     });

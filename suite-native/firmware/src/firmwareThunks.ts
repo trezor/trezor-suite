@@ -1,14 +1,19 @@
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 
 const NATIVE_FIRMWARE_MODULE_PREFIX = 'nativeFirmware';
 
-export const setTemporaryRememberedDeviceThunk = createThunk(
+type SetTemporaryRememberedDeviceThunkPayload = { temporaryRemember: boolean };
+
+type SetTemporaryRememberedDeviceThunkState = DeviceRootState;
+
+export const setTemporaryRememberedDeviceThunk = createThunk<
+    void,
+    SetTemporaryRememberedDeviceThunkPayload,
+    { rejectValue: string; state: SetTemporaryRememberedDeviceThunkState }
+>(
     `${NATIVE_FIRMWARE_MODULE_PREFIX}/setTemporaryRememberedDevice`,
-    (
-        { temporaryRemember }: { temporaryRemember: boolean },
-        { getState, rejectWithValue, dispatch },
-    ) => {
+    ({ temporaryRemember }, { getState, rejectWithValue, dispatch }) => {
         const device = selectSelectedDevice(getState());
         if (!device) {
             return rejectWithValue('Device not found');

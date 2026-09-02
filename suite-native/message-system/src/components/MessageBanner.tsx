@@ -1,7 +1,7 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
 
 import { messageSystemActions } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Message, type Variant } from '@suite-common/suite-types';
 import {
     Box,
@@ -33,19 +33,19 @@ type MessageBannerStyle = {
 
 const MessageBannerVariantToStyleMap = {
     info: {
-        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation0',
+        backgroundColor: 'elementFillInfoSoft',
         icon: 'info',
         iconColor: 'contentInfo',
         iconIntent: 'info',
     },
     warning: {
-        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        backgroundColor: 'elementFillWarningSoft',
         icon: 'warning',
         iconColor: 'contentWarning',
         iconIntent: 'warning',
     },
     critical: {
-        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        backgroundColor: 'elementFillCriticalSoft',
         icon: 'warning',
         iconColor: 'contentCritical',
         iconIntent: 'critical',

@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { IconCircle, Link } from '@trezor/components';
 import { ShuffleIcon } from '@trezor/icons';
@@ -7,7 +8,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
-import { useDispatch } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet/index';
 
 import { TransactionLayout } from './TransactionLayout';

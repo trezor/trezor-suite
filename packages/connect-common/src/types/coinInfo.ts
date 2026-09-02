@@ -127,13 +127,6 @@ export const coinSymbols = [
     'test',
     'bch',
     'tbch',
-    'btg',
-    'tbtg',
-    'dash',
-    'tdash',
-    'dcr',
-    'tdcr',
-    'dgb',
     'doge',
     'elements',
     'ftc',
@@ -146,14 +139,12 @@ export const coinSymbols = [
     'ltc',
     'tltc',
     'mona',
-    'nmc',
     'qtum',
     'tqtum',
     'rvn',
     'trvn',
     'sys',
     'xvg',
-    'vtc',
     'zec',
     'taz',
     // EVM coins
@@ -164,21 +155,18 @@ export const coinSymbols = [
     'etc',
     'pol',
     'rhc',
+    'hype',
     'base',
     'thod',
     'arb',
     'tsep',
     // misc coins (cardano, solana, ripple, stellar, tron, monero, tezos, ...)
     'ada',
-    'bnb',
     'dsol',
-    'maid',
     'nostr',
-    'omni',
     'sol',
     'tada',
     'txrp',
-    'usdt',
     'xlm',
     'trx',
     'ttrx',
@@ -190,6 +178,8 @@ export const coinSymbols = [
 
 // A supported coin symbol, e.g. `'btc'` / `'ada'`. See `coinSymbols`.
 export type CoinSymbol = (typeof coinSymbols)[number];
+
+export const asCoinSymbol = (value: string): CoinSymbol => value as CoinSymbol;
 
 const coinSymbolSet: ReadonlySet<string> = new Set(coinSymbols);
 

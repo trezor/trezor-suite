@@ -6,11 +6,12 @@ import {
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const FirmwareAuthenticityChecks = () => {
     const dispatch = useDispatch();
@@ -23,12 +24,13 @@ export const FirmwareAuthenticityChecks = () => {
     const areAllFirmwareChecksEnabled =
         isFirmwareHashCheckEnabled && isFirmwareRevisionCheckEnabled && areDeviceMetaChecksEnabled;
 
-    const handleClick = () =>
-        dispatch(
-            areAllFirmwareChecksEnabled
-                ? openModal({ type: 'firmware-authenticity-checks-opt-out' })
-                : toggleFirmwareAuthenticityChecks(true),
-        );
+    const handleClick = () => {
+        if (areAllFirmwareChecksEnabled) {
+            dispatch(openModal({ type: 'firmware-authenticity-checks-opt-out' }));
+        } else {
+            dispatch(toggleFirmwareAuthenticityChecks(true));
+        }
+    };
 
     return (
         <SectionItem>

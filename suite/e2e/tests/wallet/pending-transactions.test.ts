@@ -80,6 +80,13 @@ test.describe(
                     await device.pressYes(); // Summary
                     await devicePrompt.sendButton.click();
 
+                    const broadcastToast = page.locator(
+                        '[data-testid="@toast/tx-sent"][data-toast-intent="warning"]',
+                    );
+                    await expect(broadcastToast).toBeVisible();
+                    await expect(broadcastToast).toContainTranslation('TOAST_TX_SENT', {
+                        values: { account: 'Bitcoin Regtest #1' },
+                    });
                     const pendingTransactionsList = page.getByTestId(
                         '@wallet/accounts/transaction-list/pending/group/0',
                     );
@@ -96,11 +103,9 @@ test.describe(
                         .getByTestId('@transaction-item/0/heading')
                         .click();
 
-                    const txid = await page.getByTestId('@tx-detail/txid-value').textContent();
-                    if (!txid) {
-                        throw new Error('Transaction ID not found');
-                    }
-                    transaction.txid = txid;
+                    const txidValue = page.getByTestId('@tx-detail/txid-value');
+                    await expect(txidValue).not.toBeEmpty();
+                    transaction.txid = await txidValue.innerText();
 
                     await devicePrompt.closeModal();
                 }

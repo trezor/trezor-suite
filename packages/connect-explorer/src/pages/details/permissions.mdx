@@ -1,0 +1,96 @@
+import ZoomableIllustration from '../../components/ZoomableIllustration';
+
+# Permissions
+
+When a third-party application calls Trezor Connect through Trezor Suite, Suite asks the user to
+authorize the application before the call reaches the device. Each method declares the permissions
+it needs, and Suite shows the user a prompt listing them, grouped by coin.
+
+Permissions are **host-side authorization** — they are enforced by Trezor Suite, per application
+origin. They are independent of what the device itself does with a request.
+
+## Permission types
+
+| Permission          | Grants the app the ability to…                       |
+| ------------------- | ---------------------------------------------------- |
+| `read_address`      | derive and read a receiving address for a coin       |
+| `read_xpub`         | export an account's extended public key (xpub)       |
+| `read_account_info` | read an account's balance, history and addresses     |
+| `read_features`     | read device features (model, firmware, capabilities) |
+| `sign`              | sign a transaction                                   |
+| `sign_message`      | sign a message                                       |
+| `verify_message`    | verify a message signature                           |
+| `push_tx`           | broadcast a signed transaction to the network        |
+
+Read scopes are intentionally narrow: granting `read_address` does **not** grant `read_xpub`. An
+xpub exposes every address and the full history of an account, so it is a separate, more sensitive
+permission than reading a single receiving address.
+
+The `management` and `internal` permissions used by device-management methods can never be granted
+to a third-party application. `push_tx` is additionally unavailable to deeplink integrations.
+
+## Coin scoping
+
+Coin-specific permissions carry a `coin` field, which is the coin's symbol — the lowercase coin
+shortcut (for example `btc`, `eth`, `ada`). Coin-less permissions such as `read_features` omit it.
+Casing is not significant: a declared coin is normalized to lowercase, so `BTC` and `btc` refer to
+the same coin.
+
+```javascript
+{ permission: 'read_address', coin: 'btc' } // a specific coin
+{ permission: 'read_features' }             // device-level, no coin
+```
+
+## Declaring permissions up front
+
+By default the user is prompted the first time your application needs a permission it has not yet
+been granted — so an app that touches several coins or scopes can trigger several prompts over its
+lifetime.
+
+To avoid this, declare everything your application needs up front via `requestedPermissions` in
+[`TrezorConnect.init`](/methods/other/init). Suite then presents the whole set in a **single**
+consent prompt, and — if the user chooses to remember the application — every later in-scope call
+proceeds without another prompt.
+
+```javascript
+TrezorConnect.init({
+    manifest: {
+        appUrl: 'https://your.application.com',
+        appName: 'Your App',
+        email: 'your@email.com',
+    },
+    requestedPermissions: [
+        { permission: 'read_account_info', coin: 'btc' },
+        { permission: 'read_address', coin: 'btc' },
+        { permission: 'sign', coin: 'eth' },
+        { permission: 'read_features' },
+    ],
+});
+```
+
+Suite presents the declared set as one prompt, grouped by coin. The example above produces the
+following consent:
+
+<ZoomableIllustration
+    src="/images/connect-permissions-consent.webp"
+    alt="Trezor Suite consent prompt listing the requested permissions grouped by Bitcoin, Ethereum and device"
+/>
+
+Declaring permissions is optional and never grants anything on its own — the user still approves (or
+rejects) them. Anything that cannot be granted to a third party (`management`, `internal`, and
+`push_tx` on deeplinks) is ignored if declared, as are entries for unknown coins.
+
+If your application calls a method whose permissions were not declared up front, Suite falls back to
+prompting for those the first time they are needed.
+
+## Managing granted permissions
+
+When the user approves a prompt they may choose to **remember** the application. Remembered
+applications and their granted permissions are listed in Trezor Suite under
+_Settings → Connected apps_, where the user can revoke individual permissions or forget the
+application entirely.
+
+<ZoomableIllustration
+    src="/images/connect-permissions-connected-apps.webp"
+    alt="Settings → Connected apps in Trezor Suite showing a remembered app and its granted permissions grouped by coin"
+/>

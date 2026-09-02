@@ -1,7 +1,8 @@
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
 import ETH_STAKE_CONFIRMED_TX from '../../fixtures/staking/eth-stake-confirmed-tx.json';
 import { expect, test } from '../../support/fixtures';
-import { YIELD_VAULTS } from '../../support/mocks/yieldMock';
+import { ETH_MOCKED_ACCOUNT } from '../../support/mocks/eth-endpoints';
+import { YIELD_USDC_VAULT_SHARE_TOKEN, YIELD_VAULTS } from '../../support/mocks/yieldMock';
 
 const { usdcPrime, usdtPrime } = YIELD_VAULTS;
 const YIELD_USDC_VAULT_DISPLAY_NAME = ['Trezor Steakhouse', '\n', 'USDC Prime Vault'];
@@ -39,18 +40,19 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
         device,
         blockbookMock,
         yieldMock,
+        toastSection,
     }) => {
         await test.step('Check yield dashboard', async () => {
             await yieldSection.earnMenuButton.click();
 
             const ethAccountName = await walletPage
                 .accountLabel({ symbol: 'eth', type: 'normal', atIndex: 0 })
-                .textContent();
+                .innerText();
 
             await expect(yieldSection.yieldTitle).toHaveTranslation('TR_EARN_DEFI_YIELD_TITLE');
 
             for (const expectedRow of EXPECT_YIELD_DASHBOARD_ROWS) {
-                await expect(yieldSection.accountLabel(expectedRow.id)).toHaveText(ethAccountName!);
+                await expect(yieldSection.accountLabel(expectedRow.id)).toHaveText(ethAccountName);
                 await expect(yieldSection.vaultSubtitle(expectedRow.id)).toHaveText(
                     expectedRow.name,
                 );
@@ -155,17 +157,17 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 },
             });
             await devicePrompt.waitForFinalPromptAndConfirm();
+            await devicePrompt.sendButton.click();
+            await expect(toastSection.approved).toBeVisible();
+            await expect(toastSection.approvedAmount).toHaveText('10USDC');
+            await expect(yieldFlowSection.pendingTransactionLabel).toHaveTranslation(
+                'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
+            );
             blockbookMock.updateAccountState({
                 txs: 2,
                 transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
             });
             blockbookMock.updateAllowance('10000000'); // 10 USDC
-            await devicePrompt.sendButton.click();
-            await expect(yieldFlowSection.approvedToast).toBeVisible();
-            await expect(yieldFlowSection.approvedToastAmount).toHaveText('10USDC');
-            await expect(yieldFlowSection.pendingTransactionLabel).toHaveTranslation(
-                'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
-            );
             await page.clock.fastForward('01:00');
         });
 
@@ -218,8 +220,20 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 },
             });
             await devicePrompt.waitForFinalPromptAndConfirm();
+
+            blockbookMock.updateAllowance('0');
+            blockbookMock.updateAccountState({
+                txs: 3,
+                nonce: '2',
+                tokens: [
+                    ...ETH_MOCKED_ACCOUNT.tokens.map(token =>
+                        token.symbol === 'USDC' ? { ...token, balance: '990000000' } : token,
+                    ),
+                    YIELD_USDC_VAULT_SHARE_TOKEN,
+                ],
+            });
             await devicePrompt.sendButton.click();
-            await expect(yieldFlowSection.depositedToast).toBeVisible();
+            await expect(toastSection.yieldDeposit).toBeVisible();
             await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
                 'TR_EARN_YIELD_DEPOSIT_COMPLETE',
             );
@@ -228,9 +242,26 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             );
             await expect(yieldFlowSection.flowCompleteApy).toHaveText(usdcPrime.apy);
             await expect(yieldFlowSection.flowCompleteTransferInputAmount).toHaveText('10 USDC');
+            // Output shares render at full token precision via formatCoinBalance (8 fractional
+            // digits + ellipsis), not the rounded simulation preview shown earlier in the flow.
             await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
-                '9.94 trSHUSDCp',
+                '9.94423845… trSHUSDCp',
             );
+
+            await blockbookMock.sendNewBlockNotification({
+                // One block above bestHeight of the getInfo fixture in eth-endpoints.
+                height: 22881954,
+                hash: '0xa07d0d92b6bb9a5f388d47a10b824b4b09e0b3aeb08d0f61c0e30a25f6c8455f',
+            });
+        });
+
+        await test.step('Returning to the dashboard shows the deposited position', async () => {
+            await yieldFlowSection.backToOverviewButton.click();
+
+            // The vault row now offers deposit-more + withdraw actions instead of "Deposit now".
+            await expect(yieldSection.withdrawButton(usdcPrime.id)).toBeVisible();
+            await expect(yieldSection.depositMoreButton(usdcPrime.id)).toBeVisible();
+            await expect(yieldSection.depositNowButton(usdcPrime.id)).toBeHidden();
         });
     });
 });

@@ -14,8 +14,8 @@
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/flags": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/trading": "workspace:*",
@@ -25,14 +25,15 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.85.3",
-        "react-native-gesture-handler": "2.31.1",
-        "react-native-reanimated": "4.3.1",
+        "react-native": "0.86.0",
+        "react-native-gesture-handler": "~2.32.0",
+        "react-native-reanimated": "4.5.0",
         "type-fest": "5.5.0"
     },
     "devDependencies": {

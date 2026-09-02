@@ -1,6 +1,4 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { selectOAuthServerEnvironment } from '@suite/settings';
 import {
     type DataType,
@@ -11,16 +9,21 @@ import {
     ProviderErrorAction,
     type Tokens,
 } from '@suite-common/metadata-types';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
+import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
 import { disposeMetadata } from './metadataDataThunks';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
-import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
+import {
+    type MetadataRootState,
+    selectMetadata,
+    selectSelectedProviderForLabels,
+} from './metadataReducer';
 import { type FetchIntervalTrackingId } from './metadataUtils';
 import { DropboxProvider } from './providers/DropboxProvider';
 import { FileSystemProvider } from './providers/FileSystemProvider';
@@ -28,10 +31,7 @@ import { GoogleProvider } from './providers/GoogleProvider';
 import { InMemoryTestProvider } from './providers/InMemoryTestProvider';
 
 type ProviderInstance =
-    | DropboxProvider
-    | GoogleProvider
-    | FileSystemProvider
-    | InMemoryTestProvider;
+    DropboxProvider | GoogleProvider | FileSystemProvider | InMemoryTestProvider;
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 export const providerInstance: Record<DataType, ProviderInstance | undefined> = {
@@ -67,14 +67,15 @@ const createProviderInstance = (
 
 type GetProviderInstanceParams = { clientId: string; dataType: DataType };
 
+type GetProviderInstanceThunkState = MetadataRootState;
+
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
 export const getProviderInstance =
     ({ clientId, dataType = 'labels' }: GetProviderInstanceParams) =>
-    (_dispatch: Dispatch, getState: () => MetadataRootState) => {
-        const state = getState();
-        const { providers } = state.metadata;
+    (_dispatch: Dispatch, getState: () => GetProviderInstanceThunkState) => {
+        const { providers } = selectMetadata(getState());
 
         const provider = providers.find(p => p.clientId === clientId);
 
@@ -90,7 +91,7 @@ export const getProviderInstance =
         providerInstance[dataType] = createProviderInstance(
             provider.type,
             provider.tokens,
-            selectOAuthServerEnvironment(state),
+            selectOAuthServerEnvironment(getState()),
             clientId,
         );
 
@@ -103,9 +104,19 @@ type DisconnectProviderParams = {
     removeMetadata?: boolean;
 };
 
+type DisconnectProviderDeps = WithServices<DesktopAnalyticsDep>;
+
+type DisconnectProviderThunkState = MetadataRootState;
+
+type DisconnectProviderThunkDeps = DisconnectProviderDeps;
+
 export const disconnectProvider =
     ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
-    async (dispatch: Dispatch, _getState: () => MetadataRootState, extra: ExtraDependencies) => {
+    async (
+        dispatch: Dispatch,
+        _getState: () => DisconnectProviderThunkState,
+        extra: DisconnectProviderThunkDeps,
+    ) => {
         typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
             const [trackedDataType, trackedClientId] = id.split('-');
             if (trackedDataType === dataType && trackedClientId === clientId) {
@@ -126,16 +137,13 @@ export const disconnectProvider =
             providerInstance[dataType] = undefined;
 
             // flush reducer
-            dispatch({
-                type: METADATA.REMOVE_PROVIDER,
-                payload: { clientId },
-            });
+            dispatch(metadataActions.removeMetadataProvider({ clientId }));
             dispatch({
                 type: METADATA.SET_SELECTED_PROVIDER,
                 payload: { dataType, clientId: undefined },
             });
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.settingsGeneralLabelingProviderEvent.name,
                 payload: {
                     provider: '',
@@ -240,9 +248,19 @@ type ConnectProviderParams = {
     clientId?: string;
 };
 
+export type ConnectProviderDeps = WithServices<DesktopAnalyticsDep>;
+
+type ConnectProviderThunkState = MetadataRootState;
+
+type ConnectProviderThunkDeps = ConnectProviderDeps;
+
 export const connectProvider =
     ({ type, dataType = 'labels', clientId }: ConnectProviderParams) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState, extra: ExtraDependencies) => {
+    async (
+        dispatch: Dispatch,
+        getState: () => ConnectProviderThunkState,
+        extra: ConnectProviderThunkDeps,
+    ) => {
         const providerInstance = createProviderInstance(
             type,
             {},
@@ -271,15 +289,14 @@ export const connectProvider =
             return;
         }
 
-        dispatch({
-            type: METADATA.ADD_PROVIDER,
-            payload: {
+        dispatch(
+            metadataActions.addMetadataProvider({
                 ...providerDetails.payload,
                 data: {},
-            },
-        });
+            }),
+        );
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.settingsGeneralLabelingProviderEvent.name,
             payload: {
                 provider: providerDetails.payload.type,
@@ -291,8 +308,10 @@ export const connectProvider =
         return true;
     };
 
+type ExportMetadataToLocalFileThunkState = MetadataRootState;
+
 export const exportMetadataToLocalFile =
-    () => async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    () => async (dispatch: Dispatch, getState: () => ExportMetadataToLocalFileThunkState) => {
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
         const providerInstance = dispatch(

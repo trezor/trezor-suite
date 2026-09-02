@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-07-22T00:00:00+00:00",
-    "sequence": 150,
+    "timestamp": "2026-08-18T12:00:00+00:00",
+    "sequence": 155,
     "actions": [
         {
             "conditions": [
@@ -1547,15 +1547,15 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=26.5.1",
+                        "desktop": ">=26.8.1",
                         "mobile": "!",
                         "web": "*"
                     }
                 }
             ],
             "message": {
-                "id": "ab805171-6266-4618-be4f-a7c25d4c19ce",
-                "priority": 3,
+                "id": "27084e46-34ca-43db-8ce7-897b08a33fcf",
+                "priority": 5,
                 "dismissible": true,
                 "variant": "info",
                 "category": "feature",
@@ -1577,7 +1577,47 @@
                 "feature": [
                     {
                         "domain": "dashboard.promoBanner",
-                        "visibleBanner": "stablecoin-yield",
+                        "visibleBanner": "defi-yield",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=26.8.1",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "aa95f6d2-647d-42c6-a250-6900f2a957d0",
+                "priority": 4,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "eth-vault",
                         "flag": true
                     }
                 ]

@@ -1,2 +1,2 @@
-export const INVITY_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
-export const INVITY_API_RELOAD_QUOTES_AFTER_SECONDS = 30;
+export const TRADE_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
+export const TRADE_API_RELOAD_QUOTES_AFTER_SECONDS = 30;

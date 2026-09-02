@@ -1,0 +1,40 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/connect-popup"
+        },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        { "path": "../../suite-common/thp" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../authenticity-checks" },
+        { "path": "../locks" },
+        { "path": "../router" },
+        { "path": "../router-config" },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../settings" },
+        {
+            "path": "../../packages/connect-common"
+        }
+    ]
+}

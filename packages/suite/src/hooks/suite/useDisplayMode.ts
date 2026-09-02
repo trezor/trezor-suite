@@ -7,9 +7,8 @@ import {
     type StakeType,
 } from '@suite-common/wallet-types';
 
+import { useSelector } from 'src/hooks/suite';
 import { DisplayMode } from 'src/types/suite';
-
-import { useSelector } from './useSelector';
 
 type UseDisplayModeProps = {
     type: ReviewOutput['type'];

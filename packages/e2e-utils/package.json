@@ -20,14 +20,18 @@
         "fix-bot:publish": "tsx src/fixBot/publish.ts",
         "fix-bot:notify": "tsx src/fixBot/notify.ts",
         "fix-bot:update-ledger": "tsx src/fixBot/ledger.ts",
+        "llm-exploratory-tester:context": "tsx src/llmExploratoryTester/context.ts",
+        "llm-exploratory-tester:setup": "tsx src/llmExploratoryTester/setup.ts",
+        "llm-exploratory-tester:run": "tsx src/llmExploratoryTester/run.ts",
+        "llm-exploratory-tester": "yarn llm-exploratory-tester:context && yarn llm-exploratory-tester:setup && yarn llm-exploratory-tester:run",
         "gh-pr-stats": "tsx ./src/ghPrStats/index.ts",
         "github:create:project": "tsx src/githubReporter/scriptCreateProject.ts",
         "reporter-watchdog:wipe": "tsx src/githubReporter/watchdog/wipe.ts",
         "reporter-watchdog:verify": "tsx src/githubReporter/watchdog/verify.ts"
     },
     "dependencies": {
-        "@anthropic-ai/sdk": "0.100.0",
         "@octokit/rest": "^21.1.1",
+        "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",
         "dotenv": "17.2.3",
@@ -36,11 +40,14 @@
         "zod": "4.3.6"
     },
     "devDependencies": {
-        "@anthropic-ai/claude-code": "^2.1.179",
-        "@currents/mcp": "^2.3.2",
-        "@currents/playwright": "^2.1.4",
-        "@playwright/test": "1.60.0",
-        "@trezor/node-utils": "workspace:*",
+        "@anthropic-ai/claude-agent-sdk": "0.3.218",
+        "@anthropic-ai/claude-code": "2.1.218",
+        "@anthropic-ai/sdk": "0.100.0",
+        "@currents/mcp": "^2.3.3",
+        "@currents/playwright": "^2.5.0",
+        "@playwright/test": "1.62.1",
+        "@trezor/eslint": "workspace:*",
+        "claude-pretty-printer": "1.5.0",
         "tsx": "^4.21.0"
     }
 }

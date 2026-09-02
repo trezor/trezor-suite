@@ -29,11 +29,11 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.85.3",
+        "react-native": "0.86.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",

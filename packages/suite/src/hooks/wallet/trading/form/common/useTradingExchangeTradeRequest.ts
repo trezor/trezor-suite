@@ -3,6 +3,7 @@ import type { ExchangeTrade } from 'invity-api';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingExchangeQuotesRequest,
@@ -11,7 +12,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
 export const useTradingExchangeTradeRequest = (account: Account | undefined) => {

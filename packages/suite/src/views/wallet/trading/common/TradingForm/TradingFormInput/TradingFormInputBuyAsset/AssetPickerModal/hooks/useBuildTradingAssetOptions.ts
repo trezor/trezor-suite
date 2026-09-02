@@ -1,143 +1,36 @@
 import { useMemo } from 'react';
 
-import { type CryptoId } from 'invity-api';
-
-import { type TranslationKey } from '@suite/intl';
 import {
+    type TradeableAssetBalance,
+    type TradeableAssetSearchFields,
     type TradingAssetOption,
-    createAssetNativeTokenOption,
-    createAssetTokenOption,
-    getCryptoId,
+    buildTradeableAssetSearchIndex,
+    filterTradeableAssetsBySearch,
+    orderTradeableAssetsByOwnership,
+    usePreferredCurrencyUsdThreshold,
+    useTradingAssets,
 } from '@suite-common/trading';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
-import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
-import {
-    ASSET_ROW_GROUP_LABEL_HEIGHT,
-    ASSET_ROW_HEIGHT,
-    ASSET_ROW_HEIGHTS_BY_SIZE,
-} from 'src/components/suite/asset-picker/constants';
-import { useTokenDisplaySymbolNames } from 'src/components/suite/asset-picker/hooks';
-import { getTokenDisplaySymbolName } from 'src/components/suite/asset-picker/utils/tokenDisplayNames';
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { useSelector } from 'src/hooks/suite';
+import { selectTradeableAssetBalances } from 'src/selectors/wallet/tradeableAssetBalancesSelectors';
 
-import { useAssetsContext } from '../../AssetOptionsContext';
-import {
-    type AggregatedAccountWithTokens,
-    useAgregatedAccountsWithTokens,
-} from '../../hooks/useAgregatedAccountsWithTokens';
+import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
 
-function createSearchFilter(search: string) {
-    return function searchFor(property?: string | null) {
-        return Boolean(property?.toLocaleLowerCase().includes(search));
-    };
-}
-
-function assetSearchFilter(asset: TradingAssetOption, search: string) {
-    const searchFor = createSearchFilter(
-        search.replaceAll('(', '').replaceAll(')', '').toLocaleLowerCase(),
-    );
-
-    return (
-        searchFor(asset.name) ||
-        searchFor(asset.networkName) ||
-        searchFor(asset.displaySymbol) ||
-        searchFor(asset.contractAddress) ||
-        searchFor(asset.symbol) ||
-        searchFor(asset.displaySymbolName)
-    );
-}
-
-function excludeCryptoIds(excludedCryptoIds: Set<CryptoId>) {
-    return function excludeCryptoIdsFilter(accountOrToken: AggregatedAccountWithTokens) {
-        switch (accountOrToken.type) {
-            case 'account':
-                return !excludedCryptoIds.has(getCryptoId(accountOrToken.account.symbol));
-            case 'token':
-                return !excludedCryptoIds.has(
-                    getCryptoId(accountOrToken.account.symbol, accountOrToken.token.contract),
-                );
-            default:
-                return false;
-        }
-    };
-}
-
-/**
- * Note this is going to be replaced soon with more sophisticated top assets logic.
- */
-function createTopFiveAssets(excludedCryptoIds: Set<CryptoId>) {
-    return (
-        (
-            [
-                createAssetNativeTokenOption('btc'),
-                createAssetNativeTokenOption('eth'),
-                createAssetTokenOption('eth', {
-                    contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-                    symbol: 'USDT',
-                    name: 'Tether',
-                }),
-                createAssetTokenOption('eth', {
-                    contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                    symbol: 'USDC',
-                    name: 'USDC',
-                }),
-                createAssetNativeTokenOption('sol'),
-            ] satisfies TradingAssetOption[]
-        )
-            // E.g. filter out "from" field value
-            .filter(asset => !excludedCryptoIds.has(asset.id))
-    );
-}
-
-type GetOrderNetworksProps = {
-    topFiveAssets: TradingAssetOption[];
-    assets: TradingAssetOption[];
-    accountsWithTokens: AggregatedAccountWithTokens[];
+export type TradingAssetListItem = {
+    asset: TradingAssetOption;
+    balance: TradeableAssetBalance | undefined;
 };
 
-function getOrderNetworks({ topFiveAssets, assets, accountsWithTokens }: GetOrderNetworksProps) {
-    const networks: Set<NetworkSymbol> = new Set();
+const getAssetCryptoId = (asset: TradingAssetOption) => asset.id;
 
-    topFiveAssets.forEach(asset => networks.add(asset.networkSymbol));
-    assets.forEach(asset => networks.add(asset.networkSymbol));
-    accountsWithTokens.forEach(item => networks.add(item.account.symbol));
-
-    return networkSymbolCollection.filter(networkSymbol => networks.has(networkSymbol));
-}
-
-export type TradingAssetListItem =
-    | {
-          type: 'top-assets';
-          assets: TradingAssetOption[];
-          height: number;
-      }
-    | {
-          type: 'asset';
-          asset: TradingAssetOption;
-          height: number;
-      }
-    | {
-          type: 'account';
-          account: Account;
-          height: number;
-      }
-    | {
-          type: 'token';
-          token: TokensWithRates;
-          account: Account;
-          height: number;
-      }
-    | {
-          type: 'group-label';
-          label: TranslationKey;
-          height: number;
-      }
-    | {
-          type: 'group-space';
-          height: number;
-      };
+const getAssetSearchFields = (asset: TradingAssetOption): TradeableAssetSearchFields => ({
+    name: asset.displaySymbolName ?? asset.name,
+    symbol: asset.displaySymbol,
+    networkName: asset.networkName,
+    networkSymbol: asset.networkSymbol,
+    contractAddress: asset.contractAddress ?? '',
+});
 
 export interface UseBuildTradingAssetOptionsProps {
     search: string;
@@ -148,180 +41,57 @@ export function useBuildTradingAssetOptions({
     search,
     networkSymbol,
 }: UseBuildTradingAssetOptionsProps) {
-    const { assets, includedCryptoIds, excludedCryptoIds } = useAssetsContext();
-    const accountsWithTokens = useAgregatedAccountsWithTokens();
+    const { includedCryptoIds, excludedCryptoIds } = useAssetsContext();
+    const { buildAssetOptions } = useTradingAssets();
+    const balances = useSelector(selectTradeableAssetBalances);
+    const preferredCurrencyUsdThreshold = usePreferredCurrencyUsdThreshold();
 
-    const tokens = useMemo(
+    const includedAssets = useMemo(() => {
+        const { assets } = buildAssetOptions({ includedCryptoIds });
+
+        return assets.filter(asset => !excludedCryptoIds.has(asset.id));
+    }, [buildAssetOptions, includedCryptoIds, excludedCryptoIds]);
+
+    const searchIndex = useMemo(
         () =>
-            accountsWithTokens
-                .filter(item => item.type === 'token')
-                .map(item => ({
-                    account: item.account,
-                    token: item.token,
-                })),
-        [accountsWithTokens],
+            buildTradeableAssetSearchIndex({
+                assets: includedAssets,
+                getSearchFields: getAssetSearchFields,
+            }),
+        [includedAssets],
     );
-    const tokenDisplaySymbolNames = useTokenDisplaySymbolNames(tokens, assets);
 
-    return useMemo(() => {
-        const listItems: TradingAssetListItem[] = [];
+    const orderedAssets = useMemo(
+        () =>
+            orderTradeableAssetsByOwnership({
+                assets: includedAssets,
+                balances,
+                threshold: preferredCurrencyUsdThreshold,
+                getAssetCryptoId,
+            }),
+        [includedAssets, balances, preferredCurrencyUsdThreshold],
+    );
 
-        const topFiveAssets =
-            search.length === 0 && !networkSymbol ? createTopFiveAssets(excludedCryptoIds) : [];
-        const topFiveAssetIds = new Set(topFiveAssets.map(asset => asset.id));
+    const networks = useMemo(() => {
+        const networksInList = new Set(includedAssets.map(asset => asset.networkSymbol));
 
-        if (topFiveAssets.length > 0) {
-            listItems.push(
-                {
-                    type: 'top-assets',
-                    assets: topFiveAssets,
-                    height: 82,
-                },
-                {
-                    type: 'group-space',
-                    height: ASSET_ROW_HEIGHTS_BY_SIZE['lg'],
-                },
-            );
-        }
+        return networkSymbolCollection.filter(symbol => networksInList.has(symbol));
+    }, [includedAssets]);
 
-        const allAccountsWithTokens = accountsWithTokens
-            .filter(excludeCryptoIds(excludedCryptoIds))
-            .filter(accountOrToken => {
-                switch (accountOrToken.type) {
-                    case 'account':
-                        return includedCryptoIds.has(getCryptoId(accountOrToken.account.symbol));
-                    case 'token':
-                        return includedCryptoIds.has(
-                            getCryptoId(
-                                accountOrToken.account.symbol,
-                                accountOrToken.token.contract,
-                            ),
-                        );
-                    default:
-                        return false;
-                }
-            });
+    const listItems = useMemo(() => {
+        const assetsFilteredByNetwork = networkSymbol
+            ? orderedAssets.filter(asset => asset.networkSymbol === networkSymbol)
+            : orderedAssets;
 
-        const searchDisplayNameFilter = createSearchFilter(search.toLocaleLowerCase());
+        return filterTradeableAssetsBySearch({
+            assets: assetsFilteredByNetwork,
+            searchIndex,
+            search,
+        }).map((asset): TradingAssetListItem => ({
+            asset,
+            balance: balances.get(asset.id),
+        }));
+    }, [orderedAssets, networkSymbol, searchIndex, search, balances]);
 
-        const filteredAccounts = allAccountsWithTokens
-            .filter(accountOrToken => {
-                switch (accountOrToken.type) {
-                    case 'account':
-                    case 'token':
-                        return networkSymbol
-                            ? accountOrToken.account.symbol === networkSymbol
-                            : true;
-                    default:
-                        return false;
-                }
-            })
-            .filter(accountOrToken => {
-                switch (accountOrToken.type) {
-                    case 'account':
-                        return accountSearchFn(accountOrToken.account, search, {
-                            tokensMatch: false,
-                            accountLabel: '', // Todo: select label from SuiteSync
-                        });
-                    case 'token': {
-                        const displaySymbolName = getTokenDisplaySymbolName({
-                            tokenDisplaySymbolNames,
-                            account: accountOrToken.account,
-                            token: accountOrToken.token,
-                        });
-
-                        return (
-                            searchDisplayNameFilter(displaySymbolName) ||
-                            isTokenMatchesSearch(accountOrToken.token, search)
-                        );
-                    }
-                    default:
-                        return false;
-                }
-            });
-
-        if (filteredAccounts.length > 0) {
-            listItems.push({
-                type: 'group-label',
-                label: 'TR_ASSET_PICKER_YOUR_ASSETS',
-                height: ASSET_ROW_GROUP_LABEL_HEIGHT,
-            });
-        }
-
-        for (const accountOrToken of filteredAccounts) {
-            switch (accountOrToken.type) {
-                case 'account':
-                    listItems.push({
-                        type: 'account',
-                        account: accountOrToken.account,
-                        height: ASSET_ROW_HEIGHT,
-                    });
-                    break;
-
-                case 'token': {
-                    const tokenDisplaySymbolName = getTokenDisplaySymbolName({
-                        tokenDisplaySymbolNames,
-                        account: accountOrToken.account,
-                        token: accountOrToken.token,
-                    });
-
-                    listItems.push({
-                        type: 'token',
-                        token: {
-                            ...accountOrToken.token,
-                            name: tokenDisplaySymbolName,
-                        },
-                        account: accountOrToken.account,
-                        height: ASSET_ROW_HEIGHT,
-                    });
-                    break;
-                }
-            }
-        }
-
-        const allAssets = assets.filter(
-            asset => !topFiveAssetIds.has(asset.id) && !excludedCryptoIds?.has(asset.id),
-        );
-
-        const filteredAssets = allAssets
-            .filter(asset => (networkSymbol ? asset.networkSymbol === networkSymbol : true))
-            .filter(asset => assetSearchFilter(asset, search));
-
-        if (filteredAccounts.length > 0 && filteredAssets.length > 0) {
-            listItems.push({
-                type: 'group-space',
-                height: ASSET_ROW_HEIGHTS_BY_SIZE['lg'],
-            });
-
-            listItems.push({
-                type: 'group-label',
-                label: 'TR_ASSET_PICKER_ALL_ASSETS',
-                height: ASSET_ROW_GROUP_LABEL_HEIGHT,
-            });
-        }
-
-        for (const asset of filteredAssets) {
-            listItems.push({
-                type: 'asset',
-                asset,
-                height: ASSET_ROW_HEIGHT,
-            });
-        }
-
-        const orderedNetworks = getOrderNetworks({
-            topFiveAssets,
-            assets: allAssets,
-            accountsWithTokens: allAccountsWithTokens,
-        });
-
-        return { listItems, networks: orderedNetworks };
-    }, [
-        accountsWithTokens,
-        assets,
-        includedCryptoIds,
-        excludedCryptoIds,
-        networkSymbol,
-        search,
-        tokenDisplaySymbolNames,
-    ]);
+    return { listItems, networks };
 }

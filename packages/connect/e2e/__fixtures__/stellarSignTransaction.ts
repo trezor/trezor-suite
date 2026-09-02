@@ -2,7 +2,9 @@
 // @ts-ignore
 import * as Messages from '@trezor/protobuf/src/definitions';
 
-import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/stellar/sign_tx.json';
+import { loadCommonFixture } from './commonFixtures';
+
+const commonFixtures = loadCommonFixture('stellar/sign_tx.json');
 
 // operations are in protobuf format (snake_case)
 
@@ -139,6 +141,12 @@ const transformOperation = (op: any) => {
     }
 };
 
+// Soroban (StellarInvokeHostFunctionOp) signing was added in firmware 2.12.4.
+const SOROBAN_MIN_FIRMWARE = '2.12.4';
+
+const isInvokeHostFunctionTest = (parameters: any) =>
+    parameters.operations?.some((op: any) => op._message_type === 'StellarInvokeHostFunctionOp');
+
 const legacyResults = [
     {
         rules: ['<2.4.3'],
@@ -183,6 +191,20 @@ const legacyResultsMap: Record<string, LegacyResult[]> = {
     ],
 };
 
+const getLegacyResults = (name: string, result: any): LegacyResult[] => {
+    if (legacyResultsMap[name]) {
+        return legacyResultsMap[name];
+    }
+    // Soroban signing (success cases) only works from firmware 2.12.4 onwards. The error
+    // cases have no `result` and already expect a failure on every firmware.
+    if (name.startsWith('StellarInvokeHostFunction') && result.signature) {
+        return [{ rules: [`<${SOROBAN_MIN_FIRMWARE}`], payload: false }];
+    }
+
+    // stellar has required update
+    return [{ rules: ['<2.3.0'], payload: false }];
+};
+
 const stellarSignTransaction: TestCase = {
     method: 'stellarSignTransaction',
     setup: {
@@ -190,37 +212,14 @@ const stellarSignTransaction: TestCase = {
     },
     tests: [
         ...commonFixtures.tests
-            .filter((test: any) => !test.experimental)
-            .flatMap(({ name, result, parameters, skip_models }: any) => [
-                {
-                    name,
-                    description: name,
-                    skip_models,
-                    result,
-                    params: {
-                        path: parameters.address_n,
-                        networkPassphrase: parameters.network_passphrase,
-                        transaction: {
-                            source: parameters.tx.source_account,
-                            fee: parameters.tx.fee,
-                            sequence: parameters.tx.sequence_number,
-                            timebounds: {
-                                minTime: parameters.tx.timebounds_start,
-                                maxTime: parameters.tx.timebounds_end,
-                            },
-                            memo: {
-                                type: Messages.StellarMemoType[
-                                    parameters.tx.memo_type as keyof typeof Messages.StellarMemoType
-                                ],
-                                text: parameters.tx.memo_text,
-                                id: parameters.tx.memo_id,
-                                hash: parameters.tx.memo_hash,
-                            },
-                            operations: parameters.operations.flatMap(transformOperation),
-                        },
-                    },
-                },
-                {
+            .filter(
+                (test: any) =>
+                    !test.experimental &&
+                    // payment request tests need PaymentRequest data that can't be expressed in this fixture format
+                    !test.parameters.payment_request,
+            )
+            .flatMap(({ name, result, parameters, skip_models }: any) => {
+                const xdrVariant = {
                     name,
                     description: `${name} (XDR)`,
                     skip_models,
@@ -231,25 +230,64 @@ const stellarSignTransaction: TestCase = {
                         testnet:
                             parameters.network_passphrase === 'Test SDF Network ; September 2015',
                     },
-                },
-            ])
+                };
+
+                // Soroban InvokeHostFunction operations carry XDR-shaped SCVal payloads (whose
+                // 64-bit integers lose precision as JSON numbers) plus a SorobanTransactionData
+                // tx extension, neither of which the simplified `transaction` object can express.
+                // Exercise them through the XDR path only, which parses the envelope faithfully.
+                if (isInvokeHostFunctionTest(parameters)) {
+                    return [xdrVariant];
+                }
+
+                return [
+                    {
+                        name,
+                        description: name,
+                        skip_models,
+                        result,
+                        params: {
+                            path: parameters.address_n,
+                            networkPassphrase: parameters.network_passphrase,
+                            transaction: {
+                                source: parameters.tx.source_account,
+                                fee: parameters.tx.fee,
+                                sequence: parameters.tx.sequence_number,
+                                timebounds: {
+                                    minTime: parameters.tx.timebounds_start,
+                                    maxTime: parameters.tx.timebounds_end,
+                                },
+                                memo: {
+                                    type: Messages.StellarMemoType[
+                                        parameters.tx
+                                            .memo_type as keyof typeof Messages.StellarMemoType
+                                    ],
+                                    text: parameters.tx.memo_text,
+                                    id: parameters.tx.memo_id,
+                                    hash: parameters.tx.memo_hash,
+                                },
+                                operations: parameters.operations.flatMap(transformOperation),
+                            },
+                        },
+                    },
+                    xdrVariant,
+                ];
+            })
             .map(({ name, description, params, result, skip_models }: any) => ({
-                skip: skip_models?.flatMap((model: string) => (model === 't1' ? '1' : [])),
+                skip: skip_models?.flatMap((model: string) =>
+                    model === 't1' || model === 't1b1' ? '1' : [],
+                ),
                 description,
                 params,
-                result: {
-                    publicKey: result.public_key,
-                    signature: Buffer.from(result.signature, 'base64').toString('hex'),
-                },
-                legacyResults: legacyResultsMap[name]
-                    ? legacyResultsMap[name]
-                    : [
-                          {
-                              // stellar has required update
-                              rules: ['<2.3.0'],
-                              payload: false,
-                          },
-                      ],
+                // Error-case fixtures (e.g. Soroban memo-not-allowed) carry `error_message`
+                // instead of a signature; omit `result` so the harness expects a failure.
+                result: result.signature
+                    ? {
+                          publicKey: result.public_key,
+                          signature: Buffer.from(result.signature, 'base64').toString('hex'),
+                      }
+                    : undefined,
+                legacyResults: getLegacyResults(name, result),
             })),
         {
             description: 'Sequence is over Number.MAX_SAFE_INTEGER and is sent as string',

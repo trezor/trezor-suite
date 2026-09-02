@@ -1,15 +1,12 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect from '@trezor/connect';
-import { UI_REQUEST, UI_RESPONSE } from '@trezor/connect-common';
+import { UI_EVENTS, UI_REQUESTS, UI_RESPONSE } from '@trezor/connect-common';
 import type { ApplySettings } from '@trezor/protobuf/src/definitions';
 import { BridgeTransport } from '@trezor/transport-common';
 import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
 
+import TrezorConnect from '../src';
 import { THP_CREDENTIALS_AUTOCONNECT } from './common-thp-credentials';
-
-// import TrezorConnect from '../src';
 
 // Read emulator start options from EMULATOR_START_OPTS env var (JSON string set by run.ts).
 // In browser mode, Vite's `define` replaces process.env.EMULATOR_START_OPTS at build time.
@@ -197,7 +194,7 @@ export const initTrezorConnect = async (
         console.log('Transport started: ', event.version);
     });
 
-    TrezorConnect.on(UI_REQUEST.REQUEST_CONFIRMATION, () => {
+    TrezorConnect.on(UI_REQUESTS.REQUEST_CONFIRMATION, () => {
         TrezorConnect.uiResponse({
             type: UI_RESPONSE.RECEIVE_CONFIRMATION,
             payload: true,
@@ -205,7 +202,7 @@ export const initTrezorConnect = async (
     });
 
     if (autoConfirm) {
-        TrezorConnect.on(UI_REQUEST.REQUEST_BUTTON, async e => {
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, async e => {
             if (e.code === 'ButtonRequest_PinEntry') return;
             if (screenCaptureEnabled) {
                 try {

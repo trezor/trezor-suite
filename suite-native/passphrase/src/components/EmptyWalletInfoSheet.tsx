@@ -4,11 +4,11 @@ import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescrip
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    BannerInline,
     BottomSheetListItem,
     BottomSheetModal,
     Box,
     Button,
-    InlineAlertBox,
     TitleHeader,
     VStack,
 } from '@suite-native/atoms';
@@ -70,26 +70,26 @@ export const EmptyWalletInfoSheet = forwardRef<BottomSheetModalMethods, EmptyWal
                         iconName="pencilSimpleLine"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup"
                         iconSize="medium"
-                        iconBackgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
-                        iconBorderColor="borderNeutral"
+                        iconBackgroundColor="elementFillNeutralSofter"
+                        iconBorderColor="elementBorderNeutralSofter"
                     />
                     <BottomSheetListItem
                         iconName="copy"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.store"
                         iconSize="medium"
-                        iconBackgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
-                        iconBorderColor="borderNeutral"
+                        iconBackgroundColor="elementFillNeutralSofter"
+                        iconBorderColor="elementBorderNeutralSofter"
                     />
                     <BottomSheetListItem
                         iconName="eyeSlash"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.neverShare"
                         iconSize="medium"
-                        iconBackgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
-                        iconBorderColor="borderNeutral"
+                        iconBackgroundColor="elementFillNeutralSofter"
+                        iconBorderColor="elementBorderNeutralSofter"
                     />
                 </VStack>
                 <VStack style={applyStyle(bottomSheetBottomStyle)}>
-                    <InlineAlertBox
+                    <BannerInline
                         intent="warning"
                         title={
                             <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.alertTitle" />

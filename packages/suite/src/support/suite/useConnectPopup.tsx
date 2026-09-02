@@ -9,16 +9,19 @@ import {
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     CORE_CALL,
     CORE_CALL_CANCEL,
     type CallMethodKeys,
     POPUP,
+    type PermissionRequest,
     RESPONSE_EVENT,
     createPopupMessage,
 } from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 
 /**
  * Normalized incoming message from either the web or webextension popup link.
@@ -28,8 +31,13 @@ export type ConnectPopupMessage =
     | {
           type: typeof POPUP.HANDSHAKE;
           id: string;
-          payload: { manifest: ManifestPartial };
-          version: string;
+          // Same shape as the wire message from connect-web's Popup, so both links can
+          // forward it verbatim instead of remapping.
+          payload: {
+              manifest: ManifestPartial;
+              version: string;
+              requestedPermissions?: PermissionRequest[];
+          };
       }
     | { type: typeof CORE_CALL; id: string; payload: { method: string; [key: string]: unknown } }
     | { type: typeof POPUP.CLOSED; payload?: { error?: string; callId?: string } | null }
@@ -67,9 +75,10 @@ export const useConnectPopup = (
     onMessagesConsumed: () => void,
 ) => {
     const dispatch = useDispatch();
-    const lifecycle = useSelector(state => state.suite.lifecycle);
+    const lifecycle = useSelector(selectSuiteLifecycle);
     const popupCall = useSelector(selectConnectPopupCall);
     const manifest = useRef<ManifestPartial | undefined>(undefined);
+    const requestedPermissions = useRef<PermissionRequest[] | undefined>(undefined);
     const [pendingHandshake, setPendingHandshake] = useState<string | undefined>();
     const [responseSent, setResponseSent] = useState(false);
 
@@ -89,8 +98,9 @@ export const useConnectPopup = (
             } else if (event.type === POPUP.HANDSHAKE) {
                 manifest.current = {
                     ...event.payload.manifest,
-                    npmVersion: event.version,
+                    npmVersion: event.payload.version,
                 };
+                requestedPermissions.current = event.payload.requestedPermissions;
                 setPendingHandshake(event.id);
             } else if (event.type === CORE_CALL) {
                 if (!manifest.current) {
@@ -109,6 +119,7 @@ export const useConnectPopup = (
                             type: CALL_SOURCE_WEB,
                             origin: popupLink.origin,
                             manifest: manifest.current,
+                            requestedPermissions: requestedPermissions.current,
                         },
                     }),
                 );

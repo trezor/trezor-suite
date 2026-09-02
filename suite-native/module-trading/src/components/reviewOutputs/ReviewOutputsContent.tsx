@@ -5,6 +5,7 @@ import { Box, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType, ScreenHeader } from '@suite-native/navigation';
+import { TxValidityTimer } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ReviewOutputsBody } from './ReviewOutputsBody';
@@ -21,10 +22,7 @@ const spacerStyle = prepareNativeStyle(_ => ({
 }));
 
 export type ReviewOutputsContentProps = UseTradingOutputsReviewScreenControlsProps &
-    Pick<
-        UseTradingTransactionReturnProps,
-        'isTransactionSendConsentRequested' | 'resolveTransactionSendConsent'
-    > & {
+    Pick<UseTradingTransactionReturnProps, 'isTransactionSendConsentRequested'> & {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         orderId: string;
@@ -52,13 +50,24 @@ export const ReviewOutputsContent = memo(
         exchangeFlowType,
     }: ReviewOutputsContentProps) => {
         const { applyStyle } = useNativeStyles();
-        const { isTransactionAlreadySigned, confirmOnTrezorRef } =
-            useTradingOutputsReviewScreenControls({
-                orderId,
-                accountKey,
-                signAndSendTransaction,
-                reportToAnalytics,
-            });
+        const {
+            isTransactionAlreadySigned,
+            confirmOnTrezorRef,
+            showTimer,
+            secondsLeft,
+            isPastDeadline,
+            isBroadcasting,
+            onRetry,
+            isRetryDisabled,
+            handleSendTransaction,
+        } = useTradingOutputsReviewScreenControls({
+            orderId,
+            accountKey,
+            exchangeFlowType,
+            signAndSendTransaction,
+            resolveTransactionSendConsent,
+            reportToAnalytics,
+        });
         const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
 
         return (
@@ -78,17 +87,30 @@ export const ReviewOutputsContent = memo(
                     justifyContent="space-between"
                     testID="@trading/outputs-review"
                 >
-                    <ReviewOutputsBody
-                        accountKey={accountKey}
-                        tokenContract={tokenContract}
-                        exchangeFlowType={exchangeFlowType}
-                        shouldDisplayReviewList={shouldDisplayReviewList}
-                        tradingType={tradingType}
-                    />
+                    <VStack spacing="sp16">
+                        {showTimer && (
+                            <TxValidityTimer
+                                secondsLeft={secondsLeft}
+                                isPastDeadline={isPastDeadline}
+                                isBroadcasting={isBroadcasting}
+                                onRetry={onRetry}
+                                isRetryDisabled={isRetryDisabled}
+                            />
+                        )}
+                        <ReviewOutputsBody
+                            accountKey={accountKey}
+                            tokenContract={tokenContract}
+                            exchangeFlowType={exchangeFlowType}
+                            shouldDisplayReviewList={shouldDisplayReviewList}
+                            tradingType={tradingType}
+                        />
+                    </VStack>
                     {isTransactionAlreadySigned ? (
                         <ReviewOutputsFooter
                             isConsentRequested={isTransactionSendConsentRequested}
-                            resolveConsent={resolveTransactionSendConsent}
+                            isPastDeadline={isPastDeadline}
+                            isSendInProgress={isBroadcasting}
+                            onSend={handleSendTransaction}
                             testID="@trading/outputs-review/footer"
                         />
                     ) : (

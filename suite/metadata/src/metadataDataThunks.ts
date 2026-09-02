@@ -1,5 +1,3 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import { selectDevices } from '@suite-common/device';
 import {
     type AbstractMetadataProvider,
@@ -8,35 +6,45 @@ import {
     type PasswordManagerState,
     type WalletLabels,
 } from '@suite-common/metadata-types';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { selectAccounts } from '@suite-common/wallet-core';
 
-import { setAccountAdd } from './metadataActions';
+import {
+    disableMetadata as disableMetadataAction,
+    setAccountAdd,
+    setDeviceMetadata,
+} from './metadataActions';
 import * as METADATA from './metadataConstants';
 import * as METADATA_LABELING from './metadataLabelingConstants';
 import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
 import * as metadataUtils from './metadataUtils';
 
+type DisposeMetadataThunkState = MetadataRootState;
+
 /**
  * dispose metadata from all labelable objects.
  */
-export const disposeMetadata = () => (dispatch: Dispatch, getState: () => MetadataRootState) => {
-    const provider = selectSelectedProviderForLabels(getState());
+export const disposeMetadata =
+    () => (dispatch: Dispatch, getState: () => DisposeMetadataThunkState) => {
+        const provider = selectSelectedProviderForLabels(getState());
 
-    if (!provider) {
-        return;
-    }
+        if (!provider) {
+            return;
+        }
 
-    dispatch({
-        type: METADATA.SET_DATA,
-        payload: {
-            provider,
-            data: undefined,
-        },
-    });
-};
+        dispatch({
+            type: METADATA.SET_DATA,
+            payload: {
+                provider,
+                data: undefined,
+            },
+        });
+    };
+
+type DisposeMetadataKeysThunkState = MetadataRootState;
 
 export const disposeMetadataKeys =
-    () => (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    () => (dispatch: Dispatch, getState: () => DisposeMetadataKeysThunkState) => {
         const devices = selectDevices(getState());
         const accounts = selectAccounts(getState());
 
@@ -50,21 +58,18 @@ export const disposeMetadataKeys =
         devices.forEach(device => {
             if (device.state?.staticSessionId) {
                 // set metadata as disabled for this device, remove all metadata related information
-                dispatch({
-                    type: METADATA.SET_DEVICE_METADATA,
-                    payload: {
+                dispatch(
+                    setDeviceMetadata({
                         deviceState: device.state.staticSessionId,
                         metadata: {},
-                    },
-                });
+                    }),
+                );
             }
         });
     };
 
 export const disableMetadata = () => (dispatch: Dispatch) => {
-    dispatch({
-        type: METADATA.DISABLE,
-    });
+    dispatch(disableMetadataAction());
 
     // dispose metadata values and keys
     dispatch(disposeMetadata());

@@ -102,6 +102,7 @@ export const SidebarBanner = ({
             backgroundColor="surfaceFillModeless"
             borderWidth={1}
             borderColor="surfaceBorderModeless"
+            overflow="hidden"
         >
             <Column gap={16} padding={12}>
                 {icon ? (

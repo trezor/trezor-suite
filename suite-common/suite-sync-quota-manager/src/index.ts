@@ -22,6 +22,7 @@ export {
     selectOwnersAllowance,
     selectRegisteredDevices,
     selectShouldDisplayOutOfQuotaAlert,
+    selectSuiteSyncQuotaManager,
     type WithSuiteSyncQuotaManagerState,
 } from './quotaManagerSelectors';
 export {

@@ -1,11 +1,17 @@
 import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
-import { events } from '@suite-common/analytics';
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { type CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { type Bip43PathTemplate, getNetwork } from '@suite-common/wallet-config';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import {
+    type DeviceRootState,
+    type LockDeviceDep,
+    deviceActions,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import { createThunk } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { getNetwork } from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
     getAddressForNetworkType,
     getPublicKeyForNetworkType,
     selectDeviceAccountsByNetworkSymbol,
@@ -29,11 +35,16 @@ import TrezorConnect, {
 import { connectCallableMethods } from '@trezor/connect-common';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
+import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
-import { selectConnectAppPermissions, selectConnectPopupCall } from './connectPopupReducer';
+import {
+    type ConnectPopupStateRootState,
+    selectConnectAppPermissions,
+    selectConnectPopupCall,
+} from './connectPopupReducer';
 import {
     CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_WALLETCONNECT,
@@ -42,13 +53,16 @@ import {
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { deriveCardanoEnabledNetworks } from './deriveEnabledNetworks';
-import { postCallHooks, preCallHooks } from './methodHooks';
-import { permissionsAreCovered } from './permissionsGrouping';
+import { compatibilityHooks, postCallHooks, preCallHooks, validateCallHooks } from './methodHooks';
+import type { DistributiveOmit } from './methodHooks/types';
+import {
+    deriveCardanoEnabledNetworks,
+    mergePermissions,
+    permissionsAreCovered,
+    sanitizeRequestedPermissions,
+} from './permissions';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
-
-type DistributiveOmit<T, K extends keyof T> = T extends T ? Omit<T, K> : never;
 
 type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
@@ -56,13 +70,23 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     source: ConnectCallSource;
 };
 
+export type ConnectPopupCallThunkState = DeviceRootState & ConnectPopupStateRootState;
+
+export type ConnectPopupCallThunkDeps = {
+    actions: LockDeviceDep;
+    services: AnalyticsDep;
+};
+
 export const connectPopupCallThunkInner = createThunk<
     void,
-    ConnectPopupCallThunkParams<CallMethodKeys>
+    ConnectPopupCallThunkParams<CallMethodKeys>,
+    { state: ConnectPopupCallThunkState; extra: ConnectPopupCallThunkDeps }
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
-    async ({ method, payload, source }, { dispatch, getState, extra }) => {
+    async ({ source, ...params }, { dispatch, getState, extra }) => {
         try {
+            const { method, payload } = compatibilityHooks({ ...params, source });
+
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
             const methodInfo = await TrezorConnect.call({
@@ -75,9 +99,9 @@ export const connectPopupCallThunkInner = createThunk<
                 throw methodInfo.error;
             }
             const methodInfoPayload = methodInfo.payload as MethodInfo;
-            const requestedPermissions = methodInfoPayload.requiredPermissions;
+            const callPermissions = methodInfoPayload.requiredPermissions;
             const hasPermission = (name: string) =>
-                requestedPermissions.some(p => p.permission === name);
+                callPermissions.some(p => p.permission === name);
             if (
                 hasPermission('management') ||
                 hasPermission('internal') ||
@@ -86,6 +110,16 @@ export const connectPopupCallThunkInner = createThunk<
                 throw TypedError('Method_NotAllowed');
             }
 
+            // Permissions the host/dapp declared up front (ConnectSettings.requestedPermissions),
+            // sanitized against the same rules as the hard block above. Merged with this call's own
+            // required permissions so the first consent covers the whole declared set at once — a
+            // single "Remember" then silences every later in-scope call.
+            const declaredPermissions = sanitizeRequestedPermissions(
+                source.requestedPermissions,
+                source.type === CALL_SOURCE_DEEPLINK,
+            );
+            const consentPermissions = mergePermissions(callPermissions, declaredPermissions);
+
             dispatch(
                 connectPopupActions.initiateCall({
                     method,
@@ -93,7 +127,7 @@ export const connectPopupCallThunkInner = createThunk<
                         methodTitle:
                             methodInfoPayload.confirmation?.label ?? methodInfoPayload.info,
                         confirmLabel: methodInfoPayload.confirmation?.customConfirmButton?.label,
-                        permissionTypes: methodInfoPayload.requiredPermissions,
+                        permissionTypes: consentPermissions,
                         useUi: methodInfoPayload.useUi,
                     },
                     payload,
@@ -101,14 +135,20 @@ export const connectPopupCallThunkInner = createThunk<
                 }),
             );
 
-            // Check if permission remembered (permission, coin).
+            // Reject a call this host cannot fulfil (e.g. selectAccount for a coin Suite can't render)
+            // before asking for permissions, so the user doesn't approve access only to hit an error.
+            validateCallHooks({ method, payload });
+
+            // Check if permission remembered (permission, coin). Keyed on THIS call's required
+            // permissions (not the declared superset) so a call is silent whenever its own needs are
+            // already covered, even if the app declared more than it has been granted so far.
             const rememberedApps = selectConnectAppPermissions(getState());
 
             const isRemembered = rememberedApps.some(
                 app =>
                     app.origin === source.origin &&
                     app.process?.fullPath === source.process?.fullPath &&
-                    permissionsAreCovered(requestedPermissions, app.allowedPermissions),
+                    permissionsAreCovered(callPermissions, app.allowedPermissions),
             );
 
             if (!isRemembered && source.type !== CALL_SOURCE_WALLETCONNECT) {
@@ -127,7 +167,7 @@ export const connectPopupCallThunkInner = createThunk<
             // platform (desktop/web popup AND native deeplink) and for remembered apps too (which
             // skip the approve action a middleware would key off). updateConnectSettings returns
             // { success: false } rather than throwing on the thin transports; the result is ignored.
-            const enabledNetworks = deriveCardanoEnabledNetworks(requestedPermissions);
+            const enabledNetworks = deriveCardanoEnabledNetworks(consentPermissions);
             if (enabledNetworks.length) {
                 await TrezorConnect.updateConnectSettings({ enabledNetworks });
             }
@@ -236,7 +276,7 @@ export const connectPopupCallThunkInner = createThunk<
             extra.services.analytics.report({
                 type: events.connectPopupErrorEvent.name,
                 payload: {
-                    method,
+                    method: params.method,
                     origin: source.origin,
                     error: error?.code,
                     appName: source.manifest.appName,
@@ -261,90 +301,112 @@ export const connectPopupCallThunkInner = createThunk<
 // Original thunk is exposed as well for using .fulfilled, .rejected, etc.
 export const connectPopupCallThunk = <M extends CallMethodKeys>(
     params: ConnectPopupCallThunkParams<M>,
-): AsyncThunkAction<void, ConnectPopupCallThunkParams<M>, CustomThunkAPI> =>
-    connectPopupCallThunkInner(params) as any;
+): AsyncThunkAction<
+    void,
+    ConnectPopupCallThunkParams<M>,
+    { state: ConnectPopupCallThunkState; extra: ConnectPopupCallThunkDeps }
+> => connectPopupCallThunkInner(params) as any;
 
-export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
-    `${CONNECT_POPUP_MODULE}/deeplinkThunk`,
-    async ({ url }, { dispatch }) => {
-        let parsedUrl;
-        try {
-            parsedUrl = new URL(url);
-        } catch (error) {
-            console.warn('Invalid deeplink URL', { error, url });
+type ConnectPopupDeeplinkThunkState = DeviceRootState & ConnectPopupStateRootState;
 
-            return;
-        }
+type ConnectPopupDeeplinkThunkDeps = {
+    actions: LockDeviceDep;
+    services: AnalyticsDep;
+};
 
-        const path = parsedUrl.pathname;
-        const queryParams = Object.fromEntries(parsedUrl.searchParams.entries());
+export const connectPopupDeeplinkThunk = createThunk<
+    void,
+    { url: string },
+    { state: ConnectPopupDeeplinkThunkState; extra: ConnectPopupDeeplinkThunkDeps }
+>(`${CONNECT_POPUP_MODULE}/deeplinkThunk`, async ({ url }, { dispatch }) => {
+    let parsedUrl;
+    try {
+        parsedUrl = new URL(url);
+    } catch (error) {
+        console.warn('Invalid deeplink URL', { error, url });
 
-        // Validate params
-        const version = path?.split('/').slice(-2, -1)[0];
-        if (
-            !queryParams?.method ||
-            !queryParams?.params ||
-            !queryParams?.callback ||
-            typeof queryParams?.params !== 'string' ||
-            typeof queryParams?.method !== 'string' ||
-            typeof queryParams?.callback !== 'string' ||
-            !Object.prototype.hasOwnProperty.call(TrezorConnect, queryParams?.method)
-        ) {
-            dispatch(
-                connectPopupActions.setError(serializeError(TypedError('Method_InvalidParameter'))),
-            );
+        return;
+    }
 
-            return;
-        }
+    const path = parsedUrl.pathname;
+    const queryParams = Object.fromEntries(parsedUrl.searchParams.entries());
 
-        if (!version || parseInt(version) > DEEPLINK_VERSION) {
-            dispatch(
-                connectPopupActions.setError(
-                    serializeError(TypedError('Deeplink_VersionMismatch')),
-                ),
-            );
-
-            return;
-        }
-
-        const { method, callback } = queryParams;
-        let payload, callbackUrl;
-        try {
-            payload = JSON.parse(queryParams.params);
-            callbackUrl = new URL(callback);
-        } catch {
-            dispatch(
-                connectPopupActions.setError(serializeError(TypedError('Method_InvalidParameter'))),
-            );
-
-            return;
-        }
-
+    // Validate params
+    const version = path?.split('/').slice(-2, -1)[0];
+    if (
+        !queryParams?.method ||
+        !queryParams?.params ||
+        !queryParams?.callback ||
+        typeof queryParams?.params !== 'string' ||
+        typeof queryParams?.method !== 'string' ||
+        typeof queryParams?.callback !== 'string' ||
+        !Object.prototype.hasOwnProperty.call(TrezorConnect, queryParams?.method)
+    ) {
         dispatch(
-            connectPopupCallThunk({
-                source: {
-                    type: CALL_SOURCE_DEEPLINK,
-                    origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
-                    manifest: {
-                        appName: queryParams.appName ?? '',
-                        appIcon: queryParams.appIcon ?? '',
-                    },
+            connectPopupActions.setError(serializeError(TypedError('Method_InvalidParameter'))),
+        );
+
+        return;
+    }
+
+    if (!version || parseInt(version) > DEEPLINK_VERSION) {
+        dispatch(
+            connectPopupActions.setError(serializeError(TypedError('Deeplink_VersionMismatch'))),
+        );
+
+        return;
+    }
+
+    const { method, callback } = queryParams;
+    let payload, callbackUrl;
+    try {
+        payload = JSON.parse(queryParams.params);
+        callbackUrl = new URL(callback);
+    } catch {
+        dispatch(
+            connectPopupActions.setError(serializeError(TypedError('Method_InvalidParameter'))),
+        );
+
+        return;
+    }
+
+    dispatch(
+        connectPopupCallThunk({
+            source: {
+                type: CALL_SOURCE_DEEPLINK,
+                origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
+                manifest: {
+                    appName: queryParams.appName ?? '',
+                    appIcon: queryParams.appIcon ?? '',
                 },
-                method: method as CallMethodKeys,
-                payload,
-            }),
-        );
-        const response = await getPopupCallDeferred(true).promise;
-        callbackUrl.searchParams.set('response', JSON.stringify(response));
-        dispatch(
-            connectPopupActions.deeplinkCallback({
-                callbackUrl: callbackUrl.toString(),
-            }),
-        );
-    },
-);
+            },
+            method: method as CallMethodKeys,
+            payload,
+        }),
+    );
+    const response = await getPopupCallDeferred(true).promise;
+    callbackUrl.searchParams.set('response', JSON.stringify(response));
+    dispatch(
+        connectPopupActions.deeplinkCallback({
+            callbackUrl: callbackUrl.toString(),
+        }),
+    );
+});
 
-export const connectPopupVerifyAddressThunk = createThunk<void, { index: number }>(
+type ConnectPopupVerifyAddressThunkState = DeviceRootState & ConnectPopupStateRootState;
+
+type ConnectPopupVerifyAddressThunkDeps = {
+    actions: LockDeviceDep;
+};
+
+export const connectPopupVerifyAddressThunk = createThunk<
+    void,
+    { index: number },
+    {
+        state: ConnectPopupVerifyAddressThunkState;
+        extra: ConnectPopupVerifyAddressThunkDeps;
+    }
+>(
     `${CONNECT_POPUP_MODULE}/verifyAddressThunk`,
     async ({ index }, { dispatch, getState, extra }) => {
         // Unlock device access from previous call
@@ -430,7 +492,22 @@ const resolveCandidateValue = (
     return { path: account.path, address: account.descriptor };
 };
 
-export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: number }>(
+type ConnectPopupLoadSelectAccountPageThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    AccountsRootState;
+
+type ConnectPopupLoadSelectAccountPageThunkDeps = {
+    actions: LockDeviceDep;
+};
+
+export const connectPopupLoadSelectAccountPageThunk = createThunk<
+    void,
+    { page: number },
+    {
+        state: ConnectPopupLoadSelectAccountPageThunkState;
+        extra: ConnectPopupLoadSelectAccountPageThunkDeps;
+    }
+>(
     `${CONNECT_POPUP_MODULE}/loadSelectAccountPageThunk`,
     async ({ page }, { dispatch, getState, extra }) => {
         // release any device lock held by the (still pending) selectAccount call
@@ -439,6 +516,22 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
         const device = selectSelectedDevice(getState());
         const call = selectConnectPopupCall(getState());
         if (!device || call?.state !== 'select-account') return;
+
+        // Keep the picker's two load layers from stepping on each other (see #29662):
+        //  - loadingKey dedups an *identical* load. The concrete double-dispatch is the cold-cache
+        //    manual drill-in: a nav thunk resets `candidates` to [] AND dispatches a load, while the
+        //    auto-load effect ALSO fires one because `candidates === []`. Both target the same view,
+        //    so the second is a no-op here — the expensive device round-trip runs only once.
+        //  - loadEpoch resolves the write race for loads of *different* views that legitimately
+        //    overlap (page/tab/phase/account changed mid-load): each stamps a fresh epoch and, after
+        //    every await below, bails once a newer load supersedes it, so a stale load can never
+        //    paint over the current view.
+        // Both are stamped synchronously (before any await) so a same-tick re-dispatch sees them.
+        const loadingKey = `${call.manualPhase ?? ''}:${call.selectedAccountTypeKey}:${call.manualAccountIndex ?? ''}:${page}`;
+        if (call.loadingKey === loadingKey) return;
+
+        const startedEpoch = (call.loadEpoch ?? 0) + 1;
+        dispatch(connectPopupActions.updateSelectAccount({ loadingKey, loadEpoch: startedEpoch }));
 
         // Populates one page of the picker's account-index list. Used for every mode except UTXO
         // `addressSelection: 'manual'`'s address phase (see loadManualAddressPage below), which
@@ -554,12 +647,14 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                     device: activeDevice,
                 });
 
-                // bail if the user navigated to another page/tab or closed the picker meanwhile
+                // bail if the user navigated to another page/tab, this load was superseded by a
+                // newer one of the same page, or the picker closed meanwhile
                 const current = selectConnectPopupCall(getState());
                 if (
                     current?.state !== 'select-account' ||
                     current.page !== page ||
-                    current.selectedAccountTypeKey !== selectedAccountTypeKey
+                    current.selectedAccountTypeKey !== selectedAccountTypeKey ||
+                    current.loadEpoch !== startedEpoch
                 )
                     return;
 
@@ -616,7 +711,9 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                 return (
                     current?.state === 'select-account' &&
                     current.selectedAccountTypeKey === selectedAccountTypeKey &&
-                    current.manualAccountIndex === manualAccountIndex
+                    current.manualAccountIndex === manualAccountIndex &&
+                    // superseded by a newer load of the same page — its candidates must not land
+                    current.loadEpoch === startedEpoch
                 );
             };
 
@@ -655,8 +752,17 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                     };
                 });
 
+                // Keep candidates from other tabs AND from other pages of this tab, so selections
+                // made on previously-loaded pages survive pagination (mirrors loadAccountIndexPage).
+                // Filtering by tab alone would drop every prior page, since in the manual address
+                // phase all rows share the single active tab.
                 const otherCandidates = current.candidates.filter(
-                    c => c.accountTypeKey !== activeTab.key,
+                    c =>
+                        !(
+                            c.accountTypeKey === activeTab.key &&
+                            c.accountIndex >= startIndex &&
+                            c.accountIndex < startIndex + SELECT_ACCOUNT_PAGE_SIZE
+                        ),
                 );
                 dispatch(
                     connectPopupActions.updateSelectAccount({
@@ -716,19 +822,52 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
             paintPage(result.accountInfo.addresses?.used ?? []);
         }
 
-        if (call.options.addressSelection === 'manual' && call.manualPhase === 'address') {
-            await loadManualAddressPage(device, call.manualAccountIndex ?? 0);
-        } else if (call.options.addressSelection === 'manual') {
-            await loadAccountIndexPage(device, false);
-        } else {
-            await loadAccountIndexPage(device, true);
+        try {
+            if (call.options.addressSelection === 'manual' && call.manualPhase === 'address') {
+                await loadManualAddressPage(device, call.manualAccountIndex ?? 0);
+            } else if (call.options.addressSelection === 'manual') {
+                await loadAccountIndexPage(device, false);
+            } else {
+                await loadAccountIndexPage(device, true);
+            }
+        } finally {
+            // Release the dedup slot once this load settles — but only if this load still owns it.
+            // Matching loadingKey alone is not enough: rapid re-navigation can re-enter the *same*
+            // view (hence the same key) with a newer load still in flight (drill X → Y → X, or
+            // drill → back → drill the same account), and this older load must not clear that newer
+            // load's slot — that would re-open the dedup window and let the redundant device call
+            // slip back in. loadEpoch is monotonic and unique per load, so it pins the clear to the
+            // load that most recently stamped the key.
+            const current = selectConnectPopupCall(getState());
+            if (
+                current?.state === 'select-account' &&
+                current.loadingKey === loadingKey &&
+                current.loadEpoch === startedEpoch
+            ) {
+                dispatch(connectPopupActions.updateSelectAccount({ loadingKey: undefined }));
+            }
         }
     },
 );
 
 // UTXO `addressSelection: 'manual'` only: the user picked an account in the account phase — drill
 // into it by switching to the address phase and loading its used addresses from page 0.
-export const connectPopupSelectManualAccountThunk = createThunk<void, { accountIndex: number }>(
+type ConnectPopupSelectManualAccountThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    AccountsRootState;
+
+type ConnectPopupSelectManualAccountThunkDeps = {
+    actions: LockDeviceDep;
+};
+
+export const connectPopupSelectManualAccountThunk = createThunk<
+    void,
+    { accountIndex: number },
+    {
+        state: ConnectPopupSelectManualAccountThunkState;
+        extra: ConnectPopupSelectManualAccountThunkDeps;
+    }
+>(
     `${CONNECT_POPUP_MODULE}/selectManualAccountThunk`,
     ({ accountIndex }, { dispatch, getState }) => {
         const call = selectConnectPopupCall(getState());
@@ -747,30 +886,52 @@ export const connectPopupSelectManualAccountThunk = createThunk<void, { accountI
 );
 
 // UTXO `addressSelection: 'manual'` only: back out of the address phase to the account list.
-export const connectPopupBackToManualAccountsThunk = createThunk<void, void>(
-    `${CONNECT_POPUP_MODULE}/backToManualAccountsThunk`,
-    (_, { dispatch, getState }) => {
-        const call = selectConnectPopupCall(getState());
-        if (call?.state !== 'select-account' || call.options.addressSelection !== 'manual') return;
+type ConnectPopupBackToManualAccountsThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    AccountsRootState;
 
-        dispatch(
-            connectPopupActions.updateSelectAccount({
-                manualPhase: 'account',
-                manualAccountIndex: undefined,
-                candidates: [],
-                page: 0,
-                totalCandidates: undefined,
-            }),
-        );
-        dispatch(connectPopupLoadSelectAccountPageThunk({ page: 0 }));
-    },
-);
+type ConnectPopupBackToManualAccountsThunkDeps = {
+    actions: LockDeviceDep;
+};
+
+export const connectPopupBackToManualAccountsThunk = createThunk<
+    void,
+    void,
+    {
+        state: ConnectPopupBackToManualAccountsThunkState;
+        extra: ConnectPopupBackToManualAccountsThunkDeps;
+    }
+>(`${CONNECT_POPUP_MODULE}/backToManualAccountsThunk`, (_, { dispatch, getState }) => {
+    const call = selectConnectPopupCall(getState());
+    if (call?.state !== 'select-account' || call.options.addressSelection !== 'manual') return;
+
+    dispatch(
+        connectPopupActions.updateSelectAccount({
+            manualPhase: 'account',
+            manualAccountIndex: undefined,
+            candidates: [],
+            page: 0,
+            totalCandidates: undefined,
+        }),
+    );
+    dispatch(connectPopupLoadSelectAccountPageThunk({ page: 0 }));
+});
 
 // Verifies a single candidate address on the device. Safe to run while the selectAccount call is
 // pending because that method holds no device session (useDevice = false).
+type ConnectPopupVerifySelectAccountThunkState = DeviceRootState & ConnectPopupStateRootState;
+
+type ConnectPopupVerifySelectAccountThunkDeps = {
+    actions: LockDeviceDep;
+};
+
 export const connectPopupVerifySelectAccountThunk = createThunk<
     void,
-    { accountIndex: number; accountTypeKey: string }
+    { accountIndex: number; accountTypeKey: string },
+    {
+        state: ConnectPopupVerifySelectAccountThunkState;
+        extra: ConnectPopupVerifySelectAccountThunkDeps;
+    }
 >(
     `${CONNECT_POPUP_MODULE}/verifySelectAccountThunk`,
     async ({ accountIndex, accountTypeKey }, { dispatch, getState, extra }) => {
@@ -878,55 +1039,60 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
 // and unblock the hook (which then flips the picker into its `exported` phase). Mirrors
 // ConnectAddressConfirmation: after export the modal stays open so the user can keep verifying the
 // exported addresses on device, and only `finishCall` (Close) actually closes it.
-export const connectPopupResolveSelectAccountThunk = createThunk<void, { confirmed: boolean }>(
-    `${CONNECT_POPUP_MODULE}/resolveSelectAccountThunk`,
-    ({ confirmed }, { dispatch, getState }) => {
-        const call = selectConnectPopupCall(getState());
-        if (call?.state !== 'select-account') return;
+type ConnectPopupResolveSelectAccountThunkState = ConnectPopupStateRootState;
 
-        // Already exported -> this is a "Close": the response was sent on confirm, just close.
-        if (call.exported) {
-            dispatch(connectPopupActions.finishCall());
+export const connectPopupResolveSelectAccountThunk = createThunk<
+    void,
+    { confirmed: boolean },
+    {
+        state: ConnectPopupResolveSelectAccountThunkState;
+    }
+>(`${CONNECT_POPUP_MODULE}/resolveSelectAccountThunk`, ({ confirmed }, { dispatch, getState }) => {
+    const call = selectConnectPopupCall(getState());
+    if (call?.state !== 'select-account') return;
 
-            return;
-        }
+    // Already exported -> this is a "Close": the response was sent on confirm, just close.
+    if (call.exported) {
+        dispatch(connectPopupActions.finishCall());
 
-        // Not exported + not confirmed -> "Cancel": reject the pending method call.
-        if (!confirmed) {
-            getPermissionDeferred().reject(TypedError('Method_Cancel'));
-            dispatch(connectPopupActions.finishCall());
+        return;
+    }
 
-            return;
-        }
+    // Not exported + not confirmed -> "Cancel": reject the pending method call.
+    if (!confirmed) {
+        getPermissionDeferred().reject(TypedError('Method_Cancel'));
+        dispatch(connectPopupActions.finishCall());
 
-        // Always an array, even for a 'single' selection — mirrors eth_requestAccounts. `address`
-        // and `xpub` are mutually exclusive per candidate (see SelectAccountCandidate).
-        const payload = call.candidates
-            .filter(c => c.selected && (c.address || c.xpub))
-            .map(c => ({
-                symbol: c.symbol,
-                path: c.path,
-                address: c.address,
-                xpub: c.xpub,
-                // undefined for custom (non-built-in) account-type tabs — no real AccountType to report
-                accountType: call.options.accountTypeTabs.find(tab => tab.key === c.accountTypeKey)
-                    ?.accountType,
-                mac: c.mac,
-            }));
+        return;
+    }
 
-        // Export: deliver the selection to the 3rd-party app and flip the picker into its `exported`
-        // phase, then unblock the methodHook. Do NOT finishCall — keep the modal open so the user can
-        // keep verifying the exported addresses on device (mirrors ConnectAddressConfirmation).
-        getPopupCallDeferred().resolve({
-            success: true,
-            payload,
-        } as Awaited<CallMethodAnyResponse>);
-        dispatch(connectPopupActions.updateSelectAccount({ exported: true }));
-        getPermissionDeferred().resolve();
-    },
-);
+    // Always an array, even for a 'single' selection — mirrors eth_requestAccounts. `address`
+    // and `xpub` are mutually exclusive per candidate (see SelectAccountCandidate).
+    const payload = call.candidates
+        .filter(c => c.selected && (c.address || c.xpub))
+        .map(c => ({
+            symbol: c.symbol,
+            path: c.path,
+            address: c.address,
+            xpub: c.xpub,
+            // undefined for custom (non-built-in) account-type tabs — no real AccountType to report
+            accountType: call.options.accountTypeTabs.find(tab => tab.key === c.accountTypeKey)
+                ?.accountType,
+            mac: c.mac,
+        }));
 
-export const connectPopupCancelThunk = createThunk<void, { error?: string; callId?: string }>(
+    // Export: deliver the selection to the 3rd-party app and flip the picker into its `exported`
+    // phase, then unblock the methodHook. Do NOT finishCall — keep the modal open so the user can
+    // keep verifying the exported addresses on device (mirrors ConnectAddressConfirmation).
+    getPopupCallDeferred().resolve({
+        success: true,
+        payload,
+    } as Awaited<CallMethodAnyResponse>);
+    dispatch(connectPopupActions.updateSelectAccount({ exported: true }));
+    getPermissionDeferred().resolve();
+});
+
+export const connectPopupCancelThunk = createThunk<void, { error?: string; callId?: string }, void>(
     `${CONNECT_POPUP_MODULE}/cancelThunk`,
     ({ error, callId }, { dispatch }) => {
         getPermissionDeferred().reject(TypedError('Method_Cancel'));
@@ -934,10 +1100,7 @@ export const connectPopupCancelThunk = createThunk<void, { error?: string; callI
         // todo: probably not needed to call explicitly anymore
         dispatch(deviceActions.removeButtonRequests({}));
 
-        const cancelError = TypedError('Method_Interrupted');
-        // Show the cancellation error modal immediately so the user sees
-        // feedback in the Suite popup ("Request was canceled by the user").
-        dispatch(connectPopupActions.setError(serializeError(cancelError)));
+        dispatch(connectPopupActions.finishCall());
 
         // Resolve the popup-call deferred directly so the cancel response
         // reaches the caller immediately.  Without this, the response
@@ -949,7 +1112,7 @@ export const connectPopupCancelThunk = createThunk<void, { error?: string; callI
         // before RESPONSE_EVENT is sent).
         getPopupCallDeferred().resolve({
             success: false,
-            error: serializeError(cancelError),
+            error: serializeError(TypedError('Method_Interrupted')),
         });
     },
 );

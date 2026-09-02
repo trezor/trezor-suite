@@ -8,7 +8,7 @@ import {
     getAccountGraphInstanceId,
     getPortfolioGraphInstanceId,
 } from './graphInstances';
-import { DEFAULT_GRAPH_TIMEFRAME_HOURS, type GraphInstanceState, type GraphState } from './slice';
+import { type GraphInstanceState, type GraphState, getGraphTimeframeOrDefault } from './slice';
 import { type TimeframeHoursValue } from './types';
 
 type Graphs = GraphState['graphs'];
@@ -35,7 +35,7 @@ const rehydrateGraphState = (persistedState: PersistedGraphState | undefined): G
     Object.entries(persistedState?.graphs ?? {}).forEach(([instanceId, persistedGraph]) => {
         if (persistedGraph) {
             graphs[instanceId as GraphInstanceId] = {
-                timeframeHours: persistedGraph.timeframeHours ?? DEFAULT_GRAPH_TIMEFRAME_HOURS,
+                timeframeHours: getGraphTimeframeOrDefault(persistedGraph.timeframeHours),
             };
         }
     });

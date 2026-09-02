@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FEES_UPDATE_INTERVAL_MILLISECONDS, FEE_UPDATE_DELAY_MILLISECONDS } from '../feesConstants';

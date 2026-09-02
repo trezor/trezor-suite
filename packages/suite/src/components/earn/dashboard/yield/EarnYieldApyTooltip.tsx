@@ -7,7 +7,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Tooltip } from '@trezor/components';
+import { Text, Tooltip } from '@trezor/components';
 
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
@@ -48,7 +48,11 @@ export const EarnYieldApyTooltip = ({
     );
 
     if (!children && !apyPercentage) {
-        return <ApyValue apy={apyPercentage} />;
+        return (
+            <Text typographyStyle="body-sm-strong" intent="neutral" priority="primary">
+                <ApyValue apy={apyPercentage} />
+            </Text>
+        );
     }
 
     const handleMouseEnter = () => {
@@ -84,16 +88,18 @@ export const EarnYieldApyTooltip = ({
                     underlyingToken={vault.token}
                 />
             }
-            maxWidth={600}
+            tooltipMaxWidth={600}
             placement="top"
         >
-            <Abbr
-                data-testid="@earn/dashboard/apy-percentage"
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-            >
-                {children ?? <ApyValue apy={apyPercentage} />}
-            </Abbr>
+            <Text typographyStyle="body-sm-strong" intent="neutral" priority="primary">
+                <Abbr
+                    data-testid="@earn/dashboard/apy-percentage"
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                >
+                    {children ?? <ApyValue apy={apyPercentage} />}
+                </Abbr>
+            </Text>
         </Tooltip>
     );
 };

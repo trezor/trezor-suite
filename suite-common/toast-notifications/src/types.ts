@@ -1,10 +1,11 @@
 import { type CSSProperties } from 'react';
 
-import { type DesktopAppUpdateState, type Protocol } from '@suite-common/suite-constants';
+import { type DesktopAppUpdateState } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FormStateTradingExchange } from '@suite-common/wallet-types';
 import { type DEVICE, type TokenInfo } from '@trezor/connect';
+import type { Protocol } from '@trezor/network-module-suite-common-types';
 
 export type UnknownTranslationKey = string;
 
@@ -52,6 +53,36 @@ type ExchangeTransactionNotification = {
     metadata: FormStateTradingExchange;
 } & TransactionNotificationPayload;
 
+export type WrapTransactionAsset = {
+    symbol: NetworkSymbol;
+    displaySymbol: string;
+    contractAddress?: string;
+    amount: string;
+};
+
+type WrapTransactionMetadata = {
+    send: WrapTransactionAsset;
+    receive: WrapTransactionAsset;
+};
+
+// Set when the wrap/unwrap is a step of a yield deposit/withdraw rather than the standalone page,
+// which report their analytics on `yield/deposit` / `yield/withdraw` instead.
+type YieldFlowStepFlag = {
+    isYieldFlowStep?: boolean;
+};
+
+type WrapTransactionNotification = {
+    type: 'tx-wrap';
+    metadata: WrapTransactionMetadata;
+} & YieldFlowStepFlag &
+    TransactionNotificationPayload;
+
+type UnwrapTransactionNotification = {
+    type: 'tx-unwrap';
+    metadata: WrapTransactionMetadata;
+} & YieldFlowStepFlag &
+    TransactionNotificationPayload;
+
 type ReceivedTransactionNotification = {
     type: 'tx-received' | 'tx-confirmed';
     token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol'>;
@@ -80,6 +111,17 @@ type YieldWithdrawTransactionNotification = {
 type YieldClaimTransactionNotification = {
     type: 'tx-yield-claim';
 } & BaseTransactionNotificationPayload;
+
+type AccountAddedNotification = {
+    type: 'account-added';
+    networkName: string;
+};
+
+type AccountsDiscoveredNotification = {
+    type: 'accounts-discovered';
+    count: number;
+    networkName: string;
+};
 
 export type ErrorToastPayload = {
     type:
@@ -152,6 +194,8 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | ApproveTransactionNotification
     | RevokeTransactionNotification
     | ExchangeTransactionNotification
+    | WrapTransactionNotification
+    | UnwrapTransactionNotification
     | RawSentTransactionNotification
     | ErrorToastPayload
     | {
@@ -207,6 +251,8 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | YieldDepositTransactionNotification
     | YieldWithdrawTransactionNotification
     | YieldClaimTransactionNotification
+    | AccountAddedNotification
+    | AccountsDiscoveredNotification
     | {
           type: 'cannot-open-bluetooth-settings-error';
       }
@@ -248,8 +294,7 @@ type EventNotification = { context: 'event' } & CommonNotificationPayload &
     NotificationEventPayload;
 
 export type NotificationEntry<TranslationKey extends string = UnknownTranslationKey> =
-    | ToastNotification<TranslationKey>
-    | EventNotification;
+    ToastNotification<TranslationKey> | EventNotification;
 
 export type AddNotificationAction<TranslationKey extends string = UnknownTranslationKey> = {
     payload: NotificationEntry<TranslationKey>;
@@ -262,10 +307,23 @@ export type NotificationsRootState<TranslationKey extends string = UnknownTransl
     notifications: NotificationsState<TranslationKey>;
 };
 
-export type TransactionNotification = (
-    | SentTransactionNotification
-    | ReceivedTransactionNotification
-) &
-    CommonNotificationPayload;
+export type TransactionNotification = Extract<
+    NotificationEntry,
+    { type: TransactionNotificationType }
+>;
 
-export type TransactionNotificationType = TransactionNotification['type'];
+export type TransactionNotificationType =
+    | 'tx-sent'
+    | 'tx-received'
+    | 'tx-confirmed'
+    | 'tx-staked'
+    | 'tx-unstaked'
+    | 'tx-claimed'
+    | 'tx-revoked'
+    | 'tx-approved'
+    | 'tx-wrap'
+    | 'tx-unwrap'
+    | 'raw-tx-sent'
+    | 'tx-yield-deposit'
+    | 'tx-yield-withdraw'
+    | 'tx-yield-claim';

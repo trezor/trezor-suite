@@ -470,8 +470,8 @@ export const getReleaseInfo = ({
 
     const changelog = getChangelog(releasesOfDevice, features);
 
-    let isNewer = false;
-    let requiresIntermediary = false;
+    let isNewer: boolean;
+    let requiresIntermediary: boolean;
 
     if (features.bootloader_mode && release.bootloader_version) {
         // Some old version of T1B1 do not report FW version in bootloader mode and some other devices do not

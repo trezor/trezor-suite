@@ -1,5 +1,6 @@
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type DeviceIdentity } from '@trezor/connect-common/src/types/params';
 import { type Result } from '@trezor/type-utils';
@@ -36,15 +37,18 @@ export const getPublicKeyForNetworkType = ({
     showOnTrezor = true,
     derivationType,
 }: GetPublicKeyForNetworkTypeParams) => {
-    const params = { device, path, coin, showOnTrezor };
+    const params = {
+        device,
+        path,
+        coin: coin === undefined ? undefined : asCoinSymbol(coin),
+        showOnTrezor,
+    };
 
     switch (networkType) {
         case 'bitcoin':
             return TrezorConnect.getPublicKey(params);
         case 'cardano':
             return TrezorConnect.cardanoGetPublicKey({ ...params, derivationType });
-        case 'solana':
-            return TrezorConnect.solanaGetPublicKey(params);
         default:
             return methodNotDefinedError('getPublicKey');
     }
@@ -86,7 +90,14 @@ export const getAddressForNetworkType = ({
     unlockPath,
     cardano,
 }: GetAddressForNetworkTypeParams) => {
-    const params = { device, path, unlockPath, coin, chunkify, showOnTrezor };
+    const params = {
+        device,
+        path,
+        unlockPath,
+        coin: coin === undefined ? undefined : asCoinSymbol(coin),
+        chunkify,
+        showOnTrezor,
+    };
 
     switch (networkType) {
         case 'tron':

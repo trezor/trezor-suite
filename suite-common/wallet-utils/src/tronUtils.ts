@@ -45,7 +45,11 @@ export type TronFeeBreakdown = {
     trxBurned: BigNumber;
     coveredEnergy: BigNumber;
     coveredBandwidth: BigNumber;
+    isAccountActivation: boolean;
 };
+
+export const isTronAccountActivation = (tx: GeneralPrecomposedTransaction | undefined) =>
+    !!tx && 'accountActivationFee' in tx && !!tx.accountActivationFee;
 
 const toTrx = (sun: BigNumber, symbol: NetworkSymbol) =>
     new BigNumber(subunitsToUnits({ value: asAmountSubunit(sun), symbol }));
@@ -64,26 +68,25 @@ export const calculateTronFeeBreakdown = (
     const energyConsumed = 'energyConsumed' in tx ? (tx.energyConsumed ?? 0) : 0;
     const bandwidthBytes = tx.bytes ?? 0;
 
-    const isNewAccount = 'accountActivationFee' in tx && !!tx.accountActivationFee;
-    const isBandwidthCovered = isNewAccount
+    const isAccountActivation = isTronAccountActivation(tx);
+    const isBandwidthCovered = isAccountActivation
         ? availableStakedBandwidth >= bandwidthBytes
         : Math.max(availableStakedBandwidth, availableFreeBandwidth) >= bandwidthBytes;
     const coveredBandwidth = new BigNumber(isBandwidthCovered ? bandwidthBytes : 0);
     const coveredEnergy = new BigNumber(Math.min(availableEnergy, energyConsumed));
 
     const isContractCall = 'feeLimit' in tx && tx.feeLimit !== undefined;
-    const memoFeeSun = new BigNumber(('memoFee' in tx && tx.memoFee) || 0);
 
     if (!isContractCall) {
-        const uncoveredBandwidthSun = isNewAccount
-            ? TRON_CREATE_ACCOUNT_FEE_SUN
-            : bandwidthBytes * TRON_BANDWIDTH_SUN_PRICE;
-        const bandwidthBurnSun = new BigNumber(isBandwidthCovered ? 0 : uncoveredBandwidthSun);
-        const trxBurned = toTrx(bandwidthBurnSun.plus(memoFeeSun), symbol);
-
-        return { trxBurned, coveredEnergy, coveredBandwidth };
+        return {
+            trxBurned: toTrx(new BigNumber(tx.fee), symbol),
+            coveredEnergy,
+            coveredBandwidth,
+            isAccountActivation,
+        };
     }
 
+    const memoFeeSun = new BigNumber(('memoFee' in tx && tx.memoFee) || 0);
     const energyPrice = tx.feePerByte ?? '0';
     const bandwidthBurnSun = new BigNumber(
         isBandwidthCovered ? 0 : bandwidthBytes * TRON_BANDWIDTH_SUN_PRICE,
@@ -101,5 +104,5 @@ export const calculateTronFeeBreakdown = (
 
     const trxBurned = toTrx(energyBurnSun.plus(bandwidthBurnSun).plus(memoFeeSun), symbol);
 
-    return { trxBurned, coveredEnergy, coveredBandwidth };
+    return { trxBurned, coveredEnergy, coveredBandwidth, isAccountActivation };
 };

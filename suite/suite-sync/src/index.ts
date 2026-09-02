@@ -17,6 +17,7 @@ export {
     selectIsSuiteSyncBannerVisible,
     selectIsUnsupportedDeviceBannerDismissed,
     selectShowEnableSuiteSyncModal,
+    selectSuiteSync,
     prepareSuiteSyncReducer,
     desktopSuiteSyncActions,
     updateShowEnableSuiteSyncModal,

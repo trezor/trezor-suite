@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useFormContext, useFormState } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
@@ -10,10 +9,13 @@ import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { InputError } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
 
 import { FEE_LIMIT } from './constants';
+import { useFeesContext } from '../../context/FeesContext';
 
 export const CustomFeeTron = () => {
+    const { feeInfo } = useFeesContext();
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
 
@@ -21,6 +23,7 @@ export const CustomFeeTron = () => {
     const { errors } = useFormState<FormState>();
 
     const estimatedFeeLimit = getValues('estimatedFeeLimit');
+    const { maxFee, minFee } = feeInfo;
 
     useEffect(() => {
         if (getValues(FEE_LIMIT) === '' && estimatedFeeLimit) {
@@ -35,6 +38,16 @@ export const CustomFeeTron = () => {
             integer: (value: string) => {
                 if (!isInteger(value)) {
                     return translationString('CUSTOM_FEE_IS_NOT_INTEGER');
+                }
+            },
+            range: (value: string) => {
+                const customFee = new BigNumber(value);
+
+                if (customFee.isGreaterThan(maxFee) || customFee.isLessThan(minFee)) {
+                    return translationString('CUSTOM_FEE_NOT_IN_RANGE', {
+                        minFee: new BigNumber(minFee).toString(),
+                        maxFee: new BigNumber(maxFee).toString(),
+                    });
                 }
             },
             feeLimit: (value: string) => {

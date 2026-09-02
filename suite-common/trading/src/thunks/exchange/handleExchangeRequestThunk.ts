@@ -1,24 +1,27 @@
 import { type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { type AddressValidatorDep } from '@suite-common/address';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
-import { selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
-import { isAddressValid } from '@trezor/address-validator';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
-import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
+import {
+    selectTradingCoinSymbolByCryptoId,
+    selectTradingExchangeQuotesRequest,
+} from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import {
     type HandleExchangeRequestThunkProps,
     type MinimalExchangeFormProps,
     type TradingExchangeType,
 } from '../../types';
-import { addIdsToQuotes, cryptoIdToSymbol, getNetworkDecimalsWithFallback } from '../../utils';
+import { addIdsToQuotes, getNetworkDecimalsWithFallback } from '../../utils';
 import { exchangeUtils } from '../../utils/exchange/exchangeUtils';
+import { isReceiveAddressCoherent } from '../../utils/exchange/receiveAddressCoherence';
 
 type GetQuotesRequest = {
     requestData: ExchangeTradeQuoteRequest;
@@ -26,7 +29,7 @@ type GetQuotesRequest = {
 };
 
 const getQuotesRequest = ({ requestData, signal }: GetQuotesRequest) =>
-    invityAPI.getExchangeQuotes(requestData, signal);
+    tradeApi.getExchangeQuotes(requestData, signal);
 
 type GetQuoteRequestData = {
     formValues: MinimalExchangeFormProps;
@@ -72,69 +75,23 @@ export const getQuoteRequestData = ({
     return request;
 };
 
-const isReceiveAddressValid = (
-    receiveAddress: string,
-    receiveSymbol: NonNullable<ReturnType<typeof cryptoIdToSymbol>>,
-): boolean => {
-    try {
-        return isAddressValid(receiveAddress, receiveSymbol);
-    } catch {
-        return false;
-    }
-};
+type HandleExchangeRequestThunkState = AccountsRootState & TradingRootState;
 
-// Prevent stale receive addresses after TO-network changes (#28143).
-// Account keys prove selected-account chain membership for same-format networks,
-// but the submitted address must still be valid for the receive network.
-const isReceiveAddressCoherent = ({
-    receiveAddress,
-    receiveCryptoSelectId,
-    receiveAccountKey,
-    state,
-}: {
-    receiveAddress: string | undefined;
-    receiveCryptoSelectId: ExchangeTradeQuoteRequest['receive'];
-    receiveAccountKey: AccountKey | undefined;
-    state: Parameters<typeof selectAccountByKey>[0];
-}): boolean => {
-    if (!receiveAddress) {
-        return true;
-    }
-
-    const receiveSymbol = cryptoIdToSymbol(receiveCryptoSelectId);
-    if (!receiveSymbol) {
-        return false;
-    }
-
-    if (!isReceiveAddressValid(receiveAddress, receiveSymbol)) {
-        return false;
-    }
-
-    if (receiveAccountKey) {
-        const receiveAccount = selectAccountByKey(state, receiveAccountKey);
-
-        return receiveAccount?.symbol === receiveSymbol;
-    }
-
-    return true;
-};
+type HandleExchangeRequestThunkDeps = WithServices<AddressValidatorDep>;
 
 export const handleExchangeRequestThunk = createThunk<
     ExchangeTrade[],
     HandleExchangeRequestThunkProps,
     {
         rejectValue: string;
+        state: HandleExchangeRequestThunkState;
+        extra: HandleExchangeRequestThunkDeps;
     }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/handleRequest`,
     async (
-        {
-            formValues,
-            network,
-            shouldSendInSats,
-            composeRequestCallback,
-        }: HandleExchangeRequestThunkProps,
-        { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
+        { formValues, network, shouldSendInSats, composeRequestCallback },
+        { dispatch, getState, fulfillWithValue, rejectWithValue, signal, extra },
     ) => {
         const requestData = getQuoteRequestData({
             formValues,
@@ -148,12 +105,18 @@ export const handleExchangeRequestThunk = createThunk<
             return rejectWithValue('Invalid request data');
         }
 
+        const { receiveAccountKey } = formValues;
+        const receiveAccount = receiveAccountKey
+            ? selectAccountByKey(getState(), receiveAccountKey)
+            : undefined;
+
         if (
             !isReceiveAddressCoherent({
+                addressValidator: extra.services.addressValidator,
                 receiveAddress: requestData.receiveAddress,
-                receiveCryptoSelectId: requestData.receive,
-                receiveAccountKey: formValues.receiveAccountKey,
-                state: getState(),
+                receiveCryptoId: requestData.receive,
+                receiveAccountKey,
+                receiveAccountSymbol: receiveAccount?.symbol,
             })
         ) {
             dispatch(tradingActions.stopRefetchQuotes());
@@ -161,7 +124,12 @@ export const handleExchangeRequestThunk = createThunk<
             return rejectWithValue('Invalid request data');
         }
 
-        let allQuotes: ExchangeTrade[] = [];
+        const currentQuotesRequest = selectTradingExchangeQuotesRequest(getState());
+        if (currentQuotesRequest && requestData.receive !== currentQuotesRequest.receive) {
+            dispatch(tradingExchangeActions.clearQuotes());
+        }
+
+        let allQuotes: ExchangeTrade[];
         let requestSucceeded = false;
         try {
             allQuotes = (await getQuotesRequest({ requestData, signal })) ?? [];

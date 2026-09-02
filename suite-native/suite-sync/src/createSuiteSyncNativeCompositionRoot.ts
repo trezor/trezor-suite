@@ -42,7 +42,7 @@ export const createSuiteSyncNativeCompositionRoot = (
     return createSuiteSyncCompositionRoot({
         ...deps,
         createSuiteStorage: createEvoluStorageFactory({
-            createEvoluInstance: createEvoluInstanceFactory({ run }),
+            evoluInstanceFactory: createEvoluInstanceFactory({ run }),
         }),
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
         getIsTorEnabled: () => false,

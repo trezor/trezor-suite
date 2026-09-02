@@ -10,7 +10,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { type InlineAlertBoxProps } from '@suite-native/atoms';
+import { type BannerInlineProps } from '@suite-native/atoms';
 import { selectIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import {
@@ -63,7 +63,7 @@ export const DeviceFirmwareCard = () => {
         });
     };
 
-    const firmwareUpdateProps = ((): InlineAlertBoxProps | undefined => {
+    const firmwareUpdateProps = ((): BannerInlineProps | undefined => {
         if (!isFirmwareUpdateEnabled || !isDeviceBackedUp) {
             return undefined;
         }

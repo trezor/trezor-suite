@@ -20,7 +20,9 @@ class AccountImportActions {
         await onTabBar.navigateToMyAssets();
 
         // after importing some accounts, not all are visible, scrolling might be needed
-        await scrollUntilVisible(element(by.text(accountName)));
+        await scrollUntilVisible(element(by.text(accountName)), {
+            scrollViewTestId: '@accountList',
+        });
     }
 
     async selectCoin({ networkSymbol }: { networkSymbol: string }) {

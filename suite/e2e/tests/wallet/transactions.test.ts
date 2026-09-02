@@ -32,14 +32,13 @@ test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1'] }, () =
             }
         });
 
-        const latestTransactionAddress = await test.step('Find the latest transaction', async () =>
-            (await walletPage.transactionAddress.first().textContent())
-                ?.replace(/\s/g, '')
-                .slice(-4));
+        const latestTransactionAddress =
+            await test.step('Find the latest transaction', async () => {
+                const address = walletPage.transactionAddress.first();
+                await expect(address).not.toBeEmpty();
 
-        if (!latestTransactionAddress) {
-            throw new Error('No latest transaction found');
-        }
+                return (await address.innerText()).replace(/\s/g, '').slice(-4);
+            });
 
         await test.step('Search for latest transaction by its address', async () => {
             await walletPage.transactionSearch.fill(latestTransactionAddress);

@@ -1,3 +1,4 @@
+import { type Getter } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Rate } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
@@ -34,6 +35,10 @@ export enum TokenManagementAction {
 export type TokenDefinitionsState = PartialRecord<NetworkSymbol, TokenDefinitions>;
 
 export type TokenDefinitionsRootState = { tokenDefinitions: TokenDefinitionsState };
+
+export type GetTokenDefinitionsEnabledNetworksDep = {
+    getTokenDefinitionsEnabledNetworks: Getter<[], NetworkSymbol[]>;
+};
 
 export type TokenDefinition = {
     error: boolean;

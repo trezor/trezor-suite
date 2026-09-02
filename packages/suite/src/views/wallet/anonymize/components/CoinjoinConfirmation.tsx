@@ -8,13 +8,14 @@ import {
     startCoinjoinSession,
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
 import { CircuitryIcon, ClockIcon, LockKeyIcon } from '@trezor/icons';
 
 import { Error } from 'src/components/suite/Error';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { Tile, type TileProps } from './Tile';
 

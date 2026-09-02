@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, type Ref } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -8,6 +8,7 @@ import { useTableHeader } from './TableHeader';
 export const Row = styled.tr<{
     $isCollapsed: boolean;
     $verticalAlign?: string;
+    $isHighlightedOnHover: boolean;
     $isHighlighted: boolean;
     $isHeader: boolean;
     $hasBorderTop: boolean;
@@ -28,13 +29,22 @@ export const Row = styled.tr<{
 
     ${({ $verticalAlign }) => `vertical-align: ${$verticalAlign};`}
 
-    ${({ $isHighlighted, theme, $isHeader }) =>
-        $isHighlighted &&
+    ${({ $isHighlightedOnHover, theme, $isHeader, $isHighlighted }) =>
+        $isHighlightedOnHover &&
         !$isHeader &&
+        !$isHighlighted &&
         css`
             &:hover {
                 background-color: ${theme.elementFillGhostHovered};
             }
+        `}
+
+    ${({ $isHighlighted, theme }) =>
+        $isHighlighted &&
+        css`
+            background-color: ${theme.elementFillWarningSofter};
+            outline: solid 2px ${theme.elementBorderWarningSofter};
+            outline-offset: -2px;
         `}
 
     ${({ $isCollapsed }) =>
@@ -46,12 +56,12 @@ export const Row = styled.tr<{
         `}
 
         ${({ onClick }) =>
-        onClick &&
-        css`
-            &:hover {
-                cursor: pointer;
-            }
-        `}
+            onClick &&
+            css`
+                &:hover {
+                    cursor: pointer;
+                }
+            `}
 `;
 
 export interface TableRowProps {
@@ -59,9 +69,12 @@ export interface TableRowProps {
     isCollapsed?: boolean;
     verticalAlign?: string;
     isHighlightedOnHover?: boolean;
+    /** Keeps the row highlighted, e.g. while it is the target of an anchor navigation. */
+    isHighlighted?: boolean;
     onClick?: () => void;
     onHover?: (isHovering: boolean) => void;
     hasBorderTop?: boolean;
+    ref?: Ref<HTMLTableRowElement>;
     'data-testid'?: string;
 }
 
@@ -72,7 +85,9 @@ export const TableRow = ({
     onHover,
     verticalAlign,
     isHighlightedOnHover,
+    isHighlighted = false,
     hasBorderTop,
+    ref,
     'data-testid': dataTestId,
 }: TableRowProps) => {
     const isHeader = useTableHeader();
@@ -82,9 +97,11 @@ export const TableRow = ({
         <Row
             $verticalAlign={verticalAlign}
             $isCollapsed={isCollapsed}
-            $isHighlighted={isHighlightedOnHover ?? isRowHighlightedOnHover}
+            $isHighlightedOnHover={isHighlightedOnHover ?? isRowHighlightedOnHover}
+            $isHighlighted={isHighlighted}
             $isHeader={isHeader}
             $hasBorderTop={hasBorderTop ?? hasBorders}
+            ref={ref}
             onClick={onClick}
             onMouseEnter={() => onHover?.(true)}
             onMouseLeave={() => onHover?.(false)}

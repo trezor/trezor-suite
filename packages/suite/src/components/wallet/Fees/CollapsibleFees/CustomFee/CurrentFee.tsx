@@ -41,7 +41,7 @@ export const CurrentFee = () => {
             </Text>
             <Text intent="neutral" typographyStyle="body-sm">
                 <Row alignItems="center" gap={4}>
-                    <Text>
+                    <Text data-testid="@fee-card/current-rate">
                         <FeeRate feeRate={currentFeeRate} networkType={networkType} />
                     </Text>
                     <Icon as={networkType === 'ethereum' ? GasPumpIcon : ReceiptIcon} size={20} />

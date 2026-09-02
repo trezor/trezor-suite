@@ -2,11 +2,12 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { AccountTypeBadge } from '@suite/account';
+import { AccountTypeBadge, selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useReceiveDisabled } from '@suite/receive';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { typography } from '@trezor/theme';
@@ -15,7 +16,7 @@ import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, type Url } from '@trezor/u
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
 import { WalletLayout } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { AccountNonce } from './AccountNonce';
@@ -67,7 +68,7 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
 
 const Details = () => {
     const { device, isLocked } = useDevice();
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
 
     const dispatch = useDispatch();

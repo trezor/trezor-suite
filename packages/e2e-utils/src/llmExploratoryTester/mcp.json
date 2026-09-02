@@ -1,0 +1,19 @@
+{
+    "mcpServers": {
+        "playwright": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "playwright",
+                "mcp",
+                "--cdp-endpoint=http://127.0.0.1:9222",
+                "--output-dir=packages/e2e-utils/src/llmExploratoryTester/reports/browser",
+                "--timeout-action=15000"
+            ]
+        },
+        "trezor-emulator": {
+            "type": "sse",
+            "url": "http://127.0.0.1:9003/sse"
+        }
+    }
+}

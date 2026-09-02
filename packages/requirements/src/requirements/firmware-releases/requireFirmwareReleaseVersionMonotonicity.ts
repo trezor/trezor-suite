@@ -1,8 +1,10 @@
-import { readFileSync, readdirSync } from 'node:fs';
-import { join, relative, sep } from 'node:path';
+import { readdirSync } from 'node:fs';
+import { join, relative } from 'node:path';
 
+import { readJson } from '@trezor/node-utils';
 import { type VersionArray, versionUtils } from '@trezor/utils';
 
+import { normalizePath } from '../../fileSystem';
 import type { Requirement } from '../Requirement';
 
 const FIRMWARE_DIR = join('packages', 'connect-data', 'files', 'firmware');
@@ -41,7 +43,7 @@ const formatVersion = (version: VersionArray): string => version.join('.');
 // Reports the path relative to the scanned firmware directory with normalized separators, so the
 // message is stable across machines and OSes (the raw absolute path leaks the runner's layout).
 const toReportedPath = (firmwareDir: string, file: string): string =>
-    relative(firmwareDir, file).split(sep).join('/');
+    normalizePath(relative(firmwareDir, file));
 
 const readChannelReleases = (channelDir: string): FirmwareRelease[] => {
     const releases: FirmwareRelease[] = [];
@@ -52,7 +54,7 @@ const readChannelReleases = (channelDir: string): FirmwareRelease[] => {
         }
 
         const file = join(channelDir, entry.name);
-        const data = JSON.parse(readFileSync(file, 'utf-8')) as FirmwareReleaseFile;
+        const data = readJson<FirmwareReleaseFile>(file);
 
         releases.push({ file, data });
     }

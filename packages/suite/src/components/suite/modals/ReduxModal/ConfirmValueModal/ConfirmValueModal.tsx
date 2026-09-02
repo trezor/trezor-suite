@@ -7,10 +7,11 @@ import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
-import { MODAL_CONTEXT_USER } from '@suite/modal';
+import { MODAL_CONTEXT_USER, selectModalContext } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -46,7 +47,7 @@ import {
 import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
@@ -75,7 +76,7 @@ export const ConfirmValueModal = ({
 }: ConfirmValueModalProps) => {
     const [isCopied, setIsCopied] = useState(false);
     const { device } = useDevice();
-    const modalContext = useSelector(state => state.modal.context);
+    const modalContext = useSelector(selectModalContext);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const dispatch = useDispatch();
@@ -102,8 +103,8 @@ export const ConfirmValueModal = ({
     // Do not show Add address label button if there is device interaction needed and device is not connected.
     const shouldShowAddressLabelAction = suiteSyncInteraction === null || !!device?.connected;
 
-    const copy = () => {
-        const result = copyToClipboard(value);
+    const copy = async () => {
+        const result = await copyToClipboard(value);
 
         if (account) {
             analytics.report({

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/device';
-import { Box, HStack, Image, InlineAlertBox, VStack } from '@suite-native/atoms';
+import { BannerInline, Box, HStack, Image, VStack } from '@suite-native/atoms';
 import { type SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -55,7 +55,7 @@ export const SecuritySealImages = () => {
                 <Image source={images[0]} contentFit="contain" style={applyStyle(duoImageStyle)} />
                 <Image source={images[1]} contentFit="contain" style={applyStyle(duoImageStyle)} />
             </HStack>
-            <InlineAlertBox
+            <BannerInline
                 intent="info"
                 title={
                     <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.modal.alertBox" />

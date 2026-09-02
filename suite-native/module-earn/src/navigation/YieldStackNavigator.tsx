@@ -7,20 +7,24 @@ import {
     useDisableIOSGesture,
 } from '@suite-native/navigation';
 
-import { HowYieldWorksScreen } from '../screens/HowYieldWorksScreen';
-import { YieldClaimCompleteScreen } from '../screens/YieldClaimCompleteScreen';
-import { YieldClaimReviewScreen } from '../screens/YieldClaimReviewScreen';
-import { YieldClaimScreen } from '../screens/YieldClaimScreen';
-import { YieldConsentsScreen } from '../screens/YieldConsentsScreen';
-import { YieldDepositApprovalScreen } from '../screens/YieldDepositApprovalScreen';
-import { YieldDepositApprovalTransactionDataReviewScreen } from '../screens/YieldDepositApprovalTransactionDataReviewScreen';
-import { YieldDepositCompleteScreen } from '../screens/YieldDepositCompleteScreen';
-import { YieldDepositReviewScreen } from '../screens/YieldDepositReviewScreen';
-import { YieldDepositRevokeScreen } from '../screens/YieldDepositRevokeScreen';
-import { YieldDepositScreen } from '../screens/YieldDepositScreen';
-import { YieldWithdrawCompleteScreen } from '../screens/YieldWithdrawCompleteScreen';
-import { YieldWithdrawReviewScreen } from '../screens/YieldWithdrawReviewScreen';
-import { YieldWithdrawScreen } from '../screens/YieldWithdrawScreen';
+import { HowYieldWorksScreen } from '../screens/yield/HowYieldWorksScreen';
+import { YieldClaimCompleteScreen } from '../screens/yield/YieldClaimCompleteScreen';
+import { YieldClaimReviewScreen } from '../screens/yield/YieldClaimReviewScreen';
+import { YieldClaimScreen } from '../screens/yield/YieldClaimScreen';
+import { YieldConsentsScreen } from '../screens/yield/YieldConsentsScreen';
+import { YieldDepositApprovalScreen } from '../screens/yield/YieldDepositApprovalScreen';
+import { YieldDepositApprovalTransactionDataReviewScreen } from '../screens/yield/YieldDepositApprovalTransactionDataReviewScreen';
+import { YieldDepositCompleteScreen } from '../screens/yield/YieldDepositCompleteScreen';
+import { YieldDepositReviewScreen } from '../screens/yield/YieldDepositReviewScreen';
+import { YieldDepositRevokeScreen } from '../screens/yield/YieldDepositRevokeScreen';
+import { YieldDepositScreen } from '../screens/yield/YieldDepositScreen';
+import { YieldDepositWrapReviewScreen } from '../screens/yield/YieldDepositWrapReviewScreen';
+import { YieldDepositWrapScreen } from '../screens/yield/YieldDepositWrapScreen';
+import { YieldWithdrawCompleteScreen } from '../screens/yield/YieldWithdrawCompleteScreen';
+import { YieldWithdrawReviewScreen } from '../screens/yield/YieldWithdrawReviewScreen';
+import { YieldWithdrawScreen } from '../screens/yield/YieldWithdrawScreen';
+import { YieldWithdrawUnwrapReviewScreen } from '../screens/yield/YieldWithdrawUnwrapReviewScreen';
+import { YieldWithdrawUnwrapScreen } from '../screens/yield/YieldWithdrawUnwrapScreen';
 
 const YieldStack = createNativeStackNavigator<YieldStackParamList>();
 
@@ -56,6 +60,16 @@ export const YieldStackNavigator = () => {
                 options={{ title: YieldStackRoutes.YieldClaimComplete }}
                 name={YieldStackRoutes.YieldClaimComplete}
                 component={YieldClaimCompleteScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldDepositWrap }}
+                name={YieldStackRoutes.YieldDepositWrap}
+                component={YieldDepositWrapScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldDepositWrapReview }}
+                name={YieldStackRoutes.YieldDepositWrapReview}
+                component={YieldDepositWrapReviewScreen}
             />
             <YieldStack.Screen
                 options={{ title: YieldStackRoutes.YieldDepositApproval }}
@@ -101,6 +115,16 @@ export const YieldStackNavigator = () => {
                 options={{ title: YieldStackRoutes.YieldDepositComplete }}
                 name={YieldStackRoutes.YieldDepositComplete}
                 component={YieldDepositCompleteScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldWithdrawUnwrap }}
+                name={YieldStackRoutes.YieldWithdrawUnwrap}
+                component={YieldWithdrawUnwrapScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldWithdrawUnwrapReview }}
+                name={YieldStackRoutes.YieldWithdrawUnwrapReview}
+                component={YieldWithdrawUnwrapReviewScreen}
             />
             <YieldStack.Screen
                 options={{ title: YieldStackRoutes.YieldWithdrawComplete }}

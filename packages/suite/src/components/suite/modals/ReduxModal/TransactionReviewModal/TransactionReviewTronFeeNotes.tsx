@@ -1,13 +1,8 @@
 import { useTranslation } from '@suite/intl';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import {
-    asAmountSubunit,
-    calculateTronFeeBreakdown,
-    subunitsToUnits,
-} from '@suite-common/wallet-utils';
+import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
 import { Note } from '@trezor/components';
 import { ReceiptIcon } from '@trezor/icons';
-import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { type Account } from 'src/types/wallet';
@@ -27,40 +22,26 @@ export const TransactionReviewTronFeeNotes = ({
     const { trxBurned, coveredEnergy, coveredBandwidth } =
         calculateTronFeeBreakdown(tx, tronResources, account.symbol) ?? {};
 
-    const accountActivationFee = 'accountActivationFee' in tx ? tx.accountActivationFee : undefined;
-
-    const totalTrxBurned =
-        trxBurned && accountActivationFee
-            ? trxBurned.plus(
-                  new BigNumber(
-                      subunitsToUnits({
-                          value: asAmountSubunit(new BigNumber(accountActivationFee)),
-                          symbol: account.symbol,
-                      }),
-                  ),
-              )
-            : trxBurned;
-
     return (
         <>
-            {totalTrxBurned && !totalTrxBurned.isZero() && (
-                <Note icon={ReceiptIcon}>
+            {trxBurned && !trxBurned.isZero() && (
+                <Note data-testid="@modal/header/tron-burned" icon={ReceiptIcon}>
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
-                        value={totalTrxBurned.toString()}
+                        value={trxBurned.toString()}
                         symbol={account.symbol}
                     />
                 </Note>
             )}
             {coveredBandwidth?.gt(0) && (
-                <Note icon={ReceiptIcon}>
+                <Note data-testid="@modal/header/tron-bandwidth" icon={ReceiptIcon}>
                     {translationString('TR_TRON_FEE_BANDWIDTH', {
                         count: coveredBandwidth.toNumber(),
                     })}
                 </Note>
             )}
             {coveredEnergy?.gt(0) && (
-                <Note icon={ReceiptIcon}>
+                <Note data-testid="@modal/header/tron-energy" icon={ReceiptIcon}>
                     {translationString('TR_TRON_FEE_ENERGY', {
                         count: coveredEnergy.toNumber(),
                     })}

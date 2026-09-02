@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getTronAvailableVotingPower,
@@ -24,7 +25,6 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { TronStakeInfoRow } from 'src/components/earn/staking/tron/TronStakeInfoRow';
-import { useDispatch } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { TronVoteAllocationRow } from './TronVoteAllocationRow';

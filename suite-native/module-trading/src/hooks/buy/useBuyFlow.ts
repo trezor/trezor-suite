@@ -1,17 +1,18 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingRootState,
     buyThunks,
     selectTradingBuyIsLoading,
     selectTradingCoinInfoByCryptoId,
-    tradingBuyActions,
 } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { useWatch } from '@suite-native/forms';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -21,6 +22,7 @@ import {
 } from '@suite-native/navigation';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
+import { tradingActions } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
@@ -39,11 +41,10 @@ export const useBuyFlow = (form: BuyFormType) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingBuyIsLoading);
-    const [asset, candidateQuote, receiveAccount] = form.watch([
-        'asset',
-        'quote',
-        'receiveAccount',
-    ]);
+    const [asset, candidateQuote, receiveAccount] = useWatch({
+        control: form.control,
+        name: ['asset', 'quote', 'receiveAccount'],
+    });
 
     const navigation = useNavigation<NavigationProps>();
 
@@ -102,8 +103,13 @@ export const useBuyFlow = (form: BuyFormType) => {
         const addressText = getReceiveAccountAddressText(receiveAccount);
         invariant(addressText, 'addressText is not defined');
 
-        dispatch(tradingBuyActions.setReceiveAddress(addressText));
-        dispatch(tradingBuyActions.setReceiveAccountKey(receiveAccount.account.key));
+        dispatch(
+            tradingActions.setReceiveAccount({
+                tradingType: 'buy',
+                accountKey: receiveAccount.account.key,
+                address: addressText,
+            }),
+        );
 
         const returnUrl = buildTradingUrl({
             actionType: 'quote',

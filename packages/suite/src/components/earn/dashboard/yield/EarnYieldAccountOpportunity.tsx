@@ -7,22 +7,21 @@ import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
+import { useDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     getTradingPrefilledFromAccountData,
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
-import {
-    getYieldVaultContractAddress,
-    isStablecoinYieldSupported,
-} from '@suite-common/wallet-core';
+import { getYieldVaultContractAddress, isYieldSupported } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
@@ -34,6 +33,7 @@ import { EarnYieldYearlyRewards } from './EarnYieldYearlyRewards';
 import { type YieldAccountOpportunity } from './types';
 import { getEarnRouteParams } from '../../utils/getEarnRouteParams';
 import { EarnAccountCell } from '../common/EarnAccountCell';
+import { useYieldAccountOpportunityAnchor } from './hooks/useYieldAccountOpportunityAnchor';
 
 type EarnYieldAccountOpportunityProps = {
     opportunity: YieldAccountOpportunity;
@@ -50,9 +50,16 @@ export const EarnYieldAccountOpportunity = ({
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice);
+    const isFirmwareOutdated = !isYieldSupported(selectedDevice, {
+        vaultToken: {
+            networkSymbol: opportunity.networkSymbol,
+            contractAddress: opportunity.vault.token.address,
+        },
+    });
     const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
         useFirmwareUpgradeModal();
+
+    const { setAnchorElement, shouldHighlight } = useYieldAccountOpportunityAnchor(opportunity);
 
     const vaultContractAddress = getYieldVaultContractAddress(opportunity.vault);
     const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });
@@ -95,7 +102,11 @@ export const EarnYieldAccountOpportunity = ({
         const networkSymbol = opportunity.account?.symbol ?? opportunity.networkSymbol;
         const accountIndex = opportunity.account?.index ?? 0;
         const accountType = opportunity.account?.accountType ?? 'normal';
-        const tokenAddress = opportunity.vault.token.address;
+        // A wrapped-native (WETH) vault deposit spends the native asset (wrapped on the way in),
+        // so prefill a native buy rather than the wrapped ERC-20, which on-ramps don't sell.
+        const tokenAddress = isWrappedNativeToken(networkSymbol, opportunity.vault.token.address)
+            ? undefined
+            : opportunity.vault.token.address;
 
         if (opportunity.account) {
             const tokenCryptoId = tokenAddress
@@ -175,6 +186,7 @@ export const EarnYieldAccountOpportunity = ({
                 analyticsStep: 'earn-dashboard',
                 yieldContext: {
                     id: opportunity.vault.id,
+                    vaultAddress: vaultContractAddress ?? undefined,
                     tokenContractAddress: opportunity.vault.token.address ?? undefined,
                 },
             }),
@@ -182,7 +194,7 @@ export const EarnYieldAccountOpportunity = ({
     };
 
     const navigateToYieldDeposit = () => {
-        if (!opportunity.account) {
+        if (!opportunity.account || !vaultContractAddress) {
             return;
         }
 
@@ -217,15 +229,14 @@ export const EarnYieldAccountOpportunity = ({
                 routeName: 'earn-yield-deposit',
                 params: getEarnRouteParams({
                     account: opportunity.account,
-                    yieldId: opportunity.vault.id,
-                    contractAddress: opportunity.vault.token.address ?? undefined,
+                    vaultAddress: vaultContractAddress,
                 }),
             }),
         );
     };
 
     const navigateToYieldWithdraw = () => {
-        if (!opportunity.account) {
+        if (!opportunity.account || !vaultContractAddress) {
             return;
         }
 
@@ -260,8 +271,7 @@ export const EarnYieldAccountOpportunity = ({
                 routeName: 'earn-yield-withdraw',
                 params: getEarnRouteParams({
                     account: opportunity.account,
-                    yieldId: opportunity.vault.id,
-                    contractAddress: opportunity.vault.token.address ?? undefined,
+                    vaultAddress: vaultContractAddress,
                 }),
             }),
         );
@@ -411,7 +421,11 @@ export const EarnYieldAccountOpportunity = ({
     return (
         <>
             {firmwareModal}
-            <Table.Row data-testid={`@earn/dashboard/row/${opportunity.vault.id}`}>
+            <Table.Row
+                ref={setAnchorElement}
+                isHighlighted={shouldHighlight}
+                data-testid={`@earn/dashboard/row/${opportunity.vault.id}`}
+            >
                 <Table.Cell>{accountCell}</Table.Cell>
 
                 <Table.Cell>{apyCell}</Table.Cell>

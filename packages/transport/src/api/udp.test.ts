@@ -1,0 +1,97 @@
+import UDP from 'dgram';
+
+import { PathInternal } from '@trezor/transport-common';
+
+import { UdpApi } from './udp';
+
+// mock dgram api
+jest.mock('dgram', () => ({
+    __esModule: true,
+    default: {
+        createSocket: jest.fn(() => {
+            throw new Error('use mockImplementation');
+        }),
+    },
+}));
+
+// mock of UDP.Socket
+const createUdpSocketMock = (optional = {}) =>
+    ({
+        send: (...args: any[]) => args[3](),
+        addListener: () => {},
+        removeListener: () => {},
+        ...optional,
+    }) as unknown as UDP.Socket;
+
+describe('api/udp', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    const devicePath = PathInternal('1');
+
+    it('read aborted', async () => {
+        jest.spyOn(UDP, 'createSocket').mockImplementation(() => createUdpSocketMock());
+
+        const api = new UdpApi({});
+
+        const abortController = new AbortController();
+        await api.enumerate(abortController.signal);
+        const promise = api.read(devicePath, { signal: abortController.signal });
+        abortController.abort();
+        const result = await promise;
+        if (result.success) throw new Error('Unexpected success');
+        expect(result.error.code).toContain('Aborted by signal');
+    });
+
+    it('write aborted', async () => {
+        let listeners = 0;
+        jest.spyOn(UDP, 'createSocket').mockImplementation(() =>
+            createUdpSocketMock({
+                send: (...args: any[]) => {
+                    setTimeout(() => args[3](), 200);
+                },
+                addListener: () => {
+                    listeners++;
+                },
+                removeListener: () => {
+                    listeners--;
+                },
+            }),
+        );
+
+        const api = new UdpApi({});
+
+        const abortController = new AbortController();
+        await api.enumerate(abortController.signal);
+        const promise = api.write(devicePath, Buffer.alloc(api.chunkSize), {
+            signal: abortController.signal,
+        });
+        abortController.abort();
+
+        const result = await promise;
+        if (result.success) throw new Error('Unexpected success');
+        expect(result.error.code).toContain('Aborted by signal');
+        expect(listeners).toBe(1); // only the global listener is present
+    });
+
+    it('enumerate aborted', async () => {
+        jest.spyOn(UDP, 'createSocket').mockImplementation(() =>
+            createUdpSocketMock({
+                send: (...args: any[]) => {
+                    setTimeout(() => args[3](), 100);
+                },
+            }),
+        );
+
+        const api = new UdpApi({});
+
+        const abortController = new AbortController();
+        const promise = api.enumerate(abortController.signal);
+        abortController.abort();
+
+        const result = await promise;
+        if (result.success) throw new Error('Unexpected success');
+        expect(result.error.code).toContain('Aborted by signal');
+    });
+});

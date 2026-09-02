@@ -19,13 +19,6 @@ export const config: Config = {
             ],
         },
         {
-            coin: ['bnb'],
-            min: { T1B1: '1.9.0', T2T1: '2.3.0' },
-            comment: [
-                'There were protobuf backwards incompatible changes with introduction of 1.9.0/2.3.0 firmwares',
-            ],
-        },
-        {
             coin: ['eth', 'tsep', 'thod'],
             min: { T1B1: '1.8.0', T2T1: '2.1.0' },
             comment: ['There were protobuf backwards incompatible changes.'],
@@ -93,12 +86,6 @@ export const config: Config = {
                 'new btc accounts taproot since 1.10.4/2.4.3 (BTC + TEST only)',
                 'SignMessage with no_script_type support',
             ],
-        },
-        {
-            coin: ['dcr', 'tdcr'],
-            methods: ['signTransaction'],
-            min: { T1B1: '1.10.1', T2T1: '2.4.0' },
-            comment: [''],
         },
         {
             methods: ['ethereumSignTypedData'],
@@ -171,6 +158,18 @@ export const config: Config = {
                 T2T1: '2.6.4',
                 T2B1: '2.6.4',
             },
+        },
+        {
+            methods: ['solanaSignMessage'],
+            min: {
+                T1B1: '0',
+                T2T1: '2.12.4',
+                T2B1: '2.12.4',
+                T3B1: '2.12.4',
+                T3T1: '2.12.4',
+                T3W1: '2.12.4',
+            },
+            comment: ['Solana off-chain message signing (OCMS v1) added in 2.12.4'],
         },
         {
             capabilities: ['chunkify'],
@@ -267,6 +266,22 @@ export const config: Config = {
                 T3W1: '2.12.1',
             },
             comment: ['Ethereum clear signing for known contracts/function selectors since 2.12.1'],
+        },
+        {
+            methods: ['ethereumSignAuth7702'],
+            min: {
+                T1B1: '0',
+                T2T1: '2.12.4',
+                T2B1: '2.12.4',
+                T3B1: '2.12.4',
+                T3T1: '2.12.4',
+                T3W1: '2.12.4',
+            },
+            comment: [
+                'EIP-7702 authorization/revocation since 2.12.4, T1B1 does not support it at all.',
+                'The message is experimental - the device additionally requires experimental features',
+                'to be enabled, and authorization (unlike revocation) requires safety checks to be lowered.',
+            ],
         },
     ],
 };

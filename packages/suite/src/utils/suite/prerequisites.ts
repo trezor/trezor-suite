@@ -1,5 +1,6 @@
-import { isAdditionalShamirBackupInProgress, isRecoveryInProgress } from '@suite/recovery';
+import { isRecoveryInProgress } from '@suite/recovery';
 import { type RouterState } from '@suite/router';
+import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
 
 import type { TransportState } from 'src/reducers/suite/suiteReducer';
 import type { AppState, TrezorDevice } from 'src/types/suite';
@@ -127,6 +128,11 @@ export const isPrerequisiteGloballyExcluded = ({
     if (prerequisite === null) return true;
 
     if (router.app === 'earn' || router.app === 'earn-yield' || router.app === 'earn-staking') {
+        return true;
+    }
+
+    // Activity (notifications) page does not depend on a connected device
+    if (router.app === 'notifications') {
         return true;
     }
 

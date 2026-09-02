@@ -19,12 +19,7 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
 
     return (
-        <LoadingContent
-            size={20}
-            isLoading={areFeesLoading}
-            data-testid="@trading/quote/maximum-fee-amount-loading"
-            slideContent={false}
-        >
+        <LoadingContent size={20} isLoading={areFeesLoading} slideContent={false}>
             {txMaxFee ? (
                 <Column alignItems="flex-end">
                     <Text intent="neutral" typographyStyle={typographyStyle}>

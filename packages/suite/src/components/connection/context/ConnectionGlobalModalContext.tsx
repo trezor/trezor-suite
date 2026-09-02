@@ -1,18 +1,18 @@
 import { type ReactNode, createContext, useContext, useState } from 'react';
 
+import { selectDeviceDefaultConnectionMode, setConnectionMode } from '@suite/device';
 import {
     prepareSelectAllDevices,
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isDesktop } from '@trezor/env-utils';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { NEARBY_DEVICES_LAST_UPDATED_LIMIT } from 'src/actions/bluetooth/filterOutNonResponsiveDevices';
 import { isBluetoothDeviceReachable } from 'src/actions/bluetooth/isBluetoothDeviceReachable';
-import { selectDeviceDefaultConnectionMode } from 'src/actions/device/deviceSelectors';
-import { setConnectionMode } from 'src/actions/device/deviceSlice';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import {
     type UseBluetoothConnectionReturn,

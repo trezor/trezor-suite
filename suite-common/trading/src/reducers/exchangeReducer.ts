@@ -80,6 +80,9 @@ const tradingExchangeSlice = createSlice({
             state: TradingExchangeState,
             action: PayloadAction<AccountKey | undefined>,
         ) {
+            if (action.payload !== state.tradingAccountKey) {
+                state.amountLimits = undefined;
+            }
             state.tradingAccountKey = action.payload;
         },
         setReceiveAccountKey(

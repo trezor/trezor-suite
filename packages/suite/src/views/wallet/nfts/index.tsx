@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 
 import { Route } from 'src/components/suite/Route';
 import { WalletLayout } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { NftsTablesSection } from './NftsTablesSection';
 import { TokensNavigation } from '../tokens/TokensNavigation';
@@ -13,7 +15,7 @@ import { TokensNavigation } from '../tokens/TokensNavigation';
 export const Nfts = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
 
     const dispatch = useDispatch();
 

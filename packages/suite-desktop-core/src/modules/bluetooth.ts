@@ -1,5 +1,4 @@
 import { exec } from 'child_process';
-import { ipcMain } from 'electron';
 
 import { isMacOs } from '@trezor/env-utils';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
@@ -13,6 +12,7 @@ import {
 import { createLazy, throwError } from '@trezor/utils';
 
 import type { ModuleInit } from './module';
+import { looselyTypedIpcMain } from '../ipcMain';
 import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
 export const SERVICE_NAME = '@trezor/transport-bluetooth';
@@ -40,6 +40,8 @@ export const init: ModuleInit = () => {
         error: (...args) => logger.error(SERVICE_NAME, args as string[]),
     };
 
+    const createHeaders = (token: string) => ({ Authorization: `Bearer ${token}` });
+
     const lazyBluetooth = createLazy(
         async () => {
             const [port] = await getFreePort();
@@ -49,6 +51,7 @@ export const init: ModuleInit = () => {
             const client = new BluetoothIpc({
                 url: process.getUrl(),
                 logger: desktopLogger,
+                headers: createHeaders(process.getToken()),
             });
 
             return { process, client };
@@ -69,6 +72,7 @@ export const init: ModuleInit = () => {
                   id: 'BluetoothTransport',
                   url: api.process.getUrl(),
                   logger: desktopLogger,
+                  headers: createHeaders(api.process.getToken()),
                   // writeWithResponse: isMacOs(),
                   // writeWithDelay: isWindows(),
               })
@@ -132,7 +136,7 @@ export const init: ModuleInit = () => {
         },
     };
 
-    const unregisterProxy = createIpcProxyHandler(ipcMain, 'Bluetooth', proxyOptions);
+    const unregisterProxy = createIpcProxyHandler(looselyTypedIpcMain, 'Bluetooth', proxyOptions);
     const onLoad = () => {
         bluetoothModuleState.getTransport = getBluetoothTransport;
     };

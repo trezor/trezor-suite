@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { QuestionFilledIcon, ShieldWarningIcon, WarningFilledIcon } from '@trezor/icons';
 
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
 import { CheckItem } from 'src/components/suite/CheckItem';
-import { useDispatch } from 'src/hooks/suite';
 
 type DeviceAuthenticityOptOutModalProps = {
     onCancel: () => void;
@@ -43,7 +43,7 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
             intent="warning"
         >
             <H3>
-                <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE" />
+                <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_TITLE" />
             </H3>
             <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3" />

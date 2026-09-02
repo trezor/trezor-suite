@@ -1,6 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
@@ -9,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Button, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type EarnActivateButtonProps = {
     symbol: NetworkSymbol;
@@ -46,7 +47,6 @@ export const EarnActivateButton = ({ symbol }: EarnActivateButtonProps) => {
                 type: 'add-account',
                 device,
                 symbol,
-                noRedirect: true,
                 isCoinjoinDisabled: true,
                 isBackClickDisabled: true,
             }),

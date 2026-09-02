@@ -2,10 +2,10 @@ import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
 import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
 import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
 

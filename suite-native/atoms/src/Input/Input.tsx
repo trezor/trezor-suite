@@ -9,8 +9,6 @@ import {
 import { type TextInput as GHTextInput } from 'react-native-gesture-handler';
 import Animated, {
     Easing,
-    FadeIn,
-    FadeOut,
     interpolate,
     useAnimatedStyle,
     useSharedValue,
@@ -24,12 +22,11 @@ import { Icon, type IconName, isIconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { nativeSpacings } from '@trezor/theme';
 
+import { AnimatedBox } from '../AnimatedBox';
 import { Box } from '../Box';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
 
-const LABEL_ANIMATION_DURATION = 200;
-const labelEnteringAnimation = FadeIn.duration(LABEL_ANIMATION_DURATION);
-const labelExitingAnimation = FadeOut.duration(LABEL_ANIMATION_DURATION);
+const PLACEHOLDER_ANIMATION_DURATION = 200;
 
 type InputBaseProps = {
     value: string;
@@ -106,15 +103,13 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
             {
                 condition: hasWarning,
                 style: {
-                    borderColor: utils.colors.legacyBackgroundAlertYellowBold,
-                    borderWidth: utils.borders.widths.large,
+                    borderColor: utils.colors.borderWarning,
                 },
             },
             {
                 condition: hasError,
                 style: {
                     borderColor: utils.colors.elementBorderFieldError,
-                    backgroundColor: utils.colors.legacyBackgroundAlertRedSubtleOnElevation1,
                 },
             },
         ],
@@ -228,6 +223,23 @@ const useInputLabelAnimationStyles = ({
     };
 };
 
+/**
+ * The placeholder stays mounted and only fades. Mounting and unmounting a view that has an
+ * `exiting` animation makes Reanimated defer its removal, so a re-mount within the animation
+ * duration crashes Fabric with "addViewAt: failed to insert view".
+ */
+const usePlaceholderAnimatedStyle = (isPlaceholderVisible: boolean) => {
+    const opacity = useSharedValue(0);
+
+    useEffect(() => {
+        opacity.value = withTiming(isPlaceholderVisible ? 1 : 0, {
+            duration: PLACEHOLDER_ANIMATION_DURATION,
+        });
+    }, [isPlaceholderVisible, opacity]);
+
+    return useAnimatedStyle(() => ({ opacity: opacity.value }));
+};
+
 export const Input = forwardRef<TextInput, InputProps>(
     (
         {
@@ -271,6 +283,7 @@ export const Input = forwardRef<TextInput, InputProps>(
         };
 
         const shouldShowPlaceholder = !!placeholder && S.isEmpty(value);
+        const animatedPlaceholderStyle = usePlaceholderAnimatedStyle(shouldShowPlaceholder);
 
         return (
             <>
@@ -301,14 +314,14 @@ export const Input = forwardRef<TextInput, InputProps>(
                             {label}
                         </Animated.Text>
                     )}
-                    {shouldShowPlaceholder && (
-                        <Animated.View
-                            entering={labelEnteringAnimation}
-                            exiting={labelExitingAnimation}
-                            style={applyStyle(placeholderStyle)}
+                    {!!placeholder && (
+                        <AnimatedBox
+                            aria-hidden={!shouldShowPlaceholder}
+                            pointerEvents="none"
+                            style={[applyStyle(placeholderStyle), animatedPlaceholderStyle]}
                         >
                             <Text color="contentSecondary">{placeholder}</Text>
-                        </Animated.View>
+                        </AnimatedBox>
                     )}
                     <Box flexDirection="row" alignItems="center">
                         <InputComponent

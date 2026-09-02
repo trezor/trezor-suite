@@ -1,9 +1,9 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 
+import { type VirtualItem, useVirtualizer } from '@tanstack/react-virtual';
 import styled from 'styled-components';
 
 import { type TimerId } from '@trezor/type-utils';
-import { getIndexOrThrow } from '@trezor/utils';
 
 import {
     type FrameProps,
@@ -43,208 +43,205 @@ const Container = styled.div<ContainerProps>`
         typeof $minHeight === 'number' ? `${$minHeight}px` : $minHeight};
 
     width: 100%;
-    overflow-y: auto;
+
+    /* Only the vertical axis is virtualized, and leaving the horizontal one at its default would
+    compute to auto next to overflow-y: auto and let a stray scrollbar appear. */
+    overflow: hidden auto;
     position: relative;
     ${withFrameProps};
 `;
 const Content = styled.div`
     position: relative;
     overflow: hidden;
-    will-change: contents;
+    will-change: scroll-position;
 `;
 const Item = styled.div`
     position: absolute;
     width: 100%;
     left: 0;
+    top: 0;
 `;
 
 export type BaseItemProps = {
     height: number;
 };
 
-const calculateItemHeight = <T extends BaseItemProps>(item: T): number => item.height;
+const SCROLL_END_DEBOUNCE_MS = 1000;
 
-type VirtualizedListProps<T extends BaseItemProps> = AllowedFrameProps & {
+export type VirtualizedListProps<T extends BaseItemProps> = AllowedFrameProps & {
     items: Array<T>;
-    onScroll?: (e: Event) => void;
-    onScrollEnd: () => void;
+
+    /**
+     * Rendered inside the element sized to the whole list, which is what the scroll shadow
+     * sentinels of `useScrollShadow` have to be positioned against.
+     */
+    scrollSentinels?: React.ReactNode;
+
+    /**
+     * Called while scrolling once rendering reaches `loadMoreBufferCount` items from the end.
+     * Only needed by lists that page more items in.
+     */
+    onScrollEnd?: () => void;
     listHeight: number | string;
     listMinHeight: number | string;
-    ref?: React.Ref<HTMLDivElement>;
-    renderItem: (item: T, index: number) => React.ReactNode;
+    ref?: React.RefObject<HTMLDivElement | null>;
+    renderItem: (item: T, virtualItem: VirtualItem) => React.ReactNode;
 
     /**
-     * @default 20
+     * Identity of an item. Worth passing for lists that measure their items, as it is what makes
+     * a measured height stay with its item when the list is filtered or reordered.
+     *
+     * @default the index of the item
      */
-    visibleItemsCount?: number;
+    getItemKey?: (item: T, index: number) => string | number;
 
     /**
-     * @default 100
+     * Space between two items.
+     *
+     * @default 0
      */
-    beforeAfterBufferCount?: number;
+    gap?: number;
 
     /**
+     * Items rendered above and below the visible window.
+     *
+     * @default 8
+     */
+    overscan?: number;
+
+    /**
+     * How close to the end of the list rendering has to get before `onScrollEnd` fires.
+     *
      * @default 100
      */
     loadMoreBufferCount?: number;
 
     /**
-     * @default 40
-     */
-    estimatedItemHeight?: number;
-
-    /**
      * @default true
      */
     resetScrollOnItemsChange?: boolean;
+
+    /**
+     * Whether changing `items` drops the heights measured from the rendered items and falls back
+     * to their `height` again. Lists where `height` is the real height want this, lists where it
+     * is only an estimate do not — for them it would throw away every height they have measured
+     * so far on every change.
+     *
+     * @default true
+     */
+    resetItemHeightsOnItemsChange?: boolean;
+
+    /**
+     * Use ResizeObserver to measure dimensions of each item, overrides `height` property of each item.
+     */
+    measureItems?: boolean;
 };
 
 export function VirtualizedListComponent<T extends BaseItemProps>({
-    items: initialItems,
-    onScroll,
+    items,
+    scrollSentinels,
     onScrollEnd,
     listHeight,
     listMinHeight,
     renderItem,
+    getItemKey,
     ref,
 
-    visibleItemsCount = 20,
-    beforeAfterBufferCount = 100,
+    gap,
+    overscan = 8,
     loadMoreBufferCount = 100,
-    estimatedItemHeight = 40,
 
     resetScrollOnItemsChange = true,
+    resetItemHeightsOnItemsChange = true,
+    measureItems = false,
     ...rest
 }: VirtualizedListProps<T>) {
-    const newRef = useRef<HTMLDivElement>(null);
-    const containerRef = (ref as React.RefObject<HTMLDivElement>) || newRef;
-    const [items, setItems] = useState(initialItems);
-    const [indexes, setIndexes] = useState({
-        startIndex: 0,
-        endIndex: visibleItemsCount,
-    });
-    const debouncedOnScrollEnd = useMemo(() => debounce(onScrollEnd, 1000), [onScrollEnd]);
+    const internalRef = useRef<HTMLDivElement | null>(null);
+    const containerRef = ref ?? internalRef;
 
-    const resetScroll = useCallback(() => {
-        if (!containerRef.current) return;
+    const getVirtualItemKey = useCallback(
+        (index: number) => {
+            const item = items[index];
 
-        containerRef.current.scrollTop = 0;
-    }, [containerRef]);
-
-    useEffect(() => {
-        setItems(initialItems);
-
-        if (resetScrollOnItemsChange) {
-            resetScroll();
-        }
-    }, [initialItems, resetScroll, resetScrollOnItemsChange]);
-
-    const itemHeights = useMemo(() => items.map(item => calculateItemHeight(item)), [items]);
-    const totalHeight = useMemo(
-        () => itemHeights.reduce((acc, height) => acc + height, 0),
-        [itemHeights],
-    );
-
-    // TODO: use https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API, it's more efficient
-    const handleScroll = useCallback(
-        (e: Event) => {
-            if (!containerRef.current) return;
-            const { scrollTop, clientHeight } = containerRef.current;
-            let offset = 0;
-            let newStartIndex = 0;
-
-            for (let i = 0; i < itemHeights.length; i++) {
-                // index is provably valid by loop bound
-                const height = getIndexOrThrow(itemHeights, i);
-                if (offset + height >= scrollTop) {
-                    newStartIndex = i;
-                    break;
-                }
-                offset += height;
-            }
-
-            newStartIndex = Math.max(0, newStartIndex - beforeAfterBufferCount);
-
-            let newEndIndex = newStartIndex;
-            let visibleHeight = 0;
-            const containerHeight = clientHeight;
-
-            while (
-                newEndIndex < items.length &&
-                visibleHeight < containerHeight + beforeAfterBufferCount * estimatedItemHeight
-            ) {
-                // newEndIndex is provably valid (parallel arrays: items.length === itemHeights.length)
-                const height = getIndexOrThrow(itemHeights, newEndIndex);
-                visibleHeight += height;
-                newEndIndex++;
-            }
-            newEndIndex = Math.min(items.length, newEndIndex + beforeAfterBufferCount);
-
-            setIndexes({
-                startIndex: newStartIndex,
-                endIndex: newEndIndex,
-            });
-
-            if (newEndIndex >= items.length - loadMoreBufferCount) {
-                debouncedOnScrollEnd();
-            }
-            onScroll?.(e);
+            return item && getItemKey ? getItemKey(item, index) : index;
         },
-        [
-            beforeAfterBufferCount,
-            containerRef,
-            debouncedOnScrollEnd,
-            estimatedItemHeight,
-            itemHeights,
-            items.length,
-            loadMoreBufferCount,
-            onScroll,
-        ],
+        [items, getItemKey],
     );
 
-    useEffect(() => {
-        const container = containerRef.current;
-        if (container) {
-            container.addEventListener('scroll', handleScroll, { passive: true });
+    const debouncedOnScrollEnd = useMemo(() => {
+        if (!onScrollEnd) return undefined;
 
-            return () => container.removeEventListener('scroll', handleScroll);
+        return debounce(onScrollEnd, SCROLL_END_DEBOUNCE_MS);
+    }, [onScrollEnd]);
+
+    // eslint-disable-next-line react-hooks/incompatible-library
+    const virtualizer = useVirtualizer({
+        count: items.length,
+        getScrollElement: () => containerRef.current,
+        estimateSize: index => items[index]?.height ?? 0,
+        getItemKey: getVirtualItemKey,
+        gap,
+        overscan,
+        // The virtualizer tracks the scroll offset itself and reports here whenever the rendered
+        // window moves. Asking for items only while it is scrolling keeps a list short enough to
+        // have its own end already rendered from asking for more of them forever.
+        onChange: instance => {
+            if (!instance.isScrolling) {
+                return;
+            }
+
+            const lastRenderedIndex = instance.getVirtualIndexes().at(-1);
+
+            if (
+                lastRenderedIndex !== undefined &&
+                lastRenderedIndex >= instance.options.count - loadMoreBufferCount
+            ) {
+                debouncedOnScrollEnd?.();
+            }
+        },
+    });
+
+    useEffect(() => {
+        // The virtualizer caches item sizes and does not watch `estimateSize`, so it has to be
+        // told to recalculate them whenever the items — and with them their heights — change.
+        if (resetItemHeightsOnItemsChange) {
+            virtualizer.measure();
         }
-    }, [containerRef, handleScroll]);
+
+        if (resetScrollOnItemsChange && containerRef.current) {
+            containerRef.current.scrollTop = 0;
+        }
+    }, [items, resetItemHeightsOnItemsChange, resetScrollOnItemsChange, virtualizer, containerRef]);
 
     const frameProps = pickAndPrepareFrameProps(
         rest,
         allowedVirtualizedListFrameProps,
     ) as TransientProps<AllowedFrameProps>;
 
-    const firstItemTop = useMemo(
-        () => itemHeights.slice(0, indexes.startIndex).reduce((acc, h) => acc + h, 0),
-        [itemHeights, indexes.startIndex],
-    );
-
     return (
-        <Container ref={ref} $height={listHeight} $minHeight={listMinHeight} {...frameProps}>
-            <Content style={{ height: `${totalHeight}px` }}>
-                {/* TODO: use https://react-window.vercel.app/list/variable-row-height or something that's already optimized */}
-                {itemHeights.slice(indexes.startIndex, indexes.endIndex).map((height, index) => {
-                    const itemIndex = indexes.startIndex + index;
+        <Container
+            ref={containerRef}
+            $height={listHeight}
+            $minHeight={listMinHeight}
+            {...frameProps}
+        >
+            <Content style={{ height: `${virtualizer.getTotalSize()}px` }}>
+                {scrollSentinels}
+                {virtualizer.getVirtualItems().map(virtualItem => {
+                    const item = items[virtualItem.index];
 
-                    if (!items[itemIndex]) return null;
-
-                    const itemTop =
-                        firstItemTop +
-                        itemHeights
-                            .slice(indexes.startIndex, itemIndex)
-                            .reduce((acc, h) => acc + h, 0);
+                    if (!item) return null;
 
                     return (
                         <Item
-                            key={itemIndex}
+                            key={virtualItem.key}
+                            ref={measureItems ? virtualizer.measureElement : undefined}
+                            data-index={virtualItem.index}
                             style={{
-                                transform: `translateY(${itemTop}px)`,
-                                height,
+                                transform: `translateY(${virtualItem.start}px)`,
                             }}
                         >
-                            {renderItem(items[itemIndex], itemIndex)}
+                            {renderItem(item, virtualItem)}
                         </Item>
                     );
                 })}

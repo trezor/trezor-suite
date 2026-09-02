@@ -11,6 +11,7 @@ export type ElectronPlatformEncryptionDeps = {
     desktopApi: DesktopApi;
 };
 
+// eslint-disable-next-line local-rules/enforce-di-factory-contracts -- Concrete implementation of the abstract PlatformEncryption contract.
 export const createElectronPlatformEncryption = (
     deps: ElectronPlatformEncryptionDeps,
 ): PlatformEncryption => ({

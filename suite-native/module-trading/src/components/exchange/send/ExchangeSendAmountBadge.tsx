@@ -4,7 +4,7 @@ import { invariant } from '@suite-common/suite-utils';
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { Badge } from '@suite-native/atoms';
-import { useField } from '@suite-native/forms';
+import { useField, useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { type TradingRootState, selectAmountInBaseFiatCurrency } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -35,16 +35,16 @@ const ExchangeSendFiatAmountBadge = ({ amount, asset }: ExchangeSendFiatAmountBa
 };
 
 export const ExchangeSendAmountBadge = () => {
-    const { watch } = useExchangeFormContext();
     const isLoading = useSelector(selectTradingExchangeIsLoading);
+    const { control } = useExchangeFormContext();
+    const asset = useWatch({ control, name: 'sendAsset' });
 
     const { errorMessage, hasError, value } = useField({ name: 'sendCryptoAmount' });
     if (!isLoading && hasError) {
         return <Badge label={errorMessage} intent="critical" size="small" />;
     }
 
-    const asset = watch('sendAsset');
-    if (!asset || !value) {
+    if (!value || !asset) {
         return null;
     }
 

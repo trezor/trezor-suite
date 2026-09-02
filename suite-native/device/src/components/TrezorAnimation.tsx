@@ -4,18 +4,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { VideoView } from 'expo-video';
 import type { VideoPlayer } from 'expo-video/src/VideoPlayer.types';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { useNativeStyles } from '@trezor/styles-native';
 
-const ANIMATION_WIDTH = 2000;
-const ANIMATION_HEIGHT = 2667;
-
-const animationStyle = prepareNativeStyle(({ borders }) => ({
-    flexShrink: 1,
-    alignSelf: 'center',
-    width: '100%',
-    aspectRatio: ANIMATION_WIDTH / ANIMATION_HEIGHT,
-    borderRadius: borders.radii.r16,
-}));
+import { animationStyle } from './TrezorAnimation.styles';
 
 type TrezorAnimationProps = {
     player: VideoPlayer;

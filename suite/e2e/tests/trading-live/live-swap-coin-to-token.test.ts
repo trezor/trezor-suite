@@ -1,4 +1,5 @@
 import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -51,7 +52,7 @@ test.describe(
                     },
                     buyAsset: {
                         searchFilter: 'Solana',
-                        assetCryptoId: getCryptoId('sol'),
+                        assetCryptoId: getCryptoId(asNetworkSymbol('sol')),
                     },
 
                     selectReceiveAddress: async () => {
@@ -85,8 +86,10 @@ test.describe(
                     buyAsset: {
                         searchFilter: 'USDC',
                         networkFilter: 'base',
-                        tokenSymbol: 'USDC',
-                        networkSymbol: 'base',
+                        assetCryptoId: getCryptoId(
+                            asNetworkSymbol('base'),
+                            '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+                        ),
                     },
 
                     selectReceiveAddress: async () => {
@@ -107,7 +110,7 @@ test.describe(
 
             await test.step('Initiate send', async () => {
                 await tradingPage.confirmation.initiateSendConfirmation();
-                await expect(devicePrompt.headerParagraph).toContainText(accountLabel);
+                await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
                 await expect(devicePrompt.outputValueOf('address')).toHaveValidAddress('sol');
 
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(

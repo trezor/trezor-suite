@@ -1,0 +1,205 @@
+import { combineReducers } from '@reduxjs/toolkit';
+import { type CryptoId, type SellFiatTradeQuoteRequest } from 'invity-api';
+
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestStore } from '@suite-common/test-utils';
+
+import { type SellInfo, type TradingSellState } from '../../reducers/sellReducer';
+import { initialState } from '../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
+import { sellUtilsFixtures } from '../../utils/sell/__fixtures__/sellUtils';
+
+import { sellThunks } from './index';
+
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+
+describe('selectSellQuoteThunk', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    jest.mock('../../tradeApi');
+
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
+
+    const getDataMocks = () => {
+        const quote = sellUtilsFixtures.MIN_MAX_QUOTES_LOW[0];
+        if (!quote) throw new Error('Missing test fixture');
+        const quoteExchange = quote.exchange as string;
+        const cryptoCurrency = quote.cryptoCurrency as CryptoId;
+        const fiatCurrency = quote.fiatCurrency as string;
+
+        const sellInfo: SellInfo = {
+            supportedCryptoCurrencies: [cryptoCurrency],
+            supportedFiatCurrencies: [fiatCurrency],
+
+            providerInfos: {
+                [quoteExchange]: {
+                    name: quoteExchange,
+                    companyName: quoteExchange,
+                    logo: quoteExchange,
+                    isActive: true,
+                    statusUrl: 'https://test.io/sell/txs/{{orderId}}',
+                    supportUrl: 'https://support.test.io',
+                    tradedCoins: ['bitcoin' as CryptoId],
+                    tradedFiatCurrencies: ['CZK', 'USD'],
+                    type: 'Fiat',
+                    supportedCountries: ['CZ'],
+                    flow: 'BANK_ACCOUNT',
+                    supportedSubdivisions: {},
+                },
+            },
+            country: 'CZ',
+        };
+
+        const quotesRequest: SellFiatTradeQuoteRequest = {
+            fiatCurrency,
+            cryptoCurrency,
+            cryptoStringAmount: quote.cryptoStringAmount,
+            amountInCrypto: false,
+        };
+
+        return {
+            quote,
+            state: {
+                sellInfo,
+                quotesRequest,
+            },
+        };
+    };
+
+    const getMocks = (initialSellState?: Partial<TradingSellState>) => {
+        const store = createTestStore({
+            extra: undefined,
+            reducer: combineReducers({
+                wallet: combineReducers({
+                    trading: tradingReducer,
+                }),
+            }),
+            preloadedState: {
+                wallet: {
+                    trading: {
+                        ...initialState,
+                        sell: {
+                            ...initialState.sell,
+                            ...(initialSellState ?? {}),
+                        },
+                    },
+                },
+            },
+        });
+
+        const mockNextStep = jest.fn();
+
+        return {
+            store,
+            mockNextStep,
+        };
+    };
+
+    it('should successfully select quote', async () => {
+        const { quote, state } = getDataMocks();
+        const { store, mockNextStep } = getMocks(state);
+
+        await store
+            .dispatch(
+                sellThunks.selectQuoteThunk({
+                    quote,
+                    nextStep: mockNextStep,
+                }),
+            )
+            .unwrap();
+
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(quote);
+    });
+
+    describe('should not be possible to save selected quote', () => {
+        it('when sellInfo is undefined', async () => {
+            const { quote, state } = getDataMocks();
+            const { store, mockNextStep } = getMocks({
+                ...state,
+                sellInfo: undefined,
+            });
+
+            await store
+                .dispatch(
+                    sellThunks.selectQuoteThunk({
+                        quote,
+                        nextStep: mockNextStep,
+                    }),
+                )
+                .unwrap();
+
+            expect(mockNextStep).toHaveBeenCalledTimes(0);
+            expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
+        });
+
+        it('when quote exchange is undefined', async () => {
+            const { quote, state } = getDataMocks();
+            const { store, mockNextStep } = getMocks({
+                ...state,
+                quotesRequest: undefined,
+            });
+
+            await store
+                .dispatch(
+                    sellThunks.selectQuoteThunk({
+                        quote: {
+                            ...quote,
+                            exchange: undefined,
+                        },
+                        nextStep: mockNextStep,
+                    }),
+                )
+                .unwrap();
+
+            expect(mockNextStep).toHaveBeenCalledTimes(0);
+            expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
+        });
+
+        it('when quoteRequest is undefined', async () => {
+            const { quote, state } = getDataMocks();
+            const { store, mockNextStep } = getMocks({
+                ...state,
+                quotesRequest: undefined,
+            });
+
+            await store
+                .dispatch(
+                    sellThunks.selectQuoteThunk({
+                        quote,
+                        nextStep: mockNextStep,
+                    }),
+                )
+                .unwrap();
+
+            expect(mockNextStep).toHaveBeenCalledTimes(0);
+            expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
+        });
+
+        it('when quote cryptoCurrency is undefined', async () => {
+            const { quote, state } = getDataMocks();
+            const { store, mockNextStep } = getMocks(state);
+
+            await store
+                .dispatch(
+                    sellThunks.selectQuoteThunk({
+                        quote: {
+                            ...quote,
+                            cryptoCurrency: undefined,
+                        },
+                        nextStep: mockNextStep,
+                    }),
+                )
+                .unwrap();
+
+            expect(mockNextStep).toHaveBeenCalledTimes(0);
+            expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
+        });
+    });
+});

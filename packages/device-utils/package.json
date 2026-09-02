@@ -1,7 +1,11 @@
 {
     "name": "@trezor/device-utils",
-    "version": "10.0.0-alpha.1",
+    "version": "10.0.0-beta.1",
     "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
     "license": "MIT",
     "sideEffects": false,
     "main": "src/index",

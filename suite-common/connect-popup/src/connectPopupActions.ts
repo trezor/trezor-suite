@@ -69,6 +69,8 @@ type UpdateSelectAccountPayload = Partial<
         | 'totalCandidates'
         | 'manualPhase'
         | 'manualAccountIndex'
+        | 'loadingKey'
+        | 'loadEpoch'
     >
 >;
 

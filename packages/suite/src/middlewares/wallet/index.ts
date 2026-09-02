@@ -1,27 +1,38 @@
 import type { MiddlewareAPI } from 'redux';
 
 import { coinjoinMiddleware } from '@suite/coinjoin';
+import { prepareDiscoveryMiddleware } from '@suite/discovery';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
-import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
-import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import {
+    type TokenDefinitionsMiddlewareDeps,
+    prepareTokenDefinitionsMiddleware,
+} from '@suite-common/token-definitions';
 import {
     prepareAccountsMiddleware,
     prepareBlockchainMiddleware,
     prepareFiatRatesMiddleware,
     prepareStakeMiddleware,
 } from '@suite-common/wallet-core';
-import { prepareWalletConnectMiddleware } from '@suite-common/walletconnect';
+import {
+    type WalletConnectMiddlewareDeps,
+    prepareWalletConnectMiddleware,
+} from '@suite-common/walletconnect';
 
-import { prepareDiscoveryMiddleware } from './discoveryMiddleware';
 import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
-import storageMiddleware from './storageMiddleware';
+import { storageMiddleware } from './storageMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import walletMiddleware from './walletMiddleware';
 
+export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps &
+    TokenDefinitionsMiddlewareDeps & {
+        services: SuiteSyncDep;
+    };
+
 export const getWalletMiddlewares = (
-    getExtra: () => ExtraDependencies | null,
+    getExtra: () => GetWalletMiddlewaresDeps | null,
 ): ((api: MiddlewareAPI) => any)[] => [
     prepareBlockchainMiddleware(getExtra),
     prepareAccountsMiddleware(getExtra),

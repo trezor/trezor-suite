@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type AccountKey,
     type FeeLevelLabel,
@@ -8,6 +8,7 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { useBottomSheetModal } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 
 import { getFeeAvailability } from './feeAvailability';
 import { type CustomFeeParams } from './useFeeSelection';
@@ -124,7 +125,8 @@ export const useFeeSelector = ({
         ],
     );
 
-    const feeLimitSunOverride = isTrc20 ? form.watch('customFeeLimit') : undefined;
+    const customFeeLimit = useWatch({ control: form.control, name: 'customFeeLimit' });
+    const feeLimitSunOverride = isTrc20 ? customFeeLimit : undefined;
 
     return {
         form,

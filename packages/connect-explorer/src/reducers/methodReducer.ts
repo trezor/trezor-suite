@@ -23,6 +23,12 @@ import { isFieldBasic } from '../types/common';
 
 type Action = MethodAction | TrezorConnectAction;
 
+export type MethodRootState = {
+    method: MethodState;
+};
+
+export const selectMethod = (state: MethodRootState) => state.method;
+
 // Recursively find a field in the schema (inner function)
 const findFieldsNested = (
     schema: Field<any>[],

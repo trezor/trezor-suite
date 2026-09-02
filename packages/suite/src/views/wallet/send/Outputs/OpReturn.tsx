@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { type ChangeEvent } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -33,7 +33,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
     const hexError = outputError ? outputError.dataHex : undefined;
 
     const { ref: asciiRef, ...asciiField } = register(inputAsciiName, {
-        onChange: event => {
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
             setValue(inputHexName, Buffer.from(event.target.value, 'utf-8').toString('hex'), {
                 shouldValidate: true,
             });
@@ -43,19 +43,21 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
     });
 
     const { ref: hexRef, ...hexField } = register(inputHexName, {
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+            setValue(
+                inputAsciiName,
+                isHexValid(event.target.value)
+                    ? Buffer.from(event.target.value, 'hex').toString('utf-8')
+                    : '',
+            );
+            composeTransaction(inputHexName);
+        },
         required: translationString('DATA_NOT_SET'),
         validate: (value = '') => {
             if (!isHexValid(value)) return translationString('DATA_NOT_VALID_HEX');
             if (value.length > 80 * 2) return translationString('DATA_HEX_TOO_BIG');
         },
     });
-
-    useEffect(() => {
-        setValue(
-            inputAsciiName,
-            hexValue && !hexError ? Buffer.from(hexValue, 'hex').toString('utf-8') : '',
-        );
-    }, [inputAsciiName, hexValue, hexError, setValue]);
 
     return (
         <Column gap={16}>

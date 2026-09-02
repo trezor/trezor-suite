@@ -1,7 +1,12 @@
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import {
+    type MevProtectionRootState,
+    selectIsMevProtectionFeatureEnabled,
+} from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
+    type PushSendFormTransactionThunkDeps,
+    type PushSendFormTransactionThunkState,
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectIsMevProtectionEnabled,
@@ -9,12 +14,22 @@ import {
 import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { STAKE_NATIVE_MODULE_PREFIX } from './constants';
-import { signEthereumStakingTransactionNativeThunk } from './stakeFormEthereumNativeThunks';
-import { signSolanaStakingTransactionNativeThunk } from './stakeFormSolanaNativeThunks';
+import {
+    type SignEthereumStakingTransactionNativeThunkState,
+    signEthereumStakingTransactionNativeThunk,
+} from './stakeFormEthereumNativeThunks';
+import {
+    type SignSolanaStakingTransactionNativeThunkState,
+    signSolanaStakingTransactionNativeThunk,
+} from './stakeFormSolanaNativeThunks';
 import { type SignStakeNativeRejectValue, type StakeNativeType } from './stakeNativeTypes';
 
 const LOG_PREFIX = 'signStakeTransactionNativeThunk';
 const PUSH_LOG_PREFIX = 'pushStakeTransactionNativeThunk';
+
+export type SignStakeTransactionNativeThunkState = AccountsRootState &
+    SignEthereumStakingTransactionNativeThunkState &
+    SignSolanaStakingTransactionNativeThunkState;
 
 export const signStakeTransactionNativeThunk = createThunk<
     void,
@@ -23,10 +38,13 @@ export const signStakeTransactionNativeThunk = createThunk<
         stakeType: StakeNativeType;
         precomposedTransaction: PrecomposedTransactionFinal;
     },
-    { rejectValue: SignStakeNativeRejectValue }
+    {
+        rejectValue: SignStakeNativeRejectValue;
+        state: SignStakeTransactionNativeThunkState;
+    }
 >(`${STAKE_NATIVE_MODULE_PREFIX}/${LOG_PREFIX}`, async (args, thunkApi) => {
     const { accountKey } = args;
-    const account = selectAccountByKey(thunkApi.getState() as AccountsRootState, accountKey);
+    const account = selectAccountByKey(thunkApi.getState(), accountKey);
 
     if (!account) {
         console.error(`${LOG_PREFIX}: Account not found.`);
@@ -65,13 +83,23 @@ export const signStakeTransactionNativeThunk = createThunk<
     });
 });
 
+export type PushStakeTransactionNativeThunkState = AccountsRootState &
+    MevProtectionRootState &
+    PushSendFormTransactionThunkState;
+
+export type PushStakeTransactionNativeThunkDeps = PushSendFormTransactionThunkDeps;
+
 export const pushStakeTransactionNativeThunk = createThunk<
     { txid: string },
     { accountKey: AccountKey },
-    { rejectValue: SignStakeNativeRejectValue }
+    {
+        rejectValue: SignStakeNativeRejectValue;
+        state: PushStakeTransactionNativeThunkState;
+        extra: PushStakeTransactionNativeThunkDeps;
+    }
 >(`${STAKE_NATIVE_MODULE_PREFIX}/${PUSH_LOG_PREFIX}`, async ({ accountKey }, thunkApi) => {
     const { dispatch, getState, rejectWithValue } = thunkApi;
-    const account = selectAccountByKey(getState() as AccountsRootState, accountKey);
+    const account = selectAccountByKey(getState(), accountKey);
 
     if (!account) {
         console.error(`${PUSH_LOG_PREFIX}: Account not found.`);

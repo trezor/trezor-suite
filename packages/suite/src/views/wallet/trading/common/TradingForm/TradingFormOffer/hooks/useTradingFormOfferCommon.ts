@@ -1,7 +1,5 @@
-import type { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
-
 import { type TranslationKey } from '@suite/intl';
-import { selectTorState } from '@suite/tor';
+import { selectIsTorEnabled } from '@suite/tor';
 import {
     type TradingType,
     selectTradingProviderCompanyName,
@@ -14,21 +12,15 @@ import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    getCryptoQuoteAmountProps,
     getSelectedCryptoId,
-    getSelectedQuote,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import {
     tradingGetAmountLabels,
     tradingGetSectionActionLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
-
-type TradingQuoteByType = {
-    buy: BuyTrade;
-    sell: SellFiatTrade;
-    exchange: ExchangeTrade;
-};
+import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
+import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 export const useTradingFormOfferCommon = <T extends TradingType>() => {
     const context = useTradingFormContext();
@@ -42,14 +34,14 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
 
     const { amountInCrypto } = watch();
 
-    const { isTorEnabled } = useSelector(selectTorState);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
     const areFeesLoading = useSelector(suiteState =>
         selectAreFeesLoading(suiteState, account?.symbol),
     );
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const quote = getSelectedQuote(context) as TradingQuoteByType[T] | undefined;
-    const quoteAmounts = getCryptoQuoteAmountProps(quote, context);
+    const quote = useTradingSelectedQuote(type as T);
+    const quoteAmounts = useTradingQuoteAmounts(quote, type);
     const selectedCryptoId = getSelectedCryptoId(context);
 
     const sendAmount =

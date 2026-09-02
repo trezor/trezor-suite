@@ -13,9 +13,10 @@ import { getConvertedOrDefaultFeeInfo, isEip1559 } from '@suite-common/wallet-ut
 import { type FeeLevel } from '@trezor/connect';
 
 import { feesActions } from './feesActions';
+import { type FeesRootState, selectFees } from './feesSelectors';
 import { updateFeeInfoThunk } from './feesThunks';
 
-export type FeesRootState = { wallet: { fees: FeesState } };
+export { type FeesRootState, selectFees, selectRawNetworkFeeInfo } from './feesSelectors';
 
 export const feesInitialState: FeesState = {};
 
@@ -42,17 +43,6 @@ export const feesReducer = createReducer<FeesState>(feesInitialState, builder =>
 
 // Create app selector with WeakMap memoization since we'll be using parameters
 const createMemoizedSelector = createWeakMapSelector.withTypes<FeesRootState>();
-
-// Base selector for fees state
-export const selectFees = (state: FeesRootState) => state.wallet.fees;
-
-/**
- * Returns raw feeInfo per network
- */
-export const selectRawNetworkFeeInfo = createMemoizedSelector(
-    [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
-    (fees, symbol): FeeInfo | undefined => (symbol !== undefined ? fees[symbol]?.data : undefined),
-);
 
 /**
  * Returns feeInfo per network, cleaned up, and for Ethereum also converted from wei to Gwei.

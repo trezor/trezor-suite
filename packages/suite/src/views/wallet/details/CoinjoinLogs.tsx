@@ -4,7 +4,7 @@ import { Card, Column } from '@trezor/components';
 import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 export const CoinjoinLogs = () => {
     const isDebug = useSelector(selectIsDebugModeActive);

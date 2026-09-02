@@ -1,24 +1,22 @@
-import { type ReactNode, useRef, useState } from 'react';
+import { type ReactNode, memo, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { ScrollContext } from '@suite/router';
 import { Modal, variables } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
-import { Metadata } from 'src/components/suite/Metadata';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { DiscoveryProgress } from 'src/components/wallet';
-import { HEADER_HEIGHT_NUMERIC, SUBPAGE_NAV_HEIGHT_NUMERIC } from 'src/constants/suite/layout';
-import { useLayoutSize } from 'src/hooks/suite';
-import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
-import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
-import { LayoutContext, type LayoutContextPayload } from 'src/support/suite/LayoutContext';
 
 import { ContentContainer } from '../ContentContainer';
 import { AddPassphraseWalletFlow } from './AddPassphraseWalletFlow';
+import { AnchorHighlightHandler } from './AnchorHighlightHandler';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
+import { LayoutPayloadProvider } from './LayoutPayloadProvider';
+import { AboveTabletOnly, BelowTabletOnly } from './LayoutSizeOnly';
+import { LayoutFooterSlot, LayoutHeaderSlot, LayoutMetadata } from './LayoutSlots';
 import { PowerMonitorManager } from './PowerMonitor/PowerMonitor';
+import { ScrollProvider } from './ScrollProvider';
 import { Sidebar } from './Sidebar/Sidebar';
 import { SwitchDeviceLayer } from './SwitchDeviceLayer';
 import { useResponsiveContextOnChange } from './useResponsiveContextOnChange';
@@ -83,8 +81,6 @@ type MainContentProps = {
     children: ReactNode;
 };
 
-const ANCHOR_SCROLL_OFFSET = 30;
-
 export const MainContent = ({ children }: MainContentProps) => {
     const ref = useRef<HTMLDivElement>(null);
 
@@ -98,43 +94,47 @@ interface SuiteLayoutProps {
     ['data-testid']?: string;
 }
 
-export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutProps) => {
-    const [{ title, layoutHeader, layoutFooter }, setLayoutPayload] =
-        useState<LayoutContextPayload>({});
-
-    const { isBelowTablet } = useLayoutSize();
+/**
+ * Memoised because it is the app root of every page: `Preloader` re-renders on a long list of
+ * store subscriptions, and without this every one of those re-renders would walk the whole
+ * layout — sidebar, banners, page. `children` comes from `Preloader`'s own props, so it stays
+ * referentially stable and React can bail out here.
+ */
+export const SuiteLayout = memo(({ children, 'data-testid': dataTest }: SuiteLayoutProps) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
-    const { scrollRef } = useResetScrollOnUrl();
-    const topOffset = HEADER_HEIGHT_NUMERIC + SUBPAGE_NAV_HEIGHT_NUMERIC + ANCHOR_SCROLL_OFFSET;
-
-    useClearAnchorHighlightOnClick(wrapperRef);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     return (
-        <ScrollContext.Provider value={{ scrollRef, topOffset }}>
+        <ScrollProvider scrollRef={scrollRef}>
             <Wrapper ref={wrapperRef} data-testid="@suite-layout">
+                <AnchorHighlightHandler elementRef={wrapperRef} />
                 <PageWrapper>
                     <Modal.Provider>
-                        <Metadata title={title} />
+                        <LayoutPayloadProvider>
+                            <LayoutMetadata />
 
-                        <ModalSwitcher />
-                        <SwitchDeviceLayer />
-                        <AddPassphraseWalletFlow />
+                            <ModalSwitcher />
+                            <SwitchDeviceLayer />
+                            <AddPassphraseWalletFlow />
 
-                        <PowerMonitorManager />
+                            <PowerMonitorManager />
 
-                        {isBelowTablet && <CoinjoinBars />}
+                            <BelowTabletOnly>
+                                <CoinjoinBars />
+                            </BelowTabletOnly>
 
-                        <DiscoveryProgress />
+                            <DiscoveryProgress />
 
-                        <LayoutContext.Provider value={setLayoutPayload}>
                             <Body data-testid="@suite-layout/body">
                                 <Columns>
                                     <Sidebar />
                                     <MainContent>
-                                        {!isBelowTablet && <CoinjoinBars />}
+                                        <AboveTabletOnly>
+                                            <CoinjoinBars />
+                                        </AboveTabletOnly>
                                         <SuiteBanners />
                                         <AppWrapper data-testid="@app" ref={scrollRef}>
-                                            {layoutHeader}
+                                            <LayoutHeaderSlot />
 
                                             <ContentContainer
                                                 data-testid={
@@ -145,18 +145,22 @@ export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutPr
                                             >
                                                 {children}
                                             </ContentContainer>
-                                            {layoutFooter}
+                                            <LayoutFooterSlot />
                                         </AppWrapper>
                                     </MainContent>
                                 </Columns>
                             </Body>
-                        </LayoutContext.Provider>
-                        {!isBelowTablet && <GuideButton />}
+                            <AboveTabletOnly>
+                                <GuideButton />
+                            </AboveTabletOnly>
+                        </LayoutPayloadProvider>
                     </Modal.Provider>
                 </PageWrapper>
 
                 <GuideRouter />
             </Wrapper>
-        </ScrollContext.Provider>
+        </ScrollProvider>
     );
-};
+});
+
+SuiteLayout.displayName = 'SuiteLayout';

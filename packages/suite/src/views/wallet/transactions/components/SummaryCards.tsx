@@ -74,7 +74,7 @@ export const SummaryCards = ({
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
     // Aggregate values from shown graph data.
-    const txsFromData = data.reduce((acc, d) => (acc += d.txs), 0);
+    const txsFromData = data.reduce((acc, d) => acc + d.txs, 0);
     // only fall back to account.history.total before graph data has loaded.
     const numOfTransactions = isGraphDataLoaded
         ? txsFromData

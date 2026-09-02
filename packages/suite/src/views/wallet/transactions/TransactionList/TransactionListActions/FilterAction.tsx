@@ -1,13 +1,15 @@
 import { type ReactNode } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectHasActiveModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    selectIsHideSuspiciousTransactions,
-    toggleHideSuspiciousTransactions,
+    selectSuspiciousTransactionsFilter,
+    setSuspiciousTransactionsFilter,
 } from '@suite-common/wallet-core';
+import { type SuspiciousTransactionsFilter } from '@suite-common/wallet-types';
 import {
     Badge,
     Box,
@@ -26,42 +28,53 @@ import {
 import { FunnelSimpleIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
-type FilterValue = boolean | string;
+import { useSelector } from 'src/hooks/suite';
 
-type FilterOption = {
-    value: FilterValue;
+type FilterOption<TValue> = {
+    value: TValue;
     label: ReactNode;
     description?: ReactNode;
     isDefault?: boolean;
 };
 
-type FilterSection = {
+type FilterSection<TValue> = {
     key: string;
     title: ReactNode;
-    options: readonly FilterOption[];
-    value: FilterValue;
-    onChange: (value: FilterValue) => void;
+    options: readonly FilterOption<TValue>[];
+    value: TValue;
+    onChange: (value: TValue) => void;
 };
 
-const suspiciousTransactionsOptions: readonly FilterOption[] = [
+const suspiciousTransactionsOptions: readonly FilterOption<SuspiciousTransactionsFilter>[] = [
     {
-        value: false,
+        value: 'showAll',
         label: <Translation id="TR_SHOW_ALL" />,
         isDefault: true,
     },
     {
-        value: true,
+        value: 'showUnblurred',
+        label: <Translation id="TR_SHOW_UNBLURRED" />,
+        description: <Translation id="TR_SHOW_UNBLURRED_TRANSACTIONS_DESCRIPTION" />,
+    },
+    {
+        value: 'hideSuspicious',
         label: <Translation id="TR_HIDE_SUSPICIOUS" />,
         description: <Translation id="TR_HIDE_SUSPICIOUS_TRANSACTIONS_DESCRIPTION" />,
     },
 ];
 
-const getSectionDefaultValue = (section: FilterSection) =>
+const getSectionDefaultValue = <TValue,>(section: FilterSection<TValue>) =>
     section.options.find(option => option.isDefault)?.value;
 
-export const FilterAction = () => {
+type FilterActionProps = {
+    symbol: NetworkSymbol;
+};
+
+export const FilterAction = ({ symbol }: FilterActionProps) => {
     const { suspiciousTransactionsTooltipClosed } = useSelector(selectFlags);
-    const suspiciousTransactionsHidden = useSelector(selectIsHideSuspiciousTransactions);
+    const suspiciousTransactionsFilter = useSelector(state =>
+        selectSuspiciousTransactionsFilter(state, symbol),
+    );
     const hasActiveModal = useSelector(selectHasActiveModal);
     const dispatch = useDispatch();
 
@@ -72,18 +85,21 @@ export const FilterAction = () => {
     };
     const dataTest = '@wallet/accounts/hide-scam-transactions';
 
-    const handleToggleSuspiciousTransactionsRequest = (requestedHidden: FilterValue) => {
-        if (requestedHidden === Boolean(suspiciousTransactionsHidden)) return;
-        dispatch(toggleHideSuspiciousTransactions());
+    const handleSuspiciousTransactionsFilterChange = (
+        requestedFilter: SuspiciousTransactionsFilter,
+    ) => {
+        if (requestedFilter === suspiciousTransactionsFilter) return;
+
+        dispatch(setSuspiciousTransactionsFilter({ symbol, filter: requestedFilter }));
     };
 
-    const filterSections: FilterSection[] = [
+    const filterSections: FilterSection<SuspiciousTransactionsFilter>[] = [
         {
             key: 'suspiciousTransactions',
             title: <Translation id="TR_SUSPICIOUS_TRANSACTIONS" />,
             options: suspiciousTransactionsOptions,
-            value: Boolean(suspiciousTransactionsHidden),
-            onChange: handleToggleSuspiciousTransactionsRequest,
+            value: suspiciousTransactionsFilter,
+            onChange: handleSuspiciousTransactionsFilterChange,
         },
     ];
 
@@ -118,7 +134,6 @@ export const FilterAction = () => {
                         priority="secondary"
                         size="small"
                         onClick={handleClose}
-                        isInverse
                         data-testid="@hideScamTransactionsTooltip/gotIt"
                     >
                         <Translation id="TR_GOT_IT_BUTTON" />
@@ -171,7 +186,7 @@ export const FilterAction = () => {
                                                 onChange={() => {
                                                     section.onChange(option.value);
                                                 }}
-                                                data-testid={dataTest}
+                                                data-testid={`${dataTest}/${option.value}`}
                                                 verticalAlignment="center"
                                             >
                                                 <Column>

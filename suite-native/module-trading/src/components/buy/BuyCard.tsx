@@ -1,5 +1,7 @@
 import { Box, HStack } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
 import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
@@ -7,6 +9,7 @@ import { BuyFormFieldErrorBadge } from './BuyFormFieldErrorBadge';
 import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
 import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 import { TradingCard } from '../general/TradingCard';
 import { TradingCardSection } from '../general/TradingCardSection';
@@ -19,9 +22,11 @@ type BuyCardProps = {
 const BUY_CARD_TEST_ID = '@trading/buyCard';
 
 export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardProps) => {
-    const { watch } = useBuyFormContext();
-
-    const [cryptoValue, asset] = watch(['cryptoValue', 'asset']);
+    const { control } = useBuyFormContext();
+    const [cryptoValue, asset] = useWatch({ control, name: ['cryptoValue', 'asset'] });
+    const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
+    const symbol = getSymbolFromTradeableAsset(asset);
+    const cryptoValueInBaseUnit = symbol ? convertStrToBaseUnit(cryptoValue, symbol) : cryptoValue;
 
     return (
         <TradingCard
@@ -45,7 +50,10 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                 title={<Translation id="moduleTrading.selectCoin.title" />}
                 titleAction={
                     <BuyFormFieldErrorBadge fieldName="cryptoValue">
-                        <CryptoToFiatValueBadge amount={cryptoValue} cryptoId={asset?.cryptoId} />
+                        <CryptoToFiatValueBadge
+                            amount={cryptoValueInBaseUnit}
+                            cryptoId={asset?.cryptoId}
+                        />
                     </BuyFormFieldErrorBadge>
                 }
             >

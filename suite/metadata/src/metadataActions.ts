@@ -13,75 +13,51 @@ import { type WalletDescriptor } from '@trezor/device-utils';
 
 import * as METADATA from './metadataConstants';
 
-export type MetadataAction =
-    | { type: typeof METADATA.ENABLE }
-    | { type: typeof METADATA.DISABLE }
-    | { type: typeof METADATA.SET_EDITING; payload: string | undefined }
-    | { type: typeof METADATA.SET_INITIATING; payload: boolean }
-    | {
-          type: typeof METADATA.SET_DEVICE_METADATA;
-          payload: { deviceState: StaticSessionId; metadata: DeviceMetadata };
-      }
-    | {
-          type: typeof METADATA.SET_DEVICE_METADATA_PASSWORDS;
-          payload: { deviceState: StaticSessionId; metadata: DeviceMetadata };
-      }
-    | {
-          type: typeof METADATA.REMOVE_PROVIDER;
-          payload: Pick<MetadataProvider, 'clientId'>;
-      }
-    | {
-          type: typeof METADATA.ADD_PROVIDER;
-          payload: MetadataProvider;
-      }
-    | {
-          type: typeof METADATA.SET_DATA;
-          payload: {
-              provider: Omit<MetadataProvider, 'data'> & Pick<Partial<MetadataProvider>, 'data'>;
-              data: Record<string, Labels | PasswordManagerState> | undefined;
-          };
-      }
-    | {
-          type: typeof METADATA.SET_SELECTED_PROVIDER;
-          payload: {
-              dataType: DataType;
-              clientId: string | undefined;
-          };
-      }
-    | {
-          type: typeof METADATA.SET_ERROR_FOR_DEVICE;
-          payload: { deviceState: StaticSessionId; failed: boolean };
-      }
-    | {
-          type: typeof METADATA.SET_LEGACY_LABELS_MIGRATION_FOR_WALLET;
-          payload: { walletDescriptor: WalletDescriptor };
-      }
-    | {
-          type: typeof METADATA.ACCOUNT_ADD;
-          payload: Account;
-      }
-    | {
-          type: typeof METADATA.EXPORT_METADATA_TO_BIP329_FILE;
-          payload: void;
-      };
-
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
     payload,
 }));
 
-export const enableMetadata = (): MetadataAction => ({
-    type: METADATA.ENABLE,
-});
+export const enableMetadata = createAction(METADATA.ENABLE);
+export const disableMetadata = createAction(METADATA.DISABLE);
+export const addMetadataProvider = createAction<MetadataProvider>(METADATA.ADD_PROVIDER);
+export const removeMetadataProvider = createAction<Pick<MetadataProvider, 'clientId'>>(
+    METADATA.REMOVE_PROVIDER,
+);
+export const setDeviceMetadata = createAction<{
+    deviceState: StaticSessionId;
+    metadata: DeviceMetadata;
+}>(METADATA.SET_DEVICE_METADATA);
+export const setErrorForDevice = createAction<{
+    deviceState: StaticSessionId;
+    failed: boolean;
+}>(METADATA.SET_ERROR_FOR_DEVICE);
+export const setEditing = createAction<string | undefined>(METADATA.SET_EDITING);
+export const setInitiating = createAction<boolean>(METADATA.SET_INITIATING);
+export const setData = createAction<{
+    provider: Omit<MetadataProvider, 'data'> & Pick<Partial<MetadataProvider>, 'data'>;
+    data: Record<string, Labels | PasswordManagerState> | undefined;
+}>(METADATA.SET_DATA);
+export const setSelectedProvider = createAction<{
+    dataType: DataType;
+    clientId: string | undefined;
+}>(METADATA.SET_SELECTED_PROVIDER);
 
-export const setLegacyLabelsMigrationForWallet = (walletDescriptor: WalletDescriptor) => ({
-    type: METADATA.SET_LEGACY_LABELS_MIGRATION_FOR_WALLET,
-    payload: {
-        walletDescriptor,
-    },
-});
+export const setLegacyLabelsMigrationForWallet = createAction(
+    METADATA.SET_LEGACY_LABELS_MIGRATION_FOR_WALLET,
+    (walletDescriptor: WalletDescriptor) => ({ payload: { walletDescriptor } }),
+);
 
 export const metadataActions = {
     setAccountAdd,
     enableMetadata,
+    disableMetadata,
+    addMetadataProvider,
+    removeMetadataProvider,
+    setDeviceMetadata,
+    setErrorForDevice,
+    setEditing,
+    setInitiating,
+    setData,
+    setSelectedProvider,
     setLegacyLabelsMigrationForWallet,
 };

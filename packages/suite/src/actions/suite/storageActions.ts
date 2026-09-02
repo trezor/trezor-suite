@@ -1,19 +1,74 @@
-import { selectCoinjoinAccountByKey } from '@suite/coinjoin';
-import { selectSuiteSettings } from '@suite/settings';
-import { selectKnownDevices } from '@suite-common/bluetooth';
-import { deviceActions, selectDevices, selectPersistentDeviceData } from '@suite-common/device';
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
+
+import {
+    type CoinjoinRootState,
+    selectCoinjoinAccountByKey,
+    selectCoinjoinDebug,
+} from '@suite/coinjoin';
+import { type DebugRootState, selectDebug } from '@suite/debug';
+import { type FeedbackFeatureName } from '@suite/experimental';
+import { type FlagsRootState, selectFlags } from '@suite/flags';
+import { selectMetadata, selectMetadataError } from '@suite/metadata';
+import { type SuiteSettingsRootState, selectSuiteSettings } from '@suite/settings';
+import { type DesktopSuiteSyncRootState, selectSuiteSync } from '@suite/suite-sync';
+import { type AnalyticsRootState, selectAnalytics } from '@suite-common/analytics-redux';
+import { type WithBluetoothState, selectKnownDevices } from '@suite-common/bluetooth';
+import {
+    type ConnectPopupStateRootState,
+    selectConnectAppPermissions,
+} from '@suite-common/connect-popup';
+import {
+    type DeviceRootState,
+    deviceActions,
+    selectDevices,
+    selectPersistentDeviceData,
+} from '@suite-common/device';
+import { type DiscreetModeRootState, selectDiscreetMode } from '@suite-common/discreet-mode';
+import { type FeatureFeedbackRootState, selectFeatureFeedback } from '@suite-common/feedback';
+import { type FirmwareRootState, selectFirmwareChannel } from '@suite-common/firmware';
+import { type MessageSystemRootState, selectMessageSystem } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
+import { type ReceiveRootState, selectReceiveAccountState } from '@suite-common/receive';
 import { createThunk } from '@suite-common/redux-utils/';
+import {
+    type WithSuiteSyncQuotaManagerState,
+    selectSuiteSyncQuotaManager,
+} from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { selectThp } from '@suite-common/thp';
+import { type ThpRootState, selectThp } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type DefinitionType, type TokenManagementAction } from '@suite-common/token-definitions';
+import {
+    type DefinitionType,
+    type TokenDefinitionsRootState,
+    type TokenManagementAction,
+    selectTokenDefinitions,
+} from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
 import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-import { type PhishingState } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type BlockchainRootState,
+    type FiatRatesRootState,
+    type FormDraftRootState,
+    type PhishingRootState,
+    type PhishingState,
+    type SendRootState,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
+    selectAccounts,
+    selectBlockchainState,
+    selectFormDraft,
+    selectHistoricFiatRates,
+    selectPhishing,
+    selectPhishingTransactions,
+    selectSendFormDrafts,
+    selectTransactions,
+    selectWalletSettings,
+} from '@suite-common/wallet-core';
 import type {
     AccountKey,
     FormDraftKeyPrefix,
@@ -26,13 +81,25 @@ import {
     isAccountSuccessful,
     selectHistoricRatesByTransactions,
 } from '@suite-common/wallet-utils';
+import { type WalletConnectStateRootState, selectSessions } from '@suite-common/walletconnect';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
+import {
+    type storageCorrupted,
+    type storageError,
+    type storageLoad,
+} from 'src/actions/suite/storageLifecycleActions';
+import { type SuiteState } from 'src/reducers/suite/suiteReducer';
+import { type GraphState } from 'src/reducers/wallet/graphReducer';
+import { selectGraph } from 'src/reducers/wallet/graphReducer';
+import {
+    selectEvmSettings,
+    selectSeenDisconnectNotificationForDeviceIds,
+} from 'src/selectors/suite/suiteSelectors';
 import { db } from 'src/storage';
-import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import type { TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import { type GraphData } from 'src/types/wallet/graph';
 import { serializeCoinjoinAccount, serializeDevice } from 'src/utils/suite/storage';
@@ -41,8 +108,10 @@ import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 import { STORAGE } from './constants';
 import { type DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice';
 
-export type StorageAction = NonNullable<PreloadStoreAction>;
-export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
+export type StorageAction = ReturnType<
+    typeof storageLoad | typeof storageError | typeof storageCorrupted
+>;
+export type StorageLoadAction = ReturnType<typeof storageLoad>;
 
 export const saveExplorer = ({
     symbol,
@@ -72,24 +141,30 @@ export const removeDraft = (accountKey: AccountKey) => {
     return db.removeItemByPK('sendFormDrafts', accountKey);
 };
 
-export const saveAccountDraft = (account: Account) => (_: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    const { drafts } = getState().wallet.send;
-    const draft = drafts[account.key];
-    if (draft) {
-        return db.addItem('sendFormDrafts', draft, account.key, true);
-    }
-};
+type SaveAccountDraftThunkState = SendRootState;
 
-export const saveAccountReceive = (accountKey: AccountKey) => (_: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
+export const saveAccountDraft =
+    (account: Account) =>
+    (_: Dispatch<UnknownAction>, getState: () => SaveAccountDraftThunkState) => {
+        if (!db.isAccessible()) return;
+        const drafts = selectSendFormDrafts(getState());
+        const draft = drafts[account.key];
+        if (draft) {
+            return db.addItem('sendFormDrafts', draft, account.key, true);
+        }
+    };
 
-    const state = getState();
+type SaveAccountReceiveThunkState = ReceiveRootState;
 
-    return state.receive.accounts[accountKey]
-        ? db.addItem('receive', state.receive.accounts[accountKey], accountKey, true)
-        : undefined;
-};
+export const saveAccountReceive =
+    (accountKey: AccountKey) =>
+    (_: Dispatch<UnknownAction>, getState: () => SaveAccountReceiveThunkState) => {
+        if (!db.isAccessible()) return;
+
+        const receiveAccount = selectReceiveAccountState(getState(), accountKey);
+
+        return receiveAccount ? db.addItem('receive', receiveAccount, accountKey, true) : undefined;
+    };
 
 const removeAccountDraft = (account: Account) => {
     if (!db.isAccessible()) return Promise.resolve();
@@ -97,8 +172,11 @@ const removeAccountDraft = (account: Account) => {
     return db.removeItemByPK('sendFormDrafts', account.key);
 };
 
+type SaveCoinjoinAccountThunkState = CoinjoinRootState;
+
 export const saveCoinjoinAccount =
-    (accountKey: AccountKey) => (_: Dispatch, getState: GetState) => {
+    (accountKey: AccountKey) =>
+    (_: Dispatch<UnknownAction>, getState: () => SaveCoinjoinAccountThunkState) => {
         const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
         if (!coinjoinAccount || !db.isAccessible()) return;
         const serializedAccount = serializeCoinjoinAccount(coinjoinAccount);
@@ -106,7 +184,12 @@ export const saveCoinjoinAccount =
         return db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
     };
 
-const removeCoinjoinRelatedSetting = (state: AppState) => {
+type RemoveCoinjoinRelatedSettingState = FlagsRootState &
+    SuiteSettingsRootState & {
+        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
+    };
+
+const removeCoinjoinRelatedSetting = (state: RemoveCoinjoinRelatedSettingState) => {
     const settings = { ...selectSuiteSettings(state) };
 
     settings.isCoinjoinReceiveWarningHidden = false;
@@ -125,7 +208,15 @@ const removeCoinjoinRelatedSetting = (state: AppState) => {
     );
 };
 
-export const removeCoinjoinAccount = async (accountKey: string, state: AppState) => {
+type RemoveCoinjoinAccountState = FlagsRootState &
+    SuiteSettingsRootState & {
+        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
+    };
+
+export const removeCoinjoinAccount = async (
+    accountKey: AccountKey,
+    state: RemoveCoinjoinAccountState,
+) => {
     if (!db.isAccessible()) return;
 
     await db.removeItemByPK('coinjoinAccounts', accountKey);
@@ -136,13 +227,19 @@ export const removeCoinjoinAccount = async (accountKey: string, state: AppState)
     }
 };
 
-export const saveCoinjoinDebugSettings = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    const { debug } = getState().wallet.coinjoin;
-    db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
-};
+type SaveCoinjoinDebugSettingsThunkState = CoinjoinRootState;
 
-export const saveThpCredentials = createThunk(
+export const saveCoinjoinDebugSettings =
+    () =>
+    (_dispatch: Dispatch<UnknownAction>, getState: () => SaveCoinjoinDebugSettingsThunkState) => {
+        if (!db.isAccessible()) return;
+        const debug = selectCoinjoinDebug(getState());
+        db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
+    };
+
+type SaveThpCredentialsThunkState = ThpRootState;
+
+export const saveThpCredentials = createThunk<void, void, { state: SaveThpCredentialsThunkState }>(
     `${STORAGE.MODULE_PREFIX}/saveThpCredentials`,
     async (_, { getState }) => {
         if (!db.isAccessible()) return;
@@ -151,7 +248,9 @@ export const saveThpCredentials = createThunk(
     },
 );
 
-export const saveKnownDevices = createThunk(
+type SaveKnownDevicesThunkState = WithBluetoothState<DesktopBluetoothDevice>;
+
+export const saveKnownDevices = createThunk<void, void, { state: SaveKnownDevicesThunkState }>(
     `${STORAGE.MODULE_PREFIX}/saveKnownDevices`,
     async (_, { getState }) => {
         if (!db.isAccessible()) return;
@@ -160,21 +259,19 @@ export const saveKnownDevices = createThunk(
         await db.addItem(
             'bluetooth',
             {
-                knownDevices: knownDevices.map(
-                    (it): DesktopBluetoothDevice => ({
-                        id: it.id,
-                        name: it.name,
-                        macAddress: it.macAddress,
-                        manufacturerData: it.manufacturerData,
-                        lastUpdatedTimestamp: it.lastUpdatedTimestamp,
-                        paired: it.paired,
-                        rssi: it.rssi,
-                        deviceId: it.deviceId,
+                knownDevices: knownDevices.map((it): DesktopBluetoothDevice => ({
+                    id: it.id,
+                    name: it.name,
+                    macAddress: it.macAddress,
+                    manufacturerData: it.manufacturerData,
+                    lastUpdatedTimestamp: it.lastUpdatedTimestamp,
+                    paired: it.paired,
+                    rssi: it.rssi,
+                    deviceId: it.deviceId,
 
-                        // Those fields are reset to prevent some state-inconsistency and UI flickering
-                        connectionStatus: { type: 'disconnected' },
-                    }),
-                ),
+                    // Those fields are reset to prevent some state-inconsistency and UI flickering
+                    connectionStatus: { type: 'disconnected' },
+                })),
             },
             'value',
             true,
@@ -182,14 +279,15 @@ export const saveKnownDevices = createThunk(
     },
 );
 
+type SaveAccountFormDraftThunkState = FormDraftRootState;
+
 export const saveAccountFormDraft =
-    (prefix: FormDraftKeyPrefix, accountKey: string) => (_: Dispatch, getState: GetState) => {
+    (prefix: FormDraftKeyPrefix, accountKey: string) =>
+    (_: Dispatch<UnknownAction>, getState: () => SaveAccountFormDraftThunkState) => {
         if (!db.isAccessible()) return;
 
-        const { formDrafts } = getState().wallet;
-
         const formDraftKey = getFormDraftKey(prefix, accountKey);
-        const formDraft = formDrafts[formDraftKey];
+        const formDraft = selectFormDraft(getState(), formDraftKey);
 
         return formDraft ? db.addItem('formDrafts', formDraft, formDraftKey, true) : undefined;
     };
@@ -244,48 +342,59 @@ export const removeAccountPhishing = (accountKey: AccountKey) => {
     return db.removeItemByPK('phishing', accountKey);
 };
 
-export const removeAccountWithDependencies = (getState: GetState) => (account: Account) =>
-    Promise.all([
-        ...FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
-        removeAccountDraft(account),
-        db.removeItemByPK('receive', account.key),
-        removeAccountTransactions(account),
-        removeAccountGraph(account),
-        removeCoinjoinAccount(account.key, getState()),
-        removeAccount(account),
-        removeAccountHistoricRates(account.key),
-        removeAccountPhishing(account.key),
-    ]);
+type RemoveAccountWithDependenciesState = FlagsRootState &
+    SuiteSettingsRootState & {
+        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
+    };
 
-export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    if (!device.state?.staticSessionId) return;
-    const { staticSessionId } = device.state;
+export const removeAccountWithDependencies =
+    (getState: () => RemoveAccountWithDependenciesState) => (account: Account) =>
+        Promise.all([
+            ...FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
+            removeAccountDraft(account),
+            db.removeItemByPK('receive', account.key),
+            removeAccountTransactions(account),
+            removeAccountGraph(account),
+            removeCoinjoinAccount(account.key, getState()),
+            removeAccount(account),
+            removeAccountHistoricRates(account.key),
+            removeAccountPhishing(account.key),
+        ]);
 
-    const accounts = getState().wallet.accounts.filter(a => a.deviceState === staticSessionId);
+type ForgetDeviceThunkState = AccountsRootState &
+    RemoveAccountWithDependenciesState & { metadata: MetadataState };
 
-    // forget device metadata stuff
-    const { metadata } = getState();
-    const { walletDescriptor } = parseStaticSessionId(staticSessionId);
+export const forgetDevice =
+    (device: TrezorDevice) =>
+    (_: Dispatch<UnknownAction>, getState: () => ForgetDeviceThunkState) => {
+        if (!db.isAccessible()) return;
+        if (!device.state?.staticSessionId) return;
+        const { staticSessionId } = device.state;
 
-    const hasLegacyLabelsMigrated = cloneObject(metadata.hasLegacyLabelsMigrated);
-    delete hasLegacyLabelsMigrated[walletDescriptor];
+        const accounts = selectAccounts(getState()).filter(a => a.deviceState === staticSessionId);
 
-    const metadataError = metadata.error;
-    const error = metadataError ? cloneObject(metadataError) : undefined;
-    delete error?.[staticSessionId];
+        // forget device metadata stuff
+        const metadata = selectMetadata(getState());
+        const { walletDescriptor } = parseStaticSessionId(staticSessionId);
 
-    return Promise.all([
-        db.removeItemByPK('devices', staticSessionId),
-        db.removeItemByPK('suiteSyncOwners', staticSessionId),
-        db.removeItemByIndex('accounts', 'deviceState', staticSessionId),
-        db.removeItemByIndex('txs', 'deviceState', staticSessionId),
-        db.removeItemByIndex('graph', 'deviceState', staticSessionId),
-        ...accounts.map(removeAccountWithDependencies(getState)),
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        saveMetadata({ error, hasLegacyLabelsMigrated }),
-    ]);
-};
+        const hasLegacyLabelsMigrated = cloneObject(metadata.hasLegacyLabelsMigrated);
+        delete hasLegacyLabelsMigrated[walletDescriptor];
+
+        const metadataError = metadata.error;
+        const error = metadataError ? cloneObject(metadataError) : undefined;
+        delete error?.[staticSessionId];
+
+        return Promise.all([
+            db.removeItemByPK('devices', staticSessionId),
+            db.removeItemByPK('suiteSyncOwners', staticSessionId),
+            db.removeItemByIndex('accounts', 'deviceState', staticSessionId),
+            db.removeItemByIndex('txs', 'deviceState', staticSessionId),
+            db.removeItemByIndex('graph', 'deviceState', staticSessionId),
+            ...accounts.map(removeAccountWithDependencies(getState)),
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            saveMetadata({ error, hasLegacyLabelsMigrated }),
+        ]);
+    };
 
 // The 'accounts' store keys records by these fields (its IndexedDB keyPath). `satisfies` ensures
 // they stay valid account fields, so a rename/typo is a compile error here rather than at runtime.
@@ -329,11 +438,13 @@ export const saveGraph = (graphData: GraphData[]) => {
     return db.addItems('graph', graphData, true);
 };
 
+type SaveAccountHistoricRatesThunkState = TransactionsRootState;
+
 export const saveAccountHistoricRates =
     (accountKey: AccountKey, historicRates: RatesByTimestamps) =>
-    (_dispatch: Dispatch, getState: GetState) => {
+    (_dispatch: Dispatch<UnknownAction>, getState: () => SaveAccountHistoricRatesThunkState) => {
         if (!db.isAccessible()) return Promise.resolve();
-        const allTxs = getState().wallet.transactions.transactions;
+        const allTxs = selectTransactions(getState());
         const accTxs = (allTxs[accountKey] || []).filter(isNotNullOrUndefined);
 
         const accHistoricRates = selectHistoricRatesByTransactions(historicRates, accTxs);
@@ -341,10 +452,14 @@ export const saveAccountHistoricRates =
         return db.addItem('historicRates', accHistoricRates, accountKey, true);
     };
 
+type SaveAccountTransactionsThunkState = TransactionsRootState;
+
 export const saveAccountTransactions =
-    (account: Account) => (_dispatch: Dispatch, getState: GetState) => {
+    (account: Account) =>
+    (_dispatch: Dispatch<UnknownAction>, getState: () => SaveAccountTransactionsThunkState) => {
         if (!db.isAccessible()) return Promise.resolve();
-        const { transactions, phishing } = getState().wallet.transactions;
+        const transactions = selectTransactions(getState());
+        const phishing = selectPhishingTransactions(getState());
         const accTxs = transactions[account.key] || [];
 
         // wrap txs and add its order inside the array
@@ -360,29 +475,46 @@ export const saveAccountTransactions =
         return Promise.all([transactionsPromise, phishingPromise]);
     };
 
+type SavePhishingMetadataThunkState = PhishingRootState;
+
 export const savePhishingMetadata =
-    (phishingMetadata: Partial<PhishingState>) => (_dispatch: Dispatch, getState: GetState) => {
+    (phishingMetadata: Partial<PhishingState>) =>
+    (_dispatch: Dispatch<UnknownAction>, getState: () => SavePhishingMetadataThunkState) => {
         if (!db.isAccessible()) return;
-        const oldState = getState().wallet.phishing;
+        const oldState = selectPhishing(getState());
         const newState = { ...oldState, ...phishingMetadata };
 
         return db.addItem('phishingMetadata', newState, 'phishingMetadata', true);
     };
 
+type RememberDeviceThunkState = AccountsRootState &
+    CoinjoinRootState &
+    FiatRatesRootState &
+    FormDraftRootState &
+    ReceiveRootState &
+    SendRootState &
+    TransactionsRootState & {
+        metadata: MetadataState;
+        wallet: { graph: GraphState };
+    };
+
 export const rememberDevice =
-    (device: TrezorDevice) => async (dispatch: Dispatch, getState: GetState) => {
+    (device: TrezorDevice) =>
+    async (
+        dispatch: ThunkDispatch<RememberDeviceThunkState, unknown, UnknownAction>,
+        getState: () => RememberDeviceThunkState,
+    ) => {
         if (!db.isAccessible()) return;
         if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
 
-        const { wallet } = getState();
-        const accounts = wallet.accounts
+        const accounts = selectAccounts(getState())
             .filter(isAccountSuccessful)
             .filter(a => a.deviceState === device.state?.staticSessionId);
 
-        const graphData = wallet.graph.data.filter(d =>
+        const graphData = selectGraph(getState()).data.filter(d =>
             deviceGraphDataFilterFn(d, device.state?.staticSessionId),
         );
-        const historicRates = wallet.fiat.historic;
+        const historicRates = selectHistoricFiatRates(getState());
 
         const accountPromises = accounts.reduce<Array<unknown | Promise<unknown>>>(
             (promises, account) =>
@@ -415,39 +547,62 @@ export const rememberDevice =
         }
     };
 
-export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    await db.addItem(
-        'walletSettings',
-        {
-            ...getState().wallet.settings,
-        },
-        'wallet',
-        true,
-    );
-};
+type SaveWalletSettingsThunkState = WalletSettingsRootState;
 
-export const saveDiscreetMode = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    await db.addItem('discreetMode', getState().discreetMode, 'discreetMode', true);
-};
+export const saveWalletSettings =
+    () =>
+    async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveWalletSettingsThunkState) => {
+        if (!db.isAccessible()) return;
+        await db.addItem(
+            'walletSettings',
+            {
+                ...selectWalletSettings(getState()),
+            },
+            'wallet',
+            true,
+        );
+    };
+
+type SaveDiscreetModeThunkState = DiscreetModeRootState;
+
+export const saveDiscreetMode =
+    () =>
+    async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveDiscreetModeThunkState) => {
+        if (!db.isAccessible()) return;
+        await db.addItem('discreetMode', selectDiscreetMode(getState()), 'discreetMode', true);
+    };
+
+type SaveBackendThunkState = BlockchainRootState;
 
 export const saveBackend =
-    (symbol: NetworkSymbol) => async (_dispatch: Dispatch, getState: GetState) => {
+    (symbol: NetworkSymbol) =>
+    async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveBackendThunkState) => {
         if (!db.isAccessible()) return;
         await db.addItem(
             'backendSettings',
-            getState().wallet.blockchain[symbol].backends,
+            selectBlockchainState(getState())[symbol].backends,
             symbol,
             true,
         );
     };
 
+type SaveSuiteSettingsThunkState = FlagsRootState &
+    SuiteSettingsRootState & {
+        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
+    };
+
 export const saveSuiteSettings =
     () =>
-    (_dispatch: Dispatch, getState: GetState): Promise<void> => {
+    (
+        _dispatch: Dispatch<UnknownAction>,
+        getState: () => SaveSuiteSettingsThunkState,
+    ): Promise<void> => {
         if (!db.isAccessible()) return Promise.resolve();
-        const { suite, suiteSettings, flags } = getState();
+        const suiteSettings = selectSuiteSettings(getState());
+        const flags = selectFlags(getState());
+        const evmSettings = selectEvmSettings(getState());
+        const seenDisconnectNotificationForDeviceIds =
+            selectSeenDisconnectNotificationForDeviceIds(getState());
 
         const result = db.addItem(
             'suiteSettings',
@@ -458,9 +613,8 @@ export const saveSuiteSettings =
                     experimental: suiteSettings.experimental?.filter(e => e !== 'password-manager'),
                 },
                 flags,
-                evmSettings: suite.evmSettings,
-                seenDisconnectNotificationForDeviceIds:
-                    suite.seenDisconnectNotificationForDeviceIds,
+                evmSettings,
+                seenDisconnectNotificationForDeviceIds,
             },
             'suite',
             true,
@@ -469,16 +623,22 @@ export const saveSuiteSettings =
         return result.then(() => {});
     };
 
-export const saveDebugSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    await db.addItem('debug', getState().debug, 'debug', true);
-};
+type SaveDebugSettingsThunkState = DebugRootState;
+
+export const saveDebugSettings =
+    () =>
+    async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveDebugSettingsThunkState) => {
+        if (!db.isAccessible()) return;
+        await db.addItem('debug', selectDebug(getState()), 'debug', true);
+    };
+
+type SaveTokenManagementThunkState = TokenDefinitionsRootState;
 
 export const saveTokenManagement =
     (symbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>
-    async (_dispatch: Dispatch, getState: GetState) => {
+    async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveTokenManagementThunkState) => {
         if (!db.isAccessible()) return;
-        const { tokenDefinitions } = getState();
+        const tokenDefinitions = selectTokenDefinitions(getState());
         const tokenDefinitionsType = tokenDefinitions[symbol]?.[type];
         const data = tokenDefinitionsType?.[status];
 
@@ -489,30 +649,29 @@ export const saveTokenManagement =
         return data ? db.addItem('tokenManagement', data, key, true) : undefined;
     };
 
-export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
+type SaveAnalyticsThunkState = AnalyticsRootState;
 
-    const { analytics } = getState();
-    db.addItem(
-        'analytics',
-        {
-            enabled: analytics.enabled,
-            instanceId: analytics.instanceId,
-            confirmed: analytics.confirmed,
-            customAnalyticsUrl: analytics.customAnalyticsUrl,
-            loggerEnabled: analytics.loggerEnabled,
-        },
-        'suite',
-        true,
-    );
-};
+export const saveAnalytics =
+    () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveAnalyticsThunkState) => {
+        if (!db.isAccessible()) return;
+
+        const analytics = selectAnalytics(getState());
+        db.addItem(
+            'analytics',
+            {
+                enabled: analytics.enabled,
+                instanceId: analytics.instanceId,
+                confirmed: analytics.confirmed,
+                customAnalyticsUrl: analytics.customAnalyticsUrl,
+                loggerEnabled: analytics.loggerEnabled,
+            },
+            'suite',
+            true,
+        );
+    };
 
 type MetadataPersistentKeys =
-    | 'providers'
-    | 'enabled'
-    | 'selectedProvider'
-    | 'error'
-    | 'hasLegacyLabelsMigrated';
+    'providers' | 'enabled' | 'selectedProvider' | 'error' | 'hasLegacyLabelsMigrated';
 
 const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersistentKeys>>) => {
     if (!db.isAccessible()) return;
@@ -536,37 +695,44 @@ const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersis
  * save general metadata settings
  * obsolete - will be replaced with labeling settings
  */
-export const saveMetadataSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
-    // for some strage race-condition reason it has to be awaited, so that the getState runs async
-    if (!(await db.isAccessible())) return;
+type SaveMetadataSettingsThunkState = { metadata: MetadataState };
 
-    const { metadata } = getState();
+export const saveMetadataSettings =
+    () =>
+    async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveMetadataSettingsThunkState) => {
+        // for some strage race-condition reason it has to be awaited, so that the getState runs async
+        if (!(await db.isAccessible())) return;
 
-    await saveMetadata({
-        providers: metadata.providers,
-        enabled: metadata.enabled,
-        selectedProvider: metadata.selectedProvider,
-        hasLegacyLabelsMigrated: metadata.hasLegacyLabelsMigrated,
-    });
-};
+        const metadata = selectMetadata(getState());
 
-export const saveSuiteSyncSettings = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
+        await saveMetadata({
+            providers: metadata.providers,
+            enabled: metadata.enabled,
+            selectedProvider: metadata.selectedProvider,
+            hasLegacyLabelsMigrated: metadata.hasLegacyLabelsMigrated,
+        });
+    };
 
-    const { suiteSync } = getState();
+type SaveSuiteSyncSettingsThunkState = DesktopSuiteSyncRootState;
 
-    return db.addItem(
-        'suiteSyncSettings',
-        {
-            isSuiteSyncEnabled: suiteSync.settings.isSuiteSyncEnabled,
-            isSuiteSyncDebugEnabled: suiteSync.settings.isSuiteSyncDebugEnabled,
-            suiteSyncRelayUrl: suiteSync.settings.suiteSyncRelayUrl,
-            isUnsupportedDeviceBannerDismissed: suiteSync.isUnsupportedDeviceBannerDismissed,
-        },
-        'suiteSyncSettings',
-        true,
-    );
-};
+export const saveSuiteSyncSettings =
+    () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveSuiteSyncSettingsThunkState) => {
+        if (!db.isAccessible()) return;
+
+        const suiteSync = selectSuiteSync(getState());
+
+        return db.addItem(
+            'suiteSyncSettings',
+            {
+                isSuiteSyncEnabled: suiteSync.settings.isSuiteSyncEnabled,
+                isSuiteSyncDebugEnabled: suiteSync.settings.isSuiteSyncDebugEnabled,
+                suiteSyncRelayUrl: suiteSync.settings.suiteSyncRelayUrl,
+                isUnsupportedDeviceBannerDismissed: suiteSync.isUnsupportedDeviceBannerDismissed,
+            },
+            'suiteSyncSettings',
+            true,
+        );
+    };
 
 type SaveSuiteSyncOwnerParams = {
     deviceStaticId: StaticSessionId;
@@ -585,119 +751,151 @@ export const saveSuiteSyncOwner =
         return db.addItem('suiteSyncOwners', owner, deviceStaticId, true);
     };
 
-export const saveSuiteSyncQuotaManager = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
+type SaveSuiteSyncQuotaManagerThunkState = WithSuiteSyncQuotaManagerState;
 
-    const { suiteSyncQuotaManager } = getState();
-
-    return db.addItem(
-        'suiteSyncQuotaManager',
-        {
-            baseUrl: suiteSyncQuotaManager.baseUrl,
-            enforceQuotaManager: suiteSyncQuotaManager.enforceQuotaManager,
-            registeredDevices: suiteSyncQuotaManager.registeredDevices,
-            ownersAllowance: suiteSyncQuotaManager.ownersAllowance,
-        },
-        'suiteSyncQuotaManager',
-        true,
-    );
-};
-
-export const saveDeviceMetadataError =
-    (device: TrezorDevice) => async (_dispatch: Dispatch, getState: GetState) => {
+export const saveSuiteSyncQuotaManager =
+    () =>
+    (_dispatch: Dispatch<UnknownAction>, getState: () => SaveSuiteSyncQuotaManagerThunkState) => {
         if (!db.isAccessible()) return;
 
-        const { metadata } = getState();
-        if (device.state?.staticSessionId && metadata?.error?.[device.state.staticSessionId]) {
-            const { error } = metadata;
+        const suiteSyncQuotaManager = selectSuiteSyncQuotaManager(getState());
+
+        return db.addItem(
+            'suiteSyncQuotaManager',
+            {
+                baseUrl: suiteSyncQuotaManager.baseUrl,
+                enforceQuotaManager: suiteSyncQuotaManager.enforceQuotaManager,
+                registeredDevices: suiteSyncQuotaManager.registeredDevices,
+                ownersAllowance: suiteSyncQuotaManager.ownersAllowance,
+            },
+            'suiteSyncQuotaManager',
+            true,
+        );
+    };
+
+type SaveDeviceMetadataErrorThunkState = { metadata: MetadataState };
+
+export const saveDeviceMetadataError =
+    (device: TrezorDevice) =>
+    async (
+        _dispatch: Dispatch<UnknownAction>,
+        getState: () => SaveDeviceMetadataErrorThunkState,
+    ) => {
+        if (!db.isAccessible()) return;
+
+        const error = selectMetadataError(getState());
+        if (device.state?.staticSessionId && error?.[device.state.staticSessionId]) {
             await saveMetadata({ error });
         }
     };
 
-export const saveMessageSystem = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
+type SaveMessageSystemThunkState = MessageSystemRootState;
 
-    const {
-        dismissedMessages,
-        config,
-        currentSequence,
-        configSource,
-        manuallyAddedMessageIds,
-        manuallyAddedExperimentIds,
-    } = getState().messageSystem;
+export const saveMessageSystem =
+    () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveMessageSystemThunkState) => {
+        if (!db.isAccessible()) return;
 
-    db.addItem(
-        'messageSystem',
-        {
+        const {
+            dismissedMessages,
             config,
             currentSequence,
-            dismissedMessages,
             configSource,
             manuallyAddedMessageIds,
             manuallyAddedExperimentIds,
-        },
-        'suite',
-        true,
-    );
-};
+        } = selectMessageSystem(getState());
 
-export const savePersistentDeviceData = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    const data = selectPersistentDeviceData(getState());
+        db.addItem(
+            'messageSystem',
+            {
+                config,
+                currentSequence,
+                dismissedMessages,
+                configSource,
+                manuallyAddedMessageIds,
+                manuallyAddedExperimentIds,
+            },
+            'suite',
+            true,
+        );
+    };
 
-    await db.addItem('persistentDeviceData', data, 'persistentDeviceData', true);
-};
+type SavePersistentDeviceDataThunkState = DeviceRootState;
 
-export const saveConnectSettings = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    const { connectPopup, walletConnect } = getState();
+export const savePersistentDeviceData =
+    () =>
+    async (
+        _dispatch: Dispatch<UnknownAction>,
+        getState: () => SavePersistentDeviceDataThunkState,
+    ) => {
+        if (!db.isAccessible()) return;
+        const data = selectPersistentDeviceData(getState());
 
-    db.addItem(
-        'connect',
-        {
-            permissions: connectPopup.permissions,
-            walletConnectSessions: walletConnect.sessions,
-        },
-        'connect',
-        true,
-    );
-};
+        await db.addItem('persistentDeviceData', data, 'persistentDeviceData', true);
+    };
 
-export const saveFirmwareSettings = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    const { firmware } = getState();
+type SaveConnectSettingsThunkState = ConnectPopupStateRootState & WalletConnectStateRootState;
 
-    db.addItem(
-        'firmware',
-        {
-            firmwareChannel: firmware.firmwareChannel,
-        },
-        'firmware',
-        true,
-    );
-};
+export const saveConnectSettings =
+    () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveConnectSettingsThunkState) => {
+        if (!db.isAccessible()) return;
+        const permissions = selectConnectAppPermissions(getState());
+        const walletConnectSessions = selectSessions(getState());
 
-export const saveFeatureFeedback = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    const { featureFeedback } = getState();
+        db.addItem(
+            'connect',
+            {
+                permissions,
+                walletConnectSessions,
+            },
+            'connect',
+            true,
+        );
+    };
 
-    return db.addItem('featureFeedback', featureFeedback, 'featureFeedback', true);
-};
+type SaveFirmwareSettingsThunkState = FirmwareRootState;
 
-export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
+export const saveFirmwareSettings =
+    () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveFirmwareSettingsThunkState) => {
+        if (!db.isAccessible()) return;
+        const firmwareChannel = selectFirmwareChannel(getState());
 
-    const devices = selectDevices(getState());
+        db.addItem(
+            'firmware',
+            {
+                firmwareChannel,
+            },
+            'firmware',
+            true,
+        );
+    };
 
-    const rememberedDevices = devices.filter(d => d.remember);
-    // forget all remembered devices
-    rememberedDevices.forEach(d => {
-        dispatch(deviceActions.forgetDevice({ device: d }));
-    });
-    await db.removeDatabase();
-    dispatch(
-        notificationsActions.addToast({
-            type: 'clear-storage',
-        }),
-    );
-};
+type SaveFeatureFeedbackThunkState = FeatureFeedbackRootState<FeedbackFeatureName>;
+
+export const saveFeatureFeedback =
+    () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveFeatureFeedbackThunkState) => {
+        if (!db.isAccessible()) return;
+        const featureFeedback = selectFeatureFeedback(getState());
+
+        return db.addItem('featureFeedback', featureFeedback, 'featureFeedback', true);
+    };
+
+type RemoveDatabaseThunkState = DeviceRootState;
+
+export const removeDatabase =
+    () => async (dispatch: Dispatch<UnknownAction>, getState: () => RemoveDatabaseThunkState) => {
+        if (!db.isAccessible()) return;
+
+        const devices = selectDevices(getState());
+
+        const rememberedDevices = devices.filter(d => d.remember);
+        // forget all remembered devices
+        rememberedDevices.forEach(d => {
+            dispatch(deviceActions.forgetDevice({ device: d }));
+        });
+        await db.removeDatabase();
+        dispatch(
+            notificationsActions.addToast({
+                type: 'clear-storage',
+            }),
+        );
+    };

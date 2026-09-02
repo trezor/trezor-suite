@@ -5,6 +5,7 @@ import { firmwareInitialState } from '@suite-common/firmware';
 import { geolocationInitialState } from '@suite-common/geolocation';
 import { logsSliceInitialState } from '@suite-common/logger';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { receiveInitialState } from '@suite-common/receive';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
 import { initialThpState } from '@suite-common/thp';
@@ -26,7 +27,7 @@ import {
     transactionsInitialState,
 } from '@suite-common/wallet-core';
 import { walletConnectInitialState } from '@suite-common/walletconnect';
-import { bannerFlagsInitialState } from '@suite-native/banner-flags';
+import { bannerFlagsInitialState } from '@suite-native/banners';
 import { biometricsSliceInitialState } from '@suite-native/biometrics';
 import { bluetoothInitialState } from '@suite-native/bluetooth';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
@@ -70,6 +71,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     nativeFirmware: nativeFirmwareInitialState,
     notifications: createNotificationsReducer<TxKeyPath>().initialState,
     pendingCoinVisibility: pendingCoinVisibilitySlice.getInitialState(),
+    receive: receiveInitialState,
     suiteSync: initialSuiteSyncState,
     suiteSyncData: initialSuiteSyncDataState,
     thp: initialThpState,

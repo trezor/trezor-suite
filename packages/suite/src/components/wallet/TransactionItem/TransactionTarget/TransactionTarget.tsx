@@ -14,6 +14,7 @@ import {
     type Target,
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
+    selectIsSuspiciousTransactionsBlurringEnabled,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
@@ -75,6 +76,9 @@ export const TransactionTarget = ({
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
+    const isBlurringEnabled = useSelector(state =>
+        selectIsSuspiciousTransactionsBlurringEnabled(state, transaction.symbol),
+    );
 
     const suiteSyncOutputLabels = useSelector(state =>
         isSuiteSyncEnabled
@@ -117,6 +121,7 @@ export const TransactionTarget = ({
                 return (
                     <AmountComponent
                         transfer={payload}
+                        networkSymbol={transaction.symbol}
                         withLink={false}
                         withSign
                         alignMultitoken="flex-end"
@@ -169,24 +174,19 @@ export const TransactionTarget = ({
             case 'target':
                 return (
                     <TargetAddressLabel
-                        symbol={transaction.symbol}
+                        transaction={transaction}
                         accountKey={accountKey}
                         target={payload}
-                        type={transaction.type}
-                        deviceStaticSessionId={transaction.deviceState}
                     />
                 );
             case 'token':
-                return (
-                    <TokenTransferAddressLabel
-                        symbol={transaction.symbol}
-                        transfer={payload}
-                        type={transaction.type}
-                    />
-                );
+                return <TokenTransferAddressLabel symbol={transaction.symbol} transfer={payload} />;
             case 'internal':
                 return (
-                    <AccountLabelForOwnAddress address={payload.to} symbol={transaction.symbol} />
+                    <AccountLabelForOwnAddress
+                        address={payload.to || payload.from}
+                        symbol={transaction.symbol}
+                    />
                 );
             default:
                 return exhaustive(type);
@@ -201,7 +201,7 @@ export const TransactionTarget = ({
         <TransactionTargetLayout
             {...baseLayoutProps}
             useHiddenPlaceholder={!isBeingEdited}
-            isPhishingTransaction={isPhishingTransaction}
+            isBlurred={(isPhishingTransaction ?? false) && isBlurringEnabled}
             addressLabel={
                 <Labeling
                     deviceStaticSessionId={transaction.deviceState}

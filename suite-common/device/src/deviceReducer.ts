@@ -1,6 +1,10 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
     type ButtonRequest,
@@ -628,9 +632,16 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
     }
 };
 
+export type DeviceReducerDeps = ActionTypesDep<
+    'setDeviceMetadata' | 'setDeviceMetadataPasswords' | 'storageLoad'
+> &
+    ReducersDep<
+        'setDeviceMetadataPasswordsReducer' | 'setDeviceMetadataReducer' | 'storageLoadDevices'
+    >;
+
 export const prepareDeviceReducer = createReducerWithExtraDeps(
     deviceInitialState,
-    (builder, extra) => {
+    (builder, extra: DeviceReducerDeps) => {
         builder
             .addCase(deviceActions.deviceChanged, (state, { payload }) => {
                 changeDevice(state, payload, { connected: true, available: true });

@@ -5,7 +5,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
-import { useField } from '@suite-native/forms';
+import { useField, useWatch } from '@suite-native/forms';
 import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -23,17 +23,15 @@ export type BuyFormFieldErrorBadgeProps = PropsWithChildren<{
 const asNonEmptyStringValue = (value: unknown): string => (value as string) ?? '0';
 
 const useMismatchedAmountMessage = (fieldName: keyof BuyFormValues) => {
-    const { watch } = useBuyFormContext();
+    const { control } = useBuyFormContext();
     const { translate } = useTranslate();
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
 
-    const [asset, quote, amountInCrypto, value] = watch([
-        'asset',
-        'quote',
-        'amountInCrypto',
-        fieldName,
-    ]);
+    const [asset, quote, amountInCrypto, value] = useWatch({
+        control,
+        name: ['asset', 'quote', 'amountInCrypto', fieldName],
+    });
     const symbol = getSymbolFromTradeableAsset(asset);
 
     if (!quote) {

@@ -8,12 +8,20 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite/router": "workspace:*",
+        "@suite/router-config": "workspace:*",
         "@suite/settings": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@trezor/device-utils": "workspace:*"
     }
 }

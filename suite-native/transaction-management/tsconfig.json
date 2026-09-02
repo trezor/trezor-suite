@@ -7,10 +7,16 @@
         },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
         },
         {
             "path": "../../suite-common/suite-utils"
@@ -42,7 +48,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../scrollview" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
@@ -52,9 +57,6 @@
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        {
-            "path": "../../suite-common/test-utils"
-        },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" }
     ],

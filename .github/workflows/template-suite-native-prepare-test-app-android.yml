@@ -17,7 +17,7 @@ jobs:
       COMMIT_HASH: "e2e-test" # it has to be hardcoded to avoid the fingerprint change
     steps:
       - name: Checkout project
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           submodules: "true"
 
@@ -33,7 +33,7 @@ jobs:
           large-packages: false
 
       - name: Install node and yarn
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -48,7 +48,7 @@ jobs:
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
         continue-on-error: true
         with:
           version: v0.19.1
@@ -60,14 +60,14 @@ jobs:
         run: yarn install --immutable
 
       - name: Setup Java
-        uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v5
         with:
           distribution: temurin
           java-version: 17
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
-        run: yarn prebuild --platform android --clean
+        run: yarn prebuild --platform android
 
       - name: Sign message system config
         working-directory: ./suite-common/message-system
@@ -80,7 +80,7 @@ jobs:
         run: yarn exec fingerprint ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: eu-central-1

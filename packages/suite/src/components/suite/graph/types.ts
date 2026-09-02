@@ -13,7 +13,7 @@ export interface CommonGraphProps {
     xTicks: number[];
     localCurrency: string;
     minMaxValues: [number, number];
-    onRefresh?: (abortController?: AbortController) => Promise<unknown>;
+    onRefresh?: (abortSignal?: AbortSignal) => Promise<unknown>;
 }
 
 export interface CryptoGraphProps extends CommonGraphProps {

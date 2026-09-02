@@ -3,7 +3,21 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/dependency-injection"
+        },
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/feedback" },
+        {
             "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/geolocation"
+        },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/trading" },
         {
@@ -12,13 +26,18 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../alerts" },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../device" },
+        { "path": "../feedback-form" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../link" },
+        { "path": "../navigation" },
+        { "path": "../toasts" },
         { "path": "../trading-atoms" },
         { "path": "../trading-browser-auth" },
         { "path": "../trading-provider-utils" },
@@ -28,9 +47,8 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/type-utils" },
-        { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/message-system"
+            "path": "../../suite-common/analytics-redux"
         },
         {
             "path": "../../suite-common/suite-sync"

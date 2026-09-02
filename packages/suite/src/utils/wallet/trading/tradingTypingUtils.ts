@@ -1,23 +1,16 @@
-import { type BuyTrade, type CryptoId, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import {
-    TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
     type TradingBuyType,
     type TradingExchangeType,
     type TradingFiatCurrencyOption,
     type TradingSellType,
-    type TradingTradeType,
     type TradingType,
 } from '@suite-common/trading';
 import { type BaseCurrencyOption } from '@suite-common/wallet-types';
 
-import {
-    type TradingGetCryptoQuoteAmountProps,
-    type TradingGetFiatCurrenciesProps,
-    type TradingGetProvidersInfoProps,
-} from 'src/types/trading/trading';
 import {
     type TradingFormContextValues,
     type TradingFormMapProps,
@@ -39,90 +32,6 @@ export const isTradingExchangeOrSellContext = (
     context: TradingFormMapProps[keyof TradingFormMapProps],
 ): context is TradingFormMapProps[TradingExchangeType] | TradingFormMapProps[TradingSellType] =>
     isTradingExchangeContext(context) || isTradingSellContext(context);
-
-export const getCryptoQuoteAmountProps = (
-    quoteInput: TradingTradeType | undefined,
-    context: TradingFormContextValues<TradingType>,
-): TradingGetCryptoQuoteAmountProps | null => {
-    if (!quoteInput) return null;
-
-    if (isTradingBuyContext(context)) {
-        const amountInCrypto = context.quotesRequest?.wantCrypto;
-        const quote = quoteInput as BuyTrade;
-
-        if (!quote || !context.quotesRequest) return null;
-
-        return {
-            amountInCrypto,
-            sendAmount: quote?.fiatStringAmount ?? '',
-            sendCurrency: quote?.fiatCurrency,
-            receiveAmount: quote?.receiveStringAmount ?? '',
-            receiveCurrency: quote?.receiveCurrency,
-        };
-    }
-
-    if (isTradingSellContext(context)) {
-        const amountInCrypto = context.quotesRequest?.amountInCrypto;
-        const networkFee = context.composedTransactionInfo?.composed?.fee;
-        const quote = quoteInput as SellFiatTrade;
-
-        if (!quote || !context.quotesRequest) return null;
-
-        return {
-            amountInCrypto,
-            sendAmount: quote?.fiatStringAmount ?? '',
-            sendCurrency: quote?.fiatCurrency,
-            receiveAmount: quote?.cryptoStringAmount ?? '',
-            receiveCurrency: quote?.cryptoCurrency,
-            networkFee,
-        };
-    }
-
-    const quote = quoteInput as ExchangeTrade;
-    const networkFee = context.composedTransactionInfo?.composed?.fee;
-
-    return {
-        amountInCrypto: false,
-        sendAmount: quote?.sendStringAmount ?? '',
-        sendCurrency: quote?.send,
-        receiveAmount: quote?.receiveStringAmount ?? '',
-        receiveCurrency: quote?.receive,
-        networkFee,
-    };
-};
-
-export const getProvidersInfoProps = (
-    context: TradingFormContextValues<TradingType>,
-): TradingGetProvidersInfoProps => {
-    if (isTradingBuyContext(context)) {
-        return context.buyInfo?.providerInfos;
-    }
-
-    if (isTradingSellContext(context)) {
-        return context.sellInfo?.providerInfos;
-    }
-
-    return context.exchangeInfo?.providerInfos;
-};
-
-export const getFiatCurrenciesProps = (
-    context: TradingFormContextValues<TradingType>,
-): TradingGetFiatCurrenciesProps | null => {
-    if (isTradingBuyContext(context)) {
-        return {
-            supportedFiatCurrencies: context.buyInfo?.supportedFiatCurrencies,
-            defaultAmountsOfFiatCurrencies: context.buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies,
-        };
-    }
-
-    if (isTradingSellContext(context)) {
-        return {
-            supportedFiatCurrencies: context.sellInfo?.supportedFiatCurrencies,
-        };
-    }
-
-    return null;
-};
 
 export const getSelectedCryptoId = (
     context: TradingFormContextValues<TradingType>,
@@ -150,50 +59,4 @@ export const getSelectedTradingCurrency = (
     }
 
     return context.getValues(TRADING_FORM_FIAT_CURRENCY_SELECT);
-};
-
-const getQuotesFilteredByProviderAndPaymentMethod = <T extends BuyTrade | SellFiatTrade>(
-    quotes: T[],
-    provider: string | undefined,
-    paymentMethod: string | undefined,
-): T[] => {
-    let result = quotes;
-    if (paymentMethod !== undefined) {
-        result = result.filter(quote => quote.paymentMethod === paymentMethod);
-    }
-    if (provider !== undefined) {
-        result = result.filter(quote => quote.exchange === provider);
-    }
-
-    return result;
-};
-
-export const getSelectedQuote = (
-    context: TradingFormContextValues<TradingType>,
-): BuyTrade | SellFiatTrade | ExchangeTrade | undefined => {
-    const { provider } = context.getValues();
-
-    if (isTradingExchangeContext(context)) {
-        const { exchangeType } = context.getValues();
-        const quotes =
-            exchangeType === TRADING_EXCHANGE_FORM_DEX ? context.dexQuotes : context.cexQuotes;
-
-        return quotes?.find(quote => !provider || quote.exchange === provider) ?? quotes?.[0];
-    }
-
-    const { paymentMethod } = context.getValues();
-
-    if (isTradingBuyContext(context)) {
-        return getQuotesFilteredByProviderAndPaymentMethod<BuyTrade>(
-            context.quotes,
-            provider,
-            paymentMethod?.value,
-        )?.[0];
-    }
-
-    return getQuotesFilteredByProviderAndPaymentMethod<SellFiatTrade>(
-        context.quotes,
-        provider,
-        paymentMethod?.value,
-    )?.[0];
 };

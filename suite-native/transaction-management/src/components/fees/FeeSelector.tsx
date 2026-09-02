@@ -1,11 +1,11 @@
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 
 import { FeeSummaryCard } from './FeeSummaryCard';
 import { FeesBottomSheet } from './FeesBottomSheet';
 import { TronFeeSummaryCard } from './TronFeeSummaryCard/TronFeeSummaryCard';
 import { type UseFeeSelectorParams, useFeeSelector } from '../../hooks/fees/useFeeSelector';
 
-type FeeSelectorProps = UseFeeSelectorParams;
+export type FeeSelectorProps = UseFeeSelectorParams;
 
 export const FeeSelector = (props: FeeSelectorProps) => {
     const {
@@ -33,7 +33,7 @@ export const FeeSelector = (props: FeeSelectorProps) => {
     if (!symbol || !networkType) return null;
 
     if (shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle) {
-        return <InlineAlertBox intent="critical" title={feeUnavailableErrorTitle} />;
+        return <BannerInline intent="critical" title={feeUnavailableErrorTitle} />;
     }
 
     return (

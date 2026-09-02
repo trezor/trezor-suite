@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { type FeatureFlag, toggleFeatureFlag } from './featureFlagsSlice';
 

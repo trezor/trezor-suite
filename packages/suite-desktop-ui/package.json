@@ -13,8 +13,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@sentry/electron": "^7.14.0",
+        "@sentry/electron": "^7.16.0",
         "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-update": "workspace:*",
@@ -24,6 +25,7 @@
         "@suite/platform-encryption-electron": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/sentry": "workspace:*",
+        "@suite/tor-desktop": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect-electron": "workspace:*",
         "@trezor/icons": "workspace:*",

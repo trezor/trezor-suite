@@ -53,7 +53,7 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await page.getByTestId('@send/review-button').click();
             await expect(page.getByTestId('@suite/connection-modal')).toBeVisible();
-            await page.getByTestId('@modal/close-button').click();
+            await page.modalCloseButton.click();
         });
 
         await test.step('Go to settings and verify Trezor disconnected warning', async () => {

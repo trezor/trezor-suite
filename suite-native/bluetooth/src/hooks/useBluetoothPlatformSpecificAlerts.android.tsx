@@ -1,11 +1,11 @@
 // This is Android version, see the file name.
 
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 

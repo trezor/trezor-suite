@@ -8,7 +8,6 @@ type AccountListItemBaseProps = {
     icon: React.ReactNode;
     title: React.ReactNode;
     titleBadge?: React.ReactNode;
-    secondaryTitle?: React.ReactNode;
     mainValue: React.ReactNode;
     secondaryValue: React.ReactNode;
     badges?: React.ReactNode;
@@ -95,7 +94,6 @@ export const AccountsListItemBase = ({
     icon,
     title,
     titleBadge,
-    secondaryTitle,
     badges,
     mainValue,
     secondaryValue,
@@ -135,7 +133,6 @@ export const AccountsListItemBase = ({
                         </Text>
                         {titleBadge}
                     </HStack>
-                    {secondaryTitle}
                     <HStack spacing="sp4" alignItems="center">
                         {badges}
                     </HStack>

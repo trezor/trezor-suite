@@ -6,6 +6,7 @@ export * from './components/AccountsList/AccountsListItem';
 export * from './components/AccountsList/AccountsListItemBase';
 export * from './components/AccountsList/AccountsListStakingItem';
 export * from './components/AccountsList/StakingBadge';
+export * from './components/AccountsList/ZeroApyBadge';
 export * from './components/SearchableAccountsListHeader';
 export * from './components/SelectableNetworkItem';
 export * from './components/AccountsList/AccountsListTokenItem';

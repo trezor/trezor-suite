@@ -1,9 +1,11 @@
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     isFunctionSelectorMatchesSearch,
+    isNativeDisplaySymbolSearch,
+    isNativeTransferMatchesSearch,
     isTokenTransferMatchesSearch,
 } from '@suite-common/wallet-utils';
-import { BigNumber, typedObjectKeys, unique } from '@trezor/utils';
+import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { getTargetAmounts } from './getTargetAmounts';
 import { numberSearchFilter } from './numberSearchFilter';
@@ -13,7 +15,7 @@ import { searchOperators } from './searchOperations';
 const searchDateRegex = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
 
 const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) => {
-    const addresses: Record<string, string[]> = {};
+    const addresses: Record<string, Set<string>> = {};
     const addAddress = (txid: string, addrs: string[] | undefined) => {
         if (!addrs) {
             return;
@@ -21,12 +23,10 @@ const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) 
 
         addrs.forEach(address => {
             if (!addresses[address]) {
-                addresses[address] = [];
+                addresses[address] = new Set();
             }
 
-            if (!addresses[address].includes(txid)) {
-                addresses[address].push(txid);
-            }
+            addresses[address].add(txid);
         });
     };
 
@@ -136,6 +136,7 @@ export const simpleSearchTransactions = (
         return [];
     }
 
+    const lowerCaseSearch = search.toLowerCase();
     const txsToSearch: string[] = [];
 
     // Searching for an amount (without operator)
@@ -154,7 +155,7 @@ export const simpleSearchTransactions = (
     // Find by output label
     const txsForOutputLabels = groupTransactionsByLabel(accountLabels);
     const foundTxsForOutputLabel = typedObjectKeys(txsForOutputLabels).flatMap(label => {
-        if (label.toLowerCase().includes(search.toLowerCase())) {
+        if (label.toLowerCase().includes(lowerCaseSearch)) {
             return txsForOutputLabels[label] ?? [];
         }
 
@@ -164,22 +165,24 @@ export const simpleSearchTransactions = (
 
     // Find by address label
     const addressesForLabel = groupAddressesByLabel(accountLabels);
-    const foundAddressesForLabel = typedObjectKeys(addressesForLabel).flatMap(label => {
-        if (label.toLowerCase().includes(search.toLowerCase())) {
-            return addressesForLabel[label];
-        }
+    const foundAddressesForLabel = new Set(
+        typedObjectKeys(addressesForLabel).flatMap(label => {
+            if (label.toLowerCase().includes(lowerCaseSearch)) {
+                return addressesForLabel[label] ?? [];
+            }
 
-        return [];
-    });
+            return [];
+        }),
+    );
 
     // Find by address
     const txsForAddresses = groupTransactionIdsByAddress(transactions);
     const foundTxsForAddress = typedObjectKeys(txsForAddresses).flatMap(address => {
         if (
-            address.toLowerCase().includes(search.toLowerCase()) ||
-            foundAddressesForLabel.includes(address)
+            address.toLowerCase().includes(lowerCaseSearch) ||
+            foundAddressesForLabel.has(address)
         ) {
-            return txsForAddresses[address] ?? [];
+            return [...(txsForAddresses[address] ?? [])];
         }
 
         return [];
@@ -188,11 +191,17 @@ export const simpleSearchTransactions = (
 
     // Find by token name, symbol or contract
     const foundTxsForToken = transactions.flatMap(transaction => {
+        const isNativeSymbolSearch = isNativeDisplaySymbolSearch(
+            transaction.symbol,
+            lowerCaseSearch,
+        );
         const hasMatchingToken = transaction.tokens.some(
             token =>
-                isTokenTransferMatchesSearch(token, search.toLowerCase()) ||
-                token.to?.toLowerCase().includes(search.toLowerCase()) ||
-                token.from?.toLowerCase().includes(search.toLowerCase()),
+                (isNativeSymbolSearch
+                    ? token.symbol?.toLowerCase() === lowerCaseSearch
+                    : isTokenTransferMatchesSearch(token, lowerCaseSearch)) ||
+                token.to?.toLowerCase().includes(lowerCaseSearch) ||
+                token.from?.toLowerCase().includes(lowerCaseSearch),
         );
 
         if (hasMatchingToken) {
@@ -203,11 +212,21 @@ export const simpleSearchTransactions = (
     });
     txsToSearch.push(...foundTxsForToken);
 
+    // Find by native coin symbol
+    const foundTxsForNativeSymbol = transactions.flatMap(transaction => {
+        if (isNativeTransferMatchesSearch(transaction, lowerCaseSearch)) {
+            return transaction.txid;
+        }
+
+        return [];
+    });
+    txsToSearch.push(...foundTxsForNativeSymbol);
+
     // Find by evm parsed function selector
     const foundTxsForFunctionSelector = transactions.flatMap(transaction => {
         const hasMatchingFunctionSelector =
             transaction.ethereumSpecific &&
-            isFunctionSelectorMatchesSearch(transaction.ethereumSpecific, search.toLowerCase());
+            isFunctionSelectorMatchesSearch(transaction.ethereumSpecific, lowerCaseSearch);
 
         if (hasMatchingFunctionSelector) {
             return transaction.txid;
@@ -218,7 +237,7 @@ export const simpleSearchTransactions = (
     txsToSearch.push(...foundTxsForFunctionSelector);
 
     // Remove duplicate txIDs
-    return transactions.filter(
-        t => unique(txsToSearch).includes(t.txid) || t.txid.includes(search),
-    );
+    const foundTxIds = new Set(txsToSearch);
+
+    return transactions.filter(t => foundTxIds.has(t.txid) || t.txid.includes(search));
 };

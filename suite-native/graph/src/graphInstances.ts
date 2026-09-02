@@ -4,8 +4,7 @@ export const PORTFOLIO_GRAPH_INSTANCE_ID = 'portfolio';
 
 export type PortfolioGraphInstanceId = typeof PORTFOLIO_GRAPH_INSTANCE_ID;
 export type AccountGraphInstanceId =
-    | `account:${AccountKey}`
-    | `account:${AccountKey}:token:${TokenAddress}`;
+    `account:${AccountKey}` | `account:${AccountKey}:token:${TokenAddress}`;
 export type GraphInstanceId = PortfolioGraphInstanceId | AccountGraphInstanceId;
 
 type GetAccountGraphInstanceIdParams = {

@@ -7,11 +7,11 @@ jest.mock('@trezor/env-utils', () => ({
 }));
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
-import { createMockedBluetoothDevice } from './__tests__/createMockedBluetoothDevice';
 import {
     filterOutNonResponsiveDevices,
     getLastUpdatedLimitForDevice,
 } from './filterOutNonResponsiveDevices';
+import { mockDesktopBluetoothDevice } from '../../../mocks/mockDesktopBluetoothDevice';
 
 const NOW = 8_000;
 
@@ -27,19 +27,19 @@ describe(filterOutNonResponsiveDevices.name, () => {
 
     it('keeps devices that are in specified modes regardless of lastUpdatedTimestamp', () => {
         const devices: DesktopBluetoothDevice[] = [
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('1'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: NOW - 4_000,
                 connectionStatus: { type: 'pairing' },
             }),
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceB',
                 lastUpdatedTimestamp: NOW - 4_000,
                 connectionStatus: { type: 'connecting' },
             }),
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('3'),
                 name: 'DeviceC',
                 lastUpdatedTimestamp: NOW - 4_000,
@@ -53,19 +53,19 @@ describe(filterOutNonResponsiveDevices.name, () => {
 
     it('filters non responsive devices', () => {
         const devices: DesktopBluetoothDevice[] = [
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('1'),
                 connectionStatus: { type: 'paired' },
                 name: 'DeviceA',
                 lastUpdatedTimestamp: NOW - 4_000,
             }),
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('2'),
                 connectionStatus: { type: 'paired' },
                 name: 'DeviceA',
                 lastUpdatedTimestamp: NOW - 4_000,
             }),
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('3'),
                 connectionStatus: { type: 'paired' },
                 name: 'DeviceA',
@@ -79,13 +79,13 @@ describe(filterOutNonResponsiveDevices.name, () => {
 
     it('keeps responsive devices', () => {
         const devices: DesktopBluetoothDevice[] = [
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('1'),
                 connectionStatus: { type: 'paired' },
                 name: 'DeviceA',
                 lastUpdatedTimestamp: NOW - 500,
             }),
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('2'),
                 connectionStatus: { type: 'paired' },
                 name: 'DeviceA',
@@ -99,28 +99,28 @@ describe(filterOutNonResponsiveDevices.name, () => {
 
     it('progressively increases the unresponsive device timeout', () => {
         const weakSignalDevices: DesktopBluetoothDevice[] = [
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('1'),
                 connectionStatus: { type: 'paired' },
                 name: 'DeviceA',
                 lastUpdatedTimestamp: NOW - 2_000,
                 rssi: -90,
             }),
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('2'),
                 connectionStatus: { type: 'paired' },
                 name: 'DeviceB',
                 lastUpdatedTimestamp: NOW - 5_000,
                 rssi: -100,
             }),
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('2'),
                 connectionStatus: { type: 'paired' },
                 name: 'DeviceB',
                 lastUpdatedTimestamp: NOW - 5_001,
                 rssi: -100,
             }),
-            createMockedBluetoothDevice({
+            mockDesktopBluetoothDevice({
                 id: asBluetoothDeviceId('3'),
                 connectionStatus: { type: 'paired' },
                 name: 'DeviceC',

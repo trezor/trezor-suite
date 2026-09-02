@@ -11,22 +11,12 @@ import {
     MODAL_PRESERVE_ON_TX_TIMEOUT,
     MODAL_REMOVE_PRESERVE,
 } from './constants';
-import { type ModalRootState, selectModalConfirmationRequestId } from './modalReducer';
-
-export type ModalAction =
-    | { type: typeof MODAL_CLOSE }
-    | { type: typeof MODAL_PRESERVE }
-    | { type: typeof MODAL_REMOVE_PRESERVE }
-    | { type: typeof MODAL_PRESERVE_ON_TX_TIMEOUT }
-    | {
-          type: typeof MODAL_OPEN_USER_CONTEXT;
-          payload: UserContextPayload;
-      };
+import { selectModalConfirmationRequestId } from './modalSelectors';
 
 export const closeModal = createAction(MODAL_CLOSE);
 
 /**
- * Don't close modals on UI.CLOSE_UI.WINDOW event (closing via modal US), but wait for explicit closing instead
+ * Don't close modals on UI_EVENTS.CLOSE_UI_WINDOW event, but wait for explicit closing instead
  * (usually coming from a redux action from device, or other sources not directly controlled by Suite UI)
  */
 export const preserveModal = createAction(MODAL_PRESERVE);
@@ -44,8 +34,16 @@ export const removePreserveModal = createAction(MODAL_REMOVE_PRESERVE);
  */
 export const preserveModalOnTxTimeout = createAction(MODAL_PRESERVE_ON_TX_TIMEOUT);
 
+type OnReceiveConfirmationThunkState = {
+    modal: {
+        context: string;
+        requestId?: string;
+    };
+};
+
 export const onReceiveConfirmation =
-    (confirmation: boolean) => (dispatch: Dispatch, getState: () => ModalRootState) => {
+    (confirmation: boolean) =>
+    (dispatch: Dispatch, getState: () => OnReceiveConfirmationThunkState) => {
         const requestId = selectModalConfirmationRequestId(getState());
         TrezorConnect.uiResponse({
             type: UI_RESPONSE.RECEIVE_CONFIRMATION,

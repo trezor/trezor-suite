@@ -8,7 +8,7 @@ import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 import { ReconnectDevicePrompt } from 'src/components/firmware/ReconnectDevicePrompt';
 import { RotatingPhrases } from 'src/components/firmware/RotatingPhrases';
 import { WebUsbButton } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationStepProps = {
@@ -23,8 +23,7 @@ export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstall
     const getInnerActionComponent = () => {
         if (
             isWebUsbTransport &&
-            reconnectEvent &&
-            reconnectEvent.disconnected &&
+            reconnectEvent?.disconnected &&
             reconnectEvent.i > 2 && // Add some latency for cases when the device is already paired or is restarting.
             status !== 'done'
         ) {

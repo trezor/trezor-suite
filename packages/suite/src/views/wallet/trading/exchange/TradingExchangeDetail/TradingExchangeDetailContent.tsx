@@ -8,6 +8,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
@@ -16,7 +17,7 @@ import {
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Box, Card, Column, StepList } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
@@ -115,6 +116,7 @@ export const TradingExchangeDetailContent = () => {
                     <TradingExchangeDetailPaymentSuccessful
                         trade={trade.data}
                         account={sendAccount}
+                        receiveAccountKey={trade.receiveAccountKey}
                         provider={provider}
                     />
                 );
@@ -123,6 +125,7 @@ export const TradingExchangeDetailContent = () => {
                     <TradingExchangeDetailPaymentFailed
                         trade={trade.data}
                         account={sendAccount}
+                        receiveAccountKey={trade.receiveAccountKey}
                         provider={provider}
                     />
                 );
@@ -131,6 +134,7 @@ export const TradingExchangeDetailContent = () => {
                     <TradingExchangeDetailPaymentKYC
                         trade={trade.data}
                         account={sendAccount}
+                        receiveAccountKey={trade.receiveAccountKey}
                         provider={provider}
                         supportUrl={provider?.supportUrl}
                     />
@@ -149,6 +153,7 @@ export const TradingExchangeDetailContent = () => {
                                     <TradingExchangeDetailPaymentSending
                                         trade={trade.data}
                                         account={sendAccount}
+                                        receiveAccountKey={trade.receiveAccountKey}
                                         composedTransaction={composedTransaction}
                                     />
                                 )}
@@ -156,6 +161,7 @@ export const TradingExchangeDetailContent = () => {
                                     trade={trade.data}
                                     provider={provider}
                                     account={trade.data.isDex ? sendAccount : undefined}
+                                    receiveAccountKey={trade.receiveAccountKey}
                                     isDex={trade.data.isDex}
                                 />
                                 <StepList.Item

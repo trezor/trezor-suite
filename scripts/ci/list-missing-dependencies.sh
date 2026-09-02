@@ -1,11 +1,17 @@
 #!/bin/bash
 # List dependencies missing from the domain lists.
 
-domains=("connect" "foundation" "growth" "trade" "qa" "wallet")
+domains=("connect" "earn" "growth" "networks" "qa" "trade" "wallet")
 
 dependencies_in_lists=()
 dependencies_missing_from_lists=()
 dependencies_listed_but_unused=()
+
+strip_dependency_comment() {
+    local line=$1
+
+    printf '%s\n' "$line" | sed -E 's/[[:space:]]*#.*$//; s/^[[:space:]]+//; s/[[:space:]]+$//'
+}
 
 normalize_package_name() {
     local package_name=$1
@@ -17,12 +23,15 @@ normalize_package_name() {
 
 read_file_into_array() {
     local file=$1
+    local line_without_comment
+
     # Check if the file exists before trying to read it
     if [[ -f $file ]]; then
         while IFS= read -r line || [[ -n "$line" ]]; do
-            # Skip empty lines and lines starting with #
-            if [[ -n "$line" && ! "$line" =~ ^# ]]; then
-                dependencies_in_lists+=("$line")
+            line_without_comment=$(strip_dependency_comment "$line")
+
+            if [[ -n "$line_without_comment" ]]; then
+                dependencies_in_lists+=("$line_without_comment")
             fi
         done < "$file"
     else

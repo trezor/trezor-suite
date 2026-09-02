@@ -5,13 +5,7 @@ import { EventType } from '../constants';
 export type DemoAccountQuestionnaireQuestion = 'reason' | 'suiteAction';
 
 export type DemoAccountQuestionnaireQuestionOption =
-    | 'considering'
-    | 'ad'
-    | 'friend'
-    | 'none'
-    | 'explore'
-    | 'transaction'
-    | 'hardwareWallet';
+    'considering' | 'ad' | 'friend' | 'none' | 'explore' | 'transaction' | 'hardwareWallet';
 
 type Attributes = {
     option: AttributeDef<DemoAccountQuestionnaireQuestionOption>;

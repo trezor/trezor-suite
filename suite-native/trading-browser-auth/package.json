@@ -14,7 +14,7 @@
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native": "7.1.31",
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
@@ -30,15 +30,16 @@
         "@suite-native/trading-state": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-linking": "~56.0.12",
-        "expo-web-browser": "~56.0.5",
+        "expo-linking": "~57.0.3",
+        "expo-web-browser": "~57.0.1",
         "react": "19.2.3",
-        "react-native": "0.85.3",
-        "react-native-reanimated": "4.3.1",
+        "react-native": "0.86.0",
+        "react-native-reanimated": "4.5.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",

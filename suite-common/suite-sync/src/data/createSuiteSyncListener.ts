@@ -11,11 +11,11 @@ import {
     upsertManyWallets,
 } from './suiteSyncDataReducer';
 
-export type CreateSuiteSyncListenerDeps = {
+export type SuiteSyncListenerDeps = {
     dispatch: Dispatch;
 };
 
-export const createSuiteSyncListener = (deps: CreateSuiteSyncListenerDeps): SuiteSyncListener => ({
+export const createSuiteSyncListener = (deps: SuiteSyncListenerDeps): SuiteSyncListener => ({
     onEntityChange: {
         wallets: (_deviceStaticId, entities) => {
             deps.dispatch(upsertManyWallets(entities));

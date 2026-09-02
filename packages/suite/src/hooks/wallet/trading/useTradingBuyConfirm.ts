@@ -5,10 +5,12 @@ import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     buyThunks,
     selectTradingAccountKeyByTradeType,
     selectTradingBuyIsLoading,
+    selectTradingBuyReceiveAccount,
     selectTradingBuyReceiveAddress,
     selectTradingBuySelectedQuote,
     tradingBuyActions,
@@ -17,7 +19,7 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 export const useTradingBuyConfirm = () => {
@@ -29,6 +31,7 @@ export const useTradingBuyConfirm = () => {
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const accountKey = useSelector(state => selectTradingAccountKeyByTradeType(state, 'buy'));
     const account = useSelector(state => selectAccountByKey(state, accountKey) ?? undefined);
+    const receiveAccount = useSelector(selectTradingBuyReceiveAccount);
 
     const isReady = !!selectedQuote && !!receiveAddress && !!account;
     const isConfirmDisabled = isLoading || !selectedQuote || !receiveAddress || !account;
@@ -42,7 +45,8 @@ export const useTradingBuyConfirm = () => {
     const confirmTrade = async (): Promise<BuyTrade | undefined> => {
         if (!account || !receiveAddress || !selectedQuote) return;
 
-        const returnUrl = await createTxLink(selectedQuote, account);
+        const tradeAccount = receiveAccount ?? account;
+        const returnUrl = await createTxLink(selectedQuote, tradeAccount);
 
         const processResponseData = (response: BuyTradeResponse) => {
             if (response.tradeForm) {
@@ -68,7 +72,7 @@ export const useTradingBuyConfirm = () => {
                 quote: selectedQuote,
                 address: receiveAddress,
                 returnUrl,
-                account,
+                account: tradeAccount,
                 processResponseData,
                 triggerAnalyticsTradeConfirmation,
             }),

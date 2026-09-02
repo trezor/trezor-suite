@@ -1,173 +1,157 @@
 # @suite-common/test-utils
 
-This package provides common utilities for testing React hooks that depend on Redux store.
-It also re-exports everything from `@testing-library/react`, so you should use it as a drop-in replacement.
+This package provides shared test utilities for Suite. It also re-exports
+`@testing-library/react`, so tests can use it as a drop-in replacement.
 
-## configureMockStore
+Most unit tests should not create a Redux store or an application root. Create those only when the
+test intentionally covers the integration between business logic, Redux, and injected services.
 
-`configureMockStore` is a utility for creating a Redux store configured for testing. It wraps `@reduxjs/toolkit`'s `configureStore` with additional testing features like action logging.
+## Choose the test boundary first
 
-### Usage example
+```mermaid
+flowchart TD
+    A{What are you testing?}
+    A -- One thunk, reducer, selector, or service --> B[Call it directly]
+    A -- A connected part of the application --> C[Use createTestCompositionRoot]
+    C --> D[Run the behavior and assert the resulting state or UI]
+```
+
+Use a unit test when the subject can receive all its dependencies as arguments. This is the default
+for business logic.
+
+Use an integration test when you intentionally want to run a connected part of the application and
+verify what its actions, reducers, middleware, and services produce together. For example, dispatch
+a user flow and assert the state that ends up in Redux.
+
+## Unit-test business logic directly
+
+Do not create a store merely to obtain `dispatch`, `getState`, or `extra`. A thunk is still a
+function, so call that function with those three dependencies directly:
 
 ```ts
-import { configureMockStore } from '@suite-common/test-utils';
+import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 
-const store = configureMockStore({
-    reducer: {
-        counter: (state = { value: 0 }, action) => {
-            if (action.type === 'counter/increment') {
-                return { value: state.value + 1 };
-            }
+const state: XyzThunkState = {
+    // Only the state required by xyzThunk.
+};
+const extra: XyzThunkDeps = {
+    services: {
+        // Only the services required by xyzThunk.
+    },
+};
+const getState = () => state;
+const { actions, dispatch } = createMockDispatch({ getState, extra });
 
-            return state;
+await xyzThunk()(dispatch, getState, extra);
+
+expect(extra.services.someService).toHaveBeenCalled();
+expect(actions).toEqual([
+    expect.objectContaining({ type: xyzThunk.pending.type }),
+    expect.objectContaining({ type: xyzThunk.fulfilled.type }),
+]);
+```
+
+`createMockDispatch` is not a Redux store. It is a small function that records plain actions and
+runs nested thunks recursively with the same `dispatch`, `getState`, and `extra`. This keeps the test
+focused on the thunk contract without constructing unrelated application infrastructure.
+
+Use the same principle for other business logic:
+
+- Call reducers with the previous state and an action.
+- Call selectors with the smallest state they declare.
+- Create services with explicit mocked dependencies and call the service directly.
+- Render hooks without application providers when the hook does not depend on them.
+
+## Integration-test through `createTestCompositionRoot`
+
+Use `createTestCompositionRoot` when Redux integration is part of what the test should prove. It
+creates a test application root containing the Redux store and the injected services used by that
+store.
+
+```ts
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+
+const root = createTestCompositionRoot({
+    extra: {
+        services: {
+            analytics: mockAnalytics(),
         },
     },
+    reducer: {
+        counter: counterReducer,
+    },
     preloadedState: {
-        counter: { value: 5 },
+        counter: { value: 0 },
     },
 });
 
-// Dispatch actions
-store.dispatch({ type: 'counter/increment' });
+root.services.dispatch(incrementCounter());
 
-// Get current state
-expect(store.getState().counter.value).toBe(6);
-
-// Get all dispatched actions
-expect(store.getActions()).toEqual([{ type: 'counter/increment' }]);
-
-// Clear action log
-store.clearActions();
+expect(root.store.getState().counter.value).toBe(1);
+expect(root.services.getActions()).toContainEqual(incrementCounter());
 ```
 
-### Configuration options
+Declare only the services and state needed by the tested application slice. The composition root
+also exposes `getActions` and `clearActions` as test services when action-level assertions are
+useful.
 
-- `reducer` - Redux reducer or reducer map
-- `preloadedState` - Initial state for the store
-- `middleware` - Additional middleware to include
-- `extra` - Extra dependencies for thunk middleware
-- `serializableCheck` - Configuration for serializable check middleware
+The important difference from a thunk unit test is the assertion target: an integration test runs
+the Redux wiring and normally verifies the resulting state or rendered UI, not only whether one
+isolated function called another function.
 
-## initPreloadedState
+## Do not call `createTestStore` directly by default
 
-`initPreloadedState` is a utility for merging partial state with the initial state from a reducer. This is useful when you want to override only specific parts of the state while keeping the rest at their default values.
+`createTestStore` is the low-level store utility used by `createTestCompositionRoot`. Application
+tests should use `createTestCompositionRoot` instead, so the store and its services stay together in
+the same shape as an application composition root.
 
-### Usage example
+Call `createTestStore` directly only in exceptional low-level tests, such as testing store or
+middleware infrastructure where an application service container is deliberately outside the test
+boundary. It should not be the normal shortcut for testing thunks, hooks, components, or application
+flows.
+
+## Testing hooks
+
+Use `renderHook` for a hook that does not depend on application providers:
 
 ```ts
-import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
+import { renderHook } from '@suite-common/test-utils';
 
-const rootReducer = (state = { counter: { value: 0 }, user: { name: 'John' } }, action) => {
-    // reducer logic
-    return state;
-};
+const { result } = renderHook(() => useStandaloneHook());
+```
+
+A hook that reads Redux state or injected services is an integration test. Create a test application
+root and pass it to `renderHookWithStoreProvider`:
+
+```ts
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+
+const root = createTestCompositionRoot({
+    extra: { services: { analytics: mockAnalytics() } },
+    reducer: { counter: counterReducer },
+    preloadedState: { counter: { value: 0 } },
+});
+
+const { result } = renderHookWithStoreProvider(() => useCounter(), { root });
+```
+
+The provider supplies both Redux and the injected services from the same test composition root.
+
+## Building preloaded state
+
+`initPreloadedState` merges a partial state into the initial state returned by a reducer. Use it when
+an integration test needs a complete preloaded state but should override only the relevant fields:
+
+```ts
+import { initPreloadedState } from '@suite-common/test-utils';
 
 const preloadedState = initPreloadedState({
     rootReducer,
     partialState: {
         counter: { value: 10 },
-        // user.name will remain 'John' from default state
     },
 });
-
-const store = configureMockStore({
-    reducer: rootReducer,
-    preloadedState,
-});
-
-expect(store.getState()).toEqual({
-    counter: { value: 10 },
-    user: { name: 'John' },
-});
 ```
 
-## Testing hooks
-
-```mermaid
-flowchart TD
-    A{{Do you need redux store?}} -- Yes --> B[Use 'renderHookWithStoreProvider']
-    A -- No --> C[Use 'renderHook']
-```
-
-### Using renderHook
-
-`renderHook` function is just re-exported from `@testing-library/react`. For more information, please refer to
-the [official documentation](https://testing-library.com/docs/react-testing-library/intro/).
-
-You should use it when your hook does not depend on any context providers.
-
-### Using renderHookWithStoreProvider
-
-`renderHookWithStoreProvider` is a custom utility that wraps your hook with Redux `Provider`.
-Use this when your hook depends on Redux store.
-
-**Note:** Unlike `@suite-native/test-utils`, this utility requires you to provide your own store instance.
-There is no `preloadedState` option - you must create and configure the store yourself.
-
-#### Usage example
-
-```ts
-import {
-    type TestStore,
-    act,
-    renderHookWithStoreProvider,
-    configureMockStore,
-} from '@suite-common/test-utils';
-
-describe('useCounter', () => {
-    const createStore = (initialValue: number) =>
-        configureMockStore({
-            reducer: {
-                counter: (state = { value: initialValue }, action) => {
-                    if (action.type === 'counter/increment') {
-                        return { value: state.value + 1 };
-                    }
-
-                    return state;
-                },
-            },
-        });
-
-    const renderUseCounter = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useCounter(), { store });
-
-    it('should initialize with count from store', () => {
-        const store = createStore(5);
-        const { result } = renderUseCounter(store);
-
-        expect(result.current.count).toBe(5);
-    });
-
-    it('should increment count and update store', () => {
-        const store = createStore(0);
-        const { result } = renderUseCounter(store);
-
-        act(() => {
-            result.current.increment();
-        });
-
-        expect(result.current.count).toBe(1);
-        expect(store.getState().counter.value).toBe(1);
-    });
-});
-```
-
-#### Injecting custom providers
-
-To inject a custom provider, you can use the `wrapper` option. The custom wrapper will be rendered inside
-the Redux `Provider`.
-
-```tsx
-import { type TestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
-
-const renderUseCounterA = (store: TestStore) =>
-    renderHookWithStoreProvider(() => useCounter(), { store, wrapper: MyCustomProvider });
-
-const renderUseCounterB = (store: TestStore) =>
-    renderHookWithStoreProvider(() => useCounter(), {
-        store,
-        wrapper: ({ children }) => (
-            <MyCustomProvider someProp={someValue}>{children}</MyCustomProvider>
-        ),
-    });
-```
+Pass the result to `createTestCompositionRoot`; do not create a standalone store only to initialize
+state.

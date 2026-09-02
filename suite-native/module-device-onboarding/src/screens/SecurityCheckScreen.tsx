@@ -42,7 +42,7 @@ const cardStepperContentMap = (analytics: Analytics<AnalyticsNativeEvents>) =>
                                 label={linkChunk}
                                 isUnderlined
                                 textVariant="body-md-strong"
-                                textColor="legacyBackgroundSecondaryDefault"
+                                textColor="contentBrand"
                             />
                         ),
                     }}

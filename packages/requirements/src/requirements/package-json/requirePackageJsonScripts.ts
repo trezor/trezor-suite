@@ -1,8 +1,7 @@
-import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
-
+import { type PackageJson, readPackageJson } from '@trezor/node-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
+import { walkDirectory } from '../../fileSystem';
 import type { Requirement } from '../Requirement';
 
 const PACKAGE_JSON_FILE = 'package.json';
@@ -22,23 +21,15 @@ const IGNORED_TEST_FILE_DIRECTORIES = new Set([
 ]);
 
 const hasUnitTestFile = (directoryPath: string): boolean => {
-    for (const entry of readdirSync(directoryPath, { withFileTypes: true })) {
-        if (entry.isDirectory()) {
-            if (IGNORED_TEST_FILE_DIRECTORIES.has(entry.name)) {
-                continue;
-            }
+    const walkDirectoryGenerator = walkDirectory(directoryPath, {
+        shouldEnterDirectory: ({ entry: directory }) =>
+            !IGNORED_TEST_FILE_DIRECTORIES.has(directory.name),
+        fileFilter: ({ entry }) => entry.isFile() && entry.name.endsWith('.test.ts'),
+    });
+    // generator yielded no items, equivalent to Array.length === 0
+    const isEmpty = walkDirectoryGenerator.next().done === true;
 
-            if (hasUnitTestFile(join(directoryPath, entry.name))) {
-                return true;
-            }
-        }
-
-        if (entry.isFile() && entry.name.endsWith('.test.ts')) {
-            return true;
-        }
-    }
-
-    return false;
+    return !isEmpty;
 };
 
 const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
@@ -70,10 +61,6 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
     },
 };
 
-type PackageJson = {
-    readonly scripts?: Record<string, string | undefined>;
-};
-
 const matchesScriptCommand = (
     actualCommand: string | undefined,
     expectedCommand: string | RegExp | undefined,
@@ -102,12 +89,10 @@ export const requirePackageJsonScripts: Requirement<'workspace'> = {
     name: 'package-json-scripts',
     scope: 'workspace',
     verify: context => {
-        const packageJsonPath = join(context.workspaceDir, PACKAGE_JSON_FILE);
-
         let parsed: PackageJson;
 
         try {
-            parsed = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
+            parsed = readPackageJson<PackageJson>(context.workspaceDir);
         } catch {
             return Promise.resolve([
                 `${context.workspaceName}: ${PACKAGE_JSON_FILE} is missing or contains invalid JSON.`,

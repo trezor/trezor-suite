@@ -1,0 +1,22 @@
+{
+    "name": "@suite-native/markdown",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:js:fix": "yarn lint:js --fix",
+        "test:unit": "yarn g:jest:native --passWithNoTests",
+        "test:unit:coverage": "yarn g:jest:native --coverage --passWithNoTests",
+        "test:unit:watch": "yarn g:jest:native --watch",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/styles-native": "workspace:*",
+        "react": "19.2.3",
+        "react-native-enriched-markdown": "^0.7.4"
+    }
+}

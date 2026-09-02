@@ -1,0 +1,249 @@
+import { type Target } from '@suite-common/wallet-core';
+import { asTxTargetId } from '@suite-common/wallet-types';
+
+import {
+    transactionWithChangeAddress,
+    transactionWithTargetInOutputs,
+} from './__fixtures__/transactions';
+import { type VinVoutAddress } from './types';
+import {
+    groupTargetOutputs,
+    mapTransactionInputsOutputsToAddresses,
+    sortTargetAddressesToBeginning,
+} from './utils';
+
+describe(mapTransactionInputsOutputsToAddresses.name, () => {
+    test('should return an empty array when input is empty', () => {
+        expect(
+            mapTransactionInputsOutputsToAddresses({
+                inputsOutputs: [],
+                addressesType: 'inputs',
+                isSentTransactionType: true,
+            }),
+        ).toEqual([]);
+    });
+
+    test('should return correct concatenated non-null addresses for transaction inputs', () => {
+        const expectedOutput: VinVoutAddress[] = [
+            {
+                address: 'bc1q39kuc35n722fmy0nw3qqhpvg0ch8f0a6rt22xs',
+                isChangeAddress: false,
+                outputIndex: 0,
+                txTargetId: asTxTargetId('0'),
+            },
+            {
+                address: 'bc346cd7c787e903ac4b41e4fd2e038a81cb696d5dbf87',
+                isChangeAddress: false,
+                outputIndex: 0,
+                txTargetId: asTxTargetId('0'),
+            },
+        ];
+        expect(
+            mapTransactionInputsOutputsToAddresses({
+                inputsOutputs: transactionWithTargetInOutputs.details.vin,
+                addressesType: 'inputs',
+                isSentTransactionType: false,
+            }),
+        ).toEqual(expectedOutput);
+    });
+
+    test('should return correct concatenated non-null addresses for Target input', () => {
+        const expectedOutput: VinVoutAddress[] = [
+            {
+                address: '3BcXPstZ4ZHhvLxPFkjFocuFySKt8nsGgs',
+                isChangeAddress: false,
+                outputIndex: 0,
+                txTargetId: asTxTargetId('0'),
+            },
+            {
+                address: '3QpCQP3A2q7kCr8QgsWuqG1Bg1P6RySonw',
+                isChangeAddress: false,
+                outputIndex: 1,
+                txTargetId: asTxTargetId('1'),
+            },
+        ];
+        expect(
+            mapTransactionInputsOutputsToAddresses({
+                inputsOutputs: transactionWithTargetInOutputs.details.vout,
+                addressesType: 'outputs',
+                isSentTransactionType: false,
+            }),
+        ).toEqual(expectedOutput);
+    });
+});
+
+describe(sortTargetAddressesToBeginning.name, () => {
+    test('should return an empty array when both inputs and targets are empty', () => {
+        expect(sortTargetAddressesToBeginning([], [])).toEqual([]);
+    });
+
+    test('should return empty array if only targets are present', () => {
+        const targetAddresses = mapTransactionInputsOutputsToAddresses({
+            inputsOutputs: transactionWithTargetInOutputs.targets,
+            addressesType: 'outputs',
+            isSentTransactionType: false,
+        });
+
+        expect(sortTargetAddressesToBeginning([], targetAddresses)).toEqual([]);
+    });
+
+    test('should return unchanged transaction inputs if targets not present', () => {
+        const inputAddresses = mapTransactionInputsOutputsToAddresses({
+            inputsOutputs: transactionWithTargetInOutputs.details.vin,
+            addressesType: 'inputs',
+            isSentTransactionType: true,
+        });
+
+        expect(sortTargetAddressesToBeginning(inputAddresses, [])).toEqual(inputAddresses);
+    });
+
+    test('should return unchanged transaction inputs if targets are not included', () => {
+        const inputAddresses = mapTransactionInputsOutputsToAddresses({
+            inputsOutputs: transactionWithTargetInOutputs.details.vin,
+            addressesType: 'inputs',
+            isSentTransactionType: false,
+        });
+        const targetAddresses = mapTransactionInputsOutputsToAddresses({
+            inputsOutputs: transactionWithTargetInOutputs.targets,
+            addressesType: 'outputs',
+            isSentTransactionType: false,
+        });
+
+        expect(sortTargetAddressesToBeginning(inputAddresses, targetAddresses)).toEqual(
+            inputAddresses,
+        );
+    });
+
+    test('should targets at the beginning of the array', () => {
+        const outputAddresses = mapTransactionInputsOutputsToAddresses({
+            inputsOutputs: transactionWithTargetInOutputs.details.vout,
+            addressesType: 'outputs',
+            isSentTransactionType: false,
+        });
+        const targetAddresses = mapTransactionInputsOutputsToAddresses({
+            inputsOutputs: transactionWithTargetInOutputs.targets,
+            addressesType: 'outputs',
+            isSentTransactionType: false,
+        });
+
+        const expectedResult: VinVoutAddress[] = [
+            {
+                address: '3BcXPstZ4ZHhvLxPFkjFocuFySKt8nsGgs',
+                isChangeAddress: false,
+                outputIndex: 0,
+                txTargetId: asTxTargetId('0'),
+            },
+            {
+                address: '3QpCQP3A2q7kCr8QgsWuqG1Bg1P6RySonw',
+                isChangeAddress: false,
+                outputIndex: 1,
+                txTargetId: asTxTargetId('1'),
+            },
+        ];
+
+        expect(sortTargetAddressesToBeginning(outputAddresses, targetAddresses)).toEqual(
+            expectedResult,
+        );
+    });
+
+    test('identify change address of a sent transaction', () => {
+        const outputAddresses = mapTransactionInputsOutputsToAddresses({
+            inputsOutputs: transactionWithChangeAddress.details.vout,
+            addressesType: 'outputs',
+            isSentTransactionType: true,
+        });
+        const targetAddresses = mapTransactionInputsOutputsToAddresses({
+            inputsOutputs: transactionWithChangeAddress.targets,
+            addressesType: 'outputs',
+            isSentTransactionType: true,
+        });
+
+        const expectedResult: VinVoutAddress[] = [
+            {
+                address: 'bc1ql2ntmq4jlq5g2q53q89c7f7d27s35se96jq6kw',
+                isChangeAddress: false,
+                outputIndex: 1,
+                txTargetId: asTxTargetId('1'),
+            },
+            {
+                address: 'bc1qt5mjvp7nt4lpq77s4c3trvyre2smtcxz4zmmjs',
+                isChangeAddress: true,
+                outputIndex: 0,
+                txTargetId: asTxTargetId('0'),
+            },
+        ];
+
+        expect(sortTargetAddressesToBeginning(outputAddresses, targetAddresses)).toEqual(
+            expectedResult,
+        );
+    });
+});
+
+describe(groupTargetOutputs.name, () => {
+    const makeSimpleTarget = (amount: string, n: number): Target => ({
+        type: 'target',
+        targetId: asTxTargetId(String(n)),
+        payload: { n, addresses: [`address${n}`], isAddress: true, amount },
+    });
+
+    const makeInternalTarget = (amount: string, n: number): Target => ({
+        type: 'internal',
+        targetId: asTxTargetId(String(n)),
+        payload: { type: 'sent', amount, from: 'from', to: 'to' },
+    });
+
+    test('returns empty array for empty input', () => {
+        expect(groupTargetOutputs([])).toEqual([]);
+    });
+
+    test('returns single target unchanged', () => {
+        const targets = [makeSimpleTarget('1000', 0)];
+        expect(groupTargetOutputs(targets)).toEqual(targets);
+    });
+
+    test('aggregates multiple target outputs into a single summed entry', () => {
+        const result = groupTargetOutputs([
+            makeSimpleTarget('1000', 0),
+            makeSimpleTarget('2000', 1),
+            makeSimpleTarget('3000', 2),
+        ]);
+        expect(result).toHaveLength(1);
+        expect(result[0]).toMatchObject({ type: 'target', payload: { amount: '6000' } });
+    });
+
+    test('preserves metadata of the first target in the aggregated entry', () => {
+        const first = makeSimpleTarget('1000', 0);
+        const result = groupTargetOutputs([first, makeSimpleTarget('500', 1)]);
+        expect(result[0]).toMatchObject({
+            targetId: first.targetId,
+            payload: { ...first.payload, amount: '1500' },
+        });
+    });
+
+    test('keeps non-target outputs individually after the aggregated target', () => {
+        const internal = makeInternalTarget('500', 10);
+        const result = groupTargetOutputs([
+            makeSimpleTarget('1000', 0),
+            makeSimpleTarget('2000', 1),
+            internal,
+        ]);
+        expect(result).toHaveLength(2);
+        expect(result[0]).toMatchObject({ type: 'target', payload: { amount: '3000' } });
+        expect(result[1]).toBe(internal);
+    });
+
+    test('returns non-target outputs as-is when no target outputs are present', () => {
+        const inputs = [makeInternalTarget('100', 0), makeInternalTarget('200', 1)];
+        expect(groupTargetOutputs(inputs)).toEqual(inputs);
+    });
+
+    test('treats missing target amount as zero', () => {
+        const noAmount: Target = {
+            type: 'target',
+            targetId: asTxTargetId('0'),
+            payload: { n: 0, isAddress: true },
+        };
+        const result = groupTargetOutputs([noAmount, makeSimpleTarget('500', 1)]);
+        expect(result[0]).toMatchObject({ type: 'target', payload: { amount: '500' } });
+    });
+});

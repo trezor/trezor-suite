@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useDispatch } from '@suite-common/redux-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect from '@trezor/connect';
 import { bluetoothManager } from '@trezor/transport-native-bluetooth';
@@ -44,7 +44,8 @@ export const useBluetoothDevice = () => {
             } else if (
                 unwrappedResult.error.code === 'Failure_ActionCancelled' ||
                 unwrappedResult.error.code === 'Failure_PinCancelled' ||
-                unwrappedResult.error.code === 'Method_Interrupted'
+                unwrappedResult.error.code === 'Method_Interrupted' ||
+                unwrappedResult.error.code === 'Method_Cancel'
             ) {
                 onCancel();
             }

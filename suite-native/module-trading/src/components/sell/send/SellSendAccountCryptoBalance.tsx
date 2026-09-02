@@ -1,11 +1,16 @@
+import { useWatch } from '@suite-native/forms';
+
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { TradeableAssetAccountBalance } from '../../general/TradeableAssetAccountBalance';
 
 export const SEND_ACCOUNT_BALANCE_TEST_ID = '@trading/sell/send-account-balance';
 
 export const SellSendAccountCryptoBalance = () => {
-    const { watch } = useSellFormContext();
-    const [sendAsset, sendAccount] = watch(['sendAsset', 'sendAccount']);
+    const { control } = useSellFormContext();
+    const [sendAsset, sendAccount] = useWatch({
+        control,
+        name: ['sendAsset', 'sendAccount'],
+    });
 
     return (
         <TradeableAssetAccountBalance

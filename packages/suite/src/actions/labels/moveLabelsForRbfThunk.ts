@@ -1,17 +1,23 @@
-import { moveLabelsForRbfOldMetadataThunk } from '@suite/metadata';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+
+import {
+    type MoveLabelsForRbfOldMetadataThunkState,
+    moveLabelsForRbfOldMetadataThunk,
+} from '@suite/metadata';
+import { type DeviceRootState } from '@suite-common/device';
+import { type MessageSystemRootState } from '@suite-common/message-system';
+import { type WithServices } from '@suite-common/redux-utils';
 import { findLabelsToBeMovedOrDeleted } from '@suite-common/suite-rbf-labels-migrations';
-import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { selectTransactions } from '@suite-common/wallet-core';
+import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
+import { type WithSuiteSyncState, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { type TransactionsRootState, selectTransactions } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/connect';
 import { type Branded } from '@trezor/type-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { type Dispatch, type GetState } from 'src/types/suite';
+export type StateBeforePush = TransactionsRootState & Branded<'StateBeforePush'>;
 
-export type StateBeforePush = ReturnType<GetState> & Branded<'StateBeforePush'>;
-
-export const asStateBeforePush = (state: ReturnType<GetState>): StateBeforePush =>
+export const asStateBeforePush = (state: TransactionsRootState): StateBeforePush =>
     state as StateBeforePush;
 
 type MoveLabelsForRbfThunkParams = {
@@ -21,9 +27,26 @@ type MoveLabelsForRbfThunkParams = {
     stateBeforePush: StateBeforePush;
 };
 
+export type MoveLabelsForRbfThunkState = DeviceRootState &
+    MessageSystemRootState &
+    MoveLabelsForRbfOldMetadataThunkState &
+    WithSuiteSyncState;
+
+export type MoveLabelsForRbfThunkDeps = WithServices<MigrateSuiteSyncLabelsForRbfTransactionDep>;
+
+type MoveLabelsForRbfThunkDispatch = ThunkDispatch<
+    MoveLabelsForRbfThunkState,
+    MoveLabelsForRbfThunkDeps,
+    UnknownAction
+>;
+
 export const moveLabelsForRbfThunk =
     ({ newTxId, prevTxId, deviceStaticSessionId, stateBeforePush }: MoveLabelsForRbfThunkParams) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    async (
+        dispatch: MoveLabelsForRbfThunkDispatch,
+        getState: () => MoveLabelsForRbfThunkState,
+        extra: MoveLabelsForRbfThunkDeps,
+    ) => {
         const toBeMovedOrDeletedList = findLabelsToBeMovedOrDeleted({
             prevTxId,
             // NOTE: beware of stateBeforePush, this has to be passed here which is a state

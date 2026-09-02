@@ -21,7 +21,7 @@ To run the tests locally, you need to have the following installed:
 With the debug config, the app is running in Expo dev-client and the JavaScript bundle is served from the local Metro server. This configuration is suitable for development and testing purposes because the Metro hot reloads make it easy to debug the test scenarios. To run the tests in debug mode, follow these steps:
 
 1. Navigate to the `suite-native/app` folder
-2. generate Expo native code with `yarn prebuild:clean`
+2. generate Expo native code with `yarn prebuild`
 3. Create a debug build:
     - (**Android**) `yarn build:e2e android.emu.debug`
     - (**iOS**) `yarn build:e2e ios.sim.debug`
@@ -37,7 +37,7 @@ With the debug config, the app is running in Expo dev-client and the JavaScript 
 To test the app in the release mode, you need to build the app with the release configuration. The JavaScript bundle is bundled within the app and the app is running in the standalone mode. To run the tests in the release mode, follow these steps:
 
 1. Navigate to the `suite-native/app` folder
-2. generate Expo native code with `yarn prebuild:clean`
+2. generate Expo native code with `yarn prebuild`
 3. Create a release build:
     - (**Android**) `yarn build:e2e android.emu.release`
     - (**iOS**) `yarn build:e2e ios.sim.release`
@@ -152,7 +152,7 @@ To run specific files in CI you can temporarily change the GH workflow `template
 
 #### How to make prebuild for one platform only?
 
-`yarn prebuild:clean --platform android`
+`yarn prebuild --platform android`
 
 #### How to find testIDs for screens?
 

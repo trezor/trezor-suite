@@ -1,8 +1,9 @@
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectSessions, walletConnectDisconnectThunk } from '@suite-common/walletconnect';
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports

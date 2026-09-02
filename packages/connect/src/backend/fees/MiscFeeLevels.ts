@@ -5,19 +5,23 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { cloneObject } from '@trezor/utils/src/cloneObject';
 
 import type { Blockchain } from '../Blockchain';
+import type { FeeLevels } from './feeLevelsBase';
 
-export class MiscFeeLevels {
-    coinInfo: CoinInfo;
-    levels: FeeLevel[];
-    // indicates that this.levels are current rates from backend, otherwise they are only the default values from jsons
-    wasFetchedSuccessfully: boolean = false;
+export class MiscFeeLevels implements FeeLevels {
+    private coinInfo: CoinInfo;
+    private level: FeeLevel;
+
+    get levels() {
+        return [this.level];
+    }
 
     constructor(coinInfo: CoinInfo) {
         this.coinInfo = coinInfo;
-        this.levels = cloneObject(coinInfo.defaultFees);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess - misc coins should have only one FeeLevel (normal)
+        this.level = cloneObject(coinInfo.defaultFees[0]);
     }
 
-    async load(blockchain: Blockchain, request: Parameters<typeof blockchain.estimateFee>[0]) {
+    async load(blockchain: Blockchain, request: Parameters<Blockchain['estimateFee']>[0]) {
         try {
             const estimateResult = await blockchain.estimateFee(request);
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -34,20 +38,9 @@ export class MiscFeeLevels {
                 Math.max(this.coinInfo.minFee, fee),
             ).toString();
 
-            // misc coins should have only one FeeLevel (normal)
-            const { levels } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const currentLevel: (typeof levels)[number] = levels[0];
-            this.levels[0] = {
-                ...currentLevel,
-                ...response,
-                feePerUnit,
-            };
-            this.wasFetchedSuccessfully = true;
+            this.level = { ...this.level, ...response, feePerUnit };
         } catch {
             // silent
         }
-
-        return this.levels;
     }
 }

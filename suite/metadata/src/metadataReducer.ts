@@ -1,3 +1,4 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
 import { type SuiteSettingsRootState } from '@suite/settings';
@@ -11,19 +12,28 @@ import {
 } from '@suite-common/device';
 import {
     type AccountLabels,
-    type DataType,
     type MetadataState,
     type PasswordManagerState,
     type WalletLabels,
 } from '@suite-common/metadata-types';
-import { type AnyAction } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
 
-import * as METADATA from './metadataConstants';
+import {
+    addMetadataProvider,
+    disableMetadata,
+    enableMetadata,
+    removeMetadataProvider,
+    setData,
+    setEditing,
+    setErrorForDevice,
+    setInitiating,
+    setLegacyLabelsMigrationForWallet,
+    setSelectedProvider,
+} from './metadataActions';
 import { DEFAULT_ACCOUNT_METADATA, DEFAULT_WALLET_METADATA } from './metadataLabelingConstants';
 import * as METADATA_LABELING from './metadataLabelingConstants';
 import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
@@ -49,103 +59,111 @@ export type SuiteRootStateSliceForMetadata = {
 };
 
 /** @deprecated Legacy labeling */
-export type MetadataRootState = {
+type MetadataSliceRootState = {
     metadata: MetadataState;
-} & AccountsRootState &
+};
+
+/** @deprecated Legacy labeling */
+export type MetadataRootState = MetadataSliceRootState &
+    AccountsRootState &
     DeviceRootState &
     SuiteSettingsRootState & { suite: SuiteRootStateSliceForMetadata };
+
+type StorageLoadMetadataAction = {
+    type: '@storage/load';
+    payload: { metadata?: Partial<MetadataState> };
+};
+
+const isStorageLoadMetadataAction = (action: UnknownAction): action is StorageLoadMetadataAction =>
+    action.type === '@storage/load';
 
 /**
  * @deprecated Legacy Labeling
  */
 export const metadataReducer = (
     state = initialMetadataState,
-    action: AnyAction | ReturnType<typeof deviceActions.forgetDevice>,
+    action: UnknownAction,
 ): MetadataState =>
     produce(state, draft => {
-        switch (action.type) {
-            case '@storage/load': // hack: to prevent dependency
-                return {
-                    ...state,
-                    ...(action as any).payload.metadata,
-                };
-            case METADATA.ENABLE:
-                draft.enabled = true;
-                break;
-            case METADATA.DISABLE:
-                draft.enabled = false;
-                break;
-            case METADATA.ADD_PROVIDER:
-                draft.providers.push(action.payload);
-                break;
-            case METADATA.REMOVE_PROVIDER:
-                // todo: identification should be dataType + clientId
-                // at the moment, it is not needed because each feature (passwords, labels) has distinct provider. In case we wanted to support 2 different features in 1 provider. we would need to add this?
-                draft.providers = draft.providers.filter(
-                    p => p.clientId !== action.payload.clientId,
-                );
-                break;
-            case METADATA.SET_SELECTED_PROVIDER: {
-                const dataType = action.payload.dataType as DataType;
+        if (isStorageLoadMetadataAction(action)) {
+            // Local guard prevents a dependency on the app-level storage action.
+            return {
+                ...state,
+                ...action.payload.metadata,
+            };
+        }
 
-                if (!action.payload.clientId) {
-                    delete draft.selectedProvider[dataType];
-                    break;
-                }
-                draft.selectedProvider[dataType] = action.payload.clientId;
-                break;
+        if (enableMetadata.match(action)) {
+            draft.enabled = true;
+        } else if (disableMetadata.match(action)) {
+            draft.enabled = false;
+        } else if (addMetadataProvider.match(action)) {
+            draft.providers.push(action.payload);
+        } else if (removeMetadataProvider.match(action)) {
+            // todo: identification should be dataType + clientId
+            // at the moment, it is not needed because each feature (passwords, labels) has distinct provider. In case we wanted to support 2 different features in 1 provider. we would need to add this?
+            draft.providers = draft.providers.filter(p => p.clientId !== action.payload.clientId);
+        } else if (setSelectedProvider.match(action)) {
+            const { dataType, clientId } = action.payload;
+
+            if (!clientId) {
+                delete draft.selectedProvider[dataType];
+
+                return;
             }
-            case METADATA.SET_EDITING:
-                draft.editing = action.payload;
-                break;
-            case METADATA.SET_INITIATING:
-                draft.initiating = action.payload;
-                break;
-            case METADATA.SET_DATA: {
-                const targetProvider = draft.providers.find(
-                    p =>
-                        p.type === action.payload.provider.type &&
-                        p.clientId === action.payload.provider.clientId,
-                );
-                if (!targetProvider) {
-                    break;
-                }
-                if (!action.payload.data) {
-                    targetProvider.data = {};
-                } else {
-                    targetProvider.data = { ...targetProvider.data, ...action.payload.data };
-                }
-
-                break;
+            draft.selectedProvider[dataType] = clientId;
+        } else if (setEditing.match(action)) {
+            draft.editing = action.payload;
+        } else if (setInitiating.match(action)) {
+            draft.initiating = action.payload;
+        } else if (setData.match(action)) {
+            const targetProvider = draft.providers.find(
+                p =>
+                    p.type === action.payload.provider.type &&
+                    p.clientId === action.payload.provider.clientId,
+            );
+            if (!targetProvider) {
+                return;
             }
-            case METADATA.SET_ERROR_FOR_DEVICE:
-                if (action.payload.failed) {
-                    if (!draft.error) draft.error = {};
-                    draft.error[action.payload.deviceState] = action.payload.failed;
-                } else {
-                    delete draft.error?.[action.payload.deviceState];
-                }
-                break;
-            case METADATA.SET_LEGACY_LABELS_MIGRATION_FOR_WALLET:
-                draft.hasLegacyLabelsMigrated[action.payload.walletDescriptor] = true;
-                break;
-            case deviceActions.forgetDevice.type:
-                if (action.payload.device.state?.staticSessionId) {
-                    const { staticSessionId } = action.payload.device.state;
-                    const { walletDescriptor } = parseStaticSessionId(staticSessionId);
+            if (!action.payload.data) {
+                targetProvider.data = {};
+            } else {
+                targetProvider.data = { ...targetProvider.data, ...action.payload.data };
+            }
+        } else if (setErrorForDevice.match(action)) {
+            if (action.payload.failed) {
+                if (!draft.error) draft.error = {};
+                draft.error[action.payload.deviceState] = action.payload.failed;
+            } else {
+                delete draft.error?.[action.payload.deviceState];
+            }
+        } else if (setLegacyLabelsMigrationForWallet.match(action)) {
+            draft.hasLegacyLabelsMigrated[action.payload.walletDescriptor] = true;
+        } else if (
+            deviceActions.forgetDevice.match(action) &&
+            action.payload.device.state?.staticSessionId
+        ) {
+            const { staticSessionId } = action.payload.device.state;
+            const { walletDescriptor } = parseStaticSessionId(staticSessionId);
 
-                    delete draft.error?.[staticSessionId];
-                    delete draft.hasLegacyLabelsMigrated[walletDescriptor];
-                }
-
-            // no default
+            delete draft.error?.[staticSessionId];
+            delete draft.hasLegacyLabelsMigrated[walletDescriptor];
         }
     });
 
 /**
  * @deprecated Legacy Labeling
  */
-export const selectMetadata = (state: MetadataRootState) => state.metadata;
+export const selectMetadata = (state: MetadataSliceRootState) => state.metadata;
+
+export const selectMetadataEnabled = (state: MetadataSliceRootState) => state.metadata.enabled;
+
+export const selectMetadataError = (state: MetadataSliceRootState) => state.metadata.error;
+
+export const selectMetadataInitiating = (state: MetadataSliceRootState) =>
+    state.metadata.initiating;
+
+export const selectMetadataEditing = (state: MetadataSliceRootState) => state.metadata.editing;
 
 /**
  * @deprecated Legacy Labeling

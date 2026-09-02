@@ -1,0 +1,416 @@
+import { protobufManager } from '@trezor/protobuf';
+import * as bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_pb';
+import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
+import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
+import { v1 as v1Protocol } from '@trezor/protocol';
+
+import { UsbApi } from '../api/usb';
+import { PathPublic, Session } from '../types';
+import { AbstractApiTransport } from './abstractApi';
+
+protobufManager.load([commonProto, messagesProto, bitcoinProto]);
+
+// create devices otherwise returned from navigator.usb.getDevices
+const createMockedDevice = (optional = {}) => ({
+    vendorId: 0x1209,
+    productId: 0x53c1,
+    serialNumber: '123',
+    open: () => Promise.resolve(),
+    selectConfiguration: () => Promise.resolve(),
+    claimInterface: () => Promise.resolve(),
+    transferOut: () => Promise.resolve({ status: 'ok' }),
+    transferIn: () => {
+        const buffer = Buffer.alloc(64);
+        // encoded valid "Success" message
+        buffer.write(
+            '3f23230002000000060a046d656f7700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+            'hex',
+        );
+
+        return Promise.resolve({
+            data: buffer,
+        });
+    },
+    releaseInterface: () => Promise.resolve(),
+    close: () => Promise.resolve(),
+    ...optional,
+});
+
+// mock of navigator.usb
+const createUsbMock = (optional = {}) =>
+    ({
+        getDevices: () =>
+            Promise.resolve([createMockedDevice(), createMockedDevice({ serialNumber: null })]),
+        ...optional,
+    }) as unknown as UsbApi['usbInterface'];
+
+class TestUsbTransport extends AbstractApiTransport {
+    public name = 'WebUsbTransport' as const;
+}
+
+// we cant directly use abstract class (UsbTransport)
+const initTest = async () => {
+    // create usb api with navigator.usb mock
+    const testUsbApi = new UsbApi({
+        usbInterface: createUsbMock(),
+    });
+    const transport = new TestUsbTransport({
+        api: testUsbApi,
+        id: 'test',
+    });
+
+    const initResponse = await transport.init();
+    expect(initResponse.success).toEqual(true);
+
+    return {
+        transport,
+        testUsbApi,
+    };
+};
+
+describe('Usb', () => {
+    beforeEach(() => {
+        jest.useRealTimers();
+    });
+
+    afterEach(() => {});
+
+    afterAll(async () => {});
+
+    describe('without initiated transport', () => {
+        it('enumerate error', async () => {
+            // create usb api with navigator.usb mock
+            const testUsbApi = new UsbApi({
+                usbInterface: createUsbMock({
+                    getDevices: () => {
+                        throw new Error('crazy error nobody expects');
+                    },
+                }),
+            });
+
+            const transport = new TestUsbTransport({
+                api: testUsbApi,
+                id: 'test',
+            });
+
+            await transport.init();
+            const res = await transport.enumerate();
+
+            expect(res).toEqual({
+                success: false,
+                error: { code: 'unexpected error', message: 'crazy error nobody expects' },
+            });
+        });
+    });
+
+    describe('with initiated transport', () => {
+        it('listen twice -> error', async () => {
+            const { transport } = await initTest();
+            const res1 = transport.listen();
+            expect(res1.success).toEqual(true);
+            const res2 = transport.listen();
+            expect(res2.success).toEqual(false);
+        });
+
+        it('handleDescriptorsChange', async () => {
+            const { transport } = await initTest();
+            const spy = jest.fn();
+            transport.on('transport-device_connected', descriptor =>
+                spy({ type: 'transport-device_connected', descriptor }),
+            );
+            transport.deviceEvents.on(PathPublic('1'), e => spy(e));
+
+            transport.handleDescriptorsChange([
+                { path: PathPublic('1'), session: null, type: 1, apiType: transport.apiType },
+            ]);
+
+            expect(spy).toHaveBeenCalledWith({
+                type: 'transport-device_connected',
+                descriptor: { path: '1', session: null, type: 1, apiType: 'usb' },
+            });
+            transport.handleDescriptorsChange([]);
+            expect(spy).toHaveBeenCalledWith({ type: 'transport-device_disconnected' });
+        });
+
+        it('enumerate', async () => {
+            const { transport } = await initTest();
+            const res = await transport.enumerate();
+            expect(res).toEqual({
+                success: true,
+                payload: [
+                    {
+                        path: '1',
+                        session: null,
+                        type: 1,
+                        model: 0,
+                        product: 21441,
+                        vendor: 4617,
+                        apiType: 'usb',
+                        id: '123', // todo: why?
+                    },
+                    {
+                        path: '2',
+                        session: null,
+                        type: 1,
+                        model: 0,
+                        product: 21441,
+                        vendor: 4617,
+                        apiType: 'usb',
+                        id: null, // todo: why?
+                    },
+                ],
+            });
+        });
+
+        it('acquire. transport is not listening', async () => {
+            const { transport } = await initTest();
+            jest.useFakeTimers();
+            const spy = jest.fn();
+            transport.on('transport-device_connected', spy);
+            transport.deviceEvents.on(PathPublic('1'), spy);
+
+            await transport.enumerate();
+
+            jest.runAllTimers();
+
+            const result = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(result).toEqual({ success: true, payload: '1' });
+
+            expect(spy).toHaveBeenCalledTimes(0);
+        });
+
+        it('call error - called without acquire.', async () => {
+            const { transport } = await initTest();
+            const res = await transport.call({
+                name: 'GetAddress',
+                data: {},
+                session: Session('1'),
+                protocol: v1Protocol,
+            });
+            expect(res).toEqual({
+                success: false,
+                error: { code: 'device disconnected during action' },
+            });
+        });
+
+        it('call - with valid and invalid message.', async () => {
+            const { transport } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes.success).toEqual(true);
+            if (!acquireRes.success) return;
+
+            expect(acquireRes.payload).toEqual('1');
+
+            // doesn't really matter what what message we send
+            const res1 = await transport.call({
+                name: 'GetAddress',
+                data: {},
+                session: acquireRes.payload,
+                protocol: v1Protocol,
+            });
+            expect(res1).toEqual({
+                success: true,
+                payload: {
+                    type: 'Success',
+                    message: {
+                        message: 'meow',
+                    },
+                },
+            });
+
+            const res2 = await transport.call({
+                name: 'Foo-bar message',
+                data: {},
+                session: acquireRes.payload,
+                protocol: v1Protocol,
+            });
+            expect(res2).toEqual({
+                success: false,
+                error: { code: 'unexpected error', message: 'Schema Foo-bar message not found' },
+            });
+        });
+
+        it('send and receive.', async () => {
+            const { transport } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes.success).toEqual(true);
+            if (!acquireRes.success) return;
+
+            expect(acquireRes.payload).toEqual('1');
+
+            // doesn't really matter what what message we send
+            const sendRes = await transport.send({
+                name: 'GetAddress',
+                data: {},
+                session: acquireRes.payload,
+                protocol: v1Protocol,
+            });
+            expect(sendRes).toEqual({
+                success: true,
+                payload: undefined,
+            });
+            const receiveRes = await transport.receive({
+                session: acquireRes.payload,
+                protocol: v1Protocol,
+            });
+            expect(receiveRes).toEqual({
+                success: true,
+                payload: {
+                    type: 'Success',
+                    message: {
+                        message: 'meow',
+                    },
+                },
+            });
+        });
+
+        it('send protocol-v1 with custom chunkSize', async () => {
+            const { transport, testUsbApi } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes.success).toEqual(true);
+            if (!acquireRes.success) return;
+
+            const writeSpy = jest
+                .spyOn(testUsbApi, 'write')
+                .mockImplementation(() => Promise.resolve({ success: true, payload: undefined }));
+
+            const send = () =>
+                transport.send({
+                    name: 'SignMessage',
+                    data: {
+                        message: '00'.repeat(200),
+                    },
+                    session: acquireRes.payload,
+                    protocol: v1Protocol,
+                });
+
+            // count encoded/sent chunks
+            await send(); // 64 default chunkSize for usb
+            expect(writeSpy).toHaveBeenCalledTimes(4);
+            writeSpy.mockClear();
+
+            testUsbApi.chunkSize = 16;
+            await send(); // smaller chunks
+            expect(writeSpy).toHaveBeenCalledTimes(15);
+            writeSpy.mockClear();
+
+            testUsbApi.chunkSize = 128;
+            await send(); // bigger chunks
+            expect(writeSpy).toHaveBeenCalledTimes(2);
+            writeSpy.mockClear();
+        });
+
+        it('release', async () => {
+            const { transport } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes.success).toEqual(true);
+            if (!acquireRes.success) return;
+
+            expect(acquireRes.payload).toEqual('1');
+
+            // doesn't really matter what what message we send
+            const res = await transport.release({
+                session: acquireRes.payload,
+                path: PathPublic('123'),
+            });
+            expect(res).toEqual({
+                success: true,
+                payload: null,
+            });
+        });
+
+        // CURRENTLY LEAKS — see PR #27978 for the fix.
+        //
+        // AbstractApiTransport.listen() registers three event handlers (one on the api emitter,
+        // two on the sessionsClient) but stop() does not remove them. Every listen()/stop()
+        // cycle therefore adds one fresh closure per event to the same emitters, which is
+        // exactly the kind of accumulation that trips Node's MaxListenersExceededWarning trap
+        // around the 11th cycle.
+        //
+        // This test pins the current broken behavior so the leak is visible in CI and the
+        // assertions auto-flip the moment the fix lands. When updating: each call to stop()
+        // must leave the targeted listener counts at 0 (api may keep a single one-shot
+        // 'transport-interface-change' listener registered by stop() itself, so assert
+        // listenerCount('transport-interface-change') <= 1).
+        it('listen()/stop() leaks listeners on api and sessionsClient (TODO: fix in #27978)', async () => {
+            const { transport, testUsbApi } = await initTest();
+            const { sessionsClient } = transport as any;
+
+            transport.listen();
+            // listen() registers one handler on the api and one each on the sessionsClient
+            expect(testUsbApi.listenerCount('transport-interface-change')).toBe(1);
+            expect(sessionsClient.listenerCount('descriptors')).toBe(1);
+            expect(sessionsClient.listenerCount('releaseRequest')).toBe(1);
+
+            transport.stop();
+
+            // TODO(#27978): after the fix lands, expected counts are:
+            //   testUsbApi.listenerCount('transport-interface-change')  <= 1   (only the
+            //       one-shot 'goodbye' listener registered inside stop() may remain)
+            //   sessionsClient.listenerCount('descriptors')             === 0
+            //   sessionsClient.listenerCount('releaseRequest')          === 0
+            //
+            // Current broken behavior:
+            //   - api keeps the listener added in listen() AND gains the one-shot from stop()
+            //   - sessionsClient keeps both listeners added in listen()
+            expect(testUsbApi.listenerCount('transport-interface-change')).toBe(2);
+            expect(sessionsClient.listenerCount('descriptors')).toBe(1);
+            expect(sessionsClient.listenerCount('releaseRequest')).toBe(1);
+        });
+
+        it('call - with use abort', async () => {
+            const { transport } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            if (!acquireRes.success) return;
+
+            const abort = new AbortController();
+            const promise = transport.call({
+                name: 'GetAddress',
+                data: {},
+                session: acquireRes.payload,
+                protocol: v1Protocol,
+                signal: abort.signal,
+            });
+            abort.abort();
+
+            await expect(promise).resolves.toMatchObject({
+                success: false,
+                error: { code: 'Aborted by signal' },
+            });
+
+            const promise2 = transport.call({
+                name: 'GetAddress',
+                data: {},
+                session: acquireRes.payload,
+                protocol: v1Protocol,
+            });
+            await promise2;
+            await expect(promise2).resolves.toEqual({
+                success: true,
+                payload: {
+                    type: 'Success',
+                    message: {
+                        message: 'meow',
+                    },
+                },
+            });
+        });
+    });
+});

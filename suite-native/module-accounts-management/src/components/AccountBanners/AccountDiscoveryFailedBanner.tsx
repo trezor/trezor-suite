@@ -1,12 +1,13 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery, startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     type NativeAccountsRootState,
     selectIsAccountDiscoveryFailed,
 } from '@suite-native/accounts';
-import { FullAlertBox } from '@suite-native/atoms';
+import { BannerFull } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 type AccountDiscoveryFailedBannerProps = {
@@ -27,7 +28,7 @@ export const AccountDiscoveryFailedBanner = ({ accountKey }: AccountDiscoveryFai
     }
 
     return (
-        <FullAlertBox
+        <BannerFull
             marginHorizontal="sp16"
             intent="warning"
             title={translate('moduleAccountManagement.discoveryFailedBanner.title')}

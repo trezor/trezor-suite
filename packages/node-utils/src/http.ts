@@ -586,7 +586,7 @@ const checkReferer = ({
 }) => {
     const { referer } = request.headers;
     const referers = allowedReferer ?? [];
-    let isRefererAllowed = false;
+    let isRefererAllowed: boolean;
     // Allow all origins
     if (referers.includes('*')) {
         isRefererAllowed = true;

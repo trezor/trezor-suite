@@ -32,12 +32,10 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
-        with:
-          submodules: true
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
       - name: Setup node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -62,17 +60,15 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
-        with:
-          submodules: true
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
       - name: Setup node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
         continue-on-error: true
         with:
           version: v0.19.1
@@ -92,3 +88,67 @@ jobs:
 
       - name: Test local install
         run: ./packages/connect/e2e/test-connect-local.sh
+
+  check-licenses:
+    name: License compliance
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - name: Setup node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
+        continue-on-error: true
+        with:
+          version: v0.19.1
+      - name: Install dependencies
+        run: yarn install
+
+      # @trezor/connect (the core package) and its thin wrappers
+      # (connect-web / connect-mobile / connect-webextension) are the packages
+      # 3rd parties install. A copyleft license (GPL/AGPL/SSPL/...) anywhere in
+      # their production closure would impose obligations on every downstream
+      # consumer, so it must never be pulled in.
+      #
+      # We start the scan at the hoisted package directory under the root
+      # node_modules (not packages/<pkg>): in a Yarn workspace the package's
+      # production dependencies are hoisted to the root node_modules, so that is
+      # the only start point from which license-checker resolves and walks the
+      # full transitive closure. Starting at packages/<pkg> would only see the
+      # package itself. Internal @trezor/ packages are filtered from the report
+      # (they ship under the repo's own non-copyleft reference-source license),
+      # but the scan still walks through them into their third-party
+      # dependencies. Only the @trezor/ scope appears in these closures — the
+      # lower package layers cannot import from @suite*, so no other first-party
+      # scope needs filtering. Note --excludePackagesStartingWith takes a single
+      # prefix; a comma-separated list is silently treated as one literal prefix
+      # and matches nothing.
+      - name: Check public closure licenses (no copyleft)
+        run: |
+          # license-checker is run via `yarn dlx` (version-pinned) rather than a
+          # repo devDependency on purpose: it is a CI-only tool with a large
+          # transitive tree, and vendoring it would add ~90 packages to the
+          # lockfile and the project's supply-chain surface for no runtime gain.
+          LICENSE_CHECKER="license-checker-rseidelsohn@5.0.1"
+          FORBIDDEN="GPL-2.0;GPL-3.0;AGPL-1.0;AGPL-3.0;SSPL-1.0;OSL-3.0;EUPL-1.1;EUPL-1.2;CPAL-1.0"
+          for pkg in connect connect-web connect-mobile connect-webextension; do
+            echo "::group::License summary for @trezor/$pkg"
+            yarn dlx "$LICENSE_CHECKER" \
+              --start "node_modules/@trezor/$pkg" \
+              --production \
+              --excludePackagesStartingWith "@trezor/" \
+              --summary
+            echo "::endgroup::"
+            yarn dlx "$LICENSE_CHECKER" \
+              --start "node_modules/@trezor/$pkg" \
+              --production \
+              --excludePackagesStartingWith "@trezor/" \
+              --failOn "$FORBIDDEN"
+          done

@@ -14,6 +14,7 @@ const LOCAL_BALANCE_HISTORY_COINS = [
     'base',
     'op',
     'rhc',
+    'hype',
     'xlm',
 ] satisfies Array<NetworkSymbol>;
 export type LocalBalanceHistoryCoin = (typeof LOCAL_BALANCE_HISTORY_COINS)[number];

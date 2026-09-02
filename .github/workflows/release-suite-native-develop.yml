@@ -1,14 +1,15 @@
 name: "[Release] suite-native develop"
 
 on:
-  push:
-    branches:
-      - develop
-    paths:
-      - "suite-native/**"
-      - "suite-common/**"
-      - "!**.md"
+  schedule:
+    # Run every hour at 21 minutes past the hour (UTC).
+    - cron: "21 * * * *"
   workflow_dispatch:
+    inputs:
+      commit:
+        description: "Full commit SHA from develop; leave empty for latest."
+        required: false
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -23,8 +24,22 @@ jobs:
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          ref: ${{ inputs.commit || 'develop' }}
+          fetch-depth: 0
+      - name: Resolve selected commit
+        id: selected-commit
+        run: |
+          COMMIT_SHA=$(git rev-parse HEAD)
+
+          if ! git merge-base --is-ancestor "$COMMIT_SHA" origin/develop; then
+            echo "Commit $COMMIT_SHA does not belong to develop." >&2
+            exit 1
+          fi
+
+          echo "sha=$COMMIT_SHA" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -34,27 +49,50 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Install SafeDep PMG
-        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
         continue-on-error: true
         with:
           version: v0.19.1
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
+      - name: Check existing EAS builds for commit
+        id: check-existing-builds
+        env:
+          EXPO_PUBLIC_ENVIRONMENT: develop
+        run: |
+          for PLATFORM in android ios; do
+            EXISTING_BUILD=$(eas build:list \
+              --platform "$PLATFORM" \
+              --build-profile develop \
+              --git-commit-hash "${{ steps.selected-commit.outputs.sha }}" \
+              --limit 1 \
+              --non-interactive \
+              --json)
+
+            if [ "$EXISTING_BUILD" = "[]" ]; then
+              echo "$PLATFORM-build-exists=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "$PLATFORM-build-exists=true" >> "$GITHUB_OUTPUT"
+            fi
+          done
+        working-directory: suite-native/app
       - name: Build on EAS Android
+        if: steps.check-existing-builds.outputs.android-build-exists == 'false'
         run: eas build
           --platform android
           --profile develop
           --non-interactive
           --no-wait
-          --message ${{ github.sha }}
+          --message ${{ steps.selected-commit.outputs.sha }}
         working-directory: suite-native/app
       - name: Build on EAS iOS
+        if: steps.check-existing-builds.outputs.ios-build-exists == 'false'
         run: eas build
           --platform ios
           --profile develop
           --non-interactive
           --auto-submit
           --no-wait
-          --message ${{ github.sha }}
+          --message ${{ steps.selected-commit.outputs.sha }}
         working-directory: suite-native/app

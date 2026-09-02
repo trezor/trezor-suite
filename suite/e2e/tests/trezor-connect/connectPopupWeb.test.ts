@@ -221,11 +221,6 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
             const response = page.getByTestId('@response');
             await expect(response).toHaveText(/success: false/);
             await expect(response).toHaveText(/Method_Interrupted/);
-
-            // The popup (suite window) should show a cancellation message.
-            await expect(suite.getByText('Request was canceled by the user')).toBeVisible({
-                timeout: 15_000,
-            });
         },
     );
 

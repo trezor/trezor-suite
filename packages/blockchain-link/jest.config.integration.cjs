@@ -7,5 +7,5 @@ const baseConfig = require('../../jest.config.base.swc');
 module.exports = {
     ...baseConfig,
     moduleFileExtensions: ['js', 'ts', 'json'],
-    testMatch: ['**/tests/integration/*.test.ts'],
+    testMatch: ['<rootDir>/src/**/*.integration.test.ts'],
 };

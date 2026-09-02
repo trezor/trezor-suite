@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useSelector } from './useSelector';
+import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import { selectTradingExchangeSelectedQuote } from '../selectors/tradingSelectors';
 import { exchangeThunks } from '../thunks/exchange';
 
@@ -19,7 +20,9 @@ export const useTradingExchangeWatchApproval = ({
     isEnabled,
 }: UseTradingExchangeWatchApprovalProps) => {
     const dispatch = useDispatch();
-    const status = useSelector(state => selectTradingExchangeSelectedQuote(state)?.status);
+    const status = useSelector(
+        (state: TradingRootState) => selectTradingExchangeSelectedQuote(state)?.status,
+    );
 
     useEffect(() => {
         if (!isEnabled || !account || status !== 'APPROVAL_PENDING') {

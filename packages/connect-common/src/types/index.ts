@@ -5,7 +5,7 @@ export * from './definitions';
 export * from './device';
 export * from './fees';
 export type * from './firmware';
-export type * from './method';
+export * from './method';
 export * from './params';
 export * from './settings';
 
@@ -23,7 +23,6 @@ export * from './api/nostr/common';
 
 // types used in @trezor/suite. if you need a type, reexport it from ./api/<method>
 export type {
-    ComposeOutput,
     PrecomposeResultError,
     PrecomposeResultNonFinal,
     PrecomposeResultFinal,

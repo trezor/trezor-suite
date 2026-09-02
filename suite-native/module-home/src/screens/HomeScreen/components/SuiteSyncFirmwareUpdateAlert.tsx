@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
-import { AnimatedFullAlertBox } from '@suite-native/atoms';
+import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
@@ -34,7 +34,7 @@ export const SuiteSyncFirmwareUpdateAlert = () => {
     };
 
     return (
-        <AnimatedFullAlertBox
+        <AnimatedBannerFull
             intent="info"
             title={<Translation id="moduleHome.suiteSyncFirmwareUpdateAlert.title" />}
             description={<Translation id="moduleHome.suiteSyncFirmwareUpdateAlert.description" />}

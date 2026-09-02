@@ -8,7 +8,7 @@ import { selectAccountByKey, selectPoolStatsApy } from '@suite-common/wallet-cor
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getTronVotes } from '@suite-common/wallet-utils';
 
-import { useSelector } from '../suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface UseStakingRateProps {
     symbol?: NetworkSymbol;

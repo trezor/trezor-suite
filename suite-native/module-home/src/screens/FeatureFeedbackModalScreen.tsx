@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Text, VStack } from '@suite-native/atoms';
 import { FEEDBACK_FEATURE_CONFIGS } from '@suite-native/experimental-features';
 import { FeatureRatingForm, feedbackDismissed } from '@suite-native/feature-feedback';

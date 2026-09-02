@@ -2,6 +2,7 @@ import { Platform } from 'react-native';
 
 import type { BuyTrade } from 'invity-api';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TradingCountryCode,
@@ -15,7 +16,7 @@ import {
     selectTradingBuySupportedCryptoIds,
     selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import {
     coinInfoToTradeableAsset,
@@ -40,14 +41,18 @@ const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 
 export const selectTradingBuy = (state: TradingRootState) => state.wallet.trading.buy;
 
-export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccounts(
-    [state => state, selectTradingBuy],
-    (state, { receiveAddress, tradingAccountKey }) => {
-        if (!tradingAccountKey) {
-            return undefined;
-        }
+const selectBuyReceiveAccount = (state: TradingRootState & AccountsRootState) => {
+    const { tradingAccountKey } = selectTradingBuy(state);
 
-        const account = selectAccountByKey(state, tradingAccountKey);
+    return tradingAccountKey ? selectAccountByKey(state, tradingAccountKey) : null;
+};
+
+const selectTradingBuyReceiveAddress = (state: TradingRootState) =>
+    selectTradingBuy(state).receiveAddress;
+
+export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccounts(
+    [selectBuyReceiveAccount, selectTradingBuyReceiveAddress],
+    (account, receiveAddress) => {
         if (!account) {
             return undefined;
         }
@@ -61,9 +66,8 @@ export const selectBuySupportedFiatCurrencies = (state: TradingRootState) =>
 
 export const selectBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
     [
-        selectTradingBuySupportedCryptoIds as unknown as (
-            state: TradingRootState,
-        ) => ReturnType<typeof selectTradingBuySupportedCryptoIds>,
+        (state: TradingRootState, supportedCoins: readonly NetworkSymbol[]) =>
+            selectTradingBuySupportedCryptoIds(state, supportedCoins),
         ({ wallet }) => wallet.trading.info.coins,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),

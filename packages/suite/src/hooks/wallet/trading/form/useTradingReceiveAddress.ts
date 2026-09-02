@@ -3,11 +3,15 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { type CryptoId } from 'invity-api';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { selectIsDebugModeActive } from '@suite/debug';
+import { selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     getUnusedAddressFromAccount,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
@@ -17,13 +21,12 @@ import {
     tradingBuyActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
-import { isAddressValid } from '@trezor/address-validator';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import {
     type TradingGetTranslationIdsProps,
     type TradingVerifyFormProps,
@@ -59,8 +62,9 @@ export const useTradingReceiveAddress = ({
     nonSuiteAccount,
 }: UseTradingReceiveAddressProps) => {
     const dispatch = useDispatch();
-    const accounts = useSelector(state => state.wallet.accounts);
-    const walletSelectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const accounts = useSelector(selectAccounts);
+    const walletSelectedAccount = useSelector(selectFullSelectedAccount);
     const device = useSelector(selectSelectedDevice);
     const sendAccountKey = useSelector(selectTradingExchangeAccountKey);
 
@@ -77,7 +81,7 @@ export const useTradingReceiveAddress = ({
 
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const symbol = cryptoId && cryptoIdToSymbol(cryptoId);
+    const symbol = cryptoId && cryptoIdToNetworkSymbol(cryptoId);
     const { supportedMainnets, supportedTestnets } = useNetworkSupport();
 
     const methods = useForm<TradingVerifyFormProps>({
@@ -212,10 +216,13 @@ export const useTradingReceiveAddress = ({
         }
 
         if (!isNewAsset && persistedReceiveAddress && canUseNonSuiteAccount && symbol) {
-            let isValidForCurrentSymbol = false;
+            let isValidForCurrentSymbol: boolean;
 
             try {
-                isValidForCurrentSymbol = isAddressValid(persistedReceiveAddress, symbol);
+                isValidForCurrentSymbol = addressValidator.isAddressValid(
+                    persistedReceiveAddress,
+                    symbol,
+                );
             } catch {
                 isValidForCurrentSymbol = false;
             }
@@ -282,6 +289,7 @@ export const useTradingReceiveAddress = ({
         hasSuiteReceiveAccount,
         hasSelectionInitialized,
         methods,
+        addressValidator,
     ]);
 
     const receiveAddressValue = useWatch({ control: methods.control, name: 'address' });

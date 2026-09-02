@@ -44,7 +44,7 @@ export const CardanoMinAmountInfo = () => {
                   .plus(unitsToSubunits({ symbol, value: asAmountUnit(totalAdaAmount) })),
     );
 
-    const hasEnoughADA = new BigNumber(balance).minus(minAdaAmount).gt(0);
+    const hasEnoughADA = new BigNumber(balance).minus(minAdaAmount).gte(0);
     const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
     return (

@@ -1,40 +1,38 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
 
 import {
     useAccountsWithTokenDisplayNames,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
+import { type AssetGroupKey } from 'src/components/suite/asset-picker/utils/assetGroupKey';
 
-import { useAccountWithTokensOptions } from './useAccountWithTokensOptions';
-import { useAssetsContext } from '../../AssetOptionsContext';
+import { useGroupedAssetOptions } from './useGroupedAssetOptions';
+import { useSellAssetRows } from './useSellAssetRows';
+import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
 
 export interface UseBuildTradingAssetOptionsProps {
     search: string;
     networkSymbol: NetworkSymbol | undefined;
-    expandedNonTradableTokensGroups: AccountKey[];
+    expandedGroupKeys: AssetGroupKey[];
 }
 
 export function useBuildTradingAssetOptions({
     search,
     networkSymbol,
-    expandedNonTradableTokensGroups,
+    expandedGroupKeys,
 }: UseBuildTradingAssetOptionsProps) {
-    const { includedCryptoIds, excludedCryptoIds } = useAssetsContext();
-    const { networks, accountsWithTokens } = useAccountWithTokensOptions({
+    const { excludedCryptoIds } = useAssetsContext();
+
+    const { networks, assetRows } = useSellAssetRows({
         networkSymbolFilter: networkSymbol,
-        includedCryptoIds,
         excludedCryptoIds,
-        expandedNonTradableTokensGroups,
     });
 
-    const accountsWithTokensAndDisplayNames = useAccountsWithTokenDisplayNames(accountsWithTokens);
-    const filteredAccountsWithTokens = useFilterAccountsWithTokens(
-        accountsWithTokensAndDisplayNames,
-        search,
-    );
-    const listItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
+    const assetRowsWithDisplayNames = useAccountsWithTokenDisplayNames(assetRows);
+    const filteredAssetRows = useFilterAccountsWithTokens(assetRowsWithDisplayNames, search);
+    const groupedAssetOptions = useGroupedAssetOptions(filteredAssetRows, expandedGroupKeys);
+    const listItems = useInsertGroupLabelsAndSpaces(groupedAssetOptions);
 
     return { listItems, networks };
 }

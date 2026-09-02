@@ -2,6 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import {
     getResourceGain,
@@ -12,7 +13,6 @@ import {
 import { Button, Card, Column, Divider, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import {

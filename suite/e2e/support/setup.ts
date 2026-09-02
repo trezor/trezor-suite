@@ -1,6 +1,7 @@
 import { BrowserContext, TestInfo, expect } from '@playwright/test';
 import { execSync } from 'child_process';
 
+import { installPerfInstrumentation } from '@trezor/perf-e2e';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from './bridge';
@@ -26,6 +27,13 @@ export const electronSetup = async (
         viewport: testInfo.project.use.viewport!,
         ...electronConf,
     });
+
+    // The reload puts the init script in place before the renderer's React loads; the window is
+    // still on its initial screen, so no state is lost. Passive until a test opts in. PERF=0 skips it.
+    if (process.env.PERF !== '0') {
+        await suite.window.addInitScript(installPerfInstrumentation);
+        await suite.window.reload();
+    }
 
     // Mocks shell.openExternal to prevent opening real browser windows.
     await suite.electronApp.evaluate(({ shell }) => {

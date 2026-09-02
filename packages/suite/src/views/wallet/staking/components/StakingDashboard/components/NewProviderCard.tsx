@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
@@ -9,7 +10,7 @@ import { Banner, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 interface NewProviderCardProps {
@@ -44,7 +45,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
     return (
         <Banner
             icon
-            intent="warning"
+            intent={isStakedWithFiveBinaries ? 'warning' : 'info'}
             title={
                 <Translation
                     id={

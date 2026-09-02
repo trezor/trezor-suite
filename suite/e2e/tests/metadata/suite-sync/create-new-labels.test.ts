@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
@@ -91,4 +93,50 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             await evoluClient.expectInTable('output', [expectedOutput], { softExpect: true });
         });
     });
+
+    test(
+        'Export account and output labels',
+        { tag: ['@webOnly'] },
+        async ({ walletPage, metadataPage, page }) => {
+            await test.step('Create labels to export', async () => {
+                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await metadataPage.account.changeLabel({
+                    accountId: AccountLabelId.BitcoinDefault1,
+                    label: expectedAccount.label,
+                    confirmSuiteSync: true,
+                });
+                await metadataPage.output.changeLabel({
+                    outputId: expectedOutput.txId,
+                    txNumber: Number(expectedOutput.outputIndex),
+                    label: expectedOutput.label,
+                });
+            });
+
+            await test.step('Export and verify labels', async () => {
+                const downloadPromise = page.waitForEvent('download');
+                await walletPage.exportTransactions('csv');
+                const download = await downloadPromise;
+
+                expect(download.suggestedFilename()).toMatch(
+                    new RegExp(
+                        `^${expectedAccount.label.replaceAll(' ', '_')}_\\d{8}T\\d{6}\\.csv$`,
+                    ),
+                );
+
+                const downloadPath = await download.path();
+                const exportedTransactions = fs.readFileSync(downloadPath, 'utf8');
+                const [header, ...rows] = exportedTransactions
+                    .split('\n')
+                    .map(row => row.split(','));
+                const transactionIdColumnIndex = header?.indexOf('Transaction ID') ?? -1;
+                const labelColumnIndex = header?.indexOf('Label') ?? -1;
+                const exportedOutputLabels = rows
+                    .filter(row => row[transactionIdColumnIndex] === expectedOutput.txId)
+                    .map(row => row[labelColumnIndex])
+                    .filter(label => label !== '');
+
+                expect(exportedOutputLabels).toEqual([expectedOutput.label]);
+            });
+        },
+    );
 });

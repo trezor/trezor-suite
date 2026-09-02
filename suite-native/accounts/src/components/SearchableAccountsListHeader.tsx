@@ -24,6 +24,7 @@ type SearchableAccountsListHeaderProps = {
     flowType?: AddCoinFlowType;
     closeActionType?: CloseActionType;
     closeAction?: () => void;
+    onAddAccount?: () => void;
     onFilterPress?: () => void;
     activeFilterCount?: number;
 };
@@ -32,6 +33,7 @@ const HEADER_ANIMATION_DURATION = 100;
 
 const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
     marginBottom: spacings.sp8,
+    paddingTop: spacings.sp16,
 }));
 
 export const SearchableAccountsListHeader = ({
@@ -42,6 +44,7 @@ export const SearchableAccountsListHeader = ({
     flowType,
     closeActionType,
     closeAction,
+    onAddAccount,
     onFilterPress,
     activeFilterCount = 0,
 }: SearchableAccountsListHeaderProps) => {
@@ -79,7 +82,7 @@ export const SearchableAccountsListHeader = ({
         <Box style={applyStyle(searchFormContainerStyle)}>
             {isSearchActive ? (
                 <SearchForm
-                    placeholder="accounts.searchForm.placeholder"
+                    placeholder="accounts.searchForm.searchAccountsPlaceholder"
                     onPressCancel={handleHideFilter}
                     onInputChange={onSearchInputChange}
                 />
@@ -131,6 +134,7 @@ export const SearchableAccountsListHeader = ({
                             {flowType && (
                                 <AddAccountButton
                                     flowType={flowType}
+                                    onPress={onAddAccount}
                                     testID="@myAssets/addAccountButton"
                                 />
                             )}

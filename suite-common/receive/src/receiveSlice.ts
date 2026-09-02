@@ -1,6 +1,11 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createSliceWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createSliceWithExtraDeps,
+    createWeakMapSelector,
+} from '@suite-common/redux-utils';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type AccountKey, type ReceiveInfo } from '@suite-common/wallet-types';
 
@@ -32,6 +37,9 @@ type SetCurrentFreshAddressPayload = {
     accountKey: AccountKey;
     currentFreshAddress?: CurrentFreshAddress;
 };
+
+export type ReceiveSliceDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadReceiveAccounts'>;
 
 export const receiveInitialState: ReceiveState = {
     accounts: {},
@@ -65,8 +73,6 @@ const markAddressTouched = (draft: ReceiveAccountState, path: string, address: s
             address,
         });
     }
-
-    draft.currentFreshAddress = undefined;
 };
 
 const receiveSlice = createSliceWithExtraDeps({
@@ -77,6 +83,12 @@ const receiveSlice = createSliceWithExtraDeps({
             const accountState = getReceiveAccountState(state, action.payload.accountKey);
 
             markAddressTouched(accountState, action.payload.path, action.payload.address);
+            accountState.currentFreshAddress = undefined;
+        },
+        touchAddress: (state, action: PayloadAction<ReceiveActionPayload>) => {
+            const accountState = getReceiveAccountState(state, action.payload.accountKey);
+
+            markAddressTouched(accountState, action.payload.path, action.payload.address);
         },
         setCurrentFreshAddress: (state, action: PayloadAction<SetCurrentFreshAddressPayload>) => {
             const accountState = getReceiveAccountState(state, action.payload.accountKey);
@@ -84,7 +96,7 @@ const receiveSlice = createSliceWithExtraDeps({
             accountState.currentFreshAddress = action.payload.currentFreshAddress;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: ReceiveSliceDeps) => {
         builder
             .addCase(accountsActions.removeAccount, (state, action) => {
                 action.payload.forEach((account: { key: AccountKey }) => {
@@ -97,7 +109,7 @@ const receiveSlice = createSliceWithExtraDeps({
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<ReceiveRootState>();
 
-const selectReceiveAccountState = (state: ReceiveRootState, accountKey?: AccountKey) =>
+export const selectReceiveAccountState = (state: ReceiveRootState, accountKey?: AccountKey) =>
     accountKey ? state.receive.accounts[accountKey] : undefined;
 
 export const selectTouchedAddresses = createMemoizedSelector(

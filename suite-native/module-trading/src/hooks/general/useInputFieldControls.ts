@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { useField } from '@suite-native/forms';
 
 export const useInputFieldControls = <T extends string>(
@@ -8,14 +10,14 @@ export const useInputFieldControls = <T extends string>(
     // do not use `value` from `useField` here, because it does not work properly with `undefined`
     const { onChange, onBlur, hasError } = useField({ name });
 
-    const setFocusedValue = () => {
+    const setFocusedValue = useCallback(() => {
         setValue('focusedValue', name);
-    };
+    }, [name, setValue]);
 
-    const clearFocusedValueAndBlur = () => {
+    const clearFocusedValueAndBlur = useCallback(() => {
         onBlur();
         setValue('focusedValue', undefined);
-    };
+    }, [onBlur, setValue]);
 
     return {
         value: value ?? '',

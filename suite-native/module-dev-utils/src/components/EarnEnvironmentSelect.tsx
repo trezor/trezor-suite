@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     type EarnYieldWorkerBaseUrl,
@@ -7,6 +7,7 @@ import {
     earnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrls,
 } from '@suite-common/earn-stablecoin-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import { selectEarnYieldWorkerBaseUrl, setEarnWorkerEnvironment } from '@suite-native/settings';
 

@@ -20,6 +20,8 @@ import { resolveMessageContent } from './messageSystemUtils';
 export const createMemoizedSelector = createWeakMapSelector.withTypes<MessageSystemRootState>();
 
 // Basic selectors don't need memoization
+export const selectMessageSystem = (state: MessageSystemRootState) => state.messageSystem;
+
 export const selectMessageSystemConfig = (state: MessageSystemRootState) =>
     state.messageSystem.config;
 

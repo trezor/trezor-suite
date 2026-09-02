@@ -6,7 +6,7 @@ import type { Locale } from '@suite-common/suite-types';
 import { isDevEnv } from '@suite-common/suite-utils';
 import enMessages from '@trezor/suite-data/files/translations/en-US.json';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 const useFetchMessages = (locale: Locale) => {
     const [messages, setMessages] = useState<{ [key: string]: any }>({});

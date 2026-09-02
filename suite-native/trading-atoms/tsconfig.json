@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/flags" },
         {
             "path": "../../suite-common/formatters"
         },
@@ -19,6 +20,7 @@
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../link" },
         {
             "path": "../../packages/styles-native"
         },

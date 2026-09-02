@@ -252,7 +252,9 @@ export const createHttpReceiver = (options?: {
             } catch (error) {
                 const template = applyTemplate('Error');
                 response.end(template);
-                throw new Error(`Could not handle buy post request at ${request.url} : ${error}`);
+                throw new Error(`Could not handle buy post request at ${request.url} : ${error}`, {
+                    cause: error,
+                });
             }
         },
     ]);

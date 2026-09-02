@@ -1,3 +1,4 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import {
     selectDeviceTradingTradesOrderedByDate,
@@ -14,7 +15,7 @@ import { TradingTransactionBuy } from 'src/views/wallet/trading/common/TradingTr
 import { TradingTransactionSell } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsSell';
 
 export const TradingTransactionsList = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
     const buyProviders = useSelector(selectTradingBuyProviders);
     const exchangeProviders = useSelector(selectTradingExchangeInfo)?.providerInfos;
     const sellProviders = useSelector(selectTradingSellInfo)?.providerInfos;

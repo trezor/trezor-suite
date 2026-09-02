@@ -57,7 +57,10 @@
             "inputs": [
                 "{projectRoot}/**/*",
                 "{workspaceRoot}/eslint.config.mjs",
-                "{workspaceRoot}/packages/eslint/**/*"
+                "{workspaceRoot}/packages/eslint/**/*",
+                {
+                    "env": "ESLINT_RUN_EXPENSIVE_CHECKS"
+                }
             ],
             "outputs": ["{projectRoot}/.eslintcache"],
             "cache": true

@@ -12,7 +12,7 @@ import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-util
 
 import type { MigrateLegacyLabelsToSuiteSync } from './migrateLegacyLabelsToSuiteSync';
 
-export type CreateMigrateLabelsIfAvailableDeps = {
+export type MigrateLabelsIfAvailableDeps = {
     dispatch: Dispatch;
     migrateLegacyLabelsToSuiteSync: MigrateLegacyLabelsToSuiteSync;
     getIsMetadataEnabled: () => boolean;
@@ -23,8 +23,9 @@ export type CreateMigrateLabelsIfAvailableDeps = {
     ) => TrezorDevice | undefined;
 };
 
+// eslint-disable-next-line local-rules/enforce-di-factory-contracts -- Concrete implementation of the abstract OnStorageEnsured contract.
 export const createMigrateLabelsIfAvailable = (
-    deps: CreateMigrateLabelsIfAvailableDeps,
+    deps: MigrateLabelsIfAvailableDeps,
 ): OnStorageEnsured => {
     const isMigratingByWalletDescriptor = new Map<WalletDescriptor, true>();
 

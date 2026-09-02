@@ -1,4 +1,11 @@
-import type { WalletDescriptor } from '@trezor/device-utils';
+import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
+import type { StaticSessionId, WalletDescriptor } from '@trezor/device-utils';
+
+export type FetchAndSaveMetadataThunk = SuiteCompatibleThunk<StaticSessionId>;
+
+export type FetchAndSaveMetadataDep = {
+    fetchAndSaveMetadata: FetchAndSaveMetadataThunk;
+};
 
 export interface LabelableEntityKeys {
     fileName: string; // file name in data provider
@@ -101,11 +108,17 @@ export type Error = {
     success: false;
     code: keyof typeof ProviderErrorReason;
     error: string;
+    retryAfterMs?: number;
 };
 export type Result<T> = Promise<Success<T> | Error>;
 
 export abstract class AbstractMetadataProvider {
     private apiRequestQueue: Promise<unknown> = Promise.resolve();
+
+    /**
+     * Prevent queued requests from bypassing Retry-After when the rate-limited request exhausts its retries.
+     */
+    private apiRequestCooldownUntil = 0;
 
     /* isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data. */
     abstract isCloud: boolean;
@@ -152,14 +165,23 @@ export abstract class AbstractMetadataProvider {
         return { success } as const;
     }
 
-    error(code: keyof typeof ProviderErrorReason, reason: string) {
+    error(code: keyof typeof ProviderErrorReason, reason: string, retryAfterMs?: number) {
         const success = false as const;
 
         return {
             success,
             code,
             error: reason,
+            ...(retryAfterMs === undefined ? {} : { retryAfterMs }),
         } as const;
+    }
+
+    private async waitForApiRequestCooldown() {
+        const delay = this.apiRequestCooldownUntil - Date.now();
+
+        if (delay > 0) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
     }
 
     private runApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
@@ -171,15 +193,29 @@ export abstract class AbstractMetadataProvider {
         return new Promise<Awaited<ReturnType<R>>>(resolve => {
             const { retries, delay } = options;
             const run = async () => {
+                await this.waitForApiRequestCooldown();
+
                 const res = await fn();
 
                 if (res.success) {
                     return resolve(res);
                 }
 
+                const retryDelay =
+                    res.code === 'RATE_LIMIT_ERROR' && res.retryAfterMs !== undefined
+                        ? res.retryAfterMs
+                        : delay;
+
+                if (res.code === 'RATE_LIMIT_ERROR' && res.retryAfterMs !== undefined) {
+                    this.apiRequestCooldownUntil = Math.max(
+                        this.apiRequestCooldownUntil,
+                        Date.now() + retryDelay,
+                    );
+                }
+
                 if (retries > 0 && retried < retries) {
                     retried++;
-                    setTimeout(run, delay);
+                    setTimeout(run, retryDelay);
                 } else {
                     // reached retries limit, return error
                     resolve(res);

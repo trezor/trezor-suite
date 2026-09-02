@@ -1,6 +1,6 @@
 ---
 name: defensive-programming
-description: Type safety practices including exhaustive checks, explicit return types, and Result-based error handling. Use when writing TypeScript logic that handles multiple cases or error conditions.
+description: Type safety practices including exhaustive checks, explicit return types, Result-based error handling, and non-mutating array methods. Use when writing TypeScript logic that handles multiple cases or error conditions, or when sorting, reversing, splicing, or replacing an element (indexed assignment) in an array you did not create.
 ---
 
 # Defensive Programming
@@ -58,6 +58,18 @@ type Schema = {
 const result: { [K in keyof Schema]: () => void } = {
     a: () => console.log('This is A'),
 };
+```
+
+## Prefer the non-mutating array methods to copy-then-mutate
+
+`[...items].sort()` and `items.slice().sort()` are workarounds for `sort` mutating in place, and they only work if you remember the copy. `toSorted`, `toReversed`, `toSpliced` and [`with`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/with) return a new array, so forgetting is not an option — and forgetting matters here, because the arrays in play are usually a selector result or Redux state that something else is still holding. Nothing will catch it either: `immutableCheck` is `false` in both stores ([suite](../../packages/suite/src/reducers/store.ts), [native](../../suite-native/state/src/store.ts)), so a mutated slice surfaces later as a stale render or a wrong total, far from the `.sort()` that caused it.
+
+```ts
+// bad - two steps to say "sorted copy", and `.sort()` mutates whatever it is handed
+const sorted = [...accounts].sort(byBalance);
+
+// good - one call, nothing to forget
+const sorted = accounts.toSorted(byBalance);
 ```
 
 ## Do not use exceptions

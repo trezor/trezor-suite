@@ -1,8 +1,6 @@
 import { vi } from 'vitest';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect from '@trezor/connect';
-
+import TrezorConnect, { UI_EVENTS } from '../../../src';
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();
@@ -52,7 +50,7 @@ describe('TrezorConnect.pingDevice', () => {
 
     it('with button request', async () => {
         const buttonSpy = vi.fn();
-        TrezorConnect.on('ui-button', buttonSpy);
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, buttonSpy);
 
         const response = await TrezorConnect.pingDevice({
             button_protection: true,

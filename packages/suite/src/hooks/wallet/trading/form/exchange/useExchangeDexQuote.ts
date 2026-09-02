@@ -3,22 +3,22 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { type ExchangeTrade } from 'invity-api';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_OUTPUT_ADDRESS,
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
     type TradingExchangeFormType,
-    cryptoIdToNetwork,
     getDexEstimationData,
-    isSendingEvmNativeToken,
+    requiresErc20Approval,
 } from '@suite-common/trading';
 import { isAccountBasedNetwork } from '@suite-common/wallet-config';
 import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 
@@ -98,11 +98,7 @@ export const useExchangeDexQuote = ({
             return;
         }
 
-        const sendNetwork = cryptoIdToNetwork(sendCryptoSelect.id);
-        const isEvmNativeToken = isSendingEvmNativeToken(sendCryptoSelect.id);
-        const requiresApproval = sendNetwork?.networkType === 'ethereum' && !isEvmNativeToken;
-
-        const quote = requiresApproval ? selectedQuote : dexQuotes[0];
+        const quote = requiresErc20Approval(sendCryptoSelect.id) ? selectedQuote : dexQuotes[0];
 
         if (!quote?.dexTx) {
             setValue('transactionData', '');
@@ -127,10 +123,11 @@ export const useExchangeDexQuote = ({
     ]);
 
     const fetchFeesAndComposeRef = useCurrentRef(fetchFeesAndCompose);
-    // fetch fees when transactionData changes
+    // Fetch fees when the transaction to estimate changes shape.
+    const transactionShape = getEvmTransactionTextSignature(transactionData);
     useEffect(() => {
         fetchFeesAndComposeRef.current();
-    }, [transactionData, outputAddress, ethereumAdjustGasLimit, fetchFeesAndComposeRef]);
+    }, [transactionShape, outputAddress, ethereumAdjustGasLimit, fetchFeesAndComposeRef]);
 
     return { fetchFeesAndCompose };
 };

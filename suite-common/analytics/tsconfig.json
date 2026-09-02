@@ -4,6 +4,9 @@
     "references": [
         { "path": "../suite-types" },
         { "path": "../wallet-config" },
-        { "path": "../wallet-types" }
+        { "path": "../wallet-types" },
+        {
+            "path": "../../packages/analytics-uploader"
+        }
     ]
 }

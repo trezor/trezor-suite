@@ -1,0 +1,70 @@
+import { createThunk } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { getSelectedDevice, sortByTimestamp } from '@suite-common/suite-utils';
+import { type Device } from '@trezor/connect';
+import { isNative } from '@trezor/env-utils';
+
+import { deviceActions } from './deviceActions';
+import { DEVICE_MODULE_PREFIX } from './deviceConstants';
+import { type DeviceRootState } from './deviceReducer';
+import { selectDevices, selectIsSameOrNewDevice } from './deviceSelectors';
+
+type SelectDeviceThunkParams = {
+    device: Device | TrezorDevice | undefined;
+};
+
+type SelectDeviceThunkState = DeviceRootState;
+
+/**
+ * Called from:
+ * - `@trezor/connect` events handler `handleDeviceConnect`, `handleDeviceDisconnect`
+ * - from user action in `@suite-components/DeviceMenu`
+ */
+export const selectDeviceThunk = createThunk<
+    { device: TrezorDevice | undefined },
+    SelectDeviceThunkParams,
+    { state: SelectDeviceThunkState }
+>(
+    `${DEVICE_MODULE_PREFIX}/selectDevice`,
+    ({ device }, { dispatch, getState, fulfillWithValue }) => {
+        let trezorDevice: TrezorDevice | undefined;
+        const devices = selectDevices(getState());
+        if (device) {
+            // "ts" is one of the field which distinguish Device from TrezorDevice
+            // (device from connect doesn't have timestamp but suite device has)
+            if ('ts' in device) {
+                // requested device is a @suite TrezorDevice type. get exact instance from reducer
+                trezorDevice = getSelectedDevice(device, devices);
+            } else {
+                // requested device is a @trezor/connect Device type
+                // find all instances and select recently used
+                const instances = devices.filter(d => d.path === device.path);
+
+                trezorDevice = sortByTimestamp(instances)[0];
+            }
+        }
+
+        dispatch(deviceActions.selectDevice(trezorDevice));
+
+        return fulfillWithValue({ device: trezorDevice });
+    },
+);
+
+type SelectNewlyConnectedDeviceThunkState = DeviceRootState;
+
+export const selectNewlyConnectedDeviceThunk = createThunk<
+    void,
+    SelectDeviceThunkParams,
+    { state: SelectNewlyConnectedDeviceThunkState }
+>(
+    `${DEVICE_MODULE_PREFIX}/selectNewlyConnectedDevice`,
+    ({ device }, { dispatch, getState, rejectWithValue }) => {
+        if (!isNative() && !selectIsSameOrNewDevice(getState(), device)) {
+            // Select automatically when it is the first known device (none selected),
+            // or when we connected physical device corresponding to a selected remembered wallet.
+            return rejectWithValue('no-need-to-select');
+        }
+
+        dispatch(selectDeviceThunk({ device }));
+    },
+);

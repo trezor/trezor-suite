@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
-import { useDispatch, useStore } from 'react-redux';
+import { useStore } from 'react-redux';
 
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     selectTradingAccountKeyByTradeType,

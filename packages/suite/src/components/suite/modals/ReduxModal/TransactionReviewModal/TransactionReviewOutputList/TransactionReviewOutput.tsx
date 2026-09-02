@@ -28,6 +28,7 @@ import {
     localizeNumber,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -118,6 +119,19 @@ const isYieldAction = (
     evmTxType: EvmTransactionPurpose | undefined,
 ): evmTxType is keyof typeof yieldStrings =>
     !!evmTxType && Object.keys(yieldStrings).includes(evmTxType);
+
+type WrappedNativeAction = Extract<EvmTransactionPurpose, 'wrap' | 'unwrap'>;
+
+const isWrappedNativeAction = (
+    evmTxType: EvmTransactionPurpose | undefined,
+): evmTxType is WrappedNativeAction => evmTxType === 'wrap' || evmTxType === 'unwrap';
+
+// Mirrors the firmware's clear-signing "Intent" screen, which reads "Wrap ETH to WETH" /
+// "Unwrap WETH to ETH" for a canonical WETH deposit()/withdraw().
+const wrappedNativeIntentStrings: Record<WrappedNativeAction, TranslationKey> = {
+    wrap: 'TR_EARN_YIELD_WRAP_TITLE',
+    unwrap: 'TR_EARN_YIELD_UNWRAP_TITLE',
+};
 
 const getTranslationValues = (
     networkType: NetworkType,
@@ -223,7 +237,7 @@ const getOutputTitle = (
             return <Translation id={translation ? translation.label : 'TR_RECIPIENT_ADDRESS'} />;
 
         case 'amount':
-            if (isYieldAction(evmTxType)) {
+            if (isYieldAction(evmTxType) || isWrappedNativeAction(evmTxType)) {
                 return <Translation id="AMOUNT" />;
             }
 
@@ -255,6 +269,7 @@ const getOutputTitle = (
         case 'recipient_name':
             return <Translation id="TR_TRADING_PROVIDER" />;
         case 'swap_intent':
+        case 'contract_intent':
             return <Translation id="TR_TRADING_INTENT" />;
         case 'traded_assets':
             return <Translation id={receiveAddress ? 'TR_CONTRACT' : 'TR_MY_ASSETS'} />;
@@ -467,6 +482,19 @@ const getOutputLines = ({
                     value: translationString('TR_TRADING_INTENT_SWAP', {}),
                 },
             ];
+        case 'contract_intent':
+            return [
+                {
+                    id: 'contract_intent',
+                    type: 'data',
+                    value: isWrappedNativeAction(evmTxType)
+                        ? translationString(wrappedNativeIntentStrings[evmTxType], {
+                              nativeSymbol: getNetworkDisplaySymbol(symbol),
+                              tokenSymbol: getWrappedNativeSymbol(symbol),
+                          })
+                        : '',
+                },
+            ];
         case 'amount': {
             if (isYieldAction(evmTxType)) {
                 return [
@@ -489,7 +517,11 @@ const getOutputLines = ({
             const output: OutputElementLine[] = [
                 {
                     id: type,
-                    label: <Translation id="AMOUNT" />,
+                    // The card heading already reads "Amount" for a wrap/unwrap, so labelling
+                    // the line too would print it twice.
+                    label: isWrappedNativeAction(evmTxType) ? undefined : (
+                        <Translation id="AMOUNT" />
+                    ),
                     value,
                     type: 'amount',
                     token: token || nativeToken,

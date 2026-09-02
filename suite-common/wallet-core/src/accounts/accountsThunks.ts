@@ -1,11 +1,18 @@
-import { events } from '@suite-common/analytics';
-import { selectDevices } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import {
+    type TokenDefinitionsRootState,
+    selectCoinDefinitions,
+} from '@suite-common/token-definitions';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type GetTradedAccountKeysDep,
+} from '@suite-common/wallet-types';
 import {
     analyzeTransactions,
     findAccountDevice,
@@ -19,6 +26,7 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
@@ -27,12 +35,24 @@ import {
     getAccountInfoAnalyticsPayload,
     isAccountActiveForAnalytics,
 } from './accountsInfoAnalytics';
+import { type AccountsRootState } from './accountsReducer';
 import { accountRefreshed } from './accountsRefreshTimeReducer';
 import { selectAccountByKey } from './accountsSelectors';
-import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
-import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
+import {
+    type BlockchainRootState,
+    selectBlockchainHeightBySymbol,
+    selectGapLimit,
+} from '../blockchain/blockchainReducer';
+import {
+    type WalletSettingsRootState,
+    selectBitcoinAmountUnit,
+} from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
-import { selectTransactions } from '../transactions/transactionsSelectors';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
+import {
+    selectEvmPrivatePendingHint,
+    selectTransactions,
+} from '../transactions/transactionsSelectors';
 
 const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['tokens']) => {
     const tokens: TokenInfo[] = [];
@@ -57,7 +77,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 
     const promises = customTokens.map(t =>
         TrezorConnect.getAccountInfo({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'tokenBalances',
@@ -78,49 +98,82 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
     return tokens;
 };
 
-export const reportWalletBalanceThunk = createThunk(
-    `${ACCOUNTS_MODULE_PREFIX}/reportWalletBalance`,
-    (_, { getState, extra }) => {
-        reportWalletBalanceDebounced({
-            getState,
-            analytics: extra.services.analytics,
-        });
-    },
-);
+export type ReportWalletBalanceThunkState = AccountsRootState;
 
-export const reportAccountInfoThunk = createThunk(
-    `${ACCOUNTS_MODULE_PREFIX}/reportAccountInfo`,
-    (accountKey: AccountKey, { getState, extra }) => {
-        const account = selectAccountByKey(getState(), accountKey);
-        if (!account || !isAccountActiveForAnalytics(account)) return;
+export type ReportWalletBalanceThunkDeps = WithServices<AnalyticsDep>;
 
-        const tokenDefinitions = selectCoinDefinitions(getState(), account.symbol);
-        // wait for token definitions before reporting, otherwise the account would be deduped with an
-        // incorrect token list with phishing tokens could be reported
-        const requiresTokenDefinitions = getNetworkFeatures(account.symbol).includes(
-            'coin-definitions',
-        );
-        if (requiresTokenDefinitions && !tokenDefinitions?.data) return;
+export const reportWalletBalanceThunk = createThunk<
+    void,
+    void,
+    { state: ReportWalletBalanceThunkState; extra: ReportWalletBalanceThunkDeps }
+>(`${ACCOUNTS_MODULE_PREFIX}/reportWalletBalance`, (_, { getState, extra }) => {
+    reportWalletBalanceDebounced({
+        getState,
+        analytics: extra.services.analytics,
+    });
+});
 
-        const hasTraded = extra.selectors.selectTradedAccountKeys(getState()).includes(account.key);
+export type ReportAccountInfoThunkState = AccountsRootState & TokenDefinitionsRootState;
 
-        extra.services.analytics.report({
-            type: events.accountsInfoEvent.name,
-            payload: getAccountInfoAnalyticsPayload(account, tokenDefinitions, hasTraded),
-        });
-    },
-);
+export type ReportAccountInfoThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
+
+export const reportAccountInfoThunk = createThunk<
+    void,
+    AccountKey,
+    { state: ReportAccountInfoThunkState; extra: ReportAccountInfoThunkDeps }
+>(`${ACCOUNTS_MODULE_PREFIX}/reportAccountInfo`, (accountKey, { getState, extra }) => {
+    const account = selectAccountByKey(getState(), accountKey);
+    if (!account || !isAccountActiveForAnalytics(account)) return;
+
+    const tokenDefinitions = selectCoinDefinitions(getState(), account.symbol);
+    // wait for token definitions before reporting, otherwise the account would be deduped with an
+    // incorrect token list with phishing tokens could be reported
+    const requiresTokenDefinitions = getNetworkFeatures(account.symbol).includes(
+        'coin-definitions',
+    );
+    if (requiresTokenDefinitions && !tokenDefinitions?.data) return;
+
+    const hasTraded = extra.services.getTradedAccountKeys().includes(account.key);
+
+    extra.services.analytics.report({
+        type: events.accountsInfoEvent.name,
+        payload: getAccountInfoAnalyticsPayload(account, tokenDefinitions, hasTraded),
+    });
+});
 
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once
-export const fetchAndUpdateAccountThunk = createThunk(
+type FetchAndUpdateAccountThunkParams = {
+    accountKey: AccountKey;
+};
+
+export type FetchAndUpdateAccountThunkState = AccountsRootState &
+    BlockchainRootState &
+    DeviceRootState &
+    TokenDefinitionsRootState &
+    TransactionsRootState &
+    WalletSettingsRootState;
+
+export type FetchAndUpdateAccountThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
+
+export const fetchAndUpdateAccountThunk = createThunk<
+    void,
+    FetchAndUpdateAccountThunkParams,
+    { state: FetchAndUpdateAccountThunkState; extra: FetchAndUpdateAccountThunkDeps }
+>(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
-    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
+    async ({ accountKey }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || account.failed || account.accountType === 'placeholder') return;
 
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
+
+        // trezor/blockbook#1639: declare our local pending txs so blockbook reports the right
+        // pending nonce and serves them in history. undefined for non-EVM / nothing pending — the
+        // field is then omitted.
+        const privatePending = selectEvmPrivatePendingHint(getState(), account.key);
+
         // first basic check, traffic optimization
         // basic check returns only small amount of data without full transaction history
         const tokenAccountsPubKeys =
@@ -133,13 +186,14 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 : undefined;
 
         const basic = await TrezorConnect.getAccountInfo({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: account.networkType === 'solana' ? 'txids' : 'basic',
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+            privatePending,
             gap,
         });
 
@@ -165,7 +219,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 : getTxsPerPage(account.networkType);
 
         const response = await TrezorConnect.getAccountInfo({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',
@@ -173,6 +227,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             pageSize,
             suppressBackupWarning: true,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+            privatePending,
             gap:
                 account.networkType === 'bitcoin'
                     ? selectGapLimit(getState(), account.symbol)
@@ -198,7 +253,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
                     if ((freshTx.tokens?.length ?? 0) > 0) return freshTx;
                     const fakeMatch = accountTxs.find(
                         t =>
-                            t.txid === freshTx.txid &&
+                            t?.txid === freshTx.txid &&
                             'deadline' in t &&
                             (t.tokens?.length ?? 0) > 0,
                     );

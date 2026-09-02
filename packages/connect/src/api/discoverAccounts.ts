@@ -12,8 +12,8 @@ import {
     type FirmwareRange,
     PAGING,
     type PermissionRequest,
-    UI_REQUEST,
-    createUiMessage,
+    UI_EVENTS,
+    createUiEventMessage,
 } from '@trezor/connect-common';
 import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
@@ -59,6 +59,9 @@ const shouldSkipFirstAccountIndex = (account: AccountTypeItem, coinInfo: CoinInf
     (coinInfo.type === 'ethereum' || coinInfo.shortcut === 'TRX') && account.type === 'ledger';
 
 const getAccountTypeKey = ({ symbol, type }: AccountTypeKey) => `${symbol}-${type}` as const;
+
+// Account types with an index-less path (root path) have exactly one account.
+const isSingleAccountType = (account: AccountTypeItem) => !account.path.includes('i');
 
 // TODO use substituteBip43Path from wallet-utils somehow
 const substituteBip43Path = (path: string, index: number) => path.replace('i', String(index));
@@ -173,7 +176,7 @@ export default class DiscoverAccounts extends AbstractMethod<
             (Object.keys(this.progress).length || 1);
 
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+            createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                 total: 100,
                 progress: 100 * progress,
                 response,
@@ -223,11 +226,11 @@ export default class DiscoverAccounts extends AbstractMethod<
 
                 let error;
                 if (min === '0') {
-                    error = UI_REQUEST.FIRMWARE_NOT_SUPPORTED;
+                    error = UI_EVENTS.FIRMWARE_NOT_SUPPORTED;
                 } else if (!versionUtils.isNewerOrEqual(version, min)) {
-                    error = UI_REQUEST.FIRMWARE_OLD;
+                    error = UI_EVENTS.FIRMWARE_OLD;
                 } else if (max !== '0' && versionUtils.isNewer(version, max)) {
-                    error = UI_REQUEST.FIRMWARE_NOT_COMPATIBLE;
+                    error = UI_EVENTS.FIRMWARE_NOT_COMPATIBLE;
                 }
 
                 return error ? { ...item, error } : item;
@@ -291,7 +294,8 @@ export default class DiscoverAccounts extends AbstractMethod<
                 // This works because descriptors returned from getAccountDescriptor depend only
                 // on derivation path (plus type in case of Cardano). When there's a case where
                 // we expect two different descriptors from the same path, this must be reworked.
-                const address_n = validatePath(path, 3);
+                // Length 2 to allow root paths of single-account types.
+                const address_n = validatePath(path, 2);
                 const descriptor = await this.getDevice()
                     .getCommands()
                     .getAccountDescriptor(coinInfo, address_n, derivationType);
@@ -326,6 +330,15 @@ export default class DiscoverAccounts extends AbstractMethod<
         const { details, identity, pageSize, gap, protocols, coinInfo, derivation, offset, skip } =
             request;
         const { path: bip43, ...accountKey } = request.account;
+        const singleAccount = isSingleAccountType(request.account);
+
+        // The only account of a single-account type is already known; there is nothing to discover.
+        if (singleAccount && skip > 0) {
+            this.updateProgress(accountKey, skip, true);
+
+            return { nonempty: 0 };
+        }
+
         const backendType = coinInfo.blockchainLink?.type;
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
         let index = skip;
@@ -368,7 +381,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                       ? []
                       : await blockchain.getAccountUtxo(descriptor);
 
-                this.updateProgress(accountKey, index + 1, info.empty);
+                this.updateProgress(accountKey, index + 1, info.empty || singleAccount);
                 sendProgress({
                     ...info,
                     descriptor,
@@ -380,10 +393,10 @@ export default class DiscoverAccounts extends AbstractMethod<
                     failed: false,
                 });
 
-                if (info.empty) {
+                if (info.empty || singleAccount) {
                     await descPromise.catch(() => {});
 
-                    return { nonempty: index - skip };
+                    return { nonempty: index - skip + (info.empty ? 0 : 1) };
                 }
             } catch (err) {
                 const path = substituteBip43Path(bip43, offset + index);

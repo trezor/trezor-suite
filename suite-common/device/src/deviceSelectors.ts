@@ -13,6 +13,7 @@ import {
     getDeviceInstances,
     getDeviceInstancesGroupedByDeviceId,
     getDeviceInternalModel,
+    getDeviceModelWithFlagshipFallback,
     getFwUpdateVersion,
     getIsDeviceConnectedAndAuthorized,
     getIsDeviceConnectedViaBluetooth,
@@ -168,7 +169,7 @@ export const selectSupportedDeviceLanguages = createMemoizedSelector(
                 value: code as Locale,
                 icon,
                 label: name,
-                isBeta: true, // TODO: This will need tweaking in the future.
+                isBeta: availableDeviceTranslations[code]?.status === 'beta',
             }))
             .sort((a, b) => a.label.localeCompare(b.label));
 
@@ -416,6 +417,10 @@ export const selectDeviceModelById = createMemoizedSelector(
 export const selectDeviceModel = createMemoizedSelector([selectSelectedDevice], selectedDevice =>
     selectedDevice ? getDeviceInternalModel(selectedDevice) : null,
 );
+
+export const selectDeviceModelWithFlagshipFallback = (
+    state: DeviceRootState,
+): DeviceModelInternal => getDeviceModelWithFlagshipFallback(selectSelectedDevice(state));
 
 export const selectIsDeviceAuthenticityCheckSupported = createMemoizedSelector(
     [selectIsPortfolioTrackerDevice, selectDeviceModel],

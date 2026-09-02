@@ -20,7 +20,10 @@ export const FinalStep = () => {
                 />
             }
             innerActions={
-                <OnboardingCard.Button data-testid="@onboarding/final-button" onClick={goToSuite}>
+                <OnboardingCard.Button
+                    data-testid="@onboarding/final-button"
+                    onClick={() => goToSuite()}
+                >
                     <Translation id="TR_ONBOARDING_FINAL_GO_TO_DASHBOARD" />
                 </OnboardingCard.Button>
             }

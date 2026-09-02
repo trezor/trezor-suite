@@ -5,13 +5,14 @@ import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { selectAccounts } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import loadStellar from '@trezor/network-stellar/runtime';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { selectSessionByTopic } from '../walletConnectReducer';
+import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
@@ -20,26 +21,6 @@ import {
 } from '../walletConnectTypes';
 
 const methods = ['stellar_signXDR', 'stellar_signAndSubmitXDR'];
-
-// Supported classic Stellar operation types in TrezorConnect.
-// TODO: Perhaps we can add this to `transformTransaction`
-const SUPPORTED_OPERATION_TYPES = new Set([
-    'createAccount',
-    'payment',
-    'pathPaymentStrictReceive',
-    'pathPaymentStrictSend',
-    'createPassiveSellOffer',
-    'manageSellOffer',
-    'manageBuyOffer',
-    'setOptions',
-    'changeTrust',
-    'allowTrust',
-    'accountMerge',
-    'inflation',
-    'manageData',
-    'bumpSequence',
-    'claimClaimableBalance',
-]);
 
 const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
     const { chainId } = event.params;
@@ -57,6 +38,11 @@ const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
     };
 };
 
+type StellarSignXDRThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+    AccountsRootState;
+
+type StellarSignXDRThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+
 const stellarSignXDR = createThunk<
     { signedXDR: string },
     {
@@ -64,7 +50,8 @@ const stellarSignXDR = createThunk<
         xdrBase64: string;
         origin: string;
         event: WalletKitTypes.SessionRequest;
-    }
+    },
+    { state: StellarSignXDRThunkState; extra: StellarSignXDRThunkDeps }
 >(
     `${WALLETCONNECT_MODULE}/stellarSignXDR`,
     async ({ session, xdrBase64, origin, event }, { dispatch, getState }) => {
@@ -73,13 +60,6 @@ const stellarSignXDR = createThunk<
         const { parseTransactionFromXDR } = await loadStellar();
 
         const transaction = parseTransactionFromXDR(xdrBase64, testnet);
-
-        // Validate all operations are supported classic types.
-        for (const op of transaction.operations) {
-            if (!SUPPORTED_OPERATION_TYPES.has(op.type)) {
-                throw new Error(`Unsupported operation: ${op.type}`);
-            }
-        }
 
         const device = selectSelectedDevice(getState());
         const accounts = selectAccounts(getState());
@@ -126,11 +106,16 @@ const stellarSignXDR = createThunk<
     },
 );
 
+export type StellarRequestThunkState = StellarSignXDRThunkState & WalletConnectStateRootState;
+
+export type StellarRequestThunkDeps = StellarSignXDRThunkDeps;
+
 const stellarRequestThunk = createThunk<
     { signedXDR: string } | { status: string } | undefined,
     {
         event: WalletKitTypes.SessionRequest;
-    }
+    },
+    { state: StellarRequestThunkState; extra: StellarRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/stellarRequest`, async ({ event }, { dispatch, getState }) => {
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
@@ -159,7 +144,7 @@ const stellarRequestThunk = createThunk<
             ).unwrap();
 
             const pushResponse = await TrezorConnect.pushTransaction({
-                coin: context.symbol,
+                coin: asCoinSymbol(context.symbol),
                 tx: Buffer.from(result.signedXDR, 'base64').toString('hex'),
             });
             if (!pushResponse.success) {

@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 
 import { type TrxStats, useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type UseQueryResult } from '@suite-common/react-query';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TronFlow, tronStakeActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useDispatch } from 'src/hooks/suite';
-
 import { useTronAmountInput } from './useTronAmountInput';
 import { type TronStakeActions, useTronStakeActions } from './useTronStakeActions';
+import { useTronStakeFees } from './useTronStakeFees';
 import { useTronStakeForm } from './useTronStakeForm';
 import { useTronStakePendingTransactionTracking } from './useTronStakePendingTransactionTracking';
 
@@ -18,6 +18,7 @@ export interface TronStakeContextValues {
     form: ReturnType<typeof useTronStakeForm>;
     actions: TronStakeActions;
     amountInput: ReturnType<typeof useTronAmountInput>;
+    fees: ReturnType<typeof useTronStakeFees>;
 }
 
 interface UseTronStakeFlowProps {
@@ -34,6 +35,7 @@ export const useTronStakeFlow = ({
 
     const form = useTronStakeForm({ account, flow });
     const actions = useTronStakeActions({ account, form, flow });
+    const fees = useTronStakeFees({ account, form, step: actions.step });
 
     const { methods } = form;
 
@@ -56,5 +58,6 @@ export const useTronStakeFlow = ({
         form,
         actions,
         amountInput,
+        fees,
     };
 };

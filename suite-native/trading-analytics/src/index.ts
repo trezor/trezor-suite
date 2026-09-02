@@ -8,6 +8,10 @@ export {
     useExchangeAnalyticReportCallback,
 } from './hooks/useExchangeAnalyticReportCallback';
 export {
+    type TradingExchangeIssueAnalyticReportCallback,
+    useExchangeIssueAnalyticReportCallback,
+} from './hooks/useExchangeIssueAnalyticReportCallback';
+export {
     type TradingSellAnalyticReportCallback,
     useSellAnalyticReportCallback,
 } from './hooks/useSellAnalyticReportCallback';

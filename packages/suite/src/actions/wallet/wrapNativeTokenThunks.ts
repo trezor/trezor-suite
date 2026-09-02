@@ -1,149 +1,93 @@
 import { openDeferredModal } from '@suite/modal';
-import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    getNetwork,
-    getNetworkDisplaySymbol,
-    getWrappedNativeAddress,
-} from '@suite-common/wallet-config';
-import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
-import {
-    buildYieldUnsignedTransaction,
-    buildYieldWrapTransactionData,
-    estimateYieldFeeLevel,
-    ethereumGetCurrentNonceThunk,
-    selectRawNetworkFeeInfo,
+    type ComposeYieldWrapTransactionThunkState,
+    type YieldFlowDisplayToken,
+    composeYieldWrapTransactionThunk,
+    setYieldError,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountIdentity, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { type TokenInfo } from '@trezor/connect';
 
-import { sendYieldTransaction } from './stablecoin-yield/signingHelpers';
+import {
+    type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
+    getYieldErrorTranslationKey,
+    getYieldSubmitErrorAnalyticsMessage,
+    sendYieldTransaction,
+} from './stablecoin-yield/signingHelpers';
+import { addToken } from './tokenActions';
 
-// Standalone wrap flow for the debug "Wrap" action on the dashboard native-asset row. It reuses the
-// shared yield building blocks/signer but deliberately keeps its own thunks so the stablecoin-yield
-// flow thunks stay untouched.
 const WRAP_NATIVE_TOKEN_PREFIX = '@wallet/wrap-native-token';
-
-export type ComposeWrapNativeTokenErrorReason =
-    | 'unsupported-network'
-    | 'not-wrapped-native'
-    | 'missing-fee-level';
-
-export type ComposeWrapNativeTokenResult =
-    | {
-          type: 'action-ready';
-          unsignedTransaction: string;
-      }
-    | {
-          type: 'error';
-          reason: ComposeWrapNativeTokenErrorReason;
-      };
 
 type WrapNativeTokenPayload = {
     account: Account;
-    /** Native coin amount to wrap — the value carried by the transaction. */
+    token: YieldFlowDisplayToken & { contractAddress: string };
     wrapAmount: string;
+    yieldFlow?: {
+        flowKey: string;
+        flowType: 'deposit';
+        vaultId?: string;
+    };
 };
 
-/**
- * Composes an unsigned WETH `deposit()` (wrap) transaction that carries `wrapAmount` in its value.
- * The target is always the chain's canonical wrapped-native contract.
- */
-export const composeWrapNativeTokenThunk = createThunk<
-    ComposeWrapNativeTokenResult,
+type SubmitWrapNativeTokenThunkState = ComposeYieldWrapTransactionThunkState &
+    SendYieldTransactionState;
+
+type SubmitWrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
+    services: AnalyticsDep;
+};
+
+export const submitWrapNativeTokenThunk = createThunk<
+    { txid: string } | undefined,
     WrapNativeTokenPayload,
-    void
+    { state: SubmitWrapNativeTokenThunkState; extra: SubmitWrapNativeTokenThunkDeps }
 >(
-    `${WRAP_NATIVE_TOKEN_PREFIX}/compose`,
-    async ({ account, wrapAmount }, { dispatch, getState }) => {
-        if (account.networkType !== 'ethereum') {
-            return { type: 'error', reason: 'unsupported-network' } as const;
-        }
-
-        const wethAddress = getWrappedNativeAddress(account.symbol);
-
-        if (!wethAddress) {
-            return { type: 'error', reason: 'not-wrapped-native' } as const;
-        }
-
-        const network = getNetwork(account.symbol);
-
-        if (!network.chainId) {
-            return { type: 'error', reason: 'unsupported-network' } as const;
-        }
-
-        const { data, value } = buildYieldWrapTransactionData({
-            wrapAmount,
-            decimals: network.decimals,
-        });
-
-        const [{ nonce }, estimatedFeeLevel] = await Promise.all([
-            dispatch(
-                ethereumGetCurrentNonceThunk({
-                    selectedAccount: account,
-                    fetchConfirmedNonce: true,
-                }),
-            ).unwrap(),
-            estimateYieldFeeLevel({
-                coin: account.symbol,
-                identity: getAccountIdentity(account),
-                from: account.descriptor,
-                to: wethAddress,
-                data,
-                value,
-            }),
-        ]);
-
-        // WETH deposit() is a fixed ~45k-gas call, so fall back to a known backup limit when
-        // estimation fails rather than blocking the wrap.
-        const gasLimit = estimatedFeeLevel.success
-            ? estimatedFeeLevel.payload.feeLimit
-            : WETH_DEPOSIT_BACKUP_GAS_LIMIT;
-
-        const feeInfo = getConvertedOrDefaultFeeInfo({
-            networkType: account.networkType,
-            feeInfo: selectRawNetworkFeeInfo(getState(), account.symbol),
-        });
-        const normalLevel =
-            feeInfo.levels.find(level => level.label === 'normal') ?? feeInfo.levels[0];
-
-        if (!normalLevel) {
-            return { type: 'error', reason: 'missing-fee-level' } as const;
-        }
-
-        const unsignedTransaction = JSON.stringify(
-            buildYieldUnsignedTransaction({
-                chainId: network.chainId,
-                data,
-                feeLevel: normalLevel,
-                from: account.descriptor,
-                gasLimit,
-                nonce: Number(nonce),
-                to: wethAddress,
-                value,
-            }),
-        );
-
-        return { type: 'action-ready', unsignedTransaction } as const;
-    },
-);
-
-/**
- * Debug-only submit for the native-token wrap: composes the `deposit()` tx, shows the tx-simulation
- * preview, then signs on the device and broadcasts. Reuses the shared `sendYieldTransaction` signer
- * as-is — `flowType`/`flowKey` only feed the (flow-agnostic) precomposed-tx store and are inert for
- * a standalone wrap.
- */
-export const submitWrapNativeTokenThunk = createThunk(
     `${WRAP_NATIVE_TOKEN_PREFIX}/submit`,
-    async ({ account, wrapAmount }: WrapNativeTokenPayload, { dispatch, getState }) => {
+    async ({ account, token, wrapAmount, yieldFlow }, { dispatch, getState, extra }) => {
+        // An in-flow wrap belongs to the deposit funnel, so its failures are reported there rather
+        // than as a standalone yield/wrap. Only the broadcast wrap transaction is resolved by
+        // `useYieldPendingTransactionTracking`, so these pre-broadcast failures are the deposit
+        // event's only view of them and cannot double-count. The `wrap-` prefix keeps them apart
+        // from failures of the deposit transaction itself.
+        const reportError = (errorMessage: string) => {
+            if (yieldFlow) {
+                extra.services.analytics.report({
+                    type: events.yieldDepositEvent.name,
+                    payload: {
+                        type: 'error',
+                        action: 'continue',
+                        networkSymbol: account.symbol,
+                        vaultId: yieldFlow.vaultId,
+                        errorMessage: `wrap-${errorMessage}`,
+                    },
+                });
+
+                return;
+            }
+
+            extra.services.analytics.report({
+                type: events.yieldWrapEvent.name,
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    networkSymbol: account.symbol,
+                    errorMessage,
+                },
+            });
+        };
+
         try {
             const result = await dispatch(
-                composeWrapNativeTokenThunk({ account, wrapAmount }),
+                composeYieldWrapTransactionThunk({ account, token, wrapAmount }),
             ).unwrap();
 
             if (result.type === 'error') {
+                reportError(result.reason);
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
@@ -151,7 +95,13 @@ export const submitWrapNativeTokenThunk = createThunk(
                     }),
                 );
 
-                return;
+                // A wrap started from the deposit flow needs the failure on the step itself; the
+                // toast alone leaves the flow looking idle.
+                if (yieldFlow) {
+                    setYieldError({ dispatch, ...yieldFlow });
+                }
+
+                return undefined;
             }
 
             const userAcceptedTxSimulation = await dispatch(
@@ -165,8 +115,19 @@ export const submitWrapNativeTokenThunk = createThunk(
                 }),
             );
 
+            if (!yieldFlow) {
+                extra.services.analytics.report({
+                    type: events.yieldWrapEvent.name,
+                    payload: {
+                        type: 'tx-simulation-modal',
+                        action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                        networkSymbol: account.symbol,
+                    },
+                });
+            }
+
             if (userAcceptedTxSimulation?.value === false) {
-                return;
+                return undefined;
             }
 
             const network = getNetwork(account.symbol);
@@ -174,8 +135,6 @@ export const submitWrapNativeTokenThunk = createThunk(
             const sendResult = await sendYieldTransaction({
                 account,
                 amount: wrapAmount,
-                // Native display token (no contractAddress) ⇒ the review renders the wrap as a
-                // native value transfer to the WETH contract, which is what a deposit() call is.
                 token: {
                     networkSymbol: account.symbol,
                     symbol: getNetworkDisplaySymbol(account.symbol),
@@ -183,8 +142,8 @@ export const submitWrapNativeTokenThunk = createThunk(
                     contractAddress: null,
                 },
                 unsignedTransaction: result.unsignedTransaction,
-                flowKey: 'debug-wrap-native',
-                flowType: 'deposit',
+                flowKey: yieldFlow?.flowKey ?? 'standalone-wrap-native',
+                flowType: yieldFlow?.flowType ?? 'deposit',
                 dispatch,
                 getState,
                 selectedFee: userAcceptedTxSimulation?.selectedFee ?? null,
@@ -193,25 +152,90 @@ export const submitWrapNativeTokenThunk = createThunk(
             userAcceptedTxSimulation?.resolve();
 
             if (!sendResult) {
-                return;
+                reportError('submit-failed');
+
+                return undefined;
+            }
+
+            if (!yieldFlow) {
+                extra.services.analytics.report({
+                    type: events.yieldWrapEvent.name,
+                    payload: {
+                        type: 'sent',
+                        action: 'continue',
+                        networkSymbol: account.symbol,
+                    },
+                });
+            }
+
+            // Make sure re-wrapping doesn't create a duplicate
+            const isAlreadyTracked = account.tokens?.some(
+                accountToken =>
+                    accountToken.contract.toLowerCase() === token.contractAddress.toLowerCase(),
+            );
+
+            if (!isAlreadyTracked) {
+                const wrappedTokenInfo: TokenInfo = {
+                    // Only affects symbol casing (both ERC20 and BEP20 preserve it); the real
+                    // standard/balance are filled in by the next backend account refresh.
+                    standard: 'ERC20',
+                    contract: token.contractAddress,
+                    symbol: token.symbol,
+                    name: token.symbol,
+                    decimals: token.decimals,
+                    balance: '0',
+                };
+
+                dispatch(addToken(account, [wrappedTokenInfo], { showSuccessToast: false }));
             }
 
             dispatch(
                 notificationsActions.addToast({
-                    type: 'raw-tx-sent',
+                    type: 'tx-wrap',
+                    isYieldFlowStep: !!yieldFlow,
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: sendResult.txid,
+                    formattedAmount: wrapAmount,
+                    metadata: {
+                        send: {
+                            symbol: account.symbol,
+                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                            amount: wrapAmount,
+                        },
+                        receive: {
+                            symbol: account.symbol,
+                            displaySymbol: token.symbol,
+                            contractAddress: token.contractAddress,
+                            amount: wrapAmount,
+                        },
+                    },
+                    style: { maxWidth: 'auto' },
                 }),
             );
+
+            return sendResult;
         } catch (error) {
             console.error(error);
+            reportError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
                     error: error instanceof Error ? error.message : String(error),
                 }),
             );
+            // Same reasoning as the compose failure above. A push failure in particular means the
+            // transaction was already signed, which is worth saying rather than leaving the step
+            // looking idle.
+            if (yieldFlow) {
+                setYieldError({
+                    dispatch,
+                    ...yieldFlow,
+                    error: getYieldErrorTranslationKey(error),
+                });
+            }
+
+            return undefined;
         }
     },
 );

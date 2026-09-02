@@ -5,13 +5,13 @@ import { type Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingBuyQuotesRequest,
     selectTradingCoinSymbolByCryptoId,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import type { HandleBuyRequestThunkProps, TradingBuyFormProps, TradingBuyType } from '../../types';
 import {
     addIdsToQuotes,
@@ -28,7 +28,7 @@ type GetQuotesRequest = {
 };
 
 const getQuotesRequest = ({ requestData, signal }: GetQuotesRequest) =>
-    invityAPI.getBuyQuotes(requestData, signal);
+    tradeApi.getBuyQuotes(requestData, signal);
 
 type GetQuoteRequestData = {
     formValues: TradingBuyFormProps;
@@ -87,16 +87,19 @@ const getQuoteRequestData = ({
     };
 };
 
+type HandleBuyRequestThunkState = TradingRootState;
+
 export const handleBuyRequestThunk = createThunk<
     BuyTrade[],
     HandleBuyRequestThunkProps,
     {
         rejectValue: string;
+        state: HandleBuyRequestThunkState;
     }
 >(
     `${TRADING_BUY_THUNK_PREFIX}/handleRequest`,
     async (
-        { formValues, network, shouldSendInSats }: HandleBuyRequestThunkProps,
+        { formValues, network, shouldSendInSats },
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
         const quotesRequest = selectTradingBuyQuotesRequest(getState());

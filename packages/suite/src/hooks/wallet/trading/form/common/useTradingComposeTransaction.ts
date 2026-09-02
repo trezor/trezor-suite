@@ -3,6 +3,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -21,7 +22,7 @@ import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import {
@@ -64,6 +65,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const initState = useMemo(() => ({ account, network, feeInfo }), [account, network, feeInfo]);
     const outputAddress = useWatch({ control, name: TRADING_FORM_OUTPUT_ADDRESS });
     const [state, setState] = useState<TradingUseComposeTransactionStateProps>(initState);
+    const replaceablePlaceholderRef = useRef<{ accountKey?: string; address?: string }>({});
 
     // Tron: derive a cold recipient for the offers fee estimate, passed via compose context.
     // Keyed on device?.state (not the device object) so signing doesn't re-fire the device call.
@@ -76,8 +78,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     );
 
     useEffect(() => {
-        const currentDevice = deviceRef.current;
-        if (networkType !== 'tron' || !currentDevice || !account || !network) {
+        if (networkType !== 'tron' || !account || !network) {
             setFeeEstimationRecipient(undefined);
 
             return;
@@ -87,8 +88,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             account,
             network,
             accounts: accountsRef.current,
-            device: currentDevice,
-            chunkify,
+            device: deviceRef.current,
         }).then(recipient => {
             if (isMounted) setFeeEstimationRecipient(recipient);
         });
@@ -104,7 +104,6 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         networkType,
         device?.state,
         network,
-        chunkify,
     ]);
 
     const composeContext = useMemo(() => {
@@ -117,6 +116,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             network: state.network,
             feeInfo: state.feeInfo,
             feeEstimationRecipient,
+            assumeNewAccount: true,
         };
     }, [state, feeEstimationRecipient]);
 
@@ -151,6 +151,20 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             return;
         }
 
+        const hasAccountChanged = !(
+            state.account?.descriptor === initState.account?.descriptor &&
+            state.account?.symbol === initState.account?.symbol
+        );
+
+        const accountKey =
+            initState.account && `${initState.account.symbol}:${initState.account.descriptor}`;
+        if (replaceablePlaceholderRef.current.accountKey !== accountKey) {
+            replaceablePlaceholderRef.current = {
+                accountKey,
+                address: getValues('outputs')?.[0]?.address,
+            };
+        }
+
         const setStateAsync = async () => {
             const address: string = await getComposeAddressPlaceholder(
                 account,
@@ -167,16 +181,16 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             const currentOutput = getValues('outputs')?.[0];
 
             if (currentOutput && typeof address === 'string') {
-                if (!currentOutput.address) {
+                const isReplaceable =
+                    currentOutput.address !== address &&
+                    (!currentOutput.address ||
+                        currentOutput.address === replaceablePlaceholderRef.current.address);
+                if (isReplaceable) {
                     setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
                 }
                 setState(initState);
             }
         };
-        const hasAccountChanged = !(
-            state.account?.descriptor === initState.account?.descriptor &&
-            state.account?.symbol === initState.account?.symbol
-        );
 
         // update fee info only if the block height has increased.
         // note: This approach may not be ideal for Bitcoin, as fees can change within the same block

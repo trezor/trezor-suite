@@ -1,16 +1,12 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useState } from 'react';
 
 import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts';
 import styled, { useTheme } from 'styled-components';
 
-import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { isPending } from '@suite-common/wallet-utils';
 import { typography, zIndices } from '@trezor/theme';
 
 import { GraphSkeleton } from 'src/components/suite/graph/GraphSkeleton';
 import type { TransactionsGraphProps } from 'src/components/suite/graph/types';
-import { useSelector } from 'src/hooks/suite';
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 import { calcFakeGraphDataForTimestamps, calcXDomain, calcYDomain } from 'src/utils/wallet/graph';
 
 import { GraphBar } from './GraphBar';
@@ -19,6 +15,7 @@ import { GraphTooltipAccount } from './GraphTooltipAccount';
 import { GraphTooltipDashboard } from './GraphTooltipDashboard';
 import { GraphXAxisTick } from './GraphXAxisTick';
 import { GraphYAxisTick } from './GraphYAxisTick';
+import { useTransactionGraphUpdater } from './hooks/useTransactionGraphUpdater';
 
 const Wrapper = styled.div`
     display: flex;
@@ -51,68 +48,6 @@ const Description = styled.div`
     flex: 1;
 `;
 
-const emptyList: ReturnType<typeof selectAccountTransactionsWithNulls>[] = [];
-const useTransactionGraphUpdater = ({
-    onRequestGraphUpdate,
-    account,
-}: {
-    onRequestGraphUpdate: (abortController: AbortController) => Promise<unknown> | undefined;
-    account: Account | undefined;
-}) => {
-    const [currentPromise, setCurrentPromise] = useState<{
-        promiseId: string;
-        promise: Promise<unknown>;
-        abortController: AbortController;
-    } | null>(null);
-
-    const allTransactions = useSelector(state =>
-        account ? selectAccountTransactionsWithNulls(state, account.key) : emptyList,
-    );
-
-    const newestTransactions = allTransactions
-        .slice(0, 3)
-        .flat()
-        .filter((tx): tx is WalletAccountTransaction =>
-            Boolean(Boolean(tx) && tx && !isPending(tx)),
-        );
-
-    const promiseId = newestTransactions.map(tx => tx.txid).join('-');
-
-    useEffect(() => {
-        if (promiseId !== currentPromise?.promiseId && account) {
-            const nextAbortController = new AbortController();
-
-            currentPromise?.abortController.abort();
-
-            setCurrentPromise({
-                promiseId,
-                abortController: nextAbortController,
-                promise: Promise.resolve()
-                    .then(() =>
-                        currentPromise?.promise?.then(
-                            result => result,
-                            _ => {
-                                // NOTE: swallow this error as we want to continue on with the next promise
-                            },
-                        ),
-                    )
-                    .then(() => {
-                        nextAbortController.signal.throwIfAborted();
-
-                        return Promise.resolve(onRequestGraphUpdate(nextAbortController));
-                    }),
-            });
-        }
-    }, [
-        account,
-        currentPromise?.abortController,
-        currentPromise?.promise,
-        currentPromise?.promiseId,
-        promiseId,
-        onRequestGraphUpdate,
-    ]);
-};
-
 export const TransactionsGraph = memo(
     ({
         account,
@@ -129,8 +64,15 @@ export const TransactionsGraph = memo(
         xTicks,
     }: TransactionsGraphProps) => {
         const [maxYTickWidth, setMaxYTickWidth] = useState(20);
+        const [hovered, setHovered] = useState(-1);
 
         const theme = useTheme();
+
+        useTransactionGraphUpdater({
+            accountKey: account?.key,
+            onRequestGraphUpdate: onRefresh,
+        });
+
         const yDomain = calcYDomain(minMaxValues, account?.formattedBalance);
 
         const setWidth = (n: number) => {
@@ -145,8 +87,6 @@ export const TransactionsGraph = memo(
                 ? calcFakeGraphDataForTimestamps(xTicks, data, account.formattedBalance)
                 : calcFakeGraphDataForTimestamps(xTicks, data);
 
-        const hoveredIndex = -1;
-        const [hovered, setHovered] = useState(hoveredIndex);
         const isBarColored = (index: number) => [-1, index].includes(hovered);
 
         const tooltipContentProps = {
@@ -156,17 +96,17 @@ export const TransactionsGraph = memo(
             onShow: (index: number) => setHovered(index),
         };
 
-        useTransactionGraphUpdater({
-            onRequestGraphUpdate: abortController => onRefresh?.(abortController),
-            account,
-        });
+        // While there is data to show, the graph stays visible during a refetch instead of falling
+        // back to the skeleton. An empty interval (e.g. a day without transactions) is not a loading
+        // state — it renders as a graph with no bars, so the axes and the balance stay readable.
+        const isSkeletonShown = isLoading && !data?.length;
 
         return (
             <Wrapper>
                 <Description>
-                    {isLoading && <GraphSkeleton animate />}
-
-                    {!isLoading && data && (
+                    {isSkeletonShown ? (
+                        <GraphSkeleton animate />
+                    ) : (
                         <GraphResponsiveContainer height="100%" width="100%">
                             <ComposedChart
                                 data={extendedDataForInterval}

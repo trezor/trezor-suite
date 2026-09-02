@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { connectPopupActions } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import { CORE_CALL, CORE_CALL_CANCEL, POPUP } from '@trezor/connect';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import {
     type ConnectPopupLink,
@@ -137,16 +136,8 @@ export const useConnectPopupWeb = () => {
                 data.type === CORE_CALL_CANCEL ||
                 data.type === CORE_CALL
             ) {
-                const normalized: ConnectPopupMessage =
-                    data.type === POPUP.HANDSHAKE
-                        ? {
-                              type: data.type,
-                              id: data.id,
-                              payload: { manifest: data.payload?.manifest },
-                              version: data.payload?.version,
-                          }
-                        : data;
-                setIncomingMessages(prev => [...prev, normalized]);
+                const message: ConnectPopupMessage = data;
+                setIncomingMessages(prev => [...prev, message]);
             }
         };
 

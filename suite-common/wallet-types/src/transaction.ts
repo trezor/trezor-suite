@@ -83,6 +83,9 @@ export const asTxTargetId = (value: string) => value as TxTargetId;
 export type Output = {
     type: 'payment' | 'opreturn';
     address: string;
+    // Onchain hex address a named input (e.g. ENS) resolved to, if any. The user-typed
+    // name stays on `address`; composing/signing uses this resolved value when present.
+    resolvedAddress?: string;
     amount: string;
     fiat: string;
     currency: BaseCurrencyOption;
@@ -156,6 +159,7 @@ type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFi
     accountActivationFee?: string;
     memoFee?: string;
     solanaTxMeta?: SolanaTxMeta;
+    isDeviceReviewOnly?: boolean;
 };
 
 // base of PrecomposedTransactionFinal
@@ -175,6 +179,7 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
     solanaTxMeta?: SolanaTxMeta;
+    isDeviceReviewOnly?: boolean;
 };
 
 // base of PrecomposedTransactionFinal
@@ -210,9 +215,7 @@ export type PrecomposedTransactionFinal =
     | PrecomposedTransactionFinalCancelRbf;
 
 export type PrecomposedTransaction =
-    | PrecomposedTransactionError
-    | PrecomposedTransactionNonFinal
-    | PrecomposedTransactionFinal;
+    PrecomposedTransactionError | PrecomposedTransactionNonFinal | PrecomposedTransactionFinal;
 
 export type PrecomposedTransactionCardano =
     | PrecomposedTransactionCardanoError
@@ -265,6 +268,8 @@ export type EvmTransactionPurpose =
     | 'withdraw'
     | 'redeem'
     | 'claim'
+    | 'wrap'
+    | 'unwrap'
     | '';
 
 export interface RbfTransactionParamsEthereum {

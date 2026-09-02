@@ -2,8 +2,10 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
 
+export type TradeExchangeAction = 'continue' | 'cancel';
+
 type Attributes = {
-    action: AttributeDef<'continue' | 'cancel'>;
+    action: AttributeDef<TradeExchangeAction>;
     step: AttributeDef<
         | 'exchange-form'
         | 'receive-address'

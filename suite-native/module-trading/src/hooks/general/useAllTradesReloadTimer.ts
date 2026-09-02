@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { tradingThunks } from '@suite-common/trading';
 import { selectTradesToWatchByAccount } from '@suite-native/trading-state';
 

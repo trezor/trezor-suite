@@ -4,10 +4,13 @@
         "outDir": "libDev",
         "paths": { "src/*": ["../suite/src/*"] }
     },
-    "include": ["."],
+    "include": [".", "../suite/global.d.ts"],
     "references": [
         {
             "path": "../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite/analytics" },
         { "path": "../../suite/debug" },
@@ -20,6 +23,7 @@
         },
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
+        { "path": "../../suite/tor-desktop" },
         { "path": "../components" },
         { "path": "../connect-electron" },
         { "path": "../icons" },

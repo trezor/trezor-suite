@@ -18,10 +18,11 @@ import { useAccountAlerts } from '../hooks/useAccountAlerts';
 
 type AddAccountButtonProps = {
     flowType: AddCoinFlowType;
+    onPress?: () => void;
     testID?: string;
 };
 
-export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) => {
+export const AddAccountButton = ({ flowType, onPress, testID }: AddAccountButtonProps) => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountsImport>>();
 
@@ -50,13 +51,21 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
         });
     };
 
+    const handlePress = () => {
+        onPress?.();
+
+        if (isSelectedDevicePortfolioTracker) {
+            navigateToImportScreen();
+        } else {
+            navigateToAddCoinAccount();
+        }
+    };
+
     return (
         <IconButton
             iconName="plus"
             size="medium"
-            onPress={
-                isSelectedDevicePortfolioTracker ? navigateToImportScreen : navigateToAddCoinAccount
-            }
+            onPress={handlePress}
             intent="neutral"
             priority="secondary"
             isLoading={hasDeviceDiscovery}

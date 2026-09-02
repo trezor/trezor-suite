@@ -1,7 +1,7 @@
-import { type AnyAction, type Draft } from '@reduxjs/toolkit';
+import { type Draft, type PayloadAction, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DeviceConnectActionPayload, deviceActions } from '@suite-common/device';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { type BluetoothDeviceId, TrezorPushNotificationType } from '@trezor/connect';
 
 import { bluetoothActions } from './bluetoothActions';
@@ -30,6 +30,10 @@ export type BluetoothState<T extends BluetoothDeviceCommon> = {
     };
 };
 
+type StorageLoadBluetoothAction<T extends BluetoothDeviceCommon> = PayloadAction<{
+    bluetooth?: { knownDevices?: T[] };
+}>;
+
 export const prepareInitialState = <T extends BluetoothDeviceCommon>(): BluetoothState<T> => ({
     adapterStatus: 'unknown',
     scanStatus: 'idle',
@@ -40,8 +44,10 @@ export const prepareInitialState = <T extends BluetoothDeviceCommon>(): Bluetoot
     isDeviceOsUnpairingRequired: null,
 });
 
+export type BluetoothReducerDeps = ActionTypesDep<'storageLoad'>;
+
 export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() =>
-    createReducerWithExtraDeps<BluetoothState<T>>(prepareInitialState<T>(), (builder, extra) =>
+    createReducerWithExtraDeps(prepareInitialState<T>(), (builder, extra: BluetoothReducerDeps) =>
         builder
             .addCase(bluetoothActions.adapterEventAction, (state, { payload: { status } }) => {
                 state.adapterStatus = status;
@@ -217,10 +223,10 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 },
             )
             .addMatcher(
-                action => action.type === extra.actionTypes.storageLoad,
-                (state, action: AnyAction) => {
-                    const loadedKnownDevices = (action.payload?.bluetooth?.knownDevices ??
-                        []) as T[];
+                (action: UnknownAction): action is StorageLoadBluetoothAction<T> =>
+                    action.type === extra.actionTypes.storageLoad,
+                (state, action) => {
+                    const loadedKnownDevices = action.payload?.bluetooth?.knownDevices ?? [];
 
                     state.knownDevices = loadedKnownDevices.map(
                         deserializeBluetoothDeviceSerialization,

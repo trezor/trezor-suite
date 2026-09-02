@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
-import { Tooltip } from '@trezor/components';
+import { Text, Tooltip } from '@trezor/components';
 
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
@@ -37,9 +37,11 @@ export const EarnStakingRateTooltip = ({ networkType, rate }: EarnStakingRateToo
             tooltipMaxWidth={280}
             placement="top"
         >
-            <Abbr>
-                <ApyValue apy={rate} />
-            </Abbr>
+            <Text typographyStyle="body-sm-strong" intent="neutral" priority="primary">
+                <Abbr>
+                    <ApyValue apy={rate} />
+                </Abbr>
+            </Text>
         </Tooltip>
     );
 };

@@ -1,13 +1,19 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+
+import { type SelectedAccountRootState } from '@suite/account';
 import { metadataActions } from '@suite/metadata';
 import {
+    type RouterRootState,
     routerLocationChange,
     selectRouteName,
     selectRouterApp,
     selectRouterParams,
 } from '@suite/router';
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    type DiscoveryRootState,
+    type WalletSettingsRootState,
     accountsActions,
     blockchainActions,
     discoveryActions,
@@ -20,11 +26,21 @@ import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wal
 import { isChanged } from '@trezor/utils';
 
 import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
-import { type Action, type AppState, type Dispatch, type GetState } from 'src/types/suite';
+import { type AccountSearchState } from 'src/reducers/wallet/accountSearchReducer';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
+type SelectedAccountState = DeviceRootState &
+    DiscoveryRootState &
+    RouterRootState &
+    SelectedAccountRootState &
+    WalletSettingsRootState & {
+        wallet: {
+            accountSearch: AccountSearchState;
+        };
+    };
+
 // move to selector!!!!
-export const getAccountState = (state: AppState): SelectedAccountStatus => {
+export const getAccountState = (state: SelectedAccountState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
 
     // waiting for device
@@ -161,7 +177,7 @@ export const getAccountState = (state: AppState): SelectedAccountStatus => {
 
 // list of all actions which has influence on "selectedAccount" reducer
 // other actions will be ignored
-const actions = new Set<Action['type']>([
+const actions = new Set<UnknownAction['type']>([
     routerLocationChange.type,
     deviceActions.selectDevice.type,
     deviceActions.updateSelectedDevice.type,
@@ -182,59 +198,64 @@ const actions = new Set<Action['type']>([
 /*
  * Called from WalletMiddleware
  */
-export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getState: GetState) => {
-    // ignore not listed actions
-    if (!actions.has(action.type)) return;
-    const state = getState();
-    // ignore if not in wallet or in global trading routes (buy, sell, exchange, redirect)
-    if (selectRouterApp(state) !== 'wallet') {
-        return;
-    }
+type SyncSelectedAccountThunkState = SelectedAccountState;
 
-    const routeName = selectRouteName(state);
-
-    if (
-        routeName?.startsWith('wallet-trading-buy') ||
-        routeName?.startsWith('wallet-trading-sell') ||
-        routeName?.startsWith('wallet-trading-exchange') ||
-        routeName === 'wallet-trading-redirect'
-    ) {
-        return;
-    }
-
-    // get new state
-    const newState = getAccountState(state);
-    if (!newState) return;
-
-    // find differences
-    const stateChanged = isChanged(state.wallet.selectedAccount, newState, {
-        account: [
-            'descriptor',
-            'availableBalance',
-            'misc',
-            'marker',
-            'tokens',
-            'metadata',
-            'addresses',
-            'visible',
-            'utxo',
-            'status',
-            'syncing',
-        ],
-    });
-
-    if (stateChanged) {
-        dispatch(accountsActions.updateSelectedAccount(newState));
-
-        // reset filter if user selects a different coin
-        const coinFilter = state.wallet.accountSearch?.coinFilter;
-        if (
-            coinFilter?.length !== 0 &&
-            newState.status !== 'none' &&
-            newState.network &&
-            !coinFilter.includes(newState.network.symbol)
-        ) {
-            dispatch(accountSearchActions.setCoinFilter([]));
+export const syncSelectedAccount =
+    (action: UnknownAction) =>
+    (dispatch: Dispatch<UnknownAction>, getState: () => SyncSelectedAccountThunkState) => {
+        // ignore not listed actions
+        if (!actions.has(action.type)) return;
+        // eslint-disable-next-line no-restricted-syntax -- This middleware thunk intentionally compares one state snapshot.
+        const state = getState();
+        // ignore if not in wallet or in global trading routes (buy, sell, exchange, redirect)
+        if (selectRouterApp(state) !== 'wallet') {
+            return;
         }
-    }
-};
+
+        const routeName = selectRouteName(state);
+
+        if (
+            routeName?.startsWith('wallet-trading-buy') ||
+            routeName?.startsWith('wallet-trading-sell') ||
+            routeName?.startsWith('wallet-trading-exchange') ||
+            routeName === 'wallet-trading-redirect'
+        ) {
+            return;
+        }
+
+        // get new state
+        const newState = getAccountState(state);
+        if (!newState) return;
+
+        // find differences
+        const stateChanged = isChanged(state.wallet.selectedAccount, newState, {
+            account: [
+                'descriptor',
+                'availableBalance',
+                'misc',
+                'marker',
+                'tokens',
+                'metadata',
+                'addresses',
+                'visible',
+                'utxo',
+                'status',
+                'syncing',
+            ],
+        });
+
+        if (stateChanged) {
+            dispatch(accountsActions.updateSelectedAccount(newState));
+
+            // reset filter if user selects a different coin
+            const coinFilter = state.wallet.accountSearch?.coinFilter;
+            if (
+                coinFilter?.length !== 0 &&
+                newState.status !== 'none' &&
+                newState.network &&
+                !coinFilter.includes(newState.network.symbol)
+            ) {
+                dispatch(accountSearchActions.setCoinFilter([]));
+            }
+        }
+    };

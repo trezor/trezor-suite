@@ -1,0 +1,36 @@
+import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+
+import { CopyableText, type CopyableTextProps } from './CopyableText';
+
+const mockCopyToClipboard = jest.fn();
+
+jest.mock('@suite-native/clipboard', () => ({
+    useCopyToClipboard: () => mockCopyToClipboard,
+}));
+
+describe('CopyableText', () => {
+    const renderCopyableText = async (props: Partial<CopyableTextProps>) =>
+        await renderWithBasicProvider(<CopyableText text="TEST TEXT" {...props} />);
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should render title, text and copy button', async () => {
+        const { getByText, getByLabelText } = await renderCopyableText({
+            title: 'Title',
+        });
+
+        expect(getByText('TEST TEXT')).toBeOnTheScreen();
+        expect(getByText('Title')).toBeOnTheScreen();
+        expect(getByLabelText('Copy to clipboard')).toBeOnTheScreen();
+    });
+
+    it('should handle copy to clipboard press', async () => {
+        const { getByLabelText } = await renderCopyableText({});
+
+        await fireEvent.press(getByLabelText('Copy to clipboard'));
+
+        expect(mockCopyToClipboard).toHaveBeenCalledWith('TEST TEXT');
+    });
+});

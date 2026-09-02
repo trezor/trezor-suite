@@ -1,0 +1,161 @@
+import { Text } from 'react-native';
+
+import type { CryptoId, ExchangeTrade } from 'invity-api';
+
+import { UINT256_MAX } from '@suite-common/suite-constants';
+import { renderWithBasicProvider, screen } from '@suite-native/test-utils';
+
+import { ExchangeFormQuoteDebugView } from './ExchangeFormQuoteDebugView';
+
+const USDC_CONTRACT_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const USDC_CRYPTO_ID = `ethereum--${USDC_CONTRACT_ADDRESS}` as CryptoId;
+
+let mockQuote: ExchangeTrade | undefined;
+let mockDebugMode: boolean;
+let mockSendAccount:
+    | {
+          tokens?: {
+              contract: string;
+              decimals: number;
+          }[];
+      }
+    | undefined;
+
+jest.mock('@suite-native/forms', () => ({
+    ...jest.requireActual('@suite-native/forms'),
+    useWatch: () => [mockQuote, mockSendAccount],
+}));
+
+jest.mock('../../hooks/exchange/useExchangeFormContext', () => ({
+    useExchangeFormContext: () => ({
+        control: undefined,
+    }),
+}));
+
+jest.mock('@suite-native/trading-debug', () => {
+    const original = jest.requireActual('@suite-native/trading-debug');
+
+    return {
+        ...original,
+        DebugModeView: ({ children }: { children: React.ReactNode }) =>
+            mockDebugMode ? children : null,
+    };
+});
+
+jest.mock('./ExchangeUsdcPresetButton', () => ({
+    ExchangeUsdcPresetButton: () => <Text>PRESET BUTTON MOCK</Text>,
+}));
+
+describe('ExchangeFormQuoteDebugView', () => {
+    const renderDebugView = async () =>
+        await renderWithBasicProvider(<ExchangeFormQuoteDebugView />);
+
+    beforeEach(() => {
+        mockQuote = undefined;
+        mockSendAccount = undefined;
+        mockDebugMode = false;
+    });
+
+    it('should render nothing when debug mode is disabled', async () => {
+        mockDebugMode = false;
+        mockQuote = {
+            send: 'ethereum' as CryptoId,
+            receive: 'bitcoin' as CryptoId,
+            exchange: 'test-provider',
+            isDex: false,
+        };
+
+        const { toJSON } = await renderDebugView();
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should render approval status "none" when no quote is selected', async () => {
+        mockDebugMode = true;
+        mockQuote = undefined;
+
+        await renderDebugView();
+
+        expect(screen.getByText('Approval status')).toBeOnTheScreen();
+        expect(screen.getByText('none')).toBeOnTheScreen();
+    });
+
+    it('should render "not defined" for pre-approved amount when no quote is selected', async () => {
+        mockDebugMode = true;
+        mockQuote = undefined;
+
+        await renderDebugView();
+
+        expect(screen.getByText('Pre-approved')).toBeOnTheScreen();
+        expect(screen.getByText('not defined')).toBeOnTheScreen();
+    });
+
+    it('should render approval status "not_needed" for a non-DEX quote', async () => {
+        mockDebugMode = true;
+        mockQuote = {
+            send: USDC_CRYPTO_ID,
+            receive: 'bitcoin' as CryptoId,
+            exchange: 'mercuryo',
+            isDex: false,
+        };
+
+        await renderDebugView();
+
+        expect(screen.getByText('not_needed')).toBeOnTheScreen();
+    });
+
+    it('should render approval status "needs_approval" for a DEX quote without pre-approval', async () => {
+        mockDebugMode = true;
+        mockQuote = {
+            send: USDC_CRYPTO_ID,
+            receive: 'bitcoin' as CryptoId,
+            exchange: 'invity',
+            isDex: true,
+        };
+
+        await renderDebugView();
+
+        expect(screen.getByText('needs_approval')).toBeOnTheScreen();
+    });
+
+    it('should display "unlimited" for pre-approved amount when preapprovedStringAmount is max uint256', async () => {
+        mockDebugMode = true;
+        mockSendAccount = {
+            tokens: [
+                {
+                    contract: USDC_CONTRACT_ADDRESS,
+                    decimals: 6,
+                },
+            ],
+        };
+        mockQuote = {
+            send: USDC_CRYPTO_ID,
+            receive: 'bitcoin' as CryptoId,
+            exchange: 'invity',
+            isDex: true,
+            preapprovedStringAmount: UINT256_MAX,
+        };
+
+        await renderDebugView();
+
+        expect(screen.getByText('Pre-approved')).toBeOnTheScreen();
+        expect(screen.getByText('unlimited')).toBeOnTheScreen();
+    });
+
+    it('should display the specific amount for pre-approved amount when preapprovedStringAmount is not max uint256', async () => {
+        mockDebugMode = true;
+        const specificAmount = '1000000000000000000';
+        mockQuote = {
+            send: USDC_CRYPTO_ID,
+            receive: 'bitcoin' as CryptoId,
+            exchange: 'invity',
+            isDex: true,
+            preapprovedStringAmount: specificAmount,
+        };
+
+        await renderDebugView();
+
+        expect(screen.getByText('Pre-approved')).toBeOnTheScreen();
+        expect(screen.getByText(specificAmount)).toBeOnTheScreen();
+    });
+});

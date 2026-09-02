@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -47,7 +48,7 @@ import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 

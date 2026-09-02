@@ -1,16 +1,15 @@
 /**
  * Bridge runner
  */
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { type InvokeResult } from '@trezor/suite-desktop-api';
 import { type TrezordNode } from '@trezor/transport-bridge';
 import { scheduleAction } from '@trezor/utils';
 
+import { ipcMain } from '../ipcMain';
+import type { Dependencies } from './module';
 import { hasSwitch } from '../libs/process-switches';
 import { ThreadProxy } from '../libs/thread-proxy';
 import { b2t } from '../libs/utils';
-import { ipcMain } from '../typed-electron';
-import type { Dependencies } from './module';
 
 // bridge node is intended for internal testing
 const bridgeTest = hasSwitch('bridge-test');
@@ -180,27 +179,20 @@ export const initBackground = ({
 };
 
 export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies) => {
-    ipcMain.handle(
-        'bridge/change-settings',
-        (ipcEvent, payload: { doNotStartOnStartup: boolean }) => {
-            validateIpcMessage({ ipcEvent });
+    ipcMain.handle('bridge/change-settings', (_, payload: { doNotStartOnStartup: boolean }) => {
+        try {
+            store.setBridgeSettings(payload);
 
-            try {
-                store.setBridgeSettings(payload);
+            return { success: true };
+        } catch (error) {
+            return { success: false, error };
+        } finally {
+            const newSettings = store.getBridgeSettings();
+            mainWindowProxy?.getInstance()?.webContents.send('bridge/settings', newSettings);
+        }
+    });
 
-                return { success: true };
-            } catch (error) {
-                return { success: false, error };
-            } finally {
-                const newSettings = store.getBridgeSettings();
-                mainWindowProxy?.getInstance()?.webContents.send('bridge/settings', newSettings);
-            }
-        },
-    );
-
-    ipcMain.handle('bridge/get-settings', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('bridge/get-settings', () => {
         try {
             return { success: true, payload: store.getBridgeSettings() };
         } catch (error) {
@@ -225,9 +217,7 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies
         }
     };
 
-    ipcMain.handle('bridge/toggle', async ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('bridge/toggle', async () => {
         // turning bridge on and off disables watchdog. this watchdog handles quite an edge-case anyway so trying to reconcile both functionalities
         if (watchInterval) {
             clearInterval(watchInterval);
@@ -236,9 +226,7 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies
         return await toggleBridge();
     });
 
-    ipcMain.handle('bridge/get-status', async ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('bridge/get-status', async () => {
         try {
             const status = await bridge.status();
 

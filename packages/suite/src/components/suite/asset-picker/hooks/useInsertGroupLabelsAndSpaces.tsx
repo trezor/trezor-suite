@@ -1,26 +1,12 @@
-import { type ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { AccountLabel } from '@suite/account';
 import { type Account } from '@suite-common/wallet-types';
 
-import { ASSET_ROW_GROUP_LABEL_HEIGHT, ASSET_ROW_HEIGHTS_BY_SIZE } from '../constants';
-import { type AccountWithTokensOption, type AssetGroupSpaceSize } from '../types';
-
-export type AssetPickerListItem =
-    | AccountWithTokensOption
-    | {
-          type: 'group-label';
-          label: ReactNode;
-          height: number;
-      }
-    | {
-          type: 'group-space';
-          height: number;
-          size: AssetGroupSpaceSize;
-      };
+import { type AssetPickerListItem, type AssetPickerOption } from '../types';
 
 export function useInsertGroupLabelsAndSpaces(
-    accountsWithTokens: AccountWithTokensOption[],
+    accountsWithTokens: AssetPickerOption[],
 ): AssetPickerListItem[] {
     return useMemo(() => {
         const list: AssetPickerListItem[] = [];
@@ -30,17 +16,12 @@ export function useInsertGroupLabelsAndSpaces(
             // New account -> insert group label and some group padding
             if (currentAccount !== item.account) {
                 if (currentAccount) {
-                    list.push({
-                        type: 'group-space',
-                        height: ASSET_ROW_HEIGHTS_BY_SIZE['md'],
-                        size: 'md',
-                    });
+                    list.push({ type: 'group-space', size: 'md' });
                 }
 
                 list.push({
                     type: 'group-label',
                     label: <AccountLabel account={item.account} showAccountTypeBadge={true} />,
-                    height: ASSET_ROW_GROUP_LABEL_HEIGHT,
                 });
 
                 currentAccount = item.account;

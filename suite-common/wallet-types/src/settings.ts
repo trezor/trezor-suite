@@ -17,10 +17,12 @@ export const WalletType = {
 
 export type WalletType = (typeof WalletType)[keyof typeof WalletType];
 
+export type SuspiciousTransactionsFilter = 'showAll' | 'hideSuspicious' | 'showUnblurred';
+
 export interface WalletSettings {
     localCurrency: BaseCurrencyCode;
     enabledNetworks: NetworkSymbol[];
-    hideSuspiciousTransactions: boolean;
+    suspiciousTransactionsFilter: Partial<Record<NetworkSymbol, SuspiciousTransactionsFilter>>;
     bitcoinAmountUnit: PROTO.AmountUnit;
     mevProtection: boolean;
     networkReserve: boolean;

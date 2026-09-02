@@ -3,11 +3,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 export type TransactionCreatedEventAction =
-    | 'sent'
-    | 'copied'
-    | 'downloaded'
-    | 'replaced'
-    | 'canceled';
+    'sent' | 'copied' | 'downloaded' | 'replaced' | 'canceled';
 
 type Attributes = {
     action: AttributeDef<TransactionCreatedEventAction>;

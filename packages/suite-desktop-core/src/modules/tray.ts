@@ -5,11 +5,12 @@ import { Menu, Tray } from 'electron';
 import path from 'path';
 
 import { DEVICE, type DeviceEvent } from '@trezor/connect';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { type Status, type TraySettings } from '@trezor/suite-desktop-api';
 
-import { app, ipcMain } from '../typed-electron';
+import { ipcMain } from '../ipcMain';
+import { app } from '../typed-electron';
 import { type ModuleInitBackground, mainThreadEmitter } from './module';
+import { APP_NAME_BARE } from '../libs/constants';
 
 export const SERVICE_NAME = 'tray';
 
@@ -51,7 +52,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
                 getPlatformIcon(),
             );
             tray = new Tray(iconPath);
-            tray.setToolTip('Trezor Suite');
+            tray.setToolTip(APP_NAME_BARE);
         }
         const contextMenu = Menu.buildFromTemplate([
             {
@@ -71,7 +72,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
                 type: 'separator',
             },
             {
-                label: 'Launch Trezor Suite',
+                label: `Launch ${APP_NAME_BARE}`,
                 click: () => mainThreadEmitter.emit('app/show'),
             },
             {
@@ -111,14 +112,14 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
             state.devices += 1;
             tray?.displayBalloon({
                 iconType: 'info',
-                title: 'Trezor Suite',
+                title: APP_NAME_BARE,
                 content: `Device ${event.payload.name} connected`,
             });
         } else if (event.type === DEVICE.DISCONNECT && state.devices > 0) {
             state.devices -= 1;
             tray?.displayBalloon({
                 iconType: 'info',
-                title: 'Trezor Suite',
+                title: APP_NAME_BARE,
                 content: `Device ${event.payload.name} disconnected`,
             });
         }
@@ -130,9 +131,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
         renderTray();
     });
 
-    ipcMain.handle('tray/change-settings', (ipcEvent, updatedSettings: TraySettings) => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('tray/change-settings', (_, updatedSettings: TraySettings) => {
         try {
             store.setTraySettings({
                 ...store.getTraySettings(),
@@ -147,9 +146,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
         }
     });
 
-    ipcMain.handle('tray/get-settings', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('tray/get-settings', () => {
         try {
             return { success: true, payload: store.getTraySettings() };
         } catch (error) {

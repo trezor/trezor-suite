@@ -1,5 +1,5 @@
 {
-    "required": false,
+    "required": true,
     "version": [2, 5, 3],
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],

@@ -4,9 +4,10 @@ import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
-import { useDispatch, usePreferredModal, useSelector } from 'src/hooks/suite';
+import { usePreferredModal, useSelector } from 'src/hooks/suite';
 import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 
 export const SwitchDeviceLayer = () => {

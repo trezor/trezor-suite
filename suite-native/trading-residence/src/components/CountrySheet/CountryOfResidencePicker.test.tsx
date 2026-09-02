@@ -1,0 +1,222 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { useCountryFilteredData } from '@suite-common/trading';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { Form, useForm } from '@suite-native/forms';
+import { getTranslation, localeReducer } from '@suite-native/intl';
+import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
+import {
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+    screen,
+    userEvent,
+} from '@suite-native/test-utils-store';
+import { residenceReducer } from '@suite-native/trading-state';
+
+import {
+    CountryOfResidencePicker,
+    type CountryOfResidencePickerProps,
+} from './CountryOfResidencePicker';
+import { useLocationForm } from '../../hooks/useLocationForm';
+import { type TradingLocationFormValues } from '../../types/tradingLocationForm';
+import { locationFormValidationSchema } from '../../utils/locationFormValidationSchema';
+
+let mockUseCountryFilteredData: jest.Mock;
+
+const reportMock = jest.fn();
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
+};
+
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
+    useCountryFilteredData: jest.fn(),
+}));
+
+describe('CountryOfResidencePicker', () => {
+    const createTradingResidenceStore = () =>
+        createLightStore({
+            reducer: {
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    trading: combineReducers({
+                        residence: residenceReducer,
+                    }),
+                }),
+            },
+        });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        const { nonSanctionedRegional } = jest.requireActual('@suite-common/trading');
+
+        mockUseCountryFilteredData = jest.fn(() => ({
+            filteredData: nonSanctionedRegional.countriesOptions,
+            filterValue: '',
+            setFilterValue: jest.fn(),
+        }));
+
+        (useCountryFilteredData as jest.Mock).mockImplementation(mockUseCountryFilteredData);
+    });
+
+    afterEach(async () => {
+        // make sure component is unmounted (FlashList otherwise might try to do some magic)
+        await screen.unmount();
+    });
+
+    const renderCountryOfResidencePicker = async (
+        props: Partial<CountryOfResidencePickerProps> = {},
+    ) => {
+        const { result } = await renderHookWithStoreProvider(() => useLocationForm(), {
+            services,
+            store: createTradingResidenceStore(),
+        });
+
+        return await renderWithBasicProvider(
+            <CountryOfResidencePicker testID="TEST_ID" context="settings" {...props} />,
+            {
+                services,
+                wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
+            },
+        );
+    };
+
+    it('should display value from expo-localization (Poland) when in default state', async () => {
+        const { getByLabelText } = await renderCountryOfResidencePicker();
+
+        expect(
+            getByLabelText(
+                getTranslation('tradingResidence.locationSettings.selectedCountryOfResidence'),
+            ),
+        ).toHaveTextContent('POL');
+    });
+
+    it('should allow to select country', async () => {
+        const { getByText, getByLabelText } = await renderCountryOfResidencePicker();
+
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
+        await userEvent.press(getByText(/Algeria/));
+
+        expect(
+            getByLabelText(
+                getTranslation('tradingResidence.locationSettings.selectedCountryOfResidence'),
+            ),
+        ).toHaveTextContent('DZA');
+    });
+
+    it('should clear selected subdivision when country changes', async () => {
+        const form = await renderHookWithBasicProvider(
+            () =>
+                useForm<TradingLocationFormValues>({
+                    defaultValues: {
+                        country: {
+                            value: 'US',
+                            label: '🇺🇸 United States',
+                            shortLabel: '🇺🇸 USA',
+                            codeAlpha3: 'USA',
+                            flag: '🇺🇸',
+                            name: 'United States',
+                        },
+                        countrySubdivision: {
+                            value: 'CA',
+                            label: 'California',
+                            name: 'California',
+                        },
+                    },
+                    validation: locationFormValidationSchema,
+                }),
+            { services },
+        );
+
+        const { getByText } = await renderWithBasicProvider(
+            <CountryOfResidencePicker testID="TEST_ID" context="settings" />,
+            {
+                services,
+                wrapper: ({ children }) => <Form form={form.result.current}>{children}</Form>,
+            },
+        );
+
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
+        await userEvent.press(getByText(/Algeria/));
+
+        expect(form.result.current.getValues('countrySubdivision')).toBeUndefined();
+    });
+
+    it('should display empty component when filtered data is empty', async () => {
+        (useCountryFilteredData as jest.Mock).mockImplementation(() => ({
+            filteredData: [],
+            filterValue: 'test-key',
+            setFilterValue: jest.fn(),
+        }));
+
+        const { getByText } = await renderCountryOfResidencePicker();
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
+
+        expect(getByText(getTranslation('tradingResidence.countrySheet.emptyTitle'))).toBeTruthy();
+        expect(
+            getByText(getTranslation('tradingResidence.countrySheet.emptyDescription')),
+        ).toBeTruthy();
+    });
+
+    it('should report to analytics after country changed', async () => {
+        const { getByText } = await renderCountryOfResidencePicker();
+
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
+        await userEvent.press(getByText(/Algeria/));
+
+        expect(reportMock).toHaveBeenCalled();
+    });
+
+    it('should not report to analytics when user selects already selected country', async () => {
+        const { getByText } = await renderCountryOfResidencePicker();
+
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
+        await userEvent.press(getByText(/Algeria/));
+        reportMock.mockClear();
+
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
+        await userEvent.press(getByText(/Algeria/));
+
+        expect(reportMock).not.toHaveBeenCalled();
+    });
+
+    it('should render even when no value is selected', async () => {
+        const formWithoutCountrySet = await renderHookWithBasicProvider(
+            () => useForm<TradingLocationFormValues>({ validation: locationFormValidationSchema }),
+            { services },
+        );
+
+        const { getByLabelText } = await renderWithBasicProvider(
+            <CountryOfResidencePicker testID="TEST_ID" context="settings" />,
+            {
+                services,
+                wrapper: ({ children }) => (
+                    <Form form={formWithoutCountrySet.result.current}>{children}</Form>
+                ),
+            },
+        );
+
+        expect(
+            getByLabelText(
+                getTranslation('tradingResidence.locationSettings.noCountryOfResidence'),
+            ),
+        ).toHaveTextContent(getTranslation('tradingResidence.locationSettings.notSelected'));
+    });
+});

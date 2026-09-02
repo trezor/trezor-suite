@@ -801,6 +801,70 @@ export const getRbfParams = [
         result: undefined,
     },
     {
+        // A stranger's transfer out of the account is labelled 'sent' as well, but replacing it
+        // would re-sign at the stranger's nonce, so it must not be offered as replaceable.
+        description: 'ethereum tx signed by somebody else',
+        account: {
+            networkType: 'ethereum',
+            descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
+        },
+        tx: {
+            type: 'sent',
+            txid: '0xabcd',
+            rbf: true,
+            blockHeight: -1,
+            ethereumSpecific: { nonce: 45, gasLimit: 21000, gasPrice: '1000000000' },
+            details: {
+                vin: [{ addresses: ['0x0F6666bC699aec39b846E898473e9CAec5a6b821'] }],
+                vout: [{ isAddress: true, addresses: ['0xdead'] }],
+            },
+        },
+        result: undefined,
+    },
+    {
+        description: 'ethereum tx signed by the account itself',
+        account: {
+            networkType: 'ethereum',
+            symbol: 'eth',
+            descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
+        },
+        tx: {
+            type: 'sent',
+            txid: '0xbeef',
+            rbf: true,
+            blockHeight: -1,
+            ethereumSpecific: { nonce: 45, gasLimit: 21000, gasPrice: '1000000000' },
+            details: {
+                // Lower-cased, as blockbook may report it — authorship must still match.
+                vin: [{ addresses: ['0x37567e60ab231b7d7f26b5b34fdd719098e4ee1b'] }],
+                vout: [
+                    {
+                        isAddress: true,
+                        addresses: ['0xfAEEEB8Fd7D41a6a8223DD36D347DBe56c13fe61'],
+                        value: '1000000000000000000',
+                    },
+                ],
+            },
+        },
+        result: {
+            type: 'ethereum',
+            txid: '0xbeef',
+            outputs: [
+                {
+                    type: 'payment',
+                    address: '0xfAEEEB8Fd7D41a6a8223DD36D347DBe56c13fe61',
+                    amount: '1000000000000000000',
+                    formattedAmount: '1',
+                },
+            ],
+            ethereumNonce: 45,
+            transactionData: '',
+            gasPrice: '1',
+            maxFeePerGas: '',
+            maxPriorityFeePerGas: '',
+        },
+    },
+    {
         description: 'invalid tx (rbf false)',
         account: { networkType: 'bitcoin' },
         tx: { type: 'sent', rbf: false },

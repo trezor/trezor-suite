@@ -1,7 +1,11 @@
-import { current, isAnyOf } from '@reduxjs/toolkit';
+import { type ActionCreatorWithPreparedPayload, current, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { networks } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
@@ -50,6 +54,7 @@ const update = (state: Account[], account: Account) => {
     const prev = state[accountIndex];
 
     if (prev) {
+        const prevUnwrapped = current(prev);
         const next: Account = {
             ...account,
             // remove "transactions" field, they are stored in "transactionReducer"
@@ -61,10 +66,24 @@ const update = (state: Account[], account: Account) => {
             delete next.marker;
         }
 
+        // Locally tracked tokens must survive an update built from an older account snapshot
+        // (e.g. a concurrent sync). A wrapped-native (WETH) balance exists only as a local entry:
+        // wrapping emits no ERC-20 Transfer, so the backend never reports the token on its own.
+        if (next.networkType === 'ethereum' && prevUnwrapped.tokens?.length) {
+            const nextContracts = new Set(next.tokens?.map(token => token.contract.toLowerCase()));
+            const locallyTrackedTokens = prevUnwrapped.tokens.filter(
+                token => !nextContracts.has(token.contract.toLowerCase()),
+            );
+
+            if (locallyTrackedTokens.length > 0) {
+                next.tokens = (next.tokens ?? []).concat(locallyTrackedTokens);
+            }
+        }
+
         // Skip the write when nothing changed, so the entity reference (and the components subscribed
         // to it) stay stable. current() unwraps the immer draft, otherwise reads of nested fields
         // return proxies and the reference compare would never match.
-        if (isUnchangedAccount(current(prev), next)) return;
+        if (isUnchangedAccount(prevUnwrapped, next)) return;
 
         state[accountIndex] = next;
     } else {
@@ -92,9 +111,16 @@ const setMetadata = (state: Account[], account: Account) => {
     state[index].metadata = account.metadata;
 };
 
+export type AccountsReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadAccounts'> & {
+        actions: {
+            setAccountAddMetadata: ActionCreatorWithPreparedPayload<[Account], Account>;
+        };
+    };
+
 export const prepareAccountsReducer = createReducerWithExtraDeps(
     accountsInitialState,
-    (builder, extra) => {
+    (builder, extra: AccountsReducerDeps) => {
         builder
             .addCase(accountsActions.removeAccount, (state, action) => {
                 remove(state, action.payload);
@@ -129,6 +155,13 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             })
             .addCase(accountsActions.updateAccount, (state, action) => {
                 update(state, action.payload);
+            })
+            .addCase(accountsActions.addAccountTokens, (state, action) => {
+                const { accountKey, tokens } = action.payload;
+                const accountByAccountKey = state.find(account => account.key === accountKey);
+                if (accountByAccountKey) {
+                    accountByAccountKey.tokens = (accountByAccountKey.tokens ?? []).concat(tokens);
+                }
             })
             .addCase(accountsActions.renameAccount, (state, action) => {
                 const { accountKey, accountLabel } = action.payload;

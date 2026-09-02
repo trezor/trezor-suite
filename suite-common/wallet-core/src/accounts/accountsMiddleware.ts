@@ -1,28 +1,32 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
 import { accountsActions } from './accountsActions';
+import {
+    type AccountsRefreshTimeRootState,
+    isAccountStaleSelector,
+} from './accountsRefreshTimeReducer';
 import { fetchAndUpdateAccountThunk } from './accountsThunks';
 
-export const prepareAccountsMiddleware = createMiddlewareWithExtraDeps(
-    (action, { dispatch, next, extra }) => {
-        // propagate action to reducers (the accountsRefreshTime slice records the refresh timestamp
-        // off the account entity, reacting to createAccount/updateAccount/removeAccount)
-        next(action);
+type AccountsMiddlewareState = AccountsRefreshTimeRootState;
 
-        if (
-            accountsActions.updateSelectedAccount.match(action) &&
-            action.payload.status === 'loaded'
-        ) {
-            const accountKey = action.payload.account.key;
+export const prepareAccountsMiddleware = createMiddlewareWithExtraDeps<
+    void,
+    UnknownAction,
+    AccountsMiddlewareState
+>((action, { dispatch, next, getState }) => {
+    // propagate action to reducers (the accountsRefreshTime slice records the refresh timestamp
+    // off the account entity, reacting to createAccount/updateAccount/removeAccount)
+    next(action);
 
-            // Refresh the selected account on enter, throttled to once per interval per account.
-            // canRun reads the timestamp from the store, so this no longer mutates (and re-renders)
-            // the account every time.
-            if (extra.services.accountRefreshThrottle.canRun(accountKey)) {
-                dispatch(fetchAndUpdateAccountThunk({ accountKey }));
-            }
+    if (accountsActions.updateSelectedAccount.match(action) && action.payload.status === 'loaded') {
+        const accountKey = action.payload.account.key;
+
+        if (isAccountStaleSelector(getState(), accountKey)) {
+            dispatch(fetchAndUpdateAccountThunk({ accountKey }));
         }
+    }
 
-        return action;
-    },
-);
+    return action;
+});

@@ -3,6 +3,7 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getNetworksWithNativeTokenReserve } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
 import { Column, Switch } from '@trezor/components';
@@ -14,7 +15,7 @@ import {
 } from '@trezor/product-components';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const NetworkReserve = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -44,12 +45,7 @@ export const NetworkReserve = () => {
                 >
                     <TextColumn
                         title={<Translation id="TR_NETWORK_RESERVE" />}
-                        description={
-                            <Translation
-                                id="TR_NETWORK_RESERVE_DESCRIPTION"
-                                values={{ supportedNetworks }}
-                            />
-                        }
+                        description={<Translation id="TR_NETWORK_RESERVE_DESCRIPTION" />}
                         bottomContent={
                             <Column gap={8} alignItems="flex-start">
                                 <SettingsRequirementBanner>

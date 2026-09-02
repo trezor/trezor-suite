@@ -29,7 +29,7 @@ export const useMessageSystemStaking = ({
     const stake = isStaking ? Feature.stake[key] : undefined;
     const unstake = isStaking ? Feature.unstake[key] : undefined;
     const claim = isStaking ? Feature.claim[key] : undefined;
-    const vote = isStaking && key === 'trx' ? Feature.vote[key] : undefined;
+    const vote = isStaking && (key === 'trx' || key === 'ada') ? Feature.vote[key] : undefined;
     const withdraw = isStaking && key === 'trx' ? Feature.withdraw[key] : undefined;
 
     const isStakingDisabled = useSelector((state: MessageSystemRootState) =>

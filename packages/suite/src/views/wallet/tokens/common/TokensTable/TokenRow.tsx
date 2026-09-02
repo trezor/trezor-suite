@@ -13,6 +13,7 @@ import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
+import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
 import {
     BaseCurrencyValue,
     FormattedCryptoAmount,
@@ -24,6 +25,7 @@ import { useSelector } from 'src/hooks/suite';
 
 import { BlurUrls } from '../BlurUrls';
 import { TokenRowActions } from './TokenRowActions';
+import { useTokenYieldBadge } from './hooks/useTokenYieldBadge';
 import type { TokensTableType } from './types';
 
 type TokenRowProps = {
@@ -53,6 +55,13 @@ export const TokenRow = ({
     const isTokenKnown = useSelector(state =>
         selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
     );
+    const yieldBadge = useTokenYieldBadge({
+        networkSymbol: account.symbol,
+        token,
+        accountTokens: account.tokens,
+        type,
+        yieldOpportunities,
+    });
 
     const [showDeactivateModal, setShowDeactivateModal] = useState(false);
 
@@ -62,7 +71,7 @@ export const TokenRow = ({
 
     return (
         <>
-            <Table.Row isCollapsed={isCollapsed}>
+            <Table.Row isCollapsed={isCollapsed} data-testid={`@token-row/${token.symbol}`}>
                 <Table.Cell>
                     <Row gap={8}>
                         <TokenIcon
@@ -73,6 +82,17 @@ export const TokenRow = ({
                             shouldTryToFetch={isTokenKnown}
                         />
                         {isTokenKnown ? token.name : <BlurUrls text={token.name} />}
+                        {yieldBadge && (
+                            <YieldBadge
+                                apy={yieldBadge.apy}
+                                variant={yieldBadge.hasVaultPosition ? 'active' : 'inactive'}
+                                account={account}
+                                vaultId={yieldBadge.vaultId}
+                                analyticsFrom={
+                                    type === 'defi' ? 'account-defi-tokens' : 'account-tokens'
+                                }
+                            />
+                        )}
                     </Row>
                 </Table.Cell>
 

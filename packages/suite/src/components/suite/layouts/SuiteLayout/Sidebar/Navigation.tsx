@@ -1,16 +1,22 @@
-import { type FC, useCallback, useMemo } from 'react';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { selectIsInitialRun } from '@suite/flags';
-import { type Route } from '@suite/router';
+import {
+    NewContentIndicatorId,
+    markNewContentIndicatorAsSeen,
+    selectIsInitialRun,
+    selectIsNewContentIndicatorVisible,
+} from '@suite/flags';
+import { type Route, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
+import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-import { isTransactionNotification } from 'src/utils/suite/notification';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 
@@ -26,20 +32,33 @@ type NavigationProps = {
     children?: React.ReactNode;
 };
 
+const newContentIndicatorIntro = { hasPlayed: false };
+
 export const Navigation = ({ children }: NavigationProps) => {
     const { isSidebarCollapsed } = useResponsiveContext();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const dispatch = useDispatch();
 
     const isInitialRun = useSelector(selectIsInitialRun);
     const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
 
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
 
-    const hasUnseenNotifications = useSelector(state =>
-        state.notifications.some(
-            notification => !notification.seen && isTransactionNotification(notification),
-        ),
+    const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
+    const isActivityNewContentIndicatorVisible = useSelector(
+        selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8),
     );
+    const isEarnNewContentIndicatorVisible = useSelector(
+        selectIsNewContentIndicatorVisible(NewContentIndicatorId.Earn26_8),
+    );
+    const [shouldAnimateNewContentIndicators] = useState(() => !newContentIndicatorIntro.hasPlayed);
+
+    useEffect(() => {
+        newContentIndicatorIntro.hasPlayed = true;
+    }, []);
+
+    const isActivityOpen = useSelector(selectRouteName) === 'notifications-index';
+    const hasActivityIndicator = hasUnseenNotifications && !isActivityOpen;
 
     const reportSwapNavigation = useCallback(() => {
         analytics.report({
@@ -51,6 +70,42 @@ export const Navigation = ({ children }: NavigationProps) => {
             },
         });
     }, [analytics]);
+
+    const handleActivityNavigation = useCallback(() => {
+        if (isActivityNewContentIndicatorVisible) {
+            if (!isSidebarCollapsed || !hasActivityIndicator) {
+                analytics.report({
+                    type: events.appNewContentBadgeEvent.name,
+                    payload: {
+                        badgeId: NewContentIndicatorId.Activity26_8,
+                        origin: 'nav',
+                    },
+                });
+            }
+
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
+        }
+    }, [
+        analytics,
+        dispatch,
+        hasActivityIndicator,
+        isActivityNewContentIndicatorVisible,
+        isSidebarCollapsed,
+    ]);
+
+    const handleEarnNavigation = useCallback(() => {
+        if (isEarnNewContentIndicatorVisible) {
+            analytics.report({
+                type: events.appNewContentBadgeEvent.name,
+                payload: {
+                    badgeId: NewContentIndicatorId.Earn26_8,
+                    origin: 'nav',
+                },
+            });
+
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Earn26_8));
+        }
+    }, [analytics, dispatch, isEarnNewContentIndicatorVisible]);
 
     const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> =
         useMemo(
@@ -76,12 +131,17 @@ export const Navigation = ({ children }: NavigationProps) => {
                               nameId: 'TR_EARN',
                               icon: PiggyBankIcon,
                               goToRoute: 'suite-earn',
+                              hasNewContentIndicator: isEarnNewContentIndicatorVisible,
+                              isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
+                              onClick: handleEarnNavigation,
                               shortcut: ['ALT', 'KEY_E'],
                               routes: [
                                   'suite-earn',
                                   'earn-yield-deposit',
                                   'earn-yield-withdraw',
                                   'earn-yield-claim',
+                                  'earn-yield-unwrap',
+                                  'earn-yield-wrap',
                                   'earn-tron',
                                   'earn-tron-stake',
                                   'earn-tron-vote',
@@ -97,7 +157,10 @@ export const Navigation = ({ children }: NavigationProps) => {
                     icon: BellIcon,
                     goToRoute: 'notifications-index',
                     routes: ['notifications-index'],
-                    hasIndicator: hasUnseenNotifications,
+                    hasIndicator: hasActivityIndicator,
+                    hasNewContentIndicator: isActivityNewContentIndicatorVisible,
+                    isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
+                    onClick: handleActivityNavigation,
                     'data-testid': '@suite/menu/notifications',
                     shortcut: ['ALT', 'KEY_I'],
                 },
@@ -110,7 +173,17 @@ export const Navigation = ({ children }: NavigationProps) => {
                     shortcut: ['MOD', 'COMMA'],
                 },
             ],
-            [startRoute, isBtcOnly, reportSwapNavigation, hasUnseenNotifications],
+            [
+                startRoute,
+                isBtcOnly,
+                reportSwapNavigation,
+                isEarnNewContentIndicatorVisible,
+                shouldAnimateNewContentIndicators,
+                handleEarnNavigation,
+                hasActivityIndicator,
+                isActivityNewContentIndicatorVisible,
+                handleActivityNavigation,
+            ],
         );
 
     return (

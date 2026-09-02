@@ -7,11 +7,12 @@ import {
     selectSelectedDevice,
     selectSelectedDeviceLabelOrName,
 } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { PrerequisitesGuide } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type StepCheckSeedProps = {
     deviceWillBeWiped: boolean;

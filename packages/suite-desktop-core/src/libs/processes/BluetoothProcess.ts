@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isWindows } from '@trezor/env-utils';
 
@@ -7,24 +9,32 @@ import { getSwitchValue } from '../process-switches';
 export class BluetoothProcess extends BaseProcess {
     private readonly port;
     private readonly debug;
+    private readonly token;
 
     constructor(port = 21327) {
         const debug = isDevEnv || getSwitchValue('log-level') === 'debug';
+        const token = randomBytes(32).toString('hex');
 
         super('bluetooth', 'trezor-bluetooth', {
             autoRestart: 0,
             env: {
                 TREZOR_BLUETOOTH_PORT: port.toString(),
+                TREZOR_BLUETOOTH_AUTH_TOKEN: token,
             },
             stdio: debug && !isWindows() ? 'inherit' : undefined,
         });
 
         this.port = port;
         this.debug = debug;
+        this.token = token;
     }
 
     getUrl() {
         return `http://localhost:${this.port}/`;
+    }
+
+    getToken() {
+        return this.token;
     }
 
     async status(): Promise<Status> {

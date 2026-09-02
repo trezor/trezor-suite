@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { switchToDuplicatedWallet } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';

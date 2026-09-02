@@ -20,7 +20,7 @@
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
-            "path": "../../suite-common/test-utils"
+            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/wallet-core"

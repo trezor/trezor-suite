@@ -4,6 +4,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_AMOUNT_FIELDS,
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_OUTPUT_MAX,
@@ -12,26 +13,27 @@ import {
     type TradingFiatRatesReturn,
     mapFiatCurrencyCodeToBaseCurrencyCode,
 } from '@suite-common/trading';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
-
 import {
-    type TradingSellExchangeFormProps,
-    type TradingUseFormActionsProps,
-} from 'src/types/trading/tradingForm';
+    type Account,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
+import { type FeeLevel } from '@trezor/connect';
+
+import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
+import { type AmountLimitProps } from 'src/utils/suite/validation';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
-// TODO: own props interface instead of Pick from the deleted useTradingFormActions; base type, not union
-interface UseTradingCryptoAssetChangeProps<T extends TradingSellExchangeFormProps> extends Pick<
-    TradingUseFormActionsProps<T>,
-    | 'account'
-    | 'methods'
-    | 'setAmountLimits'
-    | 'changeFeeLevel'
-    | 'setComposedLevels'
-    | 'setAccountOnChange'
-> {
+interface UseTradingCryptoAssetChangeProps<T extends TradingSellExchangeFormProps> {
+    account: Account | undefined;
     accounts: Account[];
+    methods: UseFormReturn<T>;
     tradingFiatValues: TradingFiatRatesReturn | null;
+    setAmountLimits: (limits?: AmountLimitProps) => void;
+    changeFeeLevel: (level: FeeLevel['label']) => void;
+    setComposedLevels: (levels: PrecomposedLevels | PrecomposedLevelsCardano | undefined) => void;
+    setAccountOnChange: (account: Account) => void;
 }
 
 /**
@@ -50,7 +52,7 @@ export const useTradingCryptoAssetChange = <T extends TradingSellExchangeFormPro
     setAccountOnChange,
 }: UseTradingCryptoAssetChangeProps<T>) => {
     // TODO: drop this cast via capability callbacks instead of methods: UseFormReturn<T>
-    const { getValues, setValue, control } =
+    const { getValues, setValue, clearErrors, control } =
         methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;
 
     const sendCryptoSelect = useWatch({ control, name: TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT });
@@ -71,6 +73,7 @@ export const useTradingCryptoAssetChange = <T extends TradingSellExchangeFormPro
         setValue(TRADING_FORM_OUTPUT_FIAT, '');
         setValue(TRADING_FORM_OUTPUT_AMOUNT, '');
         setValue(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT, selected);
+        clearErrors(TRADING_FORM_OUTPUT_AMOUNT_FIELDS);
         setAmountLimits(undefined);
         setComposedLevels(undefined);
 

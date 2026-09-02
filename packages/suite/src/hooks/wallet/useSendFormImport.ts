@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { openDeferredModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
@@ -21,7 +22,6 @@ import {
 import { type BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 import { unique } from '@trezor/utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type UseSendFormState } from 'src/types/wallet/sendForm';
 
@@ -173,7 +173,7 @@ export const useSendFormImport = ({
                 }
 
                 if (!output.amount || (!output.fiat && network.testnet === false)) {
-                    dispatch(notificationsActions.addToastOnce({ type: 'could-not-parse-csv' }));
+                    dispatch(notificationsActions.addToast({ type: 'could-not-parse-csv' }));
                 }
             }
 

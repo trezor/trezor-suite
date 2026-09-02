@@ -100,7 +100,7 @@ export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
 
 export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo) => {
     let hasSegwit = false;
-    let coinLabel = 'Unknown coin';
+    let coinLabel: string;
     if (coinInfo) {
         coinLabel = coinInfo.label;
         hasSegwit = coinInfo.segwit;

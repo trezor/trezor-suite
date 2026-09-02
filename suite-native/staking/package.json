@@ -26,6 +26,7 @@
         "@suite-native/device-mutex": "workspace:*",
         "@suite-native/labeling": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/network-solana": "workspace:*",
@@ -36,6 +37,7 @@
     "devDependencies": {
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/test-utils": "workspace:*"
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-native/analytics": "workspace:*"
     }
 }

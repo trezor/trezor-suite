@@ -2,7 +2,7 @@ import { tradingQueryKeys, useQuery } from '@suite-common/react-query';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { getWeakRandomId } from '@trezor/utils';
 
-import { invityAPI } from '../invityAPI';
+import { tradeApi } from '../tradeApi';
 import { type TradingCountryCode, type TradingOTC } from '../types';
 
 const FALLBACK_API_KEY = getWeakRandomId(20);
@@ -17,11 +17,11 @@ export const useFetchOtc = () =>
     useQuery({
         queryKey: tradingQueryKeys.otcData(),
         queryFn: async () => {
-            if (!invityAPI.getCurrentApiKey()) {
-                invityAPI.createInvityAPIKey(FALLBACK_API_KEY);
+            if (!tradeApi.getCurrentApiKey()) {
+                tradeApi.createApiKey(FALLBACK_API_KEY);
             }
 
-            return (await invityAPI.getOTCData()) ?? null;
+            return (await tradeApi.getOTCData()) ?? null;
         },
         staleTime: 1000 * 6,
     });

@@ -11,16 +11,16 @@
     },
     "dependencies": {
         "@trezor/connect-mobile": "workspace:*",
-        "expo": "~56.0.6",
-        "expo-linking": "~56.0.12",
-        "expo-status-bar": "~56.0.4",
+        "expo": "~57.0.8",
+        "expo-linking": "~57.0.3",
+        "expo-status-bar": "~57.0.1",
         "react": "19.2.3",
-        "react-native": "0.85.3"
+        "react-native": "0.86.0"
     },
     "devDependencies": {
         "@babel/core": "7.29.7",
         "@types/react": "19.2.14",
-        "typescript": "6.0.3"
+        "typescript": "npm:@typescript/typescript6@6.0.2"
     },
     "private": true
 }

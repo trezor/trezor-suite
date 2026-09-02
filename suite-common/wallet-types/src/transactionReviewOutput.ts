@@ -24,6 +24,7 @@ export type ReviewOutput =
               | 'approve_data'
               | 'recipient_name'
               | 'swap_intent'
+              | 'contract_intent'
               | 'tron-vote'
               | 'tron-withdraw'
               | 'tron-claim'

@@ -4,9 +4,10 @@ import {
     selectFeeRateMedianByAccountKey,
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { SetupSlider } from './SetupSlider/SetupSlider';
 import {

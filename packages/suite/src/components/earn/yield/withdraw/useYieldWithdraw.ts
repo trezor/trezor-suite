@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { type EarnParams } from '@suite/router';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type YieldFlowCompleteValue,
     type YieldWithdrawFlowType,
-    getConvertedOutputTokenBalanceToInputTokenAmount,
+    getYieldWithdrawCompletedValues,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -13,14 +12,13 @@ import { type YieldFlowContextValues, useYieldFlow } from '../hooks/useYieldFlow
 
 type UseYieldWithdrawProps = {
     account: Account;
-    routeParams: EarnParams;
     vault: YieldDtoV2;
 };
 
 export type YieldWithdrawContextValues = Omit<YieldFlowContextValues, 'flowType'> & {
     flowType: YieldWithdrawFlowType;
     completedInput: YieldFlowCompleteValue;
-    completedOutput?: YieldFlowCompleteValue;
+    completedOutput: YieldFlowCompleteValue;
     toggleWithdrawFlowType: () => void;
     selectMaxWithdraw: () => void;
     isMaxWithdrawInfoVisible: boolean;
@@ -28,7 +26,6 @@ export type YieldWithdrawContextValues = Omit<YieldFlowContextValues, 'flowType'
 
 export const useYieldWithdraw = ({
     account,
-    routeParams,
     vault,
 }: UseYieldWithdrawProps): YieldWithdrawContextValues | null => {
     const [flowType, setFlowType] = useState<YieldWithdrawFlowType>('withdraw');
@@ -37,7 +34,6 @@ export const useYieldWithdraw = ({
 
     const flowResult = useYieldFlow({
         account,
-        routeParams,
         vault,
         flowType,
     });
@@ -51,6 +47,7 @@ export const useYieldWithdraw = ({
     }, []);
 
     const selectMaxWithdraw = useCallback(() => {
+        // Max redeems the whole share balance; shares have no fiat rate, so the input stays in crypto.
         if (flowType === 'redeem') {
             setAmountInput(depositedSharesAmount);
 
@@ -92,27 +89,16 @@ export const useYieldWithdraw = ({
         return null;
     }
 
-    const { completedAmount } = flowResult;
-    const isSharesInput = flowType === 'redeem';
-    const pricePerShareState = vault.state?.pricePerShareState;
-    const completedInput = {
-        token: isSharesInput ? receiptToken : token,
-        amount: completedAmount,
-    };
-    const completedOutput = isSharesInput
-        ? {
-              token,
-              amount: pricePerShareState
-                  ? getConvertedOutputTokenBalanceToInputTokenAmount({
-                        networkSymbol: token.networkSymbol,
-                        token,
-                        outputToken: receiptToken,
-                        outputTokenBalance: completedAmount,
-                        pricePerShareState,
-                    })
-                  : completedAmount,
-          }
-        : undefined;
+    const { completedAmount, unwrappedAmount } = flowResult;
+    const { input: completedInput, output: completedOutput } = getYieldWithdrawCompletedValues({
+        networkSymbol: account.symbol,
+        flowType,
+        completedAmount,
+        unwrappedAmount,
+        token,
+        receiptToken,
+        pricePerShareState: vault.state?.pricePerShareState,
+    });
 
     return {
         ...flowResult,

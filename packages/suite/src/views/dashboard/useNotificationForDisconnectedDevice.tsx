@@ -1,20 +1,27 @@
 import { useEffect } from 'react';
 
+import { selectHasSeenDisconnectTooltip } from '@suite/flags';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
+import { useSelector } from 'src/hooks/suite';
+import {
+    selectRecentlyDisconnectedDevice,
+    selectSeenDisconnectNotificationForDeviceIds,
+} from 'src/selectors/suite/suiteSelectors';
+
 import { addDeviceIdToSeenDisconnectNotification } from '../../actions/suite/suiteActions';
-import { useDispatch, useSelector } from '../../hooks/suite';
 
 export const useNotificationForDisconnectedDevice = () => {
     const dispatch = useDispatch();
 
     const selectedDevice = useSelector(selectSelectedDevice);
     const seenDisconnectNotificationForDeviceIds = useSelector(
-        state => state.suite.seenDisconnectNotificationForDeviceIds,
+        selectSeenDisconnectNotificationForDeviceIds,
     );
-    const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
-    const hasSeenDisconnectTooltip = useSelector(state => state.flags.hasSeenDisconnectTooltip);
+    const recentlyDisconnectedDevice = useSelector(selectRecentlyDisconnectedDevice);
+    const hasSeenDisconnectTooltip = useSelector(selectHasSeenDisconnectTooltip);
 
     useEffect(() => {
         const deviceId = selectedDevice?.id;

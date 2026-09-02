@@ -8,6 +8,10 @@ export class ConnectPermissionsModal {
     readonly silentModeCheckbox: Locator;
     readonly confirmButton: Locator;
     readonly cancelButton: Locator;
+    /** Lowercase `CoinSymbol` (`btc`), or `device` for the coin-less group. */
+    readonly permissionGroup: (coin: string) => Locator;
+    /** `permission` as used in code (`read_address`); the testID dash-cases it. */
+    readonly groupPermission: (coin: string, permission: string) => Locator;
 
     constructor(page: Page) {
         this.loadingHeader = page
@@ -21,5 +25,10 @@ export class ConnectPermissionsModal {
         );
         this.confirmButton = page.getByTestId('@connect-permissions-modal/confirm-button');
         this.cancelButton = page.getByTestId('@connect-permissions-modal/cancel-button');
+        this.permissionGroup = coin => page.getByTestId(`@connect-permissions/group/${coin}`);
+        this.groupPermission = (coin, permission) =>
+            this.permissionGroup(coin).getByTestId(
+                `@connect-permissions/permission/${permission.replace(/_/g, '-')}`,
+            );
     }
 }

@@ -3,11 +3,15 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
 import { type UnstakeThunkArguments, composeTronUnstakeFeeLevelsThunk } from './composeUnstake';
 import { buildUnstakeContract, buildUnstakeReviewForm } from './unstakeContract';
-import { addFakePendingTronTxThunk } from '../../../../transactions/transactionsThunks';
+import {
+    type AddFakePendingTronTxThunkState,
+    addFakePendingTronTxThunk,
+} from '../../../../transactions/transactionsThunks';
 import { TRON_STAKE_MODULE } from '../../shared/constants';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakeReducer';
@@ -20,7 +24,13 @@ interface SubmitUnstakeThunkArguments extends UnstakeThunkArguments {
     onSettled?: () => void;
 }
 
-export const submitTronUnstakeThunk = createThunk<void, SubmitUnstakeThunkArguments>(
+type SubmitTronUnstakeThunkState = AddFakePendingTronTxThunkState;
+
+export const submitTronUnstakeThunk = createThunk<
+    void,
+    SubmitUnstakeThunkArguments,
+    { state: SubmitTronUnstakeThunkState }
+>(
     `${TRON_STAKE_MODULE}/submitTronUnstakeThunk`,
     async (
         { account, device, amount, resourceType, requestPushApproval, onSigningStart, onSettled },
@@ -119,7 +129,7 @@ export const submitTronUnstakeThunk = createThunk<void, SubmitUnstakeThunkArgume
 
             const pushResult = await TrezorConnect.pushTransaction({
                 tx: signResult.serializedTx,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
             });
 

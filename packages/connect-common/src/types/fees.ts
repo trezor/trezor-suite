@@ -29,22 +29,3 @@ export const FeeLevel = Type.Object({
     maxFeePerGas: Type.Optional(Type.String()),
     maxPriorityFeePerGas: Type.Optional(Type.String()),
 });
-
-export type SelectFeeLevel = Static<typeof SelectFeeLevel>;
-export const SelectFeeLevel = Type.Union([
-    Type.Object({
-        name: Type.String(),
-        fee: Type.Literal('0'),
-        feePerByte: Type.Optional(Type.Undefined()),
-        blocks: Type.Optional(Type.Undefined()),
-        disabled: Type.Literal(true),
-    }),
-    Type.Object({
-        name: Type.String(),
-        fee: Type.String(),
-        feePerByte: Type.String(),
-        blocks: Type.Number(),
-        minutes: Type.Number(),
-        total: Type.String(),
-    }),
-]);

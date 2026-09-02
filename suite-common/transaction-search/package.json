@@ -19,5 +19,8 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3"
+    },
+    "devDependencies": {
+        "@suite-common/wallet-config": "workspace:^"
     }
 }

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -7,6 +7,7 @@ import {
     resolveMessageContent,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';

@@ -1,8 +1,8 @@
-import { type InvityServerEnvironment } from '@suite-common/trading';
+import { type TradeServerEnvironment } from '@suite-common/trading';
 import { Banner } from '@trezor/components';
 
 interface TradingEnvironmentWarningProps {
-    tradingEnvironment: InvityServerEnvironment | undefined;
+    tradingEnvironment: TradeServerEnvironment | undefined;
 }
 
 export const TradingEnvironmentWarning = ({

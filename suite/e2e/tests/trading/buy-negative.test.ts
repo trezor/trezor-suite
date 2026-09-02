@@ -1,4 +1,4 @@
-import { buyQuotesNegativeMax, buyQuotesNegativeMin, invityEndpoint } from '../../fixtures/invity';
+import { buyQuotesNegativeMax, buyQuotesNegativeMin, tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
@@ -23,7 +23,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
         });
 
         await test.step('Input amount above maximum', async () => {
-            await page.route(invityEndpoint.buyQuotes, async route => {
+            await page.route(tradeEndpoint.buyQuotes, async route => {
                 await route.fulfill({ json: buyQuotesNegativeMax });
             });
             await expect(page.getByText('Receive account')).toBeVisible();
@@ -33,7 +33,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
         });
 
         await test.step('Input amount below minimum', async () => {
-            await page.route(invityEndpoint.buyQuotes, async route => {
+            await page.route(tradeEndpoint.buyQuotes, async route => {
                 await route.fulfill({ json: buyQuotesNegativeMin });
             });
             await expect(page.getByText('Receive account')).toBeVisible();
@@ -43,7 +43,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
         });
 
         await test.step('Empty quotes', async () => {
-            await page.route(invityEndpoint.buyQuotes, async route => {
+            await page.route(tradeEndpoint.buyQuotes, async route => {
                 await route.fulfill({ json: {} });
             });
             await expect(page.getByText('Receive account')).toBeVisible();

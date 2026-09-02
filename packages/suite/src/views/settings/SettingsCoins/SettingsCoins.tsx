@@ -12,6 +12,7 @@ import { openModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     changeCoinVisibility,
@@ -29,7 +30,7 @@ import { breakpoints } from '@trezor/theme';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';

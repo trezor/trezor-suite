@@ -1,9 +1,8 @@
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Button, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-
-import { useDispatch } from 'src/hooks/suite';
 
 interface TradingTransactionIdProps {
     transactionId: string;
@@ -11,8 +10,8 @@ interface TradingTransactionIdProps {
 
 export const TradingTransactionId = ({ transactionId }: TradingTransactionIdProps) => {
     const dispatch = useDispatch();
-    const copy = () => {
-        const result = copyToClipboard(transactionId);
+    const copy = async () => {
+        const result = await copyToClipboard(transactionId);
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }

@@ -2,7 +2,11 @@ import { type BankAccount } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 
-import { type HandleSellTradeThunkProps, handleSellTradeThunk } from './handleSellTradeThunk';
+import {
+    type HandleSellTradeThunkProps,
+    type HandleSellTradeThunkState,
+    handleSellTradeThunk,
+} from './handleSellTradeThunk';
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { selectTradingSellSelectedQuote } from '../../selectors/tradingSelectors';
@@ -12,16 +16,16 @@ export type ConfirmSellTradeThunkProps = {
     triggerAnalyticsTradeConfirmation: () => void;
 } & Omit<HandleSellTradeThunkProps, 'trade'>;
 
-export const confirmSellTradeThunk = createThunk(
+type ConfirmSellTradeThunkState = HandleSellTradeThunkState;
+
+export const confirmSellTradeThunk = createThunk<
+    void,
+    ConfirmSellTradeThunkProps,
+    { state: ConfirmSellTradeThunkState }
+>(
     `${TRADING_SELL_THUNK_PREFIX}/confirmTrade`,
     async (
-        {
-            account,
-            bankAccount,
-            returnUrl,
-            triggerAnalyticsTradeConfirmation,
-            processResponseData,
-        }: ConfirmSellTradeThunkProps,
+        { account, bankAccount, returnUrl, triggerAnalyticsTradeConfirmation, processResponseData },
         { dispatch, getState },
     ) => {
         const selectedQuote = selectTradingSellSelectedQuote(getState());

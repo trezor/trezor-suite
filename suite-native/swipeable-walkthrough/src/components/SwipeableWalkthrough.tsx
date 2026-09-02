@@ -24,14 +24,12 @@ export const SwipeableWalkthrough = ({
     const { setStepLayoutHeight } = useSwipeableWalkthroughStepHeight();
     const panGesture = Gesture.Pan().onEnd(event => {
         const { translationY } = event;
+        const currentStep = currentStepIndex.get();
 
-        if (
-            translationY < -PAN_GESTURE_DETECTION_THRESHOLD &&
-            currentStepIndex.value < totalSteps - 1
-        ) {
-            currentStepIndex.set(value => value + 1);
-        } else if (translationY > PAN_GESTURE_DETECTION_THRESHOLD && currentStepIndex.value > 0) {
-            currentStepIndex.set(value => value - 1);
+        if (translationY < -PAN_GESTURE_DETECTION_THRESHOLD && currentStep < totalSteps - 1) {
+            currentStepIndex.set(currentStep + 1);
+        } else if (translationY > PAN_GESTURE_DETECTION_THRESHOLD && currentStep > 0) {
+            currentStepIndex.set(currentStep - 1);
         }
     });
 

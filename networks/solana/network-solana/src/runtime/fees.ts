@@ -42,8 +42,7 @@ import type {
 const DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS = BigInt(300_000); // micro-lamports, value taken from other wallets
 
 type CompiledTransactionMessageV0OrLegacy =
-    | LegacyCompiledTransactionMessage
-    | V0CompiledTransactionMessage;
+    LegacyCompiledTransactionMessage | V0CompiledTransactionMessage;
 
 const stripComputeBudgetInstructions = (message: CompiledTransactionMessageV0OrLegacy) => ({
     ...message,

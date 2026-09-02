@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../suite-common/backup" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -12,6 +11,7 @@
         },
         { "path": "../analytics" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/device-utils" }
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/type-utils" }
     ]
 }

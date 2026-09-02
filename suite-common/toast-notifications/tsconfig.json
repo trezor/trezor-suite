@@ -8,6 +8,9 @@
         { "path": "../test-utils" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        }
     ]
 }

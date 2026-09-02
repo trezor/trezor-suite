@@ -4,7 +4,7 @@ export const descriptionDictionary: Record<string, string> = {
     chunkify: 'Display the result in chunks for better readability. Default is false',
     suppressBackupWarning:
         'By default, this method will emit an event to show a warning if the wallet does not have a backup. This option suppresses the message.',
-    coin: 'determines network definition specified in coins.json file. The coin shortcut (a CoinSymbol, e.g. btc) is used. If coin is not set API will try to get network definition from path.',
+    coin: 'determines network definition specified in coins.json file. The coin shortcut (a CoinSymbol, e.g. btc) is used — see [supported coins](/details/coins) for every accepted value. If coin is not set API will try to get network definition from path.',
     crossChain:
         'Advanced feature. Use it only if you are know what you are doing. Allows to generate address between chains. For example Bitcoin path on Litecoin network will display cross chain address in Litecoin format.',
     unlockPath: 'the result of TrezorConnect.unlockPath method',

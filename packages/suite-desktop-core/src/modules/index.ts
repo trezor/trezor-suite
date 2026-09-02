@@ -154,6 +154,7 @@ const initModulesInner = <
 
                     throw new Error(
                         `Check if there is another instance of the Suite app running. ${err}`,
+                        { cause: err },
                     );
                 }
             }),

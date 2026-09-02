@@ -154,8 +154,9 @@ export const cryptoIdToNetworkAndContractAddress = (
 export const cryptoIdToNetwork = (cryptoId: CryptoId | undefined): Network | undefined =>
     cryptoIdToNetworkAndContractAddress(cryptoId)?.network;
 
-export const cryptoIdToSymbol = (cryptoId: CryptoId | undefined): NetworkSymbol | undefined =>
-    cryptoIdToNetwork(cryptoId)?.symbol;
+export const cryptoIdToNetworkSymbol = (
+    cryptoId: CryptoId | undefined,
+): NetworkSymbol | undefined => cryptoIdToNetwork(cryptoId)?.symbol;
 
 export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId | undefined) => {
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
@@ -280,6 +281,12 @@ export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellTyp
     quotes.filter(
         quote => quote.paymentMethod === currentPaymentMethod && quote.error === undefined,
     );
+
+// Invity API can return multiple quotes per provider (`quote.exchange`) for the same payment
+// method, so deduplication by provider is safe — each provider only offers one rate at a time.
+export const getTradingQuotesDedupedByProvider = <T extends TradingTradeType>(quotes: T[]): T[] => [
+    ...new Map(quotes.map(quote => [quote.exchange, quote])).values(),
+];
 
 export const getTradingFormState = ({
     activeSection,
@@ -406,4 +413,15 @@ export const getStatusUrl = (provider?: TradingProviderInfo, trade?: TradingTrad
     }
 
     return tradeStatusUrl || provider?.statusUrl;
+};
+
+export const isCrossChainTrade = (sendCryptoId?: CryptoId, receiveCryptoId?: CryptoId) => {
+    const sendNetworkSymbol = cryptoIdToNetworkSymbol(sendCryptoId);
+    const receiveNetworkSymbol = cryptoIdToNetworkSymbol(receiveCryptoId);
+
+    if (!sendNetworkSymbol || !receiveNetworkSymbol) {
+        return false;
+    }
+
+    return sendNetworkSymbol !== receiveNetworkSymbol;
 };

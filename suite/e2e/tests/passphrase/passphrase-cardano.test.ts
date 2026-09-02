@@ -1,6 +1,6 @@
 import { messages } from '@suite/intl';
 
-import { formatAddress, replaceTemplatesInTranslation } from '../../support/common';
+import { replaceTemplatesInTranslation } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 const correctPassphraseAddr =
@@ -55,7 +55,7 @@ test.describe('Passphrase with cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1
         await test.step('Reveal cardano address', async () => {
             await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
             await walletPage.receiveButton.click();
-            await walletPage.revealAddressButton.click();
+            await walletPage.verifyAddressButton.click();
         });
 
         await test.step('Enter correct passphrase when device asks for passphrase after reset', async () => {
@@ -64,8 +64,6 @@ test.describe('Passphrase with cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1
             await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
             await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
 
-            await expect(devicePrompt.outputValue).toHaveText(formatAddress(correctPassphraseAddr));
-
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(device).toShowReceiveAddress(correctPassphraseAddr, {
                 lineFormat: 'cardanoTetragrams',
@@ -73,14 +71,13 @@ test.describe('Passphrase with cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1
             await device.pressYes(); // Confirm receive address
 
             await expect(metadataPage.copyAddressButton).toBeVisible();
-            await devicePrompt.closeModal();
-            await expect(walletPage.revealAddressButton).toBeVisible();
+            await expect(walletPage.verifyAddressButton).toBeVisible();
         });
 
         await restartDevice();
 
         await test.step('Reveal cardano address, now enter wrong passphrase', async () => {
-            await walletPage.revealAddressButton.click();
+            await walletPage.verifyAddressButton.click();
             await dashboardPage.passphraseInput.fill('wrong passphrase');
             await dashboardPage.passphraseSubmitButton.click();
             await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase

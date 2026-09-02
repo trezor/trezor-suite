@@ -17,8 +17,6 @@ export type AsyncResultWithTypedError<T, E extends string> = Promise<Result<T, T
 export type AbortableParam = { signal?: AbortSignal; timeout?: number };
 
 export type BridgeCommonErrors =
-    | typeof ERRORS.HTTP_ERROR
-    | typeof ERRORS.WRONG_RESULT_TYPE
-    | typeof ERRORS.UNEXPECTED_ERROR;
+    typeof ERRORS.HTTP_ERROR | typeof ERRORS.WRONG_RESULT_TYPE | typeof ERRORS.UNEXPECTED_ERROR;
 
 export type MessageResponse = MessagesSchema.MessageResponse | protocolThp.ThpMessageResponse;

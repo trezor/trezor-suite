@@ -4,13 +4,13 @@ import { createThunk } from '@suite-common/redux-utils';
 import { unique } from '@trezor/utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { type ExchangeInfo } from '../../reducers/exchangeReducer';
+import { tradeApi } from '../../tradeApi';
 
-export const loadExchangeInfoThunk = createThunk<ExchangeInfo>(
+export const loadExchangeInfoThunk = createThunk<ExchangeInfo, void, void>(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/loadInfo`,
     async (_, { fulfillWithValue }) => {
-        const exchangeList = await invityAPI.getExchangeList();
+        const exchangeList = await tradeApi.getExchangeList();
         const providerInfos: { [name: string]: ExchangeProviderInfo } = {};
         const buyCryptoIds: CryptoId[] = [];
         const sellCryptoIds: CryptoId[] = [];

@@ -1,7 +1,8 @@
 import { useForm } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
-import { isAddressValid } from '@suite-common/address';
+import { selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
@@ -40,6 +41,7 @@ interface UseTronStakeFormProps {
 
 export const useTronStakeForm = ({ account, flow }: UseTronStakeFormProps) => {
     const { translationString } = useTranslation();
+    const { addressValidator } = useServices(selectAddressValidatorDep);
 
     const methods = useForm<TronStakeFormValues>({
         mode: 'onChange',
@@ -61,7 +63,7 @@ export const useTronStakeForm = ({ account, flow }: UseTronStakeFormProps) => {
                 }
 
                 return (
-                    isAddressValid(value.trim(), account.symbol) ||
+                    addressValidator.isAddressValid(value.trim(), account.symbol) ||
                     translationString('RECIPIENT_IS_NOT_VALID')
                 );
             },

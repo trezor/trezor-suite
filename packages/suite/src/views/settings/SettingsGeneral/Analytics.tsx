@@ -1,5 +1,3 @@
-import { useSelector } from 'react-redux';
-
 import styled from 'styled-components';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -9,6 +7,8 @@ import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+
+import { useSelector } from 'src/hooks/suite';
 
 const PositionedSwitch = styled.div`
     align-self: center;

@@ -13,12 +13,15 @@ export enum EarnProvider {
 
 export type EarnYieldContext = {
     id: string;
+    /** vault (share token) contract address — how vault-scoped Earn routes address the vault */
+    vaultAddress?: string;
     tokenContractAddress?: string;
 };
 
 export type EarnModalAction = 'continue' | 'cancel' | 'close';
 
 export type EarnAnalyticsStep =
+    | 'change-delegate-form-modal'
     | 'claim-form-modal'
     | 'earn-dashboard'
     | 'entry-period-stake-modal'

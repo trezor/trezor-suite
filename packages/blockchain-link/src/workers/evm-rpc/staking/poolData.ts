@@ -4,13 +4,72 @@ import type { StakingPool } from '@trezor/blockchain-link-types';
 
 import { EVERSTAKE_ACCOUNTING_ABI } from './abi';
 import { STAKING_POOL_CONTRACTS } from './constants';
+import { getChainId } from '../utils/client';
+import { getErrorName } from '../utils/errors';
+import { type BatchCall, batchRead } from '../utils/multicall';
+
+type EverstakeAccountingFunctionName = Extract<
+    (typeof EVERSTAKE_ACCOUNTING_ABI)[number],
+    { type: 'function' }
+>['name'];
+
+const ACCOUNTING_FUNCTIONS = [
+    'pendingBalanceOf',
+    'pendingDepositedBalanceOf',
+    'depositedBalanceOf',
+    'withdrawRequest',
+    'restakedRewardOf',
+    'autocompoundBalanceOf',
+] as const satisfies readonly EverstakeAccountingFunctionName[];
+
+const readAccountingBalances = async (
+    client: PublicClient,
+    contract: `0x${string}`,
+    address: `0x${string}`,
+) => {
+    const calls: BatchCall[] = ACCOUNTING_FUNCTIONS.map(functionName => ({
+        address: contract,
+        abi: EVERSTAKE_ACCOUNTING_ABI,
+        functionName,
+        args: [address],
+    }));
+
+    const results = await batchRead(client, calls);
+
+    const unread = ACCOUNTING_FUNCTIONS.filter((_, index) => results[index] === undefined);
+    if (unread.length > 0) {
+        throw new Error(`Could not read staking accounting: ${unread.join(', ')}`);
+    }
+
+    // Order follows ACCOUNTING_FUNCTIONS; withdrawRequest is the only tuple return.
+    const [
+        pendingBalance,
+        pendingDepositedBalance,
+        depositedBalance,
+        withdrawRequestResult,
+        restakedReward,
+        autocompoundBalance,
+    ] = results as [bigint, bigint, bigint, readonly [bigint, bigint], bigint, bigint];
+
+    const [withdrawTotalAmount, claimableAmount] = withdrawRequestResult;
+
+    return {
+        pendingBalance,
+        pendingDepositedBalance,
+        depositedBalance,
+        withdrawTotalAmount,
+        claimableAmount,
+        restakedReward,
+        autocompoundBalance,
+    };
+};
 
 export const getStakingPoolData = async (
     client: PublicClient,
     address: `0x${string}`,
 ): Promise<StakingPool[] | undefined> => {
     try {
-        const chainId = await client.getChainId();
+        const chainId = await getChainId(client);
         const poolConfig = STAKING_POOL_CONTRACTS[chainId];
 
         if (!poolConfig) {
@@ -18,64 +77,9 @@ export const getStakingPoolData = async (
         }
 
         const { contract, name } = poolConfig;
-        const [
-            pendingBalance,
-            pendingDepositedBalance,
-            depositedBalance,
-            withdrawRequestResult,
-            restakedReward,
-            autocompoundBalance,
-        ] = await Promise.all([
-            client.readContract({
-                address: contract,
-                abi: EVERSTAKE_ACCOUNTING_ABI,
-                functionName: 'pendingBalanceOf',
-                args: [address],
-            }),
-            client.readContract({
-                address: contract,
-                abi: EVERSTAKE_ACCOUNTING_ABI,
-                functionName: 'pendingDepositedBalanceOf',
-                args: [address],
-            }),
-            client.readContract({
-                address: contract,
-                abi: EVERSTAKE_ACCOUNTING_ABI,
-                functionName: 'depositedBalanceOf',
-                args: [address],
-            }),
-            client.readContract({
-                address: contract,
-                abi: EVERSTAKE_ACCOUNTING_ABI,
-                functionName: 'withdrawRequest',
-                args: [address],
-            }),
-            client.readContract({
-                address: contract,
-                abi: EVERSTAKE_ACCOUNTING_ABI,
-                functionName: 'restakedRewardOf',
-                args: [address],
-            }),
-            client.readContract({
-                address: contract,
-                abi: EVERSTAKE_ACCOUNTING_ABI,
-                functionName: 'autocompoundBalanceOf',
-                args: [address],
-            }),
-        ]);
+        const balances = await readAccountingBalances(client, contract, address);
 
-        const [withdrawTotalAmount, claimableAmount] = withdrawRequestResult;
-
-        const allZero =
-            pendingBalance === 0n &&
-            pendingDepositedBalance === 0n &&
-            depositedBalance === 0n &&
-            withdrawTotalAmount === 0n &&
-            claimableAmount === 0n &&
-            restakedReward === 0n &&
-            autocompoundBalance === 0n;
-
-        if (allZero) {
+        if (Object.values(balances).every(value => value === 0n)) {
             return undefined;
         }
 
@@ -83,17 +87,17 @@ export const getStakingPoolData = async (
             {
                 contract,
                 name,
-                pendingBalance: pendingBalance.toString(),
-                pendingDepositedBalance: pendingDepositedBalance.toString(),
-                depositedBalance: depositedBalance.toString(),
-                withdrawTotalAmount: withdrawTotalAmount.toString(),
-                claimableAmount: claimableAmount.toString(),
-                restakedReward: restakedReward.toString(),
-                autocompoundBalance: autocompoundBalance.toString(),
+                pendingBalance: balances.pendingBalance.toString(),
+                pendingDepositedBalance: balances.pendingDepositedBalance.toString(),
+                depositedBalance: balances.depositedBalance.toString(),
+                withdrawTotalAmount: balances.withdrawTotalAmount.toString(),
+                claimableAmount: balances.claimableAmount.toString(),
+                restakedReward: balances.restakedReward.toString(),
+                autocompoundBalance: balances.autocompoundBalance.toString(),
             },
         ];
     } catch (error) {
-        console.warn('[evm-rpc] Failed to fetch staking pool data:', error);
+        console.warn('[evm-rpc] Failed to fetch staking pool data:', getErrorName(error));
 
         return undefined;
     }

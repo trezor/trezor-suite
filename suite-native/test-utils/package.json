@@ -12,25 +12,21 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",
-        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native": "7.1.31",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/react-query": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/test-utils": "workspace:*",
-        "@suite-native/analytics": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/services": "workspace:*",
-        "@testing-library/react-native": "13.3.3",
+        "@testing-library/react-native": "14.0.1",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.85.3",
-        "react-native-keyboard-controller": "1.20.7",
-        "react-native-mmkv": "~4.3.1",
+        "react-native": "0.86.0",
+        "react-native-keyboard-controller": "1.21.9",
         "react-native-permissions": "5.4.4",
-        "react-native-reanimated": "4.3.1",
-        "react-native-safe-area-context": "5.6.2",
-        "react-native-worklets": "0.8.3"
+        "react-native-reanimated": "4.5.0",
+        "react-native-safe-area-context": "~5.7.0",
+        "react-native-worklets": "0.10.0",
+        "test-renderer": "1.2.0"
     }
 }

@@ -7,7 +7,7 @@ import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/Tradi
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
 import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
 
-const getState = (trade: SellFiatTrade): StepListItemState => {
+const getStepState = (trade: SellFiatTrade): StepListItemState => {
     switch (trade.status) {
         case 'SUCCESS':
             return 'active';
@@ -26,7 +26,7 @@ export const TradingSellDetailPaymentSuccessful = ({
     provider,
 }: TradingSellDetailPaymentSuccessfulProps) => {
     const { translationString } = useTranslation();
-    const state = getState(trade);
+    const state = getStepState(trade);
 
     const providerName = provider?.companyName ?? provider?.name ?? '';
 

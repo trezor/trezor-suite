@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Button, InlineAlertBox, PictogramTitleHeader, VStack } from '@suite-native/atoms';
+import { BannerInline, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type DemoAccountQuestionnaireStackParamList,
@@ -48,7 +48,7 @@ export const DemoAccountQuestionnaireIntroScreen = () => {
                             titleVariant="headline-md"
                         />
                     </VStack>
-                    <InlineAlertBox
+                    <BannerInline
                         intent="brand"
                         title={<Translation id="moduleDemoAccountQuestionnaire.intro.note" />}
                     />

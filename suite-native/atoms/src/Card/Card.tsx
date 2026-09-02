@@ -6,7 +6,7 @@ import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@tr
 import { type Color } from '@trezor/theme';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
-import { InlineAlertBox, type InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import { BannerInline, type BannerInlineProps } from '../BannerInline/BannerInline';
 
 const CARD_CONTAINER_TEST_ID = '@atom/card/container';
 const ALERT_TEST_ID = '@atom/card/alert/';
@@ -19,7 +19,7 @@ export type CardProps = {
     noPadding?: boolean;
     noShadow?: boolean;
     borderColor?: Color;
-    alertProps?: InlineAlertBoxProps;
+    alertProps?: BannerInlineProps;
     alertPosition?: AlertPosition;
     testID?: string;
 };
@@ -131,7 +131,7 @@ export const Card = React.forwardRef<View, CardProps>(
                         })}
                         testID={ALERT_TEST_ID + 'top'}
                     >
-                        <InlineAlertBox {...alertProps} />
+                        <BannerInline {...alertProps} />
                     </View>
                 )}
                 <View
@@ -158,7 +158,7 @@ export const Card = React.forwardRef<View, CardProps>(
                         })}
                         testID={ALERT_TEST_ID + 'bottom'}
                     >
-                        <InlineAlertBox {...alertProps} />
+                        <BannerInline {...alertProps} />
                     </View>
                 )}
             </View>

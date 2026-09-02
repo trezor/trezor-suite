@@ -1,0 +1,803 @@
+import { Text } from '@suite-native/atoms';
+import { getTranslation } from '@suite-native/intl';
+import { within } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+
+import { ReviewOutputItem, type ReviewOutputItemProps } from './ReviewOutputItem';
+import { ETH_ACCOUNT_KEY } from '../../__fixtures__/walletState';
+import { type StatefulReviewOutput } from '../../types';
+
+jest.mock('./ReviewOutputItemValues', () => ({
+    ReviewOutputItemValues: ({
+        translationKey,
+        value,
+    }: {
+        translationKey: string;
+        value: string;
+    }) => (
+        <Text>
+            ReviewOutputItemValues: [{translationKey}]-[{value}]
+        </Text>
+    ),
+}));
+
+describe('ReviewOutputItem', () => {
+    const renderReviewOutputItem = async (props: Partial<ReviewOutputItemProps>) =>
+        await renderWithStoreProvider(
+            <ReviewOutputItem
+                accountKey={ETH_ACCOUNT_KEY}
+                onLayout={jest.fn()}
+                reviewOutput={{
+                    type: 'address',
+                    value: 'mockvalue',
+                    state: 'active',
+                }}
+                {...props}
+            />,
+        );
+
+    it.each<[StatefulReviewOutput['type'], string]>([
+        ['opreturn', 'opreturn'],
+        ['data', getTranslation('transactionManagement.review.outputs.transactionDataLabel')],
+        ['locktime', 'locktime'],
+        ['fee', 'fee'],
+        [
+            'destination-tag',
+            getTranslation('transactionManagement.review.outputs.destinationTagLabel'),
+        ],
+        ['signing-with', getTranslation('transactionManagement.review.outputs.signingWithLabel')],
+        ['network', getTranslation('transactionManagement.review.outputs.networkLabel')],
+        ['timebounds', getTranslation('transactionManagement.review.outputs.timeboundsLabel')],
+        ['txid', 'txid'],
+        ['address', getTranslation('transactionManagement.review.outputs.addressLabel')],
+        ['amount', getTranslation('transactionManagement.review.outputs.amountLabel')],
+        ['gas', 'gas'],
+        ['contract', getTranslation('transactionManagement.review.outputs.contractLabel')],
+        ['regular_legacy', getTranslation('transactionManagement.review.outputs.addressLabel')],
+        ['approve_data', getTranslation('transactionManagement.review.outputs.approveLabel')],
+        [
+            'recipient_name',
+            getTranslation('transactionManagement.review.outputs.recipientNameOutputLabel'),
+        ],
+        [
+            'traded_assets',
+            getTranslation('transactionManagement.review.outputs.tradedAssetsOutputLabel'),
+        ],
+        ['swap_intent', getTranslation('transactionManagement.review.outputs.swapIntentLabel')],
+    ])('should display title based on type [%s]', async (type, expectedTitle) => {
+        // Suppress console warnings for unsupported types
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type,
+                value: 'mockvalue',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/title')).toHaveTextContent(expectedTitle);
+    });
+
+    it('should render ReviewOutputItemValues component for type "amount"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'amount',
+                value: 'mockvalue',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        // note that this test mocks the ReviewOutputItemValues component
+        expect(getByTestId('review-output-card/content')).toHaveTextContent(
+            'ReviewOutputItemValues: [transactionManagement.review.outputs.amountLabel]-[mockvalue]',
+        );
+    });
+
+    it('should not render output card for type "rewards"', async () => {
+        const { queryByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'rewards',
+                rewards: [],
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(queryByTestId('review-output-card/title')).toBeNull();
+    });
+
+    it('should render value for type "destination-tag" and value set', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'destination-tag',
+                value: 'mockvalue',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent('mockvalue');
+    });
+
+    it('should render tag not set placeholder for type "destination-tag" and empty value', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'destination-tag',
+                value: '',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent(
+            getTranslation('transactionManagement.review.outputs.destinationTagNotSet'),
+        );
+    });
+
+    it.each<StatefulReviewOutput['type']>([
+        'address',
+        'regular_legacy',
+        'contract',
+        'signing-with',
+    ])('should render chunked value for type "%s"', async type => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type,
+                value: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent(
+            '0x de0B 2956 69a9 FD93 d5F2 8D9E c85E 40f4 cb69 7BAe',
+        );
+    });
+
+    it('should render "No restriction" for type "timebounds"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'timebounds',
+                value: '',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent(
+            getTranslation('transactionManagement.review.outputs.timeboundsNotSet'),
+        );
+    });
+
+    it('should render Testnet info for type "network"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'network',
+                value: '',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent(
+            getTranslation('transactionManagement.review.outputs.networkTestnet'),
+        );
+    });
+
+    it('should render transaction data for type "data"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'data',
+                value: '0xabcd',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent('0xabcd');
+    });
+
+    it('should render long transaction data truncated with show-more control', async () => {
+        const longHex = 'd'.repeat(301);
+        const truncated = 'd'.repeat(300);
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'data',
+                value: longHex,
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        const content = getByTestId('review-output-card/content');
+        expect(within(content).getByText(truncated)).toBeOnTheScreen();
+        expect(
+            within(content).getByText(
+                getTranslation('transactionManagement.review.outputs.transactionDataShowMore'),
+            ),
+        ).toBeOnTheScreen();
+    });
+
+    it('should render empty transaction data placeholder for type "data" with empty value', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'data',
+                value: '',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent(
+            getTranslation('transactionManagement.review.outputs.transactionDataEmpty'),
+        );
+    });
+
+    it('should render recipient name for type "recipient_name"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'recipient_name',
+                value: 'mockvalue',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent('mockvalue');
+    });
+
+    it('should render traded assets when send and receive are crypto', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'traded_assets',
+                value: '',
+                value2: '',
+                state: 'active',
+                send: {
+                    cryptoId: undefined,
+                    accountKey: undefined,
+                    symbol: 'eth',
+                    amount: '0.5',
+                },
+                receive: {
+                    cryptoId: undefined,
+                    accountKey: undefined,
+                    symbol: 'btc',
+                    amount: '0.01',
+                },
+            } as StatefulReviewOutput,
+        });
+
+        const content = getByTestId('review-output-card/content');
+
+        expect(content).toHaveTextContent(
+            `${getTranslation('transactionManagement.review.outputs.tradedAssetsSendLabel')} 0.5 eth${getTranslation('transactionManagement.review.outputs.tradedAssetsReceiveLabel')} 0.01 btc`,
+        );
+    });
+
+    it('should render the send leg only for a partial clear-signed swap (receive missing)', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'traded_assets',
+                value: '',
+                value2: '',
+                state: 'active',
+                send: {
+                    cryptoId: undefined,
+                    accountKey: undefined,
+                    symbol: 'eth',
+                    amount: '0.5',
+                },
+            } as StatefulReviewOutput,
+        });
+
+        const content = getByTestId('review-output-card/content');
+
+        expect(content).toHaveTextContent(
+            `${getTranslation('transactionManagement.review.outputs.tradedAssetsSendLabel')} 0.5 eth`,
+        );
+        expect(content).not.toHaveTextContent(
+            getTranslation('transactionManagement.review.outputs.tradedAssetsReceiveLabel'),
+        );
+    });
+
+    it('should render traded assets when receive is fiat', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'traded_assets',
+                value: '',
+                value2: '',
+                state: 'active',
+                send: {
+                    cryptoId: undefined,
+                    accountKey: undefined,
+                    symbol: 'eth',
+                    amount: '1',
+                },
+                receive: {
+                    amount: '2500',
+                    fiatCurrency: 'USD',
+                },
+            } as StatefulReviewOutput,
+        });
+
+        const content = getByTestId('review-output-card/content');
+
+        expect(content).toHaveTextContent(
+            `${getTranslation('transactionManagement.review.outputs.tradedAssetsSendLabel')} 1 eth${getTranslation('transactionManagement.review.outputs.tradedAssetsReceiveLabel')} 2500 USD`,
+        );
+    });
+
+    it('should render empty content for type "traded_assets" when send or receive is missing', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'traded_assets',
+                value: '',
+                value2: '',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent('');
+    });
+
+    it('should render "Swap" for "swap_intent"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type: 'swap_intent',
+                value: 'swap',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent(
+            getTranslation('transactionManagement.review.outputs.swapIntentValue'),
+        );
+    });
+
+    it.each<StatefulReviewOutput['type']>([
+        'opreturn',
+        'locktime',
+        'fee',
+        'txid',
+        'gas',
+        'approve_data',
+    ])('should render no content for type', async type => {
+        const warningSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        const { getByTestId } = await renderReviewOutputItem({
+            reviewOutput: {
+                type,
+                value: 'mockvalue',
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent('');
+        expect(warningSpy).toHaveBeenCalledWith(
+            `ReviewOutputItemContent: Unsupported output type "${type}" with value "mockvalue".`,
+        );
+    });
+
+    describe('exchange approval flow', () => {
+        it('should render Token approval for type "address"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    type: 'address',
+                    value: '0x1234567890abcdef1234567890abcdef12345678',
+                    state: 'active',
+                },
+                flowType: 'approve',
+            });
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.tokenApprovalLabel'),
+            );
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.tokenApprovalDescription'),
+            );
+        });
+
+        it('should render "Approve to" for type "contract"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    type: 'contract',
+                    value: '1inch Aggregation Router V6',
+                },
+                flowType: 'approve',
+            });
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.approveToLabel'),
+            );
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                '1inch Aggregation Router V6',
+            );
+        });
+
+        it('should render Approve info for type "approve_data"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    token: {
+                        balance: '33.231005',
+                        contract: '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c',
+                        decimals: 6,
+                        name: 'Aave Ethereum USDC',
+                        standard: 'ERC20',
+                        symbol: 'aEthUSDC',
+                    },
+                    type: 'approve_data',
+                    value: '20000000',
+                    value2: 'Ethereum',
+                },
+                flowType: 'approve',
+            });
+
+            const content = getByTestId('review-output-card/content');
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.approveLabel'),
+            );
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.amountAllowanceLabel'),
+                ),
+            ).toBeTruthy();
+            expect(within(content).getByText('20 aEthUSDC')).toBeTruthy();
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.chainLabel'),
+                ),
+            ).toBeTruthy();
+            expect(within(content).getByText('Ethereum')).toBeTruthy();
+        });
+
+        it('should render unlimited allowance for max uint256 approve_data', async () => {
+            const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    token: {
+                        balance: '1',
+                        contract: '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c',
+                        decimals: 6,
+                        name: 'Aave Ethereum USDC',
+                        standard: 'ERC20',
+                        symbol: 'aEthUSDC',
+                    },
+                    type: 'approve_data',
+                    value: maxUint256,
+                    value2: 'Ethereum',
+                },
+                flowType: 'approve',
+            });
+
+            const content = getByTestId('review-output-card/content');
+
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.approveMaxAmount'),
+                ),
+            ).toBeOnTheScreen();
+        });
+
+        it('should not render Chain row for type "approve_data" when value2 is absent', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    token: {
+                        balance: '33.231005',
+                        contract: '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c',
+                        decimals: 6,
+                        name: 'Aave Ethereum USDC',
+                        standard: 'ERC20',
+                        symbol: 'aEthUSDC',
+                    },
+                    type: 'approve_data',
+                    value: '20000000',
+                },
+                flowType: 'approve',
+            });
+
+            const content = getByTestId('review-output-card/content');
+
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.amountAllowanceLabel'),
+                ),
+            ).toBeTruthy();
+            expect(
+                within(content).queryByText(
+                    getTranslation('transactionManagement.review.outputs.chainLabel'),
+                ),
+            ).toBeNull();
+        });
+    });
+
+    describe('exchange swap flow', () => {
+        it('should render "Recipient address" for type "address"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    type: 'address',
+                    value: '0x1234567890abcdef1234567890abcdef12345678',
+                    state: 'active',
+                },
+                flowType: 'swap',
+            });
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.addressLabel'),
+            );
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                '0x 1234 5678 90ab cdef 1234 5678 90ab cdef 1234 5678',
+            );
+        });
+
+        it('should render swap contract label and formatted contract address for type "contract"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    type: 'contract',
+                    value: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe',
+                },
+                flowType: 'swap',
+            });
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.swapContractLabel'),
+            );
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                '0x de0B 2956 69a9 FD93 d5F2 8D9E c85E 40f4 cb69 7BAe',
+            );
+        });
+    });
+
+    describe('exchange revoke-and-approve flow', () => {
+        it('should render Token revoke for type "address"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    type: 'address',
+                    value: '0x1234567890abcdef1234567890abcdef12345678',
+                    state: 'active',
+                },
+                flowType: 'revoke-and-approve',
+            });
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.tokenRevocationLabel'),
+            );
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.tokenRevocationDescription'),
+            );
+        });
+
+        it('should render "Revoke approval from" for type "contract"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    type: 'contract',
+                    value: '1inch Aggregation Router V6',
+                },
+                flowType: 'revoke-and-approve',
+            });
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.revokeApprovalFromLabel'),
+            );
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                '1inch Aggregation Router V6',
+            );
+        });
+
+        it('should render Revoke info for type "approve_data"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    token: {
+                        balance: '33.231005',
+                        contract: '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c',
+                        decimals: 6,
+                        name: 'Aave Ethereum USDC',
+                        standard: 'ERC20',
+                        symbol: 'aEthUSDC',
+                    },
+                    type: 'approve_data',
+                    value: '20000000',
+                    value2: 'Ethereum',
+                },
+                flowType: 'revoke-and-approve',
+            });
+
+            const content = getByTestId('review-output-card/content');
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.revokeLabel'),
+            );
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.tokenLabel'),
+                ),
+            ).toBeTruthy();
+            expect(within(content).getByText('aEthUSDC')).toBeTruthy();
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.chainLabel'),
+                ),
+            ).toBeTruthy();
+            expect(within(content).getByText('Ethereum')).toBeTruthy();
+        });
+    });
+
+    describe('exchange revoke flow', () => {
+        it('should render Token revoke for type "address"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    type: 'address',
+                    value: '0x1234567890abcdef1234567890abcdef12345678',
+                    state: 'active',
+                },
+                flowType: 'revoke',
+            });
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.tokenRevocationLabel'),
+            );
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.tokenRevocationDescription'),
+            );
+        });
+
+        it('should render "Approve to" for type "contract"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    type: 'contract',
+                    value: '1inch Aggregation Router V6',
+                },
+                flowType: 'revoke',
+            });
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.revokeApprovalFromLabel'),
+            );
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                '1inch Aggregation Router V6',
+            );
+        });
+
+        it('should render Revoke info for type "approve_data"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    token: {
+                        balance: '33.231005',
+                        contract: '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c',
+                        decimals: 6,
+                        name: 'Aave Ethereum USDC',
+                        standard: 'ERC20',
+                        symbol: 'aEthUSDC',
+                    },
+                    type: 'approve_data',
+                    value: '20000000',
+                    value2: 'Ethereum',
+                },
+                flowType: 'revoke',
+            });
+
+            const content = getByTestId('review-output-card/content');
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.revokeLabel'),
+            );
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.tokenLabel'),
+                ),
+            ).toBeTruthy();
+            expect(within(content).getByText('aEthUSDC')).toBeTruthy();
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.chainLabel'),
+                ),
+            ).toBeTruthy();
+            expect(within(content).getByText('Ethereum')).toBeTruthy();
+        });
+
+        it('should not render Chain row for type "approve_data" when value2 is absent', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    token: {
+                        balance: '33.231005',
+                        contract: '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c',
+                        decimals: 6,
+                        name: 'Aave Ethereum USDC',
+                        standard: 'ERC20',
+                        symbol: 'aEthUSDC',
+                    },
+                    type: 'approve_data',
+                    value: '20000000',
+                },
+                flowType: 'revoke',
+            });
+
+            const content = getByTestId('review-output-card/content');
+
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.tokenLabel'),
+                ),
+            ).toBeTruthy();
+            expect(
+                within(content).queryByText(
+                    getTranslation('transactionManagement.review.outputs.chainLabel'),
+                ),
+            ).toBeNull();
+        });
+    });
+
+    describe('contentBuilder prop', () => {
+        it('renders content returned by contentBuilder instead of default', async () => {
+            const contentBuilder = jest.fn().mockReturnValue(<Text>Custom Content</Text>);
+
+            const { getByText } = await renderReviewOutputItem({ contentBuilder });
+
+            expect(getByText('Custom Content')).toBeOnTheScreen();
+            expect(() => getByText('mockvalue')).toThrow();
+        });
+
+        it('passes all data props to contentBuilder', async () => {
+            const contentBuilder = jest.fn().mockReturnValue(undefined);
+
+            await renderReviewOutputItem({
+                contentBuilder,
+                reviewOutput: { type: 'note', value: 'some value', state: 'active' },
+            });
+
+            expect(contentBuilder).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    outputType: 'note',
+                    value: 'some value',
+                }),
+            );
+        });
+
+        it('falls back to default rendering when contentBuilder returns undefined', async () => {
+            const contentBuilder = jest.fn().mockReturnValue(undefined);
+
+            const { getByTestId } = await renderReviewOutputItem({
+                contentBuilder,
+                reviewOutput: { type: 'note', value: 'fallback note text', state: 'active' },
+            });
+
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                'fallback note text',
+            );
+        });
+    });
+
+    describe('ReviewOutputItemContent approve_data edge cases', () => {
+        it('should warn and render no content for approve_data when exchange flow is swap', async () => {
+            const warningSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    type: 'approve_data',
+                    value: '100',
+                } as StatefulReviewOutput,
+                flowType: 'swap',
+            });
+
+            expect(getByTestId('review-output-card/content')).toHaveTextContent('');
+            expect(warningSpy).toHaveBeenCalledWith(
+                'ReviewOutputItemContent: Unsupported output type "approve_data" with value "100".',
+            );
+        });
+
+        it('should render raw allowance value for approve_data on approve flow without token', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    type: 'approve_data',
+                    value: '123456789',
+                } as StatefulReviewOutput,
+                flowType: 'approve',
+            });
+
+            const content = getByTestId('review-output-card/content');
+
+            expect(within(content).getByText('123456789')).toBeOnTheScreen();
+        });
+    });
+});

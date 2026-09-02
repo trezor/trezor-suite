@@ -1,25 +1,25 @@
+import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils';
 
-import { invityEndpoint, swapQuotesBTCEthereum, swapTradeBTCEthereum } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
 
-const sendAmount = '0.0004';
+const sendAmount = '0.0015';
 const customFee = '10';
 
-test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
+test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(
-        async ({ onboardingPage, dashboardPage, walletPage, settingsPage, page, tradingMock }) => {
-            await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.swapQuotes, route => {
-                    route.fulfill({ json: swapQuotesBTCEthereum });
-                });
-                await tradingMock.routeSwapTrade(swapTradeBTCEthereum);
-            });
+        async ({ onboardingPage, dashboardPage, walletPage, settingsPage, tradingMockNew }) => {
+            tradingMockNew.setTradeFlow('swap');
+            // Backend is wired only as a broadcast guard; the test never gets past the device.
+            const btcBackend = await tradingMockNew.startBackend('btc');
 
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc', 'eth'] });
+            await settingsPage.changeNetworks({
+                enableNetworks: [{ symbol: 'btc', backend: btcBackend }, 'eth'],
+            });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'btc' });
@@ -39,36 +39,31 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
                 buyAsset: {
                     searchFilter: 'Ethereum',
                     networkFilter: 'eth',
-                    networkSymbol: 'eth',
+                    assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
                 },
             });
             await tradingPage.fees.switchToCustom();
             await tradingPage.fees.customInput.fill(customFee);
             feeRate = await tradingPage.fees.getBitcoinFeeRate('custom');
-
-            // Wait for TX precomposition to avoid
-            await new Promise(resolve => setTimeout(resolve, 2500));
+            await tradingPage.fees.waitToBeCalculated();
         });
 
         await test.step('Continue Swap flow towards Send section', async () => {
             await tradingPage.swapBestOfferButton.click();
             await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
             await tradingPage.confirmation.openConfirmAndSendModal();
-            await expect(devicePrompt.headerParagraph).toContainText('Bitcoin #1');
+            await expect(devicePrompt.header.accountLabel).toHaveText('Bitcoin #1');
             await devicePrompt.waitForPromptAndClick();
             await devicePrompt.waitForPromptAndClick();
         });
 
         await test.step('Verify fees on modal and emulator', async () => {
-            const feeFromDeviceModal = await devicePrompt.cryptoAmountOf('fee').textContent();
-            if (!feeFromDeviceModal) {
-                throw new Error('"Including fee" is not displayed on the device prompt modal');
-            }
+            const feeFromDeviceModal = await devicePrompt.cryptoAmountOf('fee').innerText();
             const totalAmount = new BigNumber(feeFromDeviceModal).plus(sendAmount).toString();
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 `${totalAmount} BTC`,
             );
-            await expect(devicePrompt.headerFeeRate).toContainText(feeRate);
+            await expect(devicePrompt.header.feeRateValue).toHaveText(feeRate);
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
@@ -88,11 +83,11 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
 
         await test.step('Verify Fee Info on emulator', async () => {
             await device.openFeeInfo({ buttonIndexT3W1: 2 });
-            const feeRateWithoutDecimals = feeRate.replace('.00\u00A0', ' ');
+            const feeRateOnDevice = `${new BigNumber(feeRate).toString()} sat/vB`;
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Fee info' },
-                    body: [['Fee rate'], [feeRateWithoutDecimals]],
+                    body: [['Fee rate'], [feeRateOnDevice]],
                 },
                 T3T1: { footer: undefined },
             });

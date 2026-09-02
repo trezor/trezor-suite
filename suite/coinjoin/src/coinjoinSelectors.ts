@@ -1,8 +1,6 @@
 import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 import { type LocksRootState, selectIsDeviceOrUiLocked } from '@suite/locks';
-import { type ModalRootState } from '@suite/modal';
-import { type RouterRootState } from '@suite/router';
-import { type TorRootState, selectTorState } from '@suite/tor';
+import { type TorRootState, selectIsTorEnabled } from '@suite/tor';
 import { type DeviceRootState, selectDeviceStatus } from '@suite-common/device';
 import {
     Feature,
@@ -11,13 +9,7 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import {
-    type AccountsRootState,
-    type BlockchainRootState,
-    type TransactionsRootState,
-    type WalletSettingsRootState,
-    selectAccountByKey,
-} from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getInputSize, getOutputSize } from '@trezor/coinjoin';
 import { BigNumber } from '@trezor/utils';
@@ -46,23 +38,14 @@ export type CoinjoinRootState = {
     wallet: {
         coinjoin: CoinjoinState;
     };
-    // slim slice of the suite reducer; declared locally to avoid a dependency on the suite app
+};
+
+// Slim suite slice declared locally to avoid a dependency on the desktop app's whole state.
+export type SuiteOnlineRootState = {
     suite: {
         online: boolean;
     };
-} & AccountsRootState &
-    BlockchainRootState &
-    TransactionsRootState &
-    WalletSettingsRootState &
-    SelectedAccountRootState &
-    DeviceRootState &
-    RouterRootState &
-    ModalRootState &
-    TorRootState &
-    MessageSystemRootState &
-    LocksRootState;
-
-export type GetState = () => CoinjoinRootState;
+};
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<CoinjoinRootState>();
 
@@ -72,6 +55,8 @@ export const selectCoinjoinIsPreloading = (state: CoinjoinRootState) =>
     state.wallet.coinjoin.isPreloading;
 
 export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.coinjoin.clients;
+
+export const selectCoinjoinDebug = (state: CoinjoinRootState) => state.wallet.coinjoin.debug;
 
 export const selectRoundsDurationInHours = (state: CoinjoinRootState) =>
     state.wallet.coinjoin.config.roundsDurationInHours;
@@ -117,7 +102,9 @@ export const selectTargetAnonymityByAccountKey = (
     return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
 };
 
-export const selectCurrentCoinjoinBalanceBreakdown = (state: CoinjoinRootState) => {
+export const selectCurrentCoinjoinBalanceBreakdown = (
+    state: CoinjoinRootState & SelectedAccountRootState,
+) => {
     const selectedAccount = selectSelectedAccount(state);
     const targetAnonymity = selectedAccount
         ? selectTargetAnonymityByAccountKey(state, selectedAccount.key)
@@ -157,7 +144,7 @@ export const selectRegisteredUtxosByAccountKey = createMemoizedSelector(
 );
 
 export const selectSessionProgressByAccountKey = (
-    state: CoinjoinRootState,
+    state: AccountsRootState & CoinjoinRootState,
     accountKey: AccountKey | null,
 ) => {
     const relatedAccount = selectAccountByKey(state, accountKey);
@@ -178,7 +165,9 @@ export const selectSessionProgressByAccountKey = (
     return progress;
 };
 
-export const selectCurrentCoinjoinSession = (state: CoinjoinRootState) => {
+export const selectCurrentCoinjoinSession = (
+    state: CoinjoinRootState & SelectedAccountRootState,
+) => {
     const selectedAccount = selectSelectedAccount(state);
     const coinjoinAccounts = selectCoinjoinAccounts(state);
 
@@ -191,7 +180,9 @@ export const selectCurrentCoinjoinSession = (state: CoinjoinRootState) => {
     return session;
 };
 
-export const selectCurrentTargetAnonymity = (state: CoinjoinRootState) => {
+export const selectCurrentTargetAnonymity = (
+    state: CoinjoinRootState & SelectedAccountRootState,
+) => {
     const selectedAccount = selectSelectedAccount(state);
     const targetAnonymity = selectedAccount
         ? selectTargetAnonymityByAccountKey(state, selectedAccount.key)
@@ -257,7 +248,7 @@ export const selectMinAllowedInputWithFee = (state: CoinjoinRootState, accountKe
 };
 
 export const selectIsNothingToAnonymizeByAccountKey = (
-    state: CoinjoinRootState,
+    state: AccountsRootState & CoinjoinRootState,
     accountKey: AccountKey,
 ) => {
     const minAllowedInputWithFee = selectMinAllowedInputWithFee(state, accountKey);
@@ -275,7 +266,7 @@ export const selectIsNothingToAnonymizeByAccountKey = (
 };
 
 export const selectWeightedAnonymityByAccountKey = (
-    state: CoinjoinRootState,
+    state: AccountsRootState & CoinjoinRootState,
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
@@ -298,7 +289,7 @@ export const selectWeightedAnonymityByAccountKey = (
 };
 
 export const selectRoundsNeededByAccountKey = (
-    state: CoinjoinRootState,
+    state: AccountsRootState & CoinjoinRootState,
     accountKey: AccountKey,
 ) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
@@ -359,7 +350,7 @@ export const selectRoundsLeftByAccountKey = (state: CoinjoinRootState, accountKe
     return maxRounds - signedRounds.length;
 };
 
-export const selectHasAnonymitySetError = (state: CoinjoinRootState) => {
+export const selectHasAnonymitySetError = (state: SelectedAccountRootState) => {
     const selectedAccount = selectSelectedAccount(state);
 
     if (!selectedAccount) {
@@ -376,7 +367,13 @@ export const selectHasAnonymitySetError = (state: CoinjoinRootState) => {
 };
 
 export const selectCoinjoinSessionBlockerByAccountKey = (
-    state: CoinjoinRootState & DeviceRootState & LocksRootState,
+    state: CoinjoinRootState &
+        DeviceRootState &
+        LocksRootState &
+        MessageSystemRootState &
+        SelectedAccountRootState &
+        SuiteOnlineRootState &
+        TorRootState,
     accountKey: AccountKey | null,
 ) => {
     if (accountKey === null) {
@@ -398,7 +395,7 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     if (selectIsNothingToAnonymizeByAccountKey(state, accountKey)) {
         return 'NOTHING_TO_ANONYMIZE';
     }
-    if (!selectTorState(state).isTorEnabled) {
+    if (!selectIsTorEnabled(state)) {
         return 'TOR_DISABLED';
     }
     if (!['connected', 'firmware-recommended'].includes(selectDeviceStatus(state) ?? '')) {
@@ -416,7 +413,15 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     }
 };
 
-export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState & DeviceRootState) => {
+export const selectCurrentCoinjoinWheelStates = (
+    state: CoinjoinRootState &
+        DeviceRootState &
+        LocksRootState &
+        MessageSystemRootState &
+        SelectedAccountRootState &
+        SuiteOnlineRootState &
+        TorRootState,
+) => {
     const { notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
     const { key, balance } = selectSelectedAccount(state) || {};
     const coinjoinAccount = selectCoinjoinAccountByKey(state, key || null);
@@ -471,7 +476,7 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState & Devi
 
 // return tuple of arguments used by startCoinjoinSession action
 export const selectStartCoinjoinSessionArguments = (
-    state: CoinjoinRootState,
+    state: CoinjoinRootState & SelectedAccountRootState,
     accountKey: AccountKey,
 ) => {
     const selectedAccount = selectSelectedAccount(state);
@@ -503,7 +508,9 @@ export const selectStartCoinjoinSessionArguments = (
     ] as const;
 };
 
-export const selectCurrentSessionDeadlineInfo = (state: CoinjoinRootState) => {
+export const selectCurrentSessionDeadlineInfo = (
+    state: CoinjoinRootState & SelectedAccountRootState,
+) => {
     const session = selectCurrentCoinjoinSession(state);
 
     const { roundPhase, roundPhaseDeadline, sessionDeadline } = session || {};
@@ -516,7 +523,7 @@ export const selectCurrentSessionDeadlineInfo = (state: CoinjoinRootState) => {
 };
 
 // Return true if it's not explicitly set to false in the message-system config.
-export const selectIsPublic = (state: CoinjoinRootState) =>
+export const selectIsPublic = (state: MessageSystemRootState) =>
     selectFeatureConfig(state, Feature.coinjoin)?.isPublic !== false;
 
 export const selectIsSessionAutostopped = (state: CoinjoinRootState, accountKey: AccountKey) => {

@@ -1,9 +1,11 @@
 import { Translation } from '@suite/intl';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
+import { selectIsSuspiciousTransactionsBlurringEnabled } from '@suite-common/wallet-core';
 import { getTxHeaderSymbol, isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Row, TextButton, Tooltip } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
+import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { InstantStakeBadge } from './InstantStakeBadge';
@@ -42,6 +44,10 @@ export const TransactionHeading = ({
     phishingDetectorId,
     dataTestBase,
 }: TransactionHeadingProps) => {
+    const isBlurringEnabled = useSelector(state =>
+        selectIsSuspiciousTransactionsBlurringEnabled(state, transaction.symbol),
+    );
+
     const symbol = getTxHeaderSymbol(transaction);
 
     return (
@@ -67,7 +73,7 @@ export const TransactionHeading = ({
             isActive={isPhishingTransaction}
             hasIcon
         >
-            <BlurWrapper $isBlurred={isPhishingTransaction}>
+            <BlurWrapper $isBlurred={isPhishingTransaction && isBlurringEnabled}>
                 <Row gap={4} data-testid={`${dataTestBase}/heading`}>
                     <TransactionHeader transaction={transaction} isPending={isPending} />
                     {isSupportedEthStakingNetworkSymbol(transaction.symbol) && (

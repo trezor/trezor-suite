@@ -1,0 +1,358 @@
+import { combineReducers } from '@reduxjs/toolkit';
+import { type CryptoId } from 'invity-api';
+
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestStore } from '@suite-common/test-utils';
+import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+
+import { ALTERNATIVE_QUOTES } from '../../__fixtures__/buyUtils';
+import {
+    type QuoteRefetchingState,
+    REFETCH_QUOTES_MAX_COUNT,
+    initialState,
+} from '../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { selectTradingBuyPaymentMethods } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
+import {
+    type HandleBuyRequestThunkProps,
+    type TradingAssetOption,
+    type TradingBuyFormProps,
+} from '../../types';
+import { MIN_MAX_QUOTES_OK } from '../../utils/buy/__fixtures__/buyUtils';
+
+import { buyThunks } from './index';
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const createMockQuotes = () =>
+    [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES].map(quote => ({ ...quote }));
+
+describe('handleBuyRequestThunk', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    jest.mock('../../tradeApi');
+
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
+
+    const getMocks = (
+        refetchQuotesOverride?: Partial<QuoteRefetchingState>,
+        coinsOverride?: NonNullable<typeof initialState.info.coins>,
+    ) => {
+        const store = createTestStore({
+            extra: undefined,
+            reducer: combineReducers({
+                wallet: combineReducers({
+                    trading: tradingReducer,
+                }),
+            }),
+            preloadedState: {
+                wallet: {
+                    trading: {
+                        ...initialState,
+                        info: {
+                            ...initialState.info,
+                            coins: {
+                                bitcoin: {
+                                    symbol: 'btc',
+                                    name: 'Bitcoin',
+                                    coingeckoId: 'bitcoin',
+                                    services: {
+                                        buy: true,
+                                        sell: false,
+                                        exchange: false,
+                                    },
+                                },
+                                ...coinsOverride,
+                            },
+                        },
+                        quoteRefetchingState: {
+                            ...initialState.quoteRefetchingState,
+                            ...refetchQuotesOverride,
+                        },
+                    },
+                },
+            },
+        });
+
+        const formValues: TradingBuyFormProps = {
+            fiatInput: '1000',
+            cryptoInput: '0',
+            currencySelect: {
+                value: 'usd',
+                label: 'USD',
+            },
+            cryptoSelect: {
+                id: 'bitcoin' as CryptoId,
+                isNativeToken: true,
+                name: 'Bitcoin',
+                symbol: btcSymbol,
+                coingeckoId: 'bitcoin',
+                displaySymbol: 'BTC',
+                displaySymbolName: 'Bitcoin',
+                contractAddress: null,
+                networkName: 'Bitcoin',
+                networkSymbol: btcSymbol,
+            } satisfies TradingAssetOption,
+            countrySelect: {
+                value: 'CZ',
+                codeAlpha3: 'CZE',
+                flag: '🇨🇿',
+                name: 'Czechia',
+                label: '🇨🇿 Czechia',
+                shortLabel: '🇨🇿 CZE',
+            },
+            paymentMethod: {
+                value: 'creditCard',
+                label: 'Credit Card',
+            },
+            amountInCrypto: false,
+            receiveAddress: 'RECEIVE_ADDRESS',
+        };
+        const input: HandleBuyRequestThunkProps = {
+            formValues,
+            network: getNetwork(btcSymbol),
+            shouldSendInSats: false,
+        };
+
+        return {
+            input,
+            store,
+        };
+    };
+
+    it('should successfully request quotes and save them', async () => {
+        const { input, store } = getMocks();
+        const mockQuotes = createMockQuotes();
+
+        tradeApi.getBuyQuotes = () => Promise.resolve(mockQuotes);
+
+        const quotesResponse = await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
+
+        const state = store.getState().wallet.trading;
+
+        expect(state.buy.amountLimits).toBeUndefined();
+        expect(state.buy.quotes?.length).toEqual(2);
+        expect(state.buy.quotesRequest).toEqual({
+            country: 'CZ',
+            cryptoStringAmount: '0',
+            fiatCurrency: 'USD',
+            fiatStringAmount: '1000',
+            receiveCurrency: 'bitcoin',
+            receiveAddress: 'RECEIVE_ADDRESS',
+            wantCrypto: false,
+        });
+        expect(selectTradingBuyPaymentMethods(store.getState()).length).toEqual(1);
+        expect(state.isLoading).toBe(false);
+        expect(state.quoteRefetchingState.status).toBe('running');
+        expect(state.quoteRefetchingState.lastFetchTimestamp).toBeGreaterThan(0);
+        expect(quotesResponse).toEqual([
+            expect.objectContaining(mockQuotes[1]),
+            expect.objectContaining(mockQuotes[6]),
+        ]);
+    });
+
+    it.each([
+        [
+            'incorrect fiatInput and cryptoInput',
+            {
+                fiatInput: undefined,
+                cryptoInput: undefined,
+            },
+        ],
+        [
+            'incorrect cryptoSelect',
+            {
+                cryptoSelect: undefined as unknown as TradingAssetOption,
+            },
+        ],
+        [
+            'country with subdivisions but no subdivision selected',
+            {
+                countrySelect: {
+                    value: 'US' as const,
+                    codeAlpha3: 'USA',
+                    flag: '🇺🇸',
+                    name: 'United States of America',
+                    label: '🇺🇸 United States',
+                    shortLabel: '🇺🇸 USA',
+                },
+                countrySubdivisionSelect: undefined,
+            },
+        ],
+    ])('should not save quotes when %s', async (_, incorrectFormValues) => {
+        const { input, store } = getMocks();
+        const inputWithIncorrectData = {
+            ...input,
+            formValues: {
+                ...input.formValues,
+                ...incorrectFormValues,
+            },
+        };
+
+        const promise = store.dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData));
+        await promise;
+
+        const state = store.getState().wallet.trading;
+
+        expect(state.buy.quotesRequest).toBeUndefined();
+        expect(state.buy.quotes?.length).toEqual(0);
+        expect(state.isLoading).toBe(false);
+        await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
+    });
+
+    it('should request quotes and include subdivision when country has subdivisions and subdivision is selected', async () => {
+        const { input, store } = getMocks();
+        const mockQuotes = createMockQuotes();
+
+        tradeApi.getBuyQuotes = () => Promise.resolve(mockQuotes);
+
+        const quotesResponse = await store
+            .dispatch(
+                buyThunks.handleRequestThunk({
+                    ...input,
+                    formValues: {
+                        ...input.formValues,
+                        countrySelect: {
+                            value: 'US' as const,
+                            codeAlpha3: 'USA',
+                            flag: '🇺🇸',
+                            name: 'United States of America',
+                            label: '🇺🇸 United States',
+                            shortLabel: '🇺🇸 USA',
+                        },
+                        countrySubdivisionSelect: {
+                            value: 'CA',
+                            label: 'California',
+                            name: 'California',
+                        },
+                    },
+                }),
+            )
+            .unwrap();
+
+        const state = store.getState().wallet.trading;
+
+        expect(state.buy.amountLimits).toBeUndefined();
+        expect(state.buy.quotes?.length).toEqual(2);
+        expect(state.buy.quotesRequest).toEqual({
+            country: 'US',
+            subdivision: 'CA',
+            cryptoStringAmount: '0',
+            fiatCurrency: 'USD',
+            fiatStringAmount: '1000',
+            receiveCurrency: 'bitcoin',
+            receiveAddress: 'RECEIVE_ADDRESS',
+            wantCrypto: false,
+        });
+        expect(quotesResponse).toEqual([
+            expect.objectContaining(mockQuotes[1]),
+            expect.objectContaining(mockQuotes[6]),
+        ]);
+    });
+
+    it('should save empty quotes when empty array is returned from in the response', async () => {
+        const { input, store } = getMocks();
+
+        tradeApi.getBuyQuotes = () => Promise.resolve([]);
+
+        const quotesResponse = await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
+
+        const state = store.getState().wallet.trading;
+
+        expect(state.buy.quotes?.length).toEqual(0);
+        expect(state.buy.quotesRequest).toEqual({
+            country: 'CZ',
+            cryptoStringAmount: '0',
+            fiatCurrency: 'USD',
+            fiatStringAmount: '1000',
+            receiveCurrency: 'bitcoin',
+            receiveAddress: 'RECEIVE_ADDRESS',
+            wantCrypto: false,
+        });
+        expect(state.isLoading).toBe(false);
+        expect(state.quoteRefetchingState.status).toBe('stopped');
+        expect(state.quoteRefetchingState.lastFetchTimestamp).toBeUndefined();
+        expect(quotesResponse).toEqual([]);
+    });
+
+    it('should not save quotes, when request is aborted', async () => {
+        const { input, store } = getMocks();
+
+        tradeApi.getBuyQuotes = () => Promise.resolve([]);
+
+        const promise = store.dispatch(buyThunks.handleRequestThunk(input));
+
+        promise.abort();
+        await promise;
+
+        const state = store.getState().wallet.trading;
+
+        expect(state.buy.quotes?.length).toEqual(0);
+        expect(state.buy.quotesRequest).toBeUndefined();
+        expect(state.isLoading).toBe(false);
+        expect(state.quoteRefetchingState.status).toBe('stopped');
+        expect(state.quoteRefetchingState.lastFetchTimestamp).toBeUndefined();
+        await expect(() => promise.unwrap()).rejects.toEqual({
+            message: 'Aborted',
+            name: 'AbortError',
+        });
+    });
+
+    it('should set refetch timestamp and decrement remaining refetches on success when refetch is running', async () => {
+        const { input, store } = getMocks({ status: 'running' });
+        const mockQuotes = createMockQuotes();
+        const beforeTimestamp = Date.now();
+
+        tradeApi.getBuyQuotes = () => Promise.resolve(mockQuotes);
+
+        await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
+
+        const { quoteRefetchingState: refetchQuotes } = store.getState().wallet.trading;
+
+        expect(refetchQuotes.status).toBe('running');
+        expect(refetchQuotes.lastFetchTimestamp).toBeGreaterThanOrEqual(beforeTimestamp);
+        expect(refetchQuotes.remainingRefetches).toBe(REFETCH_QUOTES_MAX_COUNT - 1);
+    });
+
+    it('should stop refetch when last remaining refetch is consumed on success', async () => {
+        const { input, store } = getMocks({ status: 'running', remainingRefetches: 1 });
+        const mockQuotes = createMockQuotes();
+
+        tradeApi.getBuyQuotes = () => Promise.resolve(mockQuotes);
+
+        await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
+
+        const { quoteRefetchingState: refetchQuotes } = store.getState().wallet.trading;
+
+        expect(refetchQuotes.status).toBe('stopped');
+        expect(refetchQuotes.remainingRefetches).toBe(0);
+        expect(refetchQuotes.lastFetchTimestamp).toBeDefined();
+    });
+
+    it('should reset refetch state when request data is invalid while refetch is running', async () => {
+        const { input, store } = getMocks({
+            status: 'running',
+            remainingRefetches: 10,
+            lastFetchTimestamp: Date.now(),
+        });
+
+        const promise = store.dispatch(
+            buyThunks.handleRequestThunk({
+                ...input,
+                formValues: { ...input.formValues, fiatInput: undefined, cryptoInput: undefined },
+            }),
+        );
+        await promise;
+
+        const { quoteRefetchingState: refetchQuotes } = store.getState().wallet.trading;
+
+        expect(refetchQuotes.status).toBe('stopped');
+        expect(refetchQuotes.remainingRefetches).toBe(REFETCH_QUOTES_MAX_COUNT);
+        expect(refetchQuotes.lastFetchTimestamp).toBeUndefined();
+    });
+});

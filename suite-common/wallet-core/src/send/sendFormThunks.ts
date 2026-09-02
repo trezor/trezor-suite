@@ -1,9 +1,15 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { type AnalyticsDep } from '@suite-common/analytics';
 import { Calldata } from '@suite-common/calldata';
-import { selectSelectedDevice } from '@suite-common/device';
-import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    type ActionsFromAsyncThunk,
+    type WithServices,
+    createThunk,
+} from '@suite-common/redux-utils';
+import { type GetIsWindowVisibleDep, type OnModalCancelDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -12,6 +18,7 @@ import {
     type ComposeActionContext,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
+    type GetTradedAccountKeysDep,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
     type PrecomposedTransactionFinal,
@@ -43,6 +50,7 @@ import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: blocked on blockchain plugin modularisation; remove this exception once Solana helpers are exposed via a public API (see #27376 deferred work)
 import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
@@ -60,6 +68,7 @@ import {
     composeEthereumTransactionFeeLevelsThunk,
     signEthereumSendFormTransactionThunk,
 } from './sendFormEthereumThunks';
+import { type SendRootState } from './sendFormReducer';
 import {
     composeRippleStellarTransactionFeeLevelsThunk,
     signRippleStellarSendFormTransactionThunk,
@@ -82,14 +91,22 @@ import {
     type SignTransactionTimeoutError,
 } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
-import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
+import { type BlockchainRootState } from '../blockchain/blockchainReducer';
 import {
+    type SyncAccountsWithBlockchainThunkState,
+    syncAccountsWithBlockchainThunk,
+} from '../blockchain/blockchainThunks';
+import { type FeesRootState } from '../fees/feesReducer';
+import {
+    type WalletSettingsRootState,
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
     selectIsNetworkReserveEnabled,
 } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import {
     addFakePendingCardanoTxThunk,
     addFakePendingEvmTxThunk,
@@ -100,15 +117,22 @@ import {
     signTronSendFormTransactionThunk,
 } from './tron/sendFormTronThunks';
 
-export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
+type ConvertSendFormDraftsBtcAmountUnitsThunkParams = {
+    selectedAccountKey?: AccountKey;
+    isOnSendPage?: boolean;
+};
+
+type ConvertSendFormDraftsBtcAmountUnitsThunkState = AccountsRootState &
+    SendRootState &
+    WalletSettingsRootState;
+
+export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk<
+    void,
+    ConvertSendFormDraftsBtcAmountUnitsThunkParams,
+    { state: ConvertSendFormDraftsBtcAmountUnitsThunkState }
+>(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
-    (
-        {
-            selectedAccountKey,
-            isOnSendPage,
-        }: { selectedAccountKey?: AccountKey; isOnSendPage?: boolean },
-        { dispatch, getState, rejectWithValue },
-    ) => {
+    ({ selectedAccountKey, isOnSendPage }, { dispatch, getState, rejectWithValue }) => {
         const sendFormDrafts = selectSendFormDrafts(getState());
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
 
@@ -163,10 +187,17 @@ type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
     | typeof composeTronTransactionFeeLevelsThunk
 >;
 
+export type ComposeSendFormTransactionFeeLevelsThunkState = BlockchainRootState &
+    DeviceRootState &
+    WalletSettingsRootState;
+
 export const composeSendFormTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels | PrecomposedLevelsCardano,
     { formState: FormState; composeContext: ComposeActionContext },
-    { rejectValue: ComposeFeeLevelsError }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeSendFormTransactionFeeLevelsThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeSendFormTransactionThunk`,
     async ({ formState, composeContext }, { getState, dispatch, rejectWithValue }) => {
@@ -231,7 +262,21 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-export const cancelSignSendFormTransactionThunk = createThunk(
+export type CancelSignSendFormTransactionThunkState = SendRootState;
+
+export type CancelSignSendFormTransactionThunkDeps = {
+    actions: OnModalCancelDep;
+};
+
+export const cancelSignSendFormTransactionThunk = createThunk<
+    void,
+    void,
+    {
+        state: CancelSignSendFormTransactionThunkState;
+        extra: CancelSignSendFormTransactionThunkDeps;
+        rejectValue: string;
+    }
+>(
     `${SEND_MODULE_PREFIX}/cancelSignSendFormTransactionThunk`,
     (_, { dispatch, getState, extra, rejectWithValue }) => {
         const {
@@ -252,25 +297,36 @@ export const cancelSignSendFormTransactionThunk = createThunk(
     },
 );
 
-export const synchronizeSentTransactionThunk = createThunk(
+type SynchronizeSentTransactionThunkParams = {
+    selectedAccount: Account;
+    precomposedTransaction: GeneralPrecomposedTransactionFinal;
+    precomposedForm?: FormState;
+    txid: string;
+    // The nonce the EVM tx was actually signed with. Forwarded to the fake pending tx so it
+    // shows the true nonce instead of a value re-derived from the pending-inclusive
+    // account.misc.nonce (which reads one too high until the backend picks up the real tx).
+    ethereumNonce?: string;
+};
+
+export type SynchronizeSentTransactionThunkState = FeesRootState &
+    SendRootState &
+    SyncAccountsWithBlockchainThunkState;
+
+export type SynchronizeSentTransactionThunkDeps = WithServices<
+    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
+>;
+
+export const synchronizeSentTransactionThunk = createThunk<
+    void,
+    SynchronizeSentTransactionThunkParams,
+    {
+        state: SynchronizeSentTransactionThunkState;
+        extra: SynchronizeSentTransactionThunkDeps;
+    }
+>(
     `${SEND_MODULE_PREFIX}/synchronizePendingTransactionsThunk`,
     (
-        {
-            selectedAccount,
-            precomposedTransaction,
-            precomposedForm,
-            txid,
-            ethereumNonce,
-        }: {
-            selectedAccount: Account;
-            precomposedTransaction: GeneralPrecomposedTransactionFinal;
-            precomposedForm?: FormState;
-            txid: string;
-            // The nonce the EVM tx was actually signed with. Forwarded to the fake pending tx so it
-            // shows the true nonce instead of a value re-derived from the pending-inclusive
-            // account.misc.nonce (which reads one too high until the backend picks up the real tx).
-            ethereumNonce?: string;
-        },
+        { selectedAccount, precomposedTransaction, precomposedForm, txid, ethereumNonce },
         { dispatch },
     ) => {
         // notification from the backend may be delayed.
@@ -323,7 +379,7 @@ export const synchronizeSentTransactionThunk = createThunk(
                 const { prevTxid } = precomposedTransaction;
                 void TrezorConnect.blockchainGetTransactions({
                     txs: [prevTxid],
-                    coin: selectedAccount.symbol,
+                    coin: asCoinSymbol(selectedAccount.symbol),
                 });
                 dispatch(
                     transactionsActions.removeTransaction({
@@ -332,6 +388,13 @@ export const synchronizeSentTransactionThunk = createThunk(
                     }),
                 );
             }
+
+            // Kick the periodic sync chain: external-backend EVM networks get no block-driven
+            // syncs and the confirmation notification can be missed, so the self-re-arming
+            // per-symbol sync is the guaranteed path from pending to confirmed — make sure it
+            // is running now that a pending tx exists. The fake pending tx added above carries
+            // a deadline, so the immediate fetch keeps it until the backend picks up the real tx.
+            dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
         } else {
             // there is no point in fetching account data right after tx submit
             //  as the account will update only after the tx is confirmed
@@ -340,10 +403,21 @@ export const synchronizeSentTransactionThunk = createThunk(
     },
 );
 
+export type PushSendFormTransactionThunkState = SynchronizeSentTransactionThunkState;
+
+export type PushSendFormTransactionThunkDeps = {
+    actions: OnModalCancelDep;
+    services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
+};
+
 export const pushSendFormTransactionThunk = createThunk<
     Ok<{ txid: string }>,
     { selectedAccount: Account; isMevProtectionEnabled: boolean },
-    { rejectValue: PushTransactionError }
+    {
+        rejectValue: PushTransactionError;
+        state: PushSendFormTransactionThunkState;
+        extra: PushSendFormTransactionThunkDeps;
+    }
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormTransactionThunk`,
     async (
@@ -379,7 +453,7 @@ export const pushSendFormTransactionThunk = createThunk<
 
         const pushTxResponse = await TrezorConnect.pushTransaction({
             tx: txData,
-            coin: serializedTx.symbol,
+            coin: asCoinSymbol(serializedTx.symbol),
             identity: tryGetAccountIdentity(selectedAccount),
         });
 
@@ -505,18 +579,31 @@ export const pushSendFormTransactionThunk = createThunk<
 );
 
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
-export const pushSendFormRawTransactionThunk = createThunk(
+type PushSendFormRawTransactionThunkParams = {
+    tx: string;
+    symbol: NetworkSymbol;
+    descriptor: string;
+    identity?: string;
+    isMevProtectionEnabled: boolean;
+};
+
+type PushSendFormRawTransactionThunkState = DeviceRootState & SyncAccountsWithBlockchainThunkState;
+
+type PushSendFormRawTransactionThunkDeps = WithServices<
+    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
+>;
+
+export const pushSendFormRawTransactionThunk = createThunk<
+    boolean,
+    PushSendFormRawTransactionThunkParams,
+    {
+        state: PushSendFormRawTransactionThunkState;
+        extra: PushSendFormRawTransactionThunkDeps;
+        rejectValue: string;
+    }
+>(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
-    async (
-        payload: {
-            tx: string;
-            symbol: NetworkSymbol;
-            descriptor: string;
-            identity?: string;
-            isMevProtectionEnabled: boolean;
-        },
-        { dispatch, getState, fulfillWithValue, rejectWithValue },
-    ) => {
+    async (payload, { dispatch, getState, fulfillWithValue, rejectWithValue }) => {
         const txData = getMevProtectedTxData(
             payload.symbol,
             payload.tx,
@@ -525,7 +612,7 @@ export const pushSendFormRawTransactionThunk = createThunk(
 
         const sentTx = await TrezorConnect.pushTransaction({
             tx: txData,
-            coin: payload.symbol,
+            coin: asCoinSymbol(payload.symbol),
             identity: payload.identity,
         });
 
@@ -574,10 +661,18 @@ type SignTransactionThunkParams = {
     paymentRequests?: PROTO.PaymentRequest[];
 };
 
+export type SignTransactionThunkState = AccountsRootState &
+    DeviceRootState &
+    TransactionsRootState &
+    WalletSettingsRootState;
+
 export const signTransactionThunk = createThunk<
     { serializedTx: string; signedTx?: BlockbookTransaction },
     SignTransactionThunkParams,
-    { rejectValue: SignTransactionError | SignTransactionTimeoutError | undefined }
+    {
+        rejectValue: SignTransactionError | SignTransactionTimeoutError | undefined;
+        state: SignTransactionThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signTransactionThunk`,
     async (
@@ -678,6 +773,8 @@ export const signTransactionThunk = createThunk<
     },
 );
 
+export type EnhancePrecomposedTransactionThunkState = DeviceRootState;
+
 export const enhancePrecomposedTransactionThunk = createThunk<
     GeneralPrecomposedTransactionFinal,
     {
@@ -685,7 +782,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         precomposedTransaction: GeneralPrecomposedTransactionFinal;
         selectedAccount: Account;
     },
-    { rejectValue: string }
+    { rejectValue: string; state: EnhancePrecomposedTransactionThunkState }
 >(
     `${SEND_MODULE_PREFIX}/enhancePrecomposedTransactionThunk`,
     async (
@@ -776,7 +873,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             selectedAccountNetwork.chainId
         ) {
             isTokenKnown = await fetch(
-                `https://data.trezor.io/firmware/eth-definitions/chain-id/${
+                `https://data.trezor.io/firmware/definitions/eth/chain-id/${
                     selectedAccountNetwork.chainId
                 }/token-${enhancedPrecomposedTransaction.token.contract.substring(2).toLowerCase()}.dat`,
                 { method: 'HEAD' },

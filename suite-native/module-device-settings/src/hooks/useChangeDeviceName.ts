@@ -6,7 +6,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { useForm } from '@suite-native/forms';
+import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
     type DeviceNameStackParamList,
@@ -39,7 +39,7 @@ export const useChangeDeviceName = () => {
     });
 
     const deviceNameError = form.formState.errors.deviceName;
-    const deviceNameValue = form.watch('deviceName');
+    const deviceNameValue = useWatch({ control: form.control, name: 'deviceName' });
     const isMaxLengthReached = deviceNameValue.length >= MAX_LENGTH;
     const isSubmittable = form.formState.isValid && deviceNameValue.length <= MAX_LENGTH;
 

@@ -1,5 +1,9 @@
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
+import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -14,10 +18,15 @@ type CheckDeviceAuthenticityThunkParams = {
     skipSuccessToast?: boolean;
 };
 
+type CheckDeviceAuthenticityThunkState = DeviceRootState & MessageSystemRootState;
+
 export const checkDeviceAuthenticityThunk = createThunk<
     StoredAuthenticateDeviceResult,
     CheckDeviceAuthenticityThunkParams,
-    { rejectValue: StoredAuthenticateDeviceResult }
+    {
+        rejectValue: StoredAuthenticateDeviceResult;
+        state: CheckDeviceAuthenticityThunkState;
+    }
 >(
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
     async (

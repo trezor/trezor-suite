@@ -1,4 +1,5 @@
-import { TorLoader } from 'src/components/suite';
+import { TorLoader } from '@suite/tor-desktop';
+
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 import { useTor } from 'src/support/suite/useTor';
 

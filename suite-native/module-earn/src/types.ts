@@ -3,14 +3,13 @@ import { type EarnDashboardType } from '@suite-common/message-system';
 import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
-    type AccountDescriptor,
     type AccountKey,
     type BaseCurrencyAmount,
     type TokenAddress,
     type TokenSymbol,
 } from '@suite-common/wallet-types';
 
-type StablecoinYieldPricePerShareState = NonNullable<YieldDtoV2['state']>['pricePerShareState'];
+type YieldPricePerShareState = NonNullable<YieldDtoV2['state']>['pricePerShareState'];
 
 export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
 
@@ -25,11 +24,12 @@ export type YieldReviewStatus = YieldReviewActionStatus | 'signed';
 export type YieldDepositReviewStatus = YieldReviewStatus;
 
 export type YieldReviewSigningResult =
-    | 'signed'
-    | 'cancelled'
-    | 'failed'
-    | 'not-ready'
-    | 'already-running';
+    'signed' | 'cancelled' | 'failed' | 'not-ready' | 'already-running';
+
+export type YieldBroadcastTransaction = {
+    txid: string;
+    fee?: string;
+};
 
 export type StakingEarnItem = {
     id: string;
@@ -40,7 +40,7 @@ export type StakingEarnItem = {
     balance: string | null;
 };
 
-export type StablecoinYieldEarnItem = {
+export type YieldEarnItem = {
     id: string;
     type: 'stablecoin-yield';
     yieldId: string;
@@ -57,33 +57,43 @@ export type StablecoinYieldEarnItem = {
     apy: number | null;
     token?: YieldDtoV2['token'];
     outputToken?: YieldDtoV2['outputToken'];
-    pricePerShareState?: StablecoinYieldPricePerShareState;
+    pricePerShareState?: YieldPricePerShareState;
 };
 
-export type StablecoinYieldClaimSummary = {
+export type YieldClaimSummary = {
     type: 'stablecoin-yield';
     accountKey: AccountKey;
-    accountLabel?: Account['accountLabel'];
-    accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
     claimableRewardsCount: number;
     fiatClaimableAmount: BaseCurrencyAmount | null;
+    tokens: YieldClaimRewardToken[];
 };
 
-export type StablecoinYieldNavigationItem = Pick<
-    StablecoinYieldEarnItem,
+export type YieldClaimToken = {
+    networkSymbol: NetworkSymbol;
+    contractAddress: TokenAddress;
+    symbol: TokenSymbol;
+};
+
+export type YieldClaimRewardToken = YieldClaimToken & {
+    claimableAmount: string;
+    decimals: number;
+};
+
+export type YieldNavigationItem = Pick<
+    YieldEarnItem,
     'yieldId' | 'underlyingTokenContract' | 'receiptTokenContract'
 >;
 
-export type StablecoinYieldPromoNavigationItem = StablecoinYieldNavigationItem &
-    Pick<StablecoinYieldEarnItem, 'networkSymbol' | 'tokenSymbol'>;
+export type YieldPromoNavigationItem = YieldNavigationItem &
+    Pick<YieldEarnItem, 'networkSymbol' | 'tokenSymbol'>;
 
 export type ChooseAccountTokenBalance = {
     tokenContractAddress: TokenAddress;
     tokenSymbol: TokenSymbol;
 };
 
-export type EarnPromoItem = StakingEarnItem | StablecoinYieldEarnItem;
+export type EarnPromoItem = StakingEarnItem | YieldEarnItem;
 
 export type EarnPromoSectionType = EarnPromoItem['type'];
 
@@ -92,7 +102,7 @@ export type SkeletonLoaderItem = {
     id: string;
 };
 
-export type StablecoinYieldLoadErrorListItem = {
+export type YieldLoadErrorListItem = {
     type: 'stablecoin-yield-load-error';
     id: string;
 };
@@ -120,7 +130,7 @@ export type EarnPromoListDataItem =
     | EarnPromoItem
     | EarnPromoSectionType
     | SkeletonLoaderItem
-    | StablecoinYieldLoadErrorListItem
+    | YieldLoadErrorListItem
     | EarnProviderListItem
     | EarnStakingProvidersInfoListItem
     | EarnDashboardDisabledListItem;
@@ -149,6 +159,8 @@ export type EarnDepositsCardActiveItem =
           fiatAmount: BaseCurrencyAmount;
           apy: number | null;
       };
+
+export type YieldPositionItem = Extract<EarnDepositsCardActiveItem, { type: 'stablecoin-yield' }>;
 
 export type EarnDepositsCardRow = {
     type: EarnPromoSectionType;

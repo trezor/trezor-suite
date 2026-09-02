@@ -1,8 +1,7 @@
 import { deviceActions } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const ClearDevicePersistentData = () => {
     const dispatch = useDispatch();

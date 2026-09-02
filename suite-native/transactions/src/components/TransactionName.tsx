@@ -2,20 +2,19 @@ import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discree
 import { useFormatters } from '@suite-common/formatters';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getTxStakeType } from '@suite-common/wallet-utils';
-import { Text } from '@suite-native/atoms';
+import { getNativeWrapTxKind, getTxStakeType } from '@suite-common/wallet-utils';
+import { Text, type TextProps } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { type NativeTypographyStyle } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getUnstakeTxAmount } from '../utils';
 import { UnstakeTransactionDetailTitle } from './UnstakeTransactionDetailTitle';
+import { WrapTransactionName } from './WrapTransactionName';
 
-type TransactionNameProps = {
+type TransactionNameProps = TextProps & {
     transaction: WalletAccountTransaction;
     isPending: boolean;
-    variant?: NativeTypographyStyle;
 };
 
 interface GetSelfTransactionMessageByTypeProps {
@@ -112,10 +111,25 @@ const getTronTransactionMessage = (transaction: WalletAccountTransaction) => {
     }
 };
 
-export const TransactionName = ({ transaction, isPending, variant }: TransactionNameProps) => {
+export const TransactionName = ({ transaction, isPending, ...textProps }: TransactionNameProps) => {
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
+
+    if (transaction.type === 'failed') {
+        return (
+            <Text {...textProps}>
+                <Translation id="transactions.name.failed" />
+            </Text>
+        );
+    }
+
+    // WETH wrap/unwrap get their own label (with the amount) instead of the generic contract-call
+    // method name ("deposit"/"withdraw") that the indexer parses.
+    const wrapKind = getNativeWrapTxKind(transaction);
+    if (wrapKind) {
+        return <WrapTransactionName transaction={transaction} kind={wrapKind} {...textProps} />;
+    }
 
     // Stellar trustline addition/removal (short version without asset code)
     if (
@@ -123,7 +137,7 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
         transaction.stellarSpecific?.changeTrust
     ) {
         return (
-            <Text variant={variant}>
+            <Text {...textProps}>
                 {transaction.stellarSpecific.changeTrust.isRemoval ? (
                     <Translation id="transactions.name.stellarTrustlineRemoved" />
                 ) : (
@@ -147,7 +161,7 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
                 : totalVotes;
 
             return (
-                <Text variant={variant}>
+                <Text {...textProps}>
                     <Translation
                         id="transactions.name.tron.votedVotes"
                         values={{ votes: displayedVotes }}
@@ -171,14 +185,14 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
                 : formattedUnfreezeAmount;
 
             return (
-                <Text variant={variant}>
+                <Text {...textProps}>
                     <Translation id={tronTransactionMessageId} /> {displayedUnfreezeAmount}
                 </Text>
             );
         }
 
         return (
-            <Text variant={variant}>
+            <Text {...textProps}>
                 <Translation id={tronTransactionMessageId} />
             </Text>
         );
@@ -192,7 +206,7 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
             <UnstakeTransactionDetailTitle
                 unstakeAmount={unstakeAmount}
                 symbol={transaction.symbol}
-                variant={variant}
+                {...textProps}
             />
         );
     }
@@ -204,7 +218,7 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
     const ethNameToDisplay = transaction.type === 'self' ? undefined : ethName;
 
     return (
-        <Text variant={variant}>
+        <Text {...textProps}>
             {stakeTranslationId ? (
                 <Translation id={stakeTranslationId} />
             ) : (

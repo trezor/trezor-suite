@@ -11,6 +11,7 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
+import { useAsyncMemo } from '@trezor/react-utils';
 
 import { TokenInitials } from './TokenInitials';
 import { type TokenIconProps, allowedTokenIconFrameProps } from './tokenIconTypes';
@@ -47,12 +48,13 @@ const LogoWrapper = styled.div<{ $size: number; $isBordered: boolean }>`
         `}
 `;
 
-const Logo = styled.img<{ $size: number }>`
+const Logo = styled.img<{ $size: number; $isTransparent: boolean }>`
     display: block;
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
     border-radius: calc(infinity * 1px);
-    background-color: ${({ theme }) => theme.elementFillElevated};
+    background-color: ${({ theme, $isTransparent }) =>
+        $isTransparent ? 'transparent' : theme.elementFillElevated};
 `;
 
 type NonNativeTokenIconProps = TokenIconProps & {
@@ -70,14 +72,16 @@ export const NonNativeTokenIcon = ({
     placeholder = '',
     customLogoUrl,
     isBordered = true,
+    isTransparent = false,
     'data-testid': dataTestId,
     ...rest
 }: NonNativeTokenIconProps) => {
-    const [contractAddressArray, setContractAddressArray] = useState<string[] | undefined>();
-
-    useEffect(() => {
-        getAssetLogoContractAddresses(symbol, contractAddress).then(setContractAddressArray);
-    }, [symbol, contractAddress]);
+    // resolves synchronously for everything except the first XLM token after a cold start
+    // so most icons render in the first frame without a placeholder flash
+    const contractAddressArray = useAsyncMemo(
+        () => getAssetLogoContractAddresses(symbol, contractAddress),
+        [symbol, contractAddress],
+    );
 
     const normalizedAddresses = useMemo(
         () =>
@@ -233,6 +237,7 @@ export const NonNativeTokenIcon = ({
                         loading="lazy"
                         decoding="async"
                         $size={size}
+                        $isTransparent={isTransparent}
                         data-testid={dataTestId}
                         alt={placeholder}
                         onLoad={handleOnLoad}

@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+import { useDispatch } from '@suite-common/redux-utils';
 
 import type { TradingRootState } from '../reducers/tradingCommonReducer';
 import { tradingActions } from '../reducers/tradingCommonReducer';

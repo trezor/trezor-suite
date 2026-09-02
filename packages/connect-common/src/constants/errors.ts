@@ -25,6 +25,7 @@ export const ERROR_CODES = {
     Method_Override: 'override', // inner "error", it's more like a interruption
     Method_NoResponse: 'Call resolved without response', // thrown by npm index(es), call to Core resolved without response, should not happen
     Method_Unsupported: 'Unsupported method', // 3rd party called a method unknown by current version
+    Method_UnsupportedCoinForHost: 'Coin is not supported by Trezor Suite', // coin Connect recognizes but Trezor Suite cannot render a picker for, e.g. selectAccount on an unmodeled coin
     Method_DataOverflowModelOne: 'Model One does not support data over 1024 bytes', // happens in SignMessage, EthereumSignMessage and respective VerifyMessage methods
 
     Backend_NotSupported: 'BlockchainLink settings not found in coins.json', // thrown by methods which using backends, blockchainLink not defined for this coin

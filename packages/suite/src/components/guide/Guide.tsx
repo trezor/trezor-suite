@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Column, IconCircle, useMediaQuery } from '@trezor/components';
 import { CommandIcon, LifebuoyIcon } from '@trezor/icons';
 
@@ -15,13 +16,14 @@ import {
     GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectGuideIndexNode } from 'src/selectors/suite/guideSelectors';
 
 import { GuideItem } from './GuideItem';
 
 export const Guide = () => {
     const [searchActive, setSearchActive] = useState(false);
-    const indexNode = useSelector(state => state.guide.indexNode);
+    const indexNode = useSelector(selectGuideIndexNode);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const handleFeedbackButtonClick = () => {
@@ -61,7 +63,7 @@ export const Guide = () => {
                                             />
                                         }
                                     >
-                                        <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
+                                        <Translation id="TR_GUIDE_HELP_AND_FEEDBACK" />
                                     </GuideItem>
                                 </Column>
                             </Box>

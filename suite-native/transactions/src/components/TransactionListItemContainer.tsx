@@ -1,7 +1,5 @@
-import { type ReactNode, useCallback } from 'react';
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -21,12 +19,7 @@ import {
 import { isPending } from '@suite-common/wallet-utils';
 import { Badge, Box, DiscreetText, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-    TransactionDetailStackRoutes,
-} from '@suite-native/navigation';
+import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { type TypedTokenTransfer } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -70,7 +63,13 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
 
 const titleStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
+    alignItems: 'center',
+    flexShrink: 1,
     gap: utils.spacings.sp8,
+}));
+
+const transactionNameStyle = prepareNativeStyle(_ => ({
+    flexShrink: 1,
 }));
 
 const descriptionBoxStyle = prepareNativeStyle(_ => ({
@@ -90,7 +89,7 @@ type TransactionListItemContainerProps = {
     children: ReactNode;
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
-    includedCoinsCount: number;
+    hasTokensCount: number;
     isFirst?: boolean;
     isLast?: boolean;
     tokenTransfer?: TypedTokenTransfer;
@@ -104,30 +103,26 @@ export const TransactionListItemContainer = ({
     accountKey,
     isFirst = false,
     isLast = false,
-    includedCoinsCount,
+    hasTokensCount,
     transactionType,
     stakeOperationType,
     tokenTransfer,
 }: TransactionListItemContainerProps) => {
     const { applyStyle } = useNativeStyles();
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
+    const navigateToTransactionDetail = useNavigateToTransactionDetail();
 
     const { txid, symbol } = transaction;
 
-    const handleNavigateToTransactionDetail = useCallback(() => {
-        navigation.navigate(RootStackRoutes.TransactionDetailStack, {
-            screen: TransactionDetailStackRoutes.TransactionDetail,
-            params: {
-                txid,
-                accountKey,
-                tokenContract: tokenTransfer?.contract,
-            },
+    const handleNavigateToTransactionDetail = () => {
+        navigateToTransactionDetail({
+            txid,
+            accountKey,
+            tokenContract: tokenTransfer?.contract,
         });
-    }, [navigation, txid, accountKey, tokenTransfer?.contract]);
+    };
 
-    const hasIncludedCoins = includedCoinsCount > 0;
-    const includedCoinsLabel = `+${includedCoinsCount} coin${includedCoinsCount > 1 ? 's' : ''}`;
+    const hasTokens = hasTokensCount > 0;
+    const tokensLabel = `+${hasTokensCount} coin${hasTokensCount > 1 ? 's' : ''}`;
 
     const { DateTimeFormatter } = useFormatters();
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
@@ -174,6 +169,8 @@ export const TransactionListItemContainer = ({
                                 <TransactionName
                                     transaction={transaction}
                                     isPending={isTransactionPending}
+                                    numberOfLines={2}
+                                    style={applyStyle(transactionNameStyle)}
                                 />
                                 {isPhishingTransaction && (
                                     <Badge
@@ -184,7 +181,7 @@ export const TransactionListItemContainer = ({
                                     />
                                 )}
                             </Box>
-                            {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
+                            {hasTokens && <Badge label={tokensLabel} size="small" />}
                         </HStack>
 
                         <DateTextComponent

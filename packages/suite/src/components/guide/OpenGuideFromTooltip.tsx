@@ -22,7 +22,6 @@ export const OpenGuideFromTooltip = ({ id }: OpenGuideFromTooltipProps) => {
                 openNodeById(id);
             }}
             size="small"
-            isInverse
             iconLeft={LightbulbIcon}
         >
             <Translation id="TR_LEARN" />

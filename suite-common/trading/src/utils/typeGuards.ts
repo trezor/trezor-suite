@@ -2,7 +2,19 @@ import { isArrayMember } from '@trezor/utils';
 
 import { type TradingSendRejectedProps } from '../types';
 
-const TRADING_SEND_REJECTED_TYPES = ['error', 'sign-tx-error', 'sign-transaction-timeout'] as const;
+const TRADING_SEND_REJECTED_TYPES = [
+    'error',
+    'sign-tx-error',
+    'sign-transaction-timeout',
+    'sign-cancelled',
+] as const;
+
+const SILENT_SEND_REJECTED_TYPES = ['sign-transaction-timeout', 'sign-cancelled'] as const;
+
+export const isSilentSendRejection = (
+    type: TradingSendRejectedProps['type'],
+): type is (typeof SILENT_SEND_REJECTED_TYPES)[number] =>
+    isArrayMember(type, SILENT_SEND_REJECTED_TYPES);
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null;

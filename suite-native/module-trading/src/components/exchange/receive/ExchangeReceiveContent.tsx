@@ -1,4 +1,5 @@
 import { HStack } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 
 import { ExchangeReceiveAccountCryptoBalance } from './ExchangeReceiveAccountCryptoBalance';
 import { ExchangeTradeableAssetPicker } from './ExchangeTradeableAssetPicker';
@@ -6,9 +7,9 @@ import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormC
 import { TradeableAssetNetworkInfo } from '../../general/TradeableAssetNetworkInfo';
 
 export const ExchangeReceiveContent = () => {
-    const { watch } = useExchangeFormContext();
+    const { control } = useExchangeFormContext();
 
-    const asset = watch('receiveAsset');
+    const asset = useWatch({ control, name: 'receiveAsset' });
 
     return (
         <>

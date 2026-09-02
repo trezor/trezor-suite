@@ -48,51 +48,67 @@ export const withTextProps = ({
     $wordBreak,
     $overflowWrap,
 }: TransientTextProps) => css`
-    ${$textWrap &&
-    css`
-        text-wrap: ${$textWrap};
-    `}
-    ${$wordBreak &&
-    css`
-        word-break: ${$wordBreak};
-    `}
-    ${$overflowWrap &&
-    css`
-        overflow-wrap: ${$overflowWrap};
-    `}
-    ${$typographyStyle
-        ? css`
-              ${typography[$typographyStyle]}
-          `
-        : ''}
-    ${$align &&
-    css`
-        text-align: ${$align};
-    `}
-    ${$ellipsisLineCount > 0 &&
-    css`
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-    `}
-    ${$ellipsisLineCount > 1 &&
-    css`
-        white-space: initial;
-        -webkit-line-clamp: ${$ellipsisLineCount};
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-    `}
-    ${$case && $case === 'titlecase'
-        ? css`
-              text-transform: lowercase;
+    ${
+        $textWrap &&
+        css`
+            text-wrap: ${$textWrap};
+        `
+    }
+    ${
+        $wordBreak &&
+        css`
+            word-break: ${$wordBreak};
+        `
+    }
+    ${
+        $overflowWrap &&
+        css`
+            overflow-wrap: ${$overflowWrap};
+        `
+    }
+    ${
+        $typographyStyle
+            ? css`
+                  ${typography[$typographyStyle]}
+              `
+            : ''
+    }
+    ${
+        $align &&
+        css`
+            text-align: ${$align};
+        `
+    }
+    ${
+        $ellipsisLineCount > 0 &&
+        css`
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        `
+    }
+    ${
+        $ellipsisLineCount > 1 &&
+        css`
+            white-space: initial;
+            -webkit-line-clamp: ${$ellipsisLineCount};
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+        `
+    }
+    ${
+        $case && $case === 'titlecase'
+            ? css`
+                  text-transform: lowercase;
 
-              &::first-letter {
-                  text-transform: uppercase;
-              }
-          `
-        : css`
-              text-transform: ${$case};
-          `}
+                  &::first-letter {
+                      text-transform: uppercase;
+                  }
+              `
+            : css`
+                  text-transform: ${$case};
+              `
+    }
 `;
 
 const getStorybookType = (key: TextPropsKeys) => {

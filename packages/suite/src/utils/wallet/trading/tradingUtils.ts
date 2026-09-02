@@ -9,6 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import { asAmountSubunit, substituteBip43Path, subunitsToUnits } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -58,7 +59,7 @@ export const getComposeAddressPlaceholder = async (
                 // if it is not discovered, get an address from trezor
                 const result = await TrezorConnect.getAddress({
                     device,
-                    coin: account.symbol,
+                    coin: asCoinSymbol(account.symbol),
                     path: `${substituteBip43Path(bip43Path)}/0/0`,
                     showOnTrezor: false,
                     chunkify,

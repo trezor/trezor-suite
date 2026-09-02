@@ -9,9 +9,9 @@ type InitialRunCompletedParams = {
     isFreshDeviceSetup: boolean;
 };
 
-export const initialRunCompleted = createThunk(
+export const initialRunCompleted = createThunk<void, InitialRunCompletedParams, void>(
     `${FLAGS_MODULE_PREFIX}/initialRunCompleted`,
-    ({ isFreshDeviceSetup }: InitialRunCompletedParams, { dispatch }) => {
+    ({ isFreshDeviceSetup }, { dispatch }) => {
         dispatch(setFlag({ key: 'initialRun', value: false }));
 
         // Only offer the feedback banner to users arriving from a fresh device setup. Pairing an

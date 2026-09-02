@@ -4,39 +4,34 @@ import { type AnalyticsDesktopEvents, selectDesktopAnalyticsDep } from '@suite/a
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type YieldFlowType,
     type YieldPendingTransactionState,
     type YieldWithdrawFlowType,
-    fetchAndUpdateAccountThunk,
-    selectConvertedNetworkFeeInfo,
-    selectStablecoinYieldSession,
-    selectTransactionByAccountKeyAndTxid,
-    stablecoinYieldActions,
+    isYieldWithdrawFlow,
+    selectYieldSession,
+    useYieldPendingTxStatus,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getApyBreakdown, isPending } from '@suite-common/wallet-utils';
+import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { type Analytics } from '@trezor/analytics-uploader';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
-const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;
-const BLOCK_TIME_TO_POLL_INTERVAL_RATIO = 2;
-
-const getPollIntervalMs = (blockTime: number | undefined): number => {
-    if (!blockTime) return DEFAULT_PENDING_TX_POLL_INTERVAL_MS;
-
-    return Math.max(
-        (blockTime / BLOCK_TIME_TO_POLL_INTERVAL_RATIO) * 1000,
-        MIN_PENDING_TX_POLL_INTERVAL_MS,
-    );
-};
+import { useSelector } from 'src/hooks/suite';
 
 type ResolutionEventType =
-    | { type: 'deposit'; successType: 'approve-success' | 'revoke-success' | 'success' }
-    | { type: 'withdraw'; operation: YieldWithdrawFlowType; successType: 'success' }
+    | {
+          type: 'deposit';
+          successType: 'approve-success' | 'revoke-success' | 'wrap-success' | 'success';
+      }
+    | {
+          type: 'withdraw';
+          operation: YieldWithdrawFlowType;
+          successType: 'unwrap-success' | 'success';
+      }
     | { type: 'claim'; successType: 'success' };
 
 const getResolutionEventType = (
@@ -56,6 +51,12 @@ const getResolutionEventType = (
             return { type: 'withdraw', operation: 'redeem', successType: 'success' };
         case 'claim':
             return flowType === 'claim' ? { type: 'claim', successType: 'success' } : null;
+        case 'wrap':
+            return flowType === 'deposit' ? { type: 'deposit', successType: 'wrap-success' } : null;
+        case 'unwrap':
+            return isYieldWithdrawFlow(flowType)
+                ? { type: 'withdraw', operation: flowType, successType: 'unwrap-success' }
+                : null;
         default:
             return null;
     }
@@ -65,6 +66,7 @@ type ReportContext = {
     networkSymbol: string;
     vault?: YieldDtoV2 | null;
     durationMs?: number;
+    wrappedNative?: boolean;
 };
 
 const resolveReportedType = <T extends string>(
@@ -100,6 +102,7 @@ const reportResolution = (
                 networkSymbol: context.networkSymbol,
                 vaultId: context.vault?.id,
                 durationMs: context.durationMs,
+                ...(isDepositSuccess ? { wrappedNative: context.wrappedNative } : {}),
                 ...(apyBreakdown && { apyBreakdown }),
                 ...errorMessage,
             },
@@ -109,8 +112,10 @@ const reportResolution = (
     }
 
     if (resolution.type === 'withdraw') {
-        const apyBreakdown =
-            outcome === 'success' ? getApyBreakdown(context.vault?.rewardRate?.components) : '';
+        const isWithdrawSuccess = outcome === 'success' && resolution.successType === 'success';
+        const apyBreakdown = isWithdrawSuccess
+            ? getApyBreakdown(context.vault?.rewardRate?.components)
+            : '';
 
         analytics.report({
             type: events.yieldWithdrawEvent.name,
@@ -121,6 +126,7 @@ const reportResolution = (
                 networkSymbol: context.networkSymbol,
                 vaultId: context.vault?.id,
                 durationMs: context.durationMs,
+                ...(outcome === 'success' ? { wrappedNative: context.wrappedNative } : {}),
                 ...(apyBreakdown && { apyBreakdown }),
                 ...errorMessage,
             },
@@ -161,19 +167,16 @@ export const useYieldPendingTransactionTracking = ({
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const pendingTransaction = useSelector(
-        state => selectStablecoinYieldSession(state, flowType, flowKey).action.pendingTransaction,
+        state => selectYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );
-    const trackedPendingTransaction = useSelector(state =>
-        pendingTransaction
-            ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTransaction.txid)
-            : null,
-    );
-    const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
-    const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
+    const pendingTxStatus = useYieldPendingTxStatus({
+        account,
+        flowType,
+        flowKey,
+        pendingTransaction,
+    });
 
-    const isCurrentlyPending =
-        !!pendingTransaction &&
-        (!trackedPendingTransaction || isPending(trackedPendingTransaction));
+    const isCurrentlyPending = pendingTxStatus === 'pending';
 
     // Track start time per pending txid so we can compute durationMs on resolution.
     const pendingStartRef = useRef<{ txid: string; startedAt: number } | null>(null);
@@ -195,23 +198,7 @@ export const useYieldPendingTransactionTracking = ({
     });
 
     useEffect(() => {
-        if (!isCurrentlyPending) {
-            return;
-        }
-
-        const interval = setInterval(() => {
-            dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
-        }, pollIntervalMs);
-
-        return () => clearInterval(interval);
-    }, [account, dispatch, isCurrentlyPending, pollIntervalMs]);
-
-    useEffect(() => {
-        if (!pendingTransaction || !trackedPendingTransaction) {
-            return;
-        }
-
-        if (isPending(trackedPendingTransaction)) {
+        if (!pendingTransaction || pendingTxStatus === null || pendingTxStatus === 'pending') {
             return;
         }
 
@@ -223,15 +210,16 @@ export const useYieldPendingTransactionTracking = ({
             networkSymbol: account.symbol,
             vault,
             durationMs,
+            wrappedNative: isWrappedNativeToken(account.symbol, vault?.token.address),
         };
 
-        if (trackedPendingTransaction.type === 'failed') {
+        if (pendingTxStatus === 'failed') {
             if (resolution) {
                 reportResolution(analytics, resolution, 'error', context);
             }
 
             pendingStartRef.current = null;
-            dispatch(stablecoinYieldActions.transactionFailed({ flowType, flowKey }));
+            dispatch(yieldActions.transactionFailed({ flowType, flowKey }));
 
             return;
         }
@@ -242,21 +230,34 @@ export const useYieldPendingTransactionTracking = ({
         }
 
         if (pendingTransaction.type === 'revoke') {
-            dispatch(stablecoinYieldActions.revokeSuccess({ flowType, flowKey }));
-            dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
+            dispatch(yieldActions.revokeSuccess({ flowType, flowKey }));
+            dispatch(yieldActions.invalidateAllowance({ flowType, flowKey }));
 
             return;
         }
 
         if (pendingTransaction.type === 'approve') {
             dispatch(
-                stablecoinYieldActions.completeApproval({
+                yieldActions.completeApproval({
                     flowType,
                     flowKey,
                     amount: pendingTransaction.amount,
                 }),
             );
-            dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
+            dispatch(yieldActions.invalidateAllowance({ flowType, flowKey }));
+
+            return;
+        }
+
+        if (pendingTransaction.type === 'wrap' || pendingTransaction.type === 'unwrap') {
+            dispatch(
+                yieldActions.resolveWrappedNativeStep({
+                    flowType,
+                    flowKey,
+                    step: pendingTransaction.type,
+                    amount: pendingTransaction.amount,
+                }),
+            );
 
             return;
         }
@@ -264,7 +265,7 @@ export const useYieldPendingTransactionTracking = ({
         if (pendingTransaction.type === flowType) {
             const completeAction = () => {
                 dispatch(
-                    stablecoinYieldActions.completeAction({
+                    yieldActions.completeAction({
                         flowType,
                         flowKey,
                         amount: pendingTransaction.amount,
@@ -292,13 +293,13 @@ export const useYieldPendingTransactionTracking = ({
             return;
         }
 
-        dispatch(stablecoinYieldActions.resetSession({ flowType, flowKey }));
+        dispatch(yieldActions.resetSession({ flowType, flowKey }));
     }, [
         flowKey,
         flowType,
         pendingTransaction,
+        pendingTxStatus,
         dispatch,
-        trackedPendingTransaction,
         analytics,
         account.symbol,
         vault,

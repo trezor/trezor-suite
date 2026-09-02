@@ -1,3 +1,5 @@
+import { type Getter } from '@suite-common/dependency-injection';
+
 export type LocaleInfo = {
     icon: string;
     name: string;
@@ -6,7 +8,13 @@ export type LocaleInfo = {
     nameInOsStartsWith?: string;
 };
 
-// If you are adding language, add it to suite/package.json translations:download script too
+/**
+ * Source of truth for available languages in Suite Web/Desktop.
+ * Note that Suite Native does not yet have full parity, so it has its own list: suite-native/intl/src/languages.ts
+ * Meanwhile, Firmware is sourced remotely, and so are its lists of available languages (see trezor/data repository).
+ *
+ * If you are adding language, add it to suite/intl/package.json translations:download script too
+ */
 export const LANGUAGES = {
     'en-US': { icon: '🇬🇧', name: 'English', en: 'English', type: 'official' },
     'es-ES': { icon: '🇪🇸', name: 'Español', en: 'Spanish', type: 'official' },
@@ -14,7 +22,7 @@ export const LANGUAGES = {
     'de-DE': { icon: '🇩🇪', name: 'Deutsch', en: 'German', type: 'official' },
     'fr-FR': { icon: '🇫🇷', name: 'Français', en: 'French', type: 'official' },
     'hu-HU': { icon: '🇭🇺', name: 'Magyar', en: 'Hungarian', type: 'community' },
-    'id-ID': { icon: '🇮🇩', name: 'Bahasa Indonesia', en: 'Indonesian', type: 'community' },
+    'id-ID': { icon: '🇮🇩', name: 'Bahasa Indonesia', en: 'Indonesian', type: 'official' },
     'it-IT': { icon: '🇮🇹', name: 'Italiano', en: 'Italian', type: 'community' },
     'ja-JP': { icon: '🇯🇵', name: '日本語', en: 'Japanese', type: 'official' },
     'ko-KR': { icon: '🇰🇷', name: '한국어', en: 'Korean', type: 'official' },
@@ -26,7 +34,7 @@ export const LANGUAGES = {
         icon: '简',
         name: '中文(简体)',
         en: 'Chinese Simplified',
-        type: 'community',
+        type: 'official',
         nameInOsStartsWith: 'zh-Hans',
     },
     'zh-TW': {
@@ -39,3 +47,7 @@ export const LANGUAGES = {
 } as const satisfies Record<string, LocaleInfo>;
 
 export type Locale = keyof typeof LANGUAGES;
+
+export type GetLanguageDep = {
+    getLanguage: Getter<[], string>;
+};

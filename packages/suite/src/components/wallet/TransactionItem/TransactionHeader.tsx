@@ -130,15 +130,21 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         return <Translation id="TR_UNCONFIRMED_TX_LONG" />;
     }
 
-    // WETH wrap/unwrap are shown as their own labels (with the amount) instead of the generic
-    // contract-call name ("deposit"/"withdraw") that the indexer parses.
+    if (transaction.type === 'failed') {
+        return <Translation id="TR_FAILED_TRANSACTION" />;
+    }
+
+    // WETH wrap/unwrap are shown as their own labels instead of the generic contract-call name
+    // ("deposit"/"withdraw") that the indexer parses. The wrapped-token amount isn't obvious from
+    // the transaction row, so it's spelled out while the native side stays a bare symbol
+    // ("Wrap ETH into 0.1 WETH" / "Unwrap 0.1 WETH to ETH", see trezor/trezor-suite#30552).
     const wrapKind = getNativeWrapTxKind(transaction);
     if (wrapKind) {
         return (
             <Translation
                 id={wrapKind === 'wrap' ? 'TR_TX_WRAP' : 'TR_TX_UNWRAP'}
                 values={{
-                    nativeAmount: <WrapTxAmount transaction={transaction} />,
+                    nativeSymbol: getNetworkDisplaySymbol(transaction.symbol),
                     wrappedAmount: <WrapTxAmount transaction={transaction} wrapped />,
                 }}
             />
@@ -147,7 +153,6 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
     if (
         transaction?.ethereumSpecific?.parsedData?.name &&
-        transaction.type !== 'failed' &&
         // Exclude Transfer txs, the default messages are more descriptive
         transaction.ethereumSpecific.parsedData.name !== 'Transfer'
     ) {
@@ -256,10 +261,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
     const isMultiTokenTransaction = transaction.tokens.length > 1;
     const transactionSymbol = getTxHeaderSymbol(transaction);
+    // token symbols carry their own casing (trSHUSDTp), only network symbols are stored lowercase
     const symbol =
         transactionSymbol && isNetworkSymbol(transactionSymbol)
             ? getNetworkDisplaySymbol(transactionSymbol)
-            : transactionSymbol?.toUpperCase();
+            : transactionSymbol;
 
     return (
         <BlurUrls

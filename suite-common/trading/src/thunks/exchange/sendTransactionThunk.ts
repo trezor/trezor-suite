@@ -10,7 +10,7 @@ import {
 } from './sendDexTransactionThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingExchangeAccountKey,
     selectTradingExchangeProviders,
@@ -28,11 +28,14 @@ export type SendTransactionThunkProps = {
     isSlip24Active?: boolean;
 } & SendDexTransactionThunkProps;
 
+type SendTransactionThunkState = TradingRootState;
+
 export const sendTransactionThunk = createThunk<
     undefined,
     SendTransactionThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
+        state: SendTransactionThunkState;
     }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/sendTransaction`,
@@ -49,7 +52,7 @@ export const sendTransactionThunk = createThunk<
             processResponseData,
             triggerAnalyticsTradeConfirmation,
             signAndPushSendFormTransaction,
-        }: SendTransactionThunkProps,
+        },
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());

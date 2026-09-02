@@ -1,3 +1,4 @@
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -509,6 +510,14 @@ export const getDeviceInternalModel = (
     (device?.thp?.properties?.internal_model as DeviceModelInternal) ??
     DeviceModelInternal.UNKNOWN;
 
+export const getDeviceModelWithFlagshipFallback = (
+    device?: Pick<Device, 'features' | 'thp'>,
+): DeviceModelInternal => {
+    const deviceModel = getDeviceInternalModel(device);
+
+    return deviceModel === DeviceModelInternal.UNKNOWN ? DEFAULT_FLAGSHIP_MODEL : deviceModel;
+};
+
 export const getIsThpDevice = <T extends Device | TrezorDevice>(
     device: T,
 ): device is T & { thp: NonNullable<Device['thp']> } => device.thp !== undefined;
@@ -535,10 +544,19 @@ export const getIsDeviceDescriptorApiTypeBluetooth = (device: Device | TrezorDev
 export const getIsDeviceConnectedViaBluetooth = (device?: TrezorDevice): boolean =>
     !!device?.connected && getIsDeviceDescriptorApiTypeBluetooth(device);
 
-export const getIsDevicePinProtected = (device?: TrezorDevice): boolean | null =>
+export const getIsDevicePinProtected = (device?: Device | TrezorDevice): boolean | null =>
     device?.features?.pin_protection ?? null;
 
-export const getDeviceLanguage = (device?: TrezorDevice): string | null =>
+export const getDeviceLanguage = (device?: Device | TrezorDevice): string | null =>
     device?.features?.language ?? null;
 
-export const getDeviceMode = (device?: TrezorDevice): DeviceMode | null => device?.mode ?? null;
+export const getDeviceMode = (device?: Device | TrezorDevice): DeviceMode | null =>
+    device?.mode ?? null;
+
+type DeviceComparisonParams = { prevDevice: TrezorDevice; nextDevice: TrezorDevice };
+
+export const getIsDeviceBecomingAcquired = ({ prevDevice, nextDevice }: DeviceComparisonParams) =>
+    !isDeviceAcquired(prevDevice) && isDeviceAcquired(nextDevice);
+
+export const getIsDeviceBecomingConnected = ({ prevDevice, nextDevice }: DeviceComparisonParams) =>
+    !prevDevice.connected && nextDevice.connected;

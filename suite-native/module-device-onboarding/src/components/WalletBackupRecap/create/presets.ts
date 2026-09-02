@@ -44,28 +44,22 @@ export const iconColorsMap = {
     default: {
         iconColor: 'contentPrimary',
         iconBorderColor: 'borderNeutral',
-        iconBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+        iconBackgroundColor: 'elementFillNeutralSofter',
     },
     warning: {
         iconColor: 'contentWarning',
-        iconBorderColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
-        iconBackgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
+        iconBorderColor: 'elementBorderWarningSofter',
+        iconBackgroundColor: 'elementFillWarningSofter',
     },
     primary: {
-        iconColor: 'contentPrimaryInverse',
-        iconBorderColor: 'legacyBackgroundPrimaryDefault',
-        iconBackgroundColor: 'legacyBackgroundPrimaryDefault',
+        iconColor: 'contentButtonBrandPrimary',
+        iconBorderColor: 'elementFillBrandBold',
+        iconBackgroundColor: 'elementFillBrandBold',
     },
 } as const satisfies Record<ColorVariant, IconColors>;
 
 export const connectorColorsMap = {
-    default: [
-        'legacyBackgroundTertiaryDefaultOnElevation0',
-        'legacyBackgroundTertiaryDefaultOnElevation0',
-    ],
-    warning: [
-        'legacyBackgroundAlertYellowSubtleOnElevation1',
-        'legacyBackgroundTertiaryDefaultOnElevation0',
-    ],
-    primary: ['legacyBackgroundTertiaryDefaultOnElevation0', 'legacyBackgroundPrimaryDefault'],
+    default: ['elementFillNeutralSofter', 'elementFillNeutralSofter'],
+    warning: ['elementFillWarningSofter', 'elementFillNeutralSofter'],
+    primary: ['elementFillNeutralSofter', 'elementFillBrandBold'],
 } as const satisfies Record<ColorVariant, [Color, Color]>;

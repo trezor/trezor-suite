@@ -22,12 +22,17 @@
             "path": "../../suite-common/toast-notifications"
         },
         {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../account" },
+        { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../metadata" },
         { "path": "../modal" },
         { "path": "../../packages/components" },

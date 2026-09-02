@@ -15,9 +15,10 @@ export class FeeSection {
     readonly valueOnCard = (feeType: FeeTypes) =>
         this.page.getByTestId(`@fee-card/${feeType}-fiat-amount`);
     readonly rateOnCard = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-rate`);
+    readonly rateValueOnCard = (feeType: FeeTypes) =>
+        this.rateOnCard(feeType).getByTestId('@fee-rate/value');
     readonly collapsibleFeesToggle: Locator;
     readonly collapsibleFees: Locator;
-    readonly maxFeeLoading: Locator;
     readonly customInput: Locator;
     readonly maxFee: Locator;
     readonly maxFeeWithSymbol: Locator;
@@ -33,7 +34,6 @@ export class FeeSection {
     constructor(private readonly page: Page) {
         this.collapsibleFeesToggle = this.page.getByTestId('@wallet/fees/collapsible-fees-toggle');
         this.collapsibleFees = this.page.getByTestId('@wallet/fees/collapsible-fees');
-        this.maxFeeLoading = this.page.getByTestId('@trading/quote/maximum-fee-amount-loading');
         this.customInput = this.page.getByTestId('feePerUnit');
         this.maxFee = this.page.getByTestId('@trading/quote/maximum-fee-amount');
         this.maxFeeWithSymbol = this.page.getByTestId(
@@ -59,8 +59,7 @@ export class FeeSection {
             return;
         }
 
-        // Wait for maximum fee to be calculated
-        await this.maxFeeLoading.waitFor({ state: 'hidden', timeout: 5000 });
+        await expect(this.maximumFeeAmountToBeCalculated).toBeHidden();
 
         const isDisabled = await this.collapsibleFeesToggle.getAttribute('aria-disabled');
 
@@ -80,11 +79,7 @@ export class FeeSection {
     @step()
     async getSolanaFee() {
         await expect(this.maxFee).toBeVisible();
-        const feeWithSymbol = await this.maxFee.textContent();
-        if (!feeWithSymbol) {
-            throw new Error('Fee amount is undefined or null');
-        }
-
+        const feeWithSymbol = await this.maxFee.innerText();
         const feeParts = feeWithSymbol.split(' ');
         const feeValue = feeParts[0];
         if (!feeValue || isNaN(parseFloat(feeValue))) {
@@ -116,28 +111,21 @@ export class FeeSection {
 
     @step()
     async getBitcoinFeeRate(type: FeeTypes | 'custom') {
-        let feeRateText: string | null;
-        const nonBreakingSpace = '\u00A0';
-        const suffixForDustPreventionFee = `${nonBreakingSpace}sat/vB`;
-        const suffixForCustomFee = `.00${nonBreakingSpace}sat/vB`;
+        let feeRate: string;
 
         if (type !== 'custom') {
             await this.expectBitcoinFeeCalculated();
-            feeRateText = await this.rateOnCard(type).textContent();
+            feeRate = await this.rateValueOnCard(type).innerText();
         } else {
-            feeRateText = (await this.customInput.inputValue()) + suffixForCustomFee;
+            feeRate = new BigNumber(await this.customInput.inputValue()).toFixed(2);
         }
 
         const isDustPreventionRateApplied = await this.dustPreventionNotice.isVisible();
         if (isDustPreventionRateApplied) {
-            feeRateText = (await this.getDustPreventionFeeRate()) + suffixForDustPreventionFee;
+            feeRate = await this.getDustPreventionFeeRate();
         }
 
-        if (!feeRateText) {
-            throw new Error('Fee amount is undefined or null');
-        }
-
-        return feeRateText;
+        return feeRate;
     }
 
     calculateEthereumMaxFee({
@@ -168,11 +156,7 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
 
     @step()
     async getDustPreventionFeeRate() {
-        const dustPreventionText = await this.dustPreventionNotice.textContent();
-        if (!dustPreventionText) {
-            throw new Error('Dust prevention text is undefined or null');
-        }
-
+        const dustPreventionText = await this.dustPreventionNotice.innerText();
         const regex = /has been adjusted to (?<value>\d+\.\d+) sat\/vB/;
         const match = dustPreventionText.match(regex);
 
@@ -208,11 +192,7 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
 
     @step()
     async getNetworkReserveAmount() {
-        const bannerText = await this.networkReserveBanner.textContent();
-        if (!bannerText) {
-            throw new Error('Network reserve banner text is undefined or null');
-        }
-
+        const bannerText = await this.networkReserveBanner.innerText();
         const regex = /(\d+(?:\.\d+)?)(?=\s*SOL)/;
         const match = bannerText.match(regex);
 
@@ -244,5 +224,10 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
             maxFeePerGasRounded,
             maxPriorityFeePerGasRounded,
         };
+    }
+
+    @step()
+    async waitToBeCalculated() {
+        await expect(this.maximumFeeAmountToBeCalculated).toBeHidden();
     }
 }

@@ -56,7 +56,7 @@ export const createPendingTransaction = (
             sequence: ins.sequence,
         })),
         vout: outputs.map((out, n) => {
-            let transformedAddresses: string[] = [];
+            let transformedAddresses: string[];
 
             if (out.address) {
                 transformedAddresses = [out.address];

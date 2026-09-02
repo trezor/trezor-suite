@@ -1,27 +1,21 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { listAllWorkspaces, readPackageJson } from '../../workspaces';
+import { type PackageJson, readJson } from '@trezor/node-utils';
+
 import type { Requirement } from '../Requirement';
-
-type PackageJson = {
-    readonly name?: string;
-    readonly dependencies?: Record<string, string>;
-    readonly optionalDependencies?: Record<string, string>;
-    readonly devDependencies?: Record<string, string>;
-    readonly peerDependencies?: Record<string, string>;
-};
-
-type WorkspacePackage = {
-    readonly name: string;
-    readonly packageJson: PackageJson;
-};
+import {
+    type WorkspacePackage,
+    collectProdWorkspaceClosure,
+    collectWorkspacePackages,
+} from '../connectClosure';
 
 type Snapshot = {
     readonly prod: ReadonlyArray<string>;
 };
 
 const TARGET_PACKAGES = [
+    '@trezor/connect',
     '@trezor/connect-web',
     '@trezor/connect-mobile',
     '@trezor/connect-webextension',
@@ -36,34 +30,6 @@ const SNAPSHOT_DIR = join(
     '__snapshots__',
 );
 
-const readJson = <T>(filePath: string): T => JSON.parse(readFileSync(filePath, 'utf8')) as T;
-
-const collectWorkspacePackages = (repoRoot: string) => {
-    const pkgMap = new Map<string, WorkspacePackage>();
-
-    for (const workspace of listAllWorkspaces(repoRoot)) {
-        const packageJson = readPackageJson<PackageJson>(workspace.dir);
-        if (!packageJson.name) continue;
-
-        pkgMap.set(packageJson.name, {
-            name: packageJson.name,
-            packageJson,
-        });
-    }
-
-    return pkgMap;
-};
-
-const getWorkspaceDeps = (
-    deps: Record<string, string> | undefined,
-    workspacePackages: Map<string, WorkspacePackage>,
-) =>
-    Object.entries(deps ?? {})
-        .filter(
-            ([name, version]) => version.startsWith('workspace:') && workspacePackages.has(name),
-        )
-        .map(([name]) => name);
-
 const collectDependencyNames = (
     collector: Set<string>,
     deps: Record<string, string> | undefined,
@@ -73,42 +39,31 @@ const collectDependencyNames = (
     }
 };
 
+// Optional peer dependencies (e.g. env-utils' react-native / expo-* native modules) are not part
+// of a package's prod dependency surface — they are only required in specific host environments.
+const getRequiredPeerDependencies = (packageJson: PackageJson) =>
+    Object.fromEntries(
+        Object.entries(packageJson.peerDependencies ?? {}).filter(
+            ([name]) => !packageJson.peerDependenciesMeta?.[name]?.optional,
+        ),
+    );
+
 const createSnapshot = (
     target: string,
     workspacePackages: Map<string, WorkspacePackage>,
 ): Snapshot => {
-    const prodClosure = new Set<string>([target]);
-    const prodQueue = [target];
-
-    while (prodQueue.length > 0) {
-        const packageName = prodQueue.shift();
-        if (!packageName) continue;
-
-        const pkg = workspacePackages.get(packageName);
-        if (!pkg) continue;
-
-        const nextWorkspaceDeps = [
-            ...getWorkspaceDeps(pkg.packageJson.dependencies, workspacePackages),
-            ...getWorkspaceDeps(pkg.packageJson.optionalDependencies, workspacePackages),
-        ];
-
-        for (const depName of nextWorkspaceDeps) {
-            if (prodClosure.has(depName)) continue;
-
-            prodClosure.add(depName);
-            prodQueue.push(depName);
-        }
-    }
-
+    const prodClosure = collectProdWorkspaceClosure([target], workspacePackages);
     const prodDependencies = new Set<string>(prodClosure);
 
     for (const packageName of prodClosure) {
         const pkg = workspacePackages.get(packageName);
         if (!pkg) continue;
 
-        collectDependencyNames(prodDependencies, pkg.packageJson.dependencies);
-        collectDependencyNames(prodDependencies, pkg.packageJson.optionalDependencies);
-        collectDependencyNames(prodDependencies, pkg.packageJson.peerDependencies);
+        const { packageJson } = pkg;
+
+        collectDependencyNames(prodDependencies, packageJson.dependencies);
+        collectDependencyNames(prodDependencies, packageJson.optionalDependencies);
+        collectDependencyNames(prodDependencies, getRequiredPeerDependencies(packageJson));
     }
 
     return {

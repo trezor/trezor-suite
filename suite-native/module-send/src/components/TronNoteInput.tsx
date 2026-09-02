@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -25,13 +26,13 @@ type TronNoteInputProps = {
 
 export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const { setValue, watch } = useFormContext<SendOutputsFormValues>();
+    const { setValue, control } = useFormContext<SendOutputsFormValues>();
     const { translate } = useTranslate();
     const [localNote, setLocalNote] = useState('');
 
     const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
-    const value = watch('destinationTag') ?? '';
+    const value = useWatch({ control, name: 'destinationTag' }) ?? '';
     const hexByteSize = Buffer.from(localNote || '', 'utf8').length;
     const isHexTooLong = hexByteSize > formInputsMaxLength.tronNote;
 

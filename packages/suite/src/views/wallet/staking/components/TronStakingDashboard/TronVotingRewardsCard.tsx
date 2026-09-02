@@ -4,6 +4,7 @@ import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getTronRewardClaimCooldownEndsAt,
@@ -24,7 +25,6 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 

@@ -10,7 +10,8 @@ test.beforeEach(async ({ onboardingPage, settingsPage }) => {
     await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
 });
 
-test.describe('Wallet discover tests', { tag: ['@T3W1', '@T3T1'] }, () => {
+// The @perf tag marks this as a performance-measurement host.
+test.describe('Wallet discover tests', { tag: ['@T3W1', '@T3T1', '@perf'] }, () => {
     test(
         'Discover a standard wallet',
         {
@@ -20,11 +21,20 @@ test.describe('Wallet discover tests', { tag: ['@T3W1', '@T3T1'] }, () => {
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ dashboardPage, walletPage }) => {
+        async ({ dashboardPage, walletPage, perf }) => {
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.ejectWallet();
-            await dashboardPage.addStandardWallet();
+
+            await perf.measure('wallet-discovery', async () => {
+                await dashboardPage.addStandardWallet();
+            });
+
             await expect(walletPage.balanceOfAccount({ symbol: 'btc', atIndex: 0 })).toBeVisible();
+
+            // A natural spot for rerender loops: selected-account change plus account view re-render.
+            await perf.measure('account-switch', async () => {
+                await walletPage.openAccount({ symbol: 'btc' });
+            });
         },
     );
 });

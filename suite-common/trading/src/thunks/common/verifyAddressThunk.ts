@@ -1,13 +1,19 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { confirmAddressOnDeviceThunk, selectAddressDisplayType } from '@suite-common/wallet-core';
+import { type OpenModalDep } from '@suite-common/suite-types';
+import {
+    type ConfirmAddressOnDeviceThunkState,
+    type WalletSettingsRootState,
+    confirmAddressOnDeviceThunk,
+    selectAddressDisplayType,
+} from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { logErrorThunk } from './logErrorThunk';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingActiveSection } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
 
@@ -17,9 +23,21 @@ export interface VerifyAddressThunk {
     path: string | undefined;
 }
 
-export const verifyAddressThunk = createThunk(
+type VerifyAddressThunkState = ConfirmAddressOnDeviceThunkState &
+    TradingRootState &
+    WalletSettingsRootState;
+
+type VerifyAddressThunkDeps = {
+    actions: OpenModalDep;
+};
+
+export const verifyAddressThunk = createThunk<
+    void,
+    VerifyAddressThunk,
+    { state: VerifyAddressThunkState; extra: VerifyAddressThunkDeps }
+>(
     `${TRADING_THUNK_PREFIX}/verifyAddress`,
-    async ({ account, address, path }: VerifyAddressThunk, { dispatch, getState, extra }) => {
+    async ({ account, address, path }, { dispatch, getState, extra }) => {
         const device = selectSelectedDevice(getState());
         const activeSection = selectTradingActiveSection(getState());
 

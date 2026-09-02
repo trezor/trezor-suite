@@ -31,9 +31,13 @@ expect(screen.getByText(getTranslation('path.to.translation'))).toBe(
 
 ## Naming conventions
 
-- Tests are placed in `__tests__` folders and have `.test.ts` extension.
-- Test folder is placed in the same directory as an actual implementation.
-- When testing types, suffix should be `.type-test.ts`, to prevent from being executed by jest. (For example: `packages/utils/tests/typedObjectFromEntries.type-test.ts`)
+- Tests MUST be placed directly next to the file they are testing (co-located tests).
+- `tests` and `__tests__` directories are NOT allowed for test files.
+- The goal is fast navigation and clear coverage visibility: when you open a source file,
+  you should immediately see whether it has a nearby test.
+- Use `.test.ts` / `.test.tsx` suffix for test files.
+- When testing types, suffix should be `.type-test.ts`, to prevent from being executed by jest.
+  (For example: `typedObjectFromEntries.type-test.ts`)
 - Fixtures are placed in `mocks` folders and have `mock` prefix.
 - `mocks` folder is placed in the root of the package, not in `src`.
 
@@ -44,9 +48,12 @@ my-module/
 ├── mocks/
 │   └── mockMyComponent.ts
 └── src/
-    ├── __tests__/
-    │   └── utils.test.ts
-    └── utils.ts
+    ├── MyComponent.tsx
+    ├── MyComponent.test.tsx
+    ├── useMyData.ts
+    ├── useMyData.test.ts
+    ├── utils.ts
+    └── utils.test.ts
 ```
 
 ### Reusability

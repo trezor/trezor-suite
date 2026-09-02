@@ -1,79 +1,88 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
-import TrezorConnect, { PROTO, type RecoveryDevice, UI_RESPONSE } from '@trezor/connect';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import TrezorConnect, { PROTO, type RecoveryDevice } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { isRecoveryInProgress } from './isRecoveryInProgress';
-import { recoveryActions } from './recoveryReducer';
-import { selectAdvancedRecovery, selectWordsCount } from './recoverySelectors';
+import { type RecoveryState, recoveryActions } from './recoveryReducer';
+import { selectRecoveryInputType, selectWordsCount } from './recoverySelectors';
+import { type RecoveryInputType } from './types';
 
 const DEFAULT_PASSPHRASE_PROTECTION = false;
 
 const actionPrefix = '@suite/recovery';
 
-export const submitThunk = createThunk(
-    `${actionPrefix}/submitThunk`,
-    ({ word, requestId }: { word: string; requestId?: string }) => {
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: word, requestId });
-    },
-);
+/**
+ * Maps the product-level recovery type to the firmware seed input method.
+ * - standard → ScrambledWords: user re-enters the seed word by word on the host
+ * - advanced → Matrix: user enters each letter directly on the device via the matrix keypad
+ */
+const recoveryInputTypeToInputMethod: Record<RecoveryInputType, PROTO.RecoveryDeviceInputMethod> = {
+    standard: PROTO.RecoveryDeviceInputMethod.ScrambledWords,
+    advanced: PROTO.RecoveryDeviceInputMethod.Matrix,
+};
 
-export const checkSeedThunk = createThunk(
-    `${actionPrefix}/checkSeedThunk`,
-    async (_, { dispatch, getState, extra }) => {
-        const advancedRecovery = selectAdvancedRecovery(getState());
-        const wordsCount = selectWordsCount(getState());
-        const device = selectSelectedDevice(getState());
+type CheckSeedThunkState = DeviceRootState & { recovery: RecoveryState };
 
-        if (!device?.features) return;
+type CheckSeedThunkDeps = WithServices<DesktopAnalyticsDep>;
 
-        dispatch(recoveryActions.setError(undefined));
+export const checkSeedThunk = createThunk<
+    void,
+    void,
+    { state: CheckSeedThunkState; extra: CheckSeedThunkDeps }
+>(`${actionPrefix}/checkSeedThunk`, async (_, { dispatch, getState, extra }) => {
+    const recoveryInputType = selectRecoveryInputType(getState());
+    const wordsCount = selectWordsCount(getState());
+    const device = selectSelectedDevice(getState());
 
-        if (device.features.internal_model === DeviceModelInternal.T1B1) {
-            dispatch(recoveryActions.setStatus('waiting-for-confirmation'));
-        } else {
-            dispatch(recoveryActions.setStatus('in-progress'));
-        }
+    if (!device?.features) return;
 
-        const response = await TrezorConnect.recoveryDevice({
-            type: device.features.recovery_type ?? 'DryRun', // For old firmware, we assume DryRun as it was the only option before
-            input_method: advancedRecovery
-                ? PROTO.RecoveryDeviceInputMethod.Matrix
-                : PROTO.RecoveryDeviceInputMethod.ScrambledWords,
-            word_count: wordsCount,
-            enforce_wordlist: true,
-            device: {
-                path: device.path,
+    dispatch(recoveryActions.setError(undefined));
+
+    if (device.features.internal_model === DeviceModelInternal.T1B1) {
+        dispatch(recoveryActions.setStatus('waiting-for-confirmation'));
+    } else {
+        dispatch(recoveryActions.setStatus('in-progress'));
+    }
+
+    const response = await TrezorConnect.recoveryDevice({
+        type: device.features.recovery_type ?? 'DryRun', // For old firmware, we assume DryRun as it was the only option before
+        input_method: recoveryInputTypeToInputMethod[recoveryInputType],
+        word_count: wordsCount,
+        enforce_wordlist: true,
+        device: {
+            path: device.path,
+        },
+    });
+
+    if (!response.success) {
+        dispatch(recoveryActions.setError(response.error.message));
+        extra.services.analytics.report({
+            type: events.settingsDeviceCheckSeedEvent.name,
+            payload: {
+                status: 'error',
+                error: response.error.code,
             },
         });
+    } else {
+        extra.services.analytics.report({
+            type: events.settingsDeviceCheckSeedEvent.name,
+            payload: {
+                status: 'finished',
+            },
+        });
+    }
 
-        if (!response.success) {
-            dispatch(recoveryActions.setError(response.error.message));
-            asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: events.settingsDeviceCheckSeedEvent.name,
-                payload: {
-                    status: 'error',
-                    error: response.error.code,
-                },
-            });
-        } else {
-            asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: events.settingsDeviceCheckSeedEvent.name,
-                payload: {
-                    status: 'finished',
-                },
-            });
-        }
+    dispatch(recoveryActions.setStatus('finished'));
+});
 
-        dispatch(recoveryActions.setStatus('finished'));
-    },
-);
+type RecoverDeviceThunkState = DeviceRootState & { recovery: RecoveryState };
 
-export const recoverDeviceThunk = createThunk(
+export const recoverDeviceThunk = createThunk<void, void, { state: RecoverDeviceThunkState }>(
     `${actionPrefix}/recoverDeviceThunk`,
     async (_, { dispatch, getState }) => {
-        const advancedRecovery = selectAdvancedRecovery(getState());
+        const recoveryInputType = selectRecoveryInputType(getState());
         const wordsCount = selectWordsCount(getState());
         const device = selectSelectedDevice(getState());
 
@@ -90,9 +99,7 @@ export const recoverDeviceThunk = createThunk(
 
         const params: RecoveryDevice = {
             type: device.features.recovery_type ?? 'NormalRecovery', // For old firmware, we assume NormalRecovery as it was the only option before
-            input_method: advancedRecovery
-                ? PROTO.RecoveryDeviceInputMethod.Matrix
-                : PROTO.RecoveryDeviceInputMethod.ScrambledWords,
+            input_method: recoveryInputTypeToInputMethod[recoveryInputType],
             word_count: wordsCount,
             passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
             enforce_wordlist: true,
@@ -117,13 +124,17 @@ export const recoverDeviceThunk = createThunk(
     },
 );
 
+type RecoveryRerunThunkState = DeviceRootState & { recovery: RecoveryState };
+
+type RecoveryRerunThunkDeps = WithServices<DesktopAnalyticsDep>;
+
 // Recovery mode is persistent on T2T1. This means that device stays in recovery mode even after reconnecting.
 // In such case, we need to call again the call that brought device into recovery mode (either proper recovery
 // or seed check). This way, communication is renewed and host starts receiving messages from device again.
 export const recoveryRerunThunk = createThunk<
     { initialized: boolean | null | undefined },
     void,
-    { rejectValue: string }
+    { rejectValue: string; state: RecoveryRerunThunkState; extra: RecoveryRerunThunkDeps }
 >(`${actionPrefix}/recoveryRerunThunk`, async (_, { dispatch, getState, rejectWithValue }) => {
     const device = selectSelectedDevice(getState());
     if (!device?.features) {

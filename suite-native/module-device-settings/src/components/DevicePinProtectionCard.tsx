@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceProtectedByPin, selectSelectedDevice } from '@suite-common/device';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { type InlineAlertBoxProps } from '@suite-native/atoms';
+import { type BannerInlineProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type DeviceSettingsStackParamList,
@@ -35,7 +35,7 @@ export const DevicePinProtectionCard = () => {
         });
     };
 
-    const pinAlertBoxProps = ((): InlineAlertBoxProps | undefined => {
+    const pinAlertBoxProps = ((): BannerInlineProps | undefined => {
         if (!isDeviceProtectedByPin) {
             return {
                 title: <Translation id="moduleDeviceSettings.pinProtection.alertBoxTitle" />,

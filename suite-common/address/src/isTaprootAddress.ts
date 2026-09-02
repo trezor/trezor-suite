@@ -1,5 +1,12 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { getAddressType } from '@trezor/address-validator';
 
-export const isTaprootAddress = (address: string, symbol: NetworkSymbol) =>
-    getAddressType(address, symbol) === 'p2tr';
+import type { AddressValidator } from './AddressValidator';
+
+type IsTaprootAddressParams = {
+    addressValidator: AddressValidator;
+    address: string;
+    symbol: NetworkSymbol;
+};
+
+export const isTaprootAddress = ({ addressValidator, address, symbol }: IsTaprootAddressParams) =>
+    addressValidator.getAddressType(address, symbol) === 'p2tr';

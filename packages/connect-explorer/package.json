@@ -17,6 +17,7 @@
         "@sinclair/typebox": "^0.34.49",
         "@trezor/components": "workspace:^",
         "@trezor/connect-common": "workspace:^",
+        "@trezor/connect-data": "workspace:^",
         "@trezor/connect-explorer-theme": "workspace:^",
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/connect-web": "workspace:^",
@@ -27,11 +28,12 @@
         "@trezor/schema-utils": "workspace:^",
         "@trezor/theme": "workspace:^",
         "@trezor/urls": "workspace:^",
+        "@trezor/utils": "workspace:^",
         "@uiw/react-codemirror": "^4.25.9",
         "codemirror-json-schema": "^0.8.1",
         "codemirror-json5": "^1.0.3",
         "json5": "^2.2.3",
-        "next": "15.5.18",
+        "next": "15.5.21",
         "next-themes": "^0.4.6",
         "nextra": "patch:nextra@npm%3A2.13.4#~/.yarn/patches/nextra-npm-2.13.4-f23661e7e1.patch",
         "nextra-theme-docs": "^2.13.4",
@@ -60,10 +62,10 @@
         "babel-plugin-styled-components": "^2.1.4",
         "copy-webpack-plugin": "^14.0.0",
         "eslint-plugin-mdx": "^3.8.1",
-        "html-webpack-plugin": "5.6.7",
+        "html-webpack-plugin": "5.6.8",
         "rimraf": "^6.1.2",
         "typescript-styled-plugin": "^0.18.3",
-        "webpack": "5.108.1",
-        "webpack-cli": "^7.0.3"
+        "webpack": "5.109.0",
+        "webpack-cli": "^7.2.1"
     }
 }

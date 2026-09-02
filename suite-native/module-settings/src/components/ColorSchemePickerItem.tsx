@@ -84,7 +84,7 @@ export const ColorSchemePickerItem = ({
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorVariant].legacyBackgroundNeutralBold,
+                        backgroundColor: colorVariants[colorVariant].elementFillContrast,
                         isFirstItem: false,
                     })}
                 />

@@ -1,0 +1,83 @@
+import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
+import {
+    type SuiteSyncOwner,
+    asSuiteSyncOwnerId,
+    asSuiteSyncOwnerSecretHex,
+} from '@suite-common/suite-sync-storage';
+import { asDelegatedIdentityKey } from '@suite-common/suite-types';
+import { asDeviceUniquePath } from '@trezor/connect';
+import { ok } from '@trezor/type-utils';
+
+import {
+    type RetrieveSuiteSyncOwnerDeps,
+    type RetrieveSuiteSyncOwnerParams,
+    createRetrieveSuiteSyncOwner,
+} from './createRetrieveSuiteSyncOwner';
+
+const device: RetrieveSuiteSyncOwnerParams['device'] = {
+    instance: 0,
+    path: asDeviceUniquePath('path'),
+    state: {
+        staticSessionId: 'A@B:0',
+    },
+    useEmptyPassphrase: false,
+    connected: true,
+};
+
+const owner1: SuiteSyncOwner = {
+    ownerId: asSuiteSyncOwnerId('owner1'),
+    ownerSecret: asSuiteSyncOwnerSecretHex('owner1secretHex'),
+};
+
+const trezorConnect: RetrieveSuiteSyncOwnerDeps['trezorConnect'] = {
+    evoluGetNode: () =>
+        Promise.resolve({
+            payload: { data: 'evoluNodeData' },
+            success: true,
+        }),
+};
+
+describe(createRetrieveSuiteSyncOwner.name, () => {
+    it('succeeds for valid delegated key', async () => {
+        const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
+            createSuiteSyncOwner: () => ok(owner1),
+            trezorConnect,
+        });
+
+        const result = await ensureSuiteSyncOwner({ device, delegatedKey: DELEGATED_IDENTITY_KEY });
+
+        expect(result.success).toBe(true);
+        expect(result.success && result.payload).toBe(owner1);
+    });
+
+    it('fails for invalid DelegatedIdentityKey', async () => {
+        const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
+            createSuiteSyncOwner: () => ok(owner1),
+            trezorConnect,
+        });
+
+        const delegatedKey = asDelegatedIdentityKey('delegated-broke-key');
+
+        const result = await ensureSuiteSyncOwner({ device, delegatedKey });
+
+        expect(result.success).toBe(false);
+        expect(!result.success && result.error.type).toBe('ProofOfDelegatedSignFailed');
+    });
+
+    it('returns DeviceNotConnectedError without calling Connect when device is not connected', async () => {
+        const evoluGetNode = jest.fn();
+        const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
+            createSuiteSyncOwner: () => ok(owner1),
+            trezorConnect: { evoluGetNode },
+        });
+
+        const result = await ensureSuiteSyncOwner({
+            device: { ...device, connected: false },
+            delegatedKey: DELEGATED_IDENTITY_KEY,
+        });
+
+        expect(result.success).toBe(false);
+        expect(!result.success && result.error.type).toBe('DeviceNotConnectedError');
+        expect(evoluGetNode).not.toHaveBeenCalled();
+    });
+});

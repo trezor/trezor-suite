@@ -9,8 +9,8 @@ type EarnStakingRemainingVotesProps = {
 
 export const EarnStakingRemainingVotes = ({ apr }: EarnStakingRemainingVotesProps) => (
     <Row gap={4}>
-        <Icon as={WarningIcon} size={24} intent="warning" />
-        <Paragraph typographyStyle="body-md" intent="warning">
+        <Icon as={WarningIcon} size={20} intent="warning" />
+        <Paragraph typographyStyle="body-sm" intent="warning">
             <Translation
                 id="TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES"
                 values={{ apr: formatTronApr(apr) }}

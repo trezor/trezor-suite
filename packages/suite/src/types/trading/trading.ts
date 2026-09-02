@@ -2,7 +2,6 @@ import {
     type BuyTrade,
     type CryptoId,
     type ExchangeProviderInfo,
-    type FiatCurrencyCode,
     type SellFiatTrade,
 } from 'invity-api';
 
@@ -106,11 +105,6 @@ export type TradingGetProvidersInfoProps =
 export type TradingExchangeProvidersInfoProps = {
     [key: string]: ExchangeProviderInfo;
 };
-
-export interface TradingGetFiatCurrenciesProps {
-    supportedFiatCurrencies: Set<FiatCurrencyCode> | undefined;
-    defaultAmountsOfFiatCurrencies?: Map<FiatCurrencyCode, string>;
-}
 
 export interface TradingGetCryptoQuoteAmountProps {
     amountInCrypto?: boolean | undefined;

@@ -13,6 +13,9 @@
             "path": "../../suite-common/message-system"
         },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -22,7 +25,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../banner-flags" },
+        { "path": "../banners" },
         { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-authorization" },

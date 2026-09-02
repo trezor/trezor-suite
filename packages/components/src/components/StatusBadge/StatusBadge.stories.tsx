@@ -1,7 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
 import { StatusBadge as StatusBadgeComponent } from './StatusBadge';
-import { dotIntents } from '../Dot/Dot';
+import { dotIntents } from '../Dot/types';
 
 const meta: Meta<typeof StatusBadgeComponent> = {
     title: 'StatusBadge',
@@ -24,6 +24,7 @@ export const StatusBadge: StoryObj<typeof meta> = {
     args: {
         isShown: true,
         intent: 'critical',
+        offset: { x: 0, y: 0 },
         children: <Placeholder />,
     },
     argTypes: {
@@ -33,6 +34,9 @@ export const StatusBadge: StoryObj<typeof meta> = {
         intent: {
             options: dotIntents,
             control: 'radio',
+        },
+        offset: {
+            control: 'object',
         },
     },
 };

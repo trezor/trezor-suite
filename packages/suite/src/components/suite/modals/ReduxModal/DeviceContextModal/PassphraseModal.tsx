@@ -1,12 +1,9 @@
 import { useCallback } from 'react';
 
-import {
-    MODAL_CONTEXT_DEVICE,
-    MODAL_CONTEXT_DEVICE_CONFIRMATION,
-    selectModalRequestId,
-} from '@suite/modal';
+import { selectIsDeviceInteractionModalActive, selectModalRequestId } from '@suite/modal';
 import { goto } from '@suite/router';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
@@ -14,9 +11,9 @@ import {
     selectIsDiscoveryStatusConfirmEmptyPassphrase,
     submitPassphrase,
 } from '@suite-common/wallet-core';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_EVENTS } from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { PassphraseWalletExistsFlow } from './PassphraseWalletExistsFlow';
 import { PassphraseWalletIsNotExistFlow } from './PassphraseWalletIsNotExistFlow';
@@ -28,11 +25,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
     const requestId = useSelector(selectModalRequestId);
     const dispatch = useDispatch();
-    const isDeviceInteractionModalActive = useSelector(
-        state =>
-            state.modal.context === MODAL_CONTEXT_DEVICE ||
-            state.modal.context === MODAL_CONTEXT_DEVICE_CONFIRMATION,
-    );
+    const isDeviceInteractionModalActive = useSelector(selectIsDeviceInteractionModalActive);
     const onPassphraseConfirm = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
             if (!discovery) return;
@@ -55,13 +48,13 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
 
     const onBackToInitial = () => {
         dispatch(cancelDiscoveryThunk(device));
-        dispatch({ type: UI_REQUEST.CLOSE_UI_WINDOW });
+        dispatch({ type: UI_EVENTS.CLOSE_UI_WINDOW });
         dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
     };
 
     const onCancel = () => {
         dispatch(cancelDiscoveryThunk(device));
-        dispatch({ type: UI_REQUEST.CLOSE_UI_WINDOW });
+        dispatch({ type: UI_EVENTS.CLOSE_UI_WINDOW });
     };
 
     const onSubmit = useCallback(

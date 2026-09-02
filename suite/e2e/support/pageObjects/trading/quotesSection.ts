@@ -8,6 +8,7 @@ export class TradingQuotesSection {
     readonly provider: Locator;
     readonly providerOfQuote = (provider: string) =>
         this.page.getByTestId(`@trading/offers/quote-${provider}`);
+    readonly providerInList: Locator;
     readonly selectedProvider: Locator;
     readonly selectedProviderName: Locator;
     readonly loadingSpinner: Locator;
@@ -16,6 +17,7 @@ export class TradingQuotesSection {
     constructor(private readonly page: Page) {
         this.list = this.page.getByTestId('@trading/offers/quote');
         this.provider = this.page.getByTestId('@trading/offers/quote/provider');
+        this.providerInList = this.list.getByTestId('@trading/offers/quote/provider');
         this.selectedProvider = this.page.getByTestId('@trading/selected-offer-provider');
         this.selectedProviderName = this.selectedProvider.getByTestId(
             '@trading/offers/quote/provider',
@@ -28,7 +30,19 @@ export class TradingQuotesSection {
     async waitForSync() {
         await expect(this.loadingSpinner).toBeHidden({ timeout: 30000 });
         // Even though the offer sync is finished, the best offer might not be displayed correctly yet and show 0 BTC
-        await expect(this.bestOfferAmount).not.toHaveText(/^0( w+)?$/);
+        await expect(this.bestOfferAmount).not.toHaveText(/^0( \w+)?$/);
+    }
+
+    @step()
+    async getBestOfferAmount(): Promise<string> {
+        await expect(this.bestOfferAmount).toHaveText(/^(?=[\d,.]*[1-9])[\d,]+(\.\d+)?\s+\w+$/);
+        const rawText = await this.bestOfferAmount.innerText();
+        const [amount] = rawText.split(/\s+/);
+        if (!amount) {
+            throw new Error(`Best offer amount could not be parsed from "${rawText}"`);
+        }
+
+        return amount;
     }
 
     @step()
@@ -42,17 +56,15 @@ export class TradingQuotesSection {
 
     @step()
     async chooseDifferentOfferIfAvailable(provider?: string): Promise<void> {
-        const initialProvider = (await this.selectedProviderName.textContent())?.trim();
-        if (!initialProvider) {
-            throw new Error('Cannot get text content from the initial provider.');
-        }
+        await expect(this.selectedProviderName).not.toBeEmpty();
+        const initialProvider = (await this.selectedProviderName.innerText()).trim();
 
         await this.selectedProvider.click();
         await expect(this.list.first()).toBeVisible();
 
-        const offerProviderNames = (
-            await this.list.getByTestId('@trading/offers/quote/provider').allTextContents()
-        ).map(name => name.trim());
+        const offerProviderNames = (await this.providerInList.allInnerTexts()).map(name =>
+            name.trim(),
+        );
 
         let differentProvider: string | undefined;
         if (provider) {

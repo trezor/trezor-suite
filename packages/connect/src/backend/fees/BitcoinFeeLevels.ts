@@ -1,30 +1,32 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/Fees.js
 
-import type { BitcoinNetworkInfo } from '@trezor/connect-common';
+import type { BitcoinNetworkInfo, FeeLevel } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { cloneObject } from '@trezor/utils/src/cloneObject';
 import { clamp } from '@trezor/utils/src/number';
 
 import type { Blockchain } from '../Blockchain';
-import { MiscFeeLevels } from './MiscFeeLevels';
-import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
+import type { FeeLevels } from './feeLevelsBase';
 
-export class BitcoinFeeLevels extends MiscFeeLevels {
-    coinInfo: BitcoinNetworkInfo;
-    longTermFeeRate: string; // long term fee rate is used by @trezor/utxo-lib composeTx module
+export class BitcoinFeeLevels implements FeeLevels {
+    private coinInfo: BitcoinNetworkInfo;
+    private feeLevels: FeeLevel[];
+
+    get levels() {
+        return this.feeLevels;
+    }
 
     // override only to narrow down the coinInfo type
     constructor(coinInfo: BitcoinNetworkInfo) {
-        super(coinInfo);
         this.coinInfo = coinInfo;
-        // TODO https://github.com/trezor/trezor-suite/issues/18483 rewrite with response from a new planned blockbook API
-        this.longTermFeeRate = DEFAULT_BITCOIN_LONGTERM_FEE_RATE;
+        this.feeLevels = cloneObject(coinInfo.defaultFees);
     }
 
     async load(blockchain: Blockchain) {
         try {
             const { minFee, maxFee } = this.coinInfo;
-            // get numbers of blocks to be requested, filter out 'custom' if present (the last one)
-            const blocks = this.levels.map(level => level.blocks).filter(b => b > 0);
+            // get numbers of blocks to be requested
+            const blocks = this.feeLevels.map(level => level.blocks);
             const response = await blockchain.estimateFee({ blocks });
 
             response.forEach(({ feePerUnit: feePerKB }, index) => {
@@ -36,28 +38,11 @@ export class BitcoinFeeLevels extends MiscFeeLevels {
 
                 const trimmedFeePerUnit = clamp(feePerB, minFee, maxFee);
                 // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const level: (typeof this.levels)[number] = this.levels[index];
+                const level: (typeof this.feeLevels)[number] = this.feeLevels[index];
                 level.feePerUnit = trimmedFeePerUnit.toString();
             });
-            this.wasFetchedSuccessfully = true;
         } catch {
             // do not throw, just keep current fee levels
         }
-
-        return this.levels;
-    }
-
-    updateBitcoinCustomFee(feePerUnit: string) {
-        this.levels = this.levels.filter(l => l.label !== 'custom');
-        this.levels.push({
-            label: 'custom',
-            feePerUnit,
-            /*
-             We do not estimate confirmation time for custom fees. It could be interpolated if we had
-             an array of historical fee rates, but not with the mempool.space API that blockbook provides.
-             That data, although great for estimating low/normal/high fees, means something completely different.
-            */
-            blocks: -1,
-        });
     }
 }

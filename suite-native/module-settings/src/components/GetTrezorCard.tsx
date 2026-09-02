@@ -1,5 +1,5 @@
-import { Box, Button, Card, Divider, HStack, Text, VStack } from '@suite-native/atoms';
-import { TwoSidedTS7Image } from '@suite-native/device';
+import { Box, Button, Card, Divider, HStack, Image, Text, VStack } from '@suite-native/atoms';
+import { TS7_PROMO_BANNER_IMAGE } from '@suite-native/banners';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { useGetTrezorEshopCta } from '@suite-native/link';
@@ -33,7 +33,12 @@ export const GetTrezorCard = () => {
         <Card>
             <VStack spacing="sp8">
                 <Box style={applyStyle(fullImageContainerStyle)}>
-                    <TwoSidedTS7Image size={FULL_IMAGE_SIZE} />
+                    <Image
+                        source={TS7_PROMO_BANNER_IMAGE}
+                        contentFit="contain"
+                        width={FULL_IMAGE_SIZE}
+                        height={FULL_IMAGE_SIZE}
+                    />
                 </Box>
                 <VStack spacing="sp16">
                     <VStack spacing="sp12">

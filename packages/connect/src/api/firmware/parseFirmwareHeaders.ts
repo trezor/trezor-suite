@@ -7,7 +7,7 @@ import type { VersionArray } from '@trezor/utils/src/versionUtils';
  */
 export const parseFirmwareHeaders = (buff: Buffer) => {
     const vendorHeader = buff.subarray(0, 4).toString('utf8');
-    let trezorImageHeader = '';
+    let trezorImageHeader: string;
 
     let restbuff: Buffer | undefined;
     if (vendorHeader === 'TRZV') {

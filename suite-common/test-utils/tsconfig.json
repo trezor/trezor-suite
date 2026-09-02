@@ -2,20 +2,14 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../analytics" },
-        { "path": "../bip329-types" },
-        { "path": "../platform-encryption" },
+        { "path": "../dependency-injection" },
+        { "path": "../react-query" },
         { "path": "../redux-utils" },
-        { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
-        {
-            "path": "../../packages/analytics-uploader"
-        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }

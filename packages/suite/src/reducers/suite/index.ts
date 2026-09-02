@@ -2,6 +2,7 @@ import { type ReducersMapObject, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DebugState, prepareDebugReducer } from '@suite/debug';
 import { type DesktopUpdateState, desktopUpdateReducer } from '@suite/desktop-update';
+import { type DesktopDeviceState, prepareDesktopDeviceReducer } from '@suite/device';
 import { type FeedbackFeatureName } from '@suite/experimental';
 import { featureFeedbackReducer } from '@suite/feature-feedback';
 import { type FlagsState, prepareFlagsReducer } from '@suite/flags';
@@ -25,12 +26,7 @@ import {
 } from '@suite-common/toast-notifications';
 import { type WalletConnectState, prepareWalletConnectReducer } from '@suite-common/walletconnect';
 
-import {
-    type DesktopDeviceState,
-    prepareDesktopDeviceReducer,
-} from 'src/actions/device/deviceSlice';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { type Action } from 'src/types/suite';
 
 import guide, { type GuideState } from './guideReducer';
 import protocol, { type ProtocolState } from './protocolReducer';
@@ -71,7 +67,7 @@ export type SuiteReducersState = {
     walletConnect: WalletConnectState;
 };
 
-export const suiteReducers: ReducersMapObject<SuiteReducersState, Action & UnknownAction> = {
+export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction> = {
     suite,
     discreetMode: discreetModeReducer,
     tor: torReducer,

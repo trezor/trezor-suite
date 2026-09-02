@@ -2,18 +2,20 @@ import { useState } from 'react';
 
 import { createCoinjoinAccount } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { openDeferredModal, openModal, selectModalType } from '@suite/modal';
-import { selectTorState } from '@suite/tor';
+import { openDeferredModal, openModal } from '@suite/modal';
+import { selectIsTorEnabled } from '@suite/tor';
+import { toggleTor } from '@suite/tor-desktop';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { type UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
-import { toggleTor } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';
@@ -53,10 +55,9 @@ interface AddCoinjoinAccountProps {
 export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjoinAccountProps) => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const { isTorEnabled } = useSelector(selectTorState);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
     const device = useSelector(selectSelectedDevice);
-    const accounts = useSelector(state => state.wallet.accounts);
-    const modalType = useSelector(selectModalType);
+    const accounts = useSelector(selectAccounts);
     const dispatch = useDispatch();
 
     if (!device) {
@@ -107,7 +108,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
             }
 
             // Triggering Tor process and displaying Tor loading to give user feedback of Tor progress.
-            dispatch(toggleTor(true, modalType));
+            dispatch(toggleTor(true));
             const isTorLoaded = await dispatch(openDeferredModal({ type: 'tor-loading' }));
             // When Tor was not loaded it means there was an error or user canceled it, stop the coinjoin account activation.
             if (!isTorLoaded) return;

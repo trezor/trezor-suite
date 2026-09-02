@@ -1,19 +1,12 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_tx.json';
+import { loadCommonFixture } from './commonFixtures';
+
+const commonFixtures = loadCommonFixture('ethereum/sign_tx.json');
 
 const legacyResults: Record<string, LegacyResult[]> = {
     'Ledger Live legacy path': [
         {
             // 'Forbidden key path between these versions (T1B1 does not have starting fw, too much effort to find)
             rules: ['2.3.4-2.5.4', '<1.12.2'],
-            success: false,
-        },
-    ],
-    'EIP-7702 - Uniswap': [
-        {
-            // EIP-7702 (tx_type 4) added in firmware 2.10.0
-            rules: ['<2.10.0'],
             success: false,
         },
     ],
@@ -32,19 +25,9 @@ const ethereumSignTransaction: TestCase = {
     },
     tests: commonFixtures.tests
         .flatMap(({ name, parameters, result, skip_models }: any) => {
-            const isEIP7702 = parameters.tx_type === 4;
             const fixture: Fixture = {
                 description: `${name} ${parameters.comment ?? ''}`,
                 skip: skip_models?.includes('t1') ? ['1'] : undefined,
-                // EIP-7702 requires safety_checks disabled on the device
-                ...(isEIP7702 && {
-                    setup: {
-                        mnemonic: commonFixtures.setup.mnemonic,
-                        settings: {
-                            safety_checks: 2,
-                        },
-                    },
-                }),
                 params: {
                     path: parameters.path,
                     transaction: {

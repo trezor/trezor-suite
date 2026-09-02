@@ -12,13 +12,12 @@ import * as http from 'http';
 import { CALL_SOURCE_MCP, type ConnectProcessInfo } from '@suite-common/connect-popup';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits, substituteBip43Path } from '@suite-common/wallet-utils';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
+import { ipcMain } from '../ipcMain';
+import { type ModuleInit } from './module';
 import { addMessage } from '../libs/connect-popup-messages';
 import { getProcessIcon } from '../libs/process-icon';
-import { ipcMain } from '../typed-electron';
-import { type ModuleInit } from './module';
 
 export const SERVICE_NAME = 'mcp-server';
 
@@ -359,7 +358,7 @@ const MCP_TOOLS = [
             'Send a cryptocurrency transaction using the Trezor device. ' +
             'Just provide "to" address, "value", and "coin" — everything else is automatic. ' +
             'For Bitcoin/UTXO chains (btc, ltc, bch, doge, zec): ' +
-            'handled by composeTransaction — account, UTXOs, and fees are resolved by Suite. ' +
+            'handled by sendTransaction — account, UTXOs, and fees are resolved by Suite. ' +
             'For Ethereum/EVM chains (eth, pol, bsc, arb, base, op, avax, rhc, etc): ' +
             'nonce and EIP-1559 gas fees are auto-filled; use "accountIndex" to select account. ' +
             'For ERC-20 token transfers: set "tokenContract" and "tokenDecimals" — the server encodes the transfer calldata automatically. ' +
@@ -825,7 +824,7 @@ const handleXrpSend = async (
 };
 
 /**
- * Handle BTC/UTXO transaction via a single composeTransaction call with push=true.
+ * Handle BTC/UTXO transaction via a single sendTransaction call with push=true.
  * TrezorConnect handles everything internally: account discovery, fee estimation,
  * UTXO selection, fee level selection, signing, and broadcasting.
  */
@@ -843,7 +842,7 @@ const handleUtxoSend = (
         });
     }
 
-    return callPopup(sendPopupCall, 'composeTransaction', {
+    return callPopup(sendPopupCall, 'sendTransaction', {
         outputs: [
             {
                 type: 'payment',
@@ -897,7 +896,7 @@ const handleSendTransaction = async (
             return autoBroadcast(sendPopupCall, coin, signResult, params.broadcast !== false);
         }
 
-        // Otherwise, single composeTransaction call — TrezorConnect handles everything
+        // Otherwise, single sendTransaction call — TrezorConnect handles everything
         return handleUtxoSend(params, sendPopupCall, coin);
     }
 
@@ -1377,9 +1376,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     };
 
     // IPC handlers for controlling the MCP server from the renderer
-    ipcMain.handle('mcp/get-settings', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('mcp/get-settings', () => {
         const settings = store.getMcpSettings();
 
         return {
@@ -1390,17 +1387,14 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         };
     });
 
-    ipcMain.handle('mcp/regenerate-token', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.handle('mcp/regenerate-token', () => {
         const newToken = generateToken();
         store.setMcpSettings({ token: newToken });
 
         return { token: newToken };
     });
 
-    ipcMain.handle('mcp/set-enabled', (ipcEvent, enabled: boolean) => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('mcp/set-enabled', (_, enabled: boolean) => {
         if (typeof enabled !== 'boolean') return;
 
         const currentSettings = store.getMcpSettings();

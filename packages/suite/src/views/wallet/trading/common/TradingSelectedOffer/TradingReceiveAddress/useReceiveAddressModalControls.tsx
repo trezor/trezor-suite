@@ -8,10 +8,7 @@ import { TradingReceiveAddressModal } from './TradingReceiveAddressModal';
 import { TradingUtxoReceiveAddressModal } from './TradingUtxoReceiveAddressModal/TradingUtxoReceiveAddressModal';
 
 type ReceiveAddressModal =
-    | 'accountModal'
-    | 'customAddressModal'
-    | 'utxoAddressModal'
-    | 'extraFieldModal';
+    'accountModal' | 'customAddressModal' | 'utxoAddressModal' | 'extraFieldModal';
 
 const useReceiveAddressModal = () => {
     const [activeModal, setActiveModal] = useState<ReceiveAddressModal>();

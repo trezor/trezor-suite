@@ -8,12 +8,14 @@ import { TradingUtxoReceiveAddressOption } from './TradingUtxoReceiveAddressOpti
 
 interface TradingUtxoReceiveAddressListProps {
     addresses: Address[];
+    addressLabels: Record<string, string | null>;
     title: ReactNode;
     account: Account;
 }
 
 export const TradingUtxoReceiveAddressList = ({
     addresses,
+    addressLabels,
     title,
     account,
 }: TradingUtxoReceiveAddressListProps) => {
@@ -31,6 +33,7 @@ export const TradingUtxoReceiveAddressList = ({
                         key={address.address}
                         account={account}
                         address={address}
+                        label={addressLabels[address.address] ?? undefined}
                     />
                 ))}
             </CardList>

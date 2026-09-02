@@ -105,6 +105,44 @@ function txCachePlugin(): Plugin {
 }
 
 /**
+ * Serves the trezor-common fixtures as `virtual:common-fixtures` so no `fs` reaches the browser
+ * (see commonFixtures.ts). Walks the fixtures dir at build time into a map keyed by relative path
+ * (e.g. `ethereum/getaddress.json`); empty when the submodule is absent.
+ */
+function commonFixturesPlugin(): Plugin {
+    const virtualModuleId = 'virtual:common-fixtures';
+    const resolvedVirtualModuleId = '\0' + virtualModuleId;
+    const fixturesRoot = path.resolve(e2eDir, '../../../submodules/trezor-common/tests/fixtures');
+
+    const readFixtures = (dir: string, base = '', out: Record<string, unknown> = {}) => {
+        if (!fs.existsSync(dir)) return out;
+        fs.readdirSync(dir, { withFileTypes: true }).forEach(entry => {
+            const absolutePath = path.join(dir, entry.name);
+            const relativePath = base ? `${base}/${entry.name}` : entry.name;
+            if (entry.isDirectory()) {
+                readFixtures(absolutePath, relativePath, out);
+            } else if (entry.name.endsWith('.json')) {
+                out[relativePath] = JSON.parse(fs.readFileSync(absolutePath, 'utf-8'));
+            }
+        });
+
+        return out;
+    };
+
+    return {
+        name: 'common-fixtures',
+        resolveId(id: string) {
+            if (id === virtualModuleId) return resolvedVirtualModuleId;
+        },
+        load(id: string) {
+            if (id === resolvedVirtualModuleId) {
+                return `export const FIXTURES = ${JSON.stringify(readFixtures(fixturesRoot))};`;
+            }
+        },
+    };
+}
+
+/**
  * Vite plugin that transforms coins.json to redirect blockchain_link URLs
  * to the local WS cache server when TESTS_USE_WS_CACHE is enabled.
  */
@@ -223,6 +261,7 @@ export default defineConfig(
                 ],
             },
             plugins: [
+                commonFixturesPlugin(),
                 txCachePlugin(),
                 resolveWorkerUrlsPlugin(),
                 ...(isWebProject

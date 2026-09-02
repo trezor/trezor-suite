@@ -15,6 +15,7 @@ export const orderedAccountTypes: AccountType[] = [
     'segwit',
     'legacy',
     'ledger',
+    'root',
 ];
 
 export const sendDisabledNetworkTypes: NetworkType[] = ['cardano'];

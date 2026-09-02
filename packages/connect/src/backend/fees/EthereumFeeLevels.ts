@@ -1,20 +1,29 @@
 import type { EthereumNetworkInfo, FeeLevel } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { cloneObject } from '@trezor/utils/src/cloneObject';
+import { isNotNull } from '@trezor/utils/src/isNotNull';
 import { clamp } from '@trezor/utils/src/number';
 
 import type { Blockchain } from '../Blockchain';
-import { MiscFeeLevels } from './MiscFeeLevels';
+import type { FeeLevels } from './feeLevelsBase';
 
-export class EthereumFeeLevels extends MiscFeeLevels {
-    coinInfo: EthereumNetworkInfo;
+export class EthereumFeeLevels implements FeeLevels {
+    private coinInfo: EthereumNetworkInfo;
+    private level: FeeLevel;
+    private eip1559levels?: FeeLevel[];
+
+    get levels() {
+        return this.eip1559levels ?? [this.level];
+    }
 
     // override only to narrow down the coinInfo type
     constructor(coinInfo: EthereumNetworkInfo) {
-        super(coinInfo);
         this.coinInfo = coinInfo;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        this.level = cloneObject(coinInfo.defaultFees[0]);
     }
 
-    async load(blockchain: Blockchain, request: Parameters<typeof blockchain.estimateFee>[0]) {
+    async load(blockchain: Blockchain, request: Parameters<Blockchain['estimateFee']>[0]) {
         try {
             const estimateResult = await blockchain.estimateFee(request);
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -42,7 +51,7 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                 const levels = (['low', 'medium', 'high'] as const).map(levelKey => {
                     const level = eip1559[levelKey];
 
-                    const label = levelKey === 'medium' ? 'normal' : levelKey;
+                    const label: FeeLevel['label'] = levelKey === 'medium' ? 'normal' : levelKey;
 
                     if (!level?.maxFeePerGas || !level?.maxPriorityFeePerGas) {
                         return null;
@@ -74,22 +83,13 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                     };
                 });
 
-                this.levels = levels.filter(level => level) as FeeLevel[];
+                this.eip1559levels = levels.filter(isNotNull);
             } else {
-                const { levels } = this;
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const currentLevel: (typeof levels)[number] = levels[0];
-                this.levels[0] = {
-                    ...currentLevel,
-                    ...response,
-                    feePerUnit,
-                };
+                this.eip1559levels = undefined;
+                this.level = { ...this.level, ...response, feePerUnit };
             }
-            this.wasFetchedSuccessfully = true;
         } catch {
             // silent
         }
-
-        return this.levels;
     }
 }

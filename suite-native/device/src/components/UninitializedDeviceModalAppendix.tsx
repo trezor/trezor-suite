@@ -19,8 +19,9 @@ export const UninitializedDeviceModalAppendix = () => (
 
             <BottomSheetListItem
                 iconName="checkCircle"
-                iconColor="contentPrimaryInverse"
-                iconBackgroundColor="legacyBackgroundPrimaryDefault"
+                iconColor="contentBrand"
+                iconBorderColor="elementBorderBrandSofter"
+                iconBackgroundColor="elementFillBrandSofter"
                 translationKey="moduleDevice.noSeedModal.appendix.lines.3"
             />
         </VStack>

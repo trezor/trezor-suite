@@ -1,4 +1,4 @@
-import { type Protocol } from '@suite-common/suite-constants';
+import { asProtocol } from '@trezor/network-module-suite-common-types';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import { type BipTransferUriInfo, type TransferUriError } from './transferUtils';
@@ -15,7 +15,7 @@ const removeLeadingTrailingSlashes = (text: string) => text.replace(/^\/{0,2}|\/
  */
 export const parseBip321Uri = (uri: URL): Result<BipTransferUriInfo, TransferUriError> => {
     const { protocol, pathname, host, searchParams } = uri;
-    const scheme = protocol.slice(0, -1) as Protocol;
+    const scheme = asProtocol(protocol.slice(0, -1));
 
     const address = removeLeadingTrailingSlashes(pathname) || removeLeadingTrailingSlashes(host);
     if (!address) return err({ type: 'MISSING_ADDRESS' });

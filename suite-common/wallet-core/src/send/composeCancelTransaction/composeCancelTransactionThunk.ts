@@ -10,6 +10,7 @@ import TrezorConnect, {
     DEFAULT_SORTING_STRATEGY,
     type PrecomposeResultFinal,
 } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';
 import { calculateNewFee } from './calculateNewFee';
@@ -53,7 +54,7 @@ const composeCancelTransaction = async ({
             },
         ],
         sortingStrategy: DEFAULT_SORTING_STRATEGY,
-        coin: account.symbol,
+        coin: asCoinSymbol(account.symbol),
         baseFee,
     };
 

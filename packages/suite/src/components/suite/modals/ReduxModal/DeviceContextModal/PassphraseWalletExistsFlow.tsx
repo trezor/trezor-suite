@@ -1,10 +1,9 @@
 import { useState } from 'react';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { EnterPassphrase } from './EnterPassphrase';
 import { PassphraseWalletBestPractices } from './PassphraseWalletBestPractices';

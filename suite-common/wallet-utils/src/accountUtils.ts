@@ -1,8 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,
-    type Bip43Path,
-    type Bip43PathTemplate,
     type NetworkAccount,
     type NetworkFeature,
     type NetworkSymbol,
@@ -25,6 +23,7 @@ import {
     type RatesByKey,
     type SuccessfulAccount,
     type TokenAddress,
+    type WalletAccountTransaction,
     asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
@@ -40,6 +39,8 @@ import TrezorConnect, {
     type StaticSessionId,
     type TokenInfo,
 } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
+import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
@@ -163,6 +164,8 @@ export const getAccountTypeName = ({ path, accountType, networkType }: getAccoun
                 return 'TR_ACCOUNT_TYPE_LEDGER';
             case 'legacy':
                 return 'TR_ACCOUNT_TYPE_LEGACY';
+            case 'root':
+                return 'TR_ACCOUNT_TYPE_ROOT';
             case 'normal':
                 return 'TR_ACCOUNT_TYPE_DEFAULT';
             case 'placeholder':
@@ -217,6 +220,8 @@ export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccoun
     switch (accountType) {
         case 'ledger':
             return 'TR_ACCOUNT_TYPE_LEDGER_DESC';
+        case 'root':
+            return 'TR_ACCOUNT_TYPE_ROOT_DESC';
         case 'legacy':
             if (networkType === 'cardano') {
                 return 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC';
@@ -324,6 +329,33 @@ export const findAccountsByAddress = (
 
             return a.descriptor === address;
         });
+
+/**
+ * The account that owns every input of the transaction, or undefined when any input is missing,
+ * unknown, or owned by a different account — a single input must not be presented as "the sender"
+ * of a multi-party transaction (e.g. coinjoin, payjoin).
+ */
+export const findTransactionSenderAccount = (
+    transaction: Pick<WalletAccountTransaction, 'details' | 'symbol'>,
+    accounts: Account[],
+): Account | undefined => {
+    const inputs = transaction.details?.vin ?? [];
+    if (!inputs.length) return undefined;
+
+    let senderAccount: Account | undefined;
+    for (const input of inputs) {
+        if (!input.addresses?.length) return undefined;
+        for (const address of input.addresses) {
+            const [account] = findAccountsByAddress(transaction.symbol, address, accounts);
+            if (!account || (senderAccount && account.key !== senderAccount.key)) {
+                return undefined;
+            }
+            senderAccount = account;
+        }
+    }
+
+    return senderAccount;
+};
 
 export const findAccountDevice = (account: Account, devices: TrezorDevice[]) =>
     devices.find(d => d.state?.staticSessionId === account.deviceState);
@@ -937,6 +969,10 @@ export const getUtxoFromSignedTransaction = ({
             const serialized = output.address_n.slice(3, 5).join('/');
             addr = account.addresses?.change.find(a => a.path.endsWith(serialized));
         }
+        if (!receivingAccount && 'addressParameters' in output && output.addressParameters) {
+            // find cardano change address
+            addr = account.addresses?.change.find(a => a.path === output.addressParameters.path);
+        }
         if ('address' in output) {
             // find self address
             addr = addresses.find(a => a.address === output.address);
@@ -1157,7 +1193,7 @@ export const prepareNewAccountPayload = async ({
 
     const res = await TrezorConnect.getAccountInfo({
         path: newPath,
-        coin: networkSymbol,
+        coin: asCoinSymbol(networkSymbol),
         device: {
             path: device.path,
             instance: device.instance,

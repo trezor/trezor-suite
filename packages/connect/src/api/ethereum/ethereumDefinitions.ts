@@ -23,7 +23,7 @@ interface GetEthereumDefinitions {
 const getDefinitionsBaseUrl = (channel: DefinitionsChannel = 'production') => {
     switch (channel) {
         case 'production':
-            return 'https://data.trezor.io/firmware/eth-definitions';
+            return 'https://data.trezor.io/firmware/definitions/eth';
         case 'development':
             return 'https://data.trezor.io/dev/firmware/dev-definitions/eth';
         case 'local':
@@ -69,7 +69,7 @@ export const getEthereumDefinitions = async ({
 
     try {
         if (contractAddress) {
-            // Contract address has to be in lowercase in order to be found in eth-definitions.
+            // Contract address has to be in lowercase in order to be found in definitions/eth.
             const lowerCaseContractAddress = contractAddress.toLowerCase();
             const tokenDefinitionUrl = `${baseUrl}/${chainId ? 'chain-id' : 'slip44'}/${chainId ?? slip44}/token-${lowerCaseContractAddress}.dat`;
             const tokenDefinition = await fetch(tokenDefinitionUrl);
@@ -110,7 +110,7 @@ export const getEthereumDefinitions = async ({
 };
 
 /**
- * decoded content of data retrieved from https://data.trezor.io/firmware/eth-definitions/...
+ * decoded content of data retrieved from https://data.trezor.io/firmware/definitions/eth/...
  */
 export type EthereumNetworkDefinitionDecoded = Static<typeof EthereumNetworkDefinitionDecoded>;
 export const EthereumNetworkDefinitionDecoded = Type.Object({
@@ -121,7 +121,7 @@ export const EthereumNetworkDefinitionDecoded = Type.Object({
 });
 
 /**
- * decoded content of data retreived from https://data.trezor.io/firmware/eth-definitions/...
+ * decoded content of data retreived from https://data.trezor.io/firmware/definitions/eth/...
  */
 export type EthereumTokenDefinitionDecoded = Static<typeof EthereumTokenDefinitionDecoded>;
 export const EthereumTokenDefinitionDecoded = Type.Object({

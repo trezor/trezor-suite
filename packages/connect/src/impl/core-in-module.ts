@@ -6,6 +6,7 @@ import {
     SET_ENABLED_NETWORKS,
     TRANSPORT_EVENT,
     UI_EVENT,
+    UI_REQUEST,
     createErrorMessage,
 } from '@trezor/connect-common';
 import type {
@@ -115,7 +116,11 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
                 break;
 
             case UI_EVENT:
-                // pass UI event up
+                this.eventEmitter.emit(event, message);
+                this.eventEmitter.emit(type, payload);
+                break;
+
+            case UI_REQUEST:
                 this.eventEmitter.emit(event, message);
                 this.eventEmitter.emit(type, payload);
                 break;

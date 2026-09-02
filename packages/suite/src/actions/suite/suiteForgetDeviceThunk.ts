@@ -1,7 +1,11 @@
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { forgetDeviceThunk } from '@suite-common/wallet-core';
+import {
+    type ForgetDeviceThunkDeps,
+    type ForgetDeviceThunkState,
+    forgetDeviceThunk,
+} from '@suite-common/wallet-core';
 
 import * as storageActions from 'src/actions/suite/storageActions';
 
@@ -14,15 +18,18 @@ export type ForgetDeviceThunkParams = {
     deviceId?: TrezorDevice['id'];
 };
 
-export const suiteForgetDeviceThunk = createThunk(
+type SuiteForgetDeviceThunkState = ForgetDeviceThunkState;
+
+type SuiteForgetDeviceThunkDeps = ForgetDeviceThunkDeps;
+
+export const suiteForgetDeviceThunk = createThunk<
+    void,
+    ForgetDeviceThunkParams | undefined,
+    { state: SuiteForgetDeviceThunkState; extra: SuiteForgetDeviceThunkDeps }
+>(
     SUITE_FORGET_DEVICE,
     async (
-        {
-            skipToggleModalConnection,
-            isOsUnpairingFinished,
-            skipDisconnect,
-            deviceId,
-        }: ForgetDeviceThunkParams | undefined = {},
+        { skipToggleModalConnection, isOsUnpairingFinished, skipDisconnect, deviceId } = {},
         { dispatch, getState },
     ) => {
         const devices = selectDevices(getState());

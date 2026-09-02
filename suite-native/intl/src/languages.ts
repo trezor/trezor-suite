@@ -4,6 +4,7 @@ export const DEFAULT_LOCALE = 'en-US';
 export type LocaleCode = `${string}-${string}`;
 
 export const LANGUAGES = {
+    'id-ID': { icon: '🇮🇩', name: 'Bahasa Indonesia', en: 'Indonesian', type: 'official' },
     'cs-CZ': { icon: '🇨🇿', name: 'Čeština', en: 'Czech', type: 'official' },
     'de-DE': { icon: '🇩🇪', name: 'Deutsch', en: 'German', type: 'official' },
     'en-US': { icon: '🇬🇧', name: 'English', en: 'English', type: 'official' },

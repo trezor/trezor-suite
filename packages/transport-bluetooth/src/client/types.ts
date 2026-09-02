@@ -8,6 +8,7 @@ export interface TrezorBluetoothSettings {
     timeout?: number;
     writeWithResponse?: boolean;
     writeWithDelay?: boolean;
+    headers?: Record<string, string>;
 }
 
 export type BluetoothInfo = {

@@ -1,0 +1,142 @@
+import { type TokenAddress } from '@suite-common/wallet-types';
+
+import { btcAccountBalanceHistoryResult, btcAccountTransactions } from './__fixtures__/btc';
+import {
+    ethAccountBalanceHistoryResult,
+    ethAccountTransactions,
+    ethRevertedAndUnknownStatusBalanceHistoryResult,
+    ethRevertedAndUnknownStatusTransactions,
+    ethTokenBalanceHistoryResult,
+    l2AccountBalanceHistoryResult,
+    l2AccountTransactions,
+} from './__fixtures__/eth';
+import { xrpAccountTransactions, xrpBalanceHistoryResult } from './__fixtures__/xrp';
+import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
+
+describe('Account balance movement history', () => {
+    it('should getAccoutBalanceHistory for bitcoin', async () => {
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: btcAccountTransactions,
+            symbol: 'btc',
+        });
+
+        expect(balanceHistory.main).toMatchObject(btcAccountBalanceHistoryResult);
+    });
+
+    it('should getAccoutBalanceHistory for bitcoin with timestamp filters', async () => {
+        const from = 1666021435;
+        const to = 1711445680;
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: btcAccountTransactions,
+            symbol: 'btc',
+            from,
+            to,
+        });
+
+        const filteredBalanceHistory = btcAccountBalanceHistoryResult.filter(
+            item => item.time >= from && item.time <= to,
+        );
+
+        expect(balanceHistory.main).toMatchObject(filteredBalanceHistory);
+    });
+
+    it('should getAccoutBalanceHistory for ripple', async () => {
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: xrpAccountTransactions,
+            symbol: 'xrp',
+        });
+
+        expect(balanceHistory.main).toMatchObject(xrpBalanceHistoryResult);
+    });
+
+    it('should getAccoutBalanceHistory for ripple with timestamp filters', async () => {
+        const from = 1672923931;
+        const to = 1690884611;
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: xrpAccountTransactions,
+            symbol: 'xrp',
+            from,
+            to,
+        });
+
+        const filteredBalanceHistory = xrpBalanceHistoryResult.filter(
+            item => item.time >= from && item.time <= to,
+        );
+
+        expect(balanceHistory.main).toMatchObject(filteredBalanceHistory);
+    });
+
+    it('should getAccoutBalanceHistory for ethereum', async () => {
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: ethAccountTransactions,
+            symbol: 'eth',
+        });
+
+        expect(balanceHistory.main).toMatchObject(ethAccountBalanceHistoryResult);
+    });
+
+    it('should count only the fee for reverted txs and the full value for unknown-status txs', async () => {
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: ethRevertedAndUnknownStatusTransactions,
+            symbol: 'eth',
+        });
+
+        expect(balanceHistory.main).toMatchObject(ethRevertedAndUnknownStatusBalanceHistoryResult);
+    });
+
+    it('should use effectiveGasPrice and add l1Fee for L2 fees, falling back to gasPrice', async () => {
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: l2AccountTransactions,
+            symbol: 'op',
+        });
+
+        expect(balanceHistory.main).toMatchObject(l2AccountBalanceHistoryResult);
+    });
+
+    it('should getAccoutBalanceHistory for ethereum with timestamp filters', async () => {
+        const from = 1665760907;
+        const to = 1716201815;
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: ethAccountTransactions,
+            symbol: 'eth',
+            from,
+            to,
+        });
+
+        const filteredBalanceHistory = ethAccountBalanceHistoryResult.filter(
+            item => item.time >= from && item.time <= to,
+        );
+
+        expect(balanceHistory.main).toMatchObject(filteredBalanceHistory);
+    });
+
+    it('should getAccoutBalanceHistory for ethereum with token', async () => {
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: ethAccountTransactions,
+            symbol: 'eth',
+        });
+
+        expect(balanceHistory.tokens).toMatchObject(ethTokenBalanceHistoryResult);
+    });
+
+    it('should getAccoutBalanceHistory for ethereum with token and timestamp filters', async () => {
+        const from = 1665760907;
+        const to = 1716201815;
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: ethAccountTransactions,
+            symbol: 'eth',
+            from,
+            to,
+        });
+
+        for (const token of Object.keys(balanceHistory.tokens)) {
+            const filteredBalanceHistory = ethTokenBalanceHistoryResult[token]?.filter(
+                item => item.time >= from && item.time <= to,
+            );
+
+            expect(balanceHistory.tokens[token as TokenAddress]).toMatchObject(
+                filteredBalanceHistory ?? [],
+            );
+        }
+    });
+});

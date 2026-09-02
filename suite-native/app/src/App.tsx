@@ -3,7 +3,7 @@ import { Freeze } from 'react-freeze';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
@@ -11,6 +11,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
+import { useDispatch } from '@suite-common/redux-utils';
 import { applicationInit } from '@suite-native/app-init';
 import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
 import { launchArguments } from '@suite-native/config';
@@ -19,7 +20,11 @@ import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
-import { initSentry } from '@suite-native/sentry';
+import {
+    initSentry,
+    markStartupJsBundleEvaluated,
+    reportStartupAppLoaded,
+} from '@suite-native/sentry';
 import {
     type PreloadedState,
     StoreProvider,
@@ -35,10 +40,7 @@ import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { disableRTL } from './rtl';
 
-// Base time to measure app loading time.
-// The constant has to be placed at the beginning of this file to be initialized as soon as possible.
-// TODO: This method of measuring app loading time is not ideal, Should be substituted by some more sophisticated solution in the future.
-const APP_STARTED_TIMESTAMP = Date.now();
+markStartupJsBundleEvaluated();
 
 if (__DEV__) {
     require('./LogBox');
@@ -68,7 +70,7 @@ const AppComponent = () => {
     const isAppReady = useSelector(selectIsAppReady);
     const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
 
-    useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
+    useReportAppInitToAnalytics();
 
     useEffect(() => {
         if (!isApplicationInitDispatchedRef.current) {
@@ -79,7 +81,8 @@ const AppComponent = () => {
 
     useEffect(() => {
         if (isAppReady) {
-            SplashScreen.hideAsync();
+            // Report the first usable frame even if the native splash API fails to resolve.
+            void SplashScreen.hideAsync().then(reportStartupAppLoaded, reportStartupAppLoaded);
         }
     }, [isAppReady]);
 

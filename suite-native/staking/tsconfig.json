@@ -29,6 +29,9 @@
         { "path": "../device-mutex" },
         { "path": "../labeling" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         {
@@ -44,6 +47,7 @@
         },
         {
             "path": "../../suite-common/test-utils"
-        }
+        },
+        { "path": "../analytics" }
     ]
 }

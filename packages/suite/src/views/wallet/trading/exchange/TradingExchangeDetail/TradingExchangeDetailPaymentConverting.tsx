@@ -1,6 +1,7 @@
 import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Column, type StepListItemState } from '@trezor/components';
 
 import { type Account } from 'src/types/wallet';
@@ -23,6 +24,7 @@ type TradingExchangeDetailPaymentConvertingProps = {
     trade: ExchangeTrade;
     provider?: ExchangeProviderInfo;
     account?: Account;
+    receiveAccountKey?: AccountKey;
     isDex?: boolean;
 };
 
@@ -30,6 +32,7 @@ export const TradingExchangeDetailPaymentConverting = ({
     trade,
     provider,
     account,
+    receiveAccountKey,
     isDex,
 }: TradingExchangeDetailPaymentConvertingProps) => {
     const { translationString } = useTranslation();
@@ -54,6 +57,7 @@ export const TradingExchangeDetailPaymentConverting = ({
                     {provider && (
                         <TradingDetailProviderInfo
                             account={account}
+                            receiveAccountKey={receiveAccountKey}
                             orderId={trade.orderId}
                             provider={provider}
                             trade={trade}

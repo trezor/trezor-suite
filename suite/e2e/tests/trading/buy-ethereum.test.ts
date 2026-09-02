@@ -1,8 +1,9 @@
 import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { buyQuotesEthereum, buyTradeEthereum, invityEndpoint } from '../../fixtures/invity';
+import { buyQuotesEthereum, buyTradeEthereum, tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -13,7 +14,7 @@ const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 
 test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ page, onboardingPage, settingsPage, dashboardPage }) => {
-        await page.route(invityEndpoint.buyQuotes, async route => {
+        await page.route(tradeEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesEthereum });
         });
         await onboardingPage.completeOnboarding();
@@ -32,7 +33,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await tradingPage.assetPicker.selectBuyAsset({
                 searchFilter: 'Ethereum',
                 networkFilter: 'eth',
-                assetCryptoId: getCryptoId('eth'),
+                assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
             });
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
@@ -44,7 +45,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         });
 
         await test.step('Continue to preview and confirm the trade', async () => {
-            await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeEthereum);
+            await tradingMock.routeTrade(tradeEndpoint.buyTrade, buyTradeEthereum);
 
             await tradingPage.buyBestOfferButton.click();
 

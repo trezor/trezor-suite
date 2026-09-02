@@ -1,4 +1,4 @@
-import type { Bip43Path, Bip43PathTemplate } from '@suite-common/wallet-config';
+import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
 
 export const sortByCoin = [
     {
@@ -157,6 +157,87 @@ export const getUtxoFromSignedTransaction = [
         result: [
             { txid: 'ABCD', vout: 1, amount: '1', address: 'B-change', path: '/1/1' },
             { txid: '0000', vout: 0, amount: '4' },
+        ],
+    },
+    {
+        description: 'cardano tx, 1 new change utxo',
+        params: {
+            account: {
+                addresses: {
+                    used: [],
+                    unused: [],
+                    change: [
+                        { path: "m/1852'/1815'/0'/1/0", address: 'A-change' },
+                        { path: "m/1852'/1815'/0'/1/1", address: 'B-change' },
+                    ],
+                },
+                utxo: [
+                    { txid: '0000', vout: 0, amount: '4' },
+                    { txid: '0000', vout: 1, amount: '5' },
+                ],
+            },
+            tx: {
+                type: 'final',
+                inputs: [{ prev_hash: '0000', prev_index: 1 }],
+                outputs: [
+                    { address: 'external', amount: '2' },
+                    {
+                        addressParameters: { addressType: 0, path: "m/1852'/1815'/0'/1/1" },
+                        amount: '1',
+                    },
+                ],
+            },
+            txid: 'ABCD',
+        },
+        result: [
+            {
+                txid: 'ABCD',
+                vout: 1,
+                amount: '1',
+                address: 'B-change',
+                path: "m/1852'/1815'/0'/1/1",
+            },
+            { txid: '0000', vout: 0, amount: '4' },
+        ],
+    },
+    {
+        description: 'cardano tx, change utxo with token bundle keeps lovelace amount',
+        params: {
+            account: {
+                addresses: {
+                    used: [],
+                    unused: [],
+                    change: [{ path: "m/1852'/1815'/0'/1/0", address: 'A-change' }],
+                },
+                utxo: [{ txid: '0000', vout: 0, amount: '10' }],
+            },
+            tx: {
+                type: 'final',
+                inputs: [{ prev_hash: '0000', prev_index: 0 }],
+                outputs: [
+                    { address: 'external', amount: '2' },
+                    {
+                        addressParameters: { addressType: 0, path: "m/1852'/1815'/0'/1/0" },
+                        amount: '3',
+                        tokenBundle: [
+                            {
+                                policyId: 'policy',
+                                tokenAmounts: [{ assetNameBytes: '', amount: '7' }],
+                            },
+                        ],
+                    },
+                ],
+            },
+            txid: 'ABCD',
+        },
+        result: [
+            {
+                txid: 'ABCD',
+                vout: 1,
+                amount: '3',
+                address: 'A-change',
+                path: "m/1852'/1815'/0'/1/0",
+            },
         ],
     },
     {

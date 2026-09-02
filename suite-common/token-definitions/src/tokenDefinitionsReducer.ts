@@ -1,4 +1,8 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 
 import { tokenDefinitionsActions } from './tokenDefinitionsActions';
 import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';
@@ -6,9 +10,12 @@ import { type TokenDefinitionsState, TokenManagementAction } from './tokenDefini
 
 export const tokenDefinitionsInitialState: Partial<TokenDefinitionsState> = {};
 
+type TokenDefinitionsReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadTokenManagement'>;
+
 export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
     tokenDefinitionsInitialState,
-    (builder, extra) => {
+    (builder, extra: TokenDefinitionsReducerDeps) => {
         builder
             .addCase(getTokenDefinitionThunk.pending, (state, action) => {
                 const { symbol } = action.meta.arg;

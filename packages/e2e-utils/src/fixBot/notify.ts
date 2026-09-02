@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 
-import { error, log, warn } from '../logger';
+import { error, log } from '../logger';
+import { githubRunLink, postSlackMessage } from '../slack';
 import { readSummaries } from './common';
 import { type AnalysisReport, AnalysisReportSchema, type SlackFixSummary } from './schemas';
 
@@ -36,11 +37,8 @@ function formatTestRef(validations: AnalysisReport['fixTasks'][number]['validati
     return `    ${first.spec} [${first.group}]${extrasPart}`;
 }
 
-function runUrl(): string {
-    const runId = process.env.GITHUB_RUN_ID ?? '';
-    const repo = process.env.GITHUB_REPOSITORY ?? 'trezor/trezor-suite';
-
-    return `https://github.com/${repo}/actions/runs/${runId}`;
+function runLink(): string {
+    return githubRunLink('GHA Run') ?? 'local run';
 }
 
 function readReport(reportPath: string): AnalysisReport | null {
@@ -67,7 +65,7 @@ function buildMessage(
     const lines: string[] = [];
 
     // Header
-    lines.push(`🤖 *Nightly Fix Agent — ${report.runDate}*  <${runUrl()}|GHA Run>`);
+    lines.push(`🤖 *Nightly Fix Agent — ${report.runDate}*  ${runLink()}`);
 
     // Cost summary
     const fixCosts = summaries.map(s => s.costUsd).filter((c): c is number => c !== null);
@@ -144,29 +142,6 @@ function buildMessage(
     return lines.join('\n');
 }
 
-async function sendSlackNotification(message: string): Promise<void> {
-    const webhook = process.env.SLACK_FIX_AGENT_WEBHOOK;
-
-    if (!webhook) {
-        log('[notify] No SLACK_FIX_AGENT_WEBHOOK configured, skipping notification.');
-        log(`[notify] Message would have been:\n${message}`);
-
-        return;
-    }
-
-    const res = await fetch(webhook, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: message }),
-    });
-
-    if (!res.ok) {
-        warn(`[notify] Failed to send Slack notification: ${res.status}`);
-    } else {
-        log('[notify] Slack notification sent.');
-    }
-}
-
 async function main(): Promise<void> {
     const reportPath = process.env.REPORT_PATH;
     const summariesDir = process.env.SUMMARIES_DIR;
@@ -180,8 +155,9 @@ async function main(): Promise<void> {
     const report = readReport(reportPath);
 
     if (!report) {
-        await sendSlackNotification(
-            `🤖 *Nightly Fix Agent*  <${runUrl()}|GHA Run>\n\n❓ Analysis agent did not complete correctly.`,
+        await postSlackMessage(
+            process.env.SLACK_FIX_AGENT_WEBHOOK,
+            `🤖 *Nightly Fix Agent*  ${runLink()}\n\n❓ Analysis agent did not complete correctly.`,
         );
 
         return;
@@ -194,7 +170,7 @@ async function main(): Promise<void> {
 
     const message = buildMessage(report, summaries, analyzeCost);
 
-    await sendSlackNotification(message);
+    await postSlackMessage(process.env.SLACK_FIX_AGENT_WEBHOOK, message);
 }
 
 main().catch(err => {

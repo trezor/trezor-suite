@@ -1,12 +1,12 @@
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type AcquiredDevice } from 'src/types/suite';
 
 const getButtonLabelId = ({ device }: { device: AcquiredDevice }) => {

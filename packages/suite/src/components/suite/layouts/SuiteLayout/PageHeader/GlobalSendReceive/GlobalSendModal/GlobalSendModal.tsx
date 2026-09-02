@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
@@ -11,20 +12,23 @@ import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import {
     AssetGroupLabel,
     AssetGroupSpace,
+    AssetGroupsCard,
     AssetRowAccountWithBalance,
     AssetRowToken,
     AssetsList,
     AssetsListEmpty,
     AssetsModal,
-    ExpandableAssetRowTokens,
+    ExpandableAssetRowGroup,
 } from 'src/components/suite/asset-picker/components';
 import {
-    type AssetPickerListItem,
-    useExpandableAccountGroups,
+    useExpandableGroups,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { type AssetPickerListItem } from 'src/components/suite/asset-picker/types';
+import { createTokenOption } from 'src/components/suite/asset-picker/utils';
+import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
+import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
@@ -42,13 +46,12 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
     const networkSymbolFilter = useSelector(globalSendReceiveFiltersSelectors.selectNetworkSymbol);
     const searchFilter = useSelector(globalSendReceiveFiltersSelectors.selectSearch);
-    const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
-        useExpandableAccountGroups();
+    const { expandedGroupKeys, toggleGroup } = useExpandableGroups();
     const device = useSelector(selectSelectedDevice);
 
     const accountsWithTokens = useAccountWithTokensOptions({
         networkSymbolFilter,
-        expandedHiddenTokensGroups: expandedAccountTokensGroups,
+        expandedHiddenTokensGroups: expandedGroupKeys,
         staticSessionId: device?.state?.staticSessionId ?? null,
     });
 
@@ -108,19 +111,33 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
                 case 'hidden-tokens':
                     return (
-                        <ExpandableAssetRowTokens
-                            label="TR_HIDDEN_TOKENS"
-                            account={item.account}
-                            tokens={item.tokens}
-                            expanded={item.expanded}
-                            height={item.height}
-                            onExpandToggle={updateExpandableAccountGroups}
-                            onTokenClick={handleTokenClick}
-                        />
+                        <AssetGroupsCard height={getAssetPickerItemHeight(item)}>
+                            <ExpandableAssetRowGroup
+                                label="TR_HIDDEN_TOKENS"
+                                account={item.account}
+                                items={item.tokens.map(token =>
+                                    createTokenOption(item.account, token),
+                                )}
+                                renderItem={groupItem =>
+                                    groupItem.type === 'token' && (
+                                        <AssetRowToken
+                                            token={groupItem.token}
+                                            account={groupItem.account}
+                                            onClick={handleTokenClick}
+                                            isInsideGroup
+                                        />
+                                    )
+                                }
+                                expanded={item.expanded}
+                                onExpandToggle={expanded => {
+                                    toggleGroup(item.account.key, expanded);
+                                }}
+                            />
+                        </AssetGroupsCard>
                     );
             }
         },
-        [handleAccountClick, handleTokenClick, updateExpandableAccountGroups],
+        [handleAccountClick, handleTokenClick, toggleGroup],
     );
 
     return (
@@ -143,6 +160,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                 <AssetsList
                     items={globalSendListItems}
                     renderItem={renderItem}
+                    getItemHeight={getAssetPickerItemHeight}
                     height={LIST_HEIGHT}
                     ref={listRef}
                 />

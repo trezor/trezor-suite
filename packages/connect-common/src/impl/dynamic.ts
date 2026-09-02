@@ -78,6 +78,7 @@ export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSet
             debug: settings.debug,
             version: parseVersion(settings.version),
             enabledNetworks: settings.enabledNetworks,
+            requestedPermissions: settings.requestedPermissions,
         };
 
         this.currentTarget = this.getInitTarget();

@@ -24,6 +24,14 @@ on:
         description: "Test group for orchestration"
         required: true
         type: string
+      caller-job-id:
+        description: >
+          The calling workflow's job id, used to title the performance report section after the job
+          that measured it. `github.job` inside this template is this template's own job id, which
+          is the same for every matrix entry, so the caller has to pass its own.
+        required: false
+        default: ""
+        type: string
       fail-fast:
         description: "Cancel test run if number of tests fail (number | false)"
         default: "false"
@@ -99,9 +107,8 @@ jobs:
           private-key: ${{ secrets.trezor-bot-private-key }}
 
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
-          submodules: true
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 2
 
@@ -112,7 +119,7 @@ jobs:
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
       - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -151,7 +158,7 @@ jobs:
           mv ${{ github.workspace }}/artifact-download ${{ github.workspace }}/packages/connect-explorer/build-webextension
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
         continue-on-error: true
         with:
           version: v0.19.1
@@ -199,10 +206,15 @@ jobs:
           GH_BRANCH: ${{ env.branch }} # Used by Currents reporter
           PASSPHRASE: ${{ secrets.e2e-passphrase }}
           PASSPHRASE_LIVE: ${{ secrets.e2e-passphrase-live }}
-          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token || secrets.github-token }}
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token || secrets.github-token || github.token }}
           RELEASE_BUILD: ${{ inputs.release-build }}
           RUN_GITHUB_REPORTER: ${{ inputs.run-reporter }} # Read by playwright-base.config.ts to enable the GitHub reporter
           ELECTRON_DISABLE_SANDBOX: 1
+          # Keep these two apart. The label keys this job's section of the shared pull request
+          # comment and must stay stable across runs, or a re-run adds a section instead of
+          # replacing one. The job name is only the title rendered inside it.
+          PERF_REPORT_LABEL: "${{ inputs.target }} / group ${{ inputs.test-group }}"
+          PERF_REPORT_JOB: "${{ inputs.caller-job-id && format('{0} ({1})', inputs.caller-job-id, inputs.test-group) || '' }}"
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
         run: |

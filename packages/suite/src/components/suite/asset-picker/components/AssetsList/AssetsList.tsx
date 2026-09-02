@@ -1,47 +1,59 @@
-import { type ReactNode, type RefObject, memo, useCallback, useState } from 'react';
+import { type RefObject, memo, useMemo } from 'react';
 
-import { type BaseItemProps, VirtualizedList, useScrollShadow } from '@trezor/components';
+import {
+    type BaseItemProps,
+    VirtualizedList,
+    type VirtualizedListProps,
+    useScrollShadow,
+} from '@trezor/components';
 
-export interface AssetsListProps<T> {
+type MeasuredItem<T> = T & BaseItemProps;
+
+export type AssetsListProps<T> = {
     items: T[];
-    renderItem: (item: T, index: number) => ReactNode;
-    height: string | number;
-    minHeight?: string | number;
+    renderItem: VirtualizedListProps<MeasuredItem<T>>['renderItem'];
+    getItemHeight: (item: T) => number;
+    height: VirtualizedListProps<MeasuredItem<T>>['listHeight'];
+    minHeight?: VirtualizedListProps<MeasuredItem<T>>['listMinHeight'];
     ref?: RefObject<HTMLDivElement | null>;
-}
+};
 
 export const LIST_MIN_HEIGHT = 200;
 
-function AssetsListInner<T extends BaseItemProps>({
+function AssetsListInner<T>({
     items,
     renderItem,
+    getItemHeight,
     height,
     minHeight = LIST_MIN_HEIGHT,
     ref,
 }: AssetsListProps<T>) {
-    const { onScroll, ShadowTop, ShadowBottom, ShadowContainer } = useScrollShadow({
-        externalRef: ref,
-        backgroundColor: 'surfaceFillModal',
-    });
+    const { scrollElementRef, ScrollSentinels, ShadowTop, ShadowBottom, ShadowContainer } =
+        useScrollShadow({
+            externalRef: ref,
+            backgroundColor: 'surfaceFillModal',
+        });
 
-    const [end, setEnd] = useState(items.length);
-    const onScrollEnd = useCallback(() => setEnd(end + 1000), [end]);
+    // Kept referentially stable so that the shadows switching on and off cannot re-render the
+    // list itself.
+    const scrollSentinels = useMemo(() => <ScrollSentinels />, [ScrollSentinels]);
+
+    const measuredItems = useMemo(
+        () => items.map(item => ({ ...item, height: getItemHeight(item) })),
+        [items, getItemHeight],
+    );
 
     return (
         <ShadowContainer>
             <ShadowTop />
             <VirtualizedList
-                items={items}
+                items={measuredItems}
                 padding={8}
-                ref={ref}
-                onScroll={onScroll}
+                ref={scrollElementRef}
+                scrollSentinels={scrollSentinels}
                 renderItem={renderItem}
-                onScrollEnd={onScrollEnd}
                 listHeight={height}
                 listMinHeight={minHeight}
-                visibleItemsCount={20}
-                beforeAfterBufferCount={30}
-                loadMoreBufferCount={5}
                 resetScrollOnItemsChange={false}
             />
             <ShadowBottom />

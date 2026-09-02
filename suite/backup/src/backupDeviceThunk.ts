@@ -1,24 +1,28 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
 import { actionPrefix, backupActions } from './backupReducer';
 import type { BackupDeviceParams } from './types';
 
-export const backupDeviceThunk = createThunk(
+type BackupDeviceThunkParams = {
+    params?: BackupDeviceParams;
+    skipSuccessToast?: boolean;
+};
+
+export type BackupDeviceThunkState = DeviceRootState;
+
+export type BackupDeviceThunkDeps = WithServices<DesktopAnalyticsDep>;
+
+export const backupDeviceThunk = createThunk<
+    void,
+    BackupDeviceThunkParams,
+    { state: BackupDeviceThunkState; extra: BackupDeviceThunkDeps }
+>(
     `${actionPrefix}/backupDeviceThunk`,
-    async (
-        {
-            params = {},
-            skipSuccessToast,
-        }: {
-            params?: BackupDeviceParams;
-            skipSuccessToast?: boolean;
-        },
-        { dispatch, getState, extra },
-    ) => {
+    async ({ params = {}, skipSuccessToast }, { dispatch, getState, extra }) => {
         const device = selectSelectedDevice(getState());
         if (!device) {
             dispatch(
@@ -46,7 +50,7 @@ export const backupDeviceThunk = createThunk(
 
             dispatch(notificationsActions.addToast({ type: 'backup-failed' }));
             dispatch(backupActions.setError(result.error.message));
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.createBackupEvent.name,
                 payload: {
                     status: 'error',
@@ -58,7 +62,7 @@ export const backupDeviceThunk = createThunk(
                 dispatch(notificationsActions.addToast({ type: 'backup-success' }));
             }
             dispatch(backupActions.setInProgress(false));
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.createBackupEvent.name,
                 payload: {
                     status: 'finished',

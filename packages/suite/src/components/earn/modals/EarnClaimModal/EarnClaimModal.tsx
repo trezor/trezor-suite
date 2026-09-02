@@ -2,9 +2,10 @@ import { useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { useDevice } from '@suite/device';
+import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -13,14 +14,13 @@ import { Banner, Card, Column, InfoItem, Modal, Paragraph, Row, Tooltip } from '
 import { InfoIcon, WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useCardanoStaking } from 'src/hooks/earn/useCardanoStaking';
 import { useClaimForm } from 'src/hooks/earn/useClaimForm';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 

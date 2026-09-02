@@ -8,11 +8,12 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TradingBuyType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Box, Card, Column, StepList } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
@@ -75,6 +76,7 @@ export const TradingBuyDetailContent = () => {
     };
 
     const receiveAccount = accounts.find(account => account.key === trade?.receiveAccountKey);
+    const waitingStepAccount = receiveAccount ?? account;
 
     useEffect(() => {
         // if tradeStatus hasn't changed, don't send the analytics event
@@ -115,10 +117,10 @@ export const TradingBuyDetailContent = () => {
                         />
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
-                                {account && (
+                                {waitingStepAccount && (
                                     <TradingBuyDetailPaymentWaitingForUserStep
                                         trade={trade.data}
-                                        account={account}
+                                        account={waitingStepAccount}
                                         providerName={provider?.brandName || provider?.companyName}
                                     />
                                 )}

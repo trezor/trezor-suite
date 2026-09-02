@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
-import { Form, FormSubmitButton, useFormContext } from '@suite-native/forms';
+import { Form, FormSubmitButton, useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { CustomFeeContent } from './CustomFeeContent';
@@ -44,11 +44,11 @@ export const CustomFeeBottomSheet = ({
         handleSubmit,
         reset,
         formState: { isDirty },
-        watch,
+        control,
         getValues,
     } = form;
 
-    const feeLevelValue = watch('feeLevel');
+    const feeLevelValue = useWatch({ control, name: 'feeLevel' });
 
     const isButtonVisible = useMemo(
         () => (isDirty || feeLevelValue !== 'custom') && isSubmittable,

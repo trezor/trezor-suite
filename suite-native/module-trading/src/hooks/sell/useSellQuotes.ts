@@ -1,6 +1,7 @@
-import { type RefObject, useCallback, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { type RefObject, useCallback, useEffect, useEffectEvent, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleSellRequestThunkProps,
@@ -11,7 +12,7 @@ import {
     useTradingRefetchScheduler,
 } from '@suite-common/trading';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { useFormState } from '@suite-native/forms';
+import { useFormState, useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { sellActions } from '@suite-native/trading-state';
 import { type AbortablePromise, type SellFormType } from '@suite-native/trading-types';
@@ -21,12 +22,8 @@ import { noop } from '@trezor/utils';
 import { tradingSellFormToTradingSellFormProps } from '../../utils/sell/quotesUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
 
-type ShouldFetchSellQuotes = {
+type SellQuoteRequestState = {
     isFetchAllowed: boolean;
-    shouldFetchQuotes: boolean;
-};
-
-type ShouldFetchSellQuotesRef = {
     sendAsset: string | undefined;
     amount: string | undefined;
     amountInCrypto: boolean | undefined;
@@ -36,48 +33,15 @@ type ShouldFetchSellQuotesRef = {
     accountDescriptor: string | undefined;
 };
 
-const defaultState: ShouldFetchSellQuotesRef = {
-    sendAsset: undefined,
-    amount: undefined,
-    amountInCrypto: true,
-    fiatCurrency: undefined,
-    country: undefined,
-    countrySubdivision: undefined,
-    accountDescriptor: undefined,
-} as const;
-
 const quoteDerivedCryptoErrorTypes = ['insufficient-balance', 'network-reserve'] as const;
 
 const isQuoteDerivedCryptoError = (fieldName: string, type: unknown) =>
     fieldName === 'cryptoStringAmount' &&
     quoteDerivedCryptoErrorTypes.some(errorType => errorType === type);
 
-const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetchSellQuotes => {
-    const prevState = useRef<ShouldFetchSellQuotesRef>(defaultState);
-
-    const amountInCrypto = watch('amountInCrypto');
-
-    const { isValid, errors } = useFormState({ control });
-
-    if (!isValid) {
-        const errorEntries = Object.entries(errors);
-        const errorCausedByQuote =
-            !amountInCrypto &&
-            errorEntries.every(([fieldName, { type }]) =>
-                isQuoteDerivedCryptoError(fieldName, type),
-            );
-
-        if (!errorCausedByQuote) {
-            prevState.current = defaultState;
-
-            return {
-                isFetchAllowed: false,
-                shouldFetchQuotes: false,
-            };
-        }
-    }
-
+const useSellQuoteRequestState = ({ control }: SellFormType): SellQuoteRequestState => {
     const [
+        amountInCrypto,
         sendAsset,
         sendAccount,
         cryptoStringAmount,
@@ -85,35 +49,33 @@ const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetch
         fiatCurrency,
         country,
         countrySubdivision,
-    ] = watch([
-        'sendAsset',
-        'sendAccount',
-        'cryptoStringAmount',
-        'fiatStringAmount',
-        'fiatCurrency',
-        'country',
-        'countrySubdivision',
-    ]);
+    ] = useWatch({
+        control,
+        name: [
+            'amountInCrypto',
+            'sendAsset',
+            'sendAccount',
+            'cryptoStringAmount',
+            'fiatStringAmount',
+            'fiatCurrency',
+            'country',
+            'countrySubdivision',
+        ],
+    });
+    const { isValid, errors } = useFormState({ control });
+
+    const errorEntries = Object.entries(errors);
+    const isErrorCausedByQuote =
+        !amountInCrypto &&
+        errorEntries.every(([fieldName, { type }]) => isQuoteDerivedCryptoError(fieldName, type));
+    const isFormValidForQuotes = isValid || isErrorCausedByQuote;
 
     const amount = amountInCrypto ? cryptoStringAmount : fiatStringAmount;
-    const isFetchAllowed = !!(sendAsset && fiatCurrency && amount && parseFloat(amount) > 0);
+    const isFetchAllowed =
+        isFormValidForQuotes && !!(sendAsset && fiatCurrency && amount && parseFloat(amount) > 0);
 
-    if (
-        sendAsset?.cryptoId === prevState.current.sendAsset &&
-        amount === prevState.current.amount &&
-        amountInCrypto === prevState.current.amountInCrypto &&
-        fiatCurrency === prevState.current.fiatCurrency &&
-        country?.value === prevState.current.country &&
-        countrySubdivision?.value === prevState.current.countrySubdivision &&
-        sendAccount?.descriptor === prevState.current.accountDescriptor
-    ) {
-        return {
-            isFetchAllowed,
-            shouldFetchQuotes: false,
-        };
-    }
-
-    prevState.current = {
+    return {
+        isFetchAllowed,
         sendAsset: sendAsset?.cryptoId,
         amount,
         amountInCrypto,
@@ -121,11 +83,6 @@ const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetch
         country: country?.value,
         countrySubdivision: countrySubdivision?.value,
         accountDescriptor: sendAccount?.descriptor,
-    };
-
-    return {
-        isFetchAllowed,
-        shouldFetchQuotes: true,
     };
 };
 
@@ -149,18 +106,27 @@ const useSellQuotesInvalidator = (
 };
 
 const useSellQuotesThunk = (
-    getValues: SellFormType['getValues'],
-    isFetchAllowed: boolean,
-    shouldFetchQuotes: boolean,
+    { getValues, control }: SellFormType,
+    requestState: SellQuoteRequestState,
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
     const dispatch = useDispatch();
-    const asset = getValues('sendAsset');
+    const asset = useWatch({ control, name: 'sendAsset' });
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
     );
+    const {
+        isFetchAllowed,
+        sendAsset,
+        amount,
+        amountInCrypto,
+        fiatCurrency,
+        country,
+        countrySubdivision,
+        accountDescriptor,
+    } = requestState;
 
     const fetchQuotes = useCallback(() => {
         const selectedAsset = getValues('sendAsset');
@@ -177,15 +143,30 @@ const useSellQuotesThunk = (
         quotesPromiseRef.current = dispatch(sellThunks.handleRequestThunk(payload));
     }, [getValues, shouldSendInSats, quotesPromiseRef, dispatch]);
 
-    useEffect(() => {
-        if (!isFetchAllowed || !shouldFetchQuotes) return;
-
+    const requestQuotes = useEffectEvent(() => {
         if (quotesPromiseRef.current?.abort) {
             quotesPromiseRef.current.abort('Request was replaced by another one.');
         }
 
         debounce(fetchQuotes);
-    }, [isFetchAllowed, shouldFetchQuotes, quotesPromiseRef, debounce, fetchQuotes]);
+    });
+
+    useEffect(() => {
+        if (!isFetchAllowed) {
+            return;
+        }
+
+        requestQuotes();
+    }, [
+        isFetchAllowed,
+        sendAsset,
+        amount,
+        amountInCrypto,
+        fiatCurrency,
+        country,
+        countrySubdivision,
+        accountDescriptor,
+    ]);
 
     useTradingRefetchScheduler({
         onRefetch: () => {
@@ -199,8 +180,8 @@ export const useSellQuotes = (form: SellFormType) => {
     const debounce = useDebounce();
     const promiseRef = useRef<AbortablePromise | undefined>(undefined);
 
-    const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchSellQuotes(form);
+    const requestState = useSellQuoteRequestState(form);
 
-    useSellQuotesInvalidator(isFetchAllowed, promiseRef, debounce);
-    useSellQuotesThunk(form.getValues, isFetchAllowed, shouldFetchQuotes, promiseRef, debounce);
+    useSellQuotesInvalidator(requestState.isFetchAllowed, promiseRef, debounce);
+    useSellQuotesThunk(form, requestState, promiseRef, debounce);
 };

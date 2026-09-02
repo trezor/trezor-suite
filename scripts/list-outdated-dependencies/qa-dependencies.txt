@@ -1,5 +1,7 @@
-@anthropic-ai/sdk
+@anthropic-ai/claude-agent-sdk
 @anthropic-ai/claude-code
+@anthropic-ai/sdk
+@config-plugins/detox
 @currents/cmd
 @currents/mcp
 @currents/playwright
@@ -11,15 +13,12 @@
 @playwright/browser-firefox
 @playwright/browser-webkit
 @playwright/test
-@types/jest
 @types/minimist
 @types/xml2js
-@walletconnect/sign-client
-babel-jest
+claude-pretty-printer
 detox
-dotenv
 eslint-plugin-playwright
-fast-check
+fake-indexeddb
 jest
 jest-canvas-mock
 jest-diff
@@ -28,7 +27,8 @@ jest-extended
 jest-junit
 jest-watch-typeahead
 minimist
-react-intl
+test-renderer
 ts-jest
 uri-scheme
 xml2js
+zxing-wasm

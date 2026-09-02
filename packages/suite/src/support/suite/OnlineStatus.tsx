@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { updateOnlineStatus } from 'src/actions/suite/suiteActions';
-import { useDispatch } from 'src/hooks/suite';
+import { updateOnlineStatus } from '@suite/suite-lifecycle';
+import { useDispatch } from '@suite-common/redux-utils';
 
 /**
  * Navigator online/offline handler

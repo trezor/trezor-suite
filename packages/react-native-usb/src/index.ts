@@ -162,13 +162,30 @@ export async function getDevices(): Promise<any> {
 }
 
 export class WebUSB {
+    private _onConnectSubscription?: EventSubscription;
+    private _onDisconnectSubscription?: EventSubscription;
+
     public getDevices = getDevices;
 
-    set onconnect(listener: (event: OnConnectEvent) => void) {
-        onDeviceConnected(listener);
+    // `onconnect`/`ondisconnect` mirror the WebUSB `USB` event-handler IDL attributes
+    // (https://wicg.github.io/webusb/#dom-usb-onconnect). They are declared as `EventHandler`,
+    // which the HTML spec defines as a *nullable* attribute holding a single handler: assigning
+    // a new value replaces the previous handler, and assigning `null` detaches it
+    // (https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-attributes —
+    // "If the new value is null, then deactivate the event handler").
+    //
+    // `onDeviceConnected`/`onDeviceDisconnect` each register a fresh native subscription via
+    // `ReactNativeUsbModule.addListener`, so we must remove the previous one on every
+    // (re)assignment. Without this, repeated assignment leaks native listeners, and a `null`
+    // assignment (used by transport-common's `UsbApi.dispose()`) would otherwise register a
+    // handler that crashes when it fires.
+    set onconnect(listener: ((event: OnConnectEvent) => void) | null) {
+        this._onConnectSubscription?.remove();
+        this._onConnectSubscription = listener ? onDeviceConnected(listener) : undefined;
     }
-    set ondisconnect(listener: (event: OnConnectEvent) => void) {
-        onDeviceDisconnect(listener);
+    set ondisconnect(listener: ((event: OnConnectEvent) => void) | null) {
+        this._onDisconnectSubscription?.remove();
+        this._onDisconnectSubscription = listener ? onDeviceDisconnect(listener) : undefined;
     }
 
     // TODO: implement these commented out properties, because they are part of WebUSB specs, but very low priority we are not using them anywhere

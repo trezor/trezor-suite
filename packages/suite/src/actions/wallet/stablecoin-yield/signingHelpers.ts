@@ -1,13 +1,20 @@
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
-import { selectSelectedDevice } from '@suite-common/device';
-import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
+import { type MessageSystemRootState } from '@suite-common/message-system';
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
+    type SynchronizeSentTransactionThunkDeps,
+    type SynchronizeSentTransactionThunkState,
+    type WalletSettingsRootState,
     type YieldFlowDisplayToken,
     type YieldFlowType,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
-    stablecoinYieldActions,
     synchronizeSentTransactionThunk,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -16,8 +23,7 @@ import {
 } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-
-import type { AppState, Dispatch } from 'src/types/suite';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 // Marks failures of the final broadcast — the transaction is already signed at that point,
 // which deserves a more specific message than the generic one.
@@ -47,6 +53,17 @@ export const getYieldSubmitErrorAnalyticsMessage = (error: unknown) =>
         ? 'push-failed'
         : 'submit-failed';
 
+export type SendYieldTransactionState = DeviceRootState &
+    MessageSystemRootState &
+    SynchronizeSentTransactionThunkState &
+    WalletSettingsRootState;
+export type SendYieldTransactionDeps = SynchronizeSentTransactionThunkDeps;
+type SendYieldTransactionDispatch = ThunkDispatch<
+    SendYieldTransactionState,
+    SendYieldTransactionDeps,
+    UnknownAction
+>;
+
 export type SendYieldTransactionParams = {
     account: Account;
     amount: string;
@@ -54,8 +71,8 @@ export type SendYieldTransactionParams = {
     unsignedTransaction: string;
     flowKey: string;
     flowType: YieldFlowType;
-    dispatch: Dispatch;
-    getState: () => AppState;
+    dispatch: SendYieldTransactionDispatch;
+    getState: () => SendYieldTransactionState;
     selectedFee: EvmSelectedFee | null;
 };
 
@@ -69,7 +86,7 @@ export const sendYieldTransaction = async ({
     dispatch,
     getState,
     selectedFee,
-}: SendYieldTransactionParams) => {
+}: SendYieldTransactionParams): Promise<{ txid: string } | undefined> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -92,7 +109,7 @@ export const sendYieldTransaction = async ({
     const { transactionForSigning, formState, precomposedTransaction } = transactionReview;
 
     dispatch(
-        stablecoinYieldActions.storePrecomposedTransaction({
+        yieldActions.storePrecomposedTransaction({
             precomposedTx: precomposedTransaction,
             // transactionForSigning.nonce is hex; store a decimal string so the review modal shows
             // it like the Send flow.
@@ -133,7 +150,7 @@ export const sendYieldTransaction = async ({
         }
 
         dispatch(
-            stablecoinYieldActions.storeSignedTransaction({
+            yieldActions.storeSignedTransaction({
                 serializedTx: {
                     tx: signingResponse.payload.serializedTx,
                     symbol: account.symbol,
@@ -148,13 +165,15 @@ export const sendYieldTransaction = async ({
         }
 
         const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
+        const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
+
         const pushResponse = await TrezorConnect.pushTransaction({
             tx: getMevProtectedTxData(
                 account.symbol,
                 signingResponse.payload.serializedTx,
-                isMevProtectionEnabled,
+                isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             ),
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: getAccountIdentity(account),
         });
 
@@ -182,6 +201,6 @@ export const sendYieldTransaction = async ({
         console.error(error);
         throw error;
     } finally {
-        dispatch(stablecoinYieldActions.discardTransaction());
+        dispatch(yieldActions.discardTransaction());
     }
 };

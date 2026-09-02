@@ -1,5 +1,3 @@
-import { useDispatch, useSelector } from 'react-redux';
-
 import {
     type TransactionCreatedEventAction,
     events,
@@ -8,6 +6,7 @@ import {
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Account,
@@ -25,6 +24,8 @@ import { type StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { type Deferred } from '@trezor/utils';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { type TxInfoState, getTxType, hasTxValidityExpired } from '../utils';
 
@@ -143,8 +144,8 @@ export const TransactionReviewModalBottomContent = ({
         }
     };
 
-    const handleCopy = () => {
-        const result = copyToClipboard(serializedTx!.tx);
+    const handleCopy = async () => {
+        const result = await copyToClipboard(serializedTx!.tx);
 
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));

@@ -1,17 +1,19 @@
-import { findRoute, goto } from '@suite/router';
+import { type GotoThunkDeps, type GotoThunkState, findRoute, goto } from '@suite/router';
 import { DEVICE_MODULE_PREFIX } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 
-import { asSuiteServices } from 'src/support/extraDependencies';
+type RedirectAfterWalletSelectedThunkState = GotoThunkState;
+
+type RedirectAfterWalletSelectedThunkDeps = GotoThunkDeps;
 
 export const redirectAfterWalletSelectedThunk = createThunk<
     void,
     { forceDeviceDashboard?: boolean } | undefined,
-    void
+    { state: RedirectAfterWalletSelectedThunkState; extra: RedirectAfterWalletSelectedThunkDeps }
 >(
     `${DEVICE_MODULE_PREFIX}/redirectAfterWalletSelectedThunk`,
     async (options, { dispatch, extra }) => {
-        const location = asSuiteServices(extra.services).suiteRouterHistory.getLocation();
+        const location = extra.services.suiteRouterHistory.getLocation();
         const backgroundRoute = findRoute(location.pathname);
 
         // NOTE: the URL is being static when you switch device like /btc/4/norma
@@ -38,9 +40,14 @@ export const redirectAfterWalletSelectedThunk = createThunk<
     },
 );
 
-export const openSwitchDeviceDialog = createThunk<void, void, void>(
-    `${DEVICE_MODULE_PREFIX}/openSwitchDeviceDialog`,
-    (_, { dispatch }) => {
-        dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
-    },
-);
+type OpenSwitchDeviceDialogThunkState = GotoThunkState;
+
+type OpenSwitchDeviceDialogThunkDeps = GotoThunkDeps;
+
+export const openSwitchDeviceDialog = createThunk<
+    void,
+    void,
+    { state: OpenSwitchDeviceDialogThunkState; extra: OpenSwitchDeviceDialogThunkDeps }
+>(`${DEVICE_MODULE_PREFIX}/openSwitchDeviceDialog`, (_, { dispatch }) => {
+    dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
+});

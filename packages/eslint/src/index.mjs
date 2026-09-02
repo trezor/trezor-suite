@@ -1,9 +1,15 @@
+import { fixupConfigRules } from '@eslint/compat';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import playwright from 'eslint-plugin-playwright';
 import globals from 'globals';
 
+import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 import { globalNoExtraneousDependenciesDevDependencies, importConfig } from './importConfig.mjs';
-import { javascriptConfig, noCastedObjectHelpersSyntax } from './javascriptConfig.mjs';
+import {
+    javascriptConfig,
+    noCastedObjectHelpersSyntax,
+    noRestrictedSyntax,
+} from './javascriptConfig.mjs';
 import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
 import { jestConfig } from './jestConfig.mjs';
 import { localRulesConfig } from './localRulesConfig.mjs';
@@ -17,6 +23,7 @@ import { restrictedImportsPatterns, typescriptConfig } from './typescriptConfig.
 export {
     globalNoExtraneousDependenciesDevDependencies,
     noCastedObjectHelpersSyntax,
+    noRestrictedSyntax,
     restrictedImportsPatterns,
 };
 
@@ -41,6 +48,11 @@ export const eslint = [
         ],
     },
     { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
+    {
+        linterOptions: {
+            reportUnusedDisableDirectives: areExpensiveChecksEnabled ? 'warn' : 'off',
+        },
+    },
     { languageOptions: { globals: globals.browser } },
     {
         languageOptions: {
@@ -60,7 +72,8 @@ export const eslint = [
     ...jestConfig,
     ...localRulesConfig,
 
-    jsxA11y.flatConfigs.recommended,
+    // TODO: Remove the compatibility wrapper when eslint-plugin-jsx-a11y supports ESLint 10.
+    ...fixupConfigRules(jsxA11y.flatConfigs.recommended),
 
     // Tests
     {

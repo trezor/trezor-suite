@@ -1,6 +1,5 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
-import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -57,16 +56,13 @@ test.describe('Cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify Cardano receive form', async () => {
                 await walletPage.receiveButton.click();
-                await walletPage.revealAddressButton.click();
+                await walletPage.verifyAddressButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowReceiveAddress(receiveAddress, {
                     lineFormat: 'cardanoTetragrams',
                 });
                 await device.pressYes();
                 await expect(walletPage.copyAddressButton).toBeEnabled();
-                await expect(devicePrompt.outputValue).toHaveText(formatAddress(receiveAddress));
-                await devicePrompt.confirmOnDevicePromptIsShown();
-                await settingsPage.modalCloseButton.click();
                 await page.getByTestId('@account-subpage/back').click();
             });
         },

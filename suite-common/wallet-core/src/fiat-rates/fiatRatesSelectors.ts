@@ -29,8 +29,8 @@ import { selectAccounts } from '../accounts/accountsSelectors';
 export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
     state.wallet.fiat?.['current'];
 
-export const selectHistoricFiatRates = (state: FiatRatesRootState): RatesByTimestamps | undefined =>
-    state.wallet.fiat?.['historic'];
+export const selectHistoricFiatRates = (state: FiatRatesRootState): RatesByTimestamps =>
+    state.wallet.fiat.historic;
 
 export const selectFiatRatesByFiatRateKey = (
     state: FiatRatesRootState,

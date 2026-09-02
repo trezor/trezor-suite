@@ -38,8 +38,8 @@ import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
 
 import type * as constants from './constants';
 
-export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
-export type InvityServers = Record<InvityServerEnvironment, string>;
+export type TradeServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
+export type TradeServers = Record<TradeServerEnvironment, string>;
 
 export type TradingBuyType = 'buy';
 export type TradingSellType = 'sell';
@@ -86,8 +86,7 @@ export type TradingAssetOptionWithContractAddress = TradingAssetOptionBase & {
 };
 
 export type TradingAssetOption =
-    | TradingAssetOptionNativeToken
-    | TradingAssetOptionWithContractAddress;
+    TradingAssetOptionNativeToken | TradingAssetOptionWithContractAddress;
 
 // information about created trade
 export type TradingTradeType = BuyTrade | SellFiatTrade | ExchangeTrade;
@@ -150,9 +149,7 @@ export type TradingTransactionExchange = TradingCommonTransaction & {
     sendAccountKey: Account['key'] | undefined;
 };
 export type TradingTransaction =
-    | TradingTransactionBuy
-    | TradingTransactionSell
-    | TradingTransactionExchange;
+    TradingTransactionBuy | TradingTransactionSell | TradingTransactionExchange;
 
 export type TradingTransactionStatus = TradingTransaction['data']['status'];
 
@@ -230,12 +227,10 @@ export type TradingExchangeAmountLimitProps = Pick<
 >;
 
 export type TradingExchangeRateType =
-    | typeof constants.TRADING_EXCHANGE_RATE_FIXED
-    | typeof constants.TRADING_EXCHANGE_RATE_FLOATING;
+    typeof constants.TRADING_EXCHANGE_RATE_FIXED | typeof constants.TRADING_EXCHANGE_RATE_FLOATING;
 
 export type TradingExchangeFormType =
-    | typeof constants.TRADING_EXCHANGE_FORM_CEX
-    | typeof constants.TRADING_EXCHANGE_FORM_DEX;
+    typeof constants.TRADING_EXCHANGE_FORM_CEX | typeof constants.TRADING_EXCHANGE_FORM_DEX;
 
 export type TradingExchangeKycFilter =
     | typeof constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL
@@ -276,7 +271,7 @@ export type MinimalExchangeFormProps = {
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
 
 export type TradingSendRejectedProps<TranslationKey extends string = string> = {
-    type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout';
+    type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout' | 'sign-cancelled';
     error: {
         id: TranslationKey;
         values?: Record<string, PrimitiveType>;

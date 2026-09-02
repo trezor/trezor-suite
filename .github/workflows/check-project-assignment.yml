@@ -25,7 +25,7 @@ jobs:
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: Check if PR is assigned to a project (with required fields) or an issue
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
@@ -155,11 +155,11 @@ jobs:
 
           FILLED=""
           for section in "${REQUIRED_SECTIONS[@]}"; do
-            # Capture everything between this heading and the next "## " heading,
+            # Capture everything between this heading and the next Markdown heading,
             # strip HTML comments and whitespace, then check if anything remains.
             CONTENT=$(awk -v h="$section" '
-              $0 ~ "^##[[:space:]]+" h "[[:space:]]*:?[[:space:]]*$" { capture=1; next }
-              capture && /^##[[:space:]]/ { capture=0 }
+              $0 ~ "^#{1,6}[[:space:]]+" h "[[:space:]]*:?[[:space:]]*$" { capture=1; next }
+              capture && /^#{1,6}[[:space:]]/ { capture=0 }
               capture { print }
             ' pr_body.md | perl -0777 -pe 's/<!--.*?-->//gs' | tr -d '[:space:]')
 

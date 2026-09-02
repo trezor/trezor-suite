@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
@@ -13,9 +13,16 @@ import {
 } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
+import {
+    type NativeStakingRootState,
+    selectAccountHasStaking,
+    selectIsCardanoStakedWithFiveBinaries,
+} from '@suite-native/staking';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
+import { AccountsListItemBase } from './AccountsListItemBase';
+import { StakingBadge } from './StakingBadge';
+import { ZeroApyBadge } from './ZeroApyBadge';
 import {
     type NativeAccountsRootState,
     selectAccountFiatBalance,
@@ -23,8 +30,6 @@ import {
 } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 import { AccountLabel } from '../AccountLabel';
-import { AccountsListItemBase } from './AccountsListItemBase';
-import { StakingBadge } from './StakingBadge';
 
 type AccountListItemProps = {
     account: Account;
@@ -35,8 +40,7 @@ type AccountListItemProps = {
     isFirst?: boolean;
     isLast?: boolean;
     showDivider?: boolean;
-    titleLabel?: React.ReactNode;
-    cryptoAmount?: string;
+    badges?: React.ReactNode;
 };
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
@@ -61,8 +65,7 @@ const AccountsListItemComponent = ({
     isFirst = false,
     isLast = false,
     showDivider = false,
-    titleLabel,
-    cryptoAmount,
+    badges,
 }: AccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
@@ -73,6 +76,10 @@ const AccountsListItemComponent = ({
 
     const accountHasStaking = useSelector((state: NativeStakingRootState) =>
         selectAccountHasStaking(state, account.key),
+    );
+
+    const isStakedWithFiveBinaries = useSelector((state: AccountsRootState) =>
+        selectIsCardanoStakedWithFiveBinaries(state, account.key),
     );
 
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
@@ -86,16 +93,11 @@ const AccountsListItemComponent = ({
         });
     }, [account, accountHasKnownTokensWithBalance, onPress]);
 
-    const icon = useMemo(
-        () => <TokenIcon symbol={account.symbol} showNetworkIcon={isNativeCoinOnly} />,
-        [account.symbol, isNativeCoinOnly],
-    );
-
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
     const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
     const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
-    const balanceValue = cryptoAmount ?? account.formattedBalance;
+    const shouldShowZeroApyBadge = isStakedWithFiveBinaries && !isNativeCoinOnly;
     const fiatBalanceValue =
         shouldShowTokenBadge && fiatBalance !== undefined ? (
             <BaseCurrencyAmountFormatter
@@ -105,35 +107,18 @@ const AccountsListItemComponent = ({
             />
         ) : (
             <CryptoToFiatAmountFormatter
-                value={balanceValue}
+                value={account.formattedBalance}
                 isBalance={true}
                 symbol={account.symbol}
             />
         );
-    const cryptoBalanceValue = (
-        <CryptoAmountFormatter
-            value={balanceValue}
-            symbol={account.symbol}
-            numberOfLines={1}
-            adjustsFontSizeToFit
-        />
-    );
-
     const isFailed = isAccountFailed(account);
 
-    const getTitle = () => {
-        if (titleLabel) {
-            return titleLabel;
-        }
-
-        if (shouldShowAccountLabel) {
-            return <AccountLabel account={account} />;
-        }
-
-        return <NetworkDisplaySymbolNameFormatter value={account.symbol} />;
-    };
-
-    const title = getTitle();
+    const title = shouldShowAccountLabel ? (
+        <AccountLabel account={account} />
+    ) : (
+        <NetworkDisplaySymbolNameFormatter value={account.symbol} />
+    );
 
     return (
         <AccountsListItemBase
@@ -143,7 +128,7 @@ const AccountsListItemComponent = ({
             showDivider={showDivider}
             onPress={handleOnPress}
             disabled={disabled}
-            icon={icon}
+            icon={<TokenIcon symbol={account.symbol} showNetworkIcon={isNativeCoinOnly} />}
             title={title}
             titleBadge={
                 !isNativeCoinOnly && formattedAccountType ? (
@@ -152,10 +137,15 @@ const AccountsListItemComponent = ({
             }
             badges={
                 <>
-                    {shouldShowStakingBadge && (
-                        <StakingBadge networkSymbol={account.symbol} account={account} />
+                    {shouldShowZeroApyBadge ? (
+                        <ZeroApyBadge />
+                    ) : (
+                        shouldShowStakingBadge && (
+                            <StakingBadge networkSymbol={account.symbol} account={account} />
+                        )
                     )}
                     {shouldShowTokenBadge && <TokenBadge accountKey={account.key} />}
+                    {badges}
                 </>
             }
             mainValue={
@@ -165,7 +155,16 @@ const AccountsListItemComponent = ({
                     fiatBalanceValue
                 )
             }
-            secondaryValue={isFailed ? undefined : cryptoBalanceValue}
+            secondaryValue={
+                isFailed ? undefined : (
+                    <CryptoAmountFormatter
+                        value={account.formattedBalance}
+                        symbol={account.symbol}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                    />
+                )
+            }
         />
     );
 };

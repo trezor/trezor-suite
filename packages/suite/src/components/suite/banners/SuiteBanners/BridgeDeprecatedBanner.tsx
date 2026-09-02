@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
 
 const LEGACY_BRIDGE_URL = 'http://127.0.0.1:21325/';

@@ -1,4 +1,8 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { DUST_PHISHING_THRESHOLD } from '@suite-common/token-definitions';
 
 import { phishingActions } from './phishingActions';
@@ -11,9 +15,12 @@ export const phishingInitialState: PhishingState = {
     },
 };
 
+type PhishingReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadPhishingMetadata'>;
+
 export const preparePhishingReducer = createReducerWithExtraDeps(
     phishingInitialState,
-    (builder, extra) => {
+    (builder, extra: PhishingReducerDeps) => {
         builder
             .addCase(phishingActions.setDustPhishing, (state, { payload }) => {
                 state.dustPhishing = payload;

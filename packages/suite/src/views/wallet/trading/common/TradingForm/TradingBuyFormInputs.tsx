@@ -1,11 +1,15 @@
 import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
+    TRADING_FORM_INPUT_AMOUNT_FIELDS,
     type TradingBuyType,
     isCountrySubdivisionRequired,
     selectTradingBuyQuotes,
@@ -17,7 +21,7 @@ import { Column, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
@@ -36,11 +40,11 @@ import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAdd
 
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
-    const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
     const quotes = useSelector(selectTradingBuyQuotes);
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
 
     const { device } = useDevice();
-    const { setAmountLimits, getValues, setValue } = context;
+    const { setAmountLimits, getValues, setValue, clearErrors } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
@@ -54,16 +58,23 @@ export const TradingBuyFormInputs = () => {
     // `useTradingBuyForm` has many re-rendering issues, use refs to avoid them
     const setAmountLimitsRef = useCurrentRef(setAmountLimits);
     const setValueRef = useCurrentRef(setValue);
+    const clearErrorsRef = useCurrentRef(clearErrors);
 
     const handleCryptoSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
         asset => {
             setValueRef.current(TRADING_FORM_CRYPTO_INPUT, '', { shouldDirty: true });
             setValueRef.current(TRADING_FORM_FIAT_INPUT, '', { shouldDirty: true });
             setValueRef.current(TRADING_FORM_CRYPTO_CURRENCY_SELECT, asset, { shouldDirty: true });
+            clearErrorsRef.current(TRADING_FORM_INPUT_AMOUNT_FIELDS);
             setAmountLimitsRef.current(undefined);
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
         },
-        [dispatch, setAmountLimitsRef, setValueRef],
+        [dispatch, setAmountLimitsRef, setValueRef, clearErrorsRef],
+    );
+
+    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
+    const buySupportedCryptoIds = useSelector(state =>
+        selectTradingBuySupportedCryptoIds(state, supportedNetworks),
     );
 
     const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);

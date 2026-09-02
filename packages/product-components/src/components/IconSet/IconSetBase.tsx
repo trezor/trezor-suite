@@ -53,9 +53,11 @@ const Container = styled.div<{
         css`
             display: grid;
             grid-template-columns: repeat(
-                ${$length > $maxVisibleIcons
-                    ? $maxVisibleIcons + Number($isCountVisible)
-                    : $length},
+                ${
+                    $length > $maxVisibleIcons
+                        ? $maxVisibleIcons + Number($isCountVisible)
+                        : $length
+                },
                 ${$gap}px
             );
             justify-items: center;

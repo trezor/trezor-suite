@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/address" },
         {
             "path": "../../suite-common/analytics-redux"
         },
@@ -19,6 +20,9 @@
         {
             "path": "../../suite-common/discreet-mode"
         },
+        {
+            "path": "../../suite-common/extra-dependencies"
+        },
         { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/geolocation"
@@ -27,9 +31,11 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../platform-encryption-native"
         },
+        { "path": "../../suite-common/receive" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -42,6 +48,9 @@
         {
             "path": "../../suite-common/suite-sync-quota-manager"
         },
+        {
+            "path": "../../suite-common/suite-sync-types"
+        },
         { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/toast-notifications"
@@ -50,13 +59,16 @@
             "path": "../../suite-common/token-definitions"
         },
         {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../analytics" },
-        { "path": "../banner-flags" },
+        { "path": "../banners" },
         { "path": "../biometrics" },
         { "path": "../blockchain" },
         { "path": "../bluetooth" },
@@ -79,6 +91,7 @@
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/transport-common"
         },

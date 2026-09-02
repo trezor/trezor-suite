@@ -1,5 +1,5 @@
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Card, HStack, InlineAlertBox, Text } from '@suite-native/atoms';
+import { BannerInline, Card, HStack, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -7,7 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 const cardStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
+    backgroundColor: utils.colors.surfaceFillSunken,
     borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     paddingVertical: utils.spacings.sp12,
@@ -30,7 +30,7 @@ export const CorrectNetworkMessageCard = ({
 
     if (qrNetworkSymbol) {
         return (
-            <InlineAlertBox
+            <BannerInline
                 intent="warning"
                 title={
                     <Translation

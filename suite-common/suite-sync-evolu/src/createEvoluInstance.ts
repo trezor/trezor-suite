@@ -15,16 +15,16 @@ type CreateEvoluInstanceFactoryDeps = {
     run: Run<EvoluPlatformDeps>;
 };
 
-export type CreateEvoluInstance = (params: {
+export type EvoluInstanceFactory = (params: {
     suiteSyncOwner: SuiteSyncOwner;
 }) => Promise<Evolu<typeof Schema>>;
 
-export type CreateEvoluInstanceDep = {
-    createEvoluInstance: CreateEvoluInstance;
+export type EvoluInstanceFactoryDep = {
+    evoluInstanceFactory: EvoluInstanceFactory;
 };
 
 export const createEvoluInstanceFactory =
-    (deps: CreateEvoluInstanceFactoryDeps): CreateEvoluInstance =>
+    (deps: CreateEvoluInstanceFactoryDeps): EvoluInstanceFactory =>
     async ({ suiteSyncOwner }) => {
         const owner = createEvoluAppOwnerFromTrezorData({ data: suiteSyncOwner.ownerSecret });
 

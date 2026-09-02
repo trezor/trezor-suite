@@ -6,10 +6,9 @@ import {
     type RevisionCheckErrorWithNotification,
     getIsRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-
-import { useDispatch } from 'src/hooks/suite';
 
 const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, TranslationKey> = {
     'other-error': 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',

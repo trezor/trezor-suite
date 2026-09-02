@@ -1,40 +1,55 @@
 import { type ReactNode } from 'react';
 
-import { selectFullSelectedAccount } from '@suite/account';
 import { Address } from '@suite/address';
 import { useExternalLink } from '@suite/external-links';
-import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
+import { Translation } from '@suite/intl';
+import {
+    type NetworkSymbol,
+    type NetworkSymbolExtended,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { type AnonymitySet } from '@trezor/blockchain-link-types';
-import { Column, Link, Row, Text } from '@trezor/components';
+import { Column, Icon, Link, Row, Text, Tooltip } from '@trezor/components';
+import { ChangeIcon, WalletIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { UtxoAnonymity } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 const OP_RETURN_REGEX = /^OP_RETURN \(([^)]+)\)/;
 
-type IOItem = {
+const ownershipIcon = {
+    change: { icon: ChangeIcon, tooltip: 'TR_CHANGE_OUTPUT_TOOLTIP' },
+    own: { icon: WalletIcon, tooltip: 'TR_OWN_ADDRESS_TOOLTIP' },
+} as const;
+
+export type AddressOwnership = keyof typeof ownershipIcon;
+
+type IOItemProps = {
     anonymitySet?: AnonymitySet;
+    networkSymbol: NetworkSymbol;
     symbol?: NetworkSymbolExtended;
     contractAddress?: string;
     value?: string;
     amount?: string | ReactNode;
     isPhishingTransaction?: boolean;
+    ownership?: AddressOwnership;
 };
 
 export const IOItem = ({
     anonymitySet,
     value,
+    networkSymbol,
     symbol,
     contractAddress,
     amount,
     isPhishingTransaction,
-}: IOItem) => {
-    const { network } = useSelector(selectFullSelectedAccount);
-    const explorer = useSelector(state => selectExplorer(state, network?.symbol));
+    ownership,
+}: IOItemProps) => {
+    const explorer = useSelector(state => selectExplorer(state, networkSymbol));
     const explorerUrl = getExplorerUrl(explorer, 'address');
     const explorerLink = useExternalLink(`${explorerUrl}${value}${explorer?.queryString ?? ''}`);
     const anonymity = value && anonymitySet?.[value];
@@ -46,14 +61,32 @@ export const IOItem = ({
                 {!isOpReturn ? (
                     <>
                         {value && (
-                            <Link href={explorerLink}>
-                                <Address
-                                    value={value}
-                                    isTruncated
-                                    data-testid="@tx-detail/txid-value"
-                                    isCopyAllowed={!isPhishingTransaction}
-                                />
-                            </Link>
+                            <Row gap={6} alignItems="center">
+                                <Link href={explorerLink}>
+                                    <Address
+                                        value={value}
+                                        isTruncated
+                                        data-testid="@tx-detail/txid-value"
+                                        isCopyAllowed={!isPhishingTransaction}
+                                    />
+                                </Link>
+                                {ownership && (
+                                    <Tooltip
+                                        content={
+                                            <Translation id={ownershipIcon[ownership].tooltip} />
+                                        }
+                                        flex="none"
+                                    >
+                                        <Icon
+                                            as={ownershipIcon[ownership].icon}
+                                            size={16}
+                                            intent="neutral"
+                                            priority="secondary"
+                                            data-testid={`@tx-detail/address-ownership/${ownership}`}
+                                        />
+                                    </Tooltip>
+                                )}
+                            </Row>
                         )}
                         <Row gap={8}>
                             {anonymity && <UtxoAnonymity anonymity={anonymity} />}

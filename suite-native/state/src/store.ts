@@ -10,23 +10,23 @@ import { type Persistor, persistStore } from 'redux-persist';
 
 import { logsMiddleware } from '@suite-common/logger';
 import {
-    type ExtraDependencies,
-    type ExtraDependenciesStatic,
     type ReducerState,
+    type WithServices,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
     prepareFiatRatesMiddleware,
     preparePushNotificationMiddleware,
 } from '@suite-common/wallet-core';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { blockchainMiddleware } from '@suite-native/blockchain';
 import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
-import { type NativeServices } from '@suite-native/services';
 import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
 import {
     prepareTradingLastErrorSentryMiddleware,
@@ -34,7 +34,8 @@ import {
 } from '@suite-native/trading-state';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import { createNativeCompositionRoot, extraDependencies } from './extraDependencies';
+import { type NativeServices, createNativeCompositionRoot } from './createNativeCompositionRoot';
+import { type ExtraDependenciesNative, extraDependencies } from './createNativeExtraDependencies';
 import { prepareRootReducers } from './reducers';
 
 type RootReducerShape = ReturnType<typeof prepareRootReducers>;
@@ -61,10 +62,11 @@ export type FullAppState = ExcludeChildPersists<
 
 export type PreloadedState = DeepPartial<FullPersistedAppState> | undefined;
 
-type NativeExtra = ExtraDependenciesStatic & { services: NativeServices };
-
 export type StoreWithExtra = ReturnType<
-    typeof castExtraStore<NativeExtra, EnhancedStore<FullPersistedAppState, UnknownAction>>
+    typeof castExtraStore<
+        ExtraDependenciesNative,
+        EnhancedStore<FullPersistedAppState, UnknownAction>
+    >
 > & {
     persistor: Persistor;
     services: NativeServices;
@@ -73,7 +75,9 @@ export type StoreWithExtra = ReturnType<
 const ENABLE_REDUX_LOGGER = false;
 const enhancers: Array<StoreEnhancer<any, any>> = [];
 
-const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
+type GetMiddlewaresDeps = WithServices<NativeAnalyticsDep & SuiteSyncDep>;
+
+const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
     const middlewares: Middleware[] = [
         messageSystemMiddleware,
         blockchainMiddleware,

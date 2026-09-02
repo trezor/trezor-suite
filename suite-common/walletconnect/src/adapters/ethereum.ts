@@ -3,11 +3,16 @@ import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import {
+    type MevProtectionRootState,
+    selectIsMevProtectionFeatureEnabled,
+} from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     ethereumGetCurrentNonceThunk,
     selectAccounts,
     selectIsMevProtectionEnabled,
@@ -19,10 +24,11 @@ import TrezorConnect, {
     type EthereumSignTypedData,
     type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { isAscii, isHex, throwError } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { selectSessionByTopic } from '../walletConnectReducer';
+import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
@@ -36,11 +42,20 @@ const methods = [
     'wallet_switchEthereumChain',
 ];
 
+export type EthereumRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+    WalletConnectStateRootState &
+    MevProtectionRootState &
+    WalletSettingsRootState &
+    TransactionsRootState;
+
+export type EthereumRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+
 const ethereumRequestThunk = createThunk<
     string | undefined,
     {
         event: WalletKitTypes.SessionRequest;
-    }
+    },
+    { state: EthereumRequestThunkState; extra: EthereumRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/ethereumRequest`, async ({ event }, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
     const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
@@ -142,7 +157,7 @@ const ethereumRequestThunk = createThunk<
             ) {
                 // Fee not provided, estimate it
                 const feeLevels = await TrezorConnect.blockchainEstimateFee({
-                    coin: account.symbol,
+                    coin: asCoinSymbol(account.symbol),
                     identity: getAccountIdentity(account),
                     request: {
                         blocks: [2],
@@ -211,7 +226,7 @@ const ethereumRequestThunk = createThunk<
 
             const pushResponse = await TrezorConnect.pushTransaction({
                 tx: txData,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
             });
             if (!pushResponse.success) {

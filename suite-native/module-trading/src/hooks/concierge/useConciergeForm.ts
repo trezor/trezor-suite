@@ -23,9 +23,7 @@ export const useConciergeForm = ({ defaultCountryCode }: ConciergeFormProps) => 
         },
         validation: yup.object({}),
     });
-    const { watch } = form;
-
-    useCountryChangeEffect(watch);
+    useCountryChangeEffect(form.control);
 
     return form;
 };

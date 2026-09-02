@@ -1,6 +1,6 @@
-## Mocks
+# @suite-common/test-utils
 
-This package shall only contain `extraDependenciesCommonMock` to provide a shared mocks for
-common extra for Redux Thunks
+Shared test helpers for Suite Common packages.
 
-`// Todo`: Everything else here needs to be moved to other place
+Dependency mocks belong to the package that owns the dependency. Tests import those mocks directly
+and compose only the dependencies exercised by the subject under test.

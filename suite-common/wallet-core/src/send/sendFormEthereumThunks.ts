@@ -1,4 +1,8 @@
-import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    isApprovalFlowSupported,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -46,6 +50,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
 import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
@@ -57,8 +62,15 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
-import { selectAccountTransactions } from '../transactions/transactionsSelectors';
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../settings/walletSettingsReducer';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
+import {
+    selectAccountTransactions,
+    selectEvmPrivatePendingHint,
+} from '../transactions/transactionsSelectors';
 
 /**
  * Returns fee info with levels bumped above the original transaction's gas price,
@@ -258,10 +270,12 @@ export const calculate = (
     return payloadData;
 };
 
+type ComposeEthereumTransactionFeeLevelsThunkState = DeviceRootState & TransactionsRootState;
+
 export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    { rejectValue: ComposeFeeLevelsError; state: ComposeEthereumTransactionFeeLevelsThunkState }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
     async (
@@ -300,7 +314,9 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
 
         const { output, tokenInfo, decimals } = composedOutput;
         const { availableBalance } = account;
-        const { address, amount } = firstOutput;
+        const { amount } = firstOutput;
+        // Use the resolved onchain address for a named input (e.g. ENS), otherwise the raw input.
+        const address = firstOutput.resolvedAddress ?? firstOutput.address;
 
         const ethereumEstimateFeeParams =
             isApproveTx && contract
@@ -312,16 +328,21 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                       formState.transactionData,
                   );
 
+        // trezor/blockbook#1639: declare our local pending txs so blockbook estimates gas against
+        // the correct pending state. undefined for non-EVM / nothing pending — the field is omitted.
+        const privatePending = selectEvmPrivatePendingHint(getState(), account.key);
+
         // gasLimit calculation based on address, amount and data size
         // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: getAccountIdentity(account),
             request: {
                 blocks: [2],
                 specific: {
                     from: account.descriptor,
                     ...ethereumEstimateFeeParams,
+                    privatePending,
                 },
             },
         });
@@ -485,7 +506,7 @@ export const resolveEthereumNonce = async ({
         // and fall back to local derivation below.
         try {
             const accountInfoResponse = await TrezorConnect.getAccountInfo({
-                coin: selectedAccount.symbol,
+                coin: asCoinSymbol(selectedAccount.symbol),
                 descriptor: selectedAccount.descriptor,
                 identity: tryGetAccountIdentity(selectedAccount),
                 details: 'basic',
@@ -523,9 +544,12 @@ interface EthereumGetCurrentNonceThunkParams {
     fetchConfirmedNonce?: boolean;
 }
 
+export type EthereumGetCurrentNonceThunkState = TransactionsRootState;
+
 export const ethereumGetCurrentNonceThunk = createThunk<
     ResolveEthereumNonceResult,
-    EthereumGetCurrentNonceThunkParams
+    EthereumGetCurrentNonceThunkParams,
+    { state: EthereumGetCurrentNonceThunkState }
 >(
     `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
     ({ selectedAccount, rbfParams, fetchConfirmedNonce }, { getState }) => {
@@ -542,10 +566,15 @@ export const ethereumGetCurrentNonceThunk = createThunk<
     },
 );
 
+type SignEthereumSendFormTransactionThunkState = TransactionsRootState & WalletSettingsRootState;
+
 export const signEthereumSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    {
+        rejectValue: SignTransactionError;
+        state: SignEthereumSendFormTransactionThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (
@@ -597,7 +626,8 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         const transaction = prepareEthereumTransaction({
             token: precomposedTransaction.token,
             chainId: network.chainId,
-            to: firstSignOutput.address,
+            // Use the resolved onchain address for a named input (e.g. ENS), otherwise the raw input.
+            to: firstSignOutput.resolvedAddress ?? firstSignOutput.address,
             amount: firstSignOutput.amount,
             data: formState.transactionData,
             gasLimit: precomposedTransaction.feeLimit || '',

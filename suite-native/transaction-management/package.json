@@ -16,12 +16,14 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native": "7.1.31",
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -40,7 +42,6 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@suite-native/scrollview": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/react-utils": "workspace:*",
@@ -48,15 +49,14 @@
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-linear-gradient": "~56.0.4",
+        "expo-linear-gradient": "~57.0.1",
         "react": "19.2.3",
         "react-hook-form": "^7.77.0",
-        "react-native": "0.85.3",
-        "react-native-reanimated": "4.3.1",
+        "react-native": "0.86.0",
+        "react-native-reanimated": "4.5.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@suite-common/test-utils": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*"
     }

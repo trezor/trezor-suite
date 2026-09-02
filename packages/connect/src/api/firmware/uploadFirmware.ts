@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/uploadFirmware.js
 
-import { DEVICE, UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import { DEVICE, UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import type { CoreEventMessage, FirmwareUpdateFlowType, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
@@ -26,10 +26,21 @@ const postProgressMessage = (
     postMessage: (message: CoreEventMessage) => void,
 ) => {
     postMessage(
-        createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS, {
+        createUiEventMessage(UI_EVENTS.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
             operation: 'flashing',
             progress,
+        }),
+    );
+};
+
+const postFirmwareTypeChangedMessage = (
+    device: IDevice,
+    postMessage: (message: CoreEventMessage) => void,
+) => {
+    postMessage(
+        createUiEventMessage(UI_EVENTS.FIRMWARE_TYPE_CHANGED, {
+            device: device.toMessageObject(),
         }),
     );
 };
@@ -44,6 +55,7 @@ type UploadFirmwareProps = {
     device: IDevice;
     firmwareUploadRequest: PROTO.FirmwareUpload;
     updateFlowType: FirmwareUpdateFlowType;
+    firmwareTypeChanged?: boolean;
 };
 
 export const uploadFirmware = async ({
@@ -52,6 +64,7 @@ export const uploadFirmware = async ({
     device,
     firmwareUploadRequest: { payload },
     updateFlowType,
+    firmwareTypeChanged,
 }: UploadFirmwareProps) => {
     if (device.features.major_version === 1) {
         postConfirmationMessage(device, updateFlowType);
@@ -63,7 +76,7 @@ export const uploadFirmware = async ({
             const version = getFirmwareVersionArray(device.toMessageObject());
             if (version === null) return;
             if (isWithinRange(version, TIMEOUT_MIN_FW_VERSION, TIMEOUT_MAX_FW_VERSION)) {
-                postMessage(createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS_UNEXPECTED_DELAY, {}));
+                postMessage(createUiEventMessage(UI_EVENTS.FIRMWARE_PROGRESS_UNEXPECTED_DELAY, {}));
             }
         }, FIRMWARE_ERASE_TIMEOUT_MILLISECONDS);
         await typedCall('FirmwareErase', 'Success', {});
@@ -83,6 +96,10 @@ export const uploadFirmware = async ({
             clearInterval(progressTimer);
         });
 
+        if (firmwareTypeChanged) {
+            postFirmwareTypeChangedMessage(device, postMessage);
+        }
+
         postProgressMessage(device, 100, postMessage);
 
         return message;
@@ -95,12 +112,13 @@ export const uploadFirmware = async ({
         let response = await typedCall('FirmwareErase', ['FirmwareRequest', 'Success'], { length });
         // We are starting the flashing process.
         postMessage(
-            createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS, {
+            createUiEventMessage(UI_EVENTS.FIRMWARE_PROGRESS, {
                 device: device.toMessageObject(),
                 operation: 'start-flashing',
                 progress,
             }),
         );
+
         while (response.type !== 'Success') {
             // NOTE: offset and message are present in T2
             const start = response.message.offset;
@@ -126,6 +144,10 @@ export const uploadFirmware = async ({
             }).finally(() => {
                 device.transport.removeAllListeners(TRANSPORT.SEND_MESSAGE_PROGRESS);
             });
+
+            if (start === 0 && firmwareTypeChanged) {
+                postFirmwareTypeChangedMessage(device, postMessage);
+            }
         }
         postProgressMessage(device, 100, postMessage);
 

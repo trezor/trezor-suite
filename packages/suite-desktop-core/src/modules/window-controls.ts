@@ -3,7 +3,8 @@
  */
 import { isWindows } from '@trezor/env-utils';
 
-import { app, ipcMain } from '../typed-electron';
+import { ipcMain } from '../ipcMain';
+import { app } from '../typed-electron';
 import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'window-control';

@@ -181,6 +181,26 @@ const transactionNotificationConfig: Record<
             },
         },
     },
+    'tx-wrap': {
+        toastIcon: ArrowUpIcon,
+        intent: 'brand',
+        message: 'Wrap transaction from Ethereum #1 has been broadcast',
+        amount: '1.495 WETH',
+        transaction: {
+            notificationType: 'tx-wrap',
+            symbol: 'eth',
+        },
+    },
+    'tx-unwrap': {
+        toastIcon: ArrowUpIcon,
+        intent: 'brand',
+        message: 'Unwrap transaction from Ethereum #1 has been broadcast',
+        amount: '1.495 ETH',
+        transaction: {
+            notificationType: 'tx-unwrap',
+            symbol: 'eth',
+        },
+    },
 };
 
 export const Default: Story = {

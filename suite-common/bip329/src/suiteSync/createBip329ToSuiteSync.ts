@@ -9,10 +9,11 @@ export type ImportBip329ToSuiteSyncDep = {
     importBip329ToSuiteSync: ImportBip329;
 };
 
-export type ImportBip329ToSuiteSyncDeps = UpdateAddressLabelDep & UpdateOutputLabelDep;
+export type Bip329ToSuiteSyncDeps = UpdateAddressLabelDep & UpdateOutputLabelDep;
 
+// eslint-disable-next-line local-rules/enforce-di-factory-contracts -- Concrete implementation of the abstract ImportBip329 contract.
 export const createBip329ToSuiteSync =
-    (deps: ImportBip329ToSuiteSyncDeps): ImportBip329 =>
+    (deps: Bip329ToSuiteSyncDeps): ImportBip329 =>
     async ({ deviceStaticSessionId, accountDescriptor, bip329Labels }) => {
         for (const label of bip329Labels) {
             switch (label.type) {

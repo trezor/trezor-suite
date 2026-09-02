@@ -1,47 +1,56 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
+
+import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 import { closeModal, openModal, preserveModal } from '@suite/modal';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { showXpubOnDevice } from '@suite-common/wallet-core';
 
-import { type Dispatch, type GetState } from 'src/types/suite';
-
 export const openXpubModal =
     (params?: Pick<Extract<UserContextPayload, { type: 'xpub' }>, 'isConfirmed'>) =>
-    (dispatch: Dispatch) => {
+    (dispatch: Dispatch<UnknownAction>) => {
         dispatch(openModal({ type: 'xpub', ...params }));
     };
 
-export const showXpub = () => async (dispatch: Dispatch, getState: GetState) => {
-    const device = selectSelectedDevice(getState());
-    const { account } = getState().wallet.selectedAccount;
+export type ShowXpubThunkState = DeviceRootState & SelectedAccountRootState;
 
-    if (!device || !account) return;
+export const showXpub =
+    () =>
+    async (
+        dispatch: ThunkDispatch<ShowXpubThunkState, unknown, UnknownAction>,
+        getState: () => ShowXpubThunkState,
+    ) => {
+        const device = selectSelectedDevice(getState());
+        const account = selectSelectedAccount(getState());
 
-    // Show warning when device is not connected.
-    if (!device.connected || !device.available) {
-        dispatch(openModal({ type: 'unverified-xpub' }));
+        if (!device || !account) return;
 
-        return;
-    }
+        // Show warning when device is not connected.
+        if (!device.connected || !device.available) {
+            dispatch(openModal({ type: 'unverified-xpub' }));
 
-    // Prevent flickering screen when modal changes.
-    dispatch(preserveModal());
+            return;
+        }
 
-    const response = await showXpubOnDevice(device, account);
+        // Prevent flickering screen when modal changes.
+        dispatch(preserveModal());
 
-    if (response.success) {
-        // Show second part of the "confirm XPUB" modal.
-        dispatch(openXpubModal({ isConfirmed: true }));
-    } else {
-        dispatch(closeModal());
-        // Special case: closing no-backup warning modal should not show a toast.
-        if (response.error.code === 'Method_PermissionsNotGranted') return;
-        dispatch(
-            notificationsActions.addToast({
-                type: 'verify-xpub-error',
-                error: response.error.message,
-            }),
-        );
-    }
-};
+        const response = await showXpubOnDevice(device, account);
+
+        if (response.success) {
+            // Show second part of the "confirm XPUB" modal.
+            dispatch(openXpubModal({ isConfirmed: true }));
+        } else {
+            dispatch(closeModal());
+            // Special case: closing no-backup warning modal should not show a toast.
+            if (response.error.code === 'Method_PermissionsNotGranted') return;
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'verify-xpub-error',
+                    error: response.error.message,
+                }),
+            );
+        }
+    };

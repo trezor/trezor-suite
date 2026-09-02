@@ -8,10 +8,10 @@ import {
     events,
     selectNativeAnalyticsDep,
 } from '@suite-native/analytics';
-import { Flag, HStack, Text } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { Flag, HStack, Text, useBottomSheetControls } from '@suite-native/atoms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { OverviewRow, useBottomSheetControls } from '@suite-native/trading-atoms';
+import { OverviewRow } from '@suite-native/trading-atoms';
 import { type Analytics } from '@trezor/analytics-uploader';
 
 import { CountrySheet } from './CountrySheet';
@@ -45,8 +45,8 @@ export const CountryOfResidencePicker = ({
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const { isSheetVisible, hideSheet, showSheet } = useBottomSheetControls();
 
-    const { watch, setValue } = useFormContext<TradingLocationFormValues>();
-    const selectedValue = watch('country');
+    const { control, setValue } = useFormContext<TradingLocationFormValues>();
+    const selectedValue = useWatch({ control, name: 'country' });
     const selectedFlag = getCountryFlag(selectedValue?.value);
 
     const handleCountrySelect = useCallback(

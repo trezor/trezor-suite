@@ -1,4 +1,5 @@
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
+import { type AccountAddress } from '@trezor/connect';
 import { comparePath } from '@trezor/crypto-utils';
 
 const isPathLowerThanAnyUsedPath = (path: string, usedPaths: string[]) =>
@@ -9,21 +10,21 @@ export const getFreshAddresses = (
     alreadyUsedAddresses: ReceiveInfo[], // marked as already uses by the user (confirmed, labeled)
     pendingAddresses: string[], // addresses with pending transaction
     utxoBasedAccount: boolean,
-) => {
-    const unused = account.addresses
-        ? account.addresses.unused
-        : [
-              {
-                  path: account.path,
-                  address: account.descriptor,
-                  transfers: account.history.total,
-              },
-          ];
+): AccountAddress[] => {
+    const descriptorAddress: AccountAddress = {
+        path: account.path,
+        address: account.descriptor,
+        transfers: account.history.total,
+        balance: '0',
+        sent: '0',
+        received: '0',
+    };
 
     if (!utxoBasedAccount) {
-        return unused;
+        return [descriptorAddress];
     }
 
+    const unused = account.addresses ? account.addresses.unused : [descriptorAddress];
     const usedPaths = alreadyUsedAddresses.map(address => address.path);
 
     return unused.filter(

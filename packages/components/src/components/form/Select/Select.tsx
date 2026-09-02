@@ -28,7 +28,7 @@ import {
     SingleValue,
     ValueContainer,
 } from './customComponents';
-import { type Option as OptionType } from './types';
+import { type CustomSelectProps, type Option as OptionType } from './types';
 import { createSharedMenuStyles } from './utils';
 import { type FrameProps } from '../../../utils/frameProps';
 
@@ -46,7 +46,8 @@ export type SelectRef = {
 
 export type SelectProps = AllowedFrameProps &
     Omit<FormCellProps, 'children'> &
-    Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen' | 'styles'> & {
+    Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen' | 'styles'> &
+    CustomSelectProps & {
         label?: ReactNode;
         size?: InputSize;
         minValueWidth?: number;

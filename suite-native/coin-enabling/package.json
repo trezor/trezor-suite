@@ -11,11 +11,11 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.28",
-        "@reduxjs/toolkit": "2.12.0",
+        "@react-navigation/native": "7.1.31",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -31,8 +31,8 @@
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.85.3",
-        "react-native-reanimated": "4.3.1",
+        "react-native": "0.86.0",
+        "react-native-reanimated": "4.5.0",
         "react-native-svg": "15.15.5",
         "react-redux": "9.3.0"
     }

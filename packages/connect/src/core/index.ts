@@ -10,12 +10,15 @@ import {
     RESPONSE_EVENT,
     SET_ENABLED_NETWORKS,
     UI_EVENT,
+    UI_EVENTS,
     UI_REQUEST,
+    UI_REQUESTS,
     UI_RESPONSE,
     createDeviceMessage,
     createResponseMessage,
     createTransportMessage,
-    createUiMessage,
+    createUiEventMessage,
+    createUiRequestMessage,
 } from '@trezor/connect-common';
 import type {
     ConnectSettings,
@@ -60,7 +63,9 @@ type CoreContext = ReturnType<Core['getCoreContext']>;
 const createSendCoreMessageWithCallId =
     (sendCoreMessage: CoreContext['sendCoreMessage'], callId?: string) =>
     (message: CoreEventMessage) => {
-        const isUiRequestMessage = message.event === UI_EVENT && message.type.startsWith('ui-');
+        const isUiRequestMessage =
+            (message.event === UI_EVENT || message.event === UI_REQUEST) &&
+            message.type.startsWith('ui-');
         const hasCallId = 'callId' in message && Boolean(message.callId);
 
         if (callId && isUiRequestMessage && !hasCallId) {
@@ -128,8 +133,8 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
 
             // request confirmation view
             sendCoreMessage(
-                createUiMessage(
-                    UI_REQUEST.REQUEST_CONFIRMATION,
+                createUiRequestMessage(
+                    UI_REQUESTS.REQUEST_CONFIRMATION,
                     {
                         view: 'no-backup',
                     },
@@ -146,13 +151,21 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
             }
         }
         // show notification
-        sendCoreMessage(createUiMessage(UI_REQUEST.DEVICE_NEEDS_BACKUP, device.toMessageObject()));
+        sendCoreMessage(
+            createUiEventMessage(UI_EVENTS.DEVICE_NEEDS_BACKUP, {
+                device: device.toMessageObject(),
+            }),
+        );
     }
 
     // notify if firmware is outdated but not required
     if (device.firmwareStatus === 'outdated') {
         // show notification
-        sendCoreMessage(createUiMessage(UI_REQUEST.FIRMWARE_OUTDATED, device.toMessageObject()));
+        sendCoreMessage(
+            createUiEventMessage(UI_EVENTS.FIRMWARE_OUTDATED, {
+                device: device.toMessageObject(),
+            }),
+        );
     }
 
     // Make sure that device will display pin/passphrase
@@ -284,7 +297,7 @@ const onCallDevice = async (
     } catch (error) {
         if (error.code === 'Transport_Missing') {
             // show message about transport
-            sendCoreMessage(createUiMessage(UI_REQUEST.TRANSPORT));
+            sendCoreMessage(createUiEventMessage(UI_EVENTS.TRANSPORT_MISSING));
         }
         // TODO: this should not be returned here before user agrees on "read" perms...
         sendCoreMessage(createResponseMessage(responseID, false, { error }));
@@ -438,7 +451,7 @@ const cleanup = ({ uiPromises, logger }: CoreContext) => {
  * @memberof Core
  */
 const closePopup = ({ sendCoreMessage }: CoreContext) => {
-    sendCoreMessage(createUiMessage(UI_REQUEST.CLOSE_UI_WINDOW));
+    sendCoreMessage(createUiEventMessage(UI_EVENTS.CLOSE_UI_WINDOW));
 };
 
 /**
@@ -461,7 +474,7 @@ const onDeviceButtonHandler =
             createDeviceMessage(DEVICE.BUTTON, { ...request, device: device.toMessageObject() }),
         );
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.REQUEST_BUTTON, {
+            createUiEventMessage(UI_EVENTS.BUTTON_REQUEST, {
                 ...request,
                 device: device.toMessageObject(),
                 data,
@@ -477,8 +490,8 @@ const onDevicePinHandler =
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_PIN, device);
         // request pin view
         sendCoreMessage(
-            createUiMessage(
-                UI_REQUEST.REQUEST_PIN,
+            createUiRequestMessage(
+                UI_REQUESTS.REQUEST_PIN,
                 { device: device.toMessageObject(), type },
                 { requestId: uiPromise.requestId },
             ),
@@ -506,8 +519,8 @@ const onDeviceWordHandler =
         // create ui promise
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_WORD, device);
         sendCoreMessage(
-            createUiMessage(
-                UI_REQUEST.REQUEST_WORD,
+            createUiRequestMessage(
+                UI_REQUESTS.REQUEST_WORD,
                 { device: device.toMessageObject(), type },
                 { requestId: uiPromise.requestId },
             ),
@@ -536,8 +549,8 @@ const onDevicePassphraseHandler =
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_PASSPHRASE, device);
         // request passphrase view
         sendCoreMessage(
-            createUiMessage(
-                UI_REQUEST.REQUEST_PASSPHRASE,
+            createUiRequestMessage(
+                UI_REQUESTS.REQUEST_PASSPHRASE,
                 { device: device.toMessageObject() },
                 { requestId: uiPromise.requestId },
             ),
@@ -579,8 +592,8 @@ const onThpPairingHandler =
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_THP_PAIRING_TAG, device);
 
         sendCoreMessage(
-            createUiMessage(
-                UI_REQUEST.REQUEST_THP_PAIRING,
+            createUiRequestMessage(
+                UI_REQUESTS.REQUEST_THP_PAIRING_TAG,
                 {
                     device: device.toMessageObject(),
                     ...payload,
@@ -645,7 +658,7 @@ const registerDeviceEvents =
         );
         device.on(DEVICE.PASSPHRASE_ON_DEVICE, () => {
             context.sendCoreMessage(
-                createUiMessage(UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE, {
+                createUiEventMessage(UI_EVENTS.PASSPHRASE_ON_DEVICE, {
                     device: device.toMessageObject(),
                 }),
             );

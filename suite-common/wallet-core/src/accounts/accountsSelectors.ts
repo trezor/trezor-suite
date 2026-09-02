@@ -2,17 +2,13 @@ import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import {
-    type AccountType,
-    type Bip43Path,
-    type Network,
-    type NetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type AccountType, type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isCardanoStakingActive, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
-import { formattedAccountTypeMap, formattedAccountTypeWithDefaultMap } from './accountsConstants';
+import { getFormattedAccountType, getFormattedAccountTypeWithDefault } from './accountsConstants';
 import { type AccountsRootState } from './accountsReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
@@ -40,6 +36,23 @@ export const selectAccountsByDeviceState = createMemoizedSelector(
     ],
     (accounts, deviceState) =>
         pipe(getAccountsByDeviceState(accounts, deviceState), returnStableArrayIfEmpty),
+);
+
+export const selectAccountsByDeviceStateAndNetworkSymbol = createMemoizedSelector(
+    [
+        selectAccountsByDeviceState,
+        (
+            _state: AccountsRootState & DeviceRootState,
+            _deviceState: StaticSessionId | DeviceState,
+            networkSymbol: NetworkSymbol,
+        ) => networkSymbol,
+    ],
+    (accounts, networkSymbol) =>
+        pipe(
+            accounts,
+            A.filter(account => account.symbol === networkSymbol),
+            returnStableArrayIfEmpty,
+        ),
 );
 
 export const selectDeviceAccounts = createMemoizedSelector(
@@ -241,20 +254,16 @@ export const selectAccountFormattedBalance = createMemoizedSelector(
 
 export const selectFormattedAccountType = createMemoizedSelector([selectAccountByKey], account => {
     if (!account) return null;
-    const { networkType, accountType } = account;
-    const formattedType = formattedAccountTypeMap[networkType]?.[accountType];
 
-    return formattedType ?? null;
+    return getFormattedAccountType(account.networkType, account.accountType);
 });
 
 export const selectFormattedAccountTypeWithDefault = createMemoizedSelector(
     [selectAccountByKey],
     account => {
         if (!account) return null;
-        const { networkType, accountType } = account;
-        const formattedType = formattedAccountTypeWithDefaultMap[networkType]?.[accountType];
 
-        return formattedType ?? null;
+        return getFormattedAccountTypeWithDefault(account.networkType, account.accountType);
     },
 );
 

@@ -3,10 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { checkAddressChecksum, isAddressValid } from '@suite-common/address';
+import { checkAddressChecksum, selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
 
 import { useAddressChecksum } from './useAddressChecksum';
@@ -19,16 +20,17 @@ type UseAddressValidationAlertsArgs = {
 };
 
 export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationAlertsArgs) => {
+    const { addressValidator } = useServices(selectAddressValidatorDep);
     const {
         params: { tokenContract, accountKey },
     } = useRoute<RouteProp<SendStackParamList, SendStackRoutes.SendOutputs>>();
-    const { watch } = useFormContext();
+    const { control } = useFormContext();
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
     const addressFieldName = getOutputFieldName(inputIndex, 'address');
-    const addressValue = watch(addressFieldName);
+    const addressValue = useWatch({ control, name: addressFieldName });
 
     const { handleAddressChecksum, wasAddressChecksummed, resetAddressChecksummed } =
         useAddressChecksum(addressFieldName);
@@ -38,7 +40,8 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
 
     const { handleTokenAlert, wasTokenAlertDisplayed, resetTokenAlert } = useTokenAlert();
 
-    const isFilledValidAddress = !!addressValue && !!symbol && isAddressValid(addressValue, symbol);
+    const isFilledValidAddress =
+        !!addressValue && !!symbol && addressValidator.isAddressValid(addressValue, symbol);
 
     const networkType = symbol ? getNetworkType(symbol) : null;
 

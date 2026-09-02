@@ -42,6 +42,7 @@ const EVM_GAS_PRICE_PER_CHAIN_IN_GWEI: Record<
     arb: { min: 0.001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
     op: { min: 0.000000001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
     rhc: { min: 0.001, max: 1000, defaultGas: 0.1, minPriorityFee: 0 },
+    hype: { min: 0.001, max: 1000, defaultGas: 0.1, minPriorityFee: 0 },
 };
 
 const getEvmChainGweiGasPrice = (chain: string) =>
@@ -168,10 +169,10 @@ const STELLAR_FEE_INFO: FeeInfoWithLevels = {
 const TRON_FEE_INFO: FeeInfoWithLevels = {
     blockTime: 3,
     defaultFees: [{ label: 'normal', feePerUnit: '-1', blocks: -1 }],
-    minFee: -1,
-    maxFee: -1,
-    minPriorityFee: -1,
-    dustLimit: -1,
+    minFee: 1, // fee_limit in SUN, any positive value is accepted by the network
+    maxFee: 15_000_000_000, // network cap on fee_limit: 15 000 TRX in SUN (chain parameter getMaxFeeLimit)
+    minPriorityFee: -1, // unknown/unused
+    dustLimit: -1, // unknown/unused
 };
 
 const MISC_FEE_LEVELS: Record<string, FeeInfoWithLevels> = {

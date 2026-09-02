@@ -1,5 +1,6 @@
 import { useWatch } from 'react-hook-form';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -15,7 +16,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingCryptoAssetChange } from 'src/hooks/wallet/trading/form/common/useTradingCryptoAssetChange';
 import { useTradingFiatCryptoAmount } from 'src/hooks/wallet/trading/form/common/useTradingFiatCryptoAmount';
 import { useTradingSendAssetBalance } from 'src/hooks/wallet/trading/form/common/useTradingSendAssetBalance';

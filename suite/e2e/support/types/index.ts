@@ -1,5 +1,4 @@
 import type { CryptoId } from 'invity-api';
-import { RequireExactlyOne } from 'type-fest';
 
 import { AnalyticsDesktopEvents } from '@suite/analytics';
 import type { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
@@ -24,16 +23,11 @@ export type EventPayload<T extends SuiteDesktopAnalyticsEventsForE2e> = T extend
     : undefined;
 
 export type PaymentMethods =
-    | 'googlePay'
-    | 'applePay'
-    | 'creditCard'
-    | 'paypal'
-    | 'bankTransfer'
-    | 'revolutPay';
+    'googlePay' | 'applePay' | 'creditCard' | 'paypal' | 'bankTransfer' | 'revolutPay';
 
 export type PercentageOfBalanceParams = {
     percentage: number;
-    balance: string | null;
+    balance: string;
     symbol: NetworkSymbol;
 };
 
@@ -64,20 +58,24 @@ export type TrezorUserEnv = Pick<
 
 export type AssetPickerNetworkFilter = 'all-networks' | NetworkConfigWithoutTestnets['symbol'];
 
-export type BuyAsset = RequireExactlyOne<
-    {
-        searchFilter?: string;
-        networkFilter?: AssetPickerNetworkFilter;
-        assetCryptoId?: CryptoId;
-        networkSymbol?: NetworkSymbol;
-        tokenSymbol?: string;
-    },
-    'assetCryptoId' | 'networkSymbol'
->;
+export type BuyAsset = {
+    searchFilter?: string;
+    networkFilter?: AssetPickerNetworkFilter;
+    assetCryptoId: CryptoId;
+};
+
+export type SellAssetGroup = 'low-balance' | 'non-tradable';
 
 export type SellAsset = {
     searchFilter?: string;
     networkFilter?: AssetPickerNetworkFilter;
     networkSymbol: NetworkSymbol;
     tokenSymbol?: string;
+    accountType?: 'normal' | 'legacy' | 'segwit' | 'ledger';
+    accountIndex?: number;
+
+    /**
+     * Expand this group first, the asset is not selectable while it is collapsed.
+     */
+    group?: SellAssetGroup;
 };

@@ -8,7 +8,7 @@ import { DeviceFixture } from '../device';
 import { expect } from '../testExtends/customMatchers';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
-export type PromoBannerType = 'tex' | 'ts7';
+export type PromoBannerType = 'ts7' | 'stablecoin-yield' | 'defi-yield' | 'eth-vault';
 
 export class DashboardPage {
     readonly suiteLayout: Locator;
@@ -34,6 +34,7 @@ export class DashboardPage {
     readonly addNewHiddenWalletButton: Locator;
     readonly addExistingHiddenWalletButton: Locator;
     readonly hideBalanceButton: Locator;
+    readonly customBackendButton: Locator;
     readonly portfolioFiatAmount: Locator;
     readonly deviceStatus: Locator;
     readonly deviceStatusOnSwitchDevice: Locator;
@@ -89,6 +90,7 @@ export class DashboardPage {
             '@switch-device/add-existing-hidden-wallet-button',
         );
         this.hideBalanceButton = this.page.getByTestId('@quickActions/hideBalances');
+        this.customBackendButton = this.page.getByTestId('@quickActions/customBackend');
         this.portfolioFiatAmount = this.page.getByTestId('@dashboard/portfolio/fiat-amount');
         this.deviceStatus = this.page.locator("[data-testid-alt='@deviceStatus']");
         this.deviceStatusOnSwitchDevice = this.page

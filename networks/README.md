@@ -1,40 +1,40 @@
 # Networks
 
-Network-specific packages organized by different blockchain networks. The goal is to have all the logic related to a single coin family
-in a single folder, with subfolders containing packages for different domains and/or environments. Some of the packages are compulsory,
-with strictly defined API, to be used as a modules in Suite/Connect. These packages should be importable from the rest of the monorepo.
-There may also be optional packages with arbitrary structure, but these should be imported only from inside their network's directory.
+Network-specific packages are organized by network "families". The goal is to keep all logic related to one coin family in a single folder, with packages separated by technical layer. Technical-layer packages have a predefined suffix and public API, so they can be imported from the rest of the monorepo. Optional packages may use a custom suffix, but must only be imported from within their network's directory.
 
-Every package must be named with `network-` prefix, followed by given network (e.g. `bitcoin`) and either predefined compulsory suffix
-(e.g. `-connect` or `-suite`) or custom suffix, and must be located directly in the directory with the exact same name, under given network's
-directory.
+Every package name must start with `network-`, followed by the network name (for example, `bitcoin`) and either a predefined technical-layer suffix or a custom suffix. Its directory must have the same name and be located directly under the corresponding network directory.
 
-All the 3rd party dependencies related to a network should be defined inside that network's directory. Moreover, currently they're
-defined only inside general, no-suffix packages, e.g. `network-cardano` (previously coins packages) and dynamically exported.
+## Technical layers
 
-Example:
+| Layer        | Package                                  |
+| ------------ | ---------------------------------------- |
+| Connect      | `@trezor/network-<network>-connect`      |
+| Suite        | `@trezor/network-<network>-suite`        |
+| Suite Common | `@trezor/network-<network>-suite-common` |
+| Suite Native | `@trezor/network-<network>-suite-native` |
+
+Suite and Suite Native packages may depend on Suite Common. Suite Common must remain platform-independent and must not depend on Suite or Suite Native.
+
+All the 3rd party dependencies related to a network should be defined inside that network's directory. Moreover, currently they're defined only inside general, no-suffix packages, e.g. `network-cardano` (previously coins packages) and dynamically exported.
+
+The complete structure for Bitcoin illustrates all four layers alongside optional internal packages:
 
 ```
 networks/
 ├── README.md
 ├── bitcoin/
-│   ├── network-bitcoin-bip32/      → @trezor/network-bitcoin-bip32     (custom/internal)
-│   ├── network-bitcoin-coinjoin/   → @trezor/network-bitcoin-coinjoin  (custom/internal)
-│   ├── network-bitcoin-suite/      → @trezor/network-bitcoin-suite     (compulsory/public)
-│   └── network-bitcoin-connect/    → @trezor/network-bitcoin-connect   (compulsory/public)
-├── solana/
-│   ├── network-solana/             → @trezor/network-solana            (custom/internal)
-│   ├── network-solana-suite/       → @trezor/network-solana-suite      (compulsory/public)
-│   └── network-solana-connect/     → @trezor/network-solana-connect    (compulsory/public)
-└── cardano/
-    ├── network-cardano/            → @trezor/network-cardano           (custom/internal)
-    ├── network-cardano-suite/      → @trezor/network-cardano-suite     (compulsory/public)
-    └── network-cardano-connect/    → @trezor/network-cardano-connect   (compulsory/public)
+│   ├── network-bitcoin-connect/       → @trezor/network-bitcoin-connect
+│   ├── network-bitcoin-suite/         → @trezor/network-bitcoin-suite
+│   ├── network-bitcoin-suite-common/  → @trezor/network-bitcoin-suite-common
+│   ├── network-bitcoin-suite-native/  → @trezor/network-bitcoin-suite-native
+│   ├── network-bitcoin-bip32/         → @trezor/network-bitcoin-bip32 (custom/internal)
+│   └── network-bitcoin-coinjoin/      → @trezor/network-bitcoin-coinjoin (custom/internal)
+└── <network>/
+    ├── network-<network>-connect/
+    ├── network-<network>-suite/
+    ├── network-<network>-suite-common/
+    └── network-<network>-suite-native/
 ```
-
-## Compulsory package structure
-
-To be done.
 
 ## Custom package structure
 

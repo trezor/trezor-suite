@@ -5,6 +5,7 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "type": "module",
+    "main": "src/index.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
@@ -14,13 +15,17 @@
     "dependencies": {
         "@suite-common/calldata": "workspace:^",
         "@suite-common/earn-stablecoin-api": "workspace:^",
+        "@suite-common/message-system": "workspace:^",
         "@suite-common/schemas": "workspace:^",
         "@suite-common/wallet-config": "workspace:^",
+        "@suite-common/wallet-core": "workspace:^",
         "@suite-common/wallet-types": "workspace:^",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect-common": "workspace:^",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
+        "react-redux": "9.3.0",
         "zod": "4.3.6"
     }
 }

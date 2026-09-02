@@ -5,6 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     type ServerType,
@@ -12,11 +13,11 @@ import {
     getServerAddressExample,
     validateServerAddress,
 } from '@suite-common/wallet-config';
-import { blockchainActions } from '@suite-common/wallet-core';
+import { blockchainActions, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { type BackendSettings } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type BackendsFormData = {
     type: ServerType;
@@ -72,7 +73,7 @@ const getStoredState = (
 
 export const useBackendsForm = (symbol: NetworkSymbol) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const backends = useSelector(state => state.wallet.blockchain[symbol].backends);
+    const backends = useSelector(state => selectNetworkBlockchainInfo(state, symbol).backends);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const [currentValues, setCurrentValues] = useState(() =>
@@ -138,10 +139,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
 
         for (const url of urls) {
             try {
-                const result = await TrezorConnect.blockchainValidateEvmRpcUrl({
-                    url,
-                    chainId: expectedChainId,
-                });
+                const result = await TrezorConnect.blockchainEvmRpcGetChainId({ url });
 
                 if (!result.success) {
                     setValidationError(
@@ -152,13 +150,12 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
                     return false;
                 }
 
-                if (!result.payload.valid) {
-                    const { actualChainId } = result.payload;
+                if (result.payload.chainId !== expectedChainId) {
                     setValidationError(
                         translationString('TR_CUSTOM_BACKEND_CHAIN_MISMATCH', {
                             url,
                             expected: `${network.name} (${expectedChainId})`,
-                            actual: actualChainId?.toString() || 'unknown',
+                            actual: result.payload.chainId.toString(),
                         }),
                     );
                     setIsValidating(false);

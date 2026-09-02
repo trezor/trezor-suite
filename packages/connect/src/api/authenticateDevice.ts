@@ -1,4 +1,4 @@
-import { UI_REQUEST } from '@trezor/connect-common';
+import { UI_EVENTS } from '@trezor/connect-common';
 import type { PermissionRequest } from '@trezor/connect-common';
 import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
 import {
@@ -33,7 +33,7 @@ export default class AuthenticateDevice extends AbstractMethod<
 
         super(message, params);
         this.useEmptyPassphrase = true;
-        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
+        this.allowDeviceMode = [UI_EVENTS.DEVICE_NOT_INITIALIZED, UI_EVENTS.DEVICE_SEEDLESS];
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
@@ -174,7 +174,12 @@ export default class AuthenticateDevice extends AbstractMethod<
                 authenticityProof;
             const isAvailable = signature && certificates.length > 0;
             if (isAvailable) {
-                return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
+                return await verifyAuthenticityProof({
+                    proofType: 'optiga',
+                    ...commonParams,
+                    certificates,
+                    signature,
+                });
             }
 
             // all devices capable of 'authenticateDevice' (see src/data/config.ts) have Optiga, so it's always required
@@ -188,7 +193,12 @@ export default class AuthenticateDevice extends AbstractMethod<
             const isAvailable = signature && certificates.length > 0;
             const isRequired = hasTropicAbility;
             if (isAvailable) {
-                return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
+                return await verifyAuthenticityProof({
+                    proofType: 'tropic',
+                    ...commonParams,
+                    certificates,
+                    signature,
+                });
             }
 
             return isRequired ? { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' } : null;
@@ -200,6 +210,7 @@ export default class AuthenticateDevice extends AbstractMethod<
             const isRequired = !unavailableCapabilities['mcuDeviceAuthentication'];
             if (isAvailable) {
                 return await verifyAuthenticityProof({
+                    proofType: 'mcu',
                     ...commonParams,
                     certificates,
                     signature,

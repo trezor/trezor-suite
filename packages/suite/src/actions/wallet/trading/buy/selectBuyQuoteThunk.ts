@@ -1,13 +1,15 @@
 import { type BuyTrade } from 'invity-api';
 
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { goto } from '@suite/router';
-import { createThunk } from '@suite-common/redux-utils';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
+    type TradingFormAccountRootState,
     buyThunks,
     cryptoIdToNetworkSymbolAndContractAddress,
     selectTradingBuyInfo,
     selectTradingBuyQuotesRequest,
+    selectTradingBuyReceiveAccount,
     selectTradingBuyReceiveAddress,
     selectTradingCoinInfoByCryptoId,
     selectTradingFormAccount,
@@ -17,57 +19,65 @@ import { createQuoteLink } from 'src/utils/wallet/trading/buyUtils';
 
 import { submitRequestForm } from '../tradingCommonActions';
 
-export const selectBuyQuoteThunk = createThunk(
-    'trading/buy/selectQuoteWithAnalytics',
-    async ({ quote }: { quote: BuyTrade }, { dispatch, getState, extra }) => {
-        const buyInfo = selectTradingBuyInfo(getState());
-        const quotesRequest = selectTradingBuyQuotesRequest(getState());
-        const receiveAddress = selectTradingBuyReceiveAddress(getState());
-        const account = selectTradingFormAccount(getState(), 'buy');
+type SelectBuyQuoteThunkParams = { quote: BuyTrade };
 
-        const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
+type SelectBuyQuoteThunkState = GotoThunkState & TradingFormAccountRootState;
 
-        if (!quotesRequest || !provider || !receiveAddress || !account) {
-            return;
-        }
+type SelectBuyQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
 
-        const returnUrl = await createQuoteLink(
-            { ...quotesRequest, paymentMethod: quote.paymentMethod },
-            account,
-        );
+export const selectBuyQuoteThunk = createThunk<
+    void,
+    SelectBuyQuoteThunkParams,
+    { state: SelectBuyQuoteThunkState; extra: SelectBuyQuoteThunkDeps }
+>('trading/buy/selectQuoteWithAnalytics', async ({ quote }, { dispatch, getState, extra }) => {
+    const buyInfo = selectTradingBuyInfo(getState());
+    const quotesRequest = selectTradingBuyQuotesRequest(getState());
+    const receiveAddress = selectTradingBuyReceiveAddress(getState());
+    const account = selectTradingFormAccount(getState(), 'buy');
+    const receiveAccount = selectTradingBuyReceiveAccount(getState());
 
-        const { symbol: cryptoNetworkSymbol, contractAddress: cryptoContractAddress } =
-            cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.receiveCurrency);
-        const cryptoLabel = selectTradingCoinInfoByCryptoId(
-            getState(),
-            quotesRequest.receiveCurrency,
-        )?.name;
+    const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: events.tradeBuyEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'buy-form',
-                cryptoLabel,
-                cryptoNetworkSymbol,
-                cryptoContractAddress,
-                exchangeName: quote.exchange,
-                paymentMethod: quote.paymentMethod,
-                countryOfResidence: quotesRequest.country,
+    if (!quotesRequest || !provider || !receiveAddress || !account) {
+        return;
+    }
+
+    const returnUrl = await createQuoteLink(
+        { ...quotesRequest, paymentMethod: quote.paymentMethod },
+        receiveAccount ?? account,
+    );
+
+    const { symbol: cryptoNetworkSymbol, contractAddress: cryptoContractAddress } =
+        cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.receiveCurrency);
+    const cryptoLabel = selectTradingCoinInfoByCryptoId(
+        getState(),
+        quotesRequest.receiveCurrency,
+    )?.name;
+
+    extra.services.analytics.report({
+        type: events.tradeBuyEvent.name,
+        payload: {
+            action: 'continue',
+            step: 'buy-form',
+            cryptoLabel,
+            cryptoNetworkSymbol,
+            cryptoContractAddress,
+            exchangeName: quote.exchange,
+            paymentMethod: quote.paymentMethod,
+            countryOfResidence: quotesRequest.country,
+        },
+    });
+
+    await dispatch(
+        buyThunks.selectQuoteThunk({
+            quote,
+            returnUrl,
+            loginRequest: form => {
+                dispatch(submitRequestForm(form));
             },
-        });
-
-        await dispatch(
-            buyThunks.selectQuoteThunk({
-                quote,
-                returnUrl,
-                loginRequest: form => {
-                    dispatch(submitRequestForm(form));
-                },
-                nextStep: () => {
-                    dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
-                },
-            }),
-        );
-    },
-);
+            nextStep: () => {
+                dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
+            },
+        }),
+    );
+});

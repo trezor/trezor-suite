@@ -1,6 +1,8 @@
-import { type ThunkDispatch } from '@reduxjs/toolkit';
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
+import { type AnalyticsDep } from '@suite-common/analytics';
 import {
+    type DeviceRootState,
     deviceActions,
     selectDeviceByStaticSessionId,
     selectDevices,
@@ -8,10 +10,11 @@ import {
     selectSelectedDevice,
     shouldDeviceBeRemembered,
 } from '@suite-common/device';
+import { selectDeviceThunk } from '@suite-common/device';
+import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import {
-    type AnyAction,
-    type ExtraDependencies,
     type SuiteCompatibleThunk,
+    type WithServices,
     createThunk,
 } from '@suite-common/redux-utils';
 import {
@@ -21,32 +24,44 @@ import {
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
-import { type Bip43Path, type TrezorConnectBackendType } from '@suite-common/wallet-config';
-import { type DiscoveryCallIds, type DiscoveryStatus } from '@suite-common/wallet-types';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TrezorConnectBackendType } from '@suite-common/wallet-config';
+import { type DiscoveryStatus, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
-    type BundleProgress,
     type DeviceState,
     type DeviceUniquePath,
     type StaticSessionId,
-    UI_REQUEST,
+    UI_EVENTS,
     UI_RESPONSE,
+    type UiEventBundleProgress,
 } from '@trezor/connect';
 import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
+import { type DiscoveryRootState } from './discoveryReducer';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
-import { selectDeviceThunk } from './selectDeviceThunk';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 import { reportAccountInfoThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
-import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
-import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
+import {
+    type WalletCoreCompoundRootState,
+    selectAccountsToBeForgotten,
+    selectDiscoveryAccountsParam,
+} from '../selectors';
+import {
+    type WalletSettingsRootState,
+    selectIsDeviceAutoEjectEnabled,
+} from '../settings/walletSettingsReducer';
 
 const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
 const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
 
-type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
+type DiscoveryReportingThunkState = TokenDefinitionsRootState & WalletCoreCompoundRootState;
+type DiscoveryReportingDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
+
+type ProgressEvent = UiEventBundleProgress<DiscoverAccountsProgress>['payload'];
 
 function assertDeviceIsAuthorized(device?: TrezorDevice): asserts device is AuthorizedDevice {
     if (!device?.state?.staticSessionId) {
@@ -75,6 +90,8 @@ const deviceStateEqualTo = (first: DeviceState) => {
         firstParsed ? firstParsed === second?.staticSessionId?.split(':')[0] : false;
 };
 
+type ApplyDeviceStatesThunkState = DeviceRootState & WalletSettingsRootState;
+
 export const applyDeviceStatesThunk = createThunk<
     { device: TrezorDevice },
     {
@@ -82,7 +99,10 @@ export const applyDeviceStatesThunk = createThunk<
         newDeviceState: DeviceState;
         devicePath: DeviceUniquePath;
     },
-    { rejectValue: string }
+    {
+        rejectValue: string;
+        state: ApplyDeviceStatesThunkState;
+    }
 >(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
     (
@@ -213,9 +233,15 @@ type ApplyDeviceStateErrorThunkProps = {
     devicePath: DeviceUniquePath;
 };
 
-const applyDeviceStateErrorThunk = createThunk(
+type ApplyDeviceStateErrorThunkState = DiscoveryRootState;
+
+const applyDeviceStateErrorThunk = createThunk<
+    void,
+    ApplyDeviceStateErrorThunkProps,
+    { state: ApplyDeviceStateErrorThunkState }
+>(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStateError`,
-    ({ error, code, devicePath }: ApplyDeviceStateErrorThunkProps, { dispatch, getState }) => {
+    ({ error, code, devicePath }, { dispatch, getState }) => {
         // means that `cancelDiscoveryThunk` has been called and device returned code:Method_Cancel and this specific `error`
         if (error === USER_UI_CANCEL_CODE) return;
 
@@ -248,8 +274,12 @@ const completeDiscovery = (
         fetchAndSaveMetadata,
         getState,
     }: {
-        getState: () => any;
-        dispatch: ThunkDispatch<any, ExtraDependencies, AnyAction>;
+        getState: () => DiscoveryReportingThunkState;
+        dispatch: ThunkDispatch<
+            DiscoveryReportingThunkState,
+            DiscoveryReportingDeps,
+            UnknownAction
+        >;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
     },
 ) => {
@@ -264,9 +294,9 @@ const completeDiscovery = (
     );
 };
 
-export const cancelDiscoveryThunk = createThunk(
+export const cancelDiscoveryThunk = createThunk<void, TrezorDevice, void>(
     `${DISCOVERY_MODULE_PREFIX}/cancel`,
-    (device: TrezorDevice, { dispatch }) => {
+    (device, { dispatch }) => {
         // cancel with a custom error code so we can distinguish it from device cancellation
         TrezorConnect.cancel({ reason: USER_UI_CANCEL_CODE });
 
@@ -276,15 +306,22 @@ export const cancelDiscoveryThunk = createThunk(
 
 type RunDiscoveryParams = {
     device: TrezorDevice;
-    callIds?: DiscoveryCallIds;
+    callId?: string;
 };
 
-export const runDiscoveryThunk = createThunk(
+export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
+
+export type RunDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
+    thunks: FetchAndSaveMetadataDep;
+};
+
+export const runDiscoveryThunk = createThunk<
+    void,
+    RunDiscoveryParams,
+    { state: RunDiscoveryThunkState; extra: RunDiscoveryThunkDeps }
+>(
     `${DISCOVERY_MODULE_PREFIX}/run`,
-    async (
-        { device: passedDevice, callIds }: RunDiscoveryParams,
-        { dispatch, getState, extra },
-    ): Promise<void> => {
+    async ({ device: passedDevice, callId }, { dispatch, getState, extra }): Promise<void> => {
         try {
             let device: TrezorDevice = passedDevice;
 
@@ -330,7 +367,7 @@ export const runDiscoveryThunk = createThunk(
                     state: undefined,
                     useEmptyPassphrase: !isAddingHiddenWallet,
                 },
-                callId: callIds?.initialDeviceState,
+                callId,
             });
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
@@ -379,7 +416,7 @@ export const runDiscoveryThunk = createThunk(
                     // no passphrase duplicity and no standard wallet -> check that this is not in fact empty passphrase
                     const res = await TrezorConnect.getDeviceState({
                         device: { path: passedDevice.path, useEmptyPassphrase: true },
-                        callId: callIds?.emptyPassphraseCheck,
+                        callId,
                     });
 
                     if (res.success && deviceStateEqualTo(deviceState)(res.payload.state)) {
@@ -447,7 +484,7 @@ export const runDiscoveryThunk = createThunk(
                 dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
             };
 
-            TrezorConnect.on(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
+            TrezorConnect.on(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
 
             // NOTE: sync set discovery status to progress to make sure that there aren't some hanging states
             // before asnyc onBundleProgress is called which sets progress
@@ -468,10 +505,10 @@ export const runDiscoveryThunk = createThunk(
                 },
                 coins: accountsParam,
                 entropyCheckResult,
-                callId: callIds?.discoverAccounts,
+                callId,
             });
 
-            TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
+            TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
                 return;
@@ -533,7 +570,7 @@ export const runDiscoveryThunk = createThunk(
 
             const getDeviceState2Res = await TrezorConnect.getDeviceState({
                 device: { path: device.path, instance, state: undefined },
-                callId: callIds?.confirmDeviceState,
+                callId,
             });
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
@@ -590,15 +627,20 @@ type StartDiscoveryThunkParams = {
     useScopedCallIds?: boolean;
 };
 
-export const startDiscoveryThunk = createThunk(
+export type StartDiscoveryThunkState = RunDiscoveryThunkState;
+
+export type StartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
+    thunks: FetchAndSaveMetadataDep;
+};
+
+export const startDiscoveryThunk = createThunk<
+    void,
+    StartDiscoveryThunkParams,
+    { state: StartDiscoveryThunkState; extra: StartDiscoveryThunkDeps }
+>(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     (
-        {
-            device,
-            isAddingHiddenWallet,
-            isAddingExistingWallet,
-            useScopedCallIds,
-        }: StartDiscoveryThunkParams,
+        { device, isAddingHiddenWallet, isAddingExistingWallet, useScopedCallIds },
         { dispatch, getState },
     ): void => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
@@ -629,9 +671,17 @@ export const startDiscoveryThunk = createThunk(
     },
 );
 
-export const runAdditionalDiscoveryThunk = createThunk(
+type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
+
+type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
+
+export const runAdditionalDiscoveryThunk = createThunk<
+    void,
+    StaticSessionId,
+    { state: RunAdditionalDiscoveryThunkState; extra: RunAdditionalDiscoveryThunkDeps }
+>(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
-    async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
+    async (staticSessionId, { dispatch, getState }): Promise<void> => {
         // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
         // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
 
@@ -705,7 +755,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
             dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
         };
 
-        TrezorConnect.on(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.on(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
 
         // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
         const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
@@ -724,7 +774,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
             entropyCheckResult,
         });
 
-        TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
 
         dispatch(
             discoveryActions.updateDiscovery(
@@ -750,22 +800,22 @@ export const runAdditionalDiscoveryThunk = createThunk(
     },
 );
 
-export const submitPassphrase = createThunk(
+type SubmitPassphraseThunkParams = {
+    device: TrezorDevice;
+    passphrase: string;
+    passphraseOnDevice?: boolean;
+    requestId?: string;
+};
+
+type SubmitPassphraseThunkState = DiscoveryRootState;
+
+export const submitPassphrase = createThunk<
+    void,
+    SubmitPassphraseThunkParams,
+    { state: SubmitPassphraseThunkState }
+>(
     `${DISCOVERY_MODULE_PREFIX}/submitPassphrase`,
-    (
-        {
-            device,
-            passphrase,
-            passphraseOnDevice,
-            requestId,
-        }: {
-            device: TrezorDevice;
-            passphrase: string;
-            passphraseOnDevice?: boolean;
-            requestId?: string;
-        },
-        { dispatch, getState },
-    ) => {
+    ({ device, passphrase, passphraseOnDevice, requestId }, { dispatch, getState }) => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
 
         if (currentDiscovery) {
@@ -793,52 +843,62 @@ export const submitPassphrase = createThunk(
     },
 );
 
+type StartOrRestartDiscoveryThunkState = RunDiscoveryThunkState;
+
+type StartOrRestartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
+    thunks: FetchAndSaveMetadataDep;
+};
+
 /**
  * Helper to restart discovery for currently selected device
  */
-export const startOrRestartDiscoveryThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/restart`,
-    (_, { dispatch, getState }) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return;
-        const staticSessionId = device.state?.staticSessionId;
-        if (staticSessionId) {
-            // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
-            dispatch(runAdditionalDiscoveryThunk(staticSessionId));
+export const startOrRestartDiscoveryThunk = createThunk<
+    void,
+    void,
+    { state: StartOrRestartDiscoveryThunkState; extra: StartOrRestartDiscoveryThunkDeps }
+>(`${DISCOVERY_MODULE_PREFIX}/restart`, (_, { dispatch, getState }) => {
+    const device = selectSelectedDevice(getState());
+    if (!device) return;
+    const staticSessionId = device.state?.staticSessionId;
+    if (staticSessionId) {
+        // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
+        dispatch(runAdditionalDiscoveryThunk(staticSessionId));
 
-            return;
-        }
+        return;
+    }
 
-        // if no staticSessionId available yet it means we failed sooner, for example during pin input
-        dispatch(
-            startDiscoveryThunk({
-                device,
-                isAddingExistingWallet: true,
-                isAddingHiddenWallet: false,
-            }),
-        );
-    },
-);
+    // if no staticSessionId available yet it means we failed sooner, for example during pin input
+    dispatch(
+        startDiscoveryThunk({
+            device,
+            isAddingExistingWallet: true,
+            isAddingHiddenWallet: false,
+        }),
+    );
+});
 
-export const switchToDuplicatedWallet = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/switchToDuplicatedWallet`,
-    (_, { dispatch, getState }) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return;
+type SwitchToDuplicatedWalletThunkState = DeviceRootState & DiscoveryRootState;
 
-        const discovery = selectDiscoveryByDevicePath(getState(), device.path);
+export const switchToDuplicatedWallet = createThunk<
+    void,
+    void,
+    { state: SwitchToDuplicatedWalletThunkState }
+>(`${DISCOVERY_MODULE_PREFIX}/switchToDuplicatedWallet`, (_, { dispatch, getState }) => {
+    const device = selectSelectedDevice(getState());
+    if (!device) return;
 
-        if (discovery?.status !== 'passphrase-duplicate') return;
+    const discovery = selectDiscoveryByDevicePath(getState(), device.path);
 
-        dispatch(cancelDiscoveryThunk(device));
+    if (discovery?.status !== 'passphrase-duplicate') return;
 
-        const duplicatedDevice = selectDeviceByStaticSessionId(
-            getState(),
-            discovery.duplicateDeviceStaticSessionId,
-        );
+    dispatch(cancelDiscoveryThunk(device));
 
-        if (!duplicatedDevice) return;
-        // Switch to the duplicated wallet
-        dispatch(selectDeviceThunk({ device: duplicatedDevice }));
-    },
-);
+    const duplicatedDevice = selectDeviceByStaticSessionId(
+        getState(),
+        discovery.duplicateDeviceStaticSessionId,
+    );
+
+    if (!duplicatedDevice) return;
+    // Switch to the duplicated wallet
+    dispatch(selectDeviceThunk({ device: duplicatedDevice }));
+});

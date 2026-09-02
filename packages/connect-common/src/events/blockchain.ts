@@ -4,6 +4,7 @@ import type {
     NotificationEvent,
     ServerInfo,
 } from '@trezor/blockchain-link';
+import { createTypeGuardByType } from '@trezor/type-utils';
 
 import type { CoinInfo } from '../types/coinInfo';
 import type { MessageFactoryFn } from '../types/utils';
@@ -78,6 +79,8 @@ export type BlockchainEvent =
           type: typeof BLOCKCHAIN.FIAT_RATES_UPDATE;
           payload: BlockchainFiatRatesUpdate;
       };
+
+export const isBlockchainEventOfType = createTypeGuardByType<BlockchainEvent>();
 
 export type BlockchainEventMessage = BlockchainEvent & { event: typeof BLOCKCHAIN_EVENT };
 

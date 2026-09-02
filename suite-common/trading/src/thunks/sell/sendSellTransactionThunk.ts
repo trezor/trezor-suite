@@ -5,13 +5,13 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
 import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
@@ -28,7 +28,13 @@ export type SendSellTransactionThunkProps = {
     signAndPushSendFormTransaction: RecomposeAndSignTxThunkProps['signAndPushSendFormTransaction'];
 };
 
-export const sendSellTransactionThunk = createThunk(
+type SendSellTransactionThunkState = TradingRootState;
+
+export const sendSellTransactionThunk = createThunk<
+    undefined,
+    SendSellTransactionThunkProps,
+    { state: SendSellTransactionThunkState }
+>(
     `${TRADING_SELL_THUNK_PREFIX}/sendTransaction`,
     async (
         {
@@ -39,7 +45,7 @@ export const sendSellTransactionThunk = createThunk(
             isSlip24Active,
             nextStep,
             signAndPushSendFormTransaction,
-        }: SendSellTransactionThunkProps,
+        },
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingSellSelectedQuote(getState());
@@ -103,7 +109,7 @@ export const sendSellTransactionThunk = createThunk(
             destinationPaymentExtraId,
         };
 
-        const response = await invityAPI.doSellConfirm(tradeRequest);
+        const response = await tradeApi.doSellConfirm(tradeRequest);
 
         if (!response) {
             return rejectWithValue({

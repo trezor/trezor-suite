@@ -15,6 +15,7 @@ export interface FeedbackCardProps {
     successHeading: ReactNode;
     successDescription: ReactNode;
     onSubmit: (rating: Rating, description: string) => void;
+    onRatingSelect?: (rating: Rating) => void;
     defaultView?: FeedbackCardView;
 }
 
@@ -25,6 +26,7 @@ export const FeedbackCard = ({
     successHeading,
     successDescription,
     onSubmit,
+    onRatingSelect,
     defaultView = 'form',
 }: FeedbackCardProps) => {
     const [rating, setRating] = useState<Rating | undefined>();
@@ -32,6 +34,11 @@ export const FeedbackCard = ({
     const [view, setView] = useState<FeedbackCardView>(defaultView);
 
     const isFormValid = rating !== undefined && feedbackText.trim().length > 0;
+
+    const handleRatingSelect = (selectedRating: Rating) => {
+        setRating(selectedRating);
+        onRatingSelect?.(selectedRating);
+    };
 
     const handleSubmit = () => {
         if (!isFormValid) return;
@@ -61,7 +68,7 @@ export const FeedbackCard = ({
             <Column gap={16} alignItems="start" margin={{ vertical: 8 }}>
                 <H3>{heading}</H3>
 
-                <EmojiRatingSelector value={rating} onChange={setRating} />
+                <EmojiRatingSelector value={rating} onChange={handleRatingSelect} />
 
                 {description && (
                     <Paragraph margin={{ top: 12 }} typographyStyle="body-sm">

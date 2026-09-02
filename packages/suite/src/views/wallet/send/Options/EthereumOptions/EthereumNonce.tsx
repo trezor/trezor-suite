@@ -11,7 +11,7 @@ import {
     isEip1559,
     isInteger,
     isPending,
-    isSentTransaction,
+    isSignedByAccount,
 } from '@suite-common/wallet-utils';
 import { Card, Column, H4, IconButton, Input, Note, Row, TextButton } from '@trezor/components';
 import { InfoIcon, WarningIcon, XIcon } from '@trezor/icons';
@@ -87,7 +87,7 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
 
     const error = errors.ethereumNonce;
 
-    const pendingSentTxs = transactions.filter(isPending).filter(isSentTransaction);
+    const pendingSentTxs = transactions.filter(isPending).filter(isSignedByAccount);
 
     const pendingNonces = pendingSentTxs
         .map(tx => tx.ethereumSpecific?.nonce)

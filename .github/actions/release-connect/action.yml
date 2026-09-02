@@ -68,6 +68,8 @@ runs:
       continue-on-error: true
       with:
         version: v0.19.1
+        # Our just-published @trezor packages trip the cooldown. Malware scanning still runs.
+        cooldown-enabled: "false"
 
     - name: Install dependencies
       shell: bash

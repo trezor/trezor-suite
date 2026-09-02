@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTradeBuySellType,
     cryptoIdToNetworkAndContractAddress,
@@ -15,7 +16,7 @@ import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {

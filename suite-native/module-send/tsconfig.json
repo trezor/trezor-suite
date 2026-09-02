@@ -10,11 +10,12 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/networks" },
         {
-            "path": "../../suite-common/suite-sync"
+            "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/suite-utils"
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/token-definitions"
@@ -59,6 +60,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../scrollview" },
         { "path": "../send" },
         { "path": "../tokens" },
         { "path": "../transaction-management" },

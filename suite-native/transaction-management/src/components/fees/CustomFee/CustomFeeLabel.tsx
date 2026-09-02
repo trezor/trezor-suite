@@ -1,7 +1,7 @@
 import { type NetworkType } from '@suite-common/wallet-config';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { type FeesFormValues } from '../../../feesFormSchema';
@@ -22,8 +22,8 @@ const getFormattedFeeUnits = (fee: string, networkType: NetworkType) => {
 export const CustomFeeLabel = ({ networkType }: CustomFeeLabelProps) => {
     const feeUnits = getFeeUnits(networkType);
 
-    const { watch } = useFormContext<FeesFormValues>();
-    const { customFeePerUnit } = watch();
+    const { control } = useFormContext<FeesFormValues>();
+    const customFeePerUnit = useWatch({ control, name: 'customFeePerUnit' });
 
     const formattedFeePerUnit = `${getFormattedFeeUnits(customFeePerUnit, networkType)} ${feeUnits}`;
 

@@ -1,9 +1,9 @@
-import { type routes } from '@suite/router-config';
+import type { Route } from '@suite/router';
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
 
-type RouteName = (typeof routes)[number]['name'];
+type RouteName = Route['name'];
 
 type Attributes = {
     from: AttributeDef<RouteName | 'unknown'>;

@@ -52,9 +52,16 @@ const representativeAssets: Partial<Record<NetworkSymbol, readonly Representativ
     rhc: [
         { symbol: 'ETH' },
         { symbol: 'USDG', contract: '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168' },
-        { symbol: 'AAPL', contract: '0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9' },
+        { symbol: 'USDE', contract: '0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34' },
+        { symbol: 'VIRTUAL', contract: '0xc6911796042b15d7fa4f6cde69e245ddcd3d9c31' },
         { symbol: 'NVDA', contract: '0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC' },
-        { symbol: 'TSLA', contract: '0x322F0929c4625eD5bAd873c95208D54E1c003b2d' },
+    ],
+    hype: [
+        { symbol: 'HYPE' },
+        { symbol: 'USDT0', contract: '0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb' },
+        { symbol: 'XAUT0', contract: '0xf4d9235269a96aadafc9adae454a0618ebe37949' },
+        { symbol: 'MOVE', contract: '0x3073f7aaa4db83f95e9fff17424f71d4751a3073' },
+        { symbol: 'FEUSD', contract: '0x02c6a2fa58cc01a18b8d9e00ea48d65e4df26c70' },
     ],
     avax: [
         { symbol: 'AVAX' },

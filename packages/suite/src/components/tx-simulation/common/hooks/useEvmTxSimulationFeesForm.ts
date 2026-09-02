@@ -26,6 +26,12 @@ interface UseTxFeesFormProps {
     networkType?: NetworkType;
     networkSymbol?: NetworkSymbol;
     defaultGasLimit?: string;
+    /**
+     * Native value the transaction sends, in wei. A payable call such as a WETH wrap spends it on
+     * top of the fee, so leaving it out lets a full-balance wrap pass validation and then fail on
+     * broadcast with "insufficient funds".
+     */
+    txValue?: string;
 }
 
 export function useEvmTxSimulationFeesForm({
@@ -33,6 +39,7 @@ export function useEvmTxSimulationFeesForm({
     networkType = 'ethereum',
     networkSymbol = 'eth',
     defaultGasLimit = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+    txValue = '0',
 }: UseTxFeesFormProps) {
     const form = useForm<FeesFormValues>({
         defaultValues: {
@@ -79,13 +86,21 @@ export function useEvmTxSimulationFeesForm({
         const selectedLevel = composedLevels[selectedFee || 'normal'];
         const fee = selectedLevel?.type === 'final' ? selectedLevel.fee : undefined;
 
-        if (!fee || new BigNumber(fee).lte(accountBalance)) return undefined;
+        if (!fee) return undefined;
 
-        return {
-            id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-            values: { networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol) },
-        } as const;
-    }, [accountBalance, composedLevels, networkSymbol, selectedFee]);
+        if (new BigNumber(fee).gt(accountBalance)) {
+            return {
+                id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                values: { networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol) },
+            } as const;
+        }
+
+        if (new BigNumber(fee).plus(txValue).gt(accountBalance)) {
+            return { id: 'AMOUNT_IS_NOT_ENOUGH', values: undefined } as const;
+        }
+
+        return undefined;
+    }, [accountBalance, composedLevels, networkSymbol, selectedFee, txValue]);
 
     function handleTxSimulationResult({ simulation, gas_estimation }: TxSimulationEVMResult) {
         const newFeeLimit =

@@ -9,14 +9,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
         { "path": "../locks" },
-        { "path": "../router" },
-        { "path": "../../packages/connect" },
-        {
-            "path": "../../suite-common/test-utils"
-        }
+        { "path": "../../packages/connect" }
     ]
 }

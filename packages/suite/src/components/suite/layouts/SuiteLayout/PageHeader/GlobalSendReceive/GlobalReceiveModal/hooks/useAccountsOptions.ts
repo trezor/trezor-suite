@@ -5,7 +5,6 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 
-import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
 import { useSelector } from 'src/hooks/suite';
 
 export function useAccountsOptions() {
@@ -22,14 +21,7 @@ export function useAccountsOptions() {
 
     const throttledAccounts = useThrottle(accounts, 1000);
 
-    return useMemo(
-        () =>
-            throttledAccounts.map(account => ({
-                account,
-                height: ASSET_ROW_HEIGHT,
-            })),
-        [throttledAccounts],
-    );
+    return useMemo(() => throttledAccounts.map(account => ({ account })), [throttledAccounts]);
 }
 
 export type AccountOption = ReturnType<typeof useAccountsOptions>[number];

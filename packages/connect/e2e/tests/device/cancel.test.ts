@@ -1,9 +1,8 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect from '@trezor/connect';
 import type { CoinSymbol } from '@trezor/connect-common';
 import type { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { Model } from '@trezor/trezor-user-env-link';
 
+import TrezorConnect, { UI_REQUESTS, UI_RESPONSE } from '../../../src';
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const getAddress = (showOnTrezor: boolean, coin: CoinSymbol = 'regtest') =>
@@ -15,27 +14,27 @@ const getAddress = (showOnTrezor: boolean, coin: CoinSymbol = 'regtest') =>
 
 const passphraseHandler = (value: string) => () => {
     TrezorConnect.uiResponse({
-        type: 'ui-receive_passphrase',
+        type: UI_RESPONSE.RECEIVE_PASSPHRASE,
         payload: {
             passphraseOnDevice: false,
             value,
         },
     });
-    TrezorConnect.removeAllListeners('ui-request_passphrase');
+    TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_PASSPHRASE);
 };
 
 const addressHandler = () => () => {
     TrezorConnect.uiResponse({
-        type: 'ui-receive_confirmation',
+        type: UI_RESPONSE.RECEIVE_CONFIRMATION,
         payload: true,
     });
-    TrezorConnect.removeAllListeners('ui-request_confirmation');
+    TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_CONFIRMATION);
 };
 
 const assertGetAddressWorks = async () => {
     // validate that further communication is possible without any glitch
-    TrezorConnect.on('ui-request_passphrase', passphraseHandler(''));
-    TrezorConnect.on('ui-request_confirmation', addressHandler());
+    TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, passphraseHandler(''));
+    TrezorConnect.on(UI_REQUESTS.REQUEST_CONFIRMATION, addressHandler());
     const getAddressResponse = await getAddress(false, 'test');
     expect(getAddressResponse).toMatchObject({
         success: true,
@@ -56,7 +55,7 @@ const runCancelScenario = async (
 
     // Let call A run to completion so its callId is no longer in callMethods
     const callIdA = crypto.randomUUID();
-    TrezorConnect.on('ui-request_passphrase', passphraseHandler(''));
+    TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, passphraseHandler(''));
     const responseA = await TrezorConnect.getAddress({
         path: "m/84'/1'/0'/0/0",
         coin: 'regtest',
@@ -191,7 +190,7 @@ describe('TrezorConnect.cancel', () => {
 
         const getAddressCall = getAddress(true);
         await new Promise<void>(resolve => {
-            TrezorConnect.on('ui-request_passphrase', () => resolve());
+            TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, () => resolve());
         });
         TrezorConnect.cancel();
 
@@ -219,7 +218,7 @@ describe('TrezorConnect.cancel', () => {
 
         // Wait for passphrase prompt then cancel only this call by its callId
         await new Promise<void>(resolve => {
-            TrezorConnect.on('ui-request_passphrase', () => resolve());
+            TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, () => resolve());
         });
         TrezorConnect.cancel({ callId });
 
@@ -266,7 +265,7 @@ describe('TrezorConnect.cancel', () => {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         const pinPromise = new Promise<void>(resolve => {
-            TrezorConnect.on('ui-request_pin', () => {
+            TrezorConnect.on(UI_REQUESTS.REQUEST_PIN, () => {
                 resolve();
             });
         });
@@ -299,7 +298,7 @@ describe('TrezorConnect.cancel', () => {
         await initTrezorConnect(controller);
 
         const wordPromise = new Promise<void>(resolve => {
-            TrezorConnect.on('ui-request_word', () => resolve());
+            TrezorConnect.on(UI_REQUESTS.REQUEST_WORD, () => resolve());
         });
         const recoveryDeviceCall = TrezorConnect.recoveryDevice({
             passphrase_protection: false,

@@ -5,12 +5,7 @@ import { EventType } from '../constants';
 import { type CountryChangeContext } from '../definitions';
 
 type TradingParameter =
-    | 'fiat'
-    | 'cryptoFrom'
-    | 'cryptoTo'
-    | 'paymentMethod'
-    | 'provider'
-    | 'country';
+    'fiat' | 'cryptoFrom' | 'cryptoTo' | 'paymentMethod' | 'provider' | 'country';
 
 type Attributes = {
     type: AttributeDef<TradingType | CountryChangeContext>;

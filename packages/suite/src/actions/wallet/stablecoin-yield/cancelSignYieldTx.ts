@@ -1,12 +1,14 @@
 import { closeModal } from '@suite/modal';
 import { createThunk } from '@suite-common/redux-utils';
-import { STABLECOIN_YIELD_PREFIX, selectStablecoinYieldTxReview } from '@suite-common/wallet-core';
+import { YIELD_PREFIX, type YieldRootState, selectYieldTxReview } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-export const cancelSignYieldTx = createThunk(
-    `${STABLECOIN_YIELD_PREFIX}/thunk/cancelSignYieldTx`,
+type CancelSignYieldTxThunkState = YieldRootState;
+
+export const cancelSignYieldTx = createThunk<void, void, { state: CancelSignYieldTxThunkState }>(
+    `${YIELD_PREFIX}/thunk/cancelSignYieldTx`,
     (_params, { dispatch, getState }) => {
-        const { serializedTx } = selectStablecoinYieldTxReview(getState());
+        const { serializedTx } = selectYieldTxReview(getState());
 
         if (!serializedTx) {
             TrezorConnect.cancel({ reason: 'tx-cancelled' });

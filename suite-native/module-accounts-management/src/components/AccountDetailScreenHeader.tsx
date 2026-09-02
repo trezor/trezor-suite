@@ -6,6 +6,7 @@ import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountLabel } from '@suite-native/accounts';
 import { HStack, IconButton, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
+import { TokenSettingsBottomSheet } from '@suite-native/module-earn';
 import {
     type AccountsStackParamList,
     type RootStackParamList,
@@ -15,8 +16,6 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { isNetworkWithTokens } from '@suite-native/tokens';
-
-import { TokenSettingsBottomSheet } from './TokenSettingsBottomSheet';
 
 type AccountDetailScreenHeaderProps = {
     account: Account;
@@ -28,7 +27,7 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => (
+export const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => (
     <HStack alignItems="center" flexShrink={1}>
         <TokenIcon symbol={account.symbol} size="small" showNetworkIcon />
         <VStack spacing={0} flexShrink={1}>
@@ -53,7 +52,7 @@ export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeader
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
 
-    const { bottomSheetRef, openModal } = useBottomSheetModal();
+    const { bottomSheetRef, closeModal, openModal } = useBottomSheetModal();
 
     const handleSettingsNavigation = () => {
         if (isNetworkWithTokens(account.symbol) || isStakingSymbol(account.symbol)) {
@@ -83,7 +82,11 @@ export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeader
                 closeAction={navigateToInitialScreen}
             />
 
-            <TokenSettingsBottomSheet ref={bottomSheetRef} accountKey={account.key} />
+            <TokenSettingsBottomSheet
+                ref={bottomSheetRef}
+                accountKey={account.key}
+                onNavigateAway={closeModal}
+            />
         </>
     );
 };

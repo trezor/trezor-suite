@@ -12,11 +12,13 @@ import {
     messageSystemPersistedWhitelist,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
+import { prepareReceiveReducer } from '@suite-common/receive';
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
 import { prepareThpReducer } from '@suite-common/thp';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     accountsRefreshTimeReducer,
     feesReducer,
@@ -30,14 +32,14 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
-    stablecoinYieldReducer,
     walletSettingsPersistedWhitelist,
+    yieldReducer,
 } from '@suite-common/wallet-core';
 // Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
 // This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
-import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banner-flags';
+import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banners';
 import { biometricsPersistWhitelist, biometricsSlice } from '@suite-native/biometrics';
 import { prepareBluetoothReducer } from '@suite-native/bluetooth';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
@@ -58,6 +60,7 @@ import {
     bluetoothPersistTransform,
     deriveAccountTypeFromPaymentType,
     devicePersistTransform,
+    explorerPersistTransform,
     initialMigrateAppSettingsAndDiscoveryConfig,
     migrateAccountBnbToBsc,
     migrateAccountLabel,
@@ -78,7 +81,8 @@ import { tradingInitialState, tradingSlice } from '@suite-native/trading-state';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { appReducer } from './appSlice';
-import { extraDependencies } from './extraDependencies';
+import { extraDependencies } from './createNativeExtraDependencies';
+import { receivePersistTransform } from './receivePersistTransform';
 
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 const phishingReducer = preparePhishingReducer(extraDependencies);
@@ -98,6 +102,7 @@ const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+const receiveReducer = prepareReceiveReducer(extraDependencies);
 const bluetoothReducer = prepareBluetoothReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
@@ -118,10 +123,20 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const blockchainPersistedReducer = preparePersistReducer({
         reducer: blockchainReducer,
-        persistedKeys: ['btc'],
+        persistedKeys: networkSymbolCollection,
         key: 'blockchain',
         version: 1,
         transforms: [blockchainPersistTransform],
+        storage: deps.mmkvStorage,
+    });
+
+    const explorerPersistedReducer = preparePersistReducer({
+        reducer: explorerReducer,
+        persistedKeys: networkSymbolCollection,
+        key: 'explorer',
+        version: 1,
+        transforms: [explorerPersistTransform],
+        mergeLevel: 2,
         storage: deps.mmkvStorage,
     });
 
@@ -138,9 +153,9 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const tradingPersistedReducer = preparePersistReducer({
         reducer: tradingReducer,
-        persistedKeys: ['favouriteAssets', 'trades', 'residence', 'tradingEnvironment'],
+        persistedKeys: ['trades', 'residence', 'tradingEnvironment'],
         key: 'trading',
-        version: 3,
+        version: 4,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState) return oldState;
@@ -191,7 +206,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: walletSettingsReducer,
         persistedKeys: walletSettingsPersistedWhitelist,
         key: 'walletSettings',
-        version: 3,
+        version: 5,
         migrations: {
             1: initialMigrateAppSettingsAndDiscoveryConfig({
                 mmkvStorage: deps.mmkvStorage,
@@ -208,6 +223,26 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
                 return rest;
             },
+            4: (oldState: any /* FIXME */) => {
+                if (!oldState) return oldState;
+
+                // hideSuspiciousTransactions changed from a single boolean to a per-network
+                // record. Mobile has no UI for it, so the stored boolean is just dropped.
+                if (typeof oldState.hideSuspiciousTransactions === 'boolean') {
+                    const { hideSuspiciousTransactions: _, ...rest } = oldState;
+
+                    return rest;
+                }
+
+                return oldState;
+            },
+            5: (oldState: any /* FIXME */) => {
+                if (!oldState) return oldState;
+
+                const { hideSuspiciousTransactions: _, ...rest } = oldState;
+
+                return rest;
+            },
         },
         storage: deps.mmkvStorage,
     });
@@ -220,11 +255,20 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
+    const receivePersistedReducer = preparePersistReducer({
+        reducer: receiveReducer,
+        persistedKeys: ['accounts'],
+        key: 'receive',
+        version: 1,
+        transforms: [receivePersistTransform],
+        storage: deps.mmkvStorage,
+    });
+
     const walletReducers = combineReducers({
         accounts: accountsReducer,
         accountsRefreshTime: accountsRefreshTimeReducer,
         blockchain: blockchainPersistedReducer,
-        explorer: explorerReducer,
+        explorer: explorerPersistedReducer,
         fiat: fiatRatesReducer,
         transactions: transactionsReducer,
         phishing: phishingPersistedReducer,
@@ -232,7 +276,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         send: sendFormReducer,
         fees: feesReducer,
         stake: stakeReducer,
-        stablecoinYield: stablecoinYieldReducer,
+        stablecoinYield: yieldReducer,
         trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,
@@ -450,6 +494,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             nativeFirmware: nativeFirmwareReducer,
             notifications: createNotificationsReducer<TxKeyPath>().reducer,
             pendingCoinVisibility: pendingCoinVisibilitySlice.reducer,
+            receive: receivePersistedReducer,
             suiteSync: suiteSyncPersistedReducer,
             suiteSyncData: suiteSyncDataReducer,
             thp: thpPersistedReducer,

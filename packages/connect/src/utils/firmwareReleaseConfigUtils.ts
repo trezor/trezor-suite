@@ -122,6 +122,7 @@ const fetchRemoteJws = async (firmwareChannel?: FirmwareChannel): Promise<JwsInf
     } catch (error) {
         throw new Error(
             `Failed to fetch remote JWS: ${error instanceof Error ? error.message : String(error)}`,
+            { cause: error },
         );
     }
 };

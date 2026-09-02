@@ -3,7 +3,7 @@ import {
     type ForgetBluetoothDeviceThunkParams,
     bluetoothActions,
 } from '@suite-common/bluetooth';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
@@ -37,28 +37,31 @@ export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDevic
 
 type UnpairCurrentBondThunkParams = Record<never, never>;
 
+type UnpairCurrentBondThunkState = DeviceRootState;
+
 /**
  * Sends bleUnpair command to the Trezor device and cleans up BT state on success.
  * Does NOT trigger the global OS removal modal or forgetBluetoothDeviceThunk.
  * Returns whether the unpair was successful.
  */
-export const unpairCurrentBondThunk = createThunk<boolean, UnpairCurrentBondThunkParams, void>(
-    `${BLUETOOTH_PREFIX}/unpairCurrentBond`,
-    async (_, { dispatch, getState }) => {
-        const device = selectSelectedDevice(getState());
+export const unpairCurrentBondThunk = createThunk<
+    boolean,
+    UnpairCurrentBondThunkParams,
+    { state: UnpairCurrentBondThunkState }
+>(`${BLUETOOTH_PREFIX}/unpairCurrentBond`, async (_, { dispatch, getState }) => {
+    const device = selectSelectedDevice(getState());
 
-        if (!device) return false;
+    if (!device) return false;
 
-        const result = await TrezorConnect.bleUnpair({ device, all: false });
-        if (
-            result.success ||
-            result.error.code === 'Device_Disconnected' // This is an expected success
-        ) {
-            return true;
-        }
+    const result = await TrezorConnect.bleUnpair({ device, all: false });
+    if (
+        result.success ||
+        result.error.code === 'Device_Disconnected' // This is an expected success
+    ) {
+        return true;
+    }
 
-        dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
+    dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
 
-        return false;
-    },
-);
+    return false;
+});

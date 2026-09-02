@@ -2,7 +2,10 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 
 import { Calldata } from '@suite-common/calldata';
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import {
+    type MevProtectionRootState,
+    selectIsMevProtectionFeatureEnabled,
+} from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
@@ -21,6 +24,14 @@ import {
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import {
+    type ComposeSendFormTransactionFeeLevelsThunkState,
+    type EnhancePrecomposedTransactionThunkState,
+    type FormDraftRootState,
+    type PushSendFormTransactionThunkDeps,
+    type PushSendFormTransactionThunkState,
+    type SignTransactionError,
+    type SignTransactionThunkState,
+    type SignTransactionTimeoutError,
     composeAllowanceTransactionThunk,
     composeSendFormTransactionFeeLevelsThunk,
     enhancePrecomposedTransactionThunk,
@@ -35,6 +46,8 @@ import {
     type Account,
     type FeeInfo,
     type FeeLevelLabel,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
     type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
@@ -44,21 +57,27 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import { selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { getErrorStrFromThunkRejectedValue } from '@suite-native/trading-quote-utils';
-import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
+import { type TradingRootState, getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import {
+    type AddTransactionLabelingThunkDeps,
+    type AddTransactionLabelingThunkState,
     type UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Ok } from '@trezor/type-utils';
 
 import { createFormStateForSendForm } from './utils';
+import { getTradingFormDraftFeeLimit } from './utils/getTradingFormDraftFeeLimit';
 
 const NATIVE_TRADING_EXCHANGE_THUNK_PREFIX = 'trading/native';
 
-export const clearTradingStateThunk = createThunk(
+export const clearTradingStateThunk = createThunk<void, void, void>(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/clearTradingState`,
     (_, { dispatch }) => {
         // Clear only selected quotes and transaction-related data
@@ -85,18 +104,18 @@ export const clearTradingStateThunk = createThunk(
     },
 );
 
-export const pushTradingTxnThunk = createThunk(
+type PushTradingTxnThunkParams = {
+    serializedTx: string;
+    account: Account;
+};
+
+export const pushTradingTxnThunk = createThunk<
+    Ok<{ txid: string }>,
+    PushTradingTxnThunkParams,
+    { rejectValue: SerializedError | string }
+>(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/pushTransaction`,
-    async (
-        {
-            serializedTx,
-            account,
-        }: {
-            serializedTx: string;
-            account: Account;
-        },
-        { rejectWithValue, fulfillWithValue },
-    ) => {
+    async ({ serializedTx, account }, { rejectWithValue, fulfillWithValue }) => {
         try {
             const pushTxResponse = await TrezorConnect.pushTransaction({
                 tx: serializedTx,
@@ -117,7 +136,28 @@ export const pushTradingTxnThunk = createThunk(
     },
 );
 
-export const composeTradingTransactionThunk = createThunk(
+type ComposeTradingTransactionThunkParams = {
+    tradeType: TradingSellType | TradingExchangeType;
+    account: Account;
+    network: Network;
+    feeInfo: FeeInfo | null;
+    selectedFeeLevel?: FeeLevelLabel;
+    feeLimit?: string;
+    feePerUnit?: string;
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
+    isSlip24Active?: boolean;
+};
+
+export type ComposeTradingTransactionThunkState = TradingRootState &
+    ComposeSendFormTransactionFeeLevelsThunkState &
+    EnhancePrecomposedTransactionThunkState;
+
+export const composeTradingTransactionThunk = createThunk<
+    PrecomposedLevels | PrecomposedLevelsCardano,
+    ComposeTradingTransactionThunkParams,
+    { rejectValue: string; state: ComposeTradingTransactionThunkState }
+>(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/composeTransaction`,
     async (
         {
@@ -131,17 +171,6 @@ export const composeTradingTransactionThunk = createThunk(
             isSlip24Active,
             maxPriorityFeePerGas,
             maxFeePerGas,
-        }: {
-            tradeType: TradingSellType | TradingExchangeType;
-            account: Account;
-            network: Network;
-            feeInfo: FeeInfo | null;
-            selectedFeeLevel?: FeeLevelLabel;
-            feeLimit?: string;
-            feePerUnit?: string;
-            maxFeePerGas?: string;
-            maxPriorityFeePerGas?: string;
-            isSlip24Active?: boolean;
         },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
@@ -234,7 +263,12 @@ export const composeTradingTransactionThunk = createThunk(
                                 ...formState,
                                 selectedFee: selectedFeeLevel,
                                 feePerUnit: composed.feePerByte,
-                                feeLimit: composed.feeLimit ?? '',
+                                feeLimit: getTradingFormDraftFeeLimit({
+                                    networkType: account.networkType,
+                                    fee: composed.fee,
+                                    feeLimit: composed.feeLimit,
+                                    estimatedFeeLimit: composed.estimatedFeeLimit,
+                                }),
                             },
                         }),
                     );
@@ -255,29 +289,30 @@ export const composeTradingTransactionThunk = createThunk(
     },
 );
 
-export const composeEvmApprovalFeeLevelsThunk = createThunk(
+type ComposeEvmApprovalFeeLevelsThunkParams = {
+    quote: ExchangeTrade;
+    account: Account;
+    feeInfo: FeeInfo;
+    selectedFeeLevel?: FeeLevelLabel;
+    customFee?: {
+        feeLimit: string;
+        feePerUnit: string;
+        maxFeePerGas?: string;
+        maxPriorityFeePerGas?: string;
+    };
+    approvalTypeOverride?: DexApprovalType;
+};
+
+export type ComposeEvmApprovalFeeLevelsThunkState = TokensRootState & FormDraftRootState;
+
+export const composeEvmApprovalFeeLevelsThunk = createThunk<
+    PrecomposedLevels,
+    ComposeEvmApprovalFeeLevelsThunkParams,
+    { rejectValue: string; state: ComposeEvmApprovalFeeLevelsThunkState }
+>(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/composeEvmApprovalFeeLevels`,
     async (
-        {
-            quote,
-            account,
-            feeInfo,
-            selectedFeeLevel = 'normal',
-            customFee,
-            approvalTypeOverride,
-        }: {
-            quote: ExchangeTrade;
-            account: Account;
-            feeInfo: FeeInfo;
-            selectedFeeLevel?: FeeLevelLabel;
-            customFee?: {
-                feeLimit: string;
-                feePerUnit: string;
-                maxFeePerGas?: string;
-                maxPriorityFeePerGas?: string;
-            };
-            approvalTypeOverride?: DexApprovalType;
-        },
+        { quote, account, feeInfo, selectedFeeLevel = 'normal', customFee, approvalTypeOverride },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
         try {
@@ -406,15 +441,19 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
     },
 );
 
-export const signTradingTransactionThunk = createThunk(
+export type SignTradingTransactionThunkState = SignTransactionThunkState;
+
+export const signTradingTransactionThunk = createThunk<
+    BlockbookTransaction | undefined,
+    TradingSignAndPushSendFormTransactionProps,
+    {
+        rejectValue: SignTransactionError | SignTransactionTimeoutError | undefined;
+        state: SignTradingTransactionThunkState;
+    }
+>(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/signTransaction`,
     async (
-        {
-            formState,
-            precomposedTransaction,
-            selectedAccount,
-            paymentRequests,
-        }: TradingSignAndPushSendFormTransactionProps,
+        { formState, precomposedTransaction, selectedAccount, paymentRequests },
         { dispatch, rejectWithValue, fulfillWithValue },
     ) => {
         const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
@@ -445,7 +484,28 @@ export const signTradingTransactionThunk = createThunk(
     },
 );
 
-export const signAndPushSendFormTransactionThunk = createThunk(
+type SignAndPushSendFormTransactionThunkParams = TradingSignAndPushSendFormTransactionProps & {
+    waitForPushApprovalPromise: () => Promise<boolean>;
+};
+
+export type SignAndPushSendFormTransactionThunkState = MevProtectionRootState &
+    EnhancePrecomposedTransactionThunkState &
+    SignTradingTransactionThunkState &
+    PushSendFormTransactionThunkState &
+    AddTransactionLabelingThunkState;
+
+export type SignAndPushSendFormTransactionThunkDeps = PushSendFormTransactionThunkDeps &
+    AddTransactionLabelingThunkDeps;
+
+export const signAndPushSendFormTransactionThunk = createThunk<
+    Ok<{ txid: string }>,
+    SignAndPushSendFormTransactionThunkParams,
+    {
+        rejectValue: unknown;
+        state: SignAndPushSendFormTransactionThunkState;
+        extra: SignAndPushSendFormTransactionThunkDeps;
+    }
+>(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/signAndPushSendFormTransaction`,
     async (
         {
@@ -454,8 +514,6 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             selectedAccount,
             paymentRequests,
             waitForPushApprovalPromise,
-        }: TradingSignAndPushSendFormTransactionProps & {
-            waitForPushApprovalPromise: () => Promise<boolean>;
         },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
@@ -515,17 +573,16 @@ export const signAndPushSendFormTransactionThunk = createThunk(
     },
 );
 
-export const updateTradingSelectedFeeLevelThunk = createThunk(
+export type UpdateTradingSelectedFeeLevelThunkState = FormDraftRootState;
+
+export const updateTradingSelectedFeeLevelThunk = createThunk<
+    void,
+    UpdateSelectedFeeLevelThunkParams,
+    { state: UpdateTradingSelectedFeeLevelThunkState }
+>(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/updateSelectedFeeLevelThunk`,
     (
-        {
-            feeLevelLabel,
-            feePerUnit,
-            feeLimit,
-            formDraftKey,
-            maxPriorityFeePerGas,
-            maxFeePerGas,
-        }: UpdateSelectedFeeLevelThunkParams,
+        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey, maxPriorityFeePerGas, maxFeePerGas },
         { dispatch, getState },
     ) => {
         const key = formDraftKey ?? '';

@@ -1,5 +1,6 @@
 import type { TransportInfo } from './transport';
-import { UI_EVENT } from './ui-request';
+import { UI_EVENT } from './ui-event';
+import type { PermissionRequest } from '../types/method';
 import type { ConnectDynamicSettings, Manifest } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
@@ -31,6 +32,9 @@ export interface PopupHandshake {
         settings: {
             manifest?: Manifest;
             version: string;
+            // Permissions declared up front by the host/dapp so the popup can request the whole set
+            // in a single consent. Forwarded like `manifest`; sanitized by the popup.
+            requestedPermissions?: PermissionRequest[];
         }; // those are settings from the iframe, they could be different from window.opener settings
         transports?: TransportInfo[];
     };

@@ -34,6 +34,20 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             }),
         ),
     ),
+    'earn-yield-unwrap': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/unwrap/index').then(
+            ({ EarnUnwrap }) => ({
+                default: EarnUnwrap,
+            }),
+        ),
+    ),
+    'earn-yield-wrap': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/wrap/index').then(
+            ({ EarnWrap }) => ({
+                default: EarnWrap,
+            }),
+        ),
+    ),
     'earn-tron': lazy(() =>
         import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
             ({ EarnTronRedirect }) => ({
@@ -107,8 +121,10 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             ({ WalletStaking }) => ({ default: WalletStaking }),
         ),
     ),
-    'wallet-sign-verify': lazy(
-        () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/sign-verify'),
+    'wallet-sign-verify': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/sign-verify/SignVerifyPage').then(
+            ({ SignVerifyPage }) => ({ default: SignVerifyPage }),
+        ),
     ),
     'wallet-anonymize': lazy(
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/anonymize'),
@@ -184,8 +200,8 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     // settings
     'settings-index': lazy(() =>
         import(
-            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsGeneral/SettingsGeneral'
-        ).then(({ SettingsGeneral }) => ({ default: SettingsGeneral })),
+            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsGeneral/WebSettingsGeneral'
+        ).then(({ WebSettingsGeneral }) => ({ default: WebSettingsGeneral })),
     ),
     'settings-coins': lazy(() =>
         import(

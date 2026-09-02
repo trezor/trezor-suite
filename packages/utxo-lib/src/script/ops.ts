@@ -1,5 +1,5 @@
 // Inlined from bitcoin-ops (https://github.com/bitcoinjs/bitcoin-ops),
-// unmaintained since 2017. Extended with Decred OP codes.
+// unmaintained since 2017.
 //
 // The MIT License (MIT)
 //
@@ -155,12 +155,6 @@ const OPS = {
     OP_PUBKEYHASH: 253,
     OP_PUBKEY: 254,
     OP_INVALIDOPCODE: 255,
-
-    // Decred-specific opcodes
-    OP_SSTX: 0xba,
-    OP_SSTXCHANGE: 0xbd,
-    OP_SSGEN: 0xbb,
-    OP_SSRTX: 0xbc,
 } as const satisfies Record<string, number>;
 
 const REVERSE_OPS: string[] = [];

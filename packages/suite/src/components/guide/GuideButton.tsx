@@ -91,8 +91,8 @@ export const GuideButton = memo(function GuideButton() {
                 <Tooltip
                     content={
                         <Row gap={8}>
-                            <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
-                            <ShortcutBadge shortcut={['F1']} isInverse />
+                            <Translation id="TR_GUIDE_HELP_AND_SUPPORT" />
+                            <ShortcutBadge shortcut={['F1']} />
                         </Row>
                     }
                     placement="top"
@@ -103,7 +103,7 @@ export const GuideButton = memo(function GuideButton() {
                         data-testid="@guide/button-open"
                         onClick={openGuide}
                         onMouseEnter={handleMouseEnter}
-                        aria-label={translationString('TR_GUIDE_SUPPORT_AND_FEEDBACK')}
+                        aria-label={translationString('TR_GUIDE_HELP_AND_SUPPORT')}
                     >
                         <LottieAnimation
                             type="MASCOT"

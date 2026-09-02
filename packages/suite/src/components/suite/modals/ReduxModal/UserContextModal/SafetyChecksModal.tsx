@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     Banner,
     Card,
@@ -14,7 +15,6 @@ import {
 } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
 
 /**
  * A Modal that allows user to set the `safety_checks` feature of connected Trezor.

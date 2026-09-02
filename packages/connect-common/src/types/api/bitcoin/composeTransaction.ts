@@ -10,54 +10,21 @@ import type {
     ComposeResultError as ComposeResultErrorBase,
     ComposeResultFinal as ComposeResultFinalBase,
     ComposeResultNonFinal as ComposeResultNonFinalBase,
-    TransactionInputOutputSortingStrategy,
 } from '@trezor/utxo-lib';
 
-import type { CoinSymbol } from '../../coinInfo';
+import type { ComposeParams } from './common';
 import type { Params, Response } from '../../params';
-
-// for convenience ComposeOutput `type: "payment"` field is not required by @trezor/connect api
-export type ComposeOutputPayment = Omit<Extract<ComposeOutputBase, { type: 'payment' }>, 'type'> & {
-    type?: 'payment';
-};
-
-export type ComposeOutput = Exclude<ComposeOutputBase, { type: 'payment' }> | ComposeOutputPayment;
-
-export type ComposeParams = {
-    outputs: ComposeOutput[];
-    coin: CoinSymbol;
-    identity?: string;
-    account?: undefined;
-    feeLevels?: undefined;
-    push?: boolean;
-    sequence?: number;
-    baseFee?: number;
-    sortingStrategy?: TransactionInputOutputSortingStrategy;
-};
-
-export type SignedTransaction = {
-    signatures: string[];
-    serializedTx: string;
-    txid?: string;
-};
 
 // @trezor/utxo-lib `composeTx` ComposeInput required fields intersects AccountUtxo
 export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
 
-export type PrecomposeParams = {
-    outputs: ComposeOutput[];
-    coin: CoinSymbol;
-    identity?: string;
+export type PrecomposeParams = ComposeParams & {
     account: {
         path: string;
         addresses: AccountAddresses;
         utxo: ComposeUtxo[];
     };
     feeLevels: { feePerUnit: string }[];
-    push?: undefined;
-    baseFee?: number;
-    sequence?: number;
-    sortingStrategy?: TransactionInputOutputSortingStrategy;
 };
 
 // @trezor/utxo-lib `composeTx` transaction.input (ComposeInput) response intersects AccountUtxo
@@ -93,13 +60,7 @@ export type PrecomposeResultFinal = Omit<ComposeResultFinal, 'inputs' | 'outputs
 };
 
 export type PrecomposedResult =
-    | PrecomposeResultError
-    | PrecomposeResultNonFinal
-    | PrecomposeResultFinal;
-
-export declare function composeTransaction(
-    params: Params<ComposeParams>,
-): Response<SignedTransaction>;
+    PrecomposeResultError | PrecomposeResultNonFinal | PrecomposeResultFinal;
 
 export declare function composeTransaction(
     params: Params<PrecomposeParams>,

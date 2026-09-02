@@ -26,6 +26,7 @@ export const YIELD_VAULTS = {
 
 const YIELD_API_PATTERN = /\/yieldxyz\/v2\/yields/;
 const YIELD_DETAIL_API_PATTERN = /\/yieldxyz\/v2\/yields\/(?<vaultId>[^/?]+)/;
+const VAULT_ADDRESS_API_PATTERN = /\/vaults\/v1\//;
 const MERKL_API_PATTERN = /\/merkl\/v1\/users\/rewards/;
 const BLOCKAID_API_PATTERN = /\/evm\/json-rpc\/scan/;
 
@@ -33,7 +34,51 @@ const USDC_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 // Trezor Steakhouse USDC Prime Vault
 const YIELD_USDC_VAULT_ADDRESS = '0xde6c23E561F3e55846207EC45A91b777e0F7C889';
 const USDC_VAULT = YIELD_USDC_VAULT_ADDRESS.toLowerCase();
-const BLOCKAID_BENIGN_RESPONSE = {
+
+export const YIELD_USDC_VAULT_SHARE_TOKEN = {
+    type: 'ERC20',
+    standard: 'ERC20',
+    name: YIELD_VAULTS.usdcPrime.name,
+    contract: USDC_VAULT,
+    symbol: 'trSHUSDCp',
+    decimals: 18,
+    balance: '9944238455556494216',
+    transfers: 1,
+} as const;
+
+// Share token balance converted by pricePerShareState.price (1.005607422297114), as displayed
+export const YIELD_USDC_DEPOSITED_AMOUNT = '10';
+const USDC_ASSET = {
+    type: 'ERC20',
+    address: USDC_CONTRACT,
+    decimals: 6,
+    name: 'USD Coin',
+    symbol: 'USDC',
+};
+
+const USDC_VAULT_SHARE_ASSET = {
+    type: 'ERC20',
+    address: USDC_VAULT,
+    decimals: 18,
+    name: YIELD_VAULTS.usdcPrime.name,
+    symbol: 'trSHUSDCp',
+};
+
+type BlockaidTransfer = {
+    asset: typeof USDC_ASSET;
+    rawValue: string;
+    value: string;
+    usdPrice: string;
+    summary: string;
+};
+
+const createBlockaidBenignResponse = ({
+    sent,
+    received,
+}: {
+    sent: BlockaidTransfer;
+    received: BlockaidTransfer;
+}) => ({
     validation: {
         status: 'Success',
         result_type: 'Benign',
@@ -53,38 +98,26 @@ const BLOCKAID_BENIGN_RESPONSE = {
             assets_diffs: [
                 {
                     asset_type: 'ERC20',
-                    asset: {
-                        type: 'ERC20',
-                        address: USDC_CONTRACT,
-                        decimals: 6,
-                        name: 'USD Coin',
-                        symbol: 'USDC',
-                    },
+                    asset: sent.asset,
                     in: [],
                     out: [
                         {
-                            raw_value: '0x989680',
-                            value: '10.0',
-                            usd_price: '9.996549999999999159',
-                            summary: 'Sending 10 USDC',
+                            raw_value: sent.rawValue,
+                            value: sent.value,
+                            usd_price: sent.usdPrice,
+                            summary: sent.summary,
                         },
                     ],
                 },
                 {
                     asset_type: 'ERC20',
-                    asset: {
-                        type: 'ERC20',
-                        address: USDC_VAULT,
-                        decimals: 18,
-                        name: YIELD_VAULTS.usdcPrime.name,
-                        symbol: 'trSHUSDCp',
-                    },
+                    asset: received.asset,
                     in: [
                         {
-                            raw_value: '0x8a01083041395266',
-                            value: '9.944238455556494216',
-                            usd_price: '9.996535861217905605',
-                            summary: 'Receiving 9.944 trSHUSDCp',
+                            raw_value: received.rawValue,
+                            value: received.value,
+                            usd_price: received.usdPrice,
+                            summary: received.summary,
                         },
                     ],
                     out: [],
@@ -92,9 +125,9 @@ const BLOCKAID_BENIGN_RESPONSE = {
             ],
             exposures: [],
             total_usd_diff: {
-                in: '9.996535861217905605',
-                out: '9.996549999999999159',
-                total: '-0.000014138782093553',
+                in: received.usdPrice,
+                out: sent.usdPrice,
+                total: (Number(received.usdPrice) - Number(sent.usdPrice)).toString(),
             },
             total_usd_exposure: {},
             traces: [],
@@ -103,7 +136,59 @@ const BLOCKAID_BENIGN_RESPONSE = {
         addressbook_messages: [],
         error: null,
     },
-};
+});
+
+const BLOCKAID_DEPOSIT_RESPONSE = createBlockaidBenignResponse({
+    sent: {
+        asset: USDC_ASSET,
+        rawValue: '0x989680',
+        value: '10.0',
+        usdPrice: '9.996549999999999159',
+        summary: 'Sending 10 USDC',
+    },
+    received: {
+        asset: USDC_VAULT_SHARE_ASSET,
+        rawValue: '0x8a01083041395266',
+        value: '9.944238455556494216',
+        usdPrice: '9.996535861217905605',
+        summary: 'Receiving 9.944 trSHUSDCp',
+    },
+});
+
+const BLOCKAID_WITHDRAW_RESPONSE = createBlockaidBenignResponse({
+    sent: {
+        asset: USDC_VAULT_SHARE_ASSET,
+        rawValue: '0x45008418209ca967',
+        value: '4.972119227778247015',
+        usdPrice: '4.998272935608987',
+        summary: 'Sending 4.972 trSHUSDCp',
+    },
+    received: {
+        asset: USDC_ASSET,
+        rawValue: '0x4c4b40',
+        value: '5.0',
+        usdPrice: '4.998274999999999579',
+        summary: 'Receiving 5 USDC',
+    },
+});
+
+// Redemption of 3 trSHUSDCp shares pays out 3 × pricePerShare = 3.016822 USDC.
+const BLOCKAID_REDEEM_RESPONSE = createBlockaidBenignResponse({
+    sent: {
+        asset: USDC_VAULT_SHARE_ASSET,
+        rawValue: '0x29a2241af62c0000',
+        value: '3.0',
+        usdPrice: '3.015781224726041',
+        summary: 'Sending 3 trSHUSDCp',
+    },
+    received: {
+        asset: USDC_ASSET,
+        rawValue: '0x2e0876',
+        value: '3.016822',
+        usdPrice: '3.015781224726041',
+        summary: 'Receiving 3.016822 USDC',
+    },
+});
 
 const YIELD_VAULTS_RESPONSE = {
     items: [
@@ -169,11 +254,10 @@ const YIELD_VAULTS_RESPONSE = {
                 enter: true,
                 exit: true,
             },
-            // Share price so 10 USDC converts to ~9.944 trSHUSDCp shares (matches the deposit
-            // simulation in yielddepositusdc.har): shares = amount / price.
+
             state: {
                 pricePerShareState: {
-                    price: '1.005606287729678',
+                    price: '1.005607422297114',
                     shareToken: {
                         symbol: 'trSHUSDCp',
                         name: YIELD_VAULTS.usdcPrime.name,
@@ -266,18 +350,37 @@ export class YieldMock {
             return vault ? route.fulfill({ json: vault }) : route.continue();
         });
         await this.page.route(MERKL_API_PATTERN, route => route.fulfill({ json: [] }));
+        // Vault address lookup (getYieldVault) used when composing withdraw/redeem transactions.
+        await this.page.route(VAULT_ADDRESS_API_PATTERN, route =>
+            route.fulfill({ json: { address: YIELD_USDC_VAULT_ADDRESS } }),
+        );
     }
 
     @step()
     async mockUsdcDeposit() {
         await this.page.route(BLOCKAID_API_PATTERN, route =>
-            route.fulfill({ json: BLOCKAID_BENIGN_RESPONSE }),
+            route.fulfill({ json: BLOCKAID_DEPOSIT_RESPONSE }),
+        );
+    }
+
+    @step()
+    async mockUsdcWithdraw() {
+        await this.page.route(BLOCKAID_API_PATTERN, route =>
+            route.fulfill({ json: BLOCKAID_WITHDRAW_RESPONSE }),
+        );
+    }
+
+    @step()
+    async mockUsdcRedeem() {
+        await this.page.route(BLOCKAID_API_PATTERN, route =>
+            route.fulfill({ json: BLOCKAID_REDEEM_RESPONSE }),
         );
     }
 
     @step()
     async stop() {
         await this.page.unroute(BLOCKAID_API_PATTERN);
+        await this.page.unroute(VAULT_ADDRESS_API_PATTERN);
         await this.page.unroute(MERKL_API_PATTERN);
         await this.page.unroute(YIELD_DETAIL_API_PATTERN);
         await this.page.unroute(YIELD_API_PATTERN);

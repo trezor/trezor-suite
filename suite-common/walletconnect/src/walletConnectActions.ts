@@ -29,10 +29,16 @@ const clearSessionProposal = createAction(`${ACTION_PREFIX}/clearSessionProposal
 
 const expireSessionProposal = createAction(`${ACTION_PREFIX}/expireSessionProposal`);
 
+const setExperimentalFeatures = createAction(
+    '@suite/set-experimental-features',
+    (payload: { enabledFeatures?: unknown }) => ({ payload }),
+);
+
 export const walletConnectActions = {
     saveSession,
     removeSession,
     createSessionProposal,
     clearSessionProposal,
     expireSessionProposal,
+    setExperimentalFeatures,
 } as const;

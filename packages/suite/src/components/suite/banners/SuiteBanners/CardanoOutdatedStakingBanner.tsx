@@ -1,11 +1,12 @@
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const CardanoOutdatedStakingBanner = () => {
     const dispatch = useDispatch();

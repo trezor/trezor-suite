@@ -8,7 +8,9 @@ export const useExchangeAnalyticsStepReport = (step: TradingExchangeStep) => {
     const reportToAnalytics = useExchangeAnalyticReportCallback();
 
     return useCallback(
-        (action: TradingExchangeAction) => reportToAnalytics(step, action),
+        (action: TradingExchangeAction) => {
+            reportToAnalytics(step, action);
+        },
         [reportToAnalytics, step],
     );
 };

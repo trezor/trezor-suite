@@ -1,4 +1,4 @@
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_REQUESTS } from '@trezor/connect';
 
 export const MODAL_CLOSE = '@modal/close' as const;
 export const MODAL_CONTEXT_NONE = '@modal/context-none' as const;
@@ -11,7 +11,7 @@ export const MODAL_REMOVE_PRESERVE = '@modal/remove_preserve' as const;
 export const MODAL_PRESERVE_ON_TX_TIMEOUT = '@modal/preserve-on-tx-timeout' as const;
 
 export const REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES = [
-    UI_REQUEST.REQUEST_PASSPHRASE,
+    UI_REQUESTS.REQUEST_PASSPHRASE,
     // both are TransactionReviewModal, which should be final and not be subject to sudden change!
     'ButtonRequest_ConfirmOutput',
     'ButtonRequest_SignTx',

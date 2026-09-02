@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { LinearTransition } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { events as commonEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { AnimatedBox } from '@suite-native/atoms';

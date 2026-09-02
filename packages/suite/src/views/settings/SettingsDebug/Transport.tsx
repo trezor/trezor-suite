@@ -5,15 +5,16 @@ import {
     selectDebugTransports,
     suiteSettingsActions,
 } from '@suite/settings';
+import { type TransportsDep } from '@suite-common/connect-init';
 import { useServices } from '@suite-common/dependency-injection';
-import { type TransportsDep } from '@suite-common/redux-utils';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { type ArrayElement } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 
 type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;
@@ -56,9 +57,9 @@ export const Transport = () => {
     const dispatch = useDispatch();
     const transports = isDesktop() ? TRANSPORTS_DESKTOP : TRANSPORTS_WEB;
     const items = useTransportItems(transports);
-    const { createTransports } = useServices(
-        (services): TransportsDep => ({ createTransports: services.createTransports }),
-    );
+    const { createTransports } = useServices((services): TransportsDep => ({
+        createTransports: services.createTransports,
+    }));
 
     return (
         <>

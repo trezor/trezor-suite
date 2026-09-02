@@ -1,0 +1,65 @@
+import { deriveAddresses as deriveAddressesOriginal } from '@trezor/utxo-lib';
+
+import { deriveAddresses, doesTxContainAddress } from './backendUtils';
+import { SEGWIT_RECEIVE_ADDRESSES, SEGWIT_XPUB } from '../__fixtures__/methods.fixture';
+
+const PARAMS = [SEGWIT_XPUB, 'receive', 0, 10] as const;
+const ADDRESSES = deriveAddressesOriginal(...PARAMS);
+
+const TAPROOT_ADDRESS = 'bcrt1pswrqtykue8r89t9u4rprjs0gt4qzkdfuursfnvqaa3f2yql07zmq2fdmpx';
+
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const firstReceiveAddress: string = SEGWIT_RECEIVE_ADDRESSES[0];
+const NON_TAPROOT_TX = {
+    vin: [{ addresses: SEGWIT_RECEIVE_ADDRESSES.slice(1, 3) }, {}, { addresses: [] as string[] }],
+    vout: [{ addresses: [firstReceiveAddress] }],
+};
+
+const TAPROOT_TX = {
+    ...NON_TAPROOT_TX,
+    vout: [{ addresses: [TAPROOT_ADDRESS] }, ...NON_TAPROOT_TX.vout],
+};
+
+describe('backendUtils', () => {
+    describe('deriveAddresses', () => {
+        it('whole, empty prederived', () => {
+            expect(deriveAddresses(undefined, ...PARAMS)).toEqual(ADDRESSES);
+        });
+
+        it('whole, full prederived', () => {
+            expect(deriveAddresses(ADDRESSES, ...PARAMS)).toEqual(ADDRESSES);
+        });
+
+        it('whole, half prederived', () => {
+            expect(deriveAddresses(ADDRESSES.slice(0, 5), ...PARAMS)).toEqual(ADDRESSES);
+        });
+
+        it('part, empty prederived', () => {
+            expect(deriveAddresses(undefined, SEGWIT_XPUB, 'receive', 3, 5)).toEqual(
+                ADDRESSES.slice(3, 8),
+            );
+        });
+
+        it('part, full prederived', () => {
+            expect(deriveAddresses(ADDRESSES, SEGWIT_XPUB, 'receive', 3, 5)).toEqual(
+                ADDRESSES.slice(3, 8),
+            );
+        });
+
+        it('part, half prederived', () => {
+            expect(deriveAddresses(ADDRESSES.slice(0, 5), SEGWIT_XPUB, 'receive', 3, 5)).toEqual(
+                ADDRESSES.slice(3, 8),
+            );
+        });
+    });
+
+    describe('doesTxContainAddress', () => {
+        it('containing', () => {
+            expect(doesTxContainAddress(TAPROOT_ADDRESS)(TAPROOT_TX)).toBe(true);
+        });
+
+        it('not containing', () => {
+            expect(doesTxContainAddress(TAPROOT_ADDRESS)(NON_TAPROOT_TX)).toBe(false);
+        });
+    });
+});

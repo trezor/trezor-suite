@@ -26,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
       - name: Setup node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -38,7 +38,7 @@ jobs:
         run: echo "NOW=$(date +'%s')" >> $GITHUB_ENV
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
         continue-on-error: true
         with:
           version: v0.19.1
@@ -99,10 +99,12 @@ jobs:
             PR_TITLE="Crowdin translations update [DESKTOP]"
             PR_BODY="Automatically generated PR for updating DESKTOP crowdin translations from ${{ env.SOURCE_BRANCH }} branch."
             COMMIT_SCOPE="suite"
+            PLATFORM_LABEL_ARGS="--label desktop"
           else
             PR_TITLE="Crowdin translations update [MOBILE]"
             PR_BODY="Automatically generated PR for updating MOBILE crowdin translations from ${{ env.SOURCE_BRANCH }} branch."
             COMMIT_SCOPE="suite-native"
+            PLATFORM_LABEL_ARGS=""
           fi
 
           if [[ "${{ env.SOURCE_BRANCH }}" == release/* ]] || [[ "${{ env.SOURCE_BRANCH }}" == release-native/* ]]; then
@@ -114,7 +116,8 @@ jobs:
           COMMIT_MSG="chore(${COMMIT_SCOPE}): crowdin translation update${SUFFIX}"
 
           git add .
-          git commit -m "${COMMIT_MSG}"
+          # The focused install intentionally does not include all dependencies required by Husky Git hooks (pre-commit/commit-msg), so skip hook verification.
+          git commit -m "${COMMIT_MSG}" --no-verify
           git push origin ${{ env.BRANCH_NAME }} -f
 
           gh config set prompt disabled
@@ -124,5 +127,5 @@ jobs:
             --body "${PR_BODY}" \
             --base ${{ env.SOURCE_BRANCH }} \
             --label translations \
-            --label ${{ github.event.inputs.platform }} \
+            ${PLATFORM_LABEL_ARGS} \
             --label no-project

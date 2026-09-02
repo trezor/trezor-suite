@@ -52,7 +52,6 @@ export const NetworkBackendsButton = ({ symbol }: NetworkBackendsButtonProps) =>
         <Box>
             <IconButton
                 iconName="sliders"
-                // @ts-expect-error `small` icon button size was deprecated, but there is no replacement for this usage yet.
                 size="small"
                 intent="neutral"
                 priority="secondary"

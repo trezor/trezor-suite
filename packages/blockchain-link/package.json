@@ -1,6 +1,6 @@
 {
     "name": "@trezor/blockchain-link",
-    "version": "10.0.0-alpha.1",
+    "version": "10.0.0-beta.1",
     "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/blockchain-link",
@@ -70,9 +70,9 @@
         "@trezor/type-utils": "workspace:*",
         "@types/jest": "30.0.0",
         "@types/node": "22.13.10",
-        "html-webpack-plugin": "5.6.7",
+        "html-webpack-plugin": "5.6.8",
         "tiny-worker": "^2.3.0",
-        "webpack": "5.108.1"
+        "webpack": "5.109.0"
     },
     "dependencies": {
         "@trezor/blockchain-link-types": "workspace:*",

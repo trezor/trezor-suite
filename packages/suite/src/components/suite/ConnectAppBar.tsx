@@ -8,11 +8,12 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, Row, Text } from '@trezor/components';
 import { CaretCircleDownIcon, PlugsIcon, WalletConnectIcon } from '@trezor/icons';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { SuiteBanners } from './banners';
 
@@ -21,6 +22,8 @@ export const ConnectBarWrapper = styled.div`
     top: 0;
     left: 0;
     width: 100%;
+    background: ${({ theme }) => theme.surfaceFillFixed};
+    border-bottom: 1px solid ${({ theme }) => theme.surfaceBorderFixed};
 `;
 
 interface ConnectAppBarProps {
@@ -46,13 +49,10 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
     return (
         <ConnectBarWrapper>
             <Box
-                backgroundColor="surfaceFillPage"
                 padding={{
                     horizontal: 24,
                     vertical: 16,
                 }}
-                borderWidth={{ bottom: 2 }}
-                borderColor="elementBorderNeutralSofter"
             >
                 <TrafficLightOffset>
                     <Row gap={12} alignItems="center" justifyContent="space-between">

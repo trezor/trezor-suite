@@ -2,10 +2,14 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './composeVote';
 import { buildVoteContract, buildVoteReviewForm, getTotalVotes } from './voteContract';
-import { addFakePendingTronTxThunk } from '../../../../transactions/transactionsThunks';
+import {
+    type AddFakePendingTronTxThunkState,
+    addFakePendingTronTxThunk,
+} from '../../../../transactions/transactionsThunks';
 import { TRON_STAKE_MODULE } from '../../shared/constants';
 import { reportTronStakeTxId } from '../../shared/reportTronStakeTxId';
 import { signTronContract } from '../../shared/signTronContract';
@@ -21,7 +25,13 @@ interface SubmitVoteThunkArguments extends VoteThunkArguments {
     onSettled?: () => void;
 }
 
-export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
+type SubmitTronVoteThunkState = AddFakePendingTronTxThunkState;
+
+export const submitTronVoteThunk = createThunk<
+    void,
+    SubmitVoteThunkArguments,
+    { state: SubmitTronVoteThunkState }
+>(
     `${TRON_STAKE_MODULE}/submitTronVoteThunk`,
     async (
         {
@@ -150,7 +160,7 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
 
             const pushResult = await TrezorConnect.pushTransaction({
                 tx: signResult.serializedTx,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
             });
 

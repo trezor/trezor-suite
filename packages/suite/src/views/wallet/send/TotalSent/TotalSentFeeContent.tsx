@@ -1,12 +1,17 @@
 import { useTranslation } from '@suite/intl';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
-import { type TronFeeBreakdown, formatNetworkAmount } from '@suite-common/wallet-utils';
+import { type GeneralPrecomposedTransaction, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type TronFeeBreakdown,
+    convertAmountSubunitsToUnits,
+    formatNetworkAmount,
+} from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
 type TotalSentFeeContentProps = {
     transactionInfo: GeneralPrecomposedTransaction;
@@ -25,6 +30,24 @@ export function TotalSentFeeContent({
 }: TotalSentFeeContentProps) {
     const { translationString } = useTranslation();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(networkSymbol);
+
+    const hasTransactionInfo = transactionInfo.type !== 'error';
+    const feeAmount = formatNetworkAmount(
+        hasTransactionInfo ? transactionInfo.fee : '0',
+        networkSymbol,
+    );
+    const { fiatAmount: tokenFiatAmount } = useFiatFromCryptoValue({
+        amount:
+            hasTransactionInfo && tokenInfo
+                ? convertAmountSubunitsToUnits(transactionInfo.totalSpent, tokenInfo.decimals)
+                : '0',
+        symbol: networkSymbol,
+        tokenAddress: tokenInfo?.contract as TokenAddress,
+    });
+    const { fiatAmount: feeFiatAmount } = useFiatFromCryptoValue({
+        amount: feeAmount,
+        symbol: networkSymbol,
+    });
 
     if (transactionInfo.type === 'error') return null;
 
@@ -57,12 +80,27 @@ export function TotalSentFeeContent({
     }
 
     if (tokenInfo) {
+        const totalFiatIncludingFee =
+            shallDisplayBaseCurrency && tokenFiatAmount && feeFiatAmount
+                ? tokenFiatAmount.plus(feeFiatAmount)
+                : null;
+
         return (
-            <FormattedCryptoAmount
-                disableHiddenPlaceholder
-                value={formatNetworkAmount(transactionInfo.fee, networkSymbol)}
-                symbol={networkSymbol}
-            />
+            <Column alignItems="flex-end" gap={4}>
+                <FormattedCryptoAmount
+                    disableHiddenPlaceholder
+                    value={feeAmount}
+                    symbol={networkSymbol}
+                />
+                {totalFiatIncludingFee !== null && (
+                    <BaseCurrencyValue
+                        disableHiddenPlaceholder
+                        shouldConvert={false}
+                        amount={totalFiatIncludingFee.toFixed()}
+                        symbol={networkSymbol}
+                    />
+                )}
+            </Column>
         );
     }
 

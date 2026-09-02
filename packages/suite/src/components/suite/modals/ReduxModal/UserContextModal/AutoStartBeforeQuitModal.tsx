@@ -4,10 +4,9 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const AutoStartBeforeQuitModal = () => {
     const dispatch = useDispatch();

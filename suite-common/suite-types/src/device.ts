@@ -10,6 +10,8 @@ import type {
     KnownDevice,
     PROTO,
     StaticSessionId,
+    UI_EVENTS,
+    UI_REQUESTS,
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
 } from '@trezor/connect';
@@ -20,15 +22,15 @@ import type { VersionArray } from '@trezor/utils';
 // suite (deviceReducer) stores them in slightly different shape:
 // - device field from @trezor/connect is excluded
 // - code field (ButtonRequestType) is extended/combined with PinMatrixRequestType and WordRequestType (from DeviceMessage)
-// - code field also uses two custom ButtonRequests - 'ui-request_pin' and 'ui-invalid_pin' (TODO: it shouldn't)
+// - code field also uses two custom ButtonRequests - UI_REQUESTS.REQUEST_PIN and UI_EVENTS.PIN_INVALID (TODO: it shouldn't)
 
 // TODO: Suite should not define its own type for ButtonRequest. There should be
 // sufficient type exported from @trezor/connect;
 
 export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
     code?:
-        | 'ui-request_pin'
-        | 'ui-invalid_pin'
+        | (typeof UI_REQUESTS)['REQUEST_PIN']
+        | (typeof UI_EVENTS)['PIN_INVALID']
         | DeviceButtonRequest['payload']['code']
         | NonNullable<PROTO.PinMatrixRequest>['type'];
     // Firmware screen identifier (e.g. 'confirm_payment_request'). Stored from the button request
@@ -43,9 +45,8 @@ export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
  * some signing capabilities to the Suite (for example the Suite Sync).
  */
 export type DelegatedIdentityKey = string & Branded<'DelegatedIdentityKey'>; // hex-encoded P-256 private key string
-export const asDelegatedIdentityKey = (
-    privateKey: Uint8Array<ArrayBufferLike> | string,
-): DelegatedIdentityKey => String(privateKey) as DelegatedIdentityKey;
+export const asDelegatedIdentityKey = (privateKey: string): DelegatedIdentityKey =>
+    privateKey as DelegatedIdentityKey;
 
 export interface ExtendedDevice {
     useEmptyPassphrase?: boolean;
@@ -126,8 +127,7 @@ type ConnectAuthenticateDeviceResultPayload = AuthenticateDeviceResult | { error
  *    (e.g. optiga & tropic) and it is up to Suite to decide which results to use.
  */
 export type StoredAuthenticateDeviceResult =
-    | (ConnectAuthenticateDeviceResultPayload & { valid: boolean })
-    | undefined;
+    (ConnectAuthenticateDeviceResultPayload & { valid: boolean }) | undefined;
 
 /**
  * This whole file is intended as a helper for wrapping connect errors to abstract them for use

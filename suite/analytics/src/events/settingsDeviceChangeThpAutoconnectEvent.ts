@@ -3,8 +3,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 export type SettingsDeviceChangeThpAutoConnectEventAction =
-    | 'disable-autoconnect'
-    | 'enable-autoconnect';
+    'disable-autoconnect' | 'enable-autoconnect';
 
 type Attributes = {
     action: AttributeDef<SettingsDeviceChangeThpAutoConnectEventAction>;

@@ -1,6 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
-import { useDebounce } from 'react-use';
 
 import { type FiatCurrencyCode } from 'invity-api';
 
@@ -31,7 +30,7 @@ interface UseTradingFiatCryptoAmountProps<T extends TradingSellExchangeFormProps
 
 /**
  * Amount-conversion cluster shared by the sell and exchange form-input hooks:
- * the fraction-button state, fiat↔crypto conversion handlers and the debounced
+ * the fraction-button state, fiat↔crypto conversion handlers and the
  * fiat→crypto recalculation (skipped while a fraction button is active).
  */
 export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProps>({
@@ -46,6 +45,7 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
     const [fractionButtonState, setFractionButtonState] = useState<number | undefined>(undefined);
 
     const watchedFiat = useWatch({ control, name: TRADING_FORM_OUTPUT_FIAT });
+    const previousFiatRef = useRef(watchedFiat);
 
     const setFractionButton = (fraction: number | undefined) => {
         if (fraction !== 1) {
@@ -94,9 +94,15 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
     // recalculate the crypto amount from the fiat amount
     const calculateCryptoAmountFromFiat = useCallback(
         (fiatAmount: string | undefined) => {
+            if (!fiatAmount) {
+                setValue(TRADING_FORM_OUTPUT_AMOUNT, '', { shouldValidate: true });
+
+                return;
+            }
+
             const fiatCurrency = getValues(TRADING_FORM_OUTPUT_CURRENCY);
 
-            if (!tradingFiatValues || !fiatCurrency || !fiatAmount) {
+            if (!tradingFiatValues || !fiatCurrency) {
                 return;
             }
 
@@ -112,16 +118,15 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
         [getValues, tradingFiatValues, networkDecimals, shouldSendInSats, setValue],
     );
 
-    // recalculate crypto amount whenever the fiat amount is typed, with debounce
-    useDebounce(
-        () => {
-            if (fractionButtonState === undefined) {
-                calculateCryptoAmountFromFiat(getValues(TRADING_FORM_OUTPUT_FIAT));
-            }
-        },
-        500,
-        [watchedFiat],
-    );
+    useEffect(() => {
+        const currentFiat = getValues(TRADING_FORM_OUTPUT_FIAT);
+        const hasFiatChanged = currentFiat !== previousFiatRef.current;
+        previousFiatRef.current = currentFiat;
+
+        if (hasFiatChanged && fractionButtonState === undefined) {
+            calculateCryptoAmountFromFiat(currentFiat);
+        }
+    }, [watchedFiat, fractionButtonState, getValues, calculateCryptoAmountFromFiat]);
 
     return {
         fractionButton: fractionButtonState,

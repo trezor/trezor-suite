@@ -10,6 +10,7 @@ import '@formatjs/intl-listformat/polyfill.js';
 import '@formatjs/intl-listformat/locale-data/en.js';
 import '@formatjs/intl-listformat/locale-data/cs.js';
 import '@formatjs/intl-listformat/locale-data/de.js';
+import '@formatjs/intl-listformat/locale-data/id.js';
 import '@formatjs/intl-listformat/locale-data/pt.js';
 import '@formatjs/intl-listformat/locale-data/ja.js';
 

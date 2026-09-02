@@ -1,8 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceConnected, selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { forgetDeviceThunk } from '@suite-common/wallet-core';
 import { selectIsKnownBluetoothDevice, useBluetoothDevice } from '@suite-native/bluetooth';
 import { useTranslate } from '@suite-native/intl';

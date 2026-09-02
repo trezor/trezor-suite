@@ -77,7 +77,7 @@ export const useFirmwareAnalytics = ({
         [getAnalyticsPayload, analytics, resetTimeStarted],
     );
 
-    const handleAnalyticsReportStucked = useCallback(
+    const handleAnalyticsReportStuck = useCallback(
         (state: 'modalPart1' | 'modalPart2' | 'buttonVisible') => {
             analytics.report({
                 type: events.firmwareFirmwareUpdateStuckedEvent.name,
@@ -116,9 +116,9 @@ export const useFirmwareAnalytics = ({
         getElapsedTimeInSeconds,
         getAnalyticsPayload,
         resetTimeStarted,
-        handleAnalyticsReportStucked,
+        handleAnalyticsReportStarted,
+        handleAnalyticsReportStuck,
         handleAnalyticsReportFinished,
         handleAnalyticsReportCancelled,
-        handleAnalyticsReportStarted,
     };
 };

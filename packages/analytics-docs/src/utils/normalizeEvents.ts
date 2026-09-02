@@ -17,8 +17,7 @@ const toAttributeDoc = ([name, attribute]: [string, AttributeDef<unknown>]): [
 ];
 
 type NormalizableEvent = (
-    | EventDef<Record<string, AttributeDef<unknown>>, string>
-    | EventDef<unknown, string>
+    EventDef<Record<string, AttributeDef<unknown>>, string> | EventDef<unknown, string>
 ) & { platform?: string; attributes?: Record<string, AttributeDef<unknown>> };
 
 const toEventDoc = (event: NormalizableEvent): [string, EventDoc] => {

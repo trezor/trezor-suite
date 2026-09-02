@@ -1,4 +1,3 @@
-import { type Dispatch } from '@reduxjs/toolkit';
 import crypto from 'crypto';
 
 import { selectSelectedDevice } from '@suite-common/device';
@@ -7,6 +6,7 @@ import {
     type PasswordEntry,
     ProviderErrorAction,
 } from '@suite-common/metadata-types';
+import { type Dispatch } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
@@ -19,9 +19,11 @@ import { type MetadataRootState, selectSelectedProviderForPasswords } from './me
 import * as metadataUtils from './metadataUtils';
 import { type FetchIntervalTrackingId } from './metadataUtils';
 
+type FetchPasswordsThunkState = MetadataRootState;
+
 const fetchPasswords =
     (keys: LabelableEntityKeys) =>
-    async (dispatch: Dispatch, _getState: () => MetadataRootState) => {
+    async (dispatch: Dispatch, _getState: () => FetchPasswordsThunkState) => {
         const provider = dispatch(
             metadataProviderActions.getProviderInstance({
                 clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
@@ -79,7 +81,11 @@ const fetchPasswords =
         );
     };
 
-export const init = () => async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+const selectIsSuiteOnline = (state: MetadataRootState) => state.suite.online;
+
+type InitThunkState = MetadataRootState;
+
+export const init = () => async (dispatch: Dispatch, getState: () => InitThunkState) => {
     let device = selectSelectedDevice(getState());
 
     if (!device?.state?.staticSessionId) {
@@ -181,7 +187,7 @@ export const init = () => async (dispatch: Dispatch, getState: () => MetadataRoo
             device = selectSelectedDevice(getState());
             const { fileName, aesKey } = device?.passwords?.[1] || {};
 
-            if (!getState().suite.online || !device?.state || !fileName || !aesKey) {
+            if (!selectIsSuiteOnline(getState()) || !device?.state || !fileName || !aesKey) {
                 return;
             }
             dispatch(
@@ -194,9 +200,11 @@ export const init = () => async (dispatch: Dispatch, getState: () => MetadataRoo
     }
 };
 
+type AddPasswordMetadataThunkState = MetadataRootState;
+
 export const addPasswordMetadata =
     (nextId: number, payload: PasswordEntry, fileName: string, aesKey: string) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => AddPasswordMetadataThunkState) => {
         if (!payload.note) {
             return Promise.resolve({ success: false, error: 'required field (note) missing' });
         }
@@ -240,9 +248,11 @@ export const addPasswordMetadata =
         });
     };
 
+type RemovePasswordMetadataThunkState = MetadataRootState;
+
 export const removePasswordMetadata =
     (index: number, fileName: string, aesKey: string) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => RemovePasswordMetadataThunkState) => {
         const provider = selectSelectedProviderForPasswords(getState());
         const providerInstance = dispatch(
             metadataProviderActions.getProviderInstance({

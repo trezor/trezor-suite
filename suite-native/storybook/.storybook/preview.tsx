@@ -6,6 +6,8 @@ import { alertRendererDecorator } from '../decorators/alertRendererDecorator';
 import { bottomSheetDecorator } from '../decorators/bottomSheetDecorator';
 import { SHARED_DECORATORS } from '../decorators/decorators';
 
+// Gives #storybook-root proper height so the React Native Web flex chain works correctly.
+import './global.css';
 import './fonts.css';
 
 const preview: Preview = {

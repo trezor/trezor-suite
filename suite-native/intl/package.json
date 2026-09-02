@@ -18,7 +18,7 @@
         "translations:list-unused": "yarn g:tsx ./scripts/listUnused.ts",
         "translations:remove-unused": "yarn g:tsx ./scripts/listUnused.ts --cleanup",
         "translations:upload": "crowdin upload",
-        "translations:download": "crowdin download --all -l en -l cs -l de -l es-ES -l fr -l pt-BR -l ja -l zh-CN",
+        "translations:download": "crowdin download --all -l en -l cs -l de -l es-ES -l fr -l id -l pt-BR -l ja -l zh-CN",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -26,14 +26,15 @@
         "@formatjs/intl-listformat": "^8.2.1",
         "@formatjs/intl-locale": "^5.2.1",
         "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-localization": "~56.0.6",
+        "expo-localization": "~57.0.1",
         "intl-pluralrules": "^2.0.1",
         "react": "19.2.3",
         "react-intl": "^8.1.3",
-        "react-native": "0.85.3",
+        "react-native": "0.86.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

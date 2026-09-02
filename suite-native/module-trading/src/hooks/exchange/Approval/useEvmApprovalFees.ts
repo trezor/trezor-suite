@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { type DexApprovalType } from 'invity-api';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingExchangeSelectedQuote,

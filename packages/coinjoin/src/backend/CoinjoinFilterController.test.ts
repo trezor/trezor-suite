@@ -1,0 +1,116 @@
+import { CoinjoinFilterController } from './CoinjoinFilterController';
+import { MockFilterClient } from '../../mocks/MockFilterClient';
+import { COINJOIN_BACKEND_SETTINGS } from '../__fixtures__/config.fixture';
+import { type MockBlockFilter, mockFilterSequence } from '../__fixtures__/filters.fixture';
+
+const FILTER_COUNT = 16;
+const FILTER_MIDDLE = 8;
+
+const FILTERS: MockBlockFilter[] = mockFilterSequence(
+    FILTER_COUNT,
+    COINJOIN_BACKEND_SETTINGS.baseBlockHeight,
+    COINJOIN_BACKEND_SETTINGS.baseBlockHash,
+);
+
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const filterBeforeReorg: MockBlockFilter = FILTERS[FILTER_MIDDLE - 1];
+const REORG_FILTER: MockBlockFilter = {
+    blockHeight: 9,
+    blockHash: 'nope',
+    filter: 'nope',
+    prevHash: filterBeforeReorg.blockHash,
+    filterParams: { key: 'nope' },
+};
+
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const filterAt5: MockBlockFilter = FILTERS[5];
+const REORG_FILTERS = FILTERS.slice(0, FILTER_MIDDLE).concat(REORG_FILTER);
+
+const FIXTURES = [
+    {
+        description: 'From start',
+        params: {
+            batchSize: 5,
+        },
+        expected: FILTERS,
+    },
+    {
+        description: 'From middle',
+        params: {
+            batchSize: 5,
+            checkpoints: [
+                {
+                    blockHash: filterBeforeReorg.blockHash,
+                    blockHeight: filterBeforeReorg.blockHeight,
+                },
+            ],
+        },
+        expected: FILTERS.slice(FILTER_MIDDLE),
+    },
+    {
+        description: 'Not found',
+        params: {
+            batchSize: 5,
+            checkpoints: [
+                {
+                    blockHash: 'foo',
+                    blockHeight: 42,
+                },
+            ],
+        },
+        error: 'not found',
+    },
+];
+
+describe('CoinjoinFilterController', () => {
+    const client = new MockFilterClient();
+
+    beforeEach(() => {
+        client.setFixture(FILTERS);
+    });
+
+    describe('Filter controller', () => {
+        FIXTURES.forEach(({ description, params, expected, error }) => {
+            it(description, async () => {
+                const controller = new CoinjoinFilterController(client, COINJOIN_BACKEND_SETTINGS);
+                const iterator = controller.getFilterIterator(params);
+                if (error) {
+                    await expect(() => iterator.next()).rejects.toThrow(error);
+                } else {
+                    const received = [];
+
+                    for await (const b of iterator) {
+                        received.push(b);
+                    }
+                    expect(received).toEqual(expected);
+                }
+            });
+        });
+
+        it('Reorg', async () => {
+            const params = { batchSize: 5 };
+            const controller = new CoinjoinFilterController(client, COINJOIN_BACKEND_SETTINGS);
+            const received = [];
+
+            client.setFixture(REORG_FILTERS);
+
+            for await (const b of controller.getFilterIterator(params)) {
+                received.push(b);
+            }
+
+            expect(received).toEqual(REORG_FILTERS);
+            received.length = 0;
+
+            client.setFixture(FILTERS);
+
+            for await (const b of controller.getFilterIterator({
+                ...params,
+                checkpoints: [REORG_FILTER, filterAt5],
+            })) {
+                received.push(b);
+            }
+
+            expect(received).toEqual(FILTERS.slice(6));
+        });
+    });
+});

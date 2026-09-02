@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
     selectTradingAccountKeyByTradeType,
@@ -12,7 +13,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useTradingFormAccount = (tradingType: TradingType) => {
     const dispatch = useDispatch();

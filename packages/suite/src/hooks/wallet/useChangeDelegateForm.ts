@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import {
     selectBaseCurrency,
@@ -12,10 +13,11 @@ import {
     type SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { useCurrentRef } from '@trezor/react-utils';
 import { throwError } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
 import { useFees } from './form/useFees';
@@ -38,7 +40,9 @@ export const useChangeDelegateForm = ({
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, account.key),
+    );
 
     const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: account.networkType,
@@ -62,9 +66,8 @@ export const useChangeDelegateForm = ({
             network,
             feeInfo,
             formValues: defaultValues,
-            selectedVotingDelegation,
         }),
-        [account, network, feeInfo, defaultValues, selectedVotingDelegation],
+        [account, network, feeInfo, defaultValues],
     );
 
     const methods = useForm<ChangeDelegateFormState>({
@@ -90,6 +93,12 @@ export const useChangeDelegateForm = ({
         ...methods,
         state,
     });
+
+    const composeRequestRef = useCurrentRef(composeRequest);
+
+    useEffect(() => {
+        composeRequestRef.current();
+    }, [composeRequestRef, selectedVotingDelegation]);
 
     const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
         defaultValue: 'normal',

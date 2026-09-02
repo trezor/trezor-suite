@@ -62,8 +62,8 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await page.clock.install();
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
-                await expect(stakingSection.stakingDashboardCard).toBeHidden();
                 await expect(stakingSection.stakingEmptyCard).toBeVisible();
+                await expect(stakingSection.stakingDashboardCard).toBeHidden();
             });
 
             await test.step('Open and fill staking form', async () => {

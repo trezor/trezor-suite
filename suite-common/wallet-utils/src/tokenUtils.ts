@@ -1,13 +1,13 @@
-import { areEvmAddressesEqual } from '@suite-common/address';
 import {
     type Explorer,
     type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
     getExplorerUrl,
+    getNetworkDisplaySymbol,
     getNetworkType,
-    getWrappedNativeAddress,
 } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     type EthereumSpecific,
     type TokenInfo,
@@ -36,15 +36,47 @@ export const getContractAddressForNetworkSymbol = (
     }
 };
 
-export const isWrappedNativeToken = (
-    networkSymbol: NetworkSymbol,
-    contractAddress?: string | null,
-): boolean => areEvmAddressesEqual(getWrappedNativeAddress(networkSymbol), contractAddress);
+type StellarRuntime = Awaited<ReturnType<typeof stellar>>;
 
-export const getAssetLogoContractAddresses = async (
+let loadedStellarRuntime: StellarRuntime | undefined;
+let stellarRuntimePromise: Promise<StellarRuntime> | undefined;
+
+// the Stellar module is chunk-split on web, so it is fetched lazily on the first
+// XLM call and cached, which lets all subsequent calls read it synchronously
+const loadStellarRuntime = () => {
+    stellarRuntimePromise ??= stellar().then(runtime => {
+        loadedStellarRuntime = runtime;
+
+        return runtime;
+    });
+
+    return stellarRuntimePromise;
+};
+
+const getXlmAssetLogoContractAddresses = (contract: string, stellarRuntime: StellarRuntime) => {
+    try {
+        const { sorobanAssetContractId } = stellarRuntime.computeSorobanAssetContractId(contract);
+
+        // keep the classic contract first until CoinGecko finishes the Stellar migration
+        // once Soroban ids become the primary CDN key, flip the order to reduce retries
+        return [contract, sorobanAssetContractId];
+    } catch {
+        // a malformed classic contract has no derivable Soroban ID
+        // but the classic ID itself may still resolve on the CDN
+        return [contract];
+    }
+};
+
+/**
+ * Returns the contract address candidates under which an asset logo may be stored on the
+ * CoinGecko CDN. Resolves synchronously whenever possible so hot paths like token icon lists
+ * can render without an async placeholder frame; only the first xlm call returns a promise
+ * while the lazily loaded stellar module is being fetched.
+ */
+export const getAssetLogoContractAddresses = (
     symbol: NetworkSymbolExtended | undefined,
     contract: string | null | undefined,
-) => {
+): string[] | Promise<string[]> | undefined => {
     if (!contract || !symbol) return undefined;
 
     if (symbol === 'ada') {
@@ -59,13 +91,13 @@ export const getAssetLogoContractAddresses = async (
     // filename. Fall back to the locally-derived Soroban asset contract id so
     // the icon is still reachable.
     if (symbol === 'xlm') {
-        const { computeSorobanAssetContractId } = await stellar();
-        const { sorobanAssetContractId } = computeSorobanAssetContractId(contract);
+        if (loadedStellarRuntime) {
+            return getXlmAssetLogoContractAddresses(contract, loadedStellarRuntime);
+        }
 
-        // Keep the classic contract first until CoinGecko finishes the Stellar
-        // migration. Once Soroban ids become the primary CDN key, flip the
-        // order to reduce retries.
-        return [contract, sorobanAssetContractId];
+        return loadStellarRuntime().then(stellarRuntime =>
+            getXlmAssetLogoContractAddresses(contract, stellarRuntime),
+        );
     }
 
     return [getContractAddressForNetworkSymbol(symbol, contract)];
@@ -112,10 +144,37 @@ export const isTokenMatchesSearch = (token: TokenInfo, rawSearch: string) => {
     );
 };
 
+const isTokenNameMatchesSearch = (name: string | undefined, search: string) =>
+    name
+        ?.toLowerCase()
+        .split(/\s+/)
+        .some(word => word.startsWith(search)) ?? false;
+
 export const isTokenTransferMatchesSearch = (token: TokenTransfer, search: string) =>
     token.symbol?.toLowerCase().includes(search) ||
-    token.name?.toLowerCase().includes(search) ||
+    isTokenNameMatchesSearch(token.name, search) ||
     token.contract.toLowerCase().includes(search);
+
+export const isNativeDisplaySymbolSearch = (symbol: NetworkSymbol, search: string) =>
+    getNetworkDisplaySymbol(symbol).toLowerCase() === search;
+
+export const isNativeTransferMatchesSearch = (
+    transaction: WalletAccountTransaction,
+    search: string,
+) => {
+    if (!isNativeDisplaySymbolSearch(transaction.symbol, search)) {
+        return false;
+    }
+
+    const hasNativeInternalTransfer = transaction.internalTransfers.some(
+        transfer => transfer.type === 'sent' || transfer.type === 'recv',
+    );
+    const hasNativeAmount =
+        ['sent', 'recv', 'joint', 'contract'].includes(transaction.type) &&
+        transaction.amount !== '0';
+
+    return hasNativeInternalTransfer || hasNativeAmount;
+};
 
 export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
     token.symbol?.toLowerCase().includes(search) ||
@@ -142,7 +201,8 @@ const PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS: ReadonlySet<TokenStandard> = new Set
 export const shouldUppercaseTokenSymbol = (token: TokenInfo) =>
     token.standard ? !PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS.has(token.standard) : true;
 
-export const isErc4626 = (token: TokenInfo) => !!token.protocols?.includes('erc4626');
+export const isErc4626 = (token?: TokenInfo | null) =>
+    !!token && (token.protocols?.includes('erc4626') ?? false);
 
 export const getErc4626Contracts = (tokens: TokenInfo[] | undefined) =>
     new Set(tokens?.filter(isErc4626).map(token => token.contract.toLowerCase()));

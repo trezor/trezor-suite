@@ -1,9 +1,11 @@
 import { Locator, Page } from '@playwright/test';
+import type { ExchangeTrade } from 'invity-api';
 
 import { messages } from '@suite/intl';
 import type { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
+import { TradingApprovalModal } from './approvalModal';
 import { TradingAssetPicker } from './assetsModal';
 import { TradingConfirmationModal } from './confirmationModal';
 import { TradingTransactionsSection } from './transactionsSection';
@@ -13,10 +15,12 @@ import { TradingFormInputs } from './formInputs';
 import { TradingQuotesSection } from './quotesSection';
 import { TradingReceiveAccount } from './receiveAccount';
 import { TransactionDetailSidebar } from './transactionDetailSidebar';
-import { invityEndpoint } from '../../../fixtures/invity';
+import { tradeEndpoint } from '../../../fixtures/trading';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 import { BuyAsset, SellAsset } from '../../types';
+
+const LIVE_TRADE_RESPONSE_TIMEOUT = 90_000;
 
 export class TradingPage {
     readonly fees: FeeSection;
@@ -24,6 +28,7 @@ export class TradingPage {
     readonly receiveAccount: TradingReceiveAccount;
     readonly quotes: TradingQuotesSection;
     readonly confirmation: TradingConfirmationModal;
+    readonly approvalModal: TradingApprovalModal;
     readonly inputs: TradingFormInputs;
     readonly transactionDetailSidebar: TransactionDetailSidebar;
 
@@ -36,6 +41,11 @@ export class TradingPage {
     readonly swapBestOfferButton: Locator;
     readonly kycWarning: Locator;
     readonly proceedToPayButton: Locator;
+    readonly approveSpendingButton: Locator;
+    readonly pendingApprovalTransactionLabel: Locator;
+    readonly pendingApprovalTransactionIdLabel: Locator;
+    readonly pendingApprovalTransactionId: Locator;
+    readonly swapButton: Locator;
     readonly backToAccountButton = (type: 'Buy' | 'Sell' | 'Swap') =>
         this.page.getByRole('button', { name: `Make another ${type}` });
 
@@ -51,6 +61,7 @@ export class TradingPage {
     readonly transactionDetailStatus: Locator;
     readonly transactionDetailHeader: Locator;
     readonly transactionDetail: Locator;
+    readonly transactionDetailTxid: Locator;
     readonly transactions: TradingTransactionsSection;
 
     // Swap toast notifications
@@ -67,6 +78,7 @@ export class TradingPage {
         this.receiveAccount = new TradingReceiveAccount(page);
         this.quotes = new TradingQuotesSection(page);
         this.confirmation = new TradingConfirmationModal(page, devicePrompt);
+        this.approvalModal = new TradingApprovalModal(page);
         this.inputs = new TradingFormInputs(page);
         this.transactionDetailSidebar = new TransactionDetailSidebar(page);
 
@@ -78,6 +90,15 @@ export class TradingPage {
         this.swapBestOfferButton = this.page.getByTestId('@trading/form/exchange-button');
         this.kycWarning = this.page.getByTestId('@trading/form/kyc-warning');
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
+        this.approveSpendingButton = this.page.getByTestId('@trading/form/approve-button');
+        this.pendingApprovalTransactionLabel = this.page.getByTestId('@pending-transaction/title');
+        this.pendingApprovalTransactionIdLabel = this.page.getByTestId(
+            '@pending-transaction/txid/label',
+        );
+        this.pendingApprovalTransactionId = this.page.getByTestId(
+            '@pending-transaction/txid/value',
+        );
+        this.swapButton = this.page.getByTestId('@trading/form/swap-button');
 
         // Swap
         this.sendAddressInput = this.page.getByTestId('outputs.0.address');
@@ -90,6 +111,7 @@ export class TradingPage {
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
         this.transactionDetailHeader = this.page.getByTestId('@trading/transaction/detail/header');
         this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
+        this.transactionDetailTxid = this.page.getByTestId('@tx-detail/txid-value');
         this.transactions = new TradingTransactionsSection(page);
 
         // Swap toast notifications
@@ -162,7 +184,7 @@ export class TradingPage {
             await selectReceiveAddress();
         }
 
-        const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.buyQuotes);
+        const quotesResponsePromise = this.page.waitForResponse(tradeEndpoint.buyQuotes);
         await inputField.fill(amount);
         await quotesResponsePromise;
         await this.quotes.waitForSync();
@@ -235,7 +257,7 @@ export class TradingPage {
     ) {
         await this.inputs.selectCountryOfResidence(country);
         await this.inputs.cryptoAmount.fill(amount);
-        await this.page.waitForRequest(invityEndpoint.sellQuotes);
+        await this.page.waitForRequest(tradeEndpoint.sellQuotes);
         await expect(
             this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
@@ -326,7 +348,7 @@ export class TradingPage {
             await selectReceiveAddress();
         }
 
-        const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.swapQuotes);
+        const quotesResponsePromise = this.page.waitForResponse(tradeEndpoint.swapQuotes);
         await expect(this.quotes.bestOfferAmount).toHaveText(/0 \w+/);
         await this.inputs.cryptoAmount.fill(amount);
         await quotesResponsePromise;
@@ -337,7 +359,7 @@ export class TradingPage {
      * @param params.sendAccount - The account label the swap is sent from (e.g., 'Solana #1')
      * @param params.receiveAccount - The account label the swap is received to (e.g., 'Bitcoin #1')
      * @param params.sendAmount - The expected send amount (e.g., '0.001')
-     * @param params.receiveAmount - The expected receive amount (localized, e.g., '0.00002')
+     * @param params.receiveAmount - The expected receive amount exactly as the provider returned it (e.g., '0.07357510')
      */
     @step()
     async verifySwapToast({
@@ -359,6 +381,22 @@ export class TradingPage {
         });
         await expect(this.swapToastSendAmount).toHaveText(sendAmount);
         await expect(this.swapToastReceiveAmount).toHaveText(receiveAmount);
+    }
+
+    // temporary workaround which should be replaced with soon to be merged fixture tradingResponses
+    @step()
+    async waitForLiveTradeAmounts() {
+        const response = await this.page.waitForResponse(tradeEndpoint.swapTrade, {
+            timeout: LIVE_TRADE_RESPONSE_TIMEOUT,
+        });
+        const { sendStringAmount, receiveStringAmount } = (await response.json()) as ExchangeTrade;
+        if (!sendStringAmount || !receiveStringAmount) {
+            throw new Error(
+                'Live trade response is missing sendStringAmount or receiveStringAmount',
+            );
+        }
+
+        return { sendStringAmount, receiveStringAmount };
     }
 
     @step()

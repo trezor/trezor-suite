@@ -2,18 +2,24 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/analytics"
-        },
         { "path": "../../suite-common/bip329" },
         {
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-stablecoin"
+        },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
+        {
             "path": "../../suite-common/fiat-services"
         },
         { "path": "../../suite-common/graph" },
+        {
+            "path": "../../suite-common/react-query"
+        },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -42,7 +48,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../banner-flags" },
+        { "path": "../banners" },
         { "path": "../bip329" },
         { "path": "../device" },
         { "path": "../device-manager" },
@@ -66,7 +72,9 @@
         { "path": "../suite-sync" },
         { "path": "../tokens" },
         { "path": "../transactions" },
-        { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
         {
             "path": "../../packages/styles-native"
         },

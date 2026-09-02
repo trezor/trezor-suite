@@ -4,7 +4,16 @@ import type { CryptoId } from 'invity-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
-import { AssetPickerNetworkFilter, BuyAsset, SellAsset } from '../../types';
+import { AssetPickerNetworkFilter, BuyAsset, SellAsset, SellAssetGroup } from '../../types';
+
+type SellAccountParams = {
+    accountSymbol: NetworkSymbol;
+    accountType: string;
+    index: number;
+};
+
+const getSellOptionTestId = ({ accountType, accountSymbol, index }: SellAccountParams) =>
+    `@asset-picker/sell/option/${accountType}/${accountSymbol}/${index}`;
 
 export class TradingAssetPicker {
     readonly openSellModal: Locator;
@@ -12,19 +21,22 @@ export class TradingAssetPicker {
     readonly searchInput: Locator;
     readonly displaySymbol: Locator;
     readonly networkFilterButton: Locator;
-    readonly networkFilterOption = (tab: AssetPickerNetworkFilter) =>
+    readonly sendReceiveNetworkFilterSelect: Locator;
+    readonly networkFilterOption = (tab: AssetPickerNetworkFilter | NetworkSymbol) =>
         this.page.getByTestId(`@asset-picker/search/filter/select-option/${tab}`);
     readonly globalAddAccountButton: Locator;
 
     // buy and sell options
-    readonly sellOption = (networkSymbol: NetworkSymbol, tokenSymbol?: string) =>
+    readonly sellOption = (params: SellAccountParams & { tokenSymbol?: string }) =>
         this.page.getByTestId(
-            `@asset-picker/sell/option/${networkSymbol}${tokenSymbol ? `/${tokenSymbol}` : ''}`,
+            `${getSellOptionTestId(params)}${
+                params.tokenSymbol ? `/token/${params.tokenSymbol}` : ''
+            }`,
         );
-    readonly buyOption = (networkSymbol: NetworkSymbol, tokenSymbol?: string) =>
-        this.page.getByTestId(
-            `@asset-picker/buy/option/${networkSymbol}${tokenSymbol ? `/${tokenSymbol}` : ''}`,
-        );
+    readonly sellGroup = (params: SellAccountParams & { group: SellAssetGroup }) =>
+        this.page.getByTestId(`${getSellOptionTestId(params)}/${params.group}`);
+    readonly sellGroupToggle = (params: SellAccountParams & { group: SellAssetGroup }) =>
+        this.page.getByTestId(`${getSellOptionTestId(params)}/${params.group}/toggle`);
     readonly buyAssetOption = (assetCryptoId: CryptoId) =>
         this.page.getByTestId(`@asset-picker/buy/option/asset/${assetCryptoId}`);
 
@@ -54,15 +66,26 @@ export class TradingAssetPicker {
         this.openBuyModal = this.page.getByTestId('@trading/buy/asset-picker');
         this.searchInput = this.page.getByTestId('@asset-picker/search/input');
         this.displaySymbol = this.page.getByTestId('@asset-picker/display-symbol');
-        this.networkFilterButton = this.page.getByTestId('@asset-picker/search/filter/input');
+        this.networkFilterButton = this.page.getByTestId('@asset-picker/search/filter');
+        this.sendReceiveNetworkFilterSelect = this.page.getByTestId(
+            '@asset-picker/search/filter/input',
+        );
         this.globalAddAccountButton = this.page.getByTestId('@global-send-receive/add-account');
     }
 
     @step()
-    async filterByNetwork(networkFilter: AssetPickerNetworkFilter) {
+    async filterByNetwork(networkFilter: AssetPickerNetworkFilter | NetworkSymbol) {
         // use global retry helper since opening the dropdown is flaky in automation
         await this.page.selectDropdownOptionWithRetry(
             this.networkFilterButton,
+            this.networkFilterOption(networkFilter),
+        );
+    }
+
+    @step()
+    async filterSendReceiveByNetwork(networkFilter: AssetPickerNetworkFilter | NetworkSymbol) {
+        await this.page.selectDropdownOptionWithRetry(
+            this.sendReceiveNetworkFilterSelect,
             this.networkFilterOption(networkFilter),
         );
     }
@@ -74,7 +97,15 @@ export class TradingAssetPicker {
     }
 
     @step()
-    async selectSellAsset({ searchFilter, networkFilter, networkSymbol, tokenSymbol }: SellAsset) {
+    async selectSellAsset({
+        searchFilter,
+        networkFilter,
+        networkSymbol,
+        tokenSymbol,
+        accountType = 'normal',
+        accountIndex = 0,
+        group,
+    }: SellAsset) {
         await this.openSellModal.click();
 
         if (networkFilter) {
@@ -85,17 +116,17 @@ export class TradingAssetPicker {
             await this.searchAsset(searchFilter);
         }
 
-        await this.sellOption(networkSymbol, tokenSymbol).click();
+        const account = { accountSymbol: networkSymbol, accountType, index: accountIndex };
+
+        if (group) {
+            await this.sellGroupToggle({ ...account, group }).click();
+        }
+
+        await this.sellOption({ ...account, tokenSymbol }).click();
     }
 
     @step()
-    async selectBuyAsset({
-        searchFilter,
-        networkFilter,
-        assetCryptoId,
-        networkSymbol,
-        tokenSymbol,
-    }: BuyAsset) {
+    async selectBuyAsset({ searchFilter, networkFilter, assetCryptoId }: BuyAsset) {
         await this.openBuyModal.click();
 
         if (networkFilter) {
@@ -106,12 +137,6 @@ export class TradingAssetPicker {
             await this.searchAsset(searchFilter);
         }
 
-        if (assetCryptoId) {
-            await this.buyAssetOption(assetCryptoId).click();
-        } else if (networkSymbol) {
-            await this.buyOption(networkSymbol, tokenSymbol).click();
-        } else {
-            throw new Error('Either assetCryptoId or networkSymbol must be provided');
-        }
+        await this.buyAssetOption(assetCryptoId).click();
     }
 }

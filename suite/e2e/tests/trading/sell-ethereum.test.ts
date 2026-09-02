@@ -2,11 +2,11 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
     getCompanyNameFromList,
-    invityEndpoint,
     sellQuotesEthereum,
     sellTradeEthereum,
     sellWatchEthereum,
-} from '../../fixtures/invity';
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -48,11 +48,11 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
             walletPage,
         }) => {
             await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.sellQuotes, async route => {
+                await page.route(tradeEndpoint.sellQuotes, async route => {
                     await route.fulfill({ json: sellQuotesEthereum });
                 });
-                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereum);
-                await page.route(invityEndpoint.sellWatch, async route => {
+                await tradingMock.routeTrade(tradeEndpoint.sellTrade, sellTradeEthereum);
+                await page.route(tradeEndpoint.sellWatch, async route => {
                     await route.fulfill({ json: sellWatchEthereum });
                 });
             });
@@ -101,7 +101,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
 
         await test.step('Initiate send', async () => {
             await tradingPage.confirmation.openConfirmAndSendModal();
-            await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
+            await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
             await devicePrompt.waitForPromptAndClick();
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
             await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
@@ -117,10 +117,10 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
             });
 
         await test.step('Verify fees on modal and emulator', async () => {
-            await expect(devicePrompt.ethereumGasLimit).toHaveText(`${messages['TR_GAS_LIMIT'].defaultMessage}: ${gasLimit}`);
-            await expect(devicePrompt.ethereumFeeRate).toHaveText(`${maxFeePerGasRounded} Gwei`);
-            await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
-                `${maxPriorityFeePerGasRounded} Gwei`,
+            await expect(devicePrompt.header.gasLimitValue).toHaveText(gasLimit);
+            await expect(devicePrompt.header.feePerGasValue).toHaveText(`${maxFeePerGasRounded}`);
+            await expect(devicePrompt.header.priorityFeeValue).toHaveText(
+                `${maxPriorityFeePerGasRounded}`,
             );
             await expect(device).toDisplayOnEmulator({
                 T3W1: {

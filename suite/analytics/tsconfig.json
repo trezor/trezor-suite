@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/analytics"
         },
+        { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/metadata-types"
         },
@@ -14,7 +15,7 @@
         {
             "path": "../../suite-common/wallet-config"
         },
-        { "path": "../router-config" },
+        { "path": "../router" },
         {
             "path": "../../packages/analytics-uploader"
         },

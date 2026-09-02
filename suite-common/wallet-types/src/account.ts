@@ -1,10 +1,6 @@
+import { type Getter } from '@suite-common/dependency-injection';
 import type { AccountEntityKeys } from '@suite-common/metadata-types';
-import type {
-    AccountType,
-    BackendType,
-    Bip43Path,
-    NetworkSymbol,
-} from '@suite-common/wallet-config';
+import type { AccountType, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import type {
     AddressAlias,
     ContractInfo,
@@ -13,6 +9,7 @@ import type {
     TronAccountExtraData,
 } from '@trezor/blockchain-link-types';
 import type { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
+import type { Bip43Path } from '@trezor/crypto-utils';
 import type { StaticSessionId } from '@trezor/device-utils';
 import { type Branded } from '@trezor/type-utils';
 
@@ -126,8 +123,7 @@ export type AccountBackendSpecific =
       };
 
 export type AccountFailureSpecific =
-    | { failed: true; error: string }
-    | { failed?: false; error?: undefined };
+    { failed: true; error: string } | { failed?: false; error?: undefined };
 
 /**
  * This is synthetic (combined) key, it may be useful for some data-structures.
@@ -137,6 +133,10 @@ export type AccountFailureSpecific =
  */
 export type AccountKey = `${AccountDescriptor}-${NetworkSymbol}-${StaticSessionId}` &
     Branded<'AccountKey'>;
+
+export type GetTradedAccountKeysDep = {
+    getTradedAccountKeys: Getter<[], AccountKey[]>;
+};
 
 type CreateAccountKeyParams = {
     accountDescriptor: AccountDescriptor;

@@ -1,0 +1,58 @@
+import { act } from 'react';
+
+import { useTradingRefetchScheduler } from './useTradingRefetchScheduler';
+import { tradingActions } from '../reducers/tradingCommonReducer';
+import { renderHookWithTradingStore } from '../test-utils/testUtils';
+
+describe('useTradingRefetchScheduler', () => {
+    it('should verify that timestapp is set and cleared on unmount', () => {
+        const { result, unmount, store } = renderHookWithTradingStore(() =>
+            useTradingRefetchScheduler({
+                onRefetch: jest.fn(),
+            }),
+        );
+        expect(
+            store.getState().wallet.trading.quoteRefetchingState.lastFetchTimestamp,
+        ).toBeUndefined();
+
+        act(() => {
+            store.dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
+        });
+        expect(
+            store.getState().wallet.trading.quoteRefetchingState.lastFetchTimestamp,
+        ).toBeDefined();
+        expect(result.current).toBeUndefined();
+
+        unmount();
+
+        expect(
+            store.getState().wallet.trading.quoteRefetchingState.lastFetchTimestamp,
+        ).toBeUndefined();
+    });
+
+    it('should call onRefetch after specified time', () => {
+        jest.useFakeTimers();
+        const mockOnRefetch = jest.fn();
+        const { store } = renderHookWithTradingStore(() =>
+            useTradingRefetchScheduler({
+                onRefetch: mockOnRefetch,
+            }),
+        );
+
+        act(() => {
+            store.dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
+        });
+
+        act(() => {
+            jest.advanceTimersByTime(1000);
+        });
+
+        expect(mockOnRefetch).toHaveBeenCalledTimes(0);
+
+        act(() => {
+            jest.advanceTimersByTime(30000);
+        });
+
+        expect(mockOnRefetch).toHaveBeenCalledTimes(1);
+    });
+});

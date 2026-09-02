@@ -1,5 +1,8 @@
+import { fixupConfigRules } from '@eslint/compat';
 import pluginReact from 'eslint-plugin-react';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
+
+import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
@@ -7,7 +10,8 @@ import pluginReactHooks from 'eslint-plugin-react-hooks';
 /** @type {Config[]} */
 export const reactConfig = [
     // React
-    pluginReact.configs.flat.recommended,
+    // TODO: Remove the compatibility wrapper when eslint-plugin-react supports ESLint 10.
+    ...fixupConfigRules(pluginReact.configs.flat.recommended),
     {
         languageOptions: pluginReact.configs.flat.recommended.languageOptions,
         settings: { react: { version: 'detect' } },
@@ -36,4 +40,22 @@ export const reactConfig = [
             'react-hooks/use-memo': 'off', // Too restrictive: enforces inline function in useMemo (forbids using variable)
         },
     },
+    ...(areExpensiveChecksEnabled
+        ? []
+        : [
+              {
+                  rules: {
+                      'react-hooks/preserve-manual-memoization': 'off',
+                      'react-hooks/incompatible-library': 'off',
+                      'react-hooks/immutability': 'off',
+                      'react-hooks/globals': 'off',
+                      'react-hooks/error-boundaries': 'off',
+                      'react-hooks/purity': 'off',
+                      'react-hooks/set-state-in-render': 'off',
+                      'react-hooks/unsupported-syntax': 'off',
+                      'react-hooks/config': 'off',
+                      'react-hooks/gating': 'off',
+                  },
+              },
+          ]),
 ];

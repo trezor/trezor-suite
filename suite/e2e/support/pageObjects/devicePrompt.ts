@@ -2,6 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { step } from '../common';
 import { DeviceFixture } from '../device';
+import { DevicePromptHeaderSection } from './devicePromptHeaderSection';
 
 export class DevicePrompt {
     readonly confirmOnDevicePrompt: Locator;
@@ -38,14 +39,9 @@ export class DevicePrompt {
     readonly assetsReceiveAddress: Locator;
     readonly reviewAmount: Locator;
     readonly sendButton: Locator;
-    readonly header: Locator;
-    readonly headerParagraph: Locator;
+    readonly header: DevicePromptHeaderSection;
     readonly acquireDeviceButton: Locator;
     readonly closeButton: Locator;
-    readonly ethereumGasLimit: Locator;
-    readonly ethereumFeeRate: Locator;
-    readonly ethereumPriorityFeeRate: Locator;
-    readonly headerFeeRate: Locator;
 
     constructor(
         private page: Page,
@@ -54,7 +50,7 @@ export class DevicePrompt {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
         this.confirmOnDevicePromptSuccess = page.getByTestId('@prompts/confirm-on-device/success');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
-        this.modalCloseButton = page.getByTestId('@modal/close-button');
+        this.modalCloseButton = page.modalCloseButton;
         this.modal = page.modal;
         this.paginatedText = page.locator("[data-testid-alt='@device-display/paginated-text']");
         this.paginatedTextSeparator = page.getByTestId('@device-display/paginated-text/separator');
@@ -65,18 +61,9 @@ export class DevicePrompt {
         this.assetsReceiveAddress = page.getByTestId('@modal/assets/receive/address');
         this.reviewAmount = page.getByTestId('@modal/transaction-review/amount');
         this.sendButton = page.getByTestId('@modal/send');
-        this.header = page.getByTestId('@modal/header');
-        this.headerParagraph = page.getByTestId('@modal/header-paragraph');
+        this.header = new DevicePromptHeaderSection(page);
         this.acquireDeviceButton = this.page.getByTestId('@device-acquire');
         this.closeButton = this.page.getByTestId('@confirm-on-device/close-button');
-        this.ethereumGasLimit = this.page.getByTestId('@modal/ethereum/gas-limit');
-        this.ethereumFeeRate = this.page
-            .getByTestId('@modal/ethereum/fee')
-            .getByTestId('@fee-rate');
-        this.ethereumPriorityFeeRate = this.page
-            .getByTestId('@modal/ethereum/priority-fee')
-            .getByTestId('@fee-rate');
-        this.headerFeeRate = this.page.getByTestId('@fee-rate');
     }
 
     @step()
@@ -166,14 +153,13 @@ export class DevicePrompt {
         if (!isSeparatorVisible) {
             return false;
         }
-        const separatorText = await this.paginatedTextSeparator.textContent();
 
-        return typeof separatorText === 'string' ? separatorText : false;
+        return await this.paginatedTextSeparator.innerText();
     }
 
     @step()
     async combinedPaginatedText() {
-        let textsArray = await this.paginatedText.allTextContents();
+        let textsArray = await this.paginatedText.allInnerTexts();
         const separatorText = await this.getPaginatedTextSeparator();
         if (separatorText) {
             textsArray = textsArray.map(text => text.replace(separatorText, ''));
@@ -181,29 +167,6 @@ export class DevicePrompt {
         const removeWhitespaces = (text: string) => text.replace(/\s+/g, '');
 
         return textsArray.map(removeWhitespaces).join('');
-    }
-
-    @step()
-    async getFeeRate() {
-        // Element format is: Bitcoin #1 \n+ ≈ 10 minutes \n+ 4.00 sat/vB
-        const fullText = await this.headerParagraph.textContent();
-        if (!fullText) {
-            throw new Error('No text found in header paragraph of device prompt');
-        }
-
-        const lines = fullText
-            .split('\n')
-            .map(line => line.trim())
-            .filter(line => line.length > 0);
-        const feeRateRegex = /^\d+(\.\d+)?\s+sat\/vB$/;
-        const lastLine = lines[lines.length - 1];
-        if (!lastLine || !feeRateRegex.test(lastLine)) {
-            throw new Error(
-                `Last line does not match the expected format of a decimal number followed by 'sat/vB': ${lastLine}`,
-            );
-        }
-
-        return lastLine;
     }
 
     @step()

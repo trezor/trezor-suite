@@ -5,13 +5,14 @@ import { goto } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectThpStep } from '@suite-common/thp';
 import { exhaustive } from '@trezor/type-utils';
 
 import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
 import { getOnboardingStepIndex } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
-import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
 import { BackupTypeStep } from 'src/views/onboarding/steps/BackupTypeStep';
 import { CreateOrRecoverStep } from 'src/views/onboarding/steps/CreateOrRecoverStep';

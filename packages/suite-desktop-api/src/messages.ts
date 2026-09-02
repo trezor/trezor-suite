@@ -1,4 +1,4 @@
-import { type TorStatus } from '@suite/tor';
+import { type TorStatus } from '@suite/tor-types';
 
 import { type ExtractUndefined } from './methods';
 
@@ -81,18 +81,9 @@ export type HandshakeElectron = {
     };
 };
 
-interface LoggerOptions {
-    colors?: boolean;
-    writeToConsole?: boolean;
-    writeToDisk?: boolean;
-    outputFile?: string;
-    outputPath?: string;
-    logFormat?: string;
-}
-
 export interface LoggerConfig {
     level?: 'mute' | 'error' | 'warn' | 'info' | 'debug';
-    options?: LoggerOptions;
+    writeToDisk?: boolean;
 }
 
 export interface UpdateInfo {
@@ -155,6 +146,9 @@ export type ConnectPopupCall = {
         email: string;
         npmVersion?: string;
     };
+    // Mirrors connect's `PermissionRequest`, inlined to keep this package free of a
+    // `@trezor/connect` dependency — same as `manifest` above.
+    requestedPermissions?: { permission: string; coin?: string }[];
 };
 
 export type ConnectPopupCancel = {

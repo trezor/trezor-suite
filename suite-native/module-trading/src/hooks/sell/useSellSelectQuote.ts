@@ -1,15 +1,16 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingSellInfo,
     selectTradingSellIsLoading,
     sellThunks,
     tradingSellActions,
 } from '@suite-common/trading';
-import { useFormState } from '@suite-native/forms';
+import { useFormState, useWatch } from '@suite-native/forms';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -37,9 +38,9 @@ type SellSelectQuoteReturn = {
 export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const { watch, control } = form;
+    const { control } = form;
     const { isValid } = useFormState({ control });
-    const candidateQuote = watch('quote');
+    const candidateQuote = useWatch({ control, name: 'quote' });
     const isLoading = useSelector(selectTradingSellIsLoading);
     const sellInfo = useSelector(selectTradingSellInfo);
 

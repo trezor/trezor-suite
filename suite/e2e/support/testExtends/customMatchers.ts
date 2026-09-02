@@ -5,7 +5,11 @@ import { diff } from 'jest-diff';
 import { isEqualWith } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
-import { isAddressValid } from '@suite-common/address';
+import { createAddressValidator } from '@suite-common/address';
+import {
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { Model } from '@trezor/trezor-user-env-link';
 import { getIndexOrThrow } from '@trezor/utils';
@@ -13,12 +17,17 @@ import { getIndexOrThrow } from '@trezor/utils';
 import { formatAddress, formatEvmAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DeviceFixture } from '../device';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
+import { decodeQrCodes } from '../helpers/qrCodeDecoder';
 
 type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'cardanoTetragrams' | 'fullLine';
 
 const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
 const intlEn = createIntl({ locale: 'en', messages: {} }, createIntlCache());
+
+const networkModules = createNetworksCompositionRoot();
+const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const addressValidator = createAddressValidator({ networkModuleRepository });
 
 const compareTextAndNumber = async (
     locator: Locator,
@@ -27,10 +36,10 @@ const compareTextAndNumber = async (
     compareFnName: string,
 ) => {
     await baseExpect(locator).toBeVisible();
-    const text = await locator.textContent();
-    const textWithoutEllipsis = text?.endsWith('…') ? text.slice(0, -1) : text;
+    const text = await locator.innerText();
+    const textWithoutEllipsis = text.endsWith('…') ? text.slice(0, -1) : text;
     const numericValue = Number(textWithoutEllipsis);
-    const isNumber = Number.isFinite(numericValue);
+    const isNumber = textWithoutEllipsis.trim() !== '' && Number.isFinite(numericValue);
 
     return {
         pass: isNumber && compareFn(numericValue, expectedValue),
@@ -322,13 +331,31 @@ export const expect = baseExpect.extend({
 
     async toHaveValidAddress(locator: Locator, symbol: Account['symbol']) {
         await baseExpect(locator).toBeVisible();
-        const text = await locator.textContent();
-        const stripped = text?.replace(/\s/g, '') ?? '';
+        const text = await locator.innerText();
+        const stripped = text.replace(/\s/g, '');
 
         return {
-            pass: isAddressValid(stripped, symbol),
+            pass: addressValidator.isAddressValid(stripped, symbol),
             message: () =>
                 `expected locator text to be a valid '${symbol}' address, but got '${text}' (stripped: '${stripped}')`,
+        };
+    },
+
+    async toHaveQrCodeValue(
+        locator: Locator,
+        expectedValue: string,
+        options?: { timeout?: number },
+    ) {
+        await baseExpect
+            .poll(async () => await decodeQrCodes(await locator.screenshot()), {
+                timeout: options?.timeout,
+                message: `expected the rendered QR code to decode to '${expectedValue}'`,
+            })
+            .toEqual([expectedValue]);
+
+        return {
+            pass: true,
+            message: () => 'errors are handled in expects above',
         };
     },
 

@@ -10,6 +10,14 @@ export const InitSchema = Type.Object({
     debug: Type.Optional(Type.Boolean()),
     transportReconnect: Type.Optional(Type.Boolean()),
     pendingTransportEvent: Type.Optional(Type.Boolean()),
+    requestedPermissions: Type.Optional(
+        Type.Array(
+            Type.Object({
+                permission: Type.String(),
+                coin: Type.Optional(Type.String()),
+            }),
+        ),
+    ),
     coreMode: Type.Optional(
         Type.Union([
             Type.Literal('auto'),
@@ -26,6 +34,8 @@ export const paramDescriptions = {
         'default `true`. If transport dies during lifecycle of application, this field decides whether TrezorConnect tries to reestablish connection with transport layer.',
     pendingTransportEvent:
         'default `true`. Postpone emitting TRANSPORT.START event to the moment when connected device becomes available.',
+    requestedPermissions:
+        'Permissions your application will need, declared up front so the user can approve the whole set in a single prompt instead of being asked per call. See [Permissions](/details/permissions).',
     coreMode: `default \`auto\`.
 In the default \`auto\` mode, TrezorConnect will automatically choose \`core-in-suite-desktop\` if Suite desktop is available and \`core-in-suite-web\` otherwise, to allow for webUSB use.`,
 };
@@ -47,6 +57,13 @@ const result = await TrezorConnect.init({
     // More advanced options
     debug: true,
     coreMode: 'auto',
+    // Declare the permissions your app needs so the user can approve them all at once.
+    // See the Permissions page for details.
+    requestedPermissions: [
+        { permission: 'read_account_info', coin: 'btc' },
+        { permission: 'read_address', coin: 'btc' },
+        { permission: 'sign', coin: 'eth' },
+    ],
 });
 ```
 

@@ -12,6 +12,7 @@ import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-commo
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';
@@ -65,7 +66,9 @@ export const YieldEarnProviderConsentModal = ({
         yieldContext,
     });
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-    const depositSymbol = tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol;
+    const depositSymbol = isWrappedNativeToken(account.symbol, normalizedTokenContractAddress)
+        ? displaySymbol
+        : (tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol);
     const providerName = getEarnProviderName(provider);
 
     const handleOnConfirm = () => {
@@ -123,7 +126,7 @@ export const YieldEarnProviderConsentModal = ({
             }
             onConfirm={handleOnConfirm}
             onCancel={handleOnCancel}
-            networkType={account.networkType}
+            account={account}
         >
             <VotingDelegations account={account} />
         </EarnProviderConsentModalLayout>

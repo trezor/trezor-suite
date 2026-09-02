@@ -38,10 +38,7 @@ export function CollapsibleFees({
     isOpen,
     tronResources,
 }: CollapsibleFeesProps) {
-    const selectedFee = useWatch<FormState, 'selectedFee'>({
-        name: 'selectedFee',
-        defaultValue: 'normal',
-    });
+    const selectedFee = useWatch<FormState, 'selectedFee'>({ name: 'selectedFee' }) ?? 'normal';
 
     const isTrc20Transfer = useMemo(() => {
         if (networkType !== 'tron' || composedLevels == null) return false;
@@ -56,9 +53,11 @@ export function CollapsibleFees({
         networkType !== 'solana' && (networkType !== 'tron' || isTrc20Transfer);
     const isCustomFee = supportsAdjustableFees && selectedFee === 'custom';
 
-    // when fees are loading, feeInfo.levels = [], but CustomFee requires at least the 'normal' level to have some default
-    const hasNormalFeeLevel = useMemo(
-        () => feeInfo.levels.some(level => level.label === 'normal'),
+    // get default non-custom fee level, preferably normal
+    const defaultFeeLevel = useMemo(
+        () =>
+            feeInfo.levels.find(level => level.label === 'normal')?.label ??
+            feeInfo.levels.find(level => level.label !== 'custom')?.label,
         [feeInfo.levels],
     );
 
@@ -107,17 +106,19 @@ export function CollapsibleFees({
                                     </Column>
 
                                     <Row justifyContent="center" margin={{ bottom: 8 }}>
-                                        {isCustomFee && (
+                                        {/* allow switching to non-custom fee only when there is some */}
+                                        {isCustomFee && !!defaultFeeLevel && (
                                             <Button
                                                 intent="neutral"
                                                 priority="secondary"
-                                                onClick={() => changeFeeLevel('normal')}
+                                                onClick={() => changeFeeLevel(defaultFeeLevel)}
                                                 data-testid="@wallet/fees/select-standard-fee"
                                             >
                                                 <Translation id="FEE_LEVEL_STANDARD" />
                                             </Button>
                                         )}
-                                        {!isCustomFee && hasNormalFeeLevel && (
+                                        {/* in order to have sensible default for custom fee, selected fee level must exist (see useFees hook) */}
+                                        {!isCustomFee && !!selectedFeeLevel && (
                                             <TextButton
                                                 onClick={() => changeFeeLevel('custom')}
                                                 data-testid="@wallet/fees/select-custom-fee"

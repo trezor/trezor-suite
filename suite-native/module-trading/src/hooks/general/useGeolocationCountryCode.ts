@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { fetchCountryCodeThunk, selectCountryCode } from '@suite-common/geolocation';
+import { useDispatch } from '@suite-common/redux-utils';
 
 export const useGeolocationCountryCode = () => {
     const dispatch = useDispatch();

@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectDeviceUnavailableCapabilities,
     selectIsDeviceRemembered,
 } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -114,6 +117,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
+    const { addressValidator } = useServices(selectAddressValidatorDep);
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
@@ -172,6 +176,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         // If the form is prefilled with the draft values, we want to revalidate the draft on every change.
         mode: sendFormDraft ? 'onChange' : 'onTouched',
         context: {
+            addressValidator,
             networkFeeInfo,
             accountDescriptor: account?.descriptor,
             symbol: account?.symbol,

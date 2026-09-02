@@ -1,20 +1,21 @@
-import { getIsTorEnabled, torActions } from '@suite/tor';
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { geolocationActions, selectCountryCode } from '@suite-common/geolocation';
+import { torActions } from '@suite/tor';
+import { deviceActions } from '@suite-common/device';
+import { geolocationActions } from '@suite-common/geolocation';
 import {
     categorizeMessages,
     getValidExperimentIds,
     getValidMessages,
     messageSystemActions,
+    selectMessageSystemConfig,
 } from '@suite-common/message-system';
 import { createMiddleware } from '@suite-common/redux-utils';
 import { changeNetworks } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 
-import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
+import { selectMessageSystemValidationParams } from 'src/selectors/suite/selectMessageSystemValidationParams';
 
 // actions which can affect message system messages
-const actions = [
+const actions: string[] = [
     deviceActions.selectDevice.type,
     torActions.setTorStatus.type,
     messageSystemActions.fetchSuccessUpdate.type,
@@ -32,22 +33,8 @@ const messageSystemMiddleware = createMiddleware((action, { next, dispatch, getS
     next(action);
 
     if (actions.includes(action.type)) {
-        const { config } = getState().messageSystem;
-        const { torStatus } = getState().tor;
-        const transports = selectActiveTransports(getState());
-        const device = selectSelectedDevice(getState());
-        const { enabledNetworks } = getState().wallet.settings;
-        const countryCode = selectCountryCode(getState());
-
-        const validationParams = {
-            device,
-            transports,
-            settings: {
-                tor: getIsTorEnabled(torStatus),
-                enabledNetworks,
-            },
-            countryCode,
-        };
+        const config = selectMessageSystemConfig(getState());
+        const validationParams = selectMessageSystemValidationParams(getState());
 
         const validMessages = getValidMessages(config, validationParams);
         const validExperimentIds = getValidExperimentIds(config, validationParams);

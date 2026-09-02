@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import * as Clipboard from 'expo-clipboard';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
 import { type BottomSheetModalRef, Button, Loader, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

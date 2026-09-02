@@ -2,14 +2,12 @@
 // differences:
 // - add missing `compressed` field on BIP32Interface
 // - changed order of `fromPrivateKeyLocal/fromPublicKeyLocal` (eslint no-use-before-define)
-// - `identifier` method is using different hashing for Decred.
-// - `fromBase58` and `toBase58` methods are using additional "network" param in bs58check.encode/decode (Decred support).
 
 import * as wif from 'wif';
 
 import * as bs58check from './bs58check';
 import * as crypto from './crypto';
-import { bitcoin as BITCOIN, isNetworkType } from './networks';
+import { bitcoin as BITCOIN } from './networks';
 import type { Network } from './networks';
 import * as ecc from './noble-compatibility';
 import {
@@ -150,8 +148,6 @@ class BIP32 implements BIP32Interface {
     }
 
     get identifier(): Buffer {
-        if (isNetworkType('decred', this.network)) return crypto.hash160blake256(this.publicKey);
-
         return crypto.hash160(this.publicKey);
     }
 
@@ -213,7 +209,7 @@ class BIP32 implements BIP32Interface {
             this.publicKey.copy(buffer, 45);
         }
 
-        return bs58check.encode(buffer, network);
+        return bs58check.encode(buffer);
     }
 
     toWIF(): string {
@@ -317,7 +313,7 @@ class BIP32 implements BIP32Interface {
 
         return splitPath.reduce((prevHd, indexStr) => {
             let index;
-            if (indexStr.slice(-1) === `'`) {
+            if (indexStr.endsWith(`'`)) {
                 index = parseInt(indexStr.slice(0, -1), 10);
 
                 return prevHd.deriveHardened(index);
@@ -354,11 +350,7 @@ class BIP32 implements BIP32Interface {
 }
 
 export function fromBase58(inString: string, network?: Network): BIP32Interface {
-    const buffer = Buffer.from(
-        isNetworkType('decred', network)
-            ? bs58check.decodeBlake256Key(inString)
-            : bs58check.decode(inString, network),
-    );
+    const buffer = Buffer.from(bs58check.decode(inString));
     if (buffer.length !== 78) throw new TypeError('Invalid buffer length');
     network = network || BITCOIN;
 

@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
-import { useDispatch } from 'react-redux';
 
 import { getLocales } from 'expo-localization';
+
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { DEFAULT_LOCALE, type LocaleCode } from '../languages';
 import { setSystemLocaleCode } from '../localeSlice';

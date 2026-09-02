@@ -18,7 +18,7 @@ import getPublicKey from '../../../data/methods/bitcoin/getPublicKey.ts';
 
 export const paramDescriptions = {
     path: 'minimum length is `1`. [read more](/details/path)',
-    coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used. If `coin` is not set API will try to get network definition from `path`.',
+    coin: 'determines the network definition. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used — see [supported coins](/details/coins) for every accepted value. If `coin` is not set API will try to get network definition from `path`.',
     scriptType: 'used to distinguish between various address formats (non-segwit, segwit, etc.).',
     ignoreXpubMagic: 'ignore SLIP-0132 XPUB magic, use xpub/tpub prefix for all account types.',
     ecdsaCurveName: 'ECDSA curve name to use',

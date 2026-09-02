@@ -130,9 +130,7 @@ export interface CoinjoinOutputAddedEvent {
 }
 
 export type CoinjoinStateEvent =
-    | CoinjoinRoundCreatedEvent
-    | CoinjoinInputAddedEvent
-    | CoinjoinOutputAddedEvent;
+    CoinjoinRoundCreatedEvent | CoinjoinInputAddedEvent | CoinjoinOutputAddedEvent;
 
 export interface AllowedRange {
     Min: number;

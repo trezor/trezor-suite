@@ -1,11 +1,12 @@
 import {
     type ActionCreatorWithPayload,
     type ActionCreatorWithoutPayload,
-    type AnyAction,
+    type UnknownAction,
 } from '@reduxjs/toolkit';
 
 export * from './device';
-export type * from './firmware';
+export * from './firmware';
+export type * from './connectInit';
 export type * from './guide';
 export type * from './messageSystem';
 export type * from './modal';
@@ -15,7 +16,8 @@ export * from './walletBackupType';
 export type * from './sign';
 export type * from './thp';
 export * from './languages';
+export type * from './window';
 
 export type SuiteCompatibleAction<TPayload> = (
     payload: TPayload,
-) => AnyAction | ActionCreatorWithPayload<TPayload> | ActionCreatorWithoutPayload;
+) => UnknownAction | ActionCreatorWithPayload<TPayload> | ActionCreatorWithoutPayload;

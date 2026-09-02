@@ -25,7 +25,6 @@ export class OnboardingPage {
 
     readonly welcomeBody: Locator;
     readonly completeOnboardingButton: Locator;
-    readonly connectDevicePrompt: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
     readonly createBackupButton: Locator;
@@ -63,12 +62,11 @@ export class OnboardingPage {
 
         this.welcomeBody = this.page.getByTestId('@welcome-layout/body');
         this.completeOnboardingButton = this.page.getByTestId('@onboarding/complete-onboarding');
-        this.connectDevicePrompt = this.page.getByTestId('@connect-device-prompt');
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
         this.authenticityContinueButton = this.page.getByTestId(
             '@authenticity-check/continue-button',
         );
-        this.createBackupButton = this.page.getByTestId('@onboarding/create-backup-button');
+        this.createBackupButton = this.backup.createBackupButton;
         this.recoverWalletButton = this.page.getByTestId('@onboarding/path-recovery-button');
         this.startRecoveryButton = this.page.getByTestId('@onboarding/recovery/start-button');
         this.continueRecoveryButton = this.page.getByTestId('@onboarding/recovery/continue-button');
@@ -115,6 +113,11 @@ export class OnboardingPage {
 
     @step()
     async enterTHPPairingCode() {
+        await expect(
+            this.thpPairingModal,
+            'expected THP pairing modal to be shown before entering the pairing code',
+        ).toBeVisible({ timeout: 10_000 });
+
         const code = await this.device.getTHPPairingCode();
 
         for (let i = 0; i < code.length; i++) {

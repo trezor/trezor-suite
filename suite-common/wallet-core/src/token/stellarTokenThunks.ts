@@ -1,6 +1,6 @@
 import { G } from '@mobily/ts-belt';
 
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -9,10 +9,11 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import stellar from '@trezor/network-stellar/runtime';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 
-import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
+import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer';
 
 export interface TokenThunkPayload {
     account: Account;
@@ -26,7 +27,7 @@ const STELLAR_TOKEN_MODULE_PREFIX = '@common/wallet-core/stellar-token';
 const manageTrustline = async (
     payload: TokenThunkPayload,
     operation: 'activate' | 'deactivate',
-    getState: () => any,
+    getState: () => DeviceRootState & FeesRootState,
     rejectWithValue: (value: any) => any,
 ) => {
     const { account, contractAddress, selectedFee, customFeePerUnit } = payload;
@@ -112,7 +113,7 @@ const manageTrustline = async (
     // Submit transaction to the network
     const pushResponse = await TrezorConnect.pushTransaction({
         tx: serializedTx,
-        coin: account.symbol,
+        coin: asCoinSymbol(account.symbol),
         identity: tryGetAccountIdentity(account),
     });
 
@@ -124,20 +125,30 @@ const manageTrustline = async (
     }
 };
 
+type ActivateStellarTokenThunkState = DeviceRootState & FeesRootState;
+
 export const activateStellarTokenThunk = createThunk<
     void,
     TokenThunkPayload,
-    { rejectValue: { error: string; message: string } }
+    {
+        rejectValue: { error: string; message: string };
+        state: ActivateStellarTokenThunkState;
+    }
 >(
     `${STELLAR_TOKEN_MODULE_PREFIX}/activateStellarTokenThunk`,
     (payload, { getState, rejectWithValue }) =>
         manageTrustline(payload, 'activate', getState, rejectWithValue),
 );
 
+type DeactivateStellarTokenThunkState = DeviceRootState & FeesRootState;
+
 export const deactivateStellarTokenThunk = createThunk<
     void,
     TokenThunkPayload,
-    { rejectValue: { error: string; message: string } }
+    {
+        rejectValue: { error: string; message: string };
+        state: DeactivateStellarTokenThunkState;
+    }
 >(
     `${STELLAR_TOKEN_MODULE_PREFIX}/deactivateStellarTokenThunk`,
     (payload, { getState, rejectWithValue }) =>

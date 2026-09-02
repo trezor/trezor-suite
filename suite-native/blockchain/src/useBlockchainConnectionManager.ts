@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
@@ -9,6 +10,7 @@ import {
     selectBlockchainBackendType,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 // No other networks need managing at the moment.
 const symbol: NetworkSymbol = 'btc';
@@ -28,7 +30,7 @@ export const useBlockchainConnectionManager = () => {
             // connection. So we need to manage the connection based on the app state.
             const subscription = AppState.addEventListener('change', nextAppState => {
                 if (nextAppState === 'background') {
-                    TrezorConnect.blockchainDisconnect({ coin: symbol });
+                    TrezorConnect.blockchainDisconnect({ coin: asCoinSymbol(symbol) });
                 } else if (nextAppState === 'active') {
                     dispatch(reconnectBlockchainThunk({ symbol }));
                 }

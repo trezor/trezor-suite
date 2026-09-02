@@ -39,5 +39,5 @@ Before submitting code, ensure:
 - [ ] Correct render function used (`renderHookWithStoreProvider` for hooks needing store, `renderHook` otherwise)
 - [ ] Fixtures are properly typed
 - [ ] Tests focus on behavior, not implementation
-- [ ] Tests follow naming conventions (.hook.test.ts, .test.ts)
+- [ ] Tests follow the `.test.ts` or `.test.tsx` naming convention
 - [ ] All tests pass locally

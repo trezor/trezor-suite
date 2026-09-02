@@ -1,0 +1,13 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/feedback" },
+        { "path": "../atoms" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../intl" },
+        { "path": "../test-utils" }
+    ]
+}

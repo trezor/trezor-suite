@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { Input, Text } from '@suite-native/atoms';
@@ -102,7 +103,9 @@ export const CryptoAmountInput = ({
             hasError={!isDisabled && hasError}
             rightIcon={
                 <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                    {tokenSymbol ?? formatter.format(symbol)}
+                    {tokenSymbol !== null
+                        ? getDisplaySymbol(tokenSymbol, tokenContract)
+                        : formatter.format(symbol)}
                 </SendAmountCurrencyLabelWrapper>
             }
         />

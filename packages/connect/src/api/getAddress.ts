@@ -6,7 +6,7 @@ import {
     type PROTO,
     type PermissionRequest,
 } from '@trezor/connect-common';
-import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { GetAddress as GetAddressSchema } from '@trezor/connect-common/src/types/api/account/getAddress';
 import { Assert } from '@trezor/schema-utils';
@@ -14,7 +14,12 @@ import { Assert } from '@trezor/schema-utils';
 import { bundlify, validateCoinPath } from './common/paramsValidator';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
+import {
+    fixCoinInfoNetwork,
+    getBitcoinNetwork,
+    getBitcoinNetworkOrThrow,
+    getUniqueNetworks,
+} from '../data/coinInfo';
 import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Params = {
@@ -52,11 +57,8 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             if (coinInfo && !batch.crossChain) {
                 validateCoinPath(path, coinInfo);
             } else if (!coinInfo) {
-                coinInfo = getBitcoinNetwork(path);
-            }
-
-            if (!coinInfo) {
-                throw ERRORS.TypedError('Method_UnknownCoin');
+                // coin not provided (or not bitcoin-like), derive the network from the path
+                coinInfo = getBitcoinNetworkOrThrow(path);
             }
 
             // fix coinInfo network values (segwit/legacy)
@@ -174,7 +176,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             if (this.hasBundle) {
                 // send progress
                 sendCoreMessage(
-                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                    createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

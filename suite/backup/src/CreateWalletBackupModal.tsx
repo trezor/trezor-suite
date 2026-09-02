@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
@@ -8,9 +8,10 @@ import {
     AdditionalBackupSteps,
     AdditionalBackupSuccess,
 } from '@suite/nfc';
-import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
+import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Modal } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';

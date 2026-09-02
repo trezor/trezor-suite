@@ -100,49 +100,9 @@ export const validAddresses = [
         address: 'qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807',
     },
     {
-        description: 'Bitcoin Gold P2PKH',
-        coin: 'btg',
-        address: 'GW3JrQyHtoVfEFES3Y9JagiX3VSKQStLwj',
-    },
-    {
-        description: 'Bitcoin Gold P2SH',
-        coin: 'btg',
-        address: 'AQtK3tNjJUSn68fXdDoBU8o1jNxNvzMQ4A',
-    },
-    {
-        description: 'Dash P2PKH',
-        coin: 'dash',
-        address: 'Xx4dYKgz3Zcv6kheaqog3fynaKWjbahb6b',
-    },
-    {
-        description: 'Digibyte P2PKH',
-        coin: 'dgb',
-        address: 'D9TDZTR9Z9Mx2NoDJnhqhnYhDLKRAmsL9n',
-    },
-    {
-        description: 'Digibyte P2SH',
-        coin: 'dgb',
-        address: 'SRrevBM5bfZNpFJ4MhzaNfkTghYKoTB6LV',
-    },
-    {
         description: 'Doge P2PKH',
         coin: 'doge',
         address: 'DPpJVPpvPNP6i6tMj4rTycAGh8wReTqaSU',
-    },
-    {
-        description: 'Vertcoin P2PKH',
-        coin: 'vtc',
-        address: 'VmoMjGf3zgZLy8sk3PMKd3xikZHXWvnYi7',
-    },
-    {
-        description: 'Vertcoin P2SH',
-        coin: 'vtc',
-        address: '3PgeyhEJEnS5CeBu3iFcu3JHVKemeHx1AW',
-    },
-    {
-        description: 'Vertcoin P2WPKH',
-        coin: 'vtc',
-        address: 'vtc1qmzq3erafwvz23yfeu9tu45uz2kx3d7esk0rayg',
     },
     {
         description: 'ZCash P2PKH',
@@ -187,18 +147,6 @@ export const invalidAddresses = [
     {
         address: 'bitcoincash:qp3wjpa3tjlj042z2wv7hahsldgwhwy0rq9sywjpyya',
         coin: 'bch',
-    },
-    {
-        address: 'vtc1qmzq3erafwvz23yabc9tu45uz2kx3d7esk0rayg',
-        coin: 'vtc',
-    },
-    {
-        address: 'vtc1qhy8eqwqxpyryz4wctus36yl2uu60t0z6ecrvt',
-        coin: 'vtc',
-    },
-    {
-        address: 'vtd1qhy8eqwqxpyryz4wctus36yl2uu60t0z6ecrvtc',
-        coin: 'vtc',
     },
     {
         address: 't3Yz22vK5z2LcKEdg16Yv4FFneEL1zg9ojd',

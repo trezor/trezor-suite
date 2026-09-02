@@ -11,7 +11,6 @@ import {
     selectFormattedAccountTypeWithDefault,
     selectIsAccountUtxoBased,
 } from '@suite-common/wallet-core';
-import { AccountLabel } from '@suite-native/accounts';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Bip329ManageLabelsCard } from '@suite-native/bip329';
 import { TokenIcon } from '@suite-native/icons';
@@ -24,6 +23,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 
+import { AccountDetailScreenHeaderContent } from '../components/AccountDetailScreenHeader';
 import { AccountRenameButton } from '../components/AccountRenameButton';
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
@@ -85,7 +85,7 @@ export const AccountSettingsScreen = ({
         <Screen
             header={
                 <ScreenHeader
-                    title={<AccountLabel account={account} />}
+                    customContent={<AccountDetailScreenHeaderContent account={account} />}
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}
                 />
             }

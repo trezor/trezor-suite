@@ -13,11 +13,5 @@ export const EarnWithdraw = () => {
         return <EarnLayoutFallback layoutState={result} />;
     }
 
-    return (
-        <YieldWithdraw
-            account={result.account}
-            routeParams={result.routeParams}
-            vault={result.vault}
-        />
-    );
+    return <YieldWithdraw account={result.account} vault={result.vault} />;
 };

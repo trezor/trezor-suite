@@ -1,4 +1,4 @@
-import { MODAL_CONTEXT_USER } from '@suite/modal';
+import { MODAL_CONTEXT_USER, selectModal } from '@suite/modal';
 import type { State as ModalState } from '@suite/modal';
 import { type UserContextPayload } from '@suite-common/suite-types';
 
@@ -23,7 +23,7 @@ export const useFilteredModal = <T extends ModalContext>(
     context: T[],
     type?: T extends typeof MODAL_CONTEXT_USER ? UserModalType[] : never,
 ): Extract<ModalState, { context: T }> | null => {
-    const modal = useSelector(state => state.modal);
+    const modal = useSelector(selectModal);
 
     if (!hasGivenContext(modal, context)) {
         return null;

@@ -5,6 +5,7 @@ import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DefinitionType,
@@ -26,7 +27,7 @@ import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 

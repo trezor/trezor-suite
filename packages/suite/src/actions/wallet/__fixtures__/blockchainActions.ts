@@ -1,4 +1,5 @@
-import { type AnyAction } from '@suite-common/redux-utils';
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type AccountsState,
@@ -7,6 +8,7 @@ import {
     blockchainActions,
     feesActions,
     transactionsActions,
+    updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
 import { type BlockchainBlock, type BlockchainNotification } from '@trezor/connect-common';
@@ -254,23 +256,33 @@ type OnConnectFixture = {
     connect?: ConnectFixtures;
     initialState?: FixtureState;
     symbol: string;
-    actions: AnyAction[];
+    actions: UnknownAction[];
     blockchainEstimateFee: number;
     blockchainSubscribe: number;
 };
+
+// Fake timer handle seeded into blockchain[symbol].syncTimeout by the onDisconnect fixtures.
+export const MOCK_SYNC_TIMEOUT = 42;
 
 type OnDisconnectFixture = {
     description: string;
     initialState?: FixtureState;
     symbol: string;
-    actions: AnyAction[];
+    identity?: string;
+    // The thunk armed a new sync timeout; the test asserts it fires syncAccountsWithBlockchainThunk.
+    armsTimer?: boolean;
+    // The seeded MOCK_SYNC_TIMEOUT handle must survive untouched (no clearTimeout call).
+    keepsTimer?: boolean;
+    // The seeded MOCK_SYNC_TIMEOUT handle must be cleared.
+    clearsTimer?: boolean;
+    actions: UnknownAction[];
 };
 
 type OnNotificationFixture = {
     description: string;
     initialState?: FixtureState;
     params: DeepPartial<BlockchainNotification>;
-    actions: AnyAction[];
+    actions: UnknownAction[];
     getAccountInfo: number;
 };
 
@@ -440,7 +452,7 @@ type InitFixture = {
         accounts?: DeepPartial<AccountsState>;
         blockchain?: DeepPartial<BlockchainState>;
     };
-    actions: AnyAction[];
+    actions: UnknownAction[];
     blockchainSetCustomBackend: number;
 };
 
@@ -494,7 +506,7 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 0,
     },
     {
@@ -507,7 +519,7 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 0,
     },
     {
@@ -525,7 +537,7 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 1,
     },
     {
@@ -542,7 +554,7 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 1,
     },
     {
@@ -550,14 +562,15 @@ export const onConnect: OnConnectFixture[] = [
         initialState: {
             accounts: [{ symbol: 'btc', history: {} }],
         },
-        // order: subscribe > estimateFee
-        connect: [undefined, { success: false }],
+        // order: estimateFee > subscribe > estimateFee
+        connect: [{ success: false }, undefined, { success: false }],
         symbol: 'btc',
         actions: [
+            { type: updateFeeInfoThunk.rejected.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 1,
     },
     {
@@ -565,14 +578,15 @@ export const onConnect: OnConnectFixture[] = [
         initialState: {
             accounts: [{ symbol: 'eth', history: {}, deviceState: 'abc' }],
         },
-        // order: subscribe > subscribe > estimateFee
-        connect: [undefined, undefined, { success: false }],
+        // order: estimateFee > subscribe > subscribe > estimateFee
+        connect: [{ success: false }, undefined, undefined, { success: false }],
         symbol: 'eth',
         actions: [
+            { type: updateFeeInfoThunk.rejected.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 2,
     },
 ];
@@ -584,32 +598,84 @@ export const onDisconnect: OnDisconnectFixture[] = [
         actions: [],
     },
     {
-        description: 'without accounts, not reconnection',
+        description: 'without accounts, without armed timer, does nothing',
         symbol: 'btc',
         actions: [],
     },
     {
-        description: 'with accounts, reconnection started',
+        description: 'without accounts, with armed timer, stops the sync chain',
         initialState: {
-            accounts: [{ symbol: 'btc' }],
-        },
-        symbol: 'btc',
-        actions: [],
-    },
-    {
-        description: 'with accounts, with reconnection, reconnection restarted',
-        initialState: {
-            accounts: [{ symbol: 'btc' }],
             blockchain: {
-                btc: {
-                    reconnection: {
-                        id: 1,
-                        count: 1,
-                    },
-                },
+                btc: { syncTimeout: MOCK_SYNC_TIMEOUT },
             },
         },
         symbol: 'btc',
+        clearsTimer: true,
+        actions: [
+            {
+                type: blockchainActions.synced.type,
+                payload: { symbol: 'btc', timeout: undefined },
+            },
+        ],
+    },
+    {
+        description: 'with accounts, without armed timer, re-arms the sync chain',
+        initialState: {
+            accounts: [{ symbol: 'btc', visible: true }],
+        },
+        symbol: 'btc',
+        armsTimer: true,
+        actions: [
+            {
+                type: blockchainActions.synced.type,
+                payload: { symbol: 'btc' },
+            },
+        ],
+    },
+    {
+        description: 'with accounts, with armed timer, keeps the existing chain',
+        initialState: {
+            accounts: [{ symbol: 'btc' }],
+            blockchain: {
+                btc: { syncTimeout: MOCK_SYNC_TIMEOUT },
+            },
+        },
+        symbol: 'btc',
+        keepsTimer: true,
+        actions: [],
+    },
+    {
+        description: 'identity-scoped error, with accounts, re-arms a missing sync chain',
+        initialState: {
+            accounts: [
+                {
+                    symbol: 'eth',
+                    visible: true,
+                    deviceState: '1stTestnetAddress@device_id:0',
+                },
+            ],
+        },
+        symbol: 'eth',
+        identity: '1stTestnetAddress@device_id:0',
+        armsTimer: true,
+        actions: [
+            {
+                type: blockchainActions.synced.type,
+                payload: { symbol: 'eth' },
+            },
+        ],
+    },
+    {
+        description: 'identity-scoped error, with accounts, keeps an armed chain',
+        initialState: {
+            accounts: [{ symbol: 'eth', deviceState: '1stTestnetAddress@device_id:0' }],
+            blockchain: {
+                eth: { syncTimeout: MOCK_SYNC_TIMEOUT },
+            },
+        },
+        symbol: 'eth',
+        identity: '1stTestnetAddress@device_id:0',
+        keepsTimer: true,
         actions: [],
     },
 ];

@@ -4,13 +4,19 @@ import { type StaticSessionId } from '@trezor/connect';
 
 import * as metadataLabelingActions from './metadataLabelingActions';
 import * as METADATA_LABELING from './metadataLabelingConstants';
-import { selectIsMetadataEnabled } from './metadataReducer';
+import { type MetadataRootState, selectIsMetadataEnabled } from './metadataReducer';
 
 export * from './metadataDataThunks';
 
-export const initNewDeviceStateMetadataThunk = createThunk(
+type InitNewDeviceStateMetadataThunkState = MetadataRootState;
+
+export const initNewDeviceStateMetadataThunk = createThunk<
+    void,
+    StaticSessionId,
+    { state: InitNewDeviceStateMetadataThunkState }
+>(
     '@suite/metadata/initNewDeviceStateMetadataThunk',
-    async (staticSessionId: StaticSessionId, { getState, dispatch }) => {
+    async (staticSessionId, { getState, dispatch }) => {
         if (!selectIsMetadataEnabled(getState())) {
             return;
         }

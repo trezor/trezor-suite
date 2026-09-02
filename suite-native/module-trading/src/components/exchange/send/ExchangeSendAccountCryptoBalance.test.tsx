@@ -1,0 +1,57 @@
+import { Form } from '@suite-native/forms';
+import { act } from '@suite-native/test-utils-store';
+import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
+import { type ExchangeFormType } from '@suite-native/trading-types';
+
+import {
+    ExchangeSendAccountCryptoBalance,
+    SEND_ACCOUNT_BALANCE_TEST_ID,
+} from './ExchangeSendAccountCryptoBalance';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
+import {
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../test-utils/tradingTestUtils';
+
+describe('ExchangeSendAccountCryptoBalance', () => {
+    let exchangeForm: ExchangeFormType;
+
+    const renderExchangeForm = async () => {
+        const { result } = await renderHookWithTradingProvider(() => useExchangeForm(), {
+            tradeType: 'exchange',
+        });
+
+        return result.current;
+    };
+
+    const renderComponent = async () =>
+        await renderWithTradingProvider(<ExchangeSendAccountCryptoBalance />, {
+            tradeType: 'exchange',
+            wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
+        });
+
+    beforeEach(async () => {
+        exchangeForm = await renderExchangeForm();
+    });
+
+    it('should use asset form field as default symbol', async () => {
+        await act(() => {
+            exchangeForm.setValue('sendAsset', btcAsset);
+        });
+        const { getByTestId } = await renderComponent();
+
+        expect(getByTestId(SEND_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:- BTC');
+    });
+
+    it('should use sendAccount form field to obtain account', async () => {
+        await act(() => {
+            exchangeForm.setValue('sendAsset', btcAsset);
+        });
+        await act(() => {
+            exchangeForm.setValue('sendAccount', getBtcAccount());
+        });
+        const { getByTestId } = await renderComponent();
+
+        expect(getByTestId(SEND_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:0.01 BTC');
+    });
+});

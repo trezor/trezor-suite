@@ -6,6 +6,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
-        { "path": "../config" }
+        { "path": "../config" },
+        { "path": "../storage" }
     ]
 }

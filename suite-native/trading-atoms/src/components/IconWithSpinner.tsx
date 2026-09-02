@@ -24,7 +24,7 @@ export const IconWithSpinner = ({ iconName, isInProgress = true }: IconWithSpinn
             {isInProgress && (
                 <CircularSpinner
                     size={utils.spacings.sp56}
-                    color="legacyBackgroundAlertYellowBold"
+                    color="elementFillWarningBold"
                     width={3}
                 />
             )}

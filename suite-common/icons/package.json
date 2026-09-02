@@ -11,12 +11,15 @@
         "generate-icons": "yarn g:tsx generateIcons.mjs && yarn g:tsx generateIconFont.ts",
         "generate-icon-font": "yarn g:tsx generateIconFont.ts",
         "download-crypto-icons": "yarn g:tsx ./scripts/downloadCryptoIcons.ts",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest"
     },
     "devDependencies": {
-        "chalk": "^5.6.2",
+        "@suite-common/wallet-config": "workspace:^",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
+        "chalk": "^6.0.0",
         "fantasticon": "4.1.0",
-        "prettier": "^3.8.4",
+        "prettier": "^3.9.6",
         "sharp": "^0.34.2",
         "svgo": "^4.0.1"
     },

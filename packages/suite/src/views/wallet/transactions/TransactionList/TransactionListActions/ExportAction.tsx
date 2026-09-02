@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
@@ -13,8 +13,6 @@ import { Dropdown, Note } from '@trezor/components';
 import { ChecksIcon, FileArrowDownIcon, InfoIcon } from '@trezor/icons';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
-import { useDispatch } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 
 export interface ExportActionProps {
@@ -39,8 +37,6 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
         });
     }, [account, translationString]);
 
-    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
-
     const runExport = useCallback(
         async (type: ExportFileType) => {
             if (isExportRunning) {
@@ -63,11 +59,10 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
                         noLoading: true,
                     }),
                 );
-                const accountName = accountLabel || getAccountTitle();
                 await dispatch(
                     exportTransactionsThunk({
                         account,
-                        accountName,
+                        defaultAccountName: getAccountTitle(),
                         type,
                         searchQuery,
                     }),
@@ -89,7 +84,6 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
             analytics,
             account,
             dispatch,
-            accountLabel,
             getAccountTitle,
             searchQuery,
             translationString,

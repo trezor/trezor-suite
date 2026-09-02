@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectAdapterStatus } from '@suite-common/bluetooth';
 import { type BluetoothAdapterStatus } from '@suite-common/bluetooth/src/types';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner, Modal, Paragraph } from '@trezor/components';
 
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type BluetoothAdapterStatusModalProps = {
     onCancel: () => void;

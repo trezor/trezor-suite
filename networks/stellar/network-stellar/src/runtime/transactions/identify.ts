@@ -1,9 +1,11 @@
 import {
     type Asset,
+    FeeBumpTransaction,
     type Horizon,
     type Memo,
     Networks,
-    Transaction,
+    type Transaction,
+    TransactionBuilder,
     extractBaseAddress,
 } from '@stellar/stellar-sdk';
 
@@ -35,13 +37,31 @@ const convertMemo = (memo: Memo): string | undefined => {
 };
 
 export const identifyTransaction = (rawTx: Horizon.ServerApi.TransactionRecord) => {
-    // In Stellar, there are many types of operations; currently, we only include limited support and will consider adding more support later.
-    const parsedTx = new Transaction(rawTx.envelope_xdr, Networks.PUBLIC);
-    const memo = convertMemo(parsedTx.memo);
-    const feeSource = extractBaseAddress(rawTx.source_account);
+    // For fee-bump transactions the fee is paid by fee_account, not by the inner source_account
+    const feeSource = extractBaseAddress(rawTx.fee_account || rawTx.source_account);
     const fee = rawTx.fee_charged.toString();
     const createdAt = isoToTimestamp(rawTx.created_at);
     const { hash, ledger_attr: ledgerAttr } = rawTx;
+
+    let parsedTx: Transaction;
+    try {
+        const envelope = TransactionBuilder.fromXDR(rawTx.envelope_xdr, Networks.PUBLIC);
+        parsedTx = envelope instanceof FeeBumpTransaction ? envelope.innerTransaction : envelope;
+    } catch {
+        // A single unparseable record must not fail the whole account history
+        return {
+            type: 'unknown',
+            memo: undefined,
+            feeSource,
+            hash,
+            fee,
+            createdAt,
+            ledgerAttr,
+        } as const;
+    }
+
+    // In Stellar, there are many types of operations; currently, we only include limited support and will consider adding more support later.
+    const memo = convertMemo(parsedTx.memo);
     const common = { parsedTx, memo, feeSource, hash, fee, createdAt, ledgerAttr };
 
     if (!rawTx.successful) {

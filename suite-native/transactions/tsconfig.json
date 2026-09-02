@@ -46,7 +46,6 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../atoms" },
-        { "path": "../device" },
         { "path": "../feature-feedback" },
         { "path": "../formatters" },
         { "path": "../icons" },
@@ -61,10 +60,13 @@
         },
         { "path": "../../packages/connect" },
         {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
             "path": "../../packages/styles-native"
         },
-        { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils-store" }
     ]
 }

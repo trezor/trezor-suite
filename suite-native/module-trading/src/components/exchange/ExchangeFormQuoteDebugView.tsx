@@ -1,14 +1,15 @@
 import { cryptoIdToNetworkAndContractAddress, getApprovalStatus } from '@suite-common/trading';
 import { findToken, isAllowanceUnlimited } from '@suite-common/wallet-utils';
-import { HStack, Text } from '@suite-native/atoms';
+import { HStack, Text, VStack } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 import { DebugModeView } from '@suite-native/trading-debug';
 
 import { ExchangeUsdcPresetButton } from './ExchangeUsdcPresetButton';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 
 export const ExchangeFormQuoteDebugView = () => {
-    const { watch } = useExchangeFormContext();
-    const [quote, sendAccount] = watch(['quote', 'sendAccount']);
+    const { control } = useExchangeFormContext();
+    const [quote, sendAccount] = useWatch({ control, name: ['quote', 'sendAccount'] });
 
     const approvalStatus = getApprovalStatus(quote);
     const { contractAddress } = cryptoIdToNetworkAndContractAddress(quote?.send);
@@ -25,19 +26,21 @@ export const ExchangeFormQuoteDebugView = () => {
 
     return (
         <DebugModeView>
-            <HStack>
-                <Text variant="body-xs">Approval status</Text>
-                <Text variant="body-xs" color="contentSecondary">
-                    {approvalStatus ?? 'none'}
-                </Text>
-            </HStack>
-            <HStack>
-                <Text variant="body-xs">Pre-approved</Text>
-                <Text variant="body-xs" color="contentSecondary">
-                    {preapproved}
-                </Text>
-            </HStack>
-            <HStack>
+            <HStack justifyContent="space-between">
+                <VStack spacing="sp2" justifyContent="center">
+                    <HStack>
+                        <Text variant="body-xs">Approval status</Text>
+                        <Text variant="body-xs" color="contentSecondary">
+                            {approvalStatus ?? 'none'}
+                        </Text>
+                    </HStack>
+                    <HStack>
+                        <Text variant="body-xs">Pre-approved</Text>
+                        <Text variant="body-xs" color="contentSecondary">
+                            {preapproved}
+                        </Text>
+                    </HStack>
+                </VStack>
                 <ExchangeUsdcPresetButton />
             </HStack>
         </DebugModeView>

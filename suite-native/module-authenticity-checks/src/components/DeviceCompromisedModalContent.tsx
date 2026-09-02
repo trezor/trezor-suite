@@ -7,15 +7,15 @@ import { Screen } from '@suite-native/navigation';
 
 const InformativeList = () => (
     <VStack spacing="sp24">
-        <IconListTextItem icon="plugs" variant="red">
+        <IconListTextItem icon="plugs" variant="critical">
             <Translation id="moduleAuthenticityChecks.deviceCompromised.steps.disconnectDevice" />
         </IconListTextItem>
 
-        <IconListTextItem icon="handPalm" variant="red">
+        <IconListTextItem icon="handPalm" variant="critical">
             <Translation id="moduleAuthenticityChecks.deviceCompromised.steps.avoidUsingDevice" />
         </IconListTextItem>
 
-        <IconListTextItem icon="chatCircle" variant="red">
+        <IconListTextItem icon="chatCircle" variant="critical">
             <Translation id="moduleAuthenticityChecks.deviceCompromised.steps.contactSupport" />
         </IconListTextItem>
     </VStack>

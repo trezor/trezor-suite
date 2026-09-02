@@ -32,7 +32,7 @@
         "usb": "^2.17.0"
     },
     "devDependencies": {
-        "electron": "42.5.0",
-        "electron-builder": "26.15.3"
+        "electron": "43.2.0",
+        "electron-builder": "26.15.7"
     }
 }

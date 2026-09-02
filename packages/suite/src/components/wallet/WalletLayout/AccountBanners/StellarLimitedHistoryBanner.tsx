@@ -1,8 +1,8 @@
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';

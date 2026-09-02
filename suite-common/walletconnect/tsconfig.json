@@ -8,6 +8,7 @@
         { "path": "../device" },
         { "path": "../mev" },
         { "path": "../redux-utils" },
+        { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },
@@ -19,6 +20,7 @@
         {
             "path": "../../packages/connect-common"
         },
+        { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../networks/stellar/network-stellar"

@@ -3,8 +3,7 @@ import { FadeIn, FadeInDown, FadeOutUp, StretchInY, StretchOutY } from 'react-na
 import { useSelector } from 'react-redux';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
-import { AnimatedBox, Card } from '@suite-native/atoms';
-import { useBottomSheetControls } from '@suite-native/trading-atoms';
+import { AnimatedBox, Card, useBottomSheetControls } from '@suite-native/atoms';
 import { CountrySubdivisionPickerControlsContext } from '@suite-native/trading-residence';
 import { selectSellBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 

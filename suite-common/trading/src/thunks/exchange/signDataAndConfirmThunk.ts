@@ -10,7 +10,7 @@ import TrezorConnect, {
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingExchangeAccountKey,
     selectTradingExchangeReceiveAccountKey,
@@ -34,11 +34,14 @@ const signDataRejectedValue: TradingSendRejectedProps = {
     error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
 };
 
+type SignDataAndConfirmThunkState = TradingRootState;
+
 export const signDataAndConfirmThunk = createThunk<
     undefined,
     SignDataAndConfirmThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
+        state: SignDataAndConfirmThunkState;
     }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/signDataAndConfirm`,
@@ -50,7 +53,7 @@ export const signDataAndConfirmThunk = createThunk<
             triggerAnalyticsTradeConfirmation,
             processResponseData,
             nextStep,
-        }: SignDataAndConfirmThunkProps,
+        },
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());

@@ -1,34 +1,30 @@
 import { type JsonRpcScanParams } from '@blockaid/client/resources/evm';
+import { type MessageScanParams } from '@blockaid/client/resources/solana/message';
+import { type TransactionScanParams as StellarScanParams } from '@blockaid/client/resources/stellar/transaction';
+import { base58 } from '@scure/base';
 
-import { type NetworkConfig, networks } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
-type ChainId = Extract<NetworkConfig, { networkType: 'ethereum'; testnet: false }>['chainId'];
-
-// Maps EVM chainId to Blockaid's canonical chain name.
-const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
-    [networks.eth.chainId]: 'ethereum',
-    [networks.op.chainId]: 'optimism',
-    [networks.bsc.chainId]: 'bsc',
-    [networks.etc.chainId]: 'ethereumClassic',
-    [networks.pol.chainId]: 'polygon',
-    [networks.base.chainId]: 'base',
-    [networks.arb.chainId]: 'arbitrum',
-    [networks.rhc.chainId]: 'robinhood',
-    [networks.avax.chainId]: 'avalanche',
-} as const satisfies Readonly<Record<ChainId, string>>;
-
-const resolveBlockaidEvmChain = (chainId: number | undefined = 1) =>
-    BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId as keyof typeof BLOCKAID_EVM_CHAIN_BY_CHAIN_ID];
+import {
+    resolveBlockaidEvmChain,
+    resolveBlockaidSolanaChain,
+    resolveBlockaidStellarChain,
+} from '../chains';
 
 function transformPayloadOfEthereumSignTransaction({
     payload: { transaction },
     fromAddress,
     sourceOrigin,
 }: TxSimulationMethod<'ethereumSignTransaction'>) {
+    const chain = resolveBlockaidEvmChain(transaction.chainId);
+
+    if (!chain) {
+        return null;
+    }
+
     return {
-        chain: resolveBlockaidEvmChain(transaction.chainId),
+        chain,
         data: {
             method: 'eth_sendTransaction',
             params: [
@@ -58,10 +54,16 @@ function transformPayloadOfEthereumSignTypedData({
     fromAddress,
     sourceOrigin,
 }: TxSimulationMethod<'ethereumSignTypedData'>) {
+    const chain = resolveBlockaidEvmChain(
+        data.domain.chainId ? Number(data.domain.chainId) : undefined,
+    );
+
+    if (!chain) {
+        return null;
+    }
+
     return {
-        chain: resolveBlockaidEvmChain(
-            data.domain.chainId ? Number(data.domain.chainId) : undefined,
-        ),
+        chain,
         data: {
             method: 'eth_signTypedData_v4',
             params: [fromAddress, JSON.stringify(data)],
@@ -77,6 +79,52 @@ function transformPayloadOfEthereumSignTypedData({
     } as const satisfies JsonRpcScanParams;
 }
 
+function transformPayloadOfSolanaSignTransaction({
+    payload: { serializedTx },
+    fromAddress,
+    sourceOrigin,
+    symbol,
+}: TxSimulationMethod<'solanaSignTransaction'>) {
+    return {
+        chain: resolveBlockaidSolanaChain(symbol),
+        account_address: fromAddress,
+        // Connect serializes the transaction as hex. `encoding` also governs how the API decodes
+        // `account_address`, so base64 here makes it reject the base58 address.
+        transactions: [base58.encode(Buffer.from(serializedTx, 'hex'))],
+        encoding: 'base58',
+        metadata: {
+            url: sourceOrigin,
+            non_dapp: true,
+        },
+        options: ['validation', 'simulation'],
+    } as const satisfies MessageScanParams;
+}
+
+function transformPayloadOfStellarSignTransaction({
+    payload,
+    fromAddress,
+    sourceOrigin,
+    symbol,
+}: TxSimulationMethod<'stellarSignTransaction'>) {
+    // Blockaid scans the signed envelope. Connect also accepts structured operations, which would
+    // have to be re-encoded to XDR first — those calls go unsimulated.
+    if (!('xdrBase64' in payload)) {
+        return null;
+    }
+
+    return {
+        chain: resolveBlockaidStellarChain(symbol),
+        account_address: fromAddress,
+        transaction: payload.xdrBase64,
+        metadata: {
+            type: 'wallet',
+            url: sourceOrigin,
+            non_dapp: true,
+        },
+        options: ['validation', 'simulation'],
+    } as const satisfies StellarScanParams;
+}
+
 /**
  * Transform payload to the format expected by the tx simulation API.
  */
@@ -86,16 +134,26 @@ export function getTxSimulationParams(action: TxSimulationAction | null) {
     }
 
     switch (action.method) {
-        case 'ethereumSignTransaction':
+        case 'ethereumSignTransaction': {
+            const params = transformPayloadOfEthereumSignTransaction(action);
+
+            return params && ({ method: action.method, params } as const);
+        }
+        case 'ethereumSignTypedData': {
+            const params = transformPayloadOfEthereumSignTypedData(action);
+
+            return params && ({ method: action.method, params } as const);
+        }
+        case 'solanaSignTransaction':
             return {
                 method: action.method,
-                params: transformPayloadOfEthereumSignTransaction(action),
+                params: transformPayloadOfSolanaSignTransaction(action),
             } as const;
-        case 'ethereumSignTypedData':
-            return {
-                method: action.method,
-                params: transformPayloadOfEthereumSignTypedData(action),
-            } as const;
+        case 'stellarSignTransaction': {
+            const params = transformPayloadOfStellarSignTransaction(action);
+
+            return params && ({ method: action.method, params } as const);
+        }
         default:
             return null;
     }

@@ -10,7 +10,9 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
     DeviceRootState & MessageSystemRootState
 >();
 
-export const selectIsMevProtectionFeatureEnabled = (state: MessageSystemRootState) =>
+export type MevProtectionRootState = MessageSystemRootState;
+
+export const selectIsMevProtectionFeatureEnabled = (state: MevProtectionRootState) =>
     selectIsFeatureEnabled(state, Feature.mevProtection, true);
 
 export const selectIsMevProtectionSettingsVisible = createMemoizedSelector(

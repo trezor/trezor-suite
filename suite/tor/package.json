@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
+        "@suite/tor-types": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {

@@ -16,13 +16,13 @@ export const validateJsonSchema = (config: string, schema: string) => {
     try {
         parsedConfig = JSON.parse(config);
     } catch (err) {
-        throw Error(`Invalid config JSON format: ${err.message}`);
+        throw Error(`Invalid config JSON format: ${err.message}`, { cause: err });
     }
 
     try {
         parsedSchema = JSON.parse(schema);
     } catch (err) {
-        throw Error(`Invalid schema JSON format: ${err.message}`);
+        throw Error(`Invalid schema JSON format: ${err.message}`, { cause: err });
     }
 
     const validate = ajv.compile(parsedSchema);

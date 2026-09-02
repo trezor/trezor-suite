@@ -3,9 +3,9 @@ import { type ReactNode } from 'react';
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { BannerInline, type BannerInlineProps } from '../BannerInline/BannerInline';
 import { Box } from '../Box';
 import { Card } from '../Card/Card';
-import { InlineAlertBox, type InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 
@@ -18,7 +18,7 @@ export type CardWithIconLayoutProps = {
     icon: IconName;
     title: ReactNode;
     children: ReactNode;
-    alertBoxProps?: InlineAlertBoxProps;
+    alertBoxProps?: BannerInlineProps;
     testID?: string;
 };
 
@@ -44,7 +44,7 @@ export const CardWithIconLayout = ({
             </HStack>
             {alertBoxProps && (
                 <Box margin="sp4">
-                    <InlineAlertBox {...alertBoxProps} />
+                    <BannerInline {...alertBoxProps} />
                 </Box>
             )}
         </Card>

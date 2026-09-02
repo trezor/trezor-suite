@@ -18,7 +18,7 @@ import styled from 'styled-components';
 
 import { CaretDownIcon } from '@trezor/icons';
 
-import type { Option as OptionType } from './types';
+import type { CustomSelectProps, Option as OptionType } from './types';
 import { Box } from '../../Box/Box';
 import { Column, Row } from '../../Flex/Flex';
 import { Icon } from '../../Icon/Icon';
@@ -37,6 +37,12 @@ import {
 const DropdownWrapper = styled.div<{ $isOpen: boolean }>`
     transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
     transition: transform 0.2s ease-in-out;
+`;
+
+// The control can grow beyond its minimum height when the value wraps to multiple lines,
+// so the label is anchored to the middle of the first row instead of the whole control.
+const SelectFloatingLabel = styled(FloatingLabel)<{ $size: InputSize }>`
+    top: ${({ $size }) => mapSizeToHeight($size) / 2}px;
 `;
 
 type ControlComponentProps = ControlProps<OptionType, boolean> & {
@@ -59,7 +65,8 @@ export const Control = ({
     const {
         isDisabled,
         hasValue,
-        selectProps: { isLoading, placeholder, isSearchable },
+        isFocused,
+        selectProps: { isLoading, placeholder },
     } = props;
 
     return (
@@ -71,15 +78,16 @@ export const Control = ({
                 isClean={isClean}
             >
                 {label && !isLoading && !isClean && (
-                    <FloatingLabel
-                        $isActive={hasValue || !!placeholder || !!isSearchable}
+                    <SelectFloatingLabel
+                        $isActive={hasValue || !!placeholder || isFocused}
                         $isDisabled={isDisabled}
+                        $size={size}
                     >
                         {label}
-                    </FloatingLabel>
+                    </SelectFloatingLabel>
                 )}
                 <Row
-                    height={isClean ? undefined : mapSizeToHeight(size)}
+                    minHeight={isClean ? undefined : mapSizeToHeight(size)}
                     gap={4}
                     padding={isClean ? undefined : { horizontal: INPUT_PADDING }}
                     overflow="hidden"
@@ -93,23 +101,27 @@ export const Control = ({
     );
 };
 
-export const Menu = ({ children, ...props }: MenuProps<OptionType, boolean>) => (
-    <components.Menu {...props}>
-        <Box
-            flex="1"
-            minWidth={140}
-            borderRadius={16}
-            backgroundColor="surfaceFillModeless"
-            borderColor="surfaceBorderModeless"
-            borderWidth={1}
-            shadow="surfaceShadowModeless"
-            overflow="auto"
-            width="fit-content"
-        >
-            {children}
-        </Box>
-    </components.Menu>
-);
+export const Menu = ({ children, ...props }: MenuProps<OptionType, boolean>) => {
+    const { isMenuFullWidth } = props.selectProps as typeof props.selectProps & CustomSelectProps;
+
+    return (
+        <components.Menu {...props}>
+            <Box
+                flex="1"
+                minWidth={140}
+                borderRadius={16}
+                backgroundColor="surfaceFillModeless"
+                borderColor="surfaceBorderModeless"
+                borderWidth={1}
+                shadow="surfaceShadowModeless"
+                overflow="auto"
+                width={isMenuFullWidth ? '100%' : 'fit-content'}
+            >
+                {children}
+            </Box>
+        </components.Menu>
+    );
+};
 
 export const MenuList = ({ children, ...props }: MenuListProps<OptionType, boolean>) => {
     const isGrouped = props.selectProps.options.some(option => option.options);
@@ -237,7 +249,15 @@ export const ValueContainer = ({
     );
 
 export const SingleValue = ({ children }: SingleValueProps<OptionType>) => (
-    <Text ellipsisLineCount={1} as="div" maxWidth="100%" intent="neutral" priority="primary">
+    // full width so a formatOptionLabel row can align its own content, instead of shrinking to fit
+    <Text
+        ellipsisLineCount={1}
+        as="div"
+        width="100%"
+        maxWidth="100%"
+        intent="neutral"
+        priority="primary"
+    >
         {children}
     </Text>
 );

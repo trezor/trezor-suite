@@ -16,7 +16,7 @@ import {
 import { type CryptoIconName, cryptoIcons } from '@suite-common/icons';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { useNativeStyles } from '@trezor/styles-native';
-import { paletteV1 } from '@trezor/theme';
+import { type CSSColor, palette } from '@trezor/theme';
 
 import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';
 
@@ -26,21 +26,20 @@ const RADIUS = 21;
 
 type CryptoIconProps = {
     iconName: CryptoIconName;
+    percentageColor: CSSColor;
     percentage: number;
     percentageOffset: number;
 };
 
 export const CryptoIconWithPercentage = ({
     iconName,
+    percentageColor,
     percentage,
     percentageOffset,
 }: CryptoIconProps) => {
     const iconSvg = useSVG(cryptoIcons[iconName]);
     const { utils } = useNativeStyles();
     const colorScheme = useActiveColorScheme();
-    // @ts-expect-error: coinsColors uses "NetworkSymbol" type. However, here we use deprecated "CryptoIconName".
-    // Not worth fixing it as this package will be removed soon.
-    const percentageColor = utils.coinsColors[iconName] ?? utils.colors.contentSecondary;
 
     const path = Skia.Path.Make();
     path.addCircle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);
@@ -101,7 +100,7 @@ export const CryptoIconWithPercentage = ({
                                 r={RADIUS}
                                 style="stroke"
                                 strokeWidth={6}
-                                color={utils.colors.legacyBackgroundSurfaceElevation2}
+                                color={utils.colors.elementFillNeutralSofter}
                             />
                             {/* Helps to brighten up the stroke color in dark mode */}
                             <Path
@@ -110,7 +109,7 @@ export const CryptoIconWithPercentage = ({
                                 end={percentageFill}
                                 style="stroke"
                                 strokeWidth={6}
-                                color={paletteV1.lightGray100}
+                                color={palette.globalWhiteAlpha1000}
                                 opacity={0.15}
                             />
                             <Path

@@ -5,7 +5,7 @@ icon: lightning
 
 import { Card, Cards, Steps, Tabs } from 'nextra/components';
 
-import { Button, CollapsibleBox } from '@trezor/components';
+import { Button, CollapsibleBox, Row } from '@trezor/components';
 
 import { BetaOnly } from '../components/BetaOnly';
 import {
@@ -27,6 +27,35 @@ import IconNode from '../components/icons/IconNode';
 import IconWeb from '../components/icons/IconWeb';
 
 # Integrate Trezor devices with your project
+
+<BetaOnly>
+    <SectionCard>
+        ### Connect 10 is here
+
+        A new major version, currently in beta. The integration is now built around **Trezor
+        Suite**: Suite hosts the Connect core and runs the device flow, so users get a better
+        experience and you get a cleaner API. Parts of your integration change — the migration
+        checklist covers them.
+
+        Already integrated with v9? It keeps working: v9 stays supported and its docs stay online,
+        so you can move over whenever it suits you.
+
+        <Row gap={12} flexWrap="wrap" margin={{ top: 16 }}>
+            <LinkButton intent="brand" size="small" href="/guides/migrating-to-connect-10">
+                Migration checklist
+            </LinkButton>
+            <Button
+                intent="neutral"
+                priority="secondary"
+                size="small"
+                href="https://connect.trezor.io/9/"
+                target="_blank">
+                Connect 9 docs
+            </Button>
+        </Row>
+    </SectionCard>
+
+</BetaOnly>
 
 <SectionCard>
     ### Explore Trezor Connect SDKs

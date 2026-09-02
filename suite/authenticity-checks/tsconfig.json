@@ -9,6 +9,15 @@
         {
             "path": "../../suite-common/message-system"
         },
-        { "path": "../settings" }
+        { "path": "../router" },
+        { "path": "../router-config" },
+        { "path": "../settings" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        { "path": "../../packages/device-utils" }
     ]
 }

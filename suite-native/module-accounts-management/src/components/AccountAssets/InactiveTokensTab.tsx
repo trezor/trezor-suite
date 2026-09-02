@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { FlashList } from '@shopify/flash-list';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type AccountKey,
     type StellarTokenInfo,

@@ -5,6 +5,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -17,7 +18,7 @@ import {
     type TradingTransaction,
     type TradingType,
     type TradingTypeWithConcierge,
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     isFinalStatus,
     selectDeviceTradingTrades,
     selectTradingIsSlip24Allowed,
@@ -64,7 +65,7 @@ import {
     getSymbolFromTradeableAsset,
     toCaseAwareCryptoId,
 } from '@suite-native/trading-atoms';
-import { type MyAsset, type MyAssetRow, type TradeableAsset } from '@suite-native/trading-types';
+import { type MyAsset, type TradeableAsset } from '@suite-native/trading-types';
 
 import { selectIsTradingEnabledForCountry } from './residenceSelectors';
 import { type TradingRootState } from '../reducers';
@@ -131,6 +132,9 @@ export const selectIsTradingSellEnabled = (state: MessageSystemRootState & Featu
 export const selectIsTradingConciergeEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState,
 ) => selectIsFeatureEnabled(state, Feature.trading.concierge, true);
+
+export const selectIsTradingTxSimulationEnabled = (state: MessageSystemRootState) =>
+    selectIsFeatureEnabled(state, Feature.trading.txSimulation, true);
 
 export const selectIsTradingSlip24Enabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootStateWithDeviceAndAccounts,
@@ -242,8 +246,11 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             selectTokenDefinitions,
             selectCurrentFiatRates,
             selectBaseCurrency,
-            (state: CombinedSelectorsRootState, tradingType: TradingType) =>
-                selectTradingSupportedSymbols(state, tradingType),
+            (
+                state: CombinedSelectorsRootState,
+                tradingType: TradingType,
+                supportedCoins: readonly NetworkSymbol[],
+            ) => selectTradingSupportedSymbols(state, tradingType, supportedCoins),
             (state: CombinedSelectorsRootState) =>
                 selectIsFeatureFlagEnabled(state, FeatureFlag.IsCardanoSendEnabled),
             (_state, tradingType: TradingType) => tradingType,
@@ -373,26 +380,6 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
         },
     );
 
-export const selectAccountsWithTokensToSellSectionCondensedListByTradingType =
-    createCombinedMemoizedSelector(
-        [selectAccountsWithTokensToSellSectionListByTradingType],
-        sectionListData =>
-            sectionListData.map(section => {
-                const data = section.data.filter(({ isEnabled }) => isEnabled) as MyAssetRow[];
-
-                const nonTradeableAssetsCount = section.data.length - data.length;
-                if (nonTradeableAssetsCount > 0) {
-                    data.push({
-                        count: nonTradeableAssetsCount,
-                        name: 'non-tradeable-assets',
-                        isEnabled: false,
-                    });
-                }
-
-                return { ...section, data };
-            }),
-    );
-
 export const selectTradesToWatchByAccount = createTradingWithDeviceAndAccountsMemoizedSelector(
     [selectDeviceTradingTrades, selectVisibleDeviceAccountsMap],
     (deviceTrades, visibleDeviceAccountsMap) => {
@@ -461,7 +448,7 @@ export const selectAccountLabelWithNetworkFallback = (
     }
 
     if (cryptoId) {
-        const networkSymbol = cryptoIdToSymbol(cryptoId);
+        const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
         if (networkSymbol) {
             return getNetwork(networkSymbol).name;
         }

@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type Network } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -22,7 +23,7 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { AssetActionButton } from '../AssetActionButton';
 import { AssetCoinLogo } from '../AssetCoinLogo';

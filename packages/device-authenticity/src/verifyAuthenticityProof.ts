@@ -1,5 +1,6 @@
 import { bufferUtils } from '@trezor/utils';
 
+import { EXPECTED_ALGORITHM_NAME_PER_PROOF_TYPE } from './constants';
 import { findSubjectContentByOid } from './findSubjectContentByOid';
 import {
     type PrepareDeviceAuthenticityDataParams,
@@ -246,6 +247,7 @@ const verifyOnlyDeviceCertificate = async ({
  * https://github.com/trezor/trezor-firmware/blob/3e0a170eabbd719da7155b754e30139c24a30f17/python/src/trezorlib/authentication.py
  */
 export const verifyAuthenticityProof = async ({
+    proofType,
     certificates,
     signature,
     signedData,
@@ -254,10 +256,10 @@ export const verifyAuthenticityProof = async ({
     config,
     blacklistConfig,
 }: VerifyAuthenticityProofParams): Promise<VerifyAuthenticityProofResult> => {
-    // Parse config with given device model, type of secure element and debug mode.
+    // Parse config with given device model, type of secure element (proofType) and debug mode.
     let allRootPubKeys: string[];
     try {
-        allRootPubKeys = getRootPubKeys({ config, deviceModel, allowDebugKeys });
+        allRootPubKeys = getRootPubKeys({ proofType, config, deviceModel, allowDebugKeys });
     } catch {
         return { valid: false, error: 'INVALID_DEVICE_MODEL' };
     }
@@ -277,6 +279,9 @@ export const verifyAuthenticityProof = async ({
     }
     // For both signing schemes, the 1st certificate is the one expected to be signed by rootPubKey (checked by matchRootPubKeyToCertificate)
     const firstCertAlgName = parsedCertificates[0]?.signatureAlgorithm.algorithmName;
+    if (firstCertAlgName !== EXPECTED_ALGORITHM_NAME_PER_PROOF_TYPE[proofType]) {
+        return { valid: false, error: 'INVALID_DEVICE_CERTIFICATE' };
+    }
 
     if (firstCertAlgName === 'MLDSA44') {
         if (parsedCertificates.length !== 1) {
@@ -295,7 +300,11 @@ export const verifyAuthenticityProof = async ({
                 allRootPubKeys,
             });
         } catch (e) {
-            return { valid: false, error: 'INVALID_DEVICE_CERTIFICATE', errorDetails: e.message };
+            return {
+                valid: false,
+                error: 'INVALID_DEVICE_CERTIFICATE',
+                errorDetails: e.message,
+            };
         }
     }
     if (firstCertAlgName === 'Ed25519' || firstCertAlgName === 'P-256') {

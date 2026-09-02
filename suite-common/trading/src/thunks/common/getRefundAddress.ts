@@ -1,5 +1,10 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { confirmAddressOnDeviceThunk, selectAddressDisplayType } from '@suite-common/wallet-core';
+import {
+    type ConfirmAddressOnDeviceThunkState,
+    type WalletSettingsRootState,
+    confirmAddressOnDeviceThunk,
+    selectAddressDisplayType,
+} from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
@@ -16,11 +21,14 @@ type GetRefundAddressFulfillValue = {
     path: string;
 };
 
+export type GetRefundAddressThunkState = ConfirmAddressOnDeviceThunkState & WalletSettingsRootState;
+
 export const getRefundAddress = createThunk<
     GetRefundAddressFulfillValue,
     GetRefundAddressProps,
     {
         rejectValue: TradingSendRejectedProps;
+        state: GetRefundAddressThunkState;
     }
 >(
     `${TRADING_THUNK_PREFIX}/getRefundAddress`,

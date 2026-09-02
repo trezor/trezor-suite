@@ -1,0 +1,25 @@
+import { curve25519fixtures, elligator2fixtures } from './__fixtures__/curve25519.fixtures';
+import { curve25519, elligator2 } from './curve25519';
+
+describe('curve25519', () => {
+    it('elligator2', () => {
+        elligator2fixtures.forEach(fixture => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const input: string = fixture[0];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const output: string = fixture[1];
+            const point = Uint8Array.from(Buffer.from(input, 'hex'));
+            const result = elligator2(point);
+            expect(Buffer.from(result).toString('hex')).toEqual(output);
+        });
+    });
+
+    curve25519fixtures.forEach(f => {
+        it(`curve25519 ${f.description}`, () => {
+            const publicKey = Buffer.from(f.public, 'hex');
+            const privateKey = Buffer.from(f.private, 'hex');
+            const secret = curve25519(privateKey, publicKey);
+            expect(secret.toString('hex')).toEqual(f.shared);
+        });
+    });
+});

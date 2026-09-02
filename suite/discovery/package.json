@@ -1,0 +1,35 @@
+{
+    "name": "@suite/discovery",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/connect-popup": "workspace:*",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/thp": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite/authenticity-checks": "workspace:*",
+        "@suite/locks": "workspace:*",
+        "@suite/router": "workspace:*",
+        "@suite/router-config": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite/settings": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
+        "redux": "^5.0.1"
+    }
+}

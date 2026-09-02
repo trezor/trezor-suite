@@ -8,6 +8,8 @@ export const CARDANO_STAKING_REGISTRATION_DEPOSIT = '2';
 export const MIN_CARDANO_AMOUNT_FOR_STAKING = new BigNumber(0);
 export const MAX_CARDANO_AMOUNT_FOR_STAKING = new BigNumber(72_000_000);
 export const MIN_CARDANO_FOR_WITHDRAWALS = new BigNumber(0);
+
+export const MIN_CARDANO_BALANCE_FOR_FEE_BUFFER = new BigNumber(0);
 export const MIN_CARDANO_BALANCE_FOR_STAKING = MIN_CARDANO_AMOUNT_FOR_STAKING.plus(
     MIN_CARDANO_FOR_WITHDRAWALS,
 );
@@ -22,8 +24,6 @@ export const CARDANO_EVERSTAKE_DREP = {
     bech32: 'drep1yt8p080ajks6zdnxd9z6a6q60p9sm9j5rl7tc63mfna8r6cnp4wr3',
 };
 
-export const CARDANO_POOL_SATURATION_SAFE_THRESHOLD = 75; // in percentage
-
 export const MIN_CARDANO_AMOUNT_FOR_SEND = new BigNumber(1_000_000);
 
 export const FIVE_BINARIES_POOLS = [
@@ -34,8 +34,10 @@ export const FIVE_BINARIES_POOLS = [
     'pool1z9m2kxeat06t30yf6ar7sqpert0cjdgxzcv2dv36dcwcqcqtgk4',
 ];
 
-export const EVERSTAKE_POOLS = [
-    'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
-    'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
-    'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
-];
+export const EVERSTAKE_POOL_NAMES: Record<string, string> = {
+    pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn: 'EVE6',
+    pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj: 'EVE7',
+    pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u: 'EVE8',
+};
+
+export const EVERSTAKE_POOLS = Object.keys(EVERSTAKE_POOL_NAMES);

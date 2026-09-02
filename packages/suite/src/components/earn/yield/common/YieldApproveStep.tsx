@@ -5,11 +5,15 @@ import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
-import { Banner, Button, Column } from '@trezor/components';
+import { Banner, Button, Column, Row } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { YieldAmountCard } from './YieldAmountCard';
+import {
+    YieldAmountCard,
+    type YieldAmountCardFiatToggleProps,
+    type YieldApproxFiat,
+} from './YieldAmountCard';
 import { YieldApprovedAmountCard } from './YieldApprovedAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 import type { YieldApprovalAction } from '../yieldFlowUtils';
@@ -32,6 +36,7 @@ const getApproveButtonTranslationId = (approvalAction: YieldApprovalAction) => {
 export type YieldApproveStepProps = {
     token: YieldFlowDisplayToken;
     summaryValue: ReactNode;
+    approxFiat?: YieldApproxFiat;
     isDisabled?: boolean;
     isLoading?: boolean;
     /** Current on-chain allowance amount fetched by RPC. */
@@ -42,8 +47,10 @@ export type YieldApproveStepProps = {
     canRevokeAllowance: boolean;
     warning?: ReactNode;
     pendingApproveTransaction?: YieldPendingTransactionState;
+    fiatToggle?: YieldAmountCardFiatToggleProps;
     onMaxClick?: () => void;
     onApprovalSubmit?: () => void;
+    onSkip?: () => void;
     onRevoke?: () => void;
     onPendingTxClick: (txid: string) => void;
 };
@@ -51,6 +58,7 @@ export type YieldApproveStepProps = {
 export const YieldApproveStep = ({
     token,
     summaryValue,
+    approxFiat,
     isDisabled = false,
     isLoading = false,
     approvedAmount,
@@ -60,8 +68,10 @@ export const YieldApproveStep = ({
     canRevokeAllowance,
     warning,
     pendingApproveTransaction,
+    fiatToggle,
     onMaxClick,
     onApprovalSubmit,
+    onSkip,
     onRevoke,
     onPendingTxClick,
 }: YieldApproveStepProps) => {
@@ -83,6 +93,7 @@ export const YieldApproveStep = ({
             <YieldAmountCard
                 tokenSymbol={token.symbol}
                 decimals={token.decimals}
+                approxFiat={approxFiat}
                 summary={{
                     labelTranslationId: 'TR_BALANCE',
                     value: summaryValue,
@@ -91,20 +102,35 @@ export const YieldApproveStep = ({
                 heading={{
                     amountLabelTranslationId: 'AMOUNT',
                 }}
+                fiatToggle={pendingApproveTransaction ? undefined : fiatToggle}
                 warning={warning}
                 isDisabled={!!pendingApproveTransaction}
             />
 
-            <Button
-                size="large"
-                width="100%"
-                data-testid="@yield/form/approve-button"
-                onClick={onApprovalSubmit}
-                isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
-                isLoading={isLoading}
-            >
-                <Translation id={approveButtonId} values={{ tokenSymbol: token.symbol }} />
-            </Button>
+            <Row gap={8} width="100%">
+                <Button
+                    size="large"
+                    flex="1"
+                    data-testid="@yield/form/approve-button"
+                    onClick={onApprovalSubmit}
+                    isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
+                    isLoading={isLoading}
+                >
+                    <Translation id={approveButtonId} values={{ tokenSymbol: token.symbol }} />
+                </Button>
+                {onSkip && (
+                    <Button
+                        size="large"
+                        intent="neutral"
+                        priority="secondary"
+                        data-testid="@yield/form/approve-skip-button"
+                        onClick={onSkip}
+                        isDisabled={isLoading || !!pendingApproveTransaction}
+                    >
+                        <Translation id="TR_SKIP" />
+                    </Button>
+                )}
+            </Row>
 
             {approvalAction === 'revoke' && !isDisabled && (
                 <Banner

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     Button,
     Card,

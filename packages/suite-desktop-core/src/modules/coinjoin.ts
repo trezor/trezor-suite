@@ -3,7 +3,6 @@
  */
 
 import { captureMessage, withScope } from '@sentry/electron/main';
-import { ipcMain } from 'electron';
 
 import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG } from '@suite-common/sentry';
 import {
@@ -18,6 +17,7 @@ import { type InterceptedEvent } from '@trezor/request-manager';
 import { getSynchronize } from '@trezor/utils';
 
 import type { ModuleInit } from './module';
+import { ipcMain, looselyTypedIpcMain } from '../ipcMain';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { ThreadProxy } from '../libs/thread-proxy';
@@ -98,7 +98,10 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
                     logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} call ${method}`);
                     if (method === 'disable') {
                         backend.dispose();
-                        backends.splice(backends.indexOf(backend), 1);
+                        const backendIndex = backends.indexOf(backend);
+                        if (backendIndex !== -1) {
+                            backends.splice(backendIndex, 1);
+                        }
 
                         return Promise.resolve();
                     }
@@ -157,7 +160,10 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
                         }
                     }
                     if (method === 'disable') {
-                        clients.splice(clients.indexOf(client), 1);
+                        const clientIndex = clients.indexOf(client);
+                        if (clientIndex !== -1) {
+                            clients.splice(clientIndex, 1);
+                        }
 
                         if (clients.length === 0) {
                             logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} binary stop`);
@@ -201,13 +207,13 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
 
     const registerProxies = () => {
         const unregisterBackendProxy = createIpcProxyHandler(
-            ipcMain,
+            looselyTypedIpcMain,
             BACKEND_CHANNEL,
             backendProxyOptions,
         );
 
         const unregisterClientProxy = createIpcProxyHandler(
-            ipcMain,
+            looselyTypedIpcMain,
             CLIENT_CHANNEL,
             clientProxyOptions,
         );

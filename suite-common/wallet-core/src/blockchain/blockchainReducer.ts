@@ -1,6 +1,11 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+    createWeakMapSelector,
+} from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     getNetworkOptional,
@@ -139,9 +144,12 @@ const reconnecting = (draft: BlockchainState, payload: BlockchainReconnecting) =
     }
 };
 
+export type BlockchainReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadBlockchain'>;
+
 export const prepareBlockchainReducer = createReducerWithExtraDeps(
     blockchainInitialState,
-    (builder, extra) => {
+    (builder, extra: BlockchainReducerDeps) => {
         builder
             .addCase(blockchainActions.synced, (state, action) => {
                 state[action.payload.symbol].syncTimeout = action.payload.timeout;

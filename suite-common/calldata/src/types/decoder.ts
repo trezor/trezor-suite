@@ -5,10 +5,9 @@ import { type ExtractAbiFunction, type NamedAbiParameter } from './abi';
 export type DecodedAbiInputs<T extends Abi> =
     ExtractAbiFunction<T>['inputs'][number] extends infer P
         ? {
-              [Param in Extract<
-                  P,
-                  NamedAbiParameter
-              > as Param['name']]: AbiParameterToPrimitiveType<Param>;
+              [
+                  Param in Extract<P, NamedAbiParameter> as Param['name']
+              ]: AbiParameterToPrimitiveType<Param>;
           }
         : never;
 

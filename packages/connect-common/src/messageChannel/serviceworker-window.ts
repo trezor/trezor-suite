@@ -16,6 +16,7 @@ export class ServiceWorkerWindowChannel<
     private name: string;
     private allowSelfOrigin: boolean;
     private currentId?: () => number | undefined;
+    private onConnectListener?: (port: chrome.runtime.Port) => void;
 
     constructor({
         name,
@@ -45,7 +46,8 @@ export class ServiceWorkerWindowChannel<
     }
 
     connect() {
-        chrome.runtime.onConnect.addListener(port => {
+        if (this.onConnectListener) return;
+        this.onConnectListener = port => {
             if (port.name !== this.name) return;
             // Ignore port if name does match, but port created by different popup
             if (this.currentId?.() && this.currentId?.() !== port.sender?.tab?.id) return;
@@ -108,12 +110,17 @@ export class ServiceWorkerWindowChannel<
 
                 this.onMessage(message);
             });
-        });
+        };
+        chrome.runtime.onConnect.addListener(this.onConnectListener);
         this.isConnected = true;
     }
 
     disconnect() {
         if (!this.isConnected) return;
+        if (this.onConnectListener) {
+            chrome.runtime.onConnect.removeListener(this.onConnectListener);
+            this.onConnectListener = undefined;
+        }
         this.port?.disconnect();
         this.clear();
         this.isConnected = false;

@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { A, pipe } from '@mobily/ts-belt';
 import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
@@ -9,11 +9,11 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
     type NetworkSymbol,
-    networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
 import {
@@ -48,9 +48,10 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
-import { resolveAfter, typedObjectKeys } from '@trezor/utils';
+import { resolveAfter } from '@trezor/utils';
 
 import { useAddCoinAccountAlerts } from './useAddCoinAccountAlerts';
+import { getAvailableAccountTypesForNetworkSymbol } from '../utils/getAvailableAccountTypesForNetworkSymbol';
 
 export type AddCoinAccountNavigationProps = StackToStackCompositeNavigationProps<
     AddCoinAccountStackParamList,
@@ -60,7 +61,7 @@ export type AddCoinAccountNavigationProps = StackToStackCompositeNavigationProps
 
 export type AddCoinEnabledAccountType = Exclude<
     AccountType,
-    'coinjoin' | 'imported' | 'ledger' | 'placeholder'
+    'coinjoin' | 'imported' | 'ledger' | 'placeholder' | 'root'
 >;
 
 export const accountTypeTranslationKeys: Record<
@@ -120,41 +121,6 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
     const [networkSymbolWithTypeToBeAdded, setNetworkSymbolWithTypeToBeAdded] = useState<
         [NetworkSymbol, AddCoinEnabledAccountType] | null
     >(null);
-
-    const availableNetworkAccountTypes = useMemo(() => {
-        // first account type for every network is set to normal and represents default type
-        const availableTypes: Map<NetworkSymbol, [AccountType, ...AccountType[]]> = new Map();
-
-        networkSymbolCollection.forEach(symbol => {
-            // for Cardano and Ethereum only allow latest account type and coinjoin and ledger are not supported
-            const types = typedObjectKeys(networks[symbol].accountTypes).filter(
-                t => !['coinjoin', 'imported', 'ledger'].includes(t),
-            );
-            availableTypes.set(symbol, [
-                NORMAL_ACCOUNT_TYPE,
-                // For Cardano and EVMs allow only normal account type
-                ...([
-                    'ada',
-                    'eth',
-                    'pol',
-                    'bsc',
-                    'sol',
-                    'op',
-                    'base',
-                    'arb',
-                    'rhc',
-                    'avax',
-                ].includes(symbol)
-                    ? []
-                    : types),
-            ]);
-        });
-
-        return availableTypes;
-    }, []);
-
-    const getAvailableAccountTypesForNetworkSymbol = ({ symbol }: { symbol: NetworkSymbol }) =>
-        availableNetworkAccountTypes.get(symbol) ?? [NORMAL_ACCOUNT_TYPE];
 
     const getAccountTypeToBeAddedName = () =>
         networkSymbolWithTypeToBeAdded

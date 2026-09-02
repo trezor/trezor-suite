@@ -9,7 +9,8 @@ import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
+import { useImperativeServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -17,8 +18,8 @@ import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteServices } from 'src/support/extraDependencies';
+import { useSelector } from 'src/hooks/suite';
+import { selectSuiteServices } from 'src/support/createSuiteCompositionRoot';
 
 type FeatureLineProps = {
     feature: ExperimentalFeature;
@@ -27,7 +28,7 @@ type FeatureLineProps = {
 
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const dispatch = useDispatch();
-    const services = useServices(selectSuiteServices);
+    const services = useImperativeServices(selectSuiteServices);
     const checked = enabledFeatures.includes(feature);
 
     const config = EXPERIMENTAL_FEATURES[feature];
@@ -121,7 +122,7 @@ export const Experimental = () => {
     const isDebug = useSelector(selectIsDebugModeActive);
 
     const dispatch = useDispatch();
-    const services = useServices(selectSuiteServices);
+    const services = useImperativeServices(selectSuiteServices);
 
     const onSwitchExperimental = () => {
         enabledFeatures?.forEach(feature =>

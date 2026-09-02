@@ -14,6 +14,8 @@ type YieldDepositingInfoProps = {
     networkSymbol: NetworkSymbol;
     depositSymbol: string;
     vaultSymbol: string | undefined;
+    isWrappedNativeVault?: boolean;
+    nativeSymbol?: string;
 };
 
 export const YieldDepositingInfo = ({
@@ -22,8 +24,21 @@ export const YieldDepositingInfo = ({
     networkSymbol,
     depositSymbol,
     vaultSymbol,
+    isWrappedNativeVault = false,
+    nativeSymbol,
 }: YieldDepositingInfoProps) => (
     <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
+        {isWrappedNativeVault && nativeSymbol && (
+            <EarnInfoRow
+                heading={
+                    <Translation
+                        id="TR_EARN_YIELD_WRAP_TITLE"
+                        values={{ nativeSymbol, tokenSymbol: depositSymbol }}
+                    />
+                }
+                content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
+            />
+        )}
         <EarnInfoRow
             heading={
                 <Translation

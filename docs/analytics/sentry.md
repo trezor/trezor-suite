@@ -54,13 +54,10 @@ Browser (User Agent), System and HW specifications, Suite version, instance id s
         [
           Capability_Bitcoin,
           Capability_Bitcoin_like,
-          Capability_Binance,
           Capability_Cardano,
           Capability_Crypto,
-          Capability_EOS,
           Capability_Ethereum,
           Capability_Monero,
-          Capability_NEM,
           Capability_Ripple,
           Capability_Stellar,
           Capability_Tezos,

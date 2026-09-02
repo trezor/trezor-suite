@@ -14,7 +14,7 @@ const ERROR_HEIGHT = 40;
 const errorStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp12,
     justifyContent: 'center',
-    backgroundColor: utils.colors.legacyBackgroundAlertRedSubtleOnElevation1,
+    backgroundColor: utils.colors.elementFillCriticalSoft,
     overflow: 'hidden',
 }));
 

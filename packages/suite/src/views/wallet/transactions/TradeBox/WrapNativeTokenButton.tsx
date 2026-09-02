@@ -1,19 +1,25 @@
 import { type MouseEvent } from 'react';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
-import { openModal } from '@suite/modal';
+import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
+import { Translation, useTranslation } from '@suite/intl';
+import { goto } from '@suite/router';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
+import { getNetworkType } from '@suite-common/wallet-config';
+import { isWrappedNativeFlowSupported } from '@suite-common/wallet-core';
+import { Button, Tooltip } from '@trezor/components';
 import {
-    getNetworkDisplaySymbol,
-    getNetworkType,
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
-} from '@suite-common/wallet-config';
-import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
-import { Button } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
+} from '@trezor/network-ethereum-suite-common';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
+import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 import { type Account } from 'src/types/wallet';
 
 type WrapNativeTokenButtonProps = {
@@ -27,7 +33,15 @@ type WrapNativeTokenButtonProps = {
  */
 export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) => {
     const dispatch = useDispatch();
+    const { translationString } = useTranslation();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    const device = useSelector(selectSelectedDevice);
+    const isFirmwareOutdated = !isWrappedNativeFlowSupported(device);
+    const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
+        useFirmwareUpgradeModal();
+    const { isDisabled: isWrapDisabled, content: wrapDisabledContent } =
+        useMessageSystemWrappedNative('wrap');
 
     const { symbol } = account;
     const wrappedAddress = getWrappedNativeAddress(symbol);
@@ -42,35 +56,57 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
         return null;
     }
 
-    // Keep a native buffer for the wrap fee (and any follow-up approve/deposit), matching the
-    // reserve the shared wrap logic uses.
-    const maxWrapAmount = BigNumber.max(
-        0,
-        new BigNumber(account.formattedBalance).minus(WETH_WRAP_GAS_RESERVE),
-    ).toString();
-
     const onClick = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
 
+        if (isFirmwareOutdated) {
+            openFirmwareModal();
+
+            return;
+        }
+
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'account-tradebox',
+                to: 'wrap-form',
+                networkSymbol: account.symbol,
+            },
+        });
+
         dispatch(
-            openModal({
-                type: 'wrap-native-token',
-                account,
-                maxWrapAmount,
-                nativeSymbol: getNetworkDisplaySymbol(symbol),
-                wrappedSymbol,
+            goto({
+                routeName: 'earn-yield-wrap',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
             }),
         );
     };
 
     return (
-        <Button
-            intent="accentViolet"
-            size="small"
-            onClick={onClick}
-            data-testid="@trading/menu/wrap-native-token"
-        >
-            <Translation id="TR_WRAP_NATIVE_TOKEN" />
-        </Button>
+        <>
+            {isFirmwareModalOpen && (
+                <FirmwareUpgradeNeededModal
+                    onClose={closeFirmwareModal}
+                    onUpdate={updateFirmware}
+                    featureName={translationString('TR_EARN_DEFI_YIELD_TITLE')}
+                />
+            )}
+            <Tooltip content={wrapDisabledContent} isActive={isWrapDisabled}>
+                <Button
+                    intent="accentViolet"
+                    size="small"
+                    isDisabled={isWrapDisabled}
+                    onClick={onClick}
+                    data-testid="@trading/menu/wrap-native-token"
+                >
+                    <Translation id="TR_WRAP_NATIVE_TOKEN" />
+                </Button>
+            </Tooltip>
+        </>
     );
 };

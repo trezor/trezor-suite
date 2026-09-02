@@ -1,13 +1,24 @@
+import { type UnknownAction, createAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
+
+import type { DesktopAnalyticsDep } from '@suite/analytics';
 import {
     type AnchorSettingSection,
+    type GotoThunkState,
     SettingsAnchor,
+    type SuiteRouterHistoryDep,
     goto,
     mapAnchorToRoute,
     onLocationChange,
 } from '@suite/router';
-import { type CoinProtocol, handleCoinProtocolUri } from '@suite/transfer-uri';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { handleCoinProtocolUri } from '@suite/transfer-uri';
+import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    type WalletConnectInitThunkDeps,
+    type WalletConnectInitThunkState,
+} from '@suite-common/walletconnect';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import {
     SUITE_ANCHOR_DEEPLINK_PREFIX,
@@ -18,34 +29,38 @@ import {
 import { isArrayMember, safeParseUrl } from '@trezor/utils';
 
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
-import { asSuiteServices } from 'src/support/extraDependencies';
-import { type Dispatch, type GetState } from 'src/types/suite';
 
 import { PROTOCOL } from './constants';
 
-export type ProtocolAction =
-    | {
-          type: typeof PROTOCOL.FILL_SEND_FORM;
-          payload: boolean;
-      }
-    | {
-          type: typeof PROTOCOL.SAVE_COIN_PROTOCOL;
-          payload: SendFormState;
-      }
-    | { type: typeof PROTOCOL.RESET };
+export const saveCoinProtocol = createAction(
+    PROTOCOL.SAVE_COIN_PROTOCOL,
+    (payload: SendFormState) => ({ payload }),
+);
 
-export const fillSendForm = (shouldFill: boolean): ProtocolAction => ({
-    type: PROTOCOL.FILL_SEND_FORM,
-    payload: shouldFill,
-});
+export const fillSendForm = createAction<boolean>(PROTOCOL.FILL_SEND_FORM);
 
-const saveCoinProtocol = (coinProtocol: CoinProtocol): ProtocolAction => ({
-    type: PROTOCOL.SAVE_COIN_PROTOCOL,
-    payload: coinProtocol,
-});
+export const resetProtocol = createAction(PROTOCOL.RESET);
+
+export type HandleProtocolRequestThunkState = GotoThunkState & WalletConnectInitThunkState;
+
+export type HandleProtocolRequestThunkDeps = WithServices<
+    DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep & SuiteRouterHistoryDep
+>;
+
+export type HandleProtocolRequestDispatchDeps = HandleProtocolRequestThunkDeps &
+    WalletConnectInitThunkDeps;
 
 export const handleProtocolRequest =
-    (uri: string) => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
+    (uri: string) =>
+    (
+        dispatch: ThunkDispatch<
+            HandleProtocolRequestThunkState,
+            HandleProtocolRequestDispatchDeps,
+            UnknownAction
+        >,
+        _getState: () => HandleProtocolRequestThunkState,
+        extra: HandleProtocolRequestThunkDeps,
+    ) => {
         dispatch(handleCoinProtocolUri(uri, saveCoinProtocol));
 
         if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
@@ -84,13 +99,9 @@ export const handleProtocolRequest =
                 const [, hash] = decodedPath.split('/coinmarket-redirect/');
                 if (hash) {
                     const path = { pathname: '/coinmarket-redirect', hash: `#${hash}` } as const;
-                    asSuiteServices(extra.services).suiteRouterHistory.navigate(path);
+                    extra.services.suiteRouterHistory.navigate(path);
                     dispatch(onLocationChange(path));
                 }
             }
         }
     };
-
-export const resetProtocol = (): ProtocolAction => ({
-    type: PROTOCOL.RESET,
-});

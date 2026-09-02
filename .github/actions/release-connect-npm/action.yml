@@ -4,39 +4,9 @@ inputs:
   deploymentType:
     description: "Specifies the deployment type for the npm package. Use 'alpha' for early prereleases, 'beta' for prereleases close to production, and 'latest' for stable versions intended for end-users."
     required: true
-    type: choice
-    options:
-      - alpha
-      - beta
-      - latest
   packageName:
-    description: "The name of the package to be deployed. Select from the predefined list of packages."
+    description: "The name of the package to be deployed, without the @trezor/ scope (e.g. 'connect-web' or 'network-solana')."
     required: true
-    type: choice
-    options:
-      - blockchain-link-types
-      - blockchain-link-utils
-      - blockchain-link
-      - connect-common
-      - connect-data
-      - transport
-      - utils
-      - utxo-lib
-      - connect-plugin-stellar
-      - connect-plugin-ethereum
-      - type-utils
-      - env-utils
-      - protocol
-      - protobuf
-      - schema-utils
-      - crypto-utils
-      - device-utils
-      - device-authenticity
-      - network-solana
-      - connect
-      - connect-web
-      - connect-webextension
-      - connect-mobile
 
 runs:
   using: "composite"
@@ -61,6 +31,8 @@ runs:
       continue-on-error: true
       with:
         version: v0.19.1
+        # Our just-published @trezor packages trip the cooldown. Malware scanning still runs.
+        cooldown-enabled: "false"
 
     - name: Install dependencies
       shell: bash
@@ -73,17 +45,6 @@ runs:
     - name: Publish to NPM
       shell: bash
       run: |
-        if [[ "${{ inputs.packageName }}" == network-* ]]; then
-          # e.g. "network-solana-sdk"
-          remainder="${{ inputs.packageName }}"
-          # Strip "network-" prefix -> "solana-sdk"
-          remainder="${remainder#network-}"
-          # Strip from first dash onward -> "solana"
-          network="${remainder%%-*}"
-          # Result: ./networks/solana/network-solana-sdk
-          cd "./networks/${network}/${{ inputs.packageName }}"
-        else
-          cd ./packages/${{ inputs.packageName }}
-        fi
+        cd "$(node ./scripts/ci/trezor-package-path.js "${{ inputs.packageName }}")"
         yarn build:lib
         yarn npm publish --tag ${{ inputs.deploymentType }} --access public --provenance

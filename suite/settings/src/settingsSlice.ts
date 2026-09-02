@@ -3,9 +3,13 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type EarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-defs';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createSliceWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
-import type { InvityServerEnvironment } from '@suite-common/trading';
+import type { TradeServerEnvironment } from '@suite-common/trading';
 import type { DefinitionsChannel } from '@trezor/connect-common';
 import { isWeb } from '@trezor/env-utils';
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
@@ -16,13 +20,10 @@ import { SIDEBAR_WIDTH_NUMERIC } from './suiteConstants';
  * String identifiers used by the debug transport switcher UI.
  */
 export type DebugTransport =
-    | 'BridgeTransport'
-    | 'NodeUsbTransport'
-    | 'UdpTransport'
-    | 'WebUsbTransport';
+    'BridgeTransport' | 'NodeUsbTransport' | 'UdpTransport' | 'WebUsbTransport';
 
 export interface DebugModeOptions {
-    invityServerEnvironment?: InvityServerEnvironment;
+    tradeServerEnvironment?: TradeServerEnvironment;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
     oauthServerEnvironment?: OAuthServerEnvironment;
     transports: DebugTransport[];
@@ -68,6 +69,9 @@ export type SuiteSettingsRootState = {
     suiteSettings: SuiteSettingsState;
 };
 
+export type SuiteSettingsSliceDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadSuiteSettings'>;
+
 export const suiteSettingsInitialState: SuiteSettingsState = {
     theme: {
         variant: 'light',
@@ -84,7 +88,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         deviceMeta: true,
     },
     debug: {
-        invityServerEnvironment: undefined,
+        tradeServerEnvironment: undefined,
         earnYieldWorkerBaseUrl: undefined,
         transports: [],
         isUnlockedBootloaderAllowed: false,
@@ -193,7 +197,7 @@ const suiteSettingsSlice = createSliceWithExtraDeps({
             state.enabledSecurityChecks.deviceMeta = payload;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: SuiteSettingsSliceDeps) => {
         builder.addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadSuiteSettings);
     },
 });

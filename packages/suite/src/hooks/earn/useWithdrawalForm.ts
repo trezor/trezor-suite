@@ -3,6 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
@@ -26,7 +27,7 @@ import {
 import { BigNumber, isChanged, throwError } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
@@ -274,10 +275,18 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransaction(values, composedTx));
+            try {
+                const result = await dispatch(signTransaction(values, composedTx));
 
-            if (result?.success) {
-                clearForm();
+                if (result?.success) {
+                    clearForm();
+                }
+            } catch (error) {
+                // The sign thunk reaches TrezorConnect, whose rejection messages may embed the
+                // composed account payload, and `signTx` is submitted fire-and-forget. Handling the
+                // rejection here keeps it from being reported verbatim by Sentry's global
+                // unhandled-rejection handler. Only the error name, never its message, is safe to log.
+                console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
     }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);

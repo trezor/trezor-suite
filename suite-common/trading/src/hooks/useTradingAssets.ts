@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import {
     type CoinInfo,
@@ -8,6 +8,8 @@ import {
     type PlatformsInfo,
 } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     type Network,
     type NetworkConfigWithoutTestnets,
@@ -18,7 +20,6 @@ import {
     getNetworkDisplaySymbolName,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import { getSupportedCoins } from '@trezor/address-validator';
 import { type TokenInfo } from '@trezor/connect';
 import { isNotNull } from '@trezor/utils';
 
@@ -41,10 +42,14 @@ import {
     getTradingPlatformsInfoByCryptoId,
 } from '../utils/infoUtils';
 
-const supportedAddressValidatorSymbols = new Set(getSupportedCoins());
 const mainnets = new Set(getMainnets().map(network => network.symbol));
 
-function hasSupportedAddressValidator(platforms: Platforms, coins: Coins, cryptoId: CryptoId) {
+function hasSupportedAddressValidator(
+    platforms: Platforms,
+    coins: Coins,
+    cryptoId: CryptoId,
+    supportedAddressValidatorSymbols: Set<NetworkSymbol>,
+) {
     const prodCryptoId = testnetToProdCryptoId(cryptoId);
     const networkSymbol =
         cryptoIdToNetwork(prodCryptoId)?.symbol ??
@@ -232,6 +237,11 @@ export function createAssetTokenOption<
  */
 export function useTradingAssets() {
     const getCoinsAndPlatforms = useCoinsAndPlatforms();
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+    const supportedAddressValidatorSymbols = useMemo(
+        () => new Set(networkModuleRepository.getSupportedNetworks()),
+        [networkModuleRepository],
+    );
 
     const buildAssetOptions = useCallback(
         ({ includedCryptoIds = new Set() }: { includedCryptoIds?: Set<CryptoId> }) => {
@@ -241,7 +251,12 @@ export function useTradingAssets() {
                 .filter(
                     cryptoId =>
                         isAssetWithSupportedNetwork(platforms, coins, cryptoId) &&
-                        hasSupportedAddressValidator(platforms, coins, cryptoId) &&
+                        hasSupportedAddressValidator(
+                            platforms,
+                            coins,
+                            cryptoId,
+                            supportedAddressValidatorSymbols,
+                        ) &&
                         coins[cryptoId],
                 )
                 .map(cryptoId => [cryptoId, coins[cryptoId]] as const)
@@ -270,7 +285,7 @@ export function useTradingAssets() {
                 networks,
             };
         },
-        [getCoinsAndPlatforms],
+        [getCoinsAndPlatforms, supportedAddressValidatorSymbols],
     );
 
     const createAssetOptionFromCryptoId = useCallback<(cryptoId?: CryptoId) => TradingAssetOption>(

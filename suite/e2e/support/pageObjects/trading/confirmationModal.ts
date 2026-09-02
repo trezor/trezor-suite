@@ -24,6 +24,7 @@ export class TradingConfirmationModal {
     readonly exchangeType: Locator;
     readonly transactionId: Locator;
     readonly copyTransactionIdButton: Locator;
+    readonly issueBanner: Locator;
     readonly finishButton: Locator;
     readonly confirmAndSendButton: Locator;
     readonly buyButton: Locator;
@@ -32,6 +33,7 @@ export class TradingConfirmationModal {
     readonly dexMinimumReceivedAmount: Locator;
     readonly dexNetworkFee: Locator;
     readonly dexExchangeType: Locator;
+    readonly dexSimulationSubtitle: Locator;
 
     constructor(
         private readonly page: Page,
@@ -64,6 +66,7 @@ export class TradingConfirmationModal {
         this.copyTransactionIdButton = this.page
             .getByTestId('@trading/form/info')
             .getByRole('button', { name: 'Copy' });
+        this.issueBanner = this.page.getByTestId('@trading/offer/issue-banner');
         this.finishButton = this.page.getByTestId('@trading/offer/continue-transaction-button');
         this.confirmAndSendButton = this.page.getByTestId(
             '@trading/offer/confirm-on-trezor-and-send',
@@ -76,6 +79,7 @@ export class TradingConfirmationModal {
         );
         this.dexNetworkFee = this.page.getByTestId('@trading/offer/info/network-fee');
         this.dexExchangeType = this.page.getByTestId('@trading/offer/info/exchange-dex-type');
+        this.dexSimulationSubtitle = this.page.getByTestId('@trading/offer/simulation-subtitle');
     }
 
     @step()

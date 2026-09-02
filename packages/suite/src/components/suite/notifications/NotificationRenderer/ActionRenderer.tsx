@@ -1,9 +1,10 @@
-import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
+import { selectDeviceThunk } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
+import { acquireDevice } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
-import { useDispatch } from 'src/hooks/suite';
 
 type ActionRendererProps = NotificationViewProps & NotificationRendererProps;
 

@@ -1,29 +1,30 @@
 import { useCallback, useState } from 'react';
 
-import { hasPendingStakeTypeTransaction, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
+import { selectSelectedAccount } from '@suite/account';
+import {
+    hasPendingStakeTypeTransaction,
+    selectCardanoPoolsInfo,
+    selectStakeVotingDelegation,
+} from '@suite-common/wallet-core';
 import {
     type ActionAvailability,
     type CardanoAction,
     type CardanoStaking,
 } from '@suite-common/wallet-types';
-import {
-    getAddressParameters,
-    getDelegationCertificates,
-    getStakingPath,
-    getUnusedChangeAddress,
-    isTestnet,
-    selectBestCardanoPool,
-} from '@suite-common/wallet-utils';
-import trezorConnect, { type CardanoCertificate } from '@trezor/connect';
 
+import {
+    CardanoComposeError,
+    prepareTxPlan,
+} from 'src/actions/wallet/stake/stakeFormCardanoActions';
 import { useSelector } from 'src/hooks/suite';
 
 export const useCardanoStaking = (): CardanoStaking => {
-    const account = useSelector(state => state.wallet.selectedAccount.account);
+    const account = useSelector(selectSelectedAccount);
 
     const isCardano = account?.networkType === 'cardano';
 
     const cardanoPools = useSelector(selectCardanoPoolsInfo);
+    const votingDelegation = useSelector(selectStakeVotingDelegation);
     const hasPendingTx = useSelector(state =>
         account ? hasPendingStakeTypeTransaction(state, account.key) : false,
     );
@@ -42,85 +43,26 @@ export const useCardanoStaking = (): CardanoStaking => {
         status: false,
     });
 
-    const {
-        rewards: rewardsAmount,
-        address: stakeAddress,
-        isActive: isStakingActive,
-    } = isCardano ? account.misc.staking : {};
+    const { rewards: rewardsAmount, isActive: isStakingActive } = isCardano
+        ? account.misc.staking
+        : {};
 
     const isStakingDisabled =
         (account?.availableBalance === '0' || !delegatingAvailable.status || hasPendingTx) &&
         !loading;
 
-    const prepareTxPlan = useCallback(
+    const calculateFeeAndDeposit = useCallback(
         async (action: CardanoAction) => {
             if (!account) return;
 
-            const changeAddress = getUnusedChangeAddress(account);
-            const stakingPath = getStakingPath(account);
-
-            if (
-                !changeAddress ||
-                !account.utxo ||
-                !account.addresses ||
-                !rewardsAmount ||
-                !stakeAddress
-            )
-                return null;
-
-            const addressParameters = getAddressParameters(account, changeAddress.path);
-
-            const selectedPool = selectBestCardanoPool(cardanoPools);
-
-            let certificates: CardanoCertificate[] = [];
-
-            if (action === 'delegate') {
-                if (!selectedPool) {
-                    return null;
-                }
-
-                certificates = getDelegationCertificates(
-                    stakingPath,
-                    selectedPool.hex,
-                    !isStakingActive,
-                );
-            }
-
-            const withdrawals =
-                action === 'withdrawal'
-                    ? [
-                          {
-                              amount: rewardsAmount,
-                              path: stakingPath,
-                              stakeAddress,
-                          },
-                      ]
-                    : [];
-
-            const response = await trezorConnect.cardanoComposeTransaction({
-                account: {
-                    descriptor: account.descriptor,
-                    utxo: account.utxo,
-                },
-                certificates,
-                withdrawals,
-                changeAddress,
-                addressParameters,
-                testnet: isTestnet(account.symbol),
-            });
-
-            if (!response.success) throw new Error(response.error.message);
-
-            return { txPlan: response.payload[0], certificates, withdrawals };
-        },
-        [account, isStakingActive, rewardsAmount, stakeAddress, cardanoPools],
-    );
-
-    const calculateFeeAndDeposit = useCallback(
-        async (action: CardanoAction) => {
             setLoading(true);
             try {
-                const composeRes = await prepareTxPlan(action);
+                const composeRes = await prepareTxPlan({
+                    account,
+                    action,
+                    cardanoPools,
+                    votingDelegation,
+                });
                 if (composeRes?.txPlan) {
                     if (composeRes.txPlan.type === 'error') {
                         throw new Error(composeRes.txPlan.error);
@@ -145,7 +87,9 @@ export const useCardanoStaking = (): CardanoStaking => {
                 // Deserialization failed in Ed25519KeyHash because: Invalid cbor: expected tuple 'hash length' of length 28 but got length Len(0).
                 const actionAvailability: ActionAvailability = {
                     status: false,
-                    reason: err.message,
+                    // A TrezorConnect failure is kept as its code only, never as its message, which
+                    // may embed the composed account payload.
+                    reason: err instanceof CardanoComposeError ? err.code : err.message,
                 };
                 setDelegatingAvailable(actionAvailability);
                 seWithdrawingAvailable(actionAvailability);
@@ -153,7 +97,7 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             setLoading(false);
         },
-        [prepareTxPlan],
+        [account, cardanoPools, votingDelegation],
     );
 
     // TODO: improve this hook for non-cardano accounts

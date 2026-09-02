@@ -1,15 +1,16 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { InlineAlertBox, VStack } from '@suite-native/atoms';
+import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
@@ -126,7 +127,7 @@ const TradingExchangeApprovalScreenContent = ({
     if (!quote) {
         return (
             <Screen header={<ScreenHeader closeActionType="back" />}>
-                <InlineAlertBox
+                <BannerInline
                     title={
                         <Translation id="moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert" />
                     }
@@ -161,7 +162,7 @@ const TradingExchangeApprovalScreenContent = ({
         >
             <VStack spacing="sp12">
                 {!!shouldIncreaseLimit && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="info"
                         title={
                             <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
@@ -170,7 +171,7 @@ const TradingExchangeApprovalScreenContent = ({
                 )}
 
                 {!!isRevoked && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="brand"
                         title={
                             <Translation id="moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert" />

@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { CloudIcon, GearIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDispatch } from 'src/hooks/suite';
 
 /**
  * Handler for invalid wallet setting, no coins in discovery

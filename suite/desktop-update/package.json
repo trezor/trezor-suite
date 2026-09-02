@@ -16,6 +16,7 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite/analytics": "workspace:*",
@@ -30,7 +31,6 @@
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",
-        "redux": "^5.0.1",
-        "redux-thunk": "^3.1.0"
+        "redux": "^5.0.1"
     }
 }

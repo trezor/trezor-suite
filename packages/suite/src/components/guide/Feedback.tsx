@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     type FeedbackCategory,
@@ -13,6 +14,7 @@ import {
     buildUserFeedbackData,
     sendFeedbackAction,
 } from '@suite-common/feedback';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { EmojiRatingSelector } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
@@ -24,7 +26,7 @@ import {
     GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const AnonymousDataList = styled.ul`
     margin-left: 20px;
@@ -52,7 +54,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
     const { device } = useDevice();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
-    const router = useSelector(state => state.router);
+    const router = useSelector(selectRouter);
     const [description, setDescription] = useState('');
     const [rating, setRating] = useState<Rating | undefined>();
 

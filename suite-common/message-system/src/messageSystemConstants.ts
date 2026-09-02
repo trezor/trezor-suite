@@ -71,6 +71,10 @@ export const CONTEXT_PATTERNS = {
         pattern: 'earn.yield.{type}',
         regex: /^earn\.yield\.(deposit|withdraw|redeem|claim)$/,
     },
+    getWrappedNative: {
+        pattern: 'earn.wrappedNative.{type}',
+        regex: /^earn\.wrappedNative\.(wrap|unwrap)$/,
+    },
     getSettings: {
         pattern: 'settings.{category}',
         regex: /^settings\.(general|device|networks|debug)$/,

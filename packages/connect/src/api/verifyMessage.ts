@@ -2,12 +2,11 @@
 
 import { VerifyMessage as VerifyMessageSchema } from '@trezor/connect-common';
 import type { CoinInfo, PROTO, PermissionRequest } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getBitcoinNetwork } from '../data/coinInfo';
+import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { validateModelOneMessageSize } from '../device/validateMessageSize';
 import { messageToHex } from '../utils/formatUtils';
 import { getLabel } from '../utils/pathUtils';
@@ -24,10 +23,7 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', Param
         // validate incoming parameters for each batch
         Assert(VerifyMessageSchema, payload);
 
-        const coinInfo = getBitcoinNetwork(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getBitcoinNetworkOrThrow(payload.coin);
         const messageHex = payload.hex
             ? messageToHex(payload.message)
             : Buffer.from(payload.message, 'utf8').toString('hex');

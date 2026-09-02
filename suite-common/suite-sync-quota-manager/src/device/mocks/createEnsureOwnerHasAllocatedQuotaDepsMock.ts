@@ -10,7 +10,6 @@ type CreateEnsureOwnerHasAllocatedQuotaDepsMockParams = {
     checkStorageByOwnerIdResponses: CheckStorageByOwnerIdResult[];
     patch?: Partial<EnsureOwnerHasAllocatedQuotaDeps>;
 };
-
 export const createEnsureOwnerHasAllocatedQuotaDepsMock = ({
     checkStorageByOwnerIdResponses,
     patch = {},

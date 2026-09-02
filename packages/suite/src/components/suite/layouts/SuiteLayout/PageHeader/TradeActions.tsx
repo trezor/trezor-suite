@@ -2,6 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { ButtonGroup, Row } from '@trezor/components';
@@ -9,7 +10,7 @@ import { MinusIcon, PlusIcon } from '@trezor/icons';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface TradeActionsProps {
     selectedAccount?: SelectedAccountStatus;

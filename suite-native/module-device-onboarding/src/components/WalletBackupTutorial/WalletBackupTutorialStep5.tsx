@@ -2,10 +2,10 @@ import * as Haptics from 'expo-haptics';
 
 import { type BackupType } from '@suite-common/suite-types';
 import {
+    BannerInline,
     Box,
     Button,
     Card,
-    InlineAlertBox,
     Text,
     TitleHeader,
     useBottomSheetModal,
@@ -98,7 +98,7 @@ export const WalletBackupTutorialStep5 = ({
                         />
                     </Text>
                     {isCalloutButtonShown && (
-                        <InlineAlertBox
+                        <BannerInline
                             intent={selectedType === 'shamir-advanced' ? 'warning' : 'brand'}
                             buttonLabel={
                                 selectedType === 'shamir-advanced' ? (

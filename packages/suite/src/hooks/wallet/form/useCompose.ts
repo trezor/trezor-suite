@@ -4,6 +4,7 @@ import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
@@ -19,7 +20,6 @@ import { type FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useDispatch } from 'src/hooks/suite';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';

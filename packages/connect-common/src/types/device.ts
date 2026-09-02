@@ -1,4 +1,9 @@
-import type { FeaturesNarrowing, FirmwareType, StaticSessionId } from '@trezor/device-utils';
+import {
+    type FeaturesNarrowing,
+    type FirmwareType,
+    type StaticSessionId,
+    type TranslationMetadata,
+} from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { ThpStateSerialized } from '@trezor/protocol';
 import type { Descriptor } from '@trezor/transport-common';
@@ -15,12 +20,7 @@ import type { FirmwareCapability, FirmwareReleaseConfigInfo } from './firmware';
  * - `thp-locked`         device is waiting for THP pairing
  */
 export type DeviceBusyStatus =
-    | 'busy'
-    | 'rebooting'
-    | 'bootloader-locked'
-    | 'hard-locked'
-    | 'pin-locked'
-    | 'thp-locked';
+    'busy' | 'rebooting' | 'bootloader-locked' | 'hard-locked' | 'pin-locked' | 'thp-locked';
 
 /**
  * - `available`  no other application has an active session
@@ -47,12 +47,7 @@ export type DeviceMode =
     | 'seedless';
 
 export type DeviceFirmwareStatus =
-    | 'valid'
-    | 'outdated'
-    | 'required'
-    | 'unknown'
-    | 'custom'
-    | 'none';
+    'valid' | 'outdated' | 'required' | 'unknown' | 'custom' | 'none';
 
 export type UnavailableCapability =
     | 'no-capability' // flag missing, could mean it's outdated or BTC only
@@ -161,7 +156,7 @@ export type KnownDevice = BaseDevice & {
     features: PROTO.Features;
     thp?: DeviceThpState;
     unavailableCapabilities: UnavailableCapabilities;
-    availableTranslations: Record<string, string>;
+    availableTranslations: Record<string, TranslationMetadata>;
     authenticityChecks: {
         firmwareRevision: FirmwareRevisionCheckResult | null;
         firmwareHash: FirmwareHashCheckResult | null;

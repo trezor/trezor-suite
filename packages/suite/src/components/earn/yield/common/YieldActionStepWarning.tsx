@@ -5,6 +5,8 @@ type YieldActionStepWarningProps = {
     isInsufficientFunds?: boolean;
     isApprovalInsufficient?: boolean;
     isApproveOverBalance?: boolean;
+    /** Non-blocking recommendation to keep a native-coin reserve aside for the follow-up fees. */
+    reserveRecommendation?: { amount: string; nativeSymbol: string };
     onModifyApproval?: () => void;
 };
 
@@ -12,8 +14,28 @@ export const YieldActionStepWarning = ({
     isInsufficientFunds = false,
     isApprovalInsufficient = false,
     isApproveOverBalance = false,
+    reserveRecommendation,
     onModifyApproval,
 }: YieldActionStepWarningProps) => {
+    if (reserveRecommendation) {
+        return (
+            <Banner
+                intent="info"
+                description={
+                    <Text>
+                        <Translation
+                            id="TR_EARN_YIELD_WRAP_RESERVE_RECOMMENDED"
+                            values={{
+                                amount: reserveRecommendation.amount,
+                                nativeSymbol: reserveRecommendation.nativeSymbol,
+                            }}
+                        />
+                    </Text>
+                }
+            />
+        );
+    }
+
     if (isApproveOverBalance) {
         return (
             <Banner

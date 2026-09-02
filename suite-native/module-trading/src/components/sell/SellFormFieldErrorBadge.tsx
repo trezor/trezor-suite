@@ -6,7 +6,7 @@ import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
-import { useField } from '@suite-native/forms';
+import { useField, useWatch } from '@suite-native/forms';
 import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -31,17 +31,15 @@ type SellSendFiatAmountBadgeProps = {
 const asNonEmptyStringValue = (value: unknown): string => (value as string) ?? '0';
 
 const useMismatchedAmountMessage = (fieldName: keyof SellFormValues) => {
-    const { watch } = useSellFormContext();
+    const { control } = useSellFormContext();
     const { translate } = useTranslate();
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
 
-    const [asset, quote, amountInCrypto, value] = watch([
-        'sendAsset',
-        'quote',
-        'amountInCrypto',
-        fieldName,
-    ]);
+    const [asset, quote, amountInCrypto, value] = useWatch({
+        control,
+        name: ['sendAsset', 'quote', 'amountInCrypto', fieldName],
+    });
     const symbol = getSymbolFromTradeableAsset(asset);
 
     if (!quote) {
@@ -110,7 +108,8 @@ const SellSendFiatAmountBadge = ({ amount, asset }: SellSendFiatAmountBadgeProps
 
 export const SellFormFieldErrorBadge = ({ fieldName }: SellFormFieldErrorBadgeProps) => {
     const isLoading = useSelector(selectTradingSellIsLoading);
-    const { watch } = useSellFormContext();
+    const { control } = useSellFormContext();
+    const asset = useWatch({ control, name: 'sendAsset' });
 
     const { errorMessage, hasError, value } = useField({ name: fieldName });
     const mismatchedAmountMessage = useMismatchedAmountMessage(fieldName);
@@ -126,8 +125,7 @@ export const SellFormFieldErrorBadge = ({ fieldName }: SellFormFieldErrorBadgePr
     }
 
     if (fieldName === 'cryptoStringAmount') {
-        const asset = watch('sendAsset');
-        if (!asset || !value) {
+        if (!value || !asset) {
             return null;
         }
 

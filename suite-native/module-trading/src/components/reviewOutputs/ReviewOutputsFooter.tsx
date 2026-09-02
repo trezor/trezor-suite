@@ -1,46 +1,47 @@
-import { useState } from 'react';
 import Animated, { SlideInDown } from 'react-native-reanimated';
 
-import { Button, Card } from '@suite-native/atoms';
+import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { SignSuccessMessage } from '@suite-native/transaction-management';
+import { ScrollToEndOnMount } from '@suite-native/scrollview';
 
 export type ReviewOutputsFooterProps = {
-    resolveConsent: (approved: boolean) => void;
+    onSend: () => void;
     isConsentRequested: boolean;
+    isPastDeadline: boolean;
+    isSendInProgress: boolean;
     testID?: string;
 };
 
 export const ReviewOutputsFooter = ({
     isConsentRequested,
-    resolveConsent,
+    isPastDeadline,
+    isSendInProgress,
+    onSend,
     testID,
 }: ReviewOutputsFooterProps) => {
-    const [isSendInProgress, setSendInProgress] = useState(false);
-
     const handleSendTransaction = () => {
-        if (!isSendInProgress) {
-            setSendInProgress(true);
-            resolveConsent(true);
+        if (isSendInProgress || isPastDeadline) {
+            return;
         }
+
+        onSend();
     };
 
     const buttonTestID = testID ? `${testID}/submit-button` : undefined;
 
     return (
-        <Animated.View entering={SlideInDown}>
-            <Card testID={testID}>
-                <SignSuccessMessage />
+        <Animated.View entering={SlideInDown} testID={testID}>
+            <ScrollToEndOnMount>
                 <Button
                     isLoading={isSendInProgress}
-                    isDisabled={!isConsentRequested}
+                    isDisabled={!isConsentRequested || isPastDeadline}
                     accessibilityRole="button"
                     testID={buttonTestID}
                     onPress={handleSendTransaction}
                 >
                     <Translation id="moduleTrading.tradingReviewOutputs.submitButton" />
                 </Button>
-            </Card>
+            </ScrollToEndOnMount>
         </Animated.View>
     );
 };

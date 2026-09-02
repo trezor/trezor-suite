@@ -12,14 +12,13 @@ import TrezorConnect from '@trezor/connect';
 
 export const WipeDeviceContinueOnTrezorScreen = () => {
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
-
-    useInterceptNativeNavigation({ onPress: TrezorConnect.cancel });
-
     const device = useSelector(selectSelectedDevice);
 
     const closeAction = useCallback(() => {
         TrezorConnect.cancel();
     }, []);
+
+    useInterceptNativeNavigation({ onPress: closeAction });
 
     if (!device) {
         return null;

@@ -2,11 +2,11 @@ import { safeStorage } from 'electron';
 
 import { DecryptionFailed, EncryptionUnavailable } from '@suite-common/platform-encryption';
 import { isLinux } from '@trezor/env-utils';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { err, ok } from '@trezor/type-utils';
 
 import type { ModuleInit } from './module';
-import { ipcMain } from '../typed-electron';
+import { isSafeStorageDecryptedValue } from './safeStorageValidation';
+import { ipcMain } from '../ipcMain';
 
 export const SERVICE_NAME = 'SAFE_STORAGE';
 
@@ -38,9 +38,7 @@ const isEncryptionAvailable = () => {
 };
 
 export const init: ModuleInit = () => {
-    ipcMain.handle('safe-storage/decrypt', (ipcEvent, params) => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('safe-storage/decrypt', (_, params) => {
         const isEncryptionAvailableResult = isEncryptionAvailable();
         if (!isEncryptionAvailableResult.success) {
             return isEncryptionAvailableResult;
@@ -50,15 +48,19 @@ export const init: ModuleInit = () => {
             const buffer = Buffer.from(params.value, 'hex');
             const decrypted = safeStorage.decryptString(buffer);
 
+            // Renderer code can invoke this handler directly, so restrict returned plaintext to
+            // known Suite values instead of exposing safeStorage as an unrestricted decrypt oracle.
+            if (!isSafeStorageDecryptedValue(decrypted)) {
+                return Promise.resolve(err(DecryptionFailed()));
+            }
+
             return Promise.resolve(ok(decrypted));
         } catch {
             return Promise.resolve(err(DecryptionFailed()));
         }
     });
 
-    ipcMain.handle('safe-storage/encrypt', (ipcEvent, params) => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('safe-storage/encrypt', (_, params) => {
         const isEncryptionAvailableResult = isEncryptionAvailable();
         if (!isEncryptionAvailableResult.success) {
             return isEncryptionAvailableResult;

@@ -1,119 +1,30 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { type Route, goto } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
+import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { TokenIcon } from '@trezor/product-components';
-import { exhaustive } from '@trezor/type-utils';
 
 import { DashboardSection } from 'src/components/dashboard';
+import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
-import { useDispatch, useLayoutSize } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
+import { TradeBoxActionButton } from './TradeBoxActionButton';
 import { WrapNativeTokenButton } from './WrapNativeTokenButton';
+import { useTradeBoxEarnOptions } from './hooks/useTradeBoxEarnOptions';
 
 type TradeBoxProps = {
     account: Account;
 };
 
-type ActionType = 'buy' | 'sell' | 'exchange' | 'stake';
-
 export const TradeBox = ({ account }: TradeBoxProps) => {
     const { isBelowTablet, isBelowMobile } = useLayoutSize();
-    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
-
-    const isStakeNetwork = hasNetworkFeatures(account, 'staking');
-
-    const ActionButton = ({
-        type,
-        children,
-        isDisabled = false,
-    }: {
-        type: ActionType;
-        children: React.ReactNode;
-        isDisabled?: boolean;
-    }) => {
-        const gotoRouteName: Route['name'] =
-            type === 'stake' ? 'wallet-staking' : `wallet-trading-${type}`;
-        const gotoProps =
-            type === 'stake'
-                ? {
-                      routeName: gotoRouteName,
-                      preserveParams: true,
-                      params: {
-                          symbol: account.symbol,
-                          accountIndex: account.index,
-                          accountType: account.accountType,
-                      },
-                  }
-                : { routeName: gotoRouteName };
-        const dataTestId = type === 'stake' ? undefined : `@trading/menu/wallet-trading-${type}`;
-
-        const handleOnClick = () => {
-            dispatch(
-                tradingActions.setTradingFromPrefilledAccount(
-                    getTradingPrefilledFromAccountData(account),
-                ),
-            );
-
-            dispatch(goto(gotoProps));
-
-            switch (type) {
-                case 'buy':
-                case 'sell':
-                case 'exchange': {
-                    analytics.report({
-                        type: events.tradeNavigateEvent.name,
-                        payload: {
-                            action: 'navigate',
-                            type,
-                            from: 'account/tradebox',
-                            networkSymbol: account.symbol,
-                        },
-                    });
-
-                    break;
-                }
-                case 'stake': {
-                    analytics.report({
-                        type: events.stakingNavigateEvent.name,
-                        payload: {
-                            action: 'navigate',
-                            from: 'account/tradebox',
-                            networkSymbol: account.symbol,
-                        },
-                    });
-
-                    break;
-                }
-                default:
-                    exhaustive(type);
-            }
-        };
-
-        return (
-            <Button
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                onClick={handleOnClick}
-                data-testid={dataTestId}
-                isDisabled={isDisabled}
-            >
-                {children}
-            </Button>
-        );
-    };
+    const { hasEarnOption, yieldBadge } = useTradeBoxEarnOptions(account);
 
     return (
         <DashboardSection>
@@ -169,23 +80,42 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 </InfoItem>
                             </>
                         ) : null}
+                        {yieldBadge && (
+                            <Row alignItems="center">
+                                <YieldBadge
+                                    apy={yieldBadge.apy}
+                                    variant="promo"
+                                    account={account}
+                                    vaultId={yieldBadge.vaultId}
+                                    analyticsFrom="account-tradebox"
+                                />
+                            </Row>
+                        )}
                     </Flex>
                     <Row gap={12}>
-                        {isStakeNetwork && (
-                            <ActionButton type="stake">
-                                <Translation id="TR_STAKE_STAKE" />
-                            </ActionButton>
+                        {hasEarnOption && (
+                            <TradeBoxActionButton account={account} type="earn">
+                                <Translation id="TR_EARN" />
+                            </TradeBoxActionButton>
                         )}
-                        <ActionButton type="buy">
+                        <TradeBoxActionButton account={account} type="buy">
                             <Translation id="TR_NAV_BUY" />
-                        </ActionButton>
-                        <ActionButton type="sell" isDisabled={account.empty}>
+                        </TradeBoxActionButton>
+                        <TradeBoxActionButton
+                            account={account}
+                            type="sell"
+                            isDisabled={account.empty}
+                        >
                             <Translation id="TR_NAV_SELL" />
-                        </ActionButton>
+                        </TradeBoxActionButton>
                         {!hasBitcoinOnlyFirmware(device) && (
-                            <ActionButton type="exchange" isDisabled={account.empty}>
+                            <TradeBoxActionButton
+                                account={account}
+                                type="exchange"
+                                isDisabled={account.empty}
+                            >
                                 <Translation id="TR_TRADING_SWAP" />
-                            </ActionButton>
+                            </TradeBoxActionButton>
                         )}
                         <WrapNativeTokenButton account={account} />
                     </Row>

@@ -11,7 +11,7 @@ import {
     selectTradingSellInfo,
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type FiatCurrencyItem, type SellFormValues } from '@suite-native/trading-types';
 import { unique } from '@trezor/utils';
 
@@ -19,11 +19,7 @@ import {
     selectTradingResidenceCountry,
     selectTradingResidenceCountrySubdivision,
 } from './residenceSelectors';
-import {
-    type TradingRootState,
-    createMemoizedSelector,
-    createMemoizedSelectorWithAccounts,
-} from '../reducers';
+import { type TradingRootState, createMemoizedSelector } from '../reducers';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 export const selectTradingSell = (state: TradingRootState) => state.wallet.trading.sell;
@@ -80,10 +76,11 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
     },
 );
 
-export const selectSellSelectedSendAccount = createMemoizedSelectorWithAccounts(
-    [state => state, selectTradingSell],
-    (state, { tradingAccountKey }) => selectAccountByKey(state, tradingAccountKey) || undefined,
-);
+export const selectSellSelectedSendAccount = (state: TradingRootState & AccountsRootState) => {
+    const { tradingAccountKey } = selectTradingSell(state);
+
+    return selectAccountByKey(state, tradingAccountKey) ?? undefined;
+};
 
 export const selectSellBestQuotesForAvailablePaymentMethods = createMemoizedSelector(
     [selectValidTradingSellQuotes],

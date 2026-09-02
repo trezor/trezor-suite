@@ -3,7 +3,7 @@ import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-confi
 import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 import { type ArrayElement } from '@trezor/type-utils';
 
-import { type Route } from './route';
+import { type Route, type Routes } from './route';
 import { type DashboardParams, type EarnParams } from './routerParams';
 
 export type SettingsBackRoute = {
@@ -16,8 +16,7 @@ type AppParamsTypes = {
     accountIndex: number;
     accountType: NonNullable<AccountType>;
     cancelable: boolean;
-    yieldId: string;
-    contractAddress?: string;
+    vaultAddress?: string;
 };
 
 type ExtractType<T extends keyof AppParamsTypes> = {
@@ -29,10 +28,9 @@ export type ModalAppParams = {
 };
 
 export type RouteParams = {
-    [K in keyof (CommonWalletParams &
-        EarnParams &
-        ModalAppParams &
-        DashboardParams)]?: (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)[K];
+    [
+        K in keyof (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)
+    ]?: (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)[K];
 };
 
 type AppWithParams<T extends { [key: string]: any }> = {
@@ -44,7 +42,7 @@ type AppWithParams<T extends { [key: string]: any }> = {
 };
 
 export type RouterAppWithParams =
-    | ArrayElement<AppWithParams<typeof routes>>
+    | ArrayElement<AppWithParams<Routes>>
     | {
           app: 'unknown';
           params: undefined;

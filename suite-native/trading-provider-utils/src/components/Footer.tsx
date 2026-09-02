@@ -28,25 +28,22 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
     const { companyName, termsUrl } = provider;
 
     return (
-        <Text variant="body-sm" color="contentSecondary" textAlign="center">
-            <Translation
-                id="moduleTrading.tradingScreen.footer.termsOfProvider"
-                values={{
-                    companyName,
-                    link: parts => (
-                        <Link
-                            textVariant="body-sm"
-                            textColor="contentSecondary"
-                            textPressedColor="contentDisabled"
-                            href={termsUrl}
-                            label={parts}
-                            isUnderlined
-                            key={parts.join('|')}
-                        />
-                    ),
-                }}
+        <VStack alignItems="center" spacing={0}>
+            <Text variant="body-sm" color="contentSecondary" textAlign="center">
+                <Translation
+                    id="moduleTrading.tradingScreen.footer.providerDisclaimer"
+                    values={{ companyName }}
+                />
+            </Text>
+            <Link
+                textVariant="body-sm"
+                textColor="contentSecondary"
+                textPressedColor="contentDisabled"
+                href={termsUrl}
+                label={<Translation id="moduleTrading.tradingScreen.footer.termsApply" />}
+                isUnderlined
             />
-        </Text>
+        </VStack>
     );
 };
 

@@ -5,7 +5,7 @@ import {
     isCountrySubdivisionRequired,
 } from '@suite-common/trading';
 import { Text } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { OverviewRow } from '@suite-native/trading-atoms';
 
@@ -24,9 +24,11 @@ export const CountrySubdivisionPicker = ({
 }: CountrySubdivisionPickerProps) => {
     const { translate } = useTranslate();
     const { isSheetVisible, hideSheet, showSheet } = useCountrySubdivisionPickerControls();
-    const { watch, setValue } = useFormContext<TradingLocationFormValues>();
-    const selectedCountry = watch('country');
-    const selectedValue = watch('countrySubdivision');
+    const { control, setValue } = useFormContext<TradingLocationFormValues>();
+    const [selectedCountry, selectedValue] = useWatch({
+        control,
+        name: ['country', 'countrySubdivision'],
+    });
     const isSubdivisionRequired = isCountrySubdivisionRequired(selectedCountry?.value);
 
     const handleSubdivisionSelect = useCallback(

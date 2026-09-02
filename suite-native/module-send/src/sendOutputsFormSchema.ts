@@ -1,6 +1,6 @@
 import {
+    type AddressValidator,
     isAddressDeprecated,
-    isAddressValid,
     isBech32AddressUppercase,
     isTaprootAddress,
 } from '@suite-common/address';
@@ -17,6 +17,7 @@ import { type FeeLevelsMaxAmount } from '@suite-native/transaction-management';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 export type SendFormFormContext = {
+    addressValidator?: AddressValidator;
     symbol?: NetworkSymbol;
     availableBalance?: string;
     networkFeeInfo?: FeeInfo;
@@ -118,15 +119,17 @@ const outputSchema = yup.object({
                 if (!value || !context) {
                     return false;
                 }
-                const { symbol, isTaprootAvailable } = context;
+                const { addressValidator, symbol, isTaprootAvailable } = context;
 
-                if (!symbol) return false;
+                if (!addressValidator || !symbol) return false;
 
-                const isTaprootValid = isTaprootAvailable || !isTaprootAddress(value, symbol);
+                const isTaprootValid =
+                    isTaprootAvailable ||
+                    !isTaprootAddress({ addressValidator, address: value, symbol });
 
                 return (
-                    isAddressValid(value, symbol) &&
-                    !isAddressDeprecated(value, symbol) &&
+                    addressValidator.isAddressValid(value, symbol) &&
+                    !isAddressDeprecated({ addressValidator, address: value, symbol }) &&
                     !isBech32AddressUppercase(value) && // bech32 addresses are valid as uppercase but are not accepted by Trezor
                     isTaprootValid // bech32m/Taproot addresses are valid but may not be supported by older FW
                 );

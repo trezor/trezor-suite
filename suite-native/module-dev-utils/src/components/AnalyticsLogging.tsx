@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     analyticsActions,
@@ -6,6 +6,7 @@ import {
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
+import { useDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { analytics } from '@suite-native/analytics';
 import { Badge, Button, Card, CheckBox, Divider, HStack, Text, VStack } from '@suite-native/atoms';

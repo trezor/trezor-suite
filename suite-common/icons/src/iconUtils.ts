@@ -16,6 +16,7 @@ export const networkIconSymbolMap = {
     dsol: 'sol',
     etc: 'etc',
     eth: 'eth',
+    hype: 'hype',
     ltc: 'ltc',
     nmc: 'nmc',
     op: 'op',

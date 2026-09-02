@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
@@ -31,6 +31,7 @@ import { Select } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { validateDecimals } from 'src/utils/suite/validation';

@@ -1,11 +1,7 @@
 import { type JSX, useCallback, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import {
-    AppUpdateEventStatus,
-    asTypedDesktopAnalytics,
-    events,
-    selectDesktopAnalyticsDep,
-} from '@suite/analytics';
+import { AppUpdateEventStatus, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import {
     UpdateState,
     availableThunk,
@@ -17,10 +13,9 @@ import {
     selectDesktopUpdate,
 } from '@suite/desktop-update';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isArrayMember } from '@trezor/utils';
-
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { Available } from './DesktopUpdater/Available';
 import { Downloading } from './DesktopUpdater/Downloading';
@@ -99,7 +94,7 @@ export const DesktopUpdater = () => {
             updateInfo: desktopUpdate.latest,
         });
 
-        asTypedDesktopAnalytics(analytics).report({
+        analytics.report({
             type: events.appUpdateEvent.name,
             payload,
         });

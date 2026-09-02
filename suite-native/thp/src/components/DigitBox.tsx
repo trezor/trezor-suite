@@ -15,7 +15,7 @@ const digitBoxStyle = prepareNativeStyle<{ isFocused: boolean }>(
         borderColor: isFocused ? colors.elementBorderFieldFocused : colors.elementBorderField,
         borderWidth: isFocused ? borders.widths.large : borders.widths.small,
         borderRadius: borders.radii.r12,
-        backgroundColor: colors.legacyBackgroundNeutralSubtleOnElevation0,
+        backgroundColor: colors.elementFillField,
         justifyContent: 'center',
     }),
 );

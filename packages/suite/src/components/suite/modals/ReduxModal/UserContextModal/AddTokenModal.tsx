@@ -3,14 +3,16 @@ import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { isAddressValid } from '@suite-common/address';
+import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
 import TrezorConnect, { type TokenInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 type AddTokenModalProps = {
@@ -25,14 +27,17 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, addressValidator } = useServices(
+        selectDesktopAnalyticsDep,
+        selectAddressValidatorDep,
+    );
 
     const loadTokenInfo = useCallback(
         async (acc: Account, contractAddress: string) => {
             if (!acc) return;
             setIsFetching(true);
             const response = await TrezorConnect.getAccountInfo({
-                coin: acc.symbol,
+                coin: asCoinSymbol(acc.symbol),
                 identity: tryGetAccountIdentity(acc),
                 descriptor: acc.descriptor,
                 details: 'tokenBalances',
@@ -80,7 +85,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
             t => t.contract.toLowerCase() === addr.toLowerCase(),
         );
 
-        const isValid = isAddressValid(addr, account.symbol);
+        const isValid = addressValidator.isAddressValid(addr, account.symbol);
 
         if (addr && !isValid) {
             setError(translationString('TR_ADD_TOKEN_ADDRESS_NOT_VALID'));
@@ -102,7 +107,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 payload: {
                     networkSymbol: account.symbol,
                     addedNth: account.tokens ? account.tokens.length + 1 : 0,
-                    token: tokenInfo[0]?.symbol?.toLowerCase() || '',
+                    token: tokenInfo[0]?.symbol || '',
                 },
             });
         }

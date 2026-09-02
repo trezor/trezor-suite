@@ -4,6 +4,7 @@ import type {
     ThpCredentials,
     ThpPairingMethod,
 } from '@trezor/protocol';
+import { createTypeGuardByType } from '@trezor/type-utils';
 import type { VersionArray } from '@trezor/utils';
 
 import type { Device } from '../types/device';
@@ -118,6 +119,8 @@ export type DeviceEvent =
     | DeviceThpPairingStatusChanged
     | DeviceVersionChanged
     | DeviceTrezorPushNotification;
+
+export const isDeviceEventOfType = createTypeGuardByType<DeviceEvent>();
 
 export type DeviceEventMessage = DeviceEvent & { event: typeof DEVICE_EVENT };
 

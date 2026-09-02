@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/getaddress.json';
+import { loadCommonFixture } from './commonFixtures';
+
+const commonFixtures = loadCommonFixture('ethereum/getaddress.json');
 
 const legacyResults: Record<string, LegacyResult[]> = {
     'Ledger Live legacy path': [

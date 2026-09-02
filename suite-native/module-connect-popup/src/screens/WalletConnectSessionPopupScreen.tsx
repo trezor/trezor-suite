@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -13,11 +14,11 @@ import {
 import { AccountsListItem } from '@suite-native/accounts';
 import {
     Badge,
+    BannerInline,
     BottomSheetModal,
     Button,
     Card,
     HStack,
-    InlineAlertBox,
     Text,
     TitleHeader,
     VStack,
@@ -228,7 +229,7 @@ export const WalletConnectSessionPopupScreen = () => {
                 )}
 
                 {(requiredNetworksNotActivated || noNetworksActivated) && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="warning"
                         title={
                             <Translation
@@ -252,7 +253,7 @@ export const WalletConnectSessionPopupScreen = () => {
                 )}
 
                 {pendingProposal?.validation === 'INVALID' && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="critical"
                         title={
                             <Translation id="moduleConnectPopup.walletConnect.errors.unableToVerify" />
@@ -261,7 +262,7 @@ export const WalletConnectSessionPopupScreen = () => {
                 )}
 
                 {pendingProposal?.expired && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="warning"
                         title={
                             <Translation id="moduleConnectPopup.walletConnect.errors.requestExpired" />

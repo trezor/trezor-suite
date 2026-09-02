@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 
-import { isCoinjoinSupportedSymbol, setDebugSettings } from '@suite/coinjoin';
+import {
+    isCoinjoinSupportedSymbol,
+    selectCoinjoinClients,
+    selectCoinjoinDebug,
+    setDebugSettings,
+} from '@suite/coinjoin';
 import {
     COINJOIN_NETWORKS,
     type CoinjoinClientInstance,
@@ -8,6 +13,7 @@ import {
     type CoinjoinSymbol,
 } from '@suite/coinjoin';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -15,7 +21,7 @@ import { Button } from '@trezor/components';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const CoordinatorVersionContainer = styled.div`
     display: flex;
@@ -93,8 +99,8 @@ const CoordinatorServer = ({
 };
 
 export const CoinjoinApi = () => {
-    const debug = useSelector(state => state.wallet.coinjoin.debug);
-    const clients = useSelector(state => state.wallet.coinjoin.clients);
+    const debug = useSelector(selectCoinjoinDebug);
+    const clients = useSelector(selectCoinjoinClients);
     const dispatch = useDispatch();
     const { reloadApp } = useServices(selectReloadAppDep);
 

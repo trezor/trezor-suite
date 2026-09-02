@@ -1,19 +1,18 @@
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
+    type GetTokenDefinitionsEnabledNetworksDep,
+    type TokenDefinitionsRootState,
     getSupportedDefinitionTypes,
     getTokenDefinitionThunk,
     periodicCheckTokenDefinitionsThunk,
     selectFilterKnownTokens,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type AccountType, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
-    type AccountType,
-    type Bip43Path,
-    type NetworkSymbol,
-    getNetworkType,
-} from '@suite-common/wallet-config';
-import {
+    type AccountsRootState,
+    type UpdateFiatRatesThunkState,
     accountsActions,
     selectAccountsByNetworkAndDeviceState,
     updateFiatRatesThunk,
@@ -23,6 +22,7 @@ import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-ut
 import { isNetworkWithTokens } from '@suite-native/tokens';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
+import type { Bip43Path } from '@trezor/crypto-utils';
 import { convertTaprootXpub } from '@trezor/utils';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 
@@ -44,9 +44,17 @@ const getAccountTypeFromDescriptor = (descriptor: string, symbol: NetworkSymbol)
     return paymentTypeToAccountType[paymentType];
 };
 
-export const importAccountThunk = createThunk(
+type ImportAccountThunkState = AccountsRootState & TokenDefinitionsRootState;
+
+type ImportAccountThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
+
+export const importAccountThunk = createThunk<
+    void,
+    ImportAssetThunkPayload,
+    { state: ImportAccountThunkState; extra: ImportAccountThunkDeps }
+>(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/importAccountThunk`,
-    ({ accountInfo, accountLabel, symbol }: ImportAssetThunkPayload, { dispatch, getState }) => {
+    ({ accountInfo, accountLabel, symbol }, { dispatch, getState }) => {
         const deviceState = PORTFOLIO_TRACKER_DEVICE_STATE;
 
         const deviceNetworkAccounts = selectAccountsByNetworkAndDeviceState(
@@ -81,10 +89,12 @@ export const importAccountThunk = createThunk(
     },
 );
 
+type GetAccountInfoThunkState = UpdateFiatRatesThunkState;
+
 export const getAccountInfoThunk = createThunk<
     AccountInfo,
     { symbol: NetworkSymbol; baseCurrencyCode: BaseCurrencyCode; xpubAddress: string },
-    { rejectValue: string }
+    { rejectValue: string; state: GetAccountInfoThunkState }
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
     async ({ symbol, baseCurrencyCode, xpubAddress }, { dispatch, rejectWithValue, getState }) => {

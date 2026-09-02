@@ -1,15 +1,18 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { checkEvoluRelayServerRunning } from '@suite-common/e2e-evolu-client';
+import type { PerfMetrics } from '@trezor/perf-e2e';
 
 import { AnalyticsFixture, AnalyticsHelper } from './analytics';
+import { measurePerformance } from '../performance/perfMeasure';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataMock } from './mocks/metadataMock';
-import { PassthruTradingMock } from './mocks/passthruTradingMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
+import { TradingMockNew } from './mocks/trading/tradingMockNew';
 import { TradingMock } from './mocks/tradingMock';
 import { YieldMock } from './mocks/yieldMock';
+import { ActivityPage } from './pageObjects/activityPage';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
 import { AssetsSection } from './pageObjects/assetsSection';
 import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
@@ -23,6 +26,7 @@ import { PaginationControl } from './pageObjects/pagination';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { StakingSection } from './pageObjects/staking/stakingSection';
+import { ToastSection } from './pageObjects/toastSection';
 import { FeeSection } from './pageObjects/trading/feeSection';
 import { TradingPage } from './pageObjects/trading/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
@@ -36,6 +40,7 @@ import { suiteBaseTest } from './testExtends/suiteBaseFixture';
 import { TradingStoreFixture } from './tradingStore';
 
 type Fixtures = {
+    activityPage: ActivityPage;
     dashboardPage: DashboardPage;
     settingsPage: SettingsPage;
     guidePanel: GuidePanel;
@@ -57,7 +62,7 @@ type Fixtures = {
     blockbookMock: BlockbookMock;
     solanaStakingMock: SolanaStakingMock;
     tradingMock: TradingMock;
-    passthruTradingMock: PassthruTradingMock;
+    tradingMockNew: TradingMockNew;
     connectPermissionsModal: ConnectPermissionsModal;
     connectSelectAccountModal: ConnectSelectAccountModal;
     stakingSection: StakingSection;
@@ -68,10 +73,24 @@ type Fixtures = {
     yieldMock: YieldMock;
     txSimulationModal: TxSimulationModal;
     paginationControl: PaginationControl;
+    toastSection: ToastSection;
     evoluClient: EvoluClient;
+    perf: {
+        /**
+         * Wraps an interaction a desktop test already performs and holds it to the limits of its
+         * scenario. Returns null where instrumentation is not installed (e.g. web).
+         */
+        measure: (
+            scenario: string,
+            interaction: () => Promise<void>,
+        ) => Promise<PerfMetrics | null>;
+    };
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
+    activityPage: async ({ page }, use) => {
+        await use(new ActivityPage(page));
+    },
     dashboardPage: async ({ page, device, devicePrompt }, use) => {
         await use(new DashboardPage(page, device, devicePrompt));
     },
@@ -133,8 +152,8 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(blockbookMock);
         blockbookMock.stop();
     },
-    solanaStakingMock: async ({ target }, use) => {
-        const solanaStakingMock = new SolanaStakingMock(target);
+    solanaStakingMock: async ({ page }, use) => {
+        const solanaStakingMock = new SolanaStakingMock(page);
         await solanaStakingMock.start();
         await use(solanaStakingMock);
         await solanaStakingMock.stop();
@@ -142,10 +161,10 @@ const test = suiteBaseTest.extend<Fixtures>({
     tradingMock: async ({ page }, use) => {
         await use(new TradingMock(page));
     },
-    passthruTradingMock: async ({ page }, use) => {
-        const passthruTradingMock = new PassthruTradingMock(page);
-        await use(passthruTradingMock);
-        await passthruTradingMock.stop();
+    tradingMockNew: async ({ page }, use) => {
+        const tradingMockNew = new TradingMockNew(page);
+        await use(tradingMockNew);
+        await tradingMockNew.stop();
     },
     connectSelectAccountModal: async ({ page }, use) => {
         await use(new ConnectSelectAccountModal(page));
@@ -179,11 +198,20 @@ const test = suiteBaseTest.extend<Fixtures>({
     paginationControl: async ({ page }, use) => {
         await use(new PaginationControl(page));
     },
+    toastSection: async ({ page }, use) => {
+        await use(new ToastSection(page));
+    },
     evoluClient: async ({}, use) => {
         await checkEvoluRelayServerRunning();
         const evoluClient = new EvoluClient();
         await use(evoluClient);
         await evoluClient.dispose();
+    },
+    perf: async ({ page }, use, testInfo) => {
+        await use({
+            measure: (scenario, interaction) =>
+                measurePerformance(page, testInfo, scenario, interaction),
+        });
     },
 });
 

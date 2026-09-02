@@ -1,4 +1,6 @@
 import pluginLocalRules from 'eslint-plugin-local-rules';
+
+import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
@@ -9,7 +11,9 @@ const publishableTrezorPackages = [
     '@trezor/blockchain-link',
     '@trezor/blockchain-link-types',
     '@trezor/blockchain-link-utils',
+    '@trezor/network-bitcoin',
     '@trezor/network-cardano',
+    '@trezor/network-ethereum',
     '@trezor/network-ripple',
     '@trezor/network-solana',
     '@trezor/network-stellar',
@@ -75,6 +79,10 @@ export const localRulesConfig = [
                         /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/mocks$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
+                        // The Ethereum network module sits behind its own entry point so that the
+                        // package barrel — which UI packages import for the wrapped-native token
+                        // helpers — stays clear of `@trezor/connect` and viem.
+                        /^@trezor\/network-ethereum-suite-common\/network-module$/,
                     ],
                 },
             ],
@@ -87,4 +95,28 @@ export const localRulesConfig = [
             'local-rules/no-suite-imports-in-suite-common': 'error',
         },
     },
+    {
+        files: ['**/src/**/*.{ts,tsx}'],
+        ignores: ['**/__fixtures__/**', '**/*.test.{ts,tsx}', '**/*.type-test.ts'],
+        rules: {
+            'local-rules/enforce-di-factory-contracts': 'error',
+            'local-rules/enforce-thunk-contracts': 'error',
+        },
+    },
+    ...(areExpensiveChecksEnabled
+        ? [
+              {
+                  files: [
+                      'networks/**/src/**/*.{ts,tsx}',
+                      'packages/**/src/**/*.{ts,tsx}',
+                      'suite/**/src/**/*.{ts,tsx}',
+                      'suite-common/**/src/**/*.{ts,tsx}',
+                      'suite-native/**/src/**/*.{ts,tsx}',
+                  ],
+                  rules: {
+                      'local-rules/no-unused-intersection-members': 'error',
+                  },
+              },
+          ]
+        : []),
 ];

@@ -1,9 +1,15 @@
 import { type ReactNode } from 'react';
-import { Pressable } from 'react-native';
+import { type PressableProps } from 'react-native';
+import {
+    interpolateColor,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from 'react-native-reanimated';
 
 import { type NetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { AnimatedPressable, Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { NetworkBadge } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -15,60 +21,104 @@ export type AssetListItemProps = {
     symbol: NetworkSymbolExtended;
     contractAddress?: TokenAddress;
     networkSymbol: NetworkSymbol;
-    onPress: () => void;
+    isDisabled?: boolean;
+    onPress?: () => void;
     rightContent?: ReactNode;
 };
 
-const vStackStyle = prepareNativeStyle(({ spacings }) => ({
+const ANIMATION_DURATION_MS = 100;
+
+const AssetAnimatedPressable = ({ onPress, style, children, ...rest }: PressableProps) => {
+    const { utils } = useNativeStyles();
+    const progress = useSharedValue(0);
+    const handlePressIn = () =>
+        (progress.value = withTiming(1, { duration: ANIMATION_DURATION_MS }));
+    const handlePressOut = () =>
+        (progress.value = withTiming(0, { duration: ANIMATION_DURATION_MS }));
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        backgroundColor: interpolateColor(
+            progress.value,
+            [0, 1],
+            ['transparent', utils.colors.elementFillGhostPressed],
+        ),
+    }));
+
+    return (
+        <AnimatedPressable
+            onPress={onPress}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            style={[animatedStyle, style]}
+            {...rest}
+        >
+            {children}
+        </AnimatedPressable>
+    );
+};
+
+const vStackStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
     flex: 1,
     gap: 0,
-    paddingVertical: spacings.sp12,
 }));
 
 const rightContentStyle = prepareNativeStyle(() => ({
-    maxWidth: '40%',
+    maxWidth: '50%',
     justifyContent: 'center',
 }));
+
+const containerStyle = prepareNativeStyle<{ isDisabled: boolean }>(
+    ({ borders }, { isDisabled }) => ({
+        borderRadius: borders.radii.r12,
+        opacity: isDisabled ? 0.5 : 1,
+    }),
+);
 
 export const AssetListItem = ({
     name,
     symbol,
     contractAddress,
     networkSymbol,
+    isDisabled = false,
     onPress,
     rightContent,
 }: AssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Pressable
+        <AssetAnimatedPressable
             onPress={onPress}
+            disabled={isDisabled}
             accessible={true}
             accessibilityRole="button"
+            accessibilityState={{ disabled: isDisabled }}
             accessibilityLabel={name}
+            style={applyStyle(containerStyle, { isDisabled })}
         >
-            <HStack alignItems="center" spacing="sp12">
-                <Box justifyContent="center">
-                    <TokenIcon
-                        symbol={networkSymbol}
-                        contractAddress={contractAddress}
-                        showNetworkIcon
-                    />
-                </Box>
+            <HStack
+                alignItems="center"
+                spacing="sp8"
+                paddingHorizontal="sp8"
+                paddingVertical="sp12"
+            >
+                <TokenIcon
+                    symbol={networkSymbol}
+                    contractAddress={contractAddress}
+                    showNetworkIcon
+                    size="medium"
+                />
                 <VStack style={applyStyle(vStackStyle)}>
-                    <HStack alignItems="center" justifyContent="space-between">
-                        <Text variant="body-md" color="contentPrimary">
-                            {name}
-                        </Text>
-                    </HStack>
-                    <HStack alignItems="center" justifyContent="flex-start">
+                    <Text variant="body-md" color="contentPrimary">
+                        {name}
+                    </Text>
+                    <HStack spacing="sp4" alignItems="center" justifyContent="flex-start">
                         <NetworkSymbolExtendedFormatter symbol={symbol} />
                         <NetworkBadge symbol={networkSymbol} />
                     </HStack>
                 </VStack>
                 {rightContent && <Box style={applyStyle(rightContentStyle)}>{rightContent}</Box>}
             </HStack>
-        </Pressable>
+        </AssetAnimatedPressable>
     );
 };

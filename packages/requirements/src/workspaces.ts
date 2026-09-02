@@ -1,6 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { resolve } from 'node:path';
 
 type YarnWorkspaceInfo = {
     readonly name: string;
@@ -33,7 +32,7 @@ export const listAllWorkspaces = (repoRoot: string): ReadonlyArray<WorkspaceEntr
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
 
-        throw new Error(`Failed to list workspaces in ${cacheKey}: ${message}`);
+        throw new Error(`Failed to list workspaces in ${cacheKey}: ${message}`, { cause: error });
     }
 
     const workspaces = rawOutput
@@ -67,6 +66,3 @@ export const getWorkspaceDirectoryMap = (repoRoot: string): ReadonlyMap<string, 
 
     return map;
 };
-
-export const readPackageJson = <T>(workspaceDir: string): T =>
-    JSON.parse(readFileSync(join(workspaceDir, 'package.json'), 'utf-8')) as T;

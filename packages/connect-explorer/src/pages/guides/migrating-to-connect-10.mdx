@@ -1,0 +1,171 @@
+---
+description: What you need to change in your integration to move from Trezor Connect 9 to Connect 10, as a checklist.
+---
+
+import { Callout } from 'nextra/components';
+
+import InteractiveChecklist from '../../components/InteractiveChecklist';
+
+# Migrating from Connect 9 to Connect 10
+
+<InteractiveChecklist />
+
+Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**. Your app stays a thin client and keeps calling the same `TrezorConnect` methods — but a handful of parameters, return shapes and packaging details change, and a few methods move out of the public API.
+
+The guide follows the order of an actual upgrade: install the beta, fix your `init()` call, fix your method calls, then verify. The first three are required; [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) and the [other improvements](#other-improvements-worth-adopting) are optional but recommended. For the architecture behind the change, see [New Connect flow in Trezor Suite](/guides/new-connect-flow-in-trezor-suite); for the release-by-release list, see the [changelog](/changelog).
+
+<Callout type="info">
+    **v9 keeps working.** Connect 10 is in beta: we would like third parties to test their
+    integrations against it and report what breaks, and to move production integrations over once it
+    reaches stable. There is no cliff edge — v9 stays supported, so you can take the time you need.
+</Callout>
+
+## Installing the beta
+
+```bash
+npm install @trezor/connect-web@10.0.0-beta.1
+```
+
+The Suite-hosted flow needs **Trezor Suite 26.7.2 or newer** to host the Connect core. Older Suite versions do not expose the local Connect server, so requests will not be handled.
+
+Found a bug, or have feedback on the beta? Open an issue at [github.com/trezor/trezor-suite](https://github.com/trezor/trezor-suite/issues/new/choose).
+
+## Update your setup
+
+- [ ] Add `manifest.appName` to your `init()` call. It is now **required**.
+
+- [ ] Add `manifest.appIcon`: a URL to an icon sized for a 64px circle. Optional, but it is what Suite shows in the permission prompt, so in practice you want it.
+
+- [ ] Migrate to ESM: `import TrezorConnect from '@trezor/connect'`. If you cannot migrate off CJS, use a dynamic `import()`, or stay on v9.
+
+- [ ] Leave `coreMode` at its default `'auto'` unless you have a specific reason to pin it to `'suite-desktop'` or `'suite-web'`.
+
+- [ ] Remove all iframe and popup integration config. `core-in-popup` and iframe-with-popup modes no longer exist. `connect-iframe` is removed.
+
+```javascript
+TrezorConnect.init({
+    manifest: {
+        email: 'developer@xyz.com',
+        appName: 'Your Application',
+        appUrl: 'https://your.application.com',
+        appIcon: 'https://your.application.com/icon-64.png',
+    },
+});
+```
+
+### If your integration runs in a browser page (web flow)
+
+Both items below are **HTTP response headers your server sends with the page that hosts your integration** — not Connect settings, and not something Connect can change on your behalf. If a CDN, framework or security middleware sets them for you, that is where to adjust them.
+
+- [ ] `Content-Security-Policy`: allow `https://suite.trezor.io` in `frame-src` (or `child-src`), so your page may embed Suite Web.
+
+- [ ] `Cross-Origin-Opener-Policy`: must not be `same-origin`, which would sever the popup's `window.opener` handle back to your page. Use `same-origin-allow-popups` or `unsafe-none`.
+
+<Callout type="warning">
+    Symptom if you skip the header changes: a handshake timeout when the popup opens.
+</Callout>
+
+### Assumptions to drop
+
+Two things that held in v9 no longer do, and neither shows up as a type error:
+
+- [ ] **Device selection and passphrase entry no longer happen in your flow.** In v9 the popup you hosted asked which device to use and collected the passphrase per request, so integrations often mirrored that with their own prompts, retries and "waiting for device" states. In v10 Suite already knows the active device and holds the unlocked session, so remove that UI and the state around it.
+
+- [ ] **Use the `TrezorConnect` object as you import it.** In v10 it is a class instance, so copying it (`{ ...TrezorConnect }`) or listing its keys no longer gives you the API — a copy silently loses methods.
+
+## Update your method calls
+
+Skip any item whose API you do not use.
+
+- [ ] **`coin` accepts the coin shortcut only.** Replace names and labels: `'Bitcoin'` → `'btc'`, `'Bitcoin Cash'` → `'bch'`, `'cardano'` → `'ada'`. Pass lowercase so TypeScript type-checks, even though runtime matching is case-insensitive. The [supported coins reference](/details/coins) lists every accepted shortcut.
+    - Path-taking methods (`getAddress`, `getPublicKey`, …) fall back to deriving the network from `path`.
+    - These throw `Method_UnknownCoin` with no fallback: `getAccountInfo`, `selectAccount`, `verifyMessage`, `composeTransaction`, `signTransaction`, `signMessage`, `getOwnershipId`, `getOwnershipProof`, and the `blockchain*` family.
+
+- [ ] **Check that the coins you use are still supported.** Coins that no current device supports have been dropped from Connect's coin definitions, so naming one behaves exactly like naming an unknown coin. [Supported coins](/details/coins) is the current list.
+
+- [ ] **`getPublicKey` no longer falls back to Bitcoin for other networks.** In v9, `getPublicKey({ coin: 'eth', … })` silently returned a Bitcoin xpub. Now the network must resolve to a bitcoin-like coin — from `coin`, or failing that from the derivation `path` — otherwise the call throws `Method_UnknownCoin`. Use the per-coin methods (`ethereumGetPublicKey`, `cardanoGetPublicKey`, …) for non-bitcoin networks.
+
+- [ ] **`getAccountDescriptor` is removed.** Call the per-coin `*GetPublicKey` instead.
+    - `payload.descriptor` → Bitcoin: `result.descriptor`. Non-Bitcoin coins: `result.displayablePublicKey`.
+    - `payload.path` → `result.serializedPath` on every `*GetPublicKey`.
+    - Coin-agnostic consumers: read `result.displayablePublicKey`.
+
+- [ ] **`getAccountInfo` called without `path` or `descriptor` now throws** `Method_InvalidParameter`. Pass `path` (derive on device, then query backend) or `descriptor` (backend only). For the old discovery behaviour use `discoverAccounts`, or [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) for user-facing selection.
+
+- [ ] **The event and UI-plumbing methods are gone:** `on`, `off`, `removeAllListeners`, `uiResponse` and `updateConnectSettings`. They are absent from the object you import, so a call throws `TypeError: TrezorConnect.on is not a function`.
+
+    In v9 these existed because your app hosted the popup: you subscribed to `DEVICE_EVENT` and `UI_EVENT`, answered a UI request with `uiResponse`, and could change settings mid-session. In v10 the device connection and every prompt belong to Suite, so there are no events to observe and no UI request to answer. Delete the listeners and any state you derived from them — each method call resolves to its own `{ success, payload }`, which is the only result your app needs.
+
+- [ ] **Update type imports:** where you referenced the `TrezorConnect` type, use `TrezorConnectPublicAPI<ConnectDynamicSettings>` from `@trezor/connect-web`. In most code `typeof TrezorConnect` is enough and you do not need the named type at all.
+
+- [ ] **Drop your direct dependency on `@trezor/connect-plugin-ethereum`** and remove manual `transformTypedData` calls. Its logic is inlined into `@trezor/connect`. The 10.x plugin is a stub that throws.
+
+### Cardano
+
+- [ ] `cardanoGetPublicKey`: `publicKey` is now the raw 32-byte key in hex. Read the new `xpub` field, or `displayablePublicKey`, for the extended key.
+
+- [ ] Remove the per-call `useCardanoDerivation` parameter. Declare `TrezorConnect.init({ enabledNetworks: [{ coin: 'ada' }] })` instead. Note: on thin packages, `enabledNetworks` is not honored — Cardano availability follows the host Suite wallet's enabled coins.
+
+## The new way to ask for an account: `selectAccount`
+
+In v9, the common way to let a user pick an account was calling `getAccountInfo` with no path, which triggered on-device discovery. That pattern is gone. Its replacement, `selectAccount`, opens Suite's own account picker: derivation, selection UI and on-device verification all happen inside Suite, and your app receives only the result.
+
+```javascript
+const response = await TrezorConnect.selectAccount({
+    coin: 'btc',
+    // Export a single fresh address instead of the whole account.
+    addressSelection: 'firstFresh',
+});
+
+if (response.success) {
+    const [{ symbol, path, address, mac }] = response.payload;
+}
+```
+
+The response is **always an array** of `{ symbol, path, address? | xpub?, accountType?, mac? }`, even for a single selection. `address` and `xpub` are mutually exclusive — which one you get depends on the sharing flow you request.
+
+### Share only what you need
+
+For UTXO coins (Bitcoin & co.), `addressSelection` decides how much the user shares:
+
+- **`'firstFresh'`** — auto-selects the next unused receive address. Exports that single address only, never the xpub, and needs only the narrow `read_address` permission. The optional `mac` in the result (SLIP-0019) lets you later re-prove the address belongs to the device.
+- **`'manual'`** — same as `'firstFresh'`, but the user picks the address, including used ones.
+- **`'fullAccount'`** (default) — shares the whole account as an xpub, like a watch-only import. Needs the broader `read_xpub` permission.
+
+Account-based networks (EVM, Solana, …) ignore `addressSelection` and always return an individual address.
+
+If a single address is enough for your use case — deposits, withdrawals, ownership checks — prefer `'firstFresh'` or `'manual'`: the user shares less, and your app asks for a smaller permission.
+
+### Shape the picker
+
+- **`selectionType`** — `'single'` (default), `'multi'`, or bounded multi-select via `{ minCount, maxCount }`.
+- **`accountType`** — restricts which derivation types the picker offers, each as its own tab: the built-in types (`'normal'`, `'taproot'`, `'segwit'`, `'legacy'`, `'ledger'`), or a custom derivation path as `{ bip43Path: "m/44'/60'/i'/0/0", label: 'My accounts' }` (with `i` as the account-index placeholder). If omitted, all of the network's types are offered.
+- **`requireOnDeviceVerification`** — whether the selected address must be confirmed on the device. Defaults to `true`.
+
+## Other improvements worth adopting
+
+Nothing here breaks your integration, but each one either simplifies your code or was not possible in v9.
+
+- [ ] Remove per-coin branching where you render public keys. Every `*GetPublicKey` now returns `displayablePublicKey`.
+
+- [ ] Review the per-coin scopes your methods request (`read_address`, `read_xpub`, `sign`, `sign_message`). Scopes are non-overlapping, so `read_address` does not grant `read_xpub`.
+
+- [ ] Ethereum: pass only `data` to [`ethereumSignTypedData`](/methods/ethereum/ethereumSignTypedData). Connect derives the EIP-712 hashes that T1B1 needs from v4 payloads (`metamask_v4_compat: true`), so there is nothing left to pre-compute — and hashes you pass yourself still take precedence.
+
+- [ ] Solana: pass `chunkify` to `solanaSignTransaction` to render addresses in 4-character chunks on device. Requires firmware with chunked-address support in the Solana `SignTx` flow.
+
+- [ ] Tron is supported now: [`tronGetAddress`](/methods/tron/tronGetAddress) and [`tronSignTransaction`](/methods/tron/tronSignTransaction).
+
+## Verify
+
+- [ ] Suite desktop running: Connect connects over the local WebSocket, no popup, no iframe.
+
+- [ ] Suite desktop not running: Suite Web opens as the approval surface.
+
+- [ ] Suite desktop started mid-session: `'auto'` switches back to it.
+
+- [ ] Mobile: `@trezor/connect-mobile` deep links into the Trezor Suite mobile app.
+
+- [ ] Suite's permission prompt shows your app name, origin and icon.
+
+- [ ] Permissions are grouped by coin in the prompt and cover only what you use.

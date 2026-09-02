@@ -1,7 +1,7 @@
 import { type ReactNode, createContext } from 'react';
 import { type FieldValues, type UseFormReturn } from 'react-hook-form';
 
-export type { FieldValues, Path, UseFormReturn, FieldPathValue } from 'react-hook-form';
+export type { FieldValues, Path, UseFormReturn, FieldPathValue, Control } from 'react-hook-form';
 
 export interface FormProps<TFieldValues extends FieldValues> {
     children?: ReactNode;

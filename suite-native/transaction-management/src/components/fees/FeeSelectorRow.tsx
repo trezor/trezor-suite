@@ -1,6 +1,6 @@
 import { Pressable } from 'react-native';
 
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 
 import { FeeSummaryRow } from './FeeSummaryRow';
 import { FeesBottomSheet } from './FeesBottomSheet';
@@ -45,7 +45,7 @@ export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
     }
 
     if (shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle) {
-        return <InlineAlertBox intent="critical" title={feeUnavailableErrorTitle} />;
+        return <BannerInline intent="critical" title={feeUnavailableErrorTitle} />;
     }
 
     const isTron = networkType === 'tron';

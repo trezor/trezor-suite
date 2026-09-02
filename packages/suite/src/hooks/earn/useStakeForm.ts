@@ -3,6 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -17,6 +18,7 @@ import {
     fromWei,
     getConvertedOrDefaultFeeInfo,
     getFiatRateKey,
+    getMaxStakeAmount,
     getStakingLimitsByNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -24,7 +26,7 @@ import { isChanged, throwError } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
@@ -286,27 +288,24 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
     );
 
     const setMax = useCallback(async () => {
-        if (amountLimits == null || stakingLimits == null) {
+        if (stakingLimits == null) {
             return;
         }
 
         setValue('setMaxOutputId', 0, { shouldDirty: true });
         clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
 
-        let amount = new BigNumber(amountLimits.maxCrypto ?? '');
+        const amount = getMaxStakeAmount({
+            balance: account.formattedBalance,
+            symbol: account.symbol,
+        });
 
-        if (amount.gt(stakingLimits.MIN_BALANCE_FOR_STAKING)) {
-            amount = new BigNumber(account.formattedBalance).minus(
-                stakingLimits.MIN_FOR_WITHDRAWALS,
-            );
-        }
+        setValue(CRYPTO_INPUT, amount, { shouldDirty: true, shouldValidate: true });
 
-        setValue(CRYPTO_INPUT, amount.toString(), { shouldDirty: true, shouldValidate: true });
-
-        await onCryptoAmountChange(amount.toString(), 'max');
+        await onCryptoAmountChange(amount, 'max');
     }, [
         account.formattedBalance,
-        amountLimits,
+        account.symbol,
         clearErrors,
         onCryptoAmountChange,
         setValue,
@@ -353,11 +352,21 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
             setIsLoading(true);
-            const result = await dispatch(signTransaction(values, composedTx));
+            try {
+                const result = await dispatch(signTransaction(values, composedTx));
 
-            setIsLoading(false);
-            if (result?.success) {
-                clearForm();
+                if (result?.success) {
+                    clearForm();
+                }
+            } catch (error) {
+                // The sign thunk reaches TrezorConnect, whose rejection messages may embed the
+                // composed account payload, and `signTx` is also called fire-and-forget from
+                // `onSubmit`. Handling the rejection here keeps it from being reported verbatim by
+                // Sentry's global unhandled-rejection handler. Only the error name, never its
+                // message, is safe to log.
+                console.warn('Stake signing failed', error instanceof Error ? error.name : error);
+            } finally {
+                setIsLoading(false);
             }
         }
     }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);

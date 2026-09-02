@@ -3,10 +3,11 @@ import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
 import { ForegroundAppModal } from './ForegroundAppModal';

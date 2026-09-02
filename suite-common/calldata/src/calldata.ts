@@ -2,6 +2,11 @@ import { buildAllowance } from './builder/evm/allowance';
 import { buildApprove } from './builder/evm/approve';
 import { buildClaim } from './builder/evm/claim';
 import { buildDeposit } from './builder/evm/deposit';
+import { buildEnsAddr } from './builder/evm/ens/addr';
+import { buildEnsMulticall } from './builder/evm/ens/multicall';
+import { buildEnsResolve } from './builder/evm/ens/resolve';
+import { buildEnsReverse } from './builder/evm/ens/reverse';
+import { buildEnsText } from './builder/evm/ens/text';
 import { buildClaimWithdrawRequest } from './builder/evm/everstake/claimWithdrawRequest';
 import { buildStake } from './builder/evm/everstake/stake';
 import { buildUnstake } from './builder/evm/everstake/unstake';
@@ -49,8 +54,18 @@ export const Calldata = {
         },
         everstake: {
             stake: { encode: buildStake },
-            unstake: { encode: buildUnstake },
+            unstake: {
+                encode: buildUnstake,
+                decode: createEvmDecoder(EVM_ABI.everstake.unstake),
+            },
             claimWithdrawRequest: { encode: buildClaimWithdrawRequest },
+        },
+        ens: {
+            resolve: { encode: buildEnsResolve },
+            reverse: { encode: buildEnsReverse },
+            addr: { encode: buildEnsAddr },
+            text: { encode: buildEnsText },
+            multicall: { encode: buildEnsMulticall },
         },
         weth: {
             deposit: {

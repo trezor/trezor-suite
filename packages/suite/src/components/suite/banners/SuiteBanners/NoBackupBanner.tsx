@@ -1,8 +1,7 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const NoBackup = () => {
     const dispatch = useDispatch();

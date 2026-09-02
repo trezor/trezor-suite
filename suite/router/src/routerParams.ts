@@ -25,8 +25,7 @@ const earnParamsSchema = yup.object({
     symbol: yup.mixed<NetworkSymbol>().required(),
     accountIndex: yup.number().required(),
     accountType: yup.mixed<AccountType>().oneOf(accountTypes).required(),
-    yieldId: yup.string().default('no-yield-id'),
-    contractAddress: yup.string().notRequired(),
+    vaultAddress: yup.string().optional(),
 });
 
 export type EarnParams = yup.InferType<typeof earnParamsSchema>;
@@ -54,25 +53,15 @@ export function parseDashboardParams(params: unknown): DashboardParams | undefin
     }
 }
 
-export const decodeEarnRouteParams = ({
-    rawYieldId,
-    rawContractAddress,
-}: {
-    rawYieldId?: string;
-    rawContractAddress?: string;
-}) => {
-    try {
-        const yieldId = rawYieldId ? decodeURIComponent(rawYieldId) : undefined;
-        const contractAddress = rawContractAddress
-            ? decodeURIComponent(rawContractAddress)
-            : undefined;
+export const decodeEarnVaultAddress = (rawVaultAddress?: string): string | undefined => {
+    if (!rawVaultAddress) {
+        return undefined;
+    }
 
-        return {
-            yieldId,
-            contractAddress,
-        };
+    try {
+        return decodeURIComponent(rawVaultAddress);
     } catch {
-        return;
+        return undefined;
     }
 };
 

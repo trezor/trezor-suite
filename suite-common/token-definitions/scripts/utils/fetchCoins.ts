@@ -3,11 +3,7 @@ import * as toml from 'toml';
 
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 
-import {
-    AdvancedTokenStructure,
-    SimpleTokenStructure,
-    TokenStructureType,
-} from '../../src/tokenDefinitionsTypes';
+import { AdvancedTokenStructure, TokenStructureType } from '../../src/tokenDefinitionsTypes';
 import { COIN_LIST_URL, STELLAR_EXPERT_URL, STELLAR_HORIZON_URL } from '../constants';
 import { CoinData } from '../types';
 
@@ -251,15 +247,20 @@ export const fetchAllCoins = async (): Promise<CoinData[]> => {
         return data;
     } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
-        throw new Error(`fetchAllCoins error: ${message}`);
+        throw new Error(`fetchAllCoins error: ${message}`, { cause: err });
     }
 };
 
+/**
+ * Returns a Set for the simple structure rather than SimpleTokenStructure (string[]), so the caller
+ * can merge extra addresses with `has`/`add` instead of a linear scan over tens of thousands of
+ * contracts. Convert with `Array.from` before writing the definition files.
+ */
 export const buildCoinDataForPlatform = async (
     allCoins: CoinData[],
     assetPlatformId: string,
     structure: TokenStructureType,
-): Promise<AdvancedTokenStructure | SimpleTokenStructure> => {
+): Promise<AdvancedTokenStructure | Set<string>> => {
     if (structure === TokenStructureType.ADVANCED) {
         const result: AdvancedTokenStructure = {};
 
@@ -292,5 +293,5 @@ export const buildCoinDataForPlatform = async (
         contractAddresses.add(contractAddress);
     }
 
-    return [...contractAddresses];
+    return contractAddresses;
 };

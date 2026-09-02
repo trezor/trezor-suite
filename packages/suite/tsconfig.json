@@ -20,6 +20,7 @@
             "path": "../../suite-common/analytics-redux"
         },
         { "path": "../../suite-common/assets" },
+        { "path": "../../suite-common/backup" },
         { "path": "../../suite-common/bip329" },
         {
             "path": "../../suite-common/bip329-types"
@@ -56,6 +57,9 @@
         {
             "path": "../../suite-common/earn-staking-api"
         },
+        {
+            "path": "../../suite-common/extra-dependencies"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/fiat-services"
@@ -71,6 +75,7 @@
         {
             "path": "../../suite-common/geolocation"
         },
+        { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
@@ -79,6 +84,7 @@
             "path": "../../suite-common/metadata-types"
         },
         { "path": "../../suite-common/mev" },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/platform-encryption"
         },
@@ -99,6 +105,9 @@
         },
         {
             "path": "../../suite-common/suite-rbf-labels-migrations"
+        },
+        {
+            "path": "../../suite-common/suite-rbf-labels-migrations-types"
         },
         {
             "path": "../../suite-common/suite-sync"
@@ -171,6 +180,7 @@
         { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },
+        { "path": "../../suite/discovery" },
         { "path": "../../suite/discreet-mode" },
         { "path": "../../suite/experimental" },
         { "path": "../../suite/external-links" },
@@ -204,15 +214,18 @@
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../../suite/settings" },
+        { "path": "../../suite/sign-verify" },
+        { "path": "../../suite/suite-lifecycle" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/thp" },
         { "path": "../../suite/tor" },
+        { "path": "../../suite/tor-desktop" },
+        { "path": "../../suite/tor-web" },
         { "path": "../../suite/trading" },
         { "path": "../../suite/transfer-uri" },
         { "path": "../../suite/tx-simulation" },
         { "path": "../../suite/ui-animations" },
         { "path": "../../suite/wallet" },
-        { "path": "../address-validator" },
         { "path": "../analytics-uploader" },
         { "path": "../asset-utils" },
         { "path": "../blockchain-link-types" },
@@ -226,6 +239,12 @@
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        },
         {
             "path": "../../networks/solana/network-solana"
         },

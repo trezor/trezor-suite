@@ -11,10 +11,10 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite/external-links": "workspace:*",

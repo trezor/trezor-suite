@@ -3,7 +3,7 @@ import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-ty
 import { type Route } from './route';
 import {
     type DashboardParams,
-    decodeEarnRouteParams,
+    decodeEarnVaultAddress,
     parseDashboardParams,
     parseEarnParams,
     validateAccountRouteParams,
@@ -32,7 +32,7 @@ export type RouterPath = {
 export const getPrefixedURL = (url: string) => {
     // do not use object destructuring https://github.com/webpack/webpack/issues/5392
     const prefix = process.env.ASSET_PREFIX;
-    if (prefix && url.indexOf(prefix) !== 0) return prefix + url;
+    if (prefix && !url.startsWith(prefix)) return prefix + url;
 
     return url;
 };
@@ -40,7 +40,7 @@ export const getPrefixedURL = (url: string) => {
 export const stripPrefixedURL = (url: string) => {
     // do not use object destructuring https://github.com/webpack/webpack/issues/5392
     const prefix = process.env.ASSET_PREFIX;
-    if (typeof prefix === 'string' && url.indexOf(prefix) === 0) {
+    if (typeof prefix === 'string' && url.startsWith(prefix)) {
         url = url.slice(prefix.length);
     }
 
@@ -98,34 +98,38 @@ const validateWalletParams = (hash: HashString): CommonWalletParams => {
     });
 };
 
+const accountScopedEarnYieldRoutes: Route['name'][] = [
+    'earn-yield-claim',
+    'earn-yield-unwrap',
+    'earn-yield-wrap',
+];
+
 const validateEarnYieldParams = (route: Route, hash: HashString) => {
-    const [symbol, index, rawAccountType, rawYieldId, rawContractAddress] = parseHash(hash);
+    const [symbol, index, rawAccountType, rawVaultAddress] = parseHash(hash);
 
     const accountRouteParams = validateAccountRouteParams({
         symbol,
         index,
         rawAccountType,
     });
-    const decodedEarnRouteParams = decodeEarnRouteParams({
-        rawYieldId,
-        rawContractAddress,
-    });
 
     if (!accountRouteParams) {
         return;
     }
 
-    if (route.name === 'earn-yield-claim') {
+    if (accountScopedEarnYieldRoutes.includes(route.name)) {
         return accountRouteParams;
     }
 
-    if (!rawYieldId) {
+    const vaultAddress = decodeEarnVaultAddress(rawVaultAddress);
+
+    if (!vaultAddress) {
         return;
     }
 
     return parseEarnParams({
         ...accountRouteParams,
-        ...decodedEarnRouteParams,
+        vaultAddress,
     });
 };
 

@@ -18,7 +18,7 @@ type WalletBackupRecapListItemProps = {
 const connectorStyle = prepareNativeStyle(utils => ({
     width: utils.spacings.sp2,
     height: utils.spacings.sp36,
-    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
+    backgroundColor: utils.colors.elementFillNeutralSofter,
     position: 'absolute',
     bottom: -utils.spacings.sp36,
 }));

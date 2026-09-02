@@ -2,18 +2,18 @@ import { useSelector } from 'react-redux';
 
 import { type SlippageFormValues, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { Divider, HStack, Text, VStack } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useFormatCryptoValue } from '@suite-native/trading-atoms';
 import { BigNumber } from '@trezor/utils';
 
 export const SlippageSummary = () => {
-    const { watch, formState } = useFormContext<SlippageFormValues>();
+    const { control, formState } = useFormContext<SlippageFormValues>();
     const formatCryptoValue = useFormatCryptoValue();
     const { receive, receiveStringAmount, swapSlippage } =
         useSelector(selectTradingExchangeSelectedQuote) ?? {};
 
-    const slippageValue = watch('slippage');
+    const slippageValue = useWatch({ control, name: 'slippage' });
 
     if (swapSlippage === undefined) {
         throw new Error('swapSlippage is required in quote for SlippageSummary');

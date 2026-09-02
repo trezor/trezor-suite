@@ -1,6 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { cancelDiscoveryThunk } from '@suite-common/wallet-core';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

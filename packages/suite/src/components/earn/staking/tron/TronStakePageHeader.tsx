@@ -4,6 +4,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto, selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectTronStakeSession } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
@@ -13,7 +14,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { TRON_FLOW_BY_ROUTE } from 'src/constants/suite/staking';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 type TronStakePageHeaderProps = {

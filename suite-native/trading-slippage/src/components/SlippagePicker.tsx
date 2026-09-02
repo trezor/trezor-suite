@@ -5,21 +5,25 @@ import {
     selectTradingExchangeSelectedQuoteIsDex,
     selectTradingExchangeSelectedQuoteSwapSlippage,
 } from '@suite-common/trading';
-import { HStack, Text } from '@suite-native/atoms';
+import { HStack, Text, useBottomSheetControls } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, selectLocale } from '@suite-native/intl';
-import { TradeInfoRow, useBottomSheetControls } from '@suite-native/trading-atoms';
+import { TradeInfoRow } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { SlippageBottomSheet } from './SlippageBottomSheet';
 
 export const SLIPPAGE_PICKER_TEST_ID = '@trading/exchange/slippage-picker';
 
+type SlippagePickerProps = {
+    onSlippageConfirmed: () => Promise<void>;
+};
+
 const slippagePickerStyle = prepareNativeStyle(({ spacings }) => ({
     height: spacings.sp56,
 }));
 
-export const SlippagePicker = () => {
+export const SlippagePicker = ({ onSlippageConfirmed }: SlippagePickerProps) => {
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
     const isDex = useSelector(selectTradingExchangeSelectedQuoteIsDex);
     const swapSlippage = useSelector(selectTradingExchangeSelectedQuoteSwapSlippage);
@@ -58,7 +62,11 @@ export const SlippagePicker = () => {
                     <Icon name="caretDown" size="medium" color="contentSecondary" />
                 </HStack>
             </TradeInfoRow>
-            <SlippageBottomSheet isVisible={isSheetVisible} onClose={hideSheet} />
+            <SlippageBottomSheet
+                isVisible={isSheetVisible}
+                onClose={hideSheet}
+                onSlippageConfirmed={onSlippageConfirmed}
+            />
         </>
     );
 };

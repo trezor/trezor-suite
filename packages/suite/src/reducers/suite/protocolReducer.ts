@@ -1,14 +1,15 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import type { Protocol } from '@suite-common/suite-constants';
+import type { Protocol } from '@trezor/network-module-suite-common-types';
 
-import { PROTOCOL } from 'src/actions/suite/constants';
-import type { Action } from 'src/types/suite';
+import { fillSendForm, resetProtocol, saveCoinProtocol } from 'src/actions/suite/protocolActions';
 
 export interface SendFormState {
     scheme: Protocol;
     address: string;
     amount?: string;
+    label?: string;
     token?: string; // ERC-681: token contract address
     tokenAmount?: string; // ERC-681: amount in token's smallest unit (uint256)
 }
@@ -25,23 +26,23 @@ export const initialState: ProtocolState = {
     sendForm: {},
 };
 
-const protocolReducer = (state: ProtocolState = initialState, action: Action): ProtocolState =>
+const protocolReducer = (
+    state: ProtocolState = initialState,
+    action: UnknownAction,
+): ProtocolState =>
     produce(state, draft => {
-        switch (action.type) {
-            case PROTOCOL.FILL_SEND_FORM:
-                draft.sendForm.shouldFill = action.payload;
-                break;
-            case PROTOCOL.SAVE_COIN_PROTOCOL:
-                draft.sendForm.address = action.payload.address;
-                draft.sendForm.scheme = action.payload.scheme;
-                draft.sendForm.amount = action.payload.amount;
-                draft.sendForm.token = action.payload.token;
-                draft.sendForm.tokenAmount = action.payload.tokenAmount;
-                draft.sendForm.shouldFill = false;
-                break;
-            case PROTOCOL.RESET:
-                return initialState;
-            // no default
+        if (fillSendForm.match(action)) {
+            draft.sendForm.shouldFill = action.payload;
+        } else if (saveCoinProtocol.match(action)) {
+            draft.sendForm.address = action.payload.address;
+            draft.sendForm.scheme = action.payload.scheme;
+            draft.sendForm.amount = action.payload.amount;
+            draft.sendForm.label = action.payload.label;
+            draft.sendForm.token = action.payload.token;
+            draft.sendForm.tokenAmount = action.payload.tokenAmount;
+            draft.sendForm.shouldFill = false;
+        } else if (resetProtocol.match(action)) {
+            return initialState;
         }
     });
 

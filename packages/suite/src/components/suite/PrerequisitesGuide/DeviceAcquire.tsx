@@ -2,6 +2,7 @@ import { type MouseEventHandler } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
@@ -10,7 +11,6 @@ import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
-import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceAcquire = () => {
     const { isLocked } = useDevice();

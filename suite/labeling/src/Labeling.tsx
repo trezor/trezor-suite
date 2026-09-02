@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
@@ -20,12 +20,10 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
-import {
-    type WithSuiteSyncAndDeviceState,
-    selectIsSuiteSyncEnabled,
-} from '@suite-common/suite-sync';
+import { useDispatch } from '@suite-common/redux-utils';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
-import { type DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/connect';
 import { EditableText, type EditableTextProps } from '@trezor/product-components';
 import { type Without } from '@trezor/type-utils';
@@ -41,11 +39,7 @@ export type LabelingProps = {
     onSubmit?: (value: string) => Promise<boolean>;
 } & Partial<EditableTextProps>;
 
-type LabelingState = WithSuiteSyncAndDeviceState &
-    MetadataRootState &
-    DesktopSuiteSyncRootState &
-    MessageSystemRootState &
-    DiscoveryRootState;
+type LabelingState = MetadataRootState & DesktopSuiteSyncRootState & MessageSystemRootState;
 
 export const Labeling = ({
     payload,

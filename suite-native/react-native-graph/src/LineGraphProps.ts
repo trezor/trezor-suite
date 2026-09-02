@@ -90,9 +90,7 @@ interface BaseLineGraphProps extends ViewProps {
     enableFadeInMask?: boolean;
 }
 
-export type StaticLineGraphProps = BaseLineGraphProps & {
-    /* any static-only line graph props? */
-};
+export type StaticLineGraphProps = BaseLineGraphProps & {/* any static-only line graph props? */};
 
 export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraphProps & {
     /**

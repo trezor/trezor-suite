@@ -6,6 +6,7 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -42,9 +43,6 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        {
-            "path": "../../suite-common/test-utils"
-        },
         { "path": "../trading-fixtures" },
         { "path": "../trading-types" }
     ],

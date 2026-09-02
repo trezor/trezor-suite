@@ -50,22 +50,26 @@ export const mapCardTypeToCSS = ({
             background: ${theme.surfaceFillRaised};
             outline: 1px solid ${theme.surfaceBorderRaised};
 
-            ${$isClickable &&
-            css`
-                background: ${theme.surfaceFillAction};
-                outline-color: ${theme.surfaceBorderAction};
-
-                ${$isSelected &&
+            ${
+                $isClickable &&
                 css`
-                    outline: 2px solid ${theme.borderBrand};
-                `}
+                    background: ${theme.surfaceFillAction};
+                    outline-color: ${theme.surfaceBorderAction};
 
-                box-shadow: ${theme.surfaceShadowAction};
+                    ${
+                        $isSelected &&
+                        css`
+                            outline: 2px solid ${theme.borderBrand};
+                        `
+                    }
 
-                &:hover {
-                    box-shadow: ${theme.surfaceShadowActionHovered};
-                }
-            `}
+                    box-shadow: ${theme.surfaceShadowAction};
+
+                    &:hover {
+                        box-shadow: ${theme.surfaceShadowActionHovered};
+                    }
+                `
+            }
         `,
         sunken: css`
             background: ${theme.surfaceFillSunken};
@@ -80,19 +84,23 @@ export const mapCardTypeToCSS = ({
             outline: 1px solid ${theme.elementBorderNeutralSofterAlt};
             outline-offset: -1px;
 
-            ${$isClickable &&
-            css`
-                ${$isSelected &&
+            ${
+                $isClickable &&
                 css`
-                    outline: 2px solid ${theme.borderBrand};
-                `}
+                    ${
+                        $isSelected &&
+                        css`
+                            outline: 2px solid ${theme.borderBrand};
+                        `
+                    }
 
-                box-shadow: ${theme.surfaceShadowAction};
+                    box-shadow: ${theme.surfaceShadowAction};
 
-                &:hover {
-                    box-shadow: ${theme.surfaceShadowActionHovered};
-                }
-            `}
+                    &:hover {
+                        box-shadow: ${theme.surfaceShadowActionHovered};
+                    }
+                `
+            }
         `,
     };
 

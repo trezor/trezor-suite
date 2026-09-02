@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/analytics"
         },
+        { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/suite-constants"
         },

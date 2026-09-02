@@ -40,7 +40,7 @@ const ExchangeFormMemoized = memo(({ isAmountInputActive }: ExchangeFormMemoized
 
 export const ExchangeForm = () => {
     const exchangeForm = useExchangeFormContext();
-    const isAmountInputActiveDebounced = useFocusedValueWatch(exchangeForm.watch);
+    const isAmountInputActiveDebounced = useFocusedValueWatch(exchangeForm.control);
     useExchangeQuotes(exchangeForm);
 
     return <ExchangeFormMemoized isAmountInputActive={isAmountInputActiveDebounced} />;

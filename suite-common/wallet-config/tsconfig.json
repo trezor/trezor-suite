@@ -3,7 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../earn-stablecoin-defs" },
+        { "path": "../networks" },
         { "path": "../wallet-constants" },
+        { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/device-utils" },
         {
             "path": "../../networks/cardano/network-cardano"

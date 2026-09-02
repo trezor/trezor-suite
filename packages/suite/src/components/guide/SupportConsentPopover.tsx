@@ -11,7 +11,6 @@ import { ArrowLineUpRightIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-
 // To match the width of the trigger button in the SupportFeedbackSelection component at minimum guide width.
 const POPOVER_WIDTH = `calc(${variables.LAYOUT_SIZE.GUIDE_PANEL_DEFAULT_WIDTH}px - 33px)`;
 

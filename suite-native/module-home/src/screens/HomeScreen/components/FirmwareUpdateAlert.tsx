@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
 import { selectDeviceId, selectDeviceUpdateFirmwareVersion } from '@suite-common/device';
-import { AnimatedFullAlertBox } from '@suite-native/atoms';
+import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
@@ -58,7 +58,7 @@ export const FirmwareUpdateAlert = () => {
     }
 
     return (
-        <AnimatedFullAlertBox
+        <AnimatedBannerFull
             title={<Translation id="moduleHome.firmwareUpdateAlert.title" />}
             description={
                 <Translation

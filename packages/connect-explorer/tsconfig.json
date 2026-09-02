@@ -22,6 +22,7 @@
     "references": [
         { "path": "../components" },
         { "path": "../connect-common" },
+        { "path": "../connect-data" },
         { "path": "../connect-explorer-theme" },
         { "path": "../connect-mobile" },
         { "path": "../connect-web" },
@@ -32,6 +33,7 @@
         { "path": "../schema-utils" },
         { "path": "../theme" },
         { "path": "../urls" },
+        { "path": "../utils" },
         { "path": "../eslint" }
     ]
 }

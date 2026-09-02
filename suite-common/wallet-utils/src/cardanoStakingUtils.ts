@@ -4,7 +4,6 @@ import { type AdaPools } from '@suite-common/earn-staking-api';
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_STAKING_POOL,
-    CARDANO_POOL_SATURATION_SAFE_THRESHOLD,
     EVERSTAKE_POOLS,
     FIVE_BINARIES_POOLS,
 } from '@suite-common/wallet-constants';
@@ -55,6 +54,17 @@ export const getCardanoAccountPoolId = (account?: Account) => {
     return poolId || null;
 };
 
+export const getCardanoAccountDrepId = (account?: Account) => {
+    if (account?.networkType !== 'cardano') return null;
+
+    const drepId = account.misc?.staking?.drep?.drep_id;
+
+    return drepId || null;
+};
+
+export const hasCardanoLiveVoteDelegation = (account?: Account) =>
+    !!isCardanoStakingActive(account ?? null) && !!getCardanoAccountDrepId(account);
+
 export const isCardanoStakedWithEverstake = (
     account: Account,
     cardanoStakingPools?: AdaPools['pools'],
@@ -92,27 +102,30 @@ export const poolBech32ToHex = (poolId: string): string => {
     return Buffer.from(bytes).toString('hex');
 };
 
-export const selectBestCardanoPool = (pools?: AdaPools['pools']) => {
-    if (!pools || pools.length === 0) return CARDANO_EVERSTAKE_STAKING_POOL;
-
-    // find the one within the threshold
-    const bestPool = pools.find(pool => pool.saturation < CARDANO_POOL_SATURATION_SAFE_THRESHOLD);
-
-    if (bestPool) {
+export const selectBestCardanoPool = (pools?: AdaPools['pools'], currentPoolId?: string | null) => {
+    // An account already delegated to an Everstake pool must never be moved to another
+    // pool, no matter which UI flow composes the delegation.
+    if (
+        currentPoolId &&
+        (EVERSTAKE_POOLS.includes(currentPoolId) || pools?.some(pool => pool.id === currentPoolId))
+    ) {
         return {
-            hex: poolBech32ToHex(bestPool.id),
-            bech32: bestPool.id,
+            hex: poolBech32ToHex(currentPoolId),
+            bech32: currentPoolId,
         };
     }
 
-    // pick the last one (lowest saturation)
-    const fallbackIndex = pools.length - 1;
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const fallback: (typeof pools)[number] = pools[fallbackIndex];
+    if (!pools || pools.length === 0) return CARDANO_EVERSTAKE_STAKING_POOL;
+
+    // Sort client-side instead of relying on the API ordering contract; new stakes
+    // always go to the least saturated pool.
+    const [bestPool] = pools.toSorted((a, b) => a.saturation - b.saturation);
+
+    if (!bestPool) return CARDANO_EVERSTAKE_STAKING_POOL;
 
     return {
-        hex: poolBech32ToHex(fallback.id),
-        bech32: fallback.id,
+        hex: poolBech32ToHex(bestPool.id),
+        bech32: bestPool.id,
     };
 };
 

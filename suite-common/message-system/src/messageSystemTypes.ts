@@ -3,6 +3,7 @@ import type {
     ExperimentsItem,
     MessageSystem,
     TradingType,
+    WrappedNativeFlowType,
     YieldFlowType,
 } from '@suite-common/suite-types';
 import type { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
@@ -55,6 +56,7 @@ export const Feature = {
         trx: 'trx.staking.claim',
     },
     vote: {
+        ada: 'ada.staking.vote',
         trx: 'trx.staking.vote',
     },
     withdraw: {
@@ -100,6 +102,7 @@ export const Feature = {
         concierge: 'trading.concierge',
         survey: 'trading.survey',
         slip24: 'trading.slip24',
+        txSimulation: 'trading.txSimulation',
     },
     earn: {
         dashboard: {
@@ -112,6 +115,13 @@ export const Feature = {
             redeem: 'earn.yield.redeem',
             claim: 'earn.yield.claim',
         } as const satisfies Record<YieldFlowType, string>,
+        // Wrapping the native coin into its wrapped-native token (e.g. ETH → WETH) and back. It is
+        // a step of the yield deposit/withdraw flows, but also a standalone flow, so it is gated
+        // separately from the yield flow types.
+        wrappedNative: {
+            wrap: 'earn.wrappedNative.wrap',
+            unwrap: 'earn.wrappedNative.unwrap',
+        } as const satisfies Record<WrappedNativeFlowType, string>,
     },
     mevProtection: 'settings.mevProtection',
     suiteSync: 'settings.suiteSync',
@@ -120,6 +130,7 @@ export const Feature = {
     firmwareUpdate: 'device.firmware.update',
     inAppRating: 'inAppRating',
     demoAccountQuestionnaire: 'demoAccountQuestionnaire',
+    activityCenter: 'activityCenter',
 } as const;
 
 type ExtractFeatureValues<T> =
@@ -148,6 +159,9 @@ const getEarnDashboardContext = (type: EarnDashboardType) => `earn.dashboard.${t
 
 const getEarnYieldContext = (type: YieldFlowType) => `earn.yield.${type}` as const;
 
+const getWrappedNativeContext = (type: WrappedNativeFlowType) =>
+    `earn.wrappedNative.${type}` as const;
+
 export type SettingsCategory = 'general' | 'device' | 'networks' | 'debug';
 const getSettingsContext = (category: SettingsCategory) => `settings.${category}` as const;
 
@@ -169,6 +183,7 @@ const getLegalContext = (key: LegalContextKey) => `legal.${key}` as const;
  * - `getEarnDashboard('yield')` → 'earn.dashboard.yield'
  * - `getEarnYield('deposit')` → 'earn.yield.deposit'
  * - `getEarnYield('claim')` → 'earn.yield.claim'
+ * - `getWrappedNative('wrap')` → 'earn.wrappedNative.wrap'
  * - `getSettings('device')` → 'settings.device'
 
  */
@@ -179,6 +194,7 @@ export const Context = {
     getTrading: getTradingContext,
     getEarnDashboard: getEarnDashboardContext,
     getEarnYield: getEarnYieldContext,
+    getWrappedNative: getWrappedNativeContext,
     getSettings: getSettingsContext,
     getLegal: getLegalContext,
 } as const;

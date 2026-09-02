@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getTronAccountTotalStakingBalance,
@@ -27,7 +28,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { formatApr } from 'src/components/earn/staking/tron/voteUtils';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { TronVoteAllocationModal } from './TronVoteAllocationModal/TronVoteAllocationModal';

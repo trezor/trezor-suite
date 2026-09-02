@@ -332,7 +332,6 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     capabilities: [
                         'Capability_Bitcoin',
                         'Capability_Bitcoin_like',
-                        'Capability_Binance',
                         'Capability_Cardano',
                         'Capability_Crypto',
                         'Capability_Ethereum',
@@ -376,20 +375,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     soc: 100,
                     firmware_corrupted: null,
                 },
-                unavailableCapabilities: {
-                    btg: 'no-support',
-                    tbtg: 'no-support',
-                    dash: 'no-support',
-                    tdash: 'no-support',
-                    dcr: 'no-support',
-                    tdcr: 'no-support',
-                    dgb: 'no-support',
-                    nmc: 'no-support',
-                    vtc: 'no-support',
-                    maid: 'no-capability',
-                    omni: 'no-capability',
-                    usdt: 'no-capability',
-                },
+                unavailableCapabilities: {},
                 availableTranslations: {},
                 authenticityChecks: {
                     firmwareRevision: {

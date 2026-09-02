@@ -1,9 +1,10 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
-import { setFlag } from '@suite/flags';
+import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
@@ -23,7 +24,8 @@ import {
     addDeviceIdToSeenDisconnectNotification,
     setRecentlyDisconnectedDevice,
 } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectRecentlyDisconnectedDevice } from 'src/selectors/suite/suiteSelectors';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { CardWithDevice } from '../CardWithDevice';
@@ -37,17 +39,12 @@ type DeviceItemProps = {
 };
 
 const ListItem = ({ children, icon }: { children: ReactNode; icon: IconComponent }) => (
-    <List.Item
-        bulletComponent={
-            <Icon as={icon} intent="neutral" priority="secondary" isInverse size={20} />
-        }
-    >
+    <List.Item bulletComponent={<Icon as={icon} intent="neutral" priority="secondary" size={20} />}>
         <Paragraph
             typographyStyle="body-md"
             intent="neutral"
             priority="secondary"
             textWrap="pretty"
-            isInverse
         >
             {children}
         </Paragraph>
@@ -58,8 +55,8 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
     const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceId = selectedDevice?.id;
-    const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
-    const hasSeenDisconnectTooltip = useSelector(state => state.flags.hasSeenDisconnectTooltip);
+    const recentlyDisconnectedDevice = useSelector(selectRecentlyDisconnectedDevice);
+    const hasSeenDisconnectTooltip = useSelector(selectHasSeenDisconnectTooltip);
     const [showTooltip, setShowTooltip] = useState(false);
     const deviceModelInternal = device.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const instancesWithState = instances.filter(i => i.state);
@@ -135,7 +132,6 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                     onTooltipClose();
                                                     onCancel?.();
                                                 }}
-                                                isInverse
                                             >
                                                 <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY" />
                                             </Button>
@@ -143,7 +139,6 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 size="small"
                                                 intent="neutral"
                                                 priority="secondary"
-                                                isInverse
                                                 onClick={() => {
                                                     onTooltipClose();
                                                     dispatch(

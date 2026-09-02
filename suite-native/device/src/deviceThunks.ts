@@ -1,15 +1,24 @@
 import {
+    type DeviceRootState,
     selectDevicePath,
     selectIsDeviceInitialized,
     selectSelectedDevice,
     selectSimulatedEntropyCheckFail,
 } from '@suite-common/device';
-import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { createThunk } from '@suite-common/redux-utils';
-import { type BackupType } from '@suite-common/suite-types';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureEnabled,
+} from '@suite-common/message-system';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import { type BackupType, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import TrezorConnect, { type OkWithDevice, PROTO } from '@trezor/connect';
+import {
+    deviceAccessMutex,
+    requestDeviceAccess,
+    requestPrioritizedDeviceAccess,
+} from '@suite-native/device-mutex';
+import TrezorConnect, { type OkWithDevice, PROTO, type Response } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err, exhaustive } from '@trezor/type-utils';
 
@@ -36,10 +45,18 @@ const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice =
     }
 };
 
+type CreateAndBackupWalletThunkState = DeviceRootState & MessageSystemRootState;
+
+type CreateAndBackupWalletThunkDeps = WithServices<ReportSecurityCheckDep>;
+
 export const createAndBackupWalletThunk = createThunk<
     Err<SerializedError> | OkWithDevice<PROTO.Success>,
     { walletBackupType: BackupType },
-    { rejectValue: string }
+    {
+        rejectValue: string;
+        state: CreateAndBackupWalletThunkState;
+        extra: CreateAndBackupWalletThunkDeps;
+    }
 >(
     `${NATIVE_DEVICE_MODULE_PREFIX}/createAndBackupWalletThunk`,
     async ({ walletBackupType }, { getState, dispatch, fulfillWithValue, rejectWithValue }) => {
@@ -110,19 +127,42 @@ export const createAndBackupWalletThunk = createThunk<
     },
 );
 
-export const recoverWalletThunk = createThunk(
-    `${NATIVE_DEVICE_MODULE_PREFIX}/recoverWalletThunk`,
-    async (_, { getState }) => {
-        const devicePath = selectDevicePath(getState());
+type RecoverWalletThunkState = DeviceRootState;
 
-        const deviceResponse = await requestPrioritizedDeviceAccess(() =>
-            TrezorConnect.recoveryDevice({ device: { path: devicePath } }),
+export const recoverWalletThunk = createThunk<
+    Response<PROTO.Success>,
+    void,
+    { state: RecoverWalletThunkState }
+>(`${NATIVE_DEVICE_MODULE_PREFIX}/recoverWalletThunk`, async (_, { getState }) => {
+    const devicePath = selectDevicePath(getState());
+
+    const deviceResponse = await requestPrioritizedDeviceAccess(() =>
+        TrezorConnect.recoveryDevice({ device: { path: devicePath } }),
+    );
+
+    if (!deviceResponse.success) {
+        throw new Error(deviceResponse.error);
+    }
+
+    return deviceResponse.payload;
+});
+
+/**
+ * Connect call to rerun FW authenticity checks (getFeatures used as the most basic no-op device call).
+ */
+type RerunFwAuthenticityChecksThunkState = DeviceRootState;
+
+export const rerunFwAuthenticityChecksThunk = createThunk<
+    void,
+    void,
+    { state: RerunFwAuthenticityChecksThunkState }
+>(`${NATIVE_DEVICE_MODULE_PREFIX}/rerunFwAuthenticityChecksThunk`, (_, { getState }) => {
+    const device = selectSelectedDevice(getState());
+    if (device === undefined) return;
+    // refrain from scheduling multiple tasks (since this runs in a loop)
+    if (deviceAccessMutex.taskQueue.length === 0) {
+        void requestDeviceAccess(() =>
+            TrezorConnect.getFeatures({ device: { path: device.path } }),
         );
-
-        if (!deviceResponse.success) {
-            throw new Error(deviceResponse.error);
-        }
-
-        return deviceResponse.payload;
-    },
-);
+    }
+});

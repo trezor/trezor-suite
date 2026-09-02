@@ -18,6 +18,9 @@
         { "path": "../../suite-common/logger" },
         { "path": "../../suite-common/mev" },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -45,7 +48,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../banner-flags" },
+        { "path": "../banners" },
         { "path": "../biometrics" },
         { "path": "../coin-enabling" },
         { "path": "../config" },

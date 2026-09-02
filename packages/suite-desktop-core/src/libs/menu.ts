@@ -1,11 +1,14 @@
 import { Menu, type MenuItemConstructorOptions, app, shell } from 'electron';
 
-import { isDevEnv } from '@suite-common/suite-utils';
+import { isCodesignBuild } from '@trezor/env-utils';
 
 import { restartApp } from './app-utils';
 import type { MainWindowProxy } from './main-window-proxy';
+import { hasSwitch } from './process-switches';
 
 const isMac = process.platform === 'darwin';
+// DevTools are only available in development, or in production when explicitly enabled via CLI flag.
+const isDevToolsEnabled = !isCodesignBuild() || hasSwitch('open-devtools');
 
 // original MenuItemConstructorOptions is too complex for our purpose.
 // submenu field may be an object or array of objects.
@@ -98,7 +101,7 @@ export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
     // { role: 'appMenu' } — macOS "App menu" conditionally prepended below
     const mainMenuTemplate: MenuItem[] = [fileMenu, editMenu, viewMenu, windowMenu, helpMenu];
 
-    if (!isDevEnv) {
+    if (!isDevToolsEnabled) {
         // remove toggleDevTools from "View"
         viewMenu.submenu.splice(2, 1);
     }

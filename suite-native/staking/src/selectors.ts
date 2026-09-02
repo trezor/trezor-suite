@@ -20,7 +20,6 @@ import { exhaustive } from '@trezor/type-utils';
 import {
     selectCardanoRewardsBalanceByAccountKey,
     selectCardanoStakedBalanceByAccountKey,
-    selectCardanoTotalStakePendingByAccountKey,
     selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol,
 } from './cardanoStakingSelectors';
 import {
@@ -109,15 +108,6 @@ export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
         default:
             return exhaustive(account.symbol);
     }
-};
-
-export const selectAccountCryptoBalanceWithStaking = (
-    state: NativeStakingRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    return getAccountCryptoBalanceWithStaking(account);
 };
 
 export const selectAccountHasStaking = (state: NativeStakingRootState, accountKey: AccountKey) => {
@@ -276,7 +266,7 @@ export const selectTotalStakePendingByAccountKey = (
         case 'sol':
             return selectSolanaTotalStakePendingByAccountKey(state, accountKey);
         case 'ada':
-            return selectCardanoTotalStakePendingByAccountKey(state, accountKey);
+            return '0';
         case 'trx':
             return '0';
         default:

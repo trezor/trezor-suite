@@ -15,9 +15,9 @@ import type {
     PROTO,
     UnavailableCapabilities,
 } from '@trezor/connect-common';
-import { DEVICE, ERRORS, FIRMWARE, UI_REQUEST } from '@trezor/connect-common';
+import { DEVICE, ERRORS, FIRMWARE, UI_EVENTS } from '@trezor/connect-common';
 import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
-import type { FirmwareRelease } from '@trezor/device-utils';
+import type { FirmwareRelease, TranslationMetadata } from '@trezor/device-utils';
 import {
     DeviceModelInternal,
     getFirmwareOrBootloaderVersionArray,
@@ -168,7 +168,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     private color?: string;
 
-    private availableTranslations: Record<string, string> = {};
+    private availableTranslations: Record<string, TranslationMetadata> = {};
 
     private authenticityChecks: KnownDevice['authenticityChecks'] = {
         firmwareRevision: null,
@@ -778,9 +778,8 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             return;
         }
 
-        const release = await getReleaseByVersion(feat, firmwareVersion, newFirmwareType);
-        this._currentRelease = release;
-        this.availableTranslations = this._currentRelease?.translations ?? {};
+        this._currentRelease = await getReleaseByVersion(feat, firmwareVersion, newFirmwareType);
+        this.updateAvailableTranslations();
     }
 
     private _updateFeatures(feat: Features) {
@@ -828,7 +827,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                     newVersion,
                     getFirmwareType(feat),
                 );
-                this.availableTranslations = this._currentRelease?.translations ?? {};
+                this.updateAvailableTranslations();
             }
         }
 
@@ -887,6 +886,15 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                 device: this.toMessageObject(),
             });
         }
+    }
+
+    private updateAvailableTranslations() {
+        this.availableTranslations = Object.fromEntries(
+            Object.keys(this._currentRelease?.translations ?? {}).map(locale => [
+                locale,
+                this._currentRelease?.translations_metadata?.[locale] ?? { status: 'beta' },
+            ]),
+        );
     }
 
     private updateNameAndColor() {
@@ -1018,14 +1026,14 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         // both allow and require cases might generate single unexpected mode
         if (this.features) {
             // allow cases
-            if (this.isBootloader() && !allow.includes(UI_REQUEST.BOOTLOADER)) {
-                return UI_REQUEST.BOOTLOADER;
+            if (this.isBootloader() && !allow.includes(UI_EVENTS.DEVICE_IN_BOOTLOADER)) {
+                return UI_EVENTS.DEVICE_IN_BOOTLOADER;
             }
-            if (!this.isInitialized() && !allow.includes(UI_REQUEST.INITIALIZE)) {
-                return UI_REQUEST.INITIALIZE;
+            if (!this.isInitialized() && !allow.includes(UI_EVENTS.DEVICE_NOT_INITIALIZED)) {
+                return UI_EVENTS.DEVICE_NOT_INITIALIZED;
             }
-            if (this.isSeedless() && !allow.includes(UI_REQUEST.SEEDLESS)) {
-                return UI_REQUEST.SEEDLESS;
+            if (this.isSeedless() && !allow.includes(UI_EVENTS.DEVICE_SEEDLESS)) {
+                return UI_EVENTS.DEVICE_SEEDLESS;
             }
         }
 

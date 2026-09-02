@@ -31,6 +31,7 @@ export type ScreenProps = {
     noHorizontalPadding?: boolean;
     noBottomPadding?: boolean;
     focusedInputBottomOffset?: number;
+    isFooterKeyboardAware?: boolean;
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
     containerStyle?: ViewProps['style'];
@@ -93,6 +94,7 @@ export const Screen = ({
     noHorizontalPadding = false,
     noBottomPadding = false,
     focusedInputBottomOffset,
+    isFooterKeyboardAware = true,
     hasBottomInset = true,
     shouldKeepScrolledToEnd = false,
 }: ScreenProps) => {
@@ -127,7 +129,7 @@ export const Screen = ({
         isScreenHeaderPropDynamic(header) && !dynamicHeaderProps?.isCompactOnly;
 
     return (
-        <DynamicHeaderProvider>
+        <DynamicHeaderProvider scrollThreshold={dynamicHeaderProps?.scrollThreshold}>
             <View
                 accessible
                 style={[
@@ -166,6 +168,7 @@ export const Screen = ({
                 </ScreenContentWrapper>
                 {footer && (
                     <KeyboardStickyView
+                        enabled={isFooterKeyboardAware}
                         style={applyStyle(screenFooterStyle, { insets, applyBottomInset })}
                     >
                         {footer}

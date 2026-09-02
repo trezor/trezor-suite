@@ -8,18 +8,10 @@ import { expect } from '../../testExtends/customMatchers';
 
 export class RewardsList {
     readonly rewardItems: Locator;
-    readonly itemDate: Locator;
-    readonly itemEpoch: Locator;
-    readonly itemCryptoAmount: Locator;
-    readonly itemFiatAmount: Locator;
     readonly itemsPerPage = 10;
 
     constructor(private readonly page: Page) {
         this.rewardItems = this.page.getByTestId('@staking/rewards-item');
-        this.itemDate = this.page.getByTestId('@staking/rewards-item/date');
-        this.itemEpoch = this.page.getByTestId('@staking/rewards-item/epoch');
-        this.itemCryptoAmount = this.page.getByTestId('@staking/rewards-item/crypto-amount');
-        this.itemFiatAmount = this.page.getByTestId('@staking/rewards-item/fiat-amount');
     }
 
     getRewardsFromPage = async () => await this.rewardItems.all();
@@ -40,7 +32,7 @@ export class RewardsList {
             .toHaveText(this.formatDate(reward.time));
         await expect
             .soft(item.getByTestId('@staking/rewards-item/epoch'))
-            .toHaveText(`Epoch number ${reward.epoch}`);
+            .toHaveTranslation('TR_STAKE_REWARDS_BADGE', { values: { count: reward.epoch } });
         await expect
             .soft(item.getByTestId('@staking/rewards-item/crypto-amount'))
             .toHaveText(this.formatSolana(reward.amount));

@@ -14,16 +14,16 @@
         "@mobily/ts-belt": "^3.13.1",
         "@trezor/eslint": "workspace:*",
         "@types/semver": "^7.7.0",
-        "chalk": "^5.6.2",
+        "chalk": "^6.0.0",
         "cross-fetch": "^4.1.0",
         "fs-extra": "^11.3.1",
         "minimatch": "^10.2.4",
-        "prettier": "^3.8.4",
+        "prettier": "^3.9.6",
         "rollup": "^4.60.1",
         "rollup-plugin-dts": "^6.4.1",
         "semver": "^7.7.1",
         "sort-package-json": "^4.0.0",
         "tsx": "^4.21.0",
-        "yargs": "^18.0.0"
+        "yargs": "^18.1.0"
     }
 }

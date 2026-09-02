@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import Animated, { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
 import { firmwareActions } from '@suite-common/firmware';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -21,7 +21,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { setTemporaryRememberedDeviceThunk } from '../firmwareThunks';
 import { DoNotCloseAppBottomSheetTrigger } from './DoNotCloseAppBottomSheetTrigger';
 import { FirmwareInstallationProgressTitles } from './FirmwareInstallationProgressTitles';
-import { MayBeStuckedBottomSheet } from './MayBeStuckedBottomSheet';
+import { MayBeStuckBottomSheet } from './MayBeStuckBottomSheet';
 import { TrezorFacts } from './TrezorFacts';
 import {
     UpdateProgressIndicator,
@@ -78,13 +78,13 @@ export const FirmwareInstallationScreenContent = ({
         status,
         resetReducer,
         translatedText,
-        mayBeStucked,
+        mayBeStuck,
         originalDevice,
         targetFirmwareType,
     } = useFirmware({ navigationLocation });
     const {
         handleAnalyticsReportFinished,
-        handleAnalyticsReportStucked,
+        handleAnalyticsReportStuck,
         handleAnalyticsReportCancelled,
         handleAnalyticsReportStarted,
     } = useFirmwareAnalytics({
@@ -101,7 +101,7 @@ export const FirmwareInstallationScreenContent = ({
     const deviceFirmwareVendor = originalDevice?.features?.fw_vendor;
 
     const openMayBeStuckBottomSheet = () => {
-        handleAnalyticsReportStucked('modalPart1');
+        handleAnalyticsReportStuck('modalPart1');
         openModal();
     };
 
@@ -264,7 +264,7 @@ export const FirmwareInstallationScreenContent = ({
     );
 
     const isDontCloseAppAlertDisplayed =
-        indicatorStatus === 'inProgress' && !isSheetOpen && !mayBeStucked && !isDone;
+        indicatorStatus === 'inProgress' && !isSheetOpen && !mayBeStuck && !isDone;
 
     return (
         <ConfirmOnTrezorWrapper
@@ -306,7 +306,7 @@ export const FirmwareInstallationScreenContent = ({
                         </Button>
                     </VStack>
                 )}
-                {mayBeStucked && (
+                {mayBeStuck && (
                     <Animated.View
                         entering={FadeInDown}
                         exiting={FadeOutDown}
@@ -338,11 +338,10 @@ export const FirmwareInstallationScreenContent = ({
                     isTriggerDisplayed={isDontCloseAppAlertDisplayed}
                 />
             </Box>
-
-            <MayBeStuckedBottomSheet
+            <MayBeStuckBottomSheet
                 ref={bottomSheetRef}
                 onClose={closeMayBeStuckBottomSheet}
-                onAnalyticsReportStucked={handleAnalyticsReportStucked}
+                onAnalyticsReportStuck={handleAnalyticsReportStuck}
             />
         </ConfirmOnTrezorWrapper>
     );

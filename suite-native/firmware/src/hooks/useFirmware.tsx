@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
 import { type FirmwareUpdateResult, useFirmwareInstallation } from '@suite-common/firmware';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { setPriorityMode } from '@trezor/react-native-usb';
 
@@ -10,7 +11,7 @@ import { nativeFirmwareActions } from '../nativeFirmwareSlice';
 import { useFirmwareAnalytics } from './useFirmwareAnalytics';
 
 // If progress doesn't change for 1 minute
-const MAYBE_STUCKED_TIMEOUT = 1 * 60 * 1000; // 1 minute
+const MAYBE_STUCK_TIMEOUT = 1 * 60 * 1000; // 1 minute
 
 export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboarding' }) => {
     const dispatch = useDispatch();
@@ -25,9 +26,9 @@ export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboard
         ...firmwareInstallation
     } = useFirmwareInstallation();
     const { translate } = useTranslate();
-    const [mayBeStucked, setMayBeStucked] = useState(false);
-    const mayBeStuckedTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const { handleAnalyticsReportStucked } = useFirmwareAnalytics({
+    const [mayBeStuck, setMayBeStuck] = useState(false);
+    const mayBeStuckTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const { handleAnalyticsReportStuck } = useFirmwareAnalytics({
         device: firmwareInstallation.originalDevice,
         targetFirmwareType: firmwareInstallation.targetFirmwareType,
         navigationLocation: params?.navigationLocation,
@@ -46,20 +47,20 @@ export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboard
         [dispatch],
     );
 
-    const resetMayBeStuckedTimeout = useCallback(() => {
-        if (mayBeStuckedTimeout.current) {
-            clearTimeout(mayBeStuckedTimeout.current);
+    const resetMayBeStuckTimeout = useCallback(() => {
+        if (mayBeStuckTimeout.current) {
+            clearTimeout(mayBeStuckTimeout.current);
         }
-        setMayBeStucked(false);
+        setMayBeStuck(false);
     }, []);
 
     const setMayBeStuckedTimeout = useCallback(() => {
-        resetMayBeStuckedTimeout();
-        mayBeStuckedTimeout.current = setTimeout(() => {
-            handleAnalyticsReportStucked('buttonVisible');
-            setMayBeStucked(true);
-        }, MAYBE_STUCKED_TIMEOUT);
-    }, [resetMayBeStuckedTimeout, handleAnalyticsReportStucked]);
+        resetMayBeStuckTimeout();
+        mayBeStuckTimeout.current = setTimeout(() => {
+            handleAnalyticsReportStuck('buttonVisible');
+            setMayBeStuck(true);
+        }, MAYBE_STUCK_TIMEOUT);
+    }, [resetMayBeStuckTimeout, handleAnalyticsReportStuck]);
 
     useEffect(() => {
         if (status === 'started' && progress < 100) {
@@ -67,9 +68,9 @@ export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboard
         }
 
         return () => {
-            resetMayBeStuckedTimeout();
+            resetMayBeStuckTimeout();
         };
-    }, [progress, status, setMayBeStuckedTimeout, resetMayBeStuckedTimeout]);
+    }, [progress, status, setMayBeStuckedTimeout, resetMayBeStuckTimeout]);
 
     const firmwareUpdate = useCallback(async () => {
         if (!isDeviceConnectedViaBluetoothRef.current) {
@@ -89,11 +90,11 @@ export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboard
                 if (!isDeviceConnectedViaBluetoothRef.current) {
                     setPriorityMode(false);
                 }
-                resetMayBeStuckedTimeout();
+                resetMayBeStuckTimeout();
             });
 
         return result;
-    }, [firmwareUpdateCommon, resetMayBeStuckedTimeout]);
+    }, [firmwareUpdateCommon, resetMayBeStuckTimeout]);
 
     const confirmOnDevice =
         confirmOnDeviceCommon ||
@@ -149,7 +150,7 @@ export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboard
         operation,
         status,
         error,
-        mayBeStucked,
+        mayBeStuck,
         progress,
         setStatus,
     };

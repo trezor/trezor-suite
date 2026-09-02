@@ -40,8 +40,11 @@ export const EarnStakingTable = () => {
                     heading={<Translation id="TR_EARN_STAKING_DASHBOARD_TITLE" />}
                     subheading={<Translation id="TR_EARN_STAKING_DASHBOARD_TEXT" />}
                     actions={
-                        <EarnProviderInfoBadge messageId="TR_EARN_STAKING_OPERATED_BY_PROVIDERS" />
+                        <Column margin={isCardLayout ? { top: 8 } : undefined}>
+                            <EarnProviderInfoBadge messageId="TR_EARN_STAKING_OPERATED_BY_PROVIDERS" />
+                        </Column>
                     }
+                    areActionsBelowSubheading={isCardLayout}
                     ref={anchorRef}
                 >
                     <Column gap={16} alignItems="center">

@@ -15,6 +15,8 @@ export enum EventType {
     AppUriHandler = 'app/uri-handler',
     // eslint-disable-next-line local-rules/analytics-event-name
     AutostartModal = 'autostart-modal',
+    CoinSignMessage = 'coin/sign-message',
+    CoinVerifyMessage = 'coin/verify-message',
     // eslint-disable-next-line local-rules/analytics-event-name
     CoinjoinAnonymityGain = 'coinjoin/anonymity-gain',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -45,18 +47,25 @@ export enum EventType {
     DeviceSetupStarted = 'device-setup-started',
     // eslint-disable-next-line local-rules/analytics-event-name
     DeviceUpdateFirmware = 'device-update-firmware',
+    FeedbackRatingSelected = 'feedback/rating-selected',
+    FeedbackSent = 'feedback/sent',
     GuideFeedbackNavigation = 'guide/feedback/navigation',
     GuideFeedbackSubmit = 'guide/feedback/submit',
     GuideHeaderNavigation = 'guide/header/navigation',
     GuideNodeNavigation = 'guide/node/navigation',
     GuideTooltipLinkNavigation = 'guide/tooltip-link/navigation',
     MenuGuide = 'menu/guide',
+    AppNewContentBadge = 'app/new-content-badge',
     MenuNotificationsToggle = 'menu/notifications/toggle',
     MenuToggleDiscreet = 'menu/toggle-discreet',
-    PromoDashboardBanner = 'promo/dashboard-banner',
     PromoDesktop = 'promo/desktop',
+    PromoDashboardBanner = 'promo/dashboard-banner',
     PromoMobile = 'promo/mobile',
     PromoReferralButton = 'promo/referral-button',
+    ReceiveAddAddress = 'receive/add-address',
+    ReceiveCopyAddress = 'receive/copy-address',
+    ReceiveShareAddress = 'receive/share-address',
+    ReceiveStartVerification = 'receive/start-verification',
     // eslint-disable-next-line local-rules/analytics-event-name
     RemoveToken = 'remove-token',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -99,6 +108,7 @@ export enum EventType {
     SettingsLoadNetworksClicked = 'settings/load-networks-clicked',
     SettingsTor = 'settings/tor',
     SettingsTorOnionLinks = 'settings/tor/onion-links',
+    StakingCardanoPoolDelegation = 'staking/cardano-pool-delegation',
     StakingChangeDelegate = 'staking/change-delegate',
     StakingClaim = 'staking/claim',
     StakingConfirm = 'staking/confirm',
@@ -131,6 +141,7 @@ export enum EventType {
     TradeSell = 'trade/sell',
     // eslint-disable-next-line local-rules/analytics-event-name
     TradeStatus = 'trade/status',
+    TradingExchangeIssue = 'trading/exchange-issue',
     TransactionCancel = 'transaction/cancel',
     // eslint-disable-next-line local-rules/analytics-event-name
     TransactionCreated = 'transaction-created',

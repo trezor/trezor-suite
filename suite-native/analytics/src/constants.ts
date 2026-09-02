@@ -57,6 +57,8 @@ export enum EventType {
     EjectDeviceClick = 'eject_device/click',
     // eslint-disable-next-line local-rules/analytics-event-name
     EmptyDashboardAction = 'empty_dashboard/action',
+    FeedbackRatingSelected = 'feedback/rating-selected',
+    FeedbackSent = 'feedback/sent',
     // eslint-disable-next-line local-rules/analytics-event-name
     FirmwareFirmwareUpdateCancel = 'firmware/firmware_update_cancel',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -82,10 +84,17 @@ export enum EventType {
     PassphraseMismatch = 'passphrase/mismatch',
     // eslint-disable-next-line local-rules/analytics-event-name
     PassphraseTryAgain = 'passphrase/try_again',
+    ReceiveAddAddress = 'receive/add-address',
     // eslint-disable-next-line local-rules/analytics-event-name
     ReceiveAddressConfirmOnTrezor = 'receiveAddress/confirm_on_trezor',
+    ReceiveCopyAddress = 'receive/copy-address',
     // eslint-disable-next-line local-rules/analytics-event-name
     ReceiveFlowEntered = 'receive/flow_entered',
+    ReceiveOpenNonFreshAddress = 'receive/open-non-fresh-address',
+    ReceiveOptionsScreen = 'receive/options-screen',
+    ReceiveQRCodeAction = 'receive/qr-code-action',
+    ReceiveShareAddress = 'receive/share-address',
+    ReceiveStartVerification = 'receive/start-verification',
     // eslint-disable-next-line local-rules/analytics-event-name
     ReferralButtonPress = 'referral/button_press',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -100,6 +109,7 @@ export enum EventType {
     SendFlowEntered = 'send/flow_entered',
     // eslint-disable-next-line local-rules/analytics-event-name
     SendFlowExited = 'send/flow_exited',
+    SendOptionsScreen = 'send/options-screen',
     // eslint-disable-next-line local-rules/analytics-event-name
     SendTransactionDispatched = 'send/transaction_dispatched',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -136,6 +146,7 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     TradingCountrySelection = 'trading/country_selection',
     TradingExchange = 'trading/exchange',
+    TradingExchangeIssue = 'trading/exchange-issue',
     TradingNavigate = 'trading/navigate',
     // eslint-disable-next-line local-rules/analytics-event-name
     TradingParameterChanged = 'trading/parameter_changed',

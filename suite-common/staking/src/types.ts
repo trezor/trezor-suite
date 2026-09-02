@@ -42,3 +42,11 @@ export interface GetStakeTxGasLimitParams {
     symbol: NetworkSymbol;
     identity?: string;
 }
+
+export type VerifyEthereumStakingLiveStateParams = {
+    stakeType: StakeType;
+    from: string;
+    symbol: NetworkSymbol;
+    identity?: string;
+    amount?: string;
+};

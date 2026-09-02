@@ -24,8 +24,8 @@ export const selectShowConnectLogs = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.showConnectLogs;
 export const selectDefinitionsChannel = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.definitionsChannel;
-export const selectInvityServerEnvironment = (state: SuiteSettingsRootState) =>
-    state.suiteSettings.debug.invityServerEnvironment;
+export const selectTradeServerEnvironment = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.tradeServerEnvironment;
 export const selectEarnYieldWorkerBaseUrl = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.earnYieldWorkerBaseUrl ?? defaultEarnYieldWorkerBaseUrl;
 export const selectOAuthServerEnvironment = (state: SuiteSettingsRootState) =>

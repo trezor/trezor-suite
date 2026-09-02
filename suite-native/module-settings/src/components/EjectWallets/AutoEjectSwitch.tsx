@@ -1,7 +1,8 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsNoPhysicalDeviceConnected } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectIsDeviceAutoEjectEnabled, toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';

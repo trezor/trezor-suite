@@ -1,28 +1,27 @@
 import { useSelector } from 'react-redux';
 
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountDescriptor,
     selectAccountDeviceState,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
-import { Box, InlineAlertBox, type InlineAlertBoxProps, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { VStack } from '@suite-native/atoms';
 
 import { ReceiveAddressDetails } from './ReceiveAddressDetails';
+import { ReceiveAddressInfo } from './ReceiveAddressInfo';
 
 type ReceiveAddressCardProps = {
     accountKey: AccountKey;
     address: string;
-    isTokenAddress?: boolean;
+    tokenContract?: TokenAddress;
 };
 
 export const ReceiveAddressCard = ({
     accountKey,
     address,
-    isTokenAddress = false,
+    tokenContract,
 }: ReceiveAddressCardProps) => {
     const accountDescriptor = useSelector((state: AccountsRootState) =>
         selectAccountDescriptor(state, accountKey),
@@ -38,33 +37,7 @@ export const ReceiveAddressCard = ({
         return null;
     }
 
-    const { name: networkName } = getNetwork(symbol);
-
-    const getCardAlertProps = (): InlineAlertBoxProps | undefined => {
-        if (symbol === 'ada') {
-            return {
-                title: (
-                    <Translation id="moduleReceive.receiveAddressCard.alert.longCardanoAddress" />
-                ),
-                intent: 'info',
-            };
-        }
-        if (isTokenAddress) {
-            return {
-                title: (
-                    <Translation
-                        id="moduleReceive.receiveAddressCard.alert.token"
-                        values={{ networkName }}
-                    />
-                ),
-                intent: 'info',
-            };
-        }
-
-        return undefined;
-    };
-
-    const cardAlertProps = getCardAlertProps();
+    const isTokenAddress = tokenContract !== undefined;
 
     return (
         <VStack spacing="sp16" flex={1}>
@@ -73,13 +46,10 @@ export const ReceiveAddressCard = ({
                 address={address}
                 deviceStaticSessionId={deviceStaticSessionId}
                 networkSymbol={symbol}
+                tokenContract={tokenContract}
                 showLabelEdit={!isTokenAddress}
             />
-            {cardAlertProps && (
-                <Box marginBottom="sp4">
-                    <InlineAlertBox {...cardAlertProps} />
-                </Box>
-            )}
+            <ReceiveAddressInfo networkSymbol={symbol} isTokenAddress={isTokenAddress} />
         </VStack>
     );
 };

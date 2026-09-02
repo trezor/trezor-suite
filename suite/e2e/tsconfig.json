@@ -3,10 +3,12 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [
         "**/*.json",
+        "llmExploratoryTester",
         "fixtures",
         "snapshots",
         "tests",
         "support",
+        "performance",
         "playwright-config",
         "scripts/**/*.ts"
     ],
@@ -26,6 +28,7 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-sync-evolu"
         },
@@ -66,6 +69,7 @@
         {
             "path": "../../networks/solana/network-solana"
         },
+        { "path": "../../packages/perf-e2e" },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/suite-data" },
         {
@@ -78,8 +82,8 @@
         {
             "path": "../../packages/trezor-user-env-link"
         },
-        { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/utxo-lib" }
     ]
 }

@@ -4,15 +4,15 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeAccountKey,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { getUnusedAddressFromAccount } from '../../utils';
 import { resolveExchangeTradeError } from '../../utils/exchange/resolveExchangeTradeError';
 import { logErrorThunk } from '../common/logErrorThunk';
@@ -31,7 +31,13 @@ export type ConfirmExchangeTradeThunkProps = {
     nextStep?: () => void;
 };
 
-export const confirmExchangeTradeThunk = createThunk(
+type ConfirmExchangeTradeThunkState = TradingRootState;
+
+export const confirmExchangeTradeThunk = createThunk<
+    ExchangeTrade | undefined,
+    ConfirmExchangeTradeThunkProps,
+    { state: ConfirmExchangeTradeThunkState }
+>(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmTrade`,
     async (
         {
@@ -45,7 +51,7 @@ export const confirmExchangeTradeThunk = createThunk(
             triggerAnalyticsTradeConfirmation,
             processResponseData,
             nextStep,
-        }: ConfirmExchangeTradeThunkProps,
+        },
         { dispatch, getState, signal },
     ) => {
         const getCoinSymbol = (cryptoId: CryptoId) =>
@@ -74,7 +80,7 @@ export const confirmExchangeTradeThunk = createThunk(
             }
         }
 
-        const rawResponse = await invityAPI.doExchangeTrade(
+        const rawResponse = await tradeApi.doExchangeTrade(
             {
                 trade,
                 receiveAddress,
@@ -93,7 +99,7 @@ export const confirmExchangeTradeThunk = createThunk(
         // invity drops DEX-specific fields on the response — preserve those the review flow needs
         const response = rawResponse && {
             ...rawResponse,
-            swapSlippage: rawResponse.swapSlippage ?? trade.swapSlippage,
+            swapSlippage: rawResponse.swapSlippage || trade.swapSlippage,
         };
 
         if (!response) {

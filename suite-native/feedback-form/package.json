@@ -1,0 +1,29 @@
+{
+    "name": "@suite-native/feedback-form",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:js:fix": "yarn lint:js --fix",
+        "test:unit": "yarn g:jest:native",
+        "test:unit:coverage": "yarn g:jest:native --coverage",
+        "test:unit:watch": "yarn g:jest:native --watch",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@gorhom/bottom-sheet": "5.2.9",
+        "@suite-common/feedback": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
+        "react": "19.2.3",
+        "react-native-reanimated": "4.5.0"
+    },
+    "devDependencies": {
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/test-utils": "workspace:*"
+    }
+}

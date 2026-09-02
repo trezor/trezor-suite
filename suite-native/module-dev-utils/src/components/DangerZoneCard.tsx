@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Text, VStack } from '@suite-native/atoms';
 import { selectMMKVStorageDep } from '@suite-native/services';
 import { clearStorage } from '@suite-native/storage';

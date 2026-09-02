@@ -1,0 +1,94 @@
+import { useCallback, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
+import {
+    type AccountsRootState,
+    type YieldRootState,
+    selectAccountNetworkSymbol,
+    selectYieldSessionByFlowKey,
+    yieldActions,
+} from '@suite-common/wallet-core';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { Translation } from '@suite-native/intl';
+import {
+    type StackNavigationProps,
+    type YieldStackParamList,
+    YieldStackRoutes,
+    useInterceptNativeNavigation,
+    useNavigateToInitialScreen,
+} from '@suite-native/navigation';
+
+import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
+import { getYieldClaimCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
+
+type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaimComplete>;
+type NavigationProps = StackNavigationProps<
+    YieldStackParamList,
+    YieldStackRoutes.YieldClaimComplete
+>;
+
+export const YieldClaimCompleteScreen = () => {
+    const route = useRoute<RouteProps>();
+    const navigation = useNavigation<NavigationProps>();
+    const dispatch = useDispatch();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
+    const { accountKey } = route.params;
+    const session = useSelector((state: YieldRootState) =>
+        selectYieldSessionByFlowKey(state, 'claim', accountKey),
+    );
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+    const { analytics } = useServices(selectNativeAnalyticsDep);
+
+    const handleExit = useCallback(() => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'claim-form',
+                to: 'earn-dashboard',
+                networkSymbol: networkSymbol ?? undefined,
+            },
+        });
+
+        navigateToInitialScreen();
+        dispatch(yieldActions.disposeSession({ flowType: 'claim', flowKey: accountKey }));
+    }, [accountKey, analytics, dispatch, navigateToInitialScreen, networkSymbol]);
+
+    useInterceptNativeNavigation({ onPress: handleExit });
+
+    useEffect(() => {
+        if (!session) {
+            navigateToInitialScreen();
+
+            return;
+        }
+
+        if (session.step !== 'complete') {
+            navigation.replace(YieldStackRoutes.YieldClaim, route.params);
+        }
+    }, [navigateToInitialScreen, navigation, route.params, session]);
+
+    if (session?.step !== 'complete') {
+        return null;
+    }
+
+    const rows = getYieldClaimCompleteRows(session.result.completedRewards);
+
+    return (
+        <EarnCompleteScreenContent
+            type="claim"
+            buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
+            onButtonPress={handleExit}
+            rows={rows}
+            title={<Translation id="earn.yieldClaimCompleteScreen.title" />}
+            subtitle={<Translation id="earn.yieldClaimCompleteScreen.subtitle" />}
+        />
+    );
+};

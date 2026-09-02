@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { H3, Modal } from '@trezor/components';
 import { DatabaseIcon } from '@trezor/icons';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
-import { useDispatch } from 'src/hooks/suite';
 
 export const DatabaseCorruptedModal = () => {
     const dispatch = useDispatch();

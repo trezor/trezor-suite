@@ -1,15 +1,15 @@
 import { Translation } from '@suite/intl';
-import { type RecoveryType, recoveryTypes } from '@suite/recovery';
+import { type RecoveryInputType, recoveryInputTypes } from '@suite/recovery';
 import { Card, Column, Grid, H4, Icon, Paragraph, RadioCard, Row } from '@trezor/components';
 import { RecoverySeedFilledIcon, TrezorModelOneFilledIcon } from '@trezor/icons';
 type SelectRecoveryTypeStepProps = {
-    setRecoveryType: (type: RecoveryType) => void;
-    recoveryType?: RecoveryType;
+    setRecoveryInputType: (type: RecoveryInputType) => void;
+    recoveryInputType?: RecoveryInputType;
 };
 
 export const SelectRecoveryTypeStep = ({
-    setRecoveryType,
-    recoveryType,
+    setRecoveryInputType,
+    recoveryInputType,
 }: SelectRecoveryTypeStepProps) => (
     <Card margin={{ top: 8 }}>
         <Column gap={16}>
@@ -17,11 +17,11 @@ export const SelectRecoveryTypeStep = ({
                 <Translation id="TR_CHOOSE_RECOVERY_TYPE" />
             </H4>
             <Grid columns={2} gap={16}>
-                {recoveryTypes.map(type => (
+                {recoveryInputTypes.map(type => (
                     <RadioCard
                         key={type}
-                        isSelected={recoveryType === type}
-                        onClick={() => setRecoveryType(type)}
+                        isSelected={recoveryInputType === type}
+                        onClick={() => setRecoveryInputType(type)}
                         dataTestId={`@recovery/select-type/${type}`}
                     >
                         <Row gap={16} padding={{ left: 4 }}>

@@ -2,11 +2,11 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
     getCompanyNameFromList,
-    invityEndpoint,
     sellQuotesEthereumToken,
     sellTradeEthereumToken,
     sellWatchEthereum,
-} from '../../fixtures/invity';
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -28,11 +28,11 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
     test.beforeEach(
         async ({ page, tradingMock, onboardingPage, dashboardPage, settingsPage, walletPage }) => {
             await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.sellQuotes, async route => {
+                await page.route(tradeEndpoint.sellQuotes, async route => {
                     await route.fulfill({ json: sellQuotesEthereumToken });
                 });
-                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereumToken);
-                await page.route(invityEndpoint.sellWatch, async route => {
+                await tradingMock.routeTrade(tradeEndpoint.sellTrade, sellTradeEthereumToken);
+                await page.route(tradeEndpoint.sellWatch, async route => {
                     await route.fulfill({ json: sellWatchEthereum });
                 });
             });
@@ -43,7 +43,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
                 await dashboardPage.deviceSwitchingOpenButton.click();
                 await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-                await walletPage.openSellTradingOfToken('eth', 'USD Coin');
+                await walletPage.openSellTradingOfToken('eth', 'USDC');
             });
         },
     );
@@ -75,7 +75,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
 
         await test.step('Initiate send', async () => {
             await tradingPage.confirmation.initiateSendConfirmation();
-            await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
+            await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
             await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
                 formattedCryptoAmount,

@@ -20,11 +20,13 @@ import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValue
 interface TradingUtxoReceiveAddressOptionProps {
     account: Account;
     address: BlockchainLinkAddress;
+    label?: string;
 }
 
 export const TradingUtxoReceiveAddressOption = ({
     account,
     address,
+    label,
 }: TradingUtxoReceiveAddressOptionProps) => {
     const { tradingReceiveAddress } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
@@ -59,7 +61,27 @@ export const TradingUtxoReceiveAddressOption = ({
                 <Row gap={12}>
                     <TokenIcon size={24} symbol={account.symbol} />
                     <Column alignItems="flex-start">
-                        <Address isTruncated value={address.address} />
+                        {label ? (
+                            <>
+                                <Text
+                                    as="div"
+                                    typographyStyle="body-md"
+                                    ellipsisLineCount={1}
+                                    maxWidth={200}
+                                >
+                                    {label}
+                                </Text>
+                                <Address
+                                    value={address.address}
+                                    typographyStyle="body-sm"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    isTruncated
+                                />
+                            </>
+                        ) : (
+                            <Address isTruncated value={address.address} />
+                        )}
                     </Column>
                 </Row>
 

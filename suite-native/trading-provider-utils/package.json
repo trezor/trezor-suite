@@ -15,7 +15,6 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",
-        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/trading": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
@@ -26,8 +25,8 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.85.3",
-        "react-native-reanimated": "4.3.1",
+        "react-native": "0.86.0",
+        "react-native-reanimated": "4.5.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { type BuyTrade } from 'invity-api';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { invityAPI } from '@suite-common/trading';
+import { useDispatch } from '@suite-common/redux-utils';
+import { tradeApi } from '@suite-common/trading';
 import { Button, Card, Column, Paragraph, type StepListItemState } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
@@ -19,7 +19,7 @@ type TradingBuyDetailPaymentWaitingForUserStepProps = {
     providerName?: string;
 };
 
-const getState = (trade: BuyTrade): StepListItemState => {
+const getStepState = (trade: BuyTrade): StepListItemState => {
     switch (trade.status) {
         case 'APPROVAL_PENDING':
             return 'done';
@@ -62,12 +62,12 @@ export const TradingBuyDetailPaymentWaitingForUserStep = ({
 }: TradingBuyDetailPaymentWaitingForUserStepProps) => {
     const [isWorking, setIsWorking] = useState(false);
     const dispatch = useDispatch();
-    const state = getState(trade);
+    const state = getStepState(trade);
 
     const goToPayment = async () => {
         setIsWorking(true);
         const returnUrl = await createTxLink(trade, account);
-        const response = await invityAPI.getBuyTradeForm({ trade, returnUrl });
+        const response = await tradeApi.getBuyTradeForm({ trade, returnUrl });
         if (response) {
             dispatch(submitRequestForm(response.form));
         }

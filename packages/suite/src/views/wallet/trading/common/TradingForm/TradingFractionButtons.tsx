@@ -5,10 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { FractionButton, Row } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
-    isTradingExchangeContext,
-    isTradingSellContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { isTradingSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 import { generateFractionButtons } from './tradingFormInputsUtils';
 
@@ -37,9 +34,6 @@ export const TradingFractionButtons = () => {
                                 payload: { type: analyticsType, value: percentValue },
                             });
                             onClick();
-                            if (isTradingExchangeContext(context)) {
-                                context.resetSelectedOffer();
-                            }
                         }}
                     />
                 );

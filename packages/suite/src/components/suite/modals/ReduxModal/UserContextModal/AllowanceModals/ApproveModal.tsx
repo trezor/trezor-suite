@@ -1,5 +1,4 @@
 import { FormProvider } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
@@ -25,6 +24,7 @@ import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useSelector } from 'src/hooks/suite';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 
 import {
@@ -121,7 +121,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                             <Text typographyStyle="body-sm">
                                 <Translation id="TR_ACCOUNT" />
                             </Text>
-                            <Row gap={8}>
+                            <Row gap={8} data-testid="@modal/approve/account-value">
                                 <NetworkIcon networkSymbol={account.symbol} size={20} />
                                 <AccountLabeling
                                     account={account}

@@ -1,10 +1,9 @@
 import { useState } from 'react';
 
 import { exportMetadataToLocalFile } from '@suite/metadata';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const Metadata = () => {
     const dispatch = useDispatch();

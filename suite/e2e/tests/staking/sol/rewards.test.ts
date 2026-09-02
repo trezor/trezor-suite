@@ -29,18 +29,34 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
+    test.beforeEach(async ({ page, onboardingPage, settingsPage, solanaStakingMock }) => {
         solanaStakingMock.setStakeAccounts([
             solStakingAccountFirst.payload,
             solStakingAccountSecond.payload,
             solStakingAccountDeactivating.payload,
         ]);
-        solanaStakingMock.setEpoch(solStakingAccountDeactivating.deactivationEpoch);
+        await solanaStakingMock.setEpoch(solStakingAccountDeactivating.deactivationEpoch);
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
             enableNetworks: [
                 { symbol: 'sol', backend: { type: 'solana', url: solanaStakingMock.url } },
             ],
+        });
+
+        await test.step('Mock rewards list request before the account opens', async () => {
+            await page.route(rewards.url, async route => {
+                const url = new URL(route.request().url());
+                const limit = Number(url.searchParams.get('limit') ?? 10);
+                const offset = Number(url.searchParams.get('offset') ?? 0);
+                const allRewards = rewards.response.rewards;
+
+                await route.fulfill({
+                    json: {
+                        rewards: allRewards.slice(offset, offset + limit),
+                        totalCount: allRewards.length,
+                    },
+                });
+            });
         });
     });
 
@@ -78,20 +94,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
             });
 
-            await test.step('Mock rewards and expire the rewards query cache', async () => {
-                await page.route(rewards.url, async route => {
-                    const url = new URL(route.request().url());
-                    const limit = Number(url.searchParams.get('limit') ?? 10);
-                    const offset = Number(url.searchParams.get('offset') ?? 0);
-                    const allRewards = rewards.response.rewards;
-
-                    await route.fulfill({
-                        json: {
-                            rewards: allRewards.slice(offset, offset + limit),
-                            totalCount: allRewards.length,
-                        },
-                    });
-                });
+            await test.step('Mock total rewards and expire the rewards query cache', async () => {
                 await page.route(totalReward.url, async route => {
                     await route.fulfill({ json: totalReward.response });
                 });

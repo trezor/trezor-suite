@@ -31,14 +31,12 @@ export const mapTransactionInputsOutputsToAddresses = ({
                     (target.isAccountOwned || target.isAccountTarget)) ??
                 false;
 
-            return target.addresses?.map(
-                (address): VinVoutAddress => ({
-                    address,
-                    isChangeAddress,
-                    outputIndex: target.n,
-                    txTargetId: createSimpleTargetId(target),
-                }),
-            );
+            return target.addresses?.map((address): VinVoutAddress => ({
+                address,
+                isChangeAddress,
+                outputIndex: target.n,
+                txTargetId: createSimpleTargetId(target),
+            }));
         }),
         A.filter(isNotNullOrUndefined),
         A.concatMany,

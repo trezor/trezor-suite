@@ -5,8 +5,8 @@ import { expect, test } from '../../support/fixtures';
 
 const solanaBalanceAddress = '41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw';
 const customFeeRate = 1;
-let bitcoinBalance: string | null;
-let solanaBalance: string | null;
+let bitcoinBalance: string;
+let solanaBalance: string;
 
 test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -33,9 +33,11 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
     test('Sell form % inputs and limits', async ({ page, walletPage, tradingPage }) => {
         await test.step('Find out btc and sol balances', async () => {
             await walletPage.openAccount({ symbol: 'btc' });
-            bitcoinBalance = await walletPage.topPanelBalance.textContent();
+            await expect(walletPage.topPanelBalance).toHaveText(/\d/);
+            bitcoinBalance = await walletPage.topPanelBalance.innerText();
             await walletPage.openAccount({ symbol: 'sol' });
-            solanaBalance = await walletPage.topPanelBalance.textContent();
+            await expect(walletPage.topPanelBalance).toHaveText(/\d/);
+            solanaBalance = await walletPage.topPanelBalance.innerText();
             await walletPage.openTrading();
             await tradingPage.sellTabButton.click();
             const worldwideOption = messages['TR_TRADING_COUNTRY_WORLD'].defaultMessage;
@@ -88,12 +90,9 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
                     .click();
                 await expect
                     .soft(async () => {
-                        const resultingFee = await tradingPage.fees.maxFee.textContent();
-                        if (!resultingFee) {
-                            throw new Error('Custom Fee amount is undefined or null');
-                        }
+                        const resultingFee = await tradingPage.fees.maxFee.innerText();
                         const maxValue = (
-                            parseFloat(bitcoinBalance!) - parseFloat(resultingFee)
+                            parseFloat(bitcoinBalance) - parseFloat(resultingFee)
                         ).toString();
                         await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
                             localizeNumber(maxValue, 'en-US', 0, 8),
@@ -105,7 +104,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await test.step('Try all % inputs on Solana', async () => {
             await walletPage.openAccount({ symbol: 'sol', atIndex: 0 });
-            await walletPage.sellButton.click();
+            await tradingPage.sellTabButton.click();
             await expect(tradingPage.inputs.swapAmountCurrencyTicker).toHaveText('SOL');
             await tradingPage.inputs.selectFiatCurrency('eur');
 

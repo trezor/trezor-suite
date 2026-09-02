@@ -28,13 +28,10 @@ export const sortRewardsByUnderlyingToken = (
         return b.rate - a.rate;
     });
 
-export const getBonusRewardToken = (
-    rewards: RewardDtoV2[],
-    underlyingToken: TokenDtoV2 | undefined,
-) => {
-    if (!underlyingToken) {
-        return null;
-    }
-
-    return rewards.find(reward => !isSameToken(reward.token, underlyingToken))?.token ?? null;
-};
+// Reward tokens paid out as protocol incentives (e.g. MORPHO from a limited-time campaign).
+// These are the rewards a user has to claim manually, so their presence is what gates the
+// "Claim rewards" explanation (mirrors the desktop `YieldEarnInANutshellModal` condition).
+export const getProtocolIncentiveRewardTokens = (rewards: RewardDtoV2[]): TokenDtoV2[] =>
+    rewards
+        .filter(reward => reward.yieldSource === 'protocol_incentive')
+        .map(reward => reward.token);

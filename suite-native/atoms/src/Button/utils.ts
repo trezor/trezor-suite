@@ -152,6 +152,11 @@ const backgroundMapPressed = {
 } as const satisfies Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, Color>>>;
 
 export const buttonSizeToDimensionsMap = {
+    small: {
+        paddingVertical: nativeSpacings.sp6,
+        paddingHorizontal: nativeSpacings.sp12,
+        borderRadius: nativeBorders.radii.r8,
+    },
     medium: {
         paddingVertical: nativeSpacings.sp10,
         paddingHorizontal: nativeSpacings.sp16,
@@ -168,16 +173,19 @@ export const buttonSizeToDimensionsMap = {
 >;
 
 export const buttonGapMap = {
+    small: nativeSpacings.sp2,
     medium: nativeSpacings.sp2,
     large: nativeSpacings.sp4,
 } as const satisfies Record<ButtonSize, number>;
 
 export const buttonToTextSizeMap = {
+    small: 'body-sm-strong',
     medium: 'body-sm-strong',
     large: 'body-md-strong',
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
 export const buttonToIconSizeMap = {
+    small: 'small',
     medium: 'medium',
     large: 'mediumLarge',
 } as const;
@@ -189,7 +197,7 @@ export const iconButtonToIconSizeMap = {
 } as const satisfies Record<DeprecatedIconButtonSize, (typeof buttonToIconSizeMap)[ButtonSize]>;
 
 export const iconButtonPaddingMap = {
-    small: nativeSpacings.sp6,
+    small: nativeSpacings.sp8,
     medium: nativeSpacings.sp12,
     large: 14,
 } as const satisfies Record<DeprecatedIconButtonSize, number>;

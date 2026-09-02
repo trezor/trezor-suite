@@ -4,7 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingSellInfo,
     selectTradingSellQuotesRequest,
@@ -15,17 +15,20 @@ export type SelectSellQuoteThunkProps = {
     nextStep: () => void;
 };
 
-export const selectSellQuoteThunk = createThunk(
-    `${TRADING_SELL_THUNK_PREFIX}/selectQuote`,
-    ({ quote, nextStep }: SelectSellQuoteThunkProps, { dispatch, getState }) => {
-        const sellInfo = selectTradingSellInfo(getState());
-        const quotesRequest = selectTradingSellQuotesRequest(getState());
-        const provider = quote.exchange ? sellInfo?.providerInfos[quote.exchange] : undefined;
+type SelectSellQuoteThunkState = TradingRootState;
 
-        if (!quotesRequest || !provider || !quote.cryptoCurrency) return;
+export const selectSellQuoteThunk = createThunk<
+    void,
+    SelectSellQuoteThunkProps,
+    { state: SelectSellQuoteThunkState }
+>(`${TRADING_SELL_THUNK_PREFIX}/selectQuote`, ({ quote, nextStep }, { dispatch, getState }) => {
+    const sellInfo = selectTradingSellInfo(getState());
+    const quotesRequest = selectTradingSellQuotesRequest(getState());
+    const provider = quote.exchange ? sellInfo?.providerInfos[quote.exchange] : undefined;
 
-        dispatch(tradingSellActions.saveSelectedQuote(quote));
-        dispatch(tradingActions.stopRefetchQuotes());
-        nextStep();
-    },
-);
+    if (!quotesRequest || !provider || !quote.cryptoCurrency) return;
+
+    dispatch(tradingSellActions.saveSelectedQuote(quote));
+    dispatch(tradingActions.stopRefetchQuotes());
+    nextStep();
+});

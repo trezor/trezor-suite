@@ -13,12 +13,11 @@ import { type RouterRootState, selectRouterApp } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState, selectPhysicalDeviceWallets } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Image } from '@trezor/components';
 import { SidebarBanner } from '@trezor/product-components';
-import { paletteV2 } from '@trezor/theme';
+import { palette } from '@trezor/theme';
 import { ESHOP_STORE_URL, withGetTrezorCtaUtm } from '@trezor/urls';
-
-import { useDispatch } from 'src/hooks/suite';
 
 const HeroContainer = styled.div`
     display: flex;
@@ -26,8 +25,8 @@ const HeroContainer = styled.div`
     justify-content: center;
     background: linear-gradient(
         100deg,
-        ${paletteV2.lightGreenAlpha75} 0,
-        ${paletteV2.lightGreen100} 100%
+        ${palette.lightGreenAlpha75} 0,
+        ${palette.lightGreen100} 100%
     );
     height: 140px;
     width: 100%;

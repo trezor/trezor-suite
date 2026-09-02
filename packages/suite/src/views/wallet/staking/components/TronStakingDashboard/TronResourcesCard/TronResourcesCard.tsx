@@ -4,12 +4,12 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { getTronResources } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { LightningIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { TronResourceModal } from '../TronResourceModal';

@@ -1,12 +1,14 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
-    selectStablecoinYieldTxReview,
+    selectSend,
     selectStake,
     selectStakePrecomposedForm,
     selectTronStakeTxReview,
+    selectYieldTxReview,
     sendFormActions,
     stakeActions,
 } from '@suite-common/wallet-core';
@@ -22,7 +24,7 @@ import {
     signTransaction,
 } from 'src/actions/wallet/stakeActions';
 import { cancelSignTronFreezeTx } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
@@ -33,9 +35,9 @@ import { type TxInfoState } from './utils';
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
 export const TransactionReviewModal = ({ type, decision }: TransactionReviewModalProps) => {
-    const send = useSelector(state => state.wallet.send);
+    const send = useSelector(selectSend);
     const stake = useSelector(selectStake);
-    const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
+    const yieldTxReview = useSelector(selectYieldTxReview);
     const tronStakeTxReview = useSelector(selectTronStakeTxReview);
     const sendPrecomposedForm = useSelector(selectPrecomposedSendForm);
     const stakePrecomposedForm = useSelector(selectStakePrecomposedForm);

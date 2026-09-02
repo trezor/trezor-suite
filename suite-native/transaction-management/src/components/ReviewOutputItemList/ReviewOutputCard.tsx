@@ -23,7 +23,7 @@ const cardStyle = prepareNativeStyle<{ isConfirmed: boolean }>((utils, { isConfi
     extend: {
         condition: isConfirmed,
         style: {
-            backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
+            backgroundColor: utils.colors.surfaceFillSunken,
         },
     },
 }));

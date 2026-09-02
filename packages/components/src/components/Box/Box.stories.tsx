@@ -30,6 +30,7 @@ export const Box: StoryObj<typeof BoxComponent> = {
         backgroundColor: undefined,
         backgroundColorOnInteraction: undefined,
         borderColor: undefined,
+        borderOffset: undefined,
     },
     argTypes: {
         backgroundColor: {
@@ -53,6 +54,9 @@ export const Box: StoryObj<typeof BoxComponent> = {
         borderWidth: {
             control: 'select',
             options: ['undefined', ...borderWidthValues],
+        },
+        borderOffset: {
+            control: 'number',
         },
         ...getFramePropsStory(allowedBoxFrameProps).argTypes,
     },

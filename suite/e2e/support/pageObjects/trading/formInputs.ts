@@ -68,14 +68,12 @@ export class TradingFormInputs {
 
     @step()
     async selectCountryOfResidence(countryCode: TradingCountryCode) {
-        const currentCountry = await this.countryValue.textContent();
-        if (currentCountry?.includes(countryCode)) {
+        const currentCountry = await this.countryValue.innerText();
+        if (currentCountry.includes(countryCode)) {
             return;
         }
         await this.countrySelect.click();
-        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
-            'TR_TRADING_COUNTRY',
-        );
+        await expect(this.page.modalHeader).toHaveTranslation('TR_TRADING_COUNTRY');
         await this.countryOption(countryCode).click();
         await expect(this.countryValue).toContainText(countryCode);
     }
@@ -83,9 +81,7 @@ export class TradingFormInputs {
     @step()
     async selectCountrySubdivision(subdivisionCode: string) {
         await this.countrySubdivisionSelect.click();
-        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
-            'TR_TRADING_COUNTRY_SUBDIVISION',
-        );
+        await expect(this.page.modalHeader).toHaveTranslation('TR_TRADING_COUNTRY_SUBDIVISION');
         await this.countrySubdivisionOption(subdivisionCode).click();
         const subdivision = getCountrySubdivisionByCode(subdivisionCode);
         if (!subdivision) {
@@ -102,7 +98,7 @@ export class TradingFormInputs {
             return;
         }
         await this.currencySelect.click();
-        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation('TR_CURRENCY');
+        await expect(this.page.modalHeader).toHaveTranslation('TR_CURRENCY');
         await this.currencyOption(currencyCode).click();
         await expect(this.currencySelect).toHaveValue(currencyCode.toUpperCase());
     }
@@ -114,9 +110,7 @@ export class TradingFormInputs {
             return;
         }
         await this.paymentMethodSelect.click();
-        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
-            'TR_TRADING_PAYMENT_METHOD',
-        );
+        await expect(this.page.modalHeader).toHaveTranslation('TR_TRADING_PAYMENT_METHOD');
         await this.paymentMethodOption(method).click();
     }
 

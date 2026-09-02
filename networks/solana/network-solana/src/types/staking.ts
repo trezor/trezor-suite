@@ -14,9 +14,7 @@ import type {
 } from '@solana/kit';
 import type { StakeStateAccount } from '@solana-program/stake';
 
-import type { Network, supportedSolanaNetworkSymbols } from '../constants';
-
-export type SupportedSolanaNetworkSymbols = (typeof supportedSolanaNetworkSymbols)[number];
+import type { Network } from '../constants';
 
 export type PriorityFees = {
     computeUnitPrice: bigint;
@@ -34,6 +32,7 @@ export type SolanaTxMeta = {
     feeLamports: string;
     rentLamports: string;
     feeIncludingRentLamports: string;
+    hasSplitInstruction: boolean;
 };
 
 export type Fee = {

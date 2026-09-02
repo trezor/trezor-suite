@@ -12,8 +12,8 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
-        "chalk": "^5.6.2",
-        "prettier": "^3.8.4",
+        "chalk": "^6.0.0",
+        "prettier": "^3.9.6",
         "svgo": "^4.0.1"
     }
 }

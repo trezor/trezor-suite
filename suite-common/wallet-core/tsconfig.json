@@ -5,11 +5,14 @@
         { "path": "../analytics" },
         { "path": "../bluetooth" },
         { "path": "../calldata" },
+        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../earn-stablecoin-api" },
         { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../firmware" },
+        { "path": "../metadata-types" },
+        { "path": "../networks" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../schemas" },
@@ -41,8 +44,15 @@
         {
             "path": "../../packages/connect-common"
         },
+        { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        },
         {
             "path": "../../networks/ripple/network-ripple"
         },
@@ -56,6 +66,7 @@
             "path": "../../networks/tron/network-tron"
         },
         { "path": "../../packages/protobuf" },
+        { "path": "../../packages/react-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

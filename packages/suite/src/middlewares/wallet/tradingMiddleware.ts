@@ -1,26 +1,27 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { routerLocationChange } from '@suite/router';
 import {
-    invityAPI,
     selectTradingAccountAccordingActiveSection,
     selectTradingAccountKeyByTradeType,
     selectTradingActiveSection,
     selectTradingModalAccountKey,
     selectTradingPrefilledFromAccount,
+    tradeApi,
     tradingActions,
     tradingBuyActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
 
-import { type Action, type AppState, type Dispatch } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 export const tradingMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (next: Dispatch<UnknownAction>) =>
+    (action: UnknownAction): UnknownAction => {
         const state = api.getState();
 
         next(action);
@@ -113,7 +114,7 @@ export const tradingMiddleware =
             }
         }
 
-        // after an account change in the Sell or Swap update the invityAPIKey based on the account
+        // after an account change in the Sell or Swap update the tradeApiKey based on the account
         const isForSettingAccountKey =
             tradingExchangeActions.setTradingAccountKey.type === action.type ||
             tradingSellActions.setTradingAccountKey.type === action.type;
@@ -124,7 +125,7 @@ export const tradingMiddleware =
         );
 
         if (isForSettingAccountKey && account) {
-            invityAPI.createInvityAPIKey(account.descriptor);
+            tradeApi.createApiKey(account.descriptor);
         }
 
         return action;

@@ -1,8 +1,7 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { type BundleProgress } from '@trezor/connect';
-import { UI_REQUEST } from '@trezor/connect-common';
+import { UI_EVENTS } from '@trezor/connect-common';
 import type { DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
 
+import TrezorConnect, { type UiEventBundleProgress } from '../../../src';
 import { getController, initTrezorConnect, setup } from '../../common.setup';
 
 let controller: ReturnType<typeof getController> | undefined;
@@ -47,7 +46,9 @@ describe(`TrezorConnect.discoverAccounts`, () => {
             throw new Error('Controller not found');
         }
 
-        const onBundleProgress = (_event: BundleProgress<DiscoverAccountsProgress>['payload']) => {
+        const onUiEventBundleProgress = (
+            _event: UiEventBundleProgress<DiscoverAccountsProgress>['payload'],
+        ) => {
             /*
             const { response, ...rest } = event;
             if ('error' in response) {
@@ -68,7 +69,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
             */
         };
 
-        TrezorConnect.on(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.on(UI_EVENTS.BUNDLE_PROGRESS, onUiEventBundleProgress);
         /*
         new Promise(resolve => setTimeout(resolve, 600)).then(() =>
             TrezorConnect.cancel({ reason: 'CANCELLED' }),
@@ -90,7 +91,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
             ],
         });
 
-        TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onUiEventBundleProgress);
 
         expect(result).toMatchObject({});
     }, 180000);

@@ -14,6 +14,7 @@ import {
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useAsyncMemo } from '@trezor/react-utils';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -24,6 +25,7 @@ export const tokenIconSizes = {
     tiny: 16,
     extraSmall: 24,
     small: 32,
+    medium: 40,
     large: 48,
     extraLarge: 64,
 } as const;
@@ -97,6 +99,10 @@ interface TokenIconProps {
     contractAddress?: string;
     showNetworkIcon?: boolean;
     size?: TokenIconSize | number;
+    /**
+     * If the token is a wrapped native token (e.g. WETH), this prop determines whether to show the icon of the token itself or its network icon.
+     */
+    wrappedTokenIcon?: 'token' | 'network';
 }
 
 const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIconProps) => {
@@ -121,25 +127,37 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
         failed: boolean;
     } | null>(null);
 
-    const resolvedUrls = useAsyncMemo(async (): Promise<(string | number)[]> => {
-        if (isNetworkSymbol(symbol)) {
-            const coingeckoId = getCoingeckoId(symbol);
-            if (coingeckoId && contractAddress) {
-                const logoAddresses = await getAssetLogoContractAddresses(symbol, contractAddress);
-                if (logoAddresses?.length) {
-                    return logoAddresses.map(address =>
-                        getAssetLogoUrl({
-                            coingeckoId,
-                            contractAddress: address,
-                            density: 2,
-                            size: sizeNumber,
-                        }),
-                    );
-                }
-            }
+    // resolves synchronously for everything except the first XLM token after a cold start
+    // so most icons render in the first frame without a placeholder flash
+    const resolvedUrls = useAsyncMemo((): (string | number)[] | Promise<(string | number)[]> => {
+        const fallbackIcon = [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
+
+        if (!isNetworkSymbol(symbol)) {
+            return fallbackIcon;
         }
 
-        return [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
+        const coingeckoId = getCoingeckoId(symbol);
+        if (!coingeckoId || !contractAddress) {
+            return fallbackIcon;
+        }
+
+        const toLogoUrls = (logoAddresses: string[] | undefined) =>
+            logoAddresses?.length
+                ? logoAddresses.map(address =>
+                      getAssetLogoUrl({
+                          coingeckoId,
+                          contractAddress: address,
+                          density: 2,
+                          size: sizeNumber,
+                      }),
+                  )
+                : fallbackIcon;
+
+        const logoAddresses = getAssetLogoContractAddresses(symbol, contractAddress);
+
+        return logoAddresses instanceof Promise
+            ? logoAddresses.then(toLogoUrls)
+            : toLogoUrls(logoAddresses);
     }, [contractAddress, sizeNumber, symbol]);
 
     const sourceUrls = resolvedUrls ?? [];
@@ -194,8 +212,17 @@ export const TokenIcon = ({
     contractAddress,
     showNetworkIcon = false,
     size = 'small',
+    wrappedTokenIcon = 'token',
 }: TokenIconProps) => {
     const { applyStyle } = useNativeStyles();
+
+    if (
+        wrappedTokenIcon === 'network' &&
+        isNetworkSymbol(symbol) &&
+        isWrappedNativeToken(symbol, contractAddress)
+    ) {
+        contractAddress = undefined;
+    }
 
     if (!showNetworkIcon || !isNetworkSymbol(symbol)) {
         return <TokenIconComponent symbol={symbol} contractAddress={contractAddress} size={size} />;
@@ -203,7 +230,8 @@ export const TokenIcon = ({
 
     const displaySymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
     const showForNativeToken = displaySymbol === 'ETH' && symbol !== 'eth';
-    const shouldShowNetwork = showForNativeToken || contractAddress;
+    const shouldShowNetwork =
+        showForNativeToken || contractAddress || wrappedTokenIcon === 'network';
 
     const iconSymbol = contractAddress ? symbol : displaySymbol;
     const iconSize = typeof size === 'number' ? size : tokenIconSizes[size];

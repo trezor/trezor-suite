@@ -1,7 +1,6 @@
 import { events } from '@suite/analytics';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
-import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
@@ -50,8 +49,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                     atIndex: 0,
                 });
                 await walletPage.receiveButton.click();
-                await walletPage.revealAddressButton.click();
-                await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
+                await walletPage.verifyAddressButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowReceiveAddress(abcAddr);
                 await device.pressYes(); // confirm address
@@ -59,7 +57,10 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(metadataPage.copyAddressButton).toBeVisible();
                 await expect(metadataPage.copyAddressButton).toBeEnabled();
 
-                await devicePrompt.closeModal();
+                // Verifying only shows the address on the device. Revealing it — which is what
+                // puts it in the address history the later steps assert on — is "show next".
+                await walletPage.showNextAddressButton.click();
+                await expect(walletPage.usedAddress(0)).toBeVisible();
             });
 
             await test.step('Add second passphrase wallet #2', async () => {
@@ -81,17 +82,14 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                     await expect(walletPage.usedAddress(0)).toBeHidden();
                 });
 
-                await expect(walletPage.revealAddressButton).toBeEnabled();
-                await walletPage.revealAddressButton.click();
-                await expect(devicePrompt.outputValue).toHaveText(formatAddress(defAddr));
+                await expect(walletPage.verifyAddressButton).toBeEnabled();
+                await walletPage.verifyAddressButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowReceiveAddress(defAddr);
                 await device.pressYes(); // confirm address
 
                 await expect(metadataPage.copyAddressButton).toBeVisible();
                 await expect(metadataPage.copyAddressButton).toBeEnabled();
-
-                await devicePrompt.closeModal();
             });
 
             await test.step('Switch back to the wallet #1, which is cached in device', async () => {
@@ -102,18 +100,16 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Revealed address stays visible in table of wallet #1', async () => {
                 await expect(walletPage.usedAddress(0)).toBeVisible();
-                await expect(walletPage.revealAddressButton).toBeEnabled();
+                await expect(walletPage.verifyAddressButton).toBeEnabled();
 
-                await walletPage.usedAddressRevealButton(0).click();
-                await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
+                await walletPage.usedAddress(0).hover();
+                await walletPage.usedAddressVerifyButton(0).click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowReceiveAddress(abcAddr);
                 await device.pressYes(); // confirm address
 
                 await expect(metadataPage.copyAddressButton).toBeVisible();
                 await expect(metadataPage.copyAddressButton).toBeEnabled();
-
-                await devicePrompt.closeModal();
             });
         },
     );

@@ -3,12 +3,23 @@ import { type Dispatch } from '@reduxjs/toolkit';
 import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect, { PROTO } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
-import { changeNetworks, setBitcoinAmountUnits } from './walletSettingsActions';
+import {
+    changeCoinVisibilityEvent,
+    changeNetworks,
+    setBitcoinAmountUnits,
+} from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
-import { selectBitcoinAmountUnit, selectEnabledNetworks } from './walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectBitcoinAmountUnit,
+    selectEnabledNetworks,
+} from './walletSettingsReducer';
 import { accountsActions } from '../accounts/accountsActions';
-import { selectAccountsToBeForgotten } from '../selectors';
+import { type WalletCoreCompoundRootState, selectAccountsToBeForgotten } from '../selectors';
+
+type ChangeCoinVisibilityThunkState = WalletCoreCompoundRootState;
 
 export const changeCoinVisibility = createThunk<
     void,
@@ -16,7 +27,7 @@ export const changeCoinVisibility = createThunk<
         symbol: NetworkSymbol;
         shouldBeVisible: boolean;
     },
-    void
+    { state: ChangeCoinVisibilityThunkState }
 >(
     WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
     async ({ symbol, shouldBeVisible }, { dispatch, getState }) => {
@@ -35,7 +46,9 @@ export const changeCoinVisibility = createThunk<
         // propagated; Connect keeps deriving until the next init). Right after the Redux update (not
         // at the end) so it runs before any later state read.
         if (shouldBeVisible && !isAlreadyEnabled) {
-            await TrezorConnect.updateConnectSettings({ enabledNetworks: [{ coin: symbol }] });
+            await TrezorConnect.updateConnectSettings({
+                enabledNetworks: [{ coin: asCoinSymbol(symbol) }],
+            });
         }
 
         const accountsToRemove = selectAccountsToBeForgotten(getState());
@@ -45,20 +58,20 @@ export const changeCoinVisibility = createThunk<
 
         // this seems to be only for analyticsMiddleware
         // TODO: why does it fire an action with the same type as the thunk??
-        dispatch({
-            type: WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
-            payload: { symbol, shouldBeVisible },
-        });
+        dispatch(changeCoinVisibilityEvent({ symbol, shouldBeVisible }));
     },
 );
 
-export const toggleBitcoinAmountUnits = () => (dispatch: Dispatch, getState: () => any) => {
-    const currentUnits = selectBitcoinAmountUnit(getState());
+type ToggleBitcoinAmountUnitsThunkState = WalletSettingsRootState;
 
-    const nextUnits =
-        currentUnits === PROTO.AmountUnit.BITCOIN
-            ? PROTO.AmountUnit.SATOSHI
-            : PROTO.AmountUnit.BITCOIN;
+export const toggleBitcoinAmountUnits =
+    () => (dispatch: Dispatch, getState: () => ToggleBitcoinAmountUnitsThunkState) => {
+        const currentUnits = selectBitcoinAmountUnit(getState());
 
-    dispatch(setBitcoinAmountUnits(nextUnits));
-};
+        const nextUnits =
+            currentUnits === PROTO.AmountUnit.BITCOIN
+                ? PROTO.AmountUnit.SATOSHI
+                : PROTO.AmountUnit.BITCOIN;
+
+        dispatch(setBitcoinAmountUnits(nextUnits));
+    };

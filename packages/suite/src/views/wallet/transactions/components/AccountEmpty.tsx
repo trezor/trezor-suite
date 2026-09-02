@@ -2,6 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import {
     getNetwork,
@@ -11,7 +12,6 @@ import {
 import { ArrowDownIcon, ArrowsLeftRightIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 interface AccountEmptyProps {
     account: Account;

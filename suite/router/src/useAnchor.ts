@@ -4,34 +4,56 @@ import { useSelector } from 'react-redux';
 import { selectRouterAnchor } from './routerReducer';
 import { ScrollContext } from './scrollContext';
 
-export const useAnchor = (anchorId: string) => {
+export const useAnchor = <TElement extends HTMLElement = HTMLDivElement>(anchorId: string) => {
     const { scrollRef, topOffset } = useContext(ScrollContext);
-    const anchorRef = useRef<HTMLDivElement>(null);
+    const anchorRef = useRef<TElement>(null);
     const anchor = useSelector(selectRouterAnchor);
+    const isAnchored = anchorId === anchor;
 
     useEffect(() => {
-        if (anchorId === anchor && anchorRef.current) {
-            const scrollContainer = scrollRef.current;
+        const element = anchorRef.current;
+        const scrollContainer = scrollRef.current;
 
-            if (!scrollContainer) {
-                return;
-            }
-
-            const element = anchorRef.current;
-            const containerRect = scrollContainer.getBoundingClientRect();
-            const elementRect = element.getBoundingClientRect();
-            const relativeTop = elementRect.top - containerRect.top + scrollContainer.scrollTop;
-            const offsetPosition = relativeTop - topOffset;
-
-            scrollContainer.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth',
-            });
+        if (!isAnchored || !element || !scrollContainer) {
+            return;
         }
-    }, [anchor, anchorId, scrollRef, topOffset]);
+
+        // An IntersectionObserver hands over geometry the browser has already computed,
+        // unlike getBoundingClientRect which forces a synchronous layout. It reports once
+        // right after observation starts, which is all the anchor needs — and that first
+        // report also covers elements that mount after the anchor was set.
+        const observer = new IntersectionObserver(
+            entries => {
+                const lastEntry = entries.at(-1);
+
+                observer.disconnect();
+
+                if (!lastEntry?.rootBounds) {
+                    return;
+                }
+
+                const relativeTop =
+                    lastEntry.boundingClientRect.top -
+                    lastEntry.rootBounds.top +
+                    scrollContainer.scrollTop;
+
+                window.requestAnimationFrame(() => {
+                    scrollContainer.scrollTo({
+                        top: relativeTop - topOffset,
+                        behavior: 'smooth',
+                    });
+                });
+            },
+            { root: scrollContainer },
+        );
+
+        observer.observe(element);
+
+        return () => observer.disconnect();
+    }, [isAnchored, scrollRef, topOffset]);
 
     return {
         anchorRef,
-        shouldHighlight: anchorId === anchor,
+        shouldHighlight: isAnchored,
     };
 };

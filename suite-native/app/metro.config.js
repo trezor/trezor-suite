@@ -1,7 +1,6 @@
 /* eslint-disable require-await */
 
 const { withRozenite } = require('@rozenite/metro');
-const { withRozeniteReduxDevTools } = require('@rozenite/redux-devtools-plugin/metro');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { withStorybook } = require('@storybook/react-native/metro/withStorybook');
 const { mergeConfig } = require('metro-config');
@@ -11,9 +10,11 @@ const { metroSecureResolver } = require('@trezor/bundler-security/src/metroSecur
 // Learn more https://docs.expo.io/guides/customizing-metro
 
 const jsonExpoConfig = getSentryExpoConfig(__dirname);
-const defaultSourceExts = jsonExpoConfig.resolver.sourceExts;
+const defaultSourceExts = [...jsonExpoConfig.resolver.sourceExts, 'md'];
 const additionalSourceExts = process.env.RN_SRC_EXT ? process.env.RN_SRC_EXT.split(',') : [];
 const sourceExts = [...additionalSourceExts, ...defaultSourceExts];
+
+const cjsOnlyPackages = ['@sinclair/typebox', 'kysely'];
 
 /**
  * Metro configuration
@@ -31,7 +32,6 @@ const config = {
         }),
     },
     resolver: {
-        unstable_enablePackageExports: false,
         blockList: [/libDev/],
         extraNodeModules: {
             // modules needed for trezor-connect
@@ -52,48 +52,32 @@ const config = {
                 originModulePath: context.originModulePath,
             });
 
-            const rootNodeModulesPath = context.nodeModulesPaths[1];
+            // Packages whose ESM build Metro would pick via `exports`, but which we need to
+            // resolve to their CommonJS build instead:
+            // - `@sinclair/typebox`: subpaths ('./value', './errors') resolve to CJS while the
+            //   package root resolves to ESM, so two TypeBox instances end up in the bundle.
+            //   Custom kinds registered in one instance's `TypeRegistry` are then invisible to
+            //   the validator from the other one. See https://github.com/expo/expo/issues/37171
+            // - `kysely`: its ESM `FileMigrationProvider` calls `await import()` with a computed
+            //   specifier, which Hermes refuses to compile ('Invalid expression encountered').
+            //   The CJS build emits a plain `require()` there.
+            if (
+                cjsOnlyPackages.some(
+                    packageName =>
+                        moduleName === packageName || moduleName.startsWith(`${packageName}/`),
+                )
+            ) {
+                return context.resolveRequest(
+                    { ...context, isESMImport: false },
+                    moduleName,
+                    platform,
+                );
+            }
+
             const getSourceFile = filePath => ({
                 filePath: require.resolve(filePath),
                 type: 'sourceFile',
             });
-
-            const overrides = {
-                // TODO: unstable_enablePackageExports: true
-                // See: https://github.com/trezor/trezor-suite/issues/20733
-                // modules exports defined in the package `exports` map.
-                '@bufbuild/protobuf/codegenv2': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/codegenv2/index.js`,
-                '@bufbuild/protobuf/wire': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/wire/index.js`,
-                '@bufbuild/protobuf/wkt': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/wkt/index.js`,
-                '@evolu/react-native': `${rootNodeModulesPath}/@evolu/react-native/dist/src/index.js`,
-                '@evolu/react-native/expo-sqlite': `${rootNodeModulesPath}/@evolu/react-native/dist/src/exports/expo-sqlite.js`,
-                '@evolu/common': `${rootNodeModulesPath}/@evolu/common/dist/src/index.js`,
-                '@evolu/common/evolu': `${rootNodeModulesPath}/@evolu/common/dist/src/Evolu/Internal.js`,
-                '@evolu/common/local-first': `${rootNodeModulesPath}/@evolu/common/dist/src/local-first/index.js`,
-                '@evolu/common/polyfills': `${rootNodeModulesPath}/@evolu/common/dist/src/Polyfills.js`,
-                '@evolu/react-native/polyfills': `${rootNodeModulesPath}/@evolu/react-native/dist/src/Polyfills.js`,
-                '@solana/kit/program-client-core': `${rootNodeModulesPath}/@solana/kit/dist/program-client-core.native.mjs`,
-                'crc/calculators/crc32': `${rootNodeModulesPath}/crc/cjs-default-unwrap/calculators/crc32.js`,
-                'crc/calculators/crc16xmodem': `${rootNodeModulesPath}/crc/cjs-default-unwrap/calculators/crc16xmodem.js`,
-                'bignumber.js': `${rootNodeModulesPath}/bignumber.js/dist/bignumber.cjs`,
-                uuid: `${rootNodeModulesPath}/uuid/dist/index.js`,
-
-                // web3-validator package is by default trying to use non-existing minified index file. This fixes that.
-                // Can be removed once web3-validator fixup PR is merged: https://github.com/web3/web3.js/pull/7016.
-                'web3-validator': `${rootNodeModulesPath}/web3-validator/lib/commonjs/index.js`,
-            };
-
-            if (overrides[moduleName]) {
-                return getSourceFile(overrides[moduleName]);
-            }
-
-            // @trezor/network-* packages have exports paths defined in package.json
-            const networkModuleMatch = moduleName.match(/^@trezor\/network-([a-z]+)\/([^/]+)$/);
-            if (networkModuleMatch) {
-                const source = `${rootNodeModulesPath}/@trezor/network-${networkModuleMatch[1]}/src/${networkModuleMatch[2]}/index.ts`;
-
-                return getSourceFile(source);
-            }
 
             if (moduleName.startsWith('@emurgo/cardano')) {
                 // Cardano libs doesn't have main field in package.json which will cause error in metro
@@ -129,7 +113,6 @@ if (
 ) {
     // enable Rozenite plugins only in debug build
     exportedConfig = withRozenite(configWithStorybook, {
-        enhanceMetroConfig: originalConfig => withRozeniteReduxDevTools(originalConfig),
         enabled: true,
     });
 }

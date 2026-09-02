@@ -1,36 +1,11 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
+import type { NetworkSymbol } from '@suite-common/networks';
+import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
-export type NetworkSymbol =
-    | 'btc'
-    | 'ltc'
-    | 'eth'
-    | 'etc'
-    | 'xrp'
-    | 'bch'
-    | 'doge'
-    | 'zec'
-    | 'ada'
-    | 'sol'
-    | 'pol'
-    | 'bsc'
-    | 'arb'
-    | 'base'
-    | 'op'
-    | 'rhc'
-    | 'avax'
-    | 'xlm'
-    | 'test'
-    | 'regtest'
-    | 'trx'
-    | 'ttrx'
-    | 'tsep'
-    | 'thod'
-    | 'txrp'
-    | 'txlm'
-    | 'dsol';
+export type { NetworkSymbol };
 
-export const asNetworkSymbol = (value: string) => value as NetworkSymbol;
+export const asNetworkSymbol = (symbol: string): NetworkSymbol => symbol as NetworkSymbol;
 
 /**
  * Used for some edge cases where extension of NetworkSymbol is necessary.
@@ -39,16 +14,10 @@ export const asNetworkSymbol = (value: string) => value as NetworkSymbol;
 export type NetworkSymbolExtended = NetworkSymbol | (string & {});
 
 export type NetworkType =
-    | 'bitcoin'
-    | 'ethereum'
-    | 'ripple'
-    | 'cardano'
-    | 'solana'
-    | 'stellar'
-    | 'tron';
+    'bitcoin' | 'ethereum' | 'ripple' | 'cardano' | 'solana' | 'stellar' | 'tron';
 
 type UtilityAccountType = 'normal' | 'imported' | 'placeholder'; // reserved accountTypes to stand in for a real accountType
-type RealAccountType = 'legacy' | 'segwit' | 'coinjoin' | 'taproot' | 'ledger';
+type RealAccountType = 'legacy' | 'segwit' | 'coinjoin' | 'taproot' | 'ledger' | 'root';
 export type AccountType = UtilityAccountType | RealAccountType;
 
 export const TREZOR_CONNECT_BACKENDS = [
@@ -88,16 +57,6 @@ export type NetworkFeature =
     | 'mev-protection'
     | 'graph'
     | 'claim-rewards';
-
-type Level = `/${number}'`;
-type MaybeApostrophe = `'` | '';
-type MaybeLevel = `/${number}${MaybeApostrophe}` | '';
-type LevelOrIndex = `/${number | 'i'}'`;
-type MaybeLevelOrIndex = `/${number | 'i'}${MaybeApostrophe}` | '';
-// template with i in place of account index, which shall be substituted with a number
-export type Bip43PathTemplate =
-    `m${Level}${Level}${LevelOrIndex}${MaybeLevelOrIndex}${MaybeLevelOrIndex}`;
-export type Bip43Path = `m${Level}${Level}${Level}${MaybeLevel}${MaybeLevel}`;
 
 export type Explorer = {
     base: string;

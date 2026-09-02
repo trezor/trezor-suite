@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
@@ -12,7 +13,6 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { Loading } from 'src/components/suite';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useDispatch } from 'src/hooks/suite';
 
 import { NoTokens } from '../common/NoTokens';
 import { NoSearchResultsWrapped } from '../common/TokensTable/TokensTable';

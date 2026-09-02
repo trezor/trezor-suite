@@ -4,13 +4,13 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingBuyReceiveAccountKey,
     selectTradingBuySelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { logErrorThunk } from '../common/logErrorThunk';
 
 export type ConfirmTradeThunkProps = {
@@ -23,7 +23,13 @@ export type ConfirmTradeThunkProps = {
     processResponseData: (response: BuyTradeResponse) => void;
 };
 
-export const confirmBuyTradeThunk = createThunk(
+type ConfirmBuyTradeThunkState = TradingRootState;
+
+export const confirmBuyTradeThunk = createThunk<
+    BuyTrade | undefined,
+    ConfirmTradeThunkProps,
+    { state: ConfirmBuyTradeThunkState }
+>(
     `${TRADING_BUY_THUNK_PREFIX}/confirmTrade`,
     async (
         {
@@ -33,7 +39,7 @@ export const confirmBuyTradeThunk = createThunk(
             account,
             triggerAnalyticsTradeConfirmation,
             processResponseData,
-        }: ConfirmTradeThunkProps,
+        },
         { dispatch, getState },
     ) => {
         const selectedQuote = selectTradingBuySelectedQuote(getState());
@@ -54,7 +60,7 @@ export const confirmBuyTradeThunk = createThunk(
             receiveAddress: address,
         };
 
-        const response = await invityAPI.doBuyTrade({
+        const response = await tradeApi.doBuyTrade({
             trade,
             returnUrl,
         });

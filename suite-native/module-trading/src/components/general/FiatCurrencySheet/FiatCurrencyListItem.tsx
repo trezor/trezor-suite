@@ -3,8 +3,7 @@ import { Pressable } from 'react-native';
 import { type FiatCurrencyCode } from 'invity-api';
 
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-
-import { FiatCurrencyIcon } from '../FiatCurrencyIcon';
+import { FiatCurrencyIcon } from '@suite-native/trading-atoms';
 
 export type FiatCurrencyListItemProps = {
     displayValue: string;

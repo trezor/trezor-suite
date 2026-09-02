@@ -1,6 +1,10 @@
 import { yup } from '@suite-common/validators';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import {
+    type NetworkSymbol,
+    getNetworkDisplaySymbol,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
+import { type TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type TradingFormContext } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -17,13 +21,25 @@ export const getAmountLimitContext = ({
     };
 };
 
-export const formatCryptoAmount = (
-    amount: string,
-    currency: string,
-    CryptoAmountFormatter: TradingFormContext['CryptoAmountFormatter'],
-) =>
+type FormatCryptoAmountParams = Pick<
+    TradingFormContext,
+    'contractAddress' | 'CryptoAmountFormatter'
+> & {
+    amount: string;
+    symbol: string;
+};
+
+export const formatCryptoAmount = ({
+    amount,
+    symbol,
+    contractAddress,
+    CryptoAmountFormatter,
+}: FormatCryptoAmountParams) =>
     CryptoAmountFormatter.format(amount, {
-        symbol: currency.toLowerCase() as NetworkSymbol,
+        symbol:
+            !contractAddress && isNetworkSymbol(symbol.toLowerCase())
+                ? (symbol.toLowerCase() as NetworkSymbol)
+                : (symbol as NetworkSymbol | TokenSymbol),
         isBalance: true,
     });
 
@@ -73,13 +89,20 @@ export const sendCryptoAmountValidationSchema = yup
     .typeError('Invalid number')
     .min(0, 'Invalid value')
     .test('send-crypto-min', (value, testContext) => {
-        const { sendSymbol, minCrypto, translate, CryptoAmountFormatter, convertNumberToBaseUnit } =
-            getAmountLimitContext(testContext);
-        if (sendSymbol === undefined) {
+        const {
+            sendAssetSymbol,
+            minCrypto,
+            translate,
+            CryptoAmountFormatter,
+            convertNumberToBaseUnit,
+            sendNetworkSymbol,
+            contractAddress,
+        } = getAmountLimitContext(testContext);
+        if (sendAssetSymbol === undefined || sendNetworkSymbol === undefined) {
             return true;
         }
 
-        const convertedValue = convertNumberToBaseUnit(value, sendSymbol.toLowerCase());
+        const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
 
         if (
             convertedValue === undefined ||
@@ -91,18 +114,30 @@ export const sendCryptoAmountValidationSchema = yup
 
         return testContext.createError({
             message: translate('moduleTrading.validators.min', {
-                min: formatCryptoAmount(minCrypto, sendSymbol, CryptoAmountFormatter),
+                min: formatCryptoAmount({
+                    amount: minCrypto,
+                    symbol: sendAssetSymbol,
+                    contractAddress,
+                    CryptoAmountFormatter,
+                }),
             }),
         });
     })
     .test('send-crypto-max', (value, testContext) => {
-        const { sendSymbol, maxCrypto, translate, CryptoAmountFormatter, convertNumberToBaseUnit } =
-            getAmountLimitContext(testContext);
-        if (sendSymbol === undefined) {
+        const {
+            sendAssetSymbol,
+            maxCrypto,
+            translate,
+            CryptoAmountFormatter,
+            convertNumberToBaseUnit,
+            sendNetworkSymbol,
+            contractAddress,
+        } = getAmountLimitContext(testContext);
+        if (sendAssetSymbol === undefined || sendNetworkSymbol === undefined) {
             return true;
         }
 
-        const convertedValue = convertNumberToBaseUnit(value, sendSymbol.toLowerCase());
+        const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
 
         if (
             convertedValue === undefined ||
@@ -114,19 +149,30 @@ export const sendCryptoAmountValidationSchema = yup
 
         return testContext.createError({
             message: translate('moduleTrading.validators.max', {
-                max: formatCryptoAmount(maxCrypto, sendSymbol, CryptoAmountFormatter),
+                max: formatCryptoAmount({
+                    amount: maxCrypto,
+                    symbol: sendAssetSymbol,
+                    contractAddress,
+                    CryptoAmountFormatter,
+                }),
             }),
         });
     })
     .test('send-crypto-balance', (value, testContext) => {
-        const { balance, translate, convertNumberToBaseUnit, sendSymbol, maxSpendableAmount } =
-            getAmountLimitContext(testContext);
+        const {
+            balance,
+            translate,
+            convertNumberToBaseUnit,
+            sendAssetSymbol,
+            sendNetworkSymbol,
+            maxSpendableAmount,
+        } = getAmountLimitContext(testContext);
 
-        if (sendSymbol === undefined) {
+        if (sendAssetSymbol === undefined || sendNetworkSymbol === undefined) {
             return true;
         }
 
-        const convertedValue = convertNumberToBaseUnit(value, sendSymbol.toLowerCase());
+        const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
 
         if (convertedValue === undefined || convertedValue === 0 || balance === undefined) {
             return true;
@@ -149,7 +195,7 @@ export const sendCryptoAmountValidationSchema = yup
             return testContext.createError({
                 type: 'network-reserve',
                 message: translate('moduleTrading.validators.networkReserve', {
-                    displaySymbol: sendSymbol.toUpperCase(),
+                    displaySymbol: getNetworkDisplaySymbol(sendNetworkSymbol),
                 }),
             });
         }

@@ -12,29 +12,24 @@ import {
     configureStore,
 } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
+import { type ThunkDispatch } from 'redux-thunk';
 
 import { type BackupState, backupMiddleware, backupReducer } from '@suite/backup';
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { type RecoveryState, recoveryReducer } from '@suite/recovery';
 import { type HistoryDep } from '@suite/router';
 import { type DesktopSuiteSyncState, prepareSuiteSyncReducer } from '@suite/suite-sync';
+import { type GetTransportsFactoriesDep } from '@suite-common/connect-init';
 import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
-import {
-    type ExtraDependencies,
-    type ExtraDependenciesStatic,
-    type GetTransportsFactoriesDep,
-    type ThpHostNameDep,
-    castExtraStore,
-    createStoreWithExtraStoreMiddleware,
-} from '@suite-common/redux-utils';
+import { castExtraStore, createStoreWithExtraStoreMiddleware } from '@suite-common/redux-utils';
 import { type SuiteSyncDataState, suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { type SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type ReloadAppDep } from '@suite-common/suite-types';
-import { type ThpState, prepareThpReducer } from '@suite-common/thp';
+import { type ThpHostNameDep, type ThpState, prepareThpReducer } from '@suite-common/thp';
 import {
     type TokenDefinitionsState,
     prepareTokenDefinitionsReducer,
@@ -44,9 +39,9 @@ import { mergeDeepObject } from '@trezor/utils';
 
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
-import { getSuiteMiddleware } from 'src/middlewares/suite';
+import { type GetSuiteMiddlewareDeps, getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
-import { getWalletMiddlewares } from 'src/middlewares/wallet';
+import { type GetWalletMiddlewaresDeps, getWalletMiddlewares } from 'src/middlewares/wallet';
 import onboardingReducers from 'src/reducers/onboarding';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { type SuiteReducersState, suiteReducers } from 'src/reducers/suite';
@@ -56,7 +51,6 @@ import {
     globalSendReceiveFiltersReducer,
 } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-import { type Action } from 'src/types/suite';
 
 import { type BioAuthState, prepareBioAuthReducer } from './bioAuth';
 import { type DesktopState, desktopReducer } from './desktop';
@@ -65,11 +59,12 @@ import {
     prepareDesktopBluetoothReducer,
 } from '../actions/bluetooth/desktopBluetoothReducer';
 import { type CreateConnectLoggerFactoryDep } from '../support/createConnectLoggerFactory';
+import { type CreateGetBinFilesBaseUrlDep } from '../support/createGetBinFilesBaseUrl';
 import {
     type SuiteServices,
     createSuiteServicesCompositionRoot,
-    extraDependencies,
-} from '../support/extraDependencies';
+} from '../support/createSuiteCompositionRoot';
+import { type ExtraDependenciesSuite, extraDependencies } from '../support/extraDependencies';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
@@ -120,7 +115,9 @@ const rootReducer = combineReducers({
 
 const loggerExcludedActions = [addLog.type];
 
-const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
+type GetCustomMiddlewareDeps = GetSuiteMiddlewareDeps & GetWalletMiddlewaresDeps;
+
+const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => {
     const middleware = [
         toastMiddleware,
         ...getSuiteMiddleware(getExtra),
@@ -171,14 +168,13 @@ type InferredAction = Parameters<RootReducerShape>[1];
 export type SuiteStoreDeps = HistoryDep &
     PlatformEncryptionDep &
     CreateConnectLoggerFactoryDep &
+    CreateGetBinFilesBaseUrlDep<AppState> &
     ReloadAppDep &
     ThpHostNameDep &
     GetTransportsFactoriesDep;
 
-type SuiteExtra = ExtraDependenciesStatic & { services: SuiteServices };
-
 export type SuiteStore = ReturnType<
-    typeof castExtraStore<SuiteExtra, EnhancedStore<AppState, Action | UnknownAction>>
+    typeof castExtraStore<ExtraDependenciesSuite, EnhancedStore<AppState, UnknownAction>>
 > & {
     services: SuiteServices;
 };
@@ -203,7 +199,12 @@ export const initStore = (
               )
             : preloadedState;
 
-    const extraFactory = (api: MiddlewareAPI) => ({
+    const extraFactory = (
+        api: MiddlewareAPI<
+            ThunkDispatch<AppState, ExtraDependenciesSuite, UnknownAction>,
+            AppState
+        >,
+    ) => ({
         ...extraDependencies,
         services: createSuiteServicesCompositionRoot({
             getState: api.getState,
@@ -212,6 +213,7 @@ export const initStore = (
             platformEncryption: deps.platformEncryption,
             reloadApp: deps.reloadApp,
             createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),
+            getBinFilesBaseUrl: deps.createGetBinFilesBaseUrl({ getState: api.getState }),
             thpHostName: deps.thpHostName,
             getTransportsFactories: deps.getTransportsFactories,
         }),

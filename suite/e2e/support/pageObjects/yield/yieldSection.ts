@@ -47,8 +47,24 @@ export class YieldSection {
         return this.row(vaultId).getByTestId('@earn/dashboard/yearly-rewards/amount');
     }
 
+    depositedAmount(vaultId: string): Locator {
+        return this.row(vaultId).getByTestId('@earn/dashboard/deposited-amount');
+    }
+
     potentialRewardAmount(vaultId: string): Locator {
         return this.row(vaultId).getByTestId('@earn/dashboard/potential-rewards/amount');
+    }
+
+    withdrawButton(vaultId: string): Locator {
+        return this.row(vaultId).getByTestId('@earn/dashboard/withdraw-button');
+    }
+
+    depositMoreButton(vaultId: string): Locator {
+        return this.row(vaultId).getByTestId('@earn/dashboard/deposit-more-button');
+    }
+
+    depositNowButton(vaultId: string): Locator {
+        return this.row(vaultId).getByTestId('@earn/dashboard/deposit-now-button');
     }
 
     @step()

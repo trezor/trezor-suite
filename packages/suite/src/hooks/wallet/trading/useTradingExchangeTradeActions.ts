@@ -4,11 +4,13 @@ import { useDevice } from '@suite/device';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,
     exchangeThunks,
     isSendRejectedError,
+    isSilentSendRejection,
     selectTradingExchange,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeSelectedQuote,
@@ -17,7 +19,7 @@ import {
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
 import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
@@ -148,7 +150,7 @@ export const useTradingExchangeTradeActions = () => {
                 return false;
             }
 
-            if (e.type !== 'sign-transaction-timeout') {
+            if (!isSilentSendRejection(e.type)) {
                 dispatch(
                     notificationsActions.addToast({
                         type: e.type,

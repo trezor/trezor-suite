@@ -43,7 +43,7 @@ const AccountTypeSelectComponent = ({
         return (
             <Row alignItems="baseline" gap={8}>
                 {accountTypeName && <Translation id={accountTypeName} />}
-                <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
+                <Text intent="neutral" priority="secondary">
                     <Translation id={getAccountTypeTech(option.value.bip43Path)} />
                 </Text>
             </Row>
@@ -64,7 +64,11 @@ const AccountTypeSelectComponent = ({
         <Column alignItems="center" gap={16}>
             <Select
                 data-testid="@add-account-type/select"
-                labelLeft={<Translation id="TR_SELECT_TYPE" />}
+                labelLeft={
+                    <Text typographyStyle="body-sm">
+                        <Translation id="TR_SELECT_ADDRESS_TYPE" />
+                    </Text>
+                }
                 isSearchable={false}
                 isClearable={false}
                 value={value}

@@ -283,7 +283,16 @@ export const networks = {
         decimals: 18,
         testnet: false,
         explorer: getExplorerUrls('https://robinscan.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'graph'],
+        features: [
+            'rbf',
+            'sign-verify',
+            'tokens',
+            'nfts',
+            'coin-definitions',
+            'eip1559',
+            'mev-protection',
+            'graph',
+        ],
         backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
         accountTypes: {
             ledger: {
@@ -299,6 +308,41 @@ export const networks = {
         nativeTokenReserve: '0.0002',
         yieldXyzId: null,
     },
+    hype: {
+        symbol: 'hype',
+        displaySymbol: 'HYPE',
+        name: 'HyperEVM',
+        displaySymbolName: 'Hyperliquid',
+        networkType: 'ethereum',
+        chainId: 999,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        explorer: getExplorerUrls('https://hyperevmscan.io', 'ethereum'),
+        features: [
+            'rbf',
+            'sign-verify',
+            'tokens',
+            'nfts',
+            'coin-definitions',
+            'nft-definitions',
+            'eip1559',
+            'graph',
+        ],
+        backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
+        accountTypes: {
+            ledger: {
+                // ledger (live), #1 acc is same as Trezor, so it is skipped
+                accountType: 'ledger',
+                bip43Path: "m/44'/60'/i'/0/0",
+                isDebugOnlyAccountType: true,
+            },
+        },
+        coingeckoId: 'hyperevm',
+        tradeCryptoId: 'hyperliquid',
+        caipId: 'eip155:999',
+        yieldXyzId: null,
+    },
     avax: {
         symbol: 'avax',
         displaySymbol: 'AVAX',
@@ -309,7 +353,7 @@ export const networks = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        explorer: getExplorerUrls('https://snowscan.xyz/', 'ethereum'),
+        explorer: getExplorerUrls('https://snowscan.xyz', 'ethereum'),
         features: [
             'rbf',
             'sign-verify',
@@ -359,6 +403,12 @@ export const networks = {
                 bip43Path: "m/44'/501'/i'",
                 isDebugOnlyAccountType: true,
             },
+            root: {
+                // root path - single account used by some wallets
+                accountType: 'root',
+                bip43Path: "m/44'/501'",
+                isDebugOnlyAccountType: true,
+            },
         },
         coingeckoId: 'solana',
         tradeCryptoId: 'solana',
@@ -375,7 +425,7 @@ export const networks = {
         decimals: TRON_DECIMALS,
         testnet: false,
         features: ['tokens', 'coin-definitions', 'graph', 'nfts', 'staking'],
-        explorer: getExplorerUrls('https://tronscan.org/#', 'tron'),
+        explorer: getExplorerUrls('https://tronscan.org', 'tron'),
         support: {
             [DeviceModelInternal.T2T1]: '2.11.0',
             [DeviceModelInternal.T2B1]: '2.11.0',
@@ -666,7 +716,7 @@ export const networks = {
         chainId: 560048,
         decimals: 18,
         testnet: true,
-        explorer: getExplorerUrls('https://hoodi.etherscan.io/', 'ethereum'),
+        explorer: getExplorerUrls('https://hoodi.etherscan.io', 'ethereum'),
         features: ['rbf', 'sign-verify', 'tokens', 'staking', 'nfts', 'eip1559', 'graph'],
         backendOptions: [{ type: 'blockbook' }, { type: 'evm-rpc' }],
         accountTypes: {
@@ -698,7 +748,14 @@ export const networks = {
             [DeviceModelInternal.T3W1]: '2.0.0',
         },
         backendOptions: [{ type: 'solana', isExternalBackend: true }],
-        accountTypes: {},
+        accountTypes: {
+            root: {
+                // root path - single account used by some wallets
+                accountType: 'root',
+                bip43Path: "m/44'/501'",
+                isDebugOnlyAccountType: true,
+            },
+        },
         coingeckoId: undefined,
         tradeCryptoId: undefined,
         caipId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
@@ -746,7 +803,7 @@ export const networks = {
         decimals: TRON_DECIMALS,
         testnet: true,
         features: ['tokens', 'graph', 'nfts'],
-        explorer: getExplorerUrls('https://nile.tronscan.org/#', 'tron'),
+        explorer: getExplorerUrls('https://nile.tronscan.org', 'tron'),
         backendOptions: [{ type: 'blockbook' }],
         accountTypes: {},
         coingeckoId: undefined,
@@ -760,6 +817,9 @@ type NetworksConfigs = typeof networks;
 export type NetworkConfig = NetworksConfigs[keyof NetworksConfigs];
 
 export type NetworkConfigWithoutTestnets = Exclude<NetworkConfig, { testnet: true }>;
+
+export const toNetworkSymbolNonTestnet = (symbol: string): NetworkConfigWithoutTestnets['symbol'] =>
+    symbol as NetworkConfigWithoutTestnets['symbol'];
 
 export type NetworkDisplaySymbol = NetworkConfig['displaySymbol'];
 

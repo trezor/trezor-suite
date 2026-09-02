@@ -57,8 +57,7 @@ export const normalizeChangelog = (
 
     const firstNumeric = sortedNumericVersions[0] as AppVersion | undefined;
     const lastNumeric = sortedNumericVersions[sortedNumericVersions.length - 1] as
-        | AppVersion
-        | undefined;
+        AppVersion | undefined;
     const onlyUnknown = !firstNumeric && unknownVersions.length > 0 ? UNKNOWN_VERSION : undefined;
 
     const first = firstNumeric ?? onlyUnknown;

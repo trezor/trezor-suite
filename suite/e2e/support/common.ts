@@ -1,6 +1,6 @@
 import { createIntl, createIntlCache } from 'react-intl';
 
-import test, { Locator, Page, TestInfo } from '@playwright/test';
+import test, { Locator, Page, TestInfo, expect } from '@playwright/test';
 import { isEqual, omit } from 'lodash';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
@@ -8,12 +8,10 @@ import path from 'node:path';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { type TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
-import { Model } from '@trezor/trezor-user-env-link';
 import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
 import { PlaywrightTarget } from './testExtends/suiteTestOptions';
 import { PercentageOfBalanceParams } from './types';
-import releases from '../../../submodules/trezor-common/releases.json';
 
 export const isDesktopProject = (target: PlaywrightTarget) => target === PlaywrightTarget.Desktop;
 
@@ -105,23 +103,6 @@ export const getVideoPath = (videoFolder: string): string | false => {
     return path.join(videoFolder, videoFilenames[0] ?? '');
 };
 
-export const findLatestVersionForModel = (model: Model): string => {
-    const firmwareVersions = releases.firmware;
-    const versions = Object.keys(firmwareVersions);
-
-    // Sort versions in descending order
-    versions.sort((a, b) => (a > b ? -1 : 1));
-
-    // Find the latest version supporting our model
-    for (const version of versions) {
-        if (firmwareVersions[version as keyof typeof firmwareVersions].includes(model)) {
-            return version;
-        }
-    }
-
-    throw new Error(`No firmware version found for model ${model}`);
-};
-
 export const getCountryLabel = (country: TradingCountryCode) => {
     const countryOption = regional.countriesOptionsMap.get(country);
     if (!countryOption) {
@@ -132,9 +113,6 @@ export const getCountryLabel = (country: TradingCountryCode) => {
 };
 
 export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
-    if (params.balance === null) {
-        throw new Error('Account balance is null');
-    }
     const fraction = (parseFloat(params.balance) * params.percentage) / 100;
     const maxDecimals = getAccountDecimals(params.symbol);
 
@@ -150,12 +128,9 @@ export const countDecimalPlaces = (value: string | number) => {
 };
 
 export const getBigNumberFromBalance = async (locator: Locator) => {
-    let originalBalanceText = await locator.textContent();
-    if (!originalBalanceText) {
-        throw new Error('Balance text content is empty');
-    }
-
-    const hasEllipsis = originalBalanceText?.includes('…');
+    await expect(locator).toHaveText(/\d/);
+    let originalBalanceText = await locator.innerText();
+    const hasEllipsis = originalBalanceText.includes('…');
     if (hasEllipsis) {
         originalBalanceText = originalBalanceText.slice(0, -1);
     }

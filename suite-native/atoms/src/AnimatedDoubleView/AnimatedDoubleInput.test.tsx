@@ -1,0 +1,66 @@
+import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+
+import { AnimatedDoubleInput, type AnimatedDoubleInputProps } from './AnimatedDoubleInput';
+import { Input } from '../Input/Input';
+
+describe('AnimatedDoubleInput', () => {
+    const renderAnimatedDoubleInput = async (props: Partial<AnimatedDoubleInputProps>) =>
+        await renderWithBasicProvider(
+            <AnimatedDoubleInput
+                renderPrimary={({ onPress, isDisabled, inputRef }) => (
+                    <Input
+                        ref={inputRef}
+                        onPress={onPress}
+                        editable={!isDisabled}
+                        value="Primary Input value"
+                        label="Primary Input label"
+                    />
+                )}
+                renderSecondary={({ onPress, isDisabled, inputRef }) => (
+                    <Input
+                        ref={inputRef}
+                        onPress={onPress}
+                        editable={!isDisabled}
+                        value="Secondary Input value"
+                        label="Secondary Input label"
+                    />
+                )}
+                {...props}
+            />,
+        );
+
+    it('should call onViewSwitch when Switch button is pressed', async () => {
+        const onInputSwitch = jest.fn();
+        const { getByLabelText } = await renderAnimatedDoubleInput({ onInputSwitch });
+
+        const switchButton = getByLabelText('Switch');
+        await userEvent.press(switchButton);
+
+        expect(onInputSwitch).toHaveBeenCalledTimes(1);
+        expect(onInputSwitch).toHaveBeenCalledWith('secondary');
+    });
+
+    it('should derive the next view from the controlled activeView', async () => {
+        const onInputSwitch = jest.fn();
+        const { getByLabelText } = await renderAnimatedDoubleInput({
+            onInputSwitch,
+            activeView: 'secondary',
+        });
+
+        const switchButton = getByLabelText('Switch');
+        await userEvent.press(switchButton);
+
+        expect(onInputSwitch).toHaveBeenCalledTimes(1);
+        expect(onInputSwitch).toHaveBeenCalledWith('primary');
+    });
+
+    it('should propagate switch label', async () => {
+        const switchLabel = 'Custom Switch Label';
+        const { getByLabelText, queryByLabelText } = await renderAnimatedDoubleInput({
+            switchLabel,
+        });
+
+        expect(queryByLabelText('Switch')).toBeNull();
+        expect(getByLabelText(switchLabel)).toBeOnTheScreen();
+    });
+});

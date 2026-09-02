@@ -18,6 +18,7 @@ export enum EventType {
     SettingsDeviceWipe = 'settings/device/wipe',
     SettingsGeneralLabeling = 'settings/general/labeling',
     SettingsNetworkSearchUsed = 'settings/network-search-used',
+    SettingsNetworksExplorer = 'settings/network-explorer',
     SettingsTestnetNetworksToggle = 'settings/testnet-networks-toggle',
     // eslint-disable-next-line local-rules/analytics-event-name
     SuiteSyncLabelCreated = 'suite-sync/label',
@@ -31,7 +32,9 @@ export enum EventType {
     AccountsBalance = 'accounts/balance',
     OnboardingStepViewed = 'onboarding/step-viewed',
     OnboardingFeedbackBannerClicked = 'onboarding/feedback-banner',
+    OnboardingRecoveryWarningCreateNewWallet = 'onboarding/recovery-warning/create-new-wallet',
     PromoNoDeviceEshopCta = 'promo/no-device-eshop-cta',
+    PromoDashboardBanner = 'promo/dashboard-banner',
     GuideSupportChatOpened = 'guide/support-chat-opened',
     YieldEarnDashboardReady = 'yield/earn-dashboard-ready',
     YieldInteraction = 'yield/interaction',
@@ -39,4 +42,6 @@ export enum EventType {
     YieldDeposit = 'yield/deposit',
     YieldWithdraw = 'yield/withdraw',
     YieldClaim = 'yield/claim',
+    YieldWrap = 'yield/wrap',
+    YieldUnwrap = 'yield/unwrap',
 }

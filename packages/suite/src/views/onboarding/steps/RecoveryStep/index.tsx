@@ -3,7 +3,8 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { selectRecoveryWordRequestInputType } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import {
-    isStandardRecoveryDisabled,
+    type RecoveryInputType,
+    isRecoveryInputTypeDisabled,
     recoverDeviceThunk,
     recoveryActions,
     selectRecoveryError,
@@ -11,14 +12,15 @@ import {
     selectWordsCount,
 } from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
-import { Badge, Column } from '@trezor/components';
+import { Badge, Banner, Column } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
@@ -60,14 +62,14 @@ export const RecoveryStep = () => {
                             dispatch(recoveryActions.setWordsCount(number));
                             // For T1B1 with 12 or 18 words, skip recovery type selection and use Advanced recovery
                             // For 24 words, show the recovery type selection
-                            const shouldSkipSelection = isStandardRecoveryDisabled(
+                            const shouldSkipSelection = isRecoveryInputTypeDisabled(
                                 deviceModelInternal,
                                 number,
                                 'standard',
                             );
 
                             if (shouldSkipSelection) {
-                                dispatch(recoveryActions.setAdvancedRecovery(true));
+                                dispatch(recoveryActions.setRecoveryInputType('advanced'));
                                 dispatch(updateAnalytics({ recoveryType: 'advanced' }));
                                 dispatch(recoverDeviceThunk());
                             } else {
@@ -98,14 +100,21 @@ export const RecoveryStep = () => {
                         <Translation id="TR_START_RECOVERY" />
                     </OnboardingCard.Button>
                 }
-            />
+            >
+                <Banner
+                    intent="neutral"
+                    icon
+                    title={<Translation id="TR_RECOVERY_SOURCE_WARNING_TITLE" />}
+                    description={<Translation id="TR_RECOVERY_SOURCE_WARNING_DESCRIPTION" />}
+                />
+            </RecoveryStepBox>
         );
     }
 
     if (status === 'select-recovery-type') {
         // 2. step: Standard recovery (user enters recovery seed word by word on host) or Advanced recovery (user types words on a device)
-        const handleSelect = (type: 'standard' | 'advanced') => {
-            dispatch(recoveryActions.setAdvancedRecovery(type === 'advanced'));
+        const handleSelect = (type: RecoveryInputType) => {
+            dispatch(recoveryActions.setRecoveryInputType(type));
             dispatch(updateAnalytics({ recoveryType: type }));
             dispatch(recoverDeviceThunk());
         };

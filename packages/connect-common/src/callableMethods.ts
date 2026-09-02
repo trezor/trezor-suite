@@ -50,7 +50,7 @@ const connectPublicCallableMethodGroups = {
         'blockchainDisconnect',
         'blockchainSetCustomBackend',
         'blockchainGetInfo',
-        'blockchainValidateEvmRpcUrl',
+        'blockchainEvmRpcGetChainId',
         'blockchainEstimateFee',
         'blockchainGetAccountBalanceHistory',
         'blockchainGetTransactions',
@@ -73,6 +73,7 @@ const connectPublicCallableMethodGroups = {
         'getCoinInfo',
     ],
     bitcoin: [
+        'sendTransaction',
         'signTransaction',
         'composeTransaction',
         'authorizeCoinjoin',
@@ -84,6 +85,7 @@ const connectPublicCallableMethodGroups = {
         'ethereumSignTransaction',
         'ethereumSignMessage',
         'ethereumSignTypedData',
+        'ethereumSignAuth7702',
         'ethereumVerifyMessage',
     ],
     cardano: [
@@ -105,6 +107,7 @@ const connectPublicCallableMethodGroups = {
         'solanaGetAddress',
         'solanaGetPublicKey',
         'solanaSignTransaction',
+        'solanaSignMessage',
         'solanaComposeTransaction',
     ],
     stellar: ['stellarGetAddress', 'stellarSignTransaction'],

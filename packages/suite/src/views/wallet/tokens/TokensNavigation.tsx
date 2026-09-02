@@ -6,6 +6,7 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, goto, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -30,7 +31,7 @@ import {
 } from '@trezor/icons';
 import { arrayPartition } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
 
 type SubTabConfig = {

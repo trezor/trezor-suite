@@ -37,6 +37,14 @@ const ScrollContainer = styled.div`
     -webkit-overflow-scrolling: touch;
 `;
 
+// The scroll shadow sentinels are positioned against this wrapper, so it has to be as wide as
+// the table it holds — a plain block would end at the visible width and its right edge would
+// never leave the viewport, no matter how far the table overflows.
+const ScrollContent = styled.div`
+    position: relative;
+    min-width: min-content;
+`;
+
 export type TableProps = AllowedFrameProps &
     AllowedTextProps & {
         children: ReactNode;
@@ -59,7 +67,7 @@ export const Table = ({
     typographyStyle = 'body-md',
     backgroundColor = 'surfaceFillRaised',
 }: TableProps) => {
-    const { scrollElementRef, onScroll, ShadowContainer, ShadowRight, ShadowLeft } =
+    const { scrollElementRef, ScrollSentinels, ShadowContainer, ShadowRight, ShadowLeft } =
         useScrollShadow({
             backgroundColor,
         });
@@ -68,17 +76,20 @@ export const Table = ({
         <TableContext.Provider value={{ isRowHighlightedOnHover, hasBorders, typographyStyle }}>
             <ShadowContainer>
                 <ShadowLeft />
-                <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                    <Container {...makePropsTransient({ margin })}>
-                        {colWidths && (
-                            <colgroup>
-                                {colWidths.map((widths, index) => (
-                                    <col key={index} style={widths} />
-                                ))}
-                            </colgroup>
-                        )}
-                        {children}
-                    </Container>
+                <ScrollContainer ref={scrollElementRef}>
+                    <ScrollContent>
+                        <ScrollSentinels />
+                        <Container {...makePropsTransient({ margin })}>
+                            {colWidths && (
+                                <colgroup>
+                                    {colWidths.map((widths, index) => (
+                                        <col key={index} style={widths} />
+                                    ))}
+                                </colgroup>
+                            )}
+                            {children}
+                        </Container>
+                    </ScrollContent>
                 </ScrollContainer>
                 <ShadowRight />
             </ShadowContainer>

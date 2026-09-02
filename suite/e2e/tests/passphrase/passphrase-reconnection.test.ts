@@ -1,4 +1,3 @@
-import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
@@ -31,8 +30,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
                 atIndex: 0,
             });
             await walletPage.receiveButton.click();
-            await walletPage.revealAddressButton.click();
-            await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
+            await walletPage.verifyAddressButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(device).toShowReceiveAddress(abcAddr);
             await device.pressYes(); // confirm address
@@ -40,13 +38,17 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect(metadataPage.copyAddressButton).toBeVisible();
             await expect(metadataPage.copyAddressButton).toBeEnabled();
 
-            await devicePrompt.closeModal();
+            // Verifying only shows the address on the device. Revealing it — which is what puts
+            // it in the address history the later steps assert on — is "show next".
+            await walletPage.showNextAddressButton.click();
+            await expect(walletPage.usedAddress(0)).toBeVisible();
         });
 
         await test.step('Disconnect and reconnect the device', async () => {
             await device.powerOff();
             await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 30_000 });
             await device.powerOn();
+            await expect(walletPage.deviceConnectedStatus).toBeVisible({ timeout: 30_000 });
         });
 
         await test.step('Check passphrase wallet "abc" is still cached and connected', async () => {
@@ -75,7 +77,8 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
             await dashboardPage.walletAtIndex(1).click();
             await walletPage.receiveButton.click();
             await expect(walletPage.usedAddress(0)).toBeVisible();
-            await walletPage.usedAddressRevealButton(0).click();
+            await walletPage.usedAddress(0).hover();
+            await walletPage.usedAddressVerifyButton(0).click();
             await expect(page.getByText('Confirm passphrase')).toBeVisible();
             await dashboardPage.passphraseInput.fill('abc');
             await dashboardPage.passphraseSubmitButton.click();
@@ -84,20 +87,19 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
 
         await test.step('Verify displayed receive address', async () => {
-            await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
-
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(device).toShowReceiveAddress(abcAddr);
             await device.pressYes(); // confirm address
 
             await expect(metadataPage.copyAddressButton).toBeVisible();
             await expect(metadataPage.copyAddressButton).toBeEnabled();
-            await devicePrompt.closeModal();
         });
 
         await test.step('Second displaying receive address after reconnect should NOT prompt for passphrase', async () => {
-            await walletPage.usedAddressRevealButton(0).click();
-            await expect(devicePrompt.outputValue).toBeVisible();
+            await walletPage.usedAddress(0).hover();
+            await walletPage.usedAddressVerifyButton(0).click();
+            // Going straight to the device prompt proves no passphrase was requested again.
+            await devicePrompt.confirmOnDevicePromptIsShown();
 
             await device.pressYes(); // confirm address
 

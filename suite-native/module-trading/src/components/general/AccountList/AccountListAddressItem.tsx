@@ -1,26 +1,20 @@
 import { AddressLabel } from '@suite-native/address';
-import { Text } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { type ReceiveAccount } from '@suite-native/trading-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountListBaseItem } from './AccountListBaseItem';
 
-const labelTextStyle = prepareNativeStyle(utils => ({
-    color: utils.colors.contentSecondary,
-    flex: 1,
-}));
-
 export type AccountListAddressItemProps = {
     receiveAccount: ReceiveAccount;
+    isFreshAddress: boolean;
     onPress: () => void;
 };
 
 export const AccountListAddressItem = ({
     receiveAccount,
+    isFreshAddress,
     onPress,
 }: AccountListAddressItemProps) => {
-    const { applyStyle } = useNativeStyles();
     const { address } = receiveAccount;
 
     if (!address) {
@@ -34,15 +28,12 @@ export const AccountListAddressItem = ({
                 <AddressLabel
                     address={address.address}
                     deviceStaticSessionId={receiveAccount.account.deviceState}
-                    fallback={<AddressFormatter value={address.address} format="full" />}
+                    fallback={<AddressFormatter value={address.address} format="long" />}
+                    numberOfLines={1}
                 />
             }
             isAddressDetail={true}
-            info={
-                <Text variant="body-sm" style={applyStyle(labelTextStyle)}>
-                    {address.path}
-                </Text>
-            }
+            isFreshAddress={isFreshAddress}
             onPress={onPress}
         />
     );

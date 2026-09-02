@@ -15,20 +15,22 @@ import {
 } from 'src/views/earn/tron';
 import { EarnClaim } from 'src/views/earn/yield/claim';
 import { EarnDeposit } from 'src/views/earn/yield/deposit';
+import { EarnUnwrap } from 'src/views/earn/yield/unwrap';
 import { EarnWithdraw } from 'src/views/earn/yield/withdraw';
+import { EarnWrap } from 'src/views/earn/yield/wrap';
 import PasswordManagerView from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
-import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
+import { DesktopSettingsGeneral } from 'src/views/settings/SettingsGeneral/DesktopSettingsGeneral';
 import Notification from 'src/views/suite/notifications';
 import WalletAnonymize from 'src/views/wallet/anonymize';
 import WalletDetails from 'src/views/wallet/details';
 import { Nfts } from 'src/views/wallet/nfts';
 import { Receive } from 'src/views/wallet/receive/Receive';
 import WalletSend from 'src/views/wallet/send';
-import WalletSignVerify from 'src/views/wallet/sign-verify';
+import { SignVerifyPage } from 'src/views/wallet/sign-verify/SignVerifyPage';
 import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
 import { Tokens } from 'src/views/wallet/tokens';
 import { TradingBuyConfirm } from 'src/views/wallet/trading/buy/TradingBuyConfirm';
@@ -45,12 +47,23 @@ import { TradingSellForm } from 'src/views/wallet/trading/sell/TradingSellForm';
 import { TradingTransactions } from 'src/views/wallet/trading/transactions/TradingTransactions';
 import { Transactions } from 'src/views/wallet/transactions/Transactions';
 
+/*
+ Note 1: Currently, this list contains the same components as webComponents.ts, but there could be Desktop-specific
+ pages to avoid bundling Desktop code into @trezor/suite, which ends up in Web too.
+
+ Note 2: Unlike Web, we don't use code-splitting with dynamic JS bundle loading – on Desktop it'd be useless.
+ There's an idea that on weak CPU, parsing & interpreting the JS bundle could be a limiting factor (code-splitting could help).
+ But it was tested that this is negligible time. On weak CPU, code execution is the limiting factor (unaffected by code-splitting).
+*/
+
 export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
     'suite-earn': Earn,
     'earn-yield-deposit': EarnDeposit,
     'earn-yield-withdraw': EarnWithdraw,
     'earn-yield-claim': EarnClaim,
+    'earn-yield-unwrap': EarnUnwrap,
+    'earn-yield-wrap': EarnWrap,
     'earn-tron': EarnTronRedirect,
     'earn-tron-stake': EarnTronStake,
     'earn-tron-vote': EarnTronVote,
@@ -65,7 +78,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'wallet-details': WalletDetails,
     'wallet-send': WalletSend,
     'wallet-staking': WalletStaking,
-    'wallet-sign-verify': WalletSignVerify,
+    'wallet-sign-verify': SignVerifyPage,
     'wallet-anonymize': WalletAnonymize,
     'wallet-tokens': Tokens,
     'wallet-nfts': Nfts,
@@ -84,7 +97,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
 
     'password-manager-index': PasswordManagerView,
 
-    'settings-index': SettingsGeneral,
+    'settings-index': DesktopSettingsGeneral,
     'settings-coins': SettingsCoins,
     'settings-debug': SettingsDebug,
     'settings-device': SettingsDevice,

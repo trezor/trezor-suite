@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { type Dispatch, useDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { type IconComponent, Tooltip } from '@trezor/components';
@@ -19,7 +20,6 @@ import {
 } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { useDispatch } from 'src/hooks/suite';
 
 import { type EmptyStakingCardData } from './useEmptyStakingCardData';
 
@@ -48,7 +48,7 @@ export interface EmptyStakingCardContent {
 
 interface UseNetworkContentProps {
     data: EmptyStakingCardData;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: Dispatch;
 }
 
 const getTronContent = ({

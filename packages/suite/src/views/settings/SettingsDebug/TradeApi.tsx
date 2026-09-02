@@ -1,27 +1,26 @@
-import { selectInvityServerEnvironment, suiteSettingsActions } from '@suite/settings';
-import { type InvityServerEnvironment, invityAPI } from '@suite-common/trading';
+import { selectTradeServerEnvironment, suiteSettingsActions } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
+import { type TradeServerEnvironment, tradeApi } from '@suite-common/trading';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const TradeApi = () => {
-    const invityServerEnvironment = useSelector(selectInvityServerEnvironment);
+    const tradeServerEnvironment = useSelector(selectTradeServerEnvironment);
     const dispatch = useDispatch();
 
-    const invityApiServerOptions = Object.entries(invityAPI.SERVERS).map(
-        ([environment, server]) => ({
-            label: server,
-            value: environment as InvityServerEnvironment,
-        }),
-    );
-    const selectedInvityApiServer =
-        invityApiServerOptions.find(s => s.value === invityServerEnvironment) ||
-        invityApiServerOptions[0];
+    const tradeApiServerOptions = Object.entries(tradeApi.SERVERS).map(([environment, server]) => ({
+        label: server,
+        value: environment as TradeServerEnvironment,
+    }));
+    const selectedTradeApiServer =
+        tradeApiServerOptions.find(s => s.value === tradeServerEnvironment) ||
+        tradeApiServerOptions[0];
 
-    const handleChange = (item: { value: InvityServerEnvironment; label: string }) => {
-        dispatch(suiteSettingsActions.setDebugMode({ invityServerEnvironment: item.value }));
-        invityAPI.setInvityServersEnvironment(item.value);
-        invityAPI.resetCurrentAccount();
+    const handleChange = (item: { value: TradeServerEnvironment; label: string }) => {
+        dispatch(suiteSettingsActions.setDebugMode({ tradeServerEnvironment: item.value }));
+        tradeApi.setServersEnvironment(item.value);
+        tradeApi.resetCurrentAccount();
     };
 
     return (
@@ -33,8 +32,8 @@ export const TradeApi = () => {
             <ActionColumn>
                 <ActionSelect
                     onChange={handleChange}
-                    value={selectedInvityApiServer}
-                    options={invityApiServerOptions}
+                    value={selectedTradeApiServer}
+                    options={tradeApiServerOptions}
                 />
             </ActionColumn>
         </SectionItem>

@@ -98,6 +98,7 @@ export interface EthereumSpecific {
     gasLimit: number;
     gasUsed?: number;
     gasPrice?: string;
+    effectiveGasPrice?: string;
     maxPriorityFeePerGas?: string;
     maxFeePerGas?: string;
     baseFeePerGas?: string;

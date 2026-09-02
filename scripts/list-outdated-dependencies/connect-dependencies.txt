@@ -1,5 +1,4 @@
 @arethetypeswrong/cli
-@blockaid/client
 @bufbuild/buf
 @bufbuild/protobuf
 @bufbuild/protoc-gen-es
@@ -7,9 +6,9 @@
 @codemirror/state
 @hbsnow/rehype-sectionize
 @headlessui/react
+@noble/curves
 @noble/post-quantum
 @reown/walletkit
-@react-native-async-storage/async-storage
 @scure/base
 @scure/bip39
 @sinclair/typebox
@@ -25,9 +24,10 @@
 @types/web
 @types/ws
 @uiw/react-codemirror
-@vitejs/plugin-react
 @walletconnect/core
 @walletconnect/react-native-compat
+@react-native-async-storage/async-storage # peer dependency required by @walletconnect/react-native-compat
+@walletconnect/sign-client
 @walletconnect/types
 @walletconnect/utils
 buffer
@@ -41,6 +41,7 @@ cross-fetch
 crypto-browserify
 esbuild
 escape-string-regexp
+fast-check
 flexsearch
 focus-visible
 git-url-parse
@@ -61,6 +62,7 @@ postcss-cli
 postcss-import
 postcss-lightningcss
 react-inspector
+react-native-ble-plx
 remark-gemoji
 remark-gfm
 scroll-into-view-if-needed
@@ -76,7 +78,6 @@ usb
 version-bump-prompt
 ws
 xvfb-maybe
-zod
 @types/cors
 @vitest/browser-playwright
 vitest

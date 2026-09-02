@@ -6,7 +6,6 @@
         {
             "path": "../../suite-common/analytics"
         },
-        { "path": "../../suite-common/calldata" },
         {
             "path": "../../suite-common/dependency-injection"
         },
@@ -20,6 +19,7 @@
         {
             "path": "../../suite-common/earn-staking-api"
         },
+        { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/formatters"
         },
@@ -27,6 +27,7 @@
             "path": "../../suite-common/message-system"
         },
         { "path": "../../suite-common/mev" },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/react-query"
         },
@@ -40,6 +41,9 @@
         },
         {
             "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/token-definitions"
         },
         {
             "path": "../../suite-common/validators"
@@ -64,21 +68,28 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
+        { "path": "../config" },
         { "path": "../confirm-on-trezor" },
+        { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
+        { "path": "../feedback-form" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../message-system" },
         { "path": "../navigation" },
+        { "path": "../scrollview" },
         { "path": "../settings" },
         { "path": "../staking" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
+        { "path": "../tokens" },
+        { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../tx-simulation" },
@@ -87,6 +98,12 @@
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        },
         {
             "path": "../../networks/solana/network-solana"
         },

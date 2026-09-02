@@ -2,10 +2,11 @@ import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
 import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
@@ -13,6 +14,7 @@ import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/Trad
 type TradingExchangeDetailPaymentFailedProps = {
     trade: ExchangeTrade;
     account?: Account;
+    receiveAccountKey?: AccountKey;
     provider?: ExchangeProviderInfo;
 };
 
@@ -20,6 +22,7 @@ export const TradingExchangeDetailPaymentFailed = ({
     trade,
     provider,
     account,
+    receiveAccountKey,
 }: TradingExchangeDetailPaymentFailedProps) => {
     const dispatch = useDispatch();
 
@@ -44,6 +47,7 @@ export const TradingExchangeDetailPaymentFailed = ({
                     {provider && (
                         <TradingDetailProviderInfo
                             account={account}
+                            receiveAccountKey={receiveAccountKey}
                             orderId={trade.orderId}
                             provider={provider}
                             trade={trade}

@@ -1,9 +1,11 @@
-import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useCallback, useEffect, useEffectEvent } from 'react';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     SLIPPAGE_PRESETS,
     type SlippageFormValues,
+    selectTradingExchangeSelectedQuoteSwapSlippage,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {
@@ -29,28 +31,44 @@ import { useSlippageForm } from '../hooks/useSlippageForm';
 type SlippageBottomSheetProps = {
     isVisible: boolean;
     onClose: () => void;
+    onSlippageConfirmed: () => Promise<void>;
 };
 
-export const SlippageBottomSheet = ({ isVisible, onClose }: SlippageBottomSheetProps) => {
+export const SlippageBottomSheet = ({
+    isVisible,
+    onClose,
+    onSlippageConfirmed,
+}: SlippageBottomSheetProps) => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
-    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const { handleSubmit, isValid, handlePresetPress, form } = useSlippageForm();
     const openLink = useOpenLink();
+
+    const currentSlippage = useSelector(selectTradingExchangeSelectedQuoteSwapSlippage);
+    const { handleSubmit, isSubmitting, isValid, handlePresetPress, form } =
+        useSlippageForm(currentSlippage);
+
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    const { reset } = form;
+    const resetForm = useEffectEvent(() => {
+        reset({ slippage: currentSlippage });
+    });
 
     useEffect(() => {
         if (isVisible) {
+            resetForm();
             openModal();
         }
     }, [isVisible, openModal]);
 
     const handleConfirm = useCallback(
-        ({ slippage }: SlippageFormValues) => {
+        async ({ slippage }: SlippageFormValues) => {
             dispatch(tradingExchangeActions.setSelectedQuoteSwapSlippage(String(slippage)));
+            await onSlippageConfirmed();
             closeModal();
             onClose();
         },
-        [dispatch, closeModal, onClose],
+        [closeModal, dispatch, onClose, onSlippageConfirmed],
     );
 
     const handleCancel = useCallback(() => {
@@ -110,6 +128,7 @@ export const SlippageBottomSheet = ({ isVisible, onClose }: SlippageBottomSheetP
                             intent="brand"
                             priority="primary"
                             isFullWidth
+                            isLoading={isSubmitting}
                             isDisabled={!isValid}
                             onPress={handleSubmit(handleConfirm)}
                         >

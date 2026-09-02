@@ -1,14 +1,15 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { type InvityServerEnvironment, invityAPI } from '@suite-common/trading';
+import { useDispatch } from '@suite-common/redux-utils';
+import { type TradeServerEnvironment, tradeApi } from '@suite-common/trading';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import { selectTradingEnvironment, tradingActions } from '@suite-native/trading-state';
 
-const tradingEnvironmentItems: SelectItemType<InvityServerEnvironment>[] = Object.keys(
-    invityAPI.SERVERS,
+const tradingEnvironmentItems: SelectItemType<TradeServerEnvironment>[] = Object.keys(
+    tradeApi.SERVERS,
 ).map(env => ({
-    value: env as InvityServerEnvironment,
+    value: env as TradeServerEnvironment,
     label: env,
 }));
 
@@ -16,12 +17,12 @@ export const TradingEnvironmentSelect = () => {
     const selectedTradingEnvironment = useSelector(selectTradingEnvironment);
     const dispatch = useDispatch();
 
-    const handleSelectEnvironment = (environment: InvityServerEnvironment) => {
+    const handleSelectEnvironment = (environment: TradeServerEnvironment) => {
         dispatch(tradingActions.setTradingEnvironment(environment));
     };
 
     return (
-        <Select<InvityServerEnvironment>
+        <Select<TradeServerEnvironment>
             title="Environment"
             items={tradingEnvironmentItems}
             value={selectedTradingEnvironment}

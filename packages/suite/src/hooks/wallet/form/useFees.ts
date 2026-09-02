@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type FeeInfo,
     type FormState,
@@ -10,7 +11,6 @@ import {
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 export type FeesFormValues = Pick<

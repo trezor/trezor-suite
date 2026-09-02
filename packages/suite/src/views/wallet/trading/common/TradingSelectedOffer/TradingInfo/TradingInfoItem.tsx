@@ -3,6 +3,7 @@ import { type CryptoId } from 'invity-api';
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -10,6 +11,7 @@ import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 
@@ -18,6 +20,7 @@ type TradingInfoItemProps = {
     label: TradingPayGetLabelType;
     currency?: CryptoId;
     amount?: string;
+    isAmountLoading?: boolean;
     isReceive?: boolean;
     receiveAddress?: string;
     cryptoAmountTestId?: string;
@@ -30,10 +33,12 @@ export const TradingInfoItem = ({
     label,
     currency,
     amount,
+    isAmountLoading,
     receiveAddress,
     cryptoAmountTestId,
     accountInfoTestId,
 }: TradingInfoItemProps) => {
+    const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
     const { translationString } = useTranslation();
     const { createAssetOptionFromCryptoId } = useTradingAssets();
     const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
@@ -125,29 +130,46 @@ export const TradingInfoItem = ({
                                 )}
                             </Column>
                         </Row>
-                        <Column alignItems="flex-end">
-                            <TradingCryptoAmount
-                                amount={amount}
-                                cryptoId={currency}
-                                testId={cryptoAmountTestId}
-                            />
-
-                            {currencyInfo?.symbol && (
-                                <Text
-                                    intent="neutral"
-                                    priority="secondary"
-                                    typographyStyle="body-sm"
-                                >
-                                    <BaseCurrencyValue
-                                        amount={amount}
-                                        symbol={currencyInfo.symbol}
-                                        rateType="current"
-                                        tokenAddress={currencyInfo.contractAddress}
-                                        showApproximationIndicator
+                        {isAmountLoading ? (
+                            <Column
+                                alignItems="flex-end"
+                                gap={2}
+                                data-testid={`${testIdPrefix}-amount-skeleton`}
+                            >
+                                <Skeleton width={110} animate={shouldAnimateSkeleton} />
+                                {currencyInfo?.symbol && (
+                                    <Skeleton
+                                        width={70}
+                                        height={16}
+                                        animate={shouldAnimateSkeleton}
                                     />
-                                </Text>
-                            )}
-                        </Column>
+                                )}
+                            </Column>
+                        ) : (
+                            <Column alignItems="flex-end">
+                                <TradingCryptoAmount
+                                    amount={amount}
+                                    cryptoId={currency}
+                                    testId={cryptoAmountTestId}
+                                />
+
+                                {currencyInfo?.symbol && (
+                                    <Text
+                                        intent="neutral"
+                                        priority="secondary"
+                                        typographyStyle="body-sm"
+                                    >
+                                        <BaseCurrencyValue
+                                            amount={amount}
+                                            symbol={currencyInfo.symbol}
+                                            rateType="current"
+                                            tokenAddress={currencyInfo.contractAddress}
+                                            showApproximationIndicator
+                                        />
+                                    </Text>
+                                )}
+                            </Column>
+                        )}
                     </Row>
                 </Card>
             )}

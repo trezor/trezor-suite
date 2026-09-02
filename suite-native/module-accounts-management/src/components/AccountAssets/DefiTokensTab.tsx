@@ -11,6 +11,9 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
+import { Card, PictogramTitleHeader } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { TokenYieldRateBadge } from '@suite-native/module-earn';
 
 import { type OnSelectAsset } from './types';
 
@@ -55,6 +58,9 @@ export const DefiTokensTab = ({ accountKey, onSelect }: DefiTokensTabProps) => {
                 hasBackground
                 isFirst={item.isFirst}
                 isLast={item.isLast}
+                badges={
+                    <TokenYieldRateBadge account={account!} token={item.token} variant="active" />
+                }
                 onSelectAccount={() =>
                     onSelect({ tokenContract: item.token.contract, tokenSymbol: item.token.symbol })
                 }
@@ -62,6 +68,20 @@ export const DefiTokensTab = ({ accountKey, onSelect }: DefiTokensTabProps) => {
         ),
         [account, onSelect],
     );
+
+    if (listItems.length === 0) {
+        return (
+            <Card>
+                <PictogramTitleHeader
+                    variant="info"
+                    icon="coins"
+                    title={
+                        <Translation id="moduleAccountManagement.accountAssetsScreen.defiTokensSection.emptyTitle" />
+                    }
+                />
+            </Card>
+        );
+    }
 
     if (!account) return null;
 

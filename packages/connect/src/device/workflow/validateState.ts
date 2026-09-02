@@ -1,4 +1,4 @@
-import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import type { StaticSessionId } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { toHardenedPathPart } from '@trezor/crypto-utils';
@@ -82,7 +82,7 @@ const validateDeviceState = async (context: WorkflowContext) => {
         } catch (error) {
             if (error.message.includes('PIN invalid')) {
                 context.sendCoreMessage(
-                    createUiMessage(UI_REQUEST.INVALID_PIN, {
+                    createUiEventMessage(UI_EVENTS.PIN_INVALID, {
                         device: context.device.toMessageObject(),
                     }),
                 );
@@ -95,7 +95,7 @@ const validateDeviceState = async (context: WorkflowContext) => {
     return validate(context).catch(error => {
         if (error.message.includes('PIN invalid')) {
             context.sendCoreMessage(
-                createUiMessage(UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED, {
+                createUiEventMessage(UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED, {
                     device: context.device.toMessageObject(),
                 }),
             );
@@ -143,6 +143,18 @@ const validateThpDeviceState = async (context: WorkflowContext) => {
             device.setState({ sessionId: undefined, deriveCardano: undefined });
             thpState?.setSessionId(Buffer.alloc(1));
         }
+    }
+
+    if (!uniqueState && !device.features.unlocked) {
+        // we don't have a sessionId yet and device is locked by pin.
+        // try to get staticSessionId (GetAddress) on the "seedless session" to display PIN matrix on the device.
+        // Failure_InvalidSession is expected here, because seedless session is not authorized to call GetAddress.
+        // This basically means the device is successfully unlocked. (failed successfully)
+        await getStaticSessionId(device).catch(e => {
+            if (e.code !== 'Failure_InvalidSession') {
+                throw e;
+            }
+        });
     }
 
     if (!uniqueState || (!currentState?.deriveCardano && method.useCardanoDerivation)) {

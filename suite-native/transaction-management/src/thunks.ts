@@ -4,6 +4,10 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
+    type ComposeSendFormTransactionFeeLevelsThunkState,
+    type FeesRootState,
+    type SendRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
@@ -24,12 +28,15 @@ import { type FeeLevelsMaxAmount, type UpdateFeeLimitThunkParams } from './types
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
 
-export const updateFeeLimitThunk = createThunk(
+export type UpdateFeeLimitThunkState = SendRootState;
+
+export const updateFeeLimitThunk = createThunk<
+    void,
+    UpdateFeeLimitThunkParams,
+    { state: UpdateFeeLimitThunkState }
+>(
     `${TRANSACTION_MANAGEMENT_PREFIX}/updateFeeLimitThunk`,
-    (
-        { accountKey, tokenContract, feeLimit }: UpdateFeeLimitThunkParams,
-        { dispatch, getState },
-    ) => {
+    ({ accountKey, tokenContract, feeLimit }, { dispatch, getState }) => {
         const draft = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
         if (!draft) throw Error('Draft not found.');
         dispatch(
@@ -42,9 +49,14 @@ export const updateFeeLimitThunk = createThunk(
     },
 );
 
+export type CalculateFeeLevelsMaxAmountThunkState = AccountsRootState &
+    FeesRootState &
+    ComposeSendFormTransactionFeeLevelsThunkState;
+
 export const calculateFeeLevelsMaxAmountThunk = createThunk<
     FeeLevelsMaxAmount,
-    { formState: FormState; accountKey: AccountKey }
+    { formState: FormState; accountKey: AccountKey },
+    { state: CalculateFeeLevelsMaxAmountThunkState }
 >(
     `${TRANSACTION_MANAGEMENT_PREFIX}/calculateMaxAmountThunk`,
     async (
@@ -87,6 +99,10 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
     },
 );
 
+export type CalculateCustomFeeLevelThunkState = AccountsRootState &
+    FeesRootState &
+    ComposeSendFormTransactionFeeLevelsThunkState;
+
 export const calculateCustomFeeLevelThunk = createThunk<
     PrecomposedLevels | PrecomposedLevelsCardano,
     {
@@ -98,7 +114,7 @@ export const calculateCustomFeeLevelThunk = createThunk<
         customMaxFeePerGas?: string;
         customMaxPriorityFeePerGas?: string;
     },
-    { rejectValue: string }
+    { rejectValue: string; state: CalculateCustomFeeLevelThunkState }
 >(
     `${TRANSACTION_MANAGEMENT_PREFIX}/calculateCustomFeeLevelThunk`,
     async (

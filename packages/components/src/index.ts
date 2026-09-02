@@ -1,3 +1,6 @@
+// Include the styled-components theme augmentation in the emitted public declarations.
+import './styled';
+
 export * as variables from './config/variables';
 export * as animations from './config/animations';
 export { motionAnimation, motionEasing } from './config/motion';
@@ -87,8 +90,13 @@ export * from './components/Image/Image';
 export * from './components/Image/SvgImage';
 export * from './components/Image/images';
 export { DotIndicator, type DotIndicatorProps } from './components/DotIndicator/DotIndicator';
-export { Dot, dotIntents, type DotProps, type DotIntent } from './components/Dot/Dot';
-export { StatusBadge, type StatusBadgeProps } from './components/StatusBadge/StatusBadge';
+export { Dot, type DotProps } from './components/Dot/Dot';
+export { dotIntents, type DotIntent } from './components/Dot/types';
+export {
+    StatusBadge,
+    type StatusBadgeProps,
+    type StatusBadgeOffset,
+} from './components/StatusBadge/StatusBadge';
 export {
     IconCircle,
     type IconCircleProps,
@@ -125,7 +133,11 @@ export type { BannerIntent } from './components/Banner/types';
 export { Table, type TableProps } from './components/Table/Table';
 export { Tabs, type TabsProps } from './components/Tabs/Tabs';
 export { SubTabs, type SubTabsProps } from './components/SubTabs/SubTabs';
-export { VirtualizedList, type BaseItemProps } from './components/VirtualizedList/VirtualizedList';
+export {
+    VirtualizedList,
+    type BaseItemProps,
+    type VirtualizedListProps,
+} from './components/VirtualizedList/VirtualizedList';
 export { List, type ListProps } from './components/List/List';
 export { StoryColumn, StoryWrapper } from './support/Story';
 export {

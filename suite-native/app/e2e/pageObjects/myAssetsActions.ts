@@ -8,8 +8,8 @@ class MyAssetsActions {
     }
 
     async addAccount() {
-        await waitForVisible(by.id('@screen/mainScrollView'));
-        await element(by.id('@screen/mainScrollView')).scrollTo('top');
+        await waitForVisible(by.id('@accountList'));
+        await element(by.id('@accountList')).scrollTo('top');
         const addAccountButtonId = '@myAssets/addAccountButton/import';
         await waitForVisible(by.id(addAccountButtonId));
         await element(by.id(addAccountButtonId)).tap();

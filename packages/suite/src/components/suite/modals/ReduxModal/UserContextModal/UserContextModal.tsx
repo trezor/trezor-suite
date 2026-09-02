@@ -1,7 +1,15 @@
 import { MetadataProviderModal } from '@suite/metadata';
 import { type MODAL_CONTEXT_USER, closeModal as closeModalAction } from '@suite/modal';
+import { isOnionUrl } from '@suite/tor';
+import {
+    DisableTorModal,
+    DisableTorStopCoinjoinModal,
+    RequestEnableTorModal,
+} from '@suite/tor-desktop';
+import { useDispatch } from '@suite-common/redux-utils';
+import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_EVENTS } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
@@ -15,9 +23,8 @@ import {
 } from 'src/components/earn';
 import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/connect-popup';
 import { EarnYieldTxSimulationModal } from 'src/components/tx-simulation/earn-stablecoin';
-import { useDispatch } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
-import { ConfirmAddressModal } from '../ConfirmAddressModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';
 import { ActivateAssetsModal } from './ActivateAssetsModal';
@@ -33,7 +40,6 @@ import { UnhideTokenModal } from '../UnhideTokenModal';
 import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
 import { CancelCoinjoinModal } from './CancelCoinjoinModal';
 import { CoinjoinSuccessModal } from './CoinjoinSuccessModal';
-import { ConfirmUnverifiedAddressModal } from './ConfirmUnverifiedAddressModal';
 import { ConfirmUnverifiedProceedModal } from './ConfirmUnverifiedProceedModal';
 import { ConfirmUnverifiedXpubModal } from './ConfirmUnverifiedXpubModal';
 import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
@@ -43,14 +49,11 @@ import { ConnectPermissionsModal } from './ConnectPermissionsModal';
 import { ConnectSelectAccount } from './ConnectSelectAccount/ConnectSelectAccount';
 import { CriticalCoinjoinPhaseModal } from './CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal';
 import { DeviceAuthenticityOptOutModal } from './DeviceAuthenticityOptOutModal';
-import { DisableTorModal } from './DisableTorModal';
-import { DisableTorStopCoinjoinModal } from './DisableTorStopCoinjoinModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 import { ImportTransactionModal } from './ImportTransactionModal/ImportTransactionModal';
 import { MoreRoundsNeededModal } from './MoreRoundsNeededModal';
 import { PinMismatchModal } from './PinMismatchModal';
 import { QrScannerModal } from './QrScannerModal/QrScannerModal';
-import { RequestEnableTorModal } from './RequestEnableTorModal';
 import { SafetyChecksModal } from './SafetyChecksModal';
 import { StakeChangeDelegateModal } from './StakeChangeDelegateModal/StakeChangeDelegateModal';
 import { TorLoadingModal } from './TorLoadingModal';
@@ -59,11 +62,11 @@ import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
 import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
-import { WrapNativeTokenModal } from './WrapNativeTokenModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {
     const dispatch = useDispatch();
+    const customBackends = useSelector(selectCustomBackends);
 
     const onCancel = () => dispatch(closeModalAction());
 
@@ -73,27 +76,16 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
                 <AddAccountModal
                     device={payload.device}
                     symbol={payload.symbol}
-                    noRedirect={payload.noRedirect}
                     isCoinjoinDisabled={payload.isCoinjoinDisabled}
                     isBackClickDisabled={payload.isBackClickDisabled}
                     onCancel={payload.onCancel ?? onCancel}
                     onConfirm={payload.onConfirm}
                 />
             );
-        case 'unverified-address':
-            return (
-                <ConfirmUnverifiedAddressModal
-                    accountKey={payload.accountKey}
-                    addressPath={payload.addressPath}
-                    value={payload.value}
-                />
-            );
         case 'unverified-xpub':
             return <ConfirmUnverifiedXpubModal />;
         case 'unverified-address-proceed':
             return <ConfirmUnverifiedProceedModal value={payload.value} />;
-        case 'address':
-            return <ConfirmAddressModal {...payload} onCancel={onCancel} />;
         case 'xpub':
             return <ConfirmXpubModal {...payload} onCancel={onCancel} />;
         case 'device-background-gallery':
@@ -114,7 +106,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <ImportTransactionModal {...payload} onCancel={onCancel} />;
         case 'pin-mismatch':
             return <PinMismatchModal />;
-        case UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED:
+        case UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED:
             return <PinInvalidModal onCancel={onCancel} />;
         case 'application-log':
             return <ApplicationLogModal onCancel={onCancel} />;
@@ -128,8 +120,32 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <AddTokenModal {...payload} onCancel={onCancel} />;
         case 'safety-checks':
             return <SafetyChecksModal onCancel={onCancel} />;
-        case 'disable-tor':
-            return <DisableTorModal decision={payload.decision} onCancel={onCancel} />;
+        case 'disable-tor': {
+            const onionBackends = customBackends.filter(({ urls }) => urls.every(isOnionUrl));
+
+            return (
+                <DisableTorModal
+                    onionBackends={onionBackends}
+                    onDisableTor={() => {
+                        onionBackends.forEach(({ symbol, type, urls }) =>
+                            dispatch(
+                                blockchainActions.setBackend({
+                                    symbol,
+                                    type,
+                                    urls: urls.filter(url => !isOnionUrl(url)),
+                                }),
+                            ),
+                        );
+                        payload.decision.resolve(true);
+                        onCancel();
+                    }}
+                    onCancel={onCancel}
+                    renderCoinSettings={(symbol, onClose) => (
+                        <AdvancedCoinSettingsModal symbol={symbol} onCancel={onClose} />
+                    )}
+                />
+            );
+        }
         case 'request-enable-tor':
             return <RequestEnableTorModal decision={payload.decision} onCancel={onCancel} />;
         case 'disable-tor-stop-coinjoin':
@@ -206,16 +222,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             );
         case 'wipe-device-success':
             return <WipeDeviceSuccessModal />;
-        case 'wrap-native-token':
-            return (
-                <WrapNativeTokenModal
-                    account={payload.account}
-                    maxWrapAmount={payload.maxWrapAmount}
-                    nativeSymbol={payload.nativeSymbol}
-                    wrappedSymbol={payload.wrappedSymbol}
-                    onCancel={onCancel}
-                />
-            );
         default:
             return exhaustive(payload);
     }

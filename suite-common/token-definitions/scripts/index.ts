@@ -5,10 +5,7 @@ import { join } from 'path';
 import { DEFINITIONS_FILENAME_SUFFIX, FILES_PATH } from './constants';
 import { buildCoinDataForPlatform, fetchAllCoins } from './utils/fetchCoins';
 import { fetchNftData } from './utils/fetchNft';
-import {
-    VAULT_NETWORK_BY_ASSET_PLATFORM,
-    fetchVaultDefinitions,
-} from './utils/fetchVaultDefinitions';
+import { fetchVaultDefinitions } from './utils/fetchVaultDefinitions';
 import { signData } from './utils/sign';
 import { validateStructure } from './utils/validate';
 import { DefinitionType, TokenStructure, TokenStructureType } from '../src/tokenDefinitionsTypes';
@@ -86,28 +83,22 @@ const main = async () => {
         const allCoins = await fetchAllCoins();
 
         const vaultDefinitions =
-            structure === TokenStructureType.SIMPLE &&
-            assetPlatformIds.some(id => id in VAULT_NETWORK_BY_ASSET_PLATFORM)
-                ? await fetchVaultDefinitions()
-                : null;
+            structure === TokenStructureType.SIMPLE ? await fetchVaultDefinitions() : null;
 
         for (const assetPlatformId of assetPlatformIds) {
             console.log('Building coin data for:', assetPlatformId);
-            const data = await buildCoinDataForPlatform(allCoins, assetPlatformId, structure);
+            const coinData = await buildCoinDataForPlatform(allCoins, assetPlatformId, structure);
 
-            const vaultNetwork = VAULT_NETWORK_BY_ASSET_PLATFORM[assetPlatformId];
-            if (vaultNetwork && vaultDefinitions?.[vaultNetwork]?.length && Array.isArray(data)) {
-                const vaultAddresses = vaultDefinitions[vaultNetwork];
-                const newVaultAddresses = vaultAddresses
-                    .filter(vault => !data.includes(vault.address))
-                    .map(vault => vault.address);
-
-                data.push(...newVaultAddresses);
+            const vaults = vaultDefinitions?.[assetPlatformId];
+            if (Array.isArray(vaults) && coinData instanceof Set) {
+                vaults.forEach(vault => coinData.add(vault.address));
 
                 console.log(
-                    `Merged ${newVaultAddresses.length} vault address(es) from the earn-yield worker for ${assetPlatformId}`,
+                    `Merged vault address(es) from the earn-yield worker for ${assetPlatformId}`,
                 );
             }
+
+            const data: TokenStructure = coinData instanceof Set ? Array.from(coinData) : coinData;
 
             const length = countRecords(data, structure);
             console.log('Records for specific platform:', length);

@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type DiscoveryRootState,
     cancelDiscoveryThunk,

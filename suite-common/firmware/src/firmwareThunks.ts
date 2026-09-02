@@ -1,12 +1,16 @@
-import { selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
-import { type TrezorDevice } from '@suite-common/suite-types';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import {
+    type GetBinFilesBaseUrlDep,
+    type GetLanguageDep,
+    type ReportSecurityCheckDep,
+    type TrezorDevice,
+} from '@suite-common/suite-types';
 import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
-import { selectFirmware } from './firmwareReducer';
-import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
+import { type FirmwareRootState, selectFirmware } from './firmwareReducer';
 
 export type FirmwareUpdateProps = {
     firmwareType?: FirmwareType;
@@ -23,10 +27,20 @@ export type FirmwareUpdateResult = {
     connectResponse?: Awaited<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
 };
 
+export type FirmwareUpdateThunkState = DeviceRootState & FirmwareRootState;
+
+export type FirmwareUpdateThunkDeps = WithServices<
+    GetBinFilesBaseUrlDep & GetLanguageDep & ReportSecurityCheckDep
+>;
+
 export const firmwareUpdate = createThunk<
     FirmwareUpdateResult,
     FirmwareUpdateProps,
-    { rejectValue: FirmwareUpdateResult }
+    {
+        rejectValue: FirmwareUpdateResult;
+        state: FirmwareUpdateThunkState;
+        extra: FirmwareUpdateThunkDeps;
+    }
 >(
     `${FIRMWARE_MODULE_PREFIX}/firmwareUpdate`,
     async (
@@ -41,13 +55,12 @@ export const firmwareUpdate = createThunk<
         }
 
         const {
-            selectors: { selectLanguage },
-            services: { reportSecurityCheck },
+            services: { getBinFilesBaseUrl, getLanguage, reportSecurityCheck },
         } = extra;
 
         const device = selectSelectedDevice(getState());
-        const binFilesBaseUrl = await dispatch(getBinFilesBaseUrlThunk()).unwrap();
-        const suiteLanguage = selectLanguage(getState());
+        const binFilesBaseUrl = getBinFilesBaseUrl();
+        const suiteLanguage = getLanguage();
         const { useDevkit, cachedDevice, error } = selectFirmware(getState());
 
         if (error) {

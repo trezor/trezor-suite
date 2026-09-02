@@ -1,6 +1,10 @@
 import type { TSchema } from '@sinclair/typebox';
 
-import type { ConnectDynamicSettings, ConnectMobileSettings } from '@trezor/connect-common';
+import type {
+    ConnectDynamicSettings,
+    ConnectMobileSettings,
+    PermissionRequest,
+} from '@trezor/connect-common';
 import type { TrezorConnectPublicAPI } from '@trezor/connect-web';
 
 import type { Field } from './common';
@@ -18,7 +22,7 @@ export const SET_METHOD_PROCESSING = 'method_set_processing';
 
 // TrezorConnect action constants
 export const ON_CHANGE_CONNECT_OPTIONS = 'action__on_change_connect_options';
-export const ON_CHANGE_CONNECT_OPTION = 'action__on_change_connect_option';
+export const ON_INIT_START = 'action__on_init_start';
 export const ON_INIT_ERROR = 'action__on_init_error';
 
 // Method action types
@@ -34,14 +38,16 @@ export type MethodAction =
     | { type: typeof SET_METHOD_PROCESSING; payload: boolean };
 
 // TrezorConnect action types
+// `requestedPermissions` is spelled out here as well: `Partial<A | B>` only exposes the keys
+// A and B share (`manifest`, `coreMode`), while `requestedPermissions` lives solely on the
+// `ConnectDynamicSettings` branch — the intersection makes it readable/writable on both.
 export type ConnectOptions = Partial<
     (ConnectMobileSettings & { coreMode: 'deeplink' }) | ConnectDynamicSettings
->;
+> & {
+    requestedPermissions?: PermissionRequest[];
+};
 
 export type TrezorConnectAction =
     | { type: typeof ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions }
-    | { type: typeof ON_INIT_ERROR; payload: string }
-    | {
-          type: typeof ON_CHANGE_CONNECT_OPTION;
-          payload: { option: Field<any>; value: any };
-      };
+    | { type: typeof ON_INIT_START }
+    | { type: typeof ON_INIT_ERROR; payload: string };

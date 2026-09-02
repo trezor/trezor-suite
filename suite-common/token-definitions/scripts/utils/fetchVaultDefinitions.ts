@@ -1,37 +1,26 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-
+/* eslint-disable no-console */
 import { YIELD_VAULTS_URL } from '../constants';
 
 /**
- * Mirror of the worker's `YieldDefinitions` schema, narrowed to the keys this
- * script needs. Inlined to keep the script free of a runtime dep on
+ * Mirror of the worker's `YieldVaults` schema, narrowed to the keys this script
+ * needs. Inlined to keep the script free of a runtime dep on
  * `@suite-common/earn-stablecoin-api`.
+ *
+ * Keyed by CoinGecko asset platform id — the same ids this script takes as CLI
+ * args — so no network-symbol mapping is needed. A platform the worker does not
+ * support for vaults is simply absent.
  */
 type YieldDefinitions = Record<
-    Extract<NetworkSymbol, 'eth' | 'op' | 'arb' | 'base'>,
-    {
-        yieldId: string;
-        address: string;
-    }[]
+    string,
+    | {
+          yieldId: string;
+          address: string;
+      }[]
+    | undefined
 >;
 
-/**
- * Maps a CoinGecko asset platform id (as used by this script's CLI args) to
- * the worker's vault network key. Networks not present here have no vaults.
- */
-export const VAULT_NETWORK_BY_ASSET_PLATFORM: Partial<Record<string, keyof YieldDefinitions>> = {
-    ethereum: 'eth',
-    'arbitrum-one': 'arb',
-    base: 'base',
-    'optimistic-ethereum': 'op',
-};
-
 export const fetchVaultDefinitions = async (): Promise<YieldDefinitions> => {
-    const response = await fetch(YIELD_VAULTS_URL, {
-        headers: {
-            'X-Suite-Version': 'latest',
-        },
-    });
+    const response = await fetch(YIELD_VAULTS_URL);
 
     if (!response.ok) {
         throw new Error(
@@ -39,5 +28,10 @@ export const fetchVaultDefinitions = async (): Promise<YieldDefinitions> => {
         );
     }
 
-    return response.json();
+    const vaultDefinitions: YieldDefinitions = await response.json();
+    const platformIds = Object.keys(vaultDefinitions);
+
+    console.log('Vault definitions fetched for platforms:', platformIds.join(', '));
+
+    return vaultDefinitions;
 };

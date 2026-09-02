@@ -32,7 +32,7 @@ const tabBarStyle = prepareNativeStyle<{
 
 const TabBarLabelTxKeys = {
     [AppTabsRoutes.HomeStack]: 'navigation.tabs.home',
-    [AppTabsRoutes.AccountsStack]: 'navigation.tabs.accounts',
+    [AppTabsRoutes.AccountsStack]: 'navigation.tabs.accountsList',
     [AppTabsRoutes.TradeStack]: 'navigation.tabs.trade',
     [AppTabsRoutes.EarnStack]: 'navigation.tabs.earn',
     [AppTabsRoutes.Settings]: 'navigation.tabs.settings',

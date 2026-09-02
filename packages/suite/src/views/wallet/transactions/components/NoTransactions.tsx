@@ -1,10 +1,10 @@
-import { TrezorLink } from '@suite/external-links';
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type Explorer } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { isUtxoBased } from '@suite-common/wallet-utils';
-import { ArrowUpRightIcon, CloudIcon } from '@trezor/icons';
+import { CloudIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
@@ -16,6 +16,7 @@ interface NoTransactionsProps {
 export const NoTransactions = ({ account }: NoTransactionsProps) => {
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
     const explorerUrl = `${getExplorerUrl(explorer, 'address')}${account.descriptor}${explorer.queryString ?? ''}`;
+    const href = useExternalLink(explorerUrl);
 
     return (
         <AccountExceptionLayout
@@ -27,12 +28,8 @@ export const NoTransactions = ({ account }: NoTransactionsProps) => {
                     ? [
                           {
                               key: '1',
-                              iconLeft: ArrowUpRightIcon,
-                              children: (
-                                  <TrezorLink href={explorerUrl}>
-                                      <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
-                                  </TrezorLink>
-                              ),
+                              href,
+                              children: <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />,
                           },
                       ]
                     : undefined

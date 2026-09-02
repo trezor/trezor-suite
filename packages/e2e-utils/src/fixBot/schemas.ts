@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export type AgentName = 'nightlyAnalyzer' | 'nightlyFixer';
+
 export const TestToValidateSchema = z.object({
     platform: z.enum(['web', 'desktop']),
     group: z.string(),
@@ -51,39 +53,6 @@ export const FixResultSchema = z.object({
     prTitle: z.string(),
 });
 
-export const ClaudeUsageSchema = z.object({
-    input_tokens: z.number().optional(),
-    output_tokens: z.number().optional(),
-    cache_creation_input_tokens: z.number().optional(),
-    cache_read_input_tokens: z.number().optional(),
-});
-
-export const ClaudeResultSchema = z.object({
-    type: z.string().optional(),
-    subtype: z.string().optional(),
-    result: z.string().optional(),
-    structured_output: z.unknown().optional(),
-    num_turns: z.number().optional(),
-    usage: ClaudeUsageSchema.optional(),
-    total_cost_usd: z.number().optional(),
-    duration_ms: z.number().optional(),
-});
-
-export const AgentMessageEntrySchema = z.object({
-    type: z.literal('assistant'),
-    parent_tool_use_id: z.string().nullish(),
-    message: z.object({
-        id: z.string(),
-        content: z.array(
-            z.object({
-                type: z.string(),
-                input: z.record(z.string(), z.unknown()).optional(),
-            }),
-        ),
-        usage: ClaudeUsageSchema.optional(),
-    }),
-});
-
 export const SlackFixSummarySchema = FixResultSchema.extend({
     prUrl: z.string().nullable().default(null),
     costUsd: z.number().nullable().default(null),
@@ -111,7 +80,6 @@ export const LedgerSchema = z.object({
 export type AnalysisReport = z.infer<typeof AnalysisReportSchema>;
 export type FixResult = z.infer<typeof FixResultSchema>;
 export type SlackFixSummary = z.infer<typeof SlackFixSummarySchema>;
-export type ClaudeResult = z.infer<typeof ClaudeResultSchema>;
 export type SkipReason = z.infer<typeof SkipReasonSchema>;
 export type LedgerEntry = z.infer<typeof LedgerEntrySchema>;
 export type Ledger = z.infer<typeof LedgerSchema>;

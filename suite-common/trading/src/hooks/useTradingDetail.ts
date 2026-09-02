@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { useSelector } from './useSelector';
+import { useDispatch } from '@suite-common/redux-utils';
+
+import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import { selectTradingDetailData } from '../selectors/tradingSelectors';
 import { tradingThunks } from '../thunks/common';
 import { type TradingType } from '../types';
@@ -15,7 +17,7 @@ import type {
 export const useTradingDetailData = <T extends TradingType>(
     tradeType: TradingType,
 ): TradingUseDetailOutputWithoutAccountProps<T> => {
-    const { info, transactionId, trade } = useSelector(state =>
+    const { info, transactionId, trade } = useSelector((state: TradingRootState) =>
         selectTradingDetailData(state, tradeType),
     ) as {
         info: TradingTradeInfoMapProps[T] | undefined;

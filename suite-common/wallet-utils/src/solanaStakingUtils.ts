@@ -1,22 +1,22 @@
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import {
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
     MIN_STAKE_DELEGATION,
     SOLANA_EPOCH_DAYS,
+    type SolanaNetworkSymbol,
     StakeState,
-    supportedSolanaNetworkSymbols,
+    isSupportedSolanaNetwork,
 } from '@trezor/network-solana/constants';
-import type { SupportedSolanaNetworkSymbols } from '@trezor/network-solana/types';
-import { BigNumber, isArrayMember } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils';
 
 import { formatNetworkAmount, networkAmountToSmallestUnit } from './amountUtils';
 
 export function isSupportedSolStakingNetworkSymbol(
     symbol: NetworkSymbol,
-): symbol is SupportedSolanaNetworkSymbols {
-    return isArrayMember(symbol, supportedSolanaNetworkSymbols);
+): symbol is SolanaNetworkSymbol {
+    return isSupportedSolanaNetwork(symbol);
 }
 
 export const getSolanaStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
@@ -29,7 +29,7 @@ export const getSolanaStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
         }
 
         return acc;
-    }, [] as SupportedSolanaNetworkSymbols[]);
+    }, [] as SolanaNetworkSymbol[]);
 
 export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAccount[]) => {
     if (!stakingAccounts?.length) return null;

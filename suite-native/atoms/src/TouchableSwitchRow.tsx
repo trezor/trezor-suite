@@ -3,10 +3,10 @@ import { type ReactNode } from 'react';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
+import { BannerInline } from './BannerInline/BannerInline';
 import { Box } from './Box';
 import { Button } from './Button/Button';
 import { Card } from './Card/Card';
-import { InlineAlertBox } from './InlineAlertBox/InlineAlertBox';
 import { PressableOpacity } from './Pressable';
 import { HStack, VStack } from './Stack';
 import { Switch } from './Switch';
@@ -89,7 +89,7 @@ export const TouchableSwitchRow = ({
                             {onLearnMorePress && <LearnMoreButton onPress={onLearnMorePress} />}
                         </VStack>
                     </HStack>
-                    {additionalInfo && <InlineAlertBox title={additionalInfo} intent="neutral" />}
+                    {additionalInfo && <BannerInline title={additionalInfo} intent="neutral" />}
                 </VStack>
             </PressableOpacity>
         </Card>

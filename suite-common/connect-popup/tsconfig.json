@@ -14,7 +14,16 @@
         {
             "path": "../../packages/connect-common"
         },
+        { "path": "../../packages/crypto-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../suite-types" },
+        { "path": "../test-utils" }
     ]
 }

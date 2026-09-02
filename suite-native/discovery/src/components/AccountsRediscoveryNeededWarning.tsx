@@ -11,7 +11,7 @@ import {
     type WalletCoreCompoundRootState,
     selectShouldRediscover,
 } from '@suite-common/wallet-core';
-import { Box, InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline, Box } from '@suite-native/atoms';
 import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
@@ -47,7 +47,7 @@ export const AccountsRediscoveryNeededWarning = ({
 
     return (
         <Box padding={hasPadding ? 'sp8' : undefined}>
-            <InlineAlertBox
+            <BannerInline
                 title={<Translation id="assets.rediscoveryNeeded" />}
                 intent="warning"
                 iconName={deviceModelToIconName(deviceModel)}

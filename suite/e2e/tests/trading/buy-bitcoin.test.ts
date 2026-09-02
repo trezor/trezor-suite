@@ -5,9 +5,9 @@ import {
     buyQuotesBTC,
     buyTradeBTC,
     getCompanyNameFromList,
-    invityEndpoint,
-    invityRequest,
-} from '../../fixtures/invity';
+    tradeApiRequest,
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -24,10 +24,10 @@ const secondOfferQuote = buyQuotesBTC[5];
 
 test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, walletPage, settingsPage }) => {
-        await page.route(invityEndpoint.buyQuotes, async route => {
+        await page.route(tradeEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesBTC });
         });
-        await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeBTC);
+        await tradingMock.routeTrade(tradeEndpoint.buyTrade, buyTradeBTC);
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await walletPage.openTrading();
@@ -54,7 +54,7 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
         });
 
         await test.step('Confirm the compared offer from the preview', async () => {
-            const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
+            const tradeRequestPromise = page.waitForRequest(tradeEndpoint.buyTrade);
             await tradingPage.confirmation.buyButton.click();
             await expect(tradeRequestPromise).toHavePayload(
                 { trade: { ...secondOfferQuote, receiveAddress } },
@@ -97,15 +97,17 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
 
         await test.step('Confirm the trade and get redirected to transaction detail', async () => {
             await tradingMock.changeBuyWatchResponseTo('SUBMITTED');
-            const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
-            const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
+            const tradeRequestPromise = page.waitForRequest(tradeEndpoint.buyTrade);
+            const watchRequestPromise = page.waitForRequest(tradeEndpoint.buyWatch);
 
             await tradingPage.confirmation.buyButton.click();
 
-            await expect.soft(tradeRequestPromise).toHavePayload(invityRequest.buyTradeBTCPayload, {
-                omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
-            });
-            await expect.soft(watchRequestPromise).toHavePayload(invityRequest.buyWatchPayload, {
+            await expect
+                .soft(tradeRequestPromise)
+                .toHavePayload(tradeApiRequest.buyTradeBTCPayload, {
+                    omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
+                });
+            await expect.soft(watchRequestPromise).toHavePayload(tradeApiRequest.buyWatchPayload, {
                 omit: ['partnerData', 'orderId', 'paymentId'],
             });
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(

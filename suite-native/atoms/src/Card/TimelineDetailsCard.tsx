@@ -1,8 +1,7 @@
-import { type ReactNode } from 'react';
-import { Pressable } from 'react-native';
+import React, { type ReactNode, useMemo } from 'react';
 
 import { Icon, type IconName } from '@suite-native/icons';
-import { type NativeStyle, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { OrderedListIcon } from '../OrderedListIcon';
@@ -14,9 +13,8 @@ export type TimelineDetailsCardItem = {
     id: string;
     title: ReactNode;
     description?: ReactNode;
+    descriptionContainer?: ({ children }: { children: ReactNode }) => ReactNode;
     icon?: ReactNode;
-    style?: NativeStyle<any>;
-    onPress?: () => void;
 };
 
 type TimelineDetailsCardProps = {
@@ -59,13 +57,75 @@ const itemDescriptionStyle = prepareNativeStyle(() => ({
 const defaultItemIconProps = {
     iconSize: 'large',
     iconColor: 'contentBrand',
-    iconBackgroundColor: 'legacyBackgroundPrimarySubtleOnElevation1',
-    iconBorderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
+    iconBackgroundColor: 'elementFillBrandSofter',
+    iconBorderColor: 'elementBorderBrandSofter',
 } as const;
 
 const renderDefaultItemIcon = (index: number) => (
     <OrderedListIcon iconNumber={index + 1} {...defaultItemIconProps} />
 );
+
+interface TimelineDetailsCardItemComponentProps {
+    item: TimelineDetailsCardItem;
+    index: number;
+    renderItemIcon?: (params: { item: TimelineDetailsCardItem; index: number }) => ReactNode;
+}
+
+const TimelineDetailsCardItemComponent = ({
+    item,
+    index,
+    renderItemIcon,
+}: TimelineDetailsCardItemComponentProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    const itemIcon = useMemo(
+        () => item.icon ?? renderItemIcon?.({ item, index }) ?? renderDefaultItemIcon(index),
+        [item, index, renderItemIcon],
+    );
+
+    const itemTitle = useMemo(
+        () => (
+            <Text variant="body-sm-strong" style={applyStyle(itemTitleStyle)}>
+                {item.title}
+            </Text>
+        ),
+        [item.title, applyStyle],
+    );
+
+    const itemDescription = useMemo(() => {
+        if (!item.description) return null;
+
+        const Container = item.descriptionContainer ?? React.Fragment;
+
+        return (
+            <Container>
+                <Text
+                    variant="body-sm"
+                    color="contentSecondary"
+                    numberOfLines={1}
+                    style={applyStyle(itemDescriptionStyle)}
+                >
+                    {item.description}
+                </Text>
+            </Container>
+        );
+    }, [item, applyStyle]);
+
+    return (
+        <HStack spacing="sp8" alignItems="flex-start" style={applyStyle(itemRowStyle)}>
+            <HStack
+                spacing="sp12"
+                alignItems="flex-start"
+                style={applyStyle(itemTitleContainerStyle)}
+            >
+                {itemIcon}
+                {itemTitle}
+            </HStack>
+
+            {itemDescription}
+        </HStack>
+    );
+};
 
 export const TimelineDetailsCard = ({
     headerTitle,
@@ -83,51 +143,23 @@ export const TimelineDetailsCard = ({
                         {headerIconName && (
                             <Icon name={headerIconName} color="contentSecondary" size={20} />
                         )}
+
                         <Text variant="body-md" color="contentSecondary">
                             {headerTitle}
                         </Text>
                     </HStack>
                 </Box>
+
                 <Box style={applyStyle(separatorStyle)} />
+
                 <VStack spacing="sp16" padding="sp16">
                     {items.map((item, index) => (
-                        <Pressable key={item.id} onPress={item.onPress}>
-                            <HStack
-                                spacing="sp8"
-                                alignItems="flex-start"
-                                style={applyStyle(itemRowStyle)}
-                            >
-                                <HStack
-                                    spacing="sp12"
-                                    alignItems="flex-start"
-                                    style={applyStyle(itemTitleContainerStyle)}
-                                >
-                                    {item.icon ??
-                                        renderItemIcon?.({ item, index }) ??
-                                        renderDefaultItemIcon(index)}
-                                    <Text
-                                        variant="body-sm-strong"
-                                        style={applyStyle(itemTitleStyle)}
-                                    >
-                                        {item.title}
-                                    </Text>
-                                </HStack>
-                                {item.description && (
-                                    <Text
-                                        variant="body-sm"
-                                        color="contentSecondary"
-                                        numberOfLines={1}
-                                        style={applyStyle(
-                                            item.style
-                                                ? [itemDescriptionStyle, item.style]
-                                                : itemDescriptionStyle,
-                                        )}
-                                    >
-                                        {item.description}
-                                    </Text>
-                                )}
-                            </HStack>
-                        </Pressable>
+                        <TimelineDetailsCardItemComponent
+                            key={item.id}
+                            item={item}
+                            index={index}
+                            renderItemIcon={renderItemIcon}
+                        />
                     ))}
                 </VStack>
             </VStack>

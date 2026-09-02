@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 
-import { useDevice } from '@suite/device';
+import { setConnectionModal, useDevice } from '@suite/device';
 import { openModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 
-import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { useModal } from 'src/components/suite/asset-picker/hooks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useTradingAssetPickerModal = () => {
     const dispatch = useDispatch();
@@ -21,14 +21,14 @@ export const useTradingAssetPickerModal = () => {
             return;
         }
 
-        if (!device?.connected) {
+        if (!device?.state?.staticSessionId) {
             dispatch(setConnectionModal(true));
 
             return;
         }
 
         openAssetPicker();
-    }, [dispatch, hasEnabledNetworks, device?.connected, openAssetPicker]);
+    }, [dispatch, hasEnabledNetworks, device?.state?.staticSessionId, openAssetPicker]);
 
     return { open, openModal: handleOpenModal, closeModal, toggleModal } as const;
 };

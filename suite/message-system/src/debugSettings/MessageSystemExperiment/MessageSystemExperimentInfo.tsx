@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import {
     type ExperimentsItemType,
@@ -7,6 +6,7 @@ import {
     getInclusionFromInstanceId,
     messageSystemActions,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Button, Column, Icon, InfoItem, Range } from '@trezor/components';
 import {
     ArrowCounterClockwiseIcon,

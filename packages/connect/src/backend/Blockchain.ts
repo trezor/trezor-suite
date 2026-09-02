@@ -96,7 +96,11 @@ export class Blockchain {
             server,
             debug: options.debug,
             proxy: options.proxy,
-            ...(this.coinInfo.type === 'ethereum' ? { throttleBlockEvent: 10 * 1000 } : {}), // register EVM block once per 10+ seconds
+            // register EVM and Tron blocks once per 12+ seconds
+            ...(this.coinInfo.type === 'ethereum' ||
+            ['TRX', 'tTRX'].includes(this.coinInfo.shortcut)
+                ? { throttleBlockEvent: 12 * 1000 }
+                : {}),
             ...(['ripple', 'stellar'].includes(blockchainLink.type)
                 ? { throttleBlockEvent: 60 * 1000 }
                 : {}),

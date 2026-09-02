@@ -30,7 +30,7 @@ export type Options = {
 };
 
 const logLevelSwitchValue = getSwitchValue('log-level');
-const logLevelByEnv = isDevEnv ? 'debug' : 'error';
+const logLevelByEnv = isDevEnv ? 'debug' : 'info';
 const logLevelDefault = isLogLevel(logLevelSwitchValue) ? logLevelSwitchValue : logLevelByEnv;
 
 type RepeatedLogMessage = LogMessage & {

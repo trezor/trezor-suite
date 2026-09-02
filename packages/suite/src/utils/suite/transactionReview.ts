@@ -1,8 +1,9 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
-import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
+import { getEvmTransactionPurpose } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 
 interface GetTransactionReviewModalActionTranslationParams {
     symbol: NetworkSymbol;
@@ -27,7 +28,11 @@ export const getTransactionReviewModalActionTranslation = ({
     isSending,
     source,
 }: GetTransactionReviewModalActionTranslationParams): ExtendedMessageDescriptor => {
-    const txSignature = getEvmTransactionTextSignature(precomposedForm.transactionData);
+    const txPurpose = getEvmTransactionPurpose({
+        networkSymbol: symbol,
+        to: precomposedForm.outputs?.[0]?.address,
+        data: precomposedForm.transactionData,
+    });
 
     switch (stakeType) {
         case 'stake':
@@ -53,7 +58,7 @@ export const getTransactionReviewModalActionTranslation = ({
     }
 
     if (precomposedForm?.trading?.activeSection === 'exchange') {
-        switch (txSignature) {
+        switch (txPurpose) {
             case 'approve':
                 return {
                     id:
@@ -77,10 +82,10 @@ export const getTransactionReviewModalActionTranslation = ({
 
     if (
         (routeName === 'earn-yield-deposit' || routeName === 'earn-yield-withdraw') &&
-        (txSignature === 'approve' || txSignature === 'revoke')
+        (txPurpose === 'approve' || txPurpose === 'revoke')
     ) {
         return {
-            id: txSignature === 'approve' ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE',
+            id: txPurpose === 'approve' ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE',
         };
     }
 
@@ -92,13 +97,32 @@ export const getTransactionReviewModalActionTranslation = ({
         return { id: 'TR_CANCEL_TX_BUTTON' };
     }
 
+    if (txPurpose === 'wrap' || txPurpose === 'unwrap') {
+        if (source === 'heading') {
+            return {
+                id:
+                    txPurpose === 'wrap'
+                        ? 'TR_EARN_YIELD_WRAP_TITLE'
+                        : 'TR_EARN_YIELD_UNWRAP_TITLE',
+                values: {
+                    nativeSymbol: getNetworkDisplaySymbol(symbol),
+                    tokenSymbol: getWrappedNativeSymbol(symbol),
+                },
+            };
+        }
+
+        return {
+            id: txPurpose === 'wrap' ? 'TR_WRAP_NATIVE_TOKEN' : 'TR_UNWRAP_NATIVE_TOKEN',
+        };
+    }
+
     if (routeName === 'earn-yield-deposit') {
         return { id: 'TR_EARN_YIELD_DEPOSIT' };
     }
 
     if (routeName === 'earn-yield-withdraw') {
         return {
-            id: txSignature === 'redeem' ? 'TR_EARN_YIELD_REDEEM' : 'TR_EARN_YIELD_WITHDRAW',
+            id: txPurpose === 'redeem' ? 'TR_EARN_YIELD_REDEEM' : 'TR_EARN_YIELD_WITHDRAW',
         };
     }
 

@@ -1,8 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { ServicesProvider } from '@suite-common/dependency-injection';
-import { analytics } from '@suite-native/analytics';
-import { type NativeServices } from '@suite-native/services';
+import { type NativeAnalyticsDep, analytics } from '@suite-native/analytics';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { StylesProvider, createRenderer } from '@trezor/styles-native';
 import { prepareNativeTheme } from '@trezor/theme';
@@ -19,9 +18,9 @@ const renderer = createRenderer();
  *
  * So far only analytics are needed in the graph context. Might be extended later.
  */
-const services = {
+const services: NativeAnalyticsDep = {
     analytics,
-} as NativeServices;
+};
 
 /**
  * @deprecated This is a hack to go around the Skia `Canvas` limitation.

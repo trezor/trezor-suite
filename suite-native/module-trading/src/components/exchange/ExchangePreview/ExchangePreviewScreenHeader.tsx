@@ -1,6 +1,8 @@
 import { memo } from 'react';
 import { FadeIn } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
+import { isCrossChainTrade, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { AnimatedText, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
@@ -8,9 +10,13 @@ import { ScreenHeader } from '@suite-native/navigation';
 import { useDexExchangeTxSimulation } from '../../../hooks/exchange/useDexExchangeTxSimulation';
 
 const HeaderTitle = () => {
-    const { isLoading, isEnabled } = useDexExchangeTxSimulation();
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
 
-    if (!isEnabled) {
+    const { isLoading, isEnabled, error } = useDexExchangeTxSimulation();
+
+    const isCrossChain = isCrossChainTrade(quote?.send, quote?.receive);
+
+    if (!isEnabled || error || isCrossChain) {
         return (
             <Text variant="body-md-strong">
                 <Translation id="moduleTrading.tradingExchangePreviewScreen.title" />

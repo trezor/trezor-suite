@@ -1,6 +1,7 @@
 {
     "ignore-patterns": ["libDev", "lib"],
     "ignores": [
+        "@rozenite/redux-devtools-plugin",
         "@react-native-async-storage/async-storage",
         "@react-native-community/netinfo",
         "@react-navigation/native",

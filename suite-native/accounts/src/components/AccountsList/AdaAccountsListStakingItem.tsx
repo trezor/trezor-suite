@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { RoundedIcon, Text } from '@suite-native/atoms';
+import { RoundedIcon } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -13,6 +13,7 @@ import {
 } from '@suite-native/staking';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
+import { ZeroApyBadge } from './ZeroApyBadge';
 
 type AdaAccountsListStakingItemProps = {
     account: Account;
@@ -37,15 +38,16 @@ export const AdaAccountsListStakingItem = ({
         selectIsCardanoStakedWithFiveBinaries(state, account.key),
     );
 
-    const icon = useMemo(
-        () =>
-            isStakedOutsideEverstake ? (
-                <Icon name="warning" color="contentWarning" />
-            ) : (
-                <Icon name="check" color="contentBrand" />
-            ),
-        [isStakedOutsideEverstake],
-    );
+    const mainValue = useMemo(() => {
+        if (isStakedWithFiveBinaries) {
+            return <ZeroApyBadge />;
+        }
+        if (isStakedOutsideEverstake) {
+            return <Icon name="warning" color="contentWarning" />;
+        }
+
+        return <Icon name="check" color="contentBrand" />;
+    }, [isStakedOutsideEverstake, isStakedWithFiveBinaries]);
 
     return (
         <AccountsListItemBase
@@ -54,14 +56,7 @@ export const AdaAccountsListStakingItem = ({
             showDivider={!isLast}
             icon={<RoundedIcon name="piggyBankFilled" intent="neutral" size={32} />}
             title={<Translation id="accountList.staking" />}
-            secondaryTitle={
-                isStakedWithFiveBinaries && (
-                    <Text variant="body-sm" color="contentWarning">
-                        <Translation id="accountList.rewardsReduced" />
-                    </Text>
-                )
-            }
-            mainValue={icon}
+            mainValue={mainValue}
             secondaryValue={undefined}
         />
     );

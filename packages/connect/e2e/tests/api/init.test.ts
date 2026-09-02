@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect from '../../../src';
 
 // error thrown by .init()
 const INIT_ERROR = { code: 'Init_ManifestMissing' };

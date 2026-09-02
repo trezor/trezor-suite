@@ -1,0 +1,77 @@
+# Local ESLint rules
+
+## Unused State and Deps intersection members
+
+`no-unused-intersection-members` checks local intersection aliases whose names end in `State` or
+`Deps`:
+
+```ts
+type RunDeps = LoggerDeps & StorageDeps;
+
+const run = (deps: RunDeps) => deps.logger.log('started');
+```
+
+Here `StorageDeps` is reported because the implementation can satisfy every observed requirement
+without it.
+
+### Principles
+
+1. **Analyze requirements, not textual references.** A member may be needed through
+   `deps.logger.log()`, a selector receiving the complete state, or a dispatched child thunk. Looking
+   only for the member's type name would miss all of these cases.
+2. **Treat intersection members as capability providers.** Each observed usage becomes a property
+   path such as `logger.log`, optionally paired with the type expected by a function parameter. The
+   rule asks which members can provide that requirement.
+3. **Account for structural composition.** A required type can be satisfied by properties spread
+   across multiple intersection members. The rule recursively compares their combined properties
+   rather than checking each member only in isolation.
+4. **Look through service containers.** `WithServices<LoggerDep & StorageDep>` moves the intersection
+   below the `services` property but does not make it a single capability. The inner dependency
+   members are checked against usages such as `deps.services.logger` and child-thunk requirements.
+5. **Include transitive thunk requirements.** Dispatching a child thunk implicitly requires the
+   child's `state` and `extra` types. Those requirements count even if the parent thunk never calls
+   `getState()` or reads `extra` itself.
+6. **Prefer false negatives over false positives.** When the analysis cannot prove which member is
+   needed, it keeps the whole contract. The rule should suggest a removal only when that removal is
+   demonstrably safe for every usage visible in the file.
+7. **Stay local and predictable.** Candidates are type aliases in the current source file, must end
+   in `State` or `Deps`, and must contain either a direct intersection or an intersection inside a
+   transparent `services` container. Usage collection is file-local: a consumer needing an
+   additional capability should declare it at the consumer instead of relying on a broader upstream
+   alias. This avoids turning lint into an open-ended whole-program dependency analysis.
+
+### Analysis stages
+
+1. At `Program:exit`, collect matching aliases and resolve every direct or service-wrapped
+   intersection member with the TypeScript type checker.
+2. Mark contracts as opaque when they enter a generic context that the rule cannot safely interpret.
+3. Read `createThunk` configuration and add the state/dependency requirements of dispatched child
+   thunks.
+4. Traverse runtime expressions and record property paths, expected argument types, and assignments.
+5. For each member, compare all usages against both that member and the intersection with that member
+   removed.
+6. Report the member only when it does not provide a usage itself and all remaining members still
+   satisfy every usage.
+
+The first half of the final test is intentionally conservative. If two members both provide the same
+capability, the rule keeps both instead of arbitrarily deciding which declaration should remain.
+
+### Conservative fallbacks
+
+The complete alias is kept when the implementation contains an ambiguous use, including:
+
+- Dynamic access such as `deps[key]`.
+- Passing the whole value to a call whose expected parameter type cannot be resolved.
+- Using the alias as a generic call or type argument outside the supported `createThunk` shape.
+- A bare value escaping without a property path or expected type.
+- Recursive, callable, constructable, or indexed structures that cannot be safely composed from
+  individual members.
+
+Contracts with no observed runtime usages are also ignored. Other tooling is better suited to finding
+entirely unused declarations.
+
+### Type-aware execution
+
+The rule requires TypeScript parser services and reuses their existing `Program` and `TypeChecker`. It
+is enabled only when `ESLINT_RUN_EXPENSIVE_CHECKS=true`; normal editor and local lint runs do not pay
+for this analysis.

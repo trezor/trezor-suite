@@ -1,8 +1,7 @@
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch } from '@suite-common/redux-utils';
 
 export const UdevDescription = () => {
     const dispatch = useDispatch();

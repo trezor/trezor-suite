@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/getpublickey.json';
+import { loadCommonFixture } from './commonFixtures';
+
+const commonFixtures = loadCommonFixture('ethereum/getpublickey.json');
 
 const generatedTests = commonFixtures.tests.flatMap(({ parameters, result }) => ({
     description: parameters.path,

@@ -1,8 +1,16 @@
 import { useState } from 'react';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
-import { Card, Column, Dot, Row } from '@trezor/components';
+import { Translation, type TranslationKey } from '@suite/intl';
+import {
+    type NotificationsState,
+    isTransactionNotification,
+} from '@suite-common/toast-notifications';
+import {
+    selectHasUnseenNonPhishingTransactionNotifications,
+    selectNonPhishingTransactionNotifications,
+} from '@suite-common/wallet-core';
+import { Card, CollapsibleBox, Column, Dot, Row } from '@trezor/components';
 
 import {
     type NavigationItem,
@@ -13,21 +21,24 @@ import { NotificationGroup } from 'src/components/suite/notifications/Notificati
 import { ReleaseNotes } from 'src/components/suite/notifications/ReleaseNotes/ReleaseNotes';
 import { TriggerActivityNotification } from 'src/components/suite/notifications/TriggerActivityNotification/TriggerActivityNotification';
 import { useLayout, useSelector } from 'src/hooks/suite';
-import { isTransactionNotification } from 'src/utils/suite/notification';
 
 type ActivityTab = 'transactions' | 'release-notes' | 'all';
 
+type NotificationsViewState = {
+    notifications: NotificationsState<TranslationKey>;
+};
+
+const selectSuiteNotifications = (state: NotificationsViewState) => state.notifications;
+
 const NotificationsView = () => {
-    const notifications = useSelector(state => state.notifications);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const [selectedTab, setSelectedTab] = useState<ActivityTab>('transactions');
 
-    const transactionNotifications = notifications.filter(isTransactionNotification);
+    const notifications = useSelector(selectSuiteNotifications);
+    const hasUnseenNotifications = useSelector(selectHasUnseenNonPhishingTransactionNotifications);
+    const transactionNotifications = useSelector(selectNonPhishingTransactionNotifications);
     const activityNotifications = notifications.filter(
         notification => !isTransactionNotification(notification),
-    );
-    const hasUnseenNotifications = transactionNotifications.some(
-        notification => !notification.seen,
     );
 
     const activitySubpages: NavigationItem<ActivityTab>[] = [
@@ -36,20 +47,30 @@ const NotificationsView = () => {
             title: (
                 <Row gap={4} alignItems="center">
                     <Translation id="NOTIFICATIONS_IMPORTANT_TITLE" />
-                    {hasUnseenNotifications && <Dot intent="critical" size={8} />}
+                    {hasUnseenNotifications && (
+                        <Dot
+                            isAnimated
+                            intent="critical"
+                            size={8}
+                            data-testid="@notifications/menu/unseen-dot"
+                        />
+                    )}
                 </Row>
             ),
             callback: () => setSelectedTab('transactions'),
+            'data-testid': '@notifications/menu/transactions',
         },
         {
             id: 'all',
             title: <Translation id="NOTIFICATIONS_SYSTEM_TITLE" />,
             callback: () => setSelectedTab('all'),
+            'data-testid': '@notifications/menu/all',
         },
         {
             id: 'release-notes',
             title: <Translation id="TR_RELEASE_NOTES" />,
             callback: () => setSelectedTab('release-notes'),
+            'data-testid': '@notifications/menu/release-notes',
         },
     ];
 
@@ -67,19 +88,6 @@ const NotificationsView = () => {
 
     return (
         <Column gap={16} width="100%" maxWidth={600} margin={{ horizontal: 'auto' }}>
-            {isDebugModeActive && (
-                <Card
-                    header={
-                        <Row gap={8}>
-                            Debug activity
-                            <DebugOnlyBadge />
-                        </Row>
-                    }
-                >
-                    <TriggerActivityNotification />
-                </Card>
-            )}
-
             {selectedTab === 'transactions' && (
                 <Card>
                     <NotificationGroup notifications={transactionNotifications} />
@@ -95,6 +103,20 @@ const NotificationsView = () => {
                 </Card>
             )}
             {selectedTab === 'release-notes' && <ReleaseNotes />}
+
+            {isDebugModeActive && (
+                <CollapsibleBox
+                    data-testid="@activity/debug/box"
+                    heading={
+                        <Row gap={8}>
+                            Debug activity
+                            <DebugOnlyBadge />
+                        </Row>
+                    }
+                >
+                    <TriggerActivityNotification />
+                </CollapsibleBox>
+            )}
         </Column>
     );
 };

@@ -11,9 +11,8 @@ import { Circle, Group } from '@shopify/react-native-skia';
 
 import { type GroupedBalanceMovementEventPayload } from '@suite-common/graph';
 import { type EventComponentProps } from '@suite-native/react-native-graph';
-import { useActiveColorScheme } from '@suite-native/theme';
 import { useNativeStyles } from '@trezor/styles-native';
-import { type Color, type ThemeColorVariant } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { GraphContextProvider } from './GraphContextProvider';
 
@@ -27,36 +26,16 @@ const OUTER_DOT_WIDTH = 6;
 const ACTIVE_OUTER_DOT_WIDTH = 8;
 const ENTERING_ANIMATION_DURATION = 750;
 
-// FIXME: Color variants are wrongly defined, so we have to specify different outer colors individually for each color theme.
-// Color definitions should be redesigned to use the same color variant for all color themes.
-
-const standard = {
+const EVENT_COLORS = {
     positive: {
-        innerColor: 'legacyBackgroundPrimaryDefault',
-        outerColor: 'legacyBackgroundPrimarySubtleOnElevation0',
+        innerColor: 'contentBrand',
+        outerColor: 'elementFillBrandSoft',
     },
     negative: {
-        innerColor: 'legacyBackgroundAlertRedBold',
-        outerColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        innerColor: 'elementFillCriticalBold',
+        outerColor: 'elementFillCriticalSoft',
     },
-} as const;
-
-const variantToStylesMaps = {
-    standard,
-    dark: {
-        positive: {
-            innerColor: 'legacyBackgroundPrimaryDefault',
-            outerColor: 'legacyBackgroundPrimarySubtleOnElevation1',
-        },
-        negative: {
-            innerColor: 'legacyBackgroundAlertRedBold',
-            outerColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
-        },
-    },
-} as const satisfies Record<
-    ThemeColorVariant,
-    Record<EventVariant, { innerColor: Color; outerColor: Color }>
->;
+} as const satisfies Record<EventVariant, { innerColor: Color; outerColor: Color }>;
 
 const TransactionEventContent = ({
     isGraphActive,
@@ -72,7 +51,6 @@ const TransactionEventContent = ({
         utils: { colors },
     } = useNativeStyles();
 
-    const colorScheme = useActiveColorScheme();
     const isActive = useDerivedValue(() => {
         // If the finger is on X position of the event.
         if (isGraphActive.value && Math.abs(fingerX.value - eventX) < ACTIVE_OUTER_DOT_WIDTH) {
@@ -103,7 +81,7 @@ const TransactionEventContent = ({
 
     const variant: EventVariant = received >= sent ? 'positive' : 'negative';
 
-    const { innerColor, outerColor } = variantToStylesMaps[colorScheme][variant];
+    const { innerColor, outerColor } = EVENT_COLORS[variant];
 
     return (
         <Group opacity={animatedOpacity}>

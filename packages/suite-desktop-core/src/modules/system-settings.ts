@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 import { type InvokeResult } from '@trezor/suite-desktop-api';
 
-import { ipcMain } from '../typed-electron';
+import { ipcMain } from '../ipcMain';
 import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'system-settings';

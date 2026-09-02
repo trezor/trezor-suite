@@ -131,7 +131,7 @@ const Container = styled.span<ContainerProps>`
         position: absolute;
         inset: 0;
         background: ${({ theme }) => theme.elementFillNeutralSofter};
-        border-radius: 4px;
+        border-radius: 8px;
         pointer-events: none;
         opacity: 0;
         transform-origin: left;

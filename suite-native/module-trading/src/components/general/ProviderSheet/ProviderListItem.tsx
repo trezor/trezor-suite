@@ -8,12 +8,13 @@ import {
     type TradingType,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
+import { Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { ProviderLogo } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { ProviderListItemAmount } from './ProviderListItemAmount';
 import { ProviderListItemInfo } from './ProviderListItemInfo';
-import { ProviderListItemValueRow } from './ProviderListItemValueRow';
 
 export type ProviderListItemProps<T extends TradingTradeType> = {
     isSelected: boolean;
@@ -25,6 +26,10 @@ export type ProviderListItemProps<T extends TradingTradeType> = {
 
 const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
     marginVertical: spacings.sp4,
+}));
+
+const companyNameStyle = prepareNativeStyle(() => ({
+    flexShrink: 1,
 }));
 
 export const ProviderListItem = <T extends TradingTradeType>({
@@ -42,6 +47,7 @@ export const ProviderListItem = <T extends TradingTradeType>({
 
     const { orderId } = quote;
     const { companyName, logo } = provider;
+    const isDex = 'kycPolicyType' in provider && provider.kycPolicyType === 'DEX';
 
     if (!orderId) {
         return null;
@@ -51,19 +57,38 @@ export const ProviderListItem = <T extends TradingTradeType>({
         <Pressable onPress={() => onPress(quote)} style={applyStyle(wrapperStyle)}>
             <Card>
                 <VStack>
-                    <HStack alignItems="center" paddingBottom="sp2">
-                        <ProviderLogo logo={logo} />
-                        <Text variant="body-md" color="contentPrimary">
-                            {companyName}
-                        </Text>
+                    <HStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                        paddingBottom="sp2"
+                        spacing="sp4"
+                    >
+                        <HStack alignItems="center" flex={1} flexShrink={1} spacing="sp12">
+                            <ProviderLogo logo={logo} size="headline-sm" />
+                            <VStack spacing="sp2" flex={1} flexShrink={1}>
+                                <Text
+                                    variant="body-md"
+                                    color="contentPrimary"
+                                    numberOfLines={1}
+                                    ellipsizeMode="tail"
+                                    style={applyStyle(companyNameStyle)}
+                                >
+                                    {companyName}
+                                </Text>
+                                {shouldShowExchangeType && (
+                                    <Text variant="body-sm" color="contentSecondary">
+                                        {isDex ? (
+                                            <Translation id="moduleTrading.providerListItem.decentralizedExchange" />
+                                        ) : (
+                                            <Translation id="moduleTrading.providerListItem.centralizedExchange" />
+                                        )}
+                                    </Text>
+                                )}
+                            </VStack>
+                        </HStack>
+                        <ProviderListItemAmount quote={quote} />
                     </HStack>
-                    <ProviderListItemInfo
-                        provider={provider}
-                        quote={quote}
-                        shouldShowExchangeType={shouldShowExchangeType}
-                    />
-                    <CardDivider />
-                    <ProviderListItemValueRow quote={quote} />
+                    <ProviderListItemInfo provider={provider} quote={quote} />
                 </VStack>
             </Card>
         </Pressable>

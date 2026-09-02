@@ -1,9 +1,17 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { transformTx, verifyEthereumStakingCalldata } from '@suite-common/staking';
+import {
+    getEthereumStakingLiveStateErrorMessage,
+    getUnstakeAmountFromCalldata,
+    transformTx,
+    verifyEthereumStakingCalldata,
+    verifyEthereumStakingLiveState,
+} from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import {
+    type AccountsRootState,
+    type FormDraftRootState,
     ethereumGetCurrentNonceThunk,
     selectAccountByKey,
     selectFormDraft,
@@ -15,7 +23,7 @@ import {
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-import { fromEther, getFormDraftKey } from '@suite-common/wallet-utils';
+import { fromEther, getAccountIdentity, getFormDraftKey } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
@@ -60,9 +68,11 @@ const buildEthereumStakingSignFormState = (
         : {}),
 });
 
+type ReadVariantFromComposeDraftState = FormDraftRootState;
+
 // Reads the variant the form already produced at compose time and converts it to the sign-time wei value. This avoids re-encoding the calldata in the thunk.
 const readVariantFromComposeDraft = (
-    state: Parameters<typeof selectFormDraft>[0],
+    state: ReadVariantFromComposeDraftState,
     stakeType: StakeNativeType,
     accountKey: AccountKey,
 ): EthereumStakingVariant | null => {
@@ -85,8 +95,10 @@ const readVariantFromComposeDraft = (
     };
 };
 
+type PrepareEthereumStakingContextState = AccountsRootState & FormDraftRootState;
+
 const prepareEthereumStakingContext = (
-    state: Parameters<typeof selectAccountByKey>[0] & Parameters<typeof selectFormDraft>[0],
+    state: PrepareEthereumStakingContextState,
     args: {
         accountKey: AccountKey;
         stakeType: StakeNativeType;
@@ -162,6 +174,9 @@ const prepareEthereumStakingContext = (
     };
 };
 
+export type SignEthereumStakingTransactionNativeThunkState = PrepareEthereumStakingContextState &
+    DeviceRootState;
+
 export const signEthereumStakingTransactionNativeThunk = createThunk<
     void,
     {
@@ -169,7 +184,10 @@ export const signEthereumStakingTransactionNativeThunk = createThunk<
         stakeType: StakeNativeType;
         precomposedTransaction: PrecomposedTransactionFinal;
     },
-    { rejectValue: SignStakeNativeRejectValue }
+    {
+        rejectValue: SignStakeNativeRejectValue;
+        state: SignEthereumStakingTransactionNativeThunkState;
+    }
 >(
     `${STAKE_NATIVE_MODULE_PREFIX}/${LOG_PREFIX}`,
     async ({ accountKey, stakeType, precomposedTransaction }, thunkApi) => {
@@ -184,6 +202,27 @@ export const signEthereumStakingTransactionNativeThunk = createThunk<
             if (!prepared.ok) return rejectWithValue(prepared.error);
 
             const { account, chainId, gasLimit, variant, feeLevel, formState } = prepared.context;
+
+            const liveState = await verifyEthereumStakingLiveState({
+                stakeType,
+                from: account.descriptor,
+                symbol: account.symbol,
+                identity: getAccountIdentity(account),
+                amount:
+                    stakeType === 'unstake'
+                        ? (getUnstakeAmountFromCalldata(variant.calldata) ?? undefined)
+                        : undefined,
+            });
+            if (!liveState.isValid) {
+                console.error(
+                    `${LOG_PREFIX}: Live-state validation failed for ${stakeType}: ${liveState.reason.code}`,
+                );
+
+                return rejectWithValue({
+                    error: 'stake-live-state-invalid',
+                    message: getEthereumStakingLiveStateErrorMessage(liveState.reason),
+                });
+            }
 
             dispatch(
                 sendFormActions.storePrecomposedTransaction({

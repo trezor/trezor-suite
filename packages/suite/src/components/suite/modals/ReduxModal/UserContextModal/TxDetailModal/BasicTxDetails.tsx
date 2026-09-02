@@ -2,10 +2,13 @@ import styled from 'styled-components';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
 import {
     type PendingEvmNonceStatus,
     fromWei,
+    getEffectiveGasPrice,
     getFeeRate,
     isEip1559,
     isPending,
@@ -16,6 +19,7 @@ import {
     Grid,
     H3,
     Icon,
+    IconButton,
     InfoItem,
     type InfoItemProps,
     InfoSegments,
@@ -24,8 +28,10 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { copyToClipboard } from '@trezor/dom-utils';
 import {
     CalendarIcon,
+    CopyIcon,
     FingerprintIcon,
     GasPumpIcon,
     PencilIcon,
@@ -95,10 +101,17 @@ export const BasicTxDetails = ({
     nonceStatus,
     nextNonce,
 }: BasicTxDetailsProps) => {
+    const dispatch = useDispatch();
+
     const { isBelowTablet } = useLayoutSize();
     const explorerLink = useExternalLink(`${explorerUrl}${tx.txid}${explorerUrlQueryString ?? ''}`);
     // all solana txs which are fetched are already confirmed
     const isConfirmed = confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
+
+    const onTxIdCopy = () => {
+        copyToClipboard(tx.txid);
+        dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
+    };
 
     return (
         <Card>
@@ -242,7 +255,9 @@ export const BasicTxDetails = ({
                         <Item label={<Translation id="TR_GAS_PRICE" />} icon={GasPumpIcon}>
                             {isConfirmed || !isEip1559(tx.ethereumSpecific) ? (
                                 <FeeRate
-                                    feeRate={fromWei(tx.ethereumSpecific?.gasPrice || '0').toGwei()}
+                                    feeRate={fromWei(
+                                        getEffectiveGasPrice(tx.ethereumSpecific),
+                                    ).toGwei()}
                                     networkType="ethereum"
                                     preserveDecimals
                                 />
@@ -320,13 +335,29 @@ export const BasicTxDetails = ({
 
                 {/* TX ID */}
                 <Item label={<Translation id="TR_TXID" />} icon={FingerprintIcon}>
-                    <Link
-                        href={explorerLink}
-                        data-testid="@tx-detail/txid-value"
-                        overflowWrap="anywhere"
+                    <Tooltip
+                        content={
+                            <Row gap={8}>
+                                {tx.txid}
+                                <IconButton
+                                    icon={CopyIcon}
+                                    size="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={onTxIdCopy}
+                                    tooltip={{ isActive: false }}
+                                />
+                            </Row>
+                        }
                     >
-                        {tx.txid}
-                    </Link>
+                        <Link
+                            href={explorerLink}
+                            data-testid="@tx-detail/txid-value"
+                            overflowWrap="anywhere"
+                        >
+                            {tx.txid}
+                        </Link>
+                    </Tooltip>
                 </Item>
 
                 {tx.tronSpecific?.energyUsage && (

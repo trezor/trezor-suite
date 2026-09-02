@@ -1,7 +1,5 @@
 import { type PROTO } from '@trezor/connect';
 
-export { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
-
 export const isRecoveryInProgress = (features: PROTO.Features) => {
     const { recovery_status, backup_availability } = features;
 

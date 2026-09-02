@@ -4,22 +4,22 @@ import type { BitcoinNetworkInfo, PermissionRequest } from '@trezor/connect-comm
 import {
     Bundle,
     GetPublicKey as GetPublicKeySchema,
-    UI_REQUEST,
-    createUiMessage,
+    UI_EVENTS,
+    createUiEventMessage,
 } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getBitcoinNetwork } from '../data/coinInfo';
+import { getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { bundlify, validateCoinPath } from './common/paramsValidator';
 import { getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 
 type Params = {
     proto: PROTO.GetPublicKey;
-    coinInfo?: BitcoinNetworkInfo;
+    coinInfo: BitcoinNetworkInfo;
     suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
@@ -41,16 +41,18 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             if (coinInfo && !batch.crossChain) {
                 validateCoinPath(address_n, coinInfo);
             } else if (!coinInfo) {
-                // NOTE: Some 3rd parties are calling getPublicKey with non-bitcoin coins, like "ETH".
-                // This is incorrect usage, but we need to keep backward compatibility.
-                // So if no coin is provided, we will keep coinInfo undefined, which will
-                // lead to getPublicKeyLabel returning a label based on the path
-                coinInfo = getBitcoinNetwork(address_n); // ?? getBitcoinNetwork('btc')!;
+                // If coin is omitted or does not resolve to a bitcoin-like network,
+                // derive the network from the path.
+                // Non-bitcoin-like networks (e.g. "eth") used to be silently accepted here and
+                // fall back to btc for backward compatibility. Since connect 10 getPublicKey only
+                // supports bitcoin-like coins, so a network that resolves via neither the coin nor
+                // the path is rejected.
+                coinInfo = getBitcoinNetworkOrThrow(address_n);
             }
 
             const proto = {
                 address_n,
-                coin_name: coinInfo?.name,
+                coin_name: coinInfo.name,
                 show_display: batch.showOnTrezor,
                 script_type: batch.scriptType,
                 ignore_xpub_magic: batch.ignoreXpubMagic,
@@ -109,15 +111,13 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const batch: (typeof params)[number] = params[i];
             const { coinInfo, unlockPath, proto } = batch;
-            // if coinInfo is not provided, use fallback (see above in init method)
-            const coinInfoFallback = coinInfo ?? getBitcoinNetwork('btc')!;
-            const response = await cmd.getHDNode(proto, { coinInfo: coinInfoFallback, unlockPath });
+            const response = await cmd.getHDNode(proto, { coinInfo, unlockPath });
             responses.push(response);
 
             if (this.hasBundle) {
                 // send progress
                 sendCoreMessage(
-                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                    createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

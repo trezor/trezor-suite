@@ -4,19 +4,16 @@ import type { ProposalTypes } from '@walletconnect/types';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    type Bip43Path,
-    type Network,
-    getNetwork,
-    networksCollection,
-} from '@suite-common/wallet-config';
-import { selectAccounts } from '@suite-common/wallet-core';
+import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CallMethodResponse, type ComposeOutput } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { selectSessionByTopic } from '../walletConnectReducer';
+import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
@@ -38,6 +35,12 @@ const findAccount = (accounts: Account[], firstAddress: string) =>
         return usedAddresses.includes(firstAddress) || unusedAddresses.includes(firstAddress);
     });
 
+export type BitcoinRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+    AccountsRootState &
+    WalletConnectStateRootState;
+
+export type BitcoinRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+
 const bitcoinRequestThunk = createThunk<
     | { address: string; publicKey: string; path: Bip43Path }[]
     | { address: string; signature: string }
@@ -45,7 +48,8 @@ const bitcoinRequestThunk = createThunk<
     | undefined,
     {
         event: WalletKitTypes.SessionRequest;
-    }
+    },
+    { state: BitcoinRequestThunkState; extra: BitcoinRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/bitcoinRequest`, async ({ event }, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
     const session = selectSessionByTopic(getState(), event.topic);
@@ -95,7 +99,7 @@ const bitcoinRequestThunk = createThunk<
                     method: 'signMessage',
                     payload: {
                         path: addressInfo.path,
-                        coin: account.symbol,
+                        coin: asCoinSymbol(account.symbol),
                         message,
                         hex: true,
                         device,
@@ -140,7 +144,7 @@ const bitcoinRequestThunk = createThunk<
                 });
             }
             const feeLevels = await TrezorConnect.blockchainEstimateFee({
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
                 request: {
                     blocks: [1],
@@ -152,8 +156,7 @@ const bitcoinRequestThunk = createThunk<
             }
             const precomposedTransaction = await TrezorConnect.composeTransaction({
                 outputs,
-                coin: account.symbol,
-                identity: getAccountIdentity(account),
+                coin: asCoinSymbol(account.symbol),
                 account: {
                     path: account.path,
                     addresses: account.addresses!,
@@ -182,7 +185,7 @@ const bitcoinRequestThunk = createThunk<
                         account: {
                             addresses: account.addresses!,
                         },
-                        coin: account.symbol,
+                        coin: asCoinSymbol(account.symbol),
                         chunkify: true,
                         unlockPath: account.unlockPath,
                         version: 2,
@@ -198,7 +201,7 @@ const bitcoinRequestThunk = createThunk<
             const typedPayload = signResponse.payload as CallMethodResponse<'signTransaction'>;
 
             const pushResponse = await TrezorConnect.pushTransaction({
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
                 tx: typedPayload.serializedTx,
             });
@@ -220,7 +223,7 @@ export const getChainId = (network: Network) => {
     return [];
 };
 
-export const getNamespace = (accounts: Account[]) => {
+export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
     const bip122 = {
         chains: [],
         accounts: [],
@@ -244,6 +247,10 @@ export const getNamespace = (accounts: Account[]) => {
             bip122.accounts.push(`${network.caipId}:${firstAddress}`);
         }
     });
+
+    if (bip122.chains.length === 0) {
+        return {};
+    }
 
     return { bip122 };
 };

@@ -1,7 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 
 import { ContextMessage } from '@suite/message-system';
-import { type EarnParams } from '@suite/router';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
@@ -19,13 +18,12 @@ import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 
 type YieldWithdrawProps = {
     account: Account;
-    routeParams: EarnParams;
     vault: YieldDtoV2;
 };
 
-export const YieldWithdraw = ({ account, routeParams, vault }: YieldWithdrawProps) => {
+export const YieldWithdraw = ({ account, vault }: YieldWithdrawProps) => {
     const allowanceContextValue = useAllowance({ account });
-    const yieldWithdrawContextValues = useYieldWithdraw({ account, routeParams, vault });
+    const yieldWithdrawContextValues = useYieldWithdraw({ account, vault });
     const vaultContractAddress = yieldWithdrawContextValues
         ? getYieldVaultContractAddress(yieldWithdrawContextValues.vault)
         : undefined;

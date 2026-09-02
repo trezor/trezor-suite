@@ -1,4 +1,5 @@
 import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -70,8 +71,10 @@ test.describe(
                     buyAsset: {
                         searchFilter: sendTokenSymbol,
                         networkFilter: 'sol',
-                        networkSymbol: 'sol',
-                        tokenSymbol: sendTokenSymbol,
+                        assetCryptoId: getCryptoId(
+                            asNetworkSymbol('sol'),
+                            'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+                        ),
                     },
                     selectReceiveAddress: async () => {
                         await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'sol');
@@ -100,10 +103,11 @@ test.describe(
                     sellAsset: {
                         networkSymbol: 'sol',
                         tokenSymbol: sendTokenSymbol,
+                        accountIndex: 1,
                     },
                     buyAsset: {
                         searchFilter: receiveAssetName,
-                        assetCryptoId: getCryptoId('sol'),
+                        assetCryptoId: getCryptoId(asNetworkSymbol('sol')),
                     },
                     selectReceiveAddress: async () => {
                         await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'sol');
@@ -111,12 +115,11 @@ test.describe(
                 });
             });
 
-            let receiveAmount: string;
+            let liveTradeAmounts: ReturnType<typeof tradingPage.waitForLiveTradeAmounts>;
 
             await test.step('Confirm the Swap trade', async () => {
                 await expect(tradingPage.quotes.bestOfferAmount).toContainText(receiveCoinSymbol);
-                const [amount] = (await tradingPage.quotes.bestOfferAmount.innerText()).split(' ');
-                receiveAmount = localizeNumber(amount ?? '');
+                liveTradeAmounts = tradingPage.waitForLiveTradeAmounts();
                 await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
             });
 
@@ -124,7 +127,7 @@ test.describe(
                 await tradingPage.confirmation.initiateSendConfirmation({
                     confirmAlsoToken: true,
                 });
-                await expect(devicePrompt.headerParagraph).toContainText(accountLabel);
+                await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
                 await expect(devicePrompt.outputValueOf('address')).toHaveValidAddress('sol');
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                     formattedSendAmount,
@@ -133,13 +136,14 @@ test.describe(
             });
 
             await test.step('Send crypto to provider', async () => {
+                const { receiveStringAmount } = await liveTradeAmounts;
                 await devicePrompt.sendButton.click();
 
                 await tradingPage.verifySwapToast({
                     sendAccount: accountLabel,
                     receiveAccount: accountLabel,
                     sendAmount,
-                    receiveAmount,
+                    receiveAmount: receiveStringAmount,
                 });
 
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(

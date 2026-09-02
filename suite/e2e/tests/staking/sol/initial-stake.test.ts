@@ -39,6 +39,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await page.clock.install();
                 await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
+                await expect(stakingSection.startStakingButton).toBeVisible();
                 await expect(stakingSection.stakingDashboardCard).toBeHidden();
                 await expect(stakingSection.stakingEmptyCard).toBeVisible();
                 await expect(stakingSection.stakeMoreButton).toBeHidden();
@@ -130,7 +131,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Wait an epoch and amount moved from pending to staked', async () => {
-                solanaStakingMock.advanceEpoch();
+                await solanaStakingMock.advanceEpoch();
                 await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                 await stakingSection.expectStakingAmounts({
                     expected: {

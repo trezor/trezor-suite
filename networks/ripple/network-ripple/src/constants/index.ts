@@ -1,3 +1,10 @@
+export {
+    isSupportedRippleNetwork,
+    supportedRippleNetworks,
+    toRippleNetworkSymbol,
+} from './networkSymbol';
+export type { RippleNetworkSymbol } from './networkSymbol';
+
 export const RIPPLE_DECIMALS = 6;
 
 // Network default reserves in drops, overwritten at runtime from `server_info`.

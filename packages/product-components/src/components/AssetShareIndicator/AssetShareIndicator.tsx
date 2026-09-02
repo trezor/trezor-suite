@@ -3,9 +3,8 @@ import { type SVGProps } from 'react';
 import { type SVGMotionProps, type Transition, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { motionEasing } from '@trezor/components';
-import { coinsColors } from '@trezor/theme';
+import { type CSSColor } from '@trezor/theme';
 
 import { TokenIcon } from '../TokenIcon/TokenIcon';
 import { type TokenIconProps } from '../TokenIcon/tokenIconTypes';
@@ -21,24 +20,27 @@ const Container = styled.div`
 `;
 
 export interface AssetShareIndicatorProps extends TokenIconProps {
-    symbol: NetworkSymbol;
+    networkColor: CSSColor;
     percentageShare?: number;
     index?: number;
 }
 
 interface ProgressCircleProps extends Pick<
     AssetShareIndicatorProps,
-    'symbol' | 'percentageShare' | 'index'
+    'networkColor' | 'percentageShare' | 'index'
 > {
     size: number;
 }
 
-const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCircleProps) => {
+const ProgressCircle = ({
+    networkColor,
+    size,
+    percentageShare,
+    index = 0,
+}: ProgressCircleProps) => {
     const theme = useTheme();
 
     const dimensions = size * 2;
-    const strokeColor =
-        symbol && coinsColors[symbol] ? coinsColors[symbol] : theme.contentSecondary;
     const viewBox = `0 0 ${dimensions} ${dimensions}`;
 
     const strokeWidth = dimensions / 6;
@@ -92,7 +94,7 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
             >
                 <motion.circle
                     {...circleConfig}
-                    stroke={strokeColor}
+                    stroke={networkColor}
                     strokeDasharray={circumference}
                     strokeDashoffset={circumference}
                     animate={{
@@ -107,6 +109,7 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
 
 export const AssetShareIndicator = ({
     symbol,
+    networkColor,
     size = 32,
     percentageShare,
     index,
@@ -115,7 +118,7 @@ export const AssetShareIndicator = ({
     <Container>
         <TokenIcon symbol={symbol} size={size} {...rest} />
         <ProgressCircle
-            symbol={symbol}
+            networkColor={networkColor}
             size={size}
             percentageShare={percentageShare}
             index={index}

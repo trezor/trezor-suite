@@ -8,7 +8,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest:native"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
@@ -25,5 +26,9 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/test-utils": "workspace:*"
     }
 }

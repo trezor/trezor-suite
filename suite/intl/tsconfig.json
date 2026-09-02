@@ -6,6 +6,9 @@
             "path": "../../suite-common/suite-utils"
         },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/wallet-types"
+        }
     ]
 }

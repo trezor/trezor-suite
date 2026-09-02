@@ -24,10 +24,8 @@ export const TooltipRow = ({
         <Column alignItems="start">
             <Text>{header}</Text>
             <Row gap={4}>
-                <Icon as={icon} intent={intent} size={12} isInverse />
-                <Text intent={intent} isInverse>
-                    {children}
-                </Text>
+                <Icon as={icon} intent={intent} size={12} />
+                <Text intent={intent}>{children}</Text>
             </Row>
         </Column>
     </Row>

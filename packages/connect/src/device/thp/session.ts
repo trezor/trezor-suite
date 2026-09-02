@@ -1,3 +1,4 @@
+import { DEVICE, ERRORS } from '@trezor/connect-common';
 import type { thp as protocolThp } from '@trezor/protocol';
 
 import { thpCall } from './thpCall';
@@ -9,9 +10,9 @@ export const createThpSession = async (device: IDevice, deriveCardano: boolean) 
         passphrase = { passphrase: '' };
     } else {
         // same flow as DeviceCurrentSession PassphraseRequest
-        passphrase = await device.prompt('passphrase', {}).then(promptRes => {
+        passphrase = await device.prompt(DEVICE.PASSPHRASE, {}).then(promptRes => {
             if (!promptRes.success) {
-                return { passphrase: '' };
+                throw ERRORS.TypedError('Method_Cancel');
             }
 
             return promptRes.payload.passphraseOnDevice

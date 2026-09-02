@@ -6,9 +6,9 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import {
     buyQuotesSolanaToken,
     buyTradeSolanaToken,
-    invityEndpoint,
-    invityRequest,
-} from '../../fixtures/invity';
+    tradeApiRequest,
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -20,10 +20,10 @@ const formattedFiatAmount = `$${fiatAmount}`;
 
 test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, settingsPage, walletPage }) => {
-        await page.route(invityEndpoint.buyQuotes, async route => {
+        await page.route(tradeEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesSolanaToken });
         });
-        await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeSolanaToken);
+        await tradingMock.routeTrade(tradeEndpoint.buyTrade, buyTradeSolanaToken);
         await onboardingPage.completeOnboarding();
 
         await test.step('Enable Solana and open its trading', async () => {
@@ -40,7 +40,6 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
                 searchFilter: 'Jupiter',
                 assetCryptoId: cryptoId,
             });
-            await tradingPage.quotes.waitForSync();
             await tradingPage.inputs.fiatCryptoSwitchButton.click();
             const isCryptoInput = true;
             await tradingPage.fillBuyForm({
@@ -66,12 +65,12 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
         });
 
         await test.step('Confirm the trade', async () => {
-            const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
+            const tradeRequestPromise = page.waitForRequest(tradeEndpoint.buyTrade);
             await tradingPage.confirmation.buyButton.click();
 
             await expect
                 .soft(tradeRequestPromise)
-                .toHavePayload(invityRequest.buyTradeSolanaPayload, {
+                .toHavePayload(tradeApiRequest.buyTradeSolanaPayload, {
                     omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
                 });
         });

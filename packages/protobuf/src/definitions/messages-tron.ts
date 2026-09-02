@@ -108,6 +108,7 @@ export const TronSignTx = Type.Object(
         data: Type.Optional(Type.String()),
         timestamp: Type.Number(),
         fee_limit: Type.Optional(Type.Number()),
+        chunkify: Type.Optional(Type.Boolean()),
     },
     { $id: 'TronSignTx' },
 );

@@ -4,6 +4,41 @@ import { Type } from '@trezor/schema-utils';
 
 import { DerivationPath } from '../../params';
 
+// ethereumSignAuth7702
+
+/**
+ * EIP-7702 authorization tuple to be signed by the device.
+ */
+export type EthereumSignAuth7702 = Static<typeof EthereumSignAuth7702>;
+export const EthereumSignAuth7702 = Type.Object({
+    path: DerivationPath,
+    /** Chain id the authorization is valid on. `0` makes it valid on every EVM chain. */
+    chainId: Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER }),
+    /**
+     * Address of the contract the account delegates to. Authorizing the zero address
+     * revokes an existing delegation.
+     */
+    delegate: Type.String(),
+    /**
+     * Account nonce the authorization is valid for. Both fields are `uint64` on the wire, but
+     * are capped at `Number.MAX_SAFE_INTEGER` so a value JavaScript cannot represent exactly is
+     * rejected instead of being silently rounded into a different authorization.
+     */
+    nonce: Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER }),
+});
+
+/**
+ * Signature of an EIP-7702 authorization tuple. Together with the `chainId`, `delegate`
+ * and `nonce` that were signed it forms an entry of a transaction `authorizationList`.
+ */
+export type EthereumSignedAuth7702 = Static<typeof EthereumSignedAuth7702>;
+export const EthereumSignedAuth7702 = Type.Object({
+    /** Parity of the signature `y` coordinate, `0` or `1`. Legacy `v` is `yParity + 27`. */
+    yParity: Type.Number(),
+    r: Type.String(),
+    s: Type.String(),
+});
+
 // ethereumSignMessage
 
 export type EthereumSignMessage = Static<typeof EthereumSignMessage>;

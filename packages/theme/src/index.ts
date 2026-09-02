@@ -1,12 +1,9 @@
 export * from './borders';
 export * from './boxShadows';
-export * from './coinsColors';
 export * from './colors';
-export { colorsV2 } from './colorsV2';
 export * from './fontFamilies';
 export * from './fontWeights';
-export { paletteV1 } from './paletteV1';
-export { paletteV2 } from './paletteV2';
+export { palette } from './palette';
 export * from './prepareTheme';
 export * from './sizes';
 export * from './spacings';

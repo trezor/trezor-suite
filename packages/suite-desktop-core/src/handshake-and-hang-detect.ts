@@ -1,11 +1,9 @@
 import { type BrowserWindow, dialog } from 'electron';
 
-import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { type ElectronIpcMainInvokeEvent } from '@trezor/ipc-proxy/src/types';
 import { type TimerId } from '@trezor/type-utils';
 
+import { ipcMain } from './ipcMain';
 import { loadIndex } from './libs/loadIndex';
-import { ipcMain } from './typed-electron';
 
 const HANG_WAIT = 30000;
 
@@ -36,11 +34,7 @@ export const handshakeAndHangDetect = ({
     statePatch,
 }: HandshakeAndHangDetectParams) => {
     const { logger } = global;
-    const handshakeHandler = (ipcEvent: ElectronIpcMainInvokeEvent) => {
-        validateIpcMessage({ ipcEvent });
-
-        return Promise.resolve({});
-    };
+    const handshakeHandler = () => Promise.resolve({});
     let timeout: TimerId;
 
     const handshake = new Promise<HandshakeResult>(resolve => {

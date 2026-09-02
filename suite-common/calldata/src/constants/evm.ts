@@ -25,6 +25,20 @@ export const EVM_ABI = {
         ]),
         claimWithdrawRequest: parseAbi(['function claimWithdrawRequest()']),
     },
+    ens: {
+        // ENSIP-19 UniversalResolver.
+        resolve: parseAbi([
+            'function resolve(bytes name, bytes data) view returns (bytes result, address resolver)',
+        ]),
+        reverse: parseAbi([
+            'function reverse(bytes lookupAddress, uint256 coinType) view returns (string primary, address resolver, address reverseResolver)',
+        ]),
+        // Resolver profiles, wrapped in `resolve` above rather than called directly.
+        addr: parseAbi(['function addr(bytes32 node) view returns (address)']),
+        text: parseAbi(['function text(bytes32 node, string key) view returns (string)']),
+        // Optional for a resolver: batches several profiles into one `resolve`.
+        multicall: parseAbi(['function multicall(bytes[] data) returns (bytes[] results)']),
+    },
     weth: {
         deposit: parseAbi(['function deposit() payable']),
         withdraw: parseAbi(['function withdraw(uint256 wad)']),

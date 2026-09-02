@@ -1,7 +1,8 @@
 import { Translation } from '@suite/intl';
-import { type AccountType, type Bip43Path, type NetworkType } from '@suite-common/wallet-config';
+import { type AccountType, type NetworkType } from '@suite-common/wallet-config';
 import { getAccountTypeName } from '@suite-common/wallet-utils';
 import { Badge, type BadgeSize } from '@trezor/components';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
 type AccountTypeBadgeProps = {
     accountType?: AccountType;

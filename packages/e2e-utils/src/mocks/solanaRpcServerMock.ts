@@ -27,7 +27,6 @@ export class SolanaRpcServerMock {
     private subscriptionServer?: WebSocketServer;
     private port?: number;
     private nextSubscriptionId = 1;
-    private proxiedRequests = 0;
 
     constructor(private readonly upstreamUrl: string) {}
 
@@ -37,12 +36,6 @@ export class SolanaRpcServerMock {
         }
 
         return `http://localhost:${this.port}`;
-    }
-
-    // Number of requests forwarded to the live upstream. Non-zero value proves the mock is
-    // actually serving the backend, so a broadcast cannot slip past it to a real endpoint.
-    get passthroughCount(): number {
-        return this.proxiedRequests;
     }
 
     setHandler(method: string, handler: SolanaRpcHandler): void {
@@ -60,10 +53,6 @@ export class SolanaRpcServerMock {
         );
 
         await new Promise<void>(resolve => this.httpServer!.listen(this.port, resolve));
-    }
-
-    dropConnections(): void {
-        this.subscriptionServer?.clients.forEach(client => client.terminate());
     }
 
     async stop(): Promise<void> {
@@ -162,7 +151,6 @@ export class SolanaRpcServerMock {
     }
 
     private async proxyToUpstream(rawBody: Buffer, response: http.ServerResponse) {
-        this.proxiedRequests += 1;
         try {
             const upstreamResponse = await fetch(this.upstreamUrl, {
                 method: 'POST',

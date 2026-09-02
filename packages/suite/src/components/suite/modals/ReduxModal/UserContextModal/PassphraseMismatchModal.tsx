@@ -1,11 +1,11 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 

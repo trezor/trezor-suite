@@ -1,9 +1,5 @@
 export type CardanoAction =
-    | 'delegate'
-    | 'withdrawal'
-    | 'voteDelegate'
-    | 'voteAbstain'
-    | 'deregister';
+    'delegate' | 'withdrawal' | 'voteDelegate' | 'voteAbstain' | 'deregister';
 
 export type ActionAvailability =
     | { status: true; reason?: undefined }

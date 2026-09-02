@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { type TradingUtilsProvidersProps, invityAPI } from '@suite-common/trading';
+import { type TradingUtilsProvidersProps, tradeApi } from '@suite-common/trading';
 
 import { TradingIcon } from '../TradingIcon';
 
@@ -36,7 +36,7 @@ export const TradingUtilsProvider = ({
                 <>
                     {provider.logo && (
                         <TradingIconWrapper>
-                            <TradingIcon iconUrl={invityAPI.getProviderLogoUrl(provider.logo)} />
+                            <TradingIcon iconUrl={tradeApi.getProviderLogoUrl(provider.logo)} />
                         </TradingIconWrapper>
                     )}
                     {providerName}

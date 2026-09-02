@@ -146,6 +146,8 @@ const config: webpack.Configuration = {
         mainFields: ['module', 'main'],
         extensions: ['.ts', '.js'],
         alias: {
+            // The ESM build of Sentry 10.67 leaves import.meta.url in the CommonJS output bundle.
+            '@sentry/electron/main$': require.resolve('@sentry/electron/main'),
             '@emurgo/cardano-serialization-lib-nodejs': '@emurgo/cardano-serialization-lib-browser',
             '@trezor/connect$': '@trezor/connect/src/index', // alternative for "module": "src/index" in connect's package.json
         },

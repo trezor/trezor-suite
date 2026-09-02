@@ -5,6 +5,7 @@ import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus, type FailedAccount } from '@suite-common/wallet-types';
@@ -21,7 +22,6 @@ import {
 import { PlusIcon, RepeatIcon, WarningIcon } from '@trezor/icons';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
 import { type DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {

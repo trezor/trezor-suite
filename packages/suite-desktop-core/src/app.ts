@@ -5,12 +5,12 @@ import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isMacOs } from '@trezor/env-utils';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { colorVariants } from '@trezor/theme';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { handshakeAndHangDetect } from './handshake-and-hang-detect';
+import { ipcMain } from './ipcMain';
 import { processStatePatch, restartApp } from './libs/app-utils';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './libs/auto-start';
 import { APP_NAME } from './libs/constants';
@@ -29,7 +29,6 @@ import { initBackgroundModules, initModules } from './modules';
 import { initBioAuthModule } from './modules/bioAuthModule';
 import { mainThreadEmitter } from './modules/module';
 import { init as initTorModule } from './modules/tor';
-import { ipcMain } from './typed-electron';
 
 process.traceProcessWarnings = true;
 
@@ -126,7 +125,6 @@ const init = async () => {
     const logger = new Logger();
 
     global.logger = logger;
-    logger.level = isDevEnv ? 'debug' : 'info';
 
     logger.info('main', `Application starting`);
 
@@ -163,12 +161,8 @@ const init = async () => {
         contents.on('will-navigate', (event, navigationUrl) => {
             // See: https://www.electronjs.org/docs/latest/tutorial/security#13-disable-or-limit-navigation
 
-            const parsedUrl = new URL(navigationUrl);
-
-            if (parsedUrl.origin !== 'https://trezor.io') {
-                logger.error('electron', `Prevented unexpected redirect to: ${navigationUrl}`);
-                event.preventDefault();
-            }
+            logger.error('electron', `Prevented unexpected redirect to: ${navigationUrl}`);
+            event.preventDefault();
         });
     });
 
@@ -299,9 +293,7 @@ const init = async () => {
             }));
 
     // repeated during app lifecycle (e.g. Ctrl+R)
-    ipcMain.handle('handshake/load-modules', (ipcEvent, payload) => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('handshake/load-modules', (_, payload) => {
         // one time back-wards compatibility migration from redux to electron store. this can be deleted after some time
         // storageLoadBioAuth should be removed as well
         if (
@@ -329,19 +321,13 @@ const init = async () => {
         store,
     });
 
-    ipcMain.handle('browser-window/reload', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('browser-window/reload', () => {
         mainWindowProxy.getInstance()?.webContents.reload();
     });
 
     loadBioAuthModule();
 
-    ipcMain.handle('handshake/load-tor-module', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
-        return loadTorModule();
-    });
+    ipcMain.handle('handshake/load-tor-module', () => loadTorModule());
 
     let readyToQuit = false;
     let stoppingDaemon = false;

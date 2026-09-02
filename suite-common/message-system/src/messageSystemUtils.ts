@@ -224,15 +224,21 @@ export const isDeviceCompatible = (deviceConditions: Device[], device?: TrezorDe
             thpProperties: thpPropertiesCondition,
         } = deviceCondition;
 
+        // createVersionRange returns null for '!' / undefined, which by design must not match
+        // (see isVersionCompatible for the same handling).
+        const firmwareRange = createVersionRange(firmwareCondition);
+        const bootloaderRange = createVersionRange(bootloaderCondition);
+
         return (
             modelCondition.toLowerCase() === deviceInternalModel &&
             (vendorCondition.toLowerCase() === deviceVendor || vendorCondition === '*') &&
             (variantCondition.toLowerCase() === deviceFwType || variantCondition === '*') &&
             (firmwareRevisionCondition.toLowerCase() === deviceFwRevision.toLowerCase() ||
                 firmwareRevisionCondition === '*') &&
-            (semver.satisfies(deviceFwVersion, createVersionRange(firmwareCondition)!) ||
+            ((firmwareRange !== null && semver.satisfies(deviceFwVersion, firmwareRange)) ||
                 firmwareCondition === '*') &&
-            (semver.satisfies(deviceBootloaderVersion, createVersionRange(bootloaderCondition)!) ||
+            ((bootloaderRange !== null &&
+                semver.satisfies(deviceBootloaderVersion, bootloaderRange)) ||
                 bootloaderCondition === '*') &&
             isThpPropertiesCompatible(thpPropertiesCondition, device.thp?.properties)
         );

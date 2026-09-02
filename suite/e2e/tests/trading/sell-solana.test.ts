@@ -3,11 +3,11 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
     getCompanyNameFromList,
-    invityEndpoint,
     sellQuotesSolana,
     sellTradeSolana,
     sellWatchSolana,
-} from '../../fixtures/invity';
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -49,13 +49,13 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             walletPage,
         }) => {
             await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.sellQuotes, async route => {
+                await page.route(tradeEndpoint.sellQuotes, async route => {
                     await route.fulfill({ json: sellQuotesSolana });
                 });
-                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeSolana);
+                await tradingMock.routeTrade(tradeEndpoint.sellTrade, sellTradeSolana);
                 //IMPORTANT: Mocking this request prevents from actually sending crypto
                 await tradingMock.routeSolanaSendRequests();
-                await page.route(invityEndpoint.sellWatch, async route => {
+                await page.route(tradeEndpoint.sellWatch, async route => {
                     await route.fulfill({ json: sellWatchSolana });
                 });
             });
@@ -79,7 +79,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 networkSymbolOrTokenId: 'sol',
             });
             // Automation is too fast, we need to wait for Fees to be resolved
-            await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
+            await tradingPage.fees.waitToBeCalculated();
             await expect(tradingPage.fees.maxFee).toBeVisible();
             await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
             await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
@@ -103,7 +103,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
 
         await test.step('Initiate send', async () => {
             await tradingPage.confirmation.initiateSendConfirmation();
-            await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
+            await expect(devicePrompt.header.accountLabel).toHaveText('Solana #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 formattedCryptoAmount,
@@ -124,7 +124,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
         });
 
         await test.step('Wait 30s for watch refresh and status change to Success', async () => {
-            await page.route(invityEndpoint.sellWatch, async route => {
+            await page.route(tradeEndpoint.sellWatch, async route => {
                 await route.fulfill({ json: { status: 'SUCCESS' } });
             });
             await page.clock.fastForward(tradingMock.watchPeriod);
@@ -147,14 +147,14 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 networkSymbolOrTokenId: 'sol',
             });
             // Automation is too fast, we need to wait for Fees to be resolved
-            await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
+            await tradingPage.fees.waitToBeCalculated();
             await expect(tradingPage.fees.maxFee).toBeVisible();
             await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
             await tradingPage.quotes.selectedProvider.click();
         });
 
         await test.step('Select second offer from modal and check correct values are sent in trade request', async () => {
-            const sellTradePromise = page.waitForRequest(invityEndpoint.sellTrade);
+            const sellTradePromise = page.waitForRequest(tradeEndpoint.sellTrade);
             await tradingPage.quotes.selectQuoteByProvider(
                 getCompanyNameFromList(secondComparedOfferQuote?.exchange ?? '', 'sellList'),
             );

@@ -1,10 +1,11 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { FullAlertBox } from '@suite-native/atoms';
+import { useDispatch } from '@suite-common/redux-utils';
+import { BannerFull } from '@suite-native/atoms';
 import {
     selectIsStellarLimitedHistoryBannerClosed,
     setIsStellarLimitedHistoryBannerClosed,
-} from '@suite-native/banner-flags';
+} from '@suite-native/banners';
 import { useTranslate } from '@suite-native/intl';
 
 export const StellarLimitedHistoryBanner = () => {
@@ -22,7 +23,7 @@ export const StellarLimitedHistoryBanner = () => {
     }
 
     return (
-        <FullAlertBox
+        <BannerFull
             marginHorizontal="sp16"
             title={translate('banner.stellarLimitedHistoryBanner.title')}
             description={translate('banner.stellarLimitedHistoryBanner.description')}

@@ -6,18 +6,20 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
     createTargets,
     selectAccountByKey,
     selectIsPhishingTransaction,
     useDisplayBaseCurrency,
+    useEvmNonceInfo,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getPendingEvmNonceStatus,
-    isSentTransaction,
+    isSignedByAccount,
     isTransactionBumpable,
     isTransactionCancellable,
     isTxFeePaid,
@@ -27,8 +29,7 @@ import { GaugeIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { OutlineHighlight } from '@trezor/product-components';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useEvmNonceInfo } from 'src/hooks/wallet/useEvmNonceInfo';
+import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';
@@ -105,11 +106,11 @@ export const TransactionItem = memo(
         const evmNonce =
             network.networkType === 'ethereum' ? transaction.ethereumSpecific?.nonce : undefined;
 
-        // Gated on `isSentTransaction` to match the filter `getEvmNonceInfo` uses when building
-        // `fetchedNonceInfo` — a tx type it doesn't count (e.g. a pending contract deployment)
-        // isn't reflected in those bounds, so comparing its nonce against them would produce a
-        // false gap/superseded reading.
-        const pendingEvmNonce = isPending && isSentTransaction(transaction) ? evmNonce : undefined;
+        // Gated on `isSignedByAccount` to match the filter `getEvmNonceInfo` uses when building
+        // `fetchedNonceInfo` — a tx it doesn't count (e.g. a stranger's transfer out of the account,
+        // which carries that stranger's nonce) isn't reflected in those bounds, so comparing its
+        // nonce against them would produce a false gap/superseded reading.
+        const pendingEvmNonce = isPending && isSignedByAccount(transaction) ? evmNonce : undefined;
 
         // A pending EVM tx can be stuck two ways: its nonce is above the next free nonce (a lower
         // nonce is missing — a gap), or below the confirmed nonce (that slot was already mined by

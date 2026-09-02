@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 
 import { preserveModal, removePreserveModal } from '@suite/modal';
 import { prettifyLog, useCommonApplicationLogs } from '@suite-common/logger';
+import { useDispatch } from '@suite-common/redux-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import {
     type SuiteLogsApplicationInfoRootState,
     selectRedactedDesktopApplicationInfo,

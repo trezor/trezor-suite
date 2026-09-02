@@ -1,0 +1,63 @@
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
+import { oneInchFusionPlusWithEip712SignDataQuote } from '@suite-native/trading-fixtures';
+
+import { ReviewOutputsBody, type ReviewOutputsBodyProps } from './ReviewOutputsBody';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
+
+const defaultProps: ReviewOutputsBodyProps = {
+    tradingType: 'exchange',
+    accountKey: 'ACCOUNT_KEY' as AccountKey,
+    tokenContract: 'TOKEN_CONTRACT' as TokenAddress,
+    exchangeFlowType: 'swap',
+    shouldDisplayReviewList: true,
+};
+
+describe('ReviewOutputsBody', () => {
+    const renderReviewOutputsBody = async (props: Partial<ReviewOutputsBodyProps> = {}) =>
+        await renderWithTradingProvider(<ReviewOutputsBody {...defaultProps} {...props} />, {
+            tradeType: 'exchange',
+        });
+
+    it('renders loading skeleton when shouldDisplayReviewList is false', async () => {
+        const { getByTestId } = await renderReviewOutputsBody({ shouldDisplayReviewList: false });
+
+        expect(getByTestId('@trading/outputs-review/skeleton')).toBeOnTheScreen();
+    });
+
+    it('renders output item list when shouldDisplayReviewList is true', async () => {
+        const { getByText, queryByTestId } = await renderReviewOutputsBody({});
+
+        // invalid account id is provided, expect error
+        expect(
+            getByText(new RegExp(getTranslation('transactionManagement.review.outputs.noAccount'))),
+        ).toBeOnTheScreen();
+        expect(queryByTestId('@trading/outputs-review/skeleton')).not.toBeOnTheScreen();
+    });
+
+    it('renders SignDataMessageReview when exchangeFlowType is sign-data', async () => {
+        const { getByText, queryByText } = await renderWithTradingProvider(
+            <ReviewOutputsBody {...defaultProps} exchangeFlowType="sign-data" />,
+            {
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: {
+                            exchange: {
+                                selectedQuote: oneInchFusionPlusWithEip712SignDataQuote,
+                            },
+                        },
+                    },
+                },
+            },
+        );
+
+        expect(
+            getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.heading')),
+        ).toBeOnTheScreen();
+        // ReviewOutputItemList renders "Account not found" for invalid keys; sign-data skips it
+        expect(
+            queryByText(getTranslation('transactionManagement.review.outputs.noAccount')),
+        ).toBeNull();
+    });
+});

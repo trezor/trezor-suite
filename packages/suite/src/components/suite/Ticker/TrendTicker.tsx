@@ -1,54 +1,23 @@
 import styled from 'styled-components';
 
-import { selectLanguage } from '@suite/settings';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
-import { Icon, type IconComponent, Skeleton } from '@trezor/components';
-import { TrendDownIcon, TrendUpIcon } from '@trezor/icons';
-import { type Color, typography } from '@trezor/theme';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { Skeleton } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useSelector } from 'src/hooks/suite';
 
 import { NoRatesTooltip } from './NoRatesTooltip';
-
-const PercentageWrapper = styled.div<{ $color: Color }>`
-    ${typography['body-sm-strong']}
-    gap: 4px;
-    display: flex;
-    align-items: center;
-    color: ${({ theme, $color }) => theme[$color]};
-`;
+import { TrendBadge, calculatePercentageDifference } from './TrendBadge';
 
 const Empty = styled.div`
     ${typography['body-sm-strong']}
     color: ${({ theme }) => theme.contentSecondary};
 `;
-
-type Trend = 'up' | 'down' | 'stable';
-
-const trendStyles: Record<Trend, { icon?: IconComponent; color: Color }> = {
-    up: { icon: TrendUpIcon, color: 'contentBrand' },
-    down: { icon: TrendDownIcon, color: 'contentCritical' },
-    stable: { color: 'contentSecondary' },
-};
-
-const calculatePercentageDifference = (a: number, b: number) => (a - b) / b;
-
-// localizePercentage renders 1 decimal place, so a change below this rounds to ±0.0% and should
-// be shown as neutral rather than as a tiny up/down move.
-const NEUTRAL_TREND_THRESHOLD = 0.0005;
-
-const getTrend = (percentageChange: number): Trend => {
-    if (Math.abs(percentageChange) < NEUTRAL_TREND_THRESHOLD) return 'stable';
-    if (percentageChange > 0) return 'up';
-    if (percentageChange < 0) return 'down';
-
-    return 'stable';
-};
 
 interface TickerProps {
     symbol: NetworkSymbol;
@@ -64,7 +33,6 @@ export const TrendTicker = ({
     showLoadingSkeleton = true,
 }: TickerProps) => {
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
-    const locale = useSelector(selectLanguage);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, contractAddress);
     const lastWeekRate = useSelector(state =>
@@ -92,13 +60,6 @@ export const TrendTicker = ({
     const percentageChange = isSuccessfullyFetched
         ? calculatePercentageDifference(currentRate.rate!, lastWeekRate.rate!)
         : 0;
-    const trend = getTrend(percentageChange);
-    const { icon, color } = trendStyles[trend];
-    // A change that rounds to ±0.0% is shown as a neutral "≈0%" instead of e.g. "-0.0%".
-    const formattedChange =
-        trend === 'stable'
-            ? '≈0%'
-            : localizePercentage({ valueInFraction: percentageChange, locale });
 
     const emptyStateComponent = noEmptyStateTooltip ? <Empty>—</Empty> : <NoRatesTooltip />;
 
@@ -106,10 +67,7 @@ export const TrendTicker = ({
         <BaseCurrencyValue amount="1" symbol={symbol} showLoadingSkeleton={false}>
             {({ rate, timestamp }) =>
                 rate && timestamp && isSuccessfullyFetched ? (
-                    <PercentageWrapper $color={color}>
-                        {icon !== undefined && <Icon as={icon} color={color} size={16} />}
-                        {formattedChange}
-                    </PercentageWrapper>
+                    <TrendBadge valueInFraction={percentageChange} />
                 ) : (
                     emptyStateComponent
                 )

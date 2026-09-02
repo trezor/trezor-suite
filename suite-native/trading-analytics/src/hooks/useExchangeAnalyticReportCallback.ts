@@ -37,8 +37,7 @@ const useExchangeFormAnalyticsPayload = (quote: ExchangeTrade | undefined) => {
         (state: TradingRootState) =>
             (
                 selectTradingProviderByNameAndTradeType(state, exchange, 'exchange') as
-                    | ExchangeProviderInfo
-                    | undefined
+                    ExchangeProviderInfo | undefined
             )?.isFixedRate,
     );
 

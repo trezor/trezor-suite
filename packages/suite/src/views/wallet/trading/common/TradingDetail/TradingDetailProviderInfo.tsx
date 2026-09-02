@@ -1,13 +1,14 @@
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type {
     TradingProviderInfo as TradingProviderInfoType,
     TradingTradeType,
 } from '@suite-common/trading';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Column, InfoItem, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { TradingDetailTxId } from './TradingDetailTxId';
@@ -15,6 +16,7 @@ import { TradingProviderInfo } from '../TradingProviderInfo';
 
 type TradingDetailProviderInfoProps = {
     account?: Account;
+    receiveAccountKey?: AccountKey;
     estimatedTime?: string;
     orderId?: string;
     provider: TradingProviderInfoType;
@@ -24,6 +26,7 @@ type TradingDetailProviderInfoProps = {
 
 export const TradingDetailProviderInfo = ({
     account,
+    receiveAccountKey,
     estimatedTime,
     orderId,
     provider,
@@ -32,8 +35,8 @@ export const TradingDetailProviderInfo = ({
 }: TradingDetailProviderInfoProps) => {
     const dispatch = useDispatch();
 
-    const copyOrderId = () => {
-        const result = copyToClipboard(orderId || '');
+    const copyOrderId = async () => {
+        const result = await copyToClipboard(orderId || '');
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }
@@ -49,7 +52,11 @@ export const TradingDetailProviderInfo = ({
                 )}
                 {account && txId && (
                     <InfoItem label={<Translation id="TR_TXID" />} direction="row">
-                        <TradingDetailTxId value={txId} account={account} />
+                        <TradingDetailTxId
+                            value={txId}
+                            account={account}
+                            receiveAccountKey={receiveAccountKey}
+                        />
                     </InfoItem>
                 )}
                 <InfoItem label={<Translation id="TR_BUY_PROVIDER" />} direction="row">

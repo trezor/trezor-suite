@@ -15,7 +15,7 @@ type InstantStakeBannerProps = {
 };
 
 const bannerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.legacyBackgroundAlertBlueSubtleOnElevation1,
+    backgroundColor: utils.colors.elementFillInfoSoft,
     borderRadius: utils.borders.radii.r12,
     paddingHorizontal: utils.spacings.sp16,
     paddingVertical: utils.spacings.sp10,

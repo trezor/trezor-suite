@@ -1,11 +1,8 @@
-import { ipcMain } from 'electron';
-
 import TrezorConnect, {
     type ConnectSettings,
     type ConnectSettingsTransport,
     type LocalFirmwares,
-    UI_EVENT,
-    UI_REQUEST,
+    UI_EVENTS,
     UI_RESPONSE,
 } from '@trezor/connect';
 import { initLog } from '@trezor/connect-common';
@@ -16,44 +13,16 @@ import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';
 import { getStoredFirmwares } from './firmware';
-import { type MainThreadEmitter, type ModuleInit, type ModuleInitBackground } from './module';
+import type { ModuleInit, ModuleInitBackground } from './module';
+import { looselyTypedIpcMain } from '../ipcMain';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
 
 export const SERVICE_NAME = '@trezor/connect';
 
-type EmitOnSetCustomBackendToMainThreadToAllowDomainsParams = {
-    params: Parameters<typeof TrezorConnect.blockchainSetCustomBackend>;
-    mainThreadEmitter: MainThreadEmitter;
-};
-
-const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
-    params,
-    mainThreadEmitter,
-}: EmitOnSetCustomBackendToMainThreadToAllowDomainsParams) => {
-    const param = params[0];
-
-    if (param?.blockchainLink !== undefined) {
-        const domains = (param.blockchainLink.url ?? []).map(url => {
-            const electrumUrlResult = parseElectrumUrl(url);
-            if (electrumUrlResult !== undefined) {
-                return electrumUrlResult.host;
-            }
-
-            return new URL(url).hostname;
-        });
-
-        mainThreadEmitter.emit('module/request-interceptor', {
-            type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS',
-            coin: param.coin,
-            domains,
-        });
-    }
-};
-
 // `id` becomes the Bridge session owner shown to the user; it mirrors the desktop
-// manifest's `appName` (see packages/suite/src/support/extraDependencies.ts).
+// manifest's `appName` (see packages/suite/src/support/services.ts).
 const TRANSPORT_ID = 'Trezor Suite desktop';
 type CreateLogger = NonNullable<ConnectSettings['createLogger']>;
 
@@ -161,7 +130,27 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 }
 
                 if (method === 'blockchainSetCustomBackend') {
-                    emitOnSetCustomBackendToMainThreadToAllowDomains({ params, mainThreadEmitter });
+                    const { coin, blockchainLink: { url: urls } = {} } = params[0];
+                    if (urls) {
+                        const domains = urls.map(
+                            url => parseElectrumUrl(url)?.host ?? new URL(url).hostname,
+                        );
+
+                        mainThreadEmitter.emit('module/request-interceptor', {
+                            type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS',
+                            coin,
+                            domains,
+                        });
+                    }
+                }
+
+                if (method === 'blockchainEvmRpcGetChainId') {
+                    const { url } = params[0];
+
+                    mainThreadEmitter.emit('module/request-interceptor', {
+                        type: 'ADD_WHITELISTED_DOMAIN',
+                        domain: new URL(url).hostname,
+                    });
                 }
 
                 if (method === 'firmwareUpdate') {
@@ -196,7 +185,11 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
         }),
     };
 
-    const unregisterProxy = createIpcProxyHandler(ipcMain, 'TrezorConnect', ipcProxyOptions);
+    const unregisterProxy = createIpcProxyHandler(
+        looselyTypedIpcMain,
+        'TrezorConnect',
+        ipcProxyOptions,
+    );
 
     const onLoad = () => {
         // TODO: doing nothing for now.
@@ -229,11 +222,8 @@ export const init: ModuleInit = ({ mainThreadEmitter }) => {
         //     mainThreadEmitter.emit('module/trezor-connect/device-event', event);
         // });
 
-        TrezorConnect.on(UI_EVENT, event => {
-            const { type } = event;
-            if (type === UI_REQUEST.FIRMWARE_DOWNLOADED) {
-                mainThreadEmitter.emit('module/trezor-connect/firmware-store', event.payload);
-            }
+        TrezorConnect.on(UI_EVENTS.FIRMWARE_DOWNLOADED, event => {
+            mainThreadEmitter.emit('module/trezor-connect/firmware-store', event);
         });
     };
 

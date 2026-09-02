@@ -12,6 +12,7 @@ import {
 } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import {
@@ -42,7 +43,7 @@ import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/Security
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
-import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
@@ -319,7 +320,8 @@ export const SecurityCheck = () => {
             setCheckedDevices(prev => [...prev, selectedDevice?.id ?? '']); // Device ID must be available as firmware is already installed.
             dispatch(deviceActions.selectDevice(nextDeviceToCheck));
         } else {
-            goToSuite();
+            // "Yes, I have used it before" only enters Suite, nothing is set up here.
+            goToSuite({ skipDeviceSetupCompletedEvent: true });
         }
     };
 

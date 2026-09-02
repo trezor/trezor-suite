@@ -3,6 +3,7 @@ import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
 import { firmwareActions } from '@suite-common/firmware';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import {
     getFirmwareVersion,
@@ -11,8 +12,6 @@ import {
 } from '@trezor/device-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
-
-import { useDispatch } from 'src/hooks/suite';
 
 interface FirmwareTypeProps {
     isDeviceLocked: boolean;

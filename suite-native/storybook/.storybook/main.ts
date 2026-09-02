@@ -58,7 +58,28 @@ const main: StorybookConfig = {
             define: {
                 'process.version': '"v18.0.0"',
             },
-            plugins: [nodePolyfills()],
+            plugins: [
+                nodePolyfills(),
+                {
+                    // Vite ignores @trezor/connect's "react-native" package.json field and
+                    // resolves to workers.browser.ts, which Vite's worker plugin can't bundle.
+                    // Redirect to a stub that exports all workers as undefined — the real
+                    // workers.native.ts pulls in ElectrumWorker → tcp.ts → net.Socket,
+                    // that breaks the build and is unused in Storybook anyway.
+                    name: 'redirect-connect-workers-to-native',
+                    enforce: 'pre',
+                    resolveId(source) {
+                        if (
+                            source.endsWith('/workers/workers') ||
+                            source === '../workers/workers'
+                        ) {
+                            return require.resolve('./mocks/workers.ts');
+                        }
+
+                        return null;
+                    },
+                },
+            ],
         };
 
         return mergeConfig(config, myConfig);

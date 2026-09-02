@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { type Bip43Path, getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
@@ -14,6 +14,7 @@ import type {
     MethodInfo,
 } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect-common';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { createPlaceholderAccount } from './utils';

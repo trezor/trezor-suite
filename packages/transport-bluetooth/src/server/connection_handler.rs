@@ -131,11 +131,29 @@ async fn handle_http_request(
     peer: String,
     req: hyper::Request<Incoming>,
     manager: AdapterManager,
+    ws_token: Arc<Option<String>>,
 ) -> Result<HyperResponse<Full<Bytes>>, ServerError> {
-    // TODO: cors check like trezord-go and node-bridge
-    // let = req.headers().get("origin");
-
     if hyper_tungstenite::is_upgrade_request(&req) {
+        if let Some(ref expected_token) = *ws_token {
+            let is_token_valid = req
+                .headers()
+                .get("authorization")
+                .and_then(|value| value.to_str().ok())
+                .and_then(|value| value.strip_prefix("Bearer "))
+                .is_some_and(|token| token == expected_token);
+
+            if !is_token_valid {
+                info!("Missing or invalid websocket Authorization token");
+                info!("- Peer: {peer}");
+
+                // Stealth rejection: return error to close connection without sending response
+                return Err(ServerError::Io(std::io::Error::new(
+                    std::io::ErrorKind::ConnectionReset,
+                    "",
+                )));
+            }
+        }
+
         let (response, websocket) = match hyper_tungstenite::upgrade(req, None) {
             Ok(r) => r,
             Err(e) => {
@@ -168,13 +186,37 @@ async fn handle_http_request(
         });
         Ok(response)
     } else {
-        Ok(HyperResponse::new(Full::<Bytes>::from(INDEX_HTML)))
+        // In debug builds serve the UI
+        // Stealth rejection in release builds to avoid fingerprinting the service
+        if cfg!(debug_assertions) {
+            Ok(HyperResponse::new(Full::<Bytes>::from(INDEX_HTML)))
+        } else {
+            Err(ServerError::Io(std::io::Error::new(
+                std::io::ErrorKind::ConnectionReset,
+                "",
+            )))
+        }
     }
 }
 
 pub async fn start_server(address: &str) -> Result<(), ServerError> {
     let tcp_listener = TcpListener::bind(&address).await?;
     info!("Version: {} Listening on: {}", utils::APP_VERSION, address);
+
+    let ws_token = Arc::new(match std::env::var("TREZOR_BLUETOOTH_AUTH_TOKEN") {
+        Ok(token) if !token.trim().is_empty() => Some(token),
+        _ => {
+            if cfg!(debug_assertions) {
+                log::warn!("WebSocket auth disabled");
+                None
+            } else {
+                return Err(ServerError::Io(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "TREZOR_BLUETOOTH_AUTH_TOKEN is missing",
+                )));
+            }
+        }
+    });
 
     let manager = AdapterManager::new().await?;
 
@@ -185,8 +227,9 @@ pub async fn start_server(address: &str) -> Result<(), ServerError> {
         let (stream, _) = tcp_listener.accept().await?;
         let peer = stream.peer_addr()?;
         let manager = manager.clone();
+        let ws_token = ws_token.clone();
         let service = hyper::service::service_fn(move |req| {
-            handle_http_request(peer.to_string(), req, manager.clone())
+            handle_http_request(peer.to_string(), req, manager.clone(), ws_token.clone())
         });
 
         let connection = http

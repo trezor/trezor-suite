@@ -17,6 +17,7 @@ import {
     MAX_ETH_AMOUNT_FOR_STAKING,
     MAX_TRON_AMOUNT_FOR_STAKING,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
+    MIN_CARDANO_BALANCE_FOR_FEE_BUFFER,
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
     MIN_ETH_AMOUNT_FOR_STAKING,
@@ -143,7 +144,7 @@ export const getStakingLimitsByNetworkSymbol = (
                 ),
                 MAX_AMOUNT_FOR_STAKING: MAX_CARDANO_AMOUNT_FOR_STAKING,
                 MIN_FOR_WITHDRAWALS: MIN_CARDANO_FOR_WITHDRAWALS,
-                MIN_BALANCE_FOR_FEE_BUFFER: MIN_ETH_BALANCE_FOR_FEE_BUFFER,
+                MIN_BALANCE_FOR_FEE_BUFFER: MIN_CARDANO_BALANCE_FOR_FEE_BUFFER,
                 MIN_BALANCE_FOR_STAKING: MIN_CARDANO_BALANCE_FOR_STAKING,
             };
 
@@ -160,6 +161,29 @@ export const getStakingLimitsByNetworkSymbol = (
         default:
             return exhaustive(symbol);
     }
+};
+
+interface GetMaxStakeAmount {
+    balance: string;
+    symbol: NetworkSymbol | undefined;
+}
+
+export const getMaxStakeAmount = ({ balance, symbol }: GetMaxStakeAmount): string => {
+    const limits = getStakingLimitsByNetworkSymbol(symbol);
+    if (!limits) return '0';
+
+    const balanceBN = new BigNumber(balance);
+
+    const balanceMinusFeeBuffer = BigNumber.max(
+        balanceBN.minus(limits.MIN_BALANCE_FOR_FEE_BUFFER),
+        0,
+    );
+
+    const maxAmount = balanceMinusFeeBuffer.gt(limits.MIN_BALANCE_FOR_STAKING)
+        ? BigNumber.max(balanceBN.minus(limits.MIN_FOR_WITHDRAWALS), 0)
+        : balanceMinusFeeBuffer;
+
+    return BigNumber.min(maxAmount, limits.MAX_AMOUNT_FOR_STAKING).toFixed();
 };
 
 export const getStakingDataForNetwork = (
@@ -210,19 +234,19 @@ export const getStakingDataForNetwork = (
                 symbol: account.symbol,
             }).toString();
 
-            const hasRewards = new BigNumber(rewards).isGreaterThan(0);
-            const totalPendingStakeBalance = !hasRewards ? account.formattedBalance : '';
+            const canClaim = new BigNumber(rewards).gt(0);
+            const totalPendingStakeBalance = !canClaim ? account.formattedBalance : '';
 
             return {
                 autocompoundBalance: totalStakedBalance,
                 claimableAmount: '',
-                depositedBalance: hasRewards ? totalStakedBalance : '',
+                depositedBalance: canClaim ? totalStakedBalance : '',
                 pendingBalance: '',
                 pendingDepositedBalance: '',
                 totalPendingStakeBalance,
                 restakedReward: formattedRewards,
                 withdrawTotalAmount: '',
-                canClaim: false,
+                canClaim,
             };
         }
 

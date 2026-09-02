@@ -1,10 +1,11 @@
 import { type ReactNode, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingFulfillValue,
     type TradingRootStateWithDeviceAndAccounts,
@@ -169,7 +170,7 @@ export const useTradingTransaction = ({
             );
 
             if (isFulfilled(result)) {
-                return result.payload as TradingFulfillValue;
+                return result.payload;
             }
 
             return result.error as TradingFulfillValue;

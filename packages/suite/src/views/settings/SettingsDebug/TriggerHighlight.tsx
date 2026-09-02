@@ -1,7 +1,6 @@
 import { SettingsAnchor, goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const TriggerHighlight = () => {
     const dispatch = useDispatch();

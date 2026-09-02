@@ -5,7 +5,9 @@ import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<EarnModalAction>;
-    step: AttributeDef<Extract<EarnAnalyticsStep, 'staking-dashboard'>>;
+    step: AttributeDef<
+        Extract<EarnAnalyticsStep, 'staking-dashboard' | 'change-delegate-form-modal'>
+    >;
     networkSymbol?: AttributeDef<string>;
     currency?: AttributeDef<'crypto' | 'fiat'>;
 };
@@ -29,9 +31,15 @@ export const stakingChangeDelegateEvent: EventDef<Attributes, EventType.StakingC
                 'The action taken by the user: `continue` to proceed with changing delegate, `cancel` to abort the process, `close` to dismiss the modal',
         },
         step: {
-            changelog: [{ version: '25.4.0', notes: 'added' }],
+            changelog: [
+                { version: '25.4.0', notes: 'added' },
+                {
+                    version: '26.8.0',
+                    notes: 'added `change-delegate-form-modal` value for the change delegate/vote form modal',
+                },
+            ],
             description:
-                'The current step in the change delegate flow: `staking-dashboard` when initiated from the staking dashboard',
+                'The current step in the change delegate flow: `staking-dashboard` when initiated from the staking dashboard, `change-delegate-form-modal` when in the change delegate form',
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],

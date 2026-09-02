@@ -12,8 +12,7 @@ export type AnalyticsSendFlowStep =
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
 export type CountryChangeContext =
-    | Exclude<TradingTypeWithConcierge, 'exchange'>
-    | CountryChangeContextCheck;
+    Exclude<TradingTypeWithConcierge, 'exchange'> | CountryChangeContextCheck;
 export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 export type DeviceAuthenticityCheckResult = 'successful' | 'compromised' | 'cancelled' | 'failed';
@@ -62,12 +61,7 @@ export type TradingNavigateFrom =
     | 'trade/exchange'
     | 'trade/concierge';
 export type TradingExchangeAction =
-    | 'continue'
-    | 'cancel'
-    | 'retry'
-    | 'visit'
-    | 'revoke'
-    | 'value_change';
+    'continue' | 'cancel' | 'retry' | 'visit' | 'revoke' | 'value_change';
 export type TradingExchangeStep =
     | 'exchange-form'
     | 'account-selection'
@@ -88,8 +82,4 @@ export type TradingBuyStep = 'buy-form' | 'account-selection' | 'buy-preview';
 
 export type TradingSellAction = 'continue' | 'cancel' | 'retry' | 'visit';
 export type TradingSellStep =
-    | 'sell-form'
-    | 'transaction-preview'
-    | 'fee-selection'
-    | 'sign-and-send'
-    | 'webview';
+    'sell-form' | 'transaction-preview' | 'fee-selection' | 'sign-and-send' | 'webview';

@@ -21,5 +21,7 @@ export {
 export { TestReportProviderBase, createTestAnnotation } from './githubReporter/annotationBase';
 export type { TestDetailsAnnotation, TestMetadataInput } from './githubReporter/types';
 export type * from './githubReporter/types';
+export { resolvePullRequestNumber, resolveRunUrl, upsertStickyPrComment } from './gitHub/prComment';
+export type { StickyPrCommentResult } from './gitHub/prComment';
 export * from './enums/testAnnotations';
 export * from './grepUtils';

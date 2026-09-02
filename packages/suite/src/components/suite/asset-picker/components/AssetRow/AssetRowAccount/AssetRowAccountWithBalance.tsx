@@ -9,28 +9,54 @@ import { AccountAmount } from './AccountAmount';
 export type AssetRowAccountWithBalanceProps = {
     account: Account;
     dataTestId?: string;
-    onClick: (account: Account) => void;
+    onClick?: (account: Account) => void;
+    isFiatPrimary?: boolean;
+    isInsideGroup?: boolean;
 };
 
 export function AssetRowAccountWithBalance({
     dataTestId,
     account,
     onClick,
+    isFiatPrimary = false,
+    isInsideGroup = false,
 }: AssetRowAccountWithBalanceProps) {
+    const isDisabled = !onClick;
+
     return (
-        <ItemClickableContainer onClick={() => onClick(account)}>
+        <ItemClickableContainer
+            onClick={() => {
+                onClick?.(account);
+            }}
+            padding={isInsideGroup ? { left: 16, vertical: 12, right: 16 } : undefined}
+            isDisabled={isDisabled}
+        >
             <Row data-testid={dataTestId} gap={12} alignItems="center" overflow="hidden">
                 <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
                 <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
-                    <Text typographyStyle="body-md" ellipsisLineCount={1} maxWidth="100%">
+                    <Text
+                        typographyStyle="body-md"
+                        ellipsisLineCount={1}
+                        maxWidth="100%"
+                        isDisabled={isDisabled}
+                    >
                         {getNetworkDisplaySymbolName(account.symbol)}
                     </Text>
-                    <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
+                    <Text
+                        intent="neutral"
+                        priority="secondary"
+                        typographyStyle="body-sm"
+                        isDisabled={isDisabled}
+                    >
                         {getDisplaySymbol(account.symbol)}
                     </Text>
                 </Column>
             </Row>
-            <AccountAmount account={account} />
+            <AccountAmount
+                account={account}
+                isFiatPrimary={isFiatPrimary}
+                isDisabled={isDisabled}
+            />
         </ItemClickableContainer>
     );
 }

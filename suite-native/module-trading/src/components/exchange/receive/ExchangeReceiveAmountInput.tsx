@@ -3,6 +3,7 @@ import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
+import { useWatch } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -21,8 +22,11 @@ export const ExchangeReceiveAmountInput = forwardRef<TextInput, ExchangeReceiveA
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
         const isLoading = useSelector(selectTradingExchangeIsLoading);
-        const { watch } = useExchangeFormContext();
-        const [asset, amount] = watch(['receiveAsset', 'receiveCryptoAmount']);
+        const { control } = useExchangeFormContext();
+        const [asset, amount] = useWatch({
+            control,
+            name: ['receiveAsset', 'receiveCryptoAmount'],
+        });
         const symbol = getSymbolFromTradeableAsset(asset);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
 

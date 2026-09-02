@@ -6,6 +6,7 @@ import { AccountsListTokenItem } from '@suite-native/accounts';
 import { AccordionContent, AnimatedBox, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenYieldRateBadge } from '@suite-native/module-earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type OnSelectAsset } from './types';
@@ -77,6 +78,13 @@ export const ZeroBalanceTokensSection = ({
                         isFirst={false}
                         isLast={index === tokens.length - 1}
                         showFiatValue={false}
+                        badges={
+                            <TokenYieldRateBadge
+                                account={account}
+                                token={token}
+                                variant="inactive"
+                            />
+                        }
                         onSelectAccount={() =>
                             onSelect({ tokenContract: token.contract, tokenSymbol: token.symbol })
                         }

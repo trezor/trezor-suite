@@ -1,4 +1,4 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -29,6 +29,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- temporary diagnostic
 import { __btcUnknownTxDebug__ } from '@trezor/connect/src/utils/pathUtils';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -39,10 +40,12 @@ import {
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import {
+    type WalletSettingsRootState,
     selectAddressDisplayType,
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
 } from '../settings/walletSettingsReducer';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 
 type GetSequenceParams = { account: Account; formValues: FormState };
@@ -59,10 +62,15 @@ const getSequence = ({ account, formValues }: GetSequenceParams) => {
     return undefined; // Must be undefined for final (non-RBF) transaction with no locktime
 };
 
+type ComposeBitcoinTransactionFeeLevelsThunkState = DeviceRootState & WalletSettingsRootState;
+
 export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeBitcoinTransactionFeeLevelsThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, getState, rejectWithValue }) => {
@@ -118,7 +126,6 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             : account.addresses.change;
 
         const params: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
-            // needs to be present in order to correct resolve of @trezor/connect params overload
             account: {
                 path: account.path,
                 addresses: {
@@ -132,7 +139,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             sequence,
             outputs: composeOutputs,
             sortingStrategy: formState.rbfParams !== undefined ? 'none' : DEFAULT_SORTING_STRATEGY,
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
         };
 
         const response = await TrezorConnect.composeTransaction(params);
@@ -192,7 +199,6 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
                 customLevels.length > 0
                     ? await TrezorConnect.composeTransaction({
                           ...params,
-                          account: params.account, // needs to be present in order to correct resolve type of @trezor/connect params overload
                           feeLevels: customLevels,
                       })
                     : ({ success: false } as const);
@@ -252,10 +258,15 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type SignBitcoinSendFormTransactionThunkState = TransactionsRootState & WalletSettingsRootState;
+
 export const signBitcoinSendFormTransactionThunk = createThunk<
     SignedTransaction,
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    {
+        rejectValue: SignTransactionError;
+        state: SignBitcoinSendFormTransactionThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (
@@ -357,7 +368,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
                 addresses: selectedAccount.addresses!,
                 transactions: refTxs,
             },
-            coin: selectedAccount.symbol,
+            coin: asCoinSymbol(selectedAccount.symbol),
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             ...signEnhancement,
             paymentRequests,

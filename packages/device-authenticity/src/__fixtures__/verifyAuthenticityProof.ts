@@ -372,6 +372,31 @@ export const verifyAuthenticityProofFixtures: Fixture[] = [
     ...matchRootPubKeyToCertificateFixtures,
     // Error detail scenarios — invalid inputs caught and wrapped in result objects.
     {
+        description:
+            'fails with ROOT_PUBKEY_NOT_FOUND for optiga certificates with tropic proof type',
+        params: {
+            ...defaultOptigaProps,
+            proofType: 'tropic',
+        },
+        result: { valid: false, error: 'INVALID_DEVICE_CERTIFICATE' },
+    },
+    {
+        description: 'fails with ROOT_PUBKEY_NOT_FOUND for tropic certificates with MCU proof type',
+        params: {
+            ...defaultTropicProps,
+            proofType: 'mcu',
+        },
+        result: { valid: false, error: 'INVALID_DEVICE_CERTIFICATE' },
+    },
+    {
+        description: 'fails with ROOT_PUBKEY_NOT_FOUND for MCU certificates with optiga proof type',
+        params: {
+            ...defaultMCUProps,
+            proofType: 'optiga',
+        },
+        result: { valid: false, error: 'INVALID_DEVICE_CERTIFICATE' },
+    },
+    {
         description: 'fails with INVALID_DEVICE_MODEL for unknown device model',
         params: {
             ...defaultOptigaProps,

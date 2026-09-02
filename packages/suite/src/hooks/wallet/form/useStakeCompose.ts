@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
     type ComposeActionContext,
@@ -15,7 +16,6 @@ import { useDebounce } from '@trezor/react-utils';
 
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
 import { type StakeContextValues } from 'src/components/earn/forms/StakeFormContext';
-import { useDispatch } from 'src/hooks/suite';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
@@ -78,6 +78,15 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 const values = getValues();
 
                 return dispatch(composeTransaction(values, state));
+            }).catch(error => {
+                // The compose thunk reaches TrezorConnect, whose rejection messages may embed the
+                // composed account payload. `composeRequest` is fired without a `.catch` from the
+                // effects below, so a rejection escaping here would become an unhandled rejection
+                // and get reported verbatim by Sentry's global handler. Only the error name, never
+                // its message, is safe to log.
+                console.warn('Stake compose failed', error instanceof Error ? error.name : error);
+
+                return undefined;
             });
 
             // RACE-CONDITION NOTE:

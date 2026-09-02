@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -42,7 +42,7 @@ export const NetworkReserveBanner = ({ symbol, contractAddress }: NetworkReserve
     };
 
     return (
-        <InlineAlertBox
+        <BannerInline
             intent="info"
             title={
                 <Translation

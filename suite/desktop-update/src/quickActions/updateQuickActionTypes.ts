@@ -1,6 +1,5 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import { goto } from '@suite/router';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { type IconComponent, type UIIntent } from '@trezor/components';
 import { ArrowDownIcon, ArrowsClockwiseFilledIcon, CheckIcon, PlugsIcon } from '@trezor/icons';
 
@@ -32,7 +31,7 @@ export const mapUpdateStatusToIntent: Record<UpdateStatus, UIIntent> = {
     'update-downloaded-manual': 'info',
     'update-downloaded-auto-restart-to-update': 'info',
     'up-to-date': 'brand',
-    'update-available': 'info',
+    'update-available': 'accentViolet',
     'just-updated': 'accentViolet',
 };
 

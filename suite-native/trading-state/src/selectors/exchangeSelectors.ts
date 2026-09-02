@@ -1,5 +1,8 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
-    selectGroupedTradingExchangeQuotes,
+    EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE,
+    type GroupedExchangeQuotesByRateType,
+    selectGroupedExchangeQuotes,
     selectTradingExchangeBuyCryptoIds,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
@@ -20,6 +23,9 @@ import {
     createTradingWithFeatureFlagsMemoizedSelector,
 } from '../reducers';
 import { getAssetByEnabledNetworksFilter } from '../utils';
+
+export type { GroupedExchangeQuotesByRateType };
+export { EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE, selectGroupedExchangeQuotes };
 
 export type TradingWithFeatureFlagsRootState = TradingRootState & FeatureFlagsRootState;
 
@@ -53,30 +59,23 @@ export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAc
 
 export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
     [
-        selectTradingExchangeBuyCryptoIds as unknown as (
-            state: TradingRootState,
-        ) => ReturnType<typeof selectTradingExchangeBuyCryptoIds>,
+        (state: TradingRootState, supportedCoins: readonly NetworkSymbol[]) =>
+            selectTradingExchangeBuyCryptoIds(state, supportedCoins),
         ({ wallet }) => wallet.trading.info.coins,
-        (_state: TradingRootState, forbiddenCryptoId?: string) => forbiddenCryptoId,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
-    (
-        cryptoIds,
-        coins,
-        forbiddenCryptoId,
-        areDebugOnlyNetworksEnabled,
-        areExperimentalOnlyNetworksEnabled,
-    ) => {
+    (cryptoIds, coins, areDebugOnlyNetworksEnabled, areExperimentalOnlyNetworksEnabled) => {
         if (!coins || !cryptoIds) {
             return [];
         }
 
         return cryptoIds
-            .filter(cryptoId => cryptoId !== forbiddenCryptoId)
             .flatMap(cryptoId => {
                 const coinInfo = coins[cryptoId];
-                if (!coinInfo) return [];
+                if (!coinInfo) {
+                    return [];
+                }
 
                 return [coinInfoToTradeableAsset(cryptoId, coinInfo)];
             })
@@ -91,10 +90,6 @@ export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMem
 
 export const selectExchangeQuotes = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotes;
-
-export const selectGroupedExchangeQuotes = selectGroupedTradingExchangeQuotes as unknown as (
-    state: TradingRootState,
-) => ReturnType<typeof selectGroupedTradingExchangeQuotes>;
 
 export const selectExchangeAmountLimits = (state: TradingRootState) =>
     selectTradingExchange(state).amountLimits;

@@ -1,23 +1,25 @@
-import React from 'react';
-
 import { Translation } from '@suite/intl';
 import { selectVotingDelegationOption } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, CollapsibleBox, Row, Text } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
 
+import { useSeededCardanoVotingDelegation } from 'src/hooks/earn/useCardanoAccountVotingDelegation';
 import { useSelector } from 'src/hooks/suite';
 
-import { VotingDelegationsOptions } from './VotingDelegationsOptions';
+import { VOTING_OPTION_LABELS, VotingDelegationsOptions } from './VotingDelegationsOptions';
 
 type VotingDelegationsProps = {
     account: Account;
 };
 
 export const VotingDelegations = ({ account }: VotingDelegationsProps) => {
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, account.key),
+    );
+    const accountVotingDelegation = useSeededCardanoVotingDelegation(account);
 
-    if (account.networkType !== 'cardano' || !selectedVotingDelegation) return null;
+    if (account.networkType !== 'cardano') return null;
 
     return (
         <Card>
@@ -32,20 +34,17 @@ export const VotingDelegations = ({ account }: VotingDelegationsProps) => {
                 toggleIcon={CaretDownIcon}
                 toggleLabel={
                     <Text intent="neutral" typographyStyle="body-sm-strong">
-                        <Translation
-                            id={
-                                selectedVotingDelegation.type === 'another_drep'
-                                    ? 'TR_STAKING_DELEGATE_TO_ANOTHER_DREP'
-                                    : 'TR_STAKING_DELEGATE_TO_EVERSTAKE'
-                            }
-                        />
+                        <Translation id={VOTING_OPTION_LABELS[selectedVotingDelegation.type]} />
                     </Text>
                 }
                 fillType="none"
                 paddingType="none"
                 hasDivider={false}
             >
-                <VotingDelegationsOptions networkType={account.networkType} resetOnMount />
+                <VotingDelegationsOptions
+                    account={account}
+                    hasKeepCurrentOption={!!accountVotingDelegation}
+                />
             </CollapsibleBox>
         </Card>
     );

@@ -1,0 +1,37 @@
+{
+    "model": "claude-opus-5",
+    "effortLevel": "low",
+    "permissions": {
+        "defaultMode": "auto",
+        "deny": [
+            "Glob",
+            "Grep",
+            "Edit",
+            "Write",
+            "NotebookEdit",
+            "Bash",
+            "PowerShell",
+            "WebFetch",
+            "WebSearch",
+            "mcp__playwright__browser_close",
+            "mcp__playwright__browser_drop",
+            "mcp__playwright__browser_evaluate",
+            "mcp__playwright__browser_file_upload",
+            "mcp__playwright__browser_navigate_back",
+            "mcp__playwright__browser_run_code_unsafe"
+        ]
+    },
+    "hooks": {
+        "PreToolUse": [
+            {
+                "matcher": "Read|mcp__playwright__browser_navigate|mcp__playwright__browser_tabs|mcp__playwright__browser_take_screenshot",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "node \"$CLAUDE_PROJECT_DIR/packages/e2e-utils/src/llmExploratoryTester/hooks/sandboxGate.mjs\""
+                    }
+                ]
+            }
+        ]
+    }
+}

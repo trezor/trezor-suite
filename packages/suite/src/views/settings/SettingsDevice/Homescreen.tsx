@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Paragraph, Tooltip } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
 import {
     ImageValidationError,
     convertImage,

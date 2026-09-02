@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
 import { connectPopupDeeplinkThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectPendingProposal, walletConnectPairThunk } from '@suite-common/walletconnect';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {

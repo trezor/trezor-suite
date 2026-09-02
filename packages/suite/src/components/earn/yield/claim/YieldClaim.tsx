@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
-import { useDevice } from '@suite/device';
+import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
@@ -10,20 +10,20 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     YIELD_FLOW_AVAILABLE_STEPS,
-    isStablecoinYieldSupported,
-    selectStablecoinYieldSession,
-    selectStablecoinYieldTxReview,
-    stablecoinYieldActions,
+    isYieldSupported,
+    selectYieldSession,
+    selectYieldTxReview,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
@@ -50,16 +50,14 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
         useFirmwareUpgradeModal();
 
-    const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
-    const claimSession = useSelector(state =>
-        selectStablecoinYieldSession(state, 'claim', flowKey),
-    );
+    const yieldTxReview = useSelector(selectYieldTxReview);
+    const claimSession = useSelector(state => selectYieldSession(state, 'claim', flowKey));
     const isClaimSubmitting =
         claimSession.action.isSubmitting ||
         (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account.key);
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
     const isDeviceConnected = !!device?.connected && device.available;
-    const isClaimFirmwareOutdated = !isStablecoinYieldSupported(device, 'claim');
+    const isClaimFirmwareOutdated = !isYieldSupported(device, { flowType: 'claim' });
 
     const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType: 'claim', flowKey });
     const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(account);
@@ -67,14 +65,13 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         merklRewardsQuery.data?.accountsRewards[0];
     const isRewardsLoading = merklRewardsQuery.isLoading || missingRateTickersQuery.isLoading;
 
-    // Completion shows the claimed-rewards snapshot; until it is available, keep the claim screen.
-    const currentStep = claimSession.step === 'complete' && accountRewards ? 'complete' : 'action';
+    const currentStep = claimSession.step === 'complete' ? 'complete' : 'action';
 
     useEffect(() => {
-        dispatch(stablecoinYieldActions.initSession({ flowType: 'claim', flowKey }));
+        dispatch(yieldActions.initSession({ flowType: 'claim', flowKey }));
 
         return () => {
-            dispatch(stablecoinYieldActions.disposeSession({ flowType: 'claim', flowKey }));
+            dispatch(yieldActions.disposeSession({ flowType: 'claim', flowKey }));
         };
     }, [dispatch, flowKey]);
 
@@ -246,10 +243,11 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                             },
                             complete: {
                                 isListItem: false,
-                                content: () =>
-                                    accountRewards ? (
-                                        <YieldFlowCompleteClaim accountRewards={accountRewards} />
-                                    ) : null,
+                                content: () => (
+                                    <YieldFlowCompleteClaim
+                                        rewards={claimSession.result.completedRewards}
+                                    />
+                                ),
                             },
                         }}
                     />

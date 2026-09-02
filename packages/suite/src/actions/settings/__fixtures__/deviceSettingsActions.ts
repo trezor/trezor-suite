@@ -2,6 +2,7 @@ import assert from 'assert';
 
 import type { SuiteSettingsState } from '@suite/settings';
 import { deviceActions, deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -9,11 +10,22 @@ import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { type Response } from '@trezor/connect';
 
 import type suiteReducer from 'src/reducers/suite/suiteReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
+import { type ThunkAction } from 'src/types/suite';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';
 
-export const deviceReducer = prepareDeviceReducer(extraDependencies);
+export const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
 
 export type DeviceSettingsFixtureState = {
     suite: ReturnType<typeof suiteReducer>;
@@ -26,7 +38,7 @@ assert(deviceChange.features !== undefined);
 
 type Fixture = {
     description: string;
-    action: () => void;
+    action: () => ThunkAction;
     initialState: Partial<DeviceSettingsFixtureState>;
     deviceChange?: TrezorDevice;
     mocks: Awaited<Response<{ message: string }>>;

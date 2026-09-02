@@ -26,7 +26,7 @@ export const EarnAccountCellDetails = ({
         return (
             <>
                 <Text
-                    typographyStyle="body-sm"
+                    typographyStyle="body-sm-strong"
                     intent="neutral"
                     priority="primary"
                     ellipsisLineCount={1}
@@ -52,7 +52,7 @@ export const EarnAccountCellDetails = ({
                 accountTypeBadgeSize="small"
                 intent="neutral"
                 priority="primary"
-                typographyStyle="body-sm"
+                typographyStyle="body-sm-strong"
                 data-testid="@earn/dashboard/account-label"
             />
 

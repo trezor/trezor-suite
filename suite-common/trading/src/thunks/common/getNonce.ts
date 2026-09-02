@@ -1,11 +1,17 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingSendRejectedProps } from '../../types';
 
-export const getNonce = createThunk<string, void, { rejectValue: TradingSendRejectedProps }>(
+export type GetNonceThunkState = DeviceRootState;
+
+export const getNonce = createThunk<
+    string,
+    void,
+    { rejectValue: TradingSendRejectedProps; state: GetNonceThunkState }
+>(
     `${TRADING_THUNK_PREFIX}/getNonce`,
     async (_, { getState, rejectWithValue, fulfillWithValue }) => {
         const device = selectSelectedDevice(getState());

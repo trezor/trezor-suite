@@ -1,6 +1,11 @@
 import { type AcquiredDevice } from '@suite-common/suite-types';
-import { type FirmwareHashCheckError, type FirmwareRevisionCheckError } from '@trezor/connect';
+import {
+    FIRMWARE,
+    type FirmwareHashCheckError,
+    type FirmwareRevisionCheckError,
+} from '@trezor/connect';
 import type { FilterPropertiesByType } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenariosConfig';
 
@@ -39,6 +44,9 @@ export const getIsRevisionCheckErrorWithNotification = (
     revisionCheckErrorScenarios[error].shouldNotify === true;
 
 type AuthenticityChecks = AcquiredDevice['authenticityChecks'];
+
+export const getIsRetriableRevisionCheckError = (error: FirmwareRevisionCheckError | null) =>
+    error !== null && isArrayMember(error, FIRMWARE.REVISION_CHECK_RETRIABLE_ERRORS);
 
 export const filterInconclusiveAuthenticityChecks = (
     checks: AuthenticityChecks,

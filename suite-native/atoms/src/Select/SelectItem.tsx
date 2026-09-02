@@ -46,7 +46,7 @@ const selectItemContentStyle = prepareNativeStyle<SelectItemStyleProps>(
                 style: {
                     margin: 0,
                     borderWidth: utils.borders.widths.large,
-                    borderColor: utils.colors.legacyBackgroundPrimaryDefault,
+                    borderColor: utils.colors.elementFillFieldSelected,
                     color: utils.colors.contentPrimary,
                 },
             },

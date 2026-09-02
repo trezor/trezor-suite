@@ -1,18 +1,17 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type TransactionsRootState, confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
+import { useDispatch } from '@suite-common/redux-utils';
+import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import type {
-    ReceiveStackParamList,
-    ReceiveStackRoutes,
+    ReceiveAddressVerificationStackParamList,
+    ReceiveAddressVerificationStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
@@ -22,11 +21,14 @@ import { exhaustive } from '@trezor/type-utils';
 import { AddressVerificationResultType, verifyReceiveAddress } from '../addressVerification';
 
 type NavigationProp = StackNavigationProps<
-    ReceiveStackParamList,
-    ReceiveStackRoutes.ReceiveAddress
+    ReceiveAddressVerificationStackParamList,
+    ReceiveAddressVerificationStackRoutes.ContinueOnTrezor
 >;
 
-export const useReceiveAddressVerification = (accountKey: AccountKey) => {
+export const useReceiveAddressVerification = (
+    accountKey: AccountKey,
+    addressPath: string | undefined,
+) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -34,17 +36,13 @@ export const useReceiveAddressVerification = (accountKey: AccountKey) => {
 
     const { showAlert } = useAlert();
 
-    const freshAddress = useSelector((state: NativeAccountsRootState & TransactionsRootState) =>
-        selectFreshAccountAddress(state, accountKey),
-    );
-
     const handleCancel = useCallback(() => {
         TrezorConnect.cancel();
     }, []);
 
     const verifyAddressOnDevice = useCallback(async (): Promise<void> => {
         try {
-            if (!freshAddress) {
+            if (!addressPath) {
                 return;
             }
 
@@ -52,7 +50,7 @@ export const useReceiveAddressVerification = (accountKey: AccountKey) => {
                 dispatch(
                     confirmAddressOnDeviceThunk({
                         accountKey,
-                        addressPath: freshAddress.path,
+                        addressPath,
                         chunkify: true,
                     }),
                 ).unwrap(),
@@ -102,9 +100,9 @@ export const useReceiveAddressVerification = (accountKey: AccountKey) => {
         }
     }, [
         accountKey,
+        addressPath,
         analytics,
         dispatch,
-        freshAddress,
         handleCancel,
         navigation,
         showAlert,

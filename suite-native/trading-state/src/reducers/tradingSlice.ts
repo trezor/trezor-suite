@@ -2,10 +2,13 @@ import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    type InvityServerEnvironment,
+    type TradeServerEnvironment,
+    type TradingReducerDeps,
+    type TradingType,
     type TradingTypeWithConcierge,
     prepareTradingReducer,
 } from '@suite-common/trading';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { ProviderConfirmationStatus, TradingState } from '@suite-native/trading-types';
 
@@ -13,6 +16,12 @@ import { TRADING_BUY, buyActions, buyReducer } from './buySlice';
 import { TRADING_EXCHANGE, exchangeActions, exchangeReducer } from './exchangeSlice';
 import { TRADING_RESIDENCE, residenceReducer } from './residenceSlice';
 import { TRADING_SELL, sellActions, sellReducer } from './sellSlice';
+
+type SetReceiveAccountPayload = {
+    tradingType: Exclude<TradingType, 'sell'>;
+    accountKey: AccountKey;
+    address: string | undefined;
+};
 
 const providerConfirmationStatusTransitions: Record<
     ProviderConfirmationStatus,
@@ -48,7 +57,7 @@ export const tradingSlice = createSliceWithExtraDeps({
     reducers: {
         setTradingEnvironment: (
             state: TradingState,
-            { payload }: PayloadAction<InvityServerEnvironment>,
+            { payload }: PayloadAction<TradeServerEnvironment>,
         ) => {
             state.tradingEnvironment = payload;
             state.tradeOrderIdToBeOpened = undefined;
@@ -73,6 +82,23 @@ export const tradingSlice = createSliceWithExtraDeps({
         },
         clearActiveTradingType: (state: TradingState) => {
             state.activeTradingType = undefined;
+        },
+        setReceiveAccount: (
+            state: TradingState,
+            { payload }: PayloadAction<SetReceiveAccountPayload>,
+        ) => {
+            const { tradingType, accountKey, address } = payload;
+
+            if (tradingType === 'buy') {
+                state.buy.tradingAccountKey = accountKey;
+                state.buy.receiveAccountKey = accountKey;
+                state.buy.receiveAddress = address;
+
+                return;
+            }
+
+            state.exchange.receiveAccountKey = accountKey;
+            state.exchange.receiveAddress = address;
         },
         setProviderConfirmationStatus: (
             state: TradingState,
@@ -99,7 +125,7 @@ export const tradingSlice = createSliceWithExtraDeps({
             state.sell.tradingAccountKey = undefined;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: TradingReducerDeps) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
         builder
             .addMatcher(

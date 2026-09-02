@@ -2,6 +2,7 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 import {
     ActionButton,
@@ -13,7 +14,7 @@ import {
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type DeviceAuthenticityOptOutProps = {
     isDeviceAuthenticityCheckSupported: boolean;
@@ -28,11 +29,11 @@ export const DeviceAuthenticityOptOut = ({
     const handleClick = () => {
         if (!isDeviceAuthenticityCheckSupported) return;
 
-        dispatch(
-            isDeviceAuthenticityCheckEnabled
-                ? openModal({ type: 'device-authenticity-check-opt-out' })
-                : toggleDeviceAuthenticityCheck(true),
-        );
+        if (isDeviceAuthenticityCheckEnabled) {
+            dispatch(openModal({ type: 'device-authenticity-check-opt-out' }));
+        } else {
+            dispatch(toggleDeviceAuthenticityCheck(true));
+        }
     };
 
     return (

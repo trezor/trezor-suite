@@ -156,11 +156,11 @@ export const HoldToConfirmButton = ({
                         cx={CIRCLE_CENTER}
                         cy={CIRCLE_CENTER}
                         r={animatedButtonRadius}
-                        color={utils.colors.legacyBackgroundPrimaryDefault}
+                        color={utils.colors.contentBrand}
                     />
                     <Path
                         path={leftLoaderArcPath}
-                        color={utils.colors.legacyBackgroundPrimaryDefault}
+                        color={utils.colors.contentBrand}
                         start={0}
                         end={animationProgress}
                         strokeCap="round"
@@ -170,7 +170,7 @@ export const HoldToConfirmButton = ({
                     />
                     <Path
                         path={rightLoaderArcPath}
-                        color={utils.colors.legacyBackgroundPrimaryDefault}
+                        color={utils.colors.contentBrand}
                         start={0}
                         end={animationProgress}
                         strokeCap="round"

@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';

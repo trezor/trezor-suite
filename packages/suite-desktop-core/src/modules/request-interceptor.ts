@@ -6,7 +6,7 @@
  * Differences from request-filter module is that it intercepts all requests from Electron Main process (nodejs),
  * whereas request-filter logs and filters allowed requests from electron renderer process.
  */
-import { TorStatus } from '@suite/tor';
+import { TorStatus } from '@suite/tor-types';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type InterceptedEvent, createInterceptor } from '@trezor/request-manager';
 import { exhaustive } from '@trezor/type-utils';
@@ -14,6 +14,10 @@ import { exhaustive } from '@trezor/type-utils';
 import { allowedDomains, localhostDomains } from '../config';
 import type { ModuleInit } from './module';
 import { hasSwitch } from '../libs/process-switches';
+import {
+    validateWhitelistedHostname,
+    validateWhitelistedHostnames,
+} from '../libs/validateWhitelistedHostname';
 
 export const SERVICE_NAME = 'request-interceptor';
 
@@ -24,7 +28,6 @@ export const SERVICE_NAME = 'request-interceptor';
 const mainThreadAllowedDomain = {
     general: [...allowedDomains],
     customBackends: {} as Record<string, string[]>,
-    coinjoinCoordinatorUrl: undefined as string | undefined,
 };
 
 /**
@@ -67,15 +70,27 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
             case 'ERROR':
                 return;
 
-            case 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS':
-                mainThreadAllowedDomain.customBackends[event.coin] = event.domains;
+            case 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS': {
+                mainThreadAllowedDomain.customBackends[event.coin] = validateWhitelistedHostnames({
+                    hostnames: event.domains,
+                    warn: message => logger.warn(SERVICE_NAME, message),
+                });
 
                 return;
+            }
 
-            case 'ADD_WHITELISTED_DOMAIN':
-                mainThreadAllowedDomain.general.push(event.domain);
+            case 'ADD_WHITELISTED_DOMAIN': {
+                const validatedHostname = validateWhitelistedHostname({
+                    hostname: event.domain,
+                    warn: message => logger.warn(SERVICE_NAME, message),
+                });
+
+                if (validatedHostname !== undefined) {
+                    mainThreadAllowedDomain.general.push(validatedHostname);
+                }
 
                 return;
+            }
 
             default:
                 return exhaustive(event);

@@ -3,6 +3,7 @@ import { FreeFocusInside } from 'react-focus-lock';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type ActiveView } from '@suite-common/suite-types';
 import { Box, Modal, ResizableBox, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
@@ -20,7 +21,8 @@ import {
 } from 'src/components/guide';
 import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { GUIDE_ANIMATION_DURATION_MS, useGuide } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectGuideView, selectGuideWidth } from 'src/selectors/suite/guideSelectors';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 const getGuideContent = (activeView: ActiveView) => {
@@ -45,8 +47,8 @@ const getGuideContent = (activeView: ActiveView) => {
 };
 
 export const GuideRouter = () => {
-    const activeView = useSelector(state => state.guide.view);
-    const storedWidth = useSelector(state => state.guide.width);
+    const activeView = useSelector(selectGuideView);
+    const storedWidth = useSelector(selectGuideWidth);
     const { isGuideOpen, closeGuide, isGuideOnTop } = useGuide();
     const { contentWidth } = useResponsiveContext();
     const dispatch = useDispatch();

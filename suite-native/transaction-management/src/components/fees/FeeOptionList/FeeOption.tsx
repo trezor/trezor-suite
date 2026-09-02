@@ -27,7 +27,7 @@ import {
     CryptoToFiatAmountFormatter,
     EmptyAmountSkeleton,
 } from '@suite-native/formatters';
-import { FormContext } from '@suite-native/forms';
+import { FormContext, useWatch } from '@suite-native/forms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
@@ -104,7 +104,7 @@ export const FeeOption = ({
     onSelectedFeeLevel,
 }: FeeOptionProps) => {
     const { utils, applyStyle } = useNativeStyles();
-    const { watch, setValue } = useContext(FormContext);
+    const { control, setValue } = useContext(FormContext);
 
     const feeTimeEstimate = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeLevelTimeEstimate(state, symbol, feeKey),
@@ -116,12 +116,12 @@ export const FeeOption = ({
 
     const areFeeValuesComplete = isFinalPrecomposedTransaction(feeLevel);
 
-    const selectedLevel = watch('feeLevel');
+    const selectedLevel = useWatch({ control, name: 'feeLevel' });
     const isChecked = selectedLevel === feeKey;
 
     const highlightColor: Color = areFeeValuesComplete
-        ? 'legacyBackgroundSecondaryDefault'
-        : 'legacyBackgroundAlertRedBold';
+        ? 'elementFillFieldSelected'
+        : 'elementFillCriticalBold';
 
     const borderAnimationValue = useDerivedValue(
         () => (isChecked ? withTiming(1) : withTiming(0)),
@@ -235,6 +235,8 @@ export const FeeOption = ({
                                 isChecked={isChecked}
                                 value={feeKey}
                                 onPress={handleSelectFeeLevel}
+                                accessibilityRole="radio"
+                                accessibilityState={{ checked: isChecked }}
                                 testID={`@transactionManagement/fees-level-radio-${feeKey}`}
                             />
                         )}

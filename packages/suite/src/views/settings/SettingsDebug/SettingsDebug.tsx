@@ -6,6 +6,7 @@ import {
 } from '@suite/message-system';
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { Context } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';
@@ -15,7 +16,6 @@ import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { TriggerActivityNotification } from 'src/components/suite/notifications/TriggerActivityNotification/TriggerActivityNotification';
-import { useDispatch } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { AnalyticsLogging } from './AnalyticsLogging';

@@ -1,13 +1,15 @@
+import { useMemo } from 'react';
+
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { LANGUAGES, type Locale } from '@suite-common/suite-types';
+import { selectSupportedDeviceLanguages } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
+import { type Locale } from '@suite-common/suite-types';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { changeLanguage } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
-
-const BASE_TRANSLATIONS = [{ value: 'en-US', label: LANGUAGES['en-US'].name as string }];
+import { useSelector } from 'src/hooks/suite';
 
 interface ChangeLanguageProps {
     isDeviceLocked: boolean;
@@ -17,32 +19,24 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
     const { device } = useDevice();
     const dispatch = useDispatch();
 
+    const supportedDeviceLanguages = useSelector(selectSupportedDeviceLanguages);
+
     const onChange = ({ value }: { value: Locale }) => {
-        dispatch(changeLanguage({ device, language: `${value}` }));
+        dispatch(changeLanguage({ device, language: value }));
     };
 
-    const isSupportedDevice = device?.features?.capabilities?.includes('Capability_Translations');
+    const languageOptions = useMemo(
+        () =>
+            supportedDeviceLanguages.map(({ value, label, isBeta }) => ({
+                value,
+                label: label + (isBeta ? ' (beta)' : ''),
+            })),
+        [supportedDeviceLanguages],
+    );
 
-    const deviceSupportedTranslations = Object.keys(device?.availableTranslations ?? {})
-        .map(it => {
-            if (!LANGUAGES[it as Locale]) {
-                console.error('LANGUAGES[it as Locale] not found', it);
-
-                return null;
-            }
-
-            return {
-                value: it,
-                label: `${LANGUAGES[it as Locale].name} (beta)`,
-            };
-        })
-        .filter((lang): lang is { value: string; label: string } => Boolean(lang));
-
-    if (isSupportedDevice !== true || deviceSupportedTranslations.length === 0) {
+    if (supportedDeviceLanguages.length <= 1) {
         return null;
     }
-
-    const languageOptions = BASE_TRANSLATIONS.concat(deviceSupportedTranslations);
 
     const selectedValue = languageOptions.find(
         option => option.value === device?.features?.language,

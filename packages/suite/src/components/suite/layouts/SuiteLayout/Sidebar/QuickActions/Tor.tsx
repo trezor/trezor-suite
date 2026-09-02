@@ -1,6 +1,7 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
-import { TorStatus, selectTorState } from '@suite/tor';
+import { TorStatus, selectIsTorDisabled, selectTorStatus } from '@suite/tor';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Column, Icon, type IconComponent, type UIIntent } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import {
@@ -13,7 +14,7 @@ import {
 } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {
     [TorStatus.Enabled]: 'TR_TOR_ENABLED',
@@ -45,7 +46,8 @@ const torIntentMap: Record<TorStatus, UIIntent> = {
 export const Tor = () => {
     const dispatch = useDispatch();
 
-    const { torStatus, isTorDisabled } = useSelector(selectTorState);
+    const torStatus = useSelector(selectTorStatus);
+    const isTorDisabled = useSelector(selectIsTorDisabled);
     const isTorIconVisible = isDesktop() && !isTorDisabled;
 
     const iconName = torIconMap[torStatus];

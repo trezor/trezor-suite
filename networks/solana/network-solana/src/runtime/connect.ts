@@ -410,7 +410,7 @@ export const sendAndConfirmTransaction = async (rawTx: string, api: SolanaAPI) =
     } catch (error) {
         const errorMessage = getSendErrorMessage(error);
         if (errorMessage) {
-            throw new Error(errorMessage);
+            throw new Error(errorMessage, { cause: error });
         }
         throw error;
     }

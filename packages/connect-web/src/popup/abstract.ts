@@ -1,12 +1,12 @@
 import EventEmitter from 'events';
 
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
-import { type CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect-common/src/events';
+import { type CoreEventMessage, POPUP } from '@trezor/connect-common/src/events';
 import {
     type AbstractMessageChannel,
     type Message,
 } from '@trezor/connect-common/src/messageChannel/abstract';
-import type { Manifest } from '@trezor/connect-common/src/types';
+import type { Manifest, PermissionRequest } from '@trezor/connect-common/src/types';
 import { type Log } from '@trezor/connect-common/src/utils/debug';
 import { getOrigin } from '@trezor/connect-common/src/utils/urlUtils';
 import type { IntervalId } from '@trezor/type-utils';
@@ -17,6 +17,7 @@ export type Params = {
     popupSrc: string;
     version: string;
     logger: Log;
+    requestedPermissions?: PermissionRequest[];
 };
 
 // How often to check if popup window is still open (ms).
@@ -34,17 +35,19 @@ export abstract class Popup extends EventEmitter {
 
     private readonly manifest: Params['manifest'];
     private readonly version: Params['version'];
+    private readonly requestedPermissions: Params['requestedPermissions'];
     private closeInterval: IntervalId | undefined;
     private locked = false;
     private closedEmitted = false;
     private pendingFocusOrCreate: Promise<void> = Promise.resolve();
 
-    constructor({ popupSrc, manifest, version, logger }: Params) {
+    constructor({ popupSrc, manifest, version, logger, requestedPermissions }: Params) {
         super();
         this.logger = logger;
         this.popupSrc = popupSrc;
         this.manifest = manifest;
         this.version = version;
+        this.requestedPermissions = requestedPermissions;
         this.channel = this.createChannel(getOrigin(popupSrc));
         this.handshakePromise = createDeferred();
         // Prevent unhandled rejection when the promise is rejected before
@@ -117,14 +120,16 @@ export abstract class Popup extends EventEmitter {
             this.channel.postMessage({
                 type: POPUP.HANDSHAKE,
                 // in this case, settings will be validated in popup
-                payload: { manifest: this.manifest, version: this.version },
+                payload: {
+                    manifest: this.manifest,
+                    version: this.version,
+                    requestedPermissions: this.requestedPermissions,
+                },
             });
             this.handshakePromise?.resolve();
         } else if (message.type === POPUP.CLOSED) {
             await this.close();
             this.handlePopupClosed();
-        } else if (message.event === DEVICE_EVENT) {
-            this.emit(DEVICE_EVENT, message);
         }
     }
 

@@ -1,15 +1,17 @@
 import { useCallback, useMemo } from 'react';
 
 import { type OtcProviderType, getOtcProvidersByCountry, useFetchOtc } from '@suite-common/trading';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { type ConciergeFormValues } from '@suite-native/trading-types';
 
 export const useConciergeProviders = () => {
     const { data: otcData } = useFetchOtc();
 
-    const { setValue, watch } = useFormContext<ConciergeFormValues>();
-    const country = watch('country');
-    const providerUrl = watch('providerUrl');
+    const { control, setValue } = useFormContext<ConciergeFormValues>();
+    const [country, providerUrl] = useWatch({
+        control,
+        name: ['country', 'providerUrl'],
+    });
 
     const providers = useMemo(
         () => getOtcProvidersByCountry(otcData, country.value),

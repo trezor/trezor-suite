@@ -1,9 +1,13 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { composeSolanaStakingTransaction, prepareSolanaStakeTxData } from '@suite-common/staking';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import {
+    type AccountsRootState,
+    type BlockchainRootState,
+    type FeesRootState,
+    type WalletSettingsRootState,
     selectAccountByKey,
     selectAddressDisplayType,
     selectConvertedNetworkFeeInfo,
@@ -23,6 +27,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { getSuiteVersion } from '@trezor/env-utils';
 import solana from '@trezor/network-solana/runtime';
 import type { Fee } from '@trezor/network-solana/types';
@@ -67,21 +72,24 @@ const buildSolanaStakeFormState = (
     stakeType,
 });
 
+type ResolveSolanaBlockchainUrlState = BlockchainRootState;
+
 const resolveSolanaBlockchainUrl = async (
-    state: Parameters<typeof selectNetworkBlockchainInfo>[0],
+    state: ResolveSolanaBlockchainUrlState,
     symbol: NetworkSymbol,
 ): Promise<string | undefined> => {
     const connectedUrl = selectNetworkBlockchainInfo(state, symbol)?.url;
     if (connectedUrl) return connectedUrl;
 
-    const info = await TrezorConnect.blockchainGetInfo({ coin: symbol });
+    const info = await TrezorConnect.blockchainGetInfo({ coin: asCoinSymbol(symbol) });
 
     return info.success ? info.payload.url : undefined;
 };
 
+type ResolveSolanaStakingContextState = AccountsRootState & BlockchainRootState;
+
 const resolveSolanaStakingContext = async (
-    state: Parameters<typeof selectAccountByKey>[0] &
-        Parameters<typeof selectNetworkBlockchainInfo>[0],
+    state: ResolveSolanaStakingContextState,
     accountKey: AccountKey,
 ): Promise<
     | { success: true; account: SolanaAccount; blockchainUrl: string }
@@ -117,10 +125,16 @@ const resolveSolanaStakingContext = async (
     return { success: true, account: account as SolanaAccount, blockchainUrl };
 };
 
+export type ComposeSolanaStakingTransactionFeeLevelsNativeThunkState =
+    ResolveSolanaStakingContextState & FeesRootState;
+
 export const composeSolanaStakingTransactionFeeLevelsNativeThunk = createThunk<
     PrecomposedLevels | undefined,
     { accountKey: AccountKey; stakeType: StakeNativeType; amount: string },
-    { rejectValue: SolanaStakingComposeRejectValue }
+    {
+        rejectValue: SolanaStakingComposeRejectValue;
+        state: ComposeSolanaStakingTransactionFeeLevelsNativeThunkState;
+    }
 >(
     `${STAKE_NATIVE_MODULE_PREFIX}/${COMPOSE_LOG_PREFIX}`,
     async ({ accountKey, stakeType, amount }, { getState, rejectWithValue }) => {
@@ -150,6 +164,10 @@ export const composeSolanaStakingTransactionFeeLevelsNativeThunk = createThunk<
     },
 );
 
+export type SignSolanaStakingTransactionNativeThunkState = ResolveSolanaStakingContextState &
+    DeviceRootState &
+    WalletSettingsRootState;
+
 export const signSolanaStakingTransactionNativeThunk = createThunk<
     void,
     {
@@ -157,7 +175,10 @@ export const signSolanaStakingTransactionNativeThunk = createThunk<
         stakeType: StakeNativeType;
         precomposedTransaction: PrecomposedTransactionFinal;
     },
-    { rejectValue: SignStakeNativeRejectValue }
+    {
+        rejectValue: SignStakeNativeRejectValue;
+        state: SignSolanaStakingTransactionNativeThunkState;
+    }
 >(
     `${STAKE_NATIVE_MODULE_PREFIX}/${SIGN_LOG_PREFIX}`,
     async (

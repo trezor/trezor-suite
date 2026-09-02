@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import { View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { isAddressValid } from '@suite-common/address';
+import { selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type XpubFormContext,
     type XpubFormValues,
@@ -14,7 +16,14 @@ import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { type Alert, useAlert } from '@suite-native/alerts';
-import { Button, Card, TextDivider, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import {
+    AnimatedBox,
+    Button,
+    Card,
+    TextDivider,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -68,16 +77,17 @@ export const XpubScanScreen = ({
     } = useBottomSheetModal();
 
     const { showAlert } = useAlert();
+    const { addressValidator } = useServices(selectAddressValidatorDep);
 
     const { networkSymbol } = route.params;
     const networkType = getNetworkType(networkSymbol);
 
     const form = useForm<XpubFormValues, XpubFormContext>({
         validation: xpubFormValidationSchema,
-        context: { symbol: networkSymbol },
+        context: { addressValidator, symbol: networkSymbol },
     });
-    const { handleSubmit, setValue, watch } = form;
-    const watchXpubAddress = watch('xpubAddress');
+    const { handleSubmit, setValue, control } = form;
+    const watchXpubAddress = useWatch({ control, name: 'xpubAddress' });
 
     const isXpubFormFilled = watchXpubAddress?.length > 0;
 
@@ -119,7 +129,7 @@ export const XpubScanScreen = ({
         if (
             xpubAddress &&
             !isAddressBasedNetwork(networkType) &&
-            isAddressValid(xpubAddress, networkSymbol)
+            addressValidator.isAddressValid(xpubAddress, networkSymbol)
         ) {
             showDelayedAlert({
                 title: <Translation id="moduleAccountImport.xpubScanScreen.alert.address.title" />,
@@ -199,14 +209,14 @@ export const XpubScanScreen = ({
                             multiline
                         />
                         {isXpubFormFilled && (
-                            <Animated.View entering={FadeIn.duration(FORM_BUTTON_FADE_IN_DURATION)}>
+                            <AnimatedBox entering={FadeIn.duration(FORM_BUTTON_FADE_IN_DURATION)}>
                                 <Button
                                     testID="@accounts-import/sync-coins/xpub-submit"
                                     onPress={onXpubFormSubmit}
                                 >
                                     <Translation id="generic.buttons.confirm" />
                                 </Button>
-                            </Animated.View>
+                            </AnimatedBox>
                         )}
                     </VStack>
                 </Form>
