@@ -2,13 +2,13 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
-    type StablecoinYieldRootState,
     type YieldFlowResolvedData,
+    type YieldRootState,
     fetchAllowance,
     fetchWrappedNativeTokenInfo,
-    selectStablecoinYieldSession,
-    stablecoinYieldActions,
-    stablecoinYieldReducer,
+    selectYieldSession,
+    yieldActions,
+    yieldReducer,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit } from '@suite-common/wallet-utils';
@@ -34,7 +34,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 jest.mock('@suite-common/wallet-core/src/allowance/fetchAllowance');
-jest.mock('@suite-common/wallet-core/src/stablecoin-yield/utils/fetchWrappedNativeTokenInfo');
+jest.mock('@suite-common/wallet-core/src/yield/utils/fetchWrappedNativeTokenInfo');
 
 const fetchAllowanceMock = jest.mocked(fetchAllowance);
 const fetchWrappedNativeTokenInfoMock = jest.mocked(fetchWrappedNativeTokenInfo);
@@ -127,7 +127,7 @@ const buildStore = (storeAccount: Account = account) =>
                     localCurrency: 'usd',
                     bitcoinAmountUnit: 0,
                 }),
-                stablecoinYield: stablecoinYieldReducer,
+                stablecoinYield: yieldReducer,
             }),
         },
     });
@@ -185,19 +185,15 @@ describe('useStartYieldDepositFlow', () => {
 
     it('resets stale action session before routing from zero allowance', async () => {
         const store = buildStore();
-        store.dispatch(stablecoinYieldActions.resetSession(sessionParams));
-        store.dispatch(stablecoinYieldActions.skipApprovalStep(sessionParams));
+        store.dispatch(yieldActions.resetSession(sessionParams));
+        store.dispatch(yieldActions.skipApprovalStep(sessionParams));
         const { result } = await renderUseStartYieldDepositFlow(store);
 
         await act(async () => {
             await result.current.handleStartYieldDepositFlow();
         });
 
-        const session = selectStablecoinYieldSession(
-            store.getState() as StablecoinYieldRootState,
-            'deposit',
-            flowKey,
-        );
+        const session = selectYieldSession(store.getState() as YieldRootState, 'deposit', flowKey);
 
         expect(session.step).toBe('approve');
         expect(mockNavigate).toHaveBeenCalledWith(

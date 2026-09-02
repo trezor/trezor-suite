@@ -3,7 +3,7 @@ import { toTokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type YieldFlowCompleteRewardItem } from '../stablecoinYieldTypes';
+import { type YieldFlowCompleteRewardItem } from '../yieldTypes';
 
 interface YieldClaimableReward {
     token: {
@@ -17,15 +17,15 @@ interface YieldClaimableReward {
     };
 }
 
-interface GetStablecoinYieldClaimRewardsSnapshotParams {
+interface GetYieldClaimRewardsSnapshotProps {
     networkSymbol: NetworkSymbol;
     rewards: YieldClaimableReward[];
 }
 
-export const getStablecoinYieldClaimRewardsSnapshot = ({
+export const getYieldClaimRewardsSnapshot = ({
     networkSymbol,
     rewards,
-}: GetStablecoinYieldClaimRewardsSnapshotParams): YieldFlowCompleteRewardItem[] =>
+}: GetYieldClaimRewardsSnapshotProps): YieldFlowCompleteRewardItem[] =>
     rewards.map(reward => ({
         token: {
             networkSymbol,

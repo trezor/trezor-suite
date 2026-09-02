@@ -7,21 +7,21 @@ import { type FeeInfo, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
-import { composeYieldDepositTransactionThunk } from './stablecoinYieldDepositThunks';
+import { composeYieldDepositTransactionThunk } from './yieldDepositThunks';
 import { accountsInitialState } from '../../accounts/accountsReducer';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
 import { blockchainInitialState } from '../../blockchain/blockchainReducer';
 import { feesReducer } from '../../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
 import { transactionsInitialState } from '../../transactions/transactionsReducer';
-import { type YieldFlowResolvedData } from '../stablecoinYieldTypes';
-import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
+import { estimateYieldFeeLevel } from '../utils/yieldFeeEstimation';
+import { type YieldFlowResolvedData } from '../yieldTypes';
 
 jest.mock('../../allowance/fetchAllowance', () => ({
     fetchAllowance: jest.fn(),
 }));
 
-jest.mock('../utils/stablecoinYieldFeeEstimation', () => ({
+jest.mock('../utils/yieldFeeEstimation', () => ({
     estimateYieldFeeLevel: jest.fn(),
 }));
 

@@ -6,15 +6,15 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useDispatch } from '@suite-common/redux-utils';
 import {
-    type StablecoinYieldRootState,
     type YIELD_FLOW_AVAILABLE_STEPS,
     type YieldFlowResolvedData,
     type YieldFlowStepId,
+    type YieldRootState,
     initYieldAllowanceThunk,
-    selectStablecoinYieldSession,
-    selectStablecoinYieldSessionByFlowKey,
-    stablecoinYieldActions,
+    selectYieldSession,
+    selectYieldSessionByFlowKey,
     trackWrappedNativeTokenThunk,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import {
     type StackNavigationProps,
@@ -53,7 +53,7 @@ export const useStartYieldDepositFlow = ({
 }: UseStartYieldDepositFlowParams) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const store = useStore<StablecoinYieldRootState>();
+    const store = useStore<YieldRootState>();
     const isStartingDepositFlowRef = useRef(false);
     const [isStartingDepositFlow, setIsStartingDepositFlow] = useState(false);
 
@@ -82,13 +82,13 @@ export const useStartYieldDepositFlow = ({
         };
 
         const navigateBySessionStep = () => {
-            const session = selectStablecoinYieldSession(store.getState(), 'deposit', flowKey);
+            const session = selectYieldSession(store.getState(), 'deposit', flowKey);
 
             navigateToDepositStep(session.step);
         };
 
         try {
-            const existingSession = selectStablecoinYieldSessionByFlowKey(
+            const existingSession = selectYieldSessionByFlowKey(
                 store.getState(),
                 'deposit',
                 flowKey,
@@ -100,9 +100,7 @@ export const useStartYieldDepositFlow = ({
                 return true;
             }
 
-            dispatch(
-                stablecoinYieldActions.resetSession({ ...sessionParams, isWrappedNativeVault }),
-            );
+            dispatch(yieldActions.resetSession({ ...sessionParams, isWrappedNativeVault }));
 
             if (isWrappedNativeVault) {
                 const trackResponse = await dispatch(
@@ -116,7 +114,7 @@ export const useStartYieldDepositFlow = ({
                 // user can still come back to it from the approve step.
                 if (new BigNumber(wrappedTokenBalance).gt(0)) {
                     dispatch(
-                        stablecoinYieldActions.resolveWrappedNativeStep({
+                        yieldActions.resolveWrappedNativeStep({
                             ...sessionParams,
                             step: 'wrap',
                         }),

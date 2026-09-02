@@ -10,7 +10,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     getYieldApprovalAction,
     getYieldVaultContractAddress,
-    stablecoinYieldActions,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -230,7 +230,7 @@ export const YieldDepositApprovalScreen = () => {
             return;
         }
 
-        dispatch(stablecoinYieldActions.disposeSession({ flowType: 'deposit', flowKey }));
+        dispatch(yieldActions.disposeSession({ flowType: 'deposit', flowKey }));
     }, [dispatch, flowKey, isApprovalPending, navigateToInitialScreen, navigation]);
 
     const handleSkipApproval = useCallback(() => {
@@ -249,7 +249,7 @@ export const YieldDepositApprovalScreen = () => {
         });
 
         dispatch(
-            stablecoinYieldActions.skipApprovalStep({
+            yieldActions.skipApprovalStep({
                 flowType: 'deposit',
                 flowKey,
                 amount: amountValue || undefined,
@@ -289,7 +289,7 @@ export const YieldDepositApprovalScreen = () => {
 
         if (amount) {
             dispatch(
-                stablecoinYieldActions.enterModifyMode({
+                yieldActions.enterModifyMode({
                     flowType: 'deposit',
                     flowKey,
                     amount,

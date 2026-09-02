@@ -6,13 +6,13 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type ComposeYieldDepositTransactionThunkState,
-    STABLECOIN_YIELD_PREFIX,
+    YIELD_PREFIX,
     type YieldFlowResolvedData,
     composeYieldDepositTransactionThunk,
     getYieldDepositErrorTranslationKey,
     openYieldApproveModal,
     setYieldError,
-    stablecoinYieldActions,
+    yieldActions,
 } from '@suite-common/wallet-core';
 
 import {
@@ -41,12 +41,12 @@ export const submitYieldDepositThunk = createThunk<
     SubmitYieldDepositPayload,
     { state: SubmitYieldDepositThunkState; extra: SubmitYieldDepositThunkDeps }
 >(
-    `${STABLECOIN_YIELD_PREFIX}/thunk/submitDeposit`,
+    `${YIELD_PREFIX}/thunk/submitDeposit`,
     async ({ flowKey, flowData, amount }, { dispatch, getState, extra }) => {
         const flowType = 'deposit' as const;
 
         try {
-            dispatch(stablecoinYieldActions.startSubmittingAction({ flowType, flowKey, amount }));
+            dispatch(yieldActions.startSubmittingAction({ flowType, flowKey, amount }));
 
             const result = await dispatch(
                 composeYieldDepositTransactionThunk({ flowData, amount }),
@@ -64,14 +64,14 @@ export const submitYieldDepositThunk = createThunk<
             }
 
             if (result.type === 'revoke-required') {
-                dispatch(stablecoinYieldActions.enterModifyMode({ flowType, flowKey }));
-                dispatch(stablecoinYieldActions.setRevokeRequired({ flowType, flowKey }));
+                dispatch(yieldActions.enterModifyMode({ flowType, flowKey }));
+                dispatch(yieldActions.setRevokeRequired({ flowType, flowKey }));
 
                 return;
             }
 
             if (result.type === 'approval-required') {
-                dispatch(stablecoinYieldActions.enterModifyMode({ flowType, flowKey }));
+                dispatch(yieldActions.enterModifyMode({ flowType, flowKey }));
 
                 openYieldApproveModal({
                     dispatch,
@@ -152,7 +152,7 @@ export const submitYieldDepositThunk = createThunk<
             );
 
             dispatch(
-                stablecoinYieldActions.setPendingTx({
+                yieldActions.setPendingTx({
                     flowType,
                     flowKey,
                     tx: {
@@ -176,14 +176,14 @@ export const submitYieldDepositThunk = createThunk<
                 },
             });
             dispatch(
-                stablecoinYieldActions.setError({
+                yieldActions.setError({
                     flowType,
                     flowKey,
                     error: getYieldErrorTranslationKey(error),
                 }),
             );
         } finally {
-            dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType, flowKey }));
+            dispatch(yieldActions.finishSubmittingAction({ flowType, flowKey }));
         }
     },
 );

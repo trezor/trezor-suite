@@ -10,9 +10,9 @@ import {
     type YieldPendingTransactionState,
     type YieldWithdrawFlowType,
     isYieldWithdrawFlow,
-    selectStablecoinYieldSession,
-    stablecoinYieldActions,
+    selectYieldSession,
     useYieldPendingTxStatus,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
@@ -167,7 +167,7 @@ export const useYieldPendingTransactionTracking = ({
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const pendingTransaction = useSelector(
-        state => selectStablecoinYieldSession(state, flowType, flowKey).action.pendingTransaction,
+        state => selectYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );
     const pendingTxStatus = useYieldPendingTxStatus({
         account,
@@ -219,7 +219,7 @@ export const useYieldPendingTransactionTracking = ({
             }
 
             pendingStartRef.current = null;
-            dispatch(stablecoinYieldActions.transactionFailed({ flowType, flowKey }));
+            dispatch(yieldActions.transactionFailed({ flowType, flowKey }));
 
             return;
         }
@@ -230,28 +230,28 @@ export const useYieldPendingTransactionTracking = ({
         }
 
         if (pendingTransaction.type === 'revoke') {
-            dispatch(stablecoinYieldActions.revokeSuccess({ flowType, flowKey }));
-            dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
+            dispatch(yieldActions.revokeSuccess({ flowType, flowKey }));
+            dispatch(yieldActions.invalidateAllowance({ flowType, flowKey }));
 
             return;
         }
 
         if (pendingTransaction.type === 'approve') {
             dispatch(
-                stablecoinYieldActions.completeApproval({
+                yieldActions.completeApproval({
                     flowType,
                     flowKey,
                     amount: pendingTransaction.amount,
                 }),
             );
-            dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
+            dispatch(yieldActions.invalidateAllowance({ flowType, flowKey }));
 
             return;
         }
 
         if (pendingTransaction.type === 'wrap' || pendingTransaction.type === 'unwrap') {
             dispatch(
-                stablecoinYieldActions.resolveWrappedNativeStep({
+                yieldActions.resolveWrappedNativeStep({
                     flowType,
                     flowKey,
                     step: pendingTransaction.type,
@@ -265,7 +265,7 @@ export const useYieldPendingTransactionTracking = ({
         if (pendingTransaction.type === flowType) {
             const completeAction = () => {
                 dispatch(
-                    stablecoinYieldActions.completeAction({
+                    yieldActions.completeAction({
                         flowType,
                         flowKey,
                         amount: pendingTransaction.amount,
@@ -293,7 +293,7 @@ export const useYieldPendingTransactionTracking = ({
             return;
         }
 
-        dispatch(stablecoinYieldActions.resetSession({ flowType, flowKey }));
+        dispatch(yieldActions.resetSession({ flowType, flowKey }));
     }, [
         flowKey,
         flowType,

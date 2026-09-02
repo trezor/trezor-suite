@@ -4,10 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import {
-    type StablecoinYieldRootState,
-    selectStablecoinYieldSessionByFlowKey,
-} from '@suite-common/wallet-core';
+import { type YieldRootState, selectYieldSessionByFlowKey } from '@suite-common/wallet-core';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -30,8 +27,8 @@ export const YieldDepositReviewScreen = () => {
     const yieldFlowData = useYieldFlowData(route.params);
     const { flowData, flowKey, resolutionStatus, vaultName } = yieldFlowData;
     const device = useSelector(selectSelectedDevice);
-    const session = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSessionByFlowKey(state, 'deposit', flowKey),
+    const session = useSelector((state: YieldRootState) =>
+        selectYieldSessionByFlowKey(state, 'deposit', flowKey),
     );
 
     const actionReview = session?.action.review;

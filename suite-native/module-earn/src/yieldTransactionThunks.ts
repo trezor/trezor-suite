@@ -6,22 +6,22 @@ import {
 } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    type StablecoinYieldRootState,
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
     type WalletSettingsRootState,
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldPositionFlowType,
-    isStablecoinYieldSupported,
+    type YieldRootState,
+    isYieldSupported,
     isYieldTxReviewForFlow,
     isYieldWithdrawFlow,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
-    selectStablecoinYieldSession,
-    selectStablecoinYieldTxReview,
-    stablecoinYieldActions,
+    selectYieldSession,
+    selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
 
@@ -55,7 +55,7 @@ export const getPushErrorType = (message: string): YieldPushTransactionError['er
         : 'push-transaction-failed';
 
 export type SignYieldActionReviewThunkState = DeviceRootState &
-    StablecoinYieldRootState &
+    YieldRootState &
     WalletSettingsRootState;
 
 export const signYieldActionReviewThunk = createThunk<
@@ -68,7 +68,7 @@ export const signYieldActionReviewThunk = createThunk<
         { flowData, flowKey, flowType, reviewToken, selectedFee },
         { dispatch, getState, rejectWithValue },
     ) => {
-        const session = selectStablecoinYieldSession(getState(), flowType, flowKey);
+        const session = selectYieldSession(getState(), flowType, flowKey);
         const {
             action: { review },
         } = session;
@@ -88,7 +88,7 @@ export const signYieldActionReviewThunk = createThunk<
             });
         }
 
-        if (!isStablecoinYieldSupported(device, { flowType, vaultToken: flowData.token })) {
+        if (!isYieldSupported(device, { flowType, vaultToken: flowData.token })) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Firmware does not support this yield action.',
@@ -119,7 +119,7 @@ export const signYieldActionReviewThunk = createThunk<
         const addressDisplayType = selectAddressDisplayType(getState());
 
         dispatch(
-            stablecoinYieldActions.storePrecomposedTransaction({
+            yieldActions.storePrecomposedTransaction({
                 precomposedTx: precomposedTransaction,
                 precomposedForm: formState,
                 accountKey: flowData.account.key,
@@ -143,7 +143,7 @@ export const signYieldActionReviewThunk = createThunk<
             });
         }
 
-        const currentTxReview = selectStablecoinYieldTxReview(getState());
+        const currentTxReview = selectYieldTxReview(getState());
 
         if (
             !isYieldTxReviewForFlow(currentTxReview, {
@@ -161,7 +161,7 @@ export const signYieldActionReviewThunk = createThunk<
         }
 
         dispatch(
-            stablecoinYieldActions.storeSignedTransaction({
+            yieldActions.storeSignedTransaction({
                 serializedTx: {
                     tx: signingResponse.payload.serializedTx,
                     symbol: flowData.account.symbol,
@@ -174,7 +174,7 @@ export const signYieldActionReviewThunk = createThunk<
 );
 
 export type PushYieldActionReviewThunkState = MevProtectionRootState &
-    StablecoinYieldRootState &
+    YieldRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
 
@@ -191,8 +191,8 @@ export const pushYieldActionReviewThunk = createThunk<
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/pushActionReview`,
     async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue }) => {
-        const session = selectStablecoinYieldSession(getState(), flowType, flowKey);
-        const txReview = selectStablecoinYieldTxReview(getState());
+        const session = selectYieldSession(getState(), flowType, flowKey);
+        const txReview = selectYieldTxReview(getState());
         const { precomposedForm, precomposedTx, serializedTx } = txReview;
         const {
             action: { review },
@@ -223,7 +223,7 @@ export const pushYieldActionReviewThunk = createThunk<
                 selectIsMevProtectionFeatureEnabled(getState()),
         });
 
-        dispatch(stablecoinYieldActions.discardTransaction());
+        dispatch(yieldActions.discardTransaction());
 
         if (!pushResponse.success) {
             return rejectWithValue({
@@ -242,7 +242,7 @@ export const pushYieldActionReviewThunk = createThunk<
         );
 
         dispatch(
-            stablecoinYieldActions.setPendingTx({
+            yieldActions.setPendingTx({
                 flowType,
                 flowKey,
                 tx: {

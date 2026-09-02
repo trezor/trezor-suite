@@ -7,9 +7,9 @@ import {
     type ComposeYieldEvmTransactionThunkState,
     composeYieldEvmTransactionThunk,
 } from './composeYieldEvmTransactionThunk';
-import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
-import type { YieldFlowResolvedData, YieldWithdrawFlowType } from '../stablecoinYieldTypes';
-import { buildYieldWithdrawCalldata, getYieldVaultAddress } from '../utils/stablecoinYieldUtils';
+import { buildYieldWithdrawCalldata, getYieldVaultAddress } from '../utils/yieldUtils';
+import { YIELD_PREFIX } from '../yieldConstants';
+import type { YieldFlowResolvedData, YieldWithdrawFlowType } from '../yieldTypes';
 
 export type ComposeYieldWithdrawErrorReason =
     ComposeYieldEvmTransactionErrorReason | 'missing-vault-address' | 'vault-chain-mismatch';
@@ -42,7 +42,7 @@ export const composeYieldWithdrawTransactionThunk = createThunk<
         state: ComposeYieldWithdrawTransactionThunkState;
     }
 >(
-    `${STABLECOIN_YIELD_PREFIX}/thunk/composeWithdrawTransaction`,
+    `${YIELD_PREFIX}/thunk/composeWithdrawTransaction`,
     async ({ flowData, amount, flowType }, { dispatch }) => {
         const { account, vault } = flowData;
 

@@ -7,7 +7,7 @@ import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-c
 import {
     type YieldFlowDisplayToken,
     accountsActions,
-    stablecoinYieldActions,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -251,9 +251,7 @@ describe('submitWrapNativeTokenThunk', () => {
         };
 
         const getFlowErrors = (store: ReturnType<typeof configureMockStore>) =>
-            store
-                .getActions()
-                .filter(action => action.type === stablecoinYieldActions.setError.type);
+            store.getActions().filter(action => action.type === yieldActions.setError.type);
 
         it('reports a push failure on the deposit step it was started from', async () => {
             acceptModalAndFailWith(

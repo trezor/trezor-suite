@@ -5,12 +5,12 @@ import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ResolvedYieldFlowData,
-    type StablecoinYieldSessionState,
     type YieldFlowFormValues,
     type YieldFlowStepId,
     type YieldPositionFlowType,
+    type YieldSessionState,
     getMaxWrapAmount,
-    isStablecoinYieldSessionResumable,
+    isYieldSessionResumable,
     isYieldWithdrawFlow,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -33,7 +33,7 @@ type UseYieldFormProps = {
     account: Account;
     vault: YieldDtoV2;
     flowKey: string;
-    session: StablecoinYieldSessionState;
+    session: YieldSessionState;
 };
 
 type UseYieldFormResult = {
@@ -115,7 +115,7 @@ export const useYieldForm = ({
             return;
         }
 
-        const resumedSession = isStablecoinYieldSessionResumable(sessionRef.current)
+        const resumedSession = isYieldSessionResumable(sessionRef.current)
             ? sessionRef.current
             : null;
 

@@ -9,13 +9,13 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
-    type StablecoinYieldRootState,
     type YieldFlowResolvedData,
+    type YieldRootState,
     formDraftActions,
     handleYieldApproveSuccessTxidThunk,
     pushSendFormTransactionThunk,
     selectIsMevProtectionEnabled,
-    selectStablecoinYieldSession,
+    selectYieldSession,
     sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
@@ -118,8 +118,8 @@ export const useYieldApprovalReview = ({
     const isApprovalSigned = useSelector(selectIsTransactionAlreadySigned);
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
-    const session = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSession(state, 'deposit', flowKey),
+    const session = useSelector((state: YieldRootState) =>
+        selectYieldSession(state, 'deposit', flowKey),
     );
     const { approval } = session;
 

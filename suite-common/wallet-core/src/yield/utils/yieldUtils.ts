@@ -14,7 +14,7 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
-import { YIELD_FLOW_AVAILABLE_STEPS } from '../stablecoinYieldConstants';
+import { YIELD_FLOW_AVAILABLE_STEPS } from '../yieldConstants';
 import type {
     YieldFlowDisplayToken,
     YieldFlowResolvedData,
@@ -22,7 +22,7 @@ import type {
     YieldFlowType,
     YieldPendingTransactionState,
     YieldWithdrawFlowType,
-} from '../stablecoinYieldTypes';
+} from '../yieldTypes';
 
 type TokenLike = {
     address?: string | null;
@@ -61,7 +61,7 @@ type ConvertOutputTokenBalanceParams = {
     };
 };
 
-type GetStablecoinYieldFlowKeyParams = {
+type GetYieldFlowKeyParams = {
     accountKey: AccountKey;
     tokenContract?: string | null;
     yieldId: string;
@@ -106,11 +106,7 @@ type BuildEvmFeeFieldsParams = {
     gasLimit: string;
 };
 
-export const getStablecoinYieldFlowKey = ({
-    accountKey,
-    tokenContract,
-    yieldId,
-}: GetStablecoinYieldFlowKeyParams) =>
+export const getYieldFlowKey = ({ accountKey, tokenContract, yieldId }: GetYieldFlowKeyParams) =>
     `${accountKey}:${yieldId}:${tokenContract?.toLowerCase() ?? ''}`;
 
 export const isYieldWithdrawFlow = (flowType: YieldFlowType): flowType is YieldWithdrawFlowType =>

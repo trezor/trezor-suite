@@ -1,8 +1,8 @@
-import { type StablecoinYieldActionReviewState } from '@suite-common/wallet-core';
+import { type YieldActionReviewState } from '@suite-common/wallet-core';
 
 import { buildYieldClaimRewards } from './yieldClaimReviewUtils';
 
-type YieldClaimReview = Extract<StablecoinYieldActionReviewState, { type: 'claim' }>;
+type YieldClaimReview = Extract<YieldActionReviewState, { type: 'claim' }>;
 
 const TOKEN_ADDRESS = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
 

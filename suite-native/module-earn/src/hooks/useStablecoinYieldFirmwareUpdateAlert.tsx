@@ -5,7 +5,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import {
     type StablecoinYieldVaultToken,
     type YieldFlowType,
-    isStablecoinYieldSupported,
+    isYieldSupported,
 } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 
@@ -18,7 +18,7 @@ export const useStablecoinYieldFirmwareUpdateAlert = () => {
 
     const isFirmwareSupported = useCallback(
         (flowType: YieldFlowType, vaultToken?: StablecoinYieldVaultToken) =>
-            isStablecoinYieldSupported(selectedDevice, { flowType, vaultToken }),
+            isYieldSupported(selectedDevice, { flowType, vaultToken }),
         [selectedDevice],
     );
 

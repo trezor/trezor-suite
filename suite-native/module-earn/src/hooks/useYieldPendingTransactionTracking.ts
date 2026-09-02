@@ -9,8 +9,8 @@ import {
     type YieldFlowType,
     type YieldPendingTransactionState,
     type YieldWithdrawFlowType,
-    stablecoinYieldActions,
     useYieldPendingTxStatus,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
@@ -241,7 +241,7 @@ export const useYieldPendingTransactionTracking = ({
 
         if (pendingTxStatus === 'failed') {
             reportResolution('error');
-            dispatch(stablecoinYieldActions.transactionFailed(sessionParams));
+            dispatch(yieldActions.transactionFailed(sessionParams));
 
             return;
         }
@@ -249,7 +249,7 @@ export const useYieldPendingTransactionTracking = ({
         if (pendingTransaction.type === 'wrap' || pendingTransaction.type === 'unwrap') {
             reportResolution('success');
             dispatch(
-                stablecoinYieldActions.resolveWrappedNativeStep({
+                yieldActions.resolveWrappedNativeStep({
                     ...sessionParams,
                     step: pendingTransaction.type,
                     amount: pendingTransaction.amount,
@@ -261,8 +261,8 @@ export const useYieldPendingTransactionTracking = ({
 
         if (pendingTransaction.type === 'revoke') {
             reportResolution('success');
-            dispatch(stablecoinYieldActions.revokeSuccess(sessionParams));
-            dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
+            dispatch(yieldActions.revokeSuccess(sessionParams));
+            dispatch(yieldActions.invalidateAllowance(sessionParams));
 
             if (isScreenFocused && onRevokeConfirmed) {
                 onRevokeConfirmed();
@@ -287,7 +287,7 @@ export const useYieldPendingTransactionTracking = ({
                 } finally {
                     if (pendingTxidRef.current === pendingTransaction.txid) {
                         dispatch(
-                            stablecoinYieldActions.completeAction({
+                            yieldActions.completeAction({
                                 ...sessionParams,
                                 amount: pendingTransaction.amount,
                             }),
@@ -304,14 +304,14 @@ export const useYieldPendingTransactionTracking = ({
         if (pendingTransaction.type !== 'approve') {
             reportResolution('success');
             dispatch(
-                stablecoinYieldActions.completeAction({
+                yieldActions.completeAction({
                     ...sessionParams,
                     amount: pendingTransaction.amount,
                 }),
             );
 
             if (pendingTransaction.type === 'deposit') {
-                dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
+                dispatch(yieldActions.invalidateAllowance(sessionParams));
             }
 
             return;
@@ -319,12 +319,12 @@ export const useYieldPendingTransactionTracking = ({
 
         reportResolution('success');
         dispatch(
-            stablecoinYieldActions.completeApproval({
+            yieldActions.completeApproval({
                 ...sessionParams,
                 amount: pendingTransaction.amount,
             }),
         );
-        dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
+        dispatch(yieldActions.invalidateAllowance(sessionParams));
 
         if (isScreenFocused && onApprovalConfirmed) {
             onApprovalConfirmed();

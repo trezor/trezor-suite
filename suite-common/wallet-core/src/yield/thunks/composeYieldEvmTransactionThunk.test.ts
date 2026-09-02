@@ -11,9 +11,9 @@ import { accountsInitialState } from '../../accounts/accountsReducer';
 import { blockchainInitialState } from '../../blockchain/blockchainReducer';
 import { feesReducer } from '../../fees/feesReducer';
 import { transactionsInitialState } from '../../transactions/transactionsReducer';
-import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
+import { estimateYieldFeeLevel } from '../utils/yieldFeeEstimation';
 
-jest.mock('../utils/stablecoinYieldFeeEstimation', () => ({
+jest.mock('../utils/yieldFeeEstimation', () => ({
     estimateYieldFeeLevel: jest.fn(),
 }));
 

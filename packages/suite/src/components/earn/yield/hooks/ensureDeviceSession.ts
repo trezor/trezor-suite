@@ -1,11 +1,11 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type StablecoinYieldTranslationKey } from '@suite-common/wallet-core';
+import { type YieldTranslationKey } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { getYieldErrorTranslationKey } from 'src/actions/wallet/stablecoin-yield/signingHelpers';
 
 export type EnsureDeviceSessionResult =
-    { success: true } | { success: false; error?: StablecoinYieldTranslationKey };
+    { success: true } | { success: false; error?: YieldTranslationKey };
 
 export const ensureDeviceSession = async (
     device: TrezorDevice | undefined,

@@ -7,19 +7,19 @@ import {
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type FormDraftRootState,
-    type StablecoinYieldRootState,
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
     type WalletSettingsRootState,
+    type YieldRootState,
     formDraftActions,
     isYieldTxReviewForFlow,
     selectAddressDisplayType,
     selectDeepCopyOfFormDraft,
     selectIsMevProtectionEnabled,
-    selectStablecoinYieldSession,
-    selectStablecoinYieldTxReview,
-    stablecoinYieldActions,
+    selectYieldSession,
+    selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { type UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
@@ -86,7 +86,7 @@ export const updateYieldClaimSelectedFeeLevelThunk = createThunk<
 );
 
 export type SignYieldClaimReviewThunkState = DeviceRootState &
-    StablecoinYieldRootState &
+    YieldRootState &
     WalletSettingsRootState;
 
 export const signYieldClaimReviewThunk = createThunk<
@@ -96,7 +96,7 @@ export const signYieldClaimReviewThunk = createThunk<
 >(
     `${EARN_MODULE_PREFIX}/signYieldClaimReviewThunk`,
     async ({ account, flowKey }, { dispatch, getState, rejectWithValue }) => {
-        const session = selectStablecoinYieldSession(getState(), 'claim', flowKey);
+        const session = selectYieldSession(getState(), 'claim', flowKey);
         const {
             action: { review },
         } = session;
@@ -132,7 +132,7 @@ export const signYieldClaimReviewThunk = createThunk<
         const addressDisplayType = selectAddressDisplayType(getState());
 
         dispatch(
-            stablecoinYieldActions.storePrecomposedTransaction({
+            yieldActions.storePrecomposedTransaction({
                 precomposedTx: precomposedTransaction,
                 precomposedForm: formState,
                 availableRewards,
@@ -157,7 +157,7 @@ export const signYieldClaimReviewThunk = createThunk<
             });
         }
 
-        const currentTxReview = selectStablecoinYieldTxReview(getState());
+        const currentTxReview = selectYieldTxReview(getState());
 
         if (
             !isYieldTxReviewForFlow(currentTxReview, {
@@ -175,7 +175,7 @@ export const signYieldClaimReviewThunk = createThunk<
         }
 
         dispatch(
-            stablecoinYieldActions.storeSignedTransaction({
+            yieldActions.storeSignedTransaction({
                 serializedTx: {
                     tx: signingResponse.payload.serializedTx,
                     symbol: account.symbol,
@@ -188,7 +188,7 @@ export const signYieldClaimReviewThunk = createThunk<
 );
 
 export type PushYieldClaimReviewThunkState = MevProtectionRootState &
-    StablecoinYieldRootState &
+    YieldRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
 
@@ -205,8 +205,8 @@ export const pushYieldClaimReviewThunk = createThunk<
 >(
     `${EARN_MODULE_PREFIX}/pushYieldClaimReviewThunk`,
     async ({ account, flowKey }, { dispatch, getState, rejectWithValue }) => {
-        const session = selectStablecoinYieldSession(getState(), 'claim', flowKey);
-        const txReview = selectStablecoinYieldTxReview(getState());
+        const session = selectYieldSession(getState(), 'claim', flowKey);
+        const txReview = selectYieldTxReview(getState());
         const { precomposedForm, precomposedTx, serializedTx } = txReview;
         const {
             action: { review },
@@ -237,7 +237,7 @@ export const pushYieldClaimReviewThunk = createThunk<
                 selectIsMevProtectionFeatureEnabled(getState()),
         });
 
-        dispatch(stablecoinYieldActions.discardTransaction());
+        dispatch(yieldActions.discardTransaction());
 
         if (!pushResponse.success) {
             return rejectWithValue({
@@ -256,7 +256,7 @@ export const pushYieldClaimReviewThunk = createThunk<
         );
 
         dispatch(
-            stablecoinYieldActions.setPendingTx({
+            yieldActions.setPendingTx({
                 flowType: 'claim',
                 flowKey,
                 tx: {

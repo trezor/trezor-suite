@@ -13,7 +13,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { useDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { getYieldVaultContractAddress, stablecoinYieldActions } from '@suite-common/wallet-core';
+import { getYieldVaultContractAddress, yieldActions } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { BannerFull, Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
@@ -230,7 +230,7 @@ export const YieldDepositScreen = () => {
         });
 
         dispatch(
-            stablecoinYieldActions.enterModifyMode({
+            yieldActions.enterModifyMode({
                 flowType: 'deposit',
                 flowKey,
                 amount: amountValue || undefined,
@@ -280,7 +280,7 @@ export const YieldDepositScreen = () => {
 
         reportSimulationAction('continue');
         dispatch(
-            stablecoinYieldActions.storeActionReviewData({
+            yieldActions.storeActionReviewData({
                 amount: simulationPreparedAction.amount,
                 flowKey,
                 flowType: 'deposit',
@@ -376,7 +376,7 @@ export const YieldDepositScreen = () => {
             return;
         }
 
-        dispatch(stablecoinYieldActions.disposeSession({ flowType: 'deposit', flowKey }));
+        dispatch(yieldActions.disposeSession({ flowType: 'deposit', flowKey }));
     }, [dispatch, flowKey, navigateToInitialScreen, session?.action.pendingTransaction]);
 
     if (resolutionStatus !== 'resolved' || !isDepositSessionReady) {

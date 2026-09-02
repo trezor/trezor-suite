@@ -3,8 +3,8 @@ import { act, renderHook } from '@testing-library/react';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type ResolvedYieldFlowData,
-    type StablecoinYieldSessionState,
     type YieldPositionFlowType,
+    type YieldSessionState,
     initialStablecoinYieldSessionState,
 } from '@suite-common/wallet-core';
 import { toTokenSymbol } from '@suite-common/wallet-types';
@@ -93,7 +93,7 @@ const flowData = {
     vaultTokenSymbol: 'mvWETH',
 } satisfies ResolvedYieldFlowData;
 
-const createMockSession = (): StablecoinYieldSessionState => ({
+const createMockSession = (): YieldSessionState => ({
     ...initialStablecoinYieldSessionState,
     approval: { ...initialStablecoinYieldSessionState.approval },
     action: { ...initialStablecoinYieldSessionState.action },

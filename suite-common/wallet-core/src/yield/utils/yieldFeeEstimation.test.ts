@@ -1,7 +1,7 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 
-import { estimateYieldFeeLevel } from './stablecoinYieldFeeEstimation';
+import { estimateYieldFeeLevel } from './yieldFeeEstimation';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,

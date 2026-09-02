@@ -4,10 +4,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Features } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import {
-    isStablecoinYieldSupported,
-    isWrappedNativeFlowSupported,
-} from './stablecoinYieldDeviceUtils';
+import { isWrappedNativeFlowSupported, isYieldSupported } from './yieldDeviceUtils';
 
 const createDevice = (features: Partial<Features>): TrezorDevice =>
     ({
@@ -29,17 +26,15 @@ const usdcVaultToken = {
     contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
 } as const;
 
-describe('isStablecoinYieldSupported', () => {
+describe('isYieldSupported', () => {
     it('returns false when no device is selected', () => {
-        expect(isStablecoinYieldSupported(undefined, { flowType: 'deposit' })).toBe(false);
+        expect(isYieldSupported(undefined, { flowType: 'deposit' })).toBe(false);
     });
 
     it('returns false when device has no features', () => {
         const deviceWithoutFeatures = {} as unknown as TrezorDevice;
 
-        expect(isStablecoinYieldSupported(deviceWithoutFeatures, { flowType: 'deposit' })).toBe(
-            false,
-        );
+        expect(isYieldSupported(deviceWithoutFeatures, { flowType: 'deposit' })).toBe(false);
     });
 
     it('returns true for T1B1 regardless of firmware version', () => {
@@ -50,48 +45,44 @@ describe('isStablecoinYieldSupported', () => {
             patch_version: 0,
         });
 
-        expect(isStablecoinYieldSupported(device, { flowType: 'deposit' })).toBe(true);
-        expect(isStablecoinYieldSupported(device, { flowType: 'withdraw' })).toBe(true);
-        expect(isStablecoinYieldSupported(device, { flowType: 'claim' })).toBe(true);
-        expect(
-            isStablecoinYieldSupported(device, { flowType: 'deposit', vaultToken: wethVaultToken }),
-        ).toBe(true);
-    });
-
-    it.each(['deposit', 'withdraw'] as const)('requires firmware 2.12.0 for %s', flowType => {
-        expect(isStablecoinYieldSupported(createDeviceWithFirmware([2, 11, 9]), { flowType })).toBe(
-            false,
-        );
-        expect(isStablecoinYieldSupported(createDeviceWithFirmware([2, 12, 0]), { flowType })).toBe(
+        expect(isYieldSupported(device, { flowType: 'deposit' })).toBe(true);
+        expect(isYieldSupported(device, { flowType: 'withdraw' })).toBe(true);
+        expect(isYieldSupported(device, { flowType: 'claim' })).toBe(true);
+        expect(isYieldSupported(device, { flowType: 'deposit', vaultToken: wethVaultToken })).toBe(
             true,
         );
     });
 
+    it.each(['deposit', 'withdraw'] as const)('requires firmware 2.12.0 for %s', flowType => {
+        expect(isYieldSupported(createDeviceWithFirmware([2, 11, 9]), { flowType })).toBe(false);
+        expect(isYieldSupported(createDeviceWithFirmware([2, 12, 0]), { flowType })).toBe(true);
+    });
+
     it('requires firmware 2.12.0 when no flow type is given', () => {
-        expect(isStablecoinYieldSupported(createDeviceWithFirmware([2, 11, 9]))).toBe(false);
-        expect(isStablecoinYieldSupported(createDeviceWithFirmware([2, 12, 0]))).toBe(true);
+        expect(isYieldSupported(createDeviceWithFirmware([2, 11, 9]))).toBe(false);
+        expect(isYieldSupported(createDeviceWithFirmware([2, 12, 0]))).toBe(true);
     });
 
     it('requires firmware 2.12.1 for claim', () => {
-        expect(
-            isStablecoinYieldSupported(createDeviceWithFirmware([2, 12, 0]), { flowType: 'claim' }),
-        ).toBe(false);
-        expect(
-            isStablecoinYieldSupported(createDeviceWithFirmware([2, 12, 1]), { flowType: 'claim' }),
-        ).toBe(true);
+        expect(isYieldSupported(createDeviceWithFirmware([2, 12, 0]), { flowType: 'claim' })).toBe(
+            false,
+        );
+        expect(isYieldSupported(createDeviceWithFirmware([2, 12, 1]), { flowType: 'claim' })).toBe(
+            true,
+        );
     });
 
     it.each(['deposit', 'withdraw', 'redeem'] as const)(
         'requires firmware 2.12.4 for %s into a wrapped-native vault',
         flowType => {
             expect(
-                isStablecoinYieldSupported(createDeviceWithFirmware([2, 12, 3]), {
+                isYieldSupported(createDeviceWithFirmware([2, 12, 3]), {
                     flowType,
                     vaultToken: wethVaultToken,
                 }),
             ).toBe(false);
             expect(
-                isStablecoinYieldSupported(createDeviceWithFirmware([2, 12, 4]), {
+                isYieldSupported(createDeviceWithFirmware([2, 12, 4]), {
                     flowType,
                     vaultToken: wethVaultToken,
                 }),
@@ -101,12 +92,12 @@ describe('isStablecoinYieldSupported', () => {
 
     it('requires firmware 2.12.4 for a wrapped-native vault when no flow type is given', () => {
         expect(
-            isStablecoinYieldSupported(createDeviceWithFirmware([2, 12, 3]), {
+            isYieldSupported(createDeviceWithFirmware([2, 12, 3]), {
                 vaultToken: wethVaultToken,
             }),
         ).toBe(false);
         expect(
-            isStablecoinYieldSupported(createDeviceWithFirmware([2, 12, 4]), {
+            isYieldSupported(createDeviceWithFirmware([2, 12, 4]), {
                 vaultToken: wethVaultToken,
             }),
         ).toBe(true);
@@ -114,7 +105,7 @@ describe('isStablecoinYieldSupported', () => {
 
     it('keeps the 2.12.0 requirement for vaults with a non-wrapped-native input token', () => {
         expect(
-            isStablecoinYieldSupported(createDeviceWithFirmware([2, 12, 0]), {
+            isYieldSupported(createDeviceWithFirmware([2, 12, 0]), {
                 flowType: 'deposit',
                 vaultToken: usdcVaultToken,
             }),

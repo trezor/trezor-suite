@@ -5,8 +5,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { type EvmPendingTxStatus } from '@suite-common/wallet-utils';
 
 import { useEvmPendingTxStatus } from '../../transactions/hooks/useEvmPendingTxStatus';
-import { stablecoinYieldActions } from '../stablecoinYieldReducer';
-import { type YieldFlowType, type YieldPendingTransactionState } from '../stablecoinYieldTypes';
+import { yieldActions } from '../yieldReducer';
+import { type YieldFlowType, type YieldPendingTransactionState } from '../yieldTypes';
 
 interface UseYieldPendingTxStatusParams {
     account: Account | null;
@@ -36,7 +36,7 @@ export const useYieldPendingTxStatus = ({
     useEffect(() => {
         if (!flowKey || !txid || nonce === undefined || nonce === storedNonce) return;
 
-        dispatch(stablecoinYieldActions.setPendingTxNonce({ flowType, flowKey, txid, nonce }));
+        dispatch(yieldActions.setPendingTxNonce({ flowType, flowKey, txid, nonce }));
     }, [dispatch, flowKey, flowType, nonce, storedNonce, txid]);
 
     return status;

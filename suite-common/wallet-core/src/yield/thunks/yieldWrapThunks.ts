@@ -18,15 +18,15 @@ import {
 import { accountsActions } from '../../accounts/accountsActions';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey } from '../../accounts/accountsSelectors';
-import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
-import type { YieldFlowDisplayToken } from '../stablecoinYieldTypes';
 import { fetchWrappedNativeTokenInfo } from '../utils/fetchWrappedNativeTokenInfo';
 import {
     buildYieldUnwrapTransactionData,
     buildYieldWrapTransactionData,
-} from '../utils/stablecoinYieldUtils';
+} from '../utils/yieldUtils';
+import { YIELD_PREFIX } from '../yieldConstants';
+import type { YieldFlowDisplayToken } from '../yieldTypes';
 
-const YIELD_WRAP_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
+const YIELD_WRAP_THUNK_PREFIX = `${YIELD_PREFIX}/thunk`;
 
 export type ComposeYieldWrapErrorReason =
     ComposeYieldEvmTransactionErrorReason | 'not-wrapped-native';

@@ -7,8 +7,8 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     REVOKE_ALLOWANCE_AMOUNT,
-    stablecoinYieldActions,
     submitYieldRevokeThunk,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import {
@@ -150,7 +150,7 @@ export const useYieldDepositRevokeScreen = () => {
         }
 
         dispatch(
-            stablecoinYieldActions.enterModifyMode({
+            yieldActions.enterModifyMode({
                 flowType: 'deposit',
                 flowKey,
                 amount: intendedDepositAmount,
@@ -226,7 +226,7 @@ export const useYieldDepositRevokeScreen = () => {
             description: 'earn.yieldDepositFlowScreen.alerts.revokeUnavailable.description',
             primaryButtonTitle: 'generic.buttons.tryAgain',
             onPressPrimaryButton: () => {
-                dispatch(stablecoinYieldActions.clearError({ flowType: 'deposit', flowKey }));
+                dispatch(yieldActions.clearError({ flowType: 'deposit', flowKey }));
                 setHasRequestedRevokePreparation(false);
                 setHasShownRevokePreparationError(false);
             },

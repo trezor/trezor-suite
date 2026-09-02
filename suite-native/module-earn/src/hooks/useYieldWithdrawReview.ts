@@ -6,13 +6,13 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     type FormDraftRootState,
-    type StablecoinYieldRootState,
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
+    type YieldRootState,
     type YieldWithdrawFlowType,
     isYieldTxReviewForFlow,
     selectFormDraft,
-    selectStablecoinYieldTxReview,
+    selectYieldTxReview,
 } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import type {
@@ -58,9 +58,7 @@ export const useYieldWithdrawReview = ({
             operation: flowType,
         });
 
-    const txReview = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldTxReview(state),
-    );
+    const txReview = useSelector((state: YieldRootState) => selectYieldTxReview(state));
 
     const formDraftKey = getYieldWithdrawFormDraftKey(flowKey);
     const formDraft = useSelector((state: FormDraftRootState) =>

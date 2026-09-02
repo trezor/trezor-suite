@@ -13,8 +13,8 @@ import {
     type YieldFlowType,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
-    stablecoinYieldActions,
     synchronizeSentTransactionThunk,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -109,7 +109,7 @@ export const sendYieldTransaction = async ({
     const { transactionForSigning, formState, precomposedTransaction } = transactionReview;
 
     dispatch(
-        stablecoinYieldActions.storePrecomposedTransaction({
+        yieldActions.storePrecomposedTransaction({
             precomposedTx: precomposedTransaction,
             // transactionForSigning.nonce is hex; store a decimal string so the review modal shows
             // it like the Send flow.
@@ -150,7 +150,7 @@ export const sendYieldTransaction = async ({
         }
 
         dispatch(
-            stablecoinYieldActions.storeSignedTransaction({
+            yieldActions.storeSignedTransaction({
                 serializedTx: {
                     tx: signingResponse.payload.serializedTx,
                     symbol: account.symbol,
@@ -201,6 +201,6 @@ export const sendYieldTransaction = async ({
         console.error(error);
         throw error;
     } finally {
-        dispatch(stablecoinYieldActions.discardTransaction());
+        dispatch(yieldActions.discardTransaction());
     }
 };

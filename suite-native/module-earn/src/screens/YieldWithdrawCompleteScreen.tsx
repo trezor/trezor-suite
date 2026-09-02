@@ -7,10 +7,10 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
-    type StablecoinYieldRootState,
+    type YieldRootState,
     getYieldWithdrawCompletedValues,
-    selectStablecoinYieldSessionByFlowKey,
-    stablecoinYieldActions,
+    selectYieldSessionByFlowKey,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
@@ -43,8 +43,8 @@ export const YieldWithdrawCompleteScreen = () => {
     const { account, flowKey, receiptToken, resolutionStatus, token, vault } = yieldFlowData;
 
     const flowType = route.params.withdrawFlowType ?? 'withdraw';
-    const session = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),
+    const session = useSelector((state: YieldRootState) =>
+        selectYieldSessionByFlowKey(state, flowType, flowKey),
     );
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
@@ -61,7 +61,7 @@ export const YieldWithdrawCompleteScreen = () => {
         });
 
         if (flowKey) {
-            dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
+            dispatch(yieldActions.disposeSession({ flowType, flowKey }));
         }
 
         navigateToInitialScreen();

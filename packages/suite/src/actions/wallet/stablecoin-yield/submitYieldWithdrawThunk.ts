@@ -6,12 +6,12 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type ComposeYieldWithdrawTransactionThunkState,
-    STABLECOIN_YIELD_PREFIX,
+    YIELD_PREFIX,
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
     composeYieldWithdrawTransactionThunk,
     isYieldWithdrawFeeError,
-    stablecoinYieldActions,
+    yieldActions,
 } from '@suite-common/wallet-core';
 
 import {
@@ -41,7 +41,7 @@ export const submitYieldWithdrawThunk = createThunk<
     SubmitYieldWithdrawPayload,
     { state: SubmitYieldWithdrawThunkState; extra: SubmitYieldWithdrawThunkDeps }
 >(
-    `${STABLECOIN_YIELD_PREFIX}/thunk/submitWithdraw`,
+    `${YIELD_PREFIX}/thunk/submitWithdraw`,
     async ({ flowKey, flowData, amount, flowType }, { dispatch, getState, extra }) => {
         const reportSubmitError = (errorMessage = 'submit-failed') =>
             extra.services.analytics.report({
@@ -61,7 +61,7 @@ export const submitYieldWithdrawThunk = createThunk<
                 throw new Error('Yield actions currently support only EVM accounts.');
             }
 
-            dispatch(stablecoinYieldActions.startSubmittingAction({ flowType, flowKey, amount }));
+            dispatch(yieldActions.startSubmittingAction({ flowType, flowKey, amount }));
 
             const { account } = flowData;
 
@@ -74,7 +74,7 @@ export const submitYieldWithdrawThunk = createThunk<
 
                 reportSubmitError(isFeeError ? 'fee-estimation-failed' : 'submit-failed');
                 dispatch(
-                    stablecoinYieldActions.setError({
+                    yieldActions.setError({
                         flowType,
                         flowKey,
                         error: isFeeError
@@ -157,7 +157,7 @@ export const submitYieldWithdrawThunk = createThunk<
             );
 
             dispatch(
-                stablecoinYieldActions.setPendingTx({
+                yieldActions.setPendingTx({
                     flowType,
                     flowKey,
                     tx: {
@@ -171,14 +171,14 @@ export const submitYieldWithdrawThunk = createThunk<
             console.error(error);
             reportSubmitError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
-                stablecoinYieldActions.setError({
+                yieldActions.setError({
                     flowType,
                     flowKey,
                     error: getYieldErrorTranslationKey(error),
                 }),
             );
         } finally {
-            dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType, flowKey }));
+            dispatch(yieldActions.finishSubmittingAction({ flowType, flowKey }));
         }
     },
 );

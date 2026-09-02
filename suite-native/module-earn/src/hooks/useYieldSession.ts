@@ -5,10 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useDispatch } from '@suite-common/redux-utils';
 import {
-    type StablecoinYieldRootState,
     type YieldFlowType,
-    selectStablecoinYieldSessionByFlowKey,
-    stablecoinYieldActions,
+    type YieldRootState,
+    selectYieldSessionByFlowKey,
+    yieldActions,
 } from '@suite-common/wallet-core';
 
 type UseYieldSessionParams = {
@@ -26,17 +26,15 @@ export const useYieldSession = ({
 }: UseYieldSessionParams) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const session = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),
+    const session = useSelector((state: YieldRootState) =>
+        selectYieldSessionByFlowKey(state, flowType, flowKey),
     );
     const hasSession = !!session;
     const hasPendingTransaction = !!session?.action.pendingTransaction;
 
     useEffect(() => {
         if (flowKey && !hasSession) {
-            dispatch(
-                stablecoinYieldActions.initSession({ flowType, flowKey, isWrappedNativeVault }),
-            );
+            dispatch(yieldActions.initSession({ flowType, flowKey, isWrappedNativeVault }));
         }
     }, [dispatch, flowKey, flowType, hasSession, isWrappedNativeVault]);
 
@@ -49,7 +47,7 @@ export const useYieldSession = ({
 
         return navigation.addListener('beforeRemove', event => {
             if (event.data.action.type === 'GO_BACK') {
-                dispatch(stablecoinYieldActions.disposeSession(sessionParams));
+                dispatch(yieldActions.disposeSession(sessionParams));
             }
         });
     }, [dispatch, flowKey, flowType, hasPendingTransaction, navigation, shouldDisposeOnGoBack]);

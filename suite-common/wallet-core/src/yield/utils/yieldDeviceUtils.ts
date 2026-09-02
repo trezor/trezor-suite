@@ -4,7 +4,7 @@ import { DeviceModelInternal, getFirmwareVersionArray } from '@trezor/device-uti
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { type VersionArray, versionUtils } from '@trezor/utils';
 
-import type { YieldFlowDisplayToken, YieldFlowType } from '../stablecoinYieldTypes';
+import type { YieldFlowDisplayToken, YieldFlowType } from '../yieldTypes';
 
 const hasMinFirmware = (device: TrezorDevice | undefined, minVersion: VersionArray): boolean => {
     // The firmware gates target the T2+ line only; T1B1 versions its firmware as 1.x.
@@ -26,15 +26,12 @@ export type StablecoinYieldVaultToken = Pick<
     'networkSymbol' | 'contractAddress'
 >;
 
-type StablecoinYieldSupportOptions = {
+type YieldSupportOptions = {
     flowType?: YieldFlowType;
     vaultToken?: StablecoinYieldVaultToken;
 };
 
-const getYieldMinFirmware = ({
-    flowType,
-    vaultToken,
-}: StablecoinYieldSupportOptions): VersionArray => {
+const getYieldMinFirmware = ({ flowType, vaultToken }: YieldSupportOptions): VersionArray => {
     if (vaultToken && isWrappedNativeToken(vaultToken.networkSymbol, vaultToken.contractAddress)) {
         return WRAPPED_NATIVE_MIN_FIRMWARE;
     }
@@ -42,7 +39,7 @@ const getYieldMinFirmware = ({
     return flowType === 'claim' ? [2, 12, 1] : [2, 12, 0];
 };
 
-export const isStablecoinYieldSupported = (
+export const isYieldSupported = (
     device: TrezorDevice | undefined,
-    options: StablecoinYieldSupportOptions = {},
+    options: YieldSupportOptions = {},
 ): boolean => hasMinFirmware(device, getYieldMinFirmware(options));

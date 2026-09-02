@@ -5,8 +5,8 @@ import { type TradingState } from '@suite-common/trading';
 import {
     type AccountsRootState,
     type SendRootState,
-    type StablecoinYieldState,
     type TronStakeReducerState,
+    type YieldState,
     accountsActions,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
@@ -24,7 +24,7 @@ export type SelectedAccountRootStateWithTrading = SelectedAccountRootState &
     SendRootState & {
         wallet: {
             trading: TradingState;
-            stablecoinYield: StablecoinYieldState;
+            stablecoinYield: YieldState;
             tronStake: TronStakeReducerState;
         };
         connectPopup: ConnectPopupState;

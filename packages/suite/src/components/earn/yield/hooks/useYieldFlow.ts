@@ -22,10 +22,10 @@ import {
     handleYieldApproveSuccessTxidThunk,
     initYieldAllowanceThunk,
     isYieldWithdrawFlow,
-    selectStablecoinYieldSession,
-    stablecoinYieldActions,
+    selectYieldSession,
     submitYieldApproveThunk,
     submitYieldRevokeThunk,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
@@ -138,7 +138,7 @@ export const useYieldFlow = ({
     const depositedSharesAmount = yieldFlowData.depositedSharesAmount ?? '0';
     const flowKey = yieldFlowData.flowKey ?? '';
 
-    const session = useSelector(state => selectStablecoinYieldSession(state, flowType, flowKey));
+    const session = useSelector(state => selectYieldSession(state, flowType, flowKey));
     // Fresh rather than commit-lagging: callbacks read the current step and pending transaction
     // when invoked, including before the next effect commit.
     const sessionRef = useFreshRef(session);
@@ -176,7 +176,7 @@ export const useYieldFlow = ({
         if (!flowKey) return;
 
         dispatch(
-            stablecoinYieldActions.enterSession({
+            yieldActions.enterSession({
                 flowType,
                 flowKey,
                 isWrappedNativeVault,
@@ -185,7 +185,7 @@ export const useYieldFlow = ({
         );
 
         return () => {
-            dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
+            dispatch(yieldActions.disposeSession({ flowType, flowKey }));
         };
     }, [flowKey, flowType, dispatch, isWrappedNativeVault, hasWrappedTokenBalanceRef]);
 
@@ -315,7 +315,7 @@ export const useYieldFlow = ({
     );
 
     const enterModifyApproval = useCallback(() => {
-        dispatch(stablecoinYieldActions.enterModifyMode({ flowType, flowKey }));
+        dispatch(yieldActions.enterModifyMode({ flowType, flowKey }));
     }, [dispatch, flowType, flowKey]);
 
     const openDeviceConnectionModal = useCallback(() => {
@@ -330,7 +330,7 @@ export const useYieldFlow = ({
     const resolveWrappedNativeStep = useCallback(
         (step: 'wrap' | 'unwrap') => {
             dispatch(
-                stablecoinYieldActions.resolveWrappedNativeStep({
+                yieldActions.resolveWrappedNativeStep({
                     flowType,
                     flowKey,
                     step,
@@ -357,7 +357,7 @@ export const useYieldFlow = ({
 
             if (!token?.contractAddress) {
                 dispatch(
-                    stablecoinYieldActions.setError({
+                    yieldActions.setError({
                         flowType,
                         flowKey,
                         error: 'TR_EARN_YIELD_ERROR_GENERIC',
@@ -386,7 +386,7 @@ export const useYieldFlow = ({
                 contractAddress: token.contractAddress,
             };
 
-            dispatch(stablecoinYieldActions.startSubmittingWrappedNative({ flowType, flowKey }));
+            dispatch(yieldActions.startSubmittingWrappedNative({ flowType, flowKey }));
             try {
                 let txid: string | undefined;
 
@@ -414,7 +414,7 @@ export const useYieldFlow = ({
 
                 if (txid) {
                     dispatch(
-                        stablecoinYieldActions.setPendingTx({
+                        yieldActions.setPendingTx({
                             flowType,
                             flowKey,
                             tx: {
@@ -430,14 +430,14 @@ export const useYieldFlow = ({
                 // unexpected throw around it so the step surfaces an error instead of silently
                 // rejecting. The step stays put, so the user can retry.
                 dispatch(
-                    stablecoinYieldActions.setError({
+                    yieldActions.setError({
                         flowType,
                         flowKey,
                         error: 'TR_EARN_YIELD_ERROR_GENERIC',
                     }),
                 );
             } finally {
-                dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType, flowKey }));
+                dispatch(yieldActions.finishSubmittingAction({ flowType, flowKey }));
             }
         },
         [
@@ -464,7 +464,7 @@ export const useYieldFlow = ({
     }, [resolveWrappedNativeStep]);
 
     const returnToWrapStep = useCallback(() => {
-        dispatch(stablecoinYieldActions.returnToWrapStep({ flowType, flowKey }));
+        dispatch(yieldActions.returnToWrapStep({ flowType, flowKey }));
     }, [dispatch, flowKey, flowType]);
 
     const submitUnwrap = useCallback(() => {
@@ -488,7 +488,7 @@ export const useYieldFlow = ({
 
         if (!token || !receiptToken) {
             dispatch(
-                stablecoinYieldActions.setError({
+                yieldActions.setError({
                     flowType,
                     flowKey,
                     error: 'TR_EARN_YIELD_ERROR_GENERIC',
@@ -537,7 +537,7 @@ export const useYieldFlow = ({
 
         if (!token || !receiptToken) {
             dispatch(
-                stablecoinYieldActions.setError({
+                yieldActions.setError({
                     flowType,
                     flowKey,
                     error: 'TR_EARN_YIELD_ERROR_GENERIC',
@@ -599,7 +599,7 @@ export const useYieldFlow = ({
 
     const skipApprove = useCallback(() => {
         dispatch(
-            stablecoinYieldActions.skipApprovalStep({
+            yieldActions.skipApprovalStep({
                 flowType,
                 flowKey,
                 amount: methodsRef.current.getValues('amountInput'),
@@ -616,7 +616,7 @@ export const useYieldFlow = ({
 
         if (!token || !receiptToken) {
             dispatch(
-                stablecoinYieldActions.setError({
+                yieldActions.setError({
                     flowType,
                     flowKey,
                     error: 'TR_EARN_YIELD_ERROR_GENERIC',

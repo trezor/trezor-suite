@@ -16,17 +16,17 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {
     type EthereumGetCurrentNonceThunkState,
-    STABLECOIN_YIELD_PREFIX,
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
     type WalletSettingsRootState,
+    YIELD_PREFIX,
     type YieldEstimatedFeeLevel,
     estimateYieldFeeLevel,
-    getStablecoinYieldClaimRewardsSnapshot,
+    getYieldClaimRewardsSnapshot,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
-    stablecoinYieldActions,
     synchronizeSentTransactionThunk,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
@@ -83,7 +83,7 @@ export const claimMerklRewardsThunk = createThunk<
     ClaimMerklRewardsParams,
     { state: ClaimMerklRewardsThunkState; extra: ClaimMerklRewardsThunkDeps }
 >(
-    `${STABLECOIN_YIELD_PREFIX}/thunk/claimMerklRewards`,
+    `${YIELD_PREFIX}/thunk/claimMerklRewards`,
     async ({ account, flowKey, rewards }, { dispatch, getState, extra }) => {
         const device = selectSelectedDevice(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
@@ -121,7 +121,7 @@ export const claimMerklRewardsThunk = createThunk<
             });
 
         dispatch(
-            stablecoinYieldActions.startSubmittingAction({
+            yieldActions.startSubmittingAction({
                 flowType: 'claim',
                 flowKey,
                 amount: '',
@@ -157,7 +157,7 @@ export const claimMerklRewardsThunk = createThunk<
             if (!estimatedFeeLevel.success) {
                 reportSubmitError(estimatedFeeLevel.error);
                 dispatch(
-                    stablecoinYieldActions.setError({
+                    yieldActions.setError({
                         flowType: 'claim',
                         flowKey,
                         error: 'TR_EARN_YIELD_ERROR_FEE_ESTIMATION',
@@ -212,10 +212,10 @@ export const claimMerklRewardsThunk = createThunk<
             // same frozen rewards the calldata was built from, so it cannot diverge from the
             // signed transaction when Merkl data refreshes in the background.
             dispatch(
-                stablecoinYieldActions.storeActionReviewData({
+                yieldActions.storeActionReviewData({
                     flowType: 'claim',
                     flowKey,
-                    rewards: getStablecoinYieldClaimRewardsSnapshot({
+                    rewards: getYieldClaimRewardsSnapshot({
                         networkSymbol: account.symbol,
                         rewards,
                     }),
@@ -224,7 +224,7 @@ export const claimMerklRewardsThunk = createThunk<
             );
 
             dispatch(
-                stablecoinYieldActions.storePrecomposedTransaction({
+                yieldActions.storePrecomposedTransaction({
                     precomposedTx: precomposedTransaction,
                     // Surface the resolved nonce (decimal) so the review modal shows it like Send.
                     precomposedForm: { ...formState, ethereumNonce: nonce },
@@ -264,7 +264,7 @@ export const claimMerklRewardsThunk = createThunk<
                 }
 
                 dispatch(
-                    stablecoinYieldActions.storeSignedTransaction({
+                    yieldActions.storeSignedTransaction({
                         serializedTx: {
                             tx: signingResponse.payload.serializedTx,
                             symbol: account.symbol,
@@ -323,7 +323,7 @@ export const claimMerklRewardsThunk = createThunk<
                 );
 
                 dispatch(
-                    stablecoinYieldActions.setPendingTx({
+                    yieldActions.setPendingTx({
                         flowType: 'claim',
                         flowKey,
                         tx: {
@@ -336,20 +336,20 @@ export const claimMerklRewardsThunk = createThunk<
 
                 return pushResponse.payload;
             } finally {
-                dispatch(stablecoinYieldActions.discardTransaction());
+                dispatch(yieldActions.discardTransaction());
             }
         } catch (error) {
             console.error(error);
             reportSubmitError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
-                stablecoinYieldActions.setError({
+                yieldActions.setError({
                     flowType: 'claim',
                     flowKey,
                     error: getYieldErrorTranslationKey(error),
                 }),
             );
         } finally {
-            dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType: 'claim', flowKey }));
+            dispatch(yieldActions.finishSubmittingAction({ flowType: 'claim', flowKey }));
         }
     },
 );

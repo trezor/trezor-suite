@@ -16,7 +16,7 @@ import {
     getYieldVaultContractAddress,
     getYieldWithdrawInputToken,
     splitYieldPendingTransaction,
-    stablecoinYieldActions,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { asAmountSubunit, getApyBreakdown, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -474,9 +474,9 @@ export const YieldWithdrawScreen = () => {
             },
         });
 
-        dispatch(stablecoinYieldActions.discardTransaction());
+        dispatch(yieldActions.discardTransaction());
         dispatch(
-            stablecoinYieldActions.storeActionReviewData({
+            yieldActions.storeActionReviewData({
                 amount: preparedAction.amount,
                 flowKey,
                 flowType,

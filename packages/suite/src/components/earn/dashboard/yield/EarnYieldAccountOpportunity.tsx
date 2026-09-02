@@ -14,10 +14,7 @@ import {
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
-import {
-    getYieldVaultContractAddress,
-    isStablecoinYieldSupported,
-} from '@suite-common/wallet-core';
+import { getYieldVaultContractAddress, isYieldSupported } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
@@ -53,7 +50,7 @@ export const EarnYieldAccountOpportunity = ({
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice, {
+    const isFirmwareOutdated = !isYieldSupported(selectedDevice, {
         vaultToken: {
             networkSymbol: opportunity.networkSymbol,
             contractAddress: opportunity.vault.token.address,
