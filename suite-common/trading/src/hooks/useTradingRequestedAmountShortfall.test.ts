@@ -1,16 +1,17 @@
-import { useSelector } from 'react-redux';
+import {
+    type BuyTrade,
+    type BuyTradeQuoteRequest,
+    type CryptoId,
+    type ExchangeTrade,
+    type ExchangeTradeQuoteRequest,
+    type SellFiatTrade,
+    type SellFiatTradeQuoteRequest,
+} from 'invity-api';
 
-import { renderHook } from '@testing-library/react';
-import { type BuyTrade, type CryptoId, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { useTradingRequestedAmountShortfall } from './useTradingRequestedAmountShortfall';
-
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
-    useSelector: jest.fn(),
-}));
-
-const mockedUseSelector = jest.mocked(useSelector);
+import { type TradingRootState, initialState } from '../reducers/tradingCommonReducer';
 
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 const ETHEREUM_CRYPTO_ID = 'ethereum' as CryptoId;
@@ -51,44 +52,51 @@ const exchangeQuote = {
     max: 100,
 } satisfies ExchangeTrade;
 
-const mockQuotesRequests = ({
-    buyQuotesRequest,
-    sellQuotesRequest,
-    exchangeQuotesRequest,
-}: {
-    buyQuotesRequest?: unknown;
-    sellQuotesRequest?: unknown;
-    exchangeQuotesRequest?: unknown;
-}) => {
-    mockedUseSelector
-        .mockReturnValueOnce(buyQuotesRequest)
-        .mockReturnValueOnce(sellQuotesRequest)
-        .mockReturnValueOnce(exchangeQuotesRequest);
+type QuotesRequests = {
+    buyQuotesRequest?: BuyTradeQuoteRequest;
+    sellQuotesRequest?: SellFiatTradeQuoteRequest;
+    exchangeQuotesRequest?: ExchangeTradeQuoteRequest;
 };
 
 const renderUseTradingRequestedAmountShortfall = (
     quote: BuyTrade | SellFiatTrade | ExchangeTrade,
-) => renderHook(() => useTradingRequestedAmountShortfall({ quote }));
-
-describe('useTradingRequestedAmountShortfall', () => {
-    beforeEach(() => {
-        jest.resetAllMocks();
+    { buyQuotesRequest, sellQuotesRequest, exchangeQuotesRequest }: QuotesRequests = {},
+) => {
+    const root = createTestCompositionRoot({
+        extra: { services: {} },
+        preloadedState: {
+            wallet: {
+                trading: {
+                    ...initialState,
+                    buy: { ...initialState.buy, quotesRequest: buyQuotesRequest },
+                    sell: { ...initialState.sell, quotesRequest: sellQuotesRequest },
+                    exchange: { ...initialState.exchange, quotesRequest: exchangeQuotesRequest },
+                },
+            },
+        } satisfies TradingRootState,
     });
 
-    it('returns crypto shortfall for buy when wantCrypto is true', () => {
-        mockQuotesRequests({
-            buyQuotesRequest: {
-                wantCrypto: true,
-                fiatCurrency: 'USD',
-                receiveCurrency: BITCOIN_CRYPTO_ID,
-                cryptoStringAmount: '1',
-            },
-        });
+    return renderHookWithStoreProvider(() => useTradingRequestedAmountShortfall({ quote }), {
+        root,
+    });
+};
 
-        const { result } = renderUseTradingRequestedAmountShortfall({
-            ...buyQuote,
-            receiveStringAmount: '0.8',
-        });
+describe('useTradingRequestedAmountShortfall', () => {
+    it('returns crypto shortfall for buy when wantCrypto is true', () => {
+        const { result } = renderUseTradingRequestedAmountShortfall(
+            {
+                ...buyQuote,
+                receiveStringAmount: '0.8',
+            },
+            {
+                buyQuotesRequest: {
+                    wantCrypto: true,
+                    fiatCurrency: 'USD',
+                    receiveCurrency: BITCOIN_CRYPTO_ID,
+                    cryptoStringAmount: '1',
+                },
+            },
+        );
 
         expect(result.current?.shortfallRatio).toBeCloseTo(0.2);
         expect(result.current?.cryptoShortfall).toEqual({
@@ -99,19 +107,20 @@ describe('useTradingRequestedAmountShortfall', () => {
     });
 
     it('returns shortfall for buy when wantCrypto is false', () => {
-        mockQuotesRequests({
-            buyQuotesRequest: {
-                wantCrypto: false,
-                fiatCurrency: 'USD',
-                receiveCurrency: BITCOIN_CRYPTO_ID,
-                fiatStringAmount: '100',
+        const { result } = renderUseTradingRequestedAmountShortfall(
+            {
+                ...buyQuote,
+                fiatStringAmount: '90',
             },
-        });
-
-        const { result } = renderUseTradingRequestedAmountShortfall({
-            ...buyQuote,
-            fiatStringAmount: '90',
-        });
+            {
+                buyQuotesRequest: {
+                    wantCrypto: false,
+                    fiatCurrency: 'USD',
+                    receiveCurrency: BITCOIN_CRYPTO_ID,
+                    fiatStringAmount: '100',
+                },
+            },
+        );
 
         expect(result.current).toEqual({
             shortfallRatio: 0.1,
@@ -120,7 +129,7 @@ describe('useTradingRequestedAmountShortfall', () => {
     });
 
     it('returns crypto shortfall for sell when amountInCrypto is true', () => {
-        mockQuotesRequests({
+        const { result } = renderUseTradingRequestedAmountShortfall(sellQuote, {
             sellQuotesRequest: {
                 amountInCrypto: true,
                 cryptoCurrency: ETHEREUM_CRYPTO_ID,
@@ -132,8 +141,6 @@ describe('useTradingRequestedAmountShortfall', () => {
             },
         });
 
-        const { result } = renderUseTradingRequestedAmountShortfall(sellQuote);
-
         expect(result.current).toEqual({
             shortfallRatio: 0.2,
             cryptoShortfall: {
@@ -144,21 +151,22 @@ describe('useTradingRequestedAmountShortfall', () => {
     });
 
     it('returns shortfall for sell when amountInCrypto is false', () => {
-        mockQuotesRequests({
-            sellQuotesRequest: {
-                amountInCrypto: false,
-                cryptoCurrency: ETHEREUM_CRYPTO_ID,
-                fiatCurrency: 'USD',
-                country: 'CZ',
-                fiatStringAmount: '100',
-                flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
+        const { result } = renderUseTradingRequestedAmountShortfall(
+            {
+                ...sellQuote,
+                fiatStringAmount: '70',
             },
-        });
-
-        const { result } = renderUseTradingRequestedAmountShortfall({
-            ...sellQuote,
-            fiatStringAmount: '70',
-        });
+            {
+                sellQuotesRequest: {
+                    amountInCrypto: false,
+                    cryptoCurrency: ETHEREUM_CRYPTO_ID,
+                    fiatCurrency: 'USD',
+                    country: 'CZ',
+                    fiatStringAmount: '100',
+                    flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
+                },
+            },
+        );
 
         expect(result.current).toEqual({
             shortfallRatio: 0.3,
@@ -167,15 +175,13 @@ describe('useTradingRequestedAmountShortfall', () => {
     });
 
     it('returns crypto shortfall for exchange when the quote send amount is lower than requested', () => {
-        mockQuotesRequests({
+        const { result } = renderUseTradingRequestedAmountShortfall(exchangeQuote, {
             exchangeQuotesRequest: {
                 send: BITCOIN_CRYPTO_ID,
                 receive: ETHEREUM_CRYPTO_ID,
                 sendStringAmount: '2',
             },
         });
-
-        const { result } = renderUseTradingRequestedAmountShortfall(exchangeQuote);
 
         expect(result.current).toEqual({
             shortfallRatio: 0.25,
@@ -187,7 +193,7 @@ describe('useTradingRequestedAmountShortfall', () => {
     });
 
     it('does not return shortfall for exchange when the quote send amount matches the request', () => {
-        mockQuotesRequests({
+        const { result } = renderUseTradingRequestedAmountShortfall(exchangeQuote, {
             exchangeQuotesRequest: {
                 send: BITCOIN_CRYPTO_ID,
                 receive: ETHEREUM_CRYPTO_ID,
@@ -195,13 +201,11 @@ describe('useTradingRequestedAmountShortfall', () => {
             },
         });
 
-        const { result } = renderUseTradingRequestedAmountShortfall(exchangeQuote);
-
         expect(result.current).toBeNull();
     });
 
     it('returns null on exact match', () => {
-        mockQuotesRequests({
+        const { result } = renderUseTradingRequestedAmountShortfall(buyQuote, {
             buyQuotesRequest: {
                 wantCrypto: true,
                 fiatCurrency: 'USD',
@@ -210,33 +214,30 @@ describe('useTradingRequestedAmountShortfall', () => {
             },
         });
 
-        const { result } = renderUseTradingRequestedAmountShortfall(buyQuote);
-
         expect(result.current).toBeNull();
     });
 
     it('returns null when request is missing', () => {
-        mockQuotesRequests({});
-
         const { result } = renderUseTradingRequestedAmountShortfall(buyQuote);
 
         expect(result.current).toBeNull();
     });
 
     it('returns null when request amount or quote amount is missing', () => {
-        mockQuotesRequests({
-            buyQuotesRequest: {
-                wantCrypto: true,
-                fiatCurrency: 'USD',
-                receiveCurrency: BITCOIN_CRYPTO_ID,
-                cryptoStringAmount: '1',
+        const { result } = renderUseTradingRequestedAmountShortfall(
+            {
+                ...buyQuote,
+                receiveStringAmount: undefined,
             },
-        });
-
-        const { result } = renderUseTradingRequestedAmountShortfall({
-            ...buyQuote,
-            receiveStringAmount: undefined,
-        });
+            {
+                buyQuotesRequest: {
+                    wantCrypto: true,
+                    fiatCurrency: 'USD',
+                    receiveCurrency: BITCOIN_CRYPTO_ID,
+                    cryptoStringAmount: '1',
+                },
+            },
+        );
 
         expect(result.current).toBeNull();
     });

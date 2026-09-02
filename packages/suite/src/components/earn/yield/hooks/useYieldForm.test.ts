@@ -1,6 +1,7 @@
-import { act, renderHook } from '@testing-library/react';
+import { act } from '@testing-library/react';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type ResolvedYieldFlowData,
     type YieldPositionFlowType,
@@ -117,29 +118,26 @@ const getMockState = () => ({
     },
 });
 
+const createRoot = () =>
+    createTestCompositionRoot({
+        extra: { services: { analytics: { report: jest.fn() } } },
+        preloadedState: getMockState(),
+    });
+
 // Reads the mutable `mockSession` at render time, so reassign-then-rerender takes effect.
 const renderYieldForm = (flowType: YieldPositionFlowType = 'deposit') =>
-    renderHook(() =>
-        useYieldForm({
-            flowType,
-            flowData,
-            account,
-            vault,
-            flowKey: FLOW_KEY,
-            session: mockSession,
-        }),
+    renderHookWithStoreProvider(
+        () =>
+            useYieldForm({
+                flowType,
+                flowData,
+                account,
+                vault,
+                flowKey: FLOW_KEY,
+                session: mockSession,
+            }),
+        { root: createRoot() },
     );
-
-jest.mock('src/hooks/suite', () => ({
-    useSelector: (selector: (state: ReturnType<typeof getMockState>) => unknown) =>
-        selector(getMockState()),
-}));
-
-jest.mock('@suite-common/dependency-injection', () => ({
-    useServices: () => ({ analytics: { report: jest.fn() } }),
-}));
-
-jest.mock('@suite/analytics', () => ({ selectDesktopAnalyticsDep: () => ({}) }));
 
 describe('useYieldForm', () => {
     beforeEach(() => {
@@ -249,7 +247,7 @@ describe('useYieldForm', () => {
     });
 
     it('resets the form when the flow key changes', () => {
-        const { result, rerender } = renderHook(
+        const { result, rerender } = renderHookWithStoreProvider(
             ({ currentFlowKey }) =>
                 useYieldForm({
                     flowType: 'deposit',
@@ -259,7 +257,10 @@ describe('useYieldForm', () => {
                     flowKey: currentFlowKey,
                     session: mockSession,
                 }),
-            { initialProps: { currentFlowKey: FLOW_KEY } },
+            {
+                root: createRoot(),
+                initialProps: { currentFlowKey: FLOW_KEY },
+            },
         );
 
         act(() => result.current.setAmountInput('5'));

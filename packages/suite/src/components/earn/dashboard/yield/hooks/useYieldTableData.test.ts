@@ -1,6 +1,5 @@
-import { renderHook } from '@testing-library/react';
-
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -8,10 +7,6 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { getYieldOpportunityData, useYieldTableData } from './useYieldTableData';
 
 const ethSymbol = asNetworkSymbol('eth');
-
-jest.mock('src/hooks/suite', () => ({
-    useSelector: () => [],
-}));
 
 const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
@@ -203,12 +198,18 @@ describe(useYieldTableData.name, () => {
             formattedBalance: '1',
         });
 
-        const { result } = renderHook(() =>
-            useYieldTableData({
-                availableVaults: [wethVault],
-                visibleAccounts: [emptyAccount, nativeOnlyAccount],
-                visibleAccountSymbols: new Set<NetworkSymbol>([ethSymbol]),
-            }),
+        const root = createTestCompositionRoot({
+            extra: { services: {} },
+            preloadedState: { device: { selectedDevice: undefined } },
+        });
+        const { result } = renderHookWithStoreProvider(
+            () =>
+                useYieldTableData({
+                    availableVaults: [wethVault],
+                    visibleAccounts: [emptyAccount, nativeOnlyAccount],
+                    visibleAccountSymbols: new Set<NetworkSymbol>([ethSymbol]),
+                }),
+            { root },
         );
 
         const opportunities = result.current.yieldAccountOpportunities;
