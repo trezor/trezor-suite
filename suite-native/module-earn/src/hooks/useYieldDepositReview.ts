@@ -5,10 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useDispatch } from '@suite-common/redux-utils';
 import {
-    type StablecoinYieldRootState,
     type YieldFlowResolvedData,
+    type YieldRootState,
     isYieldTxReviewForFlow,
-    selectStablecoinYieldTxReview,
+    selectYieldTxReview,
 } from '@suite-common/wallet-core';
 import type {
     StackNavigationProps,
@@ -46,9 +46,7 @@ export const useYieldDepositReview = ({
             vaultId: flowData.vault.id,
         });
 
-    const txReview = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldTxReview(state),
-    );
+    const txReview = useSelector((state: YieldRootState) => selectYieldTxReview(state));
 
     // A leftover signed tx from a previous review of the same account must not appear
     // as signed here, hence the flow identity and `notBefore` guard.

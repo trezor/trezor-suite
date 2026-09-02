@@ -13,10 +13,10 @@ import { Context } from '@suite-common/message-system';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     YIELD_FLOW_AVAILABLE_STEPS,
-    isStablecoinYieldSupported,
-    selectStablecoinYieldSession,
-    selectStablecoinYieldTxReview,
-    stablecoinYieldActions,
+    isYieldSupported,
+    selectYieldSession,
+    selectYieldTxReview,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
@@ -50,16 +50,14 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
         useFirmwareUpgradeModal();
 
-    const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
-    const claimSession = useSelector(state =>
-        selectStablecoinYieldSession(state, 'claim', flowKey),
-    );
+    const yieldTxReview = useSelector(selectYieldTxReview);
+    const claimSession = useSelector(state => selectYieldSession(state, 'claim', flowKey));
     const isClaimSubmitting =
         claimSession.action.isSubmitting ||
         (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account.key);
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
     const isDeviceConnected = !!device?.connected && device.available;
-    const isClaimFirmwareOutdated = !isStablecoinYieldSupported(device, { flowType: 'claim' });
+    const isClaimFirmwareOutdated = !isYieldSupported(device, { flowType: 'claim' });
 
     const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType: 'claim', flowKey });
     const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(account);
@@ -70,10 +68,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const currentStep = claimSession.step === 'complete' ? 'complete' : 'action';
 
     useEffect(() => {
-        dispatch(stablecoinYieldActions.initSession({ flowType: 'claim', flowKey }));
+        dispatch(yieldActions.initSession({ flowType: 'claim', flowKey }));
 
         return () => {
-            dispatch(stablecoinYieldActions.disposeSession({ flowType: 'claim', flowKey }));
+            dispatch(yieldActions.disposeSession({ flowType: 'claim', flowKey }));
         };
     }, [dispatch, flowKey]);
 

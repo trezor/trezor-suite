@@ -9,24 +9,24 @@ import {
 } from '@suite-common/wallet-types';
 import { isSafeObjectKey } from '@trezor/utils';
 
-import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
+import { getNextYieldFlowStep, getYieldFlowStepSequence } from './utils/yieldUtils';
+import { YIELD_PREFIX } from './yieldConstants';
 import {
-    type StablecoinYieldClaimUnsignedTransaction,
     type WrappedNativeStepId,
     YIELD_FLOW_TYPES,
     type YieldApproveModalState,
+    type YieldClaimUnsignedTransaction,
     type YieldFlowCompleteRewardItem,
     type YieldFlowStepId,
     type YieldFlowType,
     type YieldPendingTransactionState,
     type YieldPositionFlowType,
-} from './stablecoinYieldTypes';
-import { getNextYieldFlowStep, getYieldFlowStepSequence } from './utils/stablecoinYieldUtils';
+} from './yieldTypes';
 import { transactionsActions } from '../transactions/transactionsActions';
 
 // Message ids must exist in the desktop `suite/intl` messages — the desktop app renders
 // `session.error` directly via `<Translation>`.
-export type StablecoinYieldTranslationKey =
+export type YieldTranslationKey =
     | 'TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH'
     | 'TR_EARN_YIELD_ERROR_FEE_ESTIMATION'
     | 'TR_EARN_YIELD_ERROR_GENERIC'
@@ -34,12 +34,12 @@ export type StablecoinYieldTranslationKey =
     | 'TR_EARN_YIELD_ERROR_PUSH_FAILED'
     | 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
 
-type StablecoinYieldSerializedTx = {
+type YieldSerializedTx = {
     tx: string;
     symbol: NetworkSymbol;
 };
 
-export type StablecoinYieldActionReviewState =
+export type YieldActionReviewState =
     | {
           type: YieldPositionFlowType;
           amount: string;
@@ -49,7 +49,7 @@ export type StablecoinYieldActionReviewState =
     | {
           type: 'claim';
           rewards: YieldFlowCompleteRewardItem[];
-          unsignedTransaction: StablecoinYieldClaimUnsignedTransaction;
+          unsignedTransaction: YieldClaimUnsignedTransaction;
       }
     | {
           type: WrappedNativeStepId;
@@ -57,33 +57,33 @@ export type StablecoinYieldActionReviewState =
           unsignedTransaction: string;
       };
 
-type StablecoinYieldStoreActionReviewDataPayload =
-    | (StablecoinYieldSessionActionPayload & {
+type YieldStoreActionReviewDataPayload =
+    | (YieldSessionActionPayload & {
           flowType: YieldPositionFlowType;
           amount: string;
           receiptAmount: string;
           unsignedTransaction: string;
       })
-    | (StablecoinYieldSessionActionPayload & {
+    | (YieldSessionActionPayload & {
           flowType: 'claim';
           rewards: YieldFlowCompleteRewardItem[];
-          unsignedTransaction: StablecoinYieldClaimUnsignedTransaction;
+          unsignedTransaction: YieldClaimUnsignedTransaction;
       });
 
 export type YieldAllowanceStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
-export type StablecoinYieldTxReviewState = {
+export type YieldTxReviewState = {
     precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: FormState;
     availableRewards?: YieldClaimReward[];
-    serializedTx?: StablecoinYieldSerializedTx;
+    serializedTx?: YieldSerializedTx;
     accountKey?: AccountKey;
     flowKey?: string;
     flowType?: YieldFlowType;
     createdTimestamp?: number;
 };
 
-export type StablecoinYieldSessionState = {
+export type YieldSessionState = {
     step: YieldFlowStepId;
     isWrappedNativeVault: boolean;
     /**
@@ -93,7 +93,7 @@ export type StablecoinYieldSessionState = {
      * what tells a session that already moved on-chain apart from an untouched one.
      */
     hasBroadcastTransaction: boolean;
-    error: StablecoinYieldTranslationKey | null;
+    error: YieldTranslationKey | null;
     approval: {
         allowanceAmount: string | null;
         modalState: YieldApproveModalState | null;
@@ -109,7 +109,7 @@ export type StablecoinYieldSessionState = {
         isSubmitting: boolean;
         pendingTransaction: YieldPendingTransactionState | null;
         pendingReceiptAmount: string;
-        review: StablecoinYieldActionReviewState | null;
+        review: YieldActionReviewState | null;
     };
     result: {
         completedAmount: string;
@@ -120,22 +120,22 @@ export type StablecoinYieldSessionState = {
     };
 };
 
-export type StablecoinYieldState = {
-    txReview: StablecoinYieldTxReviewState;
-} & Record<YieldFlowType, Record<string, StablecoinYieldSessionState>>;
+export type YieldState = {
+    txReview: YieldTxReviewState;
+} & Record<YieldFlowType, Record<string, YieldSessionState>>;
 
-export type StablecoinYieldRootState = {
+export type YieldRootState = {
     wallet: {
-        stablecoinYield: StablecoinYieldState;
+        stablecoinYield: YieldState;
     };
 };
 
-type StablecoinYieldSessionActionPayload = {
+type YieldSessionActionPayload = {
     flowType: YieldFlowType;
     flowKey: string;
 };
 
-export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
+export const initialStablecoinYieldSessionState: YieldSessionState = {
     step: 'approve',
     isWrappedNativeVault: false,
     hasBroadcastTransaction: false,
@@ -165,7 +165,7 @@ export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
     },
 };
 
-export const initialStablecoinYieldTxReviewState: StablecoinYieldTxReviewState = {
+export const initialStablecoinYieldTxReviewState: YieldTxReviewState = {
     precomposedTx: undefined,
     precomposedForm: undefined,
     availableRewards: undefined,
@@ -176,7 +176,7 @@ export const initialStablecoinYieldTxReviewState: StablecoinYieldTxReviewState =
     createdTimestamp: undefined,
 };
 
-export const initialStablecoinYieldState: StablecoinYieldState = {
+export const initialStablecoinYieldState: YieldState = {
     deposit: Object.create(null),
     withdraw: Object.create(null),
     redeem: Object.create(null),
@@ -184,10 +184,10 @@ export const initialStablecoinYieldState: StablecoinYieldState = {
     txReview: initialStablecoinYieldTxReviewState,
 };
 
-const createInitialStablecoinYieldSessionState = (
+const createInitialYieldSessionState = (
     flowType: YieldFlowType,
     isWrappedNativeVault = false,
-): StablecoinYieldSessionState => ({
+): YieldSessionState => ({
     ...initialStablecoinYieldSessionState,
     step: getYieldFlowStepSequence({ flowType, isWrappedNativeVault })[0],
     isWrappedNativeVault,
@@ -199,7 +199,7 @@ const createInitialStablecoinYieldSessionState = (
     },
 });
 
-export const getStablecoinYieldSessionKey = (flowKey: string) => `yield-session:${flowKey}`;
+export const getYieldSessionKey = (flowKey: string) => `yield-session:${flowKey}`;
 
 /**
  * Whether re-entering the flow should pick this session up instead of starting it over.
@@ -210,9 +210,7 @@ export const getStablecoinYieldSessionKey = (flowKey: string) => `yield-session:
  * a transaction still in flight has to stay tracked — the pending panel, the duplicate-submit
  * guard, the completion into the next step and `replaceTransaction` following an RBF all read it.
  */
-export const isStablecoinYieldSessionResumable = (
-    session: StablecoinYieldSessionState | undefined,
-): boolean => {
+export const isYieldSessionResumable = (session: YieldSessionState | undefined): boolean => {
     if (!session) return false;
     if (session.action.pendingTransaction) return true;
 
@@ -220,15 +218,15 @@ export const isStablecoinYieldSessionResumable = (
 };
 
 const withSession = (
-    state: StablecoinYieldState,
-    { flowType, flowKey }: StablecoinYieldSessionActionPayload,
-    updater: (session: StablecoinYieldSessionState) => void,
+    state: YieldState,
+    { flowType, flowKey }: YieldSessionActionPayload,
+    updater: (session: YieldSessionState) => void,
 ) => {
     if (!isSafeObjectKey(flowKey)) {
         return;
     }
 
-    const session = state[flowType][getStablecoinYieldSessionKey(flowKey)];
+    const session = state[flowType][getYieldSessionKey(flowKey)];
 
     if (!session) {
         return;
@@ -237,15 +235,13 @@ const withSession = (
     updater(session);
 };
 
-const stablecoinYieldSlice = createSlice({
-    name: STABLECOIN_YIELD_PREFIX,
+const yieldSlice = createSlice({
+    name: YIELD_PREFIX,
     initialState: initialStablecoinYieldState,
     reducers: {
         initSession(
-            state: StablecoinYieldState,
-            action: PayloadAction<
-                StablecoinYieldSessionActionPayload & { isWrappedNativeVault?: boolean }
-            >,
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload & { isWrappedNativeVault?: boolean }>,
         ) {
             const { flowType, flowKey, isWrappedNativeVault } = action.payload;
 
@@ -253,10 +249,10 @@ const stablecoinYieldSlice = createSlice({
                 return;
             }
 
-            const sessionKey = getStablecoinYieldSessionKey(flowKey);
+            const sessionKey = getYieldSessionKey(flowKey);
 
             if (!state[flowType][sessionKey]) {
-                state[flowType][sessionKey] = createInitialStablecoinYieldSessionState(
+                state[flowType][sessionKey] = createInitialYieldSessionState(
                     flowType,
                     isWrappedNativeVault,
                 );
@@ -264,9 +260,9 @@ const stablecoinYieldSlice = createSlice({
         },
         /** Opens the flow: resumes a session that is still mid-flow, otherwise starts a fresh one. */
         enterSession(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
+                YieldSessionActionPayload & {
                     isWrappedNativeVault?: boolean;
                     hasWrappedTokenBalance?: boolean;
                 }
@@ -279,16 +275,13 @@ const stablecoinYieldSlice = createSlice({
                 return;
             }
 
-            const sessionKey = getStablecoinYieldSessionKey(flowKey);
+            const sessionKey = getYieldSessionKey(flowKey);
 
-            if (isStablecoinYieldSessionResumable(state[flowType][sessionKey])) {
+            if (isYieldSessionResumable(state[flowType][sessionKey])) {
                 return;
             }
 
-            const session = createInitialStablecoinYieldSessionState(
-                flowType,
-                isWrappedNativeVault,
-            );
+            const session = createInitialYieldSessionState(flowType, isWrappedNativeVault);
 
             // Only a wrapped-native deposit opens on the wrap step, and there is nothing to wrap
             // when the wrapped token is already held — mirrors `resolveWrappedNativeStep`.
@@ -298,32 +291,27 @@ const stablecoinYieldSlice = createSlice({
 
             state[flowType][sessionKey] = session;
         },
-        disposeSession(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
-        ) {
+        disposeSession(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
             const { flowType, flowKey } = action.payload;
 
             if (!isSafeObjectKey(flowKey)) {
                 return;
             }
 
-            const sessionKey = getStablecoinYieldSessionKey(flowKey);
+            const sessionKey = getYieldSessionKey(flowKey);
 
             // A session that is mid-flow must survive its page unmounting so re-entering the flow
-            // resumes it (see `isStablecoinYieldSessionResumable`); it is dropped once the flow
+            // resumes it (see `isYieldSessionResumable`); it is dropped once the flow
             // completes, or never stored beyond the page when nothing was broadcast.
-            if (isStablecoinYieldSessionResumable(state[flowType][sessionKey])) {
+            if (isYieldSessionResumable(state[flowType][sessionKey])) {
                 return;
             }
 
             delete state[flowType][sessionKey];
         },
         resetSession(
-            state: StablecoinYieldState,
-            action: PayloadAction<
-                StablecoinYieldSessionActionPayload & { isWrappedNativeVault?: boolean }
-            >,
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload & { isWrappedNativeVault?: boolean }>,
         ) {
             const { flowType, flowKey } = action.payload;
 
@@ -331,22 +319,22 @@ const stablecoinYieldSlice = createSlice({
                 return;
             }
 
-            const sessionKey = getStablecoinYieldSessionKey(flowKey);
+            const sessionKey = getYieldSessionKey(flowKey);
             const isWrappedNativeVault =
                 action.payload.isWrappedNativeVault ??
                 state[flowType][sessionKey]?.isWrappedNativeVault ??
                 false;
 
-            state[flowType][sessionKey] = createInitialStablecoinYieldSessionState(
+            state[flowType][sessionKey] = createInitialYieldSessionState(
                 flowType,
                 isWrappedNativeVault,
             );
         },
         setError(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
-                    error: StablecoinYieldTranslationKey;
+                YieldSessionActionPayload & {
+                    error: YieldTranslationKey;
                 }
             >,
         ) {
@@ -354,18 +342,15 @@ const stablecoinYieldSlice = createSlice({
                 session.error = action.payload.error;
             });
         },
-        clearError(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
-        ) {
+        clearError(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.error = null;
             });
         },
         openApprovalModal(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
+                YieldSessionActionPayload & {
                     modalState: YieldApproveModalState;
                 }
             >,
@@ -374,26 +359,20 @@ const stablecoinYieldSlice = createSlice({
                 session.approval.modalState = action.payload.modalState;
             });
         },
-        closeApprovalModal(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
-        ) {
+        closeApprovalModal(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.modalState = null;
                 session.error = null;
             });
         },
-        setRevokeRequired(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
-        ) {
+        setRevokeRequired(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.isRevokeRequired = true;
             });
         },
         startSubmittingApproval(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload>,
         ) {
             withSession(state, action.payload, session => {
                 session.approval.isSubmitting = true;
@@ -403,50 +382,44 @@ const stablecoinYieldSlice = createSlice({
             });
         },
         finishSubmittingApproval(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload>,
         ) {
             withSession(state, action.payload, session => {
                 session.approval.isSubmitting = false;
             });
         },
         startInitializingAllowance(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload>,
         ) {
             withSession(state, action.payload, session => {
                 session.approval.allowanceStatus = 'loading';
             });
         },
         setInitializedAllowance(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload & { amount: string }>,
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload & { amount: string }>,
         ) {
             withSession(state, action.payload, session => {
                 session.approval.allowanceAmount = action.payload.amount;
                 session.approval.allowanceStatus = 'loaded';
             });
         },
-        setAllowanceError(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
-        ) {
+        setAllowanceError(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.allowanceAmount = null;
                 session.approval.allowanceStatus = 'error';
             });
         },
-        invalidateAllowance(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
-        ) {
+        invalidateAllowance(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.allowanceStatus = 'idle';
             });
         },
         enterModifyMode(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload & { amount?: string }>,
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload & { amount?: string }>,
         ) {
             withSession(state, action.payload, session => {
                 session.approval.isModifyMode = true;
@@ -460,9 +433,9 @@ const stablecoinYieldSlice = createSlice({
             });
         },
         completeApproval(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
+                YieldSessionActionPayload & {
                     amount: string;
                 }
             >,
@@ -490,9 +463,9 @@ const stablecoinYieldSlice = createSlice({
             });
         },
         skipApprovalStep(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
+                YieldSessionActionPayload & {
                     amount?: string;
                 }
             >,
@@ -521,9 +494,9 @@ const stablecoinYieldSlice = createSlice({
             });
         },
         resolveWrappedNativeStep(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
+                YieldSessionActionPayload & {
                     step: WrappedNativeStepId;
                     amount?: string;
                 }
@@ -552,10 +525,7 @@ const stablecoinYieldSlice = createSlice({
                 );
             });
         },
-        returnToWrapStep(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
-        ) {
+        returnToWrapStep(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 // Editing the finished wrap step offers another wrap round. Only meaningful for
                 // a wrapped-native deposit, from a later pre-complete step, and never while an
@@ -578,10 +548,7 @@ const stablecoinYieldSlice = createSlice({
                 session.step = 'wrap';
             });
         },
-        revokeSuccess(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
-        ) {
+        revokeSuccess(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.isModifyMode = false;
                 session.approval.allowanceAmount = '0';
@@ -591,9 +558,9 @@ const stablecoinYieldSlice = createSlice({
             });
         },
         startSubmittingAction(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
+                YieldSessionActionPayload & {
                     amount: string;
                 }
             >,
@@ -606,16 +573,16 @@ const stablecoinYieldSlice = createSlice({
             });
         },
         finishSubmittingAction(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload>,
         ) {
             withSession(state, action.payload, session => {
                 session.action.isSubmitting = false;
             });
         },
         startSubmittingWrappedNative(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload>,
         ) {
             withSession(state, action.payload, session => {
                 session.action.isSubmitting = true;
@@ -623,8 +590,8 @@ const stablecoinYieldSlice = createSlice({
             });
         },
         storeActionReviewData(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldStoreActionReviewDataPayload>,
+            state: YieldState,
+            action: PayloadAction<YieldStoreActionReviewDataPayload>,
         ) {
             withSession(state, action.payload, session => {
                 if (action.payload.flowType === 'claim') {
@@ -647,9 +614,9 @@ const stablecoinYieldSlice = createSlice({
             });
         },
         storeWrappedNativeReviewData(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
+                YieldSessionActionPayload & {
                     step: WrappedNativeStepId;
                     amount: string;
                     unsignedTransaction: string;
@@ -665,9 +632,9 @@ const stablecoinYieldSlice = createSlice({
             });
         },
         setPendingTx(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
+                YieldSessionActionPayload & {
                     tx: YieldPendingTransactionState;
                     receiptAmount?: string;
                 }
@@ -686,10 +653,8 @@ const stablecoinYieldSlice = createSlice({
          * account and the page tracking it has been left and reopened.
          */
         setPendingTxNonce(
-            state: StablecoinYieldState,
-            action: PayloadAction<
-                StablecoinYieldSessionActionPayload & { txid: string; nonce: number }
-            >,
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload & { txid: string; nonce: number }>,
         ) {
             withSession(state, action.payload, session => {
                 if (session.action.pendingTransaction?.txid !== action.payload.txid) {
@@ -700,9 +665,9 @@ const stablecoinYieldSlice = createSlice({
             });
         },
         completeAction(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
+                YieldSessionActionPayload & {
                     amount: string;
                 }
             >,
@@ -724,19 +689,16 @@ const stablecoinYieldSlice = createSlice({
                 );
             });
         },
-        transactionFailed(
-            state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
-        ) {
+        transactionFailed(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.action.pendingTransaction = null;
                 session.error = 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
             });
         },
         storePrecomposedTransaction(
-            state: StablecoinYieldState,
+            state: YieldState,
             action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
+                YieldSessionActionPayload & {
                     precomposedTx: PrecomposedTransactionFinal;
                     precomposedForm: FormState;
                     availableRewards?: YieldClaimReward[];
@@ -754,12 +716,12 @@ const stablecoinYieldSlice = createSlice({
             state.txReview.serializedTx = undefined;
         },
         storeSignedTransaction(
-            state: StablecoinYieldState,
-            action: PayloadAction<{ serializedTx: StablecoinYieldSerializedTx }>,
+            state: YieldState,
+            action: PayloadAction<{ serializedTx: YieldSerializedTx }>,
         ) {
             state.txReview.serializedTx = action.payload.serializedTx;
         },
-        discardTransaction(state: StablecoinYieldState) {
+        discardTransaction(state: YieldState) {
             state.txReview.precomposedTx = undefined;
             state.txReview.precomposedForm = undefined;
             state.txReview.availableRewards = undefined;
@@ -785,5 +747,5 @@ const stablecoinYieldSlice = createSlice({
     },
 });
 
-export const stablecoinYieldActions = stablecoinYieldSlice.actions;
-export const stablecoinYieldReducer = stablecoinYieldSlice.reducer;
+export const yieldActions = yieldSlice.actions;
+export const yieldReducer = yieldSlice.reducer;

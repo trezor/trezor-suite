@@ -10,11 +10,11 @@ import type {
     YieldFlowDisplayToken,
     YieldFlowToken,
     YieldWithdrawFlowType,
-} from '../stablecoinYieldTypes';
+} from '../yieldTypes';
 import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
     getWithdrawRequestAmount,
-} from './stablecoinYieldUtils';
+} from './yieldUtils';
 
 type PricePerShareState = NonNullable<YieldDtoV2['state']>['pricePerShareState'];
 

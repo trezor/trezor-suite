@@ -7,12 +7,12 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     type ResolvedYieldFlowData,
-    type StablecoinYieldRootState,
+    type YieldRootState,
     getYieldApprovalAction,
     initYieldAllowanceThunk,
-    selectStablecoinYieldSession,
-    stablecoinYieldActions,
+    selectYieldSession,
     submitYieldApproveThunk,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import {
     type StackNavigationProps,
@@ -43,7 +43,7 @@ export const useYieldDepositApprovalSubmit = ({
 }: UseYieldDepositApprovalSubmitParams) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const store = useStore<StablecoinYieldRootState>();
+    const store = useStore<YieldRootState>();
     const showYieldAlert = useShowYieldAlert();
     const [isCheckingApproval, setIsCheckingApproval] = useState(false);
 
@@ -58,11 +58,7 @@ export const useYieldDepositApprovalSubmit = ({
             setIsCheckingApproval(true);
 
             try {
-                let sessionWithAllowance = selectStablecoinYieldSession(
-                    store.getState(),
-                    'deposit',
-                    flowKey,
-                );
+                let sessionWithAllowance = selectYieldSession(store.getState(), 'deposit', flowKey);
 
                 if (sessionWithAllowance.approval.allowanceStatus !== 'loaded') {
                     await dispatch(
@@ -73,11 +69,7 @@ export const useYieldDepositApprovalSubmit = ({
                         }),
                     );
 
-                    sessionWithAllowance = selectStablecoinYieldSession(
-                        store.getState(),
-                        'deposit',
-                        flowKey,
-                    );
+                    sessionWithAllowance = selectYieldSession(store.getState(), 'deposit', flowKey);
                 }
 
                 const approvalAction = getYieldApprovalAction({
@@ -89,15 +81,15 @@ export const useYieldDepositApprovalSubmit = ({
                 });
 
                 if (approvalAction === 'continue') {
-                    dispatch(stablecoinYieldActions.clearError(sessionParams));
-                    dispatch(stablecoinYieldActions.completeApproval({ ...sessionParams, amount }));
+                    dispatch(yieldActions.clearError(sessionParams));
+                    dispatch(yieldActions.completeApproval({ ...sessionParams, amount }));
                     navigation.navigate(YieldStackRoutes.YieldDeposit, routeParams);
 
                     return;
                 }
 
                 if (approvalAction === 'revoke') {
-                    dispatch(stablecoinYieldActions.enterModifyMode({ ...sessionParams, amount }));
+                    dispatch(yieldActions.enterModifyMode({ ...sessionParams, amount }));
                     navigation.navigate(YieldStackRoutes.YieldDepositRevoke, {
                         ...routeParams,
                         amount,
@@ -125,7 +117,7 @@ export const useYieldDepositApprovalSubmit = ({
                     return;
                 }
 
-                const session = selectStablecoinYieldSession(store.getState(), 'deposit', flowKey);
+                const session = selectYieldSession(store.getState(), 'deposit', flowKey);
 
                 if (session.error) {
                     showYieldAlert({

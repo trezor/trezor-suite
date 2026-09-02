@@ -1,7 +1,7 @@
 import {
-    type StablecoinYieldSessionState,
     type YieldApproveModalState,
     type YieldFlowToken,
+    type YieldSessionState,
 } from '@suite-common/wallet-core';
 import {
     type FeeLevelLabel,
@@ -41,7 +41,7 @@ type GetYieldApprovalAllowanceAmountParams = {
 };
 
 type IsYieldApprovalAllowanceUnlimitedParams = {
-    session: StablecoinYieldSessionState | null | undefined;
+    session: YieldSessionState | null | undefined;
     token: YieldFlowToken | null | undefined;
 };
 

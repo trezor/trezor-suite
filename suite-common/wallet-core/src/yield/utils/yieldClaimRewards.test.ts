@@ -2,7 +2,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getStablecoinYieldClaimRewardsSnapshot } from './stablecoinYieldClaimRewards';
+import { getYieldClaimRewardsSnapshot } from './yieldClaimRewards';
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -25,10 +25,10 @@ const createReward = ({
     },
 });
 
-describe('getStablecoinYieldClaimRewardsSnapshot', () => {
+describe('getYieldClaimRewardsSnapshot', () => {
     it('converts claimable subunits to display units and keeps the fiat value', () => {
         expect(
-            getStablecoinYieldClaimRewardsSnapshot({
+            getYieldClaimRewardsSnapshot({
                 networkSymbol: ethSymbol,
                 rewards: [createReward({ claimable: '1000000', fiatClaimable: '1.25' })],
             }),
@@ -47,7 +47,7 @@ describe('getStablecoinYieldClaimRewardsSnapshot', () => {
     });
 
     it('keeps the reward without a fiat value when its rate is missing', () => {
-        const rewards = getStablecoinYieldClaimRewardsSnapshot({
+        const rewards = getYieldClaimRewardsSnapshot({
             networkSymbol: ethSymbol,
             rewards: [createReward({ claimable: '2500000', fiatClaimable: null })],
         });

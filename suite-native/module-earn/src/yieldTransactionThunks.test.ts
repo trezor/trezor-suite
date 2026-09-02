@@ -4,15 +4,15 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import {
-    type StablecoinYieldRootState,
     type YieldFlowResolvedData,
     type YieldFlowToken,
     type YieldPositionFlowType,
-    selectStablecoinYieldSession,
-    selectStablecoinYieldTxReview,
-    stablecoinYieldActions,
-    stablecoinYieldReducer,
+    type YieldRootState,
+    selectYieldSession,
+    selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    yieldActions,
+    yieldReducer,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -123,7 +123,7 @@ const buildStore = () =>
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({
-                stablecoinYield: stablecoinYieldReducer,
+                stablecoinYield: yieldReducer,
             }),
         }),
     });
@@ -135,9 +135,9 @@ type PrepareParams = {
 };
 
 const prepareActionReview = ({ store, flowType, flowKey }: PrepareParams) => {
-    store.dispatch(stablecoinYieldActions.initSession({ flowType, flowKey }));
+    store.dispatch(yieldActions.initSession({ flowType, flowKey }));
     store.dispatch(
-        stablecoinYieldActions.storeActionReviewData({
+        yieldActions.storeActionReviewData({
             flowType,
             flowKey,
             amount: '100',
@@ -153,7 +153,7 @@ const storeSignedTransaction = ({
     store,
 }: PrepareParams & { store: ReturnType<typeof buildStore> }) => {
     store.dispatch(
-        stablecoinYieldActions.storePrecomposedTransaction({
+        yieldActions.storePrecomposedTransaction({
             precomposedTx: precomposedTransaction,
             precomposedForm,
             accountKey: account.key,
@@ -162,7 +162,7 @@ const storeSignedTransaction = ({
         }),
     );
     store.dispatch(
-        stablecoinYieldActions.storeSignedTransaction({
+        yieldActions.storeSignedTransaction({
             serializedTx: {
                 tx: '0xsignedtx',
                 symbol: account.symbol,
@@ -233,8 +233,8 @@ describe('pushYieldActionReviewThunk', () => {
             txid: '0xpushedtxid',
         });
 
-        const state = store.getState() as StablecoinYieldRootState;
-        const session = selectStablecoinYieldSession(state, 'deposit', FLOW_KEY);
+        const state = store.getState() as YieldRootState;
+        const session = selectYieldSession(state, 'deposit', FLOW_KEY);
 
         expect(session.action.pendingTransaction).toEqual({
             type: 'deposit',
@@ -243,7 +243,7 @@ describe('pushYieldActionReviewThunk', () => {
             fee: precomposedTransaction.fee,
             submittedAt: 1234567890,
         });
-        expect(selectStablecoinYieldTxReview(state).serializedTx).toBeUndefined();
+        expect(selectYieldTxReview(state).serializedTx).toBeUndefined();
     });
 
     it('rejects the push when the signed tx belongs to a different account', async () => {

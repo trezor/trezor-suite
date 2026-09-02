@@ -7,7 +7,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import {
     type WrappedNativeFlowType,
     type YieldFlowType,
-    stablecoinYieldActions,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
@@ -119,7 +119,7 @@ export const useYieldWrappedNativeStep = ({
         }
 
         onSkipAnalytics();
-        dispatch(stablecoinYieldActions.resolveWrappedNativeStep({ flowType, flowKey, step }));
+        dispatch(yieldActions.resolveWrappedNativeStep({ flowType, flowKey, step }));
     }, [dispatch, flowKey, flowType, isStepPending, onSkipAnalytics, step]);
 
     const handleSimulationConfirmed = useCallback(
@@ -129,7 +129,7 @@ export const useYieldWrappedNativeStep = ({
             }
 
             dispatch(
-                stablecoinYieldActions.storeWrappedNativeReviewData({
+                yieldActions.storeWrappedNativeReviewData({
                     flowType,
                     flowKey,
                     step,
@@ -159,7 +159,7 @@ export const useYieldWrappedNativeStep = ({
             return;
         }
 
-        dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
+        dispatch(yieldActions.disposeSession({ flowType, flowKey }));
     }, [dispatch, flowKey, flowType, isStepPending, navigateToInitialScreen, navigation]);
 
     return {

@@ -6,12 +6,12 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type FormDraftRootState,
-    type StablecoinYieldActionReviewState,
-    type StablecoinYieldRootState,
+    type YieldActionReviewState,
+    type YieldRootState,
     type YieldWithdrawFlowType,
     getYieldWithdrawInputToken,
     selectFormDraft,
-    selectStablecoinYieldSessionByFlowKey,
+    selectYieldSessionByFlowKey,
 } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
@@ -31,12 +31,12 @@ type NavigationProps = StackNavigationProps<
     YieldStackParamList,
     YieldStackRoutes.YieldWithdrawReview
 >;
-type YieldWithdrawScreenReview = StablecoinYieldActionReviewState & {
+type YieldWithdrawScreenReview = YieldActionReviewState & {
     type: YieldWithdrawFlowType;
 };
 
 const isYieldWithdrawScreenReview = (
-    actionReview: StablecoinYieldActionReviewState | null | undefined,
+    actionReview: YieldActionReviewState | null | undefined,
     flowType: YieldWithdrawFlowType,
 ): actionReview is YieldWithdrawScreenReview => actionReview?.type === flowType;
 
@@ -49,8 +49,8 @@ export const YieldWithdrawReviewScreen = () => {
 
     const device = useSelector(selectSelectedDevice);
     const flowType = route.params.withdrawFlowType ?? 'withdraw';
-    const session = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),
+    const session = useSelector((state: YieldRootState) =>
+        selectYieldSessionByFlowKey(state, flowType, flowKey),
     );
     const formDraftKey = flowKey ? getYieldWithdrawFormDraftKey(flowKey) : '';
     const formDraft = useSelector((state: FormDraftRootState) =>

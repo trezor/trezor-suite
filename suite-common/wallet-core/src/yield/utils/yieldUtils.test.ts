@@ -2,7 +2,7 @@ import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import type { YieldPendingTransactionState } from '../stablecoinYieldTypes';
+import type { YieldPendingTransactionState } from '../yieldTypes';
 import {
     buildEvmSelectedFee,
     buildYieldDepositCalldata,
@@ -23,7 +23,7 @@ import {
     isYieldVaultOperational,
     shouldRecommendWrapReserve,
     splitYieldPendingTransaction,
-} from './stablecoinYieldUtils';
+} from './yieldUtils';
 
 const ACCOUNT_DESCRIPTOR = asEvmAddress('0x9ea3721b5bf3b64b4418c38b603154d2d597fae3');
 const VAULT_ADDRESS = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
@@ -55,7 +55,7 @@ const flowData = {
     },
 } as unknown as Parameters<typeof buildYieldWithdrawCalldata>[0]['flowData'];
 
-describe('stablecoinYieldUtils', () => {
+describe('yieldUtils', () => {
     describe('buildYieldWithdrawCalldata', () => {
         it('builds ERC4626 withdraw calldata for asset input', () => {
             const calldata = buildYieldWithdrawCalldata({

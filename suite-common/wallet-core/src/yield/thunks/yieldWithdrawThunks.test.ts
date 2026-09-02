@@ -6,15 +6,15 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { composeYieldWithdrawTransactionThunk } from './stablecoinYieldWithdrawThunks';
+import { composeYieldWithdrawTransactionThunk } from './yieldWithdrawThunks';
 import { accountsInitialState } from '../../accounts/accountsReducer';
 import { blockchainInitialState } from '../../blockchain/blockchainReducer';
 import { feesReducer } from '../../fees/feesReducer';
 import { transactionsInitialState } from '../../transactions/transactionsReducer';
-import { type YieldFlowResolvedData } from '../stablecoinYieldTypes';
-import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
+import { estimateYieldFeeLevel } from '../utils/yieldFeeEstimation';
+import { type YieldFlowResolvedData } from '../yieldTypes';
 
-jest.mock('../utils/stablecoinYieldFeeEstimation', () => ({
+jest.mock('../utils/yieldFeeEstimation', () => ({
     estimateYieldFeeLevel: jest.fn(),
 }));
 

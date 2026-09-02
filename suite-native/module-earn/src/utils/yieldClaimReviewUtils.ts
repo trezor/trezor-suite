@@ -1,6 +1,6 @@
-import { type StablecoinYieldActionReviewState } from '@suite-common/wallet-core';
+import { type YieldActionReviewState } from '@suite-common/wallet-core';
 
-type YieldClaimReview = Extract<StablecoinYieldActionReviewState, { type: 'claim' }>;
+type YieldClaimReview = Extract<YieldActionReviewState, { type: 'claim' }>;
 
 export const buildYieldClaimRewards = (review: YieldClaimReview) =>
     review.rewards.map(reward => {

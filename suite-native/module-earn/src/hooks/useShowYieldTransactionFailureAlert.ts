@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useDispatch } from '@suite-common/redux-utils';
-import { type YieldFlowType, stablecoinYieldActions } from '@suite-common/wallet-core';
+import { type YieldFlowType, yieldActions } from '@suite-common/wallet-core';
 import { type TxKeyPath } from '@suite-native/intl';
 
 import { useShowYieldAlert } from './useShowYieldAlert';
@@ -48,8 +48,7 @@ export const useShowYieldTransactionFailureAlert = ({
         showYieldAlert({
             title: alertContent.title,
             description: alertContent.description,
-            onPressPrimaryButton: () =>
-                dispatch(stablecoinYieldActions.clearError({ flowType, flowKey })),
+            onPressPrimaryButton: () => dispatch(yieldActions.clearError({ flowType, flowKey })),
         });
     }, [dispatch, error, flowKey, flowType, isEnabled, showYieldAlert]);
 };

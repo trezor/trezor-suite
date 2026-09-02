@@ -1,7 +1,7 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { type YieldFlowDisplayToken, type YieldFlowToken } from '../stablecoinYieldTypes';
-import { getYieldWithdrawCompletedValues } from './stablecoinYieldWithdrawCompletedValues';
+import { type YieldFlowDisplayToken, type YieldFlowToken } from '../yieldTypes';
+import { getYieldWithdrawCompletedValues } from './yieldWithdrawCompletedValues';
 
 type Params = Parameters<typeof getYieldWithdrawCompletedValues>[0];
 

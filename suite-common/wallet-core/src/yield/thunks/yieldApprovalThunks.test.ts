@@ -6,15 +6,11 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
-import { initYieldAllowanceThunk } from './stablecoinYieldApprovalThunks';
+import { initYieldAllowanceThunk } from './yieldApprovalThunks';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
-import {
-    type StablecoinYieldRootState,
-    stablecoinYieldActions,
-    stablecoinYieldReducer,
-} from '../stablecoinYieldReducer';
-import { selectStablecoinYieldSession } from '../stablecoinYieldSelectors';
-import { type YieldFlowResolvedData } from '../stablecoinYieldTypes';
+import { type YieldRootState, yieldActions, yieldReducer } from '../yieldReducer';
+import { selectYieldSession } from '../yieldSelectors';
+import { type YieldFlowResolvedData } from '../yieldTypes';
 
 jest.mock('../../allowance/fetchAllowance', () => ({
     fetchAllowance: jest.fn(),
@@ -58,31 +54,29 @@ const initStore = () =>
     configureMockStore({
         extra: undefined,
         reducer: combineReducers({
-            wallet: combineReducers({ stablecoinYield: stablecoinYieldReducer }),
+            wallet: combineReducers({ stablecoinYield: yieldReducer }),
         }),
     });
 
 const getStep = (store: ReturnType<typeof initStore>) =>
-    selectStablecoinYieldSession(store.getState() as StablecoinYieldRootState, 'deposit', FLOW_KEY)
-        .step;
+    selectYieldSession(store.getState() as YieldRootState, 'deposit', FLOW_KEY).step;
 
 const getApproval = (store: ReturnType<typeof initStore>) =>
-    selectStablecoinYieldSession(store.getState() as StablecoinYieldRootState, 'deposit', FLOW_KEY)
-        .approval;
+    selectYieldSession(store.getState() as YieldRootState, 'deposit', FLOW_KEY).approval;
 
 // Seed a wrapped-native deposit session sitting on the `approve` step, with the
 // just-wrapped amount stored in `session.action.amount` (mirrors the wrap→approve
 // transition produced by resolveWrappedNativeStep after the wrap tx confirms).
 const seedWrappedDepositAtApprove = (store: ReturnType<typeof initStore>, amount: string) => {
     store.dispatch(
-        stablecoinYieldActions.initSession({
+        yieldActions.initSession({
             flowType: 'deposit',
             flowKey: FLOW_KEY,
             isWrappedNativeVault: true,
         }),
     );
     store.dispatch(
-        stablecoinYieldActions.resolveWrappedNativeStep({
+        yieldActions.resolveWrappedNativeStep({
             flowType: 'deposit',
             flowKey: FLOW_KEY,
             step: 'wrap',
@@ -144,9 +138,7 @@ describe('initYieldAllowanceThunk', () => {
         (fetchAllowance as jest.Mock).mockResolvedValue(new BigNumber('1000'));
 
         const store = initStore();
-        store.dispatch(
-            stablecoinYieldActions.initSession({ flowType: 'deposit', flowKey: FLOW_KEY }),
-        );
+        store.dispatch(yieldActions.initSession({ flowType: 'deposit', flowKey: FLOW_KEY }));
         expect(getStep(store)).toBe('approve');
 
         await store
@@ -196,14 +188,14 @@ describe('initYieldAllowanceThunk', () => {
         const store = initStore();
         seedWrappedDepositAtApprove(store, WRAPPED_AMOUNT);
         store.dispatch(
-            stablecoinYieldActions.completeApproval({
+            yieldActions.completeApproval({
                 flowType: 'deposit',
                 flowKey: FLOW_KEY,
                 amount: WRAPPED_AMOUNT,
             }),
         );
         store.dispatch(
-            stablecoinYieldActions.invalidateAllowance({ flowType: 'deposit', flowKey: FLOW_KEY }),
+            yieldActions.invalidateAllowance({ flowType: 'deposit', flowKey: FLOW_KEY }),
         );
         expect(getStep(store)).toBe('action');
 

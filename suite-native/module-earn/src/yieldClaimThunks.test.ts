@@ -2,14 +2,14 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { configureMockStore } from '@suite-common/test-utils';
 import {
-    type StablecoinYieldClaimUnsignedTransaction,
-    type StablecoinYieldRootState,
+    type YieldClaimUnsignedTransaction,
     type YieldFlowCompleteRewardItem,
-    selectStablecoinYieldSession,
-    selectStablecoinYieldTxReview,
-    stablecoinYieldActions,
-    stablecoinYieldReducer,
+    type YieldRootState,
+    selectYieldSession,
+    selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    yieldActions,
+    yieldReducer,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -68,7 +68,7 @@ const unsignedTransaction = {
     maxFeePerGas: '20000000000',
     maxPriorityFeePerGas: '2000000000',
     nonce: '1',
-} satisfies StablecoinYieldClaimUnsignedTransaction;
+} satisfies YieldClaimUnsignedTransaction;
 
 const rewards = [
     {
@@ -115,15 +115,15 @@ const buildStore = () =>
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({
-                stablecoinYield: stablecoinYieldReducer,
+                stablecoinYield: yieldReducer,
             }),
         }),
     });
 
 const prepareSignedClaimReview = (store: ReturnType<typeof buildStore>) => {
-    store.dispatch(stablecoinYieldActions.initSession({ flowType: 'claim', flowKey: account.key }));
+    store.dispatch(yieldActions.initSession({ flowType: 'claim', flowKey: account.key }));
     store.dispatch(
-        stablecoinYieldActions.storeActionReviewData({
+        yieldActions.storeActionReviewData({
             flowType: 'claim',
             flowKey: account.key,
             rewards,
@@ -131,7 +131,7 @@ const prepareSignedClaimReview = (store: ReturnType<typeof buildStore>) => {
         }),
     );
     store.dispatch(
-        stablecoinYieldActions.storePrecomposedTransaction({
+        yieldActions.storePrecomposedTransaction({
             precomposedTx: precomposedTransaction,
             precomposedForm,
             accountKey: account.key,
@@ -140,7 +140,7 @@ const prepareSignedClaimReview = (store: ReturnType<typeof buildStore>) => {
         }),
     );
     store.dispatch(
-        stablecoinYieldActions.storeSignedTransaction({
+        yieldActions.storeSignedTransaction({
             serializedTx: {
                 tx: '0xsignedtx',
                 symbol: account.symbol,
@@ -197,8 +197,8 @@ describe('pushYieldClaimReviewThunk', () => {
             txid: '0xpushedtxid',
         });
 
-        const state = store.getState() as StablecoinYieldRootState;
-        const session = selectStablecoinYieldSession(state, 'claim', account.key);
+        const state = store.getState() as YieldRootState;
+        const session = selectYieldSession(state, 'claim', account.key);
 
         expect(session.action.pendingTransaction).toEqual({
             type: 'claim',
@@ -208,7 +208,7 @@ describe('pushYieldClaimReviewThunk', () => {
             submittedAt: 1234567890,
         });
         expect(session.action.review?.type).toBe('claim');
-        expect(selectStablecoinYieldTxReview(state)).toEqual({
+        expect(selectYieldTxReview(state)).toEqual({
             precomposedTx: undefined,
             precomposedForm: undefined,
             availableRewards: undefined,
@@ -222,11 +222,9 @@ describe('pushYieldClaimReviewThunk', () => {
         prepareSignedClaimReview(store);
 
         const otherFlowKey = 'other-flow-key';
+        store.dispatch(yieldActions.initSession({ flowType: 'claim', flowKey: otherFlowKey }));
         store.dispatch(
-            stablecoinYieldActions.initSession({ flowType: 'claim', flowKey: otherFlowKey }),
-        );
-        store.dispatch(
-            stablecoinYieldActions.storeActionReviewData({
+            yieldActions.storeActionReviewData({
                 flowType: 'claim',
                 flowKey: otherFlowKey,
                 rewards,
@@ -267,14 +265,12 @@ describe('pushYieldClaimReviewThunk', () => {
             },
         });
         expect(synchronizeSentTransactionThunkMock).not.toHaveBeenCalled();
-        expect(selectStablecoinYieldTxReview(store.getState() as StablecoinYieldRootState)).toEqual(
-            {
-                precomposedTx: undefined,
-                precomposedForm: undefined,
-                availableRewards: undefined,
-                serializedTx: undefined,
-                accountKey: undefined,
-            },
-        );
+        expect(selectYieldTxReview(store.getState() as YieldRootState)).toEqual({
+            precomposedTx: undefined,
+            precomposedForm: undefined,
+            availableRewards: undefined,
+            serializedTx: undefined,
+            accountKey: undefined,
+        });
     });
 });

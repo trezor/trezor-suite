@@ -11,9 +11,9 @@ import {
     type EthereumGetCurrentNonceThunkState,
     ethereumGetCurrentNonceThunk,
 } from '../../send/sendFormEthereumThunks';
-import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
-import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
-import { buildYieldUnsignedTransaction } from '../utils/stablecoinYieldUtils';
+import { estimateYieldFeeLevel } from '../utils/yieldFeeEstimation';
+import { buildYieldUnsignedTransaction } from '../utils/yieldUtils';
+import { YIELD_PREFIX } from '../yieldConstants';
 
 export type ComposeYieldEvmTransactionErrorReason =
     'unsupported-network' | 'missing-chain-id' | 'missing-fee-level' | 'fee-estimation-failed';
@@ -46,7 +46,7 @@ export const composeYieldEvmTransactionThunk = createThunk<
         state: ComposeYieldEvmTransactionThunkState;
     }
 >(
-    `${STABLECOIN_YIELD_PREFIX}/thunk/composeEvmTransaction`,
+    `${YIELD_PREFIX}/thunk/composeEvmTransaction`,
     async ({ account, to, data, value, gasLimitFallback }, { dispatch }) => {
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;

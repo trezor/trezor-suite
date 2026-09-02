@@ -4,8 +4,8 @@ import {
 } from '@suite-common/earn-stablecoin';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
-    type StablecoinYieldActionReviewState,
     type WrappedNativeFlowType,
+    type YieldActionReviewState,
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
@@ -29,12 +29,12 @@ import { getSelectedFeeFromUnsignedClaimTransaction } from './yieldClaimFeeUtils
 import { buildYieldClaimRewards } from './yieldClaimReviewUtils';
 
 type YieldActionReview = Extract<
-    StablecoinYieldActionReviewState,
+    YieldActionReviewState,
     { type: 'deposit' | 'withdraw' | 'redeem' }
 >;
 type YieldDepositReview = YieldActionReview & { type: 'deposit' };
 type YieldWithdrawScreenReview = YieldActionReview & { type: YieldWithdrawFlowType };
-type YieldClaimReview = Extract<StablecoinYieldActionReviewState, { type: 'claim' }>;
+type YieldClaimReview = Extract<YieldActionReviewState, { type: 'claim' }>;
 
 export type YieldReviewEvmTransactionPurpose = Extract<
     EvmTransactionPurpose,

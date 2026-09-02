@@ -13,12 +13,12 @@ import {
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldFlowToken,
-} from '../stablecoinYieldTypes';
+} from '../yieldTypes';
 import {
     doTokensMatch,
     getConvertedOutputTokenBalanceToInputTokenAmount,
-    getStablecoinYieldFlowKey,
-} from './stablecoinYieldUtils';
+    getYieldFlowKey,
+} from './yieldUtils';
 
 export type YieldFlowResolutionStatus =
     'resolved' | 'missing-account' | 'missing-vault' | 'missing-network';
@@ -223,7 +223,7 @@ export const getResolvedYieldFlowData = ({
         token,
         receiptToken,
         flowData,
-        flowKey: getStablecoinYieldFlowKey({
+        flowKey: getYieldFlowKey({
             accountKey: account.key,
             tokenContract: addressedContract ?? underlyingTokenContract,
             yieldId: vault.id,

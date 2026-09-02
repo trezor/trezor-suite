@@ -7,10 +7,10 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
-    type StablecoinYieldRootState,
+    type YieldRootState,
     selectAccountByKey,
-    selectStablecoinYieldSessionByFlowKey,
-    stablecoinYieldActions,
+    selectYieldSessionByFlowKey,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import {
     type StackNavigationProps,
@@ -34,8 +34,8 @@ export const YieldClaimReviewScreen = () => {
         selectAccountByKey(state, accountKey),
     );
     const flowKey = account?.key ?? null;
-    const session = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSessionByFlowKey(state, 'claim', flowKey),
+    const session = useSelector((state: YieldRootState) =>
+        selectYieldSessionByFlowKey(state, 'claim', flowKey),
     );
     const review = session?.action.review?.type === 'claim' ? session.action.review : null;
     const preview = useMemo(() => {
@@ -70,7 +70,7 @@ export const YieldClaimReviewScreen = () => {
         // signing must not start; leave with the standard failure alert
         // instead of an empty screen.
         dispatch(
-            stablecoinYieldActions.setError({
+            yieldActions.setError({
                 flowKey: account.key,
                 flowType: 'claim',
                 error: 'TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH',

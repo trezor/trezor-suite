@@ -11,7 +11,7 @@ import { getNetworkByYieldXyzId, getNetworkOptional } from '@suite-common/wallet
 import {
     type YieldPositionFlowType,
     getYieldVaultContractAddress,
-    isStablecoinYieldSupported,
+    isYieldSupported,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
@@ -135,7 +135,7 @@ const getEarnLayoutResult = ({
 
     if (
         device &&
-        !isStablecoinYieldSupported(device, {
+        !isYieldSupported(device, {
             flowType: type,
             vaultToken: { networkSymbol: account.symbol, contractAddress: vault.token.address },
         })

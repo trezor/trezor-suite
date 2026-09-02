@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { useDispatch } from '@suite-common/redux-utils';
-import { stablecoinYieldActions } from '@suite-common/wallet-core';
+import { yieldActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
@@ -24,7 +24,7 @@ export const useYieldActionReviewBackNavigation = ({
     const isCleanupHandledRef = useRef(false);
 
     const discardActionReview = useCallback(() => {
-        dispatch(stablecoinYieldActions.discardTransaction());
+        dispatch(yieldActions.discardTransaction());
     }, [dispatch]);
 
     const cleanupCanceledActionReview = useCallback(() => {

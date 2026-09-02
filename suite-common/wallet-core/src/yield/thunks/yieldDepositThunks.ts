@@ -13,17 +13,17 @@ import {
     type ComposeYieldEvmTransactionThunkState,
     composeYieldEvmTransactionThunk,
 } from './composeYieldEvmTransactionThunk';
-import { getApprovalRequestAmount } from './stablecoinYieldApprovalThunks';
+import { getApprovalRequestAmount } from './yieldApprovalThunks';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
-import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
-import type { YieldFlowResolvedData } from '../stablecoinYieldTypes';
 import {
     buildYieldDepositCalldata,
     getWithdrawRequestAmount,
     getYieldVaultAddress,
-} from '../utils/stablecoinYieldUtils';
+} from '../utils/yieldUtils';
+import { YIELD_PREFIX } from '../yieldConstants';
+import type { YieldFlowResolvedData } from '../yieldTypes';
 
-const YIELD_DEPOSIT_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
+const YIELD_DEPOSIT_THUNK_PREFIX = `${YIELD_PREFIX}/thunk`;
 
 export type YieldDepositErrorReason =
     | ComposeYieldEvmTransactionErrorReason

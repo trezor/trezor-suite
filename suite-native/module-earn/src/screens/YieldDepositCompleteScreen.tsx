@@ -8,9 +8,9 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    type StablecoinYieldRootState,
-    selectStablecoinYieldSessionByFlowKey,
-    stablecoinYieldActions,
+    type YieldRootState,
+    selectYieldSessionByFlowKey,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
@@ -47,8 +47,8 @@ export const YieldDepositCompleteScreen = () => {
     const yieldFlowData = useYieldFlowData(route.params);
     const { vault, account, apy, flowData, flowKey, resolutionStatus, tokenSymbol } = yieldFlowData;
 
-    const session = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSessionByFlowKey(state, 'deposit', flowKey),
+    const session = useSelector((state: YieldRootState) =>
+        selectYieldSessionByFlowKey(state, 'deposit', flowKey),
     );
 
     const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
@@ -67,7 +67,7 @@ export const YieldDepositCompleteScreen = () => {
         });
 
         if (flowKey) {
-            dispatch(stablecoinYieldActions.disposeSession({ flowType: 'deposit', flowKey }));
+            dispatch(yieldActions.disposeSession({ flowType: 'deposit', flowKey }));
         }
 
         navigateToInitialScreen();

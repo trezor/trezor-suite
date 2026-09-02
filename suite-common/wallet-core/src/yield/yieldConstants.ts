@@ -1,6 +1,6 @@
-import type { YieldFlowStepId, YieldFlowType } from './stablecoinYieldTypes';
+import type { YieldFlowStepId, YieldFlowType } from './yieldTypes';
 
-export const STABLECOIN_YIELD_PREFIX = '@suite-common/wallet-core/stablecoin-yield';
+export const YIELD_PREFIX = '@suite-common/wallet-core/yield';
 
 /**
  * All steps a flow can go through, in order. Optional steps ('wrap'/'unwrap' — offered only

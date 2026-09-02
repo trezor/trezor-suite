@@ -7,7 +7,7 @@ import { type TokenInfo } from '@trezor/connect';
 import {
     type TrackWrappedNativeTokenThunkState,
     trackWrappedNativeTokenThunk,
-} from './stablecoinYieldWrapThunks';
+} from './yieldWrapThunks';
 import { accountsActions } from '../../accounts/accountsActions';
 import { fetchWrappedNativeTokenInfo } from '../utils/fetchWrappedNativeTokenInfo';
 

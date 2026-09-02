@@ -2,11 +2,11 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     type FormDraftRootState,
     REVOKE_ALLOWANCE_AMOUNT,
-    type StablecoinYieldRootState,
     type YieldFlowResolvedData,
+    type YieldRootState,
     formDraftActions,
     selectDeepCopyOfFormDraft,
-    selectStablecoinYieldSession,
+    selectYieldSession,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import {
@@ -96,7 +96,7 @@ const isExpectedAllowanceModalTxType = (
 };
 
 export type PrepareYieldAllowanceReviewTransactionThunkState = FormDraftRootState &
-    StablecoinYieldRootState &
+    YieldRootState &
     NativeSendRootState;
 
 export const prepareYieldAllowanceReviewTransactionThunk = createThunk<
@@ -114,7 +114,7 @@ export const prepareYieldAllowanceReviewTransactionThunk = createThunk<
         const formDraftKey = getYieldAllowanceFormDraftKey(flowKey, transactionType);
         const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
             FormState | undefined;
-        const { approval } = selectStablecoinYieldSession(getState(), 'deposit', flowKey);
+        const { approval } = selectYieldSession(getState(), 'deposit', flowKey);
 
         const { modalState } = approval;
 
@@ -146,7 +146,7 @@ export const prepareYieldAllowanceReviewTransactionThunk = createThunk<
         }
 
         const data = buildApprovalTransactionData({
-            amount: allowanceAmount,
+            amount: allowanceAmount ?? '',
             spender: modalState.spender,
         });
         const formState = buildYieldAllowanceFormState({

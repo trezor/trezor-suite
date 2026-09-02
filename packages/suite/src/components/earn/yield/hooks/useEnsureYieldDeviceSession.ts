@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { type YieldFlowType, stablecoinYieldActions } from '@suite-common/wallet-core';
+import { type YieldFlowType, yieldActions } from '@suite-common/wallet-core';
 
 import { ensureDeviceSession } from './ensureDeviceSession';
 
@@ -27,7 +27,7 @@ export const useEnsureYieldDeviceSession = ({
 
         if (result.error) {
             dispatch(
-                stablecoinYieldActions.setError({
+                yieldActions.setError({
                     flowType,
                     flowKey,
                     error: result.error,

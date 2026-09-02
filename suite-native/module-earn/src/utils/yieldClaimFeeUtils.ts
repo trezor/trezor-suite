@@ -1,5 +1,5 @@
 import { type EvmFeeHex } from '@suite-common/schemas/src/evm';
-import { type StablecoinYieldClaimUnsignedTransaction } from '@suite-common/wallet-core';
+import { type YieldClaimUnsignedTransaction } from '@suite-common/wallet-core';
 import {
     type FeeInfo,
     type FormState,
@@ -173,7 +173,7 @@ export const getSelectedFeeFromUnsignedClaimTransaction = ({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-}: StablecoinYieldClaimUnsignedTransaction): EvmFeeHex => {
+}: YieldClaimUnsignedTransaction): EvmFeeHex => {
     const gasLimitHex = fromIntegerString(gasLimit).toHex();
 
     if (maxFeePerGas && maxPriorityFeePerGas) {

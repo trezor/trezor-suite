@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import {
     selectResolvedEthereumNonce,
-    selectStablecoinYieldTxReview,
     selectStake,
     selectTronStakeTxReview,
+    selectYieldTxReview,
 } from '@suite-common/wallet-core';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getFee, hasEip1559MaxPriorityFee, isEip1559 } from '@suite-common/wallet-utils';
@@ -27,7 +27,7 @@ type TransactionReviewEthereumNotesProps = {
 // so it's normally set by the time this modal renders; the Note simply doesn't render until then.
 const selectReviewEthereumNonce = (state: AppState) => {
     if (selectTronStakeTxReview(state).precomposedTx) return undefined; // TRON has no EVM nonce
-    const yieldTxReview = selectStablecoinYieldTxReview(state);
+    const yieldTxReview = selectYieldTxReview(state);
     if (yieldTxReview.precomposedTx) return yieldTxReview.precomposedForm?.ethereumNonce;
     if (state.wallet.send?.precomposedTx) {
         // Send stores the resolved nonce; WalletConnect fills precomposedForm instead.

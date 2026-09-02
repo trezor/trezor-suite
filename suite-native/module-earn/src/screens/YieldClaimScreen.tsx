@@ -10,9 +10,9 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    getStablecoinYieldClaimRewardsSnapshot,
+    getYieldClaimRewardsSnapshot,
     selectAccountByKey,
-    stablecoinYieldActions,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { selectAccountLabel } from '@suite-native/accounts';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -215,7 +215,7 @@ export const YieldClaimScreen = () => {
         // The snapshot is built from the same frozen rewards the claim
         // calldata was built from, so the review cannot diverge from the
         // signed transaction when Merkl data refreshes in the background.
-        const rewardsSnapshot = getStablecoinYieldClaimRewardsSnapshot({
+        const rewardsSnapshot = getYieldClaimRewardsSnapshot({
             networkSymbol: account.symbol,
             rewards: simulationPreparedAction.rewards,
         });
@@ -223,7 +223,7 @@ export const YieldClaimScreen = () => {
         reportClaimEvent({ action: 'continue', type: 'tx-simulation-modal' });
 
         dispatch(
-            stablecoinYieldActions.storeActionReviewData({
+            yieldActions.storeActionReviewData({
                 flowKey,
                 flowType: 'claim',
                 rewards: rewardsSnapshot,
