@@ -28,6 +28,12 @@ export default [
         },
     },
     {
+        files: ['**/tests/**/*.test.ts'],
+        rules: {
+            'local-rules/enforce-e2e-test-stream': 'error',
+        },
+    },
+    {
         files: ['**/tests/manual/**'],
         rules: {
             'playwright/no-skipped-test': 'off',
