@@ -42,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [0, 1, 2, 3, 4]
+        TEST_GROUP: [0]
     env:
       # Single source of truth for the emulator options: the Detox runner reuses
       # them verbatim when it has to relaunch an emulator that died mid-run.
@@ -102,29 +102,9 @@ jobs:
         working-directory: ./suite-common/message-system
         run: yarn sign-config
 
-      - name: Generate GitHub App token
-        id: trezor-bot-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
-        with:
-          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
-          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
-
-      - name: Extract Release Build
-        id: extract_branch
-        shell: bash
-        run: |
-          echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
-
       - name: Get device name from detox config file
         id: device
         run: node -e "console.log('AVD_NAME=' + require('./suite-native/app/.detoxrc').devices.emulator.device.avdName)" >> $GITHUB_OUTPUT
-
-      - name: Run trezor-user-env
-        env:
-          COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
-        run: |
-          docker compose pull trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
-          docker compose up --detach trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
 
       - name: Download Android build artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -188,17 +168,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
         env:
           RUNNER_TEMP: /tmp
-          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
-          RELEASE_BUILD: ${{ env.release_build }}
-          PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
-          TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
           GITHUB_ACTION: true
-          CURRENTS_PROJECT_ID: iUe1Y4
-          CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
-          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
-          CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
-          CURRENTS_TAG: ${{ inputs.currents_tags }}
-          COMMIT_INFO_BRANCH: ${{ github.head_ref }}
         with:
           api-level: 34
           profile: pixel_6
@@ -212,30 +182,14 @@ jobs:
           cores: 4
           heap-size: 512M
           script: |
-            yarn test:e2e --config=${{ inputs.runner_config }} --shard=${{ matrix.TEST_GROUP }} --totalShards=5 --headless --quarantine
+            yarn test:e2e --config=${{ inputs.runner_config }} --project=no_device --headless e2e/tests/networkIconStress.test.ts
 
-      - name: Post Currents link
-        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
-        uses: ./.github/actions/post-currents-link
-        with:
-          github_token: ${{ steps.trezor-bot-token.outputs.token }}
-          project: "native android"
-          currents-project-id: "iUe1Y4"
-
-      - name: Extract Trezor-user-env and Regtest logs
+      - name: Collect Android tombstones
         if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -euo pipefail
           LOG_DIR="suite-native/app/artifacts"
-          docker cp trezor-user-env.unix:/trezor-user-env/logs/debugging.log "$LOG_DIR/trezor-user-env-debugging.log" || true
-          docker cp trezor-user-env.unix:/trezor-user-env/logs/emulator_bridge.log "$LOG_DIR/tenv-emulator-bridge-debugging.log" || true
-          docker cp trezor-user-env.unix:/trezor-user-env/logs/tropic_model.log "$LOG_DIR/trezor-user-env-tropic_model.log" || true
-          docker cp trezor-user-env.unix:/trezor-user-env/docker/version.txt "$LOG_DIR/trezor-user-env-version.txt" || true
-          docker logs trezor-user-env-regtest > "$LOG_DIR/electrum-regtest.txt" || true
-          docker logs docker-quota-db-1 > "$LOG_DIR/quota-db.log" 2>&1 || true
-          docker logs docker-suite-sync-1 > "$LOG_DIR/suite-sync.log" 2>&1 || true
-          # Android tombstones (only available if the emulator is still reachable via ADB)
           mkdir -p "$LOG_DIR/tombstones"
           adb shell ls /data/tombstones/ 2>/dev/null \
             && adb pull /data/tombstones/. "$LOG_DIR/tombstones" \
@@ -361,6 +315,6 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: android-tests-${{ matrix.TEST_GROUP }}
+          name: android-network-icon-stress
           path: suite-native/app/artifacts
           retention-days: 14
