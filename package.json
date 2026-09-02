@@ -147,6 +147,7 @@
         "@swc/core": "^1.15.47",
         "@swc/jest": "^0.2.39",
         "@trezor/eslint": "workspace:*",
+        "@types/estree": "^1.0.8",
         "@types/jest": "30.0.0",
         "@types/node": "22.13.10",
         "@typescript/native-preview": "npm:typescript@^7.0.2",

@@ -32,18 +32,23 @@ The framework consists of three main components:
 
 ## Annotation Types
 
-Test annotations are defined in `testAnnotations.ts`, all of them are optional and include:
+Test annotations are defined in `testAnnotations.ts`. Every annotation is optional except `stream`,
+which `TestMetadataInput` requires. The `local-rules/enforce-e2e-test-stream` lint rule covers what
+typing cannot: a test in `suite/e2e/tests` that carries no annotation at all.
 
-| Annotation Type | Description                                            |
-| --------------- | ------------------------------------------------------ |
-| `testCase`      | The title of the test                                  |
-| `prerequisites` | List of requirements before running the test           |
-| `steps`         | List of steps to execute the test                      |
-| `category`      | Test category (e.g., Onboarding, Security, Wallets)    |
-| `priority`      | Test priority (Critical, High, Medium, Low)            |
-| `stream`        | Team assignment (Trends, Foundation, Engagement, etc.) |
-| `deviceModel`   | Target device model (T1B1, T2T1, etc.)                 |
-| `osMatrix`      | Operating systems to test on                           |
+| Annotation Type | Description                                                           |
+| --------------- | --------------------------------------------------------------------- |
+| `testCase`      | The title of the test                                                 |
+| `prerequisites` | List of requirements before running the test                          |
+| `steps`         | List of steps to execute the test                                     |
+| `category`      | Test category (e.g., Onboarding, Security, Wallets)                   |
+| `priority`      | Test priority (Critical, High, Medium, Low)                           |
+| `stream`        | Owning team (Connect, Earn, Firmware, Growth, Network, Trade, Wallet) |
+| `deviceModel`   | Target device model (T1B1, T2T1, etc.)                                |
+| `osMatrix`      | Operating systems to test on                                          |
+
+`TestStream.NotDefined` is the reporter's fallback for tests without an annotation and is excluded
+from `AssignedTestStream`, so it cannot be assigned in a test.
 
 ## Project Fields
 
