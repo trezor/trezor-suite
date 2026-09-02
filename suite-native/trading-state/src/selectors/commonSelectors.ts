@@ -325,6 +325,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                                 fiatBalance,
                                 tokenSymbol,
                                 contract: token.contract as TokenAddress,
+                                decimals: token.decimals,
                                 cryptoId,
                                 isEnabled: sellCryptoIdsSet.has(cryptoId),
                                 fiatRateKey,

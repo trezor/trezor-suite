@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 
-import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type BannerInlineProps, Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CompactCryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+} from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     type NativeStakingRootState,
@@ -107,10 +109,9 @@ export const StakePendingCard = ({
                         <Text>{title}</Text>
                     </Box>
                     <Box style={applyStyle(valuesContainerStyle)}>
-                        <CryptoAmountFormatter
+                        <CompactCryptoAmountFormatter
                             value={totalStakePending}
                             symbol={symbol}
-                            decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
                             color="contentPrimary"
                             variant="body-md-strong"
                         />

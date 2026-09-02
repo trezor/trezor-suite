@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import {
     isSupportedStakingNetworkSymbol,
     selectAccountNetworkSymbol,
@@ -11,7 +10,10 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { BannerInline, Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CompactCryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+} from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -88,10 +90,9 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
                         </Text>
                     </Box>
                     <Box style={applyStyle(valuesContainerStyle)}>
-                        <CryptoAmountFormatter
+                        <CompactCryptoAmountFormatter
                             value={claimableAmount}
                             symbol={symbol}
-                            decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
                             color="contentPrimary"
                             variant="body-md-strong"
                         />

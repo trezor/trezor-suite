@@ -16,7 +16,7 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     type NativeStakingRootState,
@@ -113,10 +113,10 @@ export const StakingManagementPendingStakeModal = ({
                 </Text>
                 {!!symbol && (
                     <VStack style={applyStyle(amountsStyle)} spacing="sp2">
-                        <CryptoAmountFormatter
+                        <ExactCryptoAmountFormatter
                             value={totalStakePending}
                             symbol={symbol}
-                            decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
+                            maxDisplayedDecimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
                             color="contentPrimary"
                             variant="body-sm"
                         />

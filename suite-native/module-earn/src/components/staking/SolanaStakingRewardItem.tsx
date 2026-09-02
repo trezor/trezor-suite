@@ -3,7 +3,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, HStack, RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import {
-    CryptoAmountFormatter,
+    CompactCryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     SignValueFormatter,
 } from '@suite-native/formatters';
@@ -41,7 +41,7 @@ export const SolanaStakingRewardItem = ({ reward, symbol }: SolanaStakingRewardI
                             <SignValueFormatter value="positive" />
                             <CryptoToFiatAmountFormatter value={reward.amount} symbol={symbol} />
                         </Box>
-                        <CryptoAmountFormatter
+                        <CompactCryptoAmountFormatter
                             value={reward.amount}
                             symbol={symbol}
                             isBalance={false}

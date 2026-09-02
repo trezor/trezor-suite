@@ -8,9 +8,13 @@ import {
     type TokenAddress,
     type TokenSymbol,
 } from '@suite-common/wallet-types';
-import { convertAmountSubunitsToUnits, isAllowanceUnlimited } from '@suite-common/wallet-utils';
+import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { AddressFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
+import {
+    AddressFormatter,
+    ExactTokenAmountFormatter,
+    convertTokenValueToDecimal,
+} from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
 import type { TokenInfo } from '@trezor/connect';
@@ -170,13 +174,13 @@ export const ReviewOutputItemContent = ({
                 }
 
                 return (
-                    <CryptoAmountFormatter
+                    <ExactTokenAmountFormatter
                         variant="body-sm"
                         color="contentPrimary"
                         textAlign="right"
-                        value={convertAmountSubunitsToUnits(value, token.decimals)}
-                        symbol={token.symbol as TokenSymbol}
-                        decimals={token.decimals}
+                        value={convertTokenValueToDecimal(value, token.decimals)}
+                        tokenSymbol={token.symbol as TokenSymbol}
+                        maxDisplayedDecimals={token.decimals}
                         isDiscreetText={false}
                     />
                 );

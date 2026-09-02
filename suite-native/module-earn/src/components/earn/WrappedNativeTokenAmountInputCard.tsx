@@ -14,7 +14,11 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { TokenAmountFormatter, useCryptoFiatConverters } from '@suite-native/formatters';
+import {
+    CompactTokenAmountFormatter,
+    asDecimalTokenAmount,
+    useCryptoFiatConverters,
+} from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
@@ -135,9 +139,10 @@ export const WrappedNativeTokenAmountInputCard = ({
                         <Text variant="body-sm" color="contentSecondary">
                             <Translation id="earn.yieldDepositFlowScreen.balance" />
                         </Text>
-                        <TokenAmountFormatter
-                            value={balance}
+                        <CompactTokenAmountFormatter
+                            value={asDecimalTokenAmount(balance)}
                             tokenSymbol={tokenSymbol}
+                            tokenDecimals={tokenDecimals}
                             variant="body-sm"
                             color="contentSecondary"
                         />

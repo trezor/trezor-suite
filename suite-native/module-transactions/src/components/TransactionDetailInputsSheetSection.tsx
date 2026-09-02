@@ -7,8 +7,9 @@ import { type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import {
     AddressFormatter,
-    CryptoAmountFormatter,
-    TokenAmountFormatter,
+    ExactCryptoAmountFormatter,
+    ExactTokenAmountFormatter,
+    convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { type TransactionTranfer } from '@suite-native/transactions';
@@ -35,7 +36,7 @@ const TransactionAddressAmount = ({
         <AddressFormatter value={address} variant="body-sm" format="short" />
         {amount &&
             (isNetworkSymbol(symbol) ? (
-                <CryptoAmountFormatter
+                <ExactCryptoAmountFormatter
                     value={amount}
                     symbol={symbol}
                     isBalance={false}
@@ -44,10 +45,10 @@ const TransactionAddressAmount = ({
                     adjustsFontSizeToFit
                 />
             ) : (
-                <TokenAmountFormatter
-                    value={amount}
+                <ExactTokenAmountFormatter
+                    value={convertTokenValueToDecimal(amount, decimals ?? 0)}
                     tokenSymbol={symbol}
-                    decimals={decimals}
+                    maxDisplayedDecimals={decimals}
                     variant="body-xs"
                     numberOfLines={1}
                     adjustsFontSizeToFit

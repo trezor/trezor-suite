@@ -70,6 +70,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
     const chooseAccountTokenBalance = chosenYieldItem
         ? {
               tokenContractAddress: chosenYieldItem.underlyingTokenContract,
+              tokenDecimals: chosenYieldItem.token?.decimals,
               tokenSymbol: chosenYieldItem.tokenSymbol,
           }
         : undefined;

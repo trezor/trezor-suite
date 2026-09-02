@@ -1,15 +1,16 @@
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CompactCryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+} from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     selectTronPendingUnstakeBalanceByAccountKey,
     selectUnstakingPeriodInDaysByAccountKey,
     useSelector as useStakingSelector,
 } from '@suite-native/staking';
-
-import { CRYPTO_BALANCE_DECIMALS } from '../../constants';
 
 interface TronStakingUnstakeCardProps {
     accountKey: AccountKey;
@@ -39,10 +40,9 @@ export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardPro
                 </Text>
 
                 <Box flexDirection="column" alignItems="flex-end">
-                    <CryptoAmountFormatter
+                    <CompactCryptoAmountFormatter
                         value={pendingUnstakeBalance}
                         symbol={account.symbol}
-                        decimals={CRYPTO_BALANCE_DECIMALS}
                         variant="body-sm"
                         color="contentPrimary"
                     />

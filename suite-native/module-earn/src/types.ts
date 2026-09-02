@@ -86,10 +86,11 @@ export type YieldNavigationItem = Pick<
 >;
 
 export type YieldPromoNavigationItem = YieldNavigationItem &
-    Pick<YieldEarnItem, 'networkSymbol' | 'tokenSymbol'>;
+    Pick<YieldEarnItem, 'networkSymbol' | 'token' | 'tokenSymbol'>;
 
 export type ChooseAccountTokenBalance = {
     tokenContractAddress: TokenAddress;
+    tokenDecimals?: number;
     tokenSymbol: TokenSymbol;
 };
 

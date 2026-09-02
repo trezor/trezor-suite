@@ -1,6 +1,6 @@
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 
 import { TransactionDetailRow } from './TransactionDetailRow';
 
@@ -13,7 +13,7 @@ type CancelTransactionFeeRowProps = {
 export const CancelTransactionFeeRow = ({ title, fee, symbol }: CancelTransactionFeeRowProps) => (
     <TransactionDetailRow title={title}>
         <Box alignItems="flex-end">
-            <CryptoAmountFormatter
+            <ExactCryptoAmountFormatter
                 value={fee}
                 symbol={symbol}
                 variant="body-sm"

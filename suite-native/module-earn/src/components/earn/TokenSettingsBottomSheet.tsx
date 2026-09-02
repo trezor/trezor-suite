@@ -40,8 +40,9 @@ import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
     AddressFormatter,
     CoinToFiatAmountFormatter,
-    TokenAmountFormatter,
+    ExactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
+    asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -269,8 +270,8 @@ export const TokenSettingsBottomSheet = forwardRef(
                             >
                                 <Box flex={1} alignItems="flex-end" marginLeft="sp8">
                                     <VStack spacing={0} alignItems="flex-end">
-                                        <TokenAmountFormatter
-                                            value={balance}
+                                        <ExactTokenAmountFormatter
+                                            value={asDecimalTokenAmount(balance)}
                                             tokenSymbol={toTokenSymbol(
                                                 getDisplaySymbol(
                                                     token?.symbol ?? toTokenSymbol(account.symbol),

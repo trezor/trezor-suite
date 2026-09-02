@@ -10,7 +10,7 @@ import {
 import { RoundedIcon, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountLargeFormatter,
-    CryptoAmountFormatter,
+    ExactCryptoAmountFormatter,
     useFiatFromCryptoValue,
 } from '@suite-native/formatters';
 import { TextInputField } from '@suite-native/forms';
@@ -41,7 +41,7 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
             icon={<RoundedIcon symbol={symbol} />}
             coinName={getNetwork(symbol).name}
             cryptoAmount={
-                <CryptoAmountFormatter
+                <ExactCryptoAmountFormatter
                     value={balance}
                     symbol={symbol}
                     isDiscreetText={false}

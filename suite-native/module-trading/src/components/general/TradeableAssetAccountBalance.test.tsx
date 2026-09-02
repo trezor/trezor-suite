@@ -76,8 +76,8 @@ describe('TradeableAssetAccountBalance', () => {
         };
 
         it.each([
-            [ethAsset, '0.00000081 ETH'],
-            [usdcAsset, '1 USDC'],
+            [ethAsset, '<0.00001 ETH'],
+            [usdcAsset, '1.00 USDC'],
             [usdtAsset, '0 USDT'],
         ])('should display correct balance for asset, case %s', async (asset, expectedBalance) => {
             const { getByText, getByTestId } = await renderTradeableAssetAccountBalance(

@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, HStack } from '@suite-native/atoms';
-import { CryptoAmountFormatter } from '@suite-native/formatters';
+import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { NetworkIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -25,7 +25,7 @@ export const TransactionCompleteAmountValue = ({
             <Box style={applyStyle(roundNetworkIconStyle)}>
                 <NetworkIcon symbol={accountSymbol} size={20} />
             </Box>
-            <CryptoAmountFormatter
+            <ExactCryptoAmountFormatter
                 value={amountInBaseUnits}
                 symbol={accountSymbol}
                 variant="body-md-strong"

@@ -21,6 +21,7 @@ export type TradeableAsset = {
     symbol: NetworkSymbolExtended;
     contractAddress?: TokenAddress | undefined;
     cryptoId: CryptoId;
+    decimals?: number;
     networkId: string;
 } & Omit<CoinInfo, 'symbol' | 'services'>;
 
@@ -31,6 +32,7 @@ export type MyAsset = {
     fiatBalance: BaseCurrencyAmount | null;
     tokenSymbol?: TokenSymbol | null;
     contract?: TokenAddress;
+    decimals?: number;
     cryptoId?: CryptoId;
     isEnabled: boolean;
 };

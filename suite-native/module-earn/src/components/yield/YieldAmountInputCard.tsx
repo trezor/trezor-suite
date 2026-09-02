@@ -13,7 +13,7 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { TokenAmountFormatter } from '@suite-native/formatters';
+import { CompactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
@@ -112,9 +112,10 @@ export const YieldAmountInputCard = ({
                             <Text variant="body-sm" color="contentSecondary">
                                 <Translation id="earn.yieldDepositFlowScreen.balance" />
                             </Text>
-                            <TokenAmountFormatter
-                                value={balance}
+                            <CompactTokenAmountFormatter
+                                value={asDecimalTokenAmount(balance)}
                                 tokenSymbol={tokenSymbol}
+                                tokenDecimals={tokenDecimals}
                                 variant="body-sm"
                                 color="contentSecondary"
                             />

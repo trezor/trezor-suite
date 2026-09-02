@@ -95,7 +95,7 @@ describe('PaymentMethodListItem', () => {
         const { getByText, queryByText } = await renderPaymentMethodListItem({});
 
         expect(getByText('Apple Pay')).toBeOnTheScreen();
-        expect(getByText('0.00100017 BTC')).toBeOnTheScreen();
+        expect(getByText('0.00100016 BTC')).toBeOnTheScreen();
         expect(queryByText(getTranslation('moduleTrading.providerListItem.rate'))).toBeNull();
     });
 
@@ -106,7 +106,7 @@ describe('PaymentMethodListItem', () => {
         );
 
         expect(getByText('€10.00')).toBeOnTheScreen();
-        expect(queryByText('0.00100017 BTC')).toBeNull();
+        expect(queryByText('0.00100016 BTC')).toBeNull();
     });
 
     it('should display crypto amount difference in shortfall note when user requested a crypto amount', async () => {
@@ -170,7 +170,7 @@ describe('PaymentMethodListItem', () => {
         });
 
         expect(getByText('Apple Pay')).toBeOnTheScreen();
-        expect(queryByText('0.00100017 BTC')).toBeNull();
+        expect(queryByText('0.00100016 BTC')).toBeNull();
     });
 
     describe('sell trade', () => {

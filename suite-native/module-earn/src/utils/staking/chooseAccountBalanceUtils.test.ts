@@ -61,18 +61,20 @@ describe(getChooseAccountBalanceData.name, () => {
         const account = mockWalletAccount({
             symbol: ethSymbol,
             formattedBalance: '1',
-            tokens: [mockAccountToken({ contract: USDC_ADDRESS, balance: '100' })],
+            tokens: [mockAccountToken({ contract: USDC_ADDRESS, balance: '100', decimals: 6 })],
         });
 
         expect(
             getChooseAccountBalanceData(account, {
                 tokenContractAddress: USDC_ADDRESS,
+                tokenDecimals: 6,
                 tokenSymbol: toTokenSymbol('USDC'),
             }),
         ).toEqual({
             type: 'token',
             value: '100',
             tokenContractAddress: USDC_ADDRESS,
+            tokenDecimals: 6,
             tokenSymbol: 'USDC',
         });
     });

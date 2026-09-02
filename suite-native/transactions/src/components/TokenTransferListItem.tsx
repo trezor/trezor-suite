@@ -10,7 +10,11 @@ import {
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
 import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
-import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CompactTokenAmountFormatter,
+    TokenToFiatAmountFormatter,
+    convertTokenValueToDecimal,
+} from '@suite-native/formatters';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -72,10 +76,10 @@ export const TokenTransferListItemValues = ({
                 isForcedDiscreetMode={isPhishingTransaction}
                 style={applyStyle(failedTxStyle, { isFailedTx })}
             />
-            <TokenAmountFormatter
-                value={tokenTransfer.amount}
+            <CompactTokenAmountFormatter
+                value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
                 tokenSymbol={toTokenSymbol(getDisplaySymbol(tokenTransfer.symbol))}
-                decimals={tokenTransfer.decimals}
+                tokenDecimals={tokenTransfer.decimals}
                 numberOfLines={1}
                 ellipsizeMode="tail"
                 isPhishingTransaction={isPhishingTransaction}
