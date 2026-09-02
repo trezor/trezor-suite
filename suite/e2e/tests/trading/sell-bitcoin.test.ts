@@ -1,3 +1,4 @@
+import { TestStream } from '@trezor/e2e-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
@@ -10,6 +11,7 @@ import {
 } from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 // Expected values based on our mocked responses
 const fiatAmount = sellQuotesBTC[0]?.fiatStringAmount ?? '';
@@ -41,57 +43,75 @@ test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         });
     });
 
-    test('Sell Bitcoin for best offer', async ({ page, tradingPage, walletPage, devicePrompt }) => {
-        await test.step('Open sell form', async () => {
-            await walletPage.openTrading();
-            await tradingPage.sellTabButton.click();
-        });
-
-        await test.step('Fill in a sell request', async () => {
-            await tradingPage.fillSellForm({ cryptoAmount });
-            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(tradingPage.quotes.provider).toHaveText(capitalizeFirstLetter(provider));
-            await tradingPage.fees.expectBitcoinFeeCalculated();
-        });
-
-        await test.step('Confirm button shows provider name and KYC warning is visible', async () => {
-            await expect(tradingPage.sellBestOfferButton).toHaveTranslation('TR_TRADING_SELL_VIA', {
-                values: { providerName: provider },
+    test(
+        'Sell Bitcoin for best offer',
+        { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+        async ({ page, tradingPage, walletPage, devicePrompt }) => {
+            await test.step('Open sell form', async () => {
+                await walletPage.openTrading();
+                await tradingPage.sellTabButton.click();
             });
-            await expect(tradingPage.sellBestOfferButton.locator('svg')).toBeVisible();
-            await expect(tradingPage.kycWarning).toBeVisible();
-        });
 
-        await test.step('Confirm sell', async () => {
-            const tradeRequestPromise = page.waitForRequest(tradeEndpoint.sellTrade);
-            await tradingPage.sellBestOfferButton.click();
-            await expect.soft(tradeRequestPromise).toHavePayload(tradeApiRequest.sellTradePayload, {
-                omit: ['returnUrl', 'trade.orderId', 'trade.paymentId', 'trade.refundAddress'],
+            await test.step('Fill in a sell request', async () => {
+                await tradingPage.fillSellForm({ cryptoAmount });
+                await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
+                await expect(tradingPage.quotes.provider).toHaveText(
+                    capitalizeFirstLetter(provider),
+                );
+                await tradingPage.fees.expectBitcoinFeeCalculated();
             });
-        });
 
-        await tradingPage.waitForRedirectCompletion();
+            await test.step('Confirm button shows provider name and KYC warning is visible', async () => {
+                await expect(tradingPage.sellBestOfferButton).toHaveTranslation(
+                    'TR_TRADING_SELL_VIA',
+                    {
+                        values: { providerName: provider },
+                    },
+                );
+                await expect(tradingPage.sellBestOfferButton.locator('svg')).toBeVisible();
+                await expect(tradingPage.kycWarning).toBeVisible();
+            });
 
-        await test.step('Verify all confirmation values', async () => {
-            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmation.provider).toHaveText(provider);
-            await expect(tradingPage.confirmation.paymentMethod).toHaveText(paymentMethodName);
-            await expect(tradingPage.confirmation.address).toHaveText(providerAddress);
-            await expect(tradingPage.confirmation.account).toHaveText('Bitcoin #1');
-            await expect(tradingPage.confirmation.paymentId).toHaveText(providerPaymentId);
-        });
+            await test.step('Confirm sell', async () => {
+                const tradeRequestPromise = page.waitForRequest(tradeEndpoint.sellTrade);
+                await tradingPage.sellBestOfferButton.click();
+                await expect
+                    .soft(tradeRequestPromise)
+                    .toHavePayload(tradeApiRequest.sellTradePayload, {
+                        omit: [
+                            'returnUrl',
+                            'trade.orderId',
+                            'trade.paymentId',
+                            'trade.refundAddress',
+                        ],
+                    });
+            });
 
-        await test.step('Initiate send', async () => {
-            await tradingPage.confirmation.initiateSendConfirmation();
-            await expect(devicePrompt.header.accountLabel).toHaveText('Bitcoin #1');
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
-            await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
-                formattedCryptoAmount,
-            );
-            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
-        });
+            await tradingPage.waitForRedirectCompletion();
 
-        // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
-    });
+            await test.step('Verify all confirmation values', async () => {
+                await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+                await expect(tradingPage.confirmation.cryptoAmount).toHaveText(
+                    formattedCryptoAmount,
+                );
+                await expect(tradingPage.confirmation.provider).toHaveText(provider);
+                await expect(tradingPage.confirmation.paymentMethod).toHaveText(paymentMethodName);
+                await expect(tradingPage.confirmation.address).toHaveText(providerAddress);
+                await expect(tradingPage.confirmation.account).toHaveText('Bitcoin #1');
+                await expect(tradingPage.confirmation.paymentId).toHaveText(providerPaymentId);
+            });
+
+            await test.step('Initiate send', async () => {
+                await tradingPage.confirmation.initiateSendConfirmation();
+                await expect(devicePrompt.header.accountLabel).toHaveText('Bitcoin #1');
+                await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                    formattedCryptoAmount,
+                );
+                await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
+            });
+
+            // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
+        },
+    );
 });

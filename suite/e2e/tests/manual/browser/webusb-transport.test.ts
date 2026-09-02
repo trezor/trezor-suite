@@ -28,7 +28,7 @@ test.describe.skip('Web usb transport', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Wallets,
                 priority: TestPriority.Critical,
-                stream: TestStream.Foundation,
+                stream: TestStream.Connect,
                 osMatrix: [
                     TestOsMatrix.Linux,
                     TestOsMatrix.Windows,

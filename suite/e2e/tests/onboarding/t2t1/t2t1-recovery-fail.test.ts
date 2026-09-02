@@ -1,3 +1,5 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
@@ -16,6 +18,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@T2T1'] }, () => {
             annotation: createTestAnnotation({
                 testCase:
                     'Verifies that if the device is disconnected during the recovery process, the user is given the option to retry the recovery.',
+                stream: TestStream.Growth,
             }),
         },
         async ({ page, device, onboardingPage, analyticsSection, devicePrompt }) => {

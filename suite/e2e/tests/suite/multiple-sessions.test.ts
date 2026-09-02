@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 
 import { expect, test } from '../../support/fixtures';
@@ -31,6 +31,7 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: `Verifies that a user can successfully take over a session.`,
                 category: TestCategory.Wallets,
                 priority: TestPriority.Medium,
+                stream: TestStream.Connect,
             }),
         },
         async ({ page, onboardingPage, dashboardPage }) => {
@@ -76,6 +77,7 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verifies that a user can successfully take over a session by opening suite in new tab.',
                 category: TestCategory.Wallets,
                 priority: TestPriority.Medium,
+                stream: TestStream.Connect,
             }),
         },
         async ({ context, device, onboardingPage, dashboardPage }) => {

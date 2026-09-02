@@ -1,17 +1,26 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Hidden version page', { tag: ['@webOnly', '@noDevice'] }, () => {
     test.use({ startEmulator: false });
 
-    test('Version page is accessible on URL', async ({ url, page, analyticsSection }) => {
-        await analyticsSection.continueButton.click();
+    test(
+        'Version page is accessible on URL',
+        { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
+        async ({ url, page, analyticsSection }) => {
+            await analyticsSection.continueButton.click();
 
-        await page.goto(url + 'version');
-        await expect(page.getByTestId('@version/number')).toHaveText(/^\d+.\d+.\d+$/, {
-            timeout: 30_000,
-        });
-        await expect(page.getByTestId('@version/commit-hash-link')).toHaveText(/[a-f0-9]{40}/);
-        const hashLink = await page.getByTestId('@version/commit-hash-link').getAttribute('href');
-        expect(hashLink).toContain(`https://github.com/trezor/trezor-suite/commits/`);
-    });
+            await page.goto(url + 'version');
+            await expect(page.getByTestId('@version/number')).toHaveText(/^\d+.\d+.\d+$/, {
+                timeout: 30_000,
+            });
+            await expect(page.getByTestId('@version/commit-hash-link')).toHaveText(/[a-f0-9]{40}/);
+            const hashLink = await page
+                .getByTestId('@version/commit-hash-link')
+                .getAttribute('href');
+            expect(hashLink).toContain(`https://github.com/trezor/trezor-suite/commits/`);
+        },
+    );
 });

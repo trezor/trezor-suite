@@ -1,6 +1,8 @@
 import TrezorConnect from '@trezor/connect-web';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('TrezorConnect.signTransaction', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
@@ -21,43 +23,48 @@ test.describe('TrezorConnect.signTransaction', { tag: ['@T3T1', '@T3W1', '@deskt
         });
     });
 
-    test('TrezorConnect.signTransaction', async ({ page, connectPermissionsModal, device }) => {
-        TrezorConnect.signTransaction({
-            coin: 'btc',
-            inputs: [
-                {
-                    address_n: [2147483692, 2147483648, 2147483648, 0, 5],
-                    prev_hash: '50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d',
-                    prev_index: 1,
-                    // todo: check what happens if we send incorrect data, for example missing amount
-                    amount: '50000',
-                },
-            ],
-            outputs: [
-                {
-                    address: 'bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3',
-                    amount: '10000',
-                    script_type: 'PAYTOADDRESS',
-                },
-            ],
-            chunkify: true,
-        });
+    test(
+        'TrezorConnect.signTransaction',
+        { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
+        async ({ page, connectPermissionsModal, device }) => {
+            TrezorConnect.signTransaction({
+                coin: 'btc',
+                inputs: [
+                    {
+                        address_n: [2147483692, 2147483648, 2147483648, 0, 5],
+                        prev_hash:
+                            '50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d',
+                        prev_index: 1,
+                        // todo: check what happens if we send incorrect data, for example missing amount
+                        amount: '50000',
+                    },
+                ],
+                outputs: [
+                    {
+                        address: 'bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3',
+                        amount: '10000',
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
+                chunkify: true,
+            });
 
-        await connectPermissionsModal.confirmButton.click();
+            await connectPermissionsModal.confirmButton.click();
 
-        await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
-        await device.pressContinue();
-        await page
-            .getByTestId('@prompts/confirm-on-device/step/1/active')
-            .waitFor({ state: 'visible' });
-        await device.pressContinue();
-        await page
-            .getByTestId('@prompts/confirm-on-device/step/2/active')
-            .waitFor({ state: 'visible' });
-        await device.pressContinue();
+            await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
+            await device.pressContinue();
+            await page
+                .getByTestId('@prompts/confirm-on-device/step/1/active')
+                .waitFor({ state: 'visible' });
+            await device.pressContinue();
+            await page
+                .getByTestId('@prompts/confirm-on-device/step/2/active')
+                .waitFor({ state: 'visible' });
+            await device.pressContinue();
 
-        await device.pressYes();
+            await device.pressYes();
 
-        await page.getByText('Input does not match scriptPubKey').waitFor({ state: 'visible' });
-    });
+            await page.getByText('Input does not match scriptPubKey').waitFor({ state: 'visible' });
+        },
+    );
 });

@@ -24,7 +24,7 @@ test.describe('Pagination', { tag: ['@T3W1', '@T3T1'] }, () => {
                 ],
                 category: TestCategory.Accounts,
                 priority: TestPriority.Medium,
-                stream: TestStream.Engagement,
+                stream: TestStream.Wallet,
             }),
         },
 

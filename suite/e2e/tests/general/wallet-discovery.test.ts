@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -19,6 +19,7 @@ test.describe('Wallet discover tests', { tag: ['@T3W1', '@T3T1', '@perf'] }, () 
                 testCase: 'Verify that a user can successfully discover a standard wallet.',
                 category: TestCategory.Wallets,
                 priority: TestPriority.Critical,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ dashboardPage, walletPage, perf }) => {

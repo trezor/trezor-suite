@@ -65,16 +65,14 @@ export const TestPriorityColors: Record<TestPriority, string> = {
 };
 
 export enum TestStream {
-    Trends = 'Trends', // do not use for new tests
-    Wallet = 'Wallet',
-    Earn = 'Earn',
-    Trade = 'Trade',
-    Foundation = 'Foundation',
-    Engagement = 'Engagement', // do not use for new tests
-    Growth = 'Growth',
-    Firmware = 'Firmware',
     Connect = 'Connect',
+    Earn = 'Earn',
+    Firmware = 'Firmware',
+    Growth = 'Growth',
+    Network = 'Network',
     NotDefined = 'Not Defined',
+    Trade = 'Trade',
+    Wallet = 'Wallet',
 }
 
 export enum TestStatus {

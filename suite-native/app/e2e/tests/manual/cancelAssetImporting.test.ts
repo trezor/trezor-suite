@@ -18,7 +18,7 @@ describe.skip('Manual', () => {
             ],
             category: TestCategory.Application,
             priority: TestPriority.Medium,
-            stream: TestStream.Foundation,
+            stream: TestStream.Wallet,
         },
         async () => {},
     );

@@ -1,3 +1,5 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import {
     BRIDGE_URL,
     BRIDGE_VERSION,
@@ -12,6 +14,7 @@ import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
 import { DevicePrompt } from '../../support/pageObjects/devicePrompt';
 import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
 import { SettingsPage } from '../../support/pageObjects/settings/settingsPage';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 import { enhancePage } from '../../support/testExtends/enhancePage';
 
 test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
@@ -24,67 +27,72 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
         await trezorUserEnv.stopBridge();
     });
 
-    test('App spawns bundled bridge and stops it after app quit', async ({ request }, testInfo) => {
-        const suite = await launchSuite({
-            bridgeDaemon: true,
-            artefactFolder: testInfo.outputDir,
-            viewport: testInfo.project.use.viewport!,
-        });
-        const title = await suite.window.title();
-        enhancePage(suite.window);
-        expect(title).toContain('Trezor Suite');
+    test(
+        'App spawns bundled bridge and stops it after app quit',
+        { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
+        async ({ request }, testInfo) => {
+            const suite = await launchSuite({
+                bridgeDaemon: true,
+                artefactFolder: testInfo.outputDir,
+                viewport: testInfo.project.use.viewport!,
+            });
+            const title = await suite.window.title();
+            enhancePage(suite.window);
+            expect(title).toContain('Trezor Suite');
 
-        await waitForAppToBeInitialized(suite);
-        await expectBridgeToBeRunning(request);
-
-        const response = await request.post(BRIDGE_URL, {
-            headers: {
-                Origin: 'https://wallet.trezor.io',
-            },
-        });
-        const json = await response.json();
-        expect(json.version).toEqual(expect.any(String));
-
-        await test.step('Check bridge is running after renderer window is refreshed', async () => {
-            await suite.window.reload();
-            await suite.window.title();
+            await waitForAppToBeInitialized(suite);
             await expectBridgeToBeRunning(request);
-        });
 
-        await suite.electronApp.close();
-        await expectBridgeToBeStopped(request);
-    });
+            const response = await request.post(BRIDGE_URL, {
+                headers: {
+                    Origin: 'https://wallet.trezor.io',
+                },
+            });
+            const json = await response.json();
+            expect(json.version).toEqual(expect.any(String));
 
-    test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async ({
-        device,
-        trezorUserEnv,
-    }, testInfo) => {
-        await device.powerOn({ wipe: true });
-        await device.setup({});
-        await trezorUserEnv.startBridge(BRIDGE_VERSION);
+            await test.step('Check bridge is running after renderer window is refreshed', async () => {
+                await suite.window.reload();
+                await suite.window.title();
+                await expectBridgeToBeRunning(request);
+            });
 
-        const suite = await launchSuite({
-            artefactFolder: testInfo.outputDir,
-            viewport: testInfo.project.use.viewport!,
-        });
-        enhancePage(suite.window);
-        await suite.window.title();
+            await suite.electronApp.close();
+            await expectBridgeToBeStopped(request);
+        },
+    );
 
-        const devicePrompt = new DevicePrompt(suite.window, device);
+    test(
+        'App acquired device, EXTERNAL bridge is restarted, app reconnects',
+        { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
+        async ({ device, trezorUserEnv }, testInfo) => {
+            await device.powerOn({ wipe: true });
+            await device.setup({});
+            await trezorUserEnv.startBridge(BRIDGE_VERSION);
 
-        const onboardingPage = new OnboardingPage(
-            suite.window,
-            device,
-            devicePrompt,
-            new AnalyticsSection(suite.window),
-            new SettingsPage(suite.window, device),
-        );
-        await onboardingPage.completeOnboarding();
+            const suite = await launchSuite({
+                artefactFolder: testInfo.outputDir,
+                viewport: testInfo.project.use.viewport!,
+            });
+            enhancePage(suite.window);
+            await suite.window.title();
 
-        await trezorUserEnv.stopBridge();
-        await devicePrompt.connectDevicePromptIsShown();
+            const devicePrompt = new DevicePrompt(suite.window, device);
 
-        await trezorUserEnv.startBridge(BRIDGE_VERSION);
-        await expect(suite.window.getByTestId('@dashboard/index')).toBeVisible();
-    });
+            const onboardingPage = new OnboardingPage(
+                suite.window,
+                device,
+                devicePrompt,
+                new AnalyticsSection(suite.window),
+                new SettingsPage(suite.window, device),
+            );
+            await onboardingPage.completeOnboarding();
+
+            await trezorUserEnv.stopBridge();
+            await devicePrompt.connectDevicePromptIsShown();
+
+            await trezorUserEnv.startBridge(BRIDGE_VERSION);
+            await expect(suite.window.getByTestId('@dashboard/index')).toBeVisible();
+        },
+    );
 });

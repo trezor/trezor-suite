@@ -27,7 +27,7 @@ test.describe('General settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verifies that a user can change settings on the "General Settings" page.',
                 category: TestCategory.Settings,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
             }),
         },
         async ({ analytics, settingsPage, dashboardPage, page }) => {

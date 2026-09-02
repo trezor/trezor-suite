@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { csvToJson } from '../../support/csvToJson';
 import { expect, test } from '../../support/fixtures';
@@ -23,6 +23,7 @@ test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 testCase: 'Verify that a user can successfully import a BTC csv file.',
                 category: TestCategory.UriLinkHandler,
                 priority: TestPriority.Low,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, dashboardPage, walletPage }) => {

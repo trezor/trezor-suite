@@ -188,13 +188,21 @@ const allPaths = routes
 
 const coveredPaths = new Set<string>(Object.values(SECTIONS).flat());
 
-test('All routes are covered by SECTIONS', { tag: ['@webOnly', '@noDevice'] }, () => {
-    const uncovered = allPaths.filter(path => !coveredPaths.has(path));
+test(
+    'All routes are covered by SECTIONS',
+    {
+        annotation: createTestAnnotation({ stream: TestStream.Growth }),
+        tag: ['@webOnly', '@noDevice'],
+    },
+    () => {
+        const uncovered = allPaths.filter(path => !coveredPaths.has(path));
 
-    expect(uncovered, `Routes not assigned to any section: ${uncovered.join(', ')}`).toHaveLength(
-        0,
-    );
-});
+        expect(
+            uncovered,
+            `Routes not assigned to any section: ${uncovered.join(', ')}`,
+        ).toHaveLength(0);
+    },
+);
 
 test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () => {
     test.use({
@@ -209,7 +217,7 @@ test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () 
                     testCase: `Verify that all links in the ${section} section are OK`,
                     category: TestCategory.NotCategorized,
                     priority: TestPriority.Low,
-                    stream: TestStream.Foundation,
+                    stream: TestStream.Growth,
                 }),
             },
             async ({ page, onboardingPage, settingsPage }, testInfo) => {

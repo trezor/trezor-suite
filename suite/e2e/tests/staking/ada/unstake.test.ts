@@ -62,7 +62,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can unstake his Cardano account.',
                 category: TestCategory.Staking,
                 priority: TestPriority.Critical,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
         async ({

@@ -1,3 +1,5 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
@@ -16,6 +18,7 @@ test.describe(
             {
                 annotation: createTestAnnotation({
                     testCase: 'Suite labeling support switching from provider to another',
+                    stream: TestStream.Wallet,
                 }),
             },
             async ({

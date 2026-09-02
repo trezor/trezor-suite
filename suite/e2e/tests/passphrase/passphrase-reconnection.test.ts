@@ -1,4 +1,7 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
 
@@ -10,101 +13,100 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
-    test('after device is reconnected passphrase needs to be confirmed', async ({
-        page,
-        device,
-        dashboardPage,
-        walletPage,
-        metadataPage,
-        devicePrompt,
-    }) => {
-        await test.step('Add passphrase wallet "abc"', async () => {
-            await dashboardPage.openDeviceSwitcher();
-            await dashboardPage.addUnusedHiddenWallet('abc');
-        });
-
-        await test.step('Display receive address', async () => {
-            await walletPage.openAccount({
-                symbol: 'btc',
-                type: 'normal',
-                atIndex: 0,
-            });
-            await walletPage.receiveButton.click();
-            await walletPage.verifyAddressButton.click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await expect(device).toShowReceiveAddress(abcAddr);
-            await device.pressYes(); // confirm address
-
-            await expect(metadataPage.copyAddressButton).toBeVisible();
-            await expect(metadataPage.copyAddressButton).toBeEnabled();
-
-            // Verifying only shows the address on the device. Revealing it — which is what puts
-            // it in the address history the later steps assert on — is "show next".
-            await walletPage.showNextAddressButton.click();
-            await expect(walletPage.usedAddress(0)).toBeVisible();
-        });
-
-        await test.step('Disconnect and reconnect the device', async () => {
-            await device.powerOff();
-            await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 30_000 });
-            await device.powerOn();
-            await expect(walletPage.deviceConnectedStatus).toBeVisible({ timeout: 30_000 });
-        });
-
-        await test.step('Check passphrase wallet "abc" is still cached and connected', async () => {
-            await dashboardPage.deviceSwitchingOpenButton.click();
-            // Clicking on the device switcher button should either open the modal or show the "Unavailable while loading" message
-            await Promise.race([
-                expect(dashboardPage.deviceSwitcherModal).toBeVisible(),
-                expect(page.getByText('Unavailable while loading')).toBeVisible(),
-            ]);
-            const deviceSwitchUnavailable = page.getByText('Unavailable while loading').isVisible();
-            // If the device switcher is unavailable, we need to wait for discovery to finish and then open the device switcher again
-            if (await deviceSwitchUnavailable) {
-                await page.discoveryShouldFinish();
+    test(
+        'after device is reconnected passphrase needs to be confirmed',
+        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        async ({ page, device, dashboardPage, walletPage, metadataPage, devicePrompt }) => {
+            await test.step('Add passphrase wallet "abc"', async () => {
                 await dashboardPage.openDeviceSwitcher();
-            }
+                await dashboardPage.addUnusedHiddenWallet('abc');
+            });
 
-            await expect(dashboardPage.walletAtIndex(1)).toContainTranslation(
-                'TR_PASSPHRASE_WALLET',
-                {
-                    values: { id: '1' },
-                },
-            );
-        });
+            await test.step('Display receive address', async () => {
+                await walletPage.openAccount({
+                    symbol: 'btc',
+                    type: 'normal',
+                    atIndex: 0,
+                });
+                await walletPage.receiveButton.click();
+                await walletPage.verifyAddressButton.click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await expect(device).toShowReceiveAddress(abcAddr);
+                await device.pressYes(); // confirm address
 
-        await test.step('Displaying receive address should prompt for passphrase', async () => {
-            await dashboardPage.walletAtIndex(1).click();
-            await walletPage.receiveButton.click();
-            await expect(walletPage.usedAddress(0)).toBeVisible();
-            await walletPage.usedAddress(0).hover();
-            await walletPage.usedAddressVerifyButton(0).click();
-            await expect(page.getByText('Confirm passphrase')).toBeVisible();
-            await dashboardPage.passphraseInput.fill('abc');
-            await dashboardPage.passphraseSubmitButton.click();
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase, shows your address
-        });
+                await expect(metadataPage.copyAddressButton).toBeVisible();
+                await expect(metadataPage.copyAddressButton).toBeEnabled();
 
-        await test.step('Verify displayed receive address', async () => {
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await expect(device).toShowReceiveAddress(abcAddr);
-            await device.pressYes(); // confirm address
+                // Verifying only shows the address on the device. Revealing it — which is what puts
+                // it in the address history the later steps assert on — is "show next".
+                await walletPage.showNextAddressButton.click();
+                await expect(walletPage.usedAddress(0)).toBeVisible();
+            });
 
-            await expect(metadataPage.copyAddressButton).toBeVisible();
-            await expect(metadataPage.copyAddressButton).toBeEnabled();
-        });
+            await test.step('Disconnect and reconnect the device', async () => {
+                await device.powerOff();
+                await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 30_000 });
+                await device.powerOn();
+                await expect(walletPage.deviceConnectedStatus).toBeVisible({ timeout: 30_000 });
+            });
 
-        await test.step('Second displaying receive address after reconnect should NOT prompt for passphrase', async () => {
-            await walletPage.usedAddress(0).hover();
-            await walletPage.usedAddressVerifyButton(0).click();
-            // Going straight to the device prompt proves no passphrase was requested again.
-            await devicePrompt.confirmOnDevicePromptIsShown();
+            await test.step('Check passphrase wallet "abc" is still cached and connected', async () => {
+                await dashboardPage.deviceSwitchingOpenButton.click();
+                // Clicking on the device switcher button should either open the modal or show the "Unavailable while loading" message
+                await Promise.race([
+                    expect(dashboardPage.deviceSwitcherModal).toBeVisible(),
+                    expect(page.getByText('Unavailable while loading')).toBeVisible(),
+                ]);
+                const deviceSwitchUnavailable = page
+                    .getByText('Unavailable while loading')
+                    .isVisible();
+                // If the device switcher is unavailable, we need to wait for discovery to finish and then open the device switcher again
+                if (await deviceSwitchUnavailable) {
+                    await page.discoveryShouldFinish();
+                    await dashboardPage.openDeviceSwitcher();
+                }
 
-            await device.pressYes(); // confirm address
+                await expect(dashboardPage.walletAtIndex(1)).toContainTranslation(
+                    'TR_PASSPHRASE_WALLET',
+                    {
+                        values: { id: '1' },
+                    },
+                );
+            });
 
-            await expect(metadataPage.copyAddressButton).toBeVisible();
-            await expect(metadataPage.copyAddressButton).toBeEnabled();
-        });
-    });
+            await test.step('Displaying receive address should prompt for passphrase', async () => {
+                await dashboardPage.walletAtIndex(1).click();
+                await walletPage.receiveButton.click();
+                await expect(walletPage.usedAddress(0)).toBeVisible();
+                await walletPage.usedAddress(0).hover();
+                await walletPage.usedAddressVerifyButton(0).click();
+                await expect(page.getByText('Confirm passphrase')).toBeVisible();
+                await dashboardPage.passphraseInput.fill('abc');
+                await dashboardPage.passphraseSubmitButton.click();
+                await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
+                await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase, shows your address
+            });
+
+            await test.step('Verify displayed receive address', async () => {
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await expect(device).toShowReceiveAddress(abcAddr);
+                await device.pressYes(); // confirm address
+
+                await expect(metadataPage.copyAddressButton).toBeVisible();
+                await expect(metadataPage.copyAddressButton).toBeEnabled();
+            });
+
+            await test.step('Second displaying receive address after reconnect should NOT prompt for passphrase', async () => {
+                await walletPage.usedAddress(0).hover();
+                await walletPage.usedAddressVerifyButton(0).click();
+                // Going straight to the device prompt proves no passphrase was requested again.
+                await devicePrompt.confirmOnDevicePromptIsShown();
+
+                await device.pressYes(); // confirm address
+
+                await expect(metadataPage.copyAddressButton).toBeVisible();
+                await expect(metadataPage.copyAddressButton).toBeEnabled();
+            });
+        },
+    );
 });

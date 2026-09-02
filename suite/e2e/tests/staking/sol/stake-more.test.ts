@@ -40,7 +40,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can stake more from his Solana account.',
                 category: TestCategory.Solana,
                 priority: TestPriority.Critical,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
         async ({ page, device, walletPage, stakingSection, devicePrompt, solanaStakingMock }) => {

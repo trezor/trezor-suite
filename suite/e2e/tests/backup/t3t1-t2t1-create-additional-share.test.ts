@@ -21,7 +21,7 @@ test.describe('Create additional share', { tag: ['@T2T1', '@T3T1'] }, () => {
                     'Verify that an additional share can be successfully created during the backup process.',
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
             }),
         },
         async ({ settingsPage, device }) => {
