@@ -45,8 +45,13 @@ export const getAccountInfo = async (
     };
 
     const api = await request.connect();
-    const { groupOperationsByTransaction, identifyTransaction, isNotFoundError, readSep41Tokens } =
-        await stellar();
+    const {
+        computeSorobanAssetContractId,
+        groupOperationsByTransaction,
+        identifyTransaction,
+        isNotFoundError,
+        readSep41Tokens,
+    } = await stellar();
     let info;
     try {
         info = await api.accounts().accountId(payload.descriptor).call();
@@ -117,11 +122,25 @@ export const getAccountInfo = async (
     // whatever the user added themselves.
     // Enabled on mainnet only (the PoC RPC endpoint is mainnet).
     const watchedContracts = payload.stellarContractTokens ?? [];
+
+    // A Stellar Asset Contract mirrors the classic trustline balance Horizon already reported,
+    // so a watched SAC of an asset the account holds would double-count the holding.
+    const classicSacIds = new Set(
+        (account.tokens ?? []).flatMap(token => {
+            try {
+                return [computeSorobanAssetContractId(token.contract).sorobanAssetContractId];
+            } catch {
+                return [];
+            }
+        }),
+    );
     const contractsToRead = [
         ...new Set([...STELLAR_CONTRACT_TOKENS.map(token => token.contract), ...watchedContracts]),
-    ];
+    ].filter(contract => !classicSacIds.has(contract));
 
-    if (!isTestnet && contractsToRead.length > 0) {
+    const readContractTokens = async (): Promise<TokenInfo[]> => {
+        if (isTestnet || contractsToRead.length === 0) return [];
+
         try {
             const sep41Tokens = await readSep41Tokens(
                 STELLAR_SOROBAN_RPC_URL,
@@ -133,35 +152,46 @@ export const getAccountInfo = async (
             );
             const watched = new Set(watchedContracts);
 
-            const contractTokens: TokenInfo[] = sep41Tokens
-                // The curated list is only a discovery hint, so surface just the ones the account
-                // actually holds. A contract the user added stays visible at a zero balance, the
-                // way an opted-in trustline does.
-                .filter(token => token.balance !== '0' || watched.has(token.contract))
-                .map(token => {
-                    // Prefer on-chain SEP-41 metadata; fall back to the curated entry.
-                    const fallback = fallbackByContract.get(token.contract);
+            return (
+                sep41Tokens
+                    // The curated list is only a discovery hint, so surface just the ones the
+                    // account actually holds. A contract the user added stays visible at a zero
+                    // balance, the way an opted-in trustline does.
+                    .filter(token => token.balance !== '0' || watched.has(token.contract))
+                    .map(token => {
+                        // Prefer on-chain SEP-41 metadata; fall back to the curated entry.
+                        const fallback = fallbackByContract.get(token.contract);
 
-                    return {
-                        standard: 'STELLAR-CONTRACT',
-                        contract: token.contract,
-                        balance: token.balance,
-                        name: token.name ?? fallback?.name,
-                        symbol: (token.symbol ?? fallback?.symbol ?? '').toUpperCase(),
-                        decimals: token.decimals ?? fallback?.decimals ?? STELLAR_DECIMALS,
-                    };
-                });
-
-            account.tokens = [...(account.tokens ?? []), ...contractTokens];
+                        return {
+                            standard: 'STELLAR-CONTRACT',
+                            contract: token.contract,
+                            balance: token.balance,
+                            name: token.name ?? fallback?.name,
+                            symbol: (token.symbol ?? fallback?.symbol ?? '').toUpperCase(),
+                            decimals: token.decimals ?? fallback?.decimals ?? STELLAR_DECIMALS,
+                        };
+                    })
+            );
         } catch (error) {
             // Contract-token enrichment must never break classic account loading.
             console.warn('Stellar: failed to read Soroban SEP-41 tokens', error);
+
+            return [];
         }
-    }
+    };
+
+    // Kicked off here and awaited only when the response is assembled, so the RPC read runs
+    // concurrently with the Horizon history fetch instead of stalling it.
+    const contractTokensPromise = readContractTokens();
+    const mergeContractTokens = async () => {
+        account.tokens = [...(account.tokens ?? []), ...(await contractTokensPromise)];
+    };
 
     account.empty = false;
 
     if (payload.details !== 'txs') {
+        await mergeContractTokens();
+
         return {
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: account,
@@ -174,7 +204,7 @@ export const getAccountInfo = async (
     // host-function operation, which only the operations resource exposes. `join('transactions')`
     // embeds the transaction in the same response — without it, reading `operation.transaction()`
     // would fire one HTTP request per operation.
-    const fetchOperationGroups = async (limit: number) => {
+    const fetchOperationGroups = async (limit: number, cursor: string | undefined) => {
         const requestBuilder = api
             .operations()
             .forAccount(payload.descriptor)
@@ -182,34 +212,48 @@ export const getAccountInfo = async (
             .join('transactions')
             .limit(limit)
             .order('desc');
-        if (payload.page && payload.page !== 1 && payload.pageCursor) {
-            requestBuilder.cursor(payload.pageCursor);
+        if (cursor) {
+            requestBuilder.cursor(cursor);
         }
 
         const { records } = await requestBuilder.call();
 
         return {
             groups: groupOperationsByTransaction(records, records.length === limit),
-            hasRecords: records.length > 0,
+            isWindowFull: records.length === limit,
         };
     };
 
-    let groups;
+    let groups: Awaited<ReturnType<typeof fetchOperationGroups>>['groups'] = [];
     try {
-        const firstWindow = await fetchOperationGroups(Math.min(HORIZON_MAX_LIMIT, pageSize * 2));
-        groups = firstWindow.groups;
+        // The page consumers assume exactly `pageSize` transactions per page — a shorter page
+        // reads as the end of the history — while an operation window can hold arbitrarily few
+        // complete transactions, so windows are accumulated until the page fills up or the
+        // history ends.
+        let cursor = payload.page && payload.page !== 1 ? payload.pageCursor : undefined;
+        let limit = Math.min(HORIZON_MAX_LIMIT, pageSize * 2);
 
-        if (groups.length === 0 && firstWindow.hasRecords) {
-            // A single transaction filled the whole window, so its trailing group was dropped.
-            // The protocol caps operations per transaction at 100, so the largest window Horizon
-            // allows always leaves at least one complete group.
-            groups = (await fetchOperationGroups(HORIZON_MAX_LIMIT)).groups;
+        for (;;) {
+            const window = await fetchOperationGroups(limit, cursor);
+            groups = [...groups, ...window.groups];
+
+            if (groups.length >= pageSize || !window.isWindowFull) break;
+
+            // A single transaction can fill a whole window, dropping its trailing group with
+            // nothing complete before it. The protocol caps operations per transaction at 100,
+            // so the largest window Horizon allows always completes at least one group — the
+            // guard only protects against a Horizon response violating that cap.
+            if (window.groups.length === 0 && limit === HORIZON_MAX_LIMIT) break;
+
+            limit = HORIZON_MAX_LIMIT;
+            cursor = window.groups[window.groups.length - 1]?.cursor ?? cursor;
         }
     } catch (error) {
         if (isNotFoundError(error)) {
             // Horizon retains limited history; accounts without activity in the retained
             // window return 404 on the operations endpoint even though they exist
             account.history.transactions = [];
+            await mergeContractTokens();
 
             return {
                 type: RESPONSES.GET_ACCOUNT_INFO,
@@ -221,26 +265,36 @@ export const getAccountInfo = async (
 
     const pageGroups = groups.slice(0, pageSize);
 
-    account.history.transactions = await Promise.all(
+    const pageTransactions = await Promise.all(
         pageGroups.map(async ({ operations }) => {
-            // Resolved from the joined response, so this does not hit the network
-            const rawTx = await operations[0].transaction();
+            try {
+                // Resolved from the joined response, so this does not hit the network.
+                const rawTx = await operations[0].transaction();
 
-            return utils.transformTransaction(
-                identifyTransaction(operations, rawTx),
-                payload.descriptor,
-                tokenMetadata,
-            );
+                return utils.transformTransaction(
+                    identifyTransaction(operations, rawTx),
+                    payload.descriptor,
+                    tokenMetadata,
+                );
+            } catch (error) {
+                // A single unparseable record must not fail the whole account history.
+                console.warn('Stellar: failed to parse a transaction record', error);
+
+                return undefined;
+            }
         }),
     );
+    account.history.transactions = pageTransactions.filter(
+        (transaction): transaction is NonNullable<typeof transaction> => transaction != null,
+    );
 
-    const cursor = pageGroups[pageGroups.length - 1]?.cursor;
+    await mergeContractTokens();
 
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
         payload: {
             ...account,
-            stellarCursor: cursor,
+            stellarCursor: pageGroups[pageGroups.length - 1]?.cursor,
         },
     } as const;
 };
