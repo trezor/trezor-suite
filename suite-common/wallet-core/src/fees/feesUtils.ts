@@ -1,4 +1,3 @@
-import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
@@ -30,7 +29,6 @@ export const sortLevels = (levelA: FeeLevel, levelB: FeeLevel) =>
 type GetEip1559AvailabilityProps = {
     symbol: NetworkSymbol;
     feeLevel: FeeLevel;
-    device?: TrezorDevice;
 };
 const getEip1559Availability = ({ symbol, feeLevel }: GetEip1559AvailabilityProps) =>
     getNetwork(symbol).features.includes('eip1559') && isEip1559(feeLevel);

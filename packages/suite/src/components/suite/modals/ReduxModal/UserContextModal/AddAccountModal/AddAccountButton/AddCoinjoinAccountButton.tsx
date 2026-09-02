@@ -11,7 +11,6 @@ import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { type UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
@@ -23,7 +22,6 @@ import { AddButton } from './AddButton';
 interface VerifyAvailabilityProps {
     coinjoinAccounts: Account[];
     symbol: NetworkSymbol;
-    unavailableCapabilities?: UnavailableCapabilities;
 }
 
 const verifyAvailability = ({ coinjoinAccounts, symbol }: VerifyAvailabilityProps) => {
