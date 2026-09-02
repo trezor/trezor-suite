@@ -55,6 +55,7 @@ cors
 dropbox
 
 # Eslint
+@types/estree
 @eslint/compat
 @eslint/js
 eslint

@@ -19,7 +19,11 @@ export {
     REPORTER_WATCHDOG_NATIVE_MANUAL_SAMPLES,
 } from './githubReporter/watchdog/samples';
 export { TestReportProviderBase, createTestAnnotation } from './githubReporter/annotationBase';
-export type { TestDetailsAnnotation, TestMetadataInput } from './githubReporter/types';
+export type {
+    AssignedTestStream,
+    TestDetailsAnnotation,
+    TestMetadataInput,
+} from './githubReporter/types';
 export type * from './githubReporter/types';
 export { resolvePullRequestNumber, resolveRunUrl, upsertStickyPrComment } from './gitHub/prComment';
 export type { StickyPrCommentResult } from './gitHub/prComment';
