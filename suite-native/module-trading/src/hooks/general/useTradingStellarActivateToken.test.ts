@@ -1,31 +1,27 @@
 import type { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
 
-import { act, renderHook, waitFor } from '@suite-native/test-utils';
+import { type Account } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import {
+    act,
+    createStoreFromPreloadedState,
+    renderHookWithStoreProvider,
+    waitFor,
+} from '@suite-native/test-utils-store';
 
 import { useTradingStellarActivateToken } from './useTradingStellarActivateToken';
 
 const mockDispatch = jest.fn();
-const mockUseSelector = jest.fn();
 const mockNavigate = jest.fn();
 const mockShowAlert = jest.fn();
 const mockCryptoIdToNetworkAndContractAddress = jest.fn();
 const mockUseInactiveStellarTokens = jest.fn();
 const mockComposeStellarTrustlineFeesThunk = jest.fn();
-const mockSelectExchangeSelectedReceiveAccount = jest.fn();
 
 jest.mock('@reduxjs/toolkit', () => ({
     ...jest.requireActual('@reduxjs/toolkit'),
     isFulfilled: (action: { meta?: { requestStatus?: string } }) =>
         action?.meta?.requestStatus === 'fulfilled',
-}));
-
-jest.mock('react-redux', () => ({
-    useSelector: (selector: unknown) => mockUseSelector(selector),
-}));
-
-jest.mock('@suite-common/redux-utils', () => ({
-    ...jest.requireActual('@suite-common/redux-utils'),
-    useDispatch: () => mockDispatch,
 }));
 
 jest.mock('@react-navigation/native', () => ({
@@ -48,8 +44,11 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 jest.mock('@suite-native/trading-state', () => ({
-    selectExchangeSelectedReceiveAccount: (state: unknown) =>
-        mockSelectExchangeSelectedReceiveAccount(state),
+    selectExchangeSelectedReceiveAccount: (state: {
+        wallet: {
+            trading: { exchange: { selectedReceiveAccount?: { account: Account } } };
+        };
+    }) => state.wallet.trading.exchange.selectedReceiveAccount,
 }));
 
 jest.mock('@suite-native/module-stellar-token-management', () => ({
@@ -60,20 +59,35 @@ jest.mock('@suite-native/module-stellar-token-management', () => ({
 
 const RECEIVE_CRYPTO_ID = 'stellar:USDC' as CryptoId;
 const TOKEN_CONTRACT = 'USDC-GA123';
-const ACCOUNT_KEY = 'xlm-account-key';
+const stellarAccount = mockWalletAccount({ symbol: 'xlm' });
+const ACCOUNT_KEY = stellarAccount.key;
 
 const renderUseTradingStellarActivateToken = async (options?: {
     quote?: ExchangeTrade | BuyTrade;
     receiveCryptoId?: CryptoId;
     buttonTestId?: string;
-}) =>
-    await renderHook(() =>
-        useTradingStellarActivateToken({
-            quote: options?.quote,
-            receiveCryptoId: options?.receiveCryptoId,
-            buttonTestId: options?.buttonTestId,
-        }),
+}) => {
+    const store = createStoreFromPreloadedState({
+        wallet: {
+            trading: {
+                exchange: {
+                    selectedReceiveAccount: { account: stellarAccount },
+                },
+            },
+        },
+    });
+    store.dispatch = mockDispatch;
+
+    return await renderHookWithStoreProvider(
+        () =>
+            useTradingStellarActivateToken({
+                quote: options?.quote,
+                receiveCryptoId: options?.receiveCryptoId,
+                buttonTestId: options?.buttonTestId,
+            }),
+        { store },
     );
+};
 
 const getButtonProps = (
     result: Awaited<ReturnType<typeof renderUseTradingStellarActivateToken>>['result'],
@@ -97,9 +111,6 @@ const onActivateButtonPress = async (
 describe('useTradingStellarActivateToken', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-
-        mockUseSelector.mockImplementation(selector => selector({}));
-        mockSelectExchangeSelectedReceiveAccount.mockReturnValue({ account: { key: ACCOUNT_KEY } });
 
         mockCryptoIdToNetworkAndContractAddress.mockReturnValue({
             network: { networkType: 'stellar' },

@@ -1,16 +1,16 @@
-import { useSelector } from 'react-redux';
+import {
+    type BuyTrade,
+    type BuyTradeQuoteRequest,
+    type CryptoId,
+    type ExchangeTrade,
+    type SellFiatTrade,
+    type SellFiatTradeQuoteRequest,
+} from 'invity-api';
 
-import { renderHook } from '@testing-library/react';
-import { type BuyTrade, type CryptoId, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { useTradingRequestedSide } from './useTradingRequestedSide';
-
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
-    useSelector: jest.fn(),
-}));
-
-const mockedUseSelector = jest.mocked(useSelector);
+import { type TradingRootState, initialState } from '../reducers/tradingCommonReducer';
 
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 const ETHEREUM_CRYPTO_ID = 'ethereum' as CryptoId;
@@ -45,67 +45,94 @@ const exchangeQuote = {
     max: 100,
 } satisfies ExchangeTrade;
 
-const mockQuotesRequests = (buyQuotesRequest?: unknown, sellQuotesRequest?: unknown) => {
-    mockedUseSelector.mockReturnValueOnce(buyQuotesRequest).mockReturnValueOnce(sellQuotesRequest);
+type QuotesRequests = {
+    buyQuotesRequest?: BuyTradeQuoteRequest;
+    sellQuotesRequest?: SellFiatTradeQuoteRequest;
+};
+
+const renderUseTradingRequestedSide = (
+    quote: BuyTrade | SellFiatTrade | ExchangeTrade | undefined,
+    { buyQuotesRequest, sellQuotesRequest }: QuotesRequests = {},
+) => {
+    const root = createTestCompositionRoot({
+        extra: { services: {} },
+        preloadedState: {
+            wallet: {
+                trading: {
+                    ...initialState,
+                    buy: { ...initialState.buy, quotesRequest: buyQuotesRequest },
+                    sell: { ...initialState.sell, quotesRequest: sellQuotesRequest },
+                },
+            },
+        } satisfies TradingRootState,
+    });
+
+    return renderHookWithStoreProvider(() => useTradingRequestedSide(quote), { root });
 };
 
 describe('useTradingRequestedSide', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
     it("returns 'to' for buy when wantCrypto is true", () => {
-        mockQuotesRequests({ wantCrypto: true });
-
-        const { result } = renderHook(() => useTradingRequestedSide(buyQuote));
+        const { result } = renderUseTradingRequestedSide(buyQuote, {
+            buyQuotesRequest: {
+                wantCrypto: true,
+                fiatCurrency: 'USD',
+                receiveCurrency: BITCOIN_CRYPTO_ID,
+            },
+        });
 
         expect(result.current).toBe('to');
     });
 
     it("returns 'from' for buy when wantCrypto is false", () => {
-        mockQuotesRequests({ wantCrypto: false });
-
-        const { result } = renderHook(() => useTradingRequestedSide(buyQuote));
+        const { result } = renderUseTradingRequestedSide(buyQuote, {
+            buyQuotesRequest: {
+                wantCrypto: false,
+                fiatCurrency: 'USD',
+                receiveCurrency: BITCOIN_CRYPTO_ID,
+            },
+        });
 
         expect(result.current).toBe('from');
     });
 
     it("returns 'from' for buy when there is no request", () => {
-        mockQuotesRequests();
-
-        const { result } = renderHook(() => useTradingRequestedSide(buyQuote));
+        const { result } = renderUseTradingRequestedSide(buyQuote);
 
         expect(result.current).toBe('from');
     });
 
     it("returns 'from' for sell when amountInCrypto is true", () => {
-        mockQuotesRequests(undefined, { amountInCrypto: true });
-
-        const { result } = renderHook(() => useTradingRequestedSide(sellQuote));
+        const { result } = renderUseTradingRequestedSide(sellQuote, {
+            sellQuotesRequest: {
+                amountInCrypto: true,
+                fiatCurrency: 'USD',
+                cryptoCurrency: ETHEREUM_CRYPTO_ID,
+            },
+        });
 
         expect(result.current).toBe('from');
     });
 
     it("returns 'to' for sell when amountInCrypto is false", () => {
-        mockQuotesRequests(undefined, { amountInCrypto: false });
-
-        const { result } = renderHook(() => useTradingRequestedSide(sellQuote));
+        const { result } = renderUseTradingRequestedSide(sellQuote, {
+            sellQuotesRequest: {
+                amountInCrypto: false,
+                fiatCurrency: 'USD',
+                cryptoCurrency: ETHEREUM_CRYPTO_ID,
+            },
+        });
 
         expect(result.current).toBe('to');
     });
 
     it('returns undefined for exchange', () => {
-        mockQuotesRequests();
-
-        const { result } = renderHook(() => useTradingRequestedSide(exchangeQuote));
+        const { result } = renderUseTradingRequestedSide(exchangeQuote);
 
         expect(result.current).toBeUndefined();
     });
 
     it('returns undefined when there is no quote', () => {
-        mockQuotesRequests();
-
-        const { result } = renderHook(() => useTradingRequestedSide(undefined));
+        const { result } = renderUseTradingRequestedSide(undefined);
 
         expect(result.current).toBeUndefined();
     });

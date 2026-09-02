@@ -1,29 +1,37 @@
+/**
+ * @jest-environment jsdom
+ */
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+
 import { type FormDraftRootState } from './formDraftSlice';
 import { useFormDraft } from './useFormDraft';
 
 const mockDispatch = jest.fn();
 
-jest.mock('react', () => ({
-    ...jest.requireActual('react'),
-    useCallback: (fn: unknown) => fn,
-}));
-
-jest.mock('react-redux', () => {
-    const state: FormDraftRootState = {
-        wallet: {
-            formDrafts: {
-                'stake/eth': {
-                    key1: 'value1',
-                },
+const state: FormDraftRootState = {
+    wallet: {
+        formDrafts: {
+            'stake/eth': {
+                key1: 'value1',
             },
         },
-    };
+    },
+};
 
-    return {
-        useDispatch: () => mockDispatch,
-        useSelector: (selector: (state: FormDraftRootState) => unknown) => selector(state),
-    };
-});
+const createRoot = () => {
+    const root = createTestCompositionRoot({
+        extra: { services: {} },
+        preloadedState: state,
+    });
+    root.store.dispatch = mockDispatch;
+
+    return root;
+};
+
+const renderUseFormDraft = (key = 'eth') =>
+    renderHookWithStoreProvider(() => useFormDraft('stake', key), {
+        root: createRoot(),
+    });
 
 describe('useFormDraft', () => {
     beforeEach(() => {
@@ -31,15 +39,15 @@ describe('useFormDraft', () => {
     });
 
     it('should return draft based on prefix and key', () => {
-        const { draft } = useFormDraft('stake', 'eth');
+        const { result } = renderUseFormDraft();
 
-        expect(draft).toEqual({ key1: 'value1' });
+        expect(result.current.draft).toEqual({ key1: 'value1' });
     });
 
     it('should dispatch storeDraft action on saveDraft call', () => {
-        const { saveDraft } = useFormDraft('stake', 'eth');
+        const { result } = renderUseFormDraft();
 
-        saveDraft({ key2: 'value2' });
+        result.current.saveDraft({ key2: 'value2' });
 
         expect(mockDispatch).toHaveBeenCalledTimes(1);
         expect(mockDispatch).toHaveBeenCalledWith({
@@ -49,9 +57,9 @@ describe('useFormDraft', () => {
     });
 
     it('should dispatch removeDraft on removeDraft call', () => {
-        const { removeDraft } = useFormDraft('stake', 'eth');
+        const { result } = renderUseFormDraft();
 
-        removeDraft();
+        result.current.removeDraft();
 
         expect(mockDispatch).toHaveBeenCalledTimes(1);
         expect(mockDispatch).toHaveBeenCalledWith({
@@ -61,11 +69,11 @@ describe('useFormDraft', () => {
     });
 
     it('should allow to omit key', () => {
-        const { draft, saveDraft, removeDraft } = useFormDraft('stake');
+        const { result } = renderUseFormDraft('');
 
-        expect(draft).toBeUndefined();
-        saveDraft({ key3: 'value3' });
-        removeDraft();
+        expect(result.current.draft).toBeUndefined();
+        result.current.saveDraft({ key3: 'value3' });
+        result.current.removeDraft();
 
         expect(mockDispatch).toHaveBeenCalledTimes(2);
         expect(mockDispatch).toHaveBeenNthCalledWith(1, {
@@ -79,8 +87,8 @@ describe('useFormDraft', () => {
     });
 
     it('should return formDraftKey', () => {
-        const { formDraftKey } = useFormDraft('stake', 'eth');
+        const { result } = renderUseFormDraft();
 
-        expect(formDraftKey).toBe('stake/eth');
+        expect(result.current.formDraftKey).toBe('stake/eth');
     });
 });

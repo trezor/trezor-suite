@@ -1,8 +1,9 @@
 import { useForm } from 'react-hook-form';
 
-import { act, renderHook } from '@testing-library/react';
+import { act } from '@testing-library/react';
 
 import { events } from '@suite-common/analytics';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowFormValues } from '@suite-common/wallet-core';
 
@@ -20,30 +21,27 @@ const mockState = {
 
 const mockReport = jest.fn();
 
-jest.mock('src/hooks/suite', () => ({
-    useSelector: (selector: (state: unknown) => unknown) => selector(mockState),
-}));
-
-jest.mock('@suite-common/dependency-injection', () => {
-    const analytics = { report: (...args: unknown[]) => mockReport(...args) };
-
-    return { useServices: () => ({ analytics }) };
-});
-
-jest.mock('@suite/analytics', () => ({ selectDesktopAnalyticsDep: () => ({}) }));
-
-const renderYieldFiatInput = (vaultId?: string) =>
-    renderHook(() => {
-        const methods = useForm<YieldFlowFormValues>({
-            mode: 'onChange',
-            defaultValues: { amountInput: '', fiatInput: '' },
-        });
-
-        return {
-            methods,
-            fiat: useYieldFiatInput({ methods, symbol: ethSymbol, decimals: 18, vaultId }),
-        };
+const renderYieldFiatInput = (vaultId?: string) => {
+    const root = createTestCompositionRoot({
+        extra: { services: { analytics: { report: mockReport } } },
+        preloadedState: mockState,
     });
+
+    return renderHookWithStoreProvider(
+        () => {
+            const methods = useForm<YieldFlowFormValues>({
+                mode: 'onChange',
+                defaultValues: { amountInput: '', fiatInput: '' },
+            });
+
+            return {
+                methods,
+                fiat: useYieldFiatInput({ methods, symbol: ethSymbol, decimals: 18, vaultId }),
+            };
+        },
+        { root },
+    );
+};
 
 describe('useYieldFiatInput', () => {
     beforeEach(() => {
