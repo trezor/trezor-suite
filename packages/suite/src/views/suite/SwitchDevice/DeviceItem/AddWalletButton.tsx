@@ -3,12 +3,9 @@ import { useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { closeModalApp, goto } from '@suite/router';
+import { selectDeviceThunk } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import {
-    selectDeviceThunk,
-    selectIsAnyNetworkEnabled,
-    startAddWalletDiscoveryThunk,
-} from '@suite-common/wallet-core';
+import { selectIsAnyNetworkEnabled, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
 import { FolderOpenIcon, PlusCircleFilledIcon, PlusIcon, XIcon } from '@trezor/icons';

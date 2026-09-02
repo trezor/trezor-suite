@@ -6,6 +6,7 @@ import { Labeling } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible, selectLabelingValueBeingEdited } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
+import { selectDeviceThunk } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     getAccountsByDeviceState,
@@ -13,7 +14,6 @@ import {
     selectAllAccountsToList,
     selectBaseCurrency,
     selectCurrentFiatRates,
-    selectDeviceThunk,
 } from '@suite-common/wallet-core';
 import { getAllAccounts } from '@suite-common/wallet-utils';
 import {

@@ -25,7 +25,6 @@ export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoverySelectors';
 export * from './discovery/discoveryThunks';
-export * from './discovery/selectDeviceThunk';
 export * from './earn/earnDepositsFiatUtils';
 export * from './explorer/explorerActions';
 export * from './explorer/explorerReducer';

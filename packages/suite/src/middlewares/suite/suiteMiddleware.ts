@@ -11,6 +11,7 @@ import {
     deviceActions,
     isTrezorDeviceWithState,
     selectDevicePath,
+    selectDeviceThunk,
 } from '@suite-common/device';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
@@ -22,7 +23,6 @@ import {
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
-    selectDeviceThunk,
     selectIsDeviceAutoEjectEnabled,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';

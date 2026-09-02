@@ -1,8 +1,7 @@
 import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
-import { deviceActions } from '@suite-common/device';
+import { deviceActions, selectNewlyConnectedDeviceThunk } from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE, type Device, TRANSPORT } from '@trezor/connect';
 
 import { type AppState } from 'src/types/suite';
