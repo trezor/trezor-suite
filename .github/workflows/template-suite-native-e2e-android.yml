@@ -153,7 +153,7 @@ jobs:
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           emulator-port: 5554
-          emulator-options: -no-window -gpu swiftshader -accel on -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+          emulator-options: -no-window -gpu lavapipe -accel on -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
           disable-spellchecker: true
           disable-linux-hw-accel: false
           disable-animations: true
