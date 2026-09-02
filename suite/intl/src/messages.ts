@@ -4800,6 +4800,10 @@ export const messages = defineMessages({
         id: 'TR_DEACTIVATE_TOKEN',
         defaultMessage: 'Deactivate token',
     },
+    TR_REMOVE_TOKEN: {
+        id: 'TR_REMOVE_TOKEN',
+        defaultMessage: 'Remove token',
+    },
     TR_DEACTIVATE_TOKEN_HEADING: {
         id: 'TR_DEACTIVATE_TOKEN_HEADING',
         defaultMessage: 'Deactivate {token}',
@@ -4834,10 +4838,10 @@ export const messages = defineMessages({
         id: 'TR_ASSET_CODE_OR_CONTRACT_ID',
         defaultMessage: 'Asset code or contract ID',
     },
-    TR_CONTRACT_ID_UNKNOWN: {
-        id: 'TR_CONTRACT_ID_UNKNOWN',
+    TR_STELLAR_CONTRACT_TOKEN_DETECTED: {
+        id: 'TR_STELLAR_CONTRACT_TOKEN_DETECTED',
         defaultMessage:
-            'Unrecognized contract ID. Enter the asset code and issuer address instead.',
+            'Soroban contract token. It has no issuer and needs no trustline — its balance is read from the contract.',
     },
     TR_INACTIVE_TOKENS_EMPTY: {
         id: 'TR_INACTIVE_TOKENS_EMPTY',
