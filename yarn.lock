@@ -1860,7 +1860,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.29.7, @babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.9, @babel/runtime@npm:^7.28.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.7":
+"@babel/runtime@npm:7.29.7, @babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.9, @babel/runtime@npm:^7.28.6, @babel/runtime@npm:^7.29.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.7":
   version: 7.29.7
   resolution: "@babel/runtime@npm:7.29.7"
   checksum: 10/9883b4951787779fd382b121f22f92966d85f19434841f65fb00b2dfec232107e139683f47c6f252891826ad8ee18317b46c3a0e4819116a9885f47b46d7126a
@@ -1900,6 +1900,51 @@ __metadata:
     "@babel/helper-string-parser": "npm:^7.29.7"
     "@babel/helper-validator-identifier": "npm:^7.29.7"
   checksum: 10/ff2becf0f8b432f0820f286fb9319d7f3819b2d0eb95bc26957fbc6250a3ca0ae3656feb98ecb5f171f9e04b34a4c08f5036447f17459ed7bfc32ff649d9b71e
+  languageName: node
+  linkType: hard
+
+"@base-ui/react@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "@base-ui/react@npm:1.7.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.29.2"
+    "@base-ui/utils": "npm:0.3.2"
+    "@floating-ui/react-dom": "npm:^2.1.9"
+    "@floating-ui/utils": "npm:^0.2.12"
+    use-sync-external-store: "npm:^1.6.0"
+  peerDependencies:
+    "@date-fns/tz": ^1.2.0
+    "@types/react": ^17 || ^18 || ^19
+    date-fns: ^4.0.0
+    react: ^17 || ^18 || ^19
+    react-dom: ^17 || ^18 || ^19
+  peerDependenciesMeta:
+    "@date-fns/tz":
+      optional: true
+    "@types/react":
+      optional: true
+    date-fns:
+      optional: true
+  checksum: 10/244052c254e6fb4495444603379e88e8d7f0121756ec4bf53379e96056ec438d09fafab0a4f5bbd1f4e9e18916fa6558bffded3e78ae7614be203397ca33c982
+  languageName: node
+  linkType: hard
+
+"@base-ui/utils@npm:0.3.2":
+  version: 0.3.2
+  resolution: "@base-ui/utils@npm:0.3.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.29.2"
+    "@floating-ui/utils": "npm:^0.2.12"
+    reselect: "npm:^5.2.0"
+    use-sync-external-store: "npm:^1.6.0"
+  peerDependencies:
+    "@types/react": ^17 || ^18 || ^19
+    react: ^17 || ^18 || ^19
+    react-dom: ^17 || ^18 || ^19
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/4255c133bf1aa1a251474161e33fd0c8f4bb424c5b9f951cd982acd4af412a3bd1c5d87c55e54dfa568134774dd384f34023361053780d4622c62618ffbd0434
   languageName: node
   linkType: hard
 
@@ -3993,34 +4038,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/core@npm:^1.7.4":
-  version: 1.7.4
-  resolution: "@floating-ui/core@npm:1.7.4"
+"@floating-ui/core@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@floating-ui/core@npm:1.8.0"
   dependencies:
-    "@floating-ui/utils": "npm:^0.2.10"
-  checksum: 10/b750f306a99be879f0bce879108c440d5b0a67303d3d8318e153687f6ed1af27908428e27cc955475253bd902b95452a3434bd4f0cf96e66e5b5d0db1aa8ea3c
+    "@floating-ui/utils": "npm:^0.2.12"
+  checksum: 10/762cd5677fd4e82597db2efdd8f1e81d248eac5615d8be755e1bbb5f12a14c56a6bccd735676374d4914db7ccb3f09ec405ec7433e8c48a5521f5d66dc8dd5d6
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:^1.0.1, @floating-ui/dom@npm:^1.7.5":
-  version: 1.7.5
-  resolution: "@floating-ui/dom@npm:1.7.5"
+"@floating-ui/dom@npm:^1.0.1, @floating-ui/dom@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@floating-ui/dom@npm:1.8.0"
   dependencies:
-    "@floating-ui/core": "npm:^1.7.4"
-    "@floating-ui/utils": "npm:^0.2.10"
-  checksum: 10/2764990da82bd5cfe942211480aa82352926326008de93f5f3f19749cc8b171fe05b77526a2652605eadcbeab902c6506f18d60a4c43281f2651802047de100b
+    "@floating-ui/core": "npm:^1.8.0"
+    "@floating-ui/utils": "npm:^0.2.12"
+  checksum: 10/2e7d75fb702875a62795dd8529569f27eff53167768d75476056d6bf824a1ba608177a8877ed9d728eadb5787b4bd07b043fb2c3125b7ad2505a398680b323c0
   languageName: node
   linkType: hard
 
-"@floating-ui/react-dom@npm:^2.1.2, @floating-ui/react-dom@npm:^2.1.7":
-  version: 2.1.7
-  resolution: "@floating-ui/react-dom@npm:2.1.7"
+"@floating-ui/react-dom@npm:^2.1.2, @floating-ui/react-dom@npm:^2.1.7, @floating-ui/react-dom@npm:^2.1.9":
+  version: 2.1.9
+  resolution: "@floating-ui/react-dom@npm:2.1.9"
   dependencies:
-    "@floating-ui/dom": "npm:^1.7.5"
+    "@floating-ui/dom": "npm:^1.8.0"
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 10/870eb2109af3ab09ea0076eb8e0ad307da274978c3dfe28e83422136a7f85cac700f62c37663c75bc25b174d33457c0224d1944e80b9a7ca5ff7b28b8f77b7ab
+  checksum: 10/d775609760291d0f1477a9e23fc3508a35bcda1f36601d74bd3e94b817841b266914fa9964697963cb1ac09b451e51283a2ce25f0c3719d0aca761e327bdee43
   languageName: node
   linkType: hard
 
@@ -4052,10 +4097,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/utils@npm:^0.2.10, @floating-ui/utils@npm:^0.2.8":
-  version: 0.2.10
-  resolution: "@floating-ui/utils@npm:0.2.10"
-  checksum: 10/b635ea865a8be2484b608b7157f5abf9ed439f351011a74b7e988439e2898199a9a8b790f52291e05bdcf119088160dc782d98cff45cc98c5a271bc6f51327ae
+"@floating-ui/utils@npm:^0.2.10, @floating-ui/utils@npm:^0.2.12, @floating-ui/utils@npm:^0.2.8":
+  version: 0.2.12
+  resolution: "@floating-ui/utils@npm:0.2.12"
+  checksum: 10/ec4e176fb22d33d75df752c5acf82dcaacae40ed2d09c1a5015cb4081318fff20260db216678e952344b95f90c6b43214762b69eba7c51556ecd82c35a795cff
   languageName: node
   linkType: hard
 
@@ -8188,159 +8233,200 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rozenite/agent-bridge@npm:1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/agent-bridge@npm:1.13.0"
+"@rozenite/agent-bridge@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/agent-bridge@npm:2.1.0"
   dependencies:
-    "@rozenite/agent-shared": "npm:1.13.0"
-    "@rozenite/plugin-bridge": "npm:1.13.0"
+    "@rozenite/agent-shared": "npm:2.1.0"
+    "@rozenite/plugin-bridge": "npm:2.1.0"
     tslib: "npm:^2.3.0"
   peerDependencies:
     react: ">=17"
-  checksum: 10/d82681fc817acde8438bbcb80c95c919ac1cea0482d6665b59166a17124ad36af0321856602124c586d194ec10a632543f39c0784cd2873cda7503ab05eefd06
+  checksum: 10/d56a05e2a11d73e2461cc7f6b4d4b047ae04949995b5e4689968e828aa5afe356eca41207525aae10799ea96731142c1f22e1d9c988c918559ee4ee7cb56c561
   languageName: node
   linkType: hard
 
-"@rozenite/agent-shared@npm:1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/agent-shared@npm:1.13.0"
+"@rozenite/agent-shared@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/agent-shared@npm:2.1.0"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/c76a8d36d5601c376d15574c0d1a9f793bc5421a852ce4094266bb4279206ecf48198616ecb38f30874b035c300f6160ddfb7225bc7250c62da7c7bdbb42e363
+  checksum: 10/c0523b1b50afb1092e5fc11d58f71535da60cdb663c05fa5845dc0b4e09105f6de1b15e71e50275749afd394189e404c460ae425fc33377a7cb349fe7aa2e835
   languageName: node
   linkType: hard
 
-"@rozenite/metro@npm:^1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/metro@npm:1.13.0"
+"@rozenite/metro@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/metro@npm:2.1.0"
   dependencies:
-    "@rozenite/middleware": "npm:1.13.0"
-    "@rozenite/tools": "npm:1.13.0"
+    "@rozenite/middleware": "npm:2.1.0"
+    "@rozenite/runtime": "npm:2.1.0"
+    "@rozenite/tools": "npm:2.1.0"
     tslib: "npm:^2.3.0"
-  checksum: 10/59c813c5a25208de52aa909ad0c65e2a370bfbdadf9a33767d43d9f325855bebd559d4134adedd72d33b5227997660993045e0eb79fc4188d5e63753f96296f8
+  checksum: 10/f402a6f7ad72c9a8cf3342b49e507bbb258d9fd54295b9a194828e64b81fa2b29b0bdf43c7a5d1a97d301f65ba0496f8eb17edff1dca7351cde34227b9587579
   languageName: node
   linkType: hard
 
-"@rozenite/middleware@npm:1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/middleware@npm:1.13.0"
+"@rozenite/middleware@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/middleware@npm:2.1.0"
   dependencies:
-    "@rozenite/agent-shared": "npm:1.13.0"
-    "@rozenite/runtime": "npm:1.13.0"
-    "@rozenite/tools": "npm:1.13.0"
+    "@rozenite/agent-shared": "npm:2.1.0"
+    "@rozenite/runtime": "npm:2.1.0"
+    "@rozenite/shell": "npm:2.1.0"
+    "@rozenite/tools": "npm:2.1.0"
     express: "npm:^5.1.0"
     semver: "npm:^7.7.2"
     tslib: "npm:^2.3.0"
     ws: "npm:^8.18.3"
-  checksum: 10/bfb9899d01dda889328de462f928ffeb2cc0fa3a6270af496cb16a6010b622c5fbc91453013fb944625d93d37f441652bafcf3ceb632ee2f50a9ef95b25ef167
+  checksum: 10/c4f4d01383d22d6ad8ca11b15d83888ade2a1ffaf662e60ea53aca2c7dbd779c0d2f30f3b385374dd7388683fb1744bf7803bab57588184695929dfb1c22ca37
   languageName: node
   linkType: hard
 
-"@rozenite/mmkv-plugin@npm:^1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/mmkv-plugin@npm:1.13.0"
+"@rozenite/mmkv-plugin@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/mmkv-plugin@npm:2.1.0"
   dependencies:
-    "@rozenite/agent-bridge": "npm:1.13.0"
-    "@rozenite/agent-shared": "npm:1.13.0"
-    "@rozenite/plugin-bridge": "npm:1.13.0"
+    "@rozenite/agent-bridge": "npm:2.1.0"
+    "@rozenite/agent-shared": "npm:2.1.0"
+    "@rozenite/plugin-bridge": "npm:2.1.0"
     nanoevents: "npm:^9.1.0"
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-mmkv: "*"
-  checksum: 10/a1d7df9595a9615fff33f451c16919b1e059a624124f945e72138af828f01ee86078e4e4b1fe880cb2a757edd6139811c026b5b7ca3afaed76b1f438d4cd96cc
+  checksum: 10/4eb2faffced3e8e15fab26e9606b93b33240cbdaeffd7966bf8bd7834ff73c311ca9f50ae3519c3f3daa08617a473a4f25709f385a3e9aea81744362a5ae2521
   languageName: node
   linkType: hard
 
-"@rozenite/network-activity-plugin@npm:^1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/network-activity-plugin@npm:1.13.0"
+"@rozenite/network-activity-plugin@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/network-activity-plugin@npm:2.1.0"
   dependencies:
-    "@rozenite/agent-bridge": "npm:1.13.0"
-    "@rozenite/agent-shared": "npm:1.13.0"
-    "@rozenite/plugin-bridge": "npm:1.13.0"
+    "@rozenite/agent-bridge": "npm:2.1.0"
+    "@rozenite/agent-shared": "npm:2.1.0"
+    "@rozenite/plugin-bridge": "npm:2.1.0"
+    base64-js: "npm:^1.5.1"
     nanoevents: "npm:^9.1.0"
   peerDependencies:
+    expo: "*"
     react-native-nitro-fetch: "*"
     react-native-sse: "*"
   peerDependenciesMeta:
+    expo:
+      optional: true
     react-native-nitro-fetch:
       optional: true
     react-native-sse:
       optional: true
-  checksum: 10/5af70b21c6977016be1abb64c65ba0f9c040a3fbf15abf384f3e15f339bb1705ba39ac84285cad3de1c451ed45e744f3f57f334d7c816c96a2e9a5aec0d700eb
+  checksum: 10/955634da4ea8315290eb3a797966ca5e9389f19ec7a4f0d2bd955f9f76a6f78f9fa3b681f6ecb70aaf9a3e86481229ec2a3a2c334331d44dc93f9589bb5aa323
   languageName: node
   linkType: hard
 
-"@rozenite/performance-monitor-plugin@npm:^1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/performance-monitor-plugin@npm:1.13.0"
+"@rozenite/performance-monitor-plugin@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/performance-monitor-plugin@npm:2.1.0"
   dependencies:
-    "@rozenite/plugin-bridge": "npm:1.13.0"
+    "@rozenite/plugin-bridge": "npm:2.1.0"
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-performance: "*"
-  checksum: 10/0cacafd123b48e0c1f1ccfb803d682ee35466f52f143fd9cc6865e829a2969c07578645390f38ae4d74218e9fb4d09ad229bfb35f469642d87d5d623d465755d
+  checksum: 10/c48e1faa4e45c211f570ddba038d9b9d785835c1611a020781ff698a130f596ecd38b53571841d0d327efeaa8cb5ec21db0a6857dcad822f3b652d024a845224
   languageName: node
   linkType: hard
 
-"@rozenite/plugin-bridge@npm:1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/plugin-bridge@npm:1.13.0"
+"@rozenite/plugin-bridge@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/plugin-bridge@npm:2.1.0"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     react: ">=17"
-  checksum: 10/377da816dd81390f9c8f7036cac349bde0586784e55ef0ebefcb63b8b5fc84d9f397f3a6abf3a374721f5cf02cb075e1bdafac959c66d049846582433512bc06
+  checksum: 10/0e41d4c7024d811fb0bf2dcb40eb07d137b8872774ec666814ff1c57e4978df7d8daf6aa49c90a4b9b035513339111ba715a144e50a4601653f54c66b87acc2b
   languageName: node
   linkType: hard
 
-"@rozenite/react-navigation-plugin@npm:^1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/react-navigation-plugin@npm:1.13.0"
+"@rozenite/react-navigation-plugin@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/react-navigation-plugin@npm:2.1.0"
   dependencies:
-    "@rozenite/agent-bridge": "npm:1.13.0"
-    "@rozenite/agent-shared": "npm:1.13.0"
-    "@rozenite/plugin-bridge": "npm:1.13.0"
+    "@rozenite/agent-bridge": "npm:2.1.0"
+    "@rozenite/agent-shared": "npm:2.1.0"
+    "@rozenite/plugin-bridge": "npm:2.1.0"
+    "@rozenite/ui": "npm:2.1.0"
     fast-deep-equal: "npm:^3.1.3"
   peerDependencies:
     "@react-navigation/core": ^7.12.1
-  checksum: 10/ed5a212f0adc34eb9bb88ca176f77d0a70e420c8c0f68a3e0f42ece8ac3cc629cb55e4530c0f702b5958bb9c0cde518c9779f13a6ea0c550df781ed9f93994c0
+  checksum: 10/3b154a3e0565e8e6ab99b328dac3b710b2e4cc41d1e076636e77c93b81539ab4ccd27c16d791f3fb8c605856e3e10a571e4adab457a157e99579a0f1bc57f17b
   languageName: node
   linkType: hard
 
-"@rozenite/redux-devtools-plugin@npm:^1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/redux-devtools-plugin@npm:1.13.0"
+"@rozenite/redux-devtools-plugin@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/redux-devtools-plugin@npm:2.1.0"
   dependencies:
     "@redux-devtools/instrument": "npm:^2.2.0"
     "@redux-devtools/utils": "npm:^3.1.1"
-    "@rozenite/agent-bridge": "npm:1.13.0"
-    "@rozenite/agent-shared": "npm:1.13.0"
-    "@rozenite/plugin-bridge": "npm:1.13.0"
-    "@rozenite/tools": "npm:1.13.0"
+    "@rozenite/agent-bridge": "npm:2.1.0"
+    "@rozenite/agent-shared": "npm:2.1.0"
+    "@rozenite/plugin-bridge": "npm:2.1.0"
+    "@rozenite/tools": "npm:2.1.0"
     jsan: "npm:^3.1.14"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10/18bbc5cb02593fcae8bc65928892f1bd279643ef2bb58601ed5fe45fae2551025348451da4dac560dd98ba538d3f648d118355cf8abdc986e92038745d9cd122
+  checksum: 10/d03ee0237db2ee1a1aa2efc8a2aea276e6e745113d1c9db018a6dbcab45268b503df55a587180313620707875d6c08a06340ff4129575784b3674c8df17afcd4
   languageName: node
   linkType: hard
 
-"@rozenite/runtime@npm:1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/runtime@npm:1.13.0"
+"@rozenite/runtime@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/runtime@npm:2.1.0"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/78db6aab483ab6bf27fb5c210254b0df15a908910751318f7d3f9314f73fca11209f23d6dc4a0b755df814d28df8c0c2a2d92712280d87812853c87006b28b9c
+  checksum: 10/746d3ba9892da6961211e9fb462288528a7567b6d159b17a7c2e3a0d892671b654573db3db6b2fb840b0454170e034d454015bd6895d748adf3e204f6521c5fb
   languageName: node
   linkType: hard
 
-"@rozenite/tools@npm:1.13.0":
-  version: 1.13.0
-  resolution: "@rozenite/tools@npm:1.13.0"
-  checksum: 10/941fa2dc7d905703451c9ce19d2e1ab5dbd133bb5e2520b9b29dc14e44e9cd06f211c8ae3e51a168b8846caab11e98baaad52e20c1dfcadde14b715e8dd618f7
+"@rozenite/shell@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/shell@npm:2.1.0"
+  dependencies:
+    "@rozenite/ui": "npm:2.1.0"
+    lucide-react: "npm:^0.263.1"
+    react: "npm:19.2.3"
+    react-dom: "npm:19.2.3"
+  checksum: 10/6b12f6ac249b7356afd5e1e0bc4b69205253315d64354399d459f2ac64b3d13cc835fcdef356952a49b835c620fb087d175e081ddc9bc99e323dbde097f27822
+  languageName: node
+  linkType: hard
+
+"@rozenite/tools@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/tools@npm:2.1.0"
+  checksum: 10/2d125c5b9a089d41a07fd9856fb8ae6b8712dd711efd3665323d733f67c9206a054cff26514eae224dd8f07a37b55b80f4428ce963bdd0bfaeda78d1627247b4
+  languageName: node
+  linkType: hard
+
+"@rozenite/ui@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@rozenite/ui@npm:2.1.0"
+  dependencies:
+    "@base-ui/react": "npm:^1.7.0"
+    "@tanstack/react-table": "npm:^8.21.3"
+    class-variance-authority: "npm:^0.7.1"
+    clsx: "npm:^2.1.1"
+    lucide-react: "npm:^0.263.1"
+    react-resizable-panels: "npm:^4.12.2"
+    react-virtuoso: "npm:^4.14.1"
+    tailwind-merge: "npm:^3.3.1"
+    tailwindcss: "npm:4.2.2"
+    tslib: "npm:^2.3.0"
+    tw-animate-css: "npm:^1.4.0"
+  peerDependencies:
+    react: ">=19"
+    react-dom: ">=19"
+  checksum: 10/19278ab8e46cf27cc3e94f16ca93180004de77db58cde3d204429fdb7ebc470f2ee841d3cb094a240541737a23f348aa6b9f25888b56f87b0854806734b078f7
   languageName: node
   linkType: hard
 
@@ -11925,11 +12011,11 @@ __metadata:
     "@react-navigation/bottom-tabs": "npm:7.13.0"
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
-    "@rozenite/metro": "npm:^1.13.0"
-    "@rozenite/mmkv-plugin": "npm:^1.13.0"
-    "@rozenite/network-activity-plugin": "npm:^1.13.0"
-    "@rozenite/performance-monitor-plugin": "npm:^1.13.0"
-    "@rozenite/redux-devtools-plugin": "npm:^1.13.0"
+    "@rozenite/metro": "npm:^2.1.0"
+    "@rozenite/mmkv-plugin": "npm:^2.1.0"
+    "@rozenite/network-activity-plugin": "npm:^2.1.0"
+    "@rozenite/performance-monitor-plugin": "npm:^2.1.0"
+    "@rozenite/redux-devtools-plugin": "npm:^2.1.0"
     "@sentry/react-native": "npm:8.22.0"
     "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.6.2"
@@ -14016,7 +14102,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@react-navigation/routers": "npm:^7.5.3"
-    "@rozenite/react-navigation-plugin": "npm:^1.13.0"
+    "@rozenite/react-navigation-plugin": "npm:^2.1.0"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -14234,7 +14320,7 @@ __metadata:
   resolution: "@suite-native/state@workspace:suite-native/state"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@rozenite/redux-devtools-plugin": "npm:^1.13.0"
+    "@rozenite/redux-devtools-plugin": "npm:^2.1.0"
     "@suite-common/address": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/bip329": "workspace:*"
@@ -16428,6 +16514,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/react-table@npm:^8.21.3":
+  version: 8.21.3
+  resolution: "@tanstack/react-table@npm:8.21.3"
+  dependencies:
+    "@tanstack/table-core": "npm:8.21.3"
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 10/a32217ebe64d24e71dea6a6742bc288dcabf389657b16805a1ab3f347d3dca8262759c45c604a1f65bd97925d5cbdfb66d1be7637100a12eb5b279bdd420962d
+  languageName: node
+  linkType: hard
+
 "@tanstack/react-virtual@npm:^3.13.9":
   version: 3.13.9
   resolution: "@tanstack/react-virtual@npm:3.13.9"
@@ -16437,6 +16535,13 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: 10/bb7131a3e0b629939f880f1d36b39ed4d1ba4c0fa47877c2edb6f1884a871a661fb4aefab9795ef3bea8dc031b826cad167ab1729fef4bdba976bc0bcb41caa2
+  languageName: node
+  linkType: hard
+
+"@tanstack/table-core@npm:8.21.3":
+  version: 8.21.3
+  resolution: "@tanstack/table-core@npm:8.21.3"
+  checksum: 10/aa05e5f80110f0f56d66161e950668ea6ef3e2ea4f3a2ccd5d5980b39b4feea987245b20531aee2c6743e6edd12c0361503413b63090c807f88a61b19bfd04f3
   languageName: node
   linkType: hard
 
@@ -23373,6 +23478,15 @@ __metadata:
   version: 2.2.0
   resolution: "cjs-module-lexer@npm:2.2.0"
   checksum: 10/fc8eb5c1919504366d8260a150d93c4e857740e770467dc59ca0cc34de4b66c93075559a5af65618f359187866b1be40e036f4e1a1bab2f1e06001c216415f74
+  languageName: node
+  linkType: hard
+
+"class-variance-authority@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "class-variance-authority@npm:0.7.1"
+  dependencies:
+    clsx: "npm:^2.1.1"
+  checksum: 10/27a1face3f5ee88caa7813743461977aef5110830dc8e8960e7c9570598b37ffb8b2760b4e5d738dc827b0eb9058ddd204e9002e9af0ef39b6851f6ea9aa82c1
   languageName: node
   linkType: hard
 
@@ -34964,6 +35078,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lucide-react@npm:^0.263.1":
+  version: 0.263.1
+  resolution: "lucide-react@npm:0.263.1"
+  peerDependencies:
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0
+  checksum: 10/18fd79c3aa8cd2191319b5e29495516313f5e1342f9cb24495d9918e9b9b2454c774016886cf09005cca4418d796fc0bd8100d0646cb46e76c5929223ee1d388
+  languageName: node
+  linkType: hard
+
 "lunr@npm:^2.3.9":
   version: 2.3.9
   resolution: "lunr@npm:2.3.9"
@@ -41392,6 +41515,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-resizable-panels@npm:^4.12.2":
+  version: 4.12.3
+  resolution: "react-resizable-panels@npm:4.12.3"
+  peerDependencies:
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+  checksum: 10/8731e30a4cba5ef2127ba297b55cea7ce5b6f1338bad60425e503ef49ebada62563815d90017b2f6b9fd5488890947b3a0dffd574aacc38473c5bd5ec0d0567e
+  languageName: node
+  linkType: hard
+
 "react-select@npm:^5.10.2":
   version: 5.10.2
   resolution: "react-select@npm:5.10.2"
@@ -41528,6 +41661,16 @@ __metadata:
     react: "*"
     react-dom: "*"
   checksum: 10/0b3630ac9a02b755cdfa205d0a0dbee0c620a4b0fcfb00b5cceb4f38fdf928fca3c6d924671e210d89b34aafeda222f7500eb4ceb9883baf2b9ce0181f4fcd82
+  languageName: node
+  linkType: hard
+
+"react-virtuoso@npm:^4.14.1":
+  version: 4.18.12
+  resolution: "react-virtuoso@npm:4.18.12"
+  peerDependencies:
+    react: ">=16 || >=17 || >= 18 || >= 19"
+    react-dom: ">=16 || >=17 || >= 18 || >=19"
+  checksum: 10/b619bdadcbe1eae5c043b5524f76424d014848be763cc35cde237e5712fa020efcb4ff4076e4c126e07e5576379213c560d73ca2161c1f46fb3d54674d372746
   languageName: node
   linkType: hard
 
@@ -44968,6 +45111,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tailwind-merge@npm:^3.3.1":
+  version: 3.6.0
+  resolution: "tailwind-merge@npm:3.6.0"
+  checksum: 10/1da88698b6d878c391ab83064346e4b5b038d1b519d90825044df4b096971522c12253c7d6ab586c9da04e2039ba46573696138ea3d19c685d3c236f1f892899
+  languageName: node
+  linkType: hard
+
+"tailwindcss@npm:4.2.2":
+  version: 4.2.2
+  resolution: "tailwindcss@npm:4.2.2"
+  checksum: 10/f468b441d32b7278e7e2639b0f95f59fb8a52678e8c3a027f636ec51006ed32f68aeb2e66eaf81b958b234745d2ccae4757e4ba5dda23c5e158065060f90aa78
+  languageName: node
+  linkType: hard
+
 "tailwindcss@npm:^3.4.10":
   version: 3.4.10
   resolution: "tailwindcss@npm:3.4.10"
@@ -45913,6 +46070,13 @@ __metadata:
   dependencies:
     safe-buffer: "npm:^5.0.1"
   checksum: 10/7f0d9ed5c22404072b2ae8edc45c071772affd2ed14a74f03b4e71b4dd1a14c3714d85aed64abcaaee5fec2efc79002ba81155c708f4df65821b444abb0cfade
+  languageName: node
+  linkType: hard
+
+"tw-animate-css@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "tw-animate-css@npm:1.4.0"
+  checksum: 10/9d46c71b624bc7f9cf7a91c0ab3a04cfb22ba605a690961eea35689e368a8721add12815f59aa0fbf7092374acb24552f281351a83bf8b25414c52f4888f94ad
   languageName: node
   linkType: hard
 
