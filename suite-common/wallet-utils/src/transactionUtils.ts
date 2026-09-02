@@ -837,6 +837,13 @@ const NFT_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
 export const isNftToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
     NFT_TOKEN_STANDARDS.has(token.standard);
 
+/**
+ * Soroban contract tokens are read-only in Suite — the device cannot sign the
+ * `invokeHostFunction` operation their transfers need, so they cannot be spent.
+ */
+export const isReadOnlyToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
+    token.standard === 'STELLAR-CONTRACT';
+
 export const isNftTokenTransfer = <T extends Pick<TokenTransfer, 'standard'>>(transfer: T) =>
     transfer.standard && NFT_TOKEN_STANDARDS.has(transfer.standard);
 

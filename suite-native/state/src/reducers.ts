@@ -32,6 +32,8 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
+    stablecoinYieldReducer,
+    stellarContractTokensReducer,
     walletSettingsPersistedWhitelist,
     yieldReducer,
 } from '@suite-common/wallet-core';
@@ -280,11 +282,12 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,
+        stellarContractTokens: stellarContractTokensReducer,
     });
 
     const walletPersistedReducer = preparePersistReducer({
         reducer: walletReducers,
-        persistedKeys: ['accounts', 'transactions'],
+        persistedKeys: ['accounts', 'transactions', 'stellarContractTokens'],
         key: 'wallet',
         version: 4,
         migrations: {
