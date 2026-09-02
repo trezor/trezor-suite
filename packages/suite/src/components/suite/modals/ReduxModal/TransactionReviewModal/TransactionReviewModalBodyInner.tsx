@@ -7,7 +7,6 @@ import { selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
     type SerializedTx,
     selectIsTxOutputInternal,
@@ -117,7 +116,6 @@ export const TransactionReviewModalBodyInner = ({
     const { options } = precomposedForm;
     const { serializedTx } = txInfoState;
     const routeName = useSelector(selectRouteName);
-    const tradingToken = useSelector(selectTradingComposedTransactionInfo).composed?.token;
 
     const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
     // A contract call's single "address" row is the contract, not a payment recipient, so the
@@ -219,7 +217,7 @@ export const TransactionReviewModalBodyInner = ({
             symbol,
             stakeType,
             precomposedForm,
-            tradingToken,
+            approvalToken: precomposedTx.token,
             routeName,
             isBumpFeeRbfAction,
             isCancelRbfAction,
