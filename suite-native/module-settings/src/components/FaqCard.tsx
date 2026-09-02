@@ -1,7 +1,15 @@
 import { type ComponentProps, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccordionList, Box, BulletListItem, Card, Text, VStack } from '@suite-native/atoms';
+import {
+    AccordionList,
+    Box,
+    BulletList,
+    BulletListItem,
+    Card,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -48,54 +56,55 @@ const getAndroidFaqItems = (coinLabel: string) => [
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.3.question" />,
         content: (
-            <Box>
+            <VStack spacing="sp4">
                 <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.android.3.answer.subtitle" />
-
-                <Box marginTop="sp4">
+                <Box>
                     <Text variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.cabled.title" />
                     </Text>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.usbEnabled.3.answer.0" />
-                    </BulletListItem>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.usbEnabled.3.answer.1" />
-                    </BulletListItem>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.usbEnabled.3.answer.2" />
-                    </BulletListItem>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.usbEnabled.3.answer.3" />
-                    </BulletListItem>
+                    <BulletList textVariant="body-xs">
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.usbEnabled.3.answer.0" />
+                        </BulletListItem>
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.usbEnabled.3.answer.1" />
+                        </BulletListItem>
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.usbEnabled.3.answer.2" />
+                        </BulletListItem>
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.usbEnabled.3.answer.3" />
+                        </BulletListItem>
+                    </BulletList>
                 </Box>
-
-                <Box marginVertical="sp4">
+                <Box>
                     <Text variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.title" />
                     </Text>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.0" />
-                    </BulletListItem>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.1" />
-                    </BulletListItem>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.2" />
-                    </BulletListItem>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.3" />
-                    </BulletListItem>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.4" />
-                    </BulletListItem>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.5" />
-                    </BulletListItem>
-                    <BulletListItem variant="body-xs">
-                        <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.6" />
-                    </BulletListItem>
+                    <BulletList textVariant="body-xs">
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.0" />
+                        </BulletListItem>
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.1" />
+                        </BulletListItem>
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.2" />
+                        </BulletListItem>
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.3" />
+                        </BulletListItem>
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.4" />
+                        </BulletListItem>
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.5" />
+                        </BulletListItem>
+                        <BulletListItem>
+                            <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.6" />
+                        </BulletListItem>
+                    </BulletList>
                 </Box>
-
                 <AccordionContentText
                     translationKey="moduleSettings.faq.bluetoothEnabled.android.3.answer.footer"
                     values={{
@@ -109,29 +118,29 @@ const getAndroidFaqItems = (coinLabel: string) => [
                         ),
                     }}
                 />
-            </Box>
+            </VStack>
         ),
     },
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.4.question" />,
         content: (
-            <Box style={{ position: 'relative' }}>
-                <BulletListItem variant="body-xs">
+            <BulletList textVariant="body-xs">
+                <BulletListItem>
                     <Translation id="moduleSettings.faq.usbEnabled.4.answer.0" />
                 </BulletListItem>
-                <BulletListItem variant="body-xs">
+                <BulletListItem>
                     <Translation id="moduleSettings.faq.usbEnabled.4.answer.1" />
                 </BulletListItem>
-                <BulletListItem variant="body-xs">
+                <BulletListItem>
                     <Translation id="moduleSettings.faq.usbEnabled.4.answer.2" />
                 </BulletListItem>
-                <BulletListItem variant="body-xs">
+                <BulletListItem>
                     <Translation id="moduleSettings.faq.usbEnabled.4.answer.3" />
                 </BulletListItem>
-                <BulletListItem variant="body-xs">
+                <BulletListItem>
                     <Translation id="moduleSettings.faq.bluetoothEnabled.android.4.answer.4" />
                 </BulletListItem>
-            </Box>
+            </BulletList>
         ),
     },
     {
@@ -182,33 +191,31 @@ const getIosFaqItems = (coinLabel: string) => [
     {
         title: <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.question" />,
         content: (
-            <Box>
-                <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.ios.3.answer.subtitle" />
-
-                <Box marginVertical="sp4">
-                    <BulletListItem variant="body-xs">
+            <VStack spacing="sp4">
+                <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.ios.5.answer" />
+                <BulletList textVariant="body-xs">
+                    <BulletListItem>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.0" />
                     </BulletListItem>
-                    <BulletListItem variant="body-xs">
+                    <BulletListItem>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.1" />
                     </BulletListItem>
-                    <BulletListItem variant="body-xs">
+                    <BulletListItem>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.2" />
                     </BulletListItem>
-                    <BulletListItem variant="body-xs">
+                    <BulletListItem>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.3" />
                     </BulletListItem>
-                    <BulletListItem variant="body-xs">
+                    <BulletListItem>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.4" />
                     </BulletListItem>
-                    <BulletListItem variant="body-xs">
+                    <BulletListItem>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.5" />
                     </BulletListItem>
-                    <BulletListItem variant="body-xs">
+                    <BulletListItem>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.6" />
                     </BulletListItem>
-                </Box>
-
+                </BulletList>
                 <AccordionContentText
                     translationKey="moduleSettings.faq.bluetoothEnabled.ios.3.answer.footer"
                     values={{
@@ -222,7 +229,7 @@ const getIosFaqItems = (coinLabel: string) => [
                         ),
                     }}
                 />
-            </Box>
+            </VStack>
         ),
     },
     {

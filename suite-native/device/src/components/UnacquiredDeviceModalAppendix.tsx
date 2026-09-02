@@ -1,13 +1,13 @@
-import { BulletListItem, VStack } from '@suite-native/atoms';
+import { BulletList, BulletListItem } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const UnacquiredDeviceModalAppendix = () => (
-    <VStack>
-        <BulletListItem color="contentSecondary">
+    <BulletList textColor="contentSecondary" spacing="sp8">
+        <BulletListItem>
             <Translation id="moduleDevice.unacquiredDeviceModal.appendix.bullet1" />
         </BulletListItem>
-        <BulletListItem color="contentSecondary">
+        <BulletListItem>
             <Translation id="moduleDevice.unacquiredDeviceModal.appendix.bullet2" />
         </BulletListItem>
-    </VStack>
+    </BulletList>
 );
