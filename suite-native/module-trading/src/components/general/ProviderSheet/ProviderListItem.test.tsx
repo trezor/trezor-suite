@@ -53,7 +53,7 @@ describe('ProviderListItem', () => {
         expect(
             queryByText(getTranslation('moduleTrading.providerListItem.centralizedExchange')),
         ).toBeNull();
-        expect(getByText('0.00100017 BTC')).toBeOnTheScreen();
+        expect(getByText('0.00100016 BTC')).toBeOnTheScreen();
         expect(queryByText('€9,998.32 / 1 BTC')).toBeNull();
     });
 

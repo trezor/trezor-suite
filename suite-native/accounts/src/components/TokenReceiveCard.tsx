@@ -10,7 +10,11 @@ import {
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { Badge, Box, ErrorMessage, HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CompactTokenAmountFormatter,
+    TokenToFiatAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
@@ -99,11 +103,10 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                         contract={contract}
                         symbol={symbol}
                     />
-                    <TokenAmountFormatter
-                        value={token.balance ?? '0'}
+                    <CompactTokenAmountFormatter
+                        value={asDecimalTokenAmount(token.balance ?? '0')}
                         tokenSymbol={token.symbol}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
+                        tokenDecimals={token.decimals}
                     />
                 </Box>
             </Box>

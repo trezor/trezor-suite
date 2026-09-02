@@ -1,11 +1,13 @@
 import { type ReactNode } from 'react';
 
-import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Card, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CompactCryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+} from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -50,10 +52,9 @@ export const StakingManagementPendingItem = ({
                     </Text>
                     <HStack spacing="sp12" alignItems="center">
                         <VStack style={applyStyle(amountsStyle)} spacing="sp2">
-                            <CryptoAmountFormatter
+                            <CompactCryptoAmountFormatter
                                 value={amount}
                                 symbol={symbol}
-                                decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
                                 color="contentPrimary"
                                 variant="body-sm"
                             />

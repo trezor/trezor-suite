@@ -60,7 +60,7 @@ describe('ProviderListItemAmount', () => {
     it('should render the received amount when the user entered the "from" amount', async () => {
         const { getByText } = await renderProviderListItemAmount(mercuryoApplePayBuyQuote);
 
-        expect(getByText('0.00100017 BTC')).toBeOnTheScreen();
+        expect(getByText('0.00100016 BTC')).toBeOnTheScreen();
     });
 
     it('should render the fiat amount when the user requested a crypto ("to") amount for buy', async () => {

@@ -1,11 +1,13 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { selectAccountLabel } from '@suite-native/accounts';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CompactCryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+} from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
@@ -118,7 +120,7 @@ export const AccountListBaseItem = ({
                         {/* If no info is provided, display empty Box to maintain layout consistency */}
                         {info ? <AccountListLabel label={label} flex={1} /> : <Box />}
                         {shouldDisplayBalance && (
-                            <CryptoAmountFormatter
+                            <CompactCryptoAmountFormatter
                                 value={cryptoValue}
                                 symbol={account.symbol}
                                 variant="body-md"
@@ -130,7 +132,6 @@ export const AccountListBaseItem = ({
                                     { coinLabel },
                                 )}
                                 isBalance={false}
-                                decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
                             />
                         )}
                     </HStack>

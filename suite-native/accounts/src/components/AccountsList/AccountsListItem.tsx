@@ -7,7 +7,7 @@ import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
-    CryptoAmountFormatter,
+    CompactCryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
@@ -157,7 +157,7 @@ const AccountsListItemComponent = ({
             }
             secondaryValue={
                 isFailed ? undefined : (
-                    <CryptoAmountFormatter
+                    <CompactCryptoAmountFormatter
                         value={account.formattedBalance}
                         symbol={account.symbol}
                         numberOfLines={1}

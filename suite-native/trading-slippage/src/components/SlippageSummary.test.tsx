@@ -81,21 +81,21 @@ describe('SlippageSummary', () => {
     it('should calculate deduction and minimum receive from slippage', async () => {
         const { getByText } = await renderSlippageSummary({ slippage: '1' });
 
-        expect(getByText('-0.00000836 BTC')).toBeOnTheScreen();
+        expect(getByText('-0.00000835 BTC')).toBeOnTheScreen();
         expect(getByText('0.00082718 BTC')).toBeOnTheScreen();
     });
 
     it('should use swapSlippage from the quote when form value is empty', async () => {
         const { getByText } = await renderSlippageSummary({ slippage: '' });
 
-        expect(getByText('-0.00000836 BTC')).toBeOnTheScreen();
+        expect(getByText('-0.00000835 BTC')).toBeOnTheScreen();
         expect(getByText('0.00082718 BTC')).toBeOnTheScreen();
     });
 
     it('should recalculate values when slippage changes', async () => {
         const { getByText } = await renderSlippageSummary({ slippage: '3' });
 
-        expect(getByText('-0.00002507 BTC')).toBeOnTheScreen();
+        expect(getByText('-0.00002506 BTC')).toBeOnTheScreen();
         expect(getByText('0.00081047 BTC')).toBeOnTheScreen();
     });
 

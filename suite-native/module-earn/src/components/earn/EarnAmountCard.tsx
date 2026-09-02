@@ -5,7 +5,10 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { type AccountKey } from '@suite-common/wallet-types';
 import { AccountLabel, AccountTypeBadge, AccountsListItemBase } from '@suite-native/accounts';
 import { Card, ErrorMessage } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CompactCryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+} from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -48,7 +51,7 @@ export const EarnAmountCard = ({ accountKey, label, cryptoAmount }: EarnAmountCa
                 title={label ?? <AccountLabel account={account} />}
                 titleBadge={<AccountTypeBadge accountKey={accountKey} />}
                 mainValue={
-                    <CryptoAmountFormatter
+                    <CompactCryptoAmountFormatter
                         value={amount}
                         symbol={account.symbol}
                         variant="body-md-strong"

@@ -2,7 +2,12 @@ import { invariant } from '@suite-common/suite-utils';
 import { type TradeableAssetBalance, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
-import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
+import {
+    BaseCurrencyAmountFormatter,
+    CompactCryptoAmountFormatter,
+    CompactTokenAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { AssetListItem } from '../AssetListItem';
@@ -18,7 +23,7 @@ export const TradeableAssetListItem = ({
     balance,
     onPress,
 }: TradeableAssetListItemProps) => {
-    const { symbol, name, contractAddress, cryptoId } = asset;
+    const { symbol, name, contractAddress, cryptoId, decimals } = asset;
 
     const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
     invariant(networkSymbol, `Network symbol not found for cryptoId: ${cryptoId}`);
@@ -30,14 +35,26 @@ export const TradeableAssetListItem = ({
                 variant="body-md"
                 numberOfLines={1}
             />
-            <CryptoAmountFormatter
-                value={balance.cryptoAmount}
-                symbol={contractAddress ? (symbol as TokenSymbol) : networkSymbol}
-                variant="body-sm"
-                color="contentSecondary"
-                numberOfLines={1}
-                adjustsFontSizeToFit
-            />
+            {contractAddress ? (
+                <CompactTokenAmountFormatter
+                    value={asDecimalTokenAmount(balance.cryptoAmount)}
+                    tokenSymbol={symbol as TokenSymbol}
+                    tokenDecimals={decimals}
+                    variant="body-sm"
+                    color="contentSecondary"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                />
+            ) : (
+                <CompactCryptoAmountFormatter
+                    value={balance.cryptoAmount}
+                    symbol={networkSymbol}
+                    variant="body-sm"
+                    color="contentSecondary"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                />
+            )}
         </VStack>
     ) : undefined;
 

@@ -12,7 +12,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -26,6 +25,7 @@
         "@trezor/protobuf": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-localization": "~57.0.1",
         "react": "19.2.3",

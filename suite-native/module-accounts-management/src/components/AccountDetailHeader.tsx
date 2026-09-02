@@ -27,6 +27,7 @@ import {
 import {
     type TokensRootState,
     selectAccountTokenBalance,
+    selectAccountTokenDecimals,
     selectAccountTokenSymbol,
 } from '@suite-native/tokens';
 
@@ -41,10 +42,12 @@ type AccountBalanceProps = {
 const CryptoBalance = ({
     symbol,
     tokenSymbol,
+    tokenDecimals,
     totalCryptoBalance,
 }: {
     symbol: NetworkSymbol;
     tokenSymbol?: TokenSymbol | null;
+    tokenDecimals?: number | null;
     totalCryptoBalance: string | null;
 }) => {
     const selectedPoint = useAtomValue(accountDetailGraphAtoms.selectedPointAtom);
@@ -52,7 +55,12 @@ const CryptoBalance = ({
 
     return (
         <DiscreetTextTrigger>
-            <AccountDetailCryptoValue symbol={symbol} tokenSymbol={tokenSymbol} value={value} />
+            <AccountDetailCryptoValue
+                symbol={symbol}
+                tokenSymbol={tokenSymbol}
+                tokenDecimals={tokenDecimals}
+                value={value}
+            />
         </DiscreetTextTrigger>
     );
 };
@@ -68,6 +76,9 @@ export const AccountDetailHeader = ({
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account?.symbol);
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenAddress),
+    );
+    const tokenDecimals = useSelector((state: TokensRootState) =>
+        selectAccountTokenDecimals(state, accountKey, tokenAddress),
     );
     const isHistoryEnabledAccount = useSelector((state: AccountsRootState) =>
         selectIsHistoryEnabledAccountByAccountKey(state, accountKey),
@@ -95,6 +106,7 @@ export const AccountDetailHeader = ({
                 <CryptoBalance
                     symbol={account.symbol}
                     tokenSymbol={tokenSymbol}
+                    tokenDecimals={tokenDecimals}
                     totalCryptoBalance={totalCryptoBalance}
                 />
             )}

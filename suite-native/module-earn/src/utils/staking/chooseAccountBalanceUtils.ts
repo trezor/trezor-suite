@@ -16,6 +16,7 @@ export type ChooseAccountBalanceData =
           type: 'token';
           value: string;
           tokenContractAddress: ChooseAccountTokenBalance['tokenContractAddress'];
+          tokenDecimals?: ChooseAccountTokenBalance['tokenDecimals'];
           tokenSymbol: ChooseAccountTokenBalance['tokenSymbol'];
       };
 
@@ -48,6 +49,7 @@ export const getChooseAccountBalanceData = (
         tokenContractAddress: token
             ? toTokenAddress(token.contract)
             : tokenBalance.tokenContractAddress,
+        tokenDecimals: token?.decimals ?? tokenBalance.tokenDecimals,
         tokenSymbol: tokenBalance.tokenSymbol,
     };
 };

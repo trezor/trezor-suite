@@ -4,15 +4,15 @@ import { type Account } from '@suite-common/wallet-types';
 import { AccountLabel } from '@suite-native/accounts';
 import { Box, Card, PressableOpacity, VStack } from '@suite-native/atoms';
 import {
-    CryptoAmountFormatter,
+    CompactCryptoAmountFormatter,
+    CompactTokenAmountFormatter,
     CryptoToFiatAmountFormatter,
-    TokenAmountFormatter,
     TokenToFiatAmountFormatter,
+    asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { CRYPTO_BALANCE_DECIMALS } from '../../constants';
 import { type ChooseAccountBalanceData } from '../../utils/staking/chooseAccountBalanceUtils';
 
 const itemCardStyle = prepareNativeStyle(utils => ({
@@ -70,10 +70,9 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
                 <VStack spacing="sp2" style={applyStyle(valuesStyle)}>
                     {balanceData.type === 'account' ? (
                         <>
-                            <CryptoAmountFormatter
+                            <CompactCryptoAmountFormatter
                                 value={balanceData.value}
                                 symbol={account.symbol}
-                                decimals={CRYPTO_BALANCE_DECIMALS}
                                 variant="body-md"
                                 color="contentPrimary"
                                 numberOfLines={1}
@@ -90,9 +89,10 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
                         </>
                     ) : (
                         <>
-                            <TokenAmountFormatter
-                                value={balanceData.value}
+                            <CompactTokenAmountFormatter
+                                value={asDecimalTokenAmount(balanceData.value)}
                                 tokenSymbol={balanceData.tokenSymbol}
+                                tokenDecimals={balanceData.tokenDecimals}
                                 variant="body-md"
                                 color="contentPrimary"
                                 numberOfLines={1}

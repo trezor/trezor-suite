@@ -5,6 +5,9 @@ export * from './makeFormatter';
 export * from './utils/sign';
 export * from './utils/convert';
 export * from './utils/clearAddressPrefix';
-export * from './utils/getCompactAmount';
-export { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from './formatters/prepareCryptoAmountFormatter';
+export {
+    BASE_CRYPTO_MAX_DISPLAYED_DECIMALS,
+    type CryptoAmountFormatterFormatStyle,
+} from './formatters/prepareCryptoAmountFormatter';
+export { getCompactAmount } from './utils/getCompactAmount';
 export { AddressFormatter, type AddressFormat } from './formatters/AddressFormatter';

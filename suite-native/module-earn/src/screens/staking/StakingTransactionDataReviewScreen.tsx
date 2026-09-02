@@ -13,7 +13,7 @@ import {
     useConfirmOnTrezorController,
 } from '@suite-native/confirm-on-trezor';
 import { FollowDeviceScreenContent } from '@suite-native/device';
-import { CryptoAmountFormatter } from '@suite-native/formatters';
+import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -240,7 +240,7 @@ export const StakingTransactionDataReviewScreen = ({
             accountLabel={accountLabel}
             accountSymbol={account.symbol}
             amount={
-                <CryptoAmountFormatter
+                <ExactCryptoAmountFormatter
                     value={pendingAmountInBaseUnits}
                     symbol={account.symbol}
                     color="contentPrimary"
