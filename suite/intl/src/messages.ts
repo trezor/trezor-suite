@@ -7676,6 +7676,10 @@ export const messages = defineMessages({
         id: 'TR_EXPLORER_TOKEN',
         defaultMessage: 'Token',
     },
+    TR_EXPLORER_CONTRACT: {
+        id: 'TR_EXPLORER_CONTRACT',
+        defaultMessage: 'Contract',
+    },
     TR_EXPLORER_SET_DEFAULT: {
         id: 'TR_EXPLORER_SET_DEFAULT',
         defaultMessage: 'Set to default',
