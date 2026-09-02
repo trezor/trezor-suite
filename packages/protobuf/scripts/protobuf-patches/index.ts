@@ -211,6 +211,9 @@ export const TYPE_PATCH = {
     'StellarInt256Parts.hi_lo': UINT_TYPE,
     'StellarInt256Parts.lo_hi': UINT_TYPE,
     'StellarInt256Parts.lo_lo': UINT_TYPE,
+    // A Soroban auth nonce is a random sint64, so it routinely exceeds Number.MAX_SAFE_INTEGER.
+    'StellarSorobanAddressCredentials.nonce': SINT_TYPE,
+    'StellarSorobanAuthorizationWithAddress.nonce': SINT_TYPE,
     'TezosContractID.tag': 'number',
     'TezosContractID.hash': 'Uint8Array',
     'TezosRevealOp.source': 'Uint8Array',
