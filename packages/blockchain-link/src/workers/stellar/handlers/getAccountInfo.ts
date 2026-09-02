@@ -112,24 +112,32 @@ export const getAccountInfo = async (
     // Soroban contract (type-C / SEP-41) tokens.
     // Horizon cannot see these, so they are read from a Stellar RPC node.
     // Tokens are self-describing: balance + metadata (decimals/symbol/name) are
-    // read from each contract's SEP-41 interface. Discovery is a curated
-    // allow-list (no on-chain registry of contract-token holdings exists).
+    // read from each contract's SEP-41 interface. There is no on-chain registry of
+    // contract-token holdings, so the contracts to read are a curated list plus
+    // whatever the user added themselves.
     // Enabled on mainnet only (the PoC RPC endpoint is mainnet).
-    if (!isTestnet && STELLAR_CONTRACT_TOKENS.length > 0) {
+    const watchedContracts = payload.stellarContractTokens ?? [];
+    const contractsToRead = [
+        ...new Set([...STELLAR_CONTRACT_TOKENS.map(token => token.contract), ...watchedContracts]),
+    ];
+
+    if (!isTestnet && contractsToRead.length > 0) {
         try {
             const sep41Tokens = await readSep41Tokens(
                 STELLAR_SOROBAN_RPC_URL,
                 payload.descriptor,
-                STELLAR_CONTRACT_TOKENS.map(token => token.contract),
+                contractsToRead,
             );
             const fallbackByContract = new Map(
                 STELLAR_CONTRACT_TOKENS.map(token => [token.contract, token]),
             );
+            const watched = new Set(watchedContracts);
 
             const contractTokens: TokenInfo[] = sep41Tokens
-                // Contract tokens have no trustline opt-in, so only surface the ones the
-                // account actually holds (non-zero) rather than the whole allow-list.
-                .filter(token => token.balance !== '0')
+                // The curated list is only a discovery hint, so surface just the ones the account
+                // actually holds. A contract the user added stays visible at a zero balance, the
+                // way an opted-in trustline does.
+                .filter(token => token.balance !== '0' || watched.has(token.contract))
                 .map(token => {
                     // Prefer on-chain SEP-41 metadata; fall back to the curated entry.
                     const fallback = fallbackByContract.get(token.contract);

@@ -47,6 +47,10 @@ import {
     type WalletSettingsRootState,
     selectBitcoinAmountUnit,
 } from '../settings/walletSettingsReducer';
+import {
+    type StellarContractTokensRootState,
+    selectStellarContractTokens,
+} from '../token/stellarContractTokensSlice';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import {
@@ -150,6 +154,7 @@ type FetchAndUpdateAccountThunkParams = {
 export type FetchAndUpdateAccountThunkState = AccountsRootState &
     BlockchainRootState &
     DeviceRootState &
+    StellarContractTokensRootState &
     TokenDefinitionsRootState &
     TransactionsRootState &
     WalletSettingsRootState;
@@ -180,6 +185,12 @@ export const fetchAndUpdateAccountThunk = createThunk<
             account.networkType === 'solana'
                 ? account.tokens?.flatMap(t => t.accounts ?? []).map(a => a.publicKey)
                 : undefined;
+        // Soroban contract tokens are invisible to Horizon and have no trustline to discover
+        // them by, so the account only learns about the ones the user added themselves.
+        const stellarContractTokens =
+            account.networkType === 'stellar'
+                ? selectStellarContractTokens(getState(), account.key)
+                : undefined;
         const gap =
             account.networkType === 'bitcoin'
                 ? selectGapLimit(getState(), account.symbol)
@@ -192,6 +203,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
             details: account.networkType === 'solana' ? 'txids' : 'basic',
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
+            stellarContractTokens,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             privatePending,
             gap,
@@ -226,6 +238,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
             page: 1, // useful for every network except ripple and stellar
             pageSize,
             suppressBackupWarning: true,
+            stellarContractTokens,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             privatePending,
             gap:
