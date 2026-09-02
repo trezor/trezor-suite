@@ -11,6 +11,8 @@ import {
     type xdr,
 } from '@stellar/stellar-sdk';
 
+import { resolveAfter } from '@trezor/utils';
+
 /**
  * Soroban (Stellar) JSON-RPC helpers for reading SEP-41 contract-token balances.
  *
@@ -26,7 +28,7 @@ import {
 // all-zero placeholder rather than depend on a real funded account.
 const SIMULATION_SOURCE_ACCOUNT = StrKey.encodeEd25519PublicKey(Buffer.alloc(32));
 
-// Upper bound for reading the whole contract-token allow-list from the RPC.
+// Upper bound for reading one contract token from the RPC.
 const SEP41_READ_TIMEOUT_MS = 10_000;
 
 export type SorobanServer = rpc.Server;
@@ -81,8 +83,11 @@ export const getContractTokenBalance = async (
         networkPassphrase,
     );
 
-    // SEP-41 `balance` returns an i128 -> scValToNative yields a bigint.
-    return balance == null ? undefined : (balance as bigint).toString();
+    // SEP-41 `balance` returns an i128 -> scValToNative yields a bigint. A watched contract can
+    // be anything the user pasted, so a non-numeric return value must not become a balance.
+    return typeof balance === 'bigint' || typeof balance === 'number'
+        ? balance.toString()
+        : undefined;
 };
 
 /** SEP-41 descriptive metadata, read from the token contract itself. */
@@ -95,22 +100,15 @@ export interface Sep41Metadata {
 // A token's decimals/symbol/name never change, while balances are re-read on every account
 // refresh — so the descriptive half of the read is kept for the lifetime of the worker. Three of
 // the four simulations per token would otherwise repeat on every refresh, for every watched
-// contract, against a rate-limited public endpoint.
-const metadataCache = new Map<string, Sep41Metadata>();
+// contract, against a rate-limited public endpoint. The in-flight promise is cached rather than
+// the value, so concurrent account refreshes share one read instead of stampeding the RPC.
+const metadataCache = new Map<string, Promise<Sep41Metadata>>();
 
-/**
- * Reads a token's SEP-41 metadata (`decimals`/`symbol`/`name`) from the contract.
- * Makes tokens self-describing, so callers need only supply contract addresses.
- */
-export const getContractTokenMetadata = async (
+const readContractTokenMetadata = async (
     server: SorobanServer,
     contractId: string,
-    networkPassphrase: string = Networks.PUBLIC,
+    networkPassphrase: string,
 ): Promise<Sep41Metadata> => {
-    const cacheKey = `${networkPassphrase}:${contractId}`;
-    const cached = metadataCache.get(cacheKey);
-    if (cached) return cached;
-
     const [decimals, symbol, name] = await Promise.all([
         simulateContractRead(server, contractId, 'decimals', [], networkPassphrase),
         simulateContractRead(server, contractId, 'symbol', [], networkPassphrase),
@@ -120,18 +118,44 @@ export const getContractTokenMetadata = async (
     // `decimals` is a u32 -> number; be tolerant of a bigint too.
     const isNumeric = typeof decimals === 'number' || typeof decimals === 'bigint';
 
-    const metadata: Sep41Metadata = {
+    return {
         decimals: isNumeric ? Number(decimals) : undefined,
         symbol: typeof symbol === 'string' ? symbol : undefined,
         name: typeof name === 'string' ? name : undefined,
     };
+};
 
-    // A failed read says nothing about the contract, so only a real answer is kept.
-    if (metadata.decimals != null) {
-        metadataCache.set(cacheKey, metadata);
-    }
+/**
+ * Reads a token's SEP-41 metadata (`decimals`/`symbol`/`name`) from the contract.
+ * Makes tokens self-describing, so callers need only supply contract addresses.
+ */
+export const getContractTokenMetadata = (
+    server: SorobanServer,
+    contractId: string,
+    networkPassphrase: string = Networks.PUBLIC,
+): Promise<Sep41Metadata> => {
+    const cacheKey = `${networkPassphrase}:${contractId}`;
+    const cached = metadataCache.get(cacheKey);
+    if (cached) return cached;
 
-    return metadata;
+    const pending = readContractTokenMetadata(server, contractId, networkPassphrase).then(
+        metadata => {
+            // A failed read says nothing about the contract, so only a real answer is kept.
+            if (metadata.decimals == null) {
+                metadataCache.delete(cacheKey);
+            }
+
+            return metadata;
+        },
+        error => {
+            metadataCache.delete(cacheKey);
+            throw error;
+        },
+    );
+
+    metadataCache.set(cacheKey, pending);
+
+    return pending;
 };
 
 /** A fully-described SEP-41 token holding for an account. */
@@ -177,61 +201,17 @@ export const readSep41Tokens = async (
 ): Promise<Sep41Token[]> => {
     const server = getSorobanServer(rpcUrl);
 
-    const read = Promise.all(
+    // A slow or unreachable RPC must never stall account loading, so each read is capped and
+    // falls back to no token. Capping per token keeps one slow contract from discarding the
+    // tokens that did resolve in time.
+    const tokens = await Promise.all(
         contractIds.map(contract =>
-            getSep41Token(server, contract, holder, networkPassphrase).catch(() => undefined),
+            Promise.race([
+                getSep41Token(server, contract, holder, networkPassphrase).catch(() => undefined),
+                resolveAfter<Sep41Token | undefined>(SEP41_READ_TIMEOUT_MS),
+            ]),
         ),
     );
 
-    // A slow or unreachable RPC must never stall account loading, so cap the read
-    // and fall back to no contract tokens if it does not finish in time.
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-    const timeout = new Promise<(Sep41Token | undefined)[]>(resolve => {
-        timeoutId = setTimeout(() => resolve([]), SEP41_READ_TIMEOUT_MS);
-    });
-
-    try {
-        const tokens = await Promise.race([read, timeout]);
-
-        return tokens.filter((token): token is Sep41Token => token != null);
-    } finally {
-        clearTimeout(timeoutId);
-    }
+    return tokens.filter((token): token is Sep41Token => token != null);
 };
-
-/**
- * Reads SEP-41 balances for a fixed list of contract tokens held by `holder`.
- * Discovery is an explicit allow-list — there is no on-chain registry of an
- * account's contract-token holdings. Missing/failed reads resolve to `'0'`.
- */
-export const getContractTokenBalances = (
-    server: SorobanServer,
-    holder: string,
-    contractIds: string[],
-    networkPassphrase: string = Networks.PUBLIC,
-): Promise<{ contract: string; balance: string }[]> =>
-    Promise.all(
-        contractIds.map(async contract => {
-            try {
-                const balance = await getContractTokenBalance(
-                    server,
-                    contract,
-                    holder,
-                    networkPassphrase,
-                );
-
-                return { contract, balance: balance ?? '0' };
-            } catch {
-                return { contract, balance: '0' };
-            }
-        }),
-    );
-
-/** Convenience: create a server and read a fixed token list in one call. */
-export const readStellarContractTokenBalances = (
-    rpcUrl: string,
-    holder: string,
-    contractIds: string[],
-    networkPassphrase: string = Networks.PUBLIC,
-): Promise<{ contract: string; balance: string }[]> =>
-    getContractTokenBalances(getSorobanServer(rpcUrl), holder, contractIds, networkPassphrase);
