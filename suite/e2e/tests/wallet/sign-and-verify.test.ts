@@ -1,5 +1,4 @@
 import { expect, test } from '../../support/fixtures';
-import { captureClipboardWrites } from '../../support/helpers/clipboard';
 
 const PATH = "m/84'/0'/0'/0/3";
 const ADDRESS = 'bc1q6hr68ewf72l6r7cj6ut286x0xkwg5706jq450u';
@@ -12,7 +11,7 @@ const ELECTRUM_SIGNATURE =
 test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all' },
-        contextOptions: { permissions: ['clipboard-read', 'clipboard-write'] },
+        webClipboardRead: true,
     });
 
     test.beforeEach(async ({ page, walletPage, onboardingPage, settingsPage }) => {
@@ -34,7 +33,11 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
      * 7. Compare signature with expected value
      */
 
-    test('Signs message with standard Bitcoin signature format', async ({ page, devicePrompt }) => {
+    test('Signs message with standard Bitcoin signature format', async ({
+        page,
+        devicePrompt,
+        clipboard,
+    }) => {
         await page.getByTestId('@sign-verify/message').fill(MESSAGE);
         await page.getByTestId('@sign-verify/sign-address/input').click();
         await page.getByTestId(`@sign-verify/sign-address/option/${PATH}`).click();
@@ -57,17 +60,15 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
         await expect(page.getByTestId('@sign-verify/outcome/signed')).toBeVisible();
         await expect(page.getByTestId('@sign-verify/clear')).toBeVisible();
 
-        const expectCopiedText = await captureClipboardWrites(page);
-
         await page.getByTestId('@sign-verify/copy-address').click();
-        await expectCopiedText(ADDRESS);
+        await clipboard.expectText(ADDRESS);
         await expect(page.getByTestId('@toast/copy-to-clipboard')).toBeVisible();
 
         await page.getByTestId('@sign-verify/copy-message').click();
-        await expectCopiedText(MESSAGE);
+        await clipboard.expectText(MESSAGE);
 
         await page.getByTestId('@sign-verify/copy-signature').click();
-        await expectCopiedText(SIGNATURE);
+        await clipboard.expectText(SIGNATURE);
 
         await page.getByTestId('@sign-verify/clear').click();
         await expect(page.getByTestId('@sign-verify/outcome/signed')).toBeHidden();
@@ -85,6 +86,7 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
     test('Signs message with Electrum-compatible signature format', async ({
         page,
         devicePrompt,
+        clipboard,
     }) => {
         await page.getByTestId('@sign-verify/message').fill(MESSAGE);
         await page.getByTestId('@sign-verify/sign-address/input').click();
@@ -106,11 +108,9 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
         await devicePrompt.waitForPromptAndConfirm(); // Confirm message
         await expect(page.getByTestId('@sign-verify/signature')).toHaveValue(ELECTRUM_SIGNATURE);
 
-        const expectCopiedText = await captureClipboardWrites(page);
-
         // Regression guard for #20504.
         await page.getByTestId('@sign-verify/copy-signature').click();
-        await expectCopiedText(ELECTRUM_SIGNATURE);
+        await clipboard.expectText(ELECTRUM_SIGNATURE);
     });
 
     test('Verify message signed with standard Bitcoin signature format', async ({

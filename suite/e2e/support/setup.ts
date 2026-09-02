@@ -95,13 +95,46 @@ export const electronTeardown = async (
     await closePromise;
 };
 
-export const webSetup = async (browserContext: BrowserContext) => {
+export const webSetup = async (
+    browserContext: BrowserContext,
+    { webClipboardRead }: { webClipboardRead: boolean },
+) => {
     await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
 
-    // Need to allow this to be able to access bridge on localhost
-    // When running tests against suite deployed elsewhere
     if (browserContext.browser()?.browserType().name() === 'chromium') {
-        await browserContext.grantPermissions(['local-network-access']);
+        await browserContext.grantPermissions([
+            // Need to allow this to be able to access bridge on localhost
+            // When running tests against suite deployed elsewhere
+            'local-network-access',
+            // Need to allow this to be able to read and write to the clipboard
+            ...(webClipboardRead ? (['clipboard-read', 'clipboard-write'] as const) : []),
+        ]);
+    }
+
+    if (webClipboardRead) {
+        // Deployed Suite sends Permissions-Policy: clipboard-read=(), which the granted
+        // permission cannot override, so relax the header for this browser context only.
+        await browserContext.route('**/*', async route => {
+            if (route.request().resourceType() !== 'document') {
+                return route.fallback();
+            }
+            const response = await route.fetch();
+            const headers = { ...response.headers() };
+            const policy = headers['permissions-policy'];
+            if (policy?.includes('clipboard-read')) {
+                const clipboardDirective = /clipboard-read=\([^)]*\)/;
+                if (!clipboardDirective.test(policy)) {
+                    throw new Error(
+                        `Cannot rewrite clipboard-read in the Permissions-Policy header, its format changed: ${policy}`,
+                    );
+                }
+                headers['permissions-policy'] = policy.replace(
+                    clipboardDirective,
+                    'clipboard-read=(self)',
+                );
+            }
+            await route.fulfill({ response, headers });
+        });
     }
 
     const page = await browserContext.newPage();
