@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import {
-    lazyStellarTokenMetadata,
-    resolveStellarAssetFromContractId,
-} from '@suite-common/wallet-utils';
+import { resolveStellarContractId } from '@suite-common/wallet-utils';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
 import stellar from '@trezor/network-stellar/runtime';
 
@@ -22,9 +19,6 @@ type FormData = {
     assetCode: string;
     assetIssuer: string;
 };
-
-const resolveContractId = async (contractId: string) =>
-    resolveStellarAssetFromContractId(contractId, await lazyStellarTokenMetadata.getOrInit());
 
 const validateAssetCode = (translate: (id: TranslationKey) => string) => async (value: string) => {
     const { isValidAssetCode, isValidContractId } = await stellar();
@@ -99,15 +93,16 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
                 return;
             }
 
-            const resolved = await resolveContractId(assetCode);
-            if (isStale) return;
+            // Every valid contract id is a contract token until resolved otherwise, so a slow or
+            // failed definitions fetch cannot leave a contract id classified as a classic asset.
+            if (!isStale) setIsContractToken(true);
 
-            setIsContractToken(!resolved);
+            const resolved = await resolveStellarContractId(assetCode).catch(() => undefined);
+            if (isStale || !resolved) return;
 
-            if (resolved) {
-                setValue('assetCode', resolved.assetCode, { shouldValidate: true });
-                setValue('assetIssuer', resolved.assetIssuer, { shouldValidate: true });
-            }
+            setIsContractToken(false);
+            setValue('assetCode', resolved.assetCode, { shouldValidate: true });
+            setValue('assetIssuer', resolved.assetIssuer, { shouldValidate: true });
         };
 
         classifyContractId();
@@ -123,13 +118,19 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
         trigger('assetIssuer');
     }, [isContractToken, trigger]);
 
-    const handleContinue = handleSubmit(({ assetCode: code, assetIssuer: issuer }: FormData) => {
-        onSubmit(
-            isContractToken
-                ? { standard: 'STELLAR-CONTRACT', contract: code }
-                : { standard: 'STELLAR-CLASSIC', assetCode: code, assetIssuer: issuer },
-        );
-    });
+    const handleContinue = handleSubmit(
+        async ({ assetCode: code, assetIssuer: issuer }: FormData) => {
+            // Derived from the submitted value rather than the async classification state, so a
+            // submit racing the classification can never file a contract id as a classic asset.
+            const { isValidContractId } = await stellar();
+
+            onSubmit(
+                isValidContractId(code)
+                    ? { standard: 'STELLAR-CONTRACT', contract: code }
+                    : { standard: 'STELLAR-CLASSIC', assetCode: code, assetIssuer: issuer },
+            );
+        },
+    );
 
     return (
         <Modal
