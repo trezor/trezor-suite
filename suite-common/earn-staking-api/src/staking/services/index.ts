@@ -96,4 +96,6 @@ export const reportStakingTxIds: (
     method: 'POST',
     schema: reportStakingTxIdsResponse,
     timeout: 60_000,
+    retry: { attempts: 0 },
+    reject: response => !response.ok,
 });
