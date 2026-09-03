@@ -1,3 +1,5 @@
+import { captureException, withScope } from '@sentry/core';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
@@ -11,7 +13,7 @@ import {
     addFakePendingTronTxThunk,
 } from '../../../../transactions/transactionsThunks';
 import { TRON_STAKE_MODULE } from '../../shared/constants';
-import { reportTronStakeTxId } from '../../shared/reportTronStakingTxId';
+import { reportTronVoteTxId } from '../../shared/reportTronVoteTxId';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakingReducer';
 import { type TronFlow } from '../../tronStakingTypes';
@@ -56,12 +58,15 @@ export const submitTronVoteThunk = createThunk<
             }
         }
 
-        if (account.networkType !== 'tron') {
+        if (account.symbol !== 'trx') {
             dispatch(
                 tronStakeActions.submitFinished({
                     accountKey,
                     flow,
-                    error: { kind: 'compose-failed', message: 'Invalid network type.' },
+                    error: {
+                        kind: 'compose-failed',
+                        message: 'TRON voting is supported only for TRX mainnet accounts.',
+                    },
                 }),
             );
 
@@ -144,7 +149,7 @@ export const submitTronVoteThunk = createThunk<
                 return;
             }
 
-            const isReported = await reportTronStakeTxId(signResult.txid, 'vote');
+            const isReported = await reportTronVoteTxId(signResult.txid);
 
             if (!isReported) {
                 dispatch(
@@ -165,6 +170,16 @@ export const submitTronVoteThunk = createThunk<
             });
 
             if (!pushResult.success) {
+                withScope(scope => {
+                    scope.setTag('error.code', 'tron_staking_broadcast_failed_after_report');
+                    scope.setTag('error.kind', 'vote');
+                    scope.setTag('network.symbol', account.symbol);
+                    scope.setExtra('errorMessage', pushResult.error.message);
+                    captureException(
+                        new Error('TRON vote broadcast failed after successful txid report.'),
+                    );
+                });
+
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,
@@ -177,6 +192,20 @@ export const submitTronVoteThunk = createThunk<
             }
 
             const { txid } = pushResult.payload;
+
+            if (txid !== signResult.txid) {
+                withScope(scope => {
+                    scope.setLevel('fatal');
+                    scope.setTag('error.code', 'tron_staking_broadcast_txid_mismatch');
+                    scope.setTag('error.kind', 'vote');
+                    scope.setTag('network.symbol', account.symbol);
+                    captureException(
+                        new Error(
+                            'TRON vote broadcast txid differs from the reported signed txid.',
+                        ),
+                    );
+                });
+            }
 
             dispatch(
                 addFakePendingTronTxThunk({
