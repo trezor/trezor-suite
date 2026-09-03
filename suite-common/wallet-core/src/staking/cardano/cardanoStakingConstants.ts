@@ -1,9 +1,5 @@
 import { BigNumber } from '@trezor/utils';
 
-export const CARDANO_EPOCH_DAYS = 5;
-const CARDANO_APPROXIMATE_EPOCHS = 2;
-export const CARDANO_ACTIVATION_PERIOD_DAYS = CARDANO_APPROXIMATE_EPOCHS * CARDANO_EPOCH_DAYS;
-
 export const MIN_CARDANO_AMOUNT_FOR_STAKING = new BigNumber(0);
 export const MAX_CARDANO_AMOUNT_FOR_STAKING = new BigNumber(72_000_000);
 export const MIN_CARDANO_FOR_WITHDRAWALS = new BigNumber(0);

@@ -7,6 +7,7 @@ import {
     getStakingProviderByTronSrAddress,
 } from '@suite-common/wallet-config';
 import {
+    CARDANO_EPOCH_DAYS,
     CARDANO_STAKING_REGISTRATION_DEPOSIT,
     MIN_ETH_BALANCE_FOR_FEE_BUFFER,
 } from '@suite-common/wallet-constants';
@@ -48,7 +49,6 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import {
-    CARDANO_EPOCH_DAYS,
     MAX_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_FEE_BUFFER,
