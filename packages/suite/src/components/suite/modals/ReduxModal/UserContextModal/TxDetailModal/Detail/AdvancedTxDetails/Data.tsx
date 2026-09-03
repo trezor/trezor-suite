@@ -30,6 +30,45 @@ type DataProps = {
     tx: WalletAccountTransaction;
 };
 
+/**
+ * The Soroban equivalent of EVM calldata. XDR is self-describing, so the contract, the function
+ * and the argument types are decoded from the envelope without a contract ABI — but the argument
+ * *names* are not in there, they come from the contract spec, so arguments stay positional.
+ */
+const StellarContractCallRows = ({
+    contractCall,
+}: {
+    contractCall: NonNullable<WalletAccountTransaction['stellarSpecific']>['contractCall'];
+}) => {
+    if (!contractCall) return null;
+
+    const { contractId, functionName, args, authorizedCalls } = contractCall;
+
+    return (
+        <>
+            <DataRow translationId="TR_TX_DATA_CONTRACT" content={contractId} />
+            <DataRow translationId="TR_TX_DATA_FUNCTION" content={functionName} />
+            {args.length > 0 && (
+                <DataRow
+                    translationId="TR_TX_DATA_PARAMS"
+                    content={args.map(({ value }, index) => `[${index}] ${value}`).join('\n')}
+                />
+            )}
+            {authorizedCalls.length > 0 && (
+                <DataRow
+                    translationId="TR_TX_DATA_AUTHORIZED_CALLS"
+                    content={authorizedCalls
+                        .map(
+                            call =>
+                                `${'  '.repeat(call.depth)}${call.contractId} :: ${call.functionName}`,
+                        )
+                        .join('\n')}
+                />
+            )}
+        </>
+    );
+};
+
 export const Data = ({ tx }: DataProps) => {
     const { data, parsedData } = tx.ethereumSpecific || {};
     const { function: fn, methodId, name, params } = parsedData || {};
@@ -48,6 +87,7 @@ export const Data = ({ tx }: DataProps) => {
                 />
             )}
             {data && <DataRow translationId="TR_TX_DATA_INPUT_DATA" content={data} />}
+            <StellarContractCallRows contractCall={tx.stellarSpecific?.contractCall} />
         </Column>
     );
 };
