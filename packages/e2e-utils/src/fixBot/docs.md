@@ -200,3 +200,33 @@ never read.
 A ledger match is never re-attempted. A `not_duplicated` result records nothing (failure not
 reproduced — flaky or resolved). `buildLedger()` is pure and deterministic; matching is the agent's
 judgment at Step 7, not a computed key (the same spec can fail for different reasons across runs).
+
+---
+
+## Partial runs, missing summaries, and error passing
+
+The aggregation after the fix matrix is **fail-open per task, by design**. Fix jobs are independent
+and unreliable by assumption — a matrix job can be cancelled or die at any point of its up-to-210-minute
+run — so `notify` and `update-ledger` must degrade per task, never all-or-nothing. All their artifact
+downloads carry `continue-on-error: true`: the Slack message goes out even on a night where analyze
+failed or zero fix jobs completed.
+
+The per-task channel is the summary file, `slack-fix-summary-<task-id>.json`:
+
+- **Agent completed, publish succeeded** — summary carries the result and `prUrl`.
+- **Agent completed, publish failed** (push, `gh pr create`, or project assignment) — `publish.ts`
+  catches the error, stores it in the summary's `error` field, and still writes the file; `notify`
+  renders it as `⚠️ publish failed: …`. The step exits non-zero so the job is red, but the night's
+  aggregation is unaffected.
+- **Agent/job died before publish** — no summary exists. `notify` renders the task as
+  `job did not complete`; `buildLedger()` logs a warning and writes **no ledger entry** for it.
+- **Summary exists but fails schema validation** — `readSummaries()` warns and skips that file
+  (e.g. schema drift between code versions, or a truncated write from a dying runner), so one
+  malformed file cannot cost the other tasks their Slack line and ledger entry. A summary with
+  invalid JSON, by contrast, throws and fails the aggregating job — that is corruption, not a
+  partial run.
+
+**Why dropping unknown outcomes is safe:** absence from the ledger means "re-attempt next night".
+The only alternatives would be recording `FIX_FAILED` or `FIX_DELIVERED` — and both _suppress_
+future attempts, so a wrong guess silences a real failure permanently, while a drop costs at most
+one duplicate attempt. Drop-what-you-can't-verify is strictly safer than any recorded guess.

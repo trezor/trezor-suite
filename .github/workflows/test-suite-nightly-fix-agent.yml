@@ -40,7 +40,11 @@ jobs:
         run: yarn workspaces focus @trezor/e2e-utils
 
       - name: Install Playwright trace skill
-        run: yarn workspace @trezor/e2e-utils exec playwright trace install-skill
+        # Must run from the repo root — the skill installs to <cwd>/.claude/skills and the agent's cwd is the root
+        run: npx playwright trace install-skill
+
+      - name: Install Playwright headless shell for trace snapshot inspection
+        run: npx playwright install chromium-headless-shell
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
@@ -203,7 +207,8 @@ jobs:
         run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
 
       - name: Install Playwright trace skill
-        run: yarn workspace @trezor/suite-e2e exec playwright trace install-skill
+        # Must run from the repo root — the skill installs to <cwd>/.claude/skills and the agent's cwd is the root
+        run: npx playwright trace install-skill
 
       - name: Build message system config
         run: yarn message-system-sign-config 1>/dev/null

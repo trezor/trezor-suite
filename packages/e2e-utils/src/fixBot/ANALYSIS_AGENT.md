@@ -54,6 +54,15 @@ file path.
 > which instances need investigation. It does **not** contain per-test error messages or artifact
 > URLs. Those only come from `currents-get-spec-instance` in Step 3, which is always required.
 
+> The response is large, so the harness saves it to a file. Its shape is stable — do not probe it;
+> extract everything you need in one pass:
+>
+> ```bash
+> jq -r '.data.specs[]
+>   | select((.results.stats.failures // 0) > 0 or (.results.stats.pending // 0) > 0)
+>   | [.instanceId, .groupId, .spec] | @tsv' <saved-file>
+> ```
+
 **Excluded directories:** Skip any instance whose spec path starts with
 `suite/e2e/tests/trading-live`. Do not investigate, diagnose, or include these in fix tasks
 or the skipped list — omit them entirely from the report.
@@ -67,15 +76,28 @@ For each failed or pending `instanceId`, use `currents-get-spec-instance` and ex
 - `electron-logs.txt` attachment URL (desktop runs only — useful for Electron startup
   crashes or main process errors)
 
+> Do **not** use `currents-get-context` for pending/quarantined tests — it reports them as
+> `PASSED`/`NO_TESTS` with zero failures and hides their errors and artifact URLs. Only
+> `currents-get-spec-instance` exposes them.
+
+Once you have the error data, compare each failure against the known-failures ledger (see Step 7,
+rule 1). An instance that is a **confident ledger match** skips Steps 4–5 entirely — its error
+signature is the evidence.
+
 ## Step 4 — Fetch and analyze trace artifacts (MANDATORY — do not skip)
 
 **Do not write any diagnosis until you have completed this step for every failed instance.**
+The one exception: a **confident ledger match** (Step 7, rule 1) is verified by error signature
+only — skip this step and Step 5 for it.
 
 **Trace (primary).** Download the trace, then read it with the **`playwright-trace` skill**:
 
 ```bash
 python3 -c "import urllib.request; urllib.request.urlretrieve('<trace-url>', '/tmp/trace-<instanceId>.zip')"
 ```
+
+If the skill is not available under that name, read `.claude/skills/playwright-trace/SKILL.md`
+at the repo root and use its `npx playwright trace` commands directly.
 
 If a trace is not available for an instance, state this explicitly and note that visual analysis
 was not possible.
@@ -143,10 +165,21 @@ Route each cluster by the **first** rule that applies:
 
 1. **Already in the known-failures ledger** (the section at the end of this prompt) — compare each
    cluster against every entry's `rootCause` and `validations` (platform/group/spec), not just an
-   overlapping spec path — a failure may be specific to a platform or device group (e.g. `T1B1`):
-    - **Confident match → skipped**, reusing the entry's `reason`.
-    - **rootCause match, but different validations → treat as new** — continue to rules 2–4.
-    - **Unsure → treat as new** — continue to rules 2–4.
+   overlapping spec path — a failure may be specific to a platform or device group (e.g. `T1B1`).
+   A **confident match** requires **both**, verified from the `currents-get-spec-instance` error
+   data:
+    - the per-test error signature (message, failing locator/assertion, stack location) matches the
+      failure mode described by the entry's `rootCause`, **and**
+    - every affected platform/group/spec combination is covered by the entry's `validations`.
+
+    Routing:
+    - **Confident match → skipped**, reusing the entry's `reason`. The error signature is
+      sufficient evidence — do not download or read traces for it.
+    - **rootCause match, but different validations → treat as new** — continue to rules 2–4, with
+      full trace analysis (Steps 4–5).
+    - **Same spec but a different error, or unsure → treat as new** — continue to rules 2–4, with
+      full trace analysis (Steps 4–5).
+
 2. **Fixable** — the **entire** remedy fits inside `suite/e2e/` and/or adding `data-testid`
    attributes in product source → **fix_task**.
 3. **Needs a product-logic change** → **skipped**, `reason: "PRODUCT_BUG"`.
@@ -197,7 +230,10 @@ Return a JSON object (validated against a matching JSON Schema) with:
 - **Visual evidence is mandatory.** Do not write a diagnosis for any test until you have
   fetched and read its trace. Every **Root cause** must cite something you actually
   observed — an action's selector or result, a DOM snapshot, a failed request, or a stack
-  trace. If it does not, you are speculating.
+  trace. If it does not, you are speculating. The one exception is a **confident ledger
+  match** (Step 7, rule 1): its evidence is the error signature from
+  `currents-get-spec-instance` — no trace is required, and its report entry should say
+  "confident ledger match — verified by error signature" under **Visual evidence**.
 - Never speculate. Base every diagnosis strictly on what the error, stack trace, and visual
   evidence directly show.
 - If a failure looks like a flaky timing issue, say so explicitly and explain the signal.
