@@ -14,6 +14,8 @@ export * from './hooks/useTradingFiatValues';
 export * from './hooks/useExchangeFiatDeviation';
 export * from './hooks/useTradingRequestedAmountShortfall';
 export * from './hooks/useTradingRequestedSide';
+export * from './hooks/useFormatCryptoValue';
+export * from './hooks/useChangeStringsExtractor';
 export * from './hooks/useApprovalStep';
 export * from './hooks/useTradingExchangeWatchApproval';
 export * from './hooks/useTradingRefetchScheduler';

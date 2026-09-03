@@ -1,6 +1,9 @@
-import { type TradingTradeType, useTradingRequestedSide } from '@suite-common/trading';
+import {
+    type TradingTradeType,
+    useChangeStringsExtractor,
+    useTradingRequestedSide,
+} from '@suite-common/trading';
 import { Text } from '@suite-native/atoms';
-import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 
 export type ProviderListItemAmountProps<T extends TradingTradeType> = {
     quote: T;

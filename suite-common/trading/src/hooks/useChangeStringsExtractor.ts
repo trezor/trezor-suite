@@ -1,10 +1,10 @@
 import { useFormatters } from '@suite-common/formatters';
-import { type TradingTradeType } from '@suite-common/trading';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { useFormatCryptoValue } from '@suite-native/trading-atoms';
 import { BigNumber } from '@trezor/utils';
 
-import { type TradeOperationData, getTradeOperationData } from '../utils/utils';
+import { useFormatCryptoValue } from './useFormatCryptoValue';
+import type { TradingTradeType } from '../types';
+import { type TradeOperationData, getTradeOperationData } from '../utils/tradeOperationUtils';
 
 export const useChangeStringsExtractor = (
     trade: TradingTradeType | undefined,

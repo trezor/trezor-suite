@@ -6,12 +6,12 @@ import {
     type TradingTradeType,
     isBuyTrade,
     isSellFiatTrade,
+    useFormatCryptoValue,
     useTradingRequestedAmountShortfall,
 } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 import { Translation, selectLocale } from '@suite-native/intl';
-import { useFormatCryptoValue } from '@suite-native/trading-atoms';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
