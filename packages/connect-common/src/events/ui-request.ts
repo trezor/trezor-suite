@@ -110,19 +110,19 @@ export interface UiRequestDiscoveryAccounts {
     };
 }
 
-export type UiRequestEvent =
+export type UiRequestEvent = (
     | UiRequestDeviceAction
     | UiRequestConfirmation
     | UiRequestSelectAccount
     | UiRequestSelectFee
     | UiRequestThpPairing
-    | UiRequestDiscoveryAccounts;
+    | UiRequestDiscoveryAccounts
+) & { requestId: string };
 
 export const isUiRequestOfType = createTypeGuardByType<UiRequestEvent>();
 
 export type UiRequestMessage = UiRequestEvent & {
     event: typeof UI_REQUEST;
-    requestId: string;
     callId?: string; // callId is added by connect core/index when the event is emitted, see createSendCoreMessageWithCallId
 };
 
