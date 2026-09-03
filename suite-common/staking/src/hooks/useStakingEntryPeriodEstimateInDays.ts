@@ -1,9 +1,9 @@
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api';
-import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '@suite-common/wallet-constants';
 import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { getDaysToAddToPool } from '../ethereum/ethereumStaking';
+import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '../ethereum/ethereumStakingConstants';
 import {
     hasStakeInPendingDepositedState,
     isSupportedEthStakingNetworkSymbol,

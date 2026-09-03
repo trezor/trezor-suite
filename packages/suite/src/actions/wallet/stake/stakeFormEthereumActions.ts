@@ -6,6 +6,10 @@ import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
 import {
+    MIN_ETH_AMOUNT_FOR_STAKING,
+    MIN_ETH_BALANCE_FOR_STAKING,
+    MIN_ETH_FOR_WITHDRAWALS,
+    UNSTAKE_INTERCHANGES,
     calculate,
     composeStakingTransaction,
     getStakeTxGasLimit,
@@ -15,12 +19,6 @@ import {
 } from '@suite-common/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    MIN_ETH_BALANCE_FOR_STAKING,
-    MIN_ETH_FOR_WITHDRAWALS,
-    UNSTAKE_INTERCHANGES,
-} from '@suite-common/wallet-constants';
 import {
     type EthereumGetCurrentNonceThunkState,
     type WalletSettingsRootState,

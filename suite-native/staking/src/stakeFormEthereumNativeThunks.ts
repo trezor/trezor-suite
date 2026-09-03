@@ -1,6 +1,7 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    WALLET_SDK_SOURCE_MOBILE,
     getEthereumStakingLiveStateErrorMessage,
     getUnstakeAmountFromCalldata,
     transformTx,
@@ -8,7 +9,6 @@ import {
     verifyEthereumStakingLiveState,
 } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
-import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import {
     type AccountsRootState,
     type FormDraftRootState,

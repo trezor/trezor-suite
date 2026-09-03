@@ -9,7 +9,6 @@ export const STAKE_GAS_LIMIT_RESERVE = 220_000;
 export const MIN_ETH_AMOUNT_FOR_STAKING = new BigNumber(0.01);
 export const MAX_ETH_AMOUNT_FOR_STAKING = new BigNumber(1_000_000);
 export const MIN_ETH_FOR_WITHDRAWALS = new BigNumber(0.005);
-export const MIN_ETH_BALANCE_FOR_FEE_BUFFER = new BigNumber(0.005);
 export const MIN_ETH_BALANCE_FOR_STAKING = MIN_ETH_AMOUNT_FOR_STAKING.plus(MIN_ETH_FOR_WITHDRAWALS);
 export const UNSTAKE_INTERCHANGES = 5;
 

@@ -6,26 +6,7 @@ import {
     getStakingProviderBySolanaVoterPubkey,
     getStakingProviderByTronSrAddress,
 } from '@suite-common/wallet-config';
-import {
-    CARDANO_EPOCH_DAYS,
-    CARDANO_STAKING_REGISTRATION_DEPOSIT,
-    MAX_CARDANO_AMOUNT_FOR_STAKING,
-    MAX_ETH_AMOUNT_FOR_STAKING,
-    MAX_TRON_AMOUNT_FOR_STAKING,
-    MIN_CARDANO_AMOUNT_FOR_STAKING,
-    MIN_CARDANO_BALANCE_FOR_FEE_BUFFER,
-    MIN_CARDANO_BALANCE_FOR_STAKING,
-    MIN_CARDANO_FOR_WITHDRAWALS,
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    MIN_ETH_BALANCE_FOR_FEE_BUFFER,
-    MIN_ETH_BALANCE_FOR_STAKING,
-    MIN_ETH_FOR_WITHDRAWALS,
-    MIN_TRON_AMOUNT_FOR_STAKING,
-    MIN_TRON_BALANCE_FOR_FEE_BUFFER,
-    MIN_TRON_BALANCE_FOR_STAKING,
-    MIN_TRON_FOR_WITHDRAWALS,
-    UNSTAKING_ETH_PERIOD,
-} from '@suite-common/wallet-constants';
+import { MIN_ETH_BALANCE_FOR_FEE_BUFFER } from '@suite-common/wallet-constants';
 import {
     type Account,
     type PrecomposedLevels,
@@ -63,16 +44,39 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import {
+    CARDANO_EPOCH_DAYS,
+    CARDANO_STAKING_REGISTRATION_DEPOSIT,
+    MAX_CARDANO_AMOUNT_FOR_STAKING,
+    MIN_CARDANO_AMOUNT_FOR_STAKING,
+    MIN_CARDANO_BALANCE_FOR_FEE_BUFFER,
+    MIN_CARDANO_BALANCE_FOR_STAKING,
+    MIN_CARDANO_FOR_WITHDRAWALS,
+} from '../cardano/cardanoStakingConstants';
+import {
     isCardanoStakingTx,
     isSupportedAdaStakingNetworkSymbol,
     subtypeToStakeTypeMap,
 } from '../cardano/cardanoStakingUtils';
 import { getEthereumStakingAddressByType } from '../ethereum/ethereumStaking';
+import {
+    MAX_ETH_AMOUNT_FOR_STAKING,
+    MIN_ETH_AMOUNT_FOR_STAKING,
+    MIN_ETH_BALANCE_FOR_STAKING,
+    MIN_ETH_FOR_WITHDRAWALS,
+    UNSTAKING_ETH_PERIOD,
+} from '../ethereum/ethereumStakingConstants';
 import { isSupportedEthStakingNetworkSymbol } from '../ethereum/ethereumStakingUtils';
 import {
     getSolStakingAccountsInfo,
     isSupportedSolStakingNetworkSymbol,
 } from '../solana/solanaStakingUtils';
+import {
+    MAX_TRON_AMOUNT_FOR_STAKING,
+    MIN_TRON_AMOUNT_FOR_STAKING,
+    MIN_TRON_BALANCE_FOR_FEE_BUFFER,
+    MIN_TRON_BALANCE_FOR_STAKING,
+    MIN_TRON_FOR_WITHDRAWALS,
+} from '../tron/tronStakingConstants';
 import {
     getTronStakingRewards,
     getTronUnstakingBalance,

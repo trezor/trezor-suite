@@ -15,9 +15,6 @@
             "path": "../../suite-common/wallet-config"
         },
         {
-            "path": "../../suite-common/wallet-constants"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
         {

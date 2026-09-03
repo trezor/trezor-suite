@@ -1,4 +1,4 @@
-import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
+import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/staking';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { toADA } from '../../../support/common';
