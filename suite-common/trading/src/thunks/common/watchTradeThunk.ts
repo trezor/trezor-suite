@@ -131,6 +131,12 @@ export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: Watch
                     return;
                 }
 
+                if (data.response.destinationAddress) {
+                    // make sure destinationPaymentExtraId is not stale even when empty
+                    data.tradeData.destinationPaymentExtraId =
+                        data.response.destinationPaymentExtraId;
+                }
+
                 const selectedQuote = selectTradingSellSelectedQuote(getState());
 
                 if (selectedQuote?.orderId === data.tradeData.orderId) {

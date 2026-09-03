@@ -359,6 +359,55 @@ describe('watchTradeThunk', () => {
             });
         });
 
+        it('should clear a stale destinationPaymentExtraId when the response omits it', async () => {
+            const trade = {
+                date: dateISO,
+                key: 'tradeKey',
+                tradeType: 'sell',
+                data: {
+                    status: 'SUBMITTED',
+                    orderId: 'tradeKey',
+                    destinationAddress: 'oldDestinationAddress',
+                    destinationPaymentExtraId: 'oldDestinationPaymentExtraId',
+                },
+                sendAccountKey: 'sendAccountKey' as AccountKey,
+            } as TradingTransactionSell;
+
+            const store = getStore({
+                trades: [trade],
+            });
+
+            tradeApi.watchTrade = () =>
+                Promise.resolve({
+                    status: 'SUBMITTED',
+                    destinationAddress: 'newDestinationAddress',
+                } as any);
+
+            await store.dispatch(
+                watchTradeThunk({
+                    account,
+                    trade,
+                    refreshCount,
+                }),
+            );
+
+            const actions = store.getActions();
+            const saveTradeAction = actions.find(action => action.type === '@trading/saveTrade');
+
+            expect(saveTradeAction?.payload).toEqual({
+                tradeType: 'sell',
+                date: dateISO,
+                key: 'tradeKey',
+                data: {
+                    status: 'SUBMITTED',
+                    orderId: 'tradeKey',
+                    destinationAddress: 'newDestinationAddress',
+                    destinationPaymentExtraId: undefined,
+                },
+                sendAccountKey: 'sendAccountKey',
+            });
+        });
+
         it('should update selected quote when orderId matches', async () => {
             const trade = {
                 date: dateISO,
