@@ -1,9 +1,12 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { buildStakeData, getEthereumStakingAddressByType } from '@suite-common/staking';
+import {
+    WALLET_SDK_SOURCE_MOBILE,
+    buildStakeData,
+    getEthereumStakingAddressByType,
+} from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
-import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';

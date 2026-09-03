@@ -1,8 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import { useQuery } from '@suite-common/react-query';
-import { isSupportedEthStakingNetworkSymbol, simulateUnstake } from '@suite-common/staking';
-import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
+import {
+    WALLET_SDK_SOURCE_MOBILE,
+    isSupportedEthStakingNetworkSymbol,
+    simulateUnstake,
+} from '@suite-common/staking';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BigNumber, resolveAfter } from '@trezor/utils';

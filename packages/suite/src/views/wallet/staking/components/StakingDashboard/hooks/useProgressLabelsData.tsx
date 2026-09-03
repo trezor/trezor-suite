@@ -1,9 +1,13 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { getStakingAccountCurrentStatus, getTxStakeType } from '@suite-common/staking';
+import {
+    CARDANO_ACTIVATION_PERIOD_DAYS,
+    CARDANO_EPOCH_DAYS,
+    getStakingAccountCurrentStatus,
+    getTxStakeType,
+} from '@suite-common/staking';
 import { type NetworkType } from '@suite-common/wallet-config';
-import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     type Account,
     type StakeType,

@@ -1,12 +1,9 @@
 import { bech32 } from '@scure/base';
 
 import { type AdaPools } from '@suite-common/earn-staking-api';
-import {
-    CARDANO_EVERSTAKE_DREP,
-    CARDANO_EVERSTAKE_STAKING_POOL,
-    EVERSTAKE_POOLS,
-    FIVE_BINARIES_POOLS,
-} from '@suite-common/wallet-constants';
+import { EVERSTAKE_POOLS, FIVE_BINARIES_POOLS } from '@suite-common/wallet-config';
+
+import { CARDANO_EVERSTAKE_DREP, CARDANO_EVERSTAKE_STAKING_POOL } from '../cardanoStakingConstants';
 
 // Real Everstake pools; saturations mirror the live endpoint values of 2026-08-01.
 const [eve6, eve7, eve8] = EVERSTAKE_POOLS as [string, string, string];

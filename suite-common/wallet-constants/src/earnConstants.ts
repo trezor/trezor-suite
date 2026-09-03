@@ -1,6 +1,6 @@
 import { type VersionArray } from '@trezor/utils';
 
-import { MIN_ETH_BALANCE_FOR_FEE_BUFFER } from './ethereumStakingConstants';
+import { MIN_ETH_BALANCE_FOR_FEE_BUFFER } from './ethereumConstants';
 
 /**
  * Wrap/unwrap and the wrapped-native (WETH) vault calldata are clear-signed only from this

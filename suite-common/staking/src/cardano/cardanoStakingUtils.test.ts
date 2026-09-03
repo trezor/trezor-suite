@@ -1,8 +1,8 @@
 import { type AdaPools } from '@suite-common/earn-staking-api';
-import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
 import { type Account } from '@suite-common/wallet-types';
 
 import * as fixtures from './__fixtures__/cardanoStakingUtils';
+import { CARDANO_EVERSTAKE_STAKING_POOL } from './cardanoStakingConstants';
 import {
     hasCardanoLiveVoteDelegation,
     isCardanoStakedOutsideEverstake,

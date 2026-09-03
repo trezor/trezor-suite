@@ -1,6 +1,5 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { TRON_STAKING_CONTRACT_TYPES } from '@suite-common/wallet-constants';
 import {
     type Account,
     type GeneralPrecomposedTransaction,
@@ -21,6 +20,8 @@ import {
 } from '@trezor/blockchain-link-types';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { BigNumber, isArrayMember, versionUtils } from '@trezor/utils';
+
+import { TRON_STAKING_CONTRACT_TYPES } from './tronStakingConstants';
 
 export function isSupportedTronStakingNetworkSymbol(
     symbol: NetworkSymbol,

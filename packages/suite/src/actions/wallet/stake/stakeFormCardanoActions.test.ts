@@ -1,6 +1,6 @@
 import { type AdaPools } from '@suite-common/earn-staking-api';
+import { CARDANO_EVERSTAKE_DREP } from '@suite-common/staking';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import type { AccountVotingDelegation } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type CardanoAction } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';

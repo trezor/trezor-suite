@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
 
 import { useDispatch } from '@suite-common/redux-utils';
-import { getStakingDataForNetwork, isCardanoStakedWithEverstake } from '@suite-common/staking';
-import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import {
+    CARDANO_EPOCH_DAYS,
+    getStakingDataForNetwork,
+    isCardanoStakedWithEverstake,
+} from '@suite-common/staking';
 import {
     fetchAllTransactionsForAccountThunk,
     hasPendingStakeTypeTransaction,

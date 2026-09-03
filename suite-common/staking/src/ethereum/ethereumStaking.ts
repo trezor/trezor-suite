@@ -3,14 +3,7 @@ import { decodeFunctionResult } from 'viem';
 import { Calldata, EVM_ABI, Verifier, type VerifyIssue } from '@suite-common/calldata';
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    DAYS_TO_ADD_TO_POOL_DEFAULT,
-    DEFAULT_PAYMENT,
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    STAKE_GAS_LIMIT_RESERVE,
-    UNSTAKE_INTERCHANGES,
-    WALLET_SDK_SOURCE,
-} from '@suite-common/wallet-constants';
+import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     type PrecomposedLevels,
     type StakeType,
@@ -37,6 +30,12 @@ import { type Ok, type PartialRecord, exhaustive } from '@trezor/type-utils';
 import { BigNumber, throwError } from '@trezor/utils';
 
 import { ETH_NETWORK_ADDRESSES, type EthNetworkAddresses } from './ethereumNetworkAddresses';
+import {
+    DAYS_TO_ADD_TO_POOL_DEFAULT,
+    MIN_ETH_AMOUNT_FOR_STAKING,
+    STAKE_GAS_LIMIT_RESERVE,
+    UNSTAKE_INTERCHANGES,
+} from './ethereumStakingConstants';
 import { isSupportedEthStakingNetworkSymbol } from './ethereumStakingUtils';
 import {
     type EthNetwork,
@@ -48,6 +47,7 @@ import {
     type StakeTxBaseArgs,
     type VerifyEthereumStakingLiveStateParams,
 } from './types';
+import { WALLET_SDK_SOURCE } from '../shared/stakingConstants';
 
 const encodeCalldata = <D extends string>(
     label: string,

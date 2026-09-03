@@ -6,7 +6,7 @@ import {
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
 } from '@suite-common/staking';
-import { EVERSTAKE_POOL_NAMES } from '@suite-common/wallet-constants';
+import { EVERSTAKE_POOL_NAMES } from '@suite-common/wallet-config';
 import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Icon, InfoItem, Paragraph, Row } from '@trezor/components';

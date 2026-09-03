@@ -1,9 +1,9 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { act, renderHook } from '@testing-library/react';
 
+import { CARDANO_EVERSTAKE_DREP } from '@suite-common/staking';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { DEFAULT_VOTING_OPTION, stakeActions, stakeInitialState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 

@@ -3,13 +3,14 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import {
+    UNSTAKE_INTERCHANGES,
+    WALLET_SDK_SOURCE_MOBILE,
     buildClaimWithdrawRequestData,
     buildStakeData,
     buildUnstakeData,
 } from '@suite-common/staking';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { createTestStore } from '@suite-common/test-utils';
-import { UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
     type Account,

@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
-import { getCardanoAccountDrepId } from '@suite-common/staking';
-import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
+import { CARDANO_EVERSTAKE_DREP, getCardanoAccountDrepId } from '@suite-common/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Paragraph, Text } from '@trezor/components';
 

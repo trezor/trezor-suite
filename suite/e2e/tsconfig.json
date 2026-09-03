@@ -29,6 +29,7 @@
             "path": "../../suite-common/message-system"
         },
         { "path": "../../suite-common/networks" },
+        { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/suite-sync-evolu"
         },
@@ -41,9 +42,6 @@
         { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-config"
-        },
-        {
-            "path": "../../suite-common/wallet-constants"
         },
         {
             "path": "../../suite-common/wallet-types"

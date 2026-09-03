@@ -2,6 +2,7 @@ export * from './backends';
 export * from './earnRewardsProvider';
 export * from './networksConfig';
 export * from './representativeAssets';
+export * from './stakingProviderConstants';
 export * from './stakingProviders';
 export * from './types';
 export * from './utils';

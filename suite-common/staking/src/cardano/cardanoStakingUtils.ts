@@ -1,12 +1,12 @@
 import { bech32 } from '@scure/base';
 
 import { type AdaPools } from '@suite-common/earn-staking-api';
-import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
-    CARDANO_EVERSTAKE_STAKING_POOL,
     EVERSTAKE_POOLS,
     FIVE_BINARIES_POOLS,
-} from '@suite-common/wallet-constants';
+    type NetworkSymbol,
+    getNetworkFeatures,
+} from '@suite-common/wallet-config';
 import {
     type Account,
     type StakeType,
@@ -16,6 +16,8 @@ import {
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
+
+import { CARDANO_EVERSTAKE_STAKING_POOL } from './cardanoStakingConstants';
 
 export function isSupportedAdaStakingNetworkSymbol(
     symbol: NetworkSymbol,
