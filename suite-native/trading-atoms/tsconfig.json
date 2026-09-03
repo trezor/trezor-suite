@@ -4,9 +4,6 @@
     "references": [
         { "path": "../../suite-common/flags" },
         {
-            "path": "../../suite-common/formatters"
-        },
-        {
             "path": "../../suite-common/suite-utils"
         },
         { "path": "../../suite-common/trading" },

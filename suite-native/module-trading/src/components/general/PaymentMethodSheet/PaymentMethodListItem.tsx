@@ -2,11 +2,10 @@ import { Pressable } from 'react-native';
 
 import type { BuyTrade, SellFiatTrade } from 'invity-api';
 
-import { useTradingRequestedSide } from '@suite-common/trading';
+import { useChangeStringsExtractor, useTradingRequestedSide } from '@suite-common/trading';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { PaymentMethodIcon } from '@suite-native/icons';
 import { PaymentMethodTranslation } from '@suite-native/trading-atoms';
-import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { RequestedAmountShortfallNote } from '../RequestedAmountShortfallNote';

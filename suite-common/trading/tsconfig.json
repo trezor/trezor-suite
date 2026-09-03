@@ -5,6 +5,7 @@
         { "path": "../address" },
         { "path": "../dependency-injection" },
         { "path": "../device" },
+        { "path": "../formatters" },
         { "path": "../geolocation" },
         { "path": "../networks" },
         { "path": "../react-query" },

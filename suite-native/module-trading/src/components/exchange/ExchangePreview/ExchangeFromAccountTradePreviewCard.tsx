@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
+import { useChangeStringsExtractor } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
-import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { TradingAccountCard } from '../../general/TradingAccountCard';

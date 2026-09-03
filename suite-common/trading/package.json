@@ -17,6 +17,7 @@
         "@suite-common/address": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/react-query": "workspace:*",
@@ -46,6 +47,7 @@
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@testing-library/react": "^16.3.2",
-        "@types/invity-api": "^1.1.19"
+        "@types/invity-api": "^1.1.19",
+        "react-intl": "^8.1.3"
     }
 }

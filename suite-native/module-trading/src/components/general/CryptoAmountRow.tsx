@@ -1,7 +1,8 @@
 import type { CryptoId } from 'invity-api';
 
+import { useFormatCryptoValue } from '@suite-common/trading';
 import { type BoxProps, HStack, Text } from '@suite-native/atoms';
-import { IconByCryptoId, useFormatCryptoValue } from '@suite-native/trading-atoms';
+import { IconByCryptoId } from '@suite-native/trading-atoms';
 import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
 export type CryptoAmountRowProps = {

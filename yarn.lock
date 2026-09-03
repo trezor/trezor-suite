@@ -11531,6 +11531,7 @@ __metadata:
     "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/react-query": "workspace:*"
@@ -11558,6 +11559,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.19"
     react: "npm:19.2.3"
+    react-intl: "npm:^8.1.3"
     react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
@@ -14621,7 +14623,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/device": "workspace:*"
     "@suite-common/flags": "workspace:*"
-    "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -14830,7 +14831,6 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
-    "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"

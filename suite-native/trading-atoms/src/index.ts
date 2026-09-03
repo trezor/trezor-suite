@@ -52,7 +52,6 @@ export { KYCWarning } from './components/KYCWarning';
 
 export * from './hooks/useAnimatedBorderStyle';
 export * from './hooks/useSectionList';
-export { useFormatCryptoValue } from './hooks/useFormatCryptoValue';
 
 export * from './utils/general/cryptoIdUtils';
 export * from './utils/general/receiveAccountUtils';

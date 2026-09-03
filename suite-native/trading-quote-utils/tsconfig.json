@@ -14,7 +14,6 @@
         },
         { "path": "../atoms" },
         { "path": "../intl" },
-        { "path": "../trading-atoms" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" },
