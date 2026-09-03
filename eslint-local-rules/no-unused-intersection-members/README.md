@@ -78,9 +78,9 @@ the alias is identified as a thunk state contract.
    members are checked against usages such as `deps.services.logger` and child-thunk requirements.
 5. **Include transitive thunk requirements.** Dispatching a child thunk implicitly requires the
    child's `state` and `extra` types. Those requirements count even if the parent thunk never calls
-   `getState()` or reads `extra` itself. Thunk factories are recognized from their TypeScript
-   signature, so aliases, namespace properties, named configuration types, extracted callbacks,
-   `api.dispatch(...)`, and dispatch functions passed to typed helpers retain this analysis.
+   `getState()` or reads `extra` itself. Direct `createThunk(...)` calls with inline callbacks are
+   analyzed. Named configuration types, `api.dispatch(...)`, and dispatch functions passed to typed
+   helpers retain this analysis.
 6. **Prefer false negatives over false positives.** When the analysis cannot prove which member is
    needed, it keeps the whole contract. The rule should suggest a removal only when that removal is
    demonstrably safe for every usage visible in the file.

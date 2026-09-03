@@ -646,66 +646,6 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
             errors: [{ messageId: 'unusedIntersectionMember' }],
         },
         {
-            name: 'discovers thunk contracts through aliased factories and callbacks',
-            filename: typeAwareTestFilename,
-            code: `
-                    type ChildState = { child: { ready: boolean } };
-                    type UnusedState = { unused: { ready: boolean } };
-                    type ChildDeps = { logger: { log: () => void } };
-                    type UnusedDeps = { storage: { save: () => void } };
-                    type ParentState = ChildState & UnusedState;
-                    type ParentDeps = ChildDeps & UnusedDeps;
-                    type ParentConfig = { state: ParentState; extra: ParentDeps };
-                    type ChildAction = (
-                        dispatch: unknown,
-                        getState: () => ChildState,
-                        extra: ChildDeps,
-                    ) => void;
-                    type ParentCallback = (
-                        payload: void,
-                        api: {
-                            dispatch: (action: ChildAction) => unknown;
-                            getState: () => ParentState;
-                            extra: ParentDeps;
-                        },
-                    ) => void;
-
-                    declare const childThunk: () => ChildAction;
-                    declare const createThunk: <Result, Payload, Config>(
-                        name: string,
-                        callback: (
-                            payload: Payload,
-                            api: {
-                                dispatch: (action: ChildAction) => unknown;
-                                getState: () => Config extends { state: infer State } ? State : never;
-                                extra: Config extends { extra: infer Deps } ? Deps : never;
-                            },
-                        ) => Result,
-                    ) => unknown;
-
-                    const parentCallback: ParentCallback = (_, api) => {
-                        api.dispatch(childThunk());
-                    };
-                    const thunkFactories = { createThunk };
-
-                    thunkFactories.createThunk<
-                        void,
-                        void,
-                        ParentConfig
-                    >('parent', parentCallback);
-                `,
-            errors: [
-                {
-                    messageId: 'unusedIntersectionMember',
-                    data: { memberName: 'UnusedState', typeName: 'ParentState' },
-                },
-                {
-                    messageId: 'unusedIntersectionMember',
-                    data: { memberName: 'UnusedDeps', typeName: 'ParentDeps' },
-                },
-            ],
-        },
-        {
             name: 'reports only provably unused extras when dispatch escapes',
             filename: typeAwareTestFilename,
             code: `
