@@ -12,10 +12,7 @@ import {
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
 
 import { useChangeStringsExtractor } from './useChangeStringsExtractor';
-import {
-    createTradingTestState,
-    renderHookWithTradingStore,
-} from '../test-utils/testUtils';
+import { createTradingTestState, renderHookWithTradingStore } from '../test-utils/testUtils';
 import type { TradingTradeType } from '../types';
 
 const FormattersProvider = ({ children }: PropsWithChildren) => (

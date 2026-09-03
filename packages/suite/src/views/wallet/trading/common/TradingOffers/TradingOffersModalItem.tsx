@@ -8,13 +8,14 @@ import {
     selectTradingExchangeProviders,
     selectTradingProvidersByTradeType,
 } from '@suite-common/trading';
-import { CardList, Column, Row, Skeleton, Text } from '@trezor/components';
+import { CardList, Column, Row, Skeleton } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
-import { useTradingOfferRate } from './useTradingOfferRate';
+import { TradingQuoteAmount } from '../TradingQuoteAmount';
+import { TradingRequestedAmountShortfallNote } from '../TradingRequestedAmountShortfallNote';
 import { TradingUtilsProvider } from '../TradingUtils/TradingUtilsProvider';
 import { TradingUtilsProviderKyc } from '../TradingUtils/TradingUtilsProviderKyc';
 import { useTradingQuoteAmounts } from '../hooks/useTradingQuoteAmounts';
@@ -43,7 +44,6 @@ const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItem
         },
     } = context;
     const cryptoAmountProps = useTradingQuoteAmounts(quote, context.type);
-    const formattedRate = useTradingOfferRate(quote);
     const { exchange } = quote;
     const exchangeComparatorProps = isTradingExchangeContext(context)
         ? {
@@ -65,7 +65,7 @@ const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItem
             data-testid-alt={`@trading/offers/quote-${exchange}`}
             isDisabled={isFormLoading}
         >
-            <Column gap={16} width="100%">
+            <Column gap={8} width="100%">
                 <Row justifyContent="space-between" alignItems="center" width="100%">
                     <ProviderWrapper>
                         <TradingUtilsProvider providers={providers} exchange={exchange} />
@@ -81,11 +81,13 @@ const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItem
                         )}
                     </ProviderWrapper>
 
-                    {isFormLoading && <Skeleton animate width={200} />}
-                    {!isFormLoading && formattedRate && (
-                        <Text typographyStyle="body-sm-strong">{formattedRate}</Text>
+                    {isFormLoading ? (
+                        <Skeleton animate width={200} />
+                    ) : (
+                        <TradingQuoteAmount quote={quote} />
                     )}
                 </Row>
+                <TradingRequestedAmountShortfallNote quote={quote} />
             </Column>
         </CardList.Item>
     );

@@ -1328,6 +1328,10 @@ export const messages = defineMessages({
         id: 'TR_TRADING_RATE',
         defaultMessage: 'Rate',
     },
+    TR_TRADING_LESS_TO_RECEIVE_THAN_REQUESTED: {
+        id: 'TR_TRADING_LESS_TO_RECEIVE_THAN_REQUESTED',
+        defaultMessage: '{percent} less to receive than requested ({amount})',
+    },
     TR_TRADING_FIX_RATE_DESCRIPTION: {
         id: 'TR_TRADING_FIX_RATE_DESCRIPTION',
         defaultMessage: 'Lock in your rate for 15 minutes by paying a higher fee.',
