@@ -332,7 +332,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 destination: firstSignOutput.address,
                 amount: firstSignOutput.amount,
                 asset,
-                destinationTag: formState.destinationTag,
+                memo: formState.destinationTag,
                 isTestnet: testnet,
             });
 

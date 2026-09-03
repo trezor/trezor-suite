@@ -5,6 +5,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getConvertedOrDefaultFeeInfo,
+    getStellarTrustlineMemo,
     isTestnet,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -78,11 +79,13 @@ const manageTrustline = async (
         operation === 'activate' ? buildAddTrustlineTransaction : buildRemoveTrustlineTransaction;
 
     const testnet = isTestnet(account.symbol);
+    const memo = await getStellarTrustlineMemo(contractAddress);
     const transaction = transactionBuilder({
         descriptor: account.descriptor,
         sequence: misc.stellarSequence,
         fee: feePerUnit,
         asset,
+        memo,
         isTestnet: testnet,
     });
     const xdrBase64 = transaction.toXDR();

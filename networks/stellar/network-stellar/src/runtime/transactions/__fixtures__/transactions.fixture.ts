@@ -1287,7 +1287,7 @@ export const buildSendTransaction = [
             destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
             amount: '100.125',
             asset: { type: 0 },
-            destinationTag: 'Hello, World!',
+            memo: 'Hello, World!',
             isTestnet: false,
         },
         expectedOutput: new TransactionBuilder(
@@ -1322,7 +1322,7 @@ export const buildSendTransaction = [
                 code: 'USD',
                 issuer: 'GDMRPPL6V5UJTX6YP7S4NPR3MVNZEF57A3ETB2GWH6ITILUE3MFNLN3Z',
             },
-            destinationTag: 'Hello, World!',
+            memo: 'Hello, World!',
             isTestnet: false,
         },
         expectedOutput: new TransactionBuilder(
@@ -1360,7 +1360,7 @@ export const buildSendTransaction = [
                 code: 'BANANANANA',
                 issuer: 'GDMRPPL6V5UJTX6YP7S4NPR3MVNZEF57A3ETB2GWH6ITILUE3MFNLN3Z',
             },
-            destinationTag: 'Hello, World!',
+            memo: 'Hello, World!',
             isTestnet: false,
         },
         expectedOutput: new TransactionBuilder(
@@ -1394,7 +1394,7 @@ export const buildSendTransaction = [
             destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
             amount: '100.125',
             asset: { type: 0 },
-            destinationTag: 'Hello, World!',
+            memo: 'Hello, World!',
             isTestnet: false,
         },
         expectedOutput: new TransactionBuilder(
@@ -1415,7 +1415,7 @@ export const buildSendTransaction = [
             .build(),
     },
     {
-        description: 'transaction contains a payment operation, but destinationTag is undefined',
+        description: 'transaction contains a payment operation, but memo is undefined',
         input: {
             descriptor: 'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
             sequence: '123456789',
@@ -1424,7 +1424,7 @@ export const buildSendTransaction = [
             destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
             amount: '100.125',
             asset: { type: 0 },
-            destinationTag: undefined,
+            memo: undefined,
             isTestnet: false,
         },
         expectedOutput: new TransactionBuilder(
@@ -1454,7 +1454,7 @@ export const buildSendTransaction = [
             destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
             amount: '100.125',
             asset: { type: 0 },
-            destinationTag: 'Hello, World!',
+            memo: 'Hello, World!',
             isTestnet: true,
         },
         expectedOutput: new TransactionBuilder(
@@ -1474,5 +1474,99 @@ export const buildSendTransaction = [
                 }),
             )
             .build(),
+    },
+] as const;
+
+const TRUSTLINE_SOURCE = 'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2';
+const TRUSTLINE_SEQUENCE = '123456789';
+const TRUSTLINE_FEE = '1200';
+const USD_ISSUER = 'GDMRPPL6V5UJTX6YP7S4NPR3MVNZEF57A3ETB2GWH6ITILUE3MFNLN3Z';
+
+const buildTrustlineOutput = ({
+    asset,
+    limit,
+    memo,
+    isTestnet,
+}: {
+    asset: Asset;
+    limit?: string;
+    memo?: string;
+    isTestnet?: boolean;
+}) => {
+    const txBuilder = new TransactionBuilder(new Account(TRUSTLINE_SOURCE, TRUSTLINE_SEQUENCE), {
+        fee: TRUSTLINE_FEE,
+        networkPassphrase: isTestnet ? Networks.TESTNET : Networks.PUBLIC,
+    }).setTimebounds(0, 0);
+
+    if (memo) {
+        txBuilder.addMemo(Memo.text(memo));
+    }
+
+    return txBuilder.addOperation(Operation.changeTrust({ asset, limit })).build();
+};
+
+export const buildAddTrustlineTransaction = [
+    {
+        description: 'transaction contains a change trust operation with the token name as memo',
+        input: {
+            descriptor: TRUSTLINE_SOURCE,
+            sequence: TRUSTLINE_SEQUENCE,
+            fee: TRUSTLINE_FEE,
+            asset: { type: 1, code: 'USD', issuer: USD_ISSUER },
+            memo: 'USD Coin',
+            isTestnet: false,
+        },
+        expectedOutput: buildTrustlineOutput({
+            asset: new Asset('USD', USD_ISSUER),
+            memo: 'USD Coin',
+        }),
+    },
+    {
+        description: 'transaction contains a change trust operation, but memo is undefined',
+        input: {
+            descriptor: TRUSTLINE_SOURCE,
+            sequence: TRUSTLINE_SEQUENCE,
+            fee: TRUSTLINE_FEE,
+            asset: { type: 1, code: 'USD', issuer: USD_ISSUER },
+            memo: undefined,
+            isTestnet: false,
+        },
+        expectedOutput: buildTrustlineOutput({ asset: new Asset('USD', USD_ISSUER) }),
+    },
+    {
+        description:
+            'transaction contains a change trust operation with alphanum12 asset on testnet',
+        input: {
+            descriptor: TRUSTLINE_SOURCE,
+            sequence: TRUSTLINE_SEQUENCE,
+            fee: TRUSTLINE_FEE,
+            asset: { type: 2, code: 'BANANANANA', issuer: USD_ISSUER },
+            memo: 'Banana Coin',
+            isTestnet: true,
+        },
+        expectedOutput: buildTrustlineOutput({
+            asset: new Asset('BANANANANA', USD_ISSUER),
+            memo: 'Banana Coin',
+            isTestnet: true,
+        }),
+    },
+] as const;
+
+export const buildRemoveTrustlineTransaction = [
+    {
+        description: 'transaction contains a change trust operation with a zero limit',
+        input: {
+            descriptor: TRUSTLINE_SOURCE,
+            sequence: TRUSTLINE_SEQUENCE,
+            fee: TRUSTLINE_FEE,
+            asset: { type: 1, code: 'USD', issuer: USD_ISSUER },
+            memo: 'USD Coin',
+            isTestnet: false,
+        },
+        expectedOutput: buildTrustlineOutput({
+            asset: new Asset('USD', USD_ISSUER),
+            limit: '0',
+            memo: 'USD Coin',
+        }),
     },
 ] as const;
