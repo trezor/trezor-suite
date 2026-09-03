@@ -18,6 +18,7 @@ import { looselyTypedIpcMain } from '../ipcMain';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
+import { getSwitchValue } from '../libs/process-switches';
 
 export const SERVICE_NAME = '@trezor/connect';
 
@@ -119,6 +120,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     // Core runs in this (main) process; the renderer cannot send a logger factory
                     // across IPC, so build it here from the serializable `debug` enabled hint.
                     // TODO(logger-unification): build from a unified app-wide logger instead of initLog.
+                    settings.debug = settings.debug || getSwitchValue('log-level') === 'debug';
                     createLogger = (prefix: string) => initLog(prefix, !!settings.debug);
                     settings.createLogger = createLogger;
                     settings.transports = getTransportsParam(settings.transports, createLogger);
