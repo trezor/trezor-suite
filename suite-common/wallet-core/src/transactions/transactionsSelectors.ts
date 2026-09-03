@@ -2,6 +2,7 @@ import { A, D, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { isCardanoStakingTx } from '@suite-common/staking';
 import {
     type NotificationsRootState,
     type TransactionNotification,
@@ -27,7 +28,6 @@ import {
     getErc4626Contracts,
     getEvmPrivatePendingHint,
     getFiatRateKey,
-    isCardanoStakingTx,
     isClaimTx,
     isNftTokenTransfer,
     isPending,

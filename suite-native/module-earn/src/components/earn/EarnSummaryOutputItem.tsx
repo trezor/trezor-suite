@@ -1,12 +1,12 @@
 import { type LayoutChangeEvent, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey, type ReviewOutputState } from '@suite-common/wallet-types';
 import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/staking';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type AccountKey, type ReviewOutputState } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { ReviewOutputCard, ReviewOutputItemValues } from '@suite-native/transaction-management';

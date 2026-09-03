@@ -1,5 +1,6 @@
 import { type TranslationFunction } from '@suite/intl';
 import { type Formatter, type Formatters } from '@suite-common/formatters';
+import { getSolanaUnstakeAmountBounds } from '@suite-common/staking';
 import {
     getDisplaySymbol,
     getNetworkDisplaySymbol,
@@ -9,7 +10,6 @@ import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getAmountValidationResult,
-    getSolanaUnstakeAmountBounds,
     isAmountWithinNetworkReserve,
     isDecimalsValid,
     isInteger,

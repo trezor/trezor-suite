@@ -5,7 +5,12 @@ import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
+import {
+    calculateRewards,
+    getNetworkAdjustedStakingBalance,
+    getStakingDataForNetwork,
+    getStakingLimitsByNetworkSymbol,
+} from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -15,13 +20,7 @@ import {
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    calculateRewards,
-    getAccountTotalStakingBalance,
-    getStakingDataForNetwork,
-    getStakingLimitsByNetworkSymbol,
-    isPending,
-} from '@suite-common/wallet-utils';
+import { getAccountTotalStakingBalance, isPending } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Paragraph, Row, Table, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';

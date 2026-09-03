@@ -4,6 +4,7 @@ import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { useDispatch } from '@suite-common/redux-utils';
+import { getTronStakingRewards, getTronWithdrawableBalance } from '@suite-common/staking';
 import { TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS } from '@suite-common/wallet-constants';
 import {
     type TronFlow,
@@ -18,7 +19,6 @@ import {
     tronStakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getTronStakingRewards, getTronWithdrawableBalance } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';

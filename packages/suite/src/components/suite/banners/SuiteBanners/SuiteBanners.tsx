@@ -15,8 +15,8 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { selectBannerMessage } from '@suite-common/message-system';
+import { isCardanoStakedWithFiveBinaries } from '@suite-common/staking';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
-import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { isWeb } from '@trezor/env-utils';
 
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';

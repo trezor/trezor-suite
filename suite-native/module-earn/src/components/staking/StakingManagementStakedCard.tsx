@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { isSupportedSolStakingNetworkSymbol } from '@suite-common/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     Badge,

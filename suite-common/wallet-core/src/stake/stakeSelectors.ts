@@ -1,11 +1,8 @@
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { getCardanoAccountPoolId, selectBestCardanoPool } from '@suite-common/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import {
-    getCardanoAccountPoolId,
-    secondsToDays,
-    selectBestCardanoPool,
-} from '@suite-common/wallet-utils';
+import { secondsToDays } from '@suite-common/wallet-utils';
 
 import type { AccountVotingDelegation, VotingDelegationOption } from './stakeActions';
 import { DEFAULT_VOTING_OPTION } from './stakeConstants';

@@ -7,6 +7,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
+    getStakingDataForNetwork,
     simulateUnstake,
 } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -21,7 +22,6 @@ import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
     getFiatRateKey,
-    getStakingDataForNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isChanged, throwError } from '@trezor/utils';

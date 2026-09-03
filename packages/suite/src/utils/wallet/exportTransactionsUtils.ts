@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import type PdfMake from 'pdfmake/build/pdfmake';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 
+import { subtypeToStakeTypeMap } from '@suite-common/staking';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { type TokenDefinitions, isPhishingTransaction } from '@suite-common/token-definitions';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -22,7 +23,6 @@ import {
     isNftTokenTransfer,
     localizeNumber,
     roundTimestampToNearestPastHour,
-    subtypeToStakeTypeMap,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type TransactionTarget } from '@trezor/connect';

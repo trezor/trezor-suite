@@ -1,4 +1,5 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { calculateSolanaStakingReward, getSolStakingAccountsInfo } from '@suite-common/staking';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -8,10 +9,6 @@ import {
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    calculateSolanaStakingReward,
-    getSolStakingAccountsInfo,
-} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type NativeStakingRootState } from './types';

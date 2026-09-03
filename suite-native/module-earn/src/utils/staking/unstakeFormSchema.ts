@@ -1,11 +1,11 @@
-import { yup } from '@suite-common/validators';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
 import {
     getSolanaUnstakeAmountBounds,
     getStakingLimitsByNetworkSymbol,
-    isDecimalsValid,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/staking';
+import { yup } from '@suite-common/validators';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
+import { isDecimalsValid } from '@suite-common/wallet-utils';
 import { type Translate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 

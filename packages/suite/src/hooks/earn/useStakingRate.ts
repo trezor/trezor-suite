@@ -3,10 +3,10 @@ import {
     getTronVotedApr,
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
+import { getTronVotes } from '@suite-common/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountByKey, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { getTronVotes } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

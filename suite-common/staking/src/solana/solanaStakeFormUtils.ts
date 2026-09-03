@@ -7,10 +7,7 @@ import {
     type StakeFormState,
     type StakeType,
 } from '@suite-common/wallet-types';
-import {
-    isSupportedSolStakingNetworkSymbol,
-    networkAmountToSmallestUnit,
-} from '@suite-common/wallet-utils';
+import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import {
@@ -29,7 +26,8 @@ import type {
 } from '@trezor/network-solana/types';
 import { BigNumber } from '@trezor/utils';
 
-import { calculate, composeStakingTransaction } from './stakeFormActions';
+import { isSupportedSolStakingNetworkSymbol } from './solanaStakingUtils';
+import { calculate, composeStakingTransaction } from '../shared/stakeFormUtils';
 
 // Rent-aware Solana stake fee calc for `composeStakingTransaction` / `calculate`.
 const calculateSolanaStakeTransaction = (

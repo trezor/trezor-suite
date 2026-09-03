@@ -1,4 +1,4 @@
-import { type EthNetwork } from '../types';
+import { type EthNetwork } from './types';
 
 export type EthNetworkAddresses = {
     addressContractAccounting: string;

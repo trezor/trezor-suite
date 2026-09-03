@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { buildUnstakeData, getEthereumStakingAddressByType } from '@suite-common/staking';
+import {
+    buildUnstakeData,
+    getEthereumStakingAddressByType,
+    getStakingLimitsByNetworkSymbol,
+} from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import { UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    fromEther,
-    getStakingLimitsByNetworkSymbol,
-    isPositiveBalance,
-} from '@suite-common/wallet-utils';
+import { fromEther, isPositiveBalance } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {

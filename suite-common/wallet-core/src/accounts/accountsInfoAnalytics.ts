@@ -1,9 +1,9 @@
+import { getStakingProvidersForAnalytics } from '@suite-common/staking';
 import { type TokenDefinition } from '@suite-common/token-definitions';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,
     getAccountsWithSomeTransactionHistory,
-    getStakingProvidersForAnalytics,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 

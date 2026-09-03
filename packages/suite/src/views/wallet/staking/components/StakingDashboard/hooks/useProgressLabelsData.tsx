@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { getStakingAccountCurrentStatus, getTxStakeType } from '@suite-common/staking';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
@@ -8,11 +9,7 @@ import {
     type StakeType,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import {
-    getStakingAccountCurrentStatus,
-    getTxStakeType,
-    isPending,
-} from '@suite-common/wallet-utils';
+import { isPending } from '@suite-common/wallet-utils';
 import { Column, Paragraph } from '@trezor/components';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 

@@ -2,7 +2,12 @@ import { useEffect, useMemo } from 'react';
 
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
+import {
+    getDaysToAddToPool,
+    getDaysToUnstake,
+    getStakingDataForNetwork,
+    hasStakeInPendingDepositedState,
+} from '@suite-common/staking';
 import {
     fetchAllTransactionsForAccountThunk,
     selectAccountIsStakingActive,
@@ -13,10 +18,6 @@ import {
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import {
-    getStakingDataForNetwork,
-    hasStakeInPendingDepositedState,
-} from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';

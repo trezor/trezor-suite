@@ -1,4 +1,4 @@
-import { getDaysToAddToPoolInitial } from '@suite-common/staking';
+import { getDaysToAddToPoolInitial, getUnstakingPeriodInDays } from '@suite-common/staking';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -8,11 +8,7 @@ import {
     selectEthValidatorsQueue,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    getAccountEverstakeStakingPool,
-    getUnstakingPeriodInDays,
-    isPending,
-} from '@suite-common/wallet-utils';
+import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
 
 import { type NativeStakingRootState } from './types';
 

@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { getMaxStakeAmount } from '@suite-common/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -8,11 +9,7 @@ import {
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type StakeType } from '@suite-common/wallet-types';
-import {
-    formatNetworkAmount,
-    getDecimalsForBaseCurrency,
-    getMaxStakeAmount,
-} from '@suite-common/wallet-utils';
+import { formatNetworkAmount, getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';

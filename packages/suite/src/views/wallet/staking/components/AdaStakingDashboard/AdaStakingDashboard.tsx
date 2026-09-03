@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import { useDispatch } from '@suite-common/redux-utils';
+import { getStakingDataForNetwork, isCardanoStakedWithEverstake } from '@suite-common/staking';
 import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     fetchAllTransactionsForAccountThunk,
@@ -11,7 +12,6 @@ import {
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { getStakingDataForNetwork, isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';

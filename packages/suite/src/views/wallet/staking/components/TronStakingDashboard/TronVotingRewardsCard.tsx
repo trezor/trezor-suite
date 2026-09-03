@@ -5,13 +5,13 @@ import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
-import { type Account } from '@suite-common/wallet-types';
 import {
     getTronRewardClaimCooldownEndsAt,
     getTronStakingRewards,
     isTronClaimSupported,
     isTronRewardClaimOnCooldown,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/staking';
+import { type Account } from '@suite-common/wallet-types';
 import {
     Box,
     Button,

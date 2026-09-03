@@ -8,6 +8,11 @@ import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+    isSupportedTronStakingNetworkSymbol,
+} from '@suite-common/staking';
+import {
     type NetworkSymbol,
     getNetwork,
     getNetworkFeatures,
@@ -25,9 +30,6 @@ import {
     BASE_CURRENCY_ZERO,
     asAmountUnit,
     getFiatRateKey,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-    isSupportedTronStakingNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';

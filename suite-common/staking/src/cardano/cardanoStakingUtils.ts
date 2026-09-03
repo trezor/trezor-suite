@@ -15,10 +15,7 @@ import {
     supportedCardanoNetworkSymbols,
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
-import { BigNumber, isArrayMember } from '@trezor/utils';
-
-import { asAmountSubunit } from './AmountTypes';
-import { subunitsToUnits } from './amountUtils';
+import { isArrayMember } from '@trezor/utils';
 
 export function isSupportedAdaStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -191,14 +188,6 @@ export const parseDrepBech32 = (drepId: string): { type: PROTO.CardanoDRepType; 
 
     throw new Error(`Unsupported DRep payload length: ${bytes.length}`);
 };
-
-export const getAdaAccountTotalStakingBalance = (account: Account) =>
-    account?.networkType === 'cardano' && account.misc?.staking?.isActive
-        ? subunitsToUnits({
-              value: asAmountSubunit(new BigNumber(account.balance)),
-              symbol: account.symbol,
-          }).toString()
-        : null;
 
 type CardanoSpecific = NonNullable<WalletAccountTransaction['cardanoSpecific']>;
 export const subtypeToStakeTypeMap: Record<Required<CardanoSpecific>['subtype'], StakeType> = {
