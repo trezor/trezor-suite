@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
-    CARDANO_EPOCH_DAYS,
     fetchAllTransactionsForAccountThunk,
     hasPendingStakeTypeTransaction,
     isCardanoStakedWithEverstake,

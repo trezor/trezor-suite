@@ -4,8 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
-    CARDANO_EPOCH_DAYS,
     type StakeRootState,
     isSupportedSolStakingNetworkSymbol,
     selectApy,
