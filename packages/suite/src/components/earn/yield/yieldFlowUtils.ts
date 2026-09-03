@@ -16,6 +16,7 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import type { StepListItemState } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 export { getYieldApprovalAction, type YieldApprovalAction } from '@suite-common/wallet-core';
@@ -46,6 +47,41 @@ export const getYieldModifyAmountInput = ({
     return isAmountGreaterThan({ amount: nextAmount, threshold: maxAmount })
         ? maxAmount
         : nextAmount;
+};
+
+type YieldStepEntryAmountParams = {
+    step: YieldFlowStepId;
+    committedAmount: string | null;
+    maxAmount: string;
+    unwrapDefaultAmount: string;
+};
+
+/**
+ * Amount the form is re-initialized with on step entry. The approve entry stays uncapped — the
+ * wrapped balance may be stale right after a wrap confirms, which would truncate the amount.
+ */
+export const getYieldStepEntryAmount = ({
+    step,
+    committedAmount,
+    maxAmount,
+    unwrapDefaultAmount,
+}: YieldStepEntryAmountParams): string => {
+    switch (step) {
+        case 'wrap':
+        case 'complete':
+            return '';
+        case 'approve':
+            return committedAmount ?? '';
+        case 'action': {
+            const amount = committedAmount ?? '';
+
+            return isAmountGreaterThan({ amount, threshold: maxAmount }) ? maxAmount : amount;
+        }
+        case 'unwrap':
+            return unwrapDefaultAmount;
+        default:
+            return exhaustive(step);
+    }
 };
 
 type YieldUnwrapDefaultAmountParams = {

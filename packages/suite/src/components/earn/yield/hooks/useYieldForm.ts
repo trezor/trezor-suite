@@ -20,7 +20,7 @@ import { useYieldFiatInput } from './useYieldFiatInput';
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
     getYieldFiatRateToken,
-    getYieldModifyAmountInput,
+    getYieldStepEntryAmount,
     getYieldUnwrapDefaultAmount,
     isAmountGreaterThan,
 } from '../yieldFlowUtils';
@@ -130,46 +130,6 @@ export const useYieldForm = ({
 
     const prevStepRef = useRef<YieldFlowStepId | null>(null);
 
-    // Redux thunks can transition steps outside this hook, so synchronize the form reactively.
-    useEffect(() => {
-        const prevStep = prevStepRef.current;
-        const nextStep = session.step;
-
-        if (prevStep !== null && prevStep !== nextStep) {
-            if (prevStep === 'wrap' && nextStep === 'approve') {
-                resetAmountsRef.current(session.action.amount ?? '');
-            }
-
-            if (nextStep === 'wrap') {
-                resetAmountsRef.current('');
-            }
-
-            if (prevStep === 'approve' && nextStep === 'action') {
-                const actionAmount = session.action.amount ?? '';
-                const cappedAmount = isAmountGreaterThan({
-                    amount: actionAmount,
-                    threshold: maxAmount,
-                })
-                    ? maxAmount
-                    : actionAmount;
-
-                resetAmountsRef.current(cappedAmount);
-            }
-
-            if (prevStep === 'action' && nextStep === 'approve') {
-                resetAmountsRef.current(
-                    getYieldModifyAmountInput({
-                        liveAmount: methodsRef.current.getValues('amountInput'),
-                        actionAmount: session.action.amount,
-                        maxAmount,
-                    }),
-                );
-            }
-        }
-
-        prevStepRef.current = nextStep;
-    }, [session.step, session.action.amount, methodsRef, resetAmountsRef, maxAmount]);
-
     // The unwrap step defaults to the amount just withdrawn, not the whole wrapped-native balance
     // — that would sweep in unrelated WETH (trezor/trezor-suite#30559).
     const pricePerShareState = vault.state?.pricePerShareState;
@@ -187,6 +147,25 @@ export const useYieldForm = ({
             fallbackAmount: token.balance,
         });
     }, [flowType, pricePerShareState, receiptToken, session.result.completedAmount, token]);
+
+    useEffect(() => {
+        const prevStep = prevStepRef.current;
+        const nextStep = session.step;
+        prevStepRef.current = nextStep;
+
+        if (prevStep === null || prevStep === nextStep) {
+            return;
+        }
+
+        resetAmountsRef.current(
+            getYieldStepEntryAmount({
+                step: nextStep,
+                committedAmount: session.action.amount,
+                maxAmount,
+                unwrapDefaultAmount,
+            }),
+        );
+    }, [session.step, session.action.amount, maxAmount, unwrapDefaultAmount, resetAmountsRef]);
 
     useEffect(() => {
         if (session.step !== 'unwrap') {
