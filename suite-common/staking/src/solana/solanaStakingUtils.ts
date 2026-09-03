@@ -1,6 +1,11 @@
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
-import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
+import {
+    calculateTotalSolStakingBalance,
+    formatNetworkAmount,
+    getSolAccountTotalStakingBalance,
+    networkAmountToSmallestUnit,
+} from '@suite-common/wallet-utils';
 import {
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
     MIN_STAKE_DELEGATION,
@@ -10,8 +15,6 @@ import {
     isSupportedSolanaNetwork,
 } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
-
-import { formatNetworkAmount, networkAmountToSmallestUnit } from './amountUtils';
 
 export function isSupportedSolStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -30,38 +33,6 @@ export const getSolanaStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
 
         return acc;
     }, [] as SolanaNetworkSymbol[]);
-
-export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAccount[]) => {
-    if (!stakingAccounts?.length) return null;
-
-    const totalAmount = stakingAccounts.reduce((acc, account) => {
-        if (account?.stake) {
-            const delegationStake = account.stake?.toString();
-
-            if (delegationStake != null) {
-                return acc.plus(delegationStake);
-            }
-        }
-
-        return acc;
-    }, new BigNumber(0));
-
-    return totalAmount.toString();
-};
-
-export const getSolAccountTotalStakingBalance = (account: Account) => {
-    if (!account?.misc || account.networkType !== 'solana') {
-        return null;
-    }
-
-    const { solStakingAccounts } = account.misc;
-    if (!solStakingAccounts) return null;
-
-    const totalStakingBalance = calculateTotalSolStakingBalance(solStakingAccounts);
-    if (!totalStakingBalance) return null;
-
-    return formatNetworkAmount(totalStakingBalance, account.symbol);
-};
 
 export const getSolanaCryptoBalanceWithStaking = (account: Account) => {
     const stakingBalance = getSolAccountTotalStakingBalance(account);

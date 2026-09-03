@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { calculateRewards } from '@suite-common/wallet-utils';
+import { calculateRewards } from '@suite-common/staking';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 

@@ -1,9 +1,6 @@
+import { getStakingLimitsByNetworkSymbol } from '@suite-common/staking';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    formatNetworkAmount,
-    getAccountTotalStakingBalance,
-    getStakingLimitsByNetworkSymbol,
-} from '@suite-common/wallet-utils';
+import { formatNetworkAmount, getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { type StakingNavigateFrom } from '@suite-native/analytics';
 import { BigNumber } from '@trezor/utils';
 

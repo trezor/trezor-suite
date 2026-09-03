@@ -3,9 +3,10 @@ import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
+import { isSupportedStakingNetworkSymbol } from '@suite-common/staking';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isPositiveBalance, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { BannerInline, Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';

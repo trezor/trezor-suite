@@ -1,10 +1,10 @@
-import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     isCardanoStakingActive,
-    isPending,
     isSupportedStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/staking';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { isPending } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 export const isAccountStakingActive = (

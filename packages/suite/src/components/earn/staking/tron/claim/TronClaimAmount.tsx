@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { getTronStakingRewards } from '@suite-common/wallet-utils';
+import { getTronStakingRewards } from '@suite-common/staking';
 import { Card, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 

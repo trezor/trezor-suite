@@ -2,8 +2,9 @@ import { useMemo } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { getStakingDataForNetwork } from '@suite-common/staking';
 import { BACKUP_REWARD_PAYOUT_DAYS } from '@suite-common/wallet-constants';
-import { getStakingDataForNetwork, secondsToDays } from '@suite-common/wallet-utils';
+import { secondsToDays } from '@suite-common/wallet-utils';
 import { Paragraph } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

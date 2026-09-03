@@ -2,9 +2,12 @@ import React, { useMemo } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { calculateGains, getNetworkAdjustedStakingBalance } from '@suite-common/staking';
+import {
+    calculateGains,
+    getNetworkAdjustedStakingBalance,
+    getStakingHelpCenterLink,
+} from '@suite-common/staking';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
-import { getStakingHelpCenterLink } from '@suite-common/wallet-utils';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';

@@ -1,8 +1,9 @@
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
+import { getTxStakeType } from '@suite-common/staking';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getNativeWrapTxKind, getTxStakeType } from '@suite-common/wallet-utils';
+import { getNativeWrapTxKind } from '@suite-common/wallet-utils';
 import { Text, type TextProps } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';

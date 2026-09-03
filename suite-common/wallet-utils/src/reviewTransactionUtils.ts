@@ -38,8 +38,8 @@ import {
     isUnwrapNativeTx,
     isWrapNativeTx,
 } from './ethUtils';
-import { getStakeType } from './ethereumStakingUtils';
 import { isExchangeTradingForm } from './sendFormUtils';
+import { getStakeType } from './stakingUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
 
 /**

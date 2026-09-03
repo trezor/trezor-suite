@@ -6,13 +6,13 @@ import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
 import { useDispatch } from '@suite-common/redux-utils';
-import { type Account } from '@suite-common/wallet-types';
 import {
-    getTronAccountTotalStakingBalance,
     getTronAvailableVotingPower,
     getTronTotalVotingPower,
     getTronVotes,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/staking';
+import { type Account } from '@suite-common/wallet-types';
+import { getTronAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import {
     Button,
     Card,

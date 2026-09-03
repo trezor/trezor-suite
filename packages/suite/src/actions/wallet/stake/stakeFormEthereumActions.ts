@@ -6,15 +6,13 @@ import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
 import {
+    calculate,
+    composeStakingTransaction,
     getStakeTxGasLimit,
     prepareClaimEthTx,
     prepareStakeEthTx,
     prepareUnstakeEthTx,
 } from '@suite-common/staking';
-import {
-    calculate,
-    composeStakingTransaction,
-} from '@suite-common/staking/src/actions/stakeFormActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {

@@ -2,20 +2,18 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+    type SolanaStakingLimitType,
+    estimateSolanaStakingLimit,
+    getSolanaDeactivatedRentReserves,
+} from '@suite-common/staking';
+import {
     type AccountsRootState,
     type BlockchainRootState,
     selectAccountByKey,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type SolanaStakingLimitType,
-    asAmountUnit,
-    estimateSolanaStakingLimit,
-    formatNetworkAmount,
-    getSolanaDeactivatedRentReserves,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
+import { asAmountUnit, formatNetworkAmount, unitsToSubunits } from '@suite-common/wallet-utils';
 import { useDebouncedValue } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 

@@ -1,11 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { getTronWithdrawableBalance } from '@suite-common/staking';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import {
-    asAmountUnit,
-    getAccountIdentity,
-    getTronWithdrawableBalance,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
+import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';

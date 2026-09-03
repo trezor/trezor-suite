@@ -1,4 +1,5 @@
-import { isStakingTransaction, isSwapTransaction } from '@suite-common/wallet-utils';
+import { isStakingTransaction } from '@suite-common/staking';
+import { isSwapTransaction } from '@suite-common/wallet-utils';
 import { type IconComponent } from '@trezor/components';
 import {
     ArrowDownIcon,

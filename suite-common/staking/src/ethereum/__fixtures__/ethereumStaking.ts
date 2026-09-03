@@ -1,7 +1,7 @@
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '@suite-common/wallet-constants';
 
-import { ETH_NETWORK_ADDRESSES } from '../constants/ethereumNetworkAddresses';
+import { ETH_NETWORK_ADDRESSES } from '../ethereumNetworkAddresses';
 
 export const transformTxFixtures = [
     {

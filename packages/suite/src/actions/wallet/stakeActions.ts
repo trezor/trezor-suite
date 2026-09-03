@@ -14,6 +14,11 @@ import {
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
 import { type WithServices } from '@suite-common/redux-utils';
+import {
+    isSupportedAdaStakingNetworkSymbol,
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+} from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -43,9 +48,6 @@ import {
     formatNetworkAmount,
     getMevProtectedTxData,
     isRbfBumpFeeTransaction,
-    isSupportedAdaStakingNetworkSymbol,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';

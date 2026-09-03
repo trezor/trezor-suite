@@ -4,6 +4,7 @@ import {
     useSolStakingRewardsWarning,
     useSolanaRewardsHistory,
 } from '@suite-common/earn-staking-api/src/staking';
+import { getStakingDataForNetwork } from '@suite-common/staking';
 import {
     selectAccountIsStakingActive,
     selectHasRunningDiscovery,
@@ -12,7 +13,6 @@ import {
     selectSolExternalStakingAccountsTotalStaked,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { useCurrentRef } from '@trezor/react-utils';

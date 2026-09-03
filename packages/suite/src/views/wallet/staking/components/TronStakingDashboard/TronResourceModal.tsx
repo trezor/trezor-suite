@@ -3,13 +3,9 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
+import { getResourceGain } from '@suite-common/staking';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
-import {
-    getResourceGain,
-    getTronResources,
-    getTronStakingInfo,
-    sunToTrx,
-} from '@suite-common/wallet-utils';
+import { getTronResources, getTronStakingInfo, sunToTrx } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Divider, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 

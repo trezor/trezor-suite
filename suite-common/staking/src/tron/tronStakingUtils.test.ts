@@ -14,13 +14,10 @@ import {
     TRON_REWARD_CLAIM_COOLDOWN_SECONDS,
     calculateTronFreezeSuggestion,
     getResourceGain,
-    getTronAccountTotalStakingBalance,
     getTronAvailableVotingPower,
     getTronCryptoBalanceWithStaking,
     getTronPendingUnstakeBalance,
-    getTronResources,
     getTronRewardClaimCooldownEndsAt,
-    getTronStakingInfo,
     getTronStakingRewards,
     getTronTotalVotingPower,
     getTronUnstakingBalance,
@@ -85,14 +82,6 @@ const buildTronAccount = ({
         },
     }) as unknown as Account;
 
-const buildNonTronAccount = (): Account =>
-    ({
-        symbol: 'eth',
-        networkType: 'ethereum',
-        formattedBalance: '0',
-        misc: {},
-    }) as unknown as Account;
-
 describe('isSupportedTronStakingNetworkSymbol', () => {
     it('returns true for trx', () => {
         expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('trx'))).toBe(true);
@@ -103,37 +92,6 @@ describe('isSupportedTronStakingNetworkSymbol', () => {
         expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('eth'))).toBe(false);
         // testnet Tron is not in the supported list
         expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('ttrx'))).toBe(false);
-    });
-});
-
-describe('getTronResources', () => {
-    it('returns undefined when no account is provided', () => {
-        expect(getTronResources()).toBeUndefined();
-    });
-
-    it('returns undefined for non-Tron accounts', () => {
-        expect(getTronResources(buildNonTronAccount())).toBeUndefined();
-    });
-
-    it('returns the tronResources for Tron accounts', () => {
-        const stakingInfo = buildStakingInfo({ stakedBalance: '1000000' });
-        const account = buildTronAccount({ stakingInfo });
-        expect(getTronResources(account)?.stakingInfo).toBe(stakingInfo);
-    });
-});
-
-describe('getTronStakingInfo', () => {
-    it('returns undefined when no account is provided', () => {
-        expect(getTronStakingInfo()).toBeUndefined();
-    });
-
-    it('returns undefined when the account has no stakingInfo', () => {
-        expect(getTronStakingInfo(buildTronAccount())).toBeUndefined();
-    });
-
-    it('returns the stakingInfo when present', () => {
-        const stakingInfo = buildStakingInfo({ stakedBalance: '1000000' });
-        expect(getTronStakingInfo(buildTronAccount({ stakingInfo }))).toBe(stakingInfo);
     });
 });
 
@@ -156,19 +114,6 @@ describe('isTronStakingActive', () => {
             stakingInfo: buildStakingInfo({ stakedBalance: '1' }),
         });
         expect(isTronStakingActive(account)).toBe(true);
-    });
-});
-
-describe('getTronAccountTotalStakingBalance', () => {
-    it('returns null when there is no stakingInfo', () => {
-        expect(getTronAccountTotalStakingBalance(buildTronAccount())).toBeNull();
-    });
-
-    it('converts the staked balance from Sun to TRX', () => {
-        const account = buildTronAccount({
-            stakingInfo: buildStakingInfo({ stakedBalance: String(5 * TRX) }),
-        });
-        expect(getTronAccountTotalStakingBalance(account)).toBe('5');
     });
 });
 

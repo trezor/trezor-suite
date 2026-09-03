@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { isSupportedSolStakingNetworkSymbol } from '@suite-common/staking';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import {
-    isDeviceReviewOnlyTransaction,
-    isSupportedSolStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
+import { isDeviceReviewOnlyTransaction } from '@suite-common/wallet-utils';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,

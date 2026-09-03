@@ -1,5 +1,6 @@
+import { getStakingLimitsByNetworkSymbol } from '@suite-common/staking';
 import { type Account } from '@suite-common/wallet-types';
-import { formatNetworkAmount, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 export const isBalanceBelowStakingMinimum = (account: Account): boolean => {

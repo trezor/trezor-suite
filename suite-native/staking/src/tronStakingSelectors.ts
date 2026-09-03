@@ -1,11 +1,4 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    selectAccountByKey,
-    selectDeviceAccounts,
-} from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     getTronAvailableVotingPower,
@@ -14,7 +7,14 @@ import {
     getTronVotes,
     getTronWithdrawableBalance,
     isTronStakingActive,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/staking';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectDeviceAccounts,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { type NativeStakingRootState } from './types';
 

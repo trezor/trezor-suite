@@ -2,6 +2,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
+import { getUnstakingPeriodInDays } from '@suite-common/staking';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -10,7 +11,6 @@ import {
 } from '@suite-common/suite-types/src/staking';
 import { selectEthValidatorsQueue, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useSelector } from 'src/hooks/suite';

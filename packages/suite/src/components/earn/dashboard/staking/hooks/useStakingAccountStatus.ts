@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { selectAccountIsStakingActive, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
 import {
-    getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
     getTronAvailableVotingPower,
     isCardanoStakedOutsideEverstake,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/staking';
+import { selectAccountIsStakingActive, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

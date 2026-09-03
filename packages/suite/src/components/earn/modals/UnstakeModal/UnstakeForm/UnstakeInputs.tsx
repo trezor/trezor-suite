@@ -1,9 +1,9 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
+import { getStakingDataForNetwork } from '@suite-common/staking';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, type FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 

@@ -1,3 +1,9 @@
+import {
+    getEthereumCryptoBalanceWithStaking,
+    getSolanaCryptoBalanceWithStaking,
+    getTronCryptoBalanceWithStaking,
+    getUnstakingPeriodInDays,
+} from '@suite-common/staking';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
@@ -7,13 +13,7 @@ import {
     selectSolAccountHasStaked,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import {
-    getEthereumCryptoBalanceWithStaking,
-    getSolanaCryptoBalanceWithStaking,
-    getTronCryptoBalanceWithStaking,
-    getUnstakingPeriodInDays,
-    isStakingSymbol,
-} from '@suite-common/wallet-utils';
+import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 

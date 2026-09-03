@@ -10,16 +10,17 @@ import {
     supportedTronNetworkSymbols,
 } from '@suite-common/wallet-types';
 import {
+    getTronAccountTotalStakingBalance,
+    getTronStakingInfo,
+    sunToTrx,
+} from '@suite-common/wallet-utils';
+import {
     type TronAccountExtraData,
-    type TronStakingInfo,
     type TronUnstakingBatch,
     type TronVote,
 } from '@trezor/blockchain-link-types';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { BigNumber, isArrayMember, versionUtils } from '@trezor/utils';
-
-import { asAmountSubunit } from './AmountTypes';
-import { subunitsToUnits } from './amountUtils';
 
 export function isSupportedTronStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -40,30 +41,11 @@ export const isTronClaimSupported = (device: TrezorDevice | undefined): boolean 
 export const isTronStakingTx = (transaction: WalletAccountTransaction) =>
     TRON_STAKING_CONTRACT_TYPES.some(type => type === transaction.tronSpecific?.contractType);
 
-export const sunToTrx = (sun: string, symbol: NetworkSymbol) =>
-    subunitsToUnits({
-        value: asAmountSubunit(new BigNumber(sun)),
-        symbol,
-    }).toString();
-
-export const getTronResources = (account?: Account): TronAccountExtraData | undefined =>
-    account?.networkType === 'tron' ? account.misc?.tronResources : undefined;
-
-export const getTronStakingInfo = (account?: Account): TronStakingInfo | undefined =>
-    getTronResources(account)?.stakingInfo;
-
 export const isTronStakingActive = (account: Account | null): boolean => {
     const stakingInfo = getTronStakingInfo(account ?? undefined);
     if (!stakingInfo) return false;
 
     return new BigNumber(stakingInfo.stakedBalance).isGreaterThan(0);
-};
-
-export const getTronAccountTotalStakingBalance = (account: Account): string | null => {
-    const stakingInfo = getTronStakingInfo(account);
-    if (!stakingInfo) return null;
-
-    return sunToTrx(stakingInfo.stakedBalance, account.symbol);
 };
 
 export const getTronCryptoBalanceWithStaking = (account: Account): string => {

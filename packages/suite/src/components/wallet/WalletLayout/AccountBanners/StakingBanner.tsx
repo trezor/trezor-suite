@@ -7,16 +7,16 @@ import { gotoThunk, selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
-import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
+    getNetworkAdjustedStakingBalance,
     getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
     isSupportedStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/staking';
+import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';

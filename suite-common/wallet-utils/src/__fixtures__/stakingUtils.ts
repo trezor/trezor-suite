@@ -1,161 +1,166 @@
-import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
-import { UNSTAKING_ETH_PERIOD } from '@suite-common/wallet-constants';
-import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
-
-type GetUnstakingPeriodInDaysFixture = {
-    description: string;
-    args: {
-        networkType?: NetworkType;
-        withdrawTime?: number;
-        exitTime?: number;
-    };
-    result: number;
-};
-
-export const getUnstakingPeriodInDaysFixture: GetUnstakingPeriodInDaysFixture[] = [
+export const getAccountEverstakeStakingPoolFixtures = [
     {
-        description: 'should return correct unstaking period in days for ETH',
-        args: {
+        description: 'Ethereum network with Everstake pool and small balances',
+        account: {
             networkType: 'ethereum',
-            withdrawTime: 604800,
-            exitTime: 259200,
+            misc: {
+                stakingPools: [
+                    {
+                        name: 'Everstake',
+                        autocompoundBalance: '1000000000000000000', // 1 Ether in wei
+                        claimableAmount: '500000000000000000', // 0.5 Ether in wei
+                        depositedBalance: '3000000000000000000', // 3 Ether in wei
+                        pendingBalance: '100000000000000000', // 0.1 Ether in wei
+                        pendingDepositedBalance: '200000000000000000', // 0.2 Ether in wei
+                        restakedReward: '150000000000000000', // 0.15 Ether in wei
+                        withdrawTotalAmount: '500000000000000000', // 0.5 Ether in wei
+                    },
+                ],
+            },
         },
-        result: 10,
+        expected: {
+            name: 'Everstake',
+            autocompoundBalance: '1', // Ether
+            claimableAmount: '0.5', // Ether
+            depositedBalance: '3', // Ether
+            pendingBalance: '0.1', // Ether
+            pendingDepositedBalance: '0.2', // Ether
+            restakedReward: '0.15', // Ether
+            withdrawTotalAmount: '0.5', // Ether
+            totalPendingStakeBalance: '0.3', // 0.1 + 0.2 Ether
+            canClaim: true,
+        },
     },
     {
-        description:
-            'should return default unstaking period when withdrawTime is not valid for ETH',
-        args: {
-            withdrawTime: undefined,
-        },
-        result: UNSTAKING_ETH_PERIOD,
-    },
-    {
-        description: 'should return Solana epoch duration for SOL',
-        args: {
-            networkType: 'solana',
-        },
-        result: SOLANA_EPOCH_DAYS,
-    },
-    {
-        description: 'should return default ETH period when exitTime is missing',
-        args: {
+        description: 'Ethereum network with Everstake pool and extremely large balances',
+        account: {
             networkType: 'ethereum',
-            withdrawTime: 604800,
-            exitTime: undefined,
+            misc: {
+                stakingPools: [
+                    {
+                        name: 'Everstake',
+                        autocompoundBalance: '1000000000000000000000', // 1000 Ether in wei
+                        claimableAmount: '50000000000000000000000', // 50,000 Ether in wei
+                        depositedBalance: '30000000000000000000000', // 30,000 Ether in wei
+                        pendingBalance: '1000000000000000000000', // 1000 Ether in wei
+                        pendingDepositedBalance: '2000000000000000000000', // 2000 Ether in wei
+                        restakedReward: '150000000000000000000', // 150 Ether in wei
+                        withdrawTotalAmount: '50000000000000000000000', // 50,000 Ether in wei
+                    },
+                ],
+            },
         },
-        result: UNSTAKING_ETH_PERIOD,
+        expected: {
+            name: 'Everstake',
+            autocompoundBalance: '1000', // Ether
+            claimableAmount: '50000', // Ether
+            depositedBalance: '30000', // Ether
+            pendingBalance: '1000', // Ether
+            pendingDepositedBalance: '2000', // Ether
+            restakedReward: '150', // Ether
+            withdrawTotalAmount: '50000', // Ether
+            totalPendingStakeBalance: '3000', // 1000 + 2000 Ether
+            canClaim: true,
+        },
     },
     {
-        description: 'should return default ETH period when both times are undefined',
-        args: {
+        description: 'Ethereum network without Everstake pool',
+        account: {
             networkType: 'ethereum',
-            withdrawTime: undefined,
-            exitTime: undefined,
+            misc: {
+                stakingPools: [
+                    {
+                        name: 'TrezorPool',
+                        autocompoundBalance: '1000000000000000000',
+                    },
+                ],
+            },
         },
-        result: UNSTAKING_ETH_PERIOD,
+        expected: undefined,
     },
     {
-        description: 'should default to ETH period when network and times are missing',
-        args: {},
-        result: UNSTAKING_ETH_PERIOD,
-    },
-    {
-        description:
-            'should calculate unstaking period when network is undefined but times are valid',
-        args: {
-            withdrawTime: 172800,
-            exitTime: 86400,
+        description: 'Non-Ethereum network with Everstake pool',
+        account: {
+            networkType: 'bitcoin',
+            misc: {
+                stakingPools: [
+                    {
+                        name: 'Everstake',
+                        autocompoundBalance: '1000000000000000000',
+                    },
+                ],
+            },
         },
-        result: 3,
-    },
-    {
-        description: 'should return 0 when both times are 0',
-        args: {
-            networkType: 'ethereum',
-            withdrawTime: 0,
-            exitTime: 0,
-        },
-        result: 0,
+        expected: undefined,
     },
 ];
 
-type GetMaxStakeAmountFixture = {
-    description: string;
-    args: {
-        balance: string;
-        symbol: NetworkSymbol | undefined;
-    };
-    result: string;
-};
-
-export const getMaxStakeAmountFixture: GetMaxStakeAmountFixture[] = [
+export const getEthAccountTotalStakingBalanceFixtures = [
     {
-        description:
-            'SOL: reserves the withdrawal amount (0.02), not just the fee buffer, when the balance is well above the staking minimum',
-        args: { balance: '5', symbol: 'sol' },
-        result: '4.98',
+        description: 'Ethereum account with valid Everstake pool',
+        account: {
+            networkType: 'ethereum',
+            misc: {
+                stakingPools: [
+                    {
+                        name: 'Everstake',
+                        autocompoundBalance: '1000000000000000000', // 1 Ether in wei
+                        claimableAmount: '500000000000000000', // 0.5 Ether in wei
+                        depositedBalance: '3000000000000000000', // 3 Ether in wei
+                        pendingBalance: '100000000000000000', // 0.1 Ether in wei
+                        pendingDepositedBalance: '200000000000000000', // 0.2 Ether in wei
+                        restakedReward: '150000000000000000', // 0.15 Ether in wei
+                        withdrawTotalAmount: '500000000000000000', // 0.5 Ether in wei
+                    },
+                ],
+            },
+        },
+        expectedBalance: '1.8', // 1 + 0.1 + 0.2 + 0.5 Ether
     },
     {
-        description:
-            'SOL: takes the fee-buffer-only branch because balance minus the fee buffer (0.005) does not exceed MIN_BALANCE_FOR_STAKING (1.02)',
-        args: { balance: '1.01', symbol: 'sol' },
-        result: '1.005',
+        description: 'Ethereum account with zero balances',
+        account: {
+            networkType: 'ethereum',
+            misc: {
+                stakingPools: [
+                    {
+                        name: 'Everstake',
+                        autocompoundBalance: '0',
+                        claimableAmount: '0',
+                        depositedBalance: '0',
+                        pendingBalance: '0',
+                        pendingDepositedBalance: '0',
+                        restakedReward: '0',
+                        withdrawTotalAmount: '0',
+                    },
+                ],
+            },
+        },
+        expectedBalance: '0',
     },
     {
-        description:
-            'SOL: at the exact fee-buffer branch boundary (balance minus the fee buffer equals MIN_BALANCE_FOR_STAKING), still takes the fee-buffer-only branch',
-        args: { balance: '1.025', symbol: 'sol' },
-        result: '1.02',
+        description: 'Ethereum account without Everstake pool',
+        account: {
+            networkType: 'ethereum',
+            misc: {
+                stakingPools: [],
+            },
+        },
+        expectedBalance: '0',
     },
     {
-        description:
-            'SOL: one cent above the boundary, switches to the withdrawal-reserve branch; this is a known non-monotonic step inherited from desktop (max amount drops from 1.02 to 1.006 as balance rises), not something this shared helper introduces',
-        args: { balance: '1.026', symbol: 'sol' },
-        result: '1.006',
-    },
-    {
-        description: 'SOL: caps the result at the protocol maximum stake amount',
-        args: { balance: '10000005', symbol: 'sol' },
-        result: '10000000',
-    },
-    {
-        description:
-            'SOL: never returns a negative amount when the balance is below the fee buffer',
-        args: { balance: '0.001', symbol: 'sol' },
-        result: '0',
-    },
-    {
-        description:
-            'ETH: withdrawal reserve equals the fee buffer (both 0.005), so max leaves 0.005 regardless of the branch',
-        args: { balance: '5', symbol: 'eth' },
-        result: '4.995',
-    },
-    {
-        description: 'returns 0 (fails safe, reserves everything) for a non-staking network symbol',
-        args: { balance: '5', symbol: 'btc' },
-        result: '0',
-    },
-    {
-        description: 'TRX: below the withdrawal-branch threshold, reserves the full fee buffer (5)',
-        args: { balance: '6', symbol: 'trx' },
-        result: '1',
-    },
-    {
-        description:
-            'TRX: just above the threshold, reserves only the withdrawal amount (0.01) instead of the 5 TRX fee buffer, a steep cliff inherited from desktop',
-        args: { balance: '6.02', symbol: 'trx' },
-        result: '6.01',
-    },
-    {
-        description:
-            'ADA: delegation is liquid, so both the fee buffer and the withdrawal reserve are 0 and the max amount is the full balance',
-        args: { balance: '5', symbol: 'ada' },
-        result: '5',
-    },
-    {
-        description: 'ADA: a dust balance is still fully stakeable because nothing is reserved',
-        args: { balance: '0.001', symbol: 'ada' },
-        result: '0.001',
+        description: 'Non-Ethereum network with Everstake pool',
+        account: {
+            networkType: 'bitcoin',
+            misc: {
+                stakingPools: [
+                    {
+                        name: 'Everstake',
+                        autocompoundBalance: '1000000000000000000',
+                    },
+                ],
+            },
+        },
+        expectedBalance: '0',
     },
 ];

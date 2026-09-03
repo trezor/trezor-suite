@@ -1,12 +1,10 @@
 import { useSelector } from 'react-redux';
 
+import { getSolanaUnstakeAmountBounds } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    getDecimalsForBaseCurrency,
-    getSolanaUnstakeAmountBounds,
-} from '@suite-common/wallet-utils';
+import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { BannerInline, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,

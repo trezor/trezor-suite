@@ -32,14 +32,11 @@ import { type Branded } from '@trezor/type-utils';
 import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
-import { isCardanoStakingTx } from './cardanoStakingUtils';
 import { fromGwei, fromWei } from './ethConverter';
 import { getEvmTransactionTextSignature } from './ethUtils';
-import { isStakeTypeTx } from './ethereumStakingUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
-import { isTronStakingTx } from './tronStakingUtils';
 
 export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?: number }) => {
     // if both are missing the blockHeight don't change their order
@@ -877,29 +874,6 @@ export const isSwapTransaction = (transaction: WalletAccountTransaction) => {
             tokens.some(t => t.type === 'recv') || internalTransfers.some(t => t.type === 'recv');
 
         return hasSent && hasRecv && !cardanoSpecific;
-    }
-
-    return false;
-};
-
-export const isStakingTransaction = (transaction: WalletAccountTransaction) => {
-    // Cardano staking transactions
-    if (isCardanoStakingTx(transaction)) {
-        return true;
-    }
-
-    // Solana staking transactions
-    if (transaction.solanaSpecific?.stakeOperation?.type) {
-        return true;
-    }
-
-    // Ethereum staking transactions
-    if (isStakeTypeTx(transaction.ethereumSpecific?.parsedData?.methodId)) {
-        return true;
-    }
-
-    if (isTronStakingTx(transaction)) {
-        return true;
     }
 
     return false;

@@ -23,7 +23,6 @@ import {
     fromWei,
     getEthereumEstimateFeeParams,
     isPending,
-    isSupportedEthStakingNetworkSymbol,
     sanitizeHex,
     secondsToDays,
 } from '@suite-common/wallet-utils';
@@ -37,10 +36,8 @@ import { type BlockchainEstimatedFee } from '@trezor/connect-common/src/types/ap
 import { type Ok, type PartialRecord, exhaustive } from '@trezor/type-utils';
 import { BigNumber, throwError } from '@trezor/utils';
 
-import {
-    ETH_NETWORK_ADDRESSES,
-    type EthNetworkAddresses,
-} from './constants/ethereumNetworkAddresses';
+import { ETH_NETWORK_ADDRESSES, type EthNetworkAddresses } from './ethereumNetworkAddresses';
+import { isSupportedEthStakingNetworkSymbol } from './ethereumStakingUtils';
 import {
     type EthNetwork,
     type GetStakeFormsDefaultValuesParams,

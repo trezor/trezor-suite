@@ -1,4 +1,10 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import {
+    getStakingDataForNetwork,
+    isCardanoStakedOutsideEverstake,
+    isCardanoStakedWithFiveBinaries,
+    isCardanoStakingActive,
+} from '@suite-common/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -7,12 +13,6 @@ import {
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    getStakingDataForNetwork,
-    isCardanoStakedOutsideEverstake,
-    isCardanoStakedWithFiveBinaries,
-    isCardanoStakingActive,
-} from '@suite-common/wallet-utils';
 
 import { type NativeStakingRootState } from './types';
 
