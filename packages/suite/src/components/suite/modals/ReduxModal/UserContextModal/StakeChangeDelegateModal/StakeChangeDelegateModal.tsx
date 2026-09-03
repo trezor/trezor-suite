@@ -6,8 +6,8 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
-    CARDANO_EVERSTAKE_DREP,
     DEFAULT_VOTING_OPTION,
     getCardanoAccountDrepId,
     selectVotingDelegationOption,

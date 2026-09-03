@@ -11,9 +11,9 @@ import { type AdaPools } from '@suite-common/earn-staking-api';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { EVERSTAKE_POOL_NAMES, type NetworkSymbol } from '@suite-common/wallet-config';
+import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     type AccountVotingDelegation,
-    CARDANO_EVERSTAKE_DREP,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
