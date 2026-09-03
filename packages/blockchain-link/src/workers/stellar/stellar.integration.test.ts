@@ -6,27 +6,28 @@ import {
     identifyTransaction,
     toStroops,
 } from '@trezor/network-stellar';
-import type { StellarAPI } from '@trezor/network-stellar/types';
+import type { StellarHorizonServer } from '@trezor/network-stellar/types';
 
 import { BlockchainLink } from '../../index';
 
 import StellarWorker from './index';
 
-const HORIZON_URL = 'https://horizon.stellar.org';
+// One origin proxies both protocols: JSON-RPC on `POST /` and Horizon on the REST paths.
+const STELLAR_URL = 'http://dev-xlm.suite.sldev.cz';
 
 describe('Stellar', () => {
     let blockchain: BlockchainLink;
-    let horizonServer: StellarAPI;
+    let horizonServer: StellarHorizonServer;
 
     beforeAll(async () => {
         blockchain = new BlockchainLink({
             name: 'Stellar',
             worker: StellarWorker,
-            server: [HORIZON_URL],
+            server: [STELLAR_URL],
             debug: false,
         });
-        const { api } = await getStellarConnection(HORIZON_URL);
-        horizonServer = api;
+        const { horizon } = await getStellarConnection(STELLAR_URL);
+        horizonServer = horizon;
     });
 
     it('getInfo', async () => {
@@ -230,6 +231,25 @@ describe('Stellar', () => {
             (hostFunctionOp as { asset_balance_changes: unknown }).asset_balance_changes,
         ).toBeInstanceOf(Array);
     });
+
+    it('subscribes to the ledger head', async () => {
+        const blocks: { blockHeight: number; blockHash: string }[] = [];
+        blockchain.on('block', block => blocks.push(block));
+
+        const subscribed = await blockchain.subscribe({ type: 'block' });
+        expect(subscribed).toEqual({ subscribed: true });
+
+        // The subscription reads the head once immediately, so there is no need to wait out a
+        // whole poll interval.
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        await blockchain.unsubscribe({ type: 'block' });
+
+        expect(blocks.length).toBeGreaterThan(0);
+        expect(blocks[0]).toEqual({
+            blockHeight: expect.any(Number),
+            blockHash: expect.any(String),
+        });
+    }, 15000);
 
     it('joins the transaction into the operations response', async () => {
         const descriptor = 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET';

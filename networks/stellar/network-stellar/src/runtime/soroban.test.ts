@@ -1,6 +1,7 @@
 import { xdr } from '@stellar/stellar-sdk';
 
-import { type SorobanServer, getContractTokenMetadata } from './soroban';
+import { getContractTokenMetadata } from './soroban';
+import type { StellarRpcServer } from '../types/rpc';
 
 const CONTRACT = 'CAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRVEAM';
 const OTHER_CONTRACT = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRV';
@@ -10,7 +11,7 @@ const mockServer = (retval: xdr.ScVal | undefined) => {
     const simulateTransaction = jest.fn(() => Promise.resolve({ result: { retval } }));
 
     return {
-        server: { simulateTransaction } as unknown as SorobanServer,
+        server: { simulateTransaction } as unknown as StellarRpcServer,
         simulateTransaction,
     };
 };

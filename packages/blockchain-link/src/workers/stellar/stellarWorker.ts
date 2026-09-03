@@ -37,6 +37,14 @@ const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) =
 
 export class StellarWorker extends BaseWorker<StellarAPI> {
     private lazyTokens = createLazy(() => utils.getTokenMetadata());
+    // The base reserve has changed once in the network's history, so it is read from the ledger
+    // header the first time an account needs it and kept for the lifetime of the worker.
+    private lazyBaseReserve = createLazy(async () => {
+        const api = await this.connect();
+        const { readLatestLedger } = await stellar();
+
+        return (await readLatestLedger(api.rpc)).baseReserve;
+    });
     private isTestnet = false;
 
     protected isConnected(api: StellarAPI | undefined): api is StellarAPI {
@@ -45,12 +53,12 @@ export class StellarWorker extends BaseWorker<StellarAPI> {
 
     async tryConnect(url: string): Promise<StellarAPI> {
         const { getStellarConnection } = await stellar();
-        const { api, isTestnet } = await getStellarConnection(
+        const api = await getStellarConnection(
             url,
             isDesktop() || isNative() ? `Trezor Suite ${getSuiteVersion()}` : undefined,
         );
 
-        this.isTestnet = isTestnet;
+        this.isTestnet = api.isTestnet;
 
         return api;
     }
@@ -65,6 +73,7 @@ export class StellarWorker extends BaseWorker<StellarAPI> {
             connect: () => this.connect(),
             post: (data: Response) => this.post(data),
             getTokenMetadata: this.lazyTokens.getOrInit,
+            getBaseReserve: this.lazyBaseReserve.getOrInit,
         });
 
         this.api = undefined;
@@ -81,6 +90,7 @@ export class StellarWorker extends BaseWorker<StellarAPI> {
                 post: (data: Response) => this.post(data),
                 state: this.state,
                 getTokenMetadata: this.lazyTokens.getOrInit,
+                getBaseReserve: this.lazyBaseReserve.getOrInit,
             };
 
             const response = await onRequest(request, this.isTestnet);

@@ -1115,7 +1115,7 @@
         {
             "blockchain_link": {
                 "type": "stellar",
-                "url": ["https://horizon.stellar.org"]
+                "url": ["http://dev-xlm.suite.sldev.cz"]
             },
             "curve": "ed25519",
             "decimals": 7,
@@ -1172,7 +1172,7 @@
         {
             "blockchain_link": {
                 "type": "stellar",
-                "url": ["https://horizon-testnet.stellar.org"]
+                "url": ["http://dev-xlm.suite.sldev.cz"]
             },
             "curve": "ed25519",
             "decimals": 7,

@@ -3,7 +3,11 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 import stellar from '@trezor/network-stellar/runtime';
 
-import { getStellarInactiveTokens, resolveStellarAssetFromContractId } from './stellarTokens';
+import {
+    getStellarInactiveTokens,
+    getStellarTrustlineMemoFromMetadata,
+    resolveStellarAssetFromContractId,
+} from './stellarTokens';
 
 const xlmSymbol = asNetworkSymbol('xlm');
 
@@ -155,5 +159,36 @@ describe(resolveStellarAssetFromContractId.name, () => {
         await expect(
             resolveStellarAssetFromContractId(usdcContractId, definitions),
         ).resolves.toEqual({ assetCode: 'USDC', assetIssuer: USDC_ISSUER });
+    });
+});
+
+describe(getStellarTrustlineMemoFromMetadata.name, () => {
+    const metadataOf = (name: string) => ({ [USDC]: { name, symbol: 'USDC' } });
+
+    it('uses the token name from the definitions', () => {
+        expect(getStellarTrustlineMemoFromMetadata(USDC, metadataOf('USD Coin'))).toBe('USD Coin');
+    });
+
+    it('trims a name that does not fit into a 28 byte text memo', () => {
+        expect(
+            getStellarTrustlineMemoFromMetadata(USDC, metadataOf('A token with a very long name')),
+        ).toBe('A token with a very long nam');
+    });
+
+    it('trims multi byte characters whole', () => {
+        // Ten three byte characters do not fit, nine do
+        expect(getStellarTrustlineMemoFromMetadata(USDC, metadataOf('求'.repeat(10)))).toBe(
+            '求'.repeat(9),
+        );
+    });
+
+    it('returns nothing for a token missing from the definitions', () => {
+        expect(
+            getStellarTrustlineMemoFromMetadata(CATCOIN, metadataOf('USD Coin')),
+        ).toBeUndefined();
+    });
+
+    it('returns nothing for a blank name', () => {
+        expect(getStellarTrustlineMemoFromMetadata(USDC, metadataOf('   '))).toBeUndefined();
     });
 });

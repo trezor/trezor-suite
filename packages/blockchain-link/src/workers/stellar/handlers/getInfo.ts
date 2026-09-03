@@ -1,37 +1,31 @@
 import type { MessageTypes } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
-import { BigNumber } from '@trezor/utils';
+import stellar from '@trezor/network-stellar/runtime';
 
-import { RESERVE } from '../reserve';
 import type { Request } from '../types';
-import { fetchLatestLedger } from '../utils';
 
 export const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolean) => {
     const api = await request.connect();
-    const horizonServerInfo = await api.root();
-    const {
-        sequence: blockHeight,
-        hash: blockHash,
-        base_reserve_in_stroops: baseReserveInStroops,
-    } = await fetchLatestLedger(api);
+    const { readLatestLedger, readVersion } = await stellar();
 
-    RESERVE.BASE = new BigNumber(baseReserveInStroops);
-
-    const serverInfo = {
-        url: api.serverURL.toString(),
-        name: 'Stellar',
-        shortcut: isTestnet ? 'txlm' : 'xlm',
-        network: isTestnet ? 'txlm' : 'xlm',
-        testnet: isTestnet,
-        version: horizonServerInfo.horizon_version,
-        decimals: STELLAR_DECIMALS,
-        blockHeight,
-        blockHash,
-    };
+    const [version, { sequence: blockHeight, hash: blockHash }] = await Promise.all([
+        readVersion(api.rpc),
+        readLatestLedger(api.rpc),
+    ]);
 
     return {
         type: RESPONSES.GET_INFO,
-        payload: { ...serverInfo },
+        payload: {
+            url: api.url,
+            name: 'Stellar',
+            shortcut: isTestnet ? 'txlm' : 'xlm',
+            network: isTestnet ? 'txlm' : 'xlm',
+            testnet: isTestnet,
+            version,
+            decimals: STELLAR_DECIMALS,
+            blockHeight,
+            blockHash,
+        },
     } as const;
 };
