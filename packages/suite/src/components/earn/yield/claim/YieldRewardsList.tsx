@@ -33,7 +33,7 @@ export const YieldRewardsList = ({ accountRewards, isLoading }: YieldRewardsList
     }
 
     return (
-        <Column gap={16}>
+        <Column gap={16} data-testid="@yield/claim/rewards-list">
             {accountRewards.rewards.map((reward, index) => {
                 const claimableUnits = subunitsToUnits({
                     value: asAmountSubunit(new BigNumber(reward.claimable)),

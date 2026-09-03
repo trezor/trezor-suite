@@ -18,7 +18,12 @@ export const YieldRewardItem = ({
     tokenAddress,
     networkSymbol,
 }: YieldRewardItemProps) => (
-    <Row justifyContent="space-between" alignItems="center" gap={16}>
+    <Row
+        justifyContent="space-between"
+        alignItems="center"
+        gap={16}
+        data-testid={`@yield/rewards/item/${tokenSymbol.toLowerCase()}`}
+    >
         <Row gap={12} alignItems="center" flex="1" overflow="hidden">
             <TokenIcon
                 symbol={networkSymbol}
@@ -28,14 +33,22 @@ export const YieldRewardItem = ({
                 isBordered={false}
             />
             <HiddenPlaceholder>
-                <Text typographyStyle="body-md-strong">
+                <Text
+                    typographyStyle="body-md-strong"
+                    data-testid="@yield/rewards/reward-amount-with-symbol"
+                >
                     {formattedAmount} {tokenSymbol}
                 </Text>
             </HiddenPlaceholder>
         </Row>
 
         <HiddenPlaceholder>
-            <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+            <Text
+                typographyStyle="body-md"
+                intent="neutral"
+                priority="secondary"
+                data-testid="@yield/rewards/reward-fiat-amount"
+            >
                 {formattedFiatAmount ? `≈ ${formattedFiatAmount}` : '—'}
             </Text>
         </HiddenPlaceholder>

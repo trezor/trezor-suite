@@ -4,7 +4,11 @@ import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
 import ETH_STAKE_CONFIRMED_TX from '../../fixtures/staking/eth-stake-confirmed-tx.json';
 import { expect, test } from '../../support/fixtures';
 import { ETH_MOCKED_ACCOUNT } from '../../support/mocks/eth-endpoints';
-import { YIELD_USDC_VAULT_SHARE_TOKEN, YIELD_VAULTS } from '../../support/mocks/yieldMock';
+import {
+    YIELD_NEW_BLOCK,
+    YIELD_USDC_VAULT_SHARE_TOKEN,
+    YIELD_VAULTS,
+} from '../../support/mocks/yieldMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const { usdcPrime, usdtPrime } = YIELD_VAULTS;
@@ -268,11 +272,7 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                     '9.94423845… trSHUSDCp',
                 );
 
-                await blockbookMock.sendNewBlockNotification({
-                    // One block above bestHeight of the getInfo fixture in eth-endpoints.
-                    height: 22881954,
-                    hash: '0xa07d0d92b6bb9a5f388d47a10b824b4b09e0b3aeb08d0f61c0e30a25f6c8455f',
-                });
+                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
             });
 
             await test.step('Returning to the dashboard shows the deposited position', async () => {

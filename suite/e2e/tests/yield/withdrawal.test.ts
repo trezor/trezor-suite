@@ -5,6 +5,7 @@ import ETH_STAKE_CONFIRMED_TX from '../../fixtures/staking/eth-stake-confirmed-t
 import { expect, test } from '../../support/fixtures';
 import { ETH_MOCKED_ACCOUNT } from '../../support/mocks/eth-endpoints';
 import {
+    YIELD_NEW_BLOCK,
     YIELD_USDC_DEPOSITED_AMOUNT,
     YIELD_USDC_VAULT_SHARE_TOKEN,
     YIELD_VAULTS,
@@ -15,10 +16,6 @@ const { usdcPrime } = YIELD_VAULTS;
 const YIELD_USDC_VAULT_DISPLAY_NAME = ['Trezor Steakhouse', '\n', 'USDC Prime Vault'];
 const WITHDRAW_AMOUNT = '5';
 const WITHDRAW_MAX_FEE = '0.00010840280031 ETH';
-const NEW_BLOCK = {
-    height: 22881954,
-    hash: '0xa07d0d92b6bb9a5f388d47a10b824b4b09e0b3aeb08d0f61c0e30a25f6c8455f',
-};
 
 const buildEthAccountTokens = ({
     usdcBalance,
@@ -190,7 +187,7 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
                     `${WITHDRAW_AMOUNT} USDC`,
                 );
 
-                await blockbookMock.sendNewBlockNotification(NEW_BLOCK);
+                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
             });
 
             await test.step('Dashboard shows the reduced position', async () => {
