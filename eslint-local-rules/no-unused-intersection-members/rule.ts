@@ -547,34 +547,8 @@ const isUsageSatisfied = (
         : areTypesCollectivelyAssignable(typesAtPath, usage.requiredType, checker);
 };
 
-const isCreateThunkCall = (node: ts.CallExpression, checker: ts.TypeChecker) => {
-    if (node.typeArguments?.[2] === undefined) {
-        return false;
-    }
-
-    const signature = checker.getResolvedSignature(node);
-    const callbackParameter = signature?.getParameters()[1];
-
-    if (callbackParameter === undefined) {
-        return false;
-    }
-
-    const callbackType = checker.getTypeOfSymbolAtLocation(callbackParameter, node);
-
-    return checker
-        .getSignaturesOfType(callbackType, ts.SignatureKind.Call)
-        .some(callbackSignature => {
-            const apiParameter = callbackSignature.getParameters()[1];
-
-            if (apiParameter === undefined) {
-                return false;
-            }
-
-            const apiType = checker.getTypeOfSymbolAtLocation(apiParameter, node);
-
-            return checker.getPropertyOfType(apiType, 'dispatch') !== undefined;
-        });
-};
+const isCreateThunkCall = (node: ts.CallExpression) =>
+    ts.isIdentifier(node.expression) && node.expression.text === 'createThunk';
 
 // Type-level consumers may depend on members without producing an observable runtime property path.
 // Supported contract composition and thunk configuration remain transparent; derivation and generic
@@ -585,19 +559,9 @@ const markContractsUsedByOpaqueTypePositions = (
     checker: ts.TypeChecker,
 ) => {
     const supportedThunkConfigProperties = new Set<ts.Declaration>();
-    const supportedThunkCallbackAliases = new Set<ts.Symbol>();
     const collectThunkConfigProperties = (node: ts.Node) => {
-        if (ts.isCallExpression(node) && isCreateThunkCall(node, checker)) {
+        if (ts.isCallExpression(node) && isCreateThunkCall(node)) {
             const configTypeNode = node.typeArguments?.[2];
-            const callback = node.arguments[1];
-
-            if (callback !== undefined) {
-                const callbackType = checker.getTypeAtLocation(callback);
-
-                if (callbackType.aliasSymbol !== undefined) {
-                    supportedThunkCallbackAliases.add(callbackType.aliasSymbol);
-                }
-            }
 
             if (configTypeNode !== undefined) {
                 const configType = checker.getTypeFromTypeNode(configTypeNode);
@@ -661,11 +625,7 @@ const markContractsUsedByOpaqueTypePositions = (
             if (ts.isTypeAliasDeclaration(parent)) {
                 const containingSymbol = checker.getSymbolAtLocation(parent.name);
 
-                return (
-                    containingSymbol === undefined ||
-                    (!contractsBySymbol.has(containingSymbol) &&
-                        !supportedThunkCallbackAliases.has(containingSymbol))
-                );
+                return containingSymbol === undefined || !contractsBySymbol.has(containingSymbol);
             }
 
             if (ts.isParameter(parent) || ts.isVariableDeclaration(parent)) {
@@ -849,7 +809,7 @@ const collectRoleContractSymbols = (sourceFile: ts.SourceFile, checker: ts.TypeC
         }
     };
     const visitNode = (node: ts.Node) => {
-        if (ts.isCallExpression(node) && isCreateThunkCall(node, checker)) {
+        if (ts.isCallExpression(node) && isCreateThunkCall(node)) {
             addTypeAliasSymbol(getConfigPropertyType(node, 'state', checker));
             addTypeAliasSymbol(getConfigPropertyType(node, 'extra', checker));
         }
@@ -887,34 +847,6 @@ const getObjectBindingIdentifier = (parameter: ts.ParameterDeclaration, property
     );
 
     return binding !== undefined && ts.isIdentifier(binding.name) ? binding.name : undefined;
-};
-
-type ThunkCallbackFunction = ts.ArrowFunction | ts.FunctionDeclaration | ts.FunctionExpression;
-
-const getThunkCallbackFunction = (
-    expression: ts.Expression,
-    checker: ts.TypeChecker,
-): ThunkCallbackFunction | undefined => {
-    if (ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) {
-        return expression;
-    }
-
-    const symbol = checker.getSymbolAtLocation(expression);
-    const declaration = symbol?.valueDeclaration;
-
-    if (
-        declaration !== undefined &&
-        ts.isVariableDeclaration(declaration) &&
-        declaration.initializer !== undefined &&
-        (ts.isArrowFunction(declaration.initializer) ||
-            ts.isFunctionExpression(declaration.initializer))
-    ) {
-        return declaration.initializer;
-    }
-
-    return declaration !== undefined && ts.isFunctionDeclaration(declaration)
-        ? declaration
-        : undefined;
 };
 
 const getDispatchSymbol = (parameter: ts.ParameterDeclaration, checker: ts.TypeChecker) => {
@@ -1146,10 +1078,13 @@ const addDispatchedThunkUsages = (
             addVanillaThunkUsages(node, contractsBySymbol, checker);
         }
 
-        if (ts.isCallExpression(node) && isCreateThunkCall(node, checker)) {
+        if (ts.isCallExpression(node) && isCreateThunkCall(node)) {
             const callback = node.arguments[1];
             const callbackFunction =
-                callback === undefined ? undefined : getThunkCallbackFunction(callback, checker);
+                callback !== undefined &&
+                (ts.isArrowFunction(callback) || ts.isFunctionExpression(callback))
+                    ? callback
+                    : undefined;
             const apiParameter = callbackFunction?.parameters[1];
             const dispatchSymbol =
                 apiParameter === undefined ? undefined : getDispatchSymbol(apiParameter, checker);
