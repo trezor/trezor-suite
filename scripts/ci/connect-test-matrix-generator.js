@@ -91,8 +91,8 @@ const groups = {
     },
 };
 
-const firmwares1 = ['1.9.0', '1-latest', '1-main'];
-const firmwares2 = ['2.3.0', '2-latest', '2-main'];
+const firmwares1 = ['1.12.1', '1-latest', '1-main'];
+const firmwares2 = ['2.5.3', '2-latest', '2-main'];
 
 const inputs = [
     {
@@ -113,7 +113,7 @@ const inputs = [
         value: ({ model, firmware }) =>
             Object.values(groups).filter(group => {
                 if (group.name === 'thp') {
-                    return firmware !== '2.3.0' && model === 'T3W1';
+                    return firmware !== '2.5.3' && model === 'T3W1';
                 }
 
                 return true;
