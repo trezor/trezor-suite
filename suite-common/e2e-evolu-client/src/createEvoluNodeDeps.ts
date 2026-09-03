@@ -22,6 +22,7 @@ import {
     initSharedWorker,
     startDbWorker,
 } from '@evolu/common/local-first';
+import { installPolyfills } from '@evolu/common/polyfills';
 import { createBetterSqliteDriver } from '@evolu/nodejs';
 import { WebSocket } from 'ws';
 
@@ -30,6 +31,8 @@ const isolatedInMemorySqliteDeps: CreateSqliteDriverDep = {
 };
 
 export const createNodeEvoluDeps = () => {
+    installPolyfills();
+
     const consoleStoreOutput = createConsoleStoreOutput();
     const console = createConsole({ output: consoleStoreOutput });
     const lockManager = testCreateLockManager();

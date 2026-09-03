@@ -1,8 +1,9 @@
 import {
     type Evolu,
     type InferRow,
-    NonEmptyString100,
-    NonEmptyString1000,
+    NonEmptyTrimmedString100,
+    NonEmptyTrimmedString1000,
+    type ObjectType,
     type QueryRows,
     createIdFromString,
     createQueryBuilder,
@@ -25,16 +26,17 @@ import { err, ok } from '@trezor/type-utils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const AccountEvoluId = id('AccountEvoluId');
-export type AccountEvoluId = typeof AccountEvoluId.Type;
+export type AccountEvoluId = typeof AccountEvoluId.Output;
 
 const accountTableColumns = {
     id: AccountEvoluId,
-    accountDescriptor: NonEmptyString1000, // xpub, ypub, .. descriptor
-    networkSymbol: NonEmptyString100, // btc, ltc, eth, ...
-    label: nullOr(NonEmptyString1000),
+    accountDescriptor: NonEmptyTrimmedString1000, // xpub, ypub, .. descriptor
+    networkSymbol: NonEmptyTrimmedString100, // btc, ltc, eth, ...
+    label: nullOr(NonEmptyTrimmedString1000),
 };
 
-export const AccountEvoluSchema = object(accountTableColumns);
+export const AccountEvoluSchema: ObjectType<typeof accountTableColumns> =
+    object(accountTableColumns);
 
 /**
  * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
@@ -58,7 +60,7 @@ export class EvoluAccountTable implements AccountTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const validated = AccountEvoluSchema.from({
+        const validated = AccountEvoluSchema.fromUnknown({
             id: idResult.value,
             accountDescriptor,
             networkSymbol,
