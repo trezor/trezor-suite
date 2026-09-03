@@ -2,6 +2,12 @@ import { type Locator, type Page } from '@playwright/test';
 
 import { step } from '../../common';
 
+type ClaimAccountParams = {
+    symbol: string;
+    accountType: string;
+    index: number;
+};
+
 export class YieldSection {
     readonly earnMenuButton: Locator;
     readonly dashboardContainer: Locator;
@@ -10,6 +16,10 @@ export class YieldSection {
     readonly apyBreakdownDescriptions: Locator;
     readonly apyBreakdownRates: Locator;
     readonly apyBreakdownFooter: Locator;
+    readonly claimRewardsButton: Locator;
+    readonly claimRewardsAmount: Locator;
+    readonly claimSelectAccountModal: Locator;
+    readonly claimSelectAccountHeading: Locator;
 
     constructor(private readonly page: Page) {
         this.earnMenuButton = this.page.getByTestId('@suite/menu/suite-earn');
@@ -25,6 +35,28 @@ export class YieldSection {
             '@earn/dashboard/apy-breakdown/rate-percent',
         );
         this.apyBreakdownFooter = this.page.getByTestId('@earn/dashboard/apy-breakdown/footer');
+        this.claimRewardsButton = this.page.getByTestId('@earn/dashboard/claim-rewards-button');
+        this.claimRewardsAmount = this.page.getByTestId('@earn/dashboard/claim-rewards-amount');
+        this.claimSelectAccountModal = this.page.getByTestId('@modal/earn-claim-select-account');
+        this.claimSelectAccountHeading = this.claimSelectAccountModal.getByTestId('@modal/header');
+    }
+
+    claimAccountButton({ symbol, accountType, index }: ClaimAccountParams): Locator {
+        return this.claimSelectAccountModal.getByTestId(
+            `@earn/claim-select-account/account/${symbol}-${accountType}-${index}`,
+        );
+    }
+
+    claimAccountRewardAmounts(account: ClaimAccountParams): Locator {
+        return this.claimAccountButton(account).getByTestId(
+            '@earn/claim-select-account/reward-amounts',
+        );
+    }
+
+    claimAccountFiatAmount(account: ClaimAccountParams): Locator {
+        return this.claimAccountButton(account).getByTestId(
+            '@earn/claim-select-account/fiat-amount',
+        );
     }
 
     row(vaultId: string): Locator {

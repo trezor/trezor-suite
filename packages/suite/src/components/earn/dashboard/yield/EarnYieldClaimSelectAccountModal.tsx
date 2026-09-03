@@ -113,7 +113,9 @@ const RewardTokenAmounts = ({ rewardTokenAmounts }: RewardTokenAmountsProps) => 
             content={fullRewardAmounts}
         >
             <RewardAmountsContainer>
-                <RewardAmountsText>{compactRewardAmounts}</RewardAmountsText>
+                <RewardAmountsText data-testid="@earn/claim-select-account/reward-amounts">
+                    {compactRewardAmounts}
+                </RewardAmountsText>
             </RewardAmountsContainer>
         </Tooltip>
     );
@@ -171,6 +173,7 @@ export const EarnYieldClaimSelectAccountModal = ({
             heading={<Translation id="TR_EARN_YIELD_CLAIM_MODAL_TITLE" />}
             description={<Translation id="TR_EARN_YIELD_CLAIM_MODAL_SUBTITLE" />}
             onCancel={handleOnCancel}
+            data-testid="@modal/earn-claim-select-account"
         >
             <CardList>
                 {sortedAccountsRewards.map(accountRewards => {
@@ -180,6 +183,7 @@ export const EarnYieldClaimSelectAccountModal = ({
                         <CardList.Item
                             key={accountRewards.account.key}
                             onClick={() => handleOnSelect(accountRewards)}
+                            data-testid={`@earn/claim-select-account/account/${accountRewards.account.symbol}-${accountRewards.account.accountType}-${accountRewards.account.index}`}
                         >
                             <Row gap={16} flex="1" overflow="hidden">
                                 <TokenIcon symbol={accountRewards.account.symbol} size={32} />
@@ -208,7 +212,11 @@ export const EarnYieldClaimSelectAccountModal = ({
                                     }
                                 >
                                     <HiddenPlaceholder>
-                                        <Text typographyStyle="body-md-strong" isTabular>
+                                        <Text
+                                            typographyStyle="body-md-strong"
+                                            isTabular
+                                            data-testid="@earn/claim-select-account/fiat-amount"
+                                        >
                                             {BaseCurrencyAmountFormatter.format(
                                                 accountRewards.totalClaimableFiatAmount,
                                             )}

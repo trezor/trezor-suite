@@ -164,7 +164,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                     <>
                         <ContextMessage context={Context.getEarnYield('claim')} />
 
-                        <Text typographyStyle="headline-md">
+                        <Text typographyStyle="headline-md" data-testid="@yield/claim/heading">
                             <Translation id="TR_EARN_CLAIM_REWARDS" />
                         </Text>
                     </>
@@ -227,6 +227,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                                 isClaimSubmitting || merklRewardsQuery.isLoading
                                             }
                                             onClick={handleClaim}
+                                            data-testid="@yield/claim/claim-button"
                                         >
                                             <Translation id="TR_EARN_YIELD_CLAIM" />
                                         </Button>

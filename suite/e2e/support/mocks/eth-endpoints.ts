@@ -90,8 +90,8 @@ export const fixtures = [
         default: true,
         response: ({ params }: any) => {
             // ERC-4626 vault calls: deposit === 0x6e553f65, withdraw === 0xb460af94,
-            // redeem === 0xba087652
-            const vaultCallSelectors = ['0x6e553f65', '0xb460af94', '0xba087652'];
+            // redeem === 0xba087652; Merkl distributor claim === 0x71ee95c0.
+            const vaultCallSelectors = ['0x6e553f65', '0xb460af94', '0xba087652', '0x71ee95c0'];
             if (vaultCallSelectors.some(selector => params?.specific?.data?.startsWith(selector))) {
                 return {
                     data: [

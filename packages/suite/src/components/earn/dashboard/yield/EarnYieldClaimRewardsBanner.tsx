@@ -55,7 +55,12 @@ export const EarnYieldClaimRewardsBanner = ({
     const areRewardsLoading = isLoading || isFiatRateLoading || isDiscoveryRunning;
     const amountContent = (
         <HiddenPlaceholder>
-            <Text typographyStyle="body-md-strong" intent="neutral" priority="primary">
+            <Text
+                typographyStyle="body-md-strong"
+                intent="neutral"
+                priority="primary"
+                data-testid="@earn/dashboard/claim-rewards-amount"
+            >
                 {!isClaimDisabled && '≈ '}
                 <BaseCurrencyAmountFormatter value={value} currency={currency} />
             </Text>
@@ -149,6 +154,7 @@ export const EarnYieldClaimRewardsBanner = ({
                         isDisabled={isClaimDisabled || isDiscoveryRunning}
                         iconLeft={claimDisabledTooltip ? InfoIcon : undefined}
                         onClick={handleOnClaim}
+                        data-testid="@earn/dashboard/claim-rewards-button"
                     >
                         <Translation id="TR_EARN_CLAIM_REWARDS_BUTTON" />
                     </Banner.Button>

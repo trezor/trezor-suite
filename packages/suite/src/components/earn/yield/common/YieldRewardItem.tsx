@@ -28,14 +28,22 @@ export const YieldRewardItem = ({
                 isBordered={false}
             />
             <HiddenPlaceholder>
-                <Text typographyStyle="body-md-strong">
+                <Text
+                    typographyStyle="body-md-strong"
+                    data-testid="@yield/rewards/reward-amount-with-symbol"
+                >
                     {formattedAmount} {tokenSymbol}
                 </Text>
             </HiddenPlaceholder>
         </Row>
 
         <HiddenPlaceholder>
-            <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+            <Text
+                typographyStyle="body-md"
+                intent="neutral"
+                priority="secondary"
+                data-testid="@yield/rewards/reward-fiat-amount"
+            >
                 {formattedFiatAmount ? `≈ ${formattedFiatAmount}` : '—'}
             </Text>
         </HiddenPlaceholder>

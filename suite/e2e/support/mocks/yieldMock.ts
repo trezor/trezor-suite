@@ -48,6 +48,33 @@ export const YIELD_USDC_VAULT_SHARE_TOKEN = {
 
 // Share token balance converted by pricePerShareState.price (1.005607422297114), as displayed
 export const YIELD_USDC_DEPOSITED_AMOUNT = '10';
+
+// Merkl protocol-incentive reward (MORPHO) claimable by the mocked account.
+const MORPHO_CONTRACT = '0x58D97B57BB95320F9a05dC918Aef65434969c2B2';
+export const YIELD_MERKL_CLAIM_REWARD = {
+    token: {
+        address: MORPHO_CONTRACT,
+        chainId: 1,
+        symbol: 'MORPHO',
+        decimals: 18,
+    },
+    // claimed and pending are 0, so the on-chain cumulative amount equals the claimable amount.
+    amount: '2500000000000000000',
+    claimable: '2500000000000000000',
+    claimableUnits: '2.5',
+} as const;
+
+// MORPHO token entry for the blockbook account state after the claim is confirmed.
+export const YIELD_CLAIMED_MORPHO_TOKEN = {
+    type: 'ERC20',
+    standard: 'ERC20',
+    name: 'Morpho Token',
+    contract: MORPHO_CONTRACT.toLowerCase(),
+    symbol: 'MORPHO',
+    decimals: 18,
+    balance: YIELD_MERKL_CLAIM_REWARD.claimable,
+    transfers: 1,
+} as const;
 const USDC_ASSET = {
     type: 'ERC20',
     address: USDC_CONTRACT,
@@ -64,6 +91,14 @@ const USDC_VAULT_SHARE_ASSET = {
     symbol: 'trSHUSDCp',
 };
 
+const MORPHO_ASSET = {
+    type: 'ERC20',
+    address: MORPHO_CONTRACT,
+    decimals: 18,
+    name: 'Morpho Token',
+    symbol: 'MORPHO',
+};
+
 type BlockaidTransfer = {
     asset: typeof USDC_ASSET;
     rawValue: string;
@@ -76,7 +111,7 @@ const createBlockaidBenignResponse = ({
     sent,
     received,
 }: {
-    sent: BlockaidTransfer;
+    sent?: BlockaidTransfer;
     received: BlockaidTransfer;
 }) => ({
     validation: {
@@ -96,19 +131,23 @@ const createBlockaidBenignResponse = ({
 
         account_summary: {
             assets_diffs: [
-                {
-                    asset_type: 'ERC20',
-                    asset: sent.asset,
-                    in: [],
-                    out: [
-                        {
-                            raw_value: sent.rawValue,
-                            value: sent.value,
-                            usd_price: sent.usdPrice,
-                            summary: sent.summary,
-                        },
-                    ],
-                },
+                ...(sent
+                    ? [
+                          {
+                              asset_type: 'ERC20',
+                              asset: sent.asset,
+                              in: [],
+                              out: [
+                                  {
+                                      raw_value: sent.rawValue,
+                                      value: sent.value,
+                                      usd_price: sent.usdPrice,
+                                      summary: sent.summary,
+                                  },
+                              ],
+                          },
+                      ]
+                    : []),
                 {
                     asset_type: 'ERC20',
                     asset: received.asset,
@@ -126,8 +165,8 @@ const createBlockaidBenignResponse = ({
             exposures: [],
             total_usd_diff: {
                 in: received.usdPrice,
-                out: sent.usdPrice,
-                total: (Number(received.usdPrice) - Number(sent.usdPrice)).toString(),
+                out: sent?.usdPrice ?? '0',
+                total: (Number(received.usdPrice) - Number(sent?.usdPrice ?? '0')).toString(),
             },
             total_usd_exposure: {},
             traces: [],
@@ -189,6 +228,38 @@ const BLOCKAID_REDEEM_RESPONSE = createBlockaidBenignResponse({
         summary: 'Receiving 3.016822 USDC',
     },
 });
+
+// Claiming Merkl rewards only receives tokens; there is no outgoing transfer.
+const BLOCKAID_CLAIM_RESPONSE = createBlockaidBenignResponse({
+    received: {
+        asset: MORPHO_ASSET,
+        rawValue: '0x22b1c8c1227a0000',
+        value: '2.5',
+        usdPrice: '2.5',
+        summary: 'Receiving 2.5 MORPHO',
+    },
+});
+
+const createMerklRewardsResponse = (entries: { chainId: number; address: string }[]) =>
+    entries.map(({ chainId, address }) => ({
+        chainId,
+        address,
+        rewards: [
+            {
+                root: '0xdd919087d979f8b985e53c9c360709d2a751f8c5dabe3834a4552a49e3b836cd',
+                amount: YIELD_MERKL_CLAIM_REWARD.amount,
+                claimed: '0',
+                pending: '0',
+                token: YIELD_MERKL_CLAIM_REWARD.token,
+                proofs: [
+                    '0x8e18f5e7ec457f26c11ed8659eda26b740a0dbe125e1276c675f89b9916cee5a',
+                    '0x6da49a874e58d9268789b2c5d7fda203407321b8f2b985cc31cc83d07e683591',
+                ],
+                claimable: YIELD_MERKL_CLAIM_REWARD.claimable,
+            },
+        ],
+        totalClaimable: YIELD_MERKL_CLAIM_REWARD.claimable,
+    }));
 
 const YIELD_VAULTS_RESPONSE = {
     items: [
@@ -374,6 +445,35 @@ export class YieldMock {
     async mockUsdcRedeem() {
         await this.page.route(BLOCKAID_API_PATTERN, route =>
             route.fulfill({ json: BLOCKAID_REDEEM_RESPONSE }),
+        );
+    }
+
+    // Serves claimable Merkl rewards for every queried account. Once Suite polls with
+    // `reloadChainId` after the claim tx is confirmed (waitForMerklToResolveClaim), the mock
+    // switches to empty rewards for good — the same way real Merkl reports a settled claim.
+    @step()
+    async mockMerklRewards() {
+        let isClaimSettled = false;
+
+        await this.page.route(MERKL_API_PATTERN, route => {
+            const entries: { chainId: number; address: string; reloadChainId?: number }[] = route
+                .request()
+                .postDataJSON();
+
+            if (entries.some(entry => entry.reloadChainId !== undefined)) {
+                isClaimSettled = true;
+            }
+
+            return route.fulfill({
+                json: isClaimSettled ? [] : createMerklRewardsResponse(entries),
+            });
+        });
+    }
+
+    @step()
+    async mockMorphoClaim() {
+        await this.page.route(BLOCKAID_API_PATTERN, route =>
+            route.fulfill({ json: BLOCKAID_CLAIM_RESPONSE }),
         );
     }
 

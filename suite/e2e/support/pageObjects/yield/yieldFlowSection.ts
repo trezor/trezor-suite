@@ -21,12 +21,21 @@ export class YieldFlowSection {
     readonly maxButton: Locator;
     readonly maxWithdrawInfoBanner: Locator;
     readonly withdrawnToast: Locator;
+    // Claim step
+    readonly claimHeading: Locator;
+    readonly claimButton: Locator;
+    readonly claimRewardAmount: Locator;
+    readonly claimRewardFiatAmount: Locator;
+    readonly claimedToast: Locator;
+    readonly claimedToastMessage: Locator;
     // Flow-complete screen
     readonly flowCompleteHeading: Locator;
     readonly flowCompleteStatus: Locator;
     readonly flowCompleteApy: Locator;
     readonly flowCompleteTransferInputAmount: Locator;
     readonly flowCompleteTransferOutputAmount: Locator;
+    readonly flowCompleteRewardAmount: Locator;
+    readonly flowCompleteRewardFiatAmount: Locator;
     readonly backToOverviewButton: Locator;
 
     constructor(private readonly page: Page) {
@@ -47,6 +56,16 @@ export class YieldFlowSection {
         this.maxButton = this.page.getByTestId('@yield/form/max-button');
         this.maxWithdrawInfoBanner = this.page.getByTestId('@yield/form/max-withdraw-info');
         this.withdrawnToast = this.page.getByTestId('@toast/tx-yield-withdraw');
+        this.claimHeading = this.page.getByTestId('@yield/claim/heading');
+        this.claimButton = this.page.getByTestId('@yield/claim/claim-button');
+        this.claimRewardAmount = this.page
+            .getByTestId('@yield/claim/rewards-list')
+            .getByTestId('@yield/rewards/reward-amount-with-symbol');
+        this.claimRewardFiatAmount = this.page
+            .getByTestId('@yield/claim/rewards-list')
+            .getByTestId('@yield/rewards/reward-fiat-amount');
+        this.claimedToast = this.page.getByTestId('@toast/tx-yield-claim');
+        this.claimedToastMessage = this.page.getByTestId('@toast/tx-yield-claim/message');
         this.flowCompleteHeading = this.page.getByTestId('@yield/flow-complete/heading');
         this.flowCompleteStatus = this.page.getByTestId('@yield/flow-complete/status');
         this.flowCompleteApy = this.page.getByTestId('@earn/dashboard/apy-percentage');
@@ -56,8 +75,21 @@ export class YieldFlowSection {
         this.flowCompleteTransferOutputAmount = this.page.getByTestId(
             '@yield/flow-complete/transfer/output-with-symbol',
         );
+        this.flowCompleteRewardAmount = this.page
+            .getByTestId('@yield/flow-complete/rewards-list')
+            .getByTestId('@yield/rewards/reward-amount-with-symbol');
+        this.flowCompleteRewardFiatAmount = this.page
+            .getByTestId('@yield/flow-complete/rewards-list')
+            .getByTestId('@yield/rewards/reward-fiat-amount');
         this.backToOverviewButton = this.page.getByTestId(
             '@yield/flow-complete/back-to-overview-button',
         );
+    }
+
+    // Token symbol shown in the claim review modal's "Reward tokens" step.
+    claimReviewRewardToken(tokenAddress: string): Locator {
+        return this.page
+            .getByTestId(`@modal/output-reward-${tokenAddress}`)
+            .getByTestId('@modal/output-value');
     }
 }
