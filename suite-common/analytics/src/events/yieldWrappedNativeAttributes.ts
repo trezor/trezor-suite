@@ -5,6 +5,9 @@ import type { AttributeDef } from '../eventDefinition';
 /**
  * Shared by `yieldWrapEvent` and `yieldUnwrapEvent`, which are structurally identical.
  *
+ * These events cover only the standalone wrap/unwrap pages — a wrap/unwrap running as an in-flow
+ * step of a yield deposit/withdraw reports through `yield/deposit` / `yield/withdraw` instead.
+ *
  * Carries no amount/balance/txid/descriptor — those are device-confidential and must never leave
  * the device (see CLAUDE.md).
  */
@@ -14,7 +17,6 @@ export type WrappedNativeFlowAttributes = {
         'submit' | 'tx-simulation-modal' | 'sent' | 'success' | 'error' | 'leftPending'
     >;
     networkSymbol?: AttributeDef<string>;
-    vaultId?: AttributeDef<string>;
     durationMs?: AttributeDef<number>;
     errorMessage?: AttributeDef<string>;
 };
@@ -27,18 +29,13 @@ export const wrappedNativeFlowAttributes = {
     },
     type: {
         description:
-            '`submit` = user confirmed the wrap/unwrap form, `tx-simulation-modal` = simulation modal shown (with `action` continue/cancel), `sent` = transaction signed &amp; broadcast accepted — emitted with `action=continue` when the "transaction sent" toast is shown and again with `action=close` if the user dismisses that toast (letting it auto-close is not reported), `success` / `error` / `leftPending` = on-chain resolution of the broadcast transaction. Mobile shows a pending-transaction sheet instead of a toast and only reports `sent` with `action=continue`.',
+            '`submit` = user confirmed the wrap/unwrap form, `tx-simulation-modal` = simulation modal shown (with `action` continue/cancel), `sent` = transaction signed &amp; broadcast accepted — emitted with `action=continue` when the "transaction sent" toast is shown and again with `action=close` if the user dismisses that toast (letting it auto-close is not reported), `success` / `leftPending` = on-chain resolution of the broadcast transaction, `error` = a pre-broadcast or on-chain failure — see `errorMessage` for the classification. Mobile shows a pending-transaction sheet instead of a toast and only reports `sent` with `action=continue`.',
         changelog: [
             { version: '26.8.0', notes: 'added' },
             { version: '26.8.1', notes: 'reported from mobile as well' },
         ],
     },
     networkSymbol: {
-        changelog: [{ version: '26.8.0', notes: 'added' }],
-    },
-    vaultId: {
-        description:
-            'Internal vault identifier (vault.id) when the wrap/unwrap runs as an in-flow step of a yield deposit/withdraw; absent for the standalone wrap/unwrap pages.',
         changelog: [{ version: '26.8.0', notes: 'added' }],
     },
     durationMs: {
