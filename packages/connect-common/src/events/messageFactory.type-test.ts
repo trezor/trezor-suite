@@ -99,9 +99,10 @@ const uiRequestMessage = createUiRequestMessage(UI_REQUESTS.REQUEST_PIN, uiReque
 });
 void (uiRequestMessage.type satisfies typeof UI_REQUESTS.REQUEST_PIN);
 void (uiRequestMessage.payload satisfies typeof uiRequestPayload);
+void (uiRequestMessage.requestId satisfies string);
 
-// TODO: ts-expect-error UI request messages require request options.
-// createUiRequestMessage(UI_REQUESTS.REQUEST_PIN, uiRequestPayload);
+// @ts-expect-error UI request messages require request options.
+createUiRequestMessage(UI_REQUESTS.REQUEST_PIN, uiRequestPayload);
 
-// TODO: ts-expect-error UI request options require requestId.
+// @ts-expect-error UI request options require requestId.
 createUiRequestMessage(UI_REQUESTS.REQUEST_PIN, uiRequestPayload, {});
