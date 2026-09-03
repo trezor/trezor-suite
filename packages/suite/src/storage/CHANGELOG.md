@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.9.0.1
+
+- add `stellarContractTokens` object store (Soroban contract ids watched per account)
+
 ## 26.9.0
 
 - replace `walletSettings.hideSuspiciousTransactions` (per-network boolean) with `walletSettings.suspiciousTransactionsFilter` (per-network filter value)

@@ -5,6 +5,16 @@ const FEE_ACCOUNT = 'GA2JRQOF6EA3HQWDCEDBPPMLYPJCFLDDGYZLEQGMS5SOBQIB3BAFHVAW';
 const USD_ISSUER = 'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY';
 const CATCOIN_ISSUER = 'GDJVFDG5OCW5PYWHB64MGTHGFF57DRRJEDUEFDEL2SLNIOONHYJWHA3Z';
 
+const ROUTER_CONTRACT = 'CAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRVEAM';
+const TOKEN_CONTRACT = 'CDWFVPEN2TZ4KL6QJBKMSI6PUF5IBJCH5VAZHIPQIL7VOF7ZBH6IXL75';
+
+// `swap_chained(DESCRIPTOR, TOKEN_CONTRACT, 20000000, 19777295)` on ROUTER_CONTRACT, authorizing a
+// nested `TOKEN_CONTRACT.transfer(DESCRIPTOR, ROUTER_CONTRACT, 20000000)` with source-account
+// credentials. A contract token is not a Stellar Asset Contract, so Horizon reports no balance
+// change for it and the envelope is the only record of what moved.
+const CONTRACT_TOKEN_SWAP_ENVELOPE =
+    'AAAAAgAAAAB9voIijl1f4z1QtBigJYncIKek313/H3WgGJf+g53KcwAABEwAAAAAAAAAAgAAAAEAAAAAAAAAAAAAAABqmWxYAAAAAAAAAAEAAAAAAAAAGAAAAAAAAAABJbKv015UMxpIkMNjGfee2xjweJ5H/Dh7OzDvLmmlTRoAAAAMc3dhcF9jaGFpbmVkAAAABAAAABIAAAAAAAAAAH2+giKOXV/jPVC0GKAlidwgp6TfXf8fdaAYl/6DncpzAAAAEgAAAAHsWryN1PPFL9BIVMkjz6F6gKRH7UGTofBC/1cX+Qn8iwAAAAkAAAAAAAAAAAAAAAABMS0AAAAACQAAAAAAAAAAAAAAAAEtxw8AAAABAAAAAAAAAAAAAAABJbKv015UMxpIkMNjGfee2xjweJ5H/Dh7OzDvLmmlTRoAAAAMc3dhcF9jaGFpbmVkAAAABAAAABIAAAAAAAAAAH2+giKOXV/jPVC0GKAlidwgp6TfXf8fdaAYl/6DncpzAAAAEgAAAAHsWryN1PPFL9BIVMkjz6F6gKRH7UGTofBC/1cX+Qn8iwAAAAkAAAAAAAAAAAAAAAABMS0AAAAACQAAAAAAAAAAAAAAAAEtxw8AAAABAAAAAAAAAAHsWryN1PPFL9BIVMkjz6F6gKRH7UGTofBC/1cX+Qn8iwAAAAh0cmFuc2ZlcgAAAAMAAAASAAAAAAAAAAB9voIijl1f4z1QtBigJYncIKek313/H3WgGJf+g53KcwAAABIAAAABJbKv015UMxpIkMNjGfee2xjweJ5H/Dh7OzDvLmmlTRoAAAAJAAAAAAAAAAAAAAAAATEtAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+gAAAAA';
+
 const TX_HASH = '0d9ebb6dc26097e5024994477dcbfdea2df7ba41caa204e885a85b51f10e30ef';
 const LEDGER = 56802294;
 const CREATED_AT = '2025-04-27T02:25:26Z';
@@ -463,6 +473,44 @@ export const fixtures = {
                     invokeHostFunction([balanceChange({ from: COUNTERPARTY, to: THIRD_PARTY })]),
                 ],
                 tx: transaction(),
+            },
+            expectedOutput: output({ type: 'unknown' }),
+        },
+        {
+            description: 'contract-token call without balance changes keeps its decoded call',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [invokeHostFunction([])],
+                tx: transaction({ envelope_xdr: CONTRACT_TOKEN_SWAP_ENVELOPE }),
+            },
+            expectedOutput: output({
+                type: 'contract',
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    contractCall: {
+                        contractId: ROUTER_CONTRACT,
+                        functionName: 'swap_chained',
+                        args: [
+                            { kind: 'address', value: DESCRIPTOR },
+                            { kind: 'address', value: TOKEN_CONTRACT },
+                            { kind: 'text', value: '20000000' },
+                            { kind: 'text', value: '19777295' },
+                        ],
+                        authorizedCalls: [
+                            { contractId: ROUTER_CONTRACT, functionName: 'swap_chained', depth: 0 },
+                            { contractId: TOKEN_CONTRACT, functionName: 'transfer', depth: 1 },
+                        ],
+                    },
+                },
+            }),
+        },
+        {
+            description: 'host function call with an unreadable envelope stays unknown',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [invokeHostFunction([])],
+                tx: transaction({ envelope_xdr: 'not-xdr' }),
             },
             expectedOutput: output({ type: 'unknown' }),
         },

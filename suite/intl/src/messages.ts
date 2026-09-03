@@ -7648,6 +7648,10 @@ export const messages = defineMessages({
         id: 'TR_EXPLORER_TOKEN',
         defaultMessage: 'Token',
     },
+    TR_EXPLORER_CONTRACT: {
+        id: 'TR_EXPLORER_CONTRACT',
+        defaultMessage: 'Contract',
+    },
     TR_EXPLORER_SET_DEFAULT: {
         id: 'TR_EXPLORER_SET_DEFAULT',
         defaultMessage: 'Set to default',
@@ -10230,6 +10234,14 @@ export const messages = defineMessages({
     TR_TX_DATA_INPUT_DATA: {
         id: 'TR_TX_DATA_INPUT_DATA',
         defaultMessage: 'Input data',
+    },
+    TR_TX_DATA_CONTRACT: {
+        id: 'TR_TX_DATA_CONTRACT',
+        defaultMessage: 'Contract',
+    },
+    TR_TX_DATA_AUTHORIZED_CALLS: {
+        id: 'TR_TX_DATA_AUTHORIZED_CALLS',
+        defaultMessage: 'Authorized calls',
     },
     TR_FROM: {
         id: 'TR_FROM',

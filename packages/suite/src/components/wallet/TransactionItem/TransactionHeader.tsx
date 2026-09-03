@@ -166,6 +166,14 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         );
     }
 
+    // Soroban calls are named by the invoked function, like the Ethereum case above. `transfer` is
+    // excluded because the token-transfer messages below describe it better. The Soroban symbol
+    // charset is alphanumeric, so the name needs no URL blurring.
+    const stellarFunctionName = transaction.stellarSpecific?.contractCall?.functionName;
+    if (stellarFunctionName && stellarFunctionName !== 'transfer') {
+        return <>{stellarFunctionName}</>;
+    }
+
     const tronTransactionMessageId = getTronTransactionMessageId(transaction);
     if (tronTransactionMessageId) {
         const contractType = transaction.tronSpecific?.contractType;

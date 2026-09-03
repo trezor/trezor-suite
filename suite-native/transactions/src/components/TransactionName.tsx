@@ -115,6 +115,7 @@ export const TransactionName = ({ transaction, isPending, ...textProps }: Transa
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
+    const stellarFunctionName = transaction.stellarSpecific?.contractCall?.functionName;
 
     if (transaction.type === 'failed') {
         return (
@@ -213,17 +214,20 @@ export const TransactionName = ({ transaction, isPending, ...textProps }: Transa
 
     const stakeTranslationId = stakeType ? getStakeTransactionMessage(stakeType, isPending) : null;
 
+    // A Soroban `transfer` is left to the generic sent/received labels, which describe it better.
+    const sorobanName = stellarFunctionName === 'transfer' ? undefined : stellarFunctionName;
+
     // The contract method name (e.g. "Transfer") must not override the "self" label for
     // self-transactions, otherwise sending to your own account shows up as a generic transfer.
-    const ethNameToDisplay = transaction.type === 'self' ? undefined : ethName;
+    const contractCallName = transaction.type === 'self' ? undefined : (ethName ?? sorobanName);
 
     return (
         <Text {...textProps}>
             {stakeTranslationId ? (
                 <Translation id={stakeTranslationId} />
             ) : (
-                // use name of eth txns, but not for recv or sent Transfer
-                ethNameToDisplay || <Translation id={getTransactionName(transaction, isPending)} />
+                // use the invoked contract function, but not for recv or sent Transfer
+                contractCallName || <Translation id={getTransactionName(transaction, isPending)} />
             )}
         </Text>
     );

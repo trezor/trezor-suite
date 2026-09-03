@@ -54,6 +54,10 @@ export const resolveStellarAssetFromContractId = async (
     return assetCode && assetIssuer ? { assetCode, assetIssuer } : undefined;
 };
 
+/** As `resolveStellarAssetFromContractId`, reading the token definitions through the shared holder. */
+export const resolveStellarContractId = async (contractId: string) =>
+    resolveStellarAssetFromContractId(contractId, await lazyStellarTokenMetadata.getOrInit());
+
 /** Get the list of inactive Stellar tokens for the user account */
 export const getStellarInactiveTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
     if (account.symbol !== 'xlm') return [];

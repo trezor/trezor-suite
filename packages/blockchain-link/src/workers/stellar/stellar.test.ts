@@ -227,6 +227,33 @@ describe('Stellar worker account history', () => {
         ]);
     });
 
+    it('keeps a contract counterparty of a balance change without failing the account load', async () => {
+        const POOL_CONTRACT = 'CAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRVEAM';
+        mockState.operationRecords = [
+            sacOperation([
+                {
+                    asset_type: 'credit_alphanum4',
+                    asset_code: 'KALE',
+                    asset_issuer: ASSET_ISSUER,
+                    type: 'transfer',
+                    from: DESCRIPTOR,
+                    to: POOL_CONTRACT,
+                    amount: '0.1447280',
+                },
+            ]),
+        ];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+        });
+
+        expect(result.history.transactions).toHaveLength(1);
+        expect(result.history.transactions![0]!.tokens[0]).toEqual(
+            expect.objectContaining({ from: DESCRIPTOR, to: POOL_CONTRACT }),
+        );
+    });
+
     it('reads the contracts the account watches on top of the curated ones', async () => {
         await blockchain.getAccountInfo({
             descriptor: DESCRIPTOR,

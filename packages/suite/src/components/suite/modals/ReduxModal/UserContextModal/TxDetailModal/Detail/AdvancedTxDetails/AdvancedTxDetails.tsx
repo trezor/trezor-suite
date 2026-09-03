@@ -79,7 +79,7 @@ export const AdvancedTxDetails = ({
                         <Translation id="TR_CHAINED_TXS" />
                     </Tabs.Item>
                 )}
-                {tx.ethereumSpecific?.data && (
+                {(tx.ethereumSpecific?.data || tx.stellarSpecific?.contractCall) && (
                     <Tabs.Item id="data" onClick={() => setSelectedTab('data')}>
                         <Translation id="TR_DATA" />
                     </Tabs.Item>
