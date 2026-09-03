@@ -14,6 +14,7 @@ import { YIELD_PREFIX } from './yieldConstants';
 import {
     type WrappedNativeStepId,
     YIELD_FLOW_TYPES,
+    type YieldApprovalOrigin,
     type YieldApproveModalState,
     type YieldClaimUnsignedTransaction,
     type YieldFlowCompleteRewardItem,
@@ -101,7 +102,7 @@ export type YieldSessionState = {
         allowanceStatus: YieldAllowanceStatus;
         /** Set when the step was left without approving, i.e. the allowance already covered it. */
         isSkipped: boolean;
-        isModifyMode: boolean;
+        origin: YieldApprovalOrigin;
         isRevokeRequired: boolean;
     };
     action: {
@@ -146,7 +147,7 @@ export const initialStablecoinYieldSessionState: YieldSessionState = {
         isSubmitting: false,
         isSkipped: false,
         allowanceStatus: 'idle',
-        isModifyMode: false,
+        origin: 'flow',
         isRevokeRequired: false,
     },
     action: {
@@ -233,6 +234,31 @@ const withSession = (
     }
 
     updater(session);
+};
+
+type YieldStepTransition = {
+    nextStep: YieldFlowStepId;
+    amountSnapshot?: string;
+    approvalJourney?: 'modify';
+};
+
+const applyYieldStepTransition = (
+    session: YieldSessionState,
+    { nextStep, amountSnapshot, approvalJourney }: YieldStepTransition,
+): void => {
+    if (amountSnapshot !== undefined) {
+        session.action.amount = amountSnapshot;
+    }
+
+    if (approvalJourney === 'modify') {
+        session.approval.origin = 'modify';
+    } else if (session.step === 'approve' && nextStep === 'action') {
+        // Leaving the approve step forward ends the modify journey, re-enabling the action
+        // step's insufficient-allowance guard.
+        session.approval.origin = 'flow';
+    }
+
+    session.step = nextStep;
 };
 
 const yieldSlice = createSlice({
@@ -422,14 +448,16 @@ const yieldSlice = createSlice({
             action: PayloadAction<YieldSessionActionPayload & { amount?: string }>,
         ) {
             withSession(state, action.payload, session => {
-                session.approval.isModifyMode = true;
                 session.approval.modalState = null;
                 // The pendingTransaction is intentionally preserved — an in-flight action tx must
                 // stay tracked so its confirmation is still processed into `completeAction`.
                 session.action.review = null;
                 session.error = null;
-                session.action.amount = action.payload.amount ?? session.action.amount;
-                session.step = 'approve';
+                applyYieldStepTransition(session, {
+                    nextStep: 'approve',
+                    amountSnapshot: action.payload.amount,
+                    approvalJourney: 'modify',
+                });
             });
         },
         completeApproval(
@@ -448,18 +476,19 @@ const yieldSlice = createSlice({
                     return;
                 }
 
-                session.approval.isModifyMode = false;
                 session.approval.modalState = null;
                 session.approval.isRevokeRequired = false;
                 session.approval.isSkipped = false;
-                session.action.amount = action.payload.amount;
                 session.action.pendingTransaction = null;
                 session.action.review = null;
-                session.step = getNextYieldFlowStep(
-                    action.payload.flowType,
-                    'approve',
-                    session.isWrappedNativeVault,
-                );
+                applyYieldStepTransition(session, {
+                    nextStep: getNextYieldFlowStep(
+                        action.payload.flowType,
+                        'approve',
+                        session.isWrappedNativeVault,
+                    ),
+                    amountSnapshot: action.payload.amount,
+                });
             });
         },
         skipApprovalStep(
@@ -475,22 +504,17 @@ const yieldSlice = createSlice({
                     return;
                 }
 
-                // A user-triggered skip carries the entered amount so the action step opens
-                // with it; the automatic allowance-check skip omits it and keeps the existing one.
-                if (action.payload.amount) {
-                    session.action.amount = action.payload.amount;
-                }
-                // Leaving the approve step forward clears modify mode (mirrors `completeApproval`)
-                // so the action step's insufficient-allowance guard applies — otherwise a skip
-                // with an amount above the current allowance would slip past it.
-                session.approval.isModifyMode = false;
                 session.approval.isRevokeRequired = false;
                 session.approval.isSkipped = true;
-                session.step = getNextYieldFlowStep(
-                    action.payload.flowType,
-                    'approve',
-                    session.isWrappedNativeVault,
-                );
+                applyYieldStepTransition(session, {
+                    nextStep: getNextYieldFlowStep(
+                        action.payload.flowType,
+                        'approve',
+                        session.isWrappedNativeVault,
+                    ),
+                    // The automatic allowance-check skip carries no amount; keep the snapshot.
+                    amountSnapshot: action.payload.amount || undefined,
+                });
             });
         },
         resolveWrappedNativeStep(
@@ -513,16 +537,21 @@ const yieldSlice = createSlice({
                 }
 
                 if (action.payload.step === 'wrap' && action.payload.amount) {
-                    session.action.amount = action.payload.amount;
                     // Record that a wrap happened so the completed deposit can be shown in the
                     // native asset (the user's original asset), mirroring `unwrappedAmount`.
                     session.result.wrappedAmount = action.payload.amount;
                 }
-                session.step = getNextYieldFlowStep(
-                    action.payload.flowType,
-                    action.payload.step,
-                    session.isWrappedNativeVault,
-                );
+                applyYieldStepTransition(session, {
+                    nextStep: getNextYieldFlowStep(
+                        action.payload.flowType,
+                        action.payload.step,
+                        session.isWrappedNativeVault,
+                    ),
+                    amountSnapshot:
+                        action.payload.step === 'wrap'
+                            ? action.payload.amount || undefined
+                            : undefined,
+                });
             });
         },
         returnToWrapStep(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
@@ -545,12 +574,12 @@ const yieldSlice = createSlice({
                     return;
                 }
 
-                session.step = 'wrap';
+                applyYieldStepTransition(session, { nextStep: 'wrap' });
             });
         },
         revokeSuccess(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
-                session.approval.isModifyMode = false;
+                session.approval.origin = 'flow';
                 session.approval.allowanceAmount = '0';
                 session.approval.allowanceStatus = 'loaded';
                 session.approval.isRevokeRequired = false;
@@ -682,11 +711,13 @@ const yieldSlice = createSlice({
 
                 session.action.pendingTransaction = null;
                 session.action.review = null;
-                session.step = getNextYieldFlowStep(
-                    action.payload.flowType,
-                    'action',
-                    session.isWrappedNativeVault,
-                );
+                applyYieldStepTransition(session, {
+                    nextStep: getNextYieldFlowStep(
+                        action.payload.flowType,
+                        'action',
+                        session.isWrappedNativeVault,
+                    ),
+                });
             });
         },
         transactionFailed(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {

@@ -139,7 +139,9 @@ export const YieldDepositApprovalScreen = () => {
     const hasWrappedAmount = !!session?.result.wrappedAmount;
     const depositForm = useYieldDepositForm({
         defaultAmount:
-            session?.approval.isModifyMode || hasWrappedAmount ? session?.action.amount : undefined,
+            session?.approval.origin === 'modify' || hasWrappedAmount
+                ? session?.action.amount
+                : undefined,
         token,
         tokenSymbol,
         wrappedAmount: session?.result.wrappedAmount,
@@ -166,7 +168,7 @@ export const YieldDepositApprovalScreen = () => {
             ? getYieldApprovalAction({
                   liveAmount: amountValue ?? '',
                   allowanceAmount,
-                  isModifyMode: hasApprovedAmount,
+                  shouldConsiderAllowance: hasApprovedAmount,
                   isRevokeRequired: session?.approval.isRevokeRequired ?? false,
                   tokenContractAddress: token?.contractAddress,
               })

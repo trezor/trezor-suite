@@ -12,6 +12,7 @@ export type YieldPositionFlowType = Exclude<YieldFlowType, 'claim'>;
 export type YieldWithdrawFlowType = Extract<YieldFlowType, 'withdraw' | 'redeem'>;
 export type YieldFlowStepId = (typeof YIELD_FLOW_STEPS)[number];
 export type WrappedNativeStepId = Extract<YieldFlowStepId, 'wrap' | 'unwrap'>;
+export type YieldApprovalOrigin = 'flow' | 'modify';
 
 export type YieldFlowFormValues = {
     // Crypto/token amount — the single source of truth submitted to every yield thunk.
