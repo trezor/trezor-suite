@@ -3,11 +3,13 @@ import { useCallback } from 'react';
 import {
     type TradingAssetSellOption,
     createAssetNativeTokenOption,
-    useTradingAssets,
+    resolveAssetTokenOption,
+    selectTradingInfo,
 } from '@suite-common/trading';
 import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
+import { useSelector } from 'src/hooks/suite';
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 export interface UseUpdateFormInputProps {
@@ -16,7 +18,7 @@ export interface UseUpdateFormInputProps {
 }
 
 export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormInputProps) {
-    const { resolveAssetTokenOption } = useTradingAssets();
+    const { coins, platforms } = useSelector(selectTradingInfo);
 
     const handleAccountClick = useCallback(
         (account: Account) => {
@@ -35,13 +37,18 @@ export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormI
     const handleTokenClick = useCallback(
         (token: TokensWithRates, account: Account) => {
             onAssetSelect({
-                ...resolveAssetTokenOption(account.symbol, token),
+                ...resolveAssetTokenOption({
+                    coins,
+                    platforms,
+                    networkSymbol: account.symbol,
+                    token,
+                }),
                 accountKey: account.key,
             });
 
             closeModal();
         },
-        [closeModal, onAssetSelect, resolveAssetTokenOption],
+        [closeModal, coins, onAssetSelect, platforms],
     );
 
     return {

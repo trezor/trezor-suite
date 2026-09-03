@@ -5,10 +5,13 @@ import { type CryptoId } from 'invity-api';
 import {
     type TradingAssetSellOption,
     createAssetNativeTokenOption,
-    useTradingAssets,
+    resolveAssetTokenOption,
+    selectTradingInfo,
 } from '@suite-common/trading';
 import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { useTradingFindAccountOrToken } from './useTradingFindAccountOrToken';
 
@@ -25,7 +28,7 @@ export function useTradingDefaultSellAsset({
     cryptoId,
 }: UseTradingDefaultSellAssetProps) {
     const findAccountOrToken = useTradingFindAccountOrToken();
-    const { resolveAssetTokenOption } = useTradingAssets();
+    const { coins, platforms } = useSelector(selectTradingInfo);
     const accountOrToken = useMemo(() => {
         if (!cryptoId || !accountKey) {
             return null;
@@ -44,7 +47,12 @@ export function useTradingDefaultSellAsset({
 
         if (token) {
             return {
-                ...resolveAssetTokenOption(account.symbol, token),
+                ...resolveAssetTokenOption({
+                    coins,
+                    platforms,
+                    networkSymbol: account.symbol,
+                    token,
+                }),
                 accountKey: account.key,
             } satisfies TradingAssetSellOption;
         }
@@ -55,7 +63,7 @@ export function useTradingDefaultSellAsset({
             ),
             accountKey: account.key,
         } satisfies TradingAssetSellOption;
-    }, [accountOrToken, resolveAssetTokenOption]);
+    }, [accountOrToken, coins, platforms]);
 
     return { account, defaultAsset };
 }

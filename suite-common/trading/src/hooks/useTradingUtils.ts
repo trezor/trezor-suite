@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
-import { type CryptoId } from 'invity-api';
+import { type Coins, type CryptoId, type Platforms } from 'invity-api';
 
-import { useCoinsAndPlatforms } from './useCoinsAndPlatforms';
+import { selectTradingInfo } from '../selectors/tradingSelectors';
 import {
     getTradingCoinInfoByCryptoId,
     getTradingCoinSymbolByCryptoId,
@@ -11,40 +12,36 @@ import {
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
 
+const emptyCoins: Coins = {};
+const emptyPlatforms: Platforms = {};
+
 export function useTradingUtils() {
-    const getCoinsAndPlatforms = useCoinsAndPlatforms();
+    const { coins = emptyCoins, platforms = emptyPlatforms } = useSelector(selectTradingInfo);
 
     const cryptoIdToPlatformName = useCallback(
-        (cryptoId: CryptoId) =>
-            getTradingPlatformsInfoByCryptoId(getCoinsAndPlatforms().platforms, cryptoId)?.name,
-        [getCoinsAndPlatforms],
+        (cryptoId: CryptoId) => getTradingPlatformsInfoByCryptoId(platforms, cryptoId)?.name,
+        [platforms],
     );
 
     const cryptoIdToCoinName = useCallback(
-        (cryptoId: CryptoId) =>
-            getTradingCoinInfoByCryptoId(getCoinsAndPlatforms().coins, cryptoId)?.name,
-        [getCoinsAndPlatforms],
+        (cryptoId: CryptoId) => getTradingCoinInfoByCryptoId(coins, cryptoId)?.name,
+        [coins],
     );
 
     const cryptoIdToNativeCoinSymbol = useCallback(
-        (cryptoId: CryptoId) => {
-            const { platforms, coins } = getCoinsAndPlatforms();
-
-            return getTradingNativeCoinSymbolByCryptoId(platforms, coins, cryptoId);
-        },
-        [getCoinsAndPlatforms],
+        (cryptoId: CryptoId) => getTradingNativeCoinSymbolByCryptoId(platforms, coins, cryptoId),
+        [coins, platforms],
     );
 
     const cryptoIdToCoinSymbol = useCallback(
-        (cryptoId: CryptoId) =>
-            getTradingCoinSymbolByCryptoId(getCoinsAndPlatforms().coins, cryptoId),
-        [getCoinsAndPlatforms],
+        (cryptoId: CryptoId) => getTradingCoinSymbolByCryptoId(coins, cryptoId),
+        [coins],
     );
 
     const cryptoIdToSymbolAndContractAddress = useCallback(
         (cryptoId: CryptoId | undefined) =>
-            getTradingSymbolAndContractAddressByCryptoId(getCoinsAndPlatforms().coins, cryptoId),
-        [getCoinsAndPlatforms],
+            getTradingSymbolAndContractAddressByCryptoId(coins, cryptoId),
+        [coins],
     );
 
     return {

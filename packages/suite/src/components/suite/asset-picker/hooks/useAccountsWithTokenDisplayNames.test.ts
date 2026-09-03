@@ -22,11 +22,15 @@ import {
     useAccountsWithTokenDisplayNames,
 } from './useAccountsWithTokenDisplayNames';
 
-jest.mock('@suite-common/trading', () => ({
-    ...jest.requireActual('@suite-common/trading'),
-    useTradingAssets: () => ({
-        buildAssetOptions: jest.fn(() => ({ assets: [] })),
+jest.mock('@suite-common/dependency-injection', () => ({
+    ...jest.requireActual('@suite-common/dependency-injection'),
+    useServices: () => ({
+        networkModuleRepository: { getSupportedNetworks: () => [] },
     }),
+}));
+
+jest.mock('src/hooks/suite', () => ({
+    useSelector: () => ({ coins: undefined, platforms: undefined }),
 }));
 
 const ethSymbol = toNetworkSymbolNonTestnet('eth');
