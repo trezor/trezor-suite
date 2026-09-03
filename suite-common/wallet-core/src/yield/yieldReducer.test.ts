@@ -198,6 +198,45 @@ describe('yieldReducer', () => {
             expect(getSession(state, 'deposit')?.step).toBe('wrap');
         });
 
+        it('keeps the modify origin across a wrap-step detour', () => {
+            const sessionPayload = { flowType: 'deposit', flowKey: FLOW_KEY } as const;
+            const atAction = yieldReducer(
+                yieldReducer(
+                    initSession('deposit', true),
+                    yieldActions.resolveWrappedNativeStep({ ...sessionPayload, step: 'wrap' }),
+                ),
+                yieldActions.skipApprovalStep(sessionPayload),
+            );
+            const atWrap = yieldReducer(
+                yieldReducer(atAction, yieldActions.enterModifyMode(sessionPayload)),
+                yieldActions.returnToWrapStep(sessionPayload),
+            );
+            const state = yieldReducer(
+                atWrap,
+                yieldActions.resolveWrappedNativeStep({ ...sessionPayload, step: 'wrap' }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('approve');
+            expect(getSession(state, 'deposit')?.approval.origin).toBe('modify');
+        });
+
+        it('ends the modify origin when the approval completes', () => {
+            const modifying = yieldReducer(
+                initSession('deposit'),
+                yieldActions.enterModifyMode({ flowType: 'deposit', flowKey: FLOW_KEY }),
+            );
+            const state = yieldReducer(
+                modifying,
+                yieldActions.completeApproval({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    amount: '10',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.approval.origin).toBe('flow');
+        });
+
         it('does not return to the wrap step for a non-wrapped vault', () => {
             const state = yieldReducer(
                 initSession('deposit'),
@@ -326,12 +365,33 @@ describe('yieldReducer', () => {
             expect(getSession(state, 'deposit')?.action.amount).toBe('25');
         });
 
-        it('clears modify mode when the approval step is skipped so the action step re-guards allowance', () => {
+        it('keeps the committed amount when a skip carries an empty amount', () => {
+            const state = yieldReducer(
+                yieldReducer(
+                    initSession('deposit'),
+                    yieldActions.enterModifyMode({
+                        flowType: 'deposit',
+                        flowKey: FLOW_KEY,
+                        amount: '25',
+                    }),
+                ),
+                yieldActions.skipApprovalStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    amount: '',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('action');
+            expect(getSession(state, 'deposit')?.action.amount).toBe('25');
+        });
+
+        it('ends the modify origin when the approval step is skipped so the action step re-guards allowance', () => {
             const modifying = yieldReducer(
                 initSession('deposit'),
                 yieldActions.enterModifyMode({ flowType: 'deposit', flowKey: FLOW_KEY }),
             );
-            expect(getSession(modifying, 'deposit')?.approval.isModifyMode).toBe(true);
+            expect(getSession(modifying, 'deposit')?.approval.origin).toBe('modify');
 
             const state = yieldReducer(
                 modifying,
@@ -343,7 +403,7 @@ describe('yieldReducer', () => {
             );
 
             expect(getSession(state, 'deposit')?.step).toBe('action');
-            expect(getSession(state, 'deposit')?.approval.isModifyMode).toBe(false);
+            expect(getSession(state, 'deposit')?.approval.origin).toBe('flow');
         });
 
         it('does not skip the wrap step when an allowance check resolves early', () => {
@@ -606,7 +666,7 @@ describe('yieldReducer', () => {
 
             expect(getSession(state, 'deposit')?.step).toBe('approve');
             expect(getSession(state, 'deposit')?.action.amount).toBeNull();
-            expect(getSession(state, 'deposit')?.approval.isModifyMode).toBe(false);
+            expect(getSession(state, 'deposit')?.approval.origin).toBe('flow');
         });
 
         it('opens a fresh wrapped-native deposit past the wrap step when the wrapped token is held', () => {
@@ -802,6 +862,18 @@ describe('yieldReducer', () => {
 
             expect(getSession(state, 'deposit')?.approval.allowanceAmount).toBe('0');
             expect(getSession(state, 'deposit')?.approval.allowanceStatus).toBe('loaded');
+        });
+
+        it('ends the modify origin when a revoke completes', () => {
+            const modifying = yieldReducer(
+                loadAllowance(initSession('deposit'), '100'),
+                yieldActions.enterModifyMode(sessionPayload),
+            );
+            expect(getSession(modifying, 'deposit')?.approval.origin).toBe('modify');
+
+            const state = yieldReducer(modifying, yieldActions.revokeSuccess(sessionPayload));
+
+            expect(getSession(state, 'deposit')?.approval.origin).toBe('flow');
         });
 
         // A confirmed approval dispatches these two back to back — the state the read must catch.

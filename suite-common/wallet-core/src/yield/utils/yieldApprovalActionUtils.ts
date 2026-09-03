@@ -4,7 +4,7 @@ import { BigNumber } from '@trezor/utils';
 type GetYieldApprovalActionParams = {
     liveAmount: string;
     allowanceAmount?: string | null;
-    isModifyMode: boolean;
+    shouldConsiderAllowance: boolean;
     isRevokeRequired: boolean;
     tokenContractAddress?: string | null;
 };
@@ -14,11 +14,11 @@ export type YieldApprovalAction = 'approve' | 'continue' | 'increase' | 'revoke'
 export const getYieldApprovalAction = ({
     liveAmount,
     allowanceAmount,
-    isModifyMode,
+    shouldConsiderAllowance,
     isRevokeRequired,
     tokenContractAddress,
 }: GetYieldApprovalActionParams): YieldApprovalAction => {
-    if (!isModifyMode) {
+    if (!shouldConsiderAllowance) {
         return 'approve';
     }
 

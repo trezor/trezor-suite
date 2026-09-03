@@ -75,7 +75,7 @@ export const useYieldDepositApprovalSubmit = ({
                 const approvalAction = getYieldApprovalAction({
                     liveAmount: amount,
                     allowanceAmount: sessionWithAllowance.approval.allowanceAmount,
-                    isModifyMode: true,
+                    shouldConsiderAllowance: true,
                     isRevokeRequired: sessionWithAllowance.approval.isRevokeRequired,
                     tokenContractAddress: flowData.token.contractAddress,
                 });
