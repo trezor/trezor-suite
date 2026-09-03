@@ -2,6 +2,11 @@ import { BigNumber } from '@trezor/utils';
 
 export const MIN_CARDANO_AMOUNT_FOR_SEND = new BigNumber(1_000_000);
 
+export const CARDANO_EPOCH_DAYS = 5;
+// Delegation activates two epoch boundaries after the certificate.
+export const CARDANO_ACTIVATION_PERIOD_MIN_DAYS = CARDANO_EPOCH_DAYS;
+export const CARDANO_ACTIVATION_PERIOD_MAX_DAYS = 2 * CARDANO_EPOCH_DAYS;
+
 // Protocol deposit locked when a stake key is registered, refunded on deregistration. Kept here
 // rather than with the staking constants in wallet-core so packages that only need the value
 // (e.g. e2e assertions) do not have to depend on the wallet core.
