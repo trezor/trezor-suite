@@ -33,12 +33,14 @@ const getPublicKey: TestCase = {
                 descriptor: `tr([95d8f670/86h/0h/0h]xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7/<0;1>/*)#htg5lhe3`,
                 displayablePublicKey: `tr([95d8f670/86'/0'/0']xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7/<0;1>/*)`,
             },
-            legacyResults: [
-                {
-                    rules: ['<1.10.4', '<2.4.3'],
-                    success: false,
-                },
-            ],
+            get legacyResults() {
+                const { descriptor, ...payload } = this.result;
+
+                return [
+                    { rules: ['<1.10.4', '<2.4.3'], success: false },
+                    { rules: ['2.4.3-2.6.9'], payload },
+                ];
+            },
         },
         {
             description: 'Bitcoin bech32 first account',
@@ -139,12 +141,14 @@ const getPublicKey: TestCase = {
             // T1B1 emulator's getScreenContent returns a placeholder; older T2T1 FW
             // doesn't render descriptors.
             deviceScreenSkip: ['1', '<2.7.0'],
-            legacyResults: [
-                {
-                    rules: ['<1.10.4', '<2.4.3'],
-                    success: false,
-                },
-            ],
+            get legacyResults() {
+                const { descriptor, ...payload } = this.result;
+
+                return [
+                    { rules: ['<1.10.4', '<2.4.3'], success: false },
+                    { rules: ['2.4.3-2.6.9'], payload },
+                ];
+            },
         },
         {
             description: 'Bitcoin bech32 first account (showOnTrezor)',

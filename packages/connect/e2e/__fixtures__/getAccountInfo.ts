@@ -115,7 +115,7 @@ const getAccountInfo: TestCase = {
             description: 'invalid path',
             params: {
                 coin: 'btc',
-                path: "m/49'/0'",
+                path: "m/49'",
             },
             result: false,
         },
