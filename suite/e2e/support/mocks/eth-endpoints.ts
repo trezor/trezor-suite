@@ -89,10 +89,18 @@ export const fixtures = [
         method: 'estimateFee',
         default: true,
         response: ({ params }: any) => {
-            // ERC-4626 vault calls: deposit === 0x6e553f65, withdraw === 0xb460af94,
-            // redeem === 0xba087652
-            const vaultCallSelectors = ['0x6e553f65', '0xb460af94', '0xba087652'];
-            if (vaultCallSelectors.some(selector => params?.specific?.data?.startsWith(selector))) {
+            const CONTRACT_CALL_SELECTORS = {
+                vaultDeposit: '0x6e553f65', // ERC-4626 deposit
+                vaultWithdraw: '0xb460af94', // ERC-4626 withdraw
+                vaultRedeem: '0xba087652', // ERC-4626 redeem
+                merklClaim: '0x71ee95c0', // Merkl distributor claim
+            } as const;
+
+            if (
+                Object.values(CONTRACT_CALL_SELECTORS).some(selector =>
+                    params?.specific?.data?.startsWith(selector),
+                )
+            ) {
                 return {
                     data: [
                         {

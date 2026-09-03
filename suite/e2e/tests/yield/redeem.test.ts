@@ -4,7 +4,11 @@ import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
 import ETH_STAKE_CONFIRMED_TX from '../../fixtures/staking/eth-stake-confirmed-tx.json';
 import { expect, test } from '../../support/fixtures';
 import { ETH_MOCKED_ACCOUNT } from '../../support/mocks/eth-endpoints';
-import { YIELD_USDC_VAULT_SHARE_TOKEN, YIELD_VAULTS } from '../../support/mocks/yieldMock';
+import {
+    YIELD_NEW_BLOCK,
+    YIELD_USDC_VAULT_SHARE_TOKEN,
+    YIELD_VAULTS,
+} from '../../support/mocks/yieldMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const { usdcPrime } = YIELD_VAULTS;
@@ -15,10 +19,6 @@ const REDEEM_PAYOUT_AMOUNT = '3.016822';
 // YIELD_USDC_VAULT_SHARE_TOKEN.balance (18 decimals) converted to units
 const REDEEM_MAX_SHARES_AMOUNT = '9.944238455556494216';
 const REDEEM_MAX_FEE = '0.00010840280031 ETH';
-const NEW_BLOCK = {
-    height: 22881954,
-    hash: '0xa07d0d92b6bb9a5f388d47a10b824b4b09e0b3aeb08d0f61c0e30a25f6c8455f',
-};
 
 const buildEthAccountTokens = ({
     usdcBalance,
@@ -163,7 +163,7 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                     `${REDEEM_PAYOUT_AMOUNT} USDC`,
                 );
 
-                await blockbookMock.sendNewBlockNotification(NEW_BLOCK);
+                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
             });
 
             await test.step('Dashboard shows the reduced position', async () => {

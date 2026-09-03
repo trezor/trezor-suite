@@ -26,7 +26,7 @@ export const YieldFlowCompleteClaim = ({ rewards }: YieldFlowCompleteClaimProps)
                     <Translation id="TR_STAKE_REWARDS" />
                 </Text>
 
-                <Column gap={16}>
+                <Column gap={16} data-testid="@yield/flow-complete/rewards-list">
                     {rewards.map((reward, index) => {
                         const formattedAmount = CryptoAmountFormatter.format(reward.value, {
                             symbol: toTokenSymbol(reward.token.symbol),
