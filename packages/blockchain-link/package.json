@@ -58,6 +58,7 @@
         "build:workers": "yarn g:rimraf build && yarn build:workers-web && yarn build:workers-module",
         "build:workers-web": "webpack --config ./webpack/workers.web.js",
         "build:workers-module": "webpack --config ./webpack/workers.module.js",
+        "stellar:parity": "yarn g:tsx ./src/workers/stellar/parityCheck.ts",
         "test:unit": "yarn g:jest -c jest.config.unit.cjs",
         "test:integration": "yarn g:jest -c jest.config.integration.cjs",
         "type-check": "yarn g:tsc --build tsconfig.json",
@@ -65,6 +66,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
+        "@stellar/stellar-sdk": "16.1.0",
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",

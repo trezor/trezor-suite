@@ -13,6 +13,8 @@ import {
 
 import { resolveAfter } from '@trezor/utils';
 
+import type { StellarRpcServer } from '../types/rpc';
+
 /**
  * Soroban (Stellar) JSON-RPC helpers for reading SEP-41 contract-token balances.
  *
@@ -31,13 +33,8 @@ const SIMULATION_SOURCE_ACCOUNT = StrKey.encodeEd25519PublicKey(Buffer.alloc(32)
 // Upper bound for reading one contract token from the RPC.
 const SEP41_READ_TIMEOUT_MS = 10_000;
 
-export type SorobanServer = rpc.Server;
-
-export const getSorobanServer = (url: string): SorobanServer =>
-    new rpc.Server(url, { allowHttp: url.startsWith('http://') });
-
 const simulateContractRead = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     method: string,
     args: xdr.ScVal[],
@@ -70,7 +67,7 @@ const simulateContractRead = async (
  * read (not a token / no balance entry / RPC failure).
  */
 export const getContractTokenBalance = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     holder: string,
     networkPassphrase: string = Networks.PUBLIC,
@@ -105,7 +102,7 @@ export interface Sep41Metadata {
 const metadataCache = new Map<string, Promise<Sep41Metadata>>();
 
 const readContractTokenMetadata = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     networkPassphrase: string,
 ): Promise<Sep41Metadata> => {
@@ -130,7 +127,7 @@ const readContractTokenMetadata = async (
  * Makes tokens self-describing, so callers need only supply contract addresses.
  */
 export const getContractTokenMetadata = (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     networkPassphrase: string = Networks.PUBLIC,
 ): Promise<Sep41Metadata> => {
@@ -170,7 +167,7 @@ export interface Sep41Token extends Sep41Metadata {
  * (neither a balance nor `decimals` could be read).
  */
 export const getSep41Token = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     holder: string,
     networkPassphrase: string = Networks.PUBLIC,
@@ -194,13 +191,11 @@ export const getSep41Token = async (
  * allow-list rather than auto-discovery. Failed reads are dropped.
  */
 export const readSep41Tokens = async (
-    rpcUrl: string,
+    server: StellarRpcServer,
     holder: string,
     contractIds: string[],
     networkPassphrase: string = Networks.PUBLIC,
 ): Promise<Sep41Token[]> => {
-    const server = getSorobanServer(rpcUrl);
-
     // A slow or unreachable RPC must never stall account loading, so each read is capped and
     // falls back to no token. Capping per token keeps one slow contract from discarding the
     // tokens that did resolve in time.

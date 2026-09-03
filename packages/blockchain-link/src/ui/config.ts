@@ -83,7 +83,7 @@ export default [
         blockchain: {
             name: 'Stellar',
             worker: 'js/stellar-worker.js',
-            server: ['https://horizon.stellar.org'],
+            server: ['http://dev-xlm.suite.sldev.cz'],
             debug: true,
         },
         data: {
@@ -103,7 +103,7 @@ export default [
         blockchain: {
             name: 'Stellar Testnet',
             worker: 'js/stellar-worker.js',
-            server: ['https://horizon-testnet.stellar.org'],
+            server: ['http://dev-xlm.suite.sldev.cz'],
             debug: true,
         },
         data: {

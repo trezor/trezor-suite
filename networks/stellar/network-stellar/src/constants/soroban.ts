@@ -1,15 +1,4 @@
-/**
- * Soroban (contract / type-C token) configuration.
- *
- * ⚠️ PROOF-OF-CONCEPT: `STELLAR_SOROBAN_RPC_URL` points at a public, keyless
- * Stellar RPC (standard `stellar-rpc` JSON-RPC, no SLA, rate-limited) as a
- * stopgap. Before production, replace it with a Trezor-hosted proxy (cf.
- * `sol.trezor.io`) so the endpoint stays within Trezor's trust boundary, and
- * source the token allow-list from the hosted definitions pipeline instead of
- * this file. Swapping the URL is the only change needed — the interface is
- * identical across any conformant `stellar-rpc`.
- */
-export const STELLAR_SOROBAN_RPC_URL = 'https://mainnet.sorobanrpc.com';
+/** Soroban (contract / type-C token) configuration. */
 
 export interface StellarContractToken {
     contract: string;
@@ -19,12 +8,13 @@ export interface StellarContractToken {
 }
 
 /**
- * Curated allow-list of Soroban contract (SEP-41 / type-C) tokens to look up.
+ * Fallback allow-list of Soroban contract (SEP-41 / type-C) tokens to look up.
  *
- * There is no on-chain registry of an account's contract-token holdings, so
- * discovery is an explicit allow-list rather than auto-discovery. Every entry
- * has been verified as a native contract token (its address is NOT the Stellar
- * Asset Contract of any classic asset).
+ * There is no on-chain registry of an account's contract-token holdings, so discovery is an
+ * explicit allow-list. The hosted definitions pipeline is the primary source; these entries
+ * stay until it carries contract tokens, and can be deleted once it does. Every entry has been
+ * verified as a native contract token (its address is NOT the Stellar Asset Contract of any
+ * classic asset).
  */
 export const STELLAR_CONTRACT_TOKENS: StellarContractToken[] = [
     {

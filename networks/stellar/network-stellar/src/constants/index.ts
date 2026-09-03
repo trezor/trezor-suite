@@ -7,7 +7,7 @@ export {
 } from './networkSymbol';
 export type { StellarNetworkSymbol } from './networkSymbol';
 export * from './rpc';
-export { STELLAR_SOROBAN_RPC_URL, STELLAR_CONTRACT_TOKENS } from './soroban';
+export { STELLAR_CONTRACT_TOKENS } from './soroban';
 export type { StellarContractToken } from './soroban';
 
 export const STELLAR_DECIMALS = 7;

@@ -1,5 +1,7 @@
 import { Asset, Networks, StrKey } from '@stellar/stellar-sdk';
 
+import type { StellarAssetRef } from '../types/account';
+
 export const isValidAssetCode = (code: string): boolean => /^[a-zA-Z0-9]{1,12}$/.test(code);
 
 export const isValidAddress = (address: string): boolean => StrKey.isValidEd25519PublicKey(address);
@@ -29,4 +31,22 @@ export const computeSorobanAssetContractId = (classicAssetContract: string) => {
         assetIsuer,
         sorobanAssetContractId: new Asset(assetCode, assetIsuer).contractId(Networks.PUBLIC),
     };
+};
+
+/**
+ * Splits a classic asset contract in `CODE-ISSUER` form. Returns `undefined` for anything that
+ * is not one — a Soroban contract id, or a key from a source Suite does not control.
+ */
+export const parseClassicAssetContract = (contract: string): StellarAssetRef | undefined => {
+    const [assetCode, assetIssuer, ...rest] = contract.split('-');
+
+    if (rest.length > 0 || !assetCode || !assetIssuer) {
+        return undefined;
+    }
+
+    if (!isValidAssetCode(assetCode) || !isValidAddress(assetIssuer)) {
+        return undefined;
+    }
+
+    return { assetCode, assetIssuer };
 };
