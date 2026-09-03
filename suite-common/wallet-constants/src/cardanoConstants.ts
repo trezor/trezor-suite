@@ -1,8 +1,9 @@
 import { BigNumber } from '@trezor/utils';
 
 export const CARDANO_EPOCH_DAYS = 5;
-const CARDANO_APPROXIMATE_EPOCHS = 2;
-export const CARDANO_ACTIVATION_PERIOD_DAYS = CARDANO_APPROXIMATE_EPOCHS * CARDANO_EPOCH_DAYS;
+// Delegation activates two epoch boundaries after the certificate.
+export const CARDANO_ACTIVATION_PERIOD_MIN_DAYS = CARDANO_EPOCH_DAYS;
+export const CARDANO_ACTIVATION_PERIOD_MAX_DAYS = 2 * CARDANO_EPOCH_DAYS;
 
 export const CARDANO_STAKING_REGISTRATION_DEPOSIT = '2';
 export const MIN_CARDANO_AMOUNT_FOR_STAKING = new BigNumber(0);
