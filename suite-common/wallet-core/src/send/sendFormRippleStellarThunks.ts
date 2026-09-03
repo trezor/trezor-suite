@@ -149,6 +149,15 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             });
         }
 
+        // Fee info without any level cannot be composed, and the custom level fallback below
+        // reads the last predefined level, which would throw on an empty list.
+        if (predefinedLevels.length === 0) {
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'No fee levels available.',
+            });
+        }
+
         let requiredAmount: BigNumber | undefined;
         // additional check if recipient address is empty
         // it will set requiredAmount to recipient account reserve value
