@@ -54,12 +54,13 @@ const watchTradeData = async <T extends TradingType>({
         return;
     }
 
-    const updates = getDefinedWatchUpdates(response);
+    const updates = {
+        ...getDefinedWatchUpdates(response),
+        // always apply, even if undefined
+        status: response.status,
+        error: response.error,
+    };
     const updateKeys = typedObjectKeys(updates);
-
-    if (updateKeys.length === 0) {
-        return;
-    }
 
     const hasChanges = updateKeys.some(
         key => trade.data[key as keyof typeof trade.data] !== updates[key],

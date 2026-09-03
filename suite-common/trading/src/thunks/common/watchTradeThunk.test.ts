@@ -173,6 +173,52 @@ describe('watchTradeThunk', () => {
         });
     });
 
+    it('should clear a previously persisted error once watchTrade succeeds', async () => {
+        const trade = {
+            date: dateISO,
+            key: 'tradeKey',
+            tradeType: 'buy',
+            data: {
+                status: 'ERROR',
+                paymentId: 'tradeKey',
+                error: 'Some error occurred',
+            },
+        } as TradingTransactionBuy;
+
+        const store = getStore({
+            trades: [trade],
+        });
+
+        tradeApi.watchTrade = () =>
+            Promise.resolve({
+                status: 'SUBMITTED',
+            } as any);
+
+        await store.dispatch(
+            watchTradeThunk({
+                account,
+                trade,
+                refreshCount,
+            }),
+        );
+
+        const actions = store.getActions();
+        const saveTradeAction = actions.find(action => action.type === '@trading/saveTrade');
+
+        expect(saveTradeAction?.payload).toEqual({
+            tradeType: 'buy',
+            date: dateISO,
+            key: 'tradeKey',
+            data: {
+                status: 'SUBMITTED',
+                paymentId: 'tradeKey',
+                error: undefined,
+            },
+            receiveAccountKey: undefined,
+            selectedAccountKey: account.key,
+        });
+    });
+
     it('should update buy trade quote fields when status is unchanged', async () => {
         const trade = {
             date: dateISO,
