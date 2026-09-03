@@ -227,6 +227,70 @@ describe('useYieldForm', () => {
         });
     });
 
+    it('carries the committed wrapped amount into the approve step uncapped', () => {
+        mockSession.step = 'wrap';
+        const { result, rerender } = renderYieldForm();
+
+        // '30' exceeds the token balance (25), so the uncapped carry is observable.
+        mockSession = {
+            ...mockSession,
+            step: 'approve',
+            action: { ...mockSession.action, amount: '30' },
+        };
+        rerender();
+
+        expect(result.current.methods.getValues('amountInput')).toBe('30');
+    });
+
+    it('caps the committed amount to the action max when the approval advances', () => {
+        mockSession.step = 'approve';
+        const { result, rerender } = renderYieldForm();
+
+        mockSession = {
+            ...mockSession,
+            step: 'action',
+            action: { ...mockSession.action, amount: '30' },
+        };
+        rerender();
+
+        expect(result.current.methods.getValues('amountInput')).toBe('25');
+    });
+
+    it('clears the amount when returning to the wrap step', () => {
+        mockSession.step = 'approve';
+        const { result, rerender } = renderYieldForm();
+
+        act(() => result.current.setAmountInput('5'));
+
+        mockSession = { ...mockSession, step: 'wrap' };
+        rerender();
+
+        expect(result.current.methods.getValues()).toEqual({
+            amountInput: '',
+            fiatInput: '',
+        });
+    });
+
+    it('clears both amount fields in fiat mode when the flow completes', () => {
+        mockSession.step = 'action';
+        const { result, rerender } = renderYieldForm();
+
+        act(() => result.current.setAmountInput('5'));
+        act(() => result.current.fiatToggle?.onToggle());
+
+        mockSession = {
+            ...mockSession,
+            step: 'complete',
+            action: { ...mockSession.action, amount: '5' },
+        };
+        rerender();
+
+        expect(result.current.methods.getValues()).toEqual({
+            amountInput: '',
+            fiatInput: '',
+        });
+    });
+
     it('restores the pending amount when re-entering a resumable flow', () => {
         mockSession = {
             ...mockSession,

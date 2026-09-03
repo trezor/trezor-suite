@@ -7,6 +7,8 @@ import {
     getYieldFiatRateToken,
     getYieldFlowSteps,
     getYieldMaxFiatInputValue,
+    getYieldModifyAmountInput,
+    getYieldStepEntryAmount,
     getYieldUnwrapDefaultAmount,
     shouldInitializeYieldAllowance,
 } from './yieldFlowUtils';
@@ -200,6 +202,79 @@ describe('yieldFlowUtils', () => {
                     fallbackAmount: '5',
                 }),
             ).toBe('5');
+        });
+    });
+
+    describe('getYieldStepEntryAmount', () => {
+        const baseEntryParams = {
+            committedAmount: '3',
+            maxAmount: '25',
+            unwrapDefaultAmount: '0.5',
+        };
+
+        it.each(['wrap', 'complete'] as const)('opens the %s step empty', step => {
+            expect(getYieldStepEntryAmount({ ...baseEntryParams, step })).toBe('');
+        });
+
+        it('carries the committed amount into the approve step', () => {
+            expect(getYieldStepEntryAmount({ ...baseEntryParams, step: 'approve' })).toBe('3');
+        });
+
+        it('does not cap the approve entry to the max amount', () => {
+            expect(
+                getYieldStepEntryAmount({
+                    ...baseEntryParams,
+                    step: 'approve',
+                    committedAmount: '30',
+                }),
+            ).toBe('30');
+        });
+
+        it('caps the action entry to the max amount', () => {
+            expect(
+                getYieldStepEntryAmount({
+                    ...baseEntryParams,
+                    step: 'action',
+                    committedAmount: '30',
+                }),
+            ).toBe('25');
+        });
+
+        it('carries the committed amount into the action step when it fits the max', () => {
+            expect(getYieldStepEntryAmount({ ...baseEntryParams, step: 'action' })).toBe('3');
+        });
+
+        it.each(['approve', 'action'] as const)(
+            'opens the %s step empty without a committed amount',
+            step => {
+                expect(
+                    getYieldStepEntryAmount({ ...baseEntryParams, step, committedAmount: null }),
+                ).toBe('');
+            },
+        );
+
+        it('pre-fills the unwrap step with the unwrap default', () => {
+            expect(getYieldStepEntryAmount({ ...baseEntryParams, step: 'unwrap' })).toBe('0.5');
+        });
+    });
+
+    describe('getYieldModifyAmountInput', () => {
+        it('prefers the live amount over the committed one', () => {
+            expect(
+                getYieldModifyAmountInput({ liveAmount: '2', actionAmount: '3', maxAmount: '25' }),
+            ).toBe('2');
+        });
+
+        it('falls back to the committed amount when the field was cleared', () => {
+            expect(
+                getYieldModifyAmountInput({ liveAmount: '', actionAmount: '3', maxAmount: '25' }),
+            ).toBe('3');
+        });
+
+        it('clamps the committed fallback to the max amount', () => {
+            expect(
+                getYieldModifyAmountInput({ liveAmount: '', actionAmount: '30', maxAmount: '25' }),
+            ).toBe('25');
         });
     });
 

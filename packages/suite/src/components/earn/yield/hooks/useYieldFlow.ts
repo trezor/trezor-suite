@@ -47,6 +47,7 @@ import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
     type YieldApprovalAction,
     getYieldApprovalAction,
+    getYieldModifyAmountInput,
     isAmountGreaterThan,
     shouldInitializeYieldAllowance,
 } from '../yieldFlowUtils';
@@ -74,7 +75,6 @@ export type UseYieldFlowResult = {
     maxAmount: string;
     flowType: YieldPositionFlowType;
     liveAmount: string;
-    actionAmount: string | null;
     completedAmount: string;
     completedReceiptAmount: string;
     unwrappedAmount: string | null;
@@ -315,8 +315,18 @@ export const useYieldFlow = ({
     );
 
     const enterModifyApproval = useCallback(() => {
-        dispatch(yieldActions.enterModifyMode({ flowType, flowKey }));
-    }, [dispatch, flowType, flowKey]);
+        dispatch(
+            yieldActions.enterModifyMode({
+                flowType,
+                flowKey,
+                amount: getYieldModifyAmountInput({
+                    liveAmount: methodsRef.current.getValues('amountInput'),
+                    actionAmount: sessionRef.current.action.amount,
+                    maxAmount,
+                }),
+            }),
+        );
+    }, [dispatch, flowType, flowKey, methodsRef, sessionRef, maxAmount]);
 
     const openDeviceConnectionModal = useCallback(() => {
         if (device?.descriptor?.apiType === 'bluetooth') {
@@ -706,7 +716,6 @@ export const useYieldFlow = ({
         maxAmount,
         flowType,
         liveAmount,
-        actionAmount: session.action.amount,
         completedAmount: session.result.completedAmount,
         completedReceiptAmount: session.result.completedReceiptAmount,
         unwrappedAmount: session.result.unwrappedAmount,
