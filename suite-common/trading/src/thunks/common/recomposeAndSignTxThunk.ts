@@ -36,13 +36,20 @@ import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingRootState } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingComposedTransactionInfo,
+    selectTradingExchangeSelectedQuote,
     selectTradingIsSlip24Allowed,
+    selectTradingSellSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import type {
     TradingFulfillValue,
     TradingSendRejectedProps,
     TradingSignAndPushSendFormTransactionProps,
 } from '../../types';
+import {
+    getTradingFundsErrorReport,
+    isTradingFundsError,
+    reportTradingFundsError,
+} from '../../utils/reportTradingFundsError';
 
 export type RecomposeAndSignTxThunkProps = {
     account: Account;
@@ -245,6 +252,30 @@ export const recomposeAndSignTxThunk = createThunk<
                     : {
                           id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION',
                       };
+
+            if (
+                precomposedToSign?.type === 'error' &&
+                isTradingFundsError(precomposedToSign.error)
+            ) {
+                const selectedQuote =
+                    tradingFormState.activeSection === 'exchange'
+                        ? selectTradingExchangeSelectedQuote(getState())
+                        : selectTradingSellSelectedQuote(getState());
+
+                reportTradingFundsError(
+                    getTradingFundsErrorReport({
+                        account,
+                        activeSection: tradingFormState.activeSection,
+                        composeError: precomposedToSign.error,
+                        composed,
+                        composedLevels: composedLevels.payload,
+                        feeInfo,
+                        formState,
+                        provider: selectedQuote?.exchange,
+                        selectedFee,
+                    }),
+                );
+            }
 
             return rejectWithValue({
                 type: 'sign-tx-error',

@@ -1,4 +1,8 @@
-import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
+import {
+    ETHEREUM_ADJUST_GAS_LIMIT,
+    ETHEREUM_ADJUST_GAS_LIMIT_RESERVE,
+} from '@suite-common/wallet-core';
+import { BigNumber } from '@trezor/utils';
 
 import { buildRecomposeInputsFromTrade } from './buildRecomposeInputsFromTrade';
 
@@ -104,6 +108,21 @@ describe('buildRecomposeInputsFromTrade', () => {
             });
 
             expect(result.transactionData).toBeUndefined();
+        });
+
+        it('signs with a lower gas limit multiplier than the trading form reserves', () => {
+            const result = buildRecomposeInputsFromTrade({
+                dexTx,
+                partnerPaymentExtraId: undefined,
+                serializedTx: '0xabcd',
+            });
+
+            expect(result.ethereumAdjustGasLimit).toBe(ETHEREUM_ADJUST_GAS_LIMIT);
+            expect(
+                new BigNumber(ETHEREUM_ADJUST_GAS_LIMIT_RESERVE).isGreaterThan(
+                    ETHEREUM_ADJUST_GAS_LIMIT,
+                ),
+            ).toBe(true);
         });
     });
 

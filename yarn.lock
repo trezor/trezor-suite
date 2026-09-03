@@ -11538,6 +11538,7 @@ __metadata:
   resolution: "@suite-common/trading@workspace:suite-common/trading"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@sentry/core": "npm:10.69.0"
     "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"

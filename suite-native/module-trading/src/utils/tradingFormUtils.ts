@@ -11,7 +11,7 @@ import {
     isExchangeTrade,
     isSellFiatTrade,
 } from '@suite-common/trading';
-import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
+import { ETHEREUM_ADJUST_GAS_LIMIT_RESERVE } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type FormStateTrading } from '@suite-common/wallet-types';
 import { QuoteError } from '@suite-native/trading-quote-utils';
 import { type FeeLevel } from '@trezor/connect';
@@ -70,7 +70,7 @@ export const createFormStateForSendForm = ({
         if (exchangeQuote.isDex && exchangeQuote.dexTx) {
             outputAddress = exchangeQuote.dexTx.to;
             transactionData = exchangeQuote.dexTx.data;
-            ethereumAdjustGasLimit = ETHEREUM_ADJUST_GAS_LIMIT;
+            ethereumAdjustGasLimit = ETHEREUM_ADJUST_GAS_LIMIT_RESERVE;
         }
 
         if (exchangeQuote.send) {

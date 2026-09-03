@@ -26,6 +26,7 @@ export interface TradingComposedTransactionInfo {
         | 'fee'
         | 'feePerByte'
         | 'feeLimit'
+        | 'max'
         | 'estimatedFeeLimit'
         | 'maxFeePerGas'
         | 'maxPriorityFeePerGas'
