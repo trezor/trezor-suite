@@ -1,4 +1,4 @@
-import { getMaxStakeAmount } from '@suite-common/staking';
+import { getMaxStakeAmount } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import { Form, useForm } from '@suite-native/forms';

@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { isCardanoStakedWithFiveBinaries } from '@suite-common/staking';
 import { PROD_STAKING_SYMBOLS, STAKING_SYMBOLS } from '@suite-common/wallet-config';
-import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import {
+    isCardanoStakedWithFiveBinaries,
+    selectVisibleDeviceAccounts,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,

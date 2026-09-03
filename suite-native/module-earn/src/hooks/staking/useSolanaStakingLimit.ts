@@ -2,13 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+    type AccountsRootState,
+    type BlockchainRootState,
     type SolanaStakingLimitType,
     estimateSolanaStakingLimit,
     getSolanaDeactivatedRentReserves,
-} from '@suite-common/staking';
-import {
-    type AccountsRootState,
-    type BlockchainRootState,
     selectAccountByKey,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';

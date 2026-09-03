@@ -3,12 +3,10 @@ import { useEffect } from 'react';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     CARDANO_EPOCH_DAYS,
-    getStakingDataForNetwork,
-    isCardanoStakedWithEverstake,
-} from '@suite-common/staking';
-import {
     fetchAllTransactionsForAccountThunk,
+    getStakingDataForNetwork,
     hasPendingStakeTypeTransaction,
+    isCardanoStakedWithEverstake,
     selectAccountIsStakingActive,
     selectCardanoPoolsInfo,
     selectHasRunningDiscovery,

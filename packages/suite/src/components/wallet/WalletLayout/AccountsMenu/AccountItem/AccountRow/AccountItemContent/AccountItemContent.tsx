@@ -1,5 +1,5 @@
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
-import { getTronAvailableVotingPower } from '@suite-common/staking';
+import { getTronAvailableVotingPower } from '@suite-common/wallet-core';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';

@@ -2,9 +2,13 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import { useForm } from 'react-hook-form';
 
 import { useDispatch } from '@suite-common/redux-utils';
-import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
+import {
+    getStakeFormsDefaultValues,
+    getStakingContractAddress,
+    selectBaseCurrency,
+    selectRawNetworkFeeInfo,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { throwError } from '@trezor/utils';

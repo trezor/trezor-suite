@@ -5,10 +5,13 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getDaysToAddToPoolInitial, getStakingHelpCenterLink } from '@suite-common/staking';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
+import {
+    getDaysToAddToPoolInitial,
+    getStakingHelpCenterLink,
+    selectEthValidatorsQueue,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { ClockIcon, HandIcon } from '@trezor/icons';

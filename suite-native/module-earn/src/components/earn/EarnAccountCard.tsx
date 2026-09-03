@@ -6,8 +6,8 @@ import {
     getTronVotedApr,
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
-import { isSupportedStakingNetworkSymbol } from '@suite-common/staking';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { ZeroApyBadge } from '@suite-native/accounts';
 import { Text } from '@suite-native/atoms';

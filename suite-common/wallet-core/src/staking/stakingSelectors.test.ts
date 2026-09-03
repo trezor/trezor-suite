@@ -1,0 +1,127 @@
+import { type AccountKey } from '@suite-common/wallet-types';
+
+import { type AccountVotingDelegation } from './stakingActions';
+import { DEFAULT_VOTING_OPTION } from './stakingConstants';
+import { type StakeDataState, stakeDataInitialState } from './stakingDataSlice';
+import { stakeInitialState } from './stakingReducer';
+import type { StakeRootState } from './stakingReducerTypes';
+import {
+    selectCardanoPoolsInfo,
+    selectEthNextRewardPayout,
+    selectStakeVotingDelegation,
+    selectVotingDelegationOption,
+} from './stakingSelectors';
+
+const buildStakeState = (data: Partial<StakeDataState['data']>): StakeRootState => ({
+    wallet: {
+        stake: {
+            ...stakeInitialState,
+            data: {
+                ...stakeDataInitialState,
+                data: { ...stakeDataInitialState.data, ...data },
+            },
+        },
+    },
+});
+
+describe('selectEthNextRewardPayout', () => {
+    const createState = (nextRewardPayout?: number) =>
+        buildStakeState({
+            eth: nextRewardPayout
+                ? { stats: { apy: 0, nextRewardPayout }, validators: {} }
+                : undefined,
+        });
+
+    it('returns null when next reward payout is unavailable', () => {
+        expect(selectEthNextRewardPayout(createState())).toBeNull();
+    });
+
+    it('returns at least 1 day for positive payout values below 1 day', () => {
+        expect(selectEthNextRewardPayout(createState(60 * 60))).toBe(1);
+    });
+
+    it('returns rounded day value for payout values over 1 day', () => {
+        expect(selectEthNextRewardPayout(createState(2.2 * 24 * 60 * 60))).toBe(2);
+    });
+});
+
+describe('selectCardanoPoolsInfo', () => {
+    type AdaPools = NonNullable<StakeDataState['data']['ada']>['pools'];
+
+    const createState = (pools?: AdaPools) =>
+        buildStakeState({
+            ada: pools === undefined ? undefined : { pools },
+        });
+
+    it('returns a stable empty array reference when ada data is missing', () => {
+        const stateA = createState();
+        const stateB = createState();
+
+        expect(selectCardanoPoolsInfo(stateA)).toBe(selectCardanoPoolsInfo(stateB));
+    });
+
+    it('returns a stable empty array reference when pools array is empty', () => {
+        const stateA = createState([]);
+        const stateB = createState([]);
+
+        expect(selectCardanoPoolsInfo(stateA)).toBe(selectCardanoPoolsInfo(stateB));
+    });
+
+    it('returns the underlying pools array when populated', () => {
+        const pools: AdaPools = [{ apy: 1, saturation: 50, id: 'pool1' }];
+        const state = createState(pools);
+
+        expect(selectCardanoPoolsInfo(state)).toBe(pools);
+    });
+});
+
+describe('selectVotingDelegationOption', () => {
+    const accountKey = 'descriptor-a-ada-session' as AccountKey;
+    const otherAccountKey = 'descriptor-b-ada-session' as AccountKey;
+    const anotherDrep: AccountVotingDelegation['option'] = {
+        type: 'another_drep',
+        drepId: 'drep1abc',
+    };
+
+    const createState = (votingDelegation?: AccountVotingDelegation): StakeRootState => ({
+        wallet: { stake: { ...stakeInitialState, votingDelegation } },
+    });
+
+    // `toBe` throughout: components read this through `useSelector`, so both branches have to return
+    // a reference that only changes when the selection does.
+    it('falls back to Everstake when no option was confirmed', () => {
+        expect(selectVotingDelegationOption(createState(), accountKey)).toBe(DEFAULT_VOTING_OPTION);
+    });
+
+    it('returns the option confirmed for the queried account', () => {
+        const state = createState({ accountKey, option: anotherDrep });
+
+        expect(selectVotingDelegationOption(state, accountKey)).toBe(anotherDrep);
+    });
+
+    it('falls back to Everstake when the option belongs to another account', () => {
+        const state = createState({ accountKey: otherAccountKey, option: anotherDrep });
+
+        expect(selectVotingDelegationOption(state, accountKey)).toBe(DEFAULT_VOTING_OPTION);
+    });
+});
+
+describe('selectStakeVotingDelegation', () => {
+    it('returns the confirmed selection as stored, for prepareTxPlan to accept or reject', () => {
+        const votingDelegation: AccountVotingDelegation = {
+            accountKey: 'descriptor-a-ada-session' as AccountKey,
+            option: { type: 'current' },
+        };
+        const state: StakeRootState = {
+            wallet: { stake: { ...stakeInitialState, votingDelegation } },
+        };
+
+        expect(selectStakeVotingDelegation(state)).toBe(votingDelegation);
+    });
+
+    it('returns undefined when nothing was confirmed', () => {
+        const state: StakeRootState = { wallet: { stake: stakeInitialState } };
+
+        expect(selectStakeVotingDelegation(state)).toBeUndefined();
+    });
+});

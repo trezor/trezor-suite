@@ -6,9 +6,11 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getStakingDataForNetwork } from '@suite-common/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
+import {
+    getStakingDataForNetwork,
+    selectAccountClaimTransactions,
+} from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
 import { ChecksIcon, InfoIcon, LightningIcon, SpinnerGapIcon } from '@trezor/icons';

@@ -96,7 +96,6 @@
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/sentry" },
-        { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/suite-config"
         },

@@ -1,6 +1,9 @@
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
-import { isSupportedSolStakingNetworkSymbol } from '@suite-common/staking';
-import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
+import {
+    isSupportedSolStakingNetworkSymbol,
+    selectAccountNetworkSymbol,
+    useAccountsSelector,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import {

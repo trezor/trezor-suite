@@ -2,8 +2,8 @@ import { memo } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { getInstantStakeType } from '@suite-common/staking';
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { getInstantStakeType } from '@suite-common/wallet-core';
 import { type StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Row } from '@trezor/components';

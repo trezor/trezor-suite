@@ -1,5 +1,7 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
     getStakingDataForNetwork,
     getTronAvailableVotingPower,
     getTronPendingUnstakeBalance,
@@ -7,10 +9,6 @@ import {
     getTronVotes,
     getTronWithdrawableBalance,
     isTronStakingActive,
-} from '@suite-common/staking';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
     selectAccountByKey,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';

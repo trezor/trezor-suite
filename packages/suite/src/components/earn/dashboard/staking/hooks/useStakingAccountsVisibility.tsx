@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { getStakingLimitsByNetworkSymbol } from '@suite-common/staking';
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     compareEarnByAmountDesc,

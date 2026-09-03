@@ -9,27 +9,25 @@ import {
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type AdaPools } from '@suite-common/earn-staking-api';
 import { type WithServices } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { EVERSTAKE_POOL_NAMES, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type AccountVotingDelegation,
     CARDANO_EVERSTAKE_DREP,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
-    calculate,
+    type StakeRootState,
+    calculateStakeFormTransaction,
     composeStakingTransaction,
     getCardanoAccountPoolId,
     hasCardanoLiveVoteDelegation,
     isCardanoStakedWithEverstake,
     parseDrepBech32,
     selectBestCardanoPool,
-    validateCardanoDrep,
-} from '@suite-common/staking';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { EVERSTAKE_POOL_NAMES, type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountVotingDelegation,
-    type StakeRootState,
     selectCardanoPoolsInfo,
     selectStakeVotingDelegation,
+    validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -106,7 +104,7 @@ const calculateTransaction = (
 
     const estimatedFeeLevel = { ...feeLevel, ...estimatedFee?.payload };
 
-    return calculate(
+    return calculateStakeFormTransaction(
         availableBalance,
         output,
         estimatedFeeLevel,

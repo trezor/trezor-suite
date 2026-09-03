@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getTxStakeType } from '@suite-common/staking';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     type AccountsRootState,
@@ -9,6 +8,7 @@ import {
     type PhishingRootState,
     type TransactionsRootState,
     createTargets,
+    getTxStakeType,
     selectAccountByKey,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';

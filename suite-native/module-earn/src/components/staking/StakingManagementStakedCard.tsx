@@ -1,9 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { CARDANO_EPOCH_DAYS, isSupportedSolStakingNetworkSymbol } from '@suite-common/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
+import {
+    CARDANO_EPOCH_DAYS,
+    isSupportedSolStakingNetworkSymbol,
+    selectEthNextRewardPayout,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {

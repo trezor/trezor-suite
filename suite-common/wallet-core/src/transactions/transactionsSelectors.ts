@@ -2,7 +2,6 @@ import { A, D, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { isCardanoStakingTx } from '@suite-common/staking';
 import {
     type NotificationsRootState,
     type TransactionNotification,
@@ -51,7 +50,8 @@ import { selectHistoricFiatRates } from '../fiat-rates/fiatRatesSelectors';
 import type { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { type PhishingRootState } from '../phishing/phishingReducerTypes';
 import { selectActiveDustPhishingThreshold } from '../phishing/phishingSelectors';
-import { isAccountStakingActive } from '../stake/stakeUtils';
+import { isCardanoStakingTx } from '../staking/cardano/cardanoStakingUtils';
+import { isAccountStakingActive } from '../staking/shared/stakingUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     TransactionsRootState & AccountsRootState

@@ -10,7 +10,7 @@ import {
     getTronStakingRewards,
     isTronClaimSupported,
     isTronRewardClaimOnCooldown,
-} from '@suite-common/staking';
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     Box,

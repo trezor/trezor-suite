@@ -8,13 +8,11 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     CARDANO_EVERSTAKE_DREP,
-    getCardanoAccountDrepId,
-    validateCardanoDrep,
-} from '@suite-common/staking';
-import {
     DEFAULT_VOTING_OPTION,
+    getCardanoAccountDrepId,
     selectVotingDelegationOption,
     stakeActions,
+    validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Card, Column, Modal, Tooltip } from '@trezor/components';

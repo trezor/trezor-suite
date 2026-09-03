@@ -1,4 +1,4 @@
-import { getStakingLimitsByNetworkSymbol } from '@suite-common/staking';
+import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { type StakingNavigateFrom } from '@suite-native/analytics';

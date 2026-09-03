@@ -1,7 +1,8 @@
-import { getDaysToAddToPoolInitial, getUnstakingPeriodInDays } from '@suite-common/staking';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    getDaysToAddToPoolInitial,
+    getUnstakingPeriodInDays,
     selectAccountByKey,
     selectAccountStakeTransactions,
     selectDeviceAccounts,

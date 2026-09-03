@@ -2,8 +2,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import { useForm } from 'react-hook-form';
 
 import { useDispatch } from '@suite-common/redux-utils';
-import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import {
+    getStakeFormsDefaultValues,
+    getStakingContractAddress,
     selectBaseCurrency,
     selectRawNetworkFeeInfo,
     selectVotingDelegationOption,

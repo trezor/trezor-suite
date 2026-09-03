@@ -1,9 +1,10 @@
 import { Context } from '@suite-common/message-system';
 import {
+    type AccountsRootState,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
-} from '@suite-common/staking';
-import { type AccountsRootState, selectAdaAccountHasStaked } from '@suite-common/wallet-core';
+    selectAdaAccountHasStaked,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
 import { Text, VStack } from '@suite-native/atoms';

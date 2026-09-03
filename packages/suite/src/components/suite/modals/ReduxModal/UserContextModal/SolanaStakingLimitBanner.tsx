@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type SolanaStakingLimit,
     estimateSolanaStakingLimit,
     getOutputTxAmount,
     getSolanaDeactivatedRentReserves,
-} from '@suite-common/staking';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectBlockchainState } from '@suite-common/wallet-core';
+    selectBlockchainState,
+} from '@suite-common/wallet-core';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';

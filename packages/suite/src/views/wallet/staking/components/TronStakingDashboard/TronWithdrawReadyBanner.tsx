@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getTronWithdrawableBalance } from '@suite-common/staking';
+import { getTronWithdrawableBalance } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';

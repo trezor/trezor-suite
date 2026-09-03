@@ -6,8 +6,8 @@ import {
     calculateGains,
     getNetworkAdjustedStakingBalance,
     getStakingHelpCenterLink,
-} from '@suite-common/staking';
-import { selectPoolStatsApy } from '@suite-common/wallet-core';
+    selectPoolStatsApy,
+} from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';

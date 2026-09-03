@@ -11226,31 +11226,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/staking@workspace:*, @suite-common/staking@workspace:suite-common/staking":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/staking@workspace:suite-common/staking"
-  dependencies:
-    "@scure/base": "npm:^2.0.0"
-    "@suite-common/calldata": "workspace:*"
-    "@suite-common/earn-staking-api": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
-    "@suite-common/test-utils": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-constants": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    "@trezor/connect-common": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
-    "@trezor/network-solana": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
-    "@trezor/urls": "workspace:*"
-    "@trezor/utils": "workspace:*"
-    viem: "npm:^2.54.1"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/suite-config@workspace:*, @suite-common/suite-config@workspace:suite-common/suite-config":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-config@workspace:suite-common/suite-config"
@@ -11669,6 +11644,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@scure/base": "npm:^2.0.0"
     "@sentry/core": "npm:10.69.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
@@ -11684,7 +11660,6 @@ __metadata:
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/schemas": "workspace:*"
-    "@suite-common/staking": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -11714,11 +11689,13 @@ __metadata:
     "@trezor/protobuf": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     lodash: "npm:^4.18.1"
     react: "npm:19.2.3"
     react-hook-form: "npm:^7.77.0"
     react-redux: "npm:9.3.0"
+    viem: "npm:^2.54.1"
   languageName: unknown
   linkType: soft
 
@@ -11823,7 +11800,6 @@ __metadata:
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/staking": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -13548,7 +13524,6 @@ __metadata:
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/schemas": "workspace:*"
-    "@suite-common/staking": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
@@ -14298,7 +14273,6 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/mev": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/staking": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -15031,7 +15005,6 @@ __metadata:
     "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/staking": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -17872,12 +17845,12 @@ __metadata:
     "@suite-common/feedback": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/networks": "workspace:*"
-    "@suite-common/staking": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/analytics": "workspace:*"
@@ -18014,7 +17987,6 @@ __metadata:
     "@suite-common/receive": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sentry": "workspace:*"
-    "@suite-common/staking": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"

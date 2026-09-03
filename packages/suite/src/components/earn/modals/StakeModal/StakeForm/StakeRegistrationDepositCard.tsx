@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
-import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import {
     selectAccountIsStakingActive,
     selectVotingDelegationOption,

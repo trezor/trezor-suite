@@ -1,7 +1,7 @@
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
-import { getTxStakeType } from '@suite-common/staking';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
+import { getTxStakeType } from '@suite-common/wallet-core';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getNativeWrapTxKind } from '@suite-common/wallet-utils';
 import { Text, type TextProps } from '@suite-native/atoms';

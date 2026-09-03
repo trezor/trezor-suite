@@ -11,7 +11,6 @@ import {
     returnStableArrayIfEmpty,
     weakMapMemoize,
 } from '@suite-common/redux-utils';
-import { isCardanoStakingActive } from '@suite-common/staking';
 import {
     type SuiteSyncDataRootState,
     selectAccountsWithSuiteSyncLabel,
@@ -30,6 +29,7 @@ import {
     type FiatRatesRootState,
     type TransactionsRootState,
     type WalletSettingsRootState,
+    isCardanoStakingActive,
     selectAccountByKey,
     selectAccountDefiTokensCount,
     selectBaseCurrency,
