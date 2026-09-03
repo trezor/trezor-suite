@@ -4,7 +4,11 @@ import { Translation } from '@suite/intl';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import {
+    CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
+    CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
+    CARDANO_EPOCH_DAYS,
+} from '@suite-common/wallet-constants';
 import { selectEthValidatorsQueue, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { StepList } from '@trezor/components';
@@ -125,15 +129,17 @@ const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
                             ? 'TR_EARN_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER'
                             : 'TR_EARN_ENTER_ACTIVATION_PERIOD'
                     }
-                    values={{ days: CARDANO_ACTIVATION_PERIOD_DAYS }}
                 />
             }
             subheading={<Translation id="TR_EARN_TIME_TO_START_EARNING" />}
             content={{
                 text: (
                     <Translation
-                        id="TR_EARN_APPROXIMATE_DAYS"
-                        values={{ count: CARDANO_ACTIVATION_PERIOD_DAYS }}
+                        id="TR_EARN_APPROXIMATE_DAYS_RANGE"
+                        values={{
+                            minDays: CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
+                            maxDays: CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
+                        }}
                     />
                 ),
             }}
