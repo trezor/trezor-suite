@@ -19,6 +19,7 @@ import { useNativeStyles } from '@trezor/styles-native';
 
 import { AnimatedVStack } from './Stack';
 import { Text } from './Text';
+
 const CANVAS_SIZE = 88;
 const CIRCLE_CENTER = CANVAS_SIZE / 2;
 const BORDER_WIDTH = 2;
@@ -44,11 +45,8 @@ export type HoldToConfirmButtonProps = {
 const GESTURE_HIT_SLOP = 20;
 const SUCCESS_VIBRATION_DURATION = 200;
 
-const leftLoaderArcPath = Skia.Path.Make();
-leftLoaderArcPath.addArc(LOADER_ARC_OVAL_CONFIG, 90, 180);
-
-const rightLoaderArcPath = Skia.Path.Make();
-rightLoaderArcPath.addArc(LOADER_ARC_OVAL_CONFIG, 90, -180);
+const leftLoaderArcPath = Skia.PathBuilder.Make().addArc(LOADER_ARC_OVAL_CONFIG, 90, 180).build();
+const rightLoaderArcPath = Skia.PathBuilder.Make().addArc(LOADER_ARC_OVAL_CONFIG, 90, -180).build();
 
 const startOnHoldVibration = () => {
     if (Platform.OS === 'ios') {
