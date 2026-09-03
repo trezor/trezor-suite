@@ -6,6 +6,7 @@ import {
     FIVE_BINARIES_POOLS,
     type NetworkSymbol,
 } from '@suite-common/wallet-config';
+import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
 import {
     type Account,
     type StakeType,
@@ -15,8 +16,6 @@ import {
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
-
-import { CARDANO_EVERSTAKE_STAKING_POOL } from './cardanoStakingConstants';
 
 export function isSupportedAdaStakingNetworkSymbol(
     symbol: NetworkSymbol,

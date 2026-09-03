@@ -1,3 +1,8 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
+import type { AccountWithNetworkType } from '@suite-common/wallet-types';
+import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import type { AccountInfo } from '@trezor/connect';
 import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
 
 export const sortByCoin = [
@@ -415,3 +420,77 @@ export const getUtxoFromSignedTransaction = [
         result: [],
     },
 ];
+
+type CardanoStaking = AccountWithNetworkType<'cardano'>['misc']['staking'];
+type CardanoDrep = NonNullable<CardanoStaking['drep']>;
+
+const drep: CardanoDrep = {
+    drep_id: CARDANO_EVERSTAKE_DREP.bech32,
+    hex: CARDANO_EVERSTAKE_DREP.hex,
+    amount: '1000000000',
+    active: true,
+    active_epoch: 507,
+    has_script: false,
+};
+
+// only `drep_id` is compared, so any other id will do
+const otherDrep = {
+    ...drep,
+    drep_id: 'drep1ygdzk0zdtehhpqvj5w6vt4h8lqy352euf40x7uypj23mf3gs6c9xy',
+};
+
+const staking = (drepOverride: CardanoDrep | null): CardanoStaking => ({
+    ...networkSpecificDefaultCardano.misc.staking,
+    drep: drepOverride,
+});
+
+// equal on both sides, so the tx count checks preceding the staking comparison can't mask its result
+const history = { total: 13, unconfirmed: 0 };
+
+const drepCases: {
+    description: string;
+    stored: CardanoDrep | null;
+    fresh: CardanoDrep | null;
+    result: boolean;
+}[] = [
+    { description: 'identical staking data', stored: drep, fresh: drep, result: false },
+    {
+        description: "only the DRep's voting power changed",
+        stored: drep,
+        fresh: { ...drep, amount: '2000000000' },
+        result: false,
+    },
+    { description: 'vote changed to another DRep', stored: drep, fresh: otherDrep, result: true },
+    {
+        description: 'first vote delegation, stored DRep is null',
+        stored: null,
+        fresh: drep,
+        result: true,
+    },
+    { description: 'vote delegation dropped', stored: drep, fresh: null, result: true },
+    {
+        description: 'same DRep, retired since last fetch',
+        stored: drep,
+        fresh: { ...drep, active: false },
+        result: true,
+    },
+    {
+        description: 'same DRep, re-registered in a later epoch',
+        stored: drep,
+        fresh: { ...drep, active_epoch: 512 },
+        result: true,
+    },
+];
+
+export const isAccountOutdated = drepCases.map(({ description, stored, fresh, result }) => ({
+    description: `cardano: ${description}`,
+    account: {
+        ...mockWalletAccount(
+            { symbol: asNetworkSymbol('ada'), history },
+            networkSpecificDefaultCardano,
+        ),
+        misc: { staking: staking(stored) },
+    } as AccountWithNetworkType<'cardano'>,
+    freshInfo: { history, misc: { staking: staking(fresh) } } as AccountInfo,
+    result,
+}));
