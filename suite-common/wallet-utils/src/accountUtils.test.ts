@@ -21,6 +21,7 @@ import {
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
     hasNetworkFeatures,
+    isAccountOutdated,
     isTestnet,
     sortByBIP44AddressIndex,
     sortByCoin,
@@ -528,6 +529,14 @@ describe('account utils', () => {
         accountInfo.addresses.change = [];
         account.addresses = enhanceAddresses(accountInfo, account);
         expect(account.addresses.change).toEqual([]);
+    });
+});
+
+describe(isAccountOutdated.name, () => {
+    fixtures.isAccountOutdated.forEach(f => {
+        it(f.description, () => {
+            expect(isAccountOutdated(f.account, f.freshInfo)).toBe(f.result);
+        });
     });
 });
 
