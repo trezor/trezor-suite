@@ -2,11 +2,12 @@ import { useSelector } from 'react-redux';
 
 import { useQuery } from '@suite-common/react-query';
 import {
+    type AccountsRootState,
     WALLET_SDK_SOURCE_MOBILE,
     isSupportedEthStakingNetworkSymbol,
+    selectAccountByKey,
     simulateUnstake,
-} from '@suite-common/staking';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BigNumber, resolveAfter } from '@trezor/utils';
 

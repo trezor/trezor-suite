@@ -2,9 +2,8 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { isCardanoStakedWithFiveBinaries } from '@suite-common/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type AccountsRootState, isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { CompoundRoundedIcon } from '@suite-native/atoms';
 import { type IconName, type IconSize } from '@suite-native/icons';

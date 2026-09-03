@@ -1,21 +1,19 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    WALLET_SDK_SOURCE_MOBILE,
-    getEthereumStakingLiveStateErrorMessage,
-    getUnstakeAmountFromCalldata,
-    transformTx,
-    verifyEthereumStakingCalldata,
-    verifyEthereumStakingLiveState,
-} from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FormDraftRootState,
+    WALLET_SDK_SOURCE_MOBILE,
     ethereumGetCurrentNonceThunk,
+    getEthereumStakingLiveStateErrorMessage,
+    getUnstakeAmountFromCalldata,
     selectAccountByKey,
     selectFormDraft,
     sendFormActions,
+    transformTx,
+    verifyEthereumStakingCalldata,
+    verifyEthereumStakingLiveState,
 } from '@suite-common/wallet-core';
 import {
     type AccountKey,

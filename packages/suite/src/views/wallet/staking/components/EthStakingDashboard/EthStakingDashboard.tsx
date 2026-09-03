@@ -3,13 +3,11 @@ import { useEffect, useMemo } from 'react';
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
+    fetchAllTransactionsForAccountThunk,
     getDaysToAddToPool,
     getDaysToUnstake,
     getStakingDataForNetwork,
     hasStakeInPendingDepositedState,
-} from '@suite-common/staking';
-import {
-    fetchAllTransactionsForAccountThunk,
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,

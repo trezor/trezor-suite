@@ -8,17 +8,15 @@ import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-    isSupportedTronStakingNetworkSymbol,
-} from '@suite-common/staking';
-import {
     type NetworkSymbol,
     getNetwork,
     getNetworkFeatures,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+    isSupportedTronStakingNetworkSymbol,
     selectAllAccountsToList,
     selectBaseCurrency,
     selectCurrentFiatRates,

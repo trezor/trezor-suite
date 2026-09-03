@@ -1,12 +1,12 @@
 import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getSolanaUnstakeAmountBounds,
     getStakingDataForNetwork,
     getStakingHelpCenterLink,
-} from '@suite-common/staking';
-import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+} from '@suite-common/wallet-core';
 import { Banner, Card, Column, InfoItem, Link, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

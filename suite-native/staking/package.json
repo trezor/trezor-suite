@@ -16,7 +16,6 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/mev": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/staking": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

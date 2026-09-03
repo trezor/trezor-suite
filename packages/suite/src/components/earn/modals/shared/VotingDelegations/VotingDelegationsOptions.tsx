@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
-import { validateCardanoDrep } from '@suite-common/staking';
 import {
     type VotingDelegationOption,
     selectVotingDelegationOption,
     stakeActions,
+    validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Input, Radio, Text } from '@trezor/components';

@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { getMaxStakeAmount } from '@suite-common/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    getMaxStakeAmount,
     selectAccountByKey,
     selectBaseCurrency,
     selectIsBaseCurrencyInSats,

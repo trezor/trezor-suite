@@ -6,13 +6,11 @@ import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS,
-    getTronStakingRewards,
-    getTronWithdrawableBalance,
-} from '@suite-common/staking';
-import {
     type TronFlow,
     type TronStakeError,
     type TronStakeStepId,
+    getTronStakingRewards,
+    getTronWithdrawableBalance,
     selectTronStakeSession,
     submitTronClaimThunk,
     submitTronFreezeThunk,

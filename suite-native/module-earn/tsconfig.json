@@ -35,7 +35,6 @@
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/schemas" },
-        { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/suite-types"
         },

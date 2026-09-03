@@ -1,9 +1,9 @@
 import { useMemo, useRef, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { getInstantStakeType } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    getInstantStakeType,
     selectAccountByKey,
     selectAllPendingTransactions,
     selectTransactionByAccountKeyAndTxid,

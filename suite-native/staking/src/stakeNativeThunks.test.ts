@@ -2,12 +2,15 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { WALLET_SDK_SOURCE_MOBILE, buildStakeData } from '@suite-common/staking';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockGetIsWindowVisible, mockOnModalCancel } from '@suite-common/suite-types/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { prepareSendFormReducer } from '@suite-common/wallet-core';
+import {
+    WALLET_SDK_SOURCE_MOBILE,
+    buildStakeData,
+    prepareSendFormReducer,
+} from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,

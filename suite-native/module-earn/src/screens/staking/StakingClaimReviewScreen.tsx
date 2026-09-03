@@ -4,15 +4,16 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
     buildClaimWithdrawRequestData,
     getStakingContractAddress,
     getStakingLimitsByNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
-} from '@suite-common/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { BannerFull, BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';

@@ -1,8 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { getInstantStakeType } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    getInstantStakeType,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Box, Text } from '@suite-native/atoms';

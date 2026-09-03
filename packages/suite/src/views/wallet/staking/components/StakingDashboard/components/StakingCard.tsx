@@ -4,10 +4,11 @@ import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getStakingDataForNetwork, isCardanoStakedWithEverstake } from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    getStakingDataForNetwork,
+    isCardanoStakedWithEverstake,
     selectAccountIsStakingActive,
     selectAccountStakeTypeTransactions,
     selectCardanoPoolsInfo,

@@ -1,5 +1,5 @@
 import { type SolanaRewardsTotalQueryResult } from '@suite-common/earn-staking-api/src/staking';
-import { getStakingDataForNetwork } from '@suite-common/staking';
+import { getStakingDataForNetwork } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';

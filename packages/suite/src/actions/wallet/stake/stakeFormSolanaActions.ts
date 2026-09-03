@@ -4,15 +4,13 @@ import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
-import {
-    composeSolanaStakingTransaction,
-    isSupportedSolStakingNetworkSymbol,
-    prepareSolanaStakeTxData,
-} from '@suite-common/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type BlockchainRootState,
     type WalletSettingsRootState,
+    composeSolanaStakingTransaction,
+    isSupportedSolStakingNetworkSymbol,
+    prepareSolanaStakeTxData,
     selectAddressDisplayType,
     selectBlockchainState,
 } from '@suite-common/wallet-core';

@@ -1,6 +1,6 @@
-import { getStakingLimitsByNetworkSymbol } from '@suite-common/staking';
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import { type Translate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';

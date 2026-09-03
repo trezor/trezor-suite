@@ -5,7 +5,6 @@ import {
 } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
-import { STAKE_GAS_LIMIT_RESERVE } from '@suite-common/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -66,6 +65,7 @@ import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
 } from '../settings/walletSettingsReducer';
+import { STAKE_GAS_LIMIT_RESERVE } from '../staking/ethereum/ethereumStakingConstants';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import {
     selectAccountTransactions,

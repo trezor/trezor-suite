@@ -1,11 +1,9 @@
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     getEthereumCryptoBalanceWithStaking,
     getSolanaCryptoBalanceWithStaking,
     getTronCryptoBalanceWithStaking,
     getUnstakingPeriodInDays,
-} from '@suite-common/staking';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-import {
     selectAccountByKey,
     selectAdaAccountHasStaked,
     selectEthValidatorsQueue,

@@ -14,11 +14,6 @@ import {
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
 import { type WithServices } from '@suite-common/redux-utils';
-import {
-    isSupportedAdaStakingNetworkSymbol,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-} from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -30,6 +25,9 @@ import {
     type SyncAccountsWithBlockchainThunkState,
     type WalletSettingsRootState,
     addFakePendingCardanoTxThunk,
+    isSupportedAdaStakingNetworkSymbol,
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
     selectStake,

@@ -1,8 +1,8 @@
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     isSupportedAdaStakingNetworkSymbol,
     isSupportedNativeStakingManagementSymbol,
-} from '@suite-common/staking';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 import { hasAccountActiveStaking } from './hasAccountActiveStaking';

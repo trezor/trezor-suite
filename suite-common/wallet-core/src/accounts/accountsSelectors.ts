@@ -2,7 +2,6 @@ import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { isCardanoStakingActive } from '@suite-common/staking';
 import { type AccountType, type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
@@ -11,6 +10,7 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { getFormattedAccountType, getFormattedAccountTypeWithDefault } from './accountsConstants';
 import { type AccountsRootState } from './accountsReducer';
+import { isCardanoStakingActive } from '../staking/cardano/cardanoStakingUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     AccountsRootState & DeviceRootState

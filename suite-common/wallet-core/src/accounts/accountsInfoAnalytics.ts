@@ -1,4 +1,3 @@
-import { getStakingProvidersForAnalytics } from '@suite-common/staking';
 import { type TokenDefinition } from '@suite-common/token-definitions';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -7,6 +6,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { getStakingProvidersForAnalytics } from '../staking/shared/stakingUtils';
 import { getAccountAnalyticsTokenSymbols } from '../tokens/tokenUtils';
 
 export const isAccountActiveForAnalytics = (account: Account) =>

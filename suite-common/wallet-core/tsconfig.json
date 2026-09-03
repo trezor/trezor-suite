@@ -16,7 +16,6 @@
         { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../schemas" },
-        { "path": "../staking" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
@@ -68,6 +67,7 @@
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
     ]
 }

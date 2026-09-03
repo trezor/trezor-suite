@@ -1,4 +1,3 @@
-import { getInstantStakeType } from '@suite-common/staking';
 import { type Account, type TxTargetId, asTxTargetId } from '@suite-common/wallet-types';
 import {
     type Target as BlockchainlinkTarget,
@@ -8,6 +7,7 @@ import {
 } from '@trezor/blockchain-link-types';
 
 import { type InternalTarget, type SimpleTarget, type Target, type TokenTarget } from './Target';
+import { getInstantStakeType } from '../../staking/ethereum/ethereumStaking';
 
 // Filter out internal transfers that are instant staking transactions
 const filteredInternalTransfers = (

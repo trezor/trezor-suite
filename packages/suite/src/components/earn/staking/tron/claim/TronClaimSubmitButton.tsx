@@ -3,8 +3,11 @@ import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { getTronStakingRewards, isTronClaimSupported } from '@suite-common/staking';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    getTronStakingRewards,
+    isTronClaimSupported,
+    selectHasRunningDiscovery,
+} from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

@@ -4,8 +4,8 @@ import {
     useSolStakingRewardsWarning,
     useSolanaRewardsHistory,
 } from '@suite-common/earn-staking-api/src/staking';
-import { getStakingDataForNetwork } from '@suite-common/staking';
 import {
+    getStakingDataForNetwork,
     selectAccountIsStakingActive,
     selectHasRunningDiscovery,
     selectHasSolExternalStakingAccounts,

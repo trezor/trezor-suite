@@ -1,9 +1,9 @@
+import { yup } from '@suite-common/validators';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getSolanaUnstakeAmountBounds,
     getStakingLimitsByNetworkSymbol,
-} from '@suite-common/staking';
-import { yup } from '@suite-common/validators';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import { type Translate } from '@suite-native/intl';

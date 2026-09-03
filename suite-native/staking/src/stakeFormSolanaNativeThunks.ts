@@ -1,17 +1,15 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    WALLET_SDK_SOURCE_MOBILE,
-    composeSolanaStakingTransaction,
-    isSupportedSolStakingNetworkSymbol,
-    prepareSolanaStakeTxData,
-} from '@suite-common/staking';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type BlockchainRootState,
     type FeesRootState,
+    WALLET_SDK_SOURCE_MOBILE,
     type WalletSettingsRootState,
+    composeSolanaStakingTransaction,
+    isSupportedSolStakingNetworkSymbol,
+    prepareSolanaStakeTxData,
     selectAccountByKey,
     selectAddressDisplayType,
     selectConvertedNetworkFeeInfo,

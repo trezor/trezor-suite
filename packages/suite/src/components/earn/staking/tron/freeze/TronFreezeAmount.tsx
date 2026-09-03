@@ -4,10 +4,13 @@ import { useFormState } from 'react-hook-form';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useDispatch } from '@suite-common/redux-utils';
-import { TRON_STAKING_RESERVE, getStakingLimitsByNetworkSymbol } from '@suite-common/staking';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { composeTronFreezeFeeLevelsThunk } from '@suite-common/wallet-core';
+import {
+    TRON_STAKING_RESERVE,
+    composeTronFreezeFeeLevelsThunk,
+    getStakingLimitsByNetworkSymbol,
+} from '@suite-common/wallet-core';
 import { asAmountSubunit, subunitsToUnits, toFiatCurrency } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';

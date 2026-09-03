@@ -64,7 +64,7 @@ import {
 const STAKE_HISTORY_ACCOUNT = address('SysvarStakeHistory1111111111111111111111111');
 const STAKE_CONFIG_ACCOUNT = address('StakeConfig11111111111111111111111111111111');
 
-/** @see {@link file://./../../../../suite-common/staking/src/shared/stakingConstants.ts}  */
+/** @see {@link file://./../../../../suite-common/wallet-core/src/staking/shared/stakingConstants.ts}  */
 const WALLET_SDK_SOURCE = '1';
 
 export const getSolanaStakingData = async (

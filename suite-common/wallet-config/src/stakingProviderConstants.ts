@@ -1,6 +1,6 @@
 // Pool and Super Representative identities backing the `stakingProviders` registry. They live
 // here rather than with the other staking constants because the registry itself is consumed by
-// packages below @suite-common/staking.
+// packages below the wallet core.
 
 export const FIVE_BINARIES_POOLS = [
     'pool1k2qhlrrweu8fecd4hx4hn22lv00nrd3rjdxj6durax7m78q7ynu',

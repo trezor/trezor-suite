@@ -5,8 +5,9 @@ import {
     getStakingLimitsByNetworkSymbol,
     getTronAvailableVotingPower,
     isCardanoStakedOutsideEverstake,
-} from '@suite-common/staking';
-import { selectAccountIsStakingActive, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
+    selectAccountIsStakingActive,
+    selectCardanoPoolsInfo,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';

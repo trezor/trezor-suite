@@ -6,7 +6,7 @@ import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     isSupportedTronStakingNetworkSymbol,
-} from '@suite-common/staking';
+} from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

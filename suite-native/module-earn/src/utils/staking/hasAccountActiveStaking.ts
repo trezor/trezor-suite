@@ -1,4 +1,4 @@
-import { isCardanoStakingActive } from '@suite-common/staking';
+import { isCardanoStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 

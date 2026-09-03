@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    getChangedInternalTx,
-    getInstantStakeType,
-    isSupportedEthStakingNetworkSymbol,
-} from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,
+    getChangedInternalTx,
+    getInstantStakeType,
+    isSupportedEthStakingNetworkSymbol,
     selectAccountByKey,
     selectAccountTransactions,
 } from '@suite-common/wallet-core';

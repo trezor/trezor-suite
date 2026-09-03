@@ -1,12 +1,12 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
+import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { type TronTxContractType } from '@suite-common/wallet-constants';
 import {
     isCardanoStakingTx,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
-} from '@suite-common/staking';
-import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { type TronTxContractType } from '@suite-common/wallet-constants';
+} from '@suite-common/wallet-core';
 import { type StakeType } from '@suite-common/wallet-types';
 import { getNativeWrapTxKind, getTxHeaderSymbol } from '@suite-common/wallet-utils';
 import { type AccountTransaction } from '@trezor/connect';

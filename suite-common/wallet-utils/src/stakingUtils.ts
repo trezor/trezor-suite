@@ -25,9 +25,9 @@ import { formatNetworkAmount, subunitsToUnits } from './amountUtils';
 import { fromWei } from './ethConverter';
 
 // Low-level staking accessors required by generic wallet-utils modules
-// (accountUtils, reviewTransactionUtils). All other staking logic lives in
-// @suite-common/staking, which builds on top of these primitives — it can
-// import them from here, but not the other way around.
+// (`accountUtils`, `reviewTransactionUtils`). Higher-level staking logic lives in
+// `@suite-common/wallet-core/staking`, which may depend on these primitives, but
+// `wallet-utils` cannot depend on `wallet-core`.
 
 export const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 

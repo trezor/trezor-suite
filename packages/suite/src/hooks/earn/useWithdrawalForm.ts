@@ -4,17 +4,15 @@ import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { useDispatch } from '@suite-common/redux-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
     getStakingDataForNetwork,
-    simulateUnstake,
-} from '@suite-common/staking';
-import { getNetwork } from '@suite-common/wallet-config';
-import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
+    simulateUnstake,
     useFormDraft,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';

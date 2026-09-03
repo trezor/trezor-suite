@@ -3,8 +3,11 @@ import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
-import { isSupportedStakingNetworkSymbol } from '@suite-common/staking';
-import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
+import {
+    isSupportedStakingNetworkSymbol,
+    selectAccountNetworkSymbol,
+    useAccountsSelector,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { BannerInline, Box, Card, PressableOpacity, Text } from '@suite-native/atoms';

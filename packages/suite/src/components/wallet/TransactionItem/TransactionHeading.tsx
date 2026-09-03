@@ -1,7 +1,9 @@
 import { Translation } from '@suite/intl';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/staking';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
-import { selectIsSuspiciousTransactionsBlurringEnabled } from '@suite-common/wallet-core';
+import {
+    isSupportedEthStakingNetworkSymbol,
+    selectIsSuspiciousTransactionsBlurringEnabled,
+} from '@suite-common/wallet-core';
 import { getTxHeaderSymbol } from '@suite-common/wallet-utils';
 import { Row, TextButton, Tooltip } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';

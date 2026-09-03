@@ -1,11 +1,9 @@
 import { selectRouteName } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import {
+    hasPendingStakeTypeTransaction,
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithFiveBinaries,
-} from '@suite-common/staking';
-import {
-    hasPendingStakeTypeTransaction,
     selectAccountIsStakingActive,
     selectCardanoPoolsInfo,
 } from '@suite-common/wallet-core';

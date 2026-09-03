@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { getUnstakeAmountByEthereumDataHex } from '@suite-common/staking';
+import { getUnstakeAmountByEthereumDataHex } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { asAmountSubunit, isUnstakeTx, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';

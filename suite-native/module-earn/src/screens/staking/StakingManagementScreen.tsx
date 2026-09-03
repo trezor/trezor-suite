@@ -3,11 +3,11 @@ import { useEffect, useMemo } from 'react';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { useDispatch } from '@suite-common/redux-utils';
-import { isSupportedSolStakingNetworkSymbol } from '@suite-common/staking';
 import {
     type AccountsRootState,
     fetchAllTransactionsForAccountThunk,
     initStakeDataThunk,
+    isSupportedSolStakingNetworkSymbol,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { parseAccountKey } from '@suite-common/wallet-utils';
