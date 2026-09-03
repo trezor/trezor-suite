@@ -2,6 +2,9 @@ import type { Horizon, Transaction } from '@stellar/stellar-sdk';
 
 import type { identifyTransaction } from '../runtime/transactions/identify';
 
+export type * from './account';
+export type * from './rpc';
+
 export type { TokenTransferInfo } from '../runtime/transactions/identify';
 
 export type StellarAPI = Horizon.Server;
