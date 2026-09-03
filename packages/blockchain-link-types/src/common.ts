@@ -13,6 +13,22 @@ export interface SolanaStakingAccount {
     activationEpoch?: number;
 }
 
+/**
+ * A Soroban contract invocation, decoded from the transaction envelope. Arguments arrive
+ * pre-rendered because only the decoder knows the XDR value types; `address` is kept apart from
+ * the rest so the UI can link it to the explorer.
+ */
+export interface StellarContractCallData {
+    contractId: string;
+    functionName: string;
+    args: { kind: 'address' | 'text'; value: string }[];
+    /**
+     * The authorization tree flattened depth-first. It names the calls the invocation authorizes —
+     * for a contract token, the `transfer` that moved it, which balance changes never report.
+     */
+    authorizedCalls: { contractId: string; functionName: string; depth: number }[];
+}
+
 export type TokenStandard =
     | 'TRC10'
     | 'ERC20'
@@ -266,6 +282,7 @@ export interface Transaction {
             assetCode: string;
             isRemoval: boolean;
         };
+        contractCall?: StellarContractCallData;
     };
     tronSpecific?: TronChainExtraData;
 }
