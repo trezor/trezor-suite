@@ -6,10 +6,7 @@ import { type Coins, type CryptoId } from 'invity-api';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
 
 import { useFormatCryptoValue } from './useFormatCryptoValue';
-import {
-    createTradingTestState,
-    renderHookWithTradingStore,
-} from '../test-utils/testUtils';
+import { createTradingTestState, renderHookWithTradingStore } from '../test-utils/testUtils';
 
 const FormattersProvider = ({ children }: PropsWithChildren) => (
     <IntlProvider locale="en">
@@ -62,10 +59,10 @@ describe('useFormatCryptoValue', () => {
     });
 
     it.each<[string, CryptoId, string]>([
-        // BTC has 8 decimals — 9th decimal is rounded
-        ['0.123456789', BITCOIN_CRYPTO_ID, '0.12345679 BTC'],
-        // Tokens are rounded to 16 decimals
-        ['0.1234567890123456789', USDC_CRYPTO_ID, '0.1234567890123457 USDC'],
+        // BTC has 8 decimals — extra precision is truncated
+        ['0.123456789', BITCOIN_CRYPTO_ID, '0.12345678 BTC'],
+        // Tokens are truncated to 16 decimals
+        ['0.1234567890123456789', USDC_CRYPTO_ID, '0.1234567890123456 USDC'],
     ])('respects network decimal precision for %s %s', (value, cryptoId, expected) => {
         const { result } = renderUseFormatCryptoValue();
 
