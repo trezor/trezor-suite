@@ -36,6 +36,7 @@ export function loadLedger(path: string): Ledger {
     return EMPTY_LEDGER;
 }
 
+/** Skips schema-invalid files instead of throwing — see docs.md "Partial runs, missing summaries". */
 export function readSummaries(summariesDir: string | undefined): SlackFixSummary[] {
     if (!summariesDir || !existsSync(summariesDir)) return [];
 
