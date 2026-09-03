@@ -2,7 +2,6 @@
 
 import type { Features, StrictFeatures } from '@trezor/connect-common/src/types/device';
 import type {
-    CurrentVersion,
     FirmwareChannel,
     FirmwareReleaseConfigInfo,
 } from '@trezor/connect-common/src/types/firmware';
@@ -36,7 +35,6 @@ import {
     buildIntermediaryFirmwareFileName,
     buildLocalFirmwareFileName,
     buildLocalReleaseName,
-    findBestCompatibleRelease,
     isFirmwareCacheUsedForSelectedSource,
     isProductionFirmwareChannel,
     isStrictFeatures,
@@ -282,36 +280,6 @@ export const getLanguage = (languageBinPath: string) => {
 
 export type { CurrentVersion } from '@trezor/connect-common/src/types/firmware';
 
-const getCurrentVersion = (features: Features): CurrentVersion => {
-    if (!isStrictFeatures(features)) {
-        throw new Error('Features of unexpected shape provided.');
-    }
-    const bootloaderVersion = getBootloaderVersionArray({ features });
-    // Old T1B1 versions do not report FW version in bootloader mode, then it cannot be known,
-    // but we are handling it `getReleaseInfo` when device is T1B1 we use bootloader version.
-    const firmwareVersion = getFirmwareVersionArray({ features });
-
-    return { bootloaderVersion, firmwareVersion };
-};
-
-const getIntermediaryMessageRelease = (features: Features) => {
-    const { bootloaderVersion, firmwareVersion } = getCurrentVersion(features);
-
-    const currentVersion = features.bootloader_mode ? bootloaderVersion : firmwareVersion;
-    const minVersionKey = features.bootloader_mode
-        ? 'min_bootloader_version'
-        : 'min_firmware_version';
-
-    if (!currentVersion) {
-        return undefined;
-    }
-
-    // Find the first intermediary release that requires a newer version than the current one.
-    return firmwareReleaseStore
-        .getIntermediary(features.internal_model)
-        ?.find(release => versionUtils.isNewer(release[minVersionKey], currentVersion));
-};
-
 const getIsBitcoinOnlyAvailable = (features: Features) =>
     !!firmwareReleaseStore.getReleases(features.internal_model, FirmwareType.BitcoinOnly);
 
@@ -326,21 +294,15 @@ const calculateShouldOfferRelease = (
         throw new Error('Probability must be between 0 and 100.');
     }
 
-    if (deviceId === null) {
-        // When deviceId is null, it means device is fresh so we always want to install latest FW,
-        // unless rolloutProbability is 0, in that case we should never offer it.
-        return rolloutProbability > 0;
-    } else {
-        // If deviceId is provided, use the deterministic approach. `rolloutProbability` is a
-        // 0..100 percentage compared with `<`, so the bucket count must be 100 (values 0..99) -
-        // passing 101 here would bucket one extra value (100) that can never satisfy `< 100`,
-        // permanently excluding ~1% of devices from being offered a release at ANY rollout
-        // percentage including 100. See the sibling usage in
-        // suite-common/message-system/src/experimentUtils.ts for the same pattern done right.
-        const deterministicValueToCompare = getIntegerInRangeFromString(deviceId, 100);
+    // If deviceId is provided, use the deterministic approach. `rolloutProbability` is a
+    // 0..100 percentage compared with `<`, so the bucket count must be 100 (values 0..99) -
+    // passing 101 here would bucket one extra value (100) that can never satisfy `< 100`,
+    // permanently excluding ~1% of devices from being offered a release at ANY rollout
+    // percentage including 100. See the sibling usage in
+    // suite-common/message-system/src/experimentUtils.ts for the same pattern done right.
+    const value = deviceId === null ? 0 : getIntegerInRangeFromString(deviceId, 100);
 
-        return deterministicValueToCompare < rolloutProbability;
-    }
+    return value < rolloutProbability;
 };
 
 const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => {
@@ -385,92 +347,87 @@ export const getFirmwareReleaseConfigInfo = (
     features: Features,
     firmwareType: FirmwareType,
 ): FirmwareReleaseConfigInfo | undefined => {
-    const deviceMessageRelease = firmwareReleaseStore.getReleases(
-        features.internal_model,
-        firmwareType,
-    );
-    if (!deviceMessageRelease?.release) {
-        return;
-    }
-    const { release: baseRelease, conditions, firmware_type } = deviceMessageRelease;
-
-    const currentVersion = getCurrentVersion(features);
-    const inBootloaderMode = features.bootloader_mode && !!currentVersion.bootloaderVersion;
-
-    const versionContext = inBootloaderMode
-        ? {
-              version: currentVersion.bootloaderVersion!,
-              minVersionKey: 'min_bootloader_version' as const,
-          }
-        : {
-              version: currentVersion.firmwareVersion,
-              minVersionKey: 'min_firmware_version' as const,
-          };
-
-    const isCompatible =
-        versionContext.version &&
-        versionUtils.isNewerOrEqual(
-            versionContext.version,
-            baseRelease[versionContext.minVersionKey],
-        );
-
-    const releasesOfDevice = getReleasesAssetByDeviceModelAndFirmwareType(
-        features.internal_model,
-        firmwareType,
-    );
-
-    let suitableRelease = baseRelease;
-    if (!isCompatible) {
-        // If the target isn't compatible, search for the best alternative.
-        const alternativeRelease = findBestCompatibleRelease(
-            releasesOfDevice,
-            currentVersion,
-            versionContext.minVersionKey,
-        );
-        // If an alternative is found, use it. Otherwise, we proceed with the original.
-        if (alternativeRelease) {
-            suitableRelease = alternativeRelease;
-        }
-    }
-
-    const intermediary = getIntermediaryMessageRelease(features);
-    const release = intermediary ? baseRelease : suitableRelease;
-
     if (!isStrictFeatures(features)) {
         throw new Error('Features of unexpected shape provided.');
     }
+
+    // Old T1B1 versions do not report FW version in bootloader mode, then it cannot be known,
+    // but we are handling it `getReleaseInfo` when device is T1B1 we use bootloader version.
+    const firmwareVersion = getFirmwareVersionArray({ features });
+    const bootloaderVersion = getBootloaderVersionArray({ features });
+    const model = features.internal_model;
+
+    const deviceMessageRelease = firmwareReleaseStore.getReleases(model, firmwareType);
+    if (!deviceMessageRelease?.release) {
+        return;
+    }
+
+    const { release: baseRelease, conditions, firmware_type } = deviceMessageRelease;
+
+    const releasesOfDevice = getReleasesAssetByDeviceModelAndFirmwareType(model, firmwareType).sort(
+        (a, b) => (versionUtils.isNewer(b.version, a.version) ? 1 : -1),
+    );
+
+    let alternativeRelease, intermediary;
+    if (features.bootloader_mode && versionUtils.isVersionArray(bootloaderVersion)) {
+        // Find the first intermediary release that requires a newer version than the current one.
+        intermediary = firmwareReleaseStore
+            .getIntermediary(model)
+            ?.find(release =>
+                versionUtils.isNewer(release.min_bootloader_version, bootloaderVersion),
+            );
+
+        if (!versionUtils.isNewerOrEqual(bootloaderVersion, baseRelease.min_bootloader_version)) {
+            // If the target isn't compatible, search for the best alternative.
+            // If an alternative is found, use it. Otherwise, we proceed with the original.
+            alternativeRelease = releasesOfDevice.find(fw =>
+                versionUtils.isNewerOrEqual(bootloaderVersion, fw.min_bootloader_version),
+            );
+        }
+    } else if (versionUtils.isVersionArray(firmwareVersion)) {
+        // Find the first intermediary release that requires a newer version than the current one.
+        intermediary = firmwareReleaseStore
+            .getIntermediary(model)
+            ?.find(release => versionUtils.isNewer(release.min_firmware_version, firmwareVersion));
+
+        if (!versionUtils.isNewerOrEqual(firmwareVersion, baseRelease.min_firmware_version)) {
+            // If the target isn't compatible, search for the best alternative.
+            // If an alternative is found, use it. Otherwise, we proceed with the original.
+            alternativeRelease = releasesOfDevice.find(fw =>
+                versionUtils.isNewerOrEqual(firmwareVersion, fw.min_firmware_version),
+            );
+        }
+    } else {
+        throw new Error('Firmware version is not version array.');
+    }
+
+    const release = (!intermediary && alternativeRelease) || baseRelease;
+
     if (!isValidConditionalRelease(release)) {
         throw new Error(`Release object in unexpected shape.`);
     }
+
     const { min_firmware_version, min_bootloader_version } = release;
 
     let isNewer: boolean;
     let requiresIntermediary: boolean;
-
-    if (features.bootloader_mode && release.bootloader_version) {
-        // Some old version of T1B1 do not report FW version in bootloader mode and some other devices do not
-        // report FW version in bootloader mode when factory reset.
-        const { bootloaderVersion, firmwareVersion } = getCurrentVersion(features);
-        if (versionUtils.isVersionArray(firmwareVersion)) {
-            // We first try to use firmwareVesion if it is available even in bootloader mode.
-            isNewer = versionUtils.isNewer(release.version, firmwareVersion);
-            requiresIntermediary = versionUtils.isNewer(min_firmware_version, firmwareVersion);
-        } else if (versionUtils.isVersionArray(bootloaderVersion)) {
-            // If we do not have firmwareVersion in bootloader mode then we use bootloader version
-            // and compare with that from the new release info.
-            isNewer = versionUtils.isNewer(release.bootloader_version, bootloaderVersion);
-            requiresIntermediary = versionUtils.isNewer(min_bootloader_version, bootloaderVersion);
-        } else {
-            throw new Error('Version is not version array.');
-        }
-    } else {
-        const { firmwareVersion } = getCurrentVersion(features);
-        if (!versionUtils.isVersionArray(firmwareVersion)) {
-            throw new Error('Firmware version is not version array.');
-        }
-
+    // Some old version of T1B1 do not report FW version in bootloader mode and some other devices do not
+    // report FW version in bootloader mode when factory reset.
+    if (versionUtils.isVersionArray(firmwareVersion)) {
+        // We first try to use firmwareVesion if it is available even in bootloader mode.
         isNewer = versionUtils.isNewer(release.version, firmwareVersion);
         requiresIntermediary = versionUtils.isNewer(min_firmware_version, firmwareVersion);
+    } else if (
+        features.bootloader_mode &&
+        release.bootloader_version &&
+        versionUtils.isVersionArray(bootloaderVersion)
+    ) {
+        // If we do not have firmwareVersion in bootloader mode then we use bootloader version
+        // and compare with that from the new release info.
+        isNewer = versionUtils.isNewer(release.bootloader_version, bootloaderVersion);
+        requiresIntermediary = versionUtils.isNewer(min_bootloader_version, bootloaderVersion);
+    } else {
+        throw new Error('Firmware version is not version array.');
     }
 
     const { rollout_probability } = conditions;

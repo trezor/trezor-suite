@@ -3,7 +3,6 @@ import connectDataCoinsEth from '@trezor/connect-data/files/coins-eth.json';
 import connectDataCoins from '@trezor/connect-data/files/coins.json';
 import type { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import type { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
@@ -29,10 +28,7 @@ const getReleaseAssets = (deviceModel: DeviceModelInternal, firmwareType: Firmwa
 export const getReleasesAssetByDeviceModelAndFirmwareType = (
     deviceModel: DeviceModelInternal,
     firmwareType: FirmwareType,
-): FirmwareRelease[] =>
-    Object.values(getReleaseAssets(deviceModel, firmwareType)).sort((a, b) =>
-        versionUtils.isNewer(b.version, a.version) ? 1 : -1,
-    );
+): FirmwareRelease[] => Object.values(getReleaseAssets(deviceModel, firmwareType));
 
 export const getReleaseAsset = (
     deviceModel: DeviceModelInternal,
