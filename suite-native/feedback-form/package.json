@@ -24,6 +24,7 @@
     },
     "devDependencies": {
         "@suite-native/intl": "workspace:*",
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-native/test-utils": "workspace:*",
+        "@trezor/theme": "workspace:*"
     }
 }

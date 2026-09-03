@@ -19,15 +19,19 @@ export * from './components/AmountEditingDoneButton';
 export * from './components/BottomSheetSectionList';
 export * from './components/CardTitle';
 export * from './components/EmptyComponent';
+export * from './components/ExplanationText';
 export * from './components/FilterTabs';
 export * from './components/FiatCurrencyIcon';
 export * from './components/IconByCryptoId';
 export * from './components/NetworkBadge';
 export * from './components/OverviewRow';
 export * from './components/OverviewValueSkeleton';
+export * from './components/PaymentMethodDisplay';
+export * from './components/ProviderDisplay';
 export * from './components/ProviderLogo';
 export * from './components/SearchableSheetHeader';
 export * from './components/SheetHeaderTitle';
+export * from './components/TradingAsset';
 export {
     TradeStatusStepper,
     type TradeStatusStep,

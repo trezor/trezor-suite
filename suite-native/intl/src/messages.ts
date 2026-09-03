@@ -4133,6 +4133,41 @@ export const messages = {
             },
             transactionId: 'Trans. ID: {orderId}',
             detail: {
+                info: {
+                    youPay: 'You pay',
+                    youGet: 'You get',
+                    fromAccount: 'from {accountLabel}',
+                    toAccount: 'to {accountLabel}',
+                    tradeId: 'Trade ID',
+                    paymentMethod: 'Payment method',
+                    payoutMethod: 'Payout method',
+                    provider: 'Provider',
+                    placed: 'Placed',
+                    rate: 'Rate',
+                    fixed: 'Fixed',
+                    floating: 'Floating',
+                    mevProtection: 'MEV protection',
+                    maximumSlippage: 'Maximum slippage',
+                    minimumReceivedAmount: 'Minimum received amount',
+                    explanation: {
+                        fixedRate: {
+                            title: 'Fixed-rate offer',
+                            description: 'The final amount won’t change as the market moves.',
+                        },
+                        floatingRate: {
+                            title: 'Floating-rate offer',
+                            description: 'The final amount can change as the market moves.',
+                        },
+                        mevProtection: {
+                            description:
+                                'Helps protect your swap from manipulation and unfair price changes.',
+                        },
+                        maximumSlippage: {
+                            description:
+                                'The most the rate can change before the swap fails. Network fees still apply.',
+                        },
+                    },
+                },
                 actionButton: {
                     contactProvider: 'Contact {providerName}',
                     startNew: {
@@ -4145,6 +4180,9 @@ export const messages = {
                     title: "Left the provider's website before paying?",
                     description:
                         "No worries – you haven't been charged. Just go back and create a new trade.",
+                },
+                supportBanner: {
+                    title: 'Need help with your trade?',
                 },
                 statusStepper: {
                     estimatedTime: 'Estimated time',
@@ -4249,49 +4287,6 @@ export const messages = {
                         },
                     },
                 },
-                paid: 'You paid',
-                received: 'You get',
-                toAccount: 'To',
-                fromAccount: 'From',
-                issued: 'Issued',
-                provider: 'Provider',
-                method: 'Via',
-                orderId: 'Order ID:',
-                errorAlert: {
-                    title: 'Transaction failed',
-                    buyDescription:
-                        "Your transaction failed or was rejected. Your payment method hasn't been charged.",
-                    sellDescription:
-                        'The transaction didn’t go through. Your funds are safe in your account.',
-                    swapDescription:
-                        'The transaction didn’t go through. Your funds are safe in your account.',
-                    description:
-                        "Your transaction failed or was rejected. Your payment method hasn't been charged.",
-                },
-                waitingAlert: {
-                    title: 'Waiting for your payment ...',
-                    description: "Click to complete your details on the provider's site.",
-                    button: 'Proceed to pay',
-                },
-                convertingAlert: {
-                    title: 'Converting your crypto...',
-                    description: 'Your swap is being processed. This may take a few minutes.',
-                },
-                kycAlert: {
-                    title: 'KYC is required',
-                    description:
-                        'Complete the identity verification process to continue with your transaction.',
-                    button: 'Go to provider support',
-                },
-                sendingAlert: {
-                    title: 'Sending your crypto...',
-                    description: 'Your transaction is being processed. Wait for confirmation.',
-                },
-                buy: 'Buy',
-                exchange: 'Swap',
-                sell: 'Sell',
-                checkOrderStatus: 'Check your order status on the provider’s website.',
-                providerSupport: 'Go to provider support',
             },
         },
         error: {

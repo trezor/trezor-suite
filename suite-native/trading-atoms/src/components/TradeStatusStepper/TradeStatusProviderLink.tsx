@@ -1,7 +1,8 @@
-import { Box, HStack, Text, TextButton } from '@suite-native/atoms';
+import { Box, HStack, TextButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
+import { ProviderDisplay } from '../ProviderDisplay';
 import { ProviderLogo } from '../ProviderLogo';
 import { TradeStatusSubItem } from './TradeStatusSubItem';
 
@@ -18,7 +19,6 @@ export const TradeStatusProviderLink = ({
 }: TradeStatusProviderLinkProps) => {
     const openLink = useOpenLink();
     const isStatusUrlAvailable = !!statusUrl;
-    const providerLogo = logo ? <ProviderLogo logo={logo} size="body-sm" /> : null;
 
     if (!isStatusUrlAvailable) {
         return (
@@ -27,12 +27,11 @@ export const TradeStatusProviderLink = ({
                     <Translation id="moduleTrading.tradeHistory.detail.statusStepper.provider.label" />
                 }
                 value={
-                    <HStack alignItems="center">
-                        {providerLogo}
-                        <Text variant="body-sm" color="contentSecondary">
-                            {providerName}
-                        </Text>
-                    </HStack>
+                    <ProviderDisplay
+                        color="contentSecondary"
+                        logo={logo}
+                        providerName={providerName}
+                    />
                 }
             />
         );

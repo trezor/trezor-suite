@@ -29,6 +29,8 @@ export const useBrowserAuth = (tradingType: TradingType | undefined): BrowserAut
                 tradingType,
             }),
         );
+
+        return Promise.resolve();
     }, [dispatch, handleBrowserClosed, handleBrowserOpened, tradingType]);
 
     return {

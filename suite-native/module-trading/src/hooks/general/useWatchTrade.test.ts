@@ -35,6 +35,8 @@ const useWatchTradeWithReportSpy = (props: {
     accountKey?: AccountKey;
     orderId?: string;
     isInProgress?: boolean;
+    isEnabled?: boolean;
+    shouldReportAnalytics?: boolean;
 }) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const spyRef = React.useRef<ReportSpy | null>(null);
@@ -47,6 +49,8 @@ const useWatchTradeWithReportSpy = (props: {
         accountKey: props.accountKey,
         orderId: props.orderId,
         isInProgress: props.isInProgress ?? false,
+        isEnabled: props.isEnabled,
+        shouldReportAnalytics: props.shouldReportAnalytics,
     });
 
     return spyRef.current!;
@@ -106,7 +110,13 @@ describe('useWatchTrade', () => {
 
     const renderUseWatchTrade = async (
         store: TestStore,
-        props: { accountKey?: AccountKey; orderId?: string; isInProgress?: boolean },
+        props: {
+            accountKey?: AccountKey;
+            orderId?: string;
+            isInProgress?: boolean;
+            isEnabled?: boolean;
+            shouldReportAnalytics?: boolean;
+        },
     ) =>
         await renderHookWithTradingProvider(() => useWatchTradeWithReportSpy(props), {
             store,
@@ -195,6 +205,43 @@ describe('useWatchTrade', () => {
 
             expect(mockWatchTradeThunk).not.toHaveBeenCalled();
         });
+
+        it('should not dispatch watch trade thunk when watching is disabled', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const store = getInitializedStore({ trades: [buyTrade] });
+
+            await renderUseWatchTrade(store, {
+                accountKey: btc1AccountKey,
+                orderId: buyTrade.data.orderId,
+                isEnabled: false,
+            });
+
+            expect(mockWatchTradeThunk).not.toHaveBeenCalled();
+        });
+
+        it('should refresh immediately after watching is re-enabled', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const store = getInitializedStore({ trades: [buyTrade] });
+            let isEnabled = true;
+            const { rerender } = await renderHookWithTradingProvider(
+                () =>
+                    useWatchTradeWithReportSpy({
+                        accountKey: btc1AccountKey,
+                        orderId: buyTrade.data.orderId,
+                        isEnabled,
+                    }),
+                { store, services },
+            );
+
+            expect(mockWatchTradeThunk).toHaveBeenCalledTimes(1);
+
+            isEnabled = false;
+            await rerender({});
+            isEnabled = true;
+            await rerender({});
+
+            expect(mockWatchTradeThunk).toHaveBeenCalledTimes(2);
+        });
     });
 
     describe('Timer Management', () => {
@@ -250,5 +297,34 @@ describe('useWatchTrade', () => {
                 refreshLimitSeconds: 30,
             });
         });
+
+        it('should disable timer when watching is disabled', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const store = getInitializedStore({ trades: [buyTrade] });
+
+            await renderUseWatchTrade(store, {
+                accountKey: btc1AccountKey,
+                orderId: buyTrade.data.orderId,
+                isEnabled: false,
+            });
+
+            expect(mockUseReloadTimer).toHaveBeenCalledWith({
+                isEnabled: false,
+                refreshLimitSeconds: 30,
+            });
+        });
+    });
+
+    it('should not report status analytics when reporting is disabled', async () => {
+        const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+        const store = getInitializedStore({ trades: [buyTrade] });
+
+        const { result } = await renderUseWatchTrade(store, {
+            accountKey: btc1AccountKey,
+            orderId: buyTrade.data.orderId,
+            shouldReportAnalytics: false,
+        });
+
+        expect(result.current).not.toHaveBeenCalled();
     });
 });

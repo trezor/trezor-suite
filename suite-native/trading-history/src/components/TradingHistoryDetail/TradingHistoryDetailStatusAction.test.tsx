@@ -13,12 +13,12 @@ import {
 import { TradingHistoryDetailStatusAction } from './TradingHistoryDetailStatusAction';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
-const mockNavigate = jest.fn();
+const mockPopTo = jest.fn();
 const startNewTradeTestID = '@trading-history/detail/action/start-new-trade';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
-    useNavigation: () => ({ navigate: mockNavigate }),
+    useNavigation: () => ({ popTo: mockPopTo }),
 }));
 
 describe('TradingHistoryDetailStatusAction', () => {
@@ -99,26 +99,32 @@ describe('TradingHistoryDetailStatusAction', () => {
         expect(queryByTestId('@trading-history/detail/action/contact-provider')).toBeNull();
     });
 
-    it('opens the matching trading form for the start-new-trade action', async () => {
-        const trade = getExchangeTrade({ status: 'SUCCESS' });
-        const { getByTestId } = await renderWithTradingHistoryProvider(
-            <TradingHistoryDetailStatusAction
-                providerName={trade.data.exchange}
-                tradeType={trade.tradeType}
-                status={trade.data.status}
-            />,
-        );
+    it.each([
+        ['buy', getBuyTrade({ status: 'SUCCESS' })],
+        ['sell', getSellTrade({ status: 'SUCCESS' })],
+        ['exchange', getExchangeTrade({ status: 'SUCCESS' })],
+    ] as const)(
+        'opens the matching trading form for a new %s trade',
+        async (tradingType, trade) => {
+            const { getByTestId } = await renderWithTradingHistoryProvider(
+                <TradingHistoryDetailStatusAction
+                    providerName={trade.data.exchange}
+                    tradeType={trade.tradeType}
+                    status={trade.data.status}
+                />,
+            );
 
-        await userEvent.press(getByTestId(startNewTradeTestID));
+            await userEvent.press(getByTestId(startNewTradeTestID));
 
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.TradeStack,
-            params: {
-                screen: TradingStackRoutes.Trading,
-                params: { tradingType: 'exchange' },
-            },
-        });
-    });
+            expect(mockPopTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.TradeStack,
+                params: {
+                    screen: TradingStackRoutes.Trading,
+                    params: { tradingType },
+                },
+            });
+        },
+    );
 
     it('opens provider support for the KYC action', async () => {
         const trade = getExchangeTrade({ status: 'KYC' });
@@ -148,7 +154,7 @@ describe('TradingHistoryDetailStatusAction', () => {
         await waitFor(() => {
             expect(mockOpenURL).toHaveBeenCalledWith(exchangeMercuryo.supportUrl);
         });
-        expect(mockNavigate).not.toHaveBeenCalled();
+        expect(mockPopTo).not.toHaveBeenCalled();
     });
 
     it('does not render the KYC action when provider support is unavailable', async () => {

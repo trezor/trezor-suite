@@ -28,6 +28,7 @@ import {
     getEthAccount,
     getExchangeTrade,
     getInitializedTradingState,
+    getSellTrade,
     getWalletState,
 } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -52,6 +53,7 @@ import {
     selectIsTradingTxSimulationEnabled,
     selectTradeToBeOpened,
     selectTradesToWatchByAccount,
+    selectTradingAccountKeyByOrderId,
     selectTradingEnvironment,
     selectTradingProviderConfirmationStatus,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
@@ -433,6 +435,32 @@ describe('commonSelectors', () => {
             expect(selectTradeToBeOpened(getMockStateForTradeToBeOpened('order1'))).toEqual({
                 data: { orderId: 'order1' },
             });
+        });
+    });
+
+    describe('selectTradingAccountKeyByOrderId', () => {
+        const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+        const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
+        const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
+        const state = {
+            wallet: {
+                trading: {
+                    ...tradingInitialState,
+                    trades: [buyTrade, sellTrade, exchangeTrade],
+                },
+            },
+        } as TradingRootState;
+
+        it.each([
+            [buyTrade.data.orderId, buyTrade.selectedAccountKey],
+            [sellTrade.data.orderId, sellTrade.sendAccountKey],
+            [exchangeTrade.data.orderId, exchangeTrade.sendAccountKey],
+        ])('should select the associated account for order %s', (orderId, accountKey) => {
+            expect(selectTradingAccountKeyByOrderId(state, orderId)).toBe(accountKey);
+        });
+
+        it('should return undefined for an unknown order', () => {
+            expect(selectTradingAccountKeyByOrderId(state, 'unknown-order')).toBeUndefined();
         });
     });
 

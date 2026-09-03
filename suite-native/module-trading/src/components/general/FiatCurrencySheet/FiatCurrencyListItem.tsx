@@ -2,8 +2,8 @@ import { Pressable } from 'react-native';
 
 import { type FiatCurrencyCode } from 'invity-api';
 
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { FiatCurrencyIcon } from '@suite-native/trading-atoms';
+import { Box } from '@suite-native/atoms';
+import { TradingAsset } from '@suite-native/trading-atoms';
 
 export type FiatCurrencyListItemProps = {
     displayValue: string;
@@ -19,18 +19,15 @@ export const FiatCurrencyListItem = ({
     value,
 }: FiatCurrencyListItemProps) => (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label}>
-        <HStack alignItems="center" spacing="sp12" paddingVertical="sp12" justifyContent="center">
-            <Box justifyContent="center">
-                <FiatCurrencyIcon size="small" value={value} />
-            </Box>
-            <VStack flex={1} spacing={0}>
-                <Text variant="body-md" color="contentPrimary">
-                    {label}
-                </Text>
-                <Text variant="body-sm" color="contentSecondary">
-                    {displayValue}
-                </Text>
-            </VStack>
-        </HStack>
+        <Box paddingVertical="sp12">
+            <TradingAsset
+                assetType="fiat"
+                fiatCurrency={value}
+                iconSize="small"
+                name={label}
+                spacing="sp12"
+                symbol={displayValue}
+            />
+        </Box>
     </Pressable>
 );

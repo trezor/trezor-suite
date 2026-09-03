@@ -187,8 +187,7 @@ describe('useAllTradesReloadTimer', () => {
             await result.current.refreshAllTrades();
         });
 
-        // After refresh, should still be false (state is managed internally)
-        // The actual state change happens in the hook's internal state
+        expect(result.current.hasFetchedInitialTrades).toBe(true);
         expect(mockReset).toHaveBeenCalled();
     });
 

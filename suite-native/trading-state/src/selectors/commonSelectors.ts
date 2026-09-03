@@ -23,6 +23,7 @@ import {
     selectDeviceTradingTrades,
     selectTradingIsSlip24Allowed,
     selectTradingSupportedSymbols,
+    selectTradingTradeByOrderId,
     toTokenCryptoId,
 } from '@suite-common/trading';
 import {
@@ -412,6 +413,19 @@ export const selectTradesToWatchByAccount = createTradingWithDeviceAndAccountsMe
         };
     },
 );
+
+export const selectTradingAccountKeyByOrderId = (
+    state: TradingRootState,
+    orderId: string | undefined,
+) => {
+    const trade = selectTradingTradeByOrderId(state, orderId);
+
+    if (!trade) {
+        return undefined;
+    }
+
+    return trade.tradeType === 'buy' ? trade.selectedAccountKey : trade.sendAccountKey;
+};
 
 export const selectVisibleDeviceAccountsByNetworkSymbolSorted =
     createTradingWithDeviceAndAccountsMemoizedSelector(

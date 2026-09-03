@@ -121,6 +121,7 @@ export const useExchangeTradeStatusSteps = (trade: TradingTransactionExchange) =
             subItems: {
                 pending: [],
                 processing: [transactionIdSubItem],
+                completed: [],
             },
         },
         {

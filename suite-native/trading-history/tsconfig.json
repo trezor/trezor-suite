@@ -16,6 +16,7 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/mev" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -25,6 +26,9 @@
         },
         {
             "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
         },
         { "path": "../alerts" },
         { "path": "../analytics" },
@@ -39,7 +43,6 @@
         { "path": "../navigation" },
         { "path": "../toasts" },
         { "path": "../trading-atoms" },
-        { "path": "../trading-browser-auth" },
         { "path": "../trading-provider-utils" },
         { "path": "../trading-quote-utils" },
         { "path": "../trading-state" },
@@ -47,9 +50,11 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" },
         {
             "path": "../../suite-common/analytics-redux"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-sync"
         },

@@ -144,7 +144,7 @@ describe('useBuyPreviewFlow', () => {
     });
 
     describe('handleTradeResponse', () => {
-        it('opens browser, pops to top, and clears Redux state when tradeForm is present', async () => {
+        it('opens browser, pops to top, clears Redux state, and opens trade detail when tradeForm is present', async () => {
             const store = getInitializedStore({ withFullState: true });
             const { result } = await renderHook(store);
 
@@ -164,9 +164,10 @@ describe('useBuyPreviewFlow', () => {
             expect(mockOpenBrowserForFormData).toHaveBeenCalledTimes(1);
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
             expect(store.getState().wallet.trading.buy.selectedQuote).toBeUndefined();
+            expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('order-123');
         });
 
-        it('navigates to trading screen before clearing Redux state', async () => {
+        it('navigates to trading screen before clearing Redux state and opening trade detail', async () => {
             const store = getInitializedStore({ withFullState: true });
             const { result } = await renderHook(store);
 
@@ -176,6 +177,7 @@ describe('useBuyPreviewFlow', () => {
 
             mockPopToTop.mockImplementationOnce(() => {
                 expect(store.getState().wallet.trading.buy.selectedQuote).toBeDefined();
+                expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBeUndefined();
             });
 
             await act(async () => {
@@ -188,9 +190,10 @@ describe('useBuyPreviewFlow', () => {
             });
 
             expect(store.getState().wallet.trading.buy.selectedQuote).toBeUndefined();
+            expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('order-123');
         });
 
-        it('does not open browser or navigate when tradeForm is absent', async () => {
+        it('opens trade detail without opening browser when tradeForm is absent', async () => {
             const store = getInitializedStore({ withFullState: true });
             const { result } = await renderHook(store);
 
@@ -205,10 +208,9 @@ describe('useBuyPreviewFlow', () => {
             });
 
             expect(mockOpenBrowserForFormData).not.toHaveBeenCalled();
-            expect(mockPopToTop).not.toHaveBeenCalled();
-            expect(store.getState().wallet.trading.buy.selectedQuote).toStrictEqual(
-                mercuryoApplePayBuyQuote,
-            );
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toBeUndefined();
+            expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('order-123');
         });
     });
 

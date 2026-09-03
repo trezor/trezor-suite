@@ -7,10 +7,9 @@ import type { TradingType } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Card, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { TradeInfoRow } from '@suite-native/trading-atoms';
+import { PaymentMethodDisplay, TradeInfoRow } from '@suite-native/trading-atoms';
 import { BigNumber } from '@trezor/utils';
 
-import { PaymentMethodPickerValue } from '../PaymentMethodPickerValue';
 import { ProviderInfoRow } from '../TradeInfo/ProviderInfoRow';
 
 export type TradingPreviewInfoCardProps = {
@@ -46,7 +45,7 @@ export const TradingPreviewInfoCard = ({
                 <Text variant="body-sm" color="contentSecondary">
                     {translate('moduleTrading.tradingScreen.paymentMethod')}
                 </Text>
-                <PaymentMethodPickerValue
+                <PaymentMethodDisplay
                     paymentMethod={quote.paymentMethod}
                     paymentMethodName={quote.paymentMethodName}
                     accessibilityLabel={translate(

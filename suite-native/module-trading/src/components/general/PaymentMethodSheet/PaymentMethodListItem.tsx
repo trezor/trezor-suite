@@ -4,8 +4,7 @@ import type { BuyTrade, SellFiatTrade } from 'invity-api';
 
 import { useTradingRequestedSide } from '@suite-common/trading';
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { PaymentMethodIcon } from '@suite-native/icons';
-import { PaymentMethodTranslation } from '@suite-native/trading-atoms';
+import { PaymentMethodDisplay } from '@suite-native/trading-atoms';
 import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -72,15 +71,13 @@ export const PaymentMethodListItem = <T extends BuyTrade | SellFiatTrade>({
         <Pressable onPress={onPress} style={applyStyle(itemStyle, { isFirst, isLast })}>
             <VStack spacing="sp8">
                 <HStack alignItems="center" justifyContent="space-between">
-                    <HStack alignItems="center" spacing="sp12" flex={1} flexShrink={1}>
-                        <PaymentMethodIcon paymentMethod={quote.paymentMethod} />
-                        <Text variant="body-sm" numberOfLines={1} ellipsizeMode="tail">
-                            <PaymentMethodTranslation
-                                paymentMethod={quote.paymentMethod}
-                                paymentMethodName={quote.paymentMethodName}
-                            />
-                        </Text>
-                    </HStack>
+                    <PaymentMethodDisplay
+                        flex={1}
+                        justifyContent="flex-start"
+                        paymentMethod={quote.paymentMethod}
+                        paymentMethodName={quote.paymentMethodName}
+                        spacing="sp12"
+                    />
                     {!!displayValue && (
                         <Text variant="body-sm-strong" numberOfLines={1} ellipsizeMode="tail">
                             {displayValue}
