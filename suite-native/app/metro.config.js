@@ -16,6 +16,13 @@ const sourceExts = [...additionalSourceExts, ...defaultSourceExts];
 
 const cjsOnlyPackages = ['@sinclair/typebox', 'kysely'];
 
+const legacyBrowserFieldPackages = ['uint8arrays', 'multiformats', '@noble/hashes'];
+
+const isModuleFrom = (packageNames, moduleName) =>
+    packageNames.some(
+        packageName => moduleName === packageName || moduleName.startsWith(`${packageName}/`),
+    );
+
 /**
  * Metro configuration
  * https://facebook.github.io/metro/docs/configuration
@@ -61,14 +68,26 @@ const config = {
             // - `kysely`: its ESM `FileMigrationProvider` calls `await import()` with a computed
             //   specifier, which Hermes refuses to compile ('Invalid expression encountered').
             //   The CJS build emits a plain `require()` there.
-            if (
-                cjsOnlyPackages.some(
-                    packageName =>
-                        moduleName === packageName || moduleName.startsWith(`${packageName}/`),
-                )
-            ) {
+            if (isModuleFrom(cjsOnlyPackages, moduleName)) {
                 return context.resolveRequest(
                     { ...context, isESMImport: false },
+                    moduleName,
+                    platform,
+                );
+            }
+
+            // Packages that predate `exports` and mirror their subpath map into the `browser`
+            // field using deep paths (`"./basics": "./cjs/src/basics.js"`). Metro applies that
+            // redirect before it validates the result against `exports`, where the deep path is
+            // never listed, so every import logs a "not listed in the exports" warning and then
+            // falls back to file-based resolution.
+            // Resolving them without `exports`, the way we did before package exports were
+            // enabled, keeps the `browser` targets these packages intend for us - `multiformats`'
+            // `exports` resolves `./hashes/sha2` to a build that requires Node's `crypto`, while
+            // `browser` points at the WebCrypto one.
+            if (isModuleFrom(legacyBrowserFieldPackages, moduleName)) {
+                return context.resolveRequest(
+                    { ...context, unstable_enablePackageExports: false },
                     moduleName,
                     platform,
                 );
