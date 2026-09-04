@@ -13,7 +13,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -24,7 +24,6 @@ import {
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { getYieldWithdrawCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
-import { formatEarnTokenAmount } from '../../utils/earn/earnAmountUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawComplete>;
 type NavigationProps = StackNavigationProps<
@@ -37,7 +36,6 @@ export const YieldWithdrawCompleteScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const locale = useSelector(selectSupportedLanguageLocale);
 
     const yieldFlowData = useYieldFlowData(route.params);
     const { account, flowKey, receiptToken, resolutionStatus, token, vault } = yieldFlowData;
@@ -110,20 +108,20 @@ export const YieldWithdrawCompleteScreen = () => {
 
         return getYieldWithdrawCompleteRows({
             accountSymbol: account.symbol,
-            receivedAmount: formatEarnTokenAmount({
-                amount: output.amount,
-                locale,
-                symbol: output.token.symbol,
-            }),
-            receivedTokenContract: output.token.contractAddress ?? undefined,
-            withdrawalAmount: formatEarnTokenAmount({
-                amount: input.amount,
-                locale,
-                symbol: input.token.symbol,
-            }),
-            withdrawalTokenContract: input.token.contractAddress ?? undefined,
+            receivedAmount: {
+                value: output.amount,
+                tokenContract: output.token.contractAddress,
+                tokenDecimals: output.token.decimals,
+                tokenSymbol: output.token.symbol,
+            },
+            withdrawalAmount: {
+                value: input.amount,
+                tokenContract: input.token.contractAddress,
+                tokenDecimals: input.token.decimals,
+                tokenSymbol: input.token.symbol,
+            },
         });
-    }, [account, flowType, locale, receiptToken, resolutionStatus, session, token, vault]);
+    }, [account, flowType, receiptToken, resolutionStatus, session, token, vault]);
 
     if (resolutionStatus !== 'resolved' || session?.step !== 'complete') {
         return null;

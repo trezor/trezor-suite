@@ -1,7 +1,10 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenSymbol } from '@suite-common/wallet-types';
 import { Card, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+
+import { YieldFormattedAmount } from './YieldFormattedAmount';
 
 type YieldDepositApprovedAmountCardProps = {
     actionType?: 'edit' | 'revoke';
@@ -9,7 +12,9 @@ type YieldDepositApprovedAmountCardProps = {
     isApprovedAmountUnlimited: boolean;
     networkSymbol: NetworkSymbol;
     onActionPress?: () => void;
+    tokenDecimals?: number;
     tokenContract: string;
+    tokenSymbol: TokenSymbol;
 };
 
 export const YieldDepositApprovedAmountCard = ({
@@ -18,7 +23,9 @@ export const YieldDepositApprovedAmountCard = ({
     isApprovedAmountUnlimited,
     networkSymbol,
     onActionPress,
+    tokenDecimals,
     tokenContract,
+    tokenSymbol,
 }: YieldDepositApprovedAmountCardProps) => (
     <Card>
         <HStack alignItems="center" justifyContent="space-between">
@@ -27,13 +34,23 @@ export const YieldDepositApprovedAmountCard = ({
             </Text>
             <HStack alignItems="center" spacing="sp8">
                 <TokenIcon symbol={networkSymbol} contractAddress={tokenContract} size={20} />
-                <Text variant="body-sm-strong" numberOfLines={1}>
-                    {isApprovedAmountUnlimited ? (
+                {isApprovedAmountUnlimited ? (
+                    <Text variant="body-sm-strong" numberOfLines={1}>
                         <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
-                    ) : (
-                        approvedAmount
-                    )}
-                </Text>
+                    </Text>
+                ) : null}
+                {!isApprovedAmountUnlimited && approvedAmount ? (
+                    <YieldFormattedAmount
+                        value={approvedAmount}
+                        networkSymbol={networkSymbol}
+                        tokenContract={tokenContract}
+                        tokenDecimals={tokenDecimals}
+                        tokenSymbol={tokenSymbol}
+                        variant="body-sm-strong"
+                        color="contentPrimary"
+                        numberOfLines={1}
+                    />
+                ) : null}
                 {actionType !== undefined && onActionPress !== undefined && (
                     <PressableOpacity
                         accessibilityRole="button"

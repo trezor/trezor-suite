@@ -7,30 +7,35 @@ import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { YieldClaimRewardRow, getYieldClaimRewardFiatAmount } from './YieldClaimRewardRow';
+import { YieldFormattedAmount, type YieldFormattedAmountValue } from './YieldFormattedAmount';
 import { type EarnCompleteSummaryRow } from '../earn/EarnCompleteScreenContent';
 
 type YieldCompleteAmountValueParams = {
     accountSymbol: NetworkSymbol;
-    amount: string;
-    tokenContract?: string;
+    amount: YieldFormattedAmountValue;
+    numberOfLines?: 1 | 2;
 };
 
 const getYieldCompleteAmountValue = ({
     accountSymbol,
     amount,
-    tokenContract,
+    numberOfLines = 2,
 }: YieldCompleteAmountValueParams): ReactNode => (
     <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-        <TokenIcon symbol={accountSymbol} contractAddress={tokenContract} size="extraSmall" />
+        <TokenIcon
+            symbol={accountSymbol}
+            contractAddress={amount.tokenContract ?? undefined}
+            size="extraSmall"
+        />
         <Box flexShrink={1}>
-            <Text
+            <YieldFormattedAmount
+                {...amount}
+                networkSymbol={accountSymbol}
                 variant="body-md-strong"
                 color="contentPrimary"
-                numberOfLines={2}
+                numberOfLines={numberOfLines}
                 textAlign="right"
-            >
-                {amount}
-            </Text>
+            />
         </Box>
     </HStack>
 );
@@ -38,10 +43,8 @@ const getYieldCompleteAmountValue = ({
 type GetYieldDepositCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
     apyValue: ReactNode;
-    receivedAmount: string;
-    receivedTokenContract?: string;
-    sentAmount: string;
-    sentTokenContract?: string;
+    receivedAmount: YieldFormattedAmountValue;
+    sentAmount: YieldFormattedAmountValue;
 };
 
 export const getYieldCompleteStatusRow = (): EarnCompleteSummaryRow => ({
@@ -61,9 +64,7 @@ export const getYieldDepositCompleteRows = ({
     accountSymbol,
     apyValue,
     receivedAmount,
-    receivedTokenContract,
     sentAmount,
-    sentTokenContract,
 }: GetYieldDepositCompleteRowsParams): EarnCompleteSummaryRow[] => [
     getYieldCompleteStatusRow(),
     {
@@ -77,7 +78,6 @@ export const getYieldDepositCompleteRows = ({
         value: getYieldCompleteAmountValue({
             accountSymbol,
             amount: sentAmount,
-            tokenContract: sentTokenContract,
         }),
     },
     {
@@ -86,42 +86,30 @@ export const getYieldDepositCompleteRows = ({
         value: getYieldCompleteAmountValue({
             accountSymbol,
             amount: receivedAmount,
-            tokenContract: receivedTokenContract,
         }),
     },
 ];
 
 type GetYieldWithdrawCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
-    receivedAmount: string;
-    receivedTokenContract?: string;
-    withdrawalAmount: string;
-    withdrawalTokenContract?: string;
+    receivedAmount: YieldFormattedAmountValue;
+    withdrawalAmount: YieldFormattedAmountValue;
 };
 
 export const getYieldWithdrawCompleteRows = ({
     accountSymbol,
     receivedAmount,
-    receivedTokenContract,
     withdrawalAmount,
-    withdrawalTokenContract,
 }: GetYieldWithdrawCompleteRowsParams): EarnCompleteSummaryRow[] => [
     getYieldCompleteStatusRow(),
     {
         key: 'sent',
         label: <Translation id="earn.yieldCompleteScreen.sent" />,
-        value: (
-            <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-                <TokenIcon
-                    symbol={accountSymbol}
-                    contractAddress={withdrawalTokenContract}
-                    size="extraSmall"
-                />
-                <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
-                    {withdrawalAmount}
-                </Text>
-            </HStack>
-        ),
+        value: getYieldCompleteAmountValue({
+            accountSymbol,
+            amount: withdrawalAmount,
+            numberOfLines: 1,
+        }),
     },
     {
         key: 'received',
@@ -129,25 +117,20 @@ export const getYieldWithdrawCompleteRows = ({
         value: getYieldCompleteAmountValue({
             accountSymbol,
             amount: receivedAmount,
-            tokenContract: receivedTokenContract,
         }),
     },
 ];
 
 type GetWrappedNativeCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
-    receivedAmount: string;
-    receivedTokenContract?: string;
-    sentAmount: string;
-    sentTokenContract?: string;
+    receivedAmount: YieldFormattedAmountValue;
+    sentAmount: YieldFormattedAmountValue;
 };
 
 export const getWrappedNativeCompleteRows = ({
     accountSymbol,
     receivedAmount,
-    receivedTokenContract,
     sentAmount,
-    sentTokenContract,
 }: GetWrappedNativeCompleteRowsParams): EarnCompleteSummaryRow[] => [
     getYieldCompleteStatusRow(),
     {
@@ -156,7 +139,6 @@ export const getWrappedNativeCompleteRows = ({
         value: getYieldCompleteAmountValue({
             accountSymbol,
             amount: sentAmount,
-            tokenContract: sentTokenContract,
         }),
     },
     {
@@ -165,7 +147,6 @@ export const getWrappedNativeCompleteRows = ({
         value: getYieldCompleteAmountValue({
             accountSymbol,
             amount: receivedAmount,
-            tokenContract: receivedTokenContract,
         }),
     },
 ];

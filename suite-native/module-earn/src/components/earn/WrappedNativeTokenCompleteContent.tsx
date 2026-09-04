@@ -11,12 +11,11 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnCompleteScreenContent } from './EarnCompleteScreenContent';
-import { formatEarnTokenAmount } from '../../utils/earn/earnAmountUtils';
 import { wrappedNativeFlowMessages } from '../../utils/earn/wrappedNativeFlowMessages';
 import { getWrappedNativeCompleteRows } from '../yield/YieldCompleteScreenPresets';
 
@@ -32,7 +31,6 @@ export const WrappedNativeTokenCompleteContent = ({
     flowType,
 }: WrappedNativeTokenCompleteContentProps) => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const locale = useSelector(selectSupportedLanguageLocale);
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const account = useSelector((state: AccountsRootState) =>
@@ -64,16 +62,22 @@ export const WrappedNativeTokenCompleteContent = ({
             return [];
         }
 
-        const formatAmount = (symbol: string) => formatEarnTokenAmount({ amount, locale, symbol });
-
         return getWrappedNativeCompleteRows({
             accountSymbol: account.symbol,
-            receivedAmount: formatAmount(flowType === 'wrap' ? wrappedNative.symbol : nativeSymbol),
-            receivedTokenContract: flowType === 'wrap' ? wrappedNative.address : undefined,
-            sentAmount: formatAmount(flowType === 'wrap' ? nativeSymbol : wrappedNative.symbol),
-            sentTokenContract: flowType === 'wrap' ? undefined : wrappedNative.address,
+            receivedAmount: {
+                value: amount,
+                tokenContract: flowType === 'wrap' ? wrappedNative.address : undefined,
+                tokenDecimals: flowType === 'wrap' ? wrappedNative.decimals : undefined,
+                tokenSymbol: flowType === 'wrap' ? wrappedNative.symbol : undefined,
+            },
+            sentAmount: {
+                value: amount,
+                tokenContract: flowType === 'wrap' ? undefined : wrappedNative.address,
+                tokenDecimals: flowType === 'wrap' ? undefined : wrappedNative.decimals,
+                tokenSymbol: flowType === 'wrap' ? undefined : wrappedNative.symbol,
+            },
         });
-    }, [account, amount, flowType, locale, nativeSymbol, wrappedNative]);
+    }, [account, amount, flowType, wrappedNative]);
 
     if (!account || !wrappedNative) {
         return null;

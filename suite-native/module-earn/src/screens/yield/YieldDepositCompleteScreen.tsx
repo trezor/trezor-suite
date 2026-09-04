@@ -6,7 +6,6 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldRootState,
     selectYieldSessionByFlowKey,
@@ -14,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
-import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -29,7 +28,6 @@ import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScr
 import { getYieldDepositCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
 import { useYieldApyBreakdownAlert } from '../../hooks/yield/useYieldApyBreakdownAlert';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
-import { formatEarnTokenAmount } from '../../utils/earn/earnAmountUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositComplete>;
 type NavigationProps = StackNavigationProps<
@@ -42,10 +40,9 @@ export const YieldDepositCompleteScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const locale = useSelector(selectSupportedLanguageLocale);
 
     const yieldFlowData = useYieldFlowData(route.params);
-    const { vault, account, apy, flowData, flowKey, resolutionStatus, tokenSymbol } = yieldFlowData;
+    const { vault, account, apy, flowData, flowKey, resolutionStatus } = yieldFlowData;
 
     const session = useSelector((state: YieldRootState) =>
         selectYieldSessionByFlowKey(state, 'deposit', flowKey),
@@ -96,18 +93,7 @@ export const YieldDepositCompleteScreen = () => {
             return [];
         }
 
-        const receivedAmount = formatEarnTokenAmount({
-            amount: session.result.completedReceiptAmount,
-            locale,
-            symbol: flowData.receiptToken.symbol,
-        });
-
         const hasWrappedInput = !!session.result.wrappedAmount;
-        const sentAmount = formatEarnTokenAmount({
-            amount: session.result.completedAmount,
-            locale,
-            symbol: hasWrappedInput ? getNetworkDisplaySymbol(account.symbol) : tokenSymbol,
-        });
 
         return getYieldDepositCompleteRows({
             accountSymbol: account.symbol,
@@ -118,23 +104,20 @@ export const YieldDepositCompleteScreen = () => {
                     </Text>
                 </ApyDottedUnderline>
             ),
-            receivedAmount,
-            receivedTokenContract: flowData.receiptToken.contractAddress ?? undefined,
-            sentAmount,
-            sentTokenContract: hasWrappedInput
-                ? undefined
-                : (flowData.token.contractAddress ?? undefined),
+            receivedAmount: {
+                value: session.result.completedReceiptAmount,
+                tokenContract: flowData.receiptToken.contractAddress,
+                tokenDecimals: flowData.receiptToken.decimals,
+                tokenSymbol: flowData.receiptToken.symbol,
+            },
+            sentAmount: {
+                value: session.result.completedAmount,
+                tokenContract: hasWrappedInput ? undefined : flowData.token.contractAddress,
+                tokenDecimals: hasWrappedInput ? undefined : flowData.token.decimals,
+                tokenSymbol: hasWrappedInput ? undefined : flowData.token.symbol,
+            },
         });
-    }, [
-        showYieldApyBreakdownAlert,
-        account,
-        apy,
-        flowData,
-        locale,
-        resolutionStatus,
-        session,
-        tokenSymbol,
-    ]);
+    }, [showYieldApyBreakdownAlert, account, apy, flowData, resolutionStatus, session]);
 
     if (resolutionStatus !== 'resolved' || session?.step !== 'complete') {
         return null;
