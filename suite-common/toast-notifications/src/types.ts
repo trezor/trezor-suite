@@ -272,7 +272,6 @@ export type NotificationEventPayload = (
     | {
           type: typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
           device: TrezorDevice;
-          needAttention?: boolean;
       }
 ) &
     NotificationOptions;

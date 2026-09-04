@@ -66,7 +66,6 @@ export interface TradingUseWatchTradeProps<T extends TradingType> {
 export interface TradingCryptoListProps {
     value: CryptoId;
     label: string; // token shortcut
-    cryptoName?: string | undefined; // full name
 }
 
 export type TradingCoinLogoProps = {
