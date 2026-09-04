@@ -1,5 +1,6 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Box, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
+import { Box, PressableOpacity, Text } from '@suite-native/atoms';
+import { TokenIcon } from '@suite-native/icons';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import {
@@ -52,7 +53,7 @@ export const TransactionDetailListItem = ({
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
-                    <RoundedIcon
+                    <TokenIcon
                         symbol={transaction.symbol}
                         contractAddress={tokenTransfer?.contract}
                     />

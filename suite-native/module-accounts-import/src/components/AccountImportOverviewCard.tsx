@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Box, Card, Text } from '@suite-native/atoms';
+import { Box, Card, HStack, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const assetCardStyle = prepareNativeStyle(utils => ({
@@ -26,15 +26,13 @@ export const AccountImportOverviewCard = ({
 
     return (
         <Card style={applyStyle(assetCardStyle)}>
-            <Box flexDirection="row" marginBottom="sp24" justifyContent="space-between">
-                <Box flexDirection="row">
-                    {icon}
-                    <Box marginLeft="sp16">
-                        <Text>{coinName}</Text>
-                        {cryptoAmount}
-                    </Box>
+            <HStack marginBottom="sp24" spacing="sp16" alignItems="center">
+                {icon}
+                <Box>
+                    <Text>{coinName}</Text>
+                    {cryptoAmount}
                 </Box>
-            </Box>
+            </HStack>
             {children}
         </Card>
     );
