@@ -966,22 +966,25 @@ const getEthereumRbfParams = (
 
     const txSignature = getEvmTransactionTextSignature(transactionData);
 
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const firstVout: (typeof vout)[number] = vout[0];
-    const firstVoutAddresses = firstVout.addresses!;
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const toAddress: string = firstVoutAddresses[0];
-    const nativeOutput = {
-        address: toAddress,
-        amount: firstVout.value!,
-        formattedAmount: formatNetworkAmount(firstVout.value!, account.symbol),
-    };
+    const firstVout = vout[0];
+    // A contract creation has no recipient, and a pending vout can arrive without a value; both
+    // leave the native output unbuildable, but a token `transfer` builds its own from `tokens`.
+    const toAddress = firstVout?.addresses?.[0];
+    const nativeAmount = firstVout?.value;
+    const nativeOutput =
+        toAddress && nativeAmount !== undefined
+            ? {
+                  address: toAddress,
+                  amount: nativeAmount,
+                  formattedAmount: formatNetworkAmount(nativeAmount, account.symbol),
+              }
+            : undefined;
 
     let output;
     switch (txSignature) {
         case 'transfer': {
-            // A `transfer` whose token transfer blockbook did not decode leaves `tokens` empty, and
-            // there is nothing to bump without it.
+            // A `transfer` whose token transfer blockbook did not decode leaves `tokens` empty,
+            // and there is nothing to bump without it.
             const token = tx.tokens?.[0];
             if (!token) {
                 return;
@@ -997,6 +1000,10 @@ const getEthereumRbfParams = (
         }
         case 'approve':
         case 'revoke': {
+            if (!toAddress) {
+                return;
+            }
+
             const approvalData = Calldata.evm.erc20.approve.decode(data);
             const amount = approvalData?.amount.toString() ?? '0';
 
@@ -1014,7 +1021,7 @@ const getEthereumRbfParams = (
         case 'withdraw':
         case 'redeem': {
             const tokenTransfer = tx.tokens?.[0];
-            if (tokenTransfer) {
+            if (tokenTransfer && toAddress) {
                 output = {
                     address: toAddress,
                     token: tokenTransfer.contract,
@@ -1032,6 +1039,10 @@ const getEthereumRbfParams = (
         default: {
             output = nativeOutput;
         }
+    }
+
+    if (!output) {
+        return;
     }
 
     return {
