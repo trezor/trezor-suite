@@ -10,12 +10,18 @@ import {
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
 import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
+import { isErc4626 } from '@suite-common/wallet-utils';
 import {
     CompactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
-import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import {
+    type TokensRootState,
+    type TypedTokenTransfer,
+    type WalletAccountTransaction,
+    selectAccountTokenInfo,
+} from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
@@ -42,6 +48,8 @@ export const TokenTransferListItemValues = ({
     transaction,
     accountKey,
 }: TokenTransferListItemValuesProps) => {
+    const { applyStyle } = useNativeStyles();
+
     const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
         selectTransactionFiatRate(state, transaction, tokenTransfer?.contract),
     );
@@ -55,27 +63,32 @@ export const TokenTransferListItemValues = ({
         ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
-    const { applyStyle } = useNativeStyles();
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenTransfer?.contract),
+    );
+
+    if (!tokenTransfer?.amount || !tokenTransfer?.symbol) return;
 
     const isFailedTx = transaction.type === 'failed';
-
-    if (!tokenTransfer?.amount) return;
+    const showFiatAmount = !isErc4626(token) && historicRate !== undefined;
 
     return (
         <>
-            <TokenToFiatAmountFormatter
-                symbol={transaction.symbol}
-                value={tokenTransfer.amount}
-                contract={tokenTransfer.contract}
-                decimals={tokenTransfer.decimals}
-                signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                historicRate={historicRate}
-                useHistoricRate
-                isForcedDiscreetMode={isPhishingTransaction}
-                style={applyStyle(failedTxStyle, { isFailedTx })}
-            />
+            {showFiatAmount && (
+                <TokenToFiatAmountFormatter
+                    symbol={transaction.symbol}
+                    value={tokenTransfer.amount}
+                    contract={tokenTransfer.contract}
+                    decimals={tokenTransfer.decimals}
+                    signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    historicRate={historicRate}
+                    useHistoricRate
+                    isForcedDiscreetMode={isPhishingTransaction}
+                    style={applyStyle(failedTxStyle, { isFailedTx })}
+                />
+            )}
             <CompactTokenAmountFormatter
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
                 tokenSymbol={toTokenSymbol(getDisplaySymbol(tokenTransfer.symbol))}
