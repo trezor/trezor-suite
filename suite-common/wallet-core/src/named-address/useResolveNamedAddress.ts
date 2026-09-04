@@ -14,11 +14,11 @@ export const useResolveNamedAddress = (value: string, symbol: NetworkSymbol | nu
     const debouncedValue = useDebouncedValue(trimmedValue);
     const isDebouncing = trimmedValue !== debouncedValue;
 
-    const { resolver } = getNamedAddressSupport(symbol);
-    const debouncedMode = getResolveMode(resolver, debouncedValue);
+    const support = getNamedAddressSupport(symbol);
+    const debouncedMode = getResolveMode(support, debouncedValue);
     // Live mode follows the un-debounced value so consumers get an immediate "we're going
     // to resolve this" signal even before the debounce window elapses.
-    const liveMode = getResolveMode(resolver, trimmedValue);
+    const liveMode = getResolveMode(support, trimmedValue);
 
     const query = useQuery({
         ...getResolveNamedAddressQueryOptions({

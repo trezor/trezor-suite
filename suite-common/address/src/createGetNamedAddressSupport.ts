@@ -3,16 +3,15 @@ import type { NamedAddressResolver } from '@trezor/network-module-suite-common-t
 
 export type SymbolNamedAddressResolver = NamedAddressResolver<NetworkSymbol>;
 
+/**
+ * The resolver arrives with `isSupported`, so support can never be claimed without one.
+ * `isNameLike` answers either way: a name typed on a chain ENS does not cover still has to be
+ * told apart from a malformed address.
+ */
 export type NamedAddressSupport = {
-    /** Whether names can be resolved for this symbol — ENS, for one, covers a few chains only. */
-    isSupported: boolean;
-
     /** Shape check in the network's name syntax; answers even where names cannot be resolved. */
     isNameLike: (value: string) => boolean;
-
-    /** The resolver, present only when `isSupported`. */
-    resolver: SymbolNamedAddressResolver | undefined;
-};
+} & ({ isSupported: true; resolver: SymbolNamedAddressResolver } | { isSupported: false });
 
 export type GetNamedAddressSupportDeps = NetworkModuleRepositoryDep;
 
@@ -39,11 +38,11 @@ export const createGetNamedAddressSupport =
         const resolver = symbol
             ? deps.networkModuleRepository.get(symbol).namedAddressResolver
             : undefined;
-        const isSupported = !!symbol && !!resolver?.supportsNamedAddress(symbol);
+        const isNameLike = (value: string) => !!resolver?.isNameLike(value);
 
-        return {
-            isSupported,
-            isNameLike: value => !!resolver?.isNameLike(value),
-            resolver: isSupported ? resolver : undefined,
-        };
+        if (!symbol || !resolver?.supportsNamedAddress(symbol)) {
+            return { isSupported: false, isNameLike };
+        }
+
+        return { isSupported: true, isNameLike, resolver };
     };

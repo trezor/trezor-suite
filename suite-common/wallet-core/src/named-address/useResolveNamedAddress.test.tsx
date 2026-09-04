@@ -29,13 +29,13 @@ const namedAddressResolver: SymbolNamedAddressResolver = {
 };
 
 const getNamedAddressSupport: GetNamedAddressSupport = symbol => {
-    const isSupported = symbol === 'eth' || symbol === 'tsep';
+    const { isNameLike } = namedAddressResolver;
 
-    return {
-        isSupported,
-        isNameLike: namedAddressResolver.isNameLike,
-        resolver: isSupported ? namedAddressResolver : undefined,
-    };
+    if (symbol !== 'eth' && symbol !== 'tsep') {
+        return { isSupported: false, isNameLike };
+    }
+
+    return { isSupported: true, isNameLike, resolver: namedAddressResolver };
 };
 
 const renderResolveHook = (value: string, symbol: NetworkSymbol | null) =>
