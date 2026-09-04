@@ -20,6 +20,8 @@ type IdPromise<ID, T> = { promiseId: ID; promise: Promise<T> };
 export type DeferredManager<T, ID extends string | number = number> = {
     /** How many pending promises are there */
     length: () => number;
+    /** The latest deadline among the pending promises, 0 when none of them has one */
+    lastDeadline: () => number;
     /** Creates new pending promise (with optional timeout) and returns it and its unique id */
     create: (timeout?: number) => IdPromise<ID, T>;
     /** Waits until there is less than `concurrency` promises and then creates a new one */
@@ -56,6 +58,8 @@ export const createDeferredManager = <T = any, ID extends string | number = numb
     let onRemovePromise = createDeferred();
 
     const length = () => promises.length;
+
+    const lastDeadline = () => promises.reduce((last, { deadline }) => Math.max(last, deadline), 0);
 
     const onPromiseRemoved = () => {
         const { resolve } = onRemovePromise;
@@ -146,5 +150,14 @@ export const createDeferredManager = <T = any, ID extends string | number = numb
         }
     };
 
-    return { length, create, createConcurrent, resolve, reject, resolveAll, rejectAll };
+    return {
+        length,
+        lastDeadline,
+        create,
+        createConcurrent,
+        resolve,
+        reject,
+        resolveAll,
+        rejectAll,
+    };
 };
