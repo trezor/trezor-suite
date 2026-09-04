@@ -4,14 +4,13 @@ import { connectPopupErrorSummary } from './connectPopupErrorSummary';
 const CONFIDENTIAL_PATH = "m/84'/0'/7'/0/3";
 
 describe('connectPopupErrorSummary', () => {
-    it('returns only { code, method } — no message/stack body reaches the sink', () => {
+    it('summarizes to a leak-free { code, method } string — no message/stack body reaches the sink', () => {
         const result = connectPopupErrorSummary('getAddress', {
             message: `Derivation failed at ${CONFIDENTIAL_PATH}`,
             code: 'Failure_UnknownCode',
         });
 
-        expect(Object.keys(result).sort()).toEqual(['code', 'method']);
-        expect(result).toEqual({ code: 'Failure_UnknownCode', method: 'getAddress' });
+        expect(result).toBe('{ code: Failure_UnknownCode, method: getAddress }');
     });
 
     it('never leaks a confidential path embedded in the error message', () => {
@@ -21,8 +20,8 @@ describe('connectPopupErrorSummary', () => {
             code: 'Method_InvalidParameter',
         });
 
-        expect(JSON.stringify(result)).not.toContain(CONFIDENTIAL_PATH);
-        expect(result.code).toBe('Method_InvalidParameter');
+        expect(result).not.toContain(CONFIDENTIAL_PATH);
+        expect(result).toBe('{ code: Method_InvalidParameter, method: getPublicKey }');
     });
 
     it('never leaks a confidential path embedded in a thrown Error message or stack', () => {
@@ -32,21 +31,21 @@ describe('connectPopupErrorSummary', () => {
 
         const result = connectPopupErrorSummary('cardanoGetAddress', error);
 
-        expect(JSON.stringify(result)).not.toContain(CONFIDENTIAL_PATH);
-        expect(result).toEqual({ code: 'Failure_ActionCancelled', method: 'cardanoGetAddress' });
+        expect(result).not.toContain(CONFIDENTIAL_PATH);
+        expect(result).toBe('{ code: Failure_ActionCancelled, method: cardanoGetAddress }');
     });
 
     it('falls back to Failure_UnknownCode for a codeless thrown error', () => {
         const result = connectPopupErrorSummary('getAddress', new Error('boom'));
 
-        expect(result).toEqual({ code: 'Failure_UnknownCode', method: 'getAddress' });
+        expect(result).toBe('{ code: Failure_UnknownCode, method: getAddress }');
     });
 
     it('falls back to Failure_UnknownCode for a non-Error payload without a code', () => {
         // A non-Error payload has no `code`, so the summary must still emit a safe constant.
         const result = connectPopupErrorSummary('getAddress', `bad path ${CONFIDENTIAL_PATH}`);
 
-        expect(JSON.stringify(result)).not.toContain(CONFIDENTIAL_PATH);
-        expect(result).toEqual({ code: 'Failure_UnknownCode', method: 'getAddress' });
+        expect(result).not.toContain(CONFIDENTIAL_PATH);
+        expect(result).toBe('{ code: Failure_UnknownCode, method: getAddress }');
     });
 });
