@@ -29,6 +29,12 @@ export const isNameLike = (value: string) => {
     const charsAfterLastDot = trimmed.length - lastDotIndex - 1;
     if (charsAfterLastDot < MIN_CHARS_AFTER_LAST_DOT) return false;
 
+    // A value made only of digits and dots is a number or an IP, whatever it is shaped like.
+    // Resolving an amount pasted into the recipient field would answer "we could not resolve
+    // that name" where the user needs to hear that it is not an address. Numeric labels are
+    // still names when something else follows: `1234.eth` is a registered one.
+    if (/^[\d.]+$/.test(trimmed)) return false;
+
     return true;
 };
 
