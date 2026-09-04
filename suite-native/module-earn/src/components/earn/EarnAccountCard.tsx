@@ -4,25 +4,27 @@ import {
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { isApyAvailable } from '@suite-common/wallet-utils';
-import { ZeroApyBadge } from '@suite-native/accounts';
-import { Text } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
 import {
+    type StakeRootState,
+    type TronStakeRootState,
     selectApy,
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
     selectTronAvailableVotingPowerByAccountKey,
     selectTronVotesByAccountKey,
-    useSelector as useStakingSelector,
-} from '@suite-native/staking';
+} from '@suite-common/wallet-core';
+import { isApyAvailable } from '@suite-common/wallet-utils';
+import { ZeroApyBadge } from '@suite-native/accounts';
+import { Text } from '@suite-native/atoms';
+import { TokenIcon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 
+import { useSelector } from 'react-redux';
+import { type EarnDepositsCardActiveItem } from '../../types';
 import { ApyValue } from './ApyValue';
 import { EarnAccountCardLayout } from './EarnAccountCardLayout';
 import { EarnAccountCardValue } from './EarnAccountCardValue';
 import { EarnTronVotingAlert } from './EarnTronVotingAlert';
-import { type EarnDepositsCardActiveItem } from '../../types';
 
 type EarnAccountCardProps = {
     item: EarnDepositsCardActiveItem;
@@ -35,7 +37,7 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
 
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
 
-    const apy = useStakingSelector(state =>
+    const apy = useSelector((state: StakeRootState) =>
         isStakingItem
             ? selectApy(state, { accountKey: item.accountKey, networkSymbol: item.symbol })
             : null,
@@ -45,7 +47,7 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
         enabled: isStakingItem && item.symbol === 'trx',
     });
 
-    const tronVotes = useStakingSelector(state =>
+    const tronVotes = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectTronVotesByAccountKey(state, item.accountKey),
     );
 
@@ -59,15 +61,15 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
     const resolvedApy = symbol === 'trx' ? tronApr : apy;
     const apyValue = isStakingItem ? resolvedApy : item.apy;
 
-    const availableTronVotingPower = useStakingSelector(state =>
+    const availableTronVotingPower = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectTronAvailableVotingPowerByAccountKey(state, item.accountKey),
     );
 
-    const isAdaStakedOutsideEverstake = useStakingSelector(state =>
+    const isAdaStakedOutsideEverstake = useSelector((state: StakeRootState) =>
         selectIsCardanoStakedOutsideEverstake(state, item.accountKey),
     );
 
-    const isStakedWithFiveBinaries = useStakingSelector(state =>
+    const isStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
         selectIsCardanoStakedWithFiveBinaries(state, item.accountKey),
     );
 

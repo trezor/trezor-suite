@@ -1,7 +1,14 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type StakeRootState,
+    type TronStakeRootState,
+    selectAccountHasStaking,
+    selectFormattedAccountType,
+    selectIsCardanoStakedWithFiveBinaries,
+} from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
@@ -13,16 +20,8 @@ import {
 } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    type NativeStakingRootState,
-    selectAccountHasStaking,
-    selectIsCardanoStakedWithFiveBinaries,
-} from '@suite-native/staking';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
-import { AccountsListItemBase } from './AccountsListItemBase';
-import { StakingBadge } from './StakingBadge';
-import { ZeroApyBadge } from './ZeroApyBadge';
 import {
     type NativeAccountsRootState,
     selectAccountFiatBalance,
@@ -30,6 +29,9 @@ import {
 } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 import { AccountLabel } from '../AccountLabel';
+import { AccountsListItemBase } from './AccountsListItemBase';
+import { StakingBadge } from './StakingBadge';
+import { ZeroApyBadge } from './ZeroApyBadge';
 
 type AccountListItemProps = {
     account: Account;
@@ -74,7 +76,7 @@ const AccountsListItemComponent = ({
         (state: NativeAccountsRootState) => selectActiveAndDefiTokensCount(state, account.key) > 0,
     );
 
-    const accountHasStaking = useSelector((state: NativeStakingRootState) =>
+    const accountHasStaking = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectAccountHasStaking(state, account.key),
     );
 

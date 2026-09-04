@@ -7,12 +7,15 @@ import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type StakeRootState,
     buildClaimWithdrawRequestData,
     getStakingContractAddress,
     getStakingLimitsByNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     selectAccountByKey,
+    selectCanClaimByAccountKey,
+    selectClaimableAmountByAccountKey,
 } from '@suite-common/wallet-core';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -25,11 +28,6 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    type NativeStakingRootState,
-    selectCanClaimByAccountKey,
-    selectClaimableAmountByAccountKey,
-} from '@suite-native/staking';
 import { FeeSelector } from '@suite-native/transaction-management';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
@@ -49,10 +47,10 @@ export const StakingClaimReviewScreen = () => {
     const { accountKey, symbol } = route.params;
     const displaySymbol = getNetworkDisplaySymbol(symbol);
 
-    const canClaimInstantly = useSelector((state: NativeStakingRootState) =>
+    const canClaimInstantly = useSelector((state: StakeRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
     );
-    const claimableAmount = useSelector((state: NativeStakingRootState) =>
+    const claimableAmount = useSelector((state: StakeRootState) =>
         selectClaimableAmountByAccountKey(state, accountKey),
     );
     const account = useSelector((state: AccountsRootState) =>

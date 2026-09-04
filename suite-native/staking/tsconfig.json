@@ -8,9 +8,6 @@
             "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/suite-sync"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -23,7 +20,6 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../device-mutex" },
-        { "path": "../labeling" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
@@ -33,7 +29,6 @@
         {
             "path": "../../networks/solana/network-solana"
         },
-        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {
             "path": "../../suite-common/message-system"

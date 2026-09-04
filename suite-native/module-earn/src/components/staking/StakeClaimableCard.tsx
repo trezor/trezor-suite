@@ -1,10 +1,14 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    type StakeRootState,
     isSupportedStakingNetworkSymbol,
     selectAccountNetworkSymbol,
+    selectCanClaimByAccountKey,
+    selectClaimableAmountByAccountKey,
     useAccountsSelector,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -20,11 +24,6 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    selectCanClaimByAccountKey,
-    selectClaimableAmountByAccountKey,
-    useSelector as useNativeStakingSelector,
-} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
@@ -54,10 +53,11 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
     const claimableAmount =
-        useNativeStakingSelector(state => selectClaimableAmountByAccountKey(state, accountKey)) ??
-        '0';
+        useSelector((state: StakeRootState) =>
+            selectClaimableAmountByAccountKey(state, accountKey),
+        ) ?? '0';
 
-    const canClaim = useNativeStakingSelector(state =>
+    const canClaim = useSelector((state: StakeRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
     );
 

@@ -1,11 +1,17 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_EPOCH_DAYS,
+    type StakeRootState,
     isSupportedSolStakingNetworkSymbol,
-    selectEthNextRewardPayout,
+    selectApy,
+    selectEthereumNextRewardPayout,
+    selectIsCardanoStakedWithFiveBinaries,
+    selectStakedBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -30,12 +36,6 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    selectApy,
-    selectIsCardanoStakedWithFiveBinaries,
-    selectStakedBalanceByAccountKey,
-    useSelector,
-} from '@suite-native/staking';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
@@ -129,15 +129,19 @@ export const StakingManagementStakedCard = ({
         navigation.navigate(RootStackRoutes.UnstakeFlow, { accountKey });
     };
 
-    const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
+    const stakedBalance = useSelector((state: StakeRootState) =>
+        selectStakedBalanceByAccountKey(state, accountKey),
+    );
     const hasStakedBalance = new BigNumber(stakedBalance ?? '0').gt(0);
     const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(accountKey);
 
-    const apy = useSelector(state => selectApy(state, { accountKey, networkSymbol }));
-    const isAdaStakedWithFiveBinaries = useSelector(state =>
+    const apy = useSelector((state: StakeRootState) =>
+        selectApy(state, { accountKey, networkSymbol }),
+    );
+    const isAdaStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
         selectIsCardanoStakedWithFiveBinaries(state, accountKey),
     );
-    const nextRewardPayout = useSelector(selectEthNextRewardPayout);
+    const nextRewardPayout = useSelector(selectEthereumNextRewardPayout);
     const isNotEarning = isCardanoStaking && isAdaStakedWithFiveBinaries;
 
     let rewardsFrequencyInDays = null;

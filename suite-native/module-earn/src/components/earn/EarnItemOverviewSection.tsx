@@ -2,8 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import {
+    type StakeRootState,
+    selectApy,
     selectFormattedAccountType,
     selectHasRunningDiscovery,
+    selectIsCardanoStakedOutsideEverstake,
     useAccountsSelector,
 } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
@@ -11,11 +14,6 @@ import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
 import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    selectApy,
-    selectIsCardanoStakedOutsideEverstake,
-    useSelector as useNativeStakingSelector,
-} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnPromoItem } from '../../types';
@@ -76,7 +74,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
         selectFormattedAccountType(state, accountKey),
     );
 
-    const apy = useNativeStakingSelector(state =>
+    const apy = useSelector((state: StakeRootState) =>
         selectApy(state, {
             accountKey: accountKey ?? undefined,
             networkSymbol: item.type === 'staking' ? item.symbol : undefined,
@@ -89,7 +87,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const isAdaStakedOutsideEverstake = useNativeStakingSelector(state =>
+    const isAdaStakedOutsideEverstake = useSelector((state: StakeRootState) =>
         accountKey ? selectIsCardanoStakedOutsideEverstake(state, accountKey) : false,
     );
 
