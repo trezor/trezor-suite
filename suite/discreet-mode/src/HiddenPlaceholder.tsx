@@ -18,7 +18,9 @@ type WrapperProps = {
 
 const Wrapper = styled.span<WrapperProps>`
     font-variant-numeric: tabular-nums;
-    display: inline;
+    display: inline-block;
+    width: fit-content;
+    max-width: 100%;
 
     ${({ $intensity, $discreetMode }: WrapperProps) =>
         $discreetMode &&
@@ -34,7 +36,6 @@ const Wrapper = styled.span<WrapperProps>`
     ${({ $minWidth }: WrapperProps) =>
         !!$minWidth &&
         css`
-            display: inline-block;
             min-width: ${$minWidth}px;
         `}
 `;
