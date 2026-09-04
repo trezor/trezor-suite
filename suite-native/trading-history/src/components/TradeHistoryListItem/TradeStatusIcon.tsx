@@ -85,8 +85,6 @@ export const TradeStatusIcon = ({ status }: TradeStatusIconProps) => {
             intent={config.intent}
             size={24}
             accessibilityLabel={translate(config.accessibilityLabelId)}
-            accessibilityRole="image"
-            testID="@trading/history/status-icon"
         />
     );
 };
