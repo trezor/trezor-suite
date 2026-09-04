@@ -28,7 +28,6 @@ type MainHtmlProps = {
     supportedBrowsers?: SupportedBrowser[];
     shouldUpdate?: boolean;
     iosAppBanner?: boolean;
-    androidAppBanner?: boolean;
     metaTags?: string[];
 };
 
