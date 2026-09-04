@@ -12,33 +12,25 @@ jest.mock('@trezor/connect', () => ({
 }));
 
 /**
- * Golden vectors captured from a real mainnet `cast` session against the deployed
- * UniversalResolver, resolving `vitalik.eth`. They pin the exact bytes on the wire, so a
- * refactor that changes the encoding fails here rather than silently on a user's machine.
+ * Golden vectors from a real mainnet `cast` session against the deployed UniversalResolver,
+ * resolving `vitalik.eth`. They pin the exact bytes on the wire, so a refactor that changes the
+ * encoding fails here rather than silently on a user's machine. The session batched the profile
+ * through `multicall`, which resolution no longer does, so the name, namehash, resolver and
+ * address words below are the captured ones with that batch wrapper peeled off.
  */
 const VITALIK_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 
 // `toHex(packetToBytes('vitalik.eth'))`
 const DNS_ENCODED_NAME = '0x07766974616c696b0365746800';
 
-// `multicall([addr(namehash('vitalik.eth'))])`
-const MULTICALL_CALLDATA =
-    '0xac9650d8' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000001' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000024' +
-    '3b3b57deee6c4522aab0003e8d14cd40a6af439055fd2577951148c14b6cea9a' +
-    '5347583500000000000000000000000000000000000000000000000000000000';
+// `addr(namehash('vitalik.eth'))`
+const ADDR_CALLDATA =
+    '0x3b3b57de' + 'ee6c4522aab0003e8d14cd40a6af439055fd2577951148c14b6cea9a53475835';
 
-// The `(bytes result, address resolver)` pair the resolver returned for that call.
+// The `(bytes result, address resolver)` pair the resolver returned for that profile.
 const RESOLVE_RETURN =
     '0x0000000000000000000000000000000000000000000000000000000000000040' +
     '000000000000000000000000231b0ee14048e9dccd1d247744d114a4eb5e8e63' +
-    '00000000000000000000000000000000000000000000000000000000000000a0' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000001' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
     '0000000000000000000000000000000000000000000000000000000000000020' +
     '000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045';
 
@@ -55,7 +47,7 @@ describe('universalResolver mainnet vectors', () => {
         });
     });
 
-    it('sends the DNS-encoded name and multicall batch captured from mainnet', async () => {
+    it('sends the DNS-encoded name and addr profile captured from mainnet', async () => {
         await resolveNamedAddressOnchain('vitalik.eth', 'eth');
 
         const sentCalldata = mockBlockchainEvmRpcCall.mock.calls[0]?.[0].data;
@@ -63,7 +55,7 @@ describe('universalResolver mainnet vectors', () => {
         const [name, data] = args;
 
         expect(name).toBe(DNS_ENCODED_NAME);
-        expect(data).toBe(MULTICALL_CALLDATA);
+        expect(data).toBe(ADDR_CALLDATA);
     });
 
     it('decodes the mainnet response to the expected address', async () => {

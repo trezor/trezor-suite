@@ -19,6 +19,9 @@ jest.mock('@trezor/connect', () => ({
  * Blockbook and a direct RPC actually send — used to cost twelve requests for one mistyped
  * name: three tiers of fallback times four query attempts. The query layer contributes the
  * retry half of that product; `namedAddressQuery.test.ts` guards it.
+ *
+ * One request per resolution is the floor: the address is asked for on its own, so there is no
+ * batch to fall back from.
  */
 const RESOLVED_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 
@@ -28,7 +31,7 @@ describe('resolution request cost', () => {
         mockGetAccountInfo.mockReset();
     });
 
-    it('costs two requests and no error for a name that does not exist', async () => {
+    it('costs one request and no error for a name that does not exist', async () => {
         mockBlockchainEvmRpcCall.mockResolvedValue({
             success: false,
             error: { message: 'execution reverted' },
@@ -36,8 +39,7 @@ describe('resolution request cost', () => {
 
         const resolved = await resolveNamedAddress('cult.et', 'eth');
 
-        // The batched call, then the bare `addr` in case the resolver lacks `multicall`.
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(2);
+        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
         // A definitive answer, so no Blockbook fallback.
         expect(mockGetAccountInfo).not.toHaveBeenCalled();
         // Resolving to `null` rather than rejecting is what keeps this out of the error log.
@@ -51,10 +53,6 @@ describe('resolution request cost', () => {
                 data:
                     '0x0000000000000000000000000000000000000000000000000000000000000040' +
                     '000000000000000000000000231b0ee14048e9dccd1d247744d114a4eb5e8e63' +
-                    '00000000000000000000000000000000000000000000000000000000000000a0' +
-                    '0000000000000000000000000000000000000000000000000000000000000020' +
-                    '0000000000000000000000000000000000000000000000000000000000000001' +
-                    '0000000000000000000000000000000000000000000000000000000000000020' +
                     '0000000000000000000000000000000000000000000000000000000000000020' +
                     '000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045',
             },

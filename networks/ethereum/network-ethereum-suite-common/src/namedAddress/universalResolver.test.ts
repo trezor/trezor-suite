@@ -1,12 +1,6 @@
 import { decodeFunctionData, encodeErrorResult, parseAbi } from 'viem';
 
-import {
-    isNameUnresolvable,
-    isUnsupportedProfileError,
-    resolveNamedAddressOnchain,
-    resolveNamedProfileOnchain,
-    reverseResolveAddressOnchain,
-} from './universalResolver';
+import { resolveNamedAddressOnchain, reverseResolveAddressOnchain } from './universalResolver';
 
 const mockBlockchainEvmRpcCall = jest.fn();
 
@@ -18,66 +12,20 @@ jest.mock('@trezor/connect', () => ({
 }));
 
 const VITALIK_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
-const DESCRIPTION = 'Lead developer of ENS & Ethereum Foundation alum.';
 
-// `resolve` wrapping a `multicall` batch of one `addr` profile.
-const MULTICALL_ADDRESS_ONLY =
-    '0x0000000000000000000000000000000000000000000000000000000000000040' +
-    '000000000000000000000000231b0ee14048e9dccd1d247744d114a4eb5e8e63' +
-    '00000000000000000000000000000000000000000000000000000000000000a0' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000001' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045';
-
-// `resolve` wrapping a `multicall` batch of `addr` plus a `description` text record.
-const MULTICALL_ADDRESS_AND_TEXT =
-    '0x0000000000000000000000000000000000000000000000000000000000000040' +
-    '000000000000000000000000231b0ee14048e9dccd1d247744d114a4eb5e8e63' +
-    '0000000000000000000000000000000000000000000000000000000000000160' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000002' +
-    '0000000000000000000000000000000000000000000000000000000000000040' +
-    '0000000000000000000000000000000000000000000000000000000000000080' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045' +
-    '0000000000000000000000000000000000000000000000000000000000000080' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000031' +
-    '4c65616420646576656c6f706572206f6620454e53202620457468657265756d' +
-    '20466f756e646174696f6e20616c756d2e000000000000000000000000000000';
-
-// A batch whose `addr` entry is the zero address: the name exists but points nowhere.
-const MULTICALL_ZERO_ADDRESS =
-    '0x0000000000000000000000000000000000000000000000000000000000000040' +
-    '000000000000000000000000231b0ee14048e9dccd1d247744d114a4eb5e8e63' +
-    '00000000000000000000000000000000000000000000000000000000000000a0' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000001' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000000';
-
-// A batch where the resolver answered `addr` but left the text record empty.
-const MULTICALL_EMPTY_TEXT =
-    '0x0000000000000000000000000000000000000000000000000000000000000040' +
-    '000000000000000000000000231b0ee14048e9dccd1d247744d114a4eb5e8e63' +
-    '00000000000000000000000000000000000000000000000000000000000000e0' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '0000000000000000000000000000000000000000000000000000000000000002' +
-    '0000000000000000000000000000000000000000000000000000000000000040' +
-    '0000000000000000000000000000000000000000000000000000000000000080' +
-    '0000000000000000000000000000000000000000000000000000000000000020' +
-    '000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045' +
-    '0000000000000000000000000000000000000000000000000000000000000000';
-
-// `resolve` of a bare `addr` profile, as used when the resolver has no `multicall`.
-const ADDRESS_ONLY_PROFILE =
+// `resolve` wrapping the `addr` profile.
+const ADDRESS_PROFILE =
     '0x0000000000000000000000000000000000000000000000000000000000000040' +
     '000000000000000000000000231b0ee14048e9dccd1d247744d114a4eb5e8e63' +
     '0000000000000000000000000000000000000000000000000000000000000020' +
     '000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045';
+
+// The same profile answering the zero address: the name exists but points nowhere.
+const ADDRESS_PROFILE_ZERO =
+    '0x0000000000000000000000000000000000000000000000000000000000000040' +
+    '000000000000000000000000231b0ee14048e9dccd1d247744d114a4eb5e8e63' +
+    '0000000000000000000000000000000000000000000000000000000000000020' +
+    '0000000000000000000000000000000000000000000000000000000000000000';
 
 // `reverse` returning the primary name "nick.eth".
 const REVERSE_SUCCESS =
@@ -110,16 +58,14 @@ const revertWith = (revertData: string) => {
     mockBlockchainEvmRpcCall.mockResolvedValue(asRevert(revertData));
 };
 
-// Queued responses win over the persistent default, so a test that needs one failed call
-// followed by a successful one has to queue both.
-const revertOnceWith = (revertData: string) => {
-    mockBlockchainEvmRpcCall.mockResolvedValueOnce(asRevert(revertData));
-};
-
 const succeedWith = (...responses: string[]) => {
     responses.forEach(data =>
         mockBlockchainEvmRpcCall.mockResolvedValueOnce({ success: true, payload: { data } }),
     );
+};
+
+const failWith = (message: string) => {
+    mockBlockchainEvmRpcCall.mockResolvedValue({ success: false, error: { message } });
 };
 
 const RESOLVER_NOT_FOUND = encodeRevert('error ResolverNotFound(bytes name)', 'ResolverNotFound', [
@@ -129,7 +75,7 @@ const RESOLVER_NOT_FOUND = encodeRevert('error ResolverNotFound(bytes name)', 'R
 const UNSUPPORTED_PROFILE = encodeRevert(
     'error UnsupportedResolverProfile(bytes4 selector)',
     'UnsupportedResolverProfile',
-    ['0xac9650d8'],
+    ['0x3b3b57de'],
 );
 
 const OFFCHAIN_LOOKUP = encodeRevert(
@@ -149,49 +95,18 @@ describe('universalResolver', () => {
         mockBlockchainEvmRpcCall.mockReset();
     });
 
-    describe('resolveNamedProfileOnchain', () => {
-        it('batches the address and text records into a single request', async () => {
-            succeedWith(MULTICALL_ADDRESS_AND_TEXT);
-
-            await expect(
-                resolveNamedProfileOnchain('vitalik.eth', 'eth', ['description']),
-            ).resolves.toEqual({
-                address: VITALIK_ADDRESS,
-                texts: { description: DESCRIPTION },
-            });
-            expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
-        });
-
-        it('omits text records the resolver left empty', async () => {
-            succeedWith(MULTICALL_EMPTY_TEXT);
-
-            await expect(
-                resolveNamedProfileOnchain('vitalik.eth', 'eth', ['description']),
-            ).resolves.toEqual({ address: VITALIK_ADDRESS, texts: {} });
-        });
-
-        it('returns an empty profile when the name has no resolver', async () => {
-            revertWith(RESOLVER_NOT_FOUND);
-
-            await expect(resolveNamedProfileOnchain('nope.eth', 'eth')).resolves.toEqual({
-                address: null,
-                texts: {},
-            });
-            expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
-        });
-    });
-
     describe('resolveNamedAddressOnchain', () => {
-        it('resolves a name to its address', async () => {
-            succeedWith(MULTICALL_ADDRESS_ONLY);
+        it('resolves a name to its address in a single request', async () => {
+            succeedWith(ADDRESS_PROFILE);
 
             await expect(resolveNamedAddressOnchain('vitalik.eth', 'eth')).resolves.toBe(
                 VITALIK_ADDRESS,
             );
+            expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
         });
 
         it('calls the UniversalResolver on the requested network', async () => {
-            succeedWith(MULTICALL_ADDRESS_ONLY);
+            succeedWith(ADDRESS_PROFILE);
 
             await resolveNamedAddressOnchain('vitalik.eth', 'tsep');
 
@@ -204,7 +119,7 @@ describe('universalResolver', () => {
         });
 
         it('normalizes the name before hashing it', async () => {
-            succeedWith(MULTICALL_ADDRESS_ONLY, MULTICALL_ADDRESS_ONLY);
+            succeedWith(ADDRESS_PROFILE, ADDRESS_PROFILE);
 
             await resolveNamedAddressOnchain('VITALIK.eth', 'eth');
             const upperCaseCallData = mockBlockchainEvmRpcCall.mock.calls[0]?.[0].data;
@@ -216,49 +131,64 @@ describe('universalResolver', () => {
         });
 
         it('returns null when the name has no address record', async () => {
-            succeedWith(MULTICALL_ZERO_ADDRESS);
+            succeedWith(ADDRESS_PROFILE_ZERO);
 
             await expect(resolveNamedAddressOnchain('vitalik.eth', 'eth')).resolves.toBeNull();
         });
 
-        it('retries without multicall when the resolver does not implement it', async () => {
-            revertOnceWith(UNSUPPORTED_PROFILE);
-            succeedWith(ADDRESS_ONLY_PROFILE);
-
-            await expect(resolveNamedAddressOnchain('vitalik.eth', 'eth')).resolves.toBe(
-                VITALIK_ADDRESS,
-            );
-            expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(2);
-        });
-
-        it('does not retry when the name is definitively unresolvable', async () => {
-            revertWith(RESOLVER_NOT_FOUND);
+        // A resolver holding the record answers with the zero address instead of reverting, so
+        // every revert below is an answer about the name — not something a second request or the
+        // Blockbook fallback could improve on.
+        it.each([
+            ['the name has no resolver', RESOLVER_NOT_FOUND],
+            ['the resolver does not implement addr', UNSUPPORTED_PROFILE],
+        ])('returns null in one request when %s', async (_case, revertData) => {
+            revertWith(revertData);
 
             await expect(resolveNamedAddressOnchain('nope.eth', 'eth')).resolves.toBeNull();
             expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
         });
 
         // Both backends strip revert data, so a bare "execution reverted" is the common case
-        // rather than the exception. It must still stop after the bare `addr` attempt instead
-        // of reporting a transport failure and dragging in the Blockbook fallback.
-        it('stops after the bare profile when the revert carries no data', async () => {
-            mockBlockchainEvmRpcCall.mockResolvedValue({
-                success: false,
-                error: { message: 'execution reverted' },
-            });
+        // rather than the exception. It must still read as an answer instead of a transport
+        // failure that drags in the Blockbook fallback.
+        it('returns null when the revert carries no data', async () => {
+            failWith('execution reverted');
 
             await expect(resolveNamedAddressOnchain('cult.et', 'eth')).resolves.toBeNull();
-            expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(2);
+            expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
         });
 
-        // The bare retry only makes sense when a resolver answered. A call that never reached one
-        // must fail immediately: retrying it pays the timeout twice over before the caller's
-        // fallback even starts, which is what leaves the send form validating for a minute.
-        it('fails after a single request when the call never reached a resolver', async () => {
-            mockBlockchainEvmRpcCall.mockResolvedValue({
-                success: false,
-                error: { message: 'Backend not connected' },
-            });
+        it('returns null for revert data no known resolver error matches', async () => {
+            failWith('reverted: 0xdeadbeefdeadbeef');
+
+            await expect(resolveNamedAddressOnchain('nope.eth', 'eth')).resolves.toBeNull();
+        });
+
+        // A direct-RPC backend surfaces viem's `call` error, which quotes the resolver address
+        // and our own calldata before any revert data. Those must not be mistaken for it.
+        it('finds the revert data further down a quoted request', async () => {
+            failWith(
+                [
+                    'execution reverted',
+                    '',
+                    'Raw Call Arguments:',
+                    '  to:    0xeeeeeeee14d718c2b47d9923deab1335e144eeee',
+                    '  data:  0x206c74c90000000000000000000000000000000000000000000000000000000000000040',
+                    '',
+                    `Details: execution reverted: ${RESOLVER_NOT_FOUND}`,
+                    'Version: viem@2.54.1',
+                ].join('\n'),
+            );
+
+            await expect(resolveNamedAddressOnchain('nope.eth', 'eth')).resolves.toBeNull();
+            expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
+        });
+
+        // A call that never reached a resolver says nothing about the name, so it has to reach
+        // the caller for the fallback to run.
+        it('throws when the call never reached a resolver', async () => {
+            failWith('Backend not connected');
 
             await expect(resolveNamedAddressOnchain('vitalik.eth', 'eth')).rejects.toThrow(
                 'Backend not connected',
@@ -266,23 +196,20 @@ describe('universalResolver', () => {
             expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
         });
 
-        // EIP-3668: the record exists but lives offchain. Reporting that as "no such name" would
-        // tell the user a perfectly valid name is wrong, so it has to reach the caller as a
-        // failure and let the fallback try.
-        it('does not treat an OffchainLookup revert as a missing record', async () => {
-            revertWith(
-                encodeRevert(
-                    'error OffchainLookup(address sender, string[] urls, bytes callData, bytes4 callbackFunction, bytes extraData)',
-                    'OffchainLookup',
-                    [
-                        '0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63',
-                        ['https://gateway.example/{sender}/{data}'],
-                        '0x1234',
-                        '0xdeadbeef',
-                        '0x5678',
-                    ],
-                ),
-            );
+        // EIP-3668: the record exists but lives offchain and the gateway hop is not implemented
+        // here. Reporting that as "no such name" would tell the user a valid name is wrong, so it
+        // has to reach the caller for the fallback to try.
+        it.each([
+            ['an OffchainLookup revert', OFFCHAIN_LOOKUP],
+            [
+                'an HttpError revert',
+                encodeRevert('error HttpError(uint16 status, string message)', 'HttpError', [
+                    502,
+                    'Bad Gateway',
+                ]),
+            ],
+        ])('throws on %s so the fallback can follow the hop', async (_case, revertData) => {
+            revertWith(revertData);
 
             await expect(resolveNamedAddressOnchain('offchain.eth', 'eth')).rejects.toThrow();
         });
@@ -292,25 +219,6 @@ describe('universalResolver', () => {
         it.each([['.eth'], ['foo_bar.eth']])('answers %s without a request', async invalidName => {
             await expect(resolveNamedAddressOnchain(invalidName, 'eth')).resolves.toBeNull();
             expect(mockBlockchainEvmRpcCall).not.toHaveBeenCalled();
-        });
-
-        // EIP-3668: the record lives offchain and the gateway hop is not implemented here, so
-        // this is not a verdict on the name. It has to reach the caller for the fallback to run.
-        it('throws on an OffchainLookup revert so the fallback can follow the hop', async () => {
-            revertWith(OFFCHAIN_LOOKUP);
-
-            await expect(resolveNamedAddressOnchain('offchain.eth', 'eth')).rejects.toThrow();
-        });
-
-        it('throws on an HttpError revert, which signals a failed offchain hop', async () => {
-            revertWith(
-                encodeRevert('error HttpError(uint16 status, string message)', 'HttpError', [
-                    502,
-                    'Bad Gateway',
-                ]),
-            );
-
-            await expect(resolveNamedAddressOnchain('offchain.eth', 'eth')).rejects.toThrow();
         });
     });
 
@@ -360,10 +268,7 @@ describe('universalResolver', () => {
         });
 
         it('returns null when the revert carries no data', async () => {
-            mockBlockchainEvmRpcCall.mockResolvedValue({
-                success: false,
-                error: { message: 'execution reverted' },
-            });
+            failWith('execution reverted');
 
             await expect(reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth')).resolves.toBeNull();
             expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
@@ -387,71 +292,6 @@ describe('universalResolver', () => {
             );
 
             await expect(reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth')).resolves.toBeNull();
-        });
-    });
-
-    describe('error classification', () => {
-        it('separates an unresolvable name from an unsupported profile', () => {
-            const notFound = new Error(`reverted: ${RESOLVER_NOT_FOUND}`);
-            const unsupported = new Error(`reverted: ${UNSUPPORTED_PROFILE}`);
-
-            expect(isNameUnresolvable(notFound)).toBe(true);
-            expect(isUnsupportedProfileError(notFound)).toBe(false);
-
-            expect(isNameUnresolvable(unsupported)).toBe(false);
-            expect(isUnsupportedProfileError(unsupported)).toBe(true);
-        });
-
-        it('classifies an error carrying no revert data as neither', () => {
-            const error = new Error('Backend not connected');
-
-            expect(isNameUnresolvable(error)).toBe(false);
-            expect(isUnsupportedProfileError(error)).toBe(false);
-        });
-
-        // A direct-RPC backend surfaces viem's `call` error, which quotes the resolver address
-        // and our own calldata before any revert data. Those must not be mistaken for it.
-        it('skips the quoted request and finds the revert data further down the message', () => {
-            const error = new Error(
-                [
-                    'execution reverted',
-                    '',
-                    'Raw Call Arguments:',
-                    '  to:    0xeeeeeeee14d718c2b47d9923deab1335e144eeee',
-                    '  data:  0x206c74c90000000000000000000000000000000000000000000000000000000000000040',
-                    '',
-                    `Details: execution reverted: ${RESOLVER_NOT_FOUND}`,
-                    'Version: viem@2.54.1',
-                ].join('\n'),
-            );
-
-            expect(isNameUnresolvable(error)).toBe(true);
-        });
-
-        // Same shape, but viem kept the revert data on the error object rather than in the
-        // message. Unclassified must mean transient, never a silent "no such name".
-        it('treats a revert whose data never reached the message as transient', () => {
-            const error = new Error(
-                [
-                    'execution reverted',
-                    '',
-                    'Raw Call Arguments:',
-                    '  to:    0xeeeeeeee14d718c2b47d9923deab1335e144eeee',
-                    '  data:  0x206c74c90000000000000000000000000000000000000000000000000000000000000040',
-                    '',
-                    'Version: viem@2.54.1',
-                ].join('\n'),
-            );
-
-            expect(isNameUnresolvable(error)).toBe(false);
-            expect(isUnsupportedProfileError(error)).toBe(false);
-        });
-
-        it('classifies unrecognised revert data as neither', () => {
-            const error = new Error('reverted: 0xdeadbeefdeadbeef');
-
-            expect(isNameUnresolvable(error)).toBe(false);
-            expect(isUnsupportedProfileError(error)).toBe(false);
         });
     });
 });
