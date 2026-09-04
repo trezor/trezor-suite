@@ -75,3 +75,4 @@ export * from './sanitizeFilename';
 export * from './isSafeObjectKey';
 export * from './context';
 export * from './localizeNumber';
+export * from './parseJSON';
