@@ -12,7 +12,6 @@ export interface CoinjoinBackendSettings extends BaseSettings {
     baseBlockHeight: number;
     baseBlockHash: string;
     filtersBatchSize: number;
-    storagePath?: string;
 }
 
 export interface CoinjoinClientSettings extends BaseSettings {
