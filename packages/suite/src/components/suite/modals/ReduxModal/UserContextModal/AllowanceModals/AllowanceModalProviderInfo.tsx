@@ -32,7 +32,7 @@ export const AllowanceModalProviderInfo = ({
     const providerName = provider.companyName ?? provider.name;
 
     return (
-        <CardList.Item paddingType={showSpender ? 'medium' : 'normal'}>
+        <CardList.Item>
             <Text typographyStyle="body-sm">
                 <Translation id={provider.label} />
             </Text>
