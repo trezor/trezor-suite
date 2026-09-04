@@ -1,7 +1,13 @@
+import { useSelector } from 'react-redux';
+
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import {
+    type StakeRootState,
     isSupportedSolStakingNetworkSymbol,
     selectAccountNetworkSymbol,
+    selectClaimableAmountByAccountKey,
+    selectUnstakingBalanceByAccountKey,
+    selectUnstakingPeriodInDaysByAccountKey,
     useAccountsSelector,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -16,13 +22,6 @@ import {
 } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import {
-    type NativeStakingRootState,
-    selectClaimableAmountByAccountKey,
-    selectUnstakingBalanceByAccountKey,
-    selectUnstakingPeriodInDaysByAccountKey,
-    useSelector,
-} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import {
@@ -60,14 +59,14 @@ export const StakingManagementUnstakingModal = ({
     const { applyStyle } = useNativeStyles();
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
     const claimableAmount =
-        useSelector((state: NativeStakingRootState) =>
+        useSelector((state: StakeRootState) =>
             selectClaimableAmountByAccountKey(state, accountKey),
         ) ?? '0';
     const unstakingBalance =
-        useSelector((state: NativeStakingRootState) =>
+        useSelector((state: StakeRootState) =>
             selectUnstakingBalanceByAccountKey(state, accountKey),
         ) ?? '0';
-    const unstakingPeriodInDays = useSelector((state: NativeStakingRootState) =>
+    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
         selectUnstakingPeriodInDaysByAccountKey(state, accountKey),
     );
 

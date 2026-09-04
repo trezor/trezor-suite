@@ -5,11 +5,11 @@ import { type TimerId } from '@trezor/type-utils';
 
 import { stakeDataActions } from './stakingDataSlice';
 import { type StakeRootState } from './stakingReducerTypes';
-import { selectStake } from './stakingSelectors';
 import {
     type WalletSettingsRootState,
     selectEnabledNetworks,
 } from '../settings/walletSettingsReducer';
+import { selectStake } from './shared/stakingSelectors';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 

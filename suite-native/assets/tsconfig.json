@@ -37,7 +37,6 @@
         { "path": "../intl" },
         { "path": "../module-earn" },
         { "path": "../navigation" },
-        { "path": "../staking" },
         { "path": "../tokens" },
         { "path": "../../packages/utils" }
     ]

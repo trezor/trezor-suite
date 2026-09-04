@@ -1,16 +1,20 @@
+import { useSelector } from 'react-redux';
+
 import {
     formatTronApr,
     getTronVotedApr,
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
-import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
 import {
+    type StakeRootState,
+    type TronStakeRootState,
+    selectAccountNetworkSymbol,
     selectApy,
     selectRewardsBalanceByAccountKey,
     selectTronVotesByAccountKey,
-    useSelector as useNativeStakingSelector,
-} from '@suite-native/staking';
+    useAccountsSelector,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { ManualStakedBalancesCard } from './ManualStakedBalancesCard';
 
@@ -25,7 +29,7 @@ export const StakingBalancesOverviewCard = ({
 }: StakingBalancesCardProps) => {
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
-    const apy = useNativeStakingSelector(state =>
+    const apy = useSelector((state: StakeRootState) =>
         selectApy(state, { accountKey, networkSymbol: symbol ?? undefined }),
     );
 
@@ -33,7 +37,7 @@ export const StakingBalancesOverviewCard = ({
         enabled: symbol === 'trx',
     });
 
-    const tronVotes = useNativeStakingSelector(state =>
+    const tronVotes = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectTronVotesByAccountKey(state, accountKey),
     );
 
@@ -44,7 +48,7 @@ export const StakingBalancesOverviewCard = ({
 
     const tronApr = formatTronApr(votedTronApr ?? tronMaxApr);
 
-    const rewardsBalance = useNativeStakingSelector(state =>
+    const rewardsBalance = useSelector((state: StakeRootState) =>
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
 

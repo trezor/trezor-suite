@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type StakeRootState,
     getMaxStakeAmount,
     selectAccountByKey,
     selectBaseCurrency,
     selectIsBaseCurrencyInSats,
+    selectStakedBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
@@ -14,10 +16,6 @@ import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import {
-    type NativeStakingRootState,
-    selectStakedBalanceByAccountKey,
-} from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
 
 import { type EarnFormValues } from '../../utils/earn/earnFormSchema';
@@ -44,7 +42,7 @@ export const EarnMaxButton = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const stakedBalance = useSelector((state: NativeStakingRootState) =>
+    const stakedBalance = useSelector((state: StakeRootState) =>
         selectStakedBalanceByAccountKey(state, accountKey),
     );
     const baseCurrencyCode = useSelector(selectBaseCurrency);

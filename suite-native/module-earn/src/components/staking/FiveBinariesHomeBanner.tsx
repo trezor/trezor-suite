@@ -1,13 +1,14 @@
 import { useSelector } from 'react-redux';
 
-import type { DeviceRootState } from '@suite-common/device';
-import { type AccountsRootState } from '@suite-common/wallet-core';
+import {
+    type StakeRootState,
+    selectFirstCardanoAccountStakedWithFiveBinaries,
+} from '@suite-common/wallet-core';
 import { BannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking';
 
 export const FiveBinariesHomeBanner = () => {
-    const account = useSelector((state: AccountsRootState & DeviceRootState) =>
+    const account = useSelector((state: StakeRootState) =>
         selectFirstCardanoAccountStakedWithFiveBinaries(state),
     );
 

@@ -1,4 +1,11 @@
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { useSelector } from 'react-redux';
+
+import {
+    type StakeRootState,
+    selectAccountByKey,
+    selectTronPendingUnstakeBalanceByAccountKey,
+    selectUnstakingPeriodInDaysByAccountKey,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import {
@@ -6,23 +13,18 @@ import {
     CryptoToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import {
-    selectTronPendingUnstakeBalanceByAccountKey,
-    selectUnstakingPeriodInDaysByAccountKey,
-    useSelector as useStakingSelector,
-} from '@suite-native/staking';
 
 interface TronStakingUnstakeCardProps {
     accountKey: AccountKey;
 }
 
 export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardProps) => {
-    const account = useStakingSelector(state => selectAccountByKey(state, accountKey));
+    const account = useSelector((state: StakeRootState) => selectAccountByKey(state, accountKey));
 
-    const pendingUnstakeBalance = useStakingSelector(state =>
+    const pendingUnstakeBalance = useSelector((state: StakeRootState) =>
         selectTronPendingUnstakeBalanceByAccountKey(state, accountKey),
     );
-    const unstakingPeriodInDays = useStakingSelector(state =>
+    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
         selectUnstakingPeriodInDaysByAccountKey(state, accountKey),
     );
 

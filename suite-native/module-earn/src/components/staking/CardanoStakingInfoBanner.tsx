@@ -1,10 +1,16 @@
+import { useSelector } from 'react-redux';
+
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
+import {
+    type StakeRootState,
+    selectAccountNetworkSymbol,
+    selectIsCardanoStakedWithFiveBinaries,
+    useAccountsSelector,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerFull, BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { selectIsCardanoStakedWithFiveBinaries, useSelector } from '@suite-native/staking';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
 type CardanoStakingInfoBannerProps = {
@@ -18,7 +24,7 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const isStakedWithFiveBinaries = useSelector(state =>
+    const isStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
         selectIsCardanoStakedWithFiveBinaries(state, accountKey),
     );
 

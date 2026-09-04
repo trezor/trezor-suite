@@ -2,22 +2,23 @@ import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { StakingBadge, ZeroApyBadge } from '@suite-native/accounts';
 import {
-    type NativeStakingRootState,
+    type StakeRootState,
+    type TronStakeRootState,
     selectFirstCardanoAccountStakedWithFiveBinaries,
     selectHasAnyDeviceAccountsWithStaking,
-} from '@suite-native/staking';
+} from '@suite-common/wallet-core';
+import { StakingBadge, ZeroApyBadge } from '@suite-native/accounts';
 
 type AssetItemStakingBadgeProps = {
     symbol: NetworkSymbol;
 };
 
 export const AssetItemStakingBadge = memo(({ symbol }: AssetItemStakingBadgeProps) => {
-    const hasAnyAccountsWithStaking = useSelector((state: NativeStakingRootState) =>
+    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, symbol),
     );
-    const stakedWithFiveBinariesAccount = useSelector((state: NativeStakingRootState) =>
+    const stakedWithFiveBinariesAccount = useSelector((state: StakeRootState) =>
         selectFirstCardanoAccountStakedWithFiveBinaries(state),
     );
 

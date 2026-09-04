@@ -1,4 +1,13 @@
+import { useSelector } from 'react-redux';
+
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type StakeRootState,
+    type TronStakeRootState,
+    selectStakedBalanceByAccountKey,
+    selectTronAvailableVotingPowerByAccountKey,
+    selectTronTotalVotingPowerByAccountKey,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, PressableOpacity, Text, useBottomSheetModal } from '@suite-native/atoms';
 import {
@@ -7,12 +16,6 @@ import {
 } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    selectStakedBalanceByAccountKey,
-    selectTronAvailableVotingPowerByAccountKey,
-    selectTronTotalVotingPowerByAccountKey,
-    useSelector,
-} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TronStakingVotesBottomSheet } from './TronStakingVotesBottomSheet';
@@ -66,14 +69,16 @@ export const ManualStakedBalancesCard = ({
     const { applyStyle } = useNativeStyles();
     const tronVotesModal = useBottomSheetModal();
 
-    const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
+    const stakedBalance = useSelector((state: StakeRootState) =>
+        selectStakedBalanceByAccountKey(state, accountKey),
+    );
 
     const isTron = symbol === 'trx';
 
-    const totalVotingPower = useSelector(state =>
+    const totalVotingPower = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectTronTotalVotingPowerByAccountKey(state, accountKey),
     );
-    const availableVotingPower = useSelector(state =>
+    const availableVotingPower = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectTronAvailableVotingPowerByAccountKey(state, accountKey),
     );
 

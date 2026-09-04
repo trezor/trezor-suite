@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
@@ -12,7 +13,6 @@ import {
 } from '@suite-common/wallet-core';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
-import { useSelector } from '@suite-native/staking';
 import { TransactionList } from '@suite-native/transactions';
 
 import { EarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';

@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { Context } from '@suite-common/message-system';
 import {
-    type AccountsRootState,
+    type StakeRootState,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     selectAdaAccountHasStaked,
@@ -10,7 +12,6 @@ import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
-import { useSelector } from '@suite-native/staking';
 
 import { CardanoDelegatedOutsideBanner } from './CardanoDelegatedOutsideBanner';
 import { CardanoStakingInfoBanner } from './CardanoStakingInfoBanner';
@@ -27,7 +28,7 @@ type StakingManagementListHeaderProps = {
 export const StakingManagementListHeader = ({ accountKey }: StakingManagementListHeaderProps) => {
     const { networkSymbol } = parseAccountKey(accountKey);
 
-    const hasAdaStaked = useSelector((state: AccountsRootState) =>
+    const hasAdaStaked = useSelector((state: StakeRootState) =>
         selectAdaAccountHasStaked(state, accountKey),
     );
 

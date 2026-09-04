@@ -51,7 +51,6 @@
         { "path": "../navigation" },
         { "path": "../scrollview" },
         { "path": "../search" },
-        { "path": "../staking" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

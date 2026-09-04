@@ -1,13 +1,15 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { DeviceRootState } from '@suite-common/device';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountsRootState, isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-core';
+import {
+    type StakeRootState,
+    isCardanoStakedWithFiveBinaries,
+    selectFirstCardanoAccountStakedWithFiveBinaries,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { CompoundRoundedIcon } from '@suite-native/atoms';
 import { type IconName, type IconSize } from '@suite-native/icons';
-import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking';
 import { type Color } from '@trezor/theme';
 
 type CompoundIcon = {
@@ -34,9 +36,8 @@ type StakingBadgeProps = {
 };
 
 export const StakingBadge = ({ networkSymbol, account }: StakingBadgeProps) => {
-    const firstAccountStakedWithFiveBinaries = useSelector(
-        (state: AccountsRootState & DeviceRootState) =>
-            selectFirstCardanoAccountStakedWithFiveBinaries(state),
+    const firstAccountStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
+        selectFirstCardanoAccountStakedWithFiveBinaries(state),
     );
 
     const shouldShowWarningIcon = useMemo(() => {

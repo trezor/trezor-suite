@@ -7,7 +7,7 @@ import {
     CARDANO_ACTIVATION_PERIOD_DAYS,
     CARDANO_EPOCH_DAYS,
     getDaysToAddToPoolInitial,
-    selectEthValidatorsQueue,
+    selectEthereumValidatorsQueue,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -167,7 +167,7 @@ const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
 );
 
 export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
-    const validatorsQueue = useSelector(selectEthValidatorsQueue);
+    const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
 
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
 

@@ -11,7 +11,7 @@ import {
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
-    selectEthNextRewardPayout,
+    selectEthereumNextRewardPayout,
     selectHasRunningDiscovery,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
@@ -43,7 +43,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
-    const nextRewardPayout = useSelector(selectEthNextRewardPayout);
+    const nextRewardPayout = useSelector(selectEthereumNextRewardPayout);
 
     const stakeTxs = useSelector(state => selectAccountStakeTransactions(state, accountKey));
     const unstakeTxs = useSelector(state => selectAccountUnstakeTransactions(state, accountKey));
