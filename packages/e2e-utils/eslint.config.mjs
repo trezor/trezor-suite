@@ -11,6 +11,7 @@ export default [
                     devDependencies: [
                         ...globalNoExtraneousDependenciesDevDependencies,
                         '**/fixBot/**',
+                        '**/llmExploratoryTester/**',
                         '**/llmTestAnalyzer/**',
                         '**/llmTestSelector/**',
                         '**/quarantineBot/**',
