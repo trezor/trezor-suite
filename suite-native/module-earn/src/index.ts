@@ -30,3 +30,4 @@ export { YieldVaultDetailScreen } from './screens/yield/YieldVaultDetailScreen';
 export { getBestPromotedRate, isEarnPromoSymbol } from './utils/earn/promotedRateUtils';
 export type { EarnPromoSymbol } from './utils/earn/promotedRateUtils';
 export { navigateByAccountState } from './utils/staking/navigateByAccountState';
+export { navigateByYieldAccountState } from './utils/yield/navigateByYieldAccountState';

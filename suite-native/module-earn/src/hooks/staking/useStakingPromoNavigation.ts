@@ -107,6 +107,7 @@ export const useStakingPromoNavigation = () => {
             params: {
                 networkSymbol: pendingEnableSymbol,
                 flowType: 'earn',
+                earnFlowParams: { earnType: 'staking' },
             },
         });
     }, [

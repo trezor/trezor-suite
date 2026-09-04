@@ -28,7 +28,7 @@ export const AddCoinDiscoveryFinishedScreen = ({
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes.AddCoinDiscoveryFinished
 >) => {
-    const { networkSymbol, flowType } = route.params;
+    const { networkSymbol, flowType, earnFlowParams } = route.params;
 
     const { applyStyle } = useNativeStyles();
     const accounts = useSelector((state: AccountsRootState & DeviceRootState) =>
@@ -50,9 +50,11 @@ export const AddCoinDiscoveryFinishedScreen = ({
             symbol: networkSymbol,
             accountType: account.accountType,
             accountIndex: account.index,
+            earnFlowParams,
         });
 
-    const handleAddAccount = () => onSelectedNetworkItem({ symbol: networkSymbol, flowType });
+    const handleAddAccount = () =>
+        onSelectedNetworkItem({ symbol: networkSymbol, flowType, earnFlowParams });
 
     const handleTypeSelectionTap = () => handleAccountTypeSelection(flowType);
 

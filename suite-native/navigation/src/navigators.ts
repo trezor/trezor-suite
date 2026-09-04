@@ -346,6 +346,15 @@ export type AccountsImportStackParamList = {
 
 export type AddCoinFlowType = 'home' | 'receive' | 'accounts' | 'trade' | 'earn';
 
+export type AddCoinEarnFlowParams =
+    | { earnType: 'staking' }
+    | {
+          earnType: 'yield';
+          yieldId: string;
+          underlyingTokenContract: TokenAddress;
+          receiptTokenContract: TokenAddress | null;
+      };
+
 export type PinActionType = 'enable' | 'change' | 'disable';
 
 export type AddCoinAccountStackParamList = {
@@ -360,10 +369,12 @@ export type AddCoinAccountStackParamList = {
     [AddCoinAccountStackRoutes.AddCoinDiscoveryRunning]: {
         networkSymbol: NetworkSymbol;
         flowType: AddCoinFlowType;
+        earnFlowParams?: AddCoinEarnFlowParams;
     };
     [AddCoinAccountStackRoutes.AddCoinDiscoveryFinished]: {
         networkSymbol: NetworkSymbol;
         flowType: AddCoinFlowType;
+        earnFlowParams?: AddCoinEarnFlowParams;
     };
 };
 
