@@ -32,7 +32,7 @@ import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 export const AddCoinDiscoveryRunningScreen = ({
     route,
 }: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.AddCoinDiscoveryRunning>) => {
-    const { networkSymbol, flowType } = route.params;
+    const { networkSymbol, flowType, earnFlowParams } = route.params;
     const dispatch = useDispatch();
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
     const accounts = useSelector((state: AccountsRootState & DeviceRootState) =>
@@ -51,6 +51,7 @@ export const AddCoinDiscoveryRunningScreen = ({
             symbol: networkSymbol,
             accountType: account.accountType,
             accountIndex: account.index,
+            earnFlowParams,
         });
     };
 
@@ -81,6 +82,7 @@ export const AddCoinDiscoveryRunningScreen = ({
             navigation.replace(AddCoinAccountStackRoutes.AddCoinDiscoveryFinished, {
                 networkSymbol,
                 flowType,
+                earnFlowParams,
             });
 
             return;

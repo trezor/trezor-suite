@@ -66,7 +66,9 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
 
     const [chosenAccounts, setChosenAccounts] = useState<Account[]>([]);
     const [chosenYieldItem, setChosenYieldItem] = useState<YieldPromoNavigationItem | null>(null);
-    const [pendingEnableSymbol, setPendingEnableSymbol] = useState<NetworkSymbol | null>(null);
+    const [pendingEnableYieldItem, setPendingEnableYieldItem] =
+        useState<YieldPromoNavigationItem | null>(null);
+    const pendingEnableSymbol = pendingEnableYieldItem?.networkSymbol ?? null;
     const chooseAccountTokenBalance = chosenYieldItem
         ? {
               tokenContractAddress: chosenYieldItem.underlyingTokenContract,
@@ -136,7 +138,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
     );
 
     const handleEnableNetworkPress = useCallback(() => {
-        if (!pendingEnableSymbol) {
+        if (!pendingEnableYieldItem) {
             return;
         }
 
@@ -148,15 +150,24 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
             return;
         }
 
+        const { networkSymbol, yieldId, underlyingTokenContract, receiptTokenContract } =
+            pendingEnableYieldItem;
+
         navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
             screen: AddCoinAccountStackRoutes.AddCoinDiscoveryRunning,
             params: {
-                networkSymbol: pendingEnableSymbol,
+                networkSymbol,
                 flowType: 'earn',
+                earnFlowParams: {
+                    earnType: 'yield',
+                    yieldId,
+                    underlyingTokenContract,
+                    receiptTokenContract,
+                },
             },
         });
     }, [
-        pendingEnableSymbol,
+        pendingEnableYieldItem,
         closeEnableNetworkModal,
         isDeviceInViewOnlyMode,
         showViewOnlyAddAccountAlert,
@@ -184,7 +195,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
             );
 
             if (accountsForNetwork.length === 0) {
-                setPendingEnableSymbol(item.networkSymbol);
+                setPendingEnableYieldItem(item);
                 openEnableNetworkModal();
 
                 return;

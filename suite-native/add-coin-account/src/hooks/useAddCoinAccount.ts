@@ -36,10 +36,15 @@ import {
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
-import { navigateByAccountState } from '@suite-native/module-earn';
+import {
+    navigateByAccountState,
+    navigateByYieldAccountState,
+    useStablecoinYieldFirmwareUpdateAlert,
+} from '@suite-native/module-earn';
 import {
     type AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
+    type AddCoinEarnFlowParams,
     type AddCoinFlowType,
     AppTabsRoutes,
     ReceiveStackRoutes,
@@ -117,6 +122,8 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         showGeneralErrorAlert,
         showPassphraseAuthAlert,
     } = useAddCoinAccountAlerts();
+    const { isFirmwareSupported, showFirmwareUpdateAlert } =
+        useStablecoinYieldFirmwareUpdateAlert();
 
     const [networkSymbolWithTypeToBeAdded, setNetworkSymbolWithTypeToBeAdded] = useState<
         [NetworkSymbol, AddCoinEnabledAccountType] | null
@@ -137,7 +144,15 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         }
     };
 
-    const navigateToEarnAfterDiscovery = (symbol: NetworkSymbol, accountIndex: number) => {
+    const navigateToEarnAfterDiscovery = ({
+        symbol,
+        accountIndex,
+        earnFlowParams,
+    }: {
+        symbol: NetworkSymbol;
+        accountIndex: number;
+        earnFlowParams?: AddCoinEarnFlowParams;
+    }) => {
         const account = deviceAccounts.find(
             acc =>
                 acc.symbol === symbol &&
@@ -162,7 +177,20 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             return;
         }
 
-        navigateByAccountState(account, navigation.navigate);
+        switch (earnFlowParams?.earnType) {
+            case 'staking':
+                navigateByAccountState(account, navigation.navigate);
+                break;
+            case 'yield':
+                navigateByYieldAccountState(
+                    account,
+                    earnFlowParams,
+                    navigation.navigate,
+                    isFirmwareSupported,
+                    showFirmwareUpdateAlert,
+                );
+                break;
+        }
     };
 
     const navigateToSuccessorScreen = ({
@@ -170,15 +198,17 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         symbol,
         accountType,
         accountIndex,
+        earnFlowParams,
     }: {
         flowType: AddCoinFlowType;
         symbol: NetworkSymbol;
         accountType: AccountType;
         accountIndex: number;
+        earnFlowParams?: AddCoinEarnFlowParams;
     }) => {
         switch (flowType) {
             case 'earn':
-                navigateToEarnAfterDiscovery(symbol, accountIndex);
+                navigateToEarnAfterDiscovery({ symbol, accountIndex, earnFlowParams });
                 break;
             case 'home':
                 navigation.replace(RootStackRoutes.ReceiveStack, {
@@ -311,11 +341,13 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         accountType,
         accounts,
         flowType,
+        earnFlowParams,
     }: {
         symbol: NetworkSymbol;
         accountType: AccountType;
         accounts: Account[];
         flowType: AddCoinFlowType;
+        earnFlowParams?: AddCoinEarnFlowParams;
     }) => {
         if (!device) {
             showGeneralErrorAlert();
@@ -361,6 +393,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             symbol,
             accountType,
             accountIndex: nextIndex,
+            earnFlowParams,
         });
     };
 
@@ -382,10 +415,12 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         symbol,
         flowType,
         accountType = NORMAL_ACCOUNT_TYPE,
+        earnFlowParams,
     }: {
         symbol: NetworkSymbol;
         flowType: AddCoinFlowType;
         accountType?: AccountType;
+        earnFlowParams?: AddCoinEarnFlowParams;
     }) => {
         try {
             clearNetworkWithTypeToBeAdded();
@@ -422,6 +457,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
                     symbol,
                     accountType,
                     accountIndex: firstHiddenEmptyAccount.index ?? accounts.length,
+                    earnFlowParams,
                 });
 
                 return;
@@ -429,7 +465,13 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
 
             // For EVM networks: allow adding next account even if previous is empty
             if (isEvmNetwork(symbol)) {
-                await createNewEvmAccount({ symbol, accountType, accounts, flowType });
+                await createNewEvmAccount({
+                    symbol,
+                    accountType,
+                    accounts,
+                    flowType,
+                    earnFlowParams,
+                });
 
                 return;
             }
@@ -446,9 +488,11 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
     const onSelectedNetworkItem = ({
         symbol,
         flowType,
+        earnFlowParams,
     }: {
         symbol: NetworkSymbol;
         flowType: AddCoinFlowType;
+        earnFlowParams?: AddCoinEarnFlowParams;
     }) => {
         if (isDeviceInViewOnlyMode) {
             showViewOnlyAddAccountAlert();
@@ -465,12 +509,14 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
                     params: {
                         networkSymbol: symbol,
                         flowType,
+                        earnFlowParams,
                     },
                 });
             } else {
                 navigation.replace(AddCoinAccountStackRoutes.AddCoinDiscoveryRunning, {
                     networkSymbol: symbol,
                     flowType,
+                    earnFlowParams,
                 });
             }
 
@@ -482,7 +528,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         if (types.length > 1) {
             setDefaultAccountToBeAdded(symbol);
         } else {
-            addCoinAccount({ symbol, flowType });
+            addCoinAccount({ symbol, flowType, earnFlowParams });
         }
     };
 
