@@ -9,25 +9,12 @@ export const pushTransaction = async (
     isTestnet: boolean,
 ) => {
     const api = await connect();
-    const { parseTransactionFromHex } = await stellar();
-    const parsedTx = parseTransactionFromHex(payload.hex, isTestnet);
-    try {
-        const resp = await api.submitTransaction(parsedTx, { skipMemoRequiredCheck: true });
+    const { createStellarDataSource, parseTransactionFromHex } = await stellar();
 
-        return {
-            type: RESPONSES.PUSH_TRANSACTION,
-            payload: resp.hash,
-        } as const;
-    } catch (e) {
-        const txResultCode: string =
-            e?.response?.data?.extras?.result_codes?.transaction || 'unknown';
-        const opResultCode: string =
-            e?.response?.data?.extras?.result_codes?.operations?.[0] || 'unknown';
-        throw Object.assign(
-            new Error(
-                `transaction result code: ${txResultCode}, operation result code: ${opResultCode}`,
-            ),
-            { cause: e },
-        );
-    }
+    const transaction = parseTransactionFromHex(payload.hex, isTestnet);
+
+    return {
+        type: RESPONSES.PUSH_TRANSACTION,
+        payload: await createStellarDataSource(api).submitTransaction(transaction),
+    } as const;
 };
