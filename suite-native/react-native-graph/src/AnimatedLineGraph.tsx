@@ -144,15 +144,15 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     }, []);
 
     const straightLine = useMemo(() => {
-        const path = Skia.Path.Make();
-        path.moveTo(0, height / 2);
+        const pathBuilder = Skia.PathBuilder.Make();
+        pathBuilder.moveTo(0, height / 2);
         for (let i = 0; i < width - 1; i += 2) {
             const x = i;
             const y = height / 2;
-            path.cubicTo(x, y, x, y, x, y);
+            pathBuilder.cubicTo(x, y, x, y, x, y);
         }
 
-        return path;
+        return pathBuilder.build();
     }, [height, width]);
 
     const paths = useSharedValue<{ from?: SkPath; to?: SkPath }>({});
@@ -452,13 +452,10 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     }, [indicatorPulsating]);
 
     const dashedLine = useDerivedValue(() => {
-        const line = Skia.Path.Make();
         const y = path.value?.getPoint(0).y ?? height / 2;
-        line.moveTo(0, y);
-        line.lineTo(width, y);
-        line.dash(2, 5, 0);
+        const line = Skia.Path.Line(Skia.Point(0, y), Skia.Point(width, y));
 
-        return line;
+        return Skia.Path.Dash(line, 2, 5, 0)!;
     });
 
     const axisLabelContainerStyle = {

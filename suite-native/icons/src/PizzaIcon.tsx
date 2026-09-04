@@ -69,14 +69,12 @@ export const PizzaIcon = ({
 
         const oval = rect(cx - radius, cy - radius, cx + radius, cy + radius);
 
-        const path = Skia.Path.Make();
-
-        path.moveTo(cx, cy)
+        return Skia.PathBuilder.Make()
+            .moveTo(cx, cy)
             .lineTo(startX, startY)
             .arcToOval(oval, startAnglePosition, sweepAngle, false)
-            .close();
-
-        return path;
+            .close()
+            .build();
     });
 
     return (
