@@ -117,6 +117,14 @@ describe('CryptoAmountFormatter', () => {
             ).toBe('0.000003');
         });
 
+        it('renders the amount alone when the symbol is empty (token without metadata)', () => {
+            expect(
+                CryptoAmountFormatter.format('300', {
+                    symbol: '' as TokenSymbol,
+                }),
+            ).toBe('300');
+        });
+
         it.each([
             ['0.3', '0.3 BTC'],
             ['0.3000', '0.3 BTC'],
