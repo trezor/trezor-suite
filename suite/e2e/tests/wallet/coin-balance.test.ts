@@ -1,3 +1,6 @@
+import { localizeNumber } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
+
 import { getBigNumberFromBalance } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -37,22 +40,22 @@ test.describe('Coin balance', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Balance is increased after sending another BTC', async () => {
-                const { originalBalance, hasEllipsis } = await getBigNumberFromBalance(
+                const { originalBalance } = await getBigNumberFromBalance(
                     firstAccountBalanceLocator,
                 );
 
-                const rawIncreasedBalance = originalBalance.plus(1).toString();
-                let expectedIncreasedBalance: string;
+                const increasedBalance = originalBalance.plus(1);
 
-                // adding 1 can overflow the balance length of 10 chars
-                if (rawIncreasedBalance.length > 10) {
-                    expectedIncreasedBalance = rawIncreasedBalance.slice(0, 10) + '…';
-                    // keep ellipsis if was already present
-                } else if (hasEllipsis) {
-                    expectedIncreasedBalance = rawIncreasedBalance + '…';
-                } else {
-                    expectedIncreasedBalance = rawIncreasedBalance;
-                }
+                // The compact format abbreviates from a million upwards (`1.00M`), which this
+                // expectation does not model.
+                expect(increasedBalance.abs().isLessThan(1_000_000)).toBe(true);
+
+                const expectedIncreasedBalance = localizeNumber(
+                    increasedBalance.decimalPlaces(2, BigNumber.ROUND_DOWN),
+                    'en-US',
+                    2,
+                    2,
+                );
 
                 await trezorUserEnv.sendToAddressAndMineBlock({ address, btc_amount: 1 });
                 await expect(firstAccountBalanceLocator).toHaveText(expectedIncreasedBalance);

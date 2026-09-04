@@ -135,7 +135,8 @@ export const getBigNumberFromBalance = async (locator: Locator) => {
         originalBalanceText = originalBalanceText.slice(0, -1);
     }
 
-    const originalBalance = BigNumber(originalBalanceText);
+    // Grouped past a thousand (`1,000.99`), which BigNumber reads as NaN.
+    const originalBalance = BigNumber(originalBalanceText.replace(/,/g, ''));
 
     return { originalBalance, hasEllipsis };
 };
@@ -212,8 +213,16 @@ export const sanitizeAndStringifyLogFields = (fields: Record<string, unknown>) =
         2,
     );
 
-export const toADA = (lovelace: number, options?: { maxDecimals?: number }) =>
-    `${localizeNumber(lovelace / 1000000, 'en-US', 0, options?.maxDecimals ?? 6)} ADA`;
+export const toADA = (lovelace: number, options?: { maxDecimals?: number }) => {
+    const maxDecimals = options?.maxDecimals ?? 6;
+    // A fee is rounded up, never truncated, so it is not understated. `localizeNumber`
+    // truncates, so round first.
+    const ada = BigNumber(lovelace)
+        .div(1_000_000)
+        .decimalPlaces(maxDecimals, BigNumber.ROUND_HALF_UP);
+
+    return `${localizeNumber(ada, 'en-US', 0, maxDecimals)} ADA`;
+};
 
 export const replaceTemplatesInTranslation = (
     template: string,

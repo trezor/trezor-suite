@@ -19,7 +19,7 @@ export const CoinBalance = ({
     <FormattedCryptoAmount
         value={value}
         symbol={symbol}
-        isBalance
+        isCompact
         showApproximation={showApproximation}
         data-testid={`${dataTestId}/coin-balance/value-${symbol}`}
     />
