@@ -10,7 +10,7 @@ import {
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
 } from '@suite-common/trading';
-import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 
@@ -27,14 +27,14 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const btcSymbol = asNetworkSymbol('btc');
 const ACCOUNT = mockWalletAccount({ symbol: btcSymbol, formattedBalance: '2' });
 
 const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
     name: 'Bitcoin',
-    coingeckoId: 'bitcoin',
+    coingeckoId: 'bitcoin' as CryptoId,
     contractAddress: null,
     symbol: btcSymbol,
     displaySymbol: 'BTC',

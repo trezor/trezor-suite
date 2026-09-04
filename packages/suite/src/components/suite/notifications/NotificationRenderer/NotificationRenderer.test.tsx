@@ -4,7 +4,7 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { type FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { mockFindNetworkSymbolForProtocol } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, fireEvent, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
@@ -24,9 +24,9 @@ type WrapNotification = Extract<LocalizedNotificationEntry, { type: 'tx-wrap' | 
 const ethSymbol = asNetworkSymbol('eth');
 
 const mockReport = jest.fn();
-const services: DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep = {
+const services: DesktopAnalyticsDep & { networks: FindNetworkSymbolForProtocolDep } = {
     analytics: mockDesktopAnalytics(mockReport),
-    findNetworkSymbolForProtocol: mockFindNetworkSymbolForProtocol(),
+    networks: { findNetworkSymbolForProtocol: mockFindNetworkSymbolForProtocol() },
 };
 
 const MessageView = ({ message, messageValues }: NotificationViewProps) => (

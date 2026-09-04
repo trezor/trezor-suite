@@ -1,5 +1,4 @@
-import type { GetNamedAddressSupportDep, NamedAddressSupport } from '@suite-common/address';
-import type { NetworkSymbol } from '@suite-common/networks';
+import type { GetNamedAddressSupportDep, NamedAddressSupport, NetworkSymbol } from '@suite-common/networks';
 import { commonQueryKeys } from '@suite-common/react-query';
 
 const STALE_TIME_MS = 10 * 60 * 1000;

@@ -55,6 +55,7 @@ export { SettingsSection } from './components/Settings/SettingsSection';
 export { TextColumn } from './components/Settings/TextColumn';
 export { SidebarBanner } from './components/SidebarBanner/SidebarBanner';
 export { StepCard } from './components/StepCard/StepCard';
+export { NativeTokenIcon } from './components/TokenIcon/NativeTokenIcon';
 export { TokenIcon } from './components/TokenIcon/TokenIcon';
 export {
     allowedTokenIconSizes,

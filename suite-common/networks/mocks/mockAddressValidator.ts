@@ -1,4 +1,4 @@
-import { type AddressValidator } from '../src';
+import type { AddressValidator } from '../src/createAddressValidator';
 
 export const mockAddressValidator = (
     overrides: Partial<AddressValidator> = {},

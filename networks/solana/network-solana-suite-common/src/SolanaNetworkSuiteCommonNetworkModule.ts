@@ -10,9 +10,12 @@ import { getNetworkConfig } from './networkConfig';
 
 export type SolanaNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<SolanaNetworkSymbol>;
 
+const isTestnet = (symbol: SolanaNetworkSymbol): boolean => getNetworkConfig(symbol).testnet;
+
 export const createSolanaSuiteCommonNetworkModule = (): SolanaNetworkSuiteCommonNetworkModule => ({
     addressValidator: solanaValidator,
     getSupportedNetworks: () => supportedSolanaNetworks,
     isSupportedNetwork: isSupportedSolanaNetwork,
+    isTestnet,
     getNetworkConfig,
 });

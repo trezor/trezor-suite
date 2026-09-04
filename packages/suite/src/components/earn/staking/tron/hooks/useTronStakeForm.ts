@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectAddressValidatorDep } from '@suite-common/networks';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';

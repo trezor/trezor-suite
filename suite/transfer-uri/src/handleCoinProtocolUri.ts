@@ -20,7 +20,7 @@ export type CoinProtocol = {
 type SaveCoinProtocol = (coinProtocol: CoinProtocol) => UnknownAction;
 
 export type HandleCoinProtocolUriThunkDeps = WithServices<
-    FindNetworkSymbolForProtocolDep & DesktopAnalyticsDep
+    { networks: FindNetworkSymbolForProtocolDep } & DesktopAnalyticsDep
 >;
 
 /**
@@ -40,7 +40,7 @@ export const handleCoinProtocolUriThunk =
                 payload: { scheme, isAmountPresent: amountPresent },
             });
 
-        const result = parseTransferUri(uri, extra.services.findNetworkSymbolForProtocol);
+        const result = parseTransferUri(uri, extra.services.networks.findNetworkSymbolForProtocol);
 
         if (!result.success) {
             if (result.error.type === 'UNKNOWN_SCHEME') reportScheme(result.error.scheme, false);

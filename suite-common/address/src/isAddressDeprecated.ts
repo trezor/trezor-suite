@@ -1,6 +1,5 @@
+import { type AddressValidator } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-
-import type { AddressValidator } from './AddressValidator';
 
 type IsAddressDeprecatedParams = {
     addressValidator: AddressValidator;

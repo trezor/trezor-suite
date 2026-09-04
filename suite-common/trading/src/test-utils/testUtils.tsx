@@ -4,10 +4,6 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import {
-    createNetworkModuleRepository,
-    createNetworksCompositionRoot,
-} from '@suite-common/networks';
-import {
     type RenderHookOptions,
     createTestStore,
     renderHookWithStoreProvider,
@@ -47,10 +43,8 @@ export type TradingTestStateWithWalletSettings = {
 
 type RenderHookWithTradingStoreOptions<Props> = RenderHookOptions<Props> & {
     preloadedState?: Partial<TradingTestStateWithWalletSettings> | Partial<TradingTestState>;
+    services?: object;
 };
-
-const networkModules = createNetworksCompositionRoot();
-const networkModuleRepository = createNetworkModuleRepository({ networkModules });
 
 /**
  * Creates a trading test state with proper structure.
@@ -154,6 +148,7 @@ export const createSellInfoState = (providerInfos: Record<string, any> = {}): an
  * @param options - Rendering options
  * @param options.preloadedState - Initial Redux state for the store
  * @param options.initialProps - Initial props to pass to the hook
+ * @param options.services - Services required by the tested hook
  * @returns Hook result with additional `store` property
  *
  * @example
@@ -192,7 +187,12 @@ export const createSellInfoState = (providerInfos: Record<string, any> = {}): an
  */
 export const renderHookWithTradingStore = <Result, Props = unknown>(
     callback: (props: Props) => Result,
-    { preloadedState, wrapper: Wrapper, ...options }: RenderHookWithTradingStoreOptions<Props> = {},
+    {
+        preloadedState,
+        services = {},
+        wrapper: Wrapper,
+        ...options
+    }: RenderHookWithTradingStoreOptions<Props> = {},
 ) => {
     const store = createTestStore({
         extra: undefined,
@@ -213,7 +213,7 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
     });
 
     const TradingServicesProvider = ({ children }: PropsWithChildren) => (
-        <ServicesProvider services={{ networkModuleRepository }}>
+        <ServicesProvider services={services}>
             {Wrapper ? <Wrapper>{children}</Wrapper> : children}
         </ServicesProvider>
     );

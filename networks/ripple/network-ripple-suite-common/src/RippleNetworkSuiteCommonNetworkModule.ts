@@ -10,9 +10,12 @@ import { getNetworkConfig } from './networkConfig';
 
 export type RippleNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<RippleNetworkSymbol>;
 
+const isTestnet = (symbol: RippleNetworkSymbol): boolean => getNetworkConfig(symbol).testnet;
+
 export const createRippleSuiteCommonNetworkModule = (): RippleNetworkSuiteCommonNetworkModule => ({
     addressValidator: rippleValidator,
     getSupportedNetworks: () => supportedRippleNetworks,
     isSupportedNetwork: isSupportedRippleNetwork,
+    isTestnet,
     getNetworkConfig,
 });

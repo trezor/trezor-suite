@@ -1,6 +1,7 @@
 import { type Coins, type CryptoId } from 'invity-api';
 
-import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { type GetSupportedNetworksDep, type IsTestnetDep } from '@suite-common/networks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { useTradingAssets } from './useTradingAssets';
 import coins from '../__fixtures__/coins.json';
@@ -8,10 +9,16 @@ import { createTradingTestState, renderHookWithTradingStore } from '../test-util
 
 const AUSDC_CONTRACT = '0x98c23e9d8f34fefb1b7bd6a91b7ff122f4e16f5c';
 const UNKNOWN_TOKEN_CONTRACT = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
+const ethSymbol = asNetworkSymbol('eth');
+
+const networks: GetSupportedNetworksDep & IsTestnetDep = {
+    getSupportedNetworks: () => [],
+    isTestnet: () => false,
+};
 
 const renderHook = (preloadedCoins: Coins | null = coins as Coins) =>
     renderHookWithTradingStore(() => useTradingAssets(), {
+        services: { networks },
         preloadedState: createTradingTestState({
             info: {
                 coins: preloadedCoins ?? undefined,

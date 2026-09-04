@@ -11,7 +11,7 @@ import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import styled from 'styled-components';
 
 import { Select } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
+import { NativeTokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 import { arrayPartition } from '@trezor/utils';
 
@@ -50,7 +50,7 @@ const classes = {
 };
 
 const MenuCategory = styled.div`
-    padding: 1rem 0 0.5rem 0;
+    padding: 1rem 0 0.5rem;
     font-weight: 600;
     text-transform: uppercase;
     ${typography['body-xs']}
@@ -180,7 +180,7 @@ export function Menu({
                     formatOptionLabel={option => (
                         <Option>
                             {coinSymbols[option.value] && (
-                                <TokenIcon size={20} symbol={coinSymbols[option.value]} />
+                                <NativeTokenIcon size={20} symbol={coinSymbols[option.value]} />
                             )}
                             <Label>{option.label}</Label>
                         </Option>

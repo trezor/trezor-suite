@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { selectGetSupportedNetworksDep } from '@suite-common/networks';
 import { HStack } from '@suite-native/atoms';
 import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { useWatch } from '@suite-native/forms';
@@ -33,9 +33,9 @@ export const BuyTradeableAssetPicker = () => {
         (asset: TradeableAsset) => form.setValue('asset', asset),
         [form],
     );
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+    const { getSupportedNetworks } = useServices(selectGetSupportedNetworksDep);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
+    const supportedNetworks = getSupportedNetworks();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
         selectBuyTradeableAssets(state, supportedNetworks),
     );

@@ -1,5 +1,9 @@
-import type { GetNamedAddressSupport, SymbolNamedAddressResolver } from '@suite-common/address';
-import type { NetworkSymbol } from '@suite-common/networks';
+import type {
+    GetNamedAddressSupport,
+    NetworkSymbol,
+    SymbolNamedAddressResolver,
+} from '@suite-common/networks';
+import { mockGetNamedAddressSupport } from '@suite-common/networks/mocks';
 import { QueryClient } from '@suite-common/react-query';
 
 import { getResolveNamedAddressQueryOptions } from './namedAddressQuery';
@@ -17,15 +21,8 @@ const namedAddressResolver: SymbolNamedAddressResolver = {
     reverseResolveAddress: (...args) => mockReverseResolveAddress(...args),
 };
 
-const getNamedAddressSupport: GetNamedAddressSupport = symbol => {
-    const { isNameLike } = namedAddressResolver;
-
-    if (symbol !== 'eth' && symbol !== 'tsep') {
-        return { isSupported: false, isNameLike };
-    }
-
-    return { isSupported: true, isNameLike, resolver: namedAddressResolver };
-};
+const getNamedAddressSupport: GetNamedAddressSupport =
+    mockGetNamedAddressSupport(namedAddressResolver);
 
 const queryOptions = (value: string, symbol: NetworkSymbol | null) =>
     getResolveNamedAddressQueryOptions({ getNamedAddressSupport, value, symbol });

@@ -1,6 +1,6 @@
+import { type AddressValidator } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import type { AddressValidator } from './AddressValidator';
 import { hasBitcoinCashAddressPrefix } from './hasBitcoinCashAddressPrefix';
 import { isBech32AddressUppercase } from './isBech32AddressUppercase';
 import { isBitcoinCashAddressUppercase } from './isBitcoinCashAddressUppercase';

@@ -15,7 +15,7 @@ export type FindNetworkSymbolForProtocolDep = {
 export const selectFindNetworkSymbolForProtocolDep = (
     services: any,
 ): FindNetworkSymbolForProtocolDep => ({
-    findNetworkSymbolForProtocol: services.findNetworkSymbolForProtocol,
+    findNetworkSymbolForProtocol: services.networks.findNetworkSymbolForProtocol,
 });
 
 export const createFindNetworkSymbolForProtocol =

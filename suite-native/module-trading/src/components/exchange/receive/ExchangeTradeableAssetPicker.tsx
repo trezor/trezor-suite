@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { selectGetSupportedNetworksDep } from '@suite-common/networks';
 import { HStack } from '@suite-native/atoms';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { useWatch } from '@suite-native/forms';
@@ -32,8 +32,8 @@ const RECEIVE_ASSET_COLLISION = {
 
 export const ExchangeTradeableAssetPicker = () => {
     const form = useExchangeFormContext();
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
-    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
+    const { getSupportedNetworks } = useServices(selectGetSupportedNetworksDep);
+    const supportedNetworks = getSupportedNetworks();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
         selectExchangeBuyTradeableAssets(state, supportedNetworks),
     );

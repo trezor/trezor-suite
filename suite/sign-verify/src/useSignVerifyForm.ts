@@ -3,8 +3,8 @@ import { useController, useForm, useWatch } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { type AddressValidator, selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { type AddressValidator, selectAddressValidatorDep } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';

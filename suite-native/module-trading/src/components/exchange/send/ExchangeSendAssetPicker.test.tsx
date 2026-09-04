@@ -3,8 +3,8 @@ import type { CryptoId } from 'invity-api';
 
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import type { GetSupportedNetworksDep } from '@suite-common/networks';
+import { mockGetSupportedNetworks } from '@suite-common/networks/mocks';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
@@ -48,9 +48,9 @@ jest.mock('@suite-native/trading-state', () => ({
 const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
     selectAccountsWithTokensToSellSectionListByTradingType as unknown as jest.Mock;
 const reportMock = jest.fn();
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: GetSupportedNetworksDep } = {
     analytics: mockNativeAnalytics(reportMock),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { getSupportedNetworks: mockGetSupportedNetworks() },
 };
 
 const mockNavigate = jest.fn();

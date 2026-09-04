@@ -3,9 +3,9 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectGetNamedAddressSupportDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
+import { selectGetNamedAddressSupportDep } from '@suite-common/networks';
 import { selectAccounts, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,

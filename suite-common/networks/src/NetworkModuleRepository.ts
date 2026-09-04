@@ -9,6 +9,7 @@ export type NetworkModuleRepository = {
     get: <T extends NetworkSymbol>(symbol: T) => SuiteCommonNetworkModule<T>;
     getSupportedNetworks: () => readonly NetworkSymbol[];
     isSupportedNetwork: (symbol: string) => symbol is NetworkSymbol;
+    isTestnet: (symbol: NetworkSymbol) => boolean;
 };
 
 export type NetworkModuleRepositoryDep = {
@@ -44,9 +45,10 @@ export const createNetworkModuleRepository = (
         getSupportedNetworks: (): readonly NetworkSymbol[] => supportedNetworks,
         isSupportedNetwork: (symbol: string): symbol is NetworkSymbol =>
             isArrayMember(symbol, supportedNetworks),
+        isTestnet: (symbol: NetworkSymbol): boolean => {
+            const networkModule = networkModuleByNetworkSymbol.get(symbol);
+
+            return networkModule?.isTestnet(symbol) ?? false;
+        },
     };
 };
-
-export const selectNetworkModuleRepositoryDep = (services: any): NetworkModuleRepositoryDep => ({
-    networkModuleRepository: services.networkModuleRepository,
-});

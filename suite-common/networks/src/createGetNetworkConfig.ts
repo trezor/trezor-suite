@@ -12,7 +12,7 @@ export type GetNetworkConfigDep = {
 };
 
 export const selectGetNetworkConfigDep = (services: any): GetNetworkConfigDep => ({
-    getNetworkConfig: services.getNetworkConfig,
+    getNetworkConfig: services.networks.getNetworkConfig,
 });
 
 export const createGetNetworkConfig =

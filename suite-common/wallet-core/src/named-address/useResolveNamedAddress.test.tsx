@@ -3,9 +3,13 @@
  */
 import { type ReactNode } from 'react';
 
-import type { GetNamedAddressSupport, SymbolNamedAddressResolver } from '@suite-common/address';
 import { ServicesProvider } from '@suite-common/dependency-injection';
-import type { NetworkSymbol } from '@suite-common/networks';
+import type {
+    GetNamedAddressSupportDep,
+    NetworkSymbol,
+    SymbolNamedAddressResolver,
+} from '@suite-common/networks';
+import { mockGetNamedAddressSupport } from '@suite-common/networks/mocks';
 import { renderHookWithQueryClient, waitFor } from '@suite-common/test-utils';
 
 import { useResolveNamedAddress } from './useResolveNamedAddress';
@@ -28,20 +32,16 @@ const namedAddressResolver: SymbolNamedAddressResolver = {
     reverseResolveAddress: (...args) => mockReverseResolveAddress(...args),
 };
 
-const getNamedAddressSupport: GetNamedAddressSupport = symbol => {
-    const { isNameLike } = namedAddressResolver;
-
-    if (symbol !== 'eth' && symbol !== 'tsep') {
-        return { isSupported: false, isNameLike };
-    }
-
-    return { isSupported: true, isNameLike, resolver: namedAddressResolver };
+const services: { networks: GetNamedAddressSupportDep } = {
+    networks: {
+        getNamedAddressSupport: mockGetNamedAddressSupport(namedAddressResolver),
+    },
 };
 
 const renderResolveHook = (value: string, symbol: NetworkSymbol | null) =>
     renderHookWithQueryClient(() => useResolveNamedAddress(value, symbol), {
         wrapper: ({ children }: { children: ReactNode }) => (
-            <ServicesProvider services={{ getNamedAddressSupport }}>{children}</ServicesProvider>
+            <ServicesProvider services={services}>{children}</ServicesProvider>
         ),
     });
 

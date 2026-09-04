@@ -10,10 +10,13 @@ import { getNetworkConfig } from './networkConfig';
 
 export type CardanoNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<CardanoNetworkSymbol>;
 
+const isTestnet = (symbol: CardanoNetworkSymbol): boolean => getNetworkConfig(symbol).testnet;
+
 export const createCardanoSuiteCommonNetworkModule =
     (): CardanoNetworkSuiteCommonNetworkModule => ({
         addressValidator: adaValidator,
         getSupportedNetworks: () => supportedCardanoNetworks,
         isSupportedNetwork: isSupportedCardanoNetwork,
+        isTestnet,
         getNetworkConfig,
     });

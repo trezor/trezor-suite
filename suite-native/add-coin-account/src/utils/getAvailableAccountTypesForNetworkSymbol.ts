@@ -1,7 +1,6 @@
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
-    type NetworkConfig,
     type NetworkSymbol,
     getNetwork,
 } from '@suite-common/wallet-config';
@@ -15,7 +14,7 @@ export const getAvailableAccountTypesForNetworkSymbol = ({
 }: {
     symbol: NetworkSymbol;
 }): [AccountType, ...AccountType[]] => {
-    const networkConfig = getNetwork(symbol) as NetworkConfig | undefined;
+    const networkConfig = getNetwork(symbol);
     if (!networkConfig) {
         return [NORMAL_ACCOUNT_TYPE];
     }
