@@ -83,19 +83,21 @@ export const sendDexTransactionThunk = createThunk<
             receiveAccountKey,
         });
 
-        let serializedTx: string;
-        try {
-            serializedTx = normalizeDexTransactionData({
-                data: selectedQuote.dexTx.data,
-                networkType: account.networkType,
-            });
-        } catch (error) {
-            console.error(error);
+        let serializedTx: string | undefined;
+        if (selectedQuote.dexTx.data) {
+            try {
+                serializedTx = normalizeDexTransactionData({
+                    data: selectedQuote.dexTx.data,
+                    networkType: account.networkType,
+                });
+            } catch (error) {
+                console.error(error);
 
-            return rejectWithValue({
-                type: 'error',
-                error: { id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA' },
-            });
+                return rejectWithValue({
+                    type: 'error',
+                    error: { id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA' },
+                });
+            }
         }
 
         const recomposeInputs = buildRecomposeInputsFromTrade({

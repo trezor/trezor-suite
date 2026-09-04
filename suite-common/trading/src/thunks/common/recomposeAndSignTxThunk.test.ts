@@ -55,6 +55,7 @@ const tradingReducer = prepareTradingReducer({
 });
 const trxSymbol = asNetworkSymbol('trx');
 const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
 const btcFeeData = {
     blockHeight: 890366,
     blockTime: 10,
@@ -86,6 +87,10 @@ const fees: FeesState = {
         data: btcFeeData,
     },
     [trxSymbol]: {
+        status: 'loaded',
+        data: btcFeeData,
+    },
+    [solSymbol]: {
         status: 'loaded',
         data: btcFeeData,
     },
@@ -588,6 +593,67 @@ describe('recomposeAndSignTxThunk', () => {
             },
         });
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('should keep token in form output for Solana when transactionData is provided', async () => {
+        const { store, tradingFormState } = getMocks({
+            composedTransactionInfo: {
+                ...mockComposedTransactionInfo,
+                composed: {
+                    ...mockComposedTransactionInfo.composed,
+                    token: {
+                        contract: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                    } as TokenInfo,
+                },
+            },
+        });
+
+        const solanaAccount = {
+            ...accountBtc,
+            symbol: solSymbol,
+            networkType: 'solana',
+            descriptor: 'solanaAccountDescriptor',
+        } as Account;
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: {
+                txid: 'txid',
+            },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            outputs: [
+                                {
+                                    amount: '10000000',
+                                },
+                            ],
+                        },
+                    }),
+            ),
+        );
+
+        await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account: solanaAccount,
+                address: 'recipient',
+                amount: '1.25',
+                transactionData: 'abcd',
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(
+            (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mock.calls[0][0]
+                .formState.outputs[0].token,
+        ).toBe('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
     });
 
     it('should reject as cancelled when the signing flow returns no result', async () => {

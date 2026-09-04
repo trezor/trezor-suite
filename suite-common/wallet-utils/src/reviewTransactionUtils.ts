@@ -89,6 +89,14 @@ const getIsUpdatedStellarSendFlow = (device: TrezorDevice, network: Account['net
     return versionUtils.isNewer(firmwareVersion, '2.9.0');
 };
 
+const isValidTxData = (transactionData?: string): transactionData is string => {
+    if (typeof transactionData !== 'string') return false;
+
+    const normalizedTransactionData = transactionData.trim().toLowerCase();
+
+    return normalizedTransactionData !== '' && normalizedTransactionData !== '0x';
+};
+
 const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
     // Transforms cardano's tokenBundle into outputs, 1 output per one token
     // since suite supports only 1 token per output it will return just one item
@@ -392,7 +400,7 @@ const constructOldFlow = ({
     if (networkType === 'tron' && precomposedForm.destinationTag) {
         outputs.push({ type: 'note', value: precomposedForm.destinationTag });
     } else if (
-        precomposedForm.transactionData &&
+        isValidTxData(precomposedForm.transactionData) &&
         (!precomposedTx.token || isYieldOperation) &&
         !isClearSignedTradingSwap
     ) {
@@ -589,10 +597,18 @@ const constructNewFlow = ({
     if (isTron && precomposedForm.destinationTag) {
         outputs.push({ type: 'note', value: precomposedForm.destinationTag });
     } else if (
-        ((precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
-            (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
-            (precomposedForm.transactionData && isYieldOp && !isUpdatedEthereumSendFlow) ||
-            (precomposedForm.transactionData && isClaimOp && !isEvmClaimClearSign)) &&
+        ((isValidTxData(precomposedForm.transactionData) &&
+            !precomposedTx.token &&
+            !isEvmApproval) ||
+            (isValidTxData(precomposedForm.transactionData) &&
+                isEvmApproval &&
+                !isApprovalFlowSupported) ||
+            (isValidTxData(precomposedForm.transactionData) &&
+                isYieldOp &&
+                !isUpdatedEthereumSendFlow) ||
+            (isValidTxData(precomposedForm.transactionData) &&
+                isClaimOp &&
+                !isEvmClaimClearSign)) &&
         !isClearSignedTradingSwap
     ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
@@ -713,9 +729,11 @@ const constructNewFlow = ({
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
                 } else if (
-                    !isTron &&
-                    ((precomposedForm.transactionData && !isEvmApproval) ||
-                        (isEvmApproval && !isApprovalFlowSupported))
+                    networkType === 'ethereum' &&
+                    ((isValidTxData(precomposedForm.transactionData) && !isEvmApproval) ||
+                        (isValidTxData(precomposedForm.transactionData) &&
+                            isEvmApproval &&
+                            !isApprovalFlowSupported))
                 ) {
                     // EVM contract call
                     outputs.push({ type: 'contract', value: o.address });

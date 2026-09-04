@@ -1,7 +1,7 @@
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
+import { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import { Assert } from '@trezor/schema-utils';
 
@@ -50,11 +50,49 @@ export default class SolanaComposeTransaction extends AbstractMethod<
             this.params.identity,
         );
 
-        // if the serializedTx is set, there is nothing to compose
+        // If serializedTx is provided, preserve token metadata for the signing step so
+        // firmware can resolve known SPL tokens instead of displaying a raw address.
         if (this.params.serializedTx) {
+            const { token, toAddress } = this.params;
+            let newAccountProgramName;
+            let tokenAccountInfo;
+
+            if (token && toAddress) {
+                newAccountProgramName = token.program;
+                const fallbackTokenAccountInfo = {
+                    baseAddress: toAddress,
+                    tokenProgram: tokenProgramsInfo[token.program].publicKey,
+                    tokenMint: token.mint,
+                    tokenAccount: toAddress,
+                };
+
+                try {
+                    const { getDecompiledMessage } = await solana();
+                    const { instructions } = getDecompiledMessage(this.params.serializedTx, true);
+                    const tokenTransferInstruction = instructions.find(
+                        instruction => instruction.type === 'transfer-checked',
+                    );
+
+                    tokenAccountInfo = tokenTransferInstruction
+                        ? {
+                              baseAddress: toAddress,
+                              tokenProgram: tokenProgramsInfo[token.program].publicKey,
+                              tokenMint: tokenTransferInstruction.parsed.accounts.mint.address,
+                              tokenAccount:
+                                  tokenTransferInstruction.parsed.accounts.destination.address,
+                          }
+                        : fallbackTokenAccountInfo;
+                } catch {
+                    tokenAccountInfo = fallbackTokenAccountInfo;
+                }
+            }
+
             return {
                 serializedTx: this.params.serializedTx,
-                additionalInfo: {},
+                additionalInfo: {
+                    newAccountProgramName,
+                    tokenAccountInfo,
+                },
             };
         }
 
