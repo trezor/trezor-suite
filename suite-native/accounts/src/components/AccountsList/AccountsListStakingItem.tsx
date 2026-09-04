@@ -11,6 +11,7 @@ type AccountsListStakingItemProps = {
     hasBackground?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
+    badges?: React.ReactNode;
 };
 
 export const AccountsListStakingItem = (props: AccountsListStakingItemProps) => {

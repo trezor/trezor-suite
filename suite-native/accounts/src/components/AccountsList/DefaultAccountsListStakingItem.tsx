@@ -16,12 +16,14 @@ type DefaultAccountsListStakingItemProps = {
     hasBackground?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
+    badges?: React.ReactNode;
 };
 
 export const DefaultAccountsListStakingItem = ({
     account,
     stakingCryptoBalance,
     isLast,
+    badges,
     ...props
 }: DefaultAccountsListStakingItemProps) => (
     <AccountsListItemBase
@@ -45,5 +47,6 @@ export const DefaultAccountsListStakingItem = ({
                 adjustsFontSizeToFit
             />
         }
+        badges={badges}
     />
 );
