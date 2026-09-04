@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { View } from 'react-native';
+import { View, type ViewProps } from 'react-native';
 
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -15,6 +15,7 @@ type BottomSheetHeaderProps = {
     isCloseDisplayed: boolean;
     onCloseSheet: () => void;
     scrollDivider?: ReactNode;
+    pointerEvents?: ViewProps['pointerEvents'];
 };
 
 const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
@@ -39,6 +40,7 @@ export const BottomSheetHeader = ({
     isCloseDisplayed,
     onCloseSheet,
     scrollDivider,
+    pointerEvents,
 }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
@@ -46,7 +48,7 @@ export const BottomSheetHeader = ({
     const isHeaderDisplayed = !!(title || subtitle || isCloseDisplayed);
 
     return (
-        <Box>
+        <Box pointerEvents={pointerEvents}>
             <Box marginTop="sp8" marginBottom="sp24">
                 <BottomSheetGrabber />
             </Box>

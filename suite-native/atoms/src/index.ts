@@ -83,6 +83,7 @@ export * from './CardStepper/CardStepper';
 export * from './Sheet/BottomSheetModal';
 export * from './Sheet/hooks/useBottomSheetBackButtonSubscription';
 export * from './Sheet/hooks/useBottomSheetControls';
+export * from './Sheet/hooks/useBottomSheetInteractionGate';
 export * from './Sheet/hooks/useBottomSheetModal';
 export * from './Sheet/hooks/useBottomSheetModalControls';
 export * from './AnimatedDoubleView/AnimatedDoubleView';
