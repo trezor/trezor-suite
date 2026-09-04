@@ -9,7 +9,6 @@ import type {
     BlockbookFilterRequestParams as FilterRequestParams,
     BlockbookMempoolTransactionNotification as MempoolTransactionNotification,
     MessageTypes,
-    BlockbookPush as Push,
     RpcCallParams,
     BlockbookSend as Send,
 } from '@trezor/blockchain-link-types';
@@ -22,16 +21,11 @@ type GetCurrentFiatRates = MessageTypes.GetCurrentFiatRates;
 type GetFiatRatesForTimestamps = MessageTypes.GetFiatRatesForTimestamps;
 type GetFiatRatesTickersList = MessageTypes.GetFiatRatesTickersList;
 
-/**
- * A push rejected by our deadline reports "send failed" while blockbook may still broadcast the
- * transaction — a retry then pays the recipient twice — so the deadline must outlast blockbook's own
- * budget for the call: up to 4x its 25s rpc_timeout (the relay fall-through on ETH, the synchronous
- * mempool add on disableMempoolSync coins; see its docs/evm-send.md). The keep-alive ping does not
- * cap this: every message resets the 50s ping timer and a live blockbook answers pings while a send
- * is in flight, while a genuinely dead socket is torn down by the unanswered ping regardless of this
- * value.
- */
-const PUSH_TRANSACTION_TIMEOUT = 110 * 1000;
+// A push rejected by our own deadline reports "send failed" while blockbook may still broadcast
+// the transaction, and the retry then pays the recipient twice. Answering definitively costs
+// blockbook up to 4x its 25s rpc_timeout (the relay fall-through on ETH, the synchronous mempool
+// add on disableMempoolSync coins), so our deadline has to outlast that.
+export const PUSH_TRANSACTION_TIMEOUT = 110 * 1000;
 
 interface BlockbookEvents {
     block: BlockNotification;
@@ -72,6 +66,12 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
     }
 
     send: Send = (method, params = {}) => this.sendMessage({ method, params });
+
+    // `send` has no room for a per-request timeout, and hand-writing the response type here would
+    // drop the method-to-response mapping `Send` already carries.
+    private sendWithTimeout(timeout: number): Send {
+        return (method, params = {}) => this.sendMessage({ method, params }, { timeout });
+    }
 
     getServerInfo() {
         return this.send('getInfo');
@@ -129,12 +129,11 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
         return this.send('getTransaction', { txid });
     }
 
-    pushTransaction(hex: string, disableAlternativeRPC?: boolean): Promise<Push> {
-        // Only sendMessage takes a per-request timeout; the send overloads have no room for one.
-        return this.sendMessage(
-            { method: 'sendTransaction', params: { hex, disableAlternativeRPC } },
-            { timeout: PUSH_TRANSACTION_TIMEOUT },
-        );
+    pushTransaction(hex: string, disableAlternativeRPC?: boolean) {
+        return this.sendWithTimeout(PUSH_TRANSACTION_TIMEOUT)('sendTransaction', {
+            hex,
+            disableAlternativeRPC,
+        });
     }
 
     estimateFee(payload: EstimateFeeParams) {

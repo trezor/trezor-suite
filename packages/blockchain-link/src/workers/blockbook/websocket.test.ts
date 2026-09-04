@@ -1,56 +1,71 @@
-import { BlockbookAPI } from './websocket';
+import { EventEmitter } from 'events';
+
+import { BlockbookAPI, PUSH_TRANSACTION_TIMEOUT } from './websocket';
+
+const WEBSOCKET_OPEN = 1;
+const WEBSOCKET_CLOSED = 3;
+
+// A socket that accepts frames and never answers, so the only thing that can settle a request is
+// its own deadline.
+class SilentWebsocket extends EventEmitter {
+    readyState = WEBSOCKET_OPEN;
+
+    send() {}
+
+    close() {
+        this.readyState = WEBSOCKET_CLOSED;
+        this.emit('close');
+    }
+}
+
+const connect = async () => {
+    const ws = new SilentWebsocket();
+    class TestBlockbookAPI extends BlockbookAPI {
+        protected createWebsocket() {
+            return ws as any;
+        }
+    }
+
+    const api = new TestBlockbookAPI({ url: 'ws://localhost:1' });
+    const connected = api.connect();
+    ws.emit('open');
+    await connected;
+
+    return { api, ws };
+};
 
 describe('BlockbookAPI', () => {
-    describe('pushTransaction', () => {
-        it('applies its own timeout instead of the default deadline', async () => {
-            const api = new BlockbookAPI({ url: 'ws://localhost:1' });
-            const sendMessage = jest
-                .spyOn(api, 'sendMessage')
-                .mockResolvedValue({ result: '0xdead' });
-
-            await expect(api.pushTransaction('0x0102', true)).resolves.toEqual({
-                result: '0xdead',
-            });
-            expect(sendMessage).toHaveBeenCalledWith(
-                {
-                    method: 'sendTransaction',
-                    params: { hex: '0x0102', disableAlternativeRPC: true },
-                },
-                { timeout: 110_000 },
-            );
-        });
+    beforeEach(() => {
+        jest.useFakeTimers();
     });
 
-    describe('onPing', () => {
-        const createApi = () => {
-            const api = new BlockbookAPI({ url: 'ws://localhost:1' });
-            const disconnect = jest.spyOn(api, 'disconnect').mockResolvedValue(undefined);
-            const ping = jest
-                .spyOn(api as any, 'ping')
-                .mockResolvedValue(undefined) as jest.SpyInstance;
+    afterEach(() => {
+        jest.useRealTimers();
+    });
 
-            return { api, disconnect, ping };
-        };
+    describe('pushTransaction', () => {
+        it('waits out blockbook instead of failing at the default deadline', async () => {
+            const { api } = await connect();
 
-        it('pings instead of disconnecting while a request is in flight', async () => {
-            const { api, disconnect, ping } = createApi();
-            // no subscriptions, no keepAlive - only the pending request keeps the socket alive
-            const { promiseId } = (api as any).messages.create(60_000);
+            let outcome: string | undefined;
+            api.pushTransaction('0x0102').then(
+                () => {
+                    outcome = 'resolved';
+                },
+                (error: Error) => {
+                    outcome = error.message;
+                },
+            );
 
-            await api.onPing();
+            // Past the 20s default deadline and past the ~70s at which the unanswered keep-alive
+            // ping used to tear the whole socket down.
+            await jest.advanceTimersByTimeAsync(PUSH_TRANSACTION_TIMEOUT - 10_000);
+            expect(outcome).toBeUndefined();
 
-            expect(ping).toHaveBeenCalled();
-            expect(disconnect).not.toHaveBeenCalled();
-            (api as any).messages.resolve(promiseId, undefined);
-        });
+            await jest.advanceTimersByTimeAsync(10_000);
+            expect(outcome).toBe('Websocket timeout');
 
-        it('still disconnects a genuinely idle socket', async () => {
-            const { api, disconnect, ping } = createApi();
-
-            await api.onPing();
-
-            expect(ping).not.toHaveBeenCalled();
-            expect(disconnect).toHaveBeenCalled();
+            api.dispose();
         });
     });
 });

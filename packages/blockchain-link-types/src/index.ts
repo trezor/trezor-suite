@@ -24,7 +24,6 @@ export type {
     FilterRequestParams as BlockbookFilterRequestParams,
     FilterResponse as BlockbookFilterResponse,
     MempoolTransactionNotification as BlockbookMempoolTransactionNotification,
-    Push as BlockbookPush,
     Send as BlockbookSend,
     ServerInfo as BlockbookServerInfo,
     Transaction as BlockbookTransaction,
