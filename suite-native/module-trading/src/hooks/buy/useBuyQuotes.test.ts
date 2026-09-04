@@ -321,4 +321,45 @@ describe('useBuyQuotes', () => {
         });
         expect(store.getState().wallet.trading.buy.quotes).toEqual([]);
     });
+
+    it('should not request quotes when coinInfo is missing for the selected asset', async () => {
+        const store = getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = await renderUseBuyQuotes(store);
+
+        await act(() => {
+            result.current.setValue('asset', usdcAsset);
+            result.current.setValue('fiatCurrency', 'usd');
+            result.current.setValue('fiatValue', '100');
+        });
+
+        expect(dispatchSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
+
+        dispatchSpy.mockClear();
+
+        await act(() => {
+            store.dispatch(
+                tradingActions.saveInfo({
+                    coins: {},
+                    platforms: {},
+                    config: {},
+                }),
+            );
+        });
+
+        // Trigger a re-fetch via amount change while coinInfo is gone
+        await act(() => {
+            result.current.setValue('fiatValue', '200');
+        });
+
+        expect(dispatchSpy).not.toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
+    });
 });

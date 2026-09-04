@@ -203,7 +203,7 @@ class TradeApi {
         });
     }
 
-    getInfo = async (): Promise<InfoResponse> => {
+    getInfo = async (): Promise<InfoResponse | undefined> => {
         try {
             const response = await this.request(this.INFO, {}, 'GET');
             if (response) {
@@ -212,8 +212,6 @@ class TradeApi {
         } catch (error) {
             console.error('[getInfo]', error);
         }
-
-        return { platforms: {}, coins: {}, config: {} };
     };
 
     getExchangeList = async (): Promise<ExchangeListResponse> => {
