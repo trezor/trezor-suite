@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { Translation, useTranslation } from '@suite/intl';
 import { type TradingSellType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
@@ -17,8 +19,10 @@ import {
 } from 'src/views/wallet/trading/common/TradingDetail/utils';
 
 import { TradingSellDetailPaymentFailed } from './TradingSellDetailPaymentFailed';
+import { TradingSellDetailPaymentSuccessful } from './TradingSellDetailPaymentSuccessful';
 import { TradingSellDetailSidebar } from './TradingSellDetailSidebar';
 import {
+    type SellDetailTerminalStep,
     getSellDetailHeaderMessages,
     getSellDetailProgress,
     getSellDetailStatusStep,
@@ -55,47 +59,53 @@ export const TradingSellDetailContent = () => {
     };
 
     const getContent = () => {
-        switch (tradeStatusStep) {
-            case 'error':
-                return (
+        if (tradeStatusStep !== 'pending') {
+            const terminalStates: Record<SellDetailTerminalStep, ReactNode> = {
+                success: (
+                    <TradingSellDetailPaymentSuccessful
+                        trade={trade.data}
+                        account={sendAccount}
+                        provider={provider}
+                    />
+                ),
+                error: (
                     <TradingSellDetailPaymentFailed
                         trade={trade.data}
                         account={sendAccount}
                         provider={provider}
                     />
-                );
-            default:
-                return (
-                    <TradingDetailProgress
-                        {...getSellDetailHeaderMessages(tradeStatus)}
-                        type={translationString('TR_TRADING_SELL').toLowerCase()}
-                    >
-                        <TradingDetailSendingStep
-                            state={getTradingDetailStepState(progress, 'customerAction')}
-                            account={sendAccount}
-                            txId={trade.data.txid}
-                            composedTransaction={composedTransaction}
-                        />
-                        <TradingDetailProcessingStep
-                            state={getTradingDetailStepState(progress, 'providerProcessing')}
-                            tradeType="sell"
-                            trade={trade.data}
-                            provider={provider}
-                        >
-                            <Paragraph
-                                typographyStyle="body-sm"
-                                intent="neutral"
-                                priority="secondary"
-                            >
-                                <Translation
-                                    id="TR_SELL_DETAIL_PROCESSING_TEXT"
-                                    values={{ providerName: getTradingProviderName(provider) }}
-                                />
-                            </Paragraph>
-                        </TradingDetailProcessingStep>
-                    </TradingDetailProgress>
-                );
+                ),
+            };
+
+            return terminalStates[tradeStatusStep];
         }
+
+        return (
+            <TradingDetailProgress
+                {...getSellDetailHeaderMessages(tradeStatus)}
+                type={translationString('TR_TRADING_SELL').toLowerCase()}
+            >
+                <TradingDetailSendingStep
+                    state={getTradingDetailStepState(progress, 'customerAction')}
+                    account={sendAccount}
+                    txId={trade.data.txid}
+                    composedTransaction={composedTransaction}
+                />
+                <TradingDetailProcessingStep
+                    state={getTradingDetailStepState(progress, 'providerProcessing')}
+                    tradeType="sell"
+                    trade={trade.data}
+                    provider={provider}
+                >
+                    <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
+                        <Translation
+                            id="TR_SELL_DETAIL_PROCESSING_TEXT"
+                            values={{ providerName: getTradingProviderName(provider) }}
+                        />
+                    </Paragraph>
+                </TradingDetailProcessingStep>
+            </TradingDetailProgress>
+        );
     };
 
     return (

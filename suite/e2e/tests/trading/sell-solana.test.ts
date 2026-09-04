@@ -141,8 +141,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 });
                 await page.clock.fastForward(tradingMock.watchPeriod);
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                    'TR_TRADING_DETAIL_PROCESSING',
-                    { values: { providerName: provider, type: 'sell' } },
+                    'TR_SELL_DETAIL_SUCCESS_TITLE',
                 );
                 await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
                 await expect(tradingPage.confirmation.cryptoAmount).toHaveText(
