@@ -949,6 +949,18 @@ export const messages = defineMessages({
         defaultMessage: 'Proceed',
         id: 'TR_SELL_GO_TO_TRANSACTION',
     },
+    TR_SELL_DETAIL_SUCCESS_TITLE: {
+        defaultMessage: 'Sell complete',
+        id: 'TR_SELL_DETAIL_SUCCESS_TITLE',
+    },
+    TR_SELL_DETAIL_SUCCESS_TEXT: {
+        defaultMessage: 'Funds are in your account. View your sell in trade history.',
+        id: 'TR_SELL_DETAIL_SUCCESS_TEXT',
+    },
+    TR_SELL_DETAIL_SUCCESS_BUTTON: {
+        defaultMessage: 'Start new sell',
+        id: 'TR_SELL_DETAIL_SUCCESS_BUTTON',
+    },
     TR_SELL_DETAIL_ERROR_TITLE: {
         defaultMessage: 'Transaction failed',
         id: 'TR_SELL_DETAIL_ERROR_TITLE',
