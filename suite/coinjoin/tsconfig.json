@@ -48,6 +48,9 @@
         },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/ipc-proxy" },
+        {
+            "path": "../../networks/network-module/network-module"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {

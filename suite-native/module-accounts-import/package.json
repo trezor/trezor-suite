@@ -44,6 +44,7 @@
         "@suite-native/video-assets": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/utils": "workspace:*",

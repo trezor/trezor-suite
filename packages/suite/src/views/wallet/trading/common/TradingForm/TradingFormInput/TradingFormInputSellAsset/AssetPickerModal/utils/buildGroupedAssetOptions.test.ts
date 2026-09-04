@@ -10,6 +10,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { asNetworkSymbol } from '@trezor/network-module';
 import { BigNumber } from '@trezor/utils';
 
 import { createAccountOption, createTokenOption } from 'src/components/suite/asset-picker/utils';
@@ -19,12 +20,13 @@ import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 import { buildGroupedAssetOptions } from './buildGroupedAssetOptions';
 
 const ETH_CRYPTO_ID = 'ethereum' as CryptoId;
+const ethSymbol = asNetworkSymbol('eth');
 const USDT_CONTRACT = toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7');
 const USDT_CRYPTO_ID = `ethereum--${USDT_CONTRACT}` as CryptoId;
 
 const createEthAccount = (descriptor: string, formattedBalance: string): Account =>
     mockWalletAccount({
-        symbol: 'eth',
+        symbol: ethSymbol,
         descriptor: asAccountDescriptor(descriptor),
         balance: formattedBalance,
         formattedBalance,
@@ -44,19 +46,19 @@ const createToken = (token: Partial<TokensWithRates> = {}): TokensWithRates => (
         lastSuccessfulFetchTimestamp: asTimestamp(1_000_000),
         isLoading: false,
         error: null,
-        ticker: { symbol: 'eth' },
+        ticker: { symbol: ethSymbol },
     },
     ...token,
 });
 
 const ethRates: RatesByKey = {
-    [getFiatRateKey('eth', 'usd')]: {
+    [getFiatRateKey(ethSymbol, 'usd')]: {
         rate: 2_000,
         lastTickerTimestamp: asTimestamp(1_000_000),
         lastSuccessfulFetchTimestamp: asTimestamp(1_000_000),
         isLoading: false,
         error: null,
-        ticker: { symbol: 'eth' },
+        ticker: { symbol: ethSymbol },
     },
 };
 

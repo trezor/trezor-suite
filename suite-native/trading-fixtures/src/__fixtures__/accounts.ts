@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import {
     mockWalletAccount,
@@ -8,7 +9,7 @@ import { type StaticSessionId } from '@trezor/device-utils';
 export const MOCK_ACCOUNT_DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 
 export const btc1NormalAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     accountLabel: 'BTC Account #1',
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'normal',
@@ -68,7 +69,7 @@ export const btc1NormalAccount = mockWalletAccount({
 });
 
 export const btc2legacyAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     accountLabel: 'BTC Account #2',
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
 
@@ -83,7 +84,7 @@ export const btc2legacyAccount = mockWalletAccount({
 });
 
 export const eth1NormalAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     accountLabel: 'ETH Account #1',
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
 
@@ -103,7 +104,7 @@ export const eth1NormalAccount = mockWalletAccount({
 });
 
 export const eth2legacyAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     accountLabel: 'ETH Account #2',
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'legacy',
@@ -112,7 +113,7 @@ export const eth2legacyAccount = mockWalletAccount({
 });
 
 export const eth3legacyAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     accountLabel: 'ETH Account #3 HIDDEN',
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'legacy',
@@ -122,7 +123,7 @@ export const eth3legacyAccount = mockWalletAccount({
 
 export const base1NormalAccount = mockWalletAccount(
     {
-        symbol: 'base',
+        symbol: asNetworkSymbol('base'),
         accountLabel: 'Base Account #1',
         deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
         accountType: 'normal',
@@ -136,7 +137,7 @@ export const base1NormalAccount = mockWalletAccount(
 );
 
 export const sol1normalAccount = mockWalletAccount({
-    symbol: 'sol',
+    symbol: asNetworkSymbol('sol'),
     accountLabel: 'SOL Account #1',
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'normal',

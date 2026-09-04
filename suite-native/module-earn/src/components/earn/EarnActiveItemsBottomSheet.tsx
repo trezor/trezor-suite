@@ -6,6 +6,7 @@ import { FlashList } from '@shopify/flash-list';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
@@ -67,7 +68,7 @@ export const EarnActiveItemsBottomSheet = ({
                     }
                     navigateToStakingDetail({
                         accountKey: item.accountKey,
-                        symbol: item.symbol,
+                        symbol: asNetworkSymbol(item.symbol),
                     });
                     break;
                 }
@@ -108,7 +109,7 @@ export const EarnActiveItemsBottomSheet = ({
 
             navigation.navigate(RootStackRoutes.StakingClaimReview, {
                 accountKey: item.accountKey,
-                symbol: item.symbol,
+                symbol: asNetworkSymbol(item.symbol),
             });
         },
         [navigation, onClose],

@@ -1,5 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getFramePropsStory } from '@trezor/components';
 
 import { TokenIcon as TokenIconComponent } from './TokenIcon';
@@ -27,6 +28,8 @@ const NETWORK_SYMBOLS = [
     'ltc',
     'doge',
 ] as const;
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const meta: Meta<TokenIconProps> = {
     title: 'TokenIcon',
@@ -67,7 +70,7 @@ export default meta;
 export const NativeCoin: StoryObj<TokenIconProps> = {
     args: {
         size: 24,
-        symbol: 'eth',
+        symbol: ethSymbol,
         placeholder: 'ETH',
         shouldTryToFetch: true,
         showNetworkIcon: false,
@@ -79,7 +82,7 @@ export const NativeCoin: StoryObj<TokenIconProps> = {
 export const Token: StoryObj<TokenIconProps> = {
     args: {
         size: 24,
-        symbol: 'eth',
+        symbol: ethSymbol,
         contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC on Ethereum
         placeholder: 'USDC',
         shouldTryToFetch: true,

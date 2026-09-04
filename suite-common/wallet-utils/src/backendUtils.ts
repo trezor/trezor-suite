@@ -8,6 +8,7 @@ import {
 import type {
     Account,
     BackendSettings,
+    Blockchain,
     BlockchainNetworks,
     CustomBackend,
 } from '@suite-common/wallet-types';
@@ -41,10 +42,32 @@ export const getBackendFromSettings = (
 const isBackend = (backend: Partial<CustomBackend>): backend is CustomBackend =>
     !!(backend.type && backend.urls?.length);
 
+type BlockchainEntry = Readonly<{
+    symbol: NetworkSymbol;
+    blockchain: Blockchain;
+}>;
+
+const hasBlockchain = (
+    entry: Readonly<{ symbol: NetworkSymbol; blockchain: Blockchain | undefined }>,
+): entry is BlockchainEntry => entry.blockchain !== undefined;
+
+export const getBlockchain = (
+    blockchains: BlockchainNetworks,
+    symbol: NetworkSymbol,
+): Blockchain => {
+    const blockchain = blockchains[symbol];
+
+    if (blockchain === undefined) {
+        throw new Error(`Blockchain state not found: ${symbol}`);
+    }
+
+    return blockchain;
+};
+
 export const getCustomBackends = (blockchains: BlockchainNetworks): CustomBackend[] =>
     networkSymbolCollection
         .map(symbol => ({ symbol, blockchain: blockchains[symbol] }))
-        .filter(({ blockchain }) => !!blockchain)
+        .filter(hasBlockchain)
         .map(({ symbol, blockchain: { backends } }) => ({
             symbol,
             type: backends.selected,

@@ -1,4 +1,4 @@
-import { asNetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import {
     mockWalletAccount,
     networkSpecificDefaultRipple,
@@ -259,8 +259,8 @@ describe('sendForm utils', () => {
                 },
             ],
         });
-        const EthNetwork = networks.eth;
-        const XrpNetwork = networks.xrp;
+        const EthNetwork = getNetwork(ethSymbol);
+        const XrpNetwork = getNetwork(asNetworkSymbol('xrp'));
 
         expect(getExternalComposeOutput({ outputs: [] }, EthAccount, EthNetwork)).toEqual(
             undefined,

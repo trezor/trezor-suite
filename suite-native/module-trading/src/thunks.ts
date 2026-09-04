@@ -69,6 +69,7 @@ import {
 } from '@suite-native/transaction-management';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Ok } from '@trezor/type-utils';
 
@@ -119,7 +120,7 @@ export const pushTradingTxnThunk = createThunk<
         try {
             const pushTxResponse = await TrezorConnect.pushTransaction({
                 tx: serializedTx,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: tryGetAccountIdentity(account),
             });
 

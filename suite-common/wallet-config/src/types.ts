@@ -1,5 +1,5 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
-import type { NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module';
 import type { SuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types';
 
 export {
@@ -14,9 +14,7 @@ export {
     type ServerType,
     type TrezorConnectBackendType,
 } from '@trezor/network-module-suite-common-types';
-export type { NetworkSymbol };
-
-export const asNetworkSymbol = (symbol: string): NetworkSymbol => symbol as NetworkSymbol;
+export { asNetworkSymbol, type NetworkSymbol };
 
 /**
  * Used for some edge cases where extension of NetworkSymbol is necessary.
@@ -24,9 +22,8 @@ export const asNetworkSymbol = (symbol: string): NetworkSymbol => symbol as Netw
  */
 export type NetworkSymbolExtended = NetworkSymbol | (string & {});
 
-export type Network = Omit<SuiteCommonNetworkConfig, 'settlementLayer' | 'yieldXyzId'> & {
+export type Network = Omit<SuiteCommonNetworkConfig, 'yieldXyzId'> & {
     readonly symbol: NetworkSymbol;
-    readonly settlementLayer?: NetworkSymbol;
     /**
      * Maps a Suite network to Yield.xyz's network identifier. This provider-specific field is
      * retained here to preserve existing behavior; the earn domain should eventually own both
@@ -35,6 +32,4 @@ export type Network = Omit<SuiteCommonNetworkConfig, 'settlementLayer' | 'yieldX
     readonly yieldXyzId: TokenDtoV2['network'] | null;
 };
 
-export type Networks = {
-    readonly [key in NetworkSymbol]: Network;
-};
+export type Networks = Readonly<Record<NetworkSymbol, Network>>;

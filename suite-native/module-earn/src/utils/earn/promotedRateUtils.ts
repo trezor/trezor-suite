@@ -1,11 +1,10 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 
-export const EARN_PROMO_SYMBOLS: NetworkSymbol[] = ['eth', 'sol'] as const;
+export const EARN_PROMO_SYMBOLS = ['eth', 'sol'] as const;
 export type EarnPromoSymbol = (typeof EARN_PROMO_SYMBOLS)[number];
 
-export const isEarnPromoSymbol = (symbol?: NetworkSymbol | null) =>
-    symbol != null && EARN_PROMO_SYMBOLS.includes(symbol);
+export const isEarnPromoSymbol = (symbol?: string | null): symbol is EarnPromoSymbol =>
+    symbol != null && EARN_PROMO_SYMBOLS.some(earnPromoSymbol => earnPromoSymbol === symbol);
 
 type GetBestPromotedRateParams = {
     vaultApy: number | null;

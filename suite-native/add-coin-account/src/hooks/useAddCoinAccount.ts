@@ -14,7 +14,7 @@ import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
     type NetworkSymbol,
-    networks,
+    getNetwork,
 } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -331,7 +331,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         );
 
         const nextIndex = lastVisibleAccount ? lastVisibleAccount.index + 1 : 0;
-        const network = networks[symbol];
+        const network = getNetwork(symbol);
         const networkAccount = network.accountTypes[accountType];
         const allAccountTypes = getAvailableAccountTypes(symbol);
 

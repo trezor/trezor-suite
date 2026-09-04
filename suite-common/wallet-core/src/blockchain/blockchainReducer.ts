@@ -12,7 +12,7 @@ import {
     networksCollection,
 } from '@suite-common/wallet-config';
 import { type Blockchain, type BlockchainNetworks } from '@suite-common/wallet-types';
-import { getCustomBackends } from '@suite-common/wallet-utils';
+import { getBlockchain, getCustomBackends } from '@suite-common/wallet-utils';
 import {
     type BlockchainBlock,
     type BlockchainError,
@@ -63,7 +63,7 @@ const writeIdentityConnection = (
     identity: string,
     data: Partial<NonNullable<Blockchain['identityConnections']>[string]>,
 ) => {
-    const blockchain = state[symbol];
+    const blockchain = getBlockchain(state, symbol);
     const connections = blockchain.identityConnections ?? (blockchain.identityConnections = {});
     connections[identity] = {
         ...(connections[identity] ?? { connected: false }),
@@ -85,14 +85,15 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
         return;
     }
 
+    const blockchain = getBlockchain(draft, network.symbol);
     draft[network.symbol] = {
         url: info.url,
         connected: true,
         blockHash: info.blockHash,
         blockHeight: info.blockHeight,
         version: info.version,
-        backends: draft[network.symbol].backends,
-        identityConnections: draft[network.symbol].identityConnections,
+        backends: blockchain.backends,
+        identityConnections: blockchain.identityConnections,
     };
 };
 
@@ -108,12 +109,13 @@ const error = (draft: BlockchainState, payload: BlockchainError) => {
     if (identity) {
         writeIdentityConnection(draft, network.symbol, identity, { connected: false, error });
     } else {
+        const blockchain = getBlockchain(draft, network.symbol);
         draft[network.symbol] = {
-            ...draft[network.symbol],
+            ...blockchain,
             connected: false,
             error,
         };
-        delete draft[network.symbol].url;
+        delete getBlockchain(draft, network.symbol).url;
     }
 };
 
@@ -122,7 +124,7 @@ const update = (draft: BlockchainState, block: BlockchainBlock) => {
     if (!network) return;
 
     draft[network.symbol] = {
-        ...draft[network.symbol],
+        ...getBlockchain(draft, network.symbol),
         blockHash: block.blockHash,
         blockHeight: block.blockHeight,
     };
@@ -138,7 +140,7 @@ const reconnecting = (draft: BlockchainState, payload: BlockchainReconnecting) =
         });
     } else {
         draft[network.symbol] = {
-            ...draft[network.symbol],
+            ...getBlockchain(draft, network.symbol),
             reconnectionTime: payload.time,
         };
     }
@@ -152,29 +154,31 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
     (builder, extra: BlockchainReducerDeps) => {
         builder
             .addCase(blockchainActions.synced, (state, action) => {
-                state[action.payload.symbol].syncTimeout = action.payload.timeout;
+                getBlockchain(state, action.payload.symbol).syncTimeout = action.payload.timeout;
             })
             .addCase(blockchainActions.setBackend, (state, action) => {
                 const { symbol, type } = action.payload;
+                const blockchain = getBlockchain(state, symbol);
                 if (type === 'default') {
-                    delete state[symbol].backends.selected;
+                    delete blockchain.backends.selected;
                 } else if (!action.payload.urls.length) {
-                    delete state[symbol].backends.selected;
-                    delete state[symbol].backends.urls?.[type];
+                    delete blockchain.backends.selected;
+                    delete blockchain.backends.urls?.[type];
                 } else {
-                    state[symbol].backends.selected = type;
-                    state[symbol].backends.urls = {
-                        ...state[symbol].backends.urls,
+                    blockchain.backends.selected = type;
+                    blockchain.backends.urls = {
+                        ...blockchain.backends.urls,
                         [type]: action.payload.urls,
                     };
                 }
             })
             .addCase(blockchainActions.setBackendGapLimit, (state, action) => {
                 const { symbol, gapLimit } = action.payload;
+                const blockchain = getBlockchain(state, symbol);
                 if (gapLimit === undefined) {
-                    delete state[symbol].backends.gapLimit;
+                    delete blockchain.backends.gapLimit;
                 } else {
-                    state[symbol].backends.gapLimit = gapLimit;
+                    blockchain.backends.gapLimit = gapLimit;
                 }
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBlockchain)
@@ -214,13 +218,16 @@ export const selectBlockchainState = (state: BlockchainRootState) => state.walle
 export const selectNetworkBlockchainInfo = (state: BlockchainRootState, symbol: NetworkSymbol) =>
     state.wallet.blockchain[symbol];
 
+const getNetworkBlockchainInfo = (state: BlockchainRootState, symbol: NetworkSymbol) =>
+    getBlockchain(state.wallet.blockchain, symbol);
+
 export const selectBlockchainHeightBySymbol = createMemoizedSelector(
-    [selectNetworkBlockchainInfo],
-    blockchain => blockchain?.blockHeight ?? null,
+    [getNetworkBlockchainInfo],
+    blockchain => blockchain.blockHeight,
 );
 
 export const selectBlockchainBlockInfoBySymbol = createMemoizedSelector(
-    [selectNetworkBlockchainInfo],
+    [getNetworkBlockchainInfo],
     blockchain => ({
         blockhash: blockchain.blockHash,
         blockHeight: blockchain.blockHeight,
@@ -228,7 +235,7 @@ export const selectBlockchainBlockInfoBySymbol = createMemoizedSelector(
 );
 
 export const selectBlockchainBackendType = createMemoizedSelector(
-    [selectNetworkBlockchainInfo],
+    [getNetworkBlockchainInfo],
     blockchain => blockchain.backends.selected,
 );
 
@@ -238,7 +245,7 @@ export const selectIsCustomBackendConfigured = createMemoizedSelector(
 );
 
 export const selectGapLimit = (state: BlockchainRootState, symbol: NetworkSymbol) =>
-    state.wallet.blockchain[symbol]?.backends.gapLimit;
+    getBlockchain(state.wallet.blockchain, symbol).backends.gapLimit;
 
 export const selectCustomBackends = createMemoizedSelector(
     [selectBlockchainState],

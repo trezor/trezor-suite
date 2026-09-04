@@ -1,9 +1,12 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { type TestStore, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
 import { ReceiveAccountPicker, type ReceiveAccountPickerProps } from './ReceiveAccountPicker';
 import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const defaultOverrides = {
     device: {
@@ -38,7 +41,7 @@ describe('ReceiveAccountPicker', () => {
 
         return await renderWithStoreProvider(
             <ReceiveAccountPicker
-                symbol="btc"
+                symbol={btcSymbol}
                 tradingType="buy"
                 receiveAccount={{
                     account: btc1NormalAccount,
@@ -70,7 +73,7 @@ describe('ReceiveAccountPicker', () => {
 
     it('should call navigate to account picker when symbol is specified and picker pressed', async () => {
         const { getByText } = await renderReceiveAccountPicker({
-            symbol: 'btc',
+            symbol: btcSymbol,
             receiveAccount: undefined,
         });
 
@@ -80,14 +83,14 @@ describe('ReceiveAccountPicker', () => {
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {
-            symbol: 'btc',
+            symbol: btcSymbol,
             tradingType: 'buy',
         });
     });
 
     it('should call navigate to account picker when tradingType is exchange, symbol is specified and picker pressed', async () => {
         const { getByText } = await renderReceiveAccountPicker({
-            symbol: 'btc',
+            symbol: btcSymbol,
             receiveAccount: undefined,
             tradingType: 'exchange',
         });
@@ -98,7 +101,7 @@ describe('ReceiveAccountPicker', () => {
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {
-            symbol: 'btc',
+            symbol: btcSymbol,
             tradingType: 'exchange',
         });
     });

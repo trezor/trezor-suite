@@ -6,7 +6,7 @@ import {
 } from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { EARN_YIELD_CLAIM_PROVIDER, networks } from '@suite-common/wallet-config';
+import { EARN_YIELD_CLAIM_PROVIDER, getNetwork } from '@suite-common/wallet-config';
 import { WRAPPED_NATIVE_MIN_FIRMWARE } from '@suite-common/wallet-constants';
 import {
     type Account,
@@ -172,8 +172,8 @@ export const getClearSignedEvmTradingSwapCoverage = ({
     ) {
         return undefined;
     }
-    const network = networks[account.symbol];
-    if (network.chainId === undefined) {
+    const network = getNetwork(account.symbol);
+    if (!('chainId' in network) || network.chainId === undefined) {
         return undefined;
     }
     const to = precomposedTx.outputs.find(
@@ -228,8 +228,8 @@ export const isClearSignedWrappedNativeTransaction = ({
         return false;
     }
 
-    const network = networks[account.symbol];
-    if (network.chainId === undefined) {
+    const network = getNetwork(account.symbol);
+    if (!('chainId' in network) || network.chainId === undefined) {
         return false;
     }
 
@@ -527,7 +527,7 @@ const constructNewFlow = ({
                 outputs.push({
                     type: 'amount',
                     value: o.amount.toString(),
-                    value2: networks[symbol].name,
+                    value2: getNetwork(symbol).name,
                     token: precomposedTx.token,
                 });
             }
@@ -756,7 +756,7 @@ const constructNewFlow = ({
             outputs.push({
                 type: 'approve_data',
                 value: evmApprovalTxData.amount.toString(),
-                value2: networks[symbol].name,
+                value2: getNetwork(symbol).name,
                 token: precomposedTx.token,
             });
         }

@@ -3,6 +3,7 @@ import { createAction, isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { asGetter } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createTestStore } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type PushSendFormTransactionThunkDeps,
     pushSendFormTransactionThunk,
@@ -38,7 +39,7 @@ jest.mock('./sendFormThunks', () => ({
     cleanupSendFormThunk: jest.fn(() => ({ type: 'mock/cleanupSendForm' })),
 }));
 
-const account = mockWalletAccount({ symbol: 'eth' });
+const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const { key: accountKey } = account;
 
 // Opaque pass-through values: the thunk only forwards these to the (mocked) sign/store/cleanup

@@ -1,8 +1,14 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { type resolveAddressAndToken } from '../tradingUtils';
 
 type ResolveAddressAndTokenArgs = Parameters<typeof resolveAddressAndToken>;
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+const adaSymbol = asNetworkSymbol('ada');
 
 export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     option: {
@@ -14,7 +20,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     {
         option: {
             account: {
-                symbol: 'btc',
+                symbol: btcSymbol,
                 descriptor: asAccountDescriptor('bbb'),
             },
             tokenContractAddress: undefined,
@@ -27,7 +33,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     {
         option: {
             account: {
-                symbol: 'eth',
+                symbol: ethSymbol,
                 descriptor: asAccountDescriptor('eee'),
             },
             tokenContractAddress: undefined,
@@ -40,7 +46,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     {
         option: {
             account: {
-                symbol: 'eth',
+                symbol: ethSymbol,
                 descriptor: asAccountDescriptor('aaa'),
             },
             tokenContractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
@@ -53,7 +59,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     {
         option: {
             account: {
-                symbol: 'sol',
+                symbol: solSymbol,
                 descriptor: asAccountDescriptor('sss'),
             },
             tokenContractAddress: undefined,
@@ -66,7 +72,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     {
         option: {
             account: {
-                symbol: 'sol',
+                symbol: solSymbol,
                 descriptor: asAccountDescriptor('ddd'),
             },
             tokenContractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
@@ -79,7 +85,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     {
         option: {
             account: {
-                symbol: 'ada',
+                symbol: adaSymbol,
                 descriptor: asAccountDescriptor('ccc'),
             },
             tokenContractAddress: undefined,

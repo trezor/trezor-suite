@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BaseCurrencyAmount,
     type TokenSymbol,
@@ -11,6 +12,9 @@ import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useMyAssetsFilteredData } from './useMyAssetsFilteredData';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 const mockUsePreferredCurrencyUsdThreshold = jest.fn();
 const mockUseTradingMyAssets = jest.fn();
@@ -26,7 +30,7 @@ jest.mock('./useTradingMyAssets', () => ({
 
 const createAsset = (overrides: Partial<MyAsset> = {}): MyAsset => ({
     name: 'Ethereum',
-    symbol: 'eth',
+    symbol: ethSymbol,
     cryptoId: 'ethereum' as CryptoId,
     balance: '2',
     fiatBalance: asBaseCurrencyAmount(new BigNumber('5000')),
@@ -36,7 +40,7 @@ const createAsset = (overrides: Partial<MyAsset> = {}): MyAsset => ({
 
 const btcAsset = createAsset({
     name: 'Bitcoin',
-    symbol: 'btc',
+    symbol: btcSymbol,
     cryptoId: 'bitcoin' as CryptoId,
 });
 const lowBalanceAsset = createAsset({
@@ -143,7 +147,7 @@ describe('useMyAssetsFilteredData', () => {
         const { result } = await renderFilter();
 
         await act(() => {
-            result.current.setFilterSymbol('eth');
+            result.current.setFilterSymbol(ethSymbol);
             result.current.setFilterValue('LOW USDC');
         });
 
@@ -157,7 +161,7 @@ describe('useMyAssetsFilteredData', () => {
         expect(result.current.scrollResetKey).toBe('Network:all;Search:');
 
         await act(() => {
-            result.current.setFilterSymbol('eth');
+            result.current.setFilterSymbol(ethSymbol);
             result.current.setFilterValue('usd');
         });
 

@@ -7,6 +7,9 @@
             "path": "../../../packages/device-utils"
         },
         {
+            "path": "../../network-module/network-module"
+        },
+        {
             "path": "../../network-module/network-module-suite-common-types"
         },
         { "path": "../network-tron" }

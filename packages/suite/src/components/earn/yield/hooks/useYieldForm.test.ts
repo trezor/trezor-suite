@@ -10,6 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { toTokenSymbol } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { useYieldForm } from './useYieldForm';
 
@@ -19,7 +20,7 @@ const RECEIPT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000002';
 const ETH_RATE = 2;
 
 const account = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     formattedBalance: '0.2',
 });
 const vault = {

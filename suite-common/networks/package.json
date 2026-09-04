@@ -14,6 +14,7 @@
         "@trezor/network-bitcoin-suite-common": "workspace:*",
         "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",
+        "@trezor/network-module": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-ripple-suite-common": "workspace:*",
         "@trezor/network-solana-suite-common": "workspace:*",

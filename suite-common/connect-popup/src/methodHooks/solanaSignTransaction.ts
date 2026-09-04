@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
@@ -30,7 +30,9 @@ const preCallHook = async <M extends CallMethodKeys>({
         if (method === 'solanaSignTransaction') {
             const typedPayload = payload as any as SolanaSignTransaction;
             const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
-            const network = getNetwork(typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol');
+            const network = getNetwork(
+                asNetworkSymbol(typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol'),
+            );
             // Try to find matching account
             let selectedAccount = selectAccountForNetworkSymbolAndPath(
                 getState(),

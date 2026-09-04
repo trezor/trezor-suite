@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
@@ -14,6 +15,9 @@ import {
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 const mockNavigate = jest.fn();
 
 jest.mock('@react-navigation/native', () => ({
@@ -23,8 +27,8 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-const btcAccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' });
-const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' });
+const btcAccountKey = mockAccountKey({ symbol: btcSymbol, descriptor: 'btc1normal' });
+const ethAccountKey = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1normal' });
 
 describe('ExchangePreviewContinueButton', () => {
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {

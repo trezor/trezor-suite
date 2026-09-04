@@ -21,6 +21,7 @@ jest.mock('@trezor/connect', () => {
 });
 
 const cardanoComposeTransactionMock = TrezorConnect.cardanoComposeTransaction as jest.Mock;
+const adaSymbol = asNetworkSymbol('ada');
 
 const PREDEFINED_DREP_ID = 'drep_always_abstain';
 const OTHER_ACCOUNT_KEY = 'other-ada-account-key' as AccountKey;
@@ -47,7 +48,7 @@ const createCardanoAccount = ({
     ({
         key: 'ada-account-key',
         index: 0,
-        symbol: 'ada',
+        symbol: adaSymbol,
         networkType: 'cardano',
         descriptor: 'ada-descriptor',
         utxo: [],
@@ -78,7 +79,7 @@ const cardanoPools: AdaPools['pools'] = [];
 const mockNeverStakedAccount = (): Account =>
     mockWalletAccount(
         {
-            symbol: asNetworkSymbol('ada'),
+            symbol: adaSymbol,
             addresses: { change: [CHANGE_ADDRESS], used: [], unused: [] },
             utxo: [],
         },
@@ -109,7 +110,7 @@ const getVoteDelegationCertificate = () => {
 const createStakeReadyAccount = () =>
     mockWalletAccount(
         {
-            symbol: 'ada',
+            symbol: adaSymbol,
             index: 0,
             balance: '10000000',
             availableBalance: '10000000',

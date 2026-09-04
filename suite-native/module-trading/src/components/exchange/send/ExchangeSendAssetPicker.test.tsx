@@ -7,6 +7,7 @@ import type { GetSupportedNetworksDep } from '@suite-common/networks';
 import { mockGetSupportedNetworks } from '@suite-common/networks/mocks';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -45,6 +46,8 @@ jest.mock('@suite-native/trading-state', () => ({
     selectAccountsWithTokensToSellSectionListByTradingType: jest.fn(),
 }));
 
+const btcSymbol = asNetworkSymbol('btc');
+
 const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
     selectAccountsWithTokensToSellSectionListByTradingType as unknown as jest.Mock;
 const reportMock = jest.fn();
@@ -80,7 +83,7 @@ describe('ExchangeSendAssetPicker', () => {
     const defaultAssets: MyAsset[] = [
         {
             name: 'Bitcoin',
-            symbol: 'btc',
+            symbol: btcSymbol,
             cryptoId: 'bitcoin' as CryptoId,
             balance: '1.23',
             fiatBalance: asBaseCurrencyAmount(new BigNumber(45.6)),

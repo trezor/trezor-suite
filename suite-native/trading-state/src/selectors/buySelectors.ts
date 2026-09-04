@@ -2,7 +2,6 @@ import { Platform } from 'react-native';
 
 import type { BuyTrade } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TradingCountryCode,
@@ -23,6 +22,7 @@ import {
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
 import { type BuyFormValues, type FiatCurrencyItem } from '@suite-native/trading-types';
+import type { NetworkSymbol } from '@trezor/network-module';
 import { unique } from '@trezor/utils';
 
 import { getAssetByEnabledNetworksFilter } from '../utils';

@@ -1,4 +1,4 @@
-import { type Network, asNetworkSymbol, networks } from '@suite-common/wallet-config';
+import { type Network, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -90,7 +90,7 @@ describe('trading utils', () => {
                     },
                 } as unknown as Account;
 
-                const network = networks.btc;
+                const network = getNetwork(asNetworkSymbol('btc'));
 
                 const result = await getComposeAddressPlaceholder(account, network);
 

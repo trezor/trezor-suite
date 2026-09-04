@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { accountsActions, selectAccountForNetworkSymbolAndPath } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
@@ -34,7 +34,7 @@ const preCallHook = async <M extends CallMethodKeys>({
         }
 
         const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
-        const network = getNetwork(typedPayload.testnet ? 'txlm' : 'xlm');
+        const network = getNetwork(asNetworkSymbol(typedPayload.testnet ? 'txlm' : 'xlm'));
 
         let selectedAccount = selectAccountForNetworkSymbolAndPath(
             getState(),

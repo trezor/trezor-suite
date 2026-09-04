@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type {
     AccountKey,
     FormStateTradingCryptoCurrency,
@@ -12,17 +13,20 @@ import type { ReviewOutputItemContentDataProps } from '@suite-native/transaction
 import { useTradingContentBuilder } from './useTradingContentBuilder';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 const mockSend: FormStateTradingCryptoCurrency = {
     cryptoId: 'bitcoin' as CryptoId,
     accountKey: undefined,
-    symbol: 'btc',
+    symbol: btcSymbol,
     amount: '1.22',
 };
 
 const mockReceiveCrypto: FormStateTradingCryptoCurrency = {
     cryptoId: 'ethereum' as CryptoId,
     accountKey: btc1NormalAccount.key,
-    symbol: 'eth',
+    symbol: ethSymbol,
     amount: '0.462586',
 };
 

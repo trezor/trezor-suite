@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     calculateEarnDepositsFiatData,
     getEarnDepositsFiatStatus,
@@ -113,7 +113,9 @@ export const useEarnDepositsCardData = ({
                     ({
                         id: deposit.id,
                         type: 'staking',
-                        title: deposit.accountLabel ?? getNetworkDisplaySymbolName(deposit.symbol),
+                        title:
+                            deposit.accountLabel ??
+                            getNetworkDisplaySymbolName(asNetworkSymbol(deposit.symbol)),
                         symbol: deposit.symbol,
                         accountKey: deposit.accountKey,
                         balance,

@@ -1,14 +1,14 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     compareEarnByAmountDesc,
     getAccountTotalStakingBalance,
-    isStakingSymbol,
     sortByCoin,
     toFiatCurrency,
+    toStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { BigNumber, arrayPartition } from '@trezor/utils';
 
@@ -35,22 +35,31 @@ export const useStakingAccountsVisibility = ({
         setIsExpanded(prev => !prev);
     }, []);
 
+    const getCurrentRate = useCallback(
+        (symbol: NetworkSymbol) => {
+            const stakingSymbol = toStakingNetworkSymbol(symbol);
+
+            return stakingSymbol === null ? undefined : currentRates[stakingSymbol];
+        },
+        [currentRates],
+    );
+
     const getAccountStakedAmountInFiat = useCallback(
         (account: Account) =>
             toFiatCurrency({
                 amount: getAccountTotalStakingBalance(account) ?? '0',
-                rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
+                rate: getCurrentRate(account.symbol),
             }) ?? '0',
-        [currentRates],
+        [getCurrentRate],
     );
 
     const getAccountBalanceInFiat = useCallback(
         (account: Account) =>
             toFiatCurrency({
                 amount: account.formattedBalance,
-                rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
+                rate: getCurrentRate(account.symbol),
             }) ?? '0',
-        [currentRates],
+        [getCurrentRate],
     );
 
     const [accountsStakingActive, accountsStakingNotActive] = arrayPartition(

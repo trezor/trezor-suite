@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Box, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -73,7 +74,11 @@ export const EarnDepositsCardRow = React.memo(({ row, onPress }: EarnDepositsCar
                             style={applyStyle(rowIconWrapperStyle, { index })}
                         >
                             <TokenIcon
-                                symbol={item.type === 'staking' ? item.symbol : item.networkSymbol}
+                                symbol={
+                                    item.type === 'staking'
+                                        ? asNetworkSymbol(item.symbol)
+                                        : item.networkSymbol
+                                }
                                 contractAddress={
                                     item.type === 'stablecoin-yield'
                                         ? item.tokenContractAddress

@@ -108,7 +108,11 @@ export const DiscoveryCoinsFilter = ({
                 });
             }
 
-            setValue(getEnabledCoinFieldName(symbol), nextIsEnabled);
+            // React Hook Form cannot infer the boolean value behind a branded record key.
+            (setValue as (fieldName: `enabledCoins.${string}`, value: boolean) => void)(
+                getEnabledCoinFieldName(symbol),
+                nextIsEnabled,
+            );
         },
         [getValues, isDeviceConnected, onDisablingLastCoin, setValue, showToast],
     );

@@ -43,7 +43,6 @@ import {
 } from 'src/reducers/wallet';
 
 import * as fixtures from './__fixtures__/blockchainActions';
-
 const TrezorConnect = testMocks.getTrezorConnectMock();
 const btcSymbol = asNetworkSymbol('btc');
 
@@ -73,7 +72,7 @@ const getInitialState = (
         blockchain: {
             ...blockchainReducer(undefined, action),
             ...blockchain,
-        },
+        } as BlockchainState,
         fees: {
             ...feesReducer(undefined, action),
             ...fees,

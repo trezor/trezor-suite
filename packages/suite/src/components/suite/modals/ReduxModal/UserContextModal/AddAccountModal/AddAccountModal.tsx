@@ -14,7 +14,6 @@ import {
     type NetworkAccount,
     type NetworkSymbol,
     getNetwork,
-    networks,
 } from '@suite-common/wallet-config';
 import {
     accountsActions,
@@ -27,6 +26,7 @@ import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-commo
 import { Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { InfoIcon } from '@trezor/icons';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { AddAccountBannerAboutNetworks } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
@@ -122,7 +122,7 @@ export const AddAccountModal = ({
     // Applied when only BTC is enabled on bitcoin-only firmware.
     const bitcoinOnlyDefaultNetworkSelection =
         isBitcoinOnlyFirmware && supportedMainnets.length === 1 && allTestnetNetworksDisabled
-            ? networks.btc
+            ? getNetwork(asNetworkSymbol('btc'))
             : undefined;
 
     const isCoinjoinVisible = (isCoinjoinPublic || isDebug) && !isCoinjoinDisabled;
@@ -448,11 +448,7 @@ export const AddAccountModal = ({
             return;
         }
 
-        const networkToSelect = networks[networkSymbol];
-
-        if (!networkToSelect) {
-            return;
-        }
+        const networkToSelect = getNetwork(networkSymbol);
 
         if (!enabledNetworkSymbols.includes(networkToSelect.symbol)) {
             if (networkPinned) {

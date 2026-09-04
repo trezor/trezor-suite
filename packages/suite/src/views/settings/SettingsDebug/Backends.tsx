@@ -120,11 +120,13 @@ const BackendItem = ({
 };
 
 const CoinItem = ({ symbol }: CoinItemProps) => {
-    const { url, error, connected, reconnectionTime, identityConnections } = useSelector(state =>
-        selectNetworkBlockchainInfo(state, symbol),
-    );
+    const blockchainInfo = useSelector(state => selectNetworkBlockchainInfo(state, symbol));
 
     const dispatch = useDispatch();
+
+    if (blockchainInfo === undefined) return null;
+
+    const { url, error, connected, reconnectionTime, identityConnections } = blockchainInfo;
 
     const onSettings = () => {
         dispatch(

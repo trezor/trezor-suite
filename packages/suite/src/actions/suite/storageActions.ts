@@ -77,6 +77,7 @@ import type {
     SuccessfulAccount,
 } from '@suite-common/wallet-types';
 import {
+    getBlockchain,
     getFormDraftKey,
     isAccountSuccessful,
     selectHistoricRatesByTransactions,
@@ -581,7 +582,7 @@ export const saveBackendThunk =
         if (!db.isAccessible()) return;
         await db.addItem(
             'backendSettings',
-            selectBlockchainState(getState())[symbol].backends,
+            getBlockchain(selectBlockchainState(getState()), symbol).backends,
             symbol,
             true,
         );

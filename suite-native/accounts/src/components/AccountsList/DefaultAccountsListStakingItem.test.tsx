@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
@@ -16,7 +17,7 @@ jest.mock('@suite-native/formatters', () => ({
 
 describe('DefaultAccountsListStakingItem', () => {
     it('renders compact staking balance when fiat value is displayed', async () => {
-        const account = mockWalletAccount({ symbol: 'eth' });
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
         const { getByText } = await renderWithBasicProvider(
             <DefaultAccountsListStakingItem

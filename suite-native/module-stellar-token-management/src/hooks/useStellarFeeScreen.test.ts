@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
@@ -33,11 +34,12 @@ const triggerFocusEffect = () => {
     focusEffectCallback?.();
 };
 
-const accountKey = mockAccountKey({ symbol: 'xlm', descriptor: 'stellar1' });
+const xlmSymbol = asNetworkSymbol('xlm');
+const accountKey = mockAccountKey({ symbol: xlmSymbol, descriptor: 'stellar1' });
 
 const mockAccount = {
     key: accountKey,
-    symbol: 'xlm',
+    symbol: xlmSymbol,
     networkType: 'stellar',
     descriptor: 'GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV',
     balance: '10000000000',

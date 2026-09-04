@@ -43,7 +43,6 @@ import {
 } from '@trezor/components';
 import { GridNineFilledIcon, PlusIcon, RowsFilledIcon, WarningIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
-import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { DashboardSection } from 'src/components/dashboard';
@@ -72,7 +71,7 @@ const GridWrapper = styled.div`
 
 const useAssetsFiatBalances = (
     assetsData: AssetData[],
-    accounts: { [key: string]: Account[] },
+    accounts: Record<NetworkSymbol, Account[]>,
     localCurrency: BaseCurrencyCode,
     currentFiatRates?: RatesByKey,
 ) =>
@@ -108,7 +107,7 @@ export const AssetsView = () => {
         network => !enabledNetworks.includes(network.symbol),
     );
 
-    const assets: PartialRecord<NetworkSymbol, Account[]> = {};
+    const assets: Record<NetworkSymbol, Account[]> = {};
 
     accounts.forEach(account => {
         let symbolAssets = assets[account.symbol];

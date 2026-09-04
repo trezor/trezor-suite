@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { formDraftReducer } from '@suite-common/wallet-core';
 import {
     type FeesState,
@@ -33,6 +34,7 @@ const buildFeePreviewMock = jest.mocked(buildYieldDepositFeePreview);
 
 const FORM_DRAFT_KEY = 'earn/test-flow/test-account';
 const BASE_UNSIGNED_TX = '0xbase';
+const ethSymbol = asNetworkSymbol('eth');
 
 const BASE_FEE_PREVIEW = {
     type: 'final',
@@ -70,7 +72,7 @@ const FEES_STATE = {
 const composeReady = (unsignedTransaction = BASE_UNSIGNED_TX) => ({
     type: 'ready' as const,
     transaction: {
-        symbol: 'eth',
+        symbol: ethSymbol,
         token: { contractAddress: null, decimals: 18, symbol: 'ETH' },
         unsignedTransaction,
     } satisfies ComposedTxBase,
@@ -82,7 +84,7 @@ type HookProps = {
     formDraftKey: string;
     hasInvalidContext: boolean;
     isEnabled: boolean;
-    symbol: 'eth' | undefined;
+    symbol: NetworkSymbol | undefined;
 };
 
 const createTestStore = () =>
@@ -113,7 +115,7 @@ const createProps = (overrides: Partial<HookProps> = {}): HookProps => ({
     formDraftKey: FORM_DRAFT_KEY,
     hasInvalidContext: false,
     isEnabled: true,
-    symbol: 'eth',
+    symbol: ethSymbol,
     ...overrides,
 });
 

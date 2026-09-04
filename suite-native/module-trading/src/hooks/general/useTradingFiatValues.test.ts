@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { act } from '@suite-native/test-utils-store';
@@ -24,12 +25,18 @@ jest.mock('@suite-common/fiat-services', () => ({
     fetchCurrentFiatRates: () => Promise.resolve(null),
 }));
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 const getOverrides = (
     walletOverrides: Record<string, unknown> = {},
 ): PreloadedStatePartial<TradingTestPreloadedState> => ({
     wallet: {
         ...mockWalletFiatRatesAndSettings({
-            [getFiatRateKey('eth', 'usd', usdcAsset.contractAddress!)]: createMockRate(1, 'eth'),
+            [getFiatRateKey(ethSymbol, 'usd', usdcAsset.contractAddress!)]: createMockRate(
+                1,
+                ethSymbol,
+            ),
         }),
         ...walletOverrides,
     },
@@ -76,7 +83,7 @@ describe('useTradingFiatValues', () => {
             const { result } = await renderUseTradingFiatValues('1', btcAsset.cryptoId);
 
             expect(result.current?.fiatValue).toBe('50000.00');
-            expect(result.current?.symbol).toBe('btc');
+            expect(result.current?.symbol).toBe(btcSymbol);
             expect(result.current?.baseCurrencyAmount).toBeInstanceOf(BigNumber);
             expect(result.current?.baseCurrencyAmount?.toString()).toBe('50000');
         });
@@ -88,7 +95,7 @@ describe('useTradingFiatValues', () => {
 
             expect(result.current).not.toBeNull();
             expect(result.current?.fiatValue).toBe('100.00');
-            expect(result.current?.symbol).toBe('eth');
+            expect(result.current?.symbol).toBe(ethSymbol);
             expect(result.current?.tokenAddress).toBe(usdcAsset.contractAddress!);
             expect(result.current?.baseCurrencyAmount).toBeInstanceOf(BigNumber);
             expect(result.current?.baseCurrencyAmount?.toString()).toBe('100');

@@ -2,7 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { getBlockchain } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
@@ -21,6 +22,7 @@ const walletSettingsReducer = prepareWalletSettingsReducer({
     reducers: { storageLoadWalletSettings: mockReducer() },
 });
 const electrumUrl = '127.0.0.1:50001:t';
+const btcSymbol = asNetworkSymbol('btc');
 
 const initStore = (enabledNetworks: NetworkSymbol[]) =>
     createTestStore({
@@ -35,8 +37,8 @@ const initStore = (enabledNetworks: NetworkSymbol[]) =>
             wallet: {
                 blockchain: {
                     ...blockchainInitialState,
-                    btc: {
-                        ...blockchainInitialState.btc,
+                    [btcSymbol]: {
+                        ...getBlockchain(blockchainInitialState, btcSymbol),
                         backends: {
                             selected: 'electrum' as const,
                             urls: { electrum: [electrumUrl] },
@@ -61,9 +63,9 @@ describe(setCustomBackendThunk.name, () => {
         const reconnect = jest
             .spyOn(TrezorConnect, 'blockchainUnsubscribeFiatRates')
             .mockResolvedValue({ success: true, payload: { subscribed: false } });
-        const store = initStore(['btc']);
+        const store = initStore([btcSymbol]);
 
-        await store.dispatch(setCustomBackendThunk('btc'));
+        await store.dispatch(setCustomBackendThunk(btcSymbol));
 
         expect(setCustomBackend).toHaveBeenCalledWith({
             coin: 'btc',
@@ -85,7 +87,7 @@ describe(setCustomBackendThunk.name, () => {
             .mockResolvedValue({ success: true, payload: { subscribed: false } });
         const store = initStore([]);
 
-        await store.dispatch(setCustomBackendThunk('btc'));
+        await store.dispatch(setCustomBackendThunk(btcSymbol));
 
         expect(setCustomBackend).toHaveBeenCalledWith({
             coin: 'btc',

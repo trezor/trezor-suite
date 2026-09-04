@@ -3,9 +3,9 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
-import { explorerInitialState } from '@suite-common/wallet-core';
+import { explorerInitialState, getExplorer } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenTransfer } from '@trezor/connect';
@@ -16,8 +16,11 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
+const ethSymbol = asNetworkSymbol('eth');
+const polSymbol = asNetworkSymbol('pol');
+
 const ethereumAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: asAccountDescriptor('ethDescriptor'),
 });
 
@@ -55,11 +58,17 @@ describe('FormattedNftAmount', () => {
 
         renderWithProviders(
             root,
-            <FormattedNftAmount transfer={nftTransfer} networkSymbol="pol" isWithLink />,
+            <FormattedNftAmount transfer={nftTransfer} networkSymbol={polSymbol} isWithLink />,
         );
 
-        const polygonNftUrl = getExplorerUrl(explorerInitialState.pol.default, 'nft');
-        const ethereumNftUrl = getExplorerUrl(explorerInitialState.eth.default, 'nft');
+        const polygonNftUrl = getExplorerUrl(
+            getExplorer(explorerInitialState, polSymbol).default,
+            'nft',
+        );
+        const ethereumNftUrl = getExplorerUrl(
+            getExplorer(explorerInitialState, ethSymbol).default,
+            'nft',
+        );
 
         expect(polygonNftUrl).not.toBe(ethereumNftUrl);
         expect(screen.getByRole('link')).toHaveAttribute(

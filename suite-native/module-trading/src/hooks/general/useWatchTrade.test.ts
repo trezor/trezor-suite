@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -24,6 +25,8 @@ jest.mock('@suite-common/trading', () => ({
         watchTradeThunk: jest.fn(() => ({ type: 'watchTradeThunk' })),
     },
 }));
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const mockWatchTradeThunk = require('@suite-common/trading').tradingThunks.watchTradeThunk;
 
@@ -52,7 +55,7 @@ const useWatchTradeWithReportSpy = (props: {
     return spyRef.current!;
 };
 
-const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
+const btc1AccountKey = mockAccountKey({ symbol: btcSymbol, descriptor: 'btc1' });
 const services: NativeAnalyticsDep = {
     analytics: mockNativeAnalytics(),
 };
@@ -84,7 +87,7 @@ describe('useWatchTrade', () => {
                             : [
                                   {
                                       key: btc1AccountKey,
-                                      symbol: 'btc',
+                                      symbol: btcSymbol,
                                       deviceState:
                                           'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
                                       descriptor: 'btc1',

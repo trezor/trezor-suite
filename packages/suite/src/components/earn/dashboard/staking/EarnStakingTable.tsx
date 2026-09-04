@@ -3,6 +3,7 @@ import { ContextMessage } from '@suite/message-system';
 import { EarnAnchor, useAnchor } from '@suite/router';
 import { Context } from '@suite-common/message-system';
 import { Button, Card, Column, Table } from '@trezor/components';
+import { asNetworkSymbol } from '@trezor/network-module';
 import { OutlineHighlight } from '@trezor/product-components';
 
 import { DashboardSection } from 'src/components/dashboard';
@@ -13,6 +14,11 @@ import { EarnStakingActivateRow } from './EarnStakingActivateRow';
 import { useStakingTableData } from './hooks/useStakingTableData';
 import { EarnProviderInfoBadge } from '../../providers/EarnProviderInfoBadge';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
+
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+const trxSymbol = asNetworkSymbol('trx');
+const adaSymbol = asNetworkSymbol('ada');
 
 export const EarnStakingTable = () => {
     const { anchorRef, shouldHighlight } = useAnchor(EarnAnchor.Staking);
@@ -59,16 +65,16 @@ export const EarnStakingTable = () => {
                                 ))}
 
                                 {ethNotActivated && (
-                                    <EarnStakingActivateRow symbol="eth" isCardLayout />
+                                    <EarnStakingActivateRow symbol={ethSymbol} isCardLayout />
                                 )}
                                 {solNotActivated && (
-                                    <EarnStakingActivateRow symbol="sol" isCardLayout />
+                                    <EarnStakingActivateRow symbol={solSymbol} isCardLayout />
                                 )}
                                 {trxNotActivated && (
-                                    <EarnStakingActivateRow symbol="trx" isCardLayout />
+                                    <EarnStakingActivateRow symbol={trxSymbol} isCardLayout />
                                 )}
                                 {adaNotActivated && (
-                                    <EarnStakingActivateRow symbol="ada" isCardLayout />
+                                    <EarnStakingActivateRow symbol={adaSymbol} isCardLayout />
                                 )}
                             </Column>
                         ) : (
@@ -89,25 +95,25 @@ export const EarnStakingTable = () => {
 
                                         {ethNotActivated && (
                                             <EarnStakingActivateRow
-                                                symbol="eth"
+                                                symbol={ethSymbol}
                                                 isCardLayout={false}
                                             />
                                         )}
                                         {solNotActivated && (
                                             <EarnStakingActivateRow
-                                                symbol="sol"
+                                                symbol={solSymbol}
                                                 isCardLayout={false}
                                             />
                                         )}
                                         {trxNotActivated && (
                                             <EarnStakingActivateRow
-                                                symbol="trx"
+                                                symbol={trxSymbol}
                                                 isCardLayout={false}
                                             />
                                         )}
                                         {adaNotActivated && (
                                             <EarnStakingActivateRow
-                                                symbol="ada"
+                                                symbol={adaSymbol}
                                                 isCardLayout={false}
                                             />
                                         )}

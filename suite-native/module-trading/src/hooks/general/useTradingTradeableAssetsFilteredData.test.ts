@@ -1,5 +1,6 @@
 import type { GetSupportedNetworksDep } from '@suite-common/networks';
 import { mockGetSupportedNetworks } from '@suite-common/networks/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { act } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { selectExchangeBuyTradeableAssets } from '@suite-native/trading-state';
@@ -7,9 +8,12 @@ import { selectExchangeBuyTradeableAssets } from '@suite-native/trading-state';
 import { useTradingTradeableAssetsFilteredData } from './useTradingTradeableAssetsFilteredData';
 import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 const mockUseWatch = jest.fn();
 const services: { networks: GetSupportedNetworksDep } = {
-    networks: { getSupportedNetworks: mockGetSupportedNetworks(['btc', 'eth']) },
+    networks: { getSupportedNetworks: mockGetSupportedNetworks([btcSymbol, ethSymbol]) },
 };
 
 jest.mock('@suite-native/forms', () => ({

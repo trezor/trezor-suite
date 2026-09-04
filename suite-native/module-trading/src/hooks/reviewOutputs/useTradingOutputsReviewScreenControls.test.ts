@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type SendState,
     initialWalletSettingsState,
@@ -24,6 +25,9 @@ import TrezorConnect from '@trezor/connect';
 import { useTradingOutputsReviewScreenControls } from './useTradingOutputsReviewScreenControls';
 import { type TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
 import { type TradingTransactionSignAndSendProps } from '../general/useTradingTransaction';
+
+const btcSymbol = asNetworkSymbol('btc');
+const solSymbol = asNetworkSymbol('sol');
 
 const mockReportToAnalytics = jest.fn();
 const mockResolveTransactionSendConsent = jest.fn();
@@ -152,8 +156,9 @@ describe('useTradingOutputsReviewScreenControls', () => {
                         accountKey ??
                         store
                             .getState()
-                            .wallet.accounts.find((account: Account) => account.symbol === 'btc')!
-                            .key,
+                            .wallet.accounts.find(
+                                (account: Account) => account.symbol === btcSymbol,
+                            )!.key,
                     signAndSendTransaction: mockSignAndSendTransaction,
                     resolveTransactionSendConsent: mockResolveTransactionSendConsent,
                     reportToAnalytics: mockReportToAnalytics,
@@ -347,7 +352,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                 store.dispatch(
                     sendFormActions.storeSignedTransaction({
                         serializedTx: {
-                            symbol: 'btc',
+                            symbol: btcSymbol,
                             tx: 'txid',
                         },
                     }),
@@ -371,7 +376,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
     describe('Solana transaction validity', () => {
         const createSolanaReviewStore = (isSigned = true) => {
             const serializedTx = isSigned
-                ? { symbol: 'sol' as const, tx: 'signed-solana-tx' }
+                ? { symbol: solSymbol, tx: 'signed-solana-tx' }
                 : undefined;
 
             store = createTestStore('exchange', {

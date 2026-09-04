@@ -2,6 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 
 import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
@@ -9,7 +10,9 @@ import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
 import { TradeInfo } from './TradeInfo';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
-const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
+const btcSymbol = asNetworkSymbol('btc');
+
+const btc1AccountKey = mockAccountKey({ symbol: btcSymbol, descriptor: 'btc1' });
 
 // Mock FeeSelector to avoid deep dependency chain (useFeesManagement, etc.)
 const mockFeeSelectorProps = jest.fn();

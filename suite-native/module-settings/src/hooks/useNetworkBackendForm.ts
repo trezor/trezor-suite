@@ -17,8 +17,9 @@ import {
 import {
     type BlockchainRootState,
     blockchainActions,
-    selectNetworkBlockchainInfo,
+    selectBlockchainState,
 } from '@suite-common/wallet-core';
+import { getBlockchain } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type SelectItemType } from '@suite-native/atoms';
 import { useForm, useWatch } from '@suite-native/forms';
@@ -38,7 +39,9 @@ export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
     const {
         connected,
         backends: { selected, urls },
-    } = useSelector((state: BlockchainRootState) => selectNetworkBlockchainInfo(state, symbol));
+    } = useSelector((state: BlockchainRootState) =>
+        getBlockchain(selectBlockchainState(state), symbol),
+    );
 
     const serverTypes = useMemo(() => {
         const defaultItem: SelectItemType<ServerType> = {

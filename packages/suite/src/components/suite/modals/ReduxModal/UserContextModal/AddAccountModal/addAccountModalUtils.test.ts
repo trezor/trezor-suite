@@ -1,4 +1,4 @@
-import { networks } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -9,15 +9,20 @@ import {
     getVisibleAccountCounts,
 } from './addAccountModalUtils';
 
+const btcNetwork = getNetwork(asNetworkSymbol('btc'));
+const ethNetwork = getNetwork(asNetworkSymbol('eth'));
+const solNetwork = getNetwork(asNetworkSymbol('sol'));
+const adaNetwork = getNetwork(asNetworkSymbol('ada'));
+
 describe('addAccountModalUtils', () => {
     describe(getSortedNetworks.name, () => {
         it('places enabled networks first and disabled networks last.', () => {
             const result = getSortedNetworks({
-                availableNetworks: [networks.eth, networks.btc, networks.sol, networks.ada],
-                enabledNetworkSymbols: [networks.btc.symbol, networks.ada.symbol],
+                availableNetworks: [ethNetwork, btcNetwork, solNetwork, adaNetwork],
+                enabledNetworkSymbols: [btcNetwork.symbol, adaNetwork.symbol],
             });
 
-            expect(result).toEqual([networks.btc, networks.ada, networks.eth, networks.sol]);
+            expect(result).toEqual([btcNetwork, adaNetwork, ethNetwork, solNetwork]);
         });
     });
 
@@ -25,22 +30,22 @@ describe('addAccountModalUtils', () => {
         it('counts only visible accounts belonging to the selected device state', () => {
             const accounts = [
                 mockWalletAccount({
-                    symbol: networks.btc.symbol,
+                    symbol: btcNetwork.symbol,
                     deviceState: 'state@device:0',
                     visible: true,
                 }),
                 mockWalletAccount({
-                    symbol: networks.btc.symbol,
+                    symbol: btcNetwork.symbol,
                     deviceState: 'state@device:0',
                     visible: false,
                 }),
                 mockWalletAccount({
-                    symbol: networks.eth.symbol,
+                    symbol: ethNetwork.symbol,
                     deviceState: 'state@device:0',
                     visible: true,
                 }),
                 mockWalletAccount({
-                    symbol: networks.btc.symbol,
+                    symbol: btcNetwork.symbol,
                     deviceState: 'other@device:0',
                     visible: true,
                 }),
@@ -55,15 +60,15 @@ describe('addAccountModalUtils', () => {
 
     describe(enqueueNetworkActivation.name, () => {
         it('does not enqueue a network more than once', () => {
-            expect(enqueueNetworkActivation([networks.btc.symbol], networks.btc.symbol)).toEqual([
-                networks.btc.symbol,
+            expect(enqueueNetworkActivation([btcNetwork.symbol], btcNetwork.symbol)).toEqual([
+                btcNetwork.symbol,
             ]);
         });
 
         it('appends a different network without reordering the queue', () => {
-            expect(enqueueNetworkActivation([networks.btc.symbol], networks.eth.symbol)).toEqual([
-                networks.btc.symbol,
-                networks.eth.symbol,
+            expect(enqueueNetworkActivation([btcNetwork.symbol], ethNetwork.symbol)).toEqual([
+                btcNetwork.symbol,
+                ethNetwork.symbol,
             ]);
         });
     });
@@ -72,22 +77,22 @@ describe('addAccountModalUtils', () => {
         it('returns only accounts created for the activated network after discovery started', () => {
             const existingAccount = mockWalletAccount({
                 descriptor: asAccountDescriptor('existingAccount'),
-                symbol: networks.btc.symbol,
+                symbol: btcNetwork.symbol,
             });
             const newBitcoinAccount = mockWalletAccount({
                 descriptor: asAccountDescriptor('newBitcoinAccount'),
-                symbol: networks.btc.symbol,
+                symbol: btcNetwork.symbol,
             });
             const newEthereumAccount = mockWalletAccount({
                 descriptor: asAccountDescriptor('newEthereumAccount'),
-                symbol: networks.eth.symbol,
+                symbol: ethNetwork.symbol,
             });
 
             expect(
                 getNewNetworkAccounts({
                     accounts: [existingAccount, newBitcoinAccount, newEthereumAccount],
                     existingAccountKeys: new Set([existingAccount.key]),
-                    networkSymbol: networks.btc.symbol,
+                    networkSymbol: btcNetwork.symbol,
                 }),
             ).toEqual([newBitcoinAccount]);
         });

@@ -1,6 +1,8 @@
 import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 const { getWalletTransaction } = testMocks;
+const btcSymbol = asNetworkSymbol('btc');
 
 export const findAnchorTransactionPage = [
     {
@@ -8,11 +10,11 @@ export const findAnchorTransactionPage = [
         transactions: [
             getWalletTransaction({
                 txid: 'txid1',
-                symbol: 'btc',
+                symbol: btcSymbol,
             }),
             getWalletTransaction({
                 txid: 'txid2',
-                symbol: 'btc',
+                symbol: btcSymbol,
             }),
         ],
         transactionsPerPage: 1,
@@ -23,11 +25,11 @@ export const findAnchorTransactionPage = [
         transactions: [
             getWalletTransaction({
                 txid: 'txid1',
-                symbol: 'btc',
+                symbol: btcSymbol,
             }),
             getWalletTransaction({
                 txid: 'txid2',
-                symbol: 'btc',
+                symbol: btcSymbol,
             }),
         ],
         transactionsPerPage: 1,
@@ -39,11 +41,11 @@ export const findAnchorTransactionPage = [
         transactions: [
             getWalletTransaction({
                 txid: 'txid1',
-                symbol: 'btc',
+                symbol: btcSymbol,
             }),
             getWalletTransaction({
                 txid: 'txid2',
-                symbol: 'btc',
+                symbol: btcSymbol,
             }),
         ],
         transactionsPerPage: 1,

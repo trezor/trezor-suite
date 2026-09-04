@@ -6,6 +6,7 @@ import {
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { useEthereumCancelTxCompose } from './useEthereumCancelTxCompose';
 
@@ -17,8 +18,8 @@ jest.mock('@suite-common/react-query', () => ({
 
 const mockUseQuery = useQuery as unknown as jest.Mock;
 
-const ethAccount = mockWalletAccount({ symbol: 'eth' }) as Account;
-const btcAccount = mockWalletAccount({ symbol: 'btc' }) as Account;
+const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as Account;
+const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') }) as Account;
 const ethTx = {
     rbfParams: { type: 'ethereum' },
 } as unknown as WalletAccountTransactionWithRequiredRbfParams;

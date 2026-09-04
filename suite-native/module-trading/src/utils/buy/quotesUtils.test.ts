@@ -2,6 +2,7 @@ import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { deviceInitialState } from '@suite-common/device';
 import { type TradingAssetOption } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
@@ -14,6 +15,8 @@ import { type BuyFormType } from '@suite-native/trading-types';
 
 import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from './quotesUtils';
 import { useBuyForm } from '../../hooks/buy/useBuyForm';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 describe('quotesUtils', () => {
     let form: BuyFormType;
@@ -99,10 +102,10 @@ describe('quotesUtils', () => {
                         coingeckoId: 'bitcoin' as CryptoId,
                         contractAddress: null,
                         name: 'Bitcoin',
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         displaySymbol: 'BTC',
                         networkName: 'Bitcoin',
-                        networkSymbol: 'btc',
+                        networkSymbol: btcSymbol,
                     } satisfies TradingAssetOption,
                     countrySelect: {
                         label: '🇺🇸 United States',

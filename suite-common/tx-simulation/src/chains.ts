@@ -1,7 +1,7 @@
 import { type MessageScanParams } from '@blockaid/client/resources/solana/message';
 import { type TransactionScanParams as StellarScanParams } from '@blockaid/client/resources/stellar/transaction';
 
-import { type Network, getNetwork } from '@suite-common/wallet-config';
+import { type Network, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { findEthereumNetworkSymbolByBlockaidChain } from '@trezor/network-ethereum-suite-common';
 import { type SolanaNetworkSymbol } from '@trezor/network-solana/constants';
 import { type StellarNetworkSymbol } from '@trezor/network-stellar/constants';
@@ -28,5 +28,5 @@ export const resolveBlockaidStellarChain = (symbol: StellarNetworkSymbol) =>
 export const getNetworkByBlockaidChain = (chain: string): Network | undefined => {
     const symbol = findEthereumNetworkSymbolByBlockaidChain(chain);
 
-    return symbol ? getNetwork(symbol) : undefined;
+    return symbol ? getNetwork(asNetworkSymbol(symbol)) : undefined;
 };

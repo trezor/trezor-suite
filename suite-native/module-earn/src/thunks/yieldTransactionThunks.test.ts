@@ -3,6 +3,7 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { selectSelectedDevice } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowResolvedData,
     type YieldFlowToken,
@@ -56,16 +57,17 @@ jest.mock('@suite-common/wallet-core', () => ({
 const STATIC_SESSION_ID: StaticSessionId = '1stTestnetAddress@device_id:0';
 const FLOW_KEY = 'flow-key';
 const OTHER_FLOW_KEY = 'other-flow-key';
+const ethSymbol = asNetworkSymbol('eth');
 
 const buildAccount = (descriptor: string) => {
     const accountKey = mockAccountKey({
-        symbol: 'eth',
+        symbol: ethSymbol,
         descriptor,
         deviceStaticSessionId: STATIC_SESSION_ID,
     });
 
     return {
-        symbol: 'eth',
+        symbol: ethSymbol,
         networkType: 'ethereum',
         key: accountKey,
         deviceState: STATIC_SESSION_ID,

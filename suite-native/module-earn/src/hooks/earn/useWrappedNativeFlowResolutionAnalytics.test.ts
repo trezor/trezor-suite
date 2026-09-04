@@ -1,8 +1,11 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useWrappedNativeFlowResolutionAnalytics } from './useWrappedNativeFlowResolutionAnalytics';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const renderResolutionAnalytics = async (
     props: Parameters<typeof useWrappedNativeFlowResolutionAnalytics>[0],
@@ -19,12 +22,12 @@ const renderResolutionAnalytics = async (
     return { ...view, analytics: services.analytics };
 };
 
-const pendingWrap = {
+const pendingWrap: Parameters<typeof useWrappedNativeFlowResolutionAnalytics>[0] = {
     flowType: 'wrap',
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
     status: 'pending',
     txid: 'tx-1',
-} as const satisfies Parameters<typeof useWrappedNativeFlowResolutionAnalytics>[0];
+};
 
 describe('useWrappedNativeFlowResolutionAnalytics', () => {
     it('reports success once when the status moves from pending to confirmed', async () => {

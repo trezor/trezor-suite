@@ -80,7 +80,7 @@ const initStore = (fees: FeesState = {}) =>
 
 describe(updateFeeInfoThunk.name, () => {
     it('fulfills with existing data for tron instead of fetching', async () => {
-        const store = initStore({ trx: { status: 'preloaded', data: tronFeeInfo } });
+        const store = initStore({ [trxSymbol]: { status: 'preloaded', data: tronFeeInfo } });
         const response = await store.dispatch(updateFeeInfoThunk({ networkSymbol: trxSymbol }));
 
         expect(response.meta.requestStatus).toBe('fulfilled');
@@ -106,7 +106,7 @@ describe(getOrFetchRawFeeInfoThunk.name, () => {
     });
 
     it('returns stored fee info without fetching', async () => {
-        const store = initStore({ eth: { status: 'preloaded', data: ethFeeInfo } });
+        const store = initStore({ [ethSymbol]: { status: 'preloaded', data: ethFeeInfo } });
 
         const response = await store.dispatch(
             getOrFetchRawFeeInfoThunk({ networkSymbol: ethSymbol }),

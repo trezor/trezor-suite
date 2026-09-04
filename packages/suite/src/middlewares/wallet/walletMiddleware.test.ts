@@ -14,6 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
@@ -27,6 +28,7 @@ const sendFormReducer = prepareSendFormReducer({
 });
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
+const ethSymbol = asNetworkSymbol('eth');
 
 type AccountsState = ReturnType<typeof accountsReducer>;
 type SettingsState = ReturnType<typeof walletSettingsReducer>;
@@ -168,9 +170,9 @@ describe('walletMiddleware', () => {
     });
 
     describe('window visibility regain', () => {
-        const account = mockWalletAccount({ symbol: 'eth' });
-        const pendingTx = { txid: 'abcd', blockHeight: -1, symbol: 'eth' };
-        const confirmedTx = { txid: 'abcd', blockHeight: 100, symbol: 'eth' };
+        const account = mockWalletAccount({ symbol: ethSymbol });
+        const pendingTx = { txid: 'abcd', blockHeight: -1, symbol: ethSymbol };
+        const confirmedTx = { txid: 'abcd', blockHeight: 100, symbol: ethSymbol };
 
         it('refetches a visible account with a pending tx when the window becomes visible', () => {
             const store = mockStore(
@@ -230,7 +232,7 @@ describe('walletMiddleware', () => {
 
         it('re-checks sibling accounts of the network, so a receiver balance updates too', () => {
             const receiver = mockWalletAccount({
-                symbol: 'eth',
+                symbol: ethSymbol,
                 descriptor: asAccountDescriptor('receiver'),
             });
             const store = mockStore(
@@ -248,7 +250,7 @@ describe('walletMiddleware', () => {
 
         it('kicks one sync per network even with multiple pending accounts', () => {
             const secondAccount = mockWalletAccount({
-                symbol: 'eth',
+                symbol: ethSymbol,
                 descriptor: asAccountDescriptor('second'),
             });
             const store = mockStore(
@@ -256,7 +258,7 @@ describe('walletMiddleware', () => {
                     accounts: [account, secondAccount],
                     transactions: {
                         [account.key]: [pendingTx],
-                        [secondAccount.key]: [{ txid: 'efgh', blockHeight: -1, symbol: 'eth' }],
+                        [secondAccount.key]: [{ txid: 'efgh', blockHeight: -1, symbol: ethSymbol }],
                     },
                     isWindowVisible: false,
                 }),
@@ -270,7 +272,7 @@ describe('walletMiddleware', () => {
         });
 
         it('skips accounts that are not visible', () => {
-            const hiddenAccount = mockWalletAccount({ symbol: 'eth', visible: false });
+            const hiddenAccount = mockWalletAccount({ symbol: ethSymbol, visible: false });
             const store = mockStore(
                 getInitialState({
                     accounts: [hiddenAccount],

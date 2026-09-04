@@ -11,6 +11,7 @@ import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { type Address } from '@trezor/blockchain-link-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
@@ -50,10 +51,11 @@ const SEARCH_INPUT = '@asset-picker/search/input';
 const DEVICE_SSID = 'btcWallet@deviceId:0' as const;
 const WALLET_DESCRIPTOR = 'btcWallet' as WalletDescriptor;
 const ACCOUNT_DESCRIPTOR = asAccountDescriptor('btcDescriptor');
+const btcSymbol = asNetworkSymbol('btc');
 
 const ACCOUNT_KEY = createAccountKey({
     accountDescriptor: ACCOUNT_DESCRIPTOR,
-    networkSymbol: 'btc',
+    networkSymbol: btcSymbol,
     deviceStaticSessionId: DEVICE_SSID,
 });
 
@@ -80,7 +82,7 @@ const btcAccount = {
     accountType: 'normal',
     visible: true,
     empty: false,
-    symbol: 'btc',
+    symbol: btcSymbol,
     networkType: 'bitcoin',
     formattedBalance: '0.003',
     addresses: {
@@ -91,11 +93,11 @@ const btcAccount = {
 } as unknown as Account;
 
 const mockSuiteSyncAddress = (address: string, label: string | null) => ({
-    id: createSuiteSyncAddressId(address, 'btc'),
+    id: createSuiteSyncAddressId(address, btcSymbol),
     address,
     label,
     accountDescriptor: ACCOUNT_DESCRIPTOR,
-    networkSymbol: 'btc' as const,
+    networkSymbol: btcSymbol,
 });
 
 const buildState = () => ({

@@ -1,4 +1,9 @@
-import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    getNetwork,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
@@ -24,7 +29,7 @@ export const getDecimalsForBaseCurrency = ({
         return 0;
     }
 
-    return code in networks ? networks[code as NetworkSymbol].decimals : 2;
+    return isNetworkSymbol(code) ? getNetwork(code).decimals : 2;
 };
 
 type AmountToFiatCurrencyWithSatsConversionParams = {
@@ -54,7 +59,7 @@ const amountToFiatCurrencyWithSatsConversion = ({
         ? asBaseCurrencyAmount(
               unitsToSubunits({
                   value: asAmountUnit(baseCurrencyAmountUnit),
-                  symbol: 'btc',
+                  symbol: asNetworkSymbol('btc'),
               }),
           )
         : baseCurrencyAmountUnit;
@@ -119,7 +124,7 @@ export const parseBaseCurrencyToFormattedCrypto = ({
         areSatsDisplayed
             ? subunitsToUnits({
                   value: asAmountSubunit(value),
-                  symbol: 'btc',
+                  symbol: asNetworkSymbol('btc'),
               })
             : value,
     );

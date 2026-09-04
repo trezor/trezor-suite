@@ -1,6 +1,7 @@
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type BackendSettings } from '@suite-common/wallet-types';
+import { getBlockchain } from '@suite-common/wallet-utils';
 
 import { type SetBackendPayload, blockchainActions } from './blockchainActions';
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
@@ -48,16 +49,19 @@ describe('blockchain reducer', () => {
         fixtures.forEach(([description, backends, payload, next]) => {
             it(description, () => {
                 expect(
-                    blockchainReducer(
-                        {
-                            ...blockchainInitialState,
-                            [payload.symbol]: {
-                                ...blockchainInitialState[payload.symbol],
-                                backends,
+                    getBlockchain(
+                        blockchainReducer(
+                            {
+                                ...blockchainInitialState,
+                                [payload.symbol]: {
+                                    ...getBlockchain(blockchainInitialState, payload.symbol),
+                                    backends,
+                                },
                             },
-                        },
-                        { type: blockchainActions.setBackend.type, payload },
-                    )[payload.symbol].backends,
+                            { type: blockchainActions.setBackend.type, payload },
+                        ),
+                        payload.symbol,
+                    ).backends,
                 ).toEqual(next);
             });
         });

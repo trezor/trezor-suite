@@ -1,7 +1,8 @@
-import { type NetworkSymbol, createNetworksCompositionRoot } from '@suite-common/networks';
+import { createNetworksCompositionRoot } from '@suite-common/networks';
+import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module';
 import { typedObjectFromEntries } from '@trezor/utils';
 
-import type { Network, NetworkType, Networks } from './types';
+import type { Network, Networks } from './types';
 
 /**
  * @deprecated This module-level composition is temporary during the modularization transition.
@@ -17,7 +18,7 @@ const createNetwork = (networkSymbol: NetworkSymbol): Network => {
 
     return {
         symbol: networkSymbol,
-        settlementLayer: settlementLayer as NetworkSymbol | undefined,
+        settlementLayer,
         yieldXyzId: yieldXyzId as Network['yieldXyzId'],
         ...networkConfig,
     };
@@ -27,7 +28,7 @@ const createNetwork = (networkSymbol: NetworkSymbol): Network => {
  * @deprecated Network display order shall be composed from network modules using fractional
  * indexing. See https://github.com/trezor/trezor-suite/issues/32060.
  */
-const networkDisplayOrder: readonly NetworkSymbol[] = [
+const networkDisplayOrder = asNetworkSymbols([
     'btc',
     'eth',
     'pol',
@@ -56,7 +57,7 @@ const networkDisplayOrder: readonly NetworkSymbol[] = [
     'txrp',
     'txlm',
     'ttrx',
-];
+]);
 
 const getNetworkDisplayOrder = (networkSymbol: NetworkSymbol): number => {
     const order = networkDisplayOrder.indexOf(networkSymbol);
@@ -80,24 +81,24 @@ export const networks: Networks = typedObjectFromEntries(
 );
 
 export type StakingNetworkSymbol = 'eth' | 'sol' | 'trx' | 'ada' | 'thod' | 'dsol';
-export type StakingNetworkType = Extract<NetworkType, 'ethereum' | 'solana' | 'tron' | 'cardano'>;
+export type StakingNetworkType = 'ethereum' | 'solana' | 'tron' | 'cardano';
 type ProdStakingNetworkSymbol = 'eth' | 'sol' | 'trx' | 'ada';
 
-const isStakingNetworkSymbol = (
-    networkSymbol: NetworkSymbol,
-): networkSymbol is StakingNetworkSymbol =>
-    getNetworkConfig(networkSymbol).features.includes('staking');
+export const STAKING_SYMBOLS: readonly StakingNetworkSymbol[] = [
+    'eth',
+    'sol',
+    'trx',
+    'ada',
+    'thod',
+    'dsol',
+];
 
-export const STAKING_SYMBOLS: readonly StakingNetworkSymbol[] =
-    registeredNetworkSymbols.filter(isStakingNetworkSymbol);
-
-const isProdStakingNetworkSymbol = (
-    networkSymbol: StakingNetworkSymbol,
-): networkSymbol is ProdStakingNetworkSymbol => !getNetworkConfig(networkSymbol).testnet;
-
-export const PROD_STAKING_SYMBOLS: readonly ProdStakingNetworkSymbol[] = STAKING_SYMBOLS.filter(
-    isProdStakingNetworkSymbol,
-);
+export const PROD_STAKING_SYMBOLS: readonly ProdStakingNetworkSymbol[] = [
+    'eth',
+    'sol',
+    'trx',
+    'ada',
+];
 
 export const STAKING_TYPES: readonly StakingNetworkType[] = [
     'ethereum',

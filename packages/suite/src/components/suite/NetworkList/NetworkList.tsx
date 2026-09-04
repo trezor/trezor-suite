@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBlockchainState } from '@suite-common/wallet-core';
+import { getBlockchain } from '@suite-common/wallet-utils';
 import { Column, Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
@@ -77,7 +78,7 @@ export const NetworkList = ({
         <Column gap={12} width="100%">
             {networks.map(network => {
                 const { symbol, name, support } = network;
-                const blockchainInfo = blockchain[symbol];
+                const blockchainInfo = getBlockchain(blockchain, symbol);
                 const hasCustomBackend = !!blockchainInfo.backends.selected;
                 const backendStatus = getBackendStatus(blockchainInfo);
 

@@ -46,6 +46,7 @@ describe('hasVisibleTokens', () => {
 });
 
 describe('enhanceTokensWithRates and sortTokensWithRates', () => {
+    const ethSymbol = asNetworkSymbol('eth');
     const USDT_CONTRACT = toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7');
     const SHIB_CONTRACT = toTokenAddress('0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce');
     const RATELESS_CONTRACT = toTokenAddress('0x2222222222222222222222222222222222222222');
@@ -56,19 +57,19 @@ describe('enhanceTokensWithRates and sortTokensWithRates', () => {
         lastSuccessfulFetchTimestamp: asTimestamp(1_000_000),
         isLoading: false,
         error: null,
-        ticker: { symbol: 'eth' as NetworkSymbol },
+        ticker: { symbol: ethSymbol as NetworkSymbol },
     });
 
     const fiatRates: RatesByKey = {
-        [getFiatRateKey('eth', 'usd', USDT_CONTRACT)]: createRate(1),
-        [getFiatRateKey('eth', 'usd', SHIB_CONTRACT)]: createRate(0.00001),
+        [getFiatRateKey(ethSymbol, 'usd', USDT_CONTRACT)]: createRate(1),
+        [getFiatRateKey(ethSymbol, 'usd', SHIB_CONTRACT)]: createRate(0.00001),
     };
 
     const createToken = (contract: string, symbol: string, balance: string) =>
         mockAccountToken({ name: symbol, symbol, contract: toTokenAddress(contract), balance });
 
     const sortTokens = (tokens: Account['tokens']) =>
-        enhanceTokensWithRates(tokens, 'usd', 'eth', fiatRates).toSorted(sortTokensWithRates);
+        enhanceTokensWithRates(tokens, 'usd', ethSymbol, fiatRates).toSorted(sortTokensWithRates);
 
     it('sorts by descending fiat value, not by balance', () => {
         const sorted = sortTokens([
@@ -101,7 +102,7 @@ describe('enhanceTokensWithRates and sortTokensWithRates', () => {
         const enhanced = enhanceTokensWithRates(
             [createToken(USDT_CONTRACT, 'USDT', '20')],
             'usd',
-            'eth',
+            ethSymbol,
         );
 
         expect(enhanced.map(token => token.fiatValue.toNumber())).toEqual([0]);

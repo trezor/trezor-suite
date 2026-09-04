@@ -1,4 +1,5 @@
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountDescriptor, type AccountKey } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -6,7 +7,7 @@ import { selectRewardsBalanceByAccountKey, useSelector } from '@suite-native/sta
 import { BigNumber } from '@trezor/utils';
 
 const NON_SOLANA_PLACEHOLDER_ACCOUNT = {
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: '' as AccountDescriptor,
 } as const;
 

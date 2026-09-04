@@ -1,4 +1,9 @@
-import { type Network, getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import {
+    type Network,
+    asNetworkSymbol,
+    getNetwork,
+    getNetworkByEvmChainId,
+} from '@suite-common/wallet-config';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 import { type NetworkChainId, asNetworkChainId } from '@trezor/network-module-suite-common-types';
 
@@ -65,7 +70,7 @@ export function getNetworkFromTxSimulationAction(action: TxSimulationAction): Ne
 
         case 'solanaSignTransaction':
         case 'stellarSignTransaction':
-            return getNetwork(action.symbol);
+            return getNetwork(asNetworkSymbol(action.symbol));
 
         default:
             return null;

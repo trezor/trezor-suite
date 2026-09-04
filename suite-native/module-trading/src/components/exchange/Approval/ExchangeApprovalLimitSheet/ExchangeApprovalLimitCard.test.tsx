@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Text } from '@suite-native/atoms';
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
@@ -7,6 +8,8 @@ import {
 } from './ExchangeApprovalLimitCard';
 
 const mockOnChange = jest.fn();
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 describe('ExchangeApprovalLimitCard', () => {
     const renderExchangeApprovalLimitCard = async (
@@ -39,14 +42,14 @@ describe('ExchangeApprovalLimitCard', () => {
     });
 
     it('should render crypto icon when symbol is provided', async () => {
-        const { getByLabelText } = await renderExchangeApprovalLimitCard({ symbol: 'btc' });
+        const { getByLabelText } = await renderExchangeApprovalLimitCard({ symbol: btcSymbol });
 
         expect(getByLabelText('btc')).toBeTruthy();
     });
 
     it('should render crypto icon with contract address when provided', async () => {
         const { getByLabelText } = await renderExchangeApprovalLimitCard({
-            symbol: 'eth',
+            symbol: ethSymbol,
             contractAddress: '0x123456789',
         });
 

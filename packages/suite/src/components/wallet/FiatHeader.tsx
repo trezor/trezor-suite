@@ -2,12 +2,15 @@ import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type AmountUnit, BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
+import { asNetworkSymbol } from '@trezor/network-module';
 import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite';
 
 import { BigAmountValue } from './BigAmountValue';
 import { useFiatFromCryptoValue } from '../../hooks/suite/useFiatFromCryptoValue';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 type UseFiatAmountProps = {
     amount: string | AmountUnit; // Todo: `string` only for back compatibility
@@ -23,7 +26,7 @@ type FiatHeaderProps = {
 const useFiatAmount = ({ amount, symbol }: UseFiatAmountProps) => {
     const { fiatAmount } = useFiatFromCryptoValue({
         amount,
-        symbol: symbol ?? 'btc',
+        symbol: symbol ?? btcSymbol,
     });
 
     if (!symbol) {

@@ -79,15 +79,30 @@ export const filterNetworksByName = (someNetworks: Network[], searchQuery: strin
     );
 };
 
+/**
+ * Get network object by symbol as a generic `Network` type.
+ * @param symbol
+ */
+export const getNetwork = (symbol: NetworkSymbol): Network => {
+    const network = networks[symbol];
+
+    if (network === undefined) {
+        throw new Error(`Network configuration not found: ${symbol}`);
+    }
+
+    return network;
+};
+
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
-    networks[symbol]?.backendOptions.some(option => option.type === 'blockbook');
+    getNetwork(symbol).backendOptions.some(option => option.type === 'blockbook');
 
 export const isNetworkUsingExternalBackend = (symbol: NetworkSymbol) =>
-    !!networks[symbol]?.backendOptions.some(
+    !!getNetwork(symbol).backendOptions.some(
         option => 'isExternalBackend' in option && option.isExternalBackend,
     );
 
-export const getNetworkType = (symbol: NetworkSymbol): NetworkType => networks[symbol]?.networkType;
+export const getNetworkType = (symbol: NetworkSymbol): NetworkType =>
+    getNetwork(symbol).networkType;
 
 export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
     const networkType = getNetworkType(symbol);
@@ -109,21 +124,14 @@ export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
 };
 
 // Takes into account just network features, not features for specific accountTypes.
-export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
-    networks[symbol]?.features;
+export const getNetworkFeatures = (symbol: NetworkSymbol): readonly NetworkFeature[] =>
+    getNetwork(symbol).features;
 
 export const getCoingeckoId = (symbol: NetworkSymbol): string | undefined =>
-    networks[symbol].coingeckoId;
+    getNetwork(symbol).coingeckoId;
 
 export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
     Object.hasOwn(networks, symbol);
-
-/**
- * Get network object by symbol as a generic `Network` type.
- * If you need the exact inferred type, use `networks[symbol]` directly.
- * @param symbol
- */
-export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
 
 /**
  * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.

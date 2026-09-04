@@ -2,6 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import type { GetSupportedNetworksDep } from '@suite-common/networks';
 import { mockGetSupportedNetworks } from '@suite-common/networks/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -32,6 +33,8 @@ jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),
     selectAccountsWithTokensToSellSectionListByTradingType: jest.fn(),
 }));
+const btcSymbol = asNetworkSymbol('btc');
+
 const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
     selectAccountsWithTokensToSellSectionListByTradingType as unknown as jest.Mock;
 const reportMock = jest.fn();
@@ -67,7 +70,7 @@ describe('SellSendAssetPicker', () => {
     const defaultAssets: MyAsset[] = [
         {
             name: 'Bitcoin',
-            symbol: 'btc',
+            symbol: btcSymbol,
             cryptoId: 'bitcoin' as CryptoId,
             balance: '1.23',
             fiatBalance: asBaseCurrencyAmount(new BigNumber(45.6)),

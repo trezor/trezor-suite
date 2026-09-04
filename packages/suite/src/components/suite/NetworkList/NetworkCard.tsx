@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { isNetworkIconSymbol } from '@suite-common/icons';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, Column, IconButton, Row, StatusBadge, Text } from '@trezor/components';
 import { SlidersIcon } from '@trezor/icons';
@@ -51,7 +52,9 @@ export const NetworkCard = ({
                 onClick={isCardClickable && onClick ? () => onClick(symbol, !isEnabled) : undefined}
             >
                 <Row padding={{ vertical: 12, horizontal: 14 }} gap={12} maxWidth="100%">
-                    <NetworkIcon size={24} networkSymbol={symbol} />
+                    {isNetworkIconSymbol(symbol) && (
+                        <NetworkIcon size={24} networkSymbol={symbol} />
+                    )}
                     <Column flex="1" minWidth={0} minHeight={32} justifyContent="center">
                         <Text typographyStyle="body-sm-strong" ellipsisLineCount={1}>
                             {name}

@@ -1,5 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type IconComponent, Toast, type ToastProps } from '@trezor/components';
 import * as generatedIcons from '@trezor/icons';
 
@@ -25,6 +26,9 @@ type ExchangeInfoToastStoryArgs = {
     dismissible: boolean;
 };
 
+const solSymbol = asNetworkSymbol('sol');
+const ethSymbol = asNetworkSymbol('eth');
+
 const mapNotificationVariantToIntent = (variant: NotificationVariant): ToastProps['intent'] => {
     const variantMap: Record<NotificationVariant, ToastProps['intent']> = {
         success: 'brand',
@@ -41,13 +45,13 @@ const exchangeInfoContent = (
     <ExchangeInfoNotification
         message="Swap transaction from Solana #1 to Ethereum #1 was broadcast"
         send={{
-            symbol: 'sol',
+            symbol: solSymbol,
             amount: 3,
             displaySymbol: 'SOL',
             coingeckoId: 'solana',
         }}
         receive={{
-            symbol: 'eth',
+            symbol: ethSymbol,
             amount: 0.0051663,
             displaySymbol: 'ETH',
             coingeckoId: 'ethereum',

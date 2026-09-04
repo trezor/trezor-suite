@@ -1,5 +1,6 @@
 import { gotoThunk } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -55,11 +56,13 @@ type RestoreCoinjoinAccountsFixture = {
 };
 
 const ACCOUNT_KEY_12345 = mockAccountKey({ descriptor: '12345' });
+const btcSymbol = asNetworkSymbol('btc');
+const ltcSymbol = asNetworkSymbol('ltc');
 
 const ACCOUNT: Partial<Account> = {
     accountType: 'coinjoin',
     backendType: 'coinjoin',
-    symbol: 'btc',
+    symbol: btcSymbol,
     deviceState: '1stTestnetAddress@device_id:0',
     key: ACCOUNT_KEY_12345,
 };
@@ -203,7 +206,7 @@ export const startCoinjoinSession: StartCoinjoinSessionFixture[] = [
         description: 'client not found',
         params: {
             ...ACCOUNT,
-            symbol: 'ltc', // only btc is supported in tests
+            symbol: ltcSymbol, // only btc is supported in tests
         },
         result: {
             actions: [],

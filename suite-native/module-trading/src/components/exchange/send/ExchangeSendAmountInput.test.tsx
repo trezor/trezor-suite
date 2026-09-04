@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
@@ -20,6 +21,8 @@ import {
     renderHookWithTradingProvider,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const mockUseAmountInputDecimals = jest.fn(
     (_account?: Account, _contractAddress?: TokenAddress) => 8,
@@ -186,13 +189,13 @@ describe('ExchangeSendAmountInput', () => {
     });
 
     it('should limit value to decimals based on useAmountInputDecimals return value', async () => {
-        const accountKey = mockAccountKey({ symbol: 'eth', descriptor: 'accountKey' });
+        const accountKey = mockAccountKey({ symbol: ethSymbol, descriptor: 'accountKey' });
         const form = await renderUseTradingExchangeForm();
         await act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendAccount', {
                 key: accountKey,
-                symbol: 'eth',
+                symbol: ethSymbol,
             } as Account);
         });
         const { getByLabelText } = await renderCryptoAmountInput({}, form);
@@ -204,7 +207,7 @@ describe('ExchangeSendAmountInput', () => {
 
         expect(form.getValues('sendCryptoAmount')).toEqual('1.01234567');
         expect(mockUseAmountInputDecimals).toHaveBeenLastCalledWith(
-            { key: accountKey, symbol: 'eth' },
+            { key: accountKey, symbol: ethSymbol },
             '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         );
     });

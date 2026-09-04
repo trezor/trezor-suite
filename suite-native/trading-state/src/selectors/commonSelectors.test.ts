@@ -2,7 +2,6 @@ import type { CryptoId } from 'invity-api';
 
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { type MessageSystemState } from '@suite-common/message-system';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import {
     type Action,
@@ -32,6 +31,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/device-utils';
+import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module';
 import { BigNumber } from '@trezor/utils';
 
 import { type TradingRootState, tradingInitialState } from '../reducers';
@@ -57,7 +57,12 @@ import {
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
 } from './commonSelectors';
 
-const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
+const btcSymbol = asNetworkSymbol('btc');
+const supportedCoins: readonly NetworkSymbol[] = [
+    btcSymbol,
+    asNetworkSymbol('eth'),
+    asNetworkSymbol('base'),
+];
 
 const actionId = 'ActionId_1';
 const contentText = 'Content Text';
@@ -1450,7 +1455,7 @@ describe('commonSelectors', () => {
         it('should sort accounts by type', () => {
             const result = selectVisibleDeviceAccountsByNetworkSymbolSorted(
                 getStateWithAccounts(),
-                'btc',
+                btcSymbol,
             );
 
             expect(result).toEqual([
@@ -1463,18 +1468,18 @@ describe('commonSelectors', () => {
         it('should be stable', () => {
             const preloadedState = getStateWithAccounts();
 
-            expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
-                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
-            );
+            expect(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, btcSymbol),
+            ).toBe(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, btcSymbol));
         });
 
         it('should be stable even for empty result', () => {
             const preloadedState = getStateWithAccounts();
             preloadedState.wallet.accounts = [];
 
-            expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
-                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
-            );
+            expect(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, btcSymbol),
+            ).toBe(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, btcSymbol));
         });
     });
 

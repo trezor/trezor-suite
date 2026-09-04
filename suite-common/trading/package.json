@@ -36,6 +36,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/network-module": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",

@@ -1,4 +1,5 @@
 import { tradingActions } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
@@ -17,6 +18,8 @@ import {
     type TradingTestPreloadedState,
     createTradingLightStore,
 } from '../../../test-utils/tradingTestUtils';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const mockComposeEvmApprovalFeeLevelsThunk = jest.fn();
 
@@ -57,7 +60,10 @@ describe('useEvmApprovalFees', () => {
         wallet: {
             trading: {
                 exchange: {
-                    tradingAccountKey: mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' }),
+                    tradingAccountKey: mockAccountKey({
+                        symbol: ethSymbol,
+                        descriptor: 'eth1normal',
+                    }),
                     selectedQuote: dexQuoteWithApprovalData as any,
                 },
             },

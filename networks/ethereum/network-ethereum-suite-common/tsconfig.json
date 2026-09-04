@@ -8,6 +8,9 @@
         { "path": "../../../packages/connect" },
         { "path": "../network-ethereum" },
         {
+            "path": "../../network-module/network-module"
+        },
+        {
             "path": "../../network-module/network-module-suite-common-types"
         },
         { "path": "../../../packages/utils" }

@@ -5,6 +5,7 @@ import {
     type TokenDefinitionsRootState,
     selectCoinDefinitions,
 } from '@suite-common/token-definitions';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { type TokenDetailByMint } from '@trezor/blockchain-link-types';
@@ -25,7 +26,7 @@ export const useInactiveStellarTokens = (accountKey?: AccountKey) => {
     );
 
     const coinDefinitions = useSelector((state: TokenDefinitionsRootState) =>
-        selectCoinDefinitions(state, account?.symbol ?? 'xlm'),
+        selectCoinDefinitions(state, account?.symbol ?? asNetworkSymbol('xlm')),
     );
 
     const isCoinDefinitionsLoading = coinDefinitions?.isLoading ?? false;

@@ -1,7 +1,7 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { useDispatch } from '@suite-common/redux-utils';
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
@@ -33,7 +33,7 @@ export const ConfirmEvmExplanationModal = ({
         return null;
     }
 
-    const network = networks[account.symbol];
+    const network = getNetwork(account.symbol);
     const isVisible =
         account.empty &&
         network.networkType === 'ethereum' &&

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';
@@ -137,7 +137,8 @@ export const useStakingPromoNavigation = () => {
 
     const handleStakingPromoPress = useCallback(
         (item: StakingEarnItem) => {
-            const resolution = resolveStakingPromoAccounts({ symbol: item.symbol, accounts });
+            const networkSymbol = asNetworkSymbol(item.symbol);
+            const resolution = resolveStakingPromoAccounts({ symbol: networkSymbol, accounts });
 
             if (resolution.isDesktopOnly) {
                 openInfoModal();
@@ -154,8 +155,8 @@ export const useStakingPromoNavigation = () => {
             const { navigableAccounts } = resolution;
 
             if (navigableAccounts.length === 0) {
-                setPendingEnableSymbol(item.symbol);
-                pendingEnableSymbolRef.current = item.symbol;
+                setPendingEnableSymbol(networkSymbol);
+                pendingEnableSymbolRef.current = networkSymbol;
                 enableNetworkContinuedRef.current = false;
                 openEnableNetworkModal();
 
@@ -171,7 +172,7 @@ export const useStakingPromoNavigation = () => {
             }
 
             setChosenAccounts(navigableAccounts);
-            chooseAccountSymbolRef.current = item.symbol;
+            chooseAccountSymbolRef.current = networkSymbol;
             chooseAccountContinuedRef.current = false;
             openChooseAccountModal();
         },

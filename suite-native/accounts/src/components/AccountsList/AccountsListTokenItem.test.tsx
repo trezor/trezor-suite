@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenInfoBranded, toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { Text } from '@suite-native/atoms';
@@ -14,7 +15,7 @@ const mockToken: TokenInfoBranded = {
     balance: '23.910287',
 };
 
-const mockAccount = mockWalletAccount({ symbol: 'eth', tokens: [mockToken] });
+const mockAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth'), tokens: [mockToken] });
 
 jest.mock('@suite-native/icons', () => ({
     TokenIcon: () => null,

@@ -1,6 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type Rate,
@@ -17,6 +17,7 @@ import { aggregateTradeableAssetBalances } from './tradeableAssetBalanceUtils';
 const ETH_CRYPTO_ID = 'ethereum' as CryptoId;
 const USDC_CONTRACT = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const USDC_CRYPTO_ID = `ethereum--${USDC_CONTRACT}` as CryptoId;
+const ethSymbol = asNetworkSymbol('eth');
 
 const createRate = (rate: number, symbol: NetworkSymbol): Rate => ({
     rate,
@@ -29,7 +30,7 @@ const createRate = (rate: number, symbol: NetworkSymbol): Rate => ({
 
 const createEthAccount = (descriptor: string, account: Partial<Account> = {}): Account =>
     mockWalletAccount({
-        symbol: 'eth',
+        symbol: ethSymbol,
         descriptor: asAccountDescriptor(descriptor),
         formattedBalance: '0',
         tokens: [],
@@ -37,8 +38,8 @@ const createEthAccount = (descriptor: string, account: Partial<Account> = {}): A
     });
 
 const ratesInUsd: RatesByKey = {
-    [getFiatRateKey('eth', 'usd')]: createRate(2_000, 'eth'),
-    [getFiatRateKey('eth', 'usd', USDC_CONTRACT)]: createRate(1, 'eth'),
+    [getFiatRateKey(ethSymbol, 'usd')]: createRate(2_000, ethSymbol),
+    [getFiatRateKey(ethSymbol, 'usd', USDC_CONTRACT)]: createRate(1, ethSymbol),
 };
 
 describe('aggregateTradeableAssetBalances', () => {

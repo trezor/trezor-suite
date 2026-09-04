@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -11,6 +12,8 @@ import {
 
 import { type UseExchangeFlowProps, useExchangeFlow } from './useExchangeFlow';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const mockNavigate = jest.fn();
 let mockConfirmTradeThunk: jest.Mock;
@@ -143,7 +146,7 @@ describe('useExchangeFlow', () => {
                     receiveAddress: 'test-address',
                     account: expect.objectContaining({
                         key: btc1Account.key,
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                     }),
                     extraField: undefined,
                     trade: mockTrade,
@@ -208,7 +211,7 @@ describe('useExchangeFlow', () => {
 
             const tradingState = getInitializedTradingStateWithQuotes();
             tradingState.exchange.tradingAccountKey = mockAccountKey({
-                symbol: 'btc',
+                symbol: btcSymbol,
                 descriptor: 'unknownAccount',
             });
             tradingState.exchange.receiveAccountKey = btc2Account.key;
@@ -268,7 +271,7 @@ describe('useExchangeFlow', () => {
                     payload: {
                         account: expect.objectContaining({
                             key: btc1Account.key,
-                            symbol: 'btc',
+                            symbol: btcSymbol,
                         }),
                         device: expect.objectContaining({
                             path: 'device-path',

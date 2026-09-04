@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -8,6 +9,9 @@ import {
     createTradingLightStore,
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+const btcSymbol = asNetworkSymbol('btc');
+const solSymbol = asNetworkSymbol('sol');
 
 const mockShowAlert = jest.fn();
 
@@ -34,7 +38,7 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
         const { result } = await renderUseTradingOutputsReviewErrorAlert(
-            mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
+            mockAccountKey({ symbol: btcSymbol, descriptor: 'btc1normal' }),
         );
 
         await act(() => {
@@ -60,7 +64,7 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         const mockOnCancel = jest.fn();
         const { result } = await renderUseTradingOutputsReviewErrorAlert(
             mockAccountKey({
-                symbol: 'sol',
+                symbol: solSymbol,
                 descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
             }),
         );

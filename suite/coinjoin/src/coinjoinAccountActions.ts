@@ -22,12 +22,14 @@ import {
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getAccountTransactions,
+    getBlockchain,
     sortByBIP44AddressIndex,
     substituteBip43Path,
 } from '@suite-common/wallet-utils';
 import { type BroadcastedTransactionDetails, type ScanAccountProgress } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { asNetworkSymbol } from '@trezor/network-module';
 import { promiseAllSequence } from '@trezor/utils';
 
 import * as coinjoinClientActions from './coinjoinClientActions';
@@ -381,7 +383,7 @@ export const createPendingTransactionThunk =
 
         // deadline = pending tx not found in mempool after two mined blocks
         const pending = await backend.createPendingTransaction(account, payload);
-        const deadline = state.wallet.blockchain[account.symbol].blockHeight + 2;
+        const deadline = getBlockchain(state.wallet.blockchain, account.symbol).blockHeight + 2;
         dispatch(
             coinjoinAccountAddTransactions({
                 account,
@@ -396,14 +398,9 @@ type CleanPendingTransactionsThunkState = BlockchainRootState & TransactionsRoot
 const cleanPendingTransactionsThunk =
     (account: Account, pending: { txid: string }[]) =>
     (dispatch: Dispatch, getState: () => CleanPendingTransactionsThunkState) => {
-        const {
-            wallet: {
-                transactions: { transactions },
-                blockchain: {
-                    [account.symbol]: { blockHeight },
-                },
-            },
-        } = getState();
+        const state = getState();
+        const { transactions } = state.wallet.transactions;
+        const { blockHeight } = getBlockchain(state.wallet.blockchain, account.symbol);
         const pendingTxids = pending.map(({ txid }) => txid);
         const txs = getAccountTransactions(account.key, transactions).filter(tx =>
             tx.deadline
@@ -534,7 +531,7 @@ export const clearCoinjoinInstancesThunk =
         const cjAccount = selectCoinjoinAccounts(getState()).find(a => a.symbol === symbol);
         // clear CoinjoinClientInstance if there are no related accounts left
         if (!cjAccount) {
-            dispatch(coinjoinClientActions.clientDisable(symbol));
+            dispatch(coinjoinClientActions.clientDisable(asNetworkSymbol(symbol)));
             CoinjoinService.removeInstance(symbol);
         }
     };

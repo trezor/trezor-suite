@@ -6,6 +6,7 @@ import {
 } from '@suite-common/suite-sync-evolu';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import type { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
 import { type WalletDescriptor, asWalletDescriptor } from '@trezor/device-utils';
@@ -18,7 +19,7 @@ import {
     createWalletRowId,
 } from './createEvoluRowIds';
 
-const networkSymbol = 'btc' as const;
+const networkSymbol = asNetworkSymbol('btc');
 const BTC_TX_TARGET_ID = '0';
 
 type SuiteSyncFixtureParams = {
