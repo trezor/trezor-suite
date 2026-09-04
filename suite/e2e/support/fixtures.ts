@@ -3,6 +3,8 @@ import { checkEvoluRelayServerRunning } from '@suite-common/e2e-evolu-client';
 import type { PerfMetrics } from '@trezor/perf-e2e';
 
 import { AnalyticsFixture, AnalyticsHelper } from './analytics';
+import { ClipboardFixture } from './clipboard';
+import { isDesktopProject } from './common';
 import { measurePerformance } from '../performance/perfMeasure';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
@@ -76,6 +78,7 @@ type Fixtures = {
     txSimulationModal: TxSimulationModal;
     paginationControl: PaginationControl;
     toastSection: ToastSection;
+    clipboard: ClipboardFixture;
     evoluClient: EvoluClient;
     perf: {
         /**
@@ -205,6 +208,16 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     toastSection: async ({ page }, use) => {
         await use(new ToastSection(page));
+    },
+    clipboard: async ({ page, target, webClipboardRead }, use) => {
+        if (!isDesktopProject(target) && !webClipboardRead) {
+            throw new Error(
+                'Reading the clipboard in the web app requires test.use({ webClipboardRead: true }).',
+            );
+        }
+        const clipboard = new ClipboardFixture(page);
+        await clipboard.clear();
+        await use(clipboard);
     },
     evoluClient: async ({}, use) => {
         await checkEvoluRelayServerRunning();

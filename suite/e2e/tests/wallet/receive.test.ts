@@ -6,11 +6,7 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({
-        contextOptions: {
-            permissions: ['clipboard-read', 'clipboard-write'],
-        },
-    });
+    test.use({ webClipboardRead: true });
 
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
@@ -58,23 +54,11 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
                     stream: TestStream.Engagement,
                 }),
             },
-            async ({ page, devicePrompt, settingsPage, walletPage }) => {
+            async ({ devicePrompt, settingsPage, walletPage, clipboard }) => {
                 await test.step(`Enable ${coin.toUpperCase()} and open the receive tab`, async () => {
                     await settingsPage.changeNetworks({ enableNetworks: [coin] });
                     await walletPage.accountButton({ symbol: coin }).click();
                     await walletPage.receiveButton.click();
-                });
-
-                await test.step('Intercept clipboard writes', async () => {
-                    await page.evaluate(() => {
-                        const clipboard = navigator.clipboard as any;
-                        const original = clipboard.writeText.bind(clipboard);
-                        clipboard.writeText = (text: string) => {
-                            (window as any).__clipboardCapture = text;
-
-                            return original(text).catch(() => undefined);
-                        };
-                    });
                 });
 
                 await test.step('Copy the receive address', async () => {
@@ -95,9 +79,7 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await test.step('Verify the copied address matches the device display and QR code', async () => {
-                    const clipboardText = await page.evaluate(
-                        () => (window as any).__clipboardCapture as string,
-                    );
+                    const clipboardText = await clipboard.read();
                     expect.soft(address).toEqual(`${deviceDisplayPrefix}${clipboardText}`);
                     expect.soft(address).toMatch(addressFormat);
                     await expect(walletPage.receiveQrCode).toHaveQrCodeValue(clipboardText);
