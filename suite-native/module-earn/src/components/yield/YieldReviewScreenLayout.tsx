@@ -7,6 +7,7 @@ import {
 } from '@suite-native/confirm-on-trezor';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
+import { ScrollToEndOnMount } from '@suite-native/scrollview';
 
 type YieldReviewScreenLayoutProps = {
     children: ReactNode;
@@ -35,11 +36,10 @@ export const YieldReviewScreenLayout = ({
                 }
             />
         }
-        shouldKeepScrolledToEnd={!!submitButton}
     >
         <VStack flex={1} justifyContent="space-between">
             {children}
-            {submitButton}
+            {!!submitButton && <ScrollToEndOnMount>{submitButton}</ScrollToEndOnMount>}
         </VStack>
     </ConfirmOnTrezorWrapper>
 );

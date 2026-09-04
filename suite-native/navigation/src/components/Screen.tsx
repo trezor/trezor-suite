@@ -35,7 +35,6 @@ export type ScreenProps = {
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
     containerStyle?: ViewProps['style'];
-    shouldKeepScrolledToEnd?: boolean;
 };
 
 const screenContainerStyle = prepareNativeStyle<{
@@ -96,7 +95,6 @@ export const Screen = ({
     focusedInputBottomOffset,
     isFooterKeyboardAware = true,
     hasBottomInset = true,
-    shouldKeepScrolledToEnd = false,
 }: ScreenProps) => {
     const {
         applyStyle,
@@ -150,7 +148,6 @@ export const Screen = ({
                     focusedInputBottomOffset={focusedInputBottomOffset}
                     refreshControl={refreshControl}
                     isDynamicHeader={isScreenHeaderPropDynamic(header)}
-                    shouldKeepScrolledToEnd={shouldKeepScrolledToEnd}
                 >
                     {shouldRenderDynamicScrollableHeader && (
                         <DynamicScrollableScreenContentHeader {...dynamicHeaderProps} />

@@ -1,21 +1,16 @@
-import { type ReactNode, useEffect, useRef } from 'react';
+import { type ReactNode } from 'react';
+import { View } from 'react-native';
 
-import { useScrollView } from './ScrollViewContext';
+import { useScrollViewRef } from './ScrollViewContext';
 
 type ScrollToEndOnMountProps = {
     children: ReactNode;
 };
 
 export const ScrollToEndOnMount = ({ children }: ScrollToEndOnMountProps) => {
-    const scrollView = useScrollView();
-    const wasScrolled = useRef(false);
+    const scrollViewRef = useScrollViewRef();
 
-    useEffect(() => {
-        if (scrollView && !wasScrolled.current) {
-            wasScrolled.current = true;
-            scrollView.scrollToEnd({ animated: true });
-        }
-    }, [scrollView]);
+    const onLayout = () => scrollViewRef.current?.scrollToEnd({ animated: true });
 
-    return children;
+    return <View onLayout={onLayout}>{children}</View>;
 };

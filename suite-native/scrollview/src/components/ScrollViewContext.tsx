@@ -5,4 +5,4 @@ export const ScrollViewContext = createContext<MutableRefObject<ScrollView | nul
     current: null,
 });
 
-export const useScrollView = () => useContext(ScrollViewContext).current;
+export const useScrollViewRef = () => useContext(ScrollViewContext);
