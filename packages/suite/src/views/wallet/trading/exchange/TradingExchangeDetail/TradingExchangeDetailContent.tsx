@@ -16,6 +16,7 @@ import { TradingDetailLayout } from 'src/views/wallet/trading/common/TradingDeta
 import { TradingDetailProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
 import { TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
 import { TradingDetailSendingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSendingStep';
+import { TradingDetailTransactionIdRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
 import {
     getTradingDetailStepState,
     processingHeaderMessages,
@@ -87,7 +88,15 @@ export const TradingExchangeDetailContent = () => {
                     trade={trade.data}
                     provider={provider}
                     isDex={trade.data.isDex}
-                />
+                >
+                    {!!trade.data.isDex && (
+                        <TradingDetailTransactionIdRow
+                            txId={trade.data.receiveTxHash}
+                            account={sendAccount}
+                            receiveAccountKey={trade.receiveAccountKey}
+                        />
+                    )}
+                </TradingDetailProcessingStep>
             </TradingDetailProgress>
         );
 

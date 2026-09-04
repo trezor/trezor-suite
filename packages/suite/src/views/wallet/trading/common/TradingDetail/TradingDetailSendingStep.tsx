@@ -9,6 +9,7 @@ import { Column, InfoItem, type StepListItemState } from '@trezor/components';
 import { useLocales, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
+import { TradingDetailTransactionIdRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
 import { TradingDetailTxId } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTxId';
 import { getTxEstimatedTimeSeconds } from 'src/views/wallet/trading/common/TradingDetail/utils';
 
@@ -47,38 +48,36 @@ export const TradingDetailSendingStep = ({
         ? `~${formatDurationStrict(estimatedTimeSeconds, locale)}`
         : undefined;
 
-    const txIdLink =
-        txId && account ? (
-            <TradingDetailTxId
-                intent="neutral"
-                priority={state === 'done' ? 'secondary' : 'primary'}
-                value={txId}
-                account={account}
-                receiveAccountKey={receiveAccountKey}
-            />
-        ) : null;
+    const hasTxId = !!txId && !!account;
 
     return (
         <TradingDetailStep
-            doneContent={txIdLink}
+            doneContent={
+                hasTxId ? (
+                    <TradingDetailTxId
+                        intent="neutral"
+                        priority="secondary"
+                        value={txId}
+                        account={account}
+                        receiveAccountKey={receiveAccountKey}
+                    />
+                ) : null
+            }
             state={state}
             title={<Translation id={getTitleId(state)} />}
         >
-            {!!txIdLink || !!estimatedTime ? (
+            {hasTxId || !!estimatedTime ? (
                 <Column gap={8}>
                     {!!estimatedTime && (
                         <InfoItem label={<Translation id="TR_ESTIMATED_TIME" />} direction="row">
                             {estimatedTime}
                         </InfoItem>
                     )}
-                    {!!txIdLink && (
-                        <InfoItem
-                            label={<Translation id="TR_TRADING_DETAIL_TRANSACTION_ID" />}
-                            direction="row"
-                        >
-                            {txIdLink}
-                        </InfoItem>
-                    )}
+                    <TradingDetailTransactionIdRow
+                        txId={txId}
+                        account={account}
+                        receiveAccountKey={receiveAccountKey}
+                    />
                 </Column>
             ) : null}
         </TradingDetailStep>
