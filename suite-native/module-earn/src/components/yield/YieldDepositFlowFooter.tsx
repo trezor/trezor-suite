@@ -1,6 +1,8 @@
 import { SlideInDown } from 'react-native-reanimated';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldApprovalAction } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { AnimatedBox, Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Translation, type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -22,6 +24,7 @@ const rewardsBoxStyle = prepareNativeStyle(utils => ({
 }));
 
 type YieldDepositFlowFooterProps = {
+    accountKey: AccountKey;
     amountValue: string | undefined;
     apy: number | null;
     approvalAction?: YieldApprovalAction;
@@ -31,8 +34,8 @@ type YieldDepositFlowFooterProps = {
     onPress: () => void;
     onSkipPress?: () => void;
     shouldKeepEstimatedRewardsVisible?: boolean;
-    /** For a wrapped-native vault this is the native symbol the user thinks in, e.g. ETH. */
-    tokenSymbol: string;
+    networkSymbol: NetworkSymbol;
+    tokenContract?: TokenAddress;
 };
 
 const getSubmitButtonTranslationId = (
@@ -50,6 +53,7 @@ const getSubmitButtonTranslationId = (
 };
 
 export const YieldDepositFlowFooter = ({
+    accountKey,
     amountValue,
     apy,
     approvalAction,
@@ -59,7 +63,8 @@ export const YieldDepositFlowFooter = ({
     onPress,
     onSkipPress,
     shouldKeepEstimatedRewardsVisible = false,
-    tokenSymbol,
+    networkSymbol,
+    tokenContract,
 }: YieldDepositFlowFooterProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
@@ -82,12 +87,14 @@ export const YieldDepositFlowFooter = ({
                         {isEstimatedRewardsVisible && (
                             <Box paddingVertical="sp12">
                                 <EarnEstimatedRewards
+                                    accountKey={accountKey}
                                     amountValue={amountValue}
                                     apy={apy}
                                     label={
                                         <Translation id="earn.yieldDepositFlowScreen.estimatedRewardsLabel" />
                                     }
-                                    symbol={tokenSymbol}
+                                    symbol={networkSymbol}
+                                    tokenContract={tokenContract}
                                 />
                             </Box>
                         )}
