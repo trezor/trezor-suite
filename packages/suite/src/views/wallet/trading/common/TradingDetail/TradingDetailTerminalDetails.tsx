@@ -1,15 +1,14 @@
-import { Translation } from '@suite/intl';
 import {
     type TradingProviderInfo,
     type TradingTradeType,
     getStatusUrl,
 } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Box, Column, Divider, InfoItem, Text } from '@trezor/components';
+import { Box, Column, Divider, Text } from '@trezor/components';
 
 import { type Account } from 'src/types/wallet';
 import { TradingDetailProviderStatusLink } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderStatusLink';
-import { TradingDetailTxId } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTxId';
+import { TradingDetailTransactionIdRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
 
 type TradingDetailTerminalDetailsProps = {
     provider?: TradingProviderInfo;
@@ -26,9 +25,10 @@ export const TradingDetailTerminalDetails = ({
     receiveAccountKey,
     txId,
 }: TradingDetailTerminalDetailsProps) => {
+    const hasTxId = !!txId && !!account;
     const hasStatusUrl = !!getStatusUrl(provider, trade);
 
-    if (!txId && !hasStatusUrl) {
+    if (!hasTxId && !hasStatusUrl) {
         return null;
     }
 
@@ -38,18 +38,11 @@ export const TradingDetailTerminalDetails = ({
             <Box padding={20}>
                 <Text typographyStyle="body-sm" as="div">
                     <Column gap={12}>
-                        {!!txId && !!account && (
-                            <InfoItem
-                                label={<Translation id="TR_TRADING_DETAIL_TRANSACTION_ID" />}
-                                direction="row"
-                            >
-                                <TradingDetailTxId
-                                    value={txId}
-                                    account={account}
-                                    receiveAccountKey={receiveAccountKey}
-                                />
-                            </InfoItem>
-                        )}
+                        <TradingDetailTransactionIdRow
+                            txId={txId}
+                            account={account}
+                            receiveAccountKey={receiveAccountKey}
+                        />
                         <TradingDetailProviderStatusLink provider={provider} trade={trade} />
                     </Column>
                 </Text>
