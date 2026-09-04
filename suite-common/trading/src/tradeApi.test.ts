@@ -100,7 +100,7 @@ describe('TradeApi', () => {
 
         const info = await tradeApi.getInfo();
         expect(consoleSpy).toHaveBeenCalled();
-        expect(info).toEqual({ platforms: {}, coins: {}, config: {} });
+        expect(info).toBeUndefined();
     });
 
     describe('getInfo', () => {
@@ -126,7 +126,7 @@ describe('TradeApi', () => {
             });
 
             const info = await tradeApi.getInfo();
-            expect(info).toEqual({ platforms: {}, coins: {}, config: {} });
+            expect(info).toBeUndefined();
         });
 
         it('should handle fetch info when there is error', async () => {
@@ -134,7 +134,7 @@ describe('TradeApi', () => {
 
             const info = await tradeApi.getInfo();
             expect(consoleSpy).toHaveBeenCalledWith('[getInfo]', error);
-            expect(info).toEqual({ platforms: {}, coins: {}, config: {} });
+            expect(info).toBeUndefined();
         });
     });
 

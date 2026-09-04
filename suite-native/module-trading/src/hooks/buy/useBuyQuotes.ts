@@ -128,6 +128,10 @@ const useBuyQuotesThunk = (
     } = requestState;
 
     const fetchQuotes = useCallback(async () => {
+        if (!coinInfo) {
+            return;
+        }
+
         const selectedAsset = form.getValues('asset');
         invariant(selectedAsset, 'Asset is not defined');
         const network = cryptoIdToNetwork(selectedAsset.cryptoId);
