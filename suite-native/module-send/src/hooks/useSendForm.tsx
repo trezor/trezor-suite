@@ -72,7 +72,7 @@ import {
     type SendOutputsFormValues,
     sendOutputsFormValidationSchema,
 } from '../sendOutputsFormSchema';
-import { constructFormDraft } from '../utils';
+import { constructFormDraft, getSendMaxAmount } from '../utils';
 import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from './useUtxoSelection';
@@ -515,12 +515,17 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const amount = isAmountInSats
         ? getValues('outputs.0.amount')
         : convertAmountUnitsToSubunits(getValues('outputs.0.amount'), network?.decimals ?? 0);
+    const maxSpendableAmount = getSendMaxAmount({
+        isTokenFlow: !!tokenContract,
+        tokenBalance: tokenInfo?.balance,
+        normalFeeLevelMaxAmount: feeLevelsMaxAmount?.normal,
+    });
 
     return {
         handleSubmitSendForm,
         form,
         network,
         amount,
-        feeLevelsMaxAmount,
+        maxSpendableAmount,
     };
 };

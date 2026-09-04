@@ -71,7 +71,7 @@ export const SendOutputsScreen = ({
         return null;
     }
 
-    const { form, handleSubmitSendForm, amount, network, feeLevelsMaxAmount } = sendForm;
+    const { form, handleSubmitSendForm, amount, network, maxSpendableAmount } = sendForm;
     const {
         formState: { isValid, isSubmitting },
     } = form;
@@ -93,7 +93,7 @@ export const SendOutputsScreen = ({
                         <SendOutputFields
                             accountKey={accountKey}
                             tokenContract={tokenContract}
-                            maxAmount={feeLevelsMaxAmount?.normal}
+                            maxAmount={maxSpendableAmount}
                         />
                         {network?.networkType === 'bitcoin' && (
                             <Box flexDirection="row" justifyContent="center" marginTop="sp24">
