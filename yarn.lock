@@ -10968,7 +10968,7 @@ __metadata:
   resolution: "@suite-common/flags@workspace:suite-common/flags"
   dependencies:
     "@trezor/env-utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
   languageName: unknown
   linkType: soft
 
@@ -11556,7 +11556,7 @@ __metadata:
     "@trezor/react-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
   languageName: unknown
@@ -11724,7 +11724,7 @@ __metadata:
     "@trezor/network-stellar": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:^"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
@@ -14026,7 +14026,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     react: "npm:19.2.3"
     react-native: "npm:0.86.0"
     react-native-gesture-handler: "npm:~2.32.0"
@@ -14608,7 +14608,7 @@ __metadata:
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
   languageName: unknown
@@ -14643,7 +14643,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     react: "npm:19.2.3"
     react-native: "npm:0.86.0"
     react-native-gesture-handler: "npm:~2.32.0"
@@ -14679,7 +14679,7 @@ __metadata:
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     expo-linking: "npm:~57.0.3"
     expo-web-browser: "npm:~57.0.1"
     react: "npm:19.2.3"
@@ -14735,7 +14735,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
   languageName: unknown
   linkType: soft
 
@@ -14780,7 +14780,7 @@ __metadata:
     "@suite-native/trading-state": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     expo-file-system: "npm:~57.0.1"
     expo-sharing: "npm:~57.0.6"
     react: "npm:19.2.3"
@@ -14810,7 +14810,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     react: "npm:19.2.3"
     react-native: "npm:0.86.0"
     react-native-reanimated: "npm:4.5.0"
@@ -14834,7 +14834,7 @@ __metadata:
     "@suite-native/trading-fixtures": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     react: "npm:19.2.3"
     react-native: "npm:0.86.0"
     react-redux: "npm:9.3.0"
@@ -14898,7 +14898,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     react: "npm:19.2.3"
     react-native: "npm:0.86.0"
     react-redux: "npm:9.3.0"
@@ -14935,7 +14935,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     react-native: "npm:0.86.0"
   languageName: unknown
   linkType: soft
@@ -14952,7 +14952,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
   languageName: unknown
   linkType: soft
 
@@ -16010,7 +16010,7 @@ __metadata:
     "@trezor/icons": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     react: "npm:19.2.3"
     styled-components: "npm:^6.3.9"
   languageName: unknown
@@ -17887,7 +17887,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     "@types/lodash": "npm:^4.17.16"
     "@walletconnect/sign-client": "npm:^2.23.10"
     "@walletconnect/types": "npm:^2.23.10"
@@ -18102,7 +18102,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/file-saver": "npm:^2.0.6"
-    "@types/invity-api": "npm:^1.1.19"
+    "@types/invity-api": "npm:^1.1.20"
     "@types/pako": "npm:^2.0.4"
     "@types/pdfmake": "npm:^0.3.1"
     "@types/react": "npm:19.2.14"
@@ -18901,10 +18901,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/invity-api@npm:^1.1.19":
-  version: 1.1.19
-  resolution: "@types/invity-api@npm:1.1.19"
-  checksum: 10/45fee2e4e68537a544ee34800f7a1c5c799154b59748504014b3fcbae469d9954d4971e7dd265eb39f7cc0a7ac543cc0f8a94b5377b04e45d1cf4285159e17a1
+"@types/invity-api@npm:^1.1.20":
+  version: 1.1.20
+  resolution: "@types/invity-api@npm:1.1.20"
+  checksum: 10/b8855417eda97f5a821355927527a52ce33d9df8b692d20ddece2db85e3d91b9e8f77c178515db8da202ff158dc4d24d3c3e114fe02dd87a5356664ba127c5e5
   languageName: node
   linkType: hard
 
