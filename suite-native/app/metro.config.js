@@ -14,9 +14,39 @@ const defaultSourceExts = [...jsonExpoConfig.resolver.sourceExts, 'md'];
 const additionalSourceExts = process.env.RN_SRC_EXT ? process.env.RN_SRC_EXT.split(',') : [];
 const sourceExts = [...additionalSourceExts, ...defaultSourceExts];
 
-const cjsOnlyPackages = ['@sinclair/typebox', 'kysely'];
+// Packages whose ESM build Metro would pick via `exports`, but which we need to resolve to
+// their CommonJS build instead.
+const cjsOnlyPackages = [
+    // Subpaths ('./value', './errors') resolve to CJS while the package root resolves to ESM,
+    // so two TypeBox instances end up in the bundle. Custom kinds registered in one instance's
+    // `TypeRegistry` are then invisible to the validator from the other one.
+    // See https://github.com/expo/expo/issues/37171
+    '@sinclair/typebox',
+    // Its ESM `FileMigrationProvider` calls `await import()` with a computed specifier, which
+    // Hermes refuses to compile ('Invalid expression encountered'). The CJS build emits a plain
+    // `require()` there.
+    'kysely',
+    // Its ESM and CJS entry points load disjoint chunks (`*.require.js` vs `*.require.cjs`), so
+    // the `require()` in `./rozeniteBootRecording` and the `import` in `useRozenitePlugins` would
+    // each get their own copy of the plugin's module state. Boot recording would then patch
+    // `globalThis.fetch` in one copy while the DevTools hook reads the other one's empty event
+    // queue.
+    '@rozenite/network-activity-plugin',
+];
 
-const legacyBrowserFieldPackages = ['uint8arrays', 'multiformats', '@noble/hashes'];
+// Packages that predate `exports` and mirror their subpath map into the `browser` field using
+// deep paths (`"./basics": "./cjs/src/basics.js"`). Metro applies that redirect before it
+// validates the result against `exports`, where the deep path is never listed, so every import
+// logs a "not listed in the exports" warning and then falls back to file-based resolution.
+// Resolving them without `exports`, the way we did before package exports were enabled, keeps
+// the `browser` targets these packages intend for us.
+const legacyBrowserFieldPackages = [
+    'uint8arrays',
+    // Its `exports` resolves `./hashes/sha2` to a build that requires Node's `crypto`, while
+    // `browser` points at the WebCrypto one.
+    'multiformats',
+    '@noble/hashes',
+];
 
 const isModuleFrom = (packageNames, moduleName) =>
     packageNames.some(
@@ -59,15 +89,6 @@ const config = {
                 originModulePath: context.originModulePath,
             });
 
-            // Packages whose ESM build Metro would pick via `exports`, but which we need to
-            // resolve to their CommonJS build instead:
-            // - `@sinclair/typebox`: subpaths ('./value', './errors') resolve to CJS while the
-            //   package root resolves to ESM, so two TypeBox instances end up in the bundle.
-            //   Custom kinds registered in one instance's `TypeRegistry` are then invisible to
-            //   the validator from the other one. See https://github.com/expo/expo/issues/37171
-            // - `kysely`: its ESM `FileMigrationProvider` calls `await import()` with a computed
-            //   specifier, which Hermes refuses to compile ('Invalid expression encountered').
-            //   The CJS build emits a plain `require()` there.
             if (isModuleFrom(cjsOnlyPackages, moduleName)) {
                 return context.resolveRequest(
                     { ...context, isESMImport: false },
@@ -76,15 +97,6 @@ const config = {
                 );
             }
 
-            // Packages that predate `exports` and mirror their subpath map into the `browser`
-            // field using deep paths (`"./basics": "./cjs/src/basics.js"`). Metro applies that
-            // redirect before it validates the result against `exports`, where the deep path is
-            // never listed, so every import logs a "not listed in the exports" warning and then
-            // falls back to file-based resolution.
-            // Resolving them without `exports`, the way we did before package exports were
-            // enabled, keeps the `browser` targets these packages intend for us - `multiformats`'
-            // `exports` resolves `./hashes/sha2` to a build that requires Node's `crypto`, while
-            // `browser` points at the WebCrypto one.
             if (isModuleFrom(legacyBrowserFieldPackages, moduleName)) {
                 return context.resolveRequest(
                     { ...context, unstable_enablePackageExports: false },
