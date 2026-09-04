@@ -5,9 +5,16 @@ export {
     wipeAndRestartEvoluRelayServer,
     checkEvoluRelayServerRunning,
     seedQuotaManagerData,
+    setDeviceUnspentStorageSize,
+    setOwnerStorageLimit,
+    readQuotaManagerData,
     logToRelayDocker,
 } from './baseEvoluClient';
-export type { EvoluClientInitParams } from './baseEvoluClient';
+export type {
+    EvoluClientInitParams,
+    QuotaManagerDeviceRow,
+    QuotaManagerOwnerRow,
+} from './baseEvoluClient';
 export {
     createOwnerIdFromSecret,
     createWalletRowId,

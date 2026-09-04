@@ -7,7 +7,10 @@ import {
     BaseEvoluClient,
     EvoluClientInitParams,
     checkEvoluRelayServerRunning,
+    readQuotaManagerData,
     seedQuotaManagerData,
+    setDeviceUnspentStorageSize,
+    setOwnerStorageLimit,
     wipeAndRestartEvoluRelayServer,
 } from '@suite-common/e2e-evolu-client';
 import { Schema } from '@suite-common/suite-sync-evolu';
@@ -35,6 +38,21 @@ export class EvoluClient extends BaseEvoluClient {
     @step()
     seedQuotaManagerData({ ownerId }: { ownerId: string }) {
         seedQuotaManagerData({ ownerId });
+    }
+
+    @step()
+    setDeviceUnspentStorageSize({ unspentStorageSize }: { unspentStorageSize: number }) {
+        setDeviceUnspentStorageSize({ unspentStorageSize });
+    }
+
+    @step()
+    setOwnerStorageLimit({ ownerId, storageLimit }: { ownerId: string; storageLimit: number }) {
+        setOwnerStorageLimit({ ownerId, storageLimit });
+    }
+
+    @step()
+    readQuotaManagerData() {
+        return readQuotaManagerData();
     }
 
     @step()
