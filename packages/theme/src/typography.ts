@@ -26,7 +26,6 @@ type TypographyStyleDefinition = {
     lineHeight: number;
     fontWeight: FontWeightValue;
     letterSpacing: number;
-    fontFamily?: string;
 };
 
 export type NativeTypographyStyleDefinition = {
