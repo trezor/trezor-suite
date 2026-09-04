@@ -76,3 +76,4 @@ export * from './isSafeObjectKey';
 export * from './context';
 export * from './localizeNumber';
 export * from './parseJSON';
+export * from './isHttps';
