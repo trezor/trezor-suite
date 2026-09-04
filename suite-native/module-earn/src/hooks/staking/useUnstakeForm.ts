@@ -4,23 +4,21 @@ import { useSelector } from 'react-redux';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type StakeRootState,
     UNSTAKE_INTERCHANGES,
     WALLET_SDK_SOURCE_MOBILE,
     buildUnstakeData,
     getEthereumStakingAddressByType,
     getStakingLimitsByNetworkSymbol,
     selectAccountByKey,
+    selectCanClaimByAccountKey,
+    selectClaimableAmountByAccountKey,
+    selectStakedBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { fromEther, isPositiveBalance } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import {
-    type NativeStakingRootState,
-    selectCanClaimByAccountKey,
-    selectClaimableAmountByAccountKey,
-    selectStakedBalanceByAccountKey,
-} from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
 
 import { useApproximateInstantUnstakeAmount } from './useApproximateInstantUnstakeAmount';
@@ -35,14 +33,14 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const stakedBalance = useSelector((state: NativeStakingRootState) =>
+    const stakedBalance = useSelector((state: StakeRootState) =>
         selectStakedBalanceByAccountKey(state, accountKey),
     );
-    const canClaim = useSelector((state: NativeStakingRootState) =>
+    const canClaim = useSelector((state: StakeRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
     );
     const claimableAmount =
-        useSelector((state: NativeStakingRootState) =>
+        useSelector((state: StakeRootState) =>
             selectClaimableAmountByAccountKey(state, accountKey),
         ) ?? '0';
 

@@ -10,7 +10,7 @@ import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-
 import {
     getDaysToAddToPoolInitial,
     getStakingHelpCenterLink,
-    selectEthValidatorsQueue,
+    selectEthereumValidatorsQueue,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
@@ -44,7 +44,7 @@ export const ConfirmStakeModal = ({
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
-    const validatorsQueue = useSelector(selectEthValidatorsQueue);
+    const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
 
     const daysToAddToPool = getDaysToAddToPoolInitial(validatorsQueue);
 

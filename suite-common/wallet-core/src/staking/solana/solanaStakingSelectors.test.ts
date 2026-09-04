@@ -1,7 +1,5 @@
-import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type StakeState, stakeInitialState } from '@suite-common/wallet-core';
 import { type Account, type Timestamp } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -17,7 +15,8 @@ import {
     selectSolanaTotalStakePendingByAccountKey,
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solanaStakingSelectors';
-import { type NativeStakingRootState } from './types';
+import { stakeInitialState } from '../stakingReducer';
+import { type StakeRootState, type StakeState } from '../stakingReducerTypes';
 
 const staticStateString: StaticSessionId = 'device@state:1';
 const solSymbol = asNetworkSymbol('sol');
@@ -152,30 +151,13 @@ const solStakeData: StakeState['data'] = {
     },
 };
 
-const messageSystemState = {
-    config: null,
-    currentSequence: 0,
-    timestamp: 0,
-    validMessages: {
-        banner: [],
-        context: [],
-        modal: [],
-        feature: [],
-    },
-    dismissedMessages: {},
-    validExperiments: [],
-    configSource: 'remote' as const,
-    manuallyAddedMessageIds: {},
-    manuallyAddedExperimentIds: {},
-};
-
 const getTestState = ({
     accounts,
     withSolStakeData = false,
 }: {
     accounts: Account[];
     withSolStakeData?: boolean;
-}): NativeStakingRootState => ({
+}): StakeRootState => ({
     wallet: {
         accounts,
         stake: {
@@ -195,9 +177,6 @@ const getTestState = ({
         },
         transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
     },
-    suiteSync: initialSuiteSyncState,
-    suiteSyncData: initialSuiteSyncDataState,
-    messageSystem: messageSystemState,
     device: {
         devices: [
             {
@@ -214,16 +193,6 @@ const getTestState = ({
             },
         } as TrezorDevice,
         persistentDeviceData: [],
-    },
-    appSettings: {
-        isOnboardingFinished: false,
-        isDeviceAuthenticityCheckEnabled: false,
-        isFirmwareRevisionCheckEnabled: false,
-        isFirmwareHashCheckEnabled: false,
-        areDeviceMetaChecksEnabled: false,
-        areTestnetsEnabled: false,
-        shouldShowAutoEjectAlert: false,
-        hasAutoEjectAlertBeenDisplayed: false,
     },
 });
 

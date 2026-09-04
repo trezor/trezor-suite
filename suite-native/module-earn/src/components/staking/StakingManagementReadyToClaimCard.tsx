@@ -1,10 +1,15 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
-import { selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    type StakeRootState,
+    selectAccountNetworkSymbol,
+    selectClaimableAmountByAccountKey,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -16,11 +21,6 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    type NativeStakingRootState,
-    selectClaimableAmountByAccountKey,
-    useSelector,
-} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
@@ -47,11 +47,12 @@ export const StakingManagementReadyToClaimCard = ({
     const { CryptoAmountFormatter: amountFormatter } = useFormatters();
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
-    const symbol = useSelector((state: NativeStakingRootState) =>
+    const symbol = useSelector((state: StakeRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+
     const claimableAmount =
-        useSelector((state: NativeStakingRootState) =>
+        useSelector((state: StakeRootState) =>
             selectClaimableAmountByAccountKey(state, accountKey),
         ) ?? '0';
 

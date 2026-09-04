@@ -7,7 +7,11 @@ import type { DeviceRootState } from '@suite-common/device';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type StakeRootState,
+    selectApy,
     selectDeviceAccountsByNetworkSymbol,
+    selectEntryPeriodInDaysBySymbol,
+    selectUnstakingPeriodInDaysBySymbol,
 } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { BannerInline, Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
@@ -19,12 +23,6 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    type NativeStakingRootState,
-    selectApy,
-    selectEntryPeriodInDaysBySymbol,
-    selectUnstakingPeriodInDaysBySymbol,
-} from '@suite-native/staking';
 
 import { HowEarnWorksBenefitsSection } from '../../components/earn/HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksHeaderSection } from '../../components/earn/HowEarnWorks/HowEarnWorksHeaderSection';
@@ -74,17 +72,15 @@ export const HowStakeWorksScreen = () => {
         navigation.navigate(RootStackRoutes.EarnForm, { accountKey: resolvedAccountKey });
     };
 
-    const unstakingPeriodInDays = useSelector((state: NativeStakingRootState) =>
+    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
         selectUnstakingPeriodInDaysBySymbol(state, symbol),
     );
 
-    const entryPeriodInDays = useSelector((state: NativeStakingRootState) =>
+    const entryPeriodInDays = useSelector((state: StakeRootState) =>
         selectEntryPeriodInDaysBySymbol(state, symbol),
     );
 
-    const apy = useSelector((state: NativeStakingRootState) =>
-        selectApy(state, { networkSymbol: symbol }),
-    );
+    const apy = useSelector((state: StakeRootState) => selectApy(state, { networkSymbol: symbol }));
 
     const displaySymbol = getNetworkDisplaySymbol(symbol);
 

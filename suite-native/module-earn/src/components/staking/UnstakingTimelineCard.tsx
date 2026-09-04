@@ -1,6 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type StakeRootState,
+    selectAccountNetworkSymbol,
+    selectUnstakingPeriodInDaysBySymbol,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     BannerInline,
@@ -14,10 +19,6 @@ import {
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    type NativeStakingRootState,
-    selectUnstakingPeriodInDaysBySymbol,
-} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type UnstakingTimelineCardProps = {
@@ -36,9 +37,11 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
-    const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
+    const symbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
 
-    const unstakingPeriodInDays = useSelector((state: NativeStakingRootState) =>
+    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
         selectUnstakingPeriodInDaysBySymbol(state, symbol ?? undefined),
     );
 

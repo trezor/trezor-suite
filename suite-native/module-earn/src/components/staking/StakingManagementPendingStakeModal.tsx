@@ -1,9 +1,16 @@
+import { useSelector } from 'react-redux';
+
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import {
+    type StakeRootState,
+    type TronStakeRootState,
     isSupportedSolStakingNetworkSymbol,
     selectAccountByKey,
     selectAccountNetworkSymbol,
     selectAccountStakeTransactions,
+    selectIsStakeConfirmingByAccountKey,
+    selectIsStakePendingByAccountKey,
+    selectTotalStakePendingByAccountKey,
     useAccountsSelector,
     useStakingEntryPeriodEstimateInDays,
 } from '@suite-common/wallet-core';
@@ -18,13 +25,6 @@ import {
 } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import {
-    type NativeStakingRootState,
-    selectIsStakeConfirmingByAccountKey,
-    selectIsStakePendingByAccountKey,
-    selectTotalStakePendingByAccountKey,
-    useSelector,
-} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import {
@@ -57,22 +57,26 @@ export const StakingManagementPendingStakeModal = ({
 }: StakingManagementPendingStakeModalProps) => {
     const { applyStyle } = useNativeStyles();
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
-    const account = useSelector((state: NativeStakingRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-    const stakeTxs = useSelector((state: NativeStakingRootState) =>
+
+    const account = useSelector((state: StakeRootState) => selectAccountByKey(state, accountKey));
+
+    const stakeTxs = useSelector((state: StakeRootState) =>
         selectAccountStakeTransactions(state, accountKey),
     );
-    const isStakeConfirming = useSelector((state: NativeStakingRootState) =>
+
+    const isStakeConfirming = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectIsStakeConfirmingByAccountKey(state, accountKey),
     );
-    const isStakePending = useSelector((state: NativeStakingRootState) =>
+
+    const isStakePending = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectIsStakePendingByAccountKey(state, accountKey),
     );
+
     const totalStakePending =
-        useSelector((state: NativeStakingRootState) =>
+        useSelector((state: StakeRootState) =>
             selectTotalStakePendingByAccountKey(state, accountKey),
         ) ?? '0';
+
     const entryPeriodEstimateInDays = useStakingEntryPeriodEstimateInDays({ account, stakeTxs });
 
     const currentStep: StakingDetailModalStep = (() => {

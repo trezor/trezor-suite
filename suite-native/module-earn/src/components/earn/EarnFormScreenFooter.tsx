@@ -1,9 +1,10 @@
 import { SlideInDown } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type StakeRootState, selectApy } from '@suite-common/wallet-core';
 import { AnimatedBox, Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { selectApy, useSelector as useStakingSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EarnEstimatedRewards } from './EarnEstimatedRewards';
@@ -46,7 +47,7 @@ export const EarnFormScreenFooter = ({
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
-    const apy = useStakingSelector(state => selectApy(state, { networkSymbol: symbol }));
+    const apy = useSelector((state: StakeRootState) => selectApy(state, { networkSymbol: symbol }));
 
     const buttonIntent = isDisabled ? 'neutral' : 'brand';
     const buttonPriority = isDisabled ? 'secondary' : 'primary';

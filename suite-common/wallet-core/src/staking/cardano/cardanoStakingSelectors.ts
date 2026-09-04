@@ -1,20 +1,19 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
+
+import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
+import { type StakeRootState } from '../stakingReducerTypes';
+import { selectStakeData } from '../stakingSelectors';
 import {
-    type AccountsRootState,
-    getStakingDataForNetwork,
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithFiveBinaries,
     isCardanoStakingActive,
-    selectAccountByKey,
-    selectCardanoPoolsInfo,
-    selectDeviceAccounts,
-} from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+} from './cardanoStakingUtils';
+import { type AccountsRootState } from '../../accounts/accountsReducer';
+import { getStakingDataForNetwork } from '../shared/stakingUtils';
 
-import { type NativeStakingRootState } from './types';
-
-const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<StakeRootState>();
 
 export const selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol = createMemoizedSelector(
     [selectDeviceAccounts, (_state, symbol: NetworkSymbol) => symbol],
@@ -61,8 +60,11 @@ export const selectIsCardanoStakedWithFiveBinaries = (
     return isCardanoStakedWithFiveBinaries(account);
 };
 
+export const selectCardanoPoolsInfo = (state: StakeRootState) =>
+    returnStableArrayIfEmpty(selectStakeData(state).ada?.pools);
+
 export const selectIsCardanoStakedOutsideEverstake = (
-    state: NativeStakingRootState,
+    state: StakeRootState,
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
@@ -72,6 +74,7 @@ export const selectIsCardanoStakedOutsideEverstake = (
 
     return isCardanoStakedOutsideEverstake(account, cardanoStakingPool);
 };
+
 export const selectFirstCardanoAccountStakedWithFiveBinaries = createMemoizedSelector(
     [selectDeviceAccounts],
     accounts =>
