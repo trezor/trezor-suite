@@ -24,10 +24,7 @@ import {
     TextButton,
     VStack,
 } from '@suite-native/atoms';
-import {
-    BaseCurrencyAmountFormatter,
-    CompactCryptoAmountFormatter,
-} from '@suite-native/formatters';
+import { BaseCurrencyAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -120,7 +117,7 @@ export const UtxoCard = ({
                     >
                         <VStack flex={1}>
                             <HStack alignItems="center">
-                                <CompactCryptoAmountFormatter
+                                <ExactCryptoAmountFormatter
                                     color="contentPrimary"
                                     variant="body-md-strong"
                                     value={utxo.amount}
