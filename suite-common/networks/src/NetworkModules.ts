@@ -1,6 +1,6 @@
 import type { BitcoinNetworkSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
 import type { CardanoNetworkSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
-import type { EthereumNetworkSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common/network-module';
+import type { EthereumNetworkSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 import type { RippleNetworkSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
 import type { SolanaNetworkSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';

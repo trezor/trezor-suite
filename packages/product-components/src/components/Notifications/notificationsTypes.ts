@@ -2,10 +2,13 @@ import { type ReactNode } from 'react';
 
 import type {
     NotificationEntry,
-    TransactionNotificationType,
+    TransactionNotificationType as ToastTransactionNotificationType,
 } from '@suite-common/toast-notifications';
 
-export type { TransactionNotificationType };
+export type TransactionNotificationType = Exclude<
+    ToastTransactionNotificationType,
+    'tx-wrap' | 'tx-unwrap'
+>;
 
 type ExchangeToastAssetData = Extract<
     NotificationEntry,

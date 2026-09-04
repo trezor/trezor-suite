@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../address" },
         { "path": "../analytics" },
         { "path": "../bluetooth" },
         { "path": "../calldata" },
@@ -48,9 +49,6 @@
         { "path": "../../packages/env-utils" },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
-        },
-        {
-            "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {
             "path": "../../networks/ripple/network-ripple"

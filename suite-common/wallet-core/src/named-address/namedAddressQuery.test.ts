@@ -1,8 +1,8 @@
-import type { NetworkModuleRepository, NetworkSymbol } from '@suite-common/networks';
+import type { GetNamedAddressSupport, SymbolNamedAddressResolver } from '@suite-common/address';
+import type { NetworkSymbol } from '@suite-common/networks';
 import { QueryClient } from '@suite-common/react-query';
 
 import { getResolveNamedAddressQueryOptions } from './namedAddressQuery';
-import type { SymbolNamedAddressResolver } from './namedAddressResolver';
 
 const mockResolveNamedAddress = jest.fn();
 const mockReverseResolveAddress = jest.fn();
@@ -15,15 +15,20 @@ const namedAddressResolver: SymbolNamedAddressResolver = {
     isAddressLike: value => /^0x[a-fA-F0-9]{40}$/.test(value.trim()),
     resolveNamedAddress: (...args) => mockResolveNamedAddress(...args),
     reverseResolveAddress: (...args) => mockReverseResolveAddress(...args),
-    resolveNamedProfile: jest.fn(),
 };
 
-const networkModuleRepository = {
-    get: () => ({ namedAddressResolver }),
-} as unknown as NetworkModuleRepository;
+const getNamedAddressSupport: GetNamedAddressSupport = symbol => {
+    const { isNameLike } = namedAddressResolver;
+
+    if (symbol !== 'eth' && symbol !== 'tsep') {
+        return { isSupported: false, isNameLike };
+    }
+
+    return { isSupported: true, isNameLike, resolver: namedAddressResolver };
+};
 
 const queryOptions = (value: string, symbol: NetworkSymbol | null) =>
-    getResolveNamedAddressQueryOptions({ networkModuleRepository, value, symbol });
+    getResolveNamedAddressQueryOptions({ getNamedAddressSupport, value, symbol });
 
 const RESOLVED_HEX = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 

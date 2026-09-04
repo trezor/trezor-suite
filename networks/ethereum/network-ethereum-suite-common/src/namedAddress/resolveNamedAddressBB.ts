@@ -1,6 +1,8 @@
 import TrezorConnect from '@trezor/connect';
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 
+import { isAddressLike } from './namedAddressUtils';
+
 /**
  * Forward-resolve a named input (ENS or other TLD) to its onchain address via Blockbook.
  *
@@ -11,7 +13,7 @@ import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
  *
  * @param value - ENS name or other TLD name.
  * @param symbol - Network symbol the name should be resolved on (e.g. `eth`).
- * @returns The resolved onchain address.
+ * @returns The resolved onchain address, or `null` when the answer is not one.
  */
 export const resolveViaBlockbook = async (value: string, symbol: EthereumNetworkSymbol) => {
     const result = await TrezorConnect.getAccountInfo({
@@ -24,5 +26,9 @@ export const resolveViaBlockbook = async (value: string, symbol: EthereumNetwork
         throw new Error(result.error.message);
     }
 
-    return result.payload.descriptor;
+    // The descriptor is whatever the backend made of the name, and it is signed as the
+    // recipient. Anything that is not an address is no answer, not a different one.
+    const { descriptor } = result.payload;
+
+    return isAddressLike(descriptor) ? descriptor : null;
 };

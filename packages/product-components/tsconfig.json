@@ -40,7 +40,7 @@
         { "path": "../env-utils" },
         { "path": "../icons" },
         {
-            "path": "../../networks/ethereum/network-ethereum-suite-common"
+            "path": "../../networks/ethereum/network-ethereum"
         },
         { "path": "../react-utils" },
         { "path": "../theme" },
