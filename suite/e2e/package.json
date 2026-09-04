@@ -36,6 +36,7 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/suite-sync-evolu": "workspace:*",
+        "@suite-common/suite-sync-quota-manager": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
