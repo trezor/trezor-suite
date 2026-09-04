@@ -23,12 +23,14 @@ type AdaAccountsListStakingItemProps = {
     hasBackground?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
+    badges?: React.ReactNode;
 };
 
 export const AdaAccountsListStakingItem = ({
     account,
     stakingCryptoBalance,
     isLast,
+    badges,
     ...props
 }: AdaAccountsListStakingItemProps) => {
     const isStakedOutsideEverstake = useSelector((state: NativeStakingRootState) =>
@@ -58,6 +60,7 @@ export const AdaAccountsListStakingItem = ({
             title={<Translation id="accountList.staking" />}
             mainValue={mainValue}
             secondaryValue={undefined}
+            badges={badges}
         />
     );
 };

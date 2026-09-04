@@ -12,7 +12,11 @@ import {
     type OnSelectAccount,
     selectAccountListSectionsWithZeroBalanceGroup,
 } from '@suite-native/accounts';
-import { TokenYieldRateBadge, useStakingDetailNavigation } from '@suite-native/module-earn';
+import {
+    StakingApyBadge,
+    TokenYieldRateBadge,
+    useStakingDetailNavigation,
+} from '@suite-native/module-earn';
 
 import { ZeroBalanceTokensSection } from './ZeroBalanceTokensSection';
 import { type OnSelectAsset } from './types';
@@ -98,6 +102,7 @@ export const ActiveTokensTab = ({
                                     hasAnyKnownTokens: false,
                                 })
                             }
+                            badges={<StakingApyBadge account={item.account} />}
                         />
                     );
                 case 'token':
