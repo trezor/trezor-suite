@@ -1,6 +1,7 @@
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import type { AcquiredDevice } from '@suite-common/suite-types';
 import TrezorConnect, { PROTO, type RecoveryDevice } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -29,14 +30,11 @@ type CheckSeedThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const checkSeedThunk = createThunk<
     void,
-    void,
+    { device: AcquiredDevice },
     { state: CheckSeedThunkState; extra: CheckSeedThunkDeps }
->(`${actionPrefix}/checkSeedThunk`, async (_, { dispatch, getState, extra }) => {
+>(`${actionPrefix}/checkSeedThunk`, async ({ device }, { dispatch, getState, extra }) => {
     const recoveryInputType = selectRecoveryInputType(getState());
     const wordsCount = selectWordsCount(getState());
-    const device = selectSelectedDevice(getState());
-
-    if (!device?.features) return;
 
     dispatch(recoveryActions.setError(undefined));
 
@@ -79,50 +77,47 @@ export const checkSeedThunk = createThunk<
 
 type RecoverDeviceThunkState = DeviceRootState & { recovery: RecoveryState };
 
-export const recoverDeviceThunk = createThunk<void, void, { state: RecoverDeviceThunkState }>(
-    `${actionPrefix}/recoverDeviceThunk`,
-    async (_, { dispatch, getState }) => {
-        const recoveryInputType = selectRecoveryInputType(getState());
-        const wordsCount = selectWordsCount(getState());
-        const device = selectSelectedDevice(getState());
+export const recoverDeviceThunk = createThunk<
+    void,
+    { device: AcquiredDevice },
+    { state: RecoverDeviceThunkState }
+>(`${actionPrefix}/recoverDeviceThunk`, async ({ device }, { dispatch, getState }) => {
+    const recoveryInputType = selectRecoveryInputType(getState());
+    const wordsCount = selectWordsCount(getState());
 
-        if (!device?.features) {
-            return;
-        }
-        dispatch(recoveryActions.setError(undefined));
+    dispatch(recoveryActions.setError(undefined));
 
-        if (device.features.internal_model === DeviceModelInternal.T1B1) {
-            dispatch(recoveryActions.setStatus('waiting-for-confirmation'));
-        } else {
-            dispatch(recoveryActions.setStatus('in-progress'));
-        }
+    if (device.features.internal_model === DeviceModelInternal.T1B1) {
+        dispatch(recoveryActions.setStatus('waiting-for-confirmation'));
+    } else {
+        dispatch(recoveryActions.setStatus('in-progress'));
+    }
 
-        const params: RecoveryDevice = {
-            type: device.features.recovery_type ?? 'NormalRecovery', // For old firmware, we assume NormalRecovery as it was the only option before
-            input_method: recoveryInputTypeToInputMethod[recoveryInputType],
-            word_count: wordsCount,
-            passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
-            enforce_wordlist: true,
-        };
+    const params: RecoveryDevice = {
+        type: device.features.recovery_type ?? 'NormalRecovery', // For old firmware, we assume NormalRecovery as it was the only option before
+        input_method: recoveryInputTypeToInputMethod[recoveryInputType],
+        word_count: wordsCount,
+        passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
+        enforce_wordlist: true,
+    };
 
-        if (device.features.capabilities?.includes('Capability_U2F')) {
-            params.u2f_counter = Math.floor(Date.now() / 1000);
-        }
+    if (device.features.capabilities?.includes('Capability_U2F')) {
+        params.u2f_counter = Math.floor(Date.now() / 1000);
+    }
 
-        const response = await TrezorConnect.recoveryDevice({
-            ...params,
-            device: {
-                path: device.path,
-            },
-        });
+    const response = await TrezorConnect.recoveryDevice({
+        ...params,
+        device: {
+            path: device.path,
+        },
+    });
 
-        if (!response.success) {
-            dispatch(recoveryActions.setError(response.error.message));
-        }
+    if (!response.success) {
+        dispatch(recoveryActions.setError(response.error.message));
+    }
 
-        dispatch(recoveryActions.setStatus('finished'));
-    },
-);
+    dispatch(recoveryActions.setStatus('finished'));
+});
 
 type RecoveryRerunThunkState = DeviceRootState & { recovery: RecoveryState };
 
@@ -160,12 +155,15 @@ export const recoveryRerunThunk = createThunk<
         return rejectWithValue('recovery not in progress');
     }
 
+    // Pass the device with the freshly-loaded features so the follow-up runs against the current state.
+    const deviceWithFreshFeatures: AcquiredDevice = { ...device, features };
+
     if (!features.initialized) {
-        dispatch(recoverDeviceThunk());
+        dispatch(recoverDeviceThunk({ device: deviceWithFreshFeatures }));
     }
 
     if (features.initialized) {
-        dispatch(checkSeedThunk());
+        dispatch(checkSeedThunk({ device: deviceWithFreshFeatures }));
     }
 
     return { initialized: features.initialized };

@@ -184,7 +184,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         onClick={() =>
                             isT1B1
                                 ? dispatch(recoveryActions.setStatus('select-word-count'))
-                                : dispatch(checkSeedThunk())
+                                : dispatch(checkSeedThunk({ device }))
                         }
                         isDisabled={!isUnderstood || isLocked()}
                         data-testid="@recovery/start-button"
@@ -211,7 +211,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
                             if (shouldSkipSelection) {
                                 dispatch(recoveryActions.setRecoveryInputType('advanced'));
-                                dispatch(checkSeedThunk());
+                                dispatch(checkSeedThunk({ device }));
                             } else {
                                 dispatch(recoveryActions.setStatus('select-recovery-type'));
                             }
@@ -229,7 +229,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             if (!recoveryInputType) return;
 
                             dispatch(recoveryActions.setRecoveryInputType(recoveryInputType));
-                            dispatch(checkSeedThunk());
+                            dispatch(checkSeedThunk({ device }));
                         }}
                         data-testid="@recovery/continue-button"
                     >
