@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
         "zod": "4.3.6"
     }
 }
