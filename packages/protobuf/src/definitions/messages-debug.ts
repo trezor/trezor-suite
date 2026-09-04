@@ -71,34 +71,34 @@ export const DebugLinkGetPairingInfo = Type.Object(
     { $id: 'DebugLinkGetPairingInfo' },
 );
 
-export type DebugLinkN4W1Connected = Static<typeof DebugLinkN4W1Connected>;
-export const DebugLinkN4W1Connected = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'DebugLinkN4W1Connected',
+export type DebugLinkN1W1Connected = Static<typeof DebugLinkN1W1Connected>;
+export const DebugLinkN1W1Connected = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'DebugLinkN1W1Connected',
 });
 
-export type DebugLinkN4W1Read = Static<typeof DebugLinkN4W1Read>;
-export const DebugLinkN4W1Read = Type.Object(
+export type DebugLinkN1W1Read = Static<typeof DebugLinkN1W1Read>;
+export const DebugLinkN1W1Read = Type.Object(
     {
         key: Type.Optional(Type.String()),
     },
-    { $id: 'DebugLinkN4W1Read' },
+    { $id: 'DebugLinkN1W1Read' },
 );
 
-export type DebugLinkN4W1Response = Static<typeof DebugLinkN4W1Response>;
-export const DebugLinkN4W1Response = Type.Object(
+export type DebugLinkN1W1Response = Static<typeof DebugLinkN1W1Response>;
+export const DebugLinkN1W1Response = Type.Object(
     {
         value: Type.Optional(Type.String()),
     },
-    { $id: 'DebugLinkN4W1Response' },
+    { $id: 'DebugLinkN1W1Response' },
 );
 
-export type DebugLinkN4W1Write = Static<typeof DebugLinkN4W1Write>;
-export const DebugLinkN4W1Write = Type.Object(
+export type DebugLinkN1W1Write = Static<typeof DebugLinkN1W1Write>;
+export const DebugLinkN1W1Write = Type.Object(
     {
         key: Type.Optional(Type.String()),
         value: Type.Optional(Type.String()),
     },
-    { $id: 'DebugLinkN4W1Write' },
+    { $id: 'DebugLinkN1W1Write' },
 );
 
 export type DebugLinkOptigaSetSecMax = Static<typeof DebugLinkOptigaSetSecMax>;
