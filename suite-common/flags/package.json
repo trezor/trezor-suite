@@ -12,8 +12,5 @@
     },
     "dependencies": {
         "@trezor/env-utils": "workspace:*"
-    },
-    "devDependencies": {
-        "@types/invity-api": "^1.1.20"
     }
 }

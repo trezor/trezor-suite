@@ -4,18 +4,19 @@ import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
-import { Card, Column } from '@trezor/components';
+import { Card, Column, Divider } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import type { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
+import { TradingDetailAssetRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailAssetRow';
+import { TradingDetailSidebarSection } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSidebarSection';
 import { TradingDetailTradeInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTradeInfo';
 import { TradingExchangeMevProtectionInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeMevProtectionInfoItem';
 import { TradingExchangeMinimumReceivedInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeMinimumReceivedInfoItem';
 import { TradingExchangeRateInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeRateInfoItem';
 import { TradingExchangeSlippageInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeSlippageInfoItem';
-import { TradingInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoItem';
 import { TradingUtilsProviderKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProviderKyc';
 import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
@@ -62,56 +63,68 @@ export const TradingExchangeDetailSidebar = ({
 
     return (
         <Card paddingType="none" data-testid="@trading/transaction/detail/sidebar">
-            <Column gap={24} padding={24}>
-                <TradingInfoItem
-                    account={sendAccount}
-                    label="TR_TRADING_YOU_PAY"
-                    currency={trade.send}
-                    amount={trade.sendStringAmount}
-                    cryptoAmountTestId="@trading/transaction/detail/send-amount"
-                    accountInfoTestId="@trading/transaction/detail/send-account"
-                />
+            <Column gap={20} padding={{ vertical: 20 }}>
+                <TradingDetailSidebarSection>
+                    <TradingDetailAssetRow
+                        account={sendAccount}
+                        label="TR_TRADING_YOU_PAY"
+                        currency={trade.send}
+                        amount={trade.sendStringAmount}
+                        cryptoAmountTestId="@trading/transaction/detail/send-amount"
+                        accountInfoTestId="@trading/transaction/detail/send-account"
+                    />
+                </TradingDetailSidebarSection>
 
-                <TradingInfoItem
-                    account={receiveAccount}
-                    label="TR_TRADING_YOU_GET"
-                    currency={trade.receive}
-                    amount={trade.receiveStringAmount}
-                    receiveAddress={trade.receiveAddress}
-                    isReceive
-                    cryptoAmountTestId="@trading/transaction/detail/receive-amount"
-                    accountInfoTestId="@trading/transaction/detail/receive-account"
-                />
+                <Divider margin={{ top: 0, bottom: 0 }} />
 
-                <TradingUtilsProviderKyc exchange={trade.exchange} providers={providers} />
+                <TradingDetailSidebarSection>
+                    <TradingDetailAssetRow
+                        account={receiveAccount}
+                        label="TR_TRADING_YOU_GET"
+                        currency={trade.receive}
+                        amount={trade.receiveStringAmount}
+                        receiveAddress={trade.receiveAddress}
+                        isReceive
+                        cryptoAmountTestId="@trading/transaction/detail/receive-amount"
+                        accountInfoTestId="@trading/transaction/detail/receive-account"
+                    />
+                </TradingDetailSidebarSection>
 
-                <TradingDetailTradeInfo
-                    date={date}
-                    orderId={trade.orderId}
-                    provider={provider}
-                    trade={trade}
-                >
-                    {trade.isDex && isMevProtectionFeatureEnabled && isMevProtectionSupported && (
-                        <TradingExchangeMevProtectionInfoItem
-                            isMevProtectionEnabled={isMevProtectionEnabled}
-                            supportedNetworks={supportedMevProtectionNetworks}
-                        />
-                    )}
+                <Divider margin={{ top: 0, bottom: 0 }} />
 
-                    {trade.isDex && swapSlippage !== undefined && (
-                        <TradingExchangeSlippageInfoItem slippage={swapSlippage} />
-                    )}
+                <TradingDetailSidebarSection>
+                    <TradingDetailTradeInfo
+                        date={date}
+                        orderId={trade.orderId}
+                        provider={provider}
+                        trade={trade}
+                    >
+                        {trade.isDex &&
+                            isMevProtectionFeatureEnabled &&
+                            isMevProtectionSupported && (
+                                <TradingExchangeMevProtectionInfoItem
+                                    isMevProtectionEnabled={isMevProtectionEnabled}
+                                    supportedNetworks={supportedMevProtectionNetworks}
+                                />
+                            )}
 
-                    {trade.isDex && !!minimumYouGetAmount && (
-                        <TradingExchangeMinimumReceivedInfoItem
-                            minimumYouGetAmount={minimumYouGetAmount}
-                            symbol={receiveCoinSymbol}
-                            contractAddress={receiveContractAddress}
-                        />
-                    )}
+                        {trade.isDex && swapSlippage !== undefined && (
+                            <TradingExchangeSlippageInfoItem slippage={swapSlippage} />
+                        )}
 
-                    {!trade.isDex && <TradingExchangeRateInfoItem rateType={rateType} />}
-                </TradingDetailTradeInfo>
+                        {trade.isDex && !!minimumYouGetAmount && (
+                            <TradingExchangeMinimumReceivedInfoItem
+                                minimumYouGetAmount={minimumYouGetAmount}
+                                symbol={receiveCoinSymbol}
+                                contractAddress={receiveContractAddress}
+                            />
+                        )}
+
+                        {!trade.isDex && <TradingExchangeRateInfoItem rateType={rateType} />}
+                    </TradingDetailTradeInfo>
+
+                    <TradingUtilsProviderKyc exchange={trade.exchange} providers={providers} />
+                </TradingDetailSidebarSection>
             </Column>
         </Card>
     );

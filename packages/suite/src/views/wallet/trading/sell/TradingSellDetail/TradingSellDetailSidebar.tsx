@@ -1,16 +1,16 @@
-import { Translation } from '@suite/intl';
 import type {
     TradingPaymentMethodType,
     TradingProviderInfo,
     TradingTradeType,
 } from '@suite-common/trading';
-import { Card, Column } from '@trezor/components';
+import { Card, Column, Divider } from '@trezor/components';
 
 import type { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
+import { TradingDetailAssetRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailAssetRow';
+import { TradingDetailFiatRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailFiatRow';
+import { TradingDetailSidebarSection } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSidebarSection';
 import { TradingDetailTradeInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTradeInfo';
-import { TradingFiatAmountInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingFiatAmountInfoItem';
-import { TradingInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoItem';
 import { TradingPaymentMethodInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingPaymentMethodInfoItem';
 
 type TradingSellDetailSidebarProps = {
@@ -35,36 +35,44 @@ export const TradingSellDetailSidebar = ({
     trade,
 }: TradingSellDetailSidebarProps) => (
     <Card paddingType="none" data-testid="@trading/transaction/detail/sidebar">
-        <Column gap={24} padding={24}>
-            <TradingInfoItem
-                account={sendAccount}
-                label="TR_TRADING_YOU_PAY"
-                currency={quoteAmounts.receiveCurrency}
-                amount={quoteAmounts.receiveAmount}
-            />
-
-            <Column gap={12}>
-                <TradingFiatAmountInfoItem
-                    amount={quoteAmounts.sendAmount}
-                    currency={quoteAmounts.sendCurrency}
-                    disableHiddenPlaceholder
-                    label={<Translation id="TR_TRADING_YOU_GET" />}
+        <Column gap={24} padding={{ vertical: 24 }}>
+            <TradingDetailSidebarSection>
+                <TradingDetailAssetRow
+                    account={sendAccount}
+                    label="TR_TRADING_YOU_PAY"
+                    currency={quoteAmounts.receiveCurrency}
+                    amount={quoteAmounts.receiveAmount}
                 />
+            </TradingDetailSidebarSection>
 
-                {paymentMethod && (
-                    <TradingPaymentMethodInfoItem
-                        paymentMethod={paymentMethod}
-                        paymentMethodName={paymentMethodName}
-                    />
-                )}
-            </Column>
+            <Divider margin={{ top: 0, bottom: 0 }} />
 
-            <TradingDetailTradeInfo
-                date={date}
-                orderId={orderId}
-                provider={provider}
-                trade={trade}
-            />
+            <TradingDetailSidebarSection>
+                <TradingDetailFiatRow
+                    label="TR_TRADING_YOU_GET"
+                    currency={quoteAmounts.sendCurrency}
+                    amount={quoteAmounts.sendAmount}
+                />
+            </TradingDetailSidebarSection>
+
+            <Divider margin={{ top: 0, bottom: 0 }} />
+
+            <TradingDetailSidebarSection>
+                <TradingDetailTradeInfo
+                    date={date}
+                    orderId={orderId}
+                    provider={provider}
+                    trade={trade}
+                >
+                    {paymentMethod && (
+                        <TradingPaymentMethodInfoItem
+                            paymentMethod={paymentMethod}
+                            paymentMethodName={paymentMethodName}
+                            label="TR_TRADING_RECEIVE_METHOD"
+                        />
+                    )}
+                </TradingDetailTradeInfo>
+            </TradingDetailSidebarSection>
         </Column>
     </Card>
 );
