@@ -5,6 +5,7 @@ import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
 import { runAgent } from './common';
+import { reportToSlack } from './errors';
 import { AnalysisReportSchema, FixResultJsonSchema, FixResultSchema } from './schemas';
 
 const MODEL = 'claude-opus-5';
@@ -35,6 +36,7 @@ async function main(): Promise<void> {
 
     if (!task) {
         error(`Task '${taskId}' not found in ${reportPath}`);
+        reportToSlack('This task is missing from the analysis report, so no fix was attempted.');
         process.exit(1);
     }
 
@@ -65,16 +67,19 @@ async function main(): Promise<void> {
         error(
             `Fix agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no result produced.`,
         );
+        reportToSlack('Fix agent hit its timeout and was killed; nothing was published.');
         process.exit(1);
     }
 
     if (runError) {
         error(`Failed to run the fix agent: ${runError}`);
+        reportToSlack('Fix agent could not be started; nothing was published.');
         process.exit(1);
     }
 
     if (result?.subtype !== 'success') {
         error(`Fix agent ended with '${result?.subtype ?? 'no result'}'; no result produced.`);
+        reportToSlack('Fix agent ended without a result; nothing was published.');
         process.exit(1);
     }
 
@@ -82,6 +87,9 @@ async function main(): Promise<void> {
     if (!fixResult.success) {
         error(
             `structured output failed schema validation: ${prettifyError(fixResult.error)} \nRaw structured output:\n${JSON.stringify(result.structured_output, null, 2)}`,
+        );
+        reportToSlack(
+            "Fix agent's result did not match the expected schema; nothing was published.",
         );
         process.exit(1);
     }

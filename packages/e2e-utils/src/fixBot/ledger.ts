@@ -55,7 +55,7 @@ function main(): void {
         process.exit(1);
     }
 
-    const summaries = readSummaries(summariesDir);
+    const { summaries } = readSummaries(summariesDir);
     const newLedger = buildLedger(report.data, summaries, report.data.runDate);
 
     writeFileSync(ledgerFilePath, `${JSON.stringify(newLedger, null, 2)}\n`);

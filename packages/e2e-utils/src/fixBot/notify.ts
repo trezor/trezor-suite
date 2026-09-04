@@ -1,8 +1,10 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 
 import { error, log } from '../logger';
 import { githubRunLink, postSlackMessage } from '../slack';
 import { readSummaries } from './common';
+import { readErrors, readTaskErrors } from './errors';
 import { type AnalysisReport, AnalysisReportSchema, type SlackFixSummary } from './schemas';
 
 const DIVIDER = '──────────────────────────────────────';
@@ -41,6 +43,12 @@ function runLink(): string {
     return githubRunLink('GHA Run') ?? 'local run';
 }
 
+function errorLines(errors: string[], indent: string): string[] {
+    if (errors.length === 0) return [];
+
+    return [`${indent}⚠️ *Errors:*`, ...errors.map(err => `${indent}    • ${err}`)];
+}
+
 function readReport(reportPath: string): AnalysisReport | null {
     try {
         const parsed = AnalysisReportSchema.safeParse(
@@ -59,6 +67,8 @@ function buildMessage(
     report: AnalysisReport,
     summaries: SlackFixSummary[],
     analyzeCost: number | null,
+    analyzeErrors: string[],
+    taskErrors: Record<string, string[]>,
 ): string {
     const summaryById = new Map(summaries.map(s => [s.taskId, s]));
 
@@ -86,6 +96,7 @@ function buildMessage(
     const fixable = report.fixTasks.length;
     const skipped = report.skipped.length;
     lines.push(`*Analyzer* — ${fixable} fixable · ${skipped} skipped`);
+    lines.push(...errorLines(analyzeErrors, ''));
 
     // Fix agents summaries
     if (report.fixTasks.length > 0) {
@@ -101,6 +112,7 @@ function buildMessage(
                 lines.push(`❓ *${task.rootCause}*`);
                 lines.push(formatTestRef(task.validations));
                 lines.push(`    ${task.id} · job did not complete`);
+                lines.push(...errorLines(taskErrors[task.id] ?? [], '    '));
                 continue;
             }
 
@@ -121,9 +133,7 @@ function buildMessage(
                 lines.push(`    ${task.id} · ${prPart} · ${iterStr} · ${countStr} · ${costPart}`);
             }
 
-            if (summary.error) {
-                lines.push(`    ⚠️ publish failed: ${summary.error.split('\n')[0]}`);
-            }
+            lines.push(...errorLines(taskErrors[task.id] ?? [], '    '));
         }
     }
 
@@ -152,23 +162,35 @@ async function main(): Promise<void> {
         process.exit(1);
     }
 
+    const analyzeErrors = readErrors(join(dirname(reportPath), 'errors.txt'));
+    const taskErrors = readTaskErrors(process.env.FIX_ERRORS_DIR);
     const report = readReport(reportPath);
 
     if (!report) {
-        await postSlackMessage(
-            process.env.SLACK_FIX_AGENT_WEBHOOK,
-            `🤖 *Nightly Fix Agent*  ${runLink()}\n\n❓ Analysis agent did not complete correctly.`,
-        );
+        const failureLines = [
+            `🤖 *Nightly Fix Agent*  ${runLink()}`,
+            '',
+            '❓ Analysis agent did not complete correctly.',
+            ...errorLines(analyzeErrors, ''),
+        ];
+        await postSlackMessage(process.env.SLACK_FIX_AGENT_WEBHOOK, failureLines.join('\n'));
 
         return;
     }
 
-    const summaries = readSummaries(summariesDir);
+    const { summaries, problemsByTaskId } = readSummaries(summariesDir);
     const analyzeCost = readAnalysisCost(analyzeCostFile);
 
-    log(`[notify] ${report.fixTasks.length} fix tasks · ${summaries.length} summaries loaded`);
+    // notify is the reader of the error files, so its own problems go straight into the message
+    for (const [taskId, problem] of Object.entries(problemsByTaskId)) {
+        taskErrors[taskId] = [...(taskErrors[taskId] ?? []), problem];
+    }
 
-    const message = buildMessage(report, summaries, analyzeCost);
+    log(
+        `[notify] ${report.fixTasks.length} fix tasks · ${summaries.length} summaries · ${analyzeErrors.length} analyze errors · ${Object.keys(taskErrors).length} tasks with errors`,
+    );
+
+    const message = buildMessage(report, summaries, analyzeCost, analyzeErrors, taskErrors);
 
     await postSlackMessage(process.env.SLACK_FIX_AGENT_WEBHOOK, message);
 }

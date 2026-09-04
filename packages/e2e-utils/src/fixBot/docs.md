@@ -211,20 +211,23 @@ run — so `notify` and `update-ledger` must degrade per task, never all-or-noth
 downloads carry `continue-on-error: true`: the Slack message goes out even on a night where analyze
 failed or zero fix jobs completed.
 
-The per-task channel is the summary file, `slack-fix-summary-<task-id>.json`:
+Per-task results travel in `slack-fix-summary-<task-id>.json`, harness problems in the separate
+`fixbot-errors-<task-id>.txt` artifact (see `errors.ts`):
 
-- **Agent completed, publish succeeded** — summary carries the result and `prUrl`.
+- **Agent completed, publish succeeded** — the summary carries the result and `prUrl`.
 - **Agent completed, publish failed** (push, `gh pr create`, or project assignment) — `publish.ts`
-  catches the error, stores it in the summary's `error` field, and still writes the file; `notify`
-  renders it as `⚠️ publish failed: …`. The step exits non-zero so the job is red, but the night's
-  aggregation is unaffected.
+  appends a fixed message to the error artifact and still writes the summary; `notify` renders the
+  message in that task's `⚠️ Errors:` block. The step exits non-zero so the job is red, but the
+  night's aggregation is unaffected.
 - **Agent/job died before publish** — no summary exists. `notify` renders the task as
   `job did not complete`; `buildLedger()` logs a warning and writes **no ledger entry** for it.
-- **Summary exists but fails schema validation** — `readSummaries()` warns and skips that file
-  (e.g. schema drift between code versions, or a truncated write from a dying runner), so one
-  malformed file cannot cost the other tasks their Slack line and ledger entry. A summary with
-  invalid JSON, by contrast, throws and fails the aggregating job — that is corruption, not a
-  partial run.
+  Errors reported before the agent died still reach Slack, which is why they do not ride the
+  summary.
+- **Summary unreadable** — invalid JSON from a truncated write, or a shape that fails schema
+  validation after a schema change. `readSummaries()` warns, skips the file, and returns a problem
+  keyed by the task id from its filename, which `notify` renders in that task's `⚠️ Errors:` block.
+  One unreadable file therefore costs neither the other tasks their Slack line and ledger entry,
+  nor the notification itself.
 
 **Why dropping unknown outcomes is safe:** absence from the ledger means "re-attempt next night".
 The only alternatives would be recording `FIX_FAILED` or `FIX_DELIVERED` — and both _suppress_
