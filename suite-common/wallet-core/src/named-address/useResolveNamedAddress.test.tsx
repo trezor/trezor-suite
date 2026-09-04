@@ -4,10 +4,14 @@
 import { type ReactNode } from 'react';
 
 import { ServicesProvider } from '@suite-common/dependency-injection';
-import type { NetworkModuleRepository, NetworkSymbol } from '@suite-common/networks';
+import type {
+    GetNamedAddressSupportDep,
+    NetworkSymbol,
+    SymbolNamedAddressResolver,
+} from '@suite-common/networks';
+import { mockGetNamedAddressSupport } from '@suite-common/networks/mocks';
 import { renderHookWithQueryClient, waitFor } from '@suite-common/test-utils';
 
-import type { SymbolNamedAddressResolver } from './namedAddressResolver';
 import { useResolveNamedAddress } from './useResolveNamedAddress';
 
 jest.mock('@trezor/react-utils', () => ({
@@ -29,14 +33,16 @@ const namedAddressResolver: SymbolNamedAddressResolver = {
     resolveNamedProfile: jest.fn(),
 };
 
-const networkModuleRepository = {
-    get: () => ({ namedAddressResolver }),
-} as unknown as NetworkModuleRepository;
+const services: { networks: GetNamedAddressSupportDep } = {
+    networks: {
+        getNamedAddressSupport: mockGetNamedAddressSupport(namedAddressResolver),
+    },
+};
 
 const renderResolveHook = (value: string, symbol: NetworkSymbol | null) =>
     renderHookWithQueryClient(() => useResolveNamedAddress(value, symbol), {
         wrapper: ({ children }: { children: ReactNode }) => (
-            <ServicesProvider services={{ networkModuleRepository }}>{children}</ServicesProvider>
+            <ServicesProvider services={services}>{children}</ServicesProvider>
         ),
     });
 

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { selectGetSupportedNetworksDep } from '@suite-common/networks';
 import { type TradingType } from '@suite-common/trading';
 import {
     type CombinedSelectorsRootState,
@@ -9,8 +9,8 @@ import {
 } from '@suite-native/trading-state';
 
 export const useTradingMyAssets = (tradingType: TradingType) => {
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
-    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
+    const { getSupportedNetworks } = useServices(selectGetSupportedNetworksDep);
+    const supportedNetworks = getSupportedNetworks();
 
     return useSelector((state: CombinedSelectorsRootState) =>
         selectAccountsWithTokensToSellSectionListByTradingType(

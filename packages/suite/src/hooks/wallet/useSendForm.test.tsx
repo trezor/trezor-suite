@@ -10,16 +10,15 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { debugInitialState } from '@suite/debug';
 import { closeModal, openModal } from '@suite/modal';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { type AddressValidatorDep } from '@suite-common/address';
-import { mockAddressValidator } from '@suite-common/address/mocks';
 import {
+    type AddressValidatorDep,
     type FindNetworkSymbolForProtocolDep,
-    type NetworkModuleRepositoryDep,
+    type GetNamedAddressSupportDep,
 } from '@suite-common/networks';
 import {
+    mockAddressValidator,
     mockFindNetworkSymbolForProtocol,
-    mockNetworkModule,
-    mockNetworkModuleRepository,
+    mockGetNamedAddressSupport,
 } from '@suite-common/networks/mocks';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
@@ -97,27 +96,31 @@ interface Args {
 }
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
-type SendFormTestServices = AddressValidatorDep &
-    DesktopAnalyticsDep &
+type SendFormNetworkServices = AddressValidatorDep &
     FindNetworkSymbolForProtocolDep &
-    GetIsWindowVisibleDep &
+    GetNamedAddressSupportDep;
+
+type SendFormTestServices = DesktopAnalyticsDep & {
+    networks: SendFormNetworkServices;
+} & GetIsWindowVisibleDep &
     GetTradedAccountKeysDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
-    NetworkModuleRepositoryDep &
     SuiteSyncDep;
 
 const services: SendFormTestServices = {
-    addressValidator: mockAddressValidator({
-        isAddressValid: address => address !== '' && address !== 'X' && address !== 'FOO',
-    }),
     analytics: mockDesktopAnalytics(),
-    findNetworkSymbolForProtocol: mockFindNetworkSymbolForProtocol({
-        [asProtocol('bitcoin')]: asNetworkSymbol('btc'),
-    }),
+    networks: {
+        addressValidator: mockAddressValidator({
+            isAddressValid: address => address !== '' && address !== 'X' && address !== 'FOO',
+        }),
+        findNetworkSymbolForProtocol: mockFindNetworkSymbolForProtocol({
+            [asProtocol('bitcoin')]: asNetworkSymbol('btc'),
+        }),
+        getNamedAddressSupport: mockGetNamedAddressSupport(),
+    },
     getIsWindowVisible: mockGetIsWindowVisible(),
     getTradedAccountKeys: mockGetTradedAccountKeys(),
     migrateSuiteSyncLabelsForRbfTransaction: mockMigrateSuiteSyncLabelsForRbfTransaction(),
-    networkModuleRepository: mockNetworkModuleRepository({ get: () => mockNetworkModule() }),
     suiteSync: mockSuiteSync(),
 };
 const extraActions: OnModalCancelDep = { onModalCancel: closeModal };

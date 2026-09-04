@@ -8,19 +8,19 @@ import {
     type TradingFiatRatesReturn,
     type TradingSellFormProps,
 } from '@suite-common/trading';
-import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Timestamp } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useTradingFiatCryptoAmount } from './useTradingFiatCryptoAmount';
 
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const btcSymbol = asNetworkSymbol('btc');
 
 const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
     name: 'Bitcoin',
-    coingeckoId: 'bitcoin',
+    coingeckoId: 'bitcoin' as CryptoId,
     contractAddress: null,
     symbol: btcSymbol,
     displaySymbol: 'BTC',

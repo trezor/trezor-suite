@@ -1,3 +1,5 @@
+/** @jest-environment node */
+
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 

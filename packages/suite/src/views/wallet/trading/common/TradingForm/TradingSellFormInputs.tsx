@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { selectGetSupportedNetworksDep } from '@suite-common/networks';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -45,7 +45,7 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
     const quotes = useSelector(selectTradingSellQuotes);
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+    const { getSupportedNetworks } = useServices(selectGetSupportedNetworksDep);
 
     const {
         type,
@@ -95,7 +95,7 @@ export const TradingSellFormInputs = () => {
         [onCryptoCurrencyChangeRef],
     );
 
-    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
+    const supportedNetworks = getSupportedNetworks();
     const sellSupportedCryptoIds = useSelector(state =>
         selectTradingSellSupportedCryptoIds(state, supportedNetworks),
     );

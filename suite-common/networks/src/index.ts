@@ -1,27 +1,31 @@
 export { createNetworksCompositionRoot } from './createNetworksCompositionRoot';
 export {
-    createGetNetworkConfig,
+    selectAddressValidatorDep,
+    type AddressValidator,
+    type AddressValidatorDep,
+} from './createAddressValidator';
+export {
+    selectGetNamedAddressSupportDep,
+    type GetNamedAddressSupport,
+    type GetNamedAddressSupportDep,
+    type NamedAddressSupport,
+    type SymbolNamedAddressResolver,
+} from './createGetNamedAddressSupport';
+export {
     selectGetNetworkConfigDep,
     type GetNetworkConfig,
     type GetNetworkConfigDep,
-    type GetNetworkConfigDeps,
 } from './createGetNetworkConfig';
 export {
-    createFindNetworkSymbolForProtocol,
+    selectGetSupportedNetworksDep,
+    type GetSupportedNetworks,
+    type GetSupportedNetworksDep,
+} from './createGetSupportedNetworks';
+export { selectIsTestnetDep, type IsTestnet, type IsTestnetDep } from './createIsTestnet';
+export {
     selectFindNetworkSymbolForProtocolDep,
     type FindNetworkSymbolForProtocol,
     type FindNetworkSymbolForProtocolDep,
-    type FindNetworkSymbolForProtocolDeps,
 } from './createFindNetworkSymbolForProtocol';
-export {
-    createNetworkModuleRepository,
-    selectNetworkModuleRepositoryDep,
-    type NetworkModuleRepository,
-    type NetworkModuleRepositoryDep,
-    type NetworkModuleRepositoryDeps,
-} from './NetworkModuleRepository';
-export {
-    type NetworkSymbol,
-    type NetworkModules,
-    type StaticNetworkModulesDep,
-} from './NetworkModules';
+export { type NetworksServices, type NetworksServicesDep } from './NetworksServices';
+export { type NetworkSymbol } from './NetworkModules';

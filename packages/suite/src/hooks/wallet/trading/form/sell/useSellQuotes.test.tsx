@@ -11,13 +11,13 @@ import {
     sellInitialState,
     initialState as tradingInitialState,
 } from '@suite-common/trading';
-import { type Network, getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { type Network, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useSellQuotes } from './useSellQuotes';
 import { DEBOUNCE_DELAY_MS } from '../common/useTradingQuoteRequest';
 
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const btcSymbol = asNetworkSymbol('btc');
 
 const QUOTES: SellFiatTrade[] = [
     {
@@ -66,7 +66,7 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
     name: 'Bitcoin',
-    coingeckoId: 'bitcoin',
+    coingeckoId: 'bitcoin' as CryptoId,
     contractAddress: null,
     symbol: btcSymbol,
     displaySymbol: 'BTC',

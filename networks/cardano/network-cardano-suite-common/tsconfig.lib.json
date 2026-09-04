@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "./lib" },
     "include": ["./src"],
     "references": [
+        {
+            "path": "../../../packages/device-utils"
+        },
         { "path": "../network-cardano" },
         {
             "path": "../../network-module/network-module-suite-common-types"

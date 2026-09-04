@@ -173,7 +173,7 @@ export const getClearSignedEvmTradingSwapCoverage = ({
         return undefined;
     }
     const network = networks[account.symbol];
-    if (!('chainId' in network)) {
+    if (network.chainId === undefined) {
         return undefined;
     }
     const to = precomposedTx.outputs.find(
@@ -229,7 +229,7 @@ export const isClearSignedWrappedNativeTransaction = ({
     }
 
     const network = networks[account.symbol];
-    if (!('chainId' in network)) {
+    if (network.chainId === undefined) {
         return false;
     }
 

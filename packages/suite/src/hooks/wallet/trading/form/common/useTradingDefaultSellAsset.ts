@@ -2,12 +2,13 @@ import { useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectIsTestnetDep } from '@suite-common/networks';
 import {
     type TradingAssetSellOption,
     createAssetNativeTokenOption,
     useTradingAssets,
 } from '@suite-common/trading';
-import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useTradingFindAccountOrToken } from './useTradingFindAccountOrToken';
@@ -26,6 +27,7 @@ export function useTradingDefaultSellAsset({
 }: UseTradingDefaultSellAssetProps) {
     const findAccountOrToken = useTradingFindAccountOrToken();
     const { resolveAssetTokenOption } = useTradingAssets();
+    const { isTestnet } = useServices(selectIsTestnetDep);
     const accountOrToken = useMemo(() => {
         if (!cryptoId || !accountKey) {
             return null;
@@ -35,27 +37,27 @@ export function useTradingDefaultSellAsset({
     }, [findAccountOrToken, accountKey, cryptoId]);
     const account = accountOrToken?.account ?? null;
 
+    const isTestnetAccount = accountOrToken ? isTestnet(accountOrToken.account.symbol) : false;
+
     const defaultAsset: TradingAssetSellOption | undefined = useMemo(() => {
-        if (!accountOrToken) {
+        if (!accountOrToken || isTestnetAccount) {
             return undefined;
         }
 
-        const { account, token } = accountOrToken;
+        const { account: selectedAccount, token } = accountOrToken;
 
         if (token) {
             return {
-                ...resolveAssetTokenOption(account.symbol, token),
-                accountKey: account.key,
+                ...resolveAssetTokenOption(selectedAccount.symbol, token),
+                accountKey: selectedAccount.key,
             } satisfies TradingAssetSellOption;
         }
 
         return {
-            ...createAssetNativeTokenOption(
-                account.symbol as NetworkConfigWithoutTestnets['symbol'],
-            ),
-            accountKey: account.key,
+            ...createAssetNativeTokenOption(selectedAccount.symbol),
+            accountKey: selectedAccount.key,
         } satisfies TradingAssetSellOption;
-    }, [accountOrToken, resolveAssetTokenOption]);
+    }, [accountOrToken, isTestnetAccount, resolveAssetTokenOption]);
 
     return { account, defaultAsset };
 }

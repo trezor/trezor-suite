@@ -3,7 +3,7 @@ import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
-import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
@@ -33,10 +33,10 @@ const accountsReducer = prepareAccountsReducer({
     reducers: { storageLoadAccounts: mockReducer() },
 });
 const cloneExchangeQuotes = () => cloneObject(MIN_MAX_QUOTES_OK) as ExchangeTrade[];
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
-const bscSymbol = toNetworkSymbolNonTestnet('bsc');
-const etcSymbol = toNetworkSymbolNonTestnet('etc');
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const bscSymbol = asNetworkSymbol('bsc');
+const etcSymbol = asNetworkSymbol('etc');
 
 describe('handleExchangeRequestThunk', () => {
     afterEach(() => {
@@ -53,11 +53,14 @@ describe('handleExchangeRequestThunk', () => {
         const store = createTestStore({
             extra: {
                 services: {
-                    addressValidator: {
-                        getAddressType: jest.fn(),
-                        isAddressValid: jest.fn(
-                            (address, symbol) => address === validEthAddress && symbol === 'eth',
-                        ),
+                    networks: {
+                        addressValidator: {
+                            getAddressType: jest.fn(),
+                            isAddressValid: jest.fn(
+                                (address, symbol) =>
+                                    address === validEthAddress && symbol === 'eth',
+                            ),
+                        },
                     },
                 },
             },
@@ -123,7 +126,7 @@ describe('handleExchangeRequestThunk', () => {
                 id: 'bitcoin' as CryptoId,
                 isNativeToken: true,
                 name: 'Bitcoin',
-                coingeckoId: 'bitcoin',
+                coingeckoId: 'bitcoin' as CryptoId,
                 contractAddress: null,
                 symbol: btcSymbol,
                 displaySymbol: 'BTC',
@@ -135,7 +138,7 @@ describe('handleExchangeRequestThunk', () => {
                 id: 'ethereum' as CryptoId,
                 isNativeToken: true,
                 name: 'Ethereum',
-                coingeckoId: 'ethereum',
+                coingeckoId: 'ethereum' as CryptoId,
                 contractAddress: null,
                 symbol: ethSymbol,
                 displaySymbol: 'ETH',
@@ -259,7 +262,7 @@ describe('handleExchangeRequestThunk', () => {
                     id: 'binancecoin' as CryptoId,
                     isNativeToken: true,
                     name: 'BNB Smart Chain',
-                    coingeckoId: 'binance-smart-chain',
+                    coingeckoId: 'binance-smart-chain' as CryptoId,
                     contractAddress: null,
                     symbol: bscSymbol,
                     displaySymbol: 'BNB',
@@ -277,7 +280,7 @@ describe('handleExchangeRequestThunk', () => {
                     id: 'ethereum-classic' as CryptoId,
                     isNativeToken: true,
                     name: 'Ethereum Classic',
-                    coingeckoId: 'ethereum-classic',
+                    coingeckoId: 'ethereum-classic' as CryptoId,
                     contractAddress: null,
                     symbol: etcSymbol,
                     displaySymbol: 'ETC',

@@ -18,17 +18,17 @@ export const prepareDisplaySymbolFormatter = (config: FormatterConfig) =>
 
             const { features: networkFeatures, testnet: isTestnet } = getNetwork(symbol);
             const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
-            let formattedSymbol = getNetworkDisplaySymbol(symbol);
 
             // convert to different units if needed
             if (areAmountUnitsEnabled && areAmountUnitsSupported) {
                 const unitAbbreviation = UNIT_ABBREVIATIONS[bitcoinAmountUnit];
-                formattedSymbol = isTestnet
-                    ? `${unitAbbreviation} ${formattedSymbol}`
+
+                return isTestnet
+                    ? `${unitAbbreviation} ${getNetworkDisplaySymbol(symbol)}`
                     : unitAbbreviation;
             }
 
-            return formattedSymbol;
+            return getNetworkDisplaySymbol(symbol);
         },
         'DisplaySymbolFormatter',
     );

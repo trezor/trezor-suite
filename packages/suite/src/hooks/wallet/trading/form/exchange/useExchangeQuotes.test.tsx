@@ -15,15 +15,15 @@ import {
 import {
     type Network,
     type NetworkSymbol,
+    asNetworkSymbol,
     getNetwork,
-    toNetworkSymbolNonTestnet,
 } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useExchangeQuotes } from './useExchangeQuotes';
 
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 const QUOTES: ExchangeTrade[] = [
     { exchange: 'provider-1', send: 'bitcoin' as CryptoId, receive: 'ethereum' as CryptoId },
@@ -70,7 +70,7 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
     name: 'Bitcoin',
-    coingeckoId: 'bitcoin',
+    coingeckoId: 'bitcoin' as CryptoId,
     contractAddress: null,
     symbol: btcSymbol,
     displaySymbol: 'BTC',
@@ -83,7 +83,7 @@ const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
     id: 'ethereum' as CryptoId,
     isNativeToken: true,
     name: 'Ethereum',
-    coingeckoId: 'ethereum',
+    coingeckoId: 'ethereum' as CryptoId,
     contractAddress: null,
     symbol: ethSymbol,
     displaySymbol: 'ETH',
@@ -146,8 +146,8 @@ const renderExchangeQuotes = (
     const { receiveAddress, receiveAccountKey, receiveAccountSymbol, resolver } = options;
     const network = 'network' in options ? options.network : getNetwork(btcSymbol);
     const services = {
-        addressValidator: mockAddressValidator,
         analytics: mockDesktopAnalytics(),
+        networks: { addressValidator: mockAddressValidator },
     };
 
     const root = createTestCompositionRoot({

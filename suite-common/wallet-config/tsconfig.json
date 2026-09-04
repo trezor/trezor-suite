@@ -4,22 +4,11 @@
     "references": [
         { "path": "../earn-stablecoin-defs" },
         { "path": "../networks" },
-        { "path": "../../packages/crypto-utils" },
-        { "path": "../../packages/device-utils" },
         {
-            "path": "../../networks/cardano/network-cardano"
-        },
-        {
-            "path": "../../networks/ripple/network-ripple"
+            "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {
             "path": "../../networks/solana/network-solana"
-        },
-        {
-            "path": "../../networks/stellar/network-stellar"
-        },
-        {
-            "path": "../../networks/tron/network-tron"
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

@@ -114,20 +114,19 @@ export const formatNetworkAmount = (
 
     if (!decimals) return amount;
 
-    let formattedAmount = convertAmountSubunitsToUnits(amount, decimals);
+    const formattedAmount = convertAmountSubunitsToUnits(amount, decimals);
 
-    if (withSymbol) {
-        let formattedSymbol = getNetworkDisplaySymbol(symbol);
-
-        if (isSatoshis) {
-            formattedAmount = amount || '0';
-            formattedSymbol = `sat ${getNetworkDisplaySymbol(symbol)}`;
-        }
-
-        return `${formattedAmount} ${formattedSymbol}`;
+    if (!withSymbol) {
+        return formattedAmount;
     }
 
-    return formattedAmount;
+    const displaySymbol = getNetworkDisplaySymbol(symbol);
+
+    if (isSatoshis) {
+        return `${amount || '0'} sat ${displaySymbol}`;
+    }
+
+    return `${formattedAmount} ${displaySymbol}`;
 };
 
 export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {

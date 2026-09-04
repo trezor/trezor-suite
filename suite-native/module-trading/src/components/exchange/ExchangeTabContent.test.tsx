@@ -1,5 +1,5 @@
-import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import type { GetSupportedNetworksDep } from '@suite-common/networks';
+import { mockGetSupportedNetworks } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -9,9 +9,9 @@ import { ExchangeTabContent } from './ExchangeTabContent';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockUseTradingExchangeData: jest.Mock;
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: GetSupportedNetworksDep } = {
     analytics: mockNativeAnalytics(),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { getSupportedNetworks: mockGetSupportedNetworks() },
 };
 
 jest.mock('../../hooks/exchange/useExchangeData', () => ({

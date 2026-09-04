@@ -5,6 +5,7 @@ import { networks } from './networksConfig';
 import {
     type AccountType,
     type Network,
+    type NetworkDisplaySymbol,
     type NetworkFeature,
     type NetworkSymbol,
     type NetworkSymbolExtended,
@@ -156,7 +157,7 @@ export const getNetworkByTradeCryptoId = (tradeCryptoId: string): Network | unde
 export const getNetworkByEvmChainId = (chainId: number): Network | undefined =>
     networksCollection.find(n => n.chainId === chainId);
 
-export const getNetworkDisplaySymbol = (symbol: NetworkSymbol): string =>
+export const getNetworkDisplaySymbol = (symbol: NetworkSymbol): NetworkDisplaySymbol =>
     getNetwork(symbol).displaySymbol;
 
 export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {

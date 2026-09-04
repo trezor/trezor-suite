@@ -1,5 +1,5 @@
-import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import type { GetSupportedNetworksDep } from '@suite-common/networks';
+import { mockGetSupportedNetworks } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -24,9 +24,9 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ params: {} }),
 }));
 
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: GetSupportedNetworksDep } = {
     analytics: mockNativeAnalytics(),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { getSupportedNetworks: mockGetSupportedNetworks() },
 };
 
 describe('ExchangeSendContent', () => {

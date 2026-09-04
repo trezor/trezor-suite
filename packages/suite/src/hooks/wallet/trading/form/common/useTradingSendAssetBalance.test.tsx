@@ -2,7 +2,7 @@ import { type CryptoId } from 'invity-api';
 
 import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingAssetSellOption } from '@suite-common/trading';
-import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseCurrencyOption } from '@suite-common/wallet-types';
 import {
     mockAccountKey,
@@ -12,8 +12,8 @@ import {
 
 import { useTradingSendAssetBalance } from './useTradingSendAssetBalance';
 
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 jest.mock('src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
     useTradingAssetDecimals: () => ({ getAssetDecimals: () => 8 }),
@@ -43,7 +43,7 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
     name: 'Bitcoin',
-    coingeckoId: 'bitcoin',
+    coingeckoId: 'bitcoin' as CryptoId,
     contractAddress: null,
     symbol: btcSymbol,
     displaySymbol: 'BTC',

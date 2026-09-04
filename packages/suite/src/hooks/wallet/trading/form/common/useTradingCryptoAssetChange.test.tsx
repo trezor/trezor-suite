@@ -8,14 +8,14 @@ import {
     type TradingFiatRatesReturn,
     type TradingSellFormProps,
 } from '@suite-common/trading';
-import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useTradingCryptoAssetChange } from './useTradingCryptoAssetChange';
 
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 const ACCOUNT = mockWalletAccount({ symbol: btcSymbol, formattedBalance: '2' });
 const OTHER_ACCOUNT = mockWalletAccount({ symbol: ethSymbol, formattedBalance: '5' });
 
@@ -23,7 +23,7 @@ const buildSelect = (accountKey: AccountKey): TradingAssetSellOption => ({
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
     name: 'Bitcoin',
-    coingeckoId: 'bitcoin',
+    coingeckoId: 'bitcoin' as CryptoId,
     contractAddress: null,
     symbol: btcSymbol,
     displaySymbol: 'BTC',

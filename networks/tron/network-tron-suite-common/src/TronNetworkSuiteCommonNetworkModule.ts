@@ -10,9 +10,12 @@ import { getNetworkConfig } from './networkConfig';
 
 export type TronNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<TronNetworkSymbol>;
 
+const isTestnet = (symbol: TronNetworkSymbol): boolean => getNetworkConfig(symbol).testnet;
+
 export const createTronSuiteCommonNetworkModule = (): TronNetworkSuiteCommonNetworkModule => ({
     addressValidator: tronValidator,
     getSupportedNetworks: () => supportedTronNetworks,
     isSupportedNetwork: isSupportedTronNetwork,
+    isTestnet,
     getNetworkConfig,
 });

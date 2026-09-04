@@ -11,3 +11,7 @@ export {
     getWrappedNativeToken,
     isWrappedNativeToken,
 } from './wrappedNativeToken';
+
+// These exports bridge transaction simulation during modularization. Once that feature is owned
+// by the Ethereum network module, its Blockaid configuration shall become module-private.
+export { findEthereumNetworkSymbolByBlockaidChain, resolveBlockaidEvmChain } from './blockaid';

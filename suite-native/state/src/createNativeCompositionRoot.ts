@@ -3,17 +3,11 @@ import RNRestart from 'react-native-restart';
 
 import * as Device from 'expo-device';
 
-import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
 import { type CommonServices, notImplementedGetter } from '@suite-common/extra-dependencies';
-import {
-    createFindNetworkSymbolForProtocol,
-    createGetNetworkConfig,
-    createNetworkModuleRepository,
-    createNetworksCompositionRoot,
-} from '@suite-common/networks';
+import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
@@ -90,14 +84,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
-    const networkModules = createNetworksCompositionRoot();
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
-    const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
-    const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
-        getNetworkConfig,
-        networkModuleRepository,
-    });
-    const addressValidator = createAddressValidator({ networkModuleRepository });
+    const networks = createNetworksCompositionRoot();
 
     const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
         initLog(prefix, false);
@@ -105,10 +92,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
     const logger = createLogger('native-transport');
 
     return {
-        networkModuleRepository,
-        getNetworkConfig,
-        findNetworkSymbolForProtocol,
-        addressValidator,
+        networks,
         suiteSync,
         bip329,
         ensureDelegatedIdentityKey,

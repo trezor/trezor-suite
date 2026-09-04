@@ -1,13 +1,6 @@
 import type { AddressValidator } from './AddressValidator';
 import type { NamedAddressResolver } from './NamedAddressResolver';
-import type { Protocol } from './Protocol';
-
-export type NetworkColor = `#${string}`;
-
-export type SuiteCommonNetworkConfig = {
-    readonly color: NetworkColor;
-    readonly protocols: readonly Protocol[];
-};
+import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
 
 export type SuiteCommonNetworkModule<TSymbol extends string> = {
     addressValidator: AddressValidator<TSymbol>;
@@ -18,6 +11,8 @@ export type SuiteCommonNetworkModule<TSymbol extends string> = {
     getSupportedNetworks: () => readonly TSymbol[];
 
     isSupportedNetwork: (symbol: string) => symbol is TSymbol;
+
+    isTestnet(symbol: TSymbol): boolean;
 
     getNetworkConfig(symbol: TSymbol): SuiteCommonNetworkConfig;
 };
