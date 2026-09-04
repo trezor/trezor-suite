@@ -1,3 +1,5 @@
+import { type Dispatch } from '@reduxjs/toolkit/react';
+
 import { selectSelectedDevice } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -105,12 +107,17 @@ const preCallHook = async <M extends CallMethodKeys>({
     }
 };
 
-export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) {
+const cleanupHook = (dispatch: Dispatch) => {
     if (temporaryAccounts.length) {
-        // Remove temporary accounts
-        dispatch(accountsActions.removeAccount(temporaryAccounts));
+        // Dispatch a copy: temporaryAccounts is cleared below and Redux carries the payload by
+        // reference, so mutating it would mutate the already-dispatched action's payload.
+        dispatch(accountsActions.removeAccount([...temporaryAccounts]));
         temporaryAccounts.length = 0;
     }
+};
+
+export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) {
+    cleanupHook(dispatch);
 
     return false;
 }
@@ -118,4 +125,5 @@ export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHoo
 export const solanaSignTransaction = {
     preCallHook,
     postCallHook,
+    cleanupHook,
 };

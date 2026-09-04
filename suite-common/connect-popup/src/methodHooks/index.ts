@@ -1,3 +1,5 @@
+import { type Dispatch } from '@reduxjs/toolkit/react';
+
 import type { CallMethodKeys } from '@trezor/connect';
 
 import { addressConfirmationModalHooks } from './addressConfirmation';
@@ -65,3 +67,14 @@ export async function postCallHooks<M extends CallMethodKeys>(params: PostCallHo
 
     return hooks.some(Boolean);
 }
+
+// Sign hooks may create placeholder accounts in preCallHook that are normally torn down in
+// postCallHook. If the call throws between the two (e.g. Device_Disconnected), postCallHook never
+// runs and the module-level placeholder leaks, later causing a stale removeAccount payload. This is
+// the unconditional safety net invoked from the thunk's finally so the leak cannot survive a call.
+export const cleanupHooks = (dispatch: Dispatch) => {
+    bitcoinSignTransaction.cleanupHook(dispatch);
+    ethereumSignTransaction.cleanupHook(dispatch);
+    solanaSignTransaction.cleanupHook(dispatch);
+    stellarSignTransaction.cleanupHook(dispatch);
+};

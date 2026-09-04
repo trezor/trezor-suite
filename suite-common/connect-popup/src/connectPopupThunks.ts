@@ -53,7 +53,13 @@ import {
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { compatibilityHooks, postCallHooks, preCallHooks, validateCallHooks } from './methodHooks';
+import {
+    cleanupHooks,
+    compatibilityHooks,
+    postCallHooks,
+    preCallHooks,
+    validateCallHooks,
+} from './methodHooks';
 import type { DistributiveOmit } from './methodHooks/types';
 import {
     deriveCardanoEnabledNetworks,
@@ -296,6 +302,9 @@ export const connectPopupCallInnerThunk = createThunk<
                 error: serializeError(error),
             });
         } finally {
+            // Tear down any placeholder accounts created in preCallHooks even if the call threw
+            // before postCallHooks ran, so they cannot leak into a later removeAccount payload.
+            cleanupHooks(dispatch);
             dispatch(extra.actions.lockDevice(false));
         }
     },
