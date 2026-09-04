@@ -8,6 +8,8 @@ import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { loadInitialDataThunk } from './loadInitialDataThunk';
+import coinsFixture from '../../__fixtures__/coins.json';
+import platformsFixture from '../../__fixtures__/platforms.json';
 import { accountBtc, accountEth } from '../../__fixtures__/utils';
 import { TRADING_FALLBACK_API_KEY } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
@@ -332,5 +334,31 @@ describe('loadInitialDataThunk', () => {
         await store.dispatch(loadInitialDataThunk({ activeSection: 'exchange' })).unwrap();
 
         expect(store.getState().wallet.trading.activeSection).toBe('exchange');
+    });
+
+    it('should keep existing coins when getInfo fails after account change', async () => {
+        tradeApi.getCurrentAccountDescriptor = () => 'FakeDescriptor';
+        const getInfoMock = jest.fn(() => Promise.resolve(undefined));
+        tradeApi.getInfo = getInfoMock;
+
+        const mockedLastLoadedTimestamp = new Date().getTime();
+        jest.spyOn(Date, 'now').mockImplementation(() => mockedLastLoadedTimestamp);
+
+        const store = initStore({
+            info: {
+                coins: coinsFixture,
+                platforms: platformsFixture,
+            },
+            lastLoadedTimestamp: mockedLastLoadedTimestamp,
+        });
+
+        await store.dispatch(loadInitialDataThunk({ activeSection: 'buy' }));
+
+        expect(getInfoMock).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.info.coins).toEqual(coinsFixture);
+        expect(store.getState().wallet.trading.info.platforms).toEqual(platformsFixture);
+        expect(
+            store.getActions().some(action => action.type === tradingActions.saveInfo.type),
+        ).toBe(false);
     });
 });
