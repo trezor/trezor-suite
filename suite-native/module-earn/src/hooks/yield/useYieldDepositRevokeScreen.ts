@@ -21,7 +21,6 @@ import { useRefreshYieldDepositAllowanceOnIdle } from './useRefreshYieldDepositA
 import { useShowYieldAlert } from './useShowYieldAlert';
 import { useShowYieldTransactionFailureAlert } from './useShowYieldTransactionFailureAlert';
 import { type YieldAllowanceFeeTransaction, useYieldAllowanceFees } from './useYieldAllowanceFees';
-import { useYieldApprovedAmountDisplay } from './useYieldApprovedAmountDisplay';
 import { useYieldFlowData } from './useYieldFlowData';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
@@ -80,12 +79,7 @@ export const useYieldDepositRevokeScreen = () => {
     const isPreparingRevoke = session?.approval.isSubmitting ?? false;
     const hasRevokeRequestAmount = isPositiveBalance(revokeRequestAmount);
     const shouldShowLowLimitWarning = !!route.params.shouldShowLowLimitWarning;
-    const { formattedApprovedAmount, hasApprovedAmount: hasApprovedAllowanceAmount } =
-        useYieldApprovedAmountDisplay({
-            allowanceAmount: approvedAllowanceAmount,
-            isApprovedAmountUnlimited,
-            tokenSymbol,
-        });
+    const hasApprovedAllowanceAmount = isPositiveBalance(approvedAllowanceAmount);
     const revokeFeeTransaction = useMemo<YieldAllowanceFeeTransaction | null>(() => {
         if (!approvalModalState || approvalModalState.txType === 'approve') {
             return null;
@@ -345,8 +339,8 @@ export const useYieldDepositRevokeScreen = () => {
     return {
         account,
         accountLabel,
+        approvedAmount: isApprovedAmountUnlimited ? null : approvedAllowanceAmount,
         feeSelectorProps,
-        formattedApprovedAmount,
         handleReviewAndSign,
         isApprovedAmountUnlimited,
         isSubmitDisabled,
@@ -355,6 +349,7 @@ export const useYieldDepositRevokeScreen = () => {
         pendingModal,
         providerName,
         shouldShowLowLimitWarning,
+        tokenDecimals: token.decimals,
         tokenContract: route.params.tokenContract,
         tokenSymbol,
         vaultTokenName,

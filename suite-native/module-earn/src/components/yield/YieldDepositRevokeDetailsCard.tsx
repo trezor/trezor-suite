@@ -23,6 +23,7 @@ type YieldDepositRevokeDetailsCardProps = {
     approvedAmount: string | null;
     isApprovedAmountUnlimited: boolean;
     providerName: string;
+    tokenDecimals?: number;
     tokenContract: TokenAddress;
     tokenSymbol: TokenSymbol;
 };
@@ -33,6 +34,7 @@ export const YieldDepositRevokeDetailsCard = ({
     approvedAmount,
     isApprovedAmountUnlimited,
     providerName,
+    tokenDecimals,
     tokenContract,
     tokenSymbol,
 }: YieldDepositRevokeDetailsCardProps) => {
@@ -84,6 +86,7 @@ export const YieldDepositRevokeDetailsCard = ({
                     approvedAmount={approvedAmount}
                     isApprovedAmountUnlimited={isApprovedAmountUnlimited}
                     networkSymbol={account.symbol}
+                    tokenDecimals={tokenDecimals}
                     tokenContract={tokenContract}
                     tokenSymbol={tokenSymbol}
                 />

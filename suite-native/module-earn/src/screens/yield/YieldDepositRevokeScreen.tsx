@@ -17,8 +17,8 @@ export const YieldDepositRevokeScreen = () => {
     const {
         account,
         accountLabel,
+        approvedAmount,
         feeSelectorProps,
-        formattedApprovedAmount,
         handleReviewAndSign,
         isApprovedAmountUnlimited,
         isSubmitDisabled,
@@ -27,6 +27,7 @@ export const YieldDepositRevokeScreen = () => {
         pendingModal,
         providerName,
         shouldShowLowLimitWarning,
+        tokenDecimals,
         tokenContract,
         tokenSymbol,
         vaultTokenName,
@@ -89,9 +90,10 @@ export const YieldDepositRevokeScreen = () => {
                     <YieldDepositRevokeDetailsCard
                         account={account}
                         accountLabel={accountLabel}
-                        approvedAmount={formattedApprovedAmount}
+                        approvedAmount={approvedAmount}
                         isApprovedAmountUnlimited={isApprovedAmountUnlimited}
                         providerName={providerName}
+                        tokenDecimals={tokenDecimals}
                         tokenContract={tokenContract}
                         tokenSymbol={tokenSymbol}
                     />

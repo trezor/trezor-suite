@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Keyboard } from 'react-native';
-import { useSelector } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
@@ -36,7 +35,7 @@ import {
 } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { decimalTransformer } from '@suite-native/helpers';
-import { Translation, selectSupportedLanguageLocale, useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
@@ -53,6 +52,7 @@ import { YieldDepositFlowScreenHeader } from '../../components/yield/YieldDeposi
 import { YieldDepositInfoBottomSheet } from '../../components/yield/YieldDepositInfoBottomSheet';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../../components/yield/YieldFeeEstimationErrorAlert';
+import { YieldFormattedAmount } from '../../components/yield/YieldFormattedAmount';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
 import { YieldWithdrawStepCard } from '../../components/yield/YieldWithdrawStepCard';
 import { YieldWithdrawWarning } from '../../components/yield/YieldWithdrawWarning';
@@ -69,7 +69,6 @@ import { useYieldPendingSheet } from '../../hooks/yield/useYieldPendingSheet';
 import { useYieldPendingTransactionTracking } from '../../hooks/yield/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../../hooks/yield/useYieldSession';
 import { useYieldWithdrawFees } from '../../hooks/yield/useYieldWithdrawFees';
-import { formatEarnTokenAmount } from '../../utils/earn/earnAmountUtils';
 import {
     getYieldTokenContract,
     isAmountInputValueValid,
@@ -105,7 +104,6 @@ export const YieldWithdrawScreen = () => {
     const isFocused = useIsFocused();
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
-    const locale = useSelector(selectSupportedLanguageLocale);
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const [assetAmount, setAssetAmount] = useState('');
@@ -538,9 +536,6 @@ export const YieldWithdrawScreen = () => {
         ? toTokenAddress(vault.token.address)
         : route.params.tokenContract;
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
-    const depositedAmountLabel = maxAmount
-        ? formatEarnTokenAmount({ amount: maxAmount, locale, symbol: activeUnitSymbol })
-        : null;
 
     return (
         <Screen
@@ -661,7 +656,7 @@ export const YieldWithdrawScreen = () => {
                                 </Hint>
                             )}
 
-                            {depositedAmountLabel && (
+                            {maxAmount && (
                                 <HStack
                                     spacing="sp8"
                                     justifyContent="space-between"
@@ -673,14 +668,17 @@ export const YieldWithdrawScreen = () => {
                                                 <Translation id="earn.yieldWithdrawFlowScreen.deposited" />
                                             </Text>
                                             <Box flexShrink={1}>
-                                                <Text
+                                                <YieldFormattedAmount
+                                                    value={maxAmount}
+                                                    networkSymbol={account.symbol}
+                                                    tokenContract={activeUnitTokenContract}
+                                                    tokenDecimals={activeInputToken.decimals}
+                                                    tokenSymbol={activeUnitSymbol}
                                                     variant="body-sm"
                                                     color="contentSecondary"
                                                     numberOfLines={1}
                                                     ellipsizeMode="tail"
-                                                >
-                                                    {depositedAmountLabel}
-                                                </Text>
+                                                />
                                             </Box>
                                         </HStack>
                                         <Button
