@@ -51,6 +51,9 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
     const tokenSymbol = token?.symbol ?? getDisplaySymbol(symbol);
     const tokenName = token?.name ?? getNetworkDisplaySymbolName(symbol);
     const balance = token?.balance ?? account?.formattedBalance ?? '0';
+    const tokenAmountSymbol = token?.symbol
+        ? (getDisplaySymbol(token.symbol) as TokenSymbol)
+        : null;
 
     return (
         <Card style={applyStyle(cardStyle)} noShadow>
@@ -111,7 +114,7 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                         {token ? (
                             <CompactTokenAmountFormatter
                                 value={asDecimalTokenAmount(token.balance ?? '0')}
-                                tokenSymbol={getDisplaySymbol(token.symbol) as TokenSymbol}
+                                tokenSymbol={tokenAmountSymbol}
                                 tokenDecimals={token.decimals}
                                 numberOfLines={1}
                                 adjustsFontSizeToFit

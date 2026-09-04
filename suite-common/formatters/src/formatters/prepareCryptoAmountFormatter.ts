@@ -198,7 +198,9 @@ const appendSymbol = ({
               })
             : symbol;
 
-    return `${value} ${formattedSymbol}`;
+    const symbolSuffix = formattedSymbol ? ` ${formattedSymbol}` : '';
+
+    return `${value}${symbolSuffix}`;
 };
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
