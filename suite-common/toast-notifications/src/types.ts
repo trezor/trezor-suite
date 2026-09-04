@@ -13,7 +13,6 @@ export type NotificationId = number;
 
 export interface NotificationOptions {
     seen?: boolean;
-    resolved?: boolean;
     autoClose?: number | false;
     style?: CSSProperties;
 }
