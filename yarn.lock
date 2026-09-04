@@ -3476,6 +3476,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@exodus/bytes@npm:^1.15.1":
+  version: 1.15.1
+  resolution: "@exodus/bytes@npm:1.15.1"
+  peerDependencies:
+    "@noble/hashes": ^1.8.0 || ^2.0.0
+  peerDependenciesMeta:
+    "@noble/hashes":
+      optional: true
+  checksum: 10/7dde00ae8040ec032ba3c287d210d7d555986caaf81a1215311c180422697d739a1952eb9d91e841132b18a19a910cdd02e4914136db3cc87baaa0fdd84b1e87
+  languageName: node
+  linkType: hard
+
 "@exodus/patch-broken-hermes-typed-arrays@npm:^1.0.0-alpha.1":
   version: 1.0.0-alpha.1
   resolution: "@exodus/patch-broken-hermes-typed-arrays@npm:1.0.0-alpha.1"
@@ -10145,24 +10157,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/js-xdr@npm:4.0.0":
-  version: 4.0.0
-  resolution: "@stellar/js-xdr@npm:4.0.0"
-  checksum: 10/d300c723e18f9d99c666499f8744a31981390ef8d780b2a321e019cbd23436a2de5b3d999e7af5e9ed334b14801497c0a19ad86ab052aff420415f2d89785a7b
+"@stellar/js-xdr@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@stellar/js-xdr@npm:5.0.0"
+  checksum: 10/90dcb6b98f5d2c1a95b5030dc78b77a6a81e78953a5d70d3cc3cf5dadcc285af4cb678136600b903a810e25e383520a1bf034b9f0def0456b71288d16149eec0
   languageName: node
   linkType: hard
 
-"@stellar/stellar-sdk@npm:16.1.0":
-  version: 16.1.0
-  resolution: "@stellar/stellar-sdk@npm:16.1.0"
+"@stellar/stellar-sdk@npm:17.0.0":
+  version: 17.0.0
+  resolution: "@stellar/stellar-sdk@npm:17.0.0"
   dependencies:
+    "@exodus/bytes": "npm:^1.15.1"
     "@noble/ed25519": "npm:^3.1.0"
     "@noble/hashes": "npm:^2.2.0"
-    "@stellar/js-xdr": "npm:4.0.0"
+    "@stellar/js-xdr": "npm:^5.0.0"
+    "@types/json-schema": "npm:^7.0.15"
     axios: "npm:1.18.0"
-    base32.js: "npm:^0.1.0"
     bignumber.js: "npm:^11.1.4"
-    buffer: "npm:^6.0.3"
     commander: "npm:^14.0.3"
     eventsource: "npm:^4.1.0"
     feaxios: "npm:^0.0.23"
@@ -10170,7 +10182,7 @@ __metadata:
     uint8array-extras: "npm:^1.5.0"
   bin:
     stellar-js: bin/stellar-js
-  checksum: 10/ebe5506ca704ebc5e10ba835a9ad6bf5dba036f397379512082d2743c63edcd73898a1ebf10534fd59c028da42e694fbe63403b6ccbe132a29f5448c599df754
+  checksum: 10/bd07c847f63538685af45ee086cb183eb0406c9328d1f9cd24925042d7820ecb8072a20779096a740123521c94fde868e3382ab8b77e94eb5542fe8f047a8b93
   languageName: node
   linkType: hard
 
@@ -17402,7 +17414,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-stellar@workspace:networks/stellar/network-stellar"
   dependencies:
-    "@stellar/stellar-sdk": "npm:16.1.0"
+    "@stellar/stellar-sdk": "npm:17.0.0"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -22315,13 +22327,6 @@ __metadata:
   version: 5.0.1
   resolution: "base-x@npm:5.0.1"
   checksum: 10/6e4f847ef842e0a71c6b6020a6ec482a2a5e727f5a98534dbfd5d5a4e8afbc0d1bdf1fd57174b3f0455d107f10a932c3c7710bec07e2878f80178607f8f605c8
-  languageName: node
-  linkType: hard
-
-"base32.js@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "base32.js@npm:0.1.0"
-  checksum: 10/7d7401a8f5c4ec45336ff72c97ee554b9bc22c2153b301acf657e6f9e25928a6205b2cfc55731072ba5686515e4903e2d3e462bea49db5f1515bbd01da1276ad
   languageName: node
   linkType: hard
 

@@ -8,7 +8,7 @@ import {
 export const parseTransactionFromXDR = (xdrBase64: string, isTestnet: boolean) => {
     let parsed;
     try {
-        parsed = TransactionBuilder.fromXDR(
+        parsed = TransactionBuilder.fromXdr(
             xdrBase64,
             isTestnet ? Networks.TESTNET : Networks.PUBLIC,
         );
