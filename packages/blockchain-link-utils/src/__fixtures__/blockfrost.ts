@@ -1498,7 +1498,7 @@ export default {
                 targets: [],
                 tokens: [],
                 cardanoSpecific: {
-                    subtype: 'withdrawal',
+                    subtype: 'stake_deregistration',
                     withdrawal: '140366',
                     deposit: '2000000',
                 },

@@ -57,8 +57,8 @@ const getSubtype = (
 ) => {
     const { withdrawal_count, stake_cert_count, delegation_count, deposit, fees } = tx.txData;
 
-    const withdrawal = withdrawal_count > 0;
-    if (withdrawal) {
+    // Deregistering needs an empty reward account, so a withdrawal here means unstake, not claim.
+    if (withdrawal_count > 0 && stake_cert_count === 0) {
         return 'withdrawal';
     }
 
