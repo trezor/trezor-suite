@@ -18,6 +18,14 @@ export const THP_CREDENTIALS = [
         autoconnect: false,
         host_static_key: '8154f21fd32368bfaa2912faa8cb8b2eadf09f60b49c49d76c22f787fa8be39a',
     },
+    {
+        trezor_static_public_key:
+            '96308b4f2ed64275e442bf9b3e1fe95d6c5bee1b06ab00e892f5e74591d03015',
+        credential:
+            '0a1c0a0974657374733a65326510001a0d5472657a6f72436f6e6e65637412201d522728c8285d53b95856c4fd29f911d963e801ed5485a00b9e91239db3e0e4',
+        autoconnect: false,
+        host_static_key: '5d0cc8f62d19b3faee9f361e88f1753e6f95cd46d053bf48f8770dca2493f91e',
+    },
 ];
 
 export const THP_CREDENTIALS_AUTOCONNECT = [
@@ -37,5 +45,13 @@ export const THP_CREDENTIALS_AUTOCONNECT = [
             '0a1c0a0974657374733a65326510011a0d5472657a6f72436f6e6e656374122025c5bd5495c6908f95bdd1faeace4dbea317ab27991f30f339f57cb51654d33b',
         autoconnect: true,
         host_static_key: '3217c896fa2767becdc1aaac541e4a7e6527e19c1f00d2472dd11d424e2867b2',
+    },
+    {
+        trezor_static_public_key:
+            '96308b4f2ed64275e442bf9b3e1fe95d6c5bee1b06ab00e892f5e74591d03015',
+        credential:
+            '0a1c0a0974657374733a65326510011a0d5472657a6f72436f6e6e65637412202664bddf66b3cd39c5876bfa26881d78f227870a4801ee0a23f4771645a41ee1',
+        autoconnect: true,
+        host_static_key: '5d0cc8f62d19b3faee9f361e88f1753e6f95cd46d053bf48f8770dca2493f91e',
     },
 ];
