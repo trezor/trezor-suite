@@ -25,7 +25,6 @@ export type YieldFlowDisplayToken = {
     symbol: string;
     decimals: number;
     contractAddress?: string | null;
-    coingeckoId?: string;
 };
 
 export type YieldFlowToken = YieldFlowDisplayToken & {
