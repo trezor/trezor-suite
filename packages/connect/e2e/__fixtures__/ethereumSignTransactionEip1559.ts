@@ -2,14 +2,15 @@ import { loadCommonFixture } from './commonFixtures';
 
 const commonFixtures = loadCommonFixture('ethereum/sign_tx_eip1559.json');
 
+const forbiddenKeyPath = {
+    // 'Forbidden key path between these versions (T1B1 does not have starting fw, too much effort to find)
+    rules: ['2.3.4-2.5.4', '<1.12.2'],
+    success: false,
+};
+
 const legacyResults: Record<string, LegacyResult[]> = {
-    'Ledger Live legacy path': [
-        {
-            // 'Forbidden key path between these versions (T1B1 does not have starting fw, too much effort to find)
-            rules: ['2.3.4-2.5.4', '<1.12.2'],
-            success: false,
-        },
-    ],
+    'Ledger Live legacy path': [forbiddenKeyPath],
+    Base: [forbiddenKeyPath],
 };
 
 const legacyResultsCommon = [

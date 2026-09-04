@@ -63,17 +63,6 @@ const fixtures = [...ethereumDefinitionFixture, ...commonFixtures.tests]
                 ? { ...restParams, show_message_hash: true }
                 : restParams;
 
-        if (typeof rawShowHash === 'string') {
-            legacyResults = [
-                ...legacyResults,
-                {
-                    // show_message_hash proto field added in firmware 2.10.0
-                    rules: ['<2.10.0'],
-                    success: false,
-                },
-            ];
-        }
-
         const fixture: Fixture = {
             description: `${name}`,
             params,

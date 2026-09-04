@@ -10,12 +10,6 @@ const legacyResults: Record<string, LegacyResult[]> = {
             success: false,
         },
     ],
-    'Hoodi Testnet, testnet path': [
-        {
-            // Hoodi testnet (chain_id 560048) definitions sent from host since 2.6.0
-            rules: ['<2.6.0'],
-        },
-    ],
 };
 
 const ethereumSignTransaction: TestCase = {

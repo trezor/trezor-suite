@@ -439,7 +439,7 @@ const TOTAL_COLLATERAL = '1000';
 const legacyResults = {
     minConnectVersion: {
         // older FW does support Cardano but Connect does not
-        rules: ['<2.4.3', '1'],
+        rules: ['<2.6.0', '1'],
         payload: false,
     },
     beforeConway: {
