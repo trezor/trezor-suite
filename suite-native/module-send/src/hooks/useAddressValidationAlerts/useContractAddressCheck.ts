@@ -8,6 +8,7 @@ import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-commo
 import { useAlert } from '@suite-native/alerts';
 import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { createContractAlert } from './alertBuilders';
 
@@ -31,7 +32,7 @@ export const useContractAddressCheck = (addressValue: string) => {
 
         const result = await TrezorConnect.getAccountInfo({
             descriptor: addressValue,
-            coin: symbol,
+            coin: asCoinSymbol(symbol),
         });
 
         if (!result?.success) {

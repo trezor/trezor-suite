@@ -1,23 +1,26 @@
-import { type Network } from '@suite-common/wallet-config';
+import { type Network, asNetworkSymbol } from '@suite-common/wallet-config';
 import { fireEvent, screen } from '@suite-native/test-utils-store';
 
 import { NetworkPicker } from './NetworkPicker';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 const mockNetworks: Network[] = [
     {
         name: 'Bitcoin',
-        symbol: 'btc',
+        symbol: btcSymbol,
     } as Network,
     {
         name: 'Ethereum',
-        symbol: 'eth',
+        symbol: ethSymbol,
     } as Network,
 ];
 
 jest.mock('@suite-native/discovery', () => ({
     ...jest.requireActual('@suite-native/discovery'),
-    selectDeviceEnabledDiscoveryNetworkSymbols: () => ['eth'],
+    selectDeviceEnabledDiscoveryNetworkSymbols: () => [ethSymbol],
     selectDiscoveryNetworkSymbols: () => mockNetworks.map(({ symbol }) => symbol),
 }));
 
@@ -62,7 +65,7 @@ describe('NetworkPicker', () => {
 
         await fireEvent.press(getByTestId(`${testID}/networks-sheet/eth`));
 
-        expect(onSelectNetwork).toHaveBeenCalledWith('eth');
+        expect(onSelectNetwork).toHaveBeenCalledWith(ethSymbol);
     });
 
     it('renders only discovered networks in discovered mode', async () => {
@@ -79,7 +82,7 @@ describe('NetworkPicker', () => {
     it('selects all networks', async () => {
         const onSelectNetwork = jest.fn();
         const { getByTestId } = await renderNetworkPicker({
-            selectedNetwork: 'eth',
+            selectedNetwork: ethSymbol,
             onSelectNetwork,
         });
         await fireEvent.press(getByTestId(testID));

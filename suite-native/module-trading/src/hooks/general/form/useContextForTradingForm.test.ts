@@ -1,4 +1,5 @@
 import { type TradingAmountLimitProps } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { act } from '@suite-native/test-utils-store';
 
@@ -8,6 +9,8 @@ import {
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 describe('useContextForTradingForm', () => {
     const renderUseContextForTradingForm = async (
@@ -48,7 +51,7 @@ describe('useContextForTradingForm', () => {
 
         await act(() => {
             result.current.setBalance('0.5');
-            result.current.setSendNetworkSymbol('eth');
+            result.current.setSendNetworkSymbol(ethSymbol);
             result.current.setSendAssetSymbol('USDT');
             result.current.setContractAddress('0x123' as TokenAddress);
         });
@@ -56,7 +59,7 @@ describe('useContextForTradingForm', () => {
         expect(result.current.context).toEqual(
             expect.objectContaining({
                 balance: '0.5',
-                sendNetworkSymbol: 'eth',
+                sendNetworkSymbol: ethSymbol,
                 sendAssetSymbol: 'USDT',
                 contractAddress: '0x123',
             }),

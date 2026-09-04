@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { RootStackRoutes } from '@suite-native/navigation';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -20,6 +21,9 @@ import {
     type TradingTestPreloadedState,
     createTradingLightStore,
 } from '../../../test-utils/tradingTestUtils';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 const navigationNavigate = jest.fn();
 const navigationPopToTop = jest.fn();
@@ -48,7 +52,7 @@ describe('AccountList', () => {
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) => {
         const store = createTradingLightStore({ overrides });
-        const symbol = props.symbol ?? 'btc';
+        const symbol = props.symbol ?? btcSymbol;
         const receiveAccounts = store
             .getState()
             .wallet.accounts.filter(account => account.symbol === symbol)
@@ -100,7 +104,7 @@ describe('AccountList', () => {
     });
 
     it('selects an account-based buy account and closes the picker', async () => {
-        const { getByText, store } = await renderAccountList({ symbol: 'eth' });
+        const { getByText, store } = await renderAccountList({ symbol: ethSymbol });
 
         await fireEvent.press(getByText('ETH Account #1'));
 
@@ -112,7 +116,7 @@ describe('AccountList', () => {
 
     it('selects an account-based exchange account and closes the picker', async () => {
         const { getByText, store } = await renderAccountList({
-            symbol: 'eth',
+            symbol: ethSymbol,
             tradingType: 'exchange',
         });
 

@@ -15,7 +15,6 @@ import {
     selectDeviceFirmwareVersion,
     selectDeviceUnavailableCapabilities,
 } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -38,6 +37,7 @@ import {
     type AccountKey,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@trezor/network-module';
 import { exhaustive } from '@trezor/type-utils';
 import { unique, versionUtils } from '@trezor/utils';
 

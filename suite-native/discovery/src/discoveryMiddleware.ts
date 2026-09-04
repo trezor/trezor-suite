@@ -4,6 +4,7 @@ import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type WalletCoreCompoundRootState,
     accountsActions,
@@ -33,6 +34,8 @@ import {
     clearPendingCoinVisibility,
     selectPendingCoinVisibilitySymbols,
 } from './pendingCoinVisibilitySlice';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 type DiscoveryMiddlewareState = NativeDeviceRootState &
     PendingCoinVisibilityRootState &
@@ -84,7 +87,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
         const newDevice = action.payload;
         if (newDevice?.connected && hasBitcoinOnlyFirmware(newDevice)) {
             if (!isBitcoinEnabled) {
-                dispatch(changeCoinVisibilityThunk({ symbol: 'btc', shouldBeVisible: true }));
+                dispatch(changeCoinVisibilityThunk({ symbol: btcSymbol, shouldBeVisible: true }));
             }
         }
     }

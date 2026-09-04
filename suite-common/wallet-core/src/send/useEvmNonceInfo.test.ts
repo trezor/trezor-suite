@@ -3,6 +3,7 @@
  */
 import { useQuery } from '@suite-common/react-query';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountWithNetworkType,
     type WalletAccountTransaction,
@@ -22,7 +23,7 @@ jest.mock('@suite-common/react-query', () => ({
 type EthAccount = AccountWithNetworkType<'ethereum'>;
 
 // mockWalletAccount seeds ethereum accounts with misc.nonce = '6'.
-const account = mockWalletAccount({ symbol: 'eth' }) as EthAccount;
+const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as EthAccount;
 
 const mockUseQuery = jest.mocked(useQuery);
 let transactions: WalletAccountTransaction[] = [];

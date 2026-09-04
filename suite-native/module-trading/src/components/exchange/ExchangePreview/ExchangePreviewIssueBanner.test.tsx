@@ -1,4 +1,5 @@
 import { type ExchangeIssue } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -13,6 +14,9 @@ import {
     type TradingTestPreloadedState,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 const mockNavigate = jest.fn();
 const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
@@ -54,8 +58,8 @@ const setIssue = (
     });
 };
 
-const btcAccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' });
-const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' });
+const btcAccountKey = mockAccountKey({ symbol: btcSymbol, descriptor: 'btc1normal' });
+const ethAccountKey = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1normal' });
 
 describe('ExchangePreviewIssueBanner', () => {
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {

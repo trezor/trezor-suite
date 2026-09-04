@@ -35,6 +35,7 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",
+        "@trezor/network-module": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",

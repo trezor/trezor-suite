@@ -19,8 +19,10 @@ import type { RootStackParamList } from '@suite-native/navigation';
 import { type AppSettingsState, appSettingsReducer } from '@suite-native/settings';
 import { FirmwareType, UI_EVENTS } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 const INIT_ACTION = { type: 'foo' };
+const btcSymbol = asNetworkSymbol('btc');
 
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {
@@ -343,7 +345,7 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
                 devices: [mockSuiteDevice()],
             },
             walletSettings: {
-                enabledNetworks: ['btc'],
+                enabledNetworks: [btcSymbol],
             },
         }),
         action: {
@@ -376,7 +378,7 @@ export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
                 isDeviceAuthenticityCheckEnabled: true,
             },
             walletSettings: {
-                enabledNetworks: ['btc'],
+                enabledNetworks: [btcSymbol],
             },
             device: {
                 selectedDevice: mockSuiteDevice(),
@@ -463,7 +465,7 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
             'navigates to ConnectingDevice when connected new device and network is enabled',
         initialState: buildInitialState({
             walletSettings: {
-                enabledNetworks: ['btc'],
+                enabledNetworks: [btcSymbol],
             },
         }),
         action: {

@@ -1,7 +1,7 @@
 import { type CryptoId } from 'invity-api';
 
 import { DefinitionType, type TokenDefinitionsState } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type RatesByKey,
@@ -20,13 +20,16 @@ const SHIB_CONTRACT = toTokenAddress('0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce
 const FAKE_CONTRACT = toTokenAddress('0x1111111111111111111111111111111111111111');
 
 const ETH_CRYPTO_ID = 'ethereum' as CryptoId;
+const ethSymbol = asNetworkSymbol('eth');
+const btcSymbol = asNetworkSymbol('btc');
+const tsepSymbol = asNetworkSymbol('tsep');
 const USDT_CRYPTO_ID = `ethereum--${USDT_CONTRACT}` as CryptoId;
 
 const createToken = (contract: string, symbol: string, balance: string) =>
     mockAccountToken({ name: symbol, symbol, contract: toTokenAddress(contract), balance });
 
 const createAccount = ({
-    symbol = 'eth',
+    symbol = ethSymbol,
     descriptor,
     balance = '0',
     accountType = 'normal',
@@ -53,19 +56,19 @@ const createRate = (rate: number) => ({
     lastSuccessfulFetchTimestamp: asTimestamp(1_000_000),
     isLoading: false,
     error: null,
-    ticker: { symbol: 'eth' as NetworkSymbol },
+    ticker: { symbol: ethSymbol },
 });
 
 const fiatRates: RatesByKey = {
-    [getFiatRateKey('eth', 'usd')]: createRate(2_000),
-    [getFiatRateKey('eth', 'usd', USDT_CONTRACT)]: createRate(1),
-    [getFiatRateKey('eth', 'usd', USDC_CONTRACT)]: createRate(1),
-    [getFiatRateKey('eth', 'usd', SHIB_CONTRACT)]: createRate(0.00001),
-    [getFiatRateKey('eth', 'usd', FAKE_CONTRACT)]: createRate(1),
+    [getFiatRateKey(ethSymbol, 'usd')]: createRate(2_000),
+    [getFiatRateKey(ethSymbol, 'usd', USDT_CONTRACT)]: createRate(1),
+    [getFiatRateKey(ethSymbol, 'usd', USDC_CONTRACT)]: createRate(1),
+    [getFiatRateKey(ethSymbol, 'usd', SHIB_CONTRACT)]: createRate(0.00001),
+    [getFiatRateKey(ethSymbol, 'usd', FAKE_CONTRACT)]: createRate(1),
 };
 
 const tokenDefinitions: TokenDefinitionsState = {
-    eth: {
+    [ethSymbol]: {
         [DefinitionType.COIN]: {
             error: false,
             isLoading: false,
@@ -97,12 +100,12 @@ const buildRows = ({
 describe('buildSellAssetRows', () => {
     it('drops testnet and coinjoin accounts', () => {
         const testnetAccount = createAccount({
-            symbol: 'tsep',
+            symbol: tsepSymbol,
             descriptor: 'testnetAccount',
             balance: '1',
         });
         const coinjoinAccount = createAccount({
-            symbol: 'btc',
+            symbol: btcSymbol,
             descriptor: 'coinjoinAccount',
             balance: '1',
             accountType: 'coinjoin',
@@ -206,14 +209,14 @@ describe('buildSellAssetRows', () => {
     it('lists every valid account network in collection order, ignoring the network filter', () => {
         const ethAccount = createAccount({ descriptor: 'ethAccount', balance: '1' });
         const btcAccount = createAccount({
-            symbol: 'btc',
+            symbol: btcSymbol,
             descriptor: 'btcAccount',
             balance: '1',
         });
 
         const { assetRows, networks } = buildRows({
             accounts: [ethAccount, btcAccount],
-            networkSymbolFilter: 'eth',
+            networkSymbolFilter: ethSymbol,
         });
 
         expect(networks).toEqual(['btc', 'eth']);

@@ -1,9 +1,15 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenTransfer, type TransferType } from '@trezor/blockchain-link-types';
 import { type AccountTransaction } from '@trezor/connect';
 
 import { TXS } from './transactions';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const testSymbol = asNetworkSymbol('test');
+const txrpSymbol = asNetworkSymbol('txrp');
 
 export const token: TokenTransfer = {
     type: 'sent' as TransferType,
@@ -468,7 +474,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: btcSymbol,
         }),
         result: {
             amount: '123',
@@ -480,7 +486,7 @@ export const enhanceTransaction = [
             deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '123.00002929',
-            symbol: 'btc',
+            symbol: btcSymbol,
             targets: [],
             tokens: [
                 {
@@ -560,7 +566,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: btcSymbol,
         }),
         result: {
             amount: '0.00006497',
@@ -572,7 +578,7 @@ export const enhanceTransaction = [
             deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '0.00009426',
-            symbol: 'btc',
+            symbol: btcSymbol,
             targets: [
                 {
                     addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
@@ -623,7 +629,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: btcSymbol,
         }),
         result: {
             amount: '0.00006497',
@@ -635,7 +641,7 @@ export const enhanceTransaction = [
             deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '0.00009426',
-            symbol: 'btc',
+            symbol: btcSymbol,
             targets: [
                 {
                     addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
@@ -1144,7 +1150,7 @@ export const getAccountTransactions = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: btcSymbol,
         }),
         result: [
             {
@@ -1191,7 +1197,7 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H'),
-            symbol: 'txrp',
+            symbol: txrpSymbol,
         }),
         result: [
             {
@@ -1242,7 +1248,7 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'),
-            symbol: 'eth',
+            symbol: ethSymbol,
         }),
         result: [
             {
@@ -1390,7 +1396,7 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('0xf69619a3dCAA63757A6BA0AF3628f5F6C42c50d2'),
-            symbol: 'eth',
+            symbol: ethSymbol,
         }),
         result: [],
     },
@@ -1407,7 +1413,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         ),
         deviceState: '1stTestnetAddress@device_id:0',
         fee: '0.00002929',
-        symbol: 'btc',
+        symbol: btcSymbol,
         targets: [],
         tokens: [
             {
@@ -1461,7 +1467,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
             'vpub5YoEd2jJofNDXriAXpt4fyX23uRhrViFG3721C1wRRKUvDS4P6St7tqFfDP4JZsRARVhaVcGvW5jerdWBVc1c3fgqZeAYt29QSTiafKdwck',
         ),
         deviceState: 'mvAmt1x3QTsSmJrR4tbPtMpYnLbi3gDEBu@912734FCB107274D3CC465EC:1',
-        symbol: 'test',
+        symbol: testSymbol,
         type: 'recv',
         txid: '70ad253c25aa8a76ebcdb7fded56f2f57ec9b40967b7e79937b4f44445968c93',
         blockTime: 1665050077,

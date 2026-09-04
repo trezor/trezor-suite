@@ -1,5 +1,6 @@
 import { type SuiteSyncAccount, createSuiteSyncAccountId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
@@ -15,6 +16,10 @@ const SELECTED_WALLET_DESCRIPTOR = asWalletDescriptor('selectedWallet');
 const SELECTED_DEVICE_STATIC_SESSION_ID: StaticSessionId = 'selectedWallet@deviceId:0';
 const OTHER_WALLET_DESCRIPTOR = asWalletDescriptor('otherWallet');
 const OTHER_DEVICE_STATIC_SESSION_ID: StaticSessionId = 'otherWallet@deviceId:0';
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const adaSymbol = asNetworkSymbol('ada');
+const ltcSymbol = asNetworkSymbol('ltc');
 
 const selectedDevice = mockSuiteDevice({
     id: 'selected-device',
@@ -25,7 +30,7 @@ const selectedDevice = mockSuiteDevice({
 });
 
 const btcDefaultAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: btcSymbol,
     descriptor: asAccountDescriptor('btcdefault'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -34,7 +39,7 @@ const btcDefaultAccount = mockWalletAccount({
 });
 
 const btcTaprootAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: btcSymbol,
     descriptor: asAccountDescriptor('btctaproot'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'taproot',
@@ -43,7 +48,7 @@ const btcTaprootAccount = mockWalletAccount({
 });
 
 const btcSecondDefaultAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: btcSymbol,
     descriptor: asAccountDescriptor('btcseconddefault'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -52,7 +57,7 @@ const btcSecondDefaultAccount = mockWalletAccount({
 });
 
 const ethAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: asAccountDescriptor('ethdefault'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -62,7 +67,7 @@ const ethAccount = mockWalletAccount({
 
 const adaAccount = mockWalletAccount(
     {
-        symbol: 'ada',
+        symbol: adaSymbol,
         descriptor: asAccountDescriptor('adadefault'),
         deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
         accountType: 'normal',
@@ -73,7 +78,7 @@ const adaAccount = mockWalletAccount(
 );
 
 const hiddenLtcAccount = mockWalletAccount({
-    symbol: 'ltc',
+    symbol: ltcSymbol,
     descriptor: asAccountDescriptor('ltchidden'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -83,7 +88,7 @@ const hiddenLtcAccount = mockWalletAccount({
 });
 
 const otherDeviceBtcAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: btcSymbol,
     descriptor: asAccountDescriptor('btcotherdevice'),
     deviceState: OTHER_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -115,7 +120,7 @@ const createState = (accounts: Account[]): NativeAccountsRootState => ({
         accounts,
         settings: {
             ...initialWalletSettingsState,
-            enabledNetworks: ['btc', 'eth', 'ada', 'ltc'],
+            enabledNetworks: [btcSymbol, ethSymbol, adaSymbol, ltcSymbol],
         },
         fiat: {
             current: {},
@@ -213,14 +218,14 @@ describe('selectFilteredDeviceAccountListRows', () => {
     });
 
     it('combines network symbol filtering with text search', () => {
-        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, ['btc'])).toEqual([
+        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, [btcSymbol])).toEqual([
             { accountKey: btcDefaultAccount.key, isFirst: true, isLast: true },
         ]);
-        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, ['eth'])).toEqual([]);
+        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, [ethSymbol])).toEqual([]);
     });
 
     it('excludes hidden accounts and accounts of other devices', () => {
-        expect(selectFilteredDeviceAccountListRows(state, '', false, ['ltc'])).toEqual([]);
+        expect(selectFilteredDeviceAccountListRows(state, '', false, [ltcSymbol])).toEqual([]);
     });
 
     it('keeps the complete data array stable when account content changes without structural changes', () => {
@@ -245,16 +250,16 @@ describe('selectFilteredDeviceAccountListRows', () => {
 describe('selectNetworkFilterOptions', () => {
     it('returns one option per network with the account count', () => {
         expect(selectNetworkFilterOptions(state, false)).toEqual([
-            { symbol: 'btc', accountCount: 2 },
-            { symbol: 'eth', accountCount: 1 },
-            { symbol: 'ada', accountCount: 1 },
+            { symbol: btcSymbol, accountCount: 2 },
+            { symbol: ethSymbol, accountCount: 1 },
+            { symbol: adaSymbol, accountCount: 1 },
         ]);
     });
 
     it('counts only send-available accounts when the send filter is enabled', () => {
         expect(selectNetworkFilterOptions(state, true)).toEqual([
-            { symbol: 'btc', accountCount: 1 },
-            { symbol: 'eth', accountCount: 1 },
+            { symbol: btcSymbol, accountCount: 1 },
+            { symbol: ethSymbol, accountCount: 1 },
         ]);
     });
 

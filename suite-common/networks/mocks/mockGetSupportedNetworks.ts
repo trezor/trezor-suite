@@ -1,4 +1,5 @@
-import type { NetworkSymbol } from '../src/NetworkModules';
+import type { NetworkSymbol } from '@trezor/network-module';
+
 import type { GetSupportedNetworks } from '../src/createGetSupportedNetworks';
 
 export const mockGetSupportedNetworks =

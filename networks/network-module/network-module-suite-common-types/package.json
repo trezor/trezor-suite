@@ -13,6 +13,7 @@
     "dependencies": {
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/network-module": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     }
 }

@@ -1,8 +1,8 @@
-import { networks } from './networksConfig';
 import { asNetworkSymbol } from './types';
 import {
     filterNetworksByName,
     getMainnets,
+    getNetwork,
     getNetworksWithMevProtection,
     getNetworksWithNativeTokenReserve,
     getTestnets,
@@ -12,7 +12,11 @@ import {
     isSingleAccountType,
 } from './utils';
 
-const { btc: bitcoin, eth: ethereum, test: testnet, regtest, sol: solana } = networks;
+const bitcoin = getNetwork(asNetworkSymbol('btc'));
+const ethereum = getNetwork(asNetworkSymbol('eth'));
+const testnet = getNetwork(asNetworkSymbol('test'));
+const regtest = getNetwork(asNetworkSymbol('regtest'));
+const solana = getNetwork(asNetworkSymbol('sol'));
 
 const mockNetworks = [bitcoin, ethereum, testnet, regtest];
 

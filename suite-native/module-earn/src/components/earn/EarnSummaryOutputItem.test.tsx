@@ -1,3 +1,4 @@
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
@@ -6,9 +7,11 @@ import { type EarnFormDraftPrefix } from '../../types';
 
 const mockReviewOutputItemValues = jest.fn();
 
-let mockAccountNetworkSymbol: string | null;
+let mockAccountNetworkSymbol: NetworkSymbol | null;
 
-const accountKey = mockAccountKey({ symbol: 'eth', descriptor: 'ethAccount' });
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+const accountKey = mockAccountKey({ symbol: ethSymbol, descriptor: 'ethAccount' });
 
 const AMOUNT_TRANSLATION_KEY = 'transactionManagement.review.outputs.summary.amount';
 const FEE_TRANSLATION_KEY = 'transactionManagement.review.outputs.summary.maxFee';
@@ -47,13 +50,13 @@ describe('EarnSummaryOutputItem', () => {
         jest.clearAllMocks();
     });
 
-    it.each<{ symbol: string; stakeType: EarnFormDraftPrefix; isAmountVisible: boolean }>([
-        { symbol: 'eth', stakeType: 'stake', isAmountVisible: true },
-        { symbol: 'eth', stakeType: 'unstake', isAmountVisible: true },
-        { symbol: 'eth', stakeType: 'claim', isAmountVisible: false },
-        { symbol: 'sol', stakeType: 'stake', isAmountVisible: true },
-        { symbol: 'sol', stakeType: 'unstake', isAmountVisible: false },
-        { symbol: 'sol', stakeType: 'claim', isAmountVisible: true },
+    it.each<{ symbol: NetworkSymbol; stakeType: EarnFormDraftPrefix; isAmountVisible: boolean }>([
+        { symbol: ethSymbol, stakeType: 'stake', isAmountVisible: true },
+        { symbol: ethSymbol, stakeType: 'unstake', isAmountVisible: true },
+        { symbol: ethSymbol, stakeType: 'claim', isAmountVisible: false },
+        { symbol: solSymbol, stakeType: 'stake', isAmountVisible: true },
+        { symbol: solSymbol, stakeType: 'unstake', isAmountVisible: false },
+        { symbol: solSymbol, stakeType: 'claim', isAmountVisible: true },
     ])(
         // The device omits the amount from the Ethereum claim and the Solana unstake summaries.
         'renders the amount row: $isAmountVisible for $symbol $stakeType',

@@ -1,9 +1,6 @@
-import type {
-    GetNamedAddressSupportDep,
-    NetworkSymbol,
-    SymbolNamedAddressResolver,
-} from '@suite-common/networks';
+import type { GetNamedAddressSupportDep, SymbolNamedAddressResolver } from '@suite-common/networks';
 import { commonQueryKeys } from '@suite-common/react-query';
+import type { NetworkSymbol } from '@trezor/network-module';
 
 const STALE_TIME_MS = 10 * 60 * 1000;
 const GC_TIME_MS = 60 * 60 * 1000;

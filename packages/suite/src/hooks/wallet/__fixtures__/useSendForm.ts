@@ -9,7 +9,7 @@ import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suit
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type Network, getNetwork } from '@suite-common/wallet-config';
+import { type Network, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     accountsActions,
@@ -33,6 +33,11 @@ import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';
 import protocolReducer from 'src/reducers/suite/protocolReducer';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const xrpSymbol = asNetworkSymbol('xrp');
+const solSymbol = asNetworkSymbol('sol');
 
 const sendFormReducer = prepareSendFormReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -83,7 +88,7 @@ const UTXO = {
 export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Partial<Network> } = {
     status: 'loaded',
     account: mockWalletAccount({
-        symbol: 'btc',
+        symbol: btcSymbol,
         descriptor: asAccountDescriptor('xpub'),
         deviceState: '1stTestnetAddress@device_id:0',
         addresses: {
@@ -147,14 +152,14 @@ export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Pa
         formattedBalance: '1000 BTC',
         utxo: Object.values(UTXO),
     }),
-    network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
+    network: { networkType: 'bitcoin', symbol: btcSymbol, decimals: 8, features: ['rbf'] },
 };
 
 export const ETH_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     status: 'loaded',
     account: mockWalletAccount(
         {
-            symbol: 'eth',
+            symbol: ethSymbol,
             descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
             deviceState: '1stTestnetAddress@device_id:0',
             balance: '10000000000000000000', // 10 ETH
@@ -171,14 +176,14 @@ export const ETH_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
         },
         networkSpecificDefaultEthereum,
     ),
-    network: { networkType: 'ethereum', symbol: 'eth', decimals: 18, chainId: 1 },
+    network: { networkType: 'ethereum', symbol: ethSymbol, decimals: 18, chainId: 1 },
 };
 
 export const XRP_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     status: 'loaded',
     account: mockWalletAccount(
         {
-            symbol: 'xrp',
+            symbol: xrpSymbol,
             descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
             deviceState: '1stTestnetAddress@device_id:0',
             balance: '100000000', // 100 XRP
@@ -186,13 +191,13 @@ export const XRP_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
         },
         networkSpecificDefaultRipple,
     ),
-    network: { networkType: 'ripple', symbol: 'xrp', decimals: 6 },
+    network: { networkType: 'ripple', symbol: xrpSymbol, decimals: 6 },
 };
 
 export const SOL_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     status: 'loaded',
     account: {
-        symbol: 'sol',
+        symbol: solSymbol,
         networkType: 'solana',
         descriptor: asAccountDescriptor('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
         deviceState: '1stTestnetAddress@device_id:0',
@@ -204,7 +209,7 @@ export const SOL_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
         },
         tokens: [],
     },
-    network: { networkType: 'solana', symbol: 'sol', decimals: 9, chainId: 1399811149 },
+    network: { networkType: 'solana', symbol: solSymbol, decimals: 9, chainId: 1399811149 },
 };
 
 const DEVICE = mockSuiteDevice({
@@ -214,7 +219,7 @@ const DEVICE = mockSuiteDevice({
 });
 
 const DEFAULT_FEES: FeesState = {
-    btc: {
+    [btcSymbol]: {
         status: 'loaded',
         data: {
             minPriorityFee: 0,
@@ -225,7 +230,7 @@ const DEFAULT_FEES: FeesState = {
             levels: [{ label: 'normal', feePerUnit: '4', blocks: 1 }],
         },
     },
-    eth: {
+    [ethSymbol]: {
         status: 'loaded',
         data: {
             minPriorityFee: 0,
@@ -243,7 +248,7 @@ const DEFAULT_FEES: FeesState = {
             ],
         },
     },
-    xrp: {
+    [xrpSymbol]: {
         status: 'loaded',
         data: {
             minPriorityFee: 0,
@@ -254,7 +259,7 @@ const DEFAULT_FEES: FeesState = {
             levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
         },
     },
-    sol: {
+    [solSymbol]: {
         status: 'loaded',
         data: {
             minPriorityFee: 0,
@@ -336,10 +341,10 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             ),
             explorer: createReducer(
                 {
-                    btc: { default: getNetwork('btc').explorer.base },
-                    eth: { default: getNetwork('eth').explorer.base },
-                    xrp: { default: getNetwork('xrp').explorer.base },
-                    sol: { default: getNetwork('sol').explorer.base },
+                    [btcSymbol]: { default: getNetwork(btcSymbol).explorer.base },
+                    [ethSymbol]: { default: getNetwork(ethSymbol).explorer.base },
+                    [xrpSymbol]: { default: getNetwork(xrpSymbol).explorer.base },
+                    [solSymbol]: { default: getNetwork(solSymbol).explorer.base },
                 },
                 () => ({}),
             ),
@@ -1813,7 +1818,7 @@ export const feeChange: FeeChangeFixture[] = [
                 drafts: getDraft(),
             },
             fees: {
-                btc: {
+                [btcSymbol]: {
                     status: 'loaded',
                     data: {
                         minPriorityFee: 0,

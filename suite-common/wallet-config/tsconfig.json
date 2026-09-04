@@ -5,6 +5,9 @@
         { "path": "../earn-stablecoin-defs" },
         { "path": "../networks" },
         {
+            "path": "../../networks/network-module/network-module"
+        },
+        {
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {

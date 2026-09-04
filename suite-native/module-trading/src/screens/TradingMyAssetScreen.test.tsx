@@ -1,6 +1,7 @@
 import { type RouteProp } from '@react-navigation/native';
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     AppTabsRoutes,
@@ -16,9 +17,11 @@ import { BigNumber } from '@trezor/utils';
 import { TradingMyAssetScreen, type TradingMyAssetScreenProps } from './TradingMyAssetScreen';
 import { renderWithTradingProvider } from '../test-utils/tradingTestUtils';
 
+const btcSymbol = asNetworkSymbol('btc');
+
 const bitcoinAsset: MyAsset = {
     name: 'Bitcoin',
-    symbol: 'btc',
+    symbol: btcSymbol,
     cryptoId: 'bitcoin' as CryptoId,
     balance: '1.23',
     fiatBalance: asBaseCurrencyAmount(new BigNumber('45000')),

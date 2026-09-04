@@ -28,4 +28,3 @@ export {
     type FindNetworkSymbolForProtocolDep,
 } from './createFindNetworkSymbolForProtocol';
 export { type NetworksServices, type NetworksServicesDep } from './NetworksServices';
-export { type NetworkSymbol } from './NetworkModules';

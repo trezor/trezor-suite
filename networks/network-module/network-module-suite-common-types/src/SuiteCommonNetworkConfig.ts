@@ -1,5 +1,6 @@
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import type { DeviceModelInternal } from '@trezor/device-utils';
+import type { NetworkSymbol } from '@trezor/network-module';
 import type { Branded } from '@trezor/type-utils';
 
 import type { Protocol } from './Protocol';
@@ -101,7 +102,7 @@ export type SuiteCommonNetworkConfig = {
      * Points to the base network whose native asset is used by this network. For example,
      * Ethereum L2s set this to `eth` so native-asset metadata and icons resolve to Ethereum.
      */
-    readonly settlementLayer?: string;
+    readonly settlementLayer?: NetworkSymbol;
     readonly displaySymbol: NetworkDisplaySymbol;
     readonly displaySymbolName?: string;
     readonly name: string;

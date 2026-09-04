@@ -25,7 +25,7 @@ import {
 } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type TrezorConnectBackendType } from '@suite-common/wallet-config';
+import { type TrezorConnectBackendType, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type DiscoveryStatus, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
@@ -206,7 +206,7 @@ const transformProgressEventData = (
 
     const accountPayload: CreateAccountActionProps = {
         deviceState,
-        symbol,
+        symbol: asNetworkSymbol(symbol),
         index,
         accountType,
         path: path as Bip43Path,

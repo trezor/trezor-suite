@@ -1,21 +1,30 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { RootStackRoutes } from '@suite-native/navigation';
 
 import { resolveStakingTargetRoute } from './resolveStakingTargetRoute';
 
 describe('resolveStakingTargetRoute', () => {
     it('routes Ethereum accounts to StakingManagement', () => {
-        expect(resolveStakingTargetRoute('eth')).toBe(RootStackRoutes.StakingManagement);
+        expect(resolveStakingTargetRoute(asNetworkSymbol('eth'))).toBe(
+            RootStackRoutes.StakingManagement,
+        );
     });
 
     it('routes Solana accounts to StakingManagement', () => {
-        expect(resolveStakingTargetRoute('sol')).toBe(RootStackRoutes.StakingManagement);
+        expect(resolveStakingTargetRoute(asNetworkSymbol('sol'))).toBe(
+            RootStackRoutes.StakingManagement,
+        );
     });
 
     it('routes Cardano accounts to StakingManagement', () => {
-        expect(resolveStakingTargetRoute('ada')).toBe(RootStackRoutes.StakingManagement);
+        expect(resolveStakingTargetRoute(asNetworkSymbol('ada'))).toBe(
+            RootStackRoutes.StakingManagement,
+        );
     });
 
     it('routes Tron accounts to StakingDetail', () => {
-        expect(resolveStakingTargetRoute('trx')).toBe(RootStackRoutes.StakingDetail);
+        expect(resolveStakingTargetRoute(asNetworkSymbol('trx'))).toBe(
+            RootStackRoutes.StakingDetail,
+        );
     });
 });

@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowResolvedData,
     type YieldRootState,
@@ -44,6 +45,7 @@ const ownerAddress = '0x0000000000000000000000000000000000000001';
 const tokenContract = '0x0000000000000000000000000000000000000002' as TokenAddress;
 const receiptTokenContract = '0x0000000000000000000000000000000000000003';
 const yieldId = 'dummy-yield-id';
+const ethSymbol = asNetworkSymbol('eth');
 const flowKey = `${accountKey}:${yieldId}:${tokenContract}`;
 const routeParams = {
     accountKey,
@@ -57,7 +59,7 @@ const sessionParams = {
 
 const account = {
     key: accountKey,
-    symbol: 'eth',
+    symbol: ethSymbol,
     networkType: 'ethereum',
     descriptor: ownerAddress,
     tokens: [],
@@ -81,13 +83,13 @@ const flowData = {
         balance: '25',
         contractAddress: tokenContract,
         decimals: 6,
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         symbol: 'USDC',
     },
     receiptToken: {
         contractAddress: receiptTokenContract,
         decimals: 18,
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         symbol: 'trSHUSDCp',
     },
 } satisfies YieldFlowResolvedData;
@@ -106,7 +108,7 @@ const wethFlowData = {
         balance: '0',
         contractAddress: wethTokenContract,
         decimals: 18,
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         symbol: 'WETH',
     },
 } satisfies YieldFlowResolvedData;

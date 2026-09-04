@@ -18,7 +18,7 @@ import {
     createSuiteSyncAccountId,
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
@@ -88,7 +88,7 @@ export class EvoluAccountTable implements AccountTable {
                 }
 
                 const accountDescriptor = asAccountDescriptor(account.accountDescriptor);
-                const networkSymbol = account.networkSymbol as NetworkSymbol;
+                const networkSymbol = asNetworkSymbol(account.networkSymbol);
 
                 acc.push({
                     id: createSuiteSyncAccountId(accountDescriptor, networkSymbol),

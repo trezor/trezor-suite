@@ -7,6 +7,9 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+
 const sendAmount = '5';
 const sourceTokenSymbol = 'USDC';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ${sourceTokenSymbol}`;
@@ -20,15 +23,15 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
             tradingMockNew.setTradeFlow('swap');
-            const ethBackend = await tradingMockNew.startBackend('eth');
+            const ethBackend = await tradingMockNew.startBackend(ethSymbol);
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: [{ symbol: 'eth', backend: ethBackend }, 'sol'],
+                enableNetworks: [{ symbol: ethSymbol, backend: ethBackend }, solSymbol],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: 'eth' });
+            await walletPage.openSwapTrading({ symbol: ethSymbol });
         },
     );
 
@@ -44,19 +47,19 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
                 sellAsset: {
-                    networkSymbol: 'eth',
+                    networkSymbol: ethSymbol,
                     tokenSymbol: sourceTokenSymbol,
                 },
                 buyAsset: {
                     searchFilter: receiveTokenSymbol,
-                    networkFilter: 'sol',
+                    networkFilter: solSymbol,
                     assetCryptoId: getCryptoId(
-                        asNetworkSymbol('sol'),
+                        solSymbol,
                         'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
                     ),
                 },
                 selectReceiveAddress: async () => {
-                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'sol');
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, solSymbol);
                 },
             });
         });

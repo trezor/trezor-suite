@@ -25,6 +25,7 @@ import {
     type TransactionsState,
     type WalletSettingsState,
     changeNetworks,
+    getExplorer,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
@@ -73,7 +74,7 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
         storageLoadExplorer: (state: ExplorerConfig, { payload }: StorageLoadAction) => {
             payload.explorer.forEach(({ symbol, explorer }) => {
                 state[symbol] = {
-                    ...state[symbol],
+                    ...getExplorer(state, symbol),
                     custom: explorer,
                 };
             });

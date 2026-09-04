@@ -8,6 +8,7 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { type AccountUtxo } from '@trezor/connect';
+import { asNetworkSymbol } from '@trezor/network-module';
 import { type DeepPartial } from '@trezor/type-utils';
 
 export { getRootReducer } from './useSendForm';
@@ -15,12 +16,13 @@ export { getRootReducer } from './useSendForm';
 const ABCD = 'abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd';
 const DCBA = 'dcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcba';
 const DUST = 'dust-limit-utxo-should-never-be-used-aaaaaaaaaaaaaaaaaaaaaaaaaaa';
+const btcSymbol = asNetworkSymbol('btc');
 
 // m/44'/0'/0' all-all-all
 export const BTC_ACCOUNT: DeepPartial<SelectedAccountLoaded> = {
     status: 'loaded',
     account: {
-        symbol: 'btc',
+        symbol: btcSymbol,
         networkType: 'bitcoin',
         path: "m/44'/0'/0'",
         descriptor:
@@ -54,7 +56,7 @@ export const BTC_ACCOUNT: DeepPartial<SelectedAccountLoaded> = {
         formattedBalance: '0.00000001 BTC',
         utxo: [{ amount: '1', txid: DUST }],
     },
-    network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
+    network: { networkType: 'bitcoin', symbol: btcSymbol, decimals: 8, features: ['rbf'] },
 };
 
 const BTC_CJ_ACCOUNT: DeepPartial<SelectedAccountLoaded> = {
@@ -118,7 +120,7 @@ type HackedTxType = WalletAccountTransactionWithRequiredRbfParams & {
 };
 
 const PREPARE_TX = (params: Partial<HackedTxType['rbfParams']> = {}): HackedTxType => ({
-    symbol: 'btc',
+    symbol: btcSymbol,
     rbfParams: {
         txid: 'ABCD',
         utxo: [
@@ -246,10 +248,10 @@ export const composeAndSign: ComposeAndSignFixture[] = [
             },
         },
         chainedTxs: {
-            own: [{ symbol: 'btc', ...txDummyData, txid: 'aaaa', fee: '500' }],
+            own: [{ symbol: btcSymbol, ...txDummyData, txid: 'aaaa', fee: '500' }],
             others: [
-                { symbol: 'btc', ...txDummyData, txid: 'bbbb', fee: '500' },
-                { symbol: 'btc', ...txDummyData, txid: 'cccc', fee: '5000' },
+                { symbol: btcSymbol, ...txDummyData, txid: 'bbbb', fee: '500' },
+                { symbol: btcSymbol, ...txDummyData, txid: 'cccc', fee: '5000' },
             ],
         },
         tx: PREPARE_TX({
@@ -460,7 +462,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 },
             },
             fees: {
-                btc: {
+                [btcSymbol]: {
                     status: 'loaded',
                     data: {
                         minPriorityFee: 0,
@@ -540,7 +542,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 },
             },
             fees: {
-                btc: {
+                [btcSymbol]: {
                     status: 'loaded',
                     data: {
                         minPriorityFee: 0,
@@ -613,7 +615,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 },
             },
             fees: {
-                btc: {
+                [btcSymbol]: {
                     status: 'loaded',
                     data: {
                         minPriorityFee: 0,
@@ -693,7 +695,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 },
             },
             fees: {
-                btc: {
+                [btcSymbol]: {
                     status: 'loaded',
                     data: {
                         minPriorityFee: 0,

@@ -249,7 +249,7 @@ describe('NotificationRenderer transaction broadcasts', () => {
         id: 1,
         formattedAmount: '1 ETH',
         descriptor: 'descriptor',
-        symbol: 'eth' as const,
+        symbol: asNetworkSymbol('eth'),
         txid: 'txid',
     };
 

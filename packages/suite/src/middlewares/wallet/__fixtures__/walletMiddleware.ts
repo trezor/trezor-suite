@@ -1,6 +1,6 @@
 import { type SelectedAccountState } from '@suite/account';
 import { type RouterState } from '@suite/router';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     WALLET_SETTINGS,
     accountsActions,
@@ -16,6 +16,11 @@ import {
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const ltcSymbol = asNetworkSymbol('ltc');
+const regtestSymbol = asNetworkSymbol('regtest');
 
 export const blockchainSubscription: Array<{
     description: string;
@@ -35,38 +40,38 @@ export const blockchainSubscription: Array<{
 }> = [
     {
         description: 'create account, only one subscribed',
-        initialAccounts: [{ descriptor: asAccountDescriptor('1'), symbol: 'ltc' }],
+        initialAccounts: [{ descriptor: asAccountDescriptor('1'), symbol: ltcSymbol }],
         actions: [
             {
                 type: accountsActions.createAccount.type,
-                payload: { descriptor: '1', symbol: 'btc' },
+                payload: { descriptor: '1', symbol: btcSymbol },
             },
         ],
         result: {
             subscribe: {
                 called: 1,
-                accounts: [{ descriptor: asAccountDescriptor('1'), symbol: 'btc' }],
-                coin: 'btc',
+                accounts: [{ descriptor: asAccountDescriptor('1'), symbol: btcSymbol }],
+                coin: btcSymbol,
             },
         },
     },
     {
         description: 'remove account, one subscription remain',
         initialAccounts: [
-            { descriptor: asAccountDescriptor('1'), symbol: 'eth' },
-            { descriptor: asAccountDescriptor('2'), symbol: 'eth' },
+            { descriptor: asAccountDescriptor('1'), symbol: ethSymbol },
+            { descriptor: asAccountDescriptor('2'), symbol: ethSymbol },
         ],
         actions: [
             {
                 type: accountsActions.removeAccount.type,
-                payload: [{ descriptor: asAccountDescriptor('1'), symbol: 'eth' }],
+                payload: [{ descriptor: asAccountDescriptor('1'), symbol: ethSymbol }],
             },
         ],
         result: {
             subscribe: {
                 called: 1,
-                accounts: [{ descriptor: asAccountDescriptor('2'), symbol: 'eth' }],
-                coin: 'eth',
+                accounts: [{ descriptor: asAccountDescriptor('2'), symbol: ethSymbol }],
+                coin: ethSymbol,
             },
             disconnect: {
                 called: 1,
@@ -76,15 +81,15 @@ export const blockchainSubscription: Array<{
     {
         description: 'remove account and disconnect backend',
         initialAccounts: [
-            { descriptor: asAccountDescriptor('1'), symbol: 'btc' },
-            { descriptor: asAccountDescriptor('2'), symbol: 'btc' },
+            { descriptor: asAccountDescriptor('1'), symbol: btcSymbol },
+            { descriptor: asAccountDescriptor('2'), symbol: btcSymbol },
         ],
         actions: [
             {
                 type: accountsActions.removeAccount.type,
                 payload: [
-                    { descriptor: asAccountDescriptor('1'), symbol: 'eth' },
-                    { descriptor: asAccountDescriptor('2'), symbol: 'eth' },
+                    { descriptor: asAccountDescriptor('1'), symbol: ethSymbol },
+                    { descriptor: asAccountDescriptor('2'), symbol: ethSymbol },
                 ],
             },
         ],
@@ -94,44 +99,44 @@ export const blockchainSubscription: Array<{
             },
             disconnect: {
                 called: 2,
-                coin: 'eth',
+                coin: ethSymbol,
             },
         },
     },
     {
         description: 'disconnect LTC backend, subscribe one account on BTC backend',
         initialAccounts: [
-            { descriptor: asAccountDescriptor('1btc'), symbol: 'btc' },
-            { descriptor: asAccountDescriptor('2btc'), symbol: 'btc' },
-            { descriptor: asAccountDescriptor('1ltc'), symbol: 'ltc' },
-            { descriptor: asAccountDescriptor('2ltc'), symbol: 'ltc' },
+            { descriptor: asAccountDescriptor('1btc'), symbol: btcSymbol },
+            { descriptor: asAccountDescriptor('2btc'), symbol: btcSymbol },
+            { descriptor: asAccountDescriptor('1ltc'), symbol: ltcSymbol },
+            { descriptor: asAccountDescriptor('2ltc'), symbol: ltcSymbol },
         ],
         actions: [
             {
                 type: accountsActions.removeAccount.type,
                 payload: [
-                    { descriptor: asAccountDescriptor('1btc'), symbol: 'btc' },
-                    { descriptor: asAccountDescriptor('1ltc'), symbol: 'ltc' },
-                    { descriptor: asAccountDescriptor('2ltc'), symbol: 'ltc' },
+                    { descriptor: asAccountDescriptor('1btc'), symbol: btcSymbol },
+                    { descriptor: asAccountDescriptor('1ltc'), symbol: ltcSymbol },
+                    { descriptor: asAccountDescriptor('2ltc'), symbol: ltcSymbol },
                 ],
             },
         ],
         result: {
             subscribe: {
                 called: 1,
-                accounts: [{ descriptor: asAccountDescriptor('2btc'), symbol: 'btc' }],
-                coin: 'btc',
+                accounts: [{ descriptor: asAccountDescriptor('2btc'), symbol: btcSymbol }],
+                coin: btcSymbol,
             },
             disconnect: {
                 called: 1,
-                coin: 'ltc',
+                coin: ltcSymbol,
             },
         },
     },
 ];
 
 const accountOneKey = mockAccountKey({ descriptor: 'one' });
-const accountTwoKey = mockAccountKey({ descriptor: 'two', symbol: 'regtest' });
+const accountTwoKey = mockAccountKey({ descriptor: 'two', symbol: regtestSymbol });
 
 export const draftsFixtures = [
     {
@@ -146,13 +151,13 @@ export const draftsFixtures = [
                 {
                     key: accountOneKey,
                     networkType: 'bitcoin',
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     accountType: 'normal',
                 } as Account,
                 {
                     key: accountTwoKey,
                     networkType: 'bitcoin',
-                    symbol: 'regtest',
+                    symbol: regtestSymbol,
                     accountType: 'normal',
                 } as Account,
             ],
@@ -161,7 +166,7 @@ export const draftsFixtures = [
                 account: {
                     key: accountOneKey,
                     networkType: 'bitcoin',
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     accountType: 'normal',
                 },
             } as SelectedAccountState,

@@ -1,6 +1,6 @@
 import { type RouteProp } from '@react-navigation/native';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
@@ -13,10 +13,12 @@ import {
     renderWithTradingProvider,
 } from '../test-utils/tradingTestUtils';
 
+const btcSymbol = asNetworkSymbol('btc');
+
 let mockRouteParams: {
     symbol: NetworkSymbol;
     tradingType: 'exchange' | 'buy';
-} = { symbol: 'btc', tradingType: 'buy' };
+} = { symbol: btcSymbol, tradingType: 'buy' };
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -67,7 +69,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     });
 
     it('should render the empty-state title when no account exists', async () => {
-        mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
+        mockRouteParams = { symbol: btcSymbol, tradingType: 'buy' };
 
         const { getByText } = await renderScreen(overridesWithAccounts([]));
 
@@ -77,7 +79,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     });
 
     it('should render account list with accounts', async () => {
-        mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
+        mockRouteParams = { symbol: btcSymbol, tradingType: 'buy' };
 
         const { getByText } = await renderScreen(overridesWithAccounts(accounts));
 
@@ -85,7 +87,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     });
 
     it('should render account list with accounts for exchange', async () => {
-        mockRouteParams = { symbol: 'btc', tradingType: 'exchange' };
+        mockRouteParams = { symbol: btcSymbol, tradingType: 'exchange' };
 
         const { getByText } = await renderScreen(overridesWithAccounts(accounts));
 
@@ -93,7 +95,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     });
 
     it('should render empty state when no account exist', async () => {
-        mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
+        mockRouteParams = { symbol: btcSymbol, tradingType: 'buy' };
 
         const { getByText } = await renderScreen(overridesWithAccounts([]));
 
@@ -103,7 +105,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     });
 
     it('should render the activation button when no account exists', async () => {
-        mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
+        mockRouteParams = { symbol: btcSymbol, tradingType: 'buy' };
 
         const { getByText } = await renderScreen(overridesWithAccounts([]));
 

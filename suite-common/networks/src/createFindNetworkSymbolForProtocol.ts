@@ -1,7 +1,7 @@
+import type { NetworkSymbol } from '@trezor/network-module';
 import type { Protocol } from '@trezor/network-module-suite-common-types';
 
 import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
-import type { NetworkSymbol } from './NetworkModules';
 import type { GetNetworkConfigDep } from './createGetNetworkConfig';
 
 export type FindNetworkSymbolForProtocol = (protocol: Protocol) => NetworkSymbol | null;

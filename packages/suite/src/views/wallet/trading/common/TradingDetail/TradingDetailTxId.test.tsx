@@ -8,6 +8,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { transactionsInitialState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
@@ -16,11 +17,11 @@ import { TradingDetailTxId } from './TradingDetailTxId';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 const sendAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcDescriptor'),
 });
 const receiveAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('ethDescriptor'),
 });
 

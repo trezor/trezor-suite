@@ -11,6 +11,7 @@ import { useAlert } from '@suite-native/alerts';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { createChecksumAlert } from './alertBuilders';
 
@@ -46,7 +47,7 @@ export const useAddressChecksum = (addressFieldName: string) => {
         if (isFilledValidAddress && symbol && !checkAddressChecksum(addressValue)) {
             const params = {
                 descriptor: addressValue,
-                coin: symbol,
+                coin: asCoinSymbol(symbol),
             };
 
             const addressInfo = await TrezorConnect.getAccountInfo(params);

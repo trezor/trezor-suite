@@ -1,6 +1,7 @@
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { isNetworkIconSymbol } from '@suite-common/icons';
 import { getNetwork } from '@suite-common/wallet-config';
 import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
 import { NetworkIcon } from '@trezor/product-components';
@@ -92,11 +93,13 @@ export const CoinsFilter = () => {
                                         toggleCoinFilter(networkSymbol);
                                     }}
                                 >
-                                    <NetworkIcon
-                                        data-testid={`@account-menu/filter/${networkSymbol}`}
-                                        networkSymbol={networkSymbol}
-                                        size={16}
-                                    />
+                                    {isNetworkIconSymbol(networkSymbol) && (
+                                        <NetworkIcon
+                                            data-testid={`@account-menu/filter/${networkSymbol}`}
+                                            networkSymbol={networkSymbol}
+                                            size={16}
+                                        />
+                                    )}
                                 </CoinLogoWrapper>
                             </motion.div>
                         </Tooltip>

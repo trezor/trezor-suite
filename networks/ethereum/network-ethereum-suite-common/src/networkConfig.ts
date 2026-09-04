@@ -1,4 +1,5 @@
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import { asNetworkSymbol } from '@trezor/network-module';
 import {
     type Explorer,
     type NetworkChainId,
@@ -18,6 +19,8 @@ const getExplorerUrls = (baseUrl: string): Explorer => ({
 type NetworkConfig = SuiteCommonNetworkConfig & {
     readonly chainId: NetworkChainId;
 };
+
+const ethSymbol = asNetworkSymbol('eth');
 
 export const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, NetworkConfig>> = {
     eth: {
@@ -144,7 +147,7 @@ export const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, Netwo
             asProtocol('arb'),
             asProtocol('arbitrum-ethereum'),
         ],
-        settlementLayer: 'eth',
+        settlementLayer: ethSymbol,
         displaySymbol: asNetworkDisplaySymbol('ETH'),
         displaySymbolName: 'Arbitrum One Ethereum',
         name: 'Arbitrum One',
@@ -182,7 +185,7 @@ export const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, Netwo
     base: {
         color: '#0052ff',
         protocols: [asProtocol('base')],
-        settlementLayer: 'eth',
+        settlementLayer: ethSymbol,
         displaySymbol: asNetworkDisplaySymbol('ETH'),
         displaySymbolName: 'Base Ethereum',
         name: 'Base',
@@ -221,7 +224,7 @@ export const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, Netwo
     op: {
         color: '#ff0720',
         protocols: [asProtocol('optimism'), asProtocol('op')],
-        settlementLayer: 'eth',
+        settlementLayer: ethSymbol,
         displaySymbol: asNetworkDisplaySymbol('ETH'),
         displaySymbolName: 'Optimism Ethereum',
         name: 'Optimism',
@@ -259,7 +262,7 @@ export const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, Netwo
     rhc: {
         color: '#ccff00',
         protocols: [asProtocol('robinhood'), asProtocol('robinhood-chain'), asProtocol('rhc')],
-        settlementLayer: 'eth',
+        settlementLayer: ethSymbol,
         displaySymbol: asNetworkDisplaySymbol('ETH'),
         displaySymbolName: 'Robinhood Ethereum',
         name: 'Robinhood Chain',

@@ -13,6 +13,7 @@ import { selectGetSupportedNetworksDep, selectIsTestnetDep } from '@suite-common
 import {
     type Network,
     type NetworkSymbol,
+    asNetworkSymbol,
     getDisplaySymbol,
     getMainnets,
     getNetwork,
@@ -309,8 +310,9 @@ export function useTradingAssets() {
         cryptoId => {
             const { coins, platforms } = getCoinsAndPlatforms();
 
-            const networkSymbol =
-                cryptoIdToNetwork(cryptoId)?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY;
+            const networkSymbol = asNetworkSymbol(
+                cryptoIdToNetwork(cryptoId)?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
+            );
 
             if (isTestnet(networkSymbol)) {
                 return createAssetNativeTokenOption(TRADING_DEFAULT_CRYPTO_CURRENCY);

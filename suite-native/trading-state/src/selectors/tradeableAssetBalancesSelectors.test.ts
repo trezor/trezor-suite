@@ -21,12 +21,14 @@ import {
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { type StaticSessionId } from '@trezor/device-utils';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { selectTradeableAssetBalances } from './tradeableAssetBalancesSelectors';
 
 const USDC_CRYPTO_ID = usdcAsset.cryptoId;
 const USDC_CONTRACT = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const DEVICE_STATIC_SESSION_ID: StaticSessionId = 'tradeableAssets@testDevice:0';
+const ethSymbol = asNetworkSymbol('eth');
 const SELECTED_DEVICE = mockSuiteDevice({
     state: { staticSessionId: DEVICE_STATIC_SESSION_ID },
 });
@@ -57,14 +59,14 @@ const createState = (accounts: Account[], rates: Record<string, Rate> = {}): Tes
 describe('selectTradeableAssetBalances', () => {
     it('aggregates native and token balances across visible accounts', () => {
         const firstAccount = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             descriptor: asAccountDescriptor('firstEthAccount'),
             deviceState: DEVICE_STATIC_SESSION_ID,
             formattedBalance: '1',
             tokens: [createUsdcToken(USDC_CONTRACT, '1.5')],
         });
         const secondAccount = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             descriptor: asAccountDescriptor('secondEthAccount'),
             deviceState: DEVICE_STATIC_SESSION_ID,
             index: 1,
@@ -72,8 +74,8 @@ describe('selectTradeableAssetBalances', () => {
             tokens: [createUsdcToken(toTokenAddress(USDC_CONTRACT.toUpperCase()), '2.5')],
         });
         const state = createState([firstAccount, secondAccount], {
-            [getFiatRateKey('eth', 'usd')]: createMockRate(2_000, 'eth'),
-            [getFiatRateKey('eth', 'usd', USDC_CONTRACT)]: createMockRate(1, 'eth'),
+            [getFiatRateKey(ethSymbol, 'usd')]: createMockRate(2_000, ethSymbol),
+            [getFiatRateKey(ethSymbol, 'usd', USDC_CONTRACT)]: createMockRate(1, ethSymbol),
         });
 
         const balances = selectTradeableAssetBalances(state);
@@ -86,14 +88,14 @@ describe('selectTradeableAssetBalances', () => {
 
     it('does not include hidden accounts or zero balances', () => {
         const visibleAccount = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             descriptor: asAccountDescriptor('visibleEthAccount'),
             deviceState: DEVICE_STATIC_SESSION_ID,
             formattedBalance: '0',
             tokens: [],
         });
         const hiddenAccount = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             descriptor: asAccountDescriptor('hiddenEthAccount'),
             deviceState: DEVICE_STATIC_SESSION_ID,
             formattedBalance: '5',

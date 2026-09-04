@@ -1,6 +1,7 @@
 import { type ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     type BannerFlagsSliceRootState,
@@ -8,15 +9,14 @@ import {
     SolEarnPromoBanner,
     selectIsEarnBannerClosed,
 } from '@suite-native/banners';
-import { type EarnPromoSymbol } from '@suite-native/module-earn';
 
 interface AccountEarnPromoBannerProps {
     account?: Account | null;
 }
 
-const earnPromoBanners: Partial<Record<EarnPromoSymbol, ComponentType<{ account: Account }>>> = {
-    eth: EthEarnPromoBanner,
-    sol: SolEarnPromoBanner,
+const earnPromoBanners: Partial<Record<NetworkSymbol, ComponentType<{ account: Account }>>> = {
+    [asNetworkSymbol('eth')]: EthEarnPromoBanner,
+    [asNetworkSymbol('sol')]: SolEarnPromoBanner,
 };
 
 export const AccountEarnPromoBanner = ({ account }: AccountEarnPromoBannerProps) => {
@@ -30,7 +30,7 @@ export const AccountEarnPromoBanner = ({ account }: AccountEarnPromoBannerProps)
         return null;
     }
 
-    const BannerToRender = earnPromoBanners[account?.symbol];
+    const BannerToRender = earnPromoBanners[account.symbol];
 
     if (BannerToRender) return <BannerToRender account={account} />;
 

@@ -2,6 +2,7 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type FeeInfo } from '@suite-common/wallet-types';
+import { getBlockchain } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { isNotUndefined, resolveAfter, typedObjectFromEntries } from '@trezor/utils';
@@ -10,10 +11,7 @@ import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
 import { DEFAULT_FEE_INFO } from './feesConstants';
 import { type FeesRootState, selectRawNetworkFeeInfo } from './feesSelectors';
 import { getNewFeeInfo, sortLevels } from './feesUtils';
-import {
-    type BlockchainRootState,
-    selectNetworkBlockchainInfo,
-} from '../blockchain/blockchainReducer';
+import { type BlockchainRootState, selectBlockchainState } from '../blockchain/blockchainReducer';
 import {
     type WalletSettingsRootState,
     selectEnabledNetworks,
@@ -96,7 +94,7 @@ export const updateFeeInfoThunk = createThunk<
     async ({ networkSymbol, artificialDelay }, { getState, fulfillWithValue, rejectWithValue }) => {
         const network = getNetwork(networkSymbol);
         const { symbol } = network;
-        const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
+        const blockchainInfo = getBlockchain(selectBlockchainState(getState()), symbol);
 
         // Tron fees are derived per transaction from bandwidth/energy, there is no
         // network-level fee estimate to fetch. Keep the current (preloaded) data.

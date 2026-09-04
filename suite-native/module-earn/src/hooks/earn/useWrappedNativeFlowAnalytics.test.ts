@@ -1,8 +1,11 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useWrappedNativeFlowAnalytics } from './useWrappedNativeFlowAnalytics';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const renderFlowAnalytics = async (props: Parameters<typeof useWrappedNativeFlowAnalytics>[0]) => {
     const services: NativeAnalyticsDep = {
@@ -21,7 +24,7 @@ describe('useWrappedNativeFlowAnalytics', () => {
     it('reports submit as yield/wrap for the wrap flow', async () => {
         const { result, analytics } = await renderFlowAnalytics({
             flowType: 'wrap',
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
         });
 
         await act(() => {
@@ -37,7 +40,7 @@ describe('useWrappedNativeFlowAnalytics', () => {
     it('reports a cancelled simulation', async () => {
         const { result, analytics } = await renderFlowAnalytics({
             flowType: 'wrap',
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
         });
 
         await act(() => {
@@ -53,7 +56,7 @@ describe('useWrappedNativeFlowAnalytics', () => {
     it('reports sent', async () => {
         const { result, analytics } = await renderFlowAnalytics({
             flowType: 'wrap',
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
         });
 
         await act(() => {
@@ -69,7 +72,7 @@ describe('useWrappedNativeFlowAnalytics', () => {
     it('reports the given error message', async () => {
         const { result, analytics } = await renderFlowAnalytics({
             flowType: 'wrap',
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
         });
 
         await act(() => {
@@ -90,7 +93,7 @@ describe('useWrappedNativeFlowAnalytics', () => {
     it('reports max selected as yield/interaction with no vaultId', async () => {
         const { result, analytics } = await renderFlowAnalytics({
             flowType: 'wrap',
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
         });
 
         await act(() => {

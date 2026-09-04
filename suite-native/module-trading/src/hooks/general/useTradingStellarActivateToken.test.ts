@@ -1,5 +1,6 @@
 import type { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import {
@@ -10,6 +11,8 @@ import {
 } from '@suite-native/test-utils-store';
 
 import { useTradingStellarActivateToken } from './useTradingStellarActivateToken';
+
+const xlmSymbol = asNetworkSymbol('xlm');
 
 const mockDispatch = jest.fn();
 const mockNavigate = jest.fn();
@@ -59,7 +62,7 @@ jest.mock('@suite-native/module-stellar-token-management', () => ({
 
 const RECEIVE_CRYPTO_ID = 'stellar:USDC' as CryptoId;
 const TOKEN_CONTRACT = 'USDC-GA123';
-const stellarAccount = mockWalletAccount({ symbol: 'xlm' });
+const stellarAccount = mockWalletAccount({ symbol: xlmSymbol });
 const ACCOUNT_KEY = stellarAccount.key;
 
 const renderUseTradingStellarActivateToken = async (options?: {

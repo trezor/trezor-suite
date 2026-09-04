@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
     type WalletSettingsRootState,
@@ -35,13 +35,15 @@ type UseConvertFiatToCryptoParams = {
     isBalance?: boolean;
 };
 
+const btcSymbol = asNetworkSymbol('btc');
+
 export const useCryptoFiatConverters = ({
     symbol,
     tokenContract,
     historicRate,
     useHistoricRate,
 }: UseConvertFiatToCryptoParams) => {
-    const symbolHelper = symbol ?? 'btc'; // handles passing the value to selectors
+    const symbolHelper = symbol ?? btcSymbol; // handles passing the value to selectors
     const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbolHelper),
     );
@@ -67,7 +69,7 @@ export const useCryptoFiatConverters = ({
                 ? asBaseCurrencyAmount(
                       subunitsToUnits({
                           value: asAmountSubunit(baseCurrencyAmount),
-                          symbol: 'btc',
+                          symbol: btcSymbol,
                       }),
                   )
                 : baseCurrencyAmount;
@@ -101,7 +103,7 @@ export const useCryptoFiatConverters = ({
             // 2. If BaseUnits are Sats (BTC only), we have to convert it to sats
             return isBaseCurrencyInSats
                 ? asBaseCurrencyAmount(
-                      unitsToSubunits({ value: asAmountUnit(baseCurrency), symbol: 'btc' }),
+                      unitsToSubunits({ value: asAmountUnit(baseCurrency), symbol: btcSymbol }),
                   )
                 : baseCurrency;
         },

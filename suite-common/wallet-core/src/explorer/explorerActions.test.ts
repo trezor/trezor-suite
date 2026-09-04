@@ -8,6 +8,7 @@ import { explorerActions } from './explorerActions';
 import {
     type ExplorerConfig,
     explorerInitialState,
+    getExplorer,
     prepareExplorerReducer,
 } from './explorerReducer';
 
@@ -32,6 +33,10 @@ const initStore = (state: Partial<ExplorerConfig> = {}) =>
         },
     });
 
+test('getExplorer throws when state is missing', () => {
+    expect(() => getExplorer({}, btcSymbol)).toThrow('Explorer state not found: btc');
+});
+
 describe('setExplorer', () => {
     test.each([
         { base: 'http://mempool.space', tx: 'tx', address: 'address' },
@@ -47,7 +52,7 @@ describe('setExplorer', () => {
             }),
         );
 
-        expect(store.getState().wallet.explorer.btc.custom).toEqual(explorer);
+        expect(getExplorer(store.getState().wallet.explorer, btcSymbol).custom).toEqual(explorer);
     });
 
     test('removes stored custom explorer', () => {
@@ -60,7 +65,7 @@ describe('setExplorer', () => {
 
         store.dispatch(explorerActions.setExplorer({ symbol: btcSymbol }));
 
-        expect(store.getState().wallet.explorer.btc.custom).toEqual(undefined);
+        expect(getExplorer(store.getState().wallet.explorer, btcSymbol).custom).toEqual(undefined);
     });
 
     test.each([
@@ -78,6 +83,6 @@ describe('setExplorer', () => {
             }),
         );
 
-        expect(store.getState().wallet.explorer.btc.custom).toEqual(undefined);
+        expect(getExplorer(store.getState().wallet.explorer, btcSymbol).custom).toEqual(undefined);
     });
 });

@@ -5,13 +5,16 @@ import { type CryptoId } from 'invity-api';
 import { cryptoIdToNetwork } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { useTradingFindAccountOrToken } from './useTradingFindAccountOrToken';
 
 /**
  * Get decimals for the given asset
  */
-export function useTradingAssetDecimals(defaultDecimals = getNetwork('btc').decimals) {
+export function useTradingAssetDecimals(
+    defaultDecimals = getNetwork(asNetworkSymbol('btc')).decimals,
+) {
     const findAccountOrToken = useTradingFindAccountOrToken();
 
     const getAssetDecimals = useCallback(

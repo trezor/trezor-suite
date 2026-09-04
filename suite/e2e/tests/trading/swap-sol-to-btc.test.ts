@@ -7,6 +7,9 @@ import { formatAddressWithNewlines, isWebProject } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
+const solSymbol = asNetworkSymbol('sol');
+const btcSymbol = asNetworkSymbol('btc');
+
 const sendAmount = '0.5';
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const accountLabel = 'Solana #1';
@@ -18,15 +21,15 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
             tradingMockNew.setTradeFlow('swap');
             await tradingMockNew.mockProviderStatusPage();
-            const solBackend = await tradingMockNew.startBackend('sol');
+            const solBackend = await tradingMockNew.startBackend(solSymbol);
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: ['btc', { symbol: 'sol', backend: solBackend }],
+                enableNetworks: [btcSymbol, { symbol: solSymbol, backend: solBackend }],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: 'sol' });
+            await walletPage.openSwapTrading({ symbol: solSymbol });
         },
     );
 
@@ -44,14 +47,14 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                 amount: sendAmount,
                 sellAsset: {
                     searchFilter: accountLabel,
-                    networkSymbol: 'sol',
+                    networkSymbol: solSymbol,
                 },
                 buyAsset: {
                     searchFilter: 'Bitcoin',
-                    assetCryptoId: getCryptoId(asNetworkSymbol('btc')),
+                    assetCryptoId: getCryptoId(btcSymbol),
                 },
                 selectReceiveAddress: async () => {
-                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, btcSymbol);
                 },
             });
         });

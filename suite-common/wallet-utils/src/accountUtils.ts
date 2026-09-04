@@ -9,7 +9,6 @@ import {
     type TrezorConnectBackendType,
     getNetwork,
     networkSymbolCollection,
-    networks,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -283,7 +282,7 @@ export const compareAccountsByCoin = (a: Account, b: Account) => {
     if (aSymbolIndex !== bSymbolIndex) return aSymbolIndex - bSymbolIndex;
 
     // when it is sorted by network, sort by order of accountType keys within the same network
-    const network = networks[a.symbol];
+    const network = getNetwork(a.symbol);
     // `network` is a union over all networks (some declare `accountTypes: {}`), which would collapse
     // `keyof` to `never`; widening to the field's declared keyset yields `AccountType[]` soundly.
     const orderedAccountTypes = typedObjectKeys(
@@ -651,7 +650,7 @@ export const getTotalFiatBalance = ({
     return instanceBalance;
 };
 
-export const isTestnet = (symbol: NetworkSymbol) => networks[symbol].testnet;
+export const isTestnet = (symbol: NetworkSymbol) => getNetwork(symbol).testnet;
 
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     if (
@@ -871,7 +870,7 @@ export const accountSearchFn = (
     const searchString = rawSearchString?.trim().toLowerCase();
     if (!searchString) return true; // no search string
 
-    const network = networks[account.symbol];
+    const network = getNetwork(account.symbol);
 
     // helper func for searching in account's addresses
     const matchAddressFn = (u: NonNullable<Account['addresses']>['used'][number]) =>
@@ -881,7 +880,7 @@ export const accountSearchFn = (
         .toLowerCase()
         .includes(searchString);
     const symbolMatch = account.symbol.startsWith(searchString);
-    const networkNameMatch = network?.name.toLowerCase().includes(searchString);
+    const networkNameMatch = network.name.toLowerCase().includes(searchString);
     const accountTypeMatch = account.accountType.startsWith(searchString);
     const accountTypeNameMatch = !!accountTypeName?.toLowerCase().includes(searchString);
     const descriptorMatch = account.descriptor.toLowerCase() === searchString;
@@ -892,7 +891,7 @@ export const accountSearchFn = (
         : false;
     // find XRP accounts when users types in 'ripple'
     const matchXRPAlternativeName =
-        network?.networkType === 'ripple' && 'ripple'.includes(searchString);
+        network.networkType === 'ripple' && 'ripple'.includes(searchString);
 
     const accountLabelMatch = accountLabel.toLowerCase().includes(searchString);
 
@@ -1068,7 +1067,7 @@ export const getPendingAccount = ({
 export const getNetworkAccountFeatures = ({
     symbol,
     accountType,
-}: Pick<Account, 'symbol' | 'accountType'>): NetworkFeature[] => {
+}: Pick<Account, 'symbol' | 'accountType'>): readonly NetworkFeature[] => {
     const matchedNetwork = getNetwork(symbol);
 
     return matchedNetwork.accountTypes[accountType]?.features ?? matchedNetwork.features;

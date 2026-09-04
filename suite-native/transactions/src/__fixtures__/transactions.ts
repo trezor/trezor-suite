@@ -1,11 +1,14 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 export const transactionWithTargetInOutputs: WalletAccountTransaction = {
     descriptor: asAccountDescriptor(
         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
     ),
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@C906E19794613145E3DF45F4:0',
-    symbol: 'btc',
+    symbol: btcSymbol,
     type: 'recv',
     internalTransfers: [],
     txid: 'd6c42e965f9e9a69b9eb1d48d09e787cae8020d86ed952548058c857f7bcfb7e',
@@ -66,7 +69,7 @@ export const transactionWithChangeAddress: WalletAccountTransaction = {
         'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
     ),
     deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-    symbol: 'btc',
+    symbol: btcSymbol,
     type: 'sent',
     txid: 'b8ccb6e85d3c5fe008b0534d4f9ff8b1de71f2b7a3d856490b9a96f6ae1e49bb',
     blockTime: 1679482960,

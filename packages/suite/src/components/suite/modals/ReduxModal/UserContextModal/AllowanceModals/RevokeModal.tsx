@@ -5,6 +5,7 @@ import { type CryptoId } from 'invity-api';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { isNetworkIconSymbol } from '@suite-common/icons';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited, shouldShowRevokeAllowanceBanner } from '@suite-common/wallet-utils';
@@ -145,7 +146,9 @@ export const RevokeModal = (props: RevokeModalProps) => {
                                 <Translation id="TR_ACCOUNT" />
                             </Text>
                             <Row gap={8}>
-                                <NetworkIcon networkSymbol={account.symbol} size={20} />
+                                {isNetworkIconSymbol(account.symbol) && (
+                                    <NetworkIcon networkSymbol={account.symbol} size={20} />
+                                )}
                                 <AccountLabeling
                                     account={account}
                                     showAccountTypeBadge

@@ -1,5 +1,6 @@
+import type { NetworkSymbol } from '@trezor/network-module';
+
 import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
-import type { NetworkSymbol } from './NetworkModules';
 
 export type GetSupportedNetworks = () => readonly NetworkSymbol[];
 

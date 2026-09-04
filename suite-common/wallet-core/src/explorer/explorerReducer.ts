@@ -21,6 +21,16 @@ export type ExplorerItem = {
 export type ExplorerConfig = Record<NetworkSymbol, ExplorerItem>;
 export type ExplorerState = { wallet: { explorer: ExplorerConfig } };
 
+export const getExplorer = (explorers: ExplorerConfig, symbol: NetworkSymbol): ExplorerItem => {
+    const explorer = explorers[symbol];
+
+    if (explorer === undefined) {
+        throw new Error(`Explorer state not found: ${symbol}`);
+    }
+
+    return explorer;
+};
+
 const initialStatePredefined: Partial<ExplorerConfig> = {};
 
 export const explorerInitialState: ExplorerConfig = networksCollection.reduce((state, network) => {
@@ -51,13 +61,14 @@ export const prepareExplorerReducer = createReducerWithExtraDeps(
         builder
             .addCase(explorerActions.setExplorer, (state, action) => {
                 const { symbol, explorer } = action.payload;
-                const defaultExplorer = state[symbol].default;
+                const currentExplorer = getExplorer(state, symbol);
+                const defaultExplorer = currentExplorer.default;
                 const normalizedExplorer = explorer && normalizeExplorer(explorer);
                 const isDefaultExplorer = typedObjectKeys(defaultExplorer).every(
                     key => normalizedExplorer?.[key] === defaultExplorer[key],
                 );
 
-                state[symbol].custom = !isDefaultExplorer ? normalizedExplorer : undefined;
+                currentExplorer.custom = !isDefaultExplorer ? normalizedExplorer : undefined;
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadExplorer);
     },

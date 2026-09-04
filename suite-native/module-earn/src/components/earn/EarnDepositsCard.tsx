@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -142,7 +143,7 @@ export const EarnDepositsCard = ({
                 }
                 navigateToStakingDetail({
                     accountKey: onlyItem.accountKey,
-                    symbol: onlyItem.symbol,
+                    symbol: asNetworkSymbol(onlyItem.symbol),
                 });
             }
 

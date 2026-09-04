@@ -41,6 +41,9 @@
         { "path": "../trading-atoms" },
         { "path": "../trading-consts" },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/network-module/network-module"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../trading-fixtures" },

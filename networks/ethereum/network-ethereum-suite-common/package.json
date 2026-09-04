@@ -21,6 +21,7 @@
         "@suite-common/calldata": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/network-ethereum": "workspace:*",
+        "@trezor/network-module": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/utils": "workspace:*",
         "viem": "^2.54.1"

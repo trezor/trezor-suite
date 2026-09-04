@@ -42,7 +42,7 @@ export function useNetworkFeeOptions({
                 ? subunitsToUnits({
                       value: asAmountSubunit(new BigNumber(transactionInfo.fee)),
                       symbol: networkSymbol,
-                      decimals: getNetwork(networkSymbol)?.decimals,
+                      decimals: getNetwork(networkSymbol).decimals,
                   })
                 : null;
             // Needed only for Solana because of fee estimation on compose Tx

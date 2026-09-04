@@ -22,6 +22,7 @@ import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-ut
 import { isNetworkWithTokens } from '@suite-native/tokens';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 import { convertTaprootXpub } from '@trezor/utils';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
@@ -107,7 +108,7 @@ export const getAccountInfoThunk = createThunk<
         try {
             const [fetchedAccountInfo] = await Promise.all([
                 TrezorConnect.getAccountInfo({
-                    coin: symbol,
+                    coin: asCoinSymbol(symbol),
                     identity: shouldUseIdentities(symbol)
                         ? getAccountIdentity({
                               deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,

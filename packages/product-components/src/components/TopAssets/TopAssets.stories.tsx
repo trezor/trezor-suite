@@ -1,5 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 import { type Asset, TopAssets } from './TopAssets';
 
 const meta: Meta<typeof TopAssets> = {
@@ -8,11 +10,16 @@ const meta: Meta<typeof TopAssets> = {
 };
 export default meta;
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+const baseSymbol = asNetworkSymbol('base');
+
 const popularAssets: Asset[] = [
     {
         id: 'btc',
         symbol: 'btc',
-        networkSymbol: 'btc',
+        networkSymbol: btcSymbol,
         displaySymbol: 'BTC',
         contractAddress: null,
         coingeckoId: 'bitcoin',
@@ -20,7 +27,7 @@ const popularAssets: Asset[] = [
     },
     {
         symbol: 'eth',
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         displaySymbol: 'ETH',
         contractAddress: null,
         coingeckoId: 'ethereum',
@@ -29,7 +36,7 @@ const popularAssets: Asset[] = [
     },
     {
         symbol: 'sol',
-        networkSymbol: 'sol',
+        networkSymbol: solSymbol,
         displaySymbol: 'SOL',
         id: 'sol',
         contractAddress: 'WCTk5xWdn5SYg56twGj32sUF3W4WFQ48ogezLBuYTBY',
@@ -38,7 +45,7 @@ const popularAssets: Asset[] = [
     },
     {
         symbol: 'usdc',
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         displaySymbol: 'USDC',
         contractAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
         coingeckoId: 'ethereum',
@@ -47,7 +54,7 @@ const popularAssets: Asset[] = [
     },
     {
         symbol: 'base',
-        networkSymbol: 'base',
+        networkSymbol: baseSymbol,
         displaySymbol: 'BASE',
         id: 'base',
         contractAddress: null,

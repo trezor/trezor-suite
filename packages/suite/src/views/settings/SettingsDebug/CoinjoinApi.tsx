@@ -125,7 +125,8 @@ export const CoinjoinApi = () => {
     return (
         <>
             {coinjoinSymbols.map(symbol => {
-                const environments = typedObjectKeys(COINJOIN_NETWORKS[symbol] || {});
+                const coinjoinSymbol: CoinjoinSymbol = symbol;
+                const environments = typedObjectKeys(COINJOIN_NETWORKS[coinjoinSymbol]);
 
                 return (
                     <CoordinatorServer

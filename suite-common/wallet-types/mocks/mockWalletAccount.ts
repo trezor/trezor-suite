@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 
 import {
@@ -81,46 +81,56 @@ type NetworkSpecificDefault =
     | typeof networkSpecificDefaultCardano
     | typeof networkSpecificDefaultStellar;
 
-const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
+const networkTypeMap: Readonly<Record<NetworkSymbol, NetworkSpecificDefault>> = {
     // Bitcoin-like
-    btc: networkSpecificDefaultBitcoin,
-    regtest: networkSpecificDefaultBitcoin,
-    test: networkSpecificDefaultBitcoin,
-    ltc: networkSpecificDefaultBitcoin,
-    bch: networkSpecificDefaultBitcoin,
-    doge: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('btc')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('regtest')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('test')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('ltc')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('bch')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('doge')]: networkSpecificDefaultBitcoin,
 
     // Eth
-    eth: networkSpecificDefaultEthereum,
-    etc: networkSpecificDefaultEthereum,
-    hype: networkSpecificDefaultEthereum,
+    [asNetworkSymbol('eth')]: networkSpecificDefaultEthereum,
+    [asNetworkSymbol('etc')]: networkSpecificDefaultEthereum,
+    [asNetworkSymbol('hype')]: networkSpecificDefaultEthereum,
 
     // Testnet Eth
-    tsep: networkSpecificDefaultEthereum,
-    thod: networkSpecificDefaultEthereum,
+    [asNetworkSymbol('tsep')]: networkSpecificDefaultEthereum,
+    [asNetworkSymbol('thod')]: networkSpecificDefaultEthereum,
 
     // Solana
-    sol: networkSpecificDefaultSolana,
-    dsol: networkSpecificDefaultSolana,
+    [asNetworkSymbol('sol')]: networkSpecificDefaultSolana,
+    [asNetworkSymbol('dsol')]: networkSpecificDefaultSolana,
 
     // Stellar
-    xlm: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('xlm')]: networkSpecificDefaultBitcoin,
 
     // Todo: fix map for remaining networks
-    xrp: networkSpecificDefaultBitcoin,
-    zec: networkSpecificDefaultBitcoin,
-    ada: networkSpecificDefaultBitcoin,
-    pol: networkSpecificDefaultBitcoin,
-    bsc: networkSpecificDefaultBitcoin,
-    arb: networkSpecificDefaultBitcoin,
-    base: networkSpecificDefaultBitcoin,
-    op: networkSpecificDefaultBitcoin,
-    rhc: networkSpecificDefaultEthereum,
-    avax: networkSpecificDefaultBitcoin,
-    trx: networkSpecificDefaultTron,
-    ttrx: networkSpecificDefaultTron,
-    txrp: networkSpecificDefaultBitcoin,
-    txlm: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('xrp')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('zec')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('ada')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('pol')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('bsc')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('arb')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('base')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('op')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('rhc')]: networkSpecificDefaultEthereum,
+    [asNetworkSymbol('avax')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('trx')]: networkSpecificDefaultTron,
+    [asNetworkSymbol('ttrx')]: networkSpecificDefaultTron,
+    [asNetworkSymbol('txrp')]: networkSpecificDefaultBitcoin,
+    [asNetworkSymbol('txlm')]: networkSpecificDefaultBitcoin,
+};
+
+const getNetworkSpecificDefault = (symbol: NetworkSymbol): NetworkSpecificDefault => {
+    const networkSpecificDefault = networkTypeMap[symbol];
+
+    if (networkSpecificDefault === undefined) {
+        throw new Error(`Network-specific account mock not found: ${symbol}`);
+    }
+
+    return networkSpecificDefault;
 };
 
 type MandatoryAccountData = {
@@ -175,6 +185,6 @@ export const mockWalletAccount = (
     return {
         ...accountBase,
         ...accountFailure,
-        ...(networkSpecific ?? networkTypeMap[account.symbol]),
+        ...(networkSpecific ?? getNetworkSpecificDefault(account.symbol)),
     };
 };

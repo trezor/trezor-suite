@@ -1,7 +1,7 @@
+import type { NetworkSymbol } from '@trezor/network-module';
 import type { AddressValidator as NetworkAddressValidator } from '@trezor/network-module-suite-common-types';
 
 import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
-import type { NetworkSymbol } from './NetworkModules';
 
 export type AddressValidator = NetworkAddressValidator<NetworkSymbol>;
 

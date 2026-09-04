@@ -1,7 +1,10 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { NoAccountsComponent } from './NoAccountsComponent';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 describe('NoAccountsComponent', () => {
     const renderNoAccountsComponent = async ({
@@ -14,7 +17,7 @@ describe('NoAccountsComponent', () => {
         onActivateAccount?: () => void;
     }) =>
         await renderWithStoreProvider(
-            <NoAccountsComponent symbol="btc" onActivateAccount={onActivateAccount} />,
+            <NoAccountsComponent symbol={btcSymbol} onActivateAccount={onActivateAccount} />,
             {
                 preloadedState: {
                     device: {

@@ -1,7 +1,9 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import type { Rate, Timestamp, WalletSettings } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 export const createMockRate = (rate: number, symbol: NetworkSymbol): Rate => ({
     rate,
@@ -19,7 +21,7 @@ export const mockWalletFiatRatesAndSettings = (customRates: { [x: string]: Rate 
     } as WalletSettings,
     fiat: {
         current: {
-            [getFiatRateKey('btc', 'usd')]: createMockRate(50000, 'btc'),
+            [getFiatRateKey(btcSymbol, 'usd')]: createMockRate(50000, btcSymbol),
             ...customRates,
         },
         lastWeek: {},

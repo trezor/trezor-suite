@@ -6,7 +6,7 @@ import {
     getTronVotedApr,
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { ZeroApyBadge } from '@suite-native/accounts';
@@ -41,15 +41,14 @@ type EarnAccountCardProps = {
 export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCardProps) => {
     const isStakingItem = item.type === 'staking';
     const isDefiYieldItem = item.type === 'stablecoin-yield';
-    const isSupportedStaking = isStakingItem && isSupportedStakingNetworkSymbol(item.symbol);
+    const symbol = isStakingItem ? asNetworkSymbol(item.symbol) : item.networkSymbol;
+    const isSupportedStaking = isStakingItem && isSupportedStakingNetworkSymbol(symbol);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const locale = useSelector(selectSupportedLanguageLocale);
 
-    const symbol = isStakingItem ? item.symbol : item.networkSymbol;
-
     const apy = useStakingSelector(state =>
         isStakingItem
-            ? selectApy(state, { accountKey: item.accountKey, networkSymbol: item.symbol })
+            ? selectApy(state, { accountKey: item.accountKey, networkSymbol: symbol })
             : null,
     );
 
@@ -92,7 +91,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
             isSupportedStaking ? selectClaimableAmountByAccountKey(state, item.accountKey) : '0',
         ) ?? '0';
 
-    const { isClaimingDisabled } = useMessageSystemStaking(isStakingItem ? item.symbol : null);
+    const { isClaimingDisabled } = useMessageSystemStaking(isStakingItem ? symbol : null);
 
     const showClaimAlert = canClaim && !isClaimingDisabled && !isPortfolioTrackerDevice;
 

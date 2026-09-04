@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectFormattedAccountType,
     selectHasRunningDiscovery,
@@ -76,10 +77,13 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
         selectFormattedAccountType(state, accountKey),
     );
 
+    const networkSymbol =
+        item.type === 'staking' ? asNetworkSymbol(item.symbol) : item.networkSymbol;
+
     const apy = useNativeStakingSelector(state =>
         selectApy(state, {
             accountKey: accountKey ?? undefined,
-            networkSymbol: item.type === 'staking' ? item.symbol : undefined,
+            networkSymbol: item.type === 'staking' ? networkSymbol : undefined,
         }),
     );
 
@@ -93,14 +97,12 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
         accountKey ? selectIsCardanoStakedOutsideEverstake(state, accountKey) : false,
     );
 
-    const symbol = item.type === 'staking' ? item.symbol : item.networkSymbol;
-
-    const resolvedApy = symbol === 'trx' ? tronMaxApr : apy;
+    const resolvedApy = networkSymbol === 'trx' ? tronMaxApr : apy;
     const apyValue = item.type === 'staking' ? resolvedApy : item.apy;
 
     const iconProps =
         item.type === 'staking'
-            ? { symbol: item.symbol }
+            ? { symbol: networkSymbol }
             : {
                   symbol: item.networkSymbol,
                   contractAddress: item.tokenContractAddress,
@@ -121,7 +123,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
                 <Box style={applyStyle(accountDescriptionStyle)}>
                     <Text>
                         {item.type === 'staking' ? (
-                            <NetworkDisplaySymbolNameFormatter value={item.symbol} />
+                            <NetworkDisplaySymbolNameFormatter value={networkSymbol} />
                         ) : (
                             item.vaultName
                         )}
@@ -151,7 +153,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
                                     {item.type === 'staking' ? (
                                         <Translation
                                             id={
-                                                symbol === 'trx'
+                                                networkSymbol === 'trx'
                                                     ? 'earn.aprPercentage'
                                                     : 'earn.apyPercentage'
                                             }

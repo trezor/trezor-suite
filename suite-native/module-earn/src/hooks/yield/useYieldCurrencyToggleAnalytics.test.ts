@@ -1,8 +1,11 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useYieldCurrencyToggleAnalytics } from './useYieldCurrencyToggleAnalytics';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const renderCurrencyToggleAnalytics = async (
     props: Parameters<typeof useYieldCurrencyToggleAnalytics>[0],
@@ -22,7 +25,7 @@ const renderCurrencyToggleAnalytics = async (
 describe('useYieldCurrencyToggleAnalytics', () => {
     it('reports a switch to the fiat input', async () => {
         const { result, analytics } = await renderCurrencyToggleAnalytics({
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
             vaultId: 'vault-1',
         });
 
@@ -43,7 +46,7 @@ describe('useYieldCurrencyToggleAnalytics', () => {
 
     it('reports a switch back to the crypto input', async () => {
         const { result, analytics } = await renderCurrencyToggleAnalytics({
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
             vaultId: 'vault-1',
         });
 
@@ -63,7 +66,9 @@ describe('useYieldCurrencyToggleAnalytics', () => {
     });
 
     it('omits vaultId for the standalone wrap/unwrap forms', async () => {
-        const { result, analytics } = await renderCurrencyToggleAnalytics({ networkSymbol: 'eth' });
+        const { result, analytics } = await renderCurrencyToggleAnalytics({
+            networkSymbol: ethSymbol,
+        });
 
         await act(() => {
             result.current('secondary');
@@ -81,7 +86,9 @@ describe('useYieldCurrencyToggleAnalytics', () => {
     });
 
     it('reports every switch, so a toggle back and forth is counted twice', async () => {
-        const { result, analytics } = await renderCurrencyToggleAnalytics({ networkSymbol: 'eth' });
+        const { result, analytics } = await renderCurrencyToggleAnalytics({
+            networkSymbol: ethSymbol,
+        });
 
         await act(() => {
             result.current('secondary');

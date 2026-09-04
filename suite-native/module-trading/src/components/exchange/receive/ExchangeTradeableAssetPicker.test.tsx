@@ -1,6 +1,7 @@
 import type { GetSupportedNetworksDep } from '@suite-common/networks';
 import { mockGetSupportedNetworks } from '@suite-common/networks/mocks';
 import { tradingExchangeActions } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
@@ -29,10 +30,13 @@ import {
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep & { networks: GetSupportedNetworksDep } = {
     analytics: mockNativeAnalytics(reportMock),
-    networks: { getSupportedNetworks: mockGetSupportedNetworks(['btc', 'eth']) },
+    networks: { getSupportedNetworks: mockGetSupportedNetworks([btcSymbol, ethSymbol]) },
 };
 
 const btc1AccountKey = btc1NormalAccount.key;

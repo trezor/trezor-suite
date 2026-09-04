@@ -1,4 +1,3 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE,
     type GroupedExchangeQuotesByRateType,
@@ -16,6 +15,7 @@ import {
     coinInfoToTradeableAsset,
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
+import type { NetworkSymbol } from '@trezor/network-module';
 
 import {
     type TradingRootState,

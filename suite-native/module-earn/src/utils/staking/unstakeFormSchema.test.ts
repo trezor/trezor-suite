@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import { StakeState } from '@trezor/network-solana/constants';
@@ -5,6 +6,8 @@ import { StakeState } from '@trezor/network-solana/constants';
 import { type UnstakeFormContext, unstakeFormValidationSchema } from './unstakeFormSchema';
 
 const SOL = 1_000_000_000;
+const solSymbol = asNetworkSymbol('sol');
+const ethSymbol = asNetworkSymbol('eth');
 
 const translate = ((id: string, values?: Record<string, unknown>) =>
     values ? `${id}:${JSON.stringify(values)}` : id) as UnstakeFormContext['translate'];
@@ -26,7 +29,7 @@ const buildStakingAccount = (
 
 const buildSolanaAccount = (solStakingAccounts: SolanaStakingAccount[]): Account =>
     ({
-        symbol: 'sol',
+        symbol: solSymbol,
         networkType: 'solana',
         formattedBalance: '0',
         misc: { solStakingAccounts },
@@ -37,7 +40,7 @@ describe('unstakeFormValidationSchema — Solana unstake amount bounds', () => {
         const account = buildSolanaAccount([buildStakingAccount({ stake: `${1.42 * SOL}` })]);
 
         await expect(
-            validate('0.5', { account, symbol: 'sol', stakedBalance: '1.42', decimals: 9 }),
+            validate('0.5', { account, symbol: solSymbol, stakedBalance: '1.42', decimals: 9 }),
         ).rejects.toThrow('earn.unstakeFormScreen.validation.invalidUnstakeAmountHigherOnly');
     });
 
@@ -48,7 +51,7 @@ describe('unstakeFormValidationSchema — Solana unstake amount bounds', () => {
         ]);
 
         await expect(
-            validate('1.42', { account, symbol: 'sol', stakedBalance: '3.42', decimals: 9 }),
+            validate('1.42', { account, symbol: solSymbol, stakedBalance: '3.42', decimals: 9 }),
         ).resolves.toBeDefined();
     });
 
@@ -59,7 +62,7 @@ describe('unstakeFormValidationSchema — Solana unstake amount bounds', () => {
         ]);
 
         await expect(
-            validate('2', { account, symbol: 'sol', stakedBalance: '3.42', decimals: 9 }),
+            validate('2', { account, symbol: solSymbol, stakedBalance: '3.42', decimals: 9 }),
         ).rejects.toThrow(/invalidUnstakeAmount(?!HigherOnly)/);
     });
 
@@ -67,13 +70,13 @@ describe('unstakeFormValidationSchema — Solana unstake amount bounds', () => {
         const account = buildSolanaAccount([buildStakingAccount({ stake: `${3.12 * SOL}` })]);
 
         await expect(
-            validate('0.42', { account, symbol: 'sol', stakedBalance: '3.12', decimals: 9 }),
+            validate('0.42', { account, symbol: solSymbol, stakedBalance: '3.12', decimals: 9 }),
         ).rejects.toThrow('earn.unstakeFormScreen.validation.invalidUnstakeAmountHigherOnly');
     });
 
     it('does not apply the Solana bounds check to other networks (e.g. Ethereum)', async () => {
         await expect(
-            validate('0.5', { symbol: 'eth', stakedBalance: '10', decimals: 18 }),
+            validate('0.5', { symbol: ethSymbol, stakedBalance: '10', decimals: 18 }),
         ).resolves.toBeDefined();
     });
 });

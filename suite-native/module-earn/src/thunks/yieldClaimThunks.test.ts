@@ -1,6 +1,7 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { createTestStore } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldClaimUnsignedTransaction,
     type YieldFlowCompleteRewardItem,
@@ -44,14 +45,15 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 
 const STATIC_SESSION_ID: StaticSessionId = '1stTestnetAddress@device_id:0';
+const ethSymbol = asNetworkSymbol('eth');
 const accountKey = mockAccountKey({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: '0xfffffffffffffffffffffffffffffffffffffffe',
     deviceStaticSessionId: STATIC_SESSION_ID,
 });
 
 const account = {
-    symbol: 'eth',
+    symbol: ethSymbol,
     networkType: 'ethereum',
     key: accountKey,
     deviceState: STATIC_SESSION_ID,
@@ -73,7 +75,7 @@ const unsignedTransaction = {
 const rewards = [
     {
         token: {
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
             symbol: 'USDT',
             decimals: 6,
             contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',

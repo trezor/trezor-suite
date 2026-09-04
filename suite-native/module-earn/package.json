@@ -72,6 +72,7 @@
         "@suite-native/tx-simulation": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",

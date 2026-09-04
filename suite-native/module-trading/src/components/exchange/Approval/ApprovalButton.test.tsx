@@ -1,4 +1,5 @@
 import { tradingExchangeActions } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { type TestStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
@@ -6,6 +7,8 @@ import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ApprovalButton, type ApprovalButtonProps } from './ApprovalButton';
 import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const mockNavigate = jest.fn();
 
@@ -25,7 +28,7 @@ jest.mock('@suite-native/trading-analytics', () => ({
             mockAnalyticsReport(action, ...args),
 }));
 
-const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' });
+const ethAccountKey = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1normal' });
 
 describe('ApprovalButton', () => {
     let store: TestStore;

@@ -2,6 +2,7 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import { type FormState } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { getTransactionReviewModalActionTranslation } from './transactionReview';
 
@@ -35,7 +36,7 @@ const getTranslation = ({
     isBumpFeeRbfAction?: boolean;
 }) =>
     getTransactionReviewModalActionTranslation({
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         stakeType: null,
         precomposedForm,
         approvalToken,

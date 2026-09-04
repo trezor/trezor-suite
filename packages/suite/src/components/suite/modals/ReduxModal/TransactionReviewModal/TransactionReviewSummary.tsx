@@ -3,7 +3,7 @@ import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { type NetworkType, networks } from '@suite-common/wallet-config';
+import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
     type FeeInfo,
@@ -65,7 +65,7 @@ export const TransactionReviewSummary = ({
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const locale = useLocales();
     const { symbol, networkType } = account;
-    const network = networks[symbol];
+    const network = getNetwork(symbol);
     const fee = getFee(account.networkType, tx);
     const estimateTime = getEstimatedTime(networkType, rawFeeInfo, tx);
     const connectPopupCall = useSelector(selectConnectPopupCall);

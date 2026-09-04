@@ -15,6 +15,7 @@ import {
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
@@ -23,6 +24,8 @@ import {
     isTradingBuyContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 export const TradingFormOfferOTC = () => {
     const dispatch = useDispatch();
@@ -72,7 +75,7 @@ export const TradingFormOfferOTC = () => {
 
     const { fiatAmount: fiatAmountConverted } = useFiatFromCryptoValue({
         amount: cryptoAmount || '0',
-        symbol: network?.symbol || 'btc',
+        symbol: network?.symbol || btcSymbol,
         tokenAddress: contractAddress,
         rateType: 'current',
     });

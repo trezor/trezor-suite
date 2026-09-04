@@ -15,6 +15,7 @@ import {
     fromIntegerString,
     getConvertedOrDefaultFeeInfo,
 } from '@suite-common/wallet-utils';
+import { asNetworkSymbol } from '@trezor/network-module';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -37,7 +38,7 @@ interface UseTxFeesFormProps {
 export function useEvmTxSimulationFeesForm({
     accountBalance,
     networkType = 'ethereum',
-    networkSymbol = 'eth',
+    networkSymbol = asNetworkSymbol('eth'),
     defaultGasLimit = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
     txValue = '0',
 }: UseTxFeesFormProps) {

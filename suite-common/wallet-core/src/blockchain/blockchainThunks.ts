@@ -5,6 +5,7 @@ import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
+    asNetworkSymbol,
     getNetworkOptional,
     isNetworkSymbol,
     isNetworkUsingExternalBackend,
@@ -19,6 +20,7 @@ import {
     getAccountIdentity,
     getAreSatoshisUsed,
     getBackendFromSettings,
+    getBlockchain,
     getCustomBackends,
     isTrezorConnectBackendType,
     shouldSubscribeBlocks,
@@ -38,7 +40,6 @@ import {
     type BlockchainRootState,
     selectBlockchainState,
     selectIsCustomBackendConfigured,
-    selectNetworkBlockchainInfo,
 } from './blockchainReducer';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
@@ -61,16 +62,16 @@ import {
 export const DEFAULT_NETWORK_SYNC_INTERVAL = 60 * 1000; // 1 minute
 
 const NETWORK_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
-    bsc: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    pol: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    op: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    base: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    arb: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    avax: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    trx: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    rhc: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    hype: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    sol: DEFAULT_NETWORK_SYNC_INTERVAL * 5,
+    [asNetworkSymbol('bsc')]: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
+    [asNetworkSymbol('pol')]: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
+    [asNetworkSymbol('op')]: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
+    [asNetworkSymbol('base')]: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
+    [asNetworkSymbol('arb')]: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
+    [asNetworkSymbol('avax')]: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
+    [asNetworkSymbol('trx')]: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
+    [asNetworkSymbol('rhc')]: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
+    [asNetworkSymbol('hype')]: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
+    [asNetworkSymbol('sol')]: DEFAULT_NETWORK_SYNC_INTERVAL * 5,
 };
 
 const getNetworkSyncInterval = (
@@ -114,7 +115,7 @@ export const setCustomBackendThunk = createThunk<
     { state: SetCustomBackendThunkState }
 >(`${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`, async (symbol, { dispatch, getState }) => {
     const blockchain = selectBlockchainState(getState());
-    const backends = [getBackendFromSettings(symbol, blockchain[symbol].backends)];
+    const backends = [getBackendFromSettings(symbol, getBlockchain(blockchain, symbol).backends)];
     const result = await setBackendsToConnect(backends);
 
     // a disabled network has nothing to sync, so do not open a connection to its backend
@@ -306,7 +307,7 @@ export const syncAccountsWithBlockchainThunk = createThunk<
         const isWindowVisible = getIsWindowVisible();
 
         // First clear, to cancel last planned sync
-        tryClearTimeout(blockchain[symbol].syncTimeout);
+        tryClearTimeout(getBlockchain(blockchain, symbol).syncTimeout);
 
         // Sync only when the app window is active
         const shouldSync = isWindowVisible;
@@ -323,7 +324,7 @@ export const syncAccountsWithBlockchainThunk = createThunk<
             );
         }
 
-        const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
+        const blockchainInfo = getBlockchain(blockchain, symbol);
         // Second clear, just to be sure that no other sync was planned while executing this one
         tryClearTimeout(blockchainInfo.syncTimeout);
 
@@ -496,7 +497,7 @@ export const onBlockchainDisconnectThunk = createThunk<
     if (!network) return;
 
     const { symbol } = network;
-    const blockchain = selectBlockchainState(getState())[symbol];
+    const blockchain = getBlockchain(selectBlockchainState(getState()), symbol);
     const hasAccounts = findAccountsByNetwork(symbol, selectAccounts(getState())).length > 0;
 
     /**

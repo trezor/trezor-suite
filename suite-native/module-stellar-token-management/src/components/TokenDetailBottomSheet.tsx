@@ -2,6 +2,7 @@ import { type RefObject } from 'react';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
@@ -17,6 +18,8 @@ type TokenDetailBottomSheetProps = {
     onClose: () => void;
 };
 
+const xlmSymbol = asNetworkSymbol('xlm');
+
 export const TokenDetailBottomSheet = ({
     bottomSheetRef,
     tokenName,
@@ -29,7 +32,7 @@ export const TokenDetailBottomSheet = ({
     <BottomSheetModal ref={bottomSheetRef} onDismiss={onClose}>
         <VStack spacing="sp16" paddingHorizontal="sp16">
             <HStack alignItems="center" spacing="sp12">
-                <TokenIcon symbol="xlm" contractAddress={iconContractAddress} size="large" />
+                <TokenIcon symbol={xlmSymbol} contractAddress={iconContractAddress} size="large" />
                 <VStack>
                     <Text variant="body-md">{tokenName}</Text>
                     <Text variant="body-sm" color="contentSecondary">

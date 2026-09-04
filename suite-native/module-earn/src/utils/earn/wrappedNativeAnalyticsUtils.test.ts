@@ -1,4 +1,5 @@
 import { events } from '@suite-common/analytics';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     type WrappedNativeFlowPayload,
@@ -8,6 +9,7 @@ import {
 } from './wrappedNativeAnalyticsUtils';
 
 const ALLOWED_PAYLOAD_KEYS = ['type', 'action', 'networkSymbol', 'durationMs', 'errorMessage'];
+const ethSymbol = asNetworkSymbol('eth');
 
 const expectOnlyAllowedKeys = (payload: WrappedNativeFlowPayload | null) => {
     expect(payload).not.toBeNull();
@@ -18,7 +20,7 @@ const expectOnlyAllowedKeys = (payload: WrappedNativeFlowPayload | null) => {
 
 describe('buildWrappedNativeFlowEvent', () => {
     it('builds a yield/wrap event for the wrap flow', () => {
-        const payload = { type: 'submit', action: 'continue', networkSymbol: 'eth' } as const;
+        const payload = { type: 'submit', action: 'continue', networkSymbol: ethSymbol } as const;
 
         expect(buildWrappedNativeFlowEvent('wrap', payload)).toEqual({
             type: events.yieldWrapEvent.name,
@@ -27,7 +29,7 @@ describe('buildWrappedNativeFlowEvent', () => {
     });
 
     it('builds a yield/unwrap event for the unwrap flow', () => {
-        const payload = { type: 'submit', action: 'continue', networkSymbol: 'eth' } as const;
+        const payload = { type: 'submit', action: 'continue', networkSymbol: ethSymbol } as const;
 
         expect(buildWrappedNativeFlowEvent('unwrap', payload)).toEqual({
             type: events.yieldUnwrapEvent.name,
@@ -39,7 +41,7 @@ describe('buildWrappedNativeFlowEvent', () => {
         const payload = {
             type: 'error',
             action: 'continue',
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
             durationMs: 1234,
             errorMessage: 'push-failed',
         } as const;
@@ -52,14 +54,14 @@ describe('getWrappedNativeResolutionPayload', () => {
     it('returns a success payload when the transaction confirmed', () => {
         const payload = getWrappedNativeResolutionPayload({
             durationMs: 5000,
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
             status: 'confirmed',
         });
 
         expect(payload).toEqual({
             type: 'success',
             action: 'continue',
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
             durationMs: 5000,
         });
         expectOnlyAllowedKeys(payload);
@@ -68,7 +70,7 @@ describe('getWrappedNativeResolutionPayload', () => {
     it('returns an on-chain-failure error payload when the transaction failed', () => {
         const payload = getWrappedNativeResolutionPayload({
             durationMs: 5000,
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
             status: 'failed',
         });
 
@@ -86,7 +88,7 @@ describe('getWrappedNativeResolutionPayload', () => {
         expect(
             getWrappedNativeResolutionPayload({
                 durationMs: 5000,
-                networkSymbol: 'eth',
+                networkSymbol: ethSymbol,
                 status: 'pending',
             }),
         ).toBeNull();
@@ -96,7 +98,7 @@ describe('getWrappedNativeResolutionPayload', () => {
         expect(
             getWrappedNativeResolutionPayload({
                 durationMs: 5000,
-                networkSymbol: 'eth',
+                networkSymbol: ethSymbol,
                 status: null,
             }),
         ).toBeNull();
@@ -105,7 +107,7 @@ describe('getWrappedNativeResolutionPayload', () => {
     it('preserves an undefined durationMs', () => {
         const payload = getWrappedNativeResolutionPayload({
             durationMs: undefined,
-            networkSymbol: 'eth',
+            networkSymbol: ethSymbol,
             status: 'confirmed',
         });
 

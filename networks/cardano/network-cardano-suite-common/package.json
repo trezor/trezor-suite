@@ -15,6 +15,7 @@
         "@scure/base": "^2.0.0",
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-cardano": "workspace:*",
+        "@trezor/network-module": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "cbor": "^10.0.12",
         "crc": "^4.3.2"

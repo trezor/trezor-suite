@@ -1,6 +1,5 @@
 import type { CryptoId } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -10,6 +9,7 @@ import {
     featureFlagsInitialState,
 } from '@suite-native/feature-flags';
 import { exchangeQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module';
 
 import { type TradingRootState } from '../reducers';
 import {
@@ -21,7 +21,11 @@ import {
     selectTradingExchange,
 } from './exchangeSelectors';
 
-const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
+const supportedCoins: readonly NetworkSymbol[] = [
+    asNetworkSymbol('btc'),
+    asNetworkSymbol('eth'),
+    asNetworkSymbol('base'),
+];
 
 describe('exchangeSelectors', () => {
     let state: TradingRootState & AccountsRootState & FeatureFlagsRootState;

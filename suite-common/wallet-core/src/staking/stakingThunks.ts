@@ -1,6 +1,7 @@
 import { getStakingBatch } from '@suite-common/earn-staking-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { PROD_STAKING_SYMBOLS } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@trezor/network-module';
 import { type TimerId } from '@trezor/type-utils';
 
 import { stakeDataActions } from './stakingDataSlice';
@@ -12,6 +13,7 @@ import {
 } from '../settings/walletSettingsReducer';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
+const btcSymbol = asNetworkSymbol('btc');
 
 function stakingDataNeedsRefetch(data: StakeRootState['wallet']['stake']['data']) {
     if (!data) return true;
@@ -31,7 +33,7 @@ export const initStakeDataThunk = createThunk<void, void, { state: InitStakeData
     `${STAKE_MODULE}/initStakeDataThunk`,
     async (_, { getState, dispatch }) => {
         const enabledNetworks = selectEnabledNetworks(getState());
-        const isBtcOnly = enabledNetworks.length === 1 && enabledNetworks.includes('btc');
+        const isBtcOnly = enabledNetworks.length === 1 && enabledNetworks.includes(btcSymbol);
 
         if (isBtcOnly) return;
 

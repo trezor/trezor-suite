@@ -2,7 +2,8 @@ import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { type Network } from '@suite-common/wallet-config';
-import { type BlockchainRootState, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { type BlockchainRootState, selectBlockchainState } from '@suite-common/wallet-core';
+import { getBlockchain } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
     IconButton,
@@ -34,7 +35,7 @@ export const ConnectionInfoButton = ({ network }: ConnectionInfoButtonProps) => 
     const { bottomSheetRef, openModal } = useBottomSheetModal();
 
     const { connected, url, blockHash, blockHeight, version } = useSelector(
-        (state: BlockchainRootState) => selectNetworkBlockchainInfo(state, network.symbol),
+        (state: BlockchainRootState) => getBlockchain(selectBlockchainState(state), network.symbol),
     );
 
     const openBottomSheet = () => {

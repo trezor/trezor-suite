@@ -5,7 +5,6 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -66,6 +65,7 @@ import {
     toCaseAwareCryptoId,
 } from '@suite-native/trading-atoms';
 import { type MyAsset, type TradeableAsset } from '@suite-native/trading-types';
+import type { NetworkSymbol } from '@trezor/network-module';
 
 import { selectIsTradingEnabledForCountry } from './residenceSelectors';
 import { type TradingRootState } from '../reducers';

@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type MyAsset } from '@suite-native/trading-types';
@@ -7,9 +8,11 @@ import { BigNumber } from '@trezor/utils';
 
 import { MyAssetGroup } from './MyAssetGroup';
 
+const ethSymbol = asNetworkSymbol('eth');
+
 const createAsset = (index: number, isEnabled = true): MyAsset => ({
     name: `Token ${index}`,
-    symbol: 'eth',
+    symbol: ethSymbol,
     cryptoId: `ethereum--token-${index}` as CryptoId,
     balance: `${index}`,
     fiatBalance: asBaseCurrencyAmount(new BigNumber(index)),

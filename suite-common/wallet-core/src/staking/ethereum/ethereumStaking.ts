@@ -2,7 +2,11 @@ import { decodeFunctionResult } from 'viem';
 
 import { Calldata, EVM_ABI, Verifier, type VerifyIssue } from '@suite-common/calldata';
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     type PrecomposedLevels,
@@ -26,7 +30,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type BlockchainEstimatedFee } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
-import { type Ok, type PartialRecord, exhaustive } from '@trezor/type-utils';
+import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, throwError } from '@trezor/utils';
 
 import { ETH_NETWORK_ADDRESSES, type EthNetworkAddresses } from './ethereumNetworkAddresses';
@@ -285,9 +289,9 @@ export const verifyEthereumStakingLiveState = async ({
 export const getEthNetworkForWalletSdk = (
     symbol: NetworkSymbol | 'unknown' | undefined,
 ): EthNetwork | null => {
-    const ethNetworks: PartialRecord<NetworkSymbol, EthNetwork> = {
-        thod: 'hoodi',
-        eth: 'mainnet',
+    const ethNetworks: Record<NetworkSymbol, EthNetwork> = {
+        [asNetworkSymbol('thod')]: 'hoodi',
+        [asNetworkSymbol('eth')]: 'mainnet',
     };
 
     return (symbol && symbol !== 'unknown' ? ethNetworks[symbol] : null) ?? null;

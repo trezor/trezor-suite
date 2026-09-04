@@ -1,7 +1,7 @@
 import type { DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { asNetworkSymbol, networks } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -21,6 +21,8 @@ const ETH_DEVICE = mockSuiteDevice({ state: { staticSessionId: ETH_DEVICE_SSID }
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
 const solSymbol = asNetworkSymbol('sol');
+const bitcoinNetwork = getNetwork(btcSymbol);
+const ethereumNetwork = getNetwork(ethSymbol);
 
 const mockState: AccountsRootState & DeviceRootState = {
     wallet: {
@@ -144,7 +146,7 @@ describe('accountsSelectors', () => {
         it('returns unused address for BTC', () => {
             const result = selectAddressByNetworkAndPath(
                 getStateWithSelectedDevice(mockState, BTC_DEVICE),
-                networks['btc'],
+                bitcoinNetwork,
                 "m/84'/0'/0'/0/0",
             );
             expect(result).toBe('bc1unused');
@@ -153,7 +155,7 @@ describe('accountsSelectors', () => {
         it('returns used address for BTC', () => {
             const result = selectAddressByNetworkAndPath(
                 getStateWithSelectedDevice(mockState, BTC_DEVICE),
-                networks['btc'],
+                bitcoinNetwork,
                 "m/84'/0'/0'/0/1",
             );
             expect(result).toBe('bc1used');
@@ -162,7 +164,7 @@ describe('accountsSelectors', () => {
         it('returns change address for BTC', () => {
             const result = selectAddressByNetworkAndPath(
                 getStateWithSelectedDevice(mockState, BTC_DEVICE),
-                networks['btc'],
+                bitcoinNetwork,
                 "m/84'/0'/0'/1/0",
             );
             expect(result).toBe('bc1change');
@@ -171,7 +173,7 @@ describe('accountsSelectors', () => {
         it('does not return address from another device', () => {
             const result = selectAddressByNetworkAndPath(
                 getStateWithSelectedDevice(mockState, ETH_DEVICE),
-                networks['btc'],
+                bitcoinNetwork,
                 "m/84'/0'/0'/0/0",
             );
             expect(result).toBeUndefined();
@@ -180,7 +182,7 @@ describe('accountsSelectors', () => {
         it('returns descriptor for ETH', () => {
             const result = selectAddressByNetworkAndPath(
                 getStateWithSelectedDevice(mockState, ETH_DEVICE),
-                networks['eth'],
+                ethereumNetwork,
                 "m/44'/60'/0'/0",
             );
             expect(result).toBe('0xEthereumAddress');
@@ -189,7 +191,7 @@ describe('accountsSelectors', () => {
         it('returns undefined for unknown path', () => {
             const result = selectAddressByNetworkAndPath(
                 getStateWithSelectedDevice(mockState, BTC_DEVICE),
-                networks['btc'],
+                bitcoinNetwork,
                 "m/84'/0'/0'/9/9",
             );
             expect(result).toBeUndefined();
@@ -207,7 +209,7 @@ describe('accountsSelectors', () => {
         it('returns undefined if path is missing', () => {
             const result = selectAddressByNetworkAndPath(
                 getStateWithSelectedDevice(mockState, BTC_DEVICE),
-                networks['btc'],
+                bitcoinNetwork,
                 undefined,
             );
             expect(result).toBeUndefined();
