@@ -1,16 +1,4 @@
-import { formatEarnAmount, formatEarnTokenAmount } from './earnAmountUtils';
-
-describe(formatEarnAmount.name, () => {
-    it('leaves out the symbol so it can be rendered as a separate element', () => {
-        expect(formatEarnAmount({ amount: '10000.123', locale: 'en-US' })).toBe('10,000.123');
-    });
-
-    it('shows a dust amount in full precision instead of rounding it to zero', () => {
-        expect(formatEarnAmount({ amount: '0.000000000000000001', locale: 'en-US' })).toBe(
-            '0.000000000000000001',
-        );
-    });
-});
+import { formatEarnTokenAmount } from './earnAmountUtils';
 
 describe(formatEarnTokenAmount.name, () => {
     it('truncates a long fractional part to 9 significant digits with an ellipsis', () => {

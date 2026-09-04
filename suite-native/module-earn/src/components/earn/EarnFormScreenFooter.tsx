@@ -1,6 +1,6 @@
 import { SlideInDown } from 'react-native-reanimated';
 
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AnimatedBox, Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { selectApy, useSelector as useStakingSelector } from '@suite-native/staking';
@@ -65,7 +65,7 @@ export const EarnFormScreenFooter = ({
                                 label={
                                     <Translation id="earn.earnFormScreen.estimatedRewardsLabel" />
                                 }
-                                symbol={getNetworkDisplaySymbol(symbol)}
+                                symbol={symbol}
                             />
                         </Box>
                     </Box>

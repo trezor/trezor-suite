@@ -388,6 +388,11 @@ export const YieldDepositScreen = () => {
 
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
     const shouldShowDepositFee = isValid && !!amountValue && !isApprovalInsufficient;
+    // Wrapped-native vault estimates should be displayed as native crypto, so
+    // omit token contract to keep EarnEstimatedRewards on the crypto formatter.
+    const estimatedRewardsTokenContract = yieldFlowData.isWrappedNativeVault
+        ? undefined
+        : route.params.tokenContract;
 
     return (
         <Screen
@@ -403,13 +408,15 @@ export const YieldDepositScreen = () => {
             }
             footer={
                 <YieldDepositFlowFooter
+                    accountKey={account.key}
                     amountValue={amountValue}
                     apy={apy}
                     isDisabled={isSubmitDisabled}
                     isLoading={isActionSubmitting || depositFee.isPreparingDepositFee}
+                    networkSymbol={account.symbol}
                     onPress={handleContinue}
                     shouldKeepEstimatedRewardsVisible={isApprovalInsufficient}
-                    tokenSymbol={wrappedNativeSymbol ?? tokenSymbol}
+                    tokenContract={estimatedRewardsTokenContract}
                 />
             }
         >

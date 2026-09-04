@@ -368,6 +368,11 @@ export const YieldDepositApprovalScreen = () => {
     const pendingModalAmountTokenSymbol = approvalPendingTransaction?.isAmountUnlimited
         ? undefined
         : tokenSymbol;
+    // Wrapped-native vault estimates should be displayed as native crypto, so
+    // omit token contract to keep EarnEstimatedRewards on the crypto formatter.
+    const estimatedRewardsTokenContract = yieldFlowData.isWrappedNativeVault
+        ? undefined
+        : route.params.tokenContract;
 
     return (
         <Screen
@@ -383,15 +388,17 @@ export const YieldDepositApprovalScreen = () => {
             }
             footer={
                 <YieldDepositFlowFooter
+                    accountKey={account.key}
                     amountValue={amountValue}
                     approvalAction={footerApprovalAction}
                     apy={apy}
                     isDisabled={isSubmitDisabled}
                     isLoading={isCheckingApproval}
                     isSkipDisabled={isApprovalPending || isCheckingApproval}
+                    networkSymbol={account.symbol}
                     onPress={handleSubmit}
                     onSkipPress={canSkipApproval ? handleSkipApproval : undefined}
-                    tokenSymbol={wrappedNativeSymbol ?? tokenSymbol}
+                    tokenContract={estimatedRewardsTokenContract}
                 />
             }
         >
