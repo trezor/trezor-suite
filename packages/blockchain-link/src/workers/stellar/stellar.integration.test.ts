@@ -6,17 +6,18 @@ import {
     identifyTransaction,
     toStroops,
 } from '@trezor/network-stellar';
-import type { StellarAPI } from '@trezor/network-stellar/types';
+import type { StellarHorizonServer } from '@trezor/network-stellar/types';
 
 import { BlockchainLink } from '../../index';
 
 import StellarWorker from './index';
 
+// One origin proxies both protocols: JSON-RPC on `POST /` and Horizon on the REST paths.
 const STELLAR_URL = 'https://xlm.trezor.io';
 
 describe('Stellar', () => {
     let blockchain: BlockchainLink;
-    let horizonServer: StellarAPI;
+    let horizonServer: StellarHorizonServer;
 
     beforeAll(async () => {
         blockchain = new BlockchainLink({
@@ -25,8 +26,8 @@ describe('Stellar', () => {
             server: [STELLAR_URL],
             debug: false,
         });
-        const { api } = await getStellarConnection(STELLAR_URL);
-        horizonServer = api;
+        const { horizon } = await getStellarConnection(STELLAR_URL);
+        horizonServer = horizon;
     });
 
     it('getInfo', async () => {
@@ -248,6 +249,25 @@ describe('Stellar', () => {
         );
         // Paging the global operations feed needs more than the 5s default.
     }, 30_000);
+
+    it('subscribes to the ledger head', async () => {
+        const blocks: { blockHeight: number; blockHash: string }[] = [];
+        blockchain.on('block', block => blocks.push(block));
+
+        const subscribed = await blockchain.subscribe({ type: 'block' });
+        expect(subscribed).toEqual({ subscribed: true });
+
+        // The subscription reads the head once immediately, so there is no need to wait out a
+        // whole poll interval.
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        await blockchain.unsubscribe({ type: 'block' });
+
+        expect(blocks.length).toBeGreaterThan(0);
+        expect(blocks[0]).toEqual({
+            blockHeight: expect.any(Number),
+            blockHash: expect.any(String),
+        });
+    }, 15000);
 
     it('joins the transaction into the operations response', async () => {
         const descriptor = 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET';
