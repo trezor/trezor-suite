@@ -38,8 +38,5 @@ export const RoundedIcon: RoundedIconStory = {
             control: { type: 'select' },
             options: ROUNDED_ICON_SIZES,
         },
-        symbol: {
-            control: false,
-        },
     },
 };
