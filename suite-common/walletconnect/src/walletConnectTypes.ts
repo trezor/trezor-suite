@@ -36,7 +36,6 @@ export interface WalletConnectSession {
     namespaces: Record<string, Partial<WalletConnectNamespace>>;
     requiredNamespaces: ProposalTypes.RequiredNamespaces;
     optionalNamespaces: ProposalTypes.OptionalNamespaces;
-    sessionProperties?: ProposalTypes.SessionProperties;
     peer: {
         publicKey: string;
         metadata: {
