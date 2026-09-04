@@ -12,7 +12,7 @@ import { isApyAvailable } from '@suite-common/wallet-utils';
 import { ZeroApyBadge } from '@suite-native/accounts';
 import { Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
-import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     selectApy,
     selectCanClaimByAccountKey,
@@ -26,11 +26,11 @@ import {
 
 import { ApyValue } from './ApyValue';
 import { EarnAccountCardLayout } from './EarnAccountCardLayout';
+import { EarnAccountCardValue } from './EarnAccountCardValue';
 import { EarnClaimAlert } from './EarnClaimAlert';
 import { EarnTronVotingAlert } from './EarnTronVotingAlert';
 import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
 import { type EarnDepositsCardActiveItem } from '../../types';
-import { formatEarnActiveItemBalance } from '../../utils/earn/earnAmountUtils';
 
 type EarnAccountCardProps = {
     item: EarnDepositsCardActiveItem;
@@ -43,7 +43,6 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const isDefiYieldItem = item.type === 'stablecoin-yield';
     const isSupportedStaking = isStakingItem && isSupportedStakingNetworkSymbol(item.symbol);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-    const locale = useSelector(selectSupportedLanguageLocale);
 
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
 
@@ -125,7 +124,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                     </Text>
                 )
             }
-            value={<Text variant="body-md">{formatEarnActiveItemBalance({ item, locale })}</Text>}
+            value={<EarnAccountCardValue item={item} />}
             valueDescription={
                 (isAdaStakedOutsideEverstake || apyValue != null) &&
                 (isStakedWithFiveBinaries ? (

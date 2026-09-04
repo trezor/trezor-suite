@@ -154,6 +154,7 @@ export type EarnDepositsCardActiveItem =
           tokenSymbol: TokenSymbol;
           contractAddress: TokenAddress;
           tokenContractAddress: TokenAddress;
+          tokenDecimals?: number;
           accountKey: AccountKey;
           accountLabel?: string;
           balance: string;
