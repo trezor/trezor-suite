@@ -11,12 +11,27 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+import { type SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Link, useOpenLink } from '@suite-native/link';
-import { DeviceModelInternal } from '@trezor/device-utils';
-import { HELP_CENTER_PACKAGING_T3B1_URL, HELP_CENTER_PACKAGING_T3T1_URL } from '@trezor/urls';
+import {
+    HELP_CENTER_PACKAGING_T2T1_URL,
+    HELP_CENTER_PACKAGING_T3B1_URL,
+    HELP_CENTER_PACKAGING_T3T1_URL,
+    HELP_CENTER_PACKAGING_T3W1_URL,
+    type Url,
+} from '@trezor/urls';
 
 import { SecuritySealImages } from './SecuritySealImages';
+
+const securitySealUrlMap = {
+    T2T1: HELP_CENTER_PACKAGING_T2T1_URL,
+    // T2B1 and T3B1 are the same product (Safe 3), so they share the URL.
+    T2B1: HELP_CENTER_PACKAGING_T3B1_URL,
+    T3B1: HELP_CENTER_PACKAGING_T3B1_URL,
+    T3T1: HELP_CENTER_PACKAGING_T3T1_URL,
+    T3W1: HELP_CENTER_PACKAGING_T3W1_URL,
+} as const satisfies Record<SetupSupportingDeviceModel, Url>;
 
 export const SecuritySealDescription = () => {
     const openLink = useOpenLink();
@@ -33,12 +48,9 @@ export const SecuritySealDescription = () => {
         });
     };
 
-    const deviceModel = useSelector(selectDeviceModel);
+    const deviceModel = useSelector(selectDeviceModel) as SetupSupportingDeviceModel;
 
-    const knowledgeBaseLink =
-        deviceModel === DeviceModelInternal.T3T1
-            ? HELP_CENTER_PACKAGING_T3T1_URL
-            : HELP_CENTER_PACKAGING_T3B1_URL;
+    const knowledgeBaseLink = securitySealUrlMap[deviceModel];
 
     const handleLearnMoreButtonPress = () => {
         openLink(knowledgeBaseLink);
