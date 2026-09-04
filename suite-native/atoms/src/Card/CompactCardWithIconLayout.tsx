@@ -8,8 +8,8 @@ import { type Color } from '@trezor/theme';
 
 import { BannerInline, type BannerInlineProps } from '../BannerInline/BannerInline';
 import { Box } from '../Box';
+import { RoundedIcon, type RoundedIconIntent } from '../Icon/RoundedIcon';
 import { Loader } from '../Loader';
-import { RoundedIcon, type RoundedIconIntent } from '../RoundedIcon';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 import { useTapGesture } from '../useTapGesture';

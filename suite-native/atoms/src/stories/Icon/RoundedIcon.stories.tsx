@@ -7,7 +7,7 @@ import {
     ROUNDED_ICON_SIZES,
     RoundedIcon as RoundedIconComponent,
     type RoundedIconProps,
-} from '../RoundedIcon';
+} from '../../Icon/RoundedIcon';
 
 type RoundedIconStory = StoryObj<RoundedIconProps>;
 
