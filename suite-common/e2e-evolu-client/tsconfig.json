@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../packages/utils" },
         { "path": "../suite-sync-evolu" },
         { "path": "../suite-sync-storage" },
         { "path": "../wallet-config" },

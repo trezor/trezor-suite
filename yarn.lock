@@ -10804,6 +10804,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     ws: "npm:^8.20.0"
   languageName: unknown
   linkType: soft
@@ -17856,6 +17857,7 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
+    "@suite-common/suite-sync-quota-manager": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"

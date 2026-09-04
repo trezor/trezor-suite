@@ -32,6 +32,7 @@ export const OutOfQuotaBanner = () => {
         <Banner
             intent="info"
             icon={InfoIcon}
+            data-testid="@notification/suite-sync-out-of-quota"
             description={<Translation id="TR_SUITE_SYNC_OUT_OF_QUOTA_BANNER_DESCRIPTION" />}
             rightContent={
                 <>
@@ -42,6 +43,7 @@ export const OutOfQuotaBanner = () => {
                         icon={XIcon}
                         intent="info"
                         priority="secondary"
+                        data-testid="@notification/suite-sync-out-of-quota/dismiss"
                         onClick={handleDismiss}
                         tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                     />

@@ -32,6 +32,8 @@ export class MetadataPage {
     readonly migrateFromLocalFileButton: Locator;
     readonly unsupportedBanner: Locator;
     readonly suiteSyncBannerDismissButton: Locator;
+    readonly outOfQuotaBanner: Locator;
+    readonly outOfQuotaBannerDismissButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -63,6 +65,10 @@ export class MetadataPage {
         this.unsupportedBanner = page.getByTestId('@notification/suite-sync-unsupported-device');
         this.suiteSyncBannerDismissButton = page.getByTestId(
             '@notification/suite-sync-unsupported-device/dismiss',
+        );
+        this.outOfQuotaBanner = page.getByTestId('@notification/suite-sync-out-of-quota');
+        this.outOfQuotaBannerDismissButton = page.getByTestId(
+            '@notification/suite-sync-out-of-quota/dismiss',
         );
     }
 
