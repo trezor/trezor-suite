@@ -656,6 +656,28 @@ export const messages = {
             message:
                 'The following accounts from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
         },
+        selectAccount: {
+            title: 'Select account',
+            description:
+                'Only the accounts you select are shared. Verify an address on your Trezor to confirm it before connecting.',
+            pickAccountDescription: 'Choose which account to pick an address from.',
+            exportedTitle: 'Accounts shared',
+            exportedDescription:
+                'You can verify the shared addresses on your Trezor to make sure they are correct.',
+            connect: 'Connect',
+            accountLabel: 'Account #{index}',
+            addressLabel: 'Address #{index}',
+            selectedCount: '{count} selected',
+            retry: 'Retry',
+            page: 'Page {page}',
+            accountType: {
+                normal: 'Normal',
+                taproot: 'Taproot',
+                segwit: 'SegWit',
+                legacy: 'Legacy',
+                ledger: 'Ledger',
+            },
+        },
         connectionStatus: {
             loading: 'Loading...',
             discoveryRunning: 'Discovery running...',
