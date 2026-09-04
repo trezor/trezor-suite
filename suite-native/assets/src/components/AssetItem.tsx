@@ -18,12 +18,13 @@ import {
     RootStackRoutes,
     type TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
-import {
-    type NativeStakingRootState,
-    selectHasAnyDeviceAccountsWithStaking,
-} from '@suite-native/staking';
-import { type TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
+import { selectHasDeviceAnyTokensForNetwork, type TokensRootState } from '@suite-native/tokens';
 
+import {
+    selectHasAnyDeviceAccountsWithStaking,
+    StakeRootState,
+    TronStakeRootState,
+} from '@suite-common/wallet-core';
 import { selectSingleDeviceAccountKeyForNetworkSymbol } from '../assetsSelectors';
 import { type AssetsRootState } from '../types';
 import { AssetItemBadges } from './AssetItemBadges';
@@ -50,7 +51,7 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const hasAnyTokens = useSelector((state: TokensRootState) =>
         selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
-    const hasAnyAccountsWithStaking = useSelector((state: NativeStakingRootState) =>
+    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
     );
     const hasAnyFailedAccount = useSelector((state: NativeAccountsRootState) =>

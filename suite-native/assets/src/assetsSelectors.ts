@@ -8,6 +8,7 @@ import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
+    getAccountCryptoBalanceWithStaking,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectHasRunningDiscovery,
@@ -16,7 +17,6 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
-import { getAccountCryptoBalanceWithStaking } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
 
 import { type AssetFiatPercentage, type AssetType, type AssetsRootState } from './types';

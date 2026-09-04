@@ -42,7 +42,6 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/scrollview": "workspace:*",
         "@suite-native/search": "workspace:*",
-        "@suite-native/staking": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",

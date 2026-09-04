@@ -1,8 +1,14 @@
+import { useSelector } from 'react-redux';
+
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type StakeRootState,
+    selectAccountByKey,
+    selectRewardsBalanceByAccountKey,
+} from '@suite-common/wallet-core';
 import { type AccountDescriptor, type AccountKey } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
-import { selectRewardsBalanceByAccountKey, useSelector } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
 
 const NON_SOLANA_PLACEHOLDER_ACCOUNT = {
@@ -14,7 +20,7 @@ export const useStakingTotalRewards = (accountKey: AccountKey) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const rewardsBalance = useSelector(state =>
+    const rewardsBalance = useSelector((state: StakeRootState) =>
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
 

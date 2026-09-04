@@ -1,20 +1,19 @@
+import { useSelector } from 'react-redux';
+
 import {
+    type StakeRootState,
     isSupportedNativeStakingManagementSymbol,
     selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
-import { Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import {
-    type NativeStakingRootState,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
     selectTotalStakePendingByAccountKey,
     selectUnstakingBalanceByAccountKey,
     selectUnstakingPeriodInDaysByAccountKey,
-    useSelector,
-} from '@suite-native/staking';
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { StakingManagementPendingItem } from './StakingManagementPendingItem';
@@ -30,24 +29,29 @@ export const StakingManagementPendingSection = ({
     accountKey,
 }: StakingManagementPendingSectionProps) => {
     const claimableAmount =
-        useSelector((state: NativeStakingRootState) =>
+        useSelector((state: StakeRootState) =>
             selectClaimableAmountByAccountKey(state, accountKey),
         ) ?? '0';
+
     const unstakingBalance =
-        useSelector((state: NativeStakingRootState) =>
+        useSelector((state: StakeRootState) =>
             selectUnstakingBalanceByAccountKey(state, accountKey),
         ) ?? '0';
+
     const totalStakePending =
-        useSelector((state: NativeStakingRootState) =>
+        useSelector((state: StakeRootState) =>
             selectTotalStakePendingByAccountKey(state, accountKey),
         ) ?? '0';
-    const unstakingPeriodInDays = useSelector((state: NativeStakingRootState) =>
+
+    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
         selectUnstakingPeriodInDaysByAccountKey(state, accountKey),
     );
-    const canClaim = useSelector((state: NativeStakingRootState) =>
+
+    const canClaim = useSelector((state: StakeRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
     );
-    const symbol = useSelector((state: NativeStakingRootState) =>
+
+    const symbol = useSelector((state: StakeRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
@@ -56,6 +60,7 @@ export const StakingManagementPendingSection = ({
         openModal: openUnstakingModal,
         closeModal: closeUnstakingModal,
     } = useBottomSheetModal();
+
     const {
         bottomSheetRef: pendingStakeModalRef,
         openModal: openPendingStakeModal,
@@ -67,8 +72,10 @@ export const StakingManagementPendingSection = ({
         canClaim &&
         !!symbol &&
         isSupportedNativeStakingManagementSymbol(symbol);
+
     const hasPendingUnstaking =
         isPositiveBalance(unstakingBalance) && !new BigNumber(unstakingBalance).eq(claimableAmount);
+
     const hasPendingDeposit = isPositiveBalance(totalStakePending);
 
     const hasPendingActions = isClaim || hasPendingUnstaking || hasPendingDeposit;

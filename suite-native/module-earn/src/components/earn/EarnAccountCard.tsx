@@ -7,13 +7,10 @@ import {
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
-import { isApyAvailable } from '@suite-common/wallet-utils';
-import { ZeroApyBadge } from '@suite-native/accounts';
-import { Text } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
-import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import {
+    type StakeRootState,
+    type TronStakeRootState,
+    isSupportedStakingNetworkSymbol,
     selectApy,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
@@ -21,8 +18,12 @@ import {
     selectIsCardanoStakedWithFiveBinaries,
     selectTronAvailableVotingPowerByAccountKey,
     selectTronVotesByAccountKey,
-    useSelector as useStakingSelector,
-} from '@suite-native/staking';
+} from '@suite-common/wallet-core';
+import { isApyAvailable } from '@suite-common/wallet-utils';
+import { ZeroApyBadge } from '@suite-native/accounts';
+import { Text } from '@suite-native/atoms';
+import { TokenIcon } from '@suite-native/icons';
+import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 
 import { ApyValue } from './ApyValue';
 import { EarnAccountCardLayout } from './EarnAccountCardLayout';
@@ -47,7 +48,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
 
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
 
-    const apy = useStakingSelector(state =>
+    const apy = useSelector((state: StakeRootState) =>
         isStakingItem
             ? selectApy(state, { accountKey: item.accountKey, networkSymbol: item.symbol })
             : null,
@@ -57,7 +58,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         enabled: isStakingItem && item.symbol === 'trx',
     });
 
-    const tronVotes = useStakingSelector(state =>
+    const tronVotes = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectTronVotesByAccountKey(state, item.accountKey),
     );
 
@@ -71,24 +72,24 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const resolvedApy = symbol === 'trx' ? tronApr : apy;
     const apyValue = isStakingItem ? resolvedApy : item.apy;
 
-    const availableTronVotingPower = useStakingSelector(state =>
+    const availableTronVotingPower = useSelector((state: StakeRootState & TronStakeRootState) =>
         selectTronAvailableVotingPowerByAccountKey(state, item.accountKey),
     );
 
-    const isAdaStakedOutsideEverstake = useStakingSelector(state =>
+    const isAdaStakedOutsideEverstake = useSelector((state: StakeRootState) =>
         selectIsCardanoStakedOutsideEverstake(state, item.accountKey),
     );
 
-    const isStakedWithFiveBinaries = useStakingSelector(state =>
+    const isStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
         selectIsCardanoStakedWithFiveBinaries(state, item.accountKey),
     );
 
-    const canClaim = useStakingSelector(state =>
+    const canClaim = useSelector((state: StakeRootState) =>
         isSupportedStaking ? selectCanClaimByAccountKey(state, item.accountKey) : false,
     );
 
     const claimableAmount =
-        useStakingSelector(state =>
+        useSelector((state: StakeRootState) =>
             isSupportedStaking ? selectClaimableAmountByAccountKey(state, item.accountKey) : '0',
         ) ?? '0';
 

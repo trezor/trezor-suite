@@ -10,7 +10,7 @@ import {
 } from '@suite-common/suite-types/src/staking';
 import {
     getUnstakingPeriodInDays,
-    selectEthValidatorsQueue,
+    selectEthereumValidatorsQueue,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -35,7 +35,7 @@ export const useEarnInANutshell = ({
     actionType = 'continue',
     yieldContext,
 }: UseEarnInANutshellProps) => {
-    const validatorsQueueData = useSelector(selectEthValidatorsQueue);
+    const validatorsQueueData = useSelector(selectEthereumValidatorsQueue);
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
     const unstakingPeriod = getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
 

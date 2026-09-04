@@ -1,8 +1,11 @@
+import { type DeviceRootState } from '@suite-common/device';
 import type { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 
 import type { AccountVotingDelegation } from './stakingActions';
 import type { StakeDataState } from './stakingDataSlice';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import type { SerializedTx } from '../send/sendFormTypes';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 
 export interface StakeState {
     precomposedTx?: PrecomposedTransactionFinal;
@@ -13,8 +16,10 @@ export interface StakeState {
     data: StakeDataState;
 }
 
-export type StakeRootState = {
-    wallet: {
-        stake: StakeState;
+export type StakeRootState = AccountsRootState &
+    TransactionsRootState &
+    DeviceRootState & {
+        wallet: {
+            stake: StakeState;
+        };
     };
-};

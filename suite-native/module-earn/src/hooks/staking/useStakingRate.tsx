@@ -8,11 +8,12 @@ import {
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type StakeRootState,
     getTronVotes,
     selectAccountByKey,
+    selectApy,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { selectApy, useSelector as useStakingSelector } from '@suite-native/staking';
 
 interface UseStakingRateProps {
     symbol?: NetworkSymbol;
@@ -24,7 +25,7 @@ export const useStakingRate = ({ symbol, accountKey }: UseStakingRateProps) => {
         selectAccountByKey(state, accountKey),
     );
 
-    const apy = useStakingSelector(state =>
+    const apy = useSelector((state: StakeRootState) =>
         selectApy(state, { networkSymbol: symbol, accountKey }),
     );
 

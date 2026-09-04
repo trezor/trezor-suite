@@ -3,16 +3,17 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type StakeRootState,
+    selectAccountByKey,
+    selectApy,
+    selectEntryPeriodInDaysBySymbol,
+} from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
-import {
-    type NativeStakingRootState,
-    selectApy,
-    selectEntryPeriodInDaysBySymbol,
-} from '@suite-native/staking';
 
 import { ApyValue } from '../../components/earn/ApyValue';
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
@@ -42,11 +43,11 @@ export const StakingTransactionCompleteScreen = () => {
         selectAccountByKey(state, accountKey),
     );
 
-    const entryPeriodInDays = useSelector((state: NativeStakingRootState) =>
+    const entryPeriodInDays = useSelector((state: StakeRootState) =>
         stakeType === 'stake' ? selectEntryPeriodInDaysBySymbol(state, account?.symbol) : undefined,
     );
 
-    const apy = useSelector((state: NativeStakingRootState) =>
+    const apy = useSelector((state: StakeRootState) =>
         stakeType === 'stake'
             ? selectApy(state, { accountKey, networkSymbol: account?.symbol })
             : null,

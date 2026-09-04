@@ -1,21 +1,28 @@
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { useSelector } from 'react-redux';
+
+import {
+    type AccountsRootState,
+    type StakeRootState,
+    selectAccountByKey,
+    selectUnstakingBalanceByAccountKey,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    selectUnstakingBalanceByAccountKey,
-    useSelector as useStakingSelector,
-} from '@suite-native/staking';
 
 interface TronStakingWithdrawBannerProps {
     accountKey: AccountKey;
 }
 
 export const TronStakingWithdrawBanner = ({ accountKey }: TronStakingWithdrawBannerProps) => {
-    const account = useStakingSelector(state => selectAccountByKey(state, accountKey));
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
 
     const withdrawableBalance =
-        useStakingSelector(state => selectUnstakingBalanceByAccountKey(state, accountKey)) ?? '0';
+        useSelector((state: StakeRootState) =>
+            selectUnstakingBalanceByAccountKey(state, accountKey),
+        ) ?? '0';
 
     if (account?.networkType !== 'tron') return null;
     if (withdrawableBalance === '0') return null;

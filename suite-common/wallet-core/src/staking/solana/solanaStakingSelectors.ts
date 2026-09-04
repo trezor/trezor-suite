@@ -1,20 +1,15 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    type StakeRootState,
-    calculateSolanaStakingReward,
-    getSolStakingAccountsInfo,
-    selectAccountByKey,
-    selectDeviceAccounts,
-    selectPoolStatsApy,
-} from '@suite-common/wallet-core';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { type NativeStakingRootState } from './types';
+import { type AccountsRootState } from '../../accounts/accountsReducer';
+import { selectPoolStatsApy } from '../stakingSelectors';
+import { calculateSolanaStakingReward, getSolStakingAccountsInfo } from './solanaStakingUtils';
+import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
+import { type StakeRootState } from '../stakingReducerTypes';
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<StakeRootState>();
 
 export const selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol = createMemoizedSelector(
     [selectDeviceAccounts, (_state, symbol: NetworkSymbol) => symbol],
@@ -33,9 +28,7 @@ export const selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol = creat
 export const selectSolStakingAccountsInfoByAccountKey = createMemoizedSelector(
     [selectAccountByKey],
     account => {
-        if (!account) {
-            return null;
-        }
+        if (!account) return null;
 
         return getSolStakingAccountsInfo(account);
     },
@@ -47,11 +40,9 @@ export const selectSolanaIsStakePendingByAccountKey = (
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
 
-    if (!stakingInfo) {
-        return false;
-    }
+    if (!stakingInfo) return false;
 
-    return Number(stakingInfo?.solPendingStakeBalance ?? 0) > 0;
+    return Number(stakingInfo.solPendingStakeBalance ?? 0) > 0;
 };
 
 export const selectSolanaAPYByAccountKey = (
@@ -69,9 +60,8 @@ export const selectSolanaStakedBalanceByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
-    if (!stakingInfo?.solStakedBalance) {
-        return '0';
-    }
+
+    if (!stakingInfo?.solStakedBalance) return '0';
 
     return stakingInfo.solStakedBalance;
 };
@@ -83,9 +73,7 @@ export const selectExpectedRewardsForEpoch = (
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
     const apy = selectSolanaAPYByAccountKey(state, accountKey)?.toString();
 
-    if (!stakingInfo || !apy) {
-        return '0';
-    }
+    if (!stakingInfo || !apy) return '0';
 
     const yieldBearingBalance = new BigNumber(stakingInfo.solStakedBalance ?? '0')
         .plus(stakingInfo.solPendingUnstakeBalance ?? '0')
@@ -99,9 +87,8 @@ export const selectSolanaTotalStakePendingByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
-    if (!stakingInfo) {
-        return '0';
-    }
+
+    if (!stakingInfo) return '0';
 
     return stakingInfo.solPendingStakeBalance;
 };
@@ -111,9 +98,8 @@ export const selectSolanaClaimableAmountByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
-    if (!stakingInfo) {
-        return '0';
-    }
+
+    if (!stakingInfo) return '0';
 
     return stakingInfo.solClaimableBalance;
 };
@@ -123,9 +109,8 @@ export const selectSolanaCanClaimByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
-    if (!stakingInfo) {
-        return false;
-    }
+
+    if (!stakingInfo) return false;
 
     return stakingInfo.canClaimSol;
 };
@@ -135,9 +120,8 @@ export const selectSolanaUnstakingBalanceByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
-    if (!stakingInfo) {
-        return '0';
-    }
+
+    if (!stakingInfo) return '0';
 
     return stakingInfo.solPendingUnstakeBalance;
 };

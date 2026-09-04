@@ -1,20 +1,22 @@
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    getDaysToAddToPoolInitial,
-    getUnstakingPeriodInDays,
-    selectAccountByKey,
-    selectAccountStakeTransactions,
-    selectDeviceAccounts,
-    selectEthValidatorsQueue,
-} from '@suite-common/wallet-core';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
+import {
+    getAccountEverstakeStakingPool,
+    isPending,
+    secondsToDays,
+} from '@suite-common/wallet-utils';
 
-import { type NativeStakingRootState } from './types';
+import { getDaysToAddToPoolInitial } from './ethereumStaking';
+import { type AccountsRootState } from '../../accounts/accountsReducer';
+import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
+import { selectAccountStakeTransactions } from '../../transactions/transactionsSelectors';
+import { getUnstakingPeriodInDays } from '../shared/stakingUtils';
+import { type StakeRootState } from '../stakingReducerTypes';
+import { selectStakeData } from '../stakingSelectors';
 
 export const selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol = (
-    state: NativeStakingRootState,
+    state: StakeRootState,
     symbol: NetworkSymbol | null,
 ) => {
     const accounts = selectDeviceAccounts(state);
@@ -32,15 +34,14 @@ export const selectEthereumStakingPoolByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
+
     if (!account) return null;
 
     return getAccountEverstakeStakingPool(account);
 };
 
-export const selectEthereumAccountHasStaking = (
-    state: NativeStakingRootState,
-    accountKey: AccountKey,
-) => !!selectEthereumStakingPoolByAccountKey(state, accountKey);
+export const selectEthereumAccountHasStaking = (state: StakeRootState, accountKey: AccountKey) =>
+    !!selectEthereumStakingPoolByAccountKey(state, accountKey);
 
 export const selectEthereumIsStakePendingByAccountKey = (
     state: AccountsRootState,
@@ -53,7 +54,7 @@ export const selectEthereumIsStakePendingByAccountKey = (
 };
 
 export const selectEthereumIsStakeConfirmingByAccountKey = (
-    state: NativeStakingRootState,
+    state: StakeRootState,
     accountKey: AccountKey,
 ) => {
     const stakeTxs = selectAccountStakeTransactions(state, accountKey);
@@ -116,17 +117,21 @@ export const selectEthereumUnstakingBalanceByAccountKey = (
     return stakingPool?.withdrawTotalAmount ?? '0';
 };
 
+export const selectEthereumValidatorsQueue = (state: StakeRootState) =>
+    selectStakeData(state).eth?.validators;
+
 export const selectUnstakingPeriodInDaysBySymbol = (
-    state: NativeStakingRootState,
+    state: StakeRootState,
     symbol: NetworkSymbol | undefined,
 ) => {
-    const validatorsQueue = selectEthValidatorsQueue(state);
+    const validatorsQueue = selectEthereumValidatorsQueue(state);
+    const networkType = symbol ? getNetworkType(symbol) : undefined;
 
-    return getUnstakingPeriodInDays(symbol ? getNetworkType(symbol) : undefined, validatorsQueue);
+    return getUnstakingPeriodInDays(networkType, validatorsQueue);
 };
 
-export const selectEthereumEntryPeriodInDays = (state: NativeStakingRootState) => {
-    const validatorsQueue = selectEthValidatorsQueue(state);
+export const selectEthereumEntryPeriodInDays = (state: StakeRootState) => {
+    const validatorsQueue = selectEthereumValidatorsQueue(state);
 
     if (
         validatorsQueue?.activationTime === undefined ||
@@ -136,4 +141,10 @@ export const selectEthereumEntryPeriodInDays = (state: NativeStakingRootState) =
     }
 
     return getDaysToAddToPoolInitial(validatorsQueue);
+};
+
+export const selectEthereumNextRewardPayout = (state: StakeRootState) => {
+    const nextRewardPayout = selectStakeData(state).eth?.stats?.nextRewardPayout;
+
+    return nextRewardPayout ? Math.max(1, secondsToDays(nextRewardPayout)) : null;
 };

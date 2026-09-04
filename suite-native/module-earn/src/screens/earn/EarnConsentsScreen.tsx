@@ -5,6 +5,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetwork } from '@suite-common/wallet-config';
+import { type StakeRootState, selectEntryPeriodInDaysBySymbol } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -15,10 +16,6 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    type NativeStakingRootState,
-    selectEntryPeriodInDaysBySymbol,
-} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import {
     HELP_CENTER_ADA_STAKING,
@@ -91,7 +88,7 @@ export const EarnConsentsScreen = () => {
         });
     };
 
-    const entryPeriodInDays = useSelector((state: NativeStakingRootState) =>
+    const entryPeriodInDays = useSelector((state: StakeRootState) =>
         selectEntryPeriodInDaysBySymbol(state, networkSymbol),
     );
 
