@@ -1,29 +1,20 @@
 import type { CryptoId } from 'invity-api';
 
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { capitalizeFirstLetter } from '@trezor/utils';
 
-import {
-    buyQuotesSolanaToken,
-    buyTradeSolanaToken,
-    tradeApiRequest,
-    tradeEndpoint,
-} from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 
-// Expected values based on our mocked responses
-const fiatAmount = localizeNumber(buyQuotesSolanaToken[0]?.fiatStringAmount ?? '', 'en-US', 2);
-const cryptoAmount = buyQuotesSolanaToken[0]?.receiveStringAmount ?? '';
-const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0]?.exchange ?? '');
-const formattedCryptoAmount = `${cryptoAmount} JUP`;
-const formattedFiatAmount = `$${fiatAmount}`;
+// Below ~500 JUP no live provider quotes the pair, and only Mercuryo quotes it for US/CA.
+const cryptoAmount = '500';
+const formattedCryptoAmount = `${localizeNumber(cryptoAmount)} JUP`;
+const jupiterCryptoId = 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' as CryptoId;
 
-test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ page, tradingMock, onboardingPage, settingsPage, walletPage }) => {
-        await page.route(tradeEndpoint.buyQuotes, async route => {
-            await route.fulfill({ json: buyQuotesSolanaToken });
-        });
-        await tradingMock.routeTrade(tradeEndpoint.buyTrade, buyTradeSolanaToken);
+test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
+    test.beforeEach(async ({ onboardingPage, settingsPage, walletPage, tradingMockNew }) => {
+        tradingMockNew.setTradeFlow('buy');
+        await tradingMockNew.rewriteProviderRedirect();
+        await tradingMockNew.setStatus('SUBMITTED');
+
         await onboardingPage.completeOnboarding();
 
         await test.step('Enable Solana and open its trading', async () => {
@@ -32,19 +23,25 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
         });
     });
 
-    test('Buy Solana Jupiter token - amount specified in crypto', async ({ page, tradingPage }) => {
+    test('Buy Solana Jupiter token - amount specified in crypto', async ({
+        page,
+        tradingPage,
+        tradingMockNew,
+        tradingResponses,
+    }) => {
+        let fiatAmount: string;
+        let providerName: string;
+
         await test.step('Request a specific crypto amount of Jupiter token to buy', async () => {
-            const cryptoId = 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' as CryptoId;
             await tradingPage.assetPicker.selectBuyAsset({
                 networkFilter: 'sol',
                 searchFilter: 'Jupiter',
-                assetCryptoId: cryptoId,
+                assetCryptoId: jupiterCryptoId,
             });
             await tradingPage.inputs.fiatCryptoSwitchButton.click();
-            const isCryptoInput = true;
             await tradingPage.fillBuyForm({
                 amount: cryptoAmount,
-                wantCrypto: isCryptoInput,
+                wantCrypto: true,
                 fiatCurrencyCode: 'usd',
                 country: 'US',
                 countrySubdivision: 'CA',
@@ -52,38 +49,44 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
                 },
             });
-            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(tradingPage.quotes.provider).toHaveText(provider);
         });
 
         await test.step('Continue to the preview', async () => {
+            // The crypto amount is the one typed, so the offer competes on the fiat it costs and
+            // the best-offer field carries that bare number rather than an amount with a ticker.
+            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(/^[\d,]+(\.\d+)?$/);
+            fiatAmount = (await tradingPage.quotes.bestOfferAmount.innerText()).trim();
+            providerName = (await tradingPage.quotes.selectedProviderName.innerText()).trim();
+
             await tradingPage.buyBestOfferButton.click();
 
-            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
             await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmation.provider).toHaveText(provider);
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(`$${fiatAmount}`);
+            await expect(tradingPage.confirmation.provider).toHaveText(providerName);
         });
 
         await test.step('Confirm the trade', async () => {
-            const tradeRequestPromise = page.waitForRequest(tradeEndpoint.buyTrade);
+            await page.clock.install();
             await tradingPage.confirmation.buyButton.click();
 
-            await expect
-                .soft(tradeRequestPromise)
-                .toHavePayload(tradeApiRequest.buyTradeSolanaPayload, {
-                    omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
-                });
+            const { exchange } = await tradingResponses.buy.trade();
+            expect(await tradingResponses.buy.companyName(exchange)).toBe(providerName);
         });
 
         await tradingPage.waitForRedirectCompletion();
 
         await test.step('Verify transaction detail', async () => {
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',
+            );
+
+            await tradingMockNew.advanceStatus('SUCCESS');
+
+            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                 'TR_BUY_DETAIL_SUCCESS_TITLE',
             );
-            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
             await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmation.provider).toHaveText(provider);
+            await expect(tradingPage.confirmation.provider).toHaveText(providerName);
         });
 
         await test.step('Return to account buy form', async () => {
