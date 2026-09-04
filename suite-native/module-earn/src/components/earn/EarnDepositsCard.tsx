@@ -72,22 +72,23 @@ export const EarnDepositsCard = ({
     const { navigateToStakingDetail } = useStakingDetailNavigation();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
+
     const {
         bottomSheetRef: stakingSheetRef,
-        closeModal: closeStakingSheet,
         openModal: openStakingSheet,
+        closeModal: closeStakingSheet,
     } = useBottomSheetModal();
 
     const {
-        bottomSheetRef: stablecoinYieldSheetRef,
-        closeModal: closeStablecoinYieldSheet,
-        openModal: openStablecoinYieldSheet,
+        bottomSheetRef: yieldSheetRef,
+        openModal: openYieldSheet,
+        closeModal: closeYieldSheet,
     } = useBottomSheetModal();
 
     const {
-        bottomSheetRef: stablecoinYieldClaimRewardsSheetRef,
-        closeModal: closeStablecoinYieldClaimRewardsSheet,
-        openModal: openStablecoinYieldClaimRewardsSheet,
+        bottomSheetRef: yieldClaimRewardsSheetRef,
+        openModal: openYieldClaimRewardsSheet,
+        closeModal: closeYieldClaimRewardsSheet,
     } = useBottomSheetModal();
 
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -169,11 +170,11 @@ export const EarnDepositsCard = ({
             return;
         }
 
-        openStablecoinYieldClaimRewardsSheet();
+        openYieldClaimRewardsSheet();
     }, [
         handleStablecoinYieldClaimRewardPress,
         isFirmwareSupported,
-        openStablecoinYieldClaimRewardsSheet,
+        openYieldClaimRewardsSheet,
         showFirmwareUpdateAlert,
         stablecoinYieldClaimItems,
     ]);
@@ -203,7 +204,7 @@ export const EarnDepositsCard = ({
                         {stablecoinYieldRow && (
                             <EarnDepositsCardRow
                                 row={stablecoinYieldRow}
-                                onPress={openStablecoinYieldSheet}
+                                onPress={openYieldSheet}
                             />
                         )}
                         {isStablecoinYieldLoading && !stablecoinYieldRow && <ListItemSkeleton />}
@@ -234,17 +235,17 @@ export const EarnDepositsCard = ({
             />
 
             <EarnActiveItemsBottomSheet
-                ref={stablecoinYieldSheetRef}
+                ref={yieldSheetRef}
                 type="stablecoin-yield"
                 items={stablecoinYieldRow?.activeItems ?? []}
-                onClose={closeStablecoinYieldSheet}
+                onClose={closeYieldSheet}
             />
 
             <YieldClaimRewardsBottomSheet
-                ref={stablecoinYieldClaimRewardsSheetRef}
+                ref={yieldClaimRewardsSheetRef}
                 claimItems={stablecoinYieldClaimItems}
                 onClaimRewardPress={handleStablecoinYieldClaimRewardPress}
-                onClose={closeStablecoinYieldClaimRewardsSheet}
+                onClose={closeYieldClaimRewardsSheet}
             />
         </>
     );

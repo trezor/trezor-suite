@@ -12240,6 +12240,7 @@ __metadata:
     react-native-reanimated: "npm:4.5.0"
     react-native-safe-area-context: "npm:~5.7.0"
     react-native-svg: "npm:15.15.5"
+    react-native-worklets: "npm:0.10.0"
     storybook: "npm:^10.3.4"
     type-fest: "npm:5.5.0"
   languageName: unknown

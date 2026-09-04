@@ -16,6 +16,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { EdgeFades } from '../EdgeFades';
+import { useBottomSheetInteractionGate } from './hooks/useBottomSheetInteractionGate';
 
 type FlashListRenderItem<TItem> = NonNullable<FlashListProps<TItem>['renderItem']>;
 type FlashListRenderItemInfo<TItem> = Parameters<FlashListRenderItem<TItem>>[0];
@@ -56,9 +57,11 @@ const bottomSheetStyle = prepareNativeStyle(utils => ({
 
 const sheetContentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
-}>((utils, { insetBottom }) => ({
+    isSheetSettled: boolean;
+}>((utils, { insetBottom, isSheetSettled }) => ({
     paddingBottom: insetBottom + utils.spacings.sp16,
     paddingHorizontal: utils.spacings.sp16,
+    pointerEvents: isSheetSettled ? 'auto' : 'none',
 }));
 
 const handleStyle = prepareNativeStyle(utils => ({
@@ -92,6 +95,7 @@ export const BottomSheetFlashList = <TItem,>({
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     const flashListRef = useRef<FlashListRef<TItem>>(null);
+    const { animatedIndex, isSheetSettled } = useBottomSheetInteractionGate();
     const [footerHeight, setFooterHeight] = useState(0);
 
     // Imperative scroll reset.
@@ -110,12 +114,19 @@ export const BottomSheetFlashList = <TItem,>({
     }, [onClose]);
 
     const renderHandleComponent = useCallback(
-        (props: BottomSheetHandleProps) =>
-            handleComponent?.({
+        (props: BottomSheetHandleProps) => {
+            const handle = handleComponent?.({
                 ...props,
                 closeSheet: dismissSheet,
-            }) ?? undefined,
-        [dismissSheet, handleComponent],
+            });
+
+            if (handle === undefined || handle === null) {
+                return undefined;
+            }
+
+            return <Box pointerEvents={isSheetSettled ? 'auto' : 'none'}>{handle}</Box>;
+        },
+        [dismissSheet, handleComponent, isSheetSettled],
     );
 
     const renderFlashListItem = useCallback(
@@ -130,10 +141,15 @@ export const BottomSheetFlashList = <TItem,>({
                 bottomInset={insetBottom}
                 style={applyStyle(footerStyle)}
             >
-                <Box onLayout={e => setFooterHeight(e.nativeEvent.layout.height)}>{footer}</Box>
+                <Box
+                    onLayout={e => setFooterHeight(e.nativeEvent.layout.height)}
+                    pointerEvents={isSheetSettled ? 'auto' : 'none'}
+                >
+                    {footer}
+                </Box>
             </BottomSheetFooter>
         ),
-        [applyStyle, footer, insetBottom],
+        [applyStyle, footer, insetBottom, isSheetSettled],
     );
 
     const maxHeight = Dimensions.get('window').height * 0.9;
@@ -154,6 +170,7 @@ export const BottomSheetFlashList = <TItem,>({
     return (
         <BottomSheetModal
             ref={bottomSheetModalRef}
+            animatedIndex={animatedIndex}
             snapPoints={snapPoints}
             maxDynamicContentSize={maxHeight}
             enableDynamicSizing={false}
@@ -184,6 +201,7 @@ export const BottomSheetFlashList = <TItem,>({
                     contentContainerStyle,
                     applyStyle(sheetContentContainerStyle, {
                         insetBottom: footer ? footerHeight + insetBottom : insetBottom,
+                        isSheetSettled,
                     }),
                 ]}
                 {...flashListProps}
