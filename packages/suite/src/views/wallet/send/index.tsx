@@ -83,7 +83,6 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
         localCurrency,
         fees,
         online,
-        sendRaw,
         metadataEnabled,
         targetAnonymity,
         prison,
