@@ -76,7 +76,7 @@ export class TxWeightCalculator {
     addInput(input: Input) {
         this.inputs_count += 1;
 
-        let input_script_size = 0;
+        let inputScriptSize: number;
 
         if (input.multisig) {
             if (input.script_type === 'SPENDTAPROOT') {
@@ -85,28 +85,27 @@ export class TxWeightCalculator {
             const n = input.multisig.nodes
                 ? input.multisig.nodes.length
                 : input.multisig.pubkeys.length;
-            let multisig_script_size = _TXSIZE_MULTISIGSCRIPT + n * (1 + _TXSIZE_PUBKEY);
+            let multisigScriptSize = _TXSIZE_MULTISIGSCRIPT + n * (1 + _TXSIZE_PUBKEY);
             if (SEGWIT_INPUT_SCRIPT_TYPES.includes(input.script_type)) {
-                // eslint-disable-next-line no-useless-assignment -- Fixed separately in #31838.
-                multisig_script_size += getVarIntSize(multisig_script_size);
+                multisigScriptSize += getVarIntSize(multisigScriptSize);
             } else {
-                multisig_script_size += getOpPushSize(multisig_script_size);
-                input_script_size =
-                    1 + // the OP_FALSE bug in multisig
-                    input.multisig.m * (1 + _TXSIZE_DER_SIGNATURE) +
-                    multisig_script_size;
+                multisigScriptSize += getOpPushSize(multisigScriptSize);
             }
+            inputScriptSize =
+                1 + // the OP_FALSE bug in multisig
+                input.multisig.m * (1 + _TXSIZE_DER_SIGNATURE) +
+                multisigScriptSize;
         } else if (input.script_type === 'SPENDTAPROOT') {
-            input_script_size = 1 + _TXSIZE_SCHNORR_SIGNATURE;
+            inputScriptSize = 1 + _TXSIZE_SCHNORR_SIGNATURE;
         } else {
-            input_script_size = 1 + _TXSIZE_DER_SIGNATURE + 1 + _TXSIZE_PUBKEY;
+            inputScriptSize = 1 + _TXSIZE_DER_SIGNATURE + 1 + _TXSIZE_PUBKEY;
         }
 
         this.counter += 4 * _TXSIZE_INPUT;
 
         if (NONSEGWIT_INPUT_SCRIPT_TYPES.includes(input.script_type)) {
-            input_script_size += getVarIntSize(input_script_size);
-            this.counter += 4 * input_script_size;
+            inputScriptSize += getVarIntSize(inputScriptSize);
+            this.counter += 4 * inputScriptSize;
         } else if (SEGWIT_INPUT_SCRIPT_TYPES.includes(input.script_type)) {
             this.segwit_inputs_count += 1;
             if (input.script_type === 'SPENDP2SHWITNESS') {
@@ -119,7 +118,7 @@ export class TxWeightCalculator {
             } else {
                 this.counter += 4; // empty script_sig (1 byte)
             }
-            this.counter += 1 + input_script_size; // discounted witness
+            this.counter += 1 + inputScriptSize; // discounted witness
         } else if (input.script_type === 'EXTERNAL') {
             const witness_size = 0;
             const script_sig_size = 0;
@@ -145,7 +144,7 @@ export class TxWeightCalculator {
             throw new Error('unknown input script_type');
         }
 
-        this.inputs.push({ length: input_script_size });
+        this.inputs.push({ length: inputScriptSize });
     }
 
     addOutputByKey(key: keyof typeof OUTPUT_SCRIPT_LENGTH) {
