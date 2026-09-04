@@ -4,7 +4,7 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
+import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
@@ -47,9 +47,11 @@ export const InstantlyAvailableRow = ({
                 </HStack>
                 <HStack alignItems="center" spacing="sp4">
                     <TokenIcon symbol={account.symbol} size="extraSmall" />
-                    <ExactCryptoAmountFormatter
+                    <CompactCryptoAmountFormatter
                         value={approximatedAmount}
                         symbol={account.symbol}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
                         variant="body-sm"
                         color="contentPrimary"
                     />

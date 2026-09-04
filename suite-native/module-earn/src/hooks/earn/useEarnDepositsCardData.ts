@@ -135,6 +135,7 @@ export const useEarnDepositsCardData = ({
                         tokenSymbol: deposit.tokenSymbol,
                         contractAddress: deposit.contractAddress,
                         tokenContractAddress: deposit.tokenContractAddress,
+                        tokenDecimals: deposit.token?.decimals,
                         accountKey: deposit.accountKey,
                         accountLabel: deposit.accountLabel,
                         balance,
