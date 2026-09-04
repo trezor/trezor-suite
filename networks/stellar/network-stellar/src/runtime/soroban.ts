@@ -15,6 +15,8 @@ import {
 
 import { isNotNullOrUndefined, resolveAfter } from '@trezor/utils';
 
+import type { StellarRpcServer } from '../types/rpc';
+
 /**
  * Soroban (Stellar) JSON-RPC helpers for reading SEP-41 contract-token balances.
  *
@@ -71,13 +73,8 @@ const withTimeout = async <T>(read: Promise<T>, timeoutMs: number): Promise<T | 
     }
 };
 
-export type SorobanServer = rpc.Server;
-
-export const getSorobanServer = (url: string): SorobanServer =>
-    new rpc.Server(url, { allowHttp: url.startsWith('http://') });
-
 const simulateContractRead = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     method: string,
     args: xdr.ScVal[],
@@ -110,7 +107,7 @@ const simulateContractRead = async (
  * read (not a token / no balance entry / RPC failure).
  */
 export const getContractTokenBalance = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     holder: string,
     networkPassphrase: string = Networks.PUBLIC,
@@ -155,7 +152,7 @@ export class SorobanSimulationError extends Error {
  * signed and submitted promptly rather than held.
  */
 export const prepareContractTransaction = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     transaction: Transaction,
 ): Promise<Transaction> => {
     const simulation = await server.simulateTransaction(transaction);
@@ -185,7 +182,7 @@ const metadataCacheKey = (contractId: string, networkPassphrase: string) =>
     `${networkPassphrase}:${contractId}`;
 
 const readContractTokenMetadata = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     networkPassphrase: string,
 ): Promise<Sep41Metadata> => {
@@ -210,7 +207,7 @@ const readContractTokenMetadata = async (
  * Makes tokens self-describing, so callers need only supply contract addresses.
  */
 export const getContractTokenMetadata = (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     networkPassphrase: string = Networks.PUBLIC,
 ): Promise<Sep41Metadata> => {
@@ -252,7 +249,7 @@ export interface Sep41Token extends Sep41Metadata {
  * reported at all rather than a fabricated amount.
  */
 export const getSep41Token = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     holder: string,
     networkPassphrase: string = Networks.PUBLIC,
@@ -354,7 +351,7 @@ const parseLedgerEntries = (entries: rpc.Api.LedgerEntryResult[]) => {
  * treats that the same as a contract the batch could not describe.
  */
 const readContractLedgerEntries = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     holder: string,
     contractIds: string[],
     contractsWithKnownMetadata: Set<string>,
@@ -402,12 +399,11 @@ const readContractLedgerEntries = async (
  * dropped rather than reported as an empty holding.
  */
 export const readSep41Tokens = async (
-    rpcUrl: string,
+    server: StellarRpcServer,
     holder: string,
     contractIds: string[],
     networkPassphrase: string = Networks.PUBLIC,
 ): Promise<Sep41Token[]> => {
-    const server = getSorobanServer(rpcUrl);
     const startedAt = Date.now();
 
     // Metadata cannot change, so a contract that has already been described keeps its instance
