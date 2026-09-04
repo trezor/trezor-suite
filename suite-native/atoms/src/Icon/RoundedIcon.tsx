@@ -4,7 +4,7 @@ import { Icon, type IconName, type IconSize, TokenIcon, icons } from '@suite-nat
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
-import { Box } from './Box';
+import { Box } from '../Box';
 
 export const ROUNDED_ICON_INTENTS = ['neutral', 'brand', 'warning', 'critical', 'info'] as const;
 export type RoundedIconIntent = (typeof ROUNDED_ICON_INTENTS)[number];
