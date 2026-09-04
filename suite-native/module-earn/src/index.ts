@@ -25,7 +25,6 @@ export { StakingDetailScreen } from './screens/staking/StakingDetailScreen';
 export { StakingManagementScreen } from './screens/staking/StakingManagementScreen';
 export { YieldVaultDetailScreen } from './screens/yield/YieldVaultDetailScreen';
 export { UnstakeFlowScreen } from './screens/staking/UnstakeFlowScreen';
-export { YieldInsufficientBalanceScreen } from './screens/yield/YieldInsufficientBalanceScreen';
 export { navigateByAccountState } from './utils/staking/navigateByAccountState';
 export { useYieldDetailNavigation } from './hooks/yield/useYieldDetailNavigation';
 export { getBestPromotedRate, isEarnPromoSymbol } from './utils/earn/promotedRateUtils';

@@ -9,7 +9,6 @@ import { type YieldNavigationItem } from '../../types';
 const ethSymbol = asNetworkSymbol('eth');
 
 const WETH_ADDRESS = toTokenAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
-const USDC_ADDRESS = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const RECEIPT_ADDRESS = toTokenAddress('0xde6c23e561f3e55846207ec45a91b777e0f7c889');
 
 const createMockItem = (
@@ -93,29 +92,6 @@ describe(navigateByYieldAccountState.name, () => {
         });
 
         expect(navigate(account)).toBe('deposit-in-a-nutshell-modal');
-    });
-
-    it('routes to the insufficient-balance screen when the account is empty', () => {
-        const account = mockWalletAccount({
-            symbol: ethSymbol,
-            formattedBalance: '0',
-        });
-
-        expect(navigate(account)).toBe('insufficient-balance-screen');
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.YieldInsufficientBalance, {
-            accountKey: account.key,
-            tokenContract: WETH_ADDRESS,
-            yieldId: 'ethereum-vault',
-        });
-    });
-
-    it('does not count the native balance for a non-wrapped-native vault', () => {
-        const account = mockWalletAccount({
-            symbol: ethSymbol,
-            formattedBalance: '5',
-        });
-
-        expect(navigate(account, createMockItem(USDC_ADDRESS))).toBe('insufficient-balance-screen');
     });
 
     it('shows the firmware update alert for a depositable account with unsupported firmware', () => {

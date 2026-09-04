@@ -521,7 +521,6 @@ export type RootStackParamList = {
         symbol: NetworkSymbol;
     };
     [RootStackRoutes.YieldNavigator]: NavigatorScreenParams<YieldStackParamList>;
-    [RootStackRoutes.YieldInsufficientBalance]: YieldInsufficientBalanceParams;
     [RootStackRoutes.WrappedNativeTokenNavigator]: NavigatorScreenParams<WrappedNativeTokenStackParamList>;
     [RootStackRoutes.EarnForm]: {
         accountKey: AccountKey;

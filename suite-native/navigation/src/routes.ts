@@ -11,7 +11,6 @@ export enum RootStackRoutes {
     YieldVaultDetail = 'YieldVaultDetail',
     HowStakeWorksScreen = 'HowStakeWorksScreen',
     YieldNavigator = 'YieldNavigator',
-    YieldInsufficientBalance = 'YieldInsufficientBalance',
     WrappedNativeTokenNavigator = 'WrappedNativeTokenNavigator',
     EarnForm = 'EarnForm',
     EarnConsents = 'EarnConsents',
