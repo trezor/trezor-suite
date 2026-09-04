@@ -549,9 +549,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                         await this.getFeatures();
                     }
                 } else if (fn) {
-                    await this.initialize(!!options.useCardanoDerivation);
+                    await this.retryOnStaleCancelResponse(
+                        () => this.initialize(!!options.useCardanoDerivation),
+                        abortSignal,
+                    );
                 } else {
-                    await this.getFeatures();
+                    await this.retryOnStaleCancelResponse(() => this.getFeatures(), abortSignal);
                 }
             } catch (error) {
                 this.logger.warn('Device._runInner error: ', error.message);
@@ -704,6 +707,30 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         const { message } = await this.getCurrentSession().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
         await this._updateCurrentRelease(message);
+    }
+
+    // Initialize/GetFeatures have no on-device UI, so Failure(ActionCancelled) can only be
+    // a stale response left in the device buffer by an interrupted previous session
+    // (e.g. page reload sent Cancel and never read the reply). Each failed attempt drains
+    // one stale message, so a bounded retry recovers the handshake.
+    private async retryOnStaleCancelResponse(call: () => Promise<void>, abortSignal: AbortSignal) {
+        const attemptsLimit = 3;
+        for (let attempt = 1; ; ++attempt) {
+            try {
+                return await call();
+            } catch (error) {
+                if (
+                    error.code !== 'Failure_ActionCancelled' ||
+                    abortSignal.aborted ||
+                    attempt >= attemptsLimit
+                ) {
+                    throw error;
+                }
+                this.logger.warn(
+                    `handshake received stale Failure(ActionCancelled), retrying (attempt ${attempt})`,
+                );
+            }
+        }
     }
 
     getAuthenticityChecks() {
