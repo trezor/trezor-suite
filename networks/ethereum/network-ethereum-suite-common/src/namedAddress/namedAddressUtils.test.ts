@@ -34,6 +34,10 @@ describe('isNameLike', () => {
         // Deliberate: the resolver is the authority on what exists, and single-label names
         // like `a.eth` are registrable, so no minimum is imposed on the leading label.
         ['.eth'],
+        // Digits are ordinary labels: numeric names are registered and traded, and a numeric
+        // last segment is a namespace elsewhere (e.g. Unstoppable's `.888`).
+        ['1234.eth'],
+        ['vitalik.888'],
     ])('accepts %s', value => {
         expect(isNameLike(value)).toBe(true);
     });
@@ -47,6 +51,11 @@ describe('isNameLike', () => {
         ['vitalik.', 'zero chars after last dot'],
         ['vitalik.e', 'one char after last dot'],
         ['a.b.c', 'last segment shorter than two chars'],
+        // A recipient field also receives what the user meant as an amount.
+        ['1.23', 'decimal amount'],
+        ['0.50', 'decimal amount below one'],
+        ['1.000000', 'amount padded to six decimals'],
+        ['192.168.10.20', 'IPv4 address'],
     ])('rejects %s (%s)', value => {
         expect(isNameLike(value)).toBe(false);
     });
