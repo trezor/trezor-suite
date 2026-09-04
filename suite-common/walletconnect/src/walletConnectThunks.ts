@@ -32,6 +32,7 @@ import {
     processNamespaces,
 } from './adapters';
 import { walletConnectActions } from './walletConnectActions';
+import { getSessionAuthenticateContext } from './walletConnectAuthUtils';
 import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
 import { type WalletConnectStateRootState, selectPendingProposal } from './walletConnectReducer';
 import { type PendingConnectionProposalNetwork } from './walletConnectTypes';
@@ -52,22 +53,31 @@ const sessionAuthenticateThunk = createThunk<
     },
     { state: SessionAuthenticateThunkState; extra: SessionAuthenticateThunkDeps }
 >(`${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`, async ({ event }, { getState, dispatch }) => {
-    // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
+    // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities).
     try {
         const accounts = selectAllSuccessfulAccountsToList(getState());
-        const supportedNamespaces = getNamespaces(accounts);
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const eip155Namespace: (typeof supportedNamespaces)[keyof typeof supportedNamespaces] =
-            supportedNamespaces.eip155;
+        const contextResult = getSessionAuthenticateContext(accounts);
+        if (!contextResult.success) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: contextResult.error.message,
+                }),
+            );
+            await walletKit.rejectSessionAuthenticate({
+                id: event.id,
+                reason: getSdkError('UNSUPPORTED_CHAINS'),
+            });
+
+            return;
+        }
+
+        const { account: ethAccount, namespace: eip155Namespace } = contextResult.payload;
         const authPayload = populateAuthPayload({
             authPayload: event.params.authPayload,
             chains: eip155Namespace.chains,
             methods: eip155Namespace.methods,
         });
-        const ethAccount = accounts.find(a => a.symbol === 'eth');
-        if (!ethAccount) {
-            throw new Error('No ETH account');
-        }
         const iss = `eip155:1:${ethAccount.descriptor}`;
         const message = walletKit.formatAuthMessage({
             request: authPayload,
