@@ -4,7 +4,7 @@ import { Icon, type IconName, type IconSize, TokenIcon, icons } from '@suite-nat
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
-import { Box, type BoxProps } from './Box';
+import { Box } from './Box';
 
 export const ROUNDED_ICON_INTENTS = ['neutral', 'brand', 'warning', 'critical', 'info'] as const;
 export type RoundedIconIntent = (typeof ROUNDED_ICON_INTENTS)[number];
@@ -18,7 +18,8 @@ export type RoundedIconProps = {
     contractAddress?: TokenAddress;
     intent?: RoundedIconIntent;
     size?: RoundedIconSize;
-} & BoxProps;
+    accessibilityLabel?: string;
+};
 
 type RoundedIconStyle = {
     backgroundColor: Color;
@@ -73,9 +74,7 @@ export const RoundedIcon = ({
     contractAddress,
     intent = 'neutral',
     size = 48,
-    children,
-    style,
-    ...boxProps
+    accessibilityLabel,
 }: RoundedIconProps) => {
     const { applyStyle } = useNativeStyles();
     const { backgroundColor, iconColor } = roundedIconIntentToStylePropsMap[intent];
@@ -83,15 +82,15 @@ export const RoundedIcon = ({
 
     return (
         <Box
-            style={[applyStyle(iconContainerStyle, { backgroundColor, size }), style]}
-            {...boxProps}
+            style={applyStyle(iconContainerStyle, { backgroundColor, size })}
+            accessibilityLabel={accessibilityLabel}
+            accessibilityRole="image"
         >
-            {children ??
-                (name && name in icons ? (
-                    <Icon name={name} color={iconColor} size={iconSize} />
-                ) : (
-                    symbol && <TokenIcon symbol={symbol} contractAddress={contractAddress} />
-                ))}
+            {name && name in icons ? (
+                <Icon name={name} color={iconColor} size={iconSize} />
+            ) : (
+                symbol && <TokenIcon symbol={symbol} contractAddress={contractAddress} />
+            )}
         </Box>
     );
 };
