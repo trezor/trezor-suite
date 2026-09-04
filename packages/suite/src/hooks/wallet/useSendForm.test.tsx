@@ -10,8 +10,8 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { debugInitialState } from '@suite/debug';
 import { closeModal, openModal } from '@suite/modal';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { type AddressValidatorDep } from '@suite-common/address';
-import { mockAddressValidator } from '@suite-common/address/mocks';
+import { type AddressValidatorDep, type GetNamedAddressSupportDep } from '@suite-common/address';
+import { mockAddressValidator, mockGetNamedAddressSupport } from '@suite-common/address/mocks';
 import {
     type FindNetworkSymbolForProtocolDep,
     type NetworkModuleRepositoryDep,
@@ -101,6 +101,7 @@ type SendFormTestServices = AddressValidatorDep &
     DesktopAnalyticsDep &
     FindNetworkSymbolForProtocolDep &
     GetIsWindowVisibleDep &
+    GetNamedAddressSupportDep &
     GetTradedAccountKeysDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
     NetworkModuleRepositoryDep &
@@ -115,6 +116,7 @@ const services: SendFormTestServices = {
         [asProtocol('bitcoin')]: asNetworkSymbol('btc'),
     }),
     getIsWindowVisible: mockGetIsWindowVisible(),
+    getNamedAddressSupport: mockGetNamedAddressSupport(),
     getTradedAccountKeys: mockGetTradedAccountKeys(),
     migrateSuiteSyncLabelsForRbfTransaction: mockMigrateSuiteSyncLabelsForRbfTransaction(),
     networkModuleRepository: mockNetworkModuleRepository({ get: () => mockNetworkModule() }),
