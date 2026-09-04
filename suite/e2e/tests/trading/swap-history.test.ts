@@ -161,7 +161,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
 
                     await expect
                         .soft(tradingPage.transactionDetailSidebar.orderId)
-                        .toHaveText(trade.orderId);
+                        .toHaveText(`${trade.orderId.slice(0, 8)}...${trade.orderId.slice(-8)}`);
 
                     await expect(tradingPage.transactionDetailSidebar.sendAccount).toContainText(
                         getNetwork(trade.sendSymbol as NetworkSymbol).name,

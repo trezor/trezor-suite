@@ -23,8 +23,6 @@ type TradingInfoItemProps = {
     isAmountLoading?: boolean;
     isReceive?: boolean;
     receiveAddress?: string;
-    cryptoAmountTestId?: string;
-    accountInfoTestId?: string;
 };
 
 export const TradingInfoItem = ({
@@ -35,8 +33,6 @@ export const TradingInfoItem = ({
     amount,
     isAmountLoading,
     receiveAddress,
-    cryptoAmountTestId,
-    accountInfoTestId,
 }: TradingInfoItemProps) => {
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
     const { translationString } = useTranslation();
@@ -77,7 +73,7 @@ export const TradingInfoItem = ({
                         priority="secondary"
                         typographyStyle="body-sm"
                         as="div"
-                        data-testid={accountInfoTestId ?? `${testIdPrefix}-account`}
+                        data-testid={`${testIdPrefix}-account`}
                     >
                         <Row>
                             {accountLabelPrefix}&nbsp;
@@ -147,11 +143,7 @@ export const TradingInfoItem = ({
                             </Column>
                         ) : (
                             <Column alignItems="flex-end">
-                                <TradingCryptoAmount
-                                    amount={amount}
-                                    cryptoId={currency}
-                                    testId={cryptoAmountTestId}
-                                />
+                                <TradingCryptoAmount amount={amount} cryptoId={currency} />
 
                                 {currencyInfo?.symbol && (
                                     <Text

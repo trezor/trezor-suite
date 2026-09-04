@@ -14,7 +14,9 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 // Expected values based on our mocked responses
-const fiatAmount = localizeNumber(buyQuotesSolanaToken[0]?.fiatStringAmount ?? '', 'en-US', 2);
+const fiatStringAmount = buyQuotesSolanaToken[0]?.fiatStringAmount ?? '';
+const fiatAmount = localizeNumber(fiatStringAmount, 'en-US', 2);
+const detailFiatAmount = localizeNumber(fiatStringAmount, 'en-US', 0, 2);
 const cryptoAmount = buyQuotesSolanaToken[0]?.receiveStringAmount ?? '';
 const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0]?.exchange ?? '');
 const formattedCryptoAmount = `${cryptoAmount} JUP`;
@@ -88,11 +90,13 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                     'TR_BUY_DETAIL_COMPLETE_TITLE',
                 );
-                await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
-                await expect(tradingPage.confirmation.cryptoAmount).toHaveText(
+                await expect(tradingPage.transactionDetailSidebar.fiatAmount).toHaveText(
+                    detailFiatAmount,
+                );
+                await expect(tradingPage.transactionDetailSidebar.receiveAmount).toHaveText(
                     formattedCryptoAmount,
                 );
-                await expect(tradingPage.confirmation.provider).toHaveText(provider);
+                await expect(tradingPage.transactionDetailSidebar.provider).toHaveText(provider);
             });
 
             await test.step('Return to account buy form', async () => {

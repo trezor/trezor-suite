@@ -1,5 +1,3 @@
-import type { FiatCurrencyCode } from 'invity-api';
-
 import { type FlagType } from './types';
 
 const fiatCurrencyToFlagMap = {
@@ -81,7 +79,7 @@ type FiatCurrencyWithFlag = keyof typeof fiatCurrencyToFlagMap;
 const hasFiatCurrencyFlag = (fiatCurrency: string): fiatCurrency is FiatCurrencyWithFlag =>
     fiatCurrency in fiatCurrencyToFlagMap;
 
-export const getFiatCurrencyFlag = (fiatCurrency?: FiatCurrencyCode): FlagType | undefined => {
+export const getFiatCurrencyFlag = (fiatCurrency?: string): FlagType | undefined => {
     if (!fiatCurrency) {
         return undefined;
     }

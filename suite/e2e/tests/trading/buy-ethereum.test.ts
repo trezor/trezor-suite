@@ -13,6 +13,7 @@ const fiatAmount = buyQuotesEthereum[3]?.fiatStringAmount ?? '';
 const provider = capitalizeFirstLetter(buyQuotesEthereum[3]?.exchange ?? '');
 const formattedCryptoAmount = `${localizeNumber(buyQuotesEthereum[3]?.receiveStringAmount ?? '')} ETH`;
 const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
+const detailFiatAmount = localizeNumber(fiatAmount, 'en-US', 0, 2);
 
 test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ page, onboardingPage, settingsPage, dashboardPage }) => {
@@ -64,11 +65,13 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                     'TR_BUY_DETAIL_COMPLETE_TITLE',
                 );
-                await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
-                await expect(tradingPage.confirmation.cryptoAmount).toHaveText(
+                await expect(tradingPage.transactionDetailSidebar.fiatAmount).toHaveText(
+                    detailFiatAmount,
+                );
+                await expect(tradingPage.transactionDetailSidebar.receiveAmount).toHaveText(
                     formattedCryptoAmount,
                 );
-                await expect(tradingPage.confirmation.provider).toHaveText(provider);
+                await expect(tradingPage.transactionDetailSidebar.provider).toHaveText(provider);
             });
 
             await test.step('Return to account buy form', async () => {
