@@ -1,3 +1,5 @@
+import { SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE } from '@trezor/utils';
+
 import { resolveNamedAddress } from './resolveNamedAddress';
 import { resolveViaBlockbook } from './resolveNamedAddressBB';
 import { resolveNamedAddressOnchain } from './universalResolver';
@@ -41,6 +43,35 @@ describe('resolveNamedAddress', () => {
 
         await expect(resolveNamedAddress('vitalik.eth', 'eth')).resolves.toBe(VITALIK_ADDRESS);
         expect(mockResolveViaBlockbook).toHaveBeenCalledWith('vitalik.eth', 'eth');
+    });
+
+    it('reports a Blockbook answer that is not an address as no record', async () => {
+        mockResolveOnchain.mockRejectedValue(new Error('Backend not connected'));
+        mockResolveViaBlockbook.mockResolvedValue(null);
+
+        await expect(resolveNamedAddress('vitalik.eth', 'eth')).resolves.toBeNull();
+    });
+
+    // The send form awaits this before it can validate, so a backend that takes the request and
+    // never answers must not hold the field open for as long as it likes.
+    it('gives up once the whole resolution outruns its budget', async () => {
+        jest.useFakeTimers();
+        mockResolveOnchain.mockReturnValue(new Promise(() => {}));
+
+        try {
+            // The rejection has to be caught up front: the assertion can only run once the
+            // timers below have advanced, and an unhandled rejection in between fails the run.
+            const resolution = resolveNamedAddress('vitalik.eth', 'eth').catch(error => error);
+
+            // Past any budget the onchain attempt and the fallback could share.
+            await jest.advanceTimersByTimeAsync(60_000);
+
+            await expect(resolution).resolves.toMatchObject({
+                message: SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE,
+            });
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it('propagates the Blockbook failure when both paths fail', async () => {
