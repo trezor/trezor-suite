@@ -41,8 +41,7 @@ export const CryptoIconWithPercentage = ({
     const { utils } = useNativeStyles();
     const colorScheme = useActiveColorScheme();
 
-    const path = Skia.Path.Make();
-    path.addCircle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);
+    const path = Skia.Path.Circle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);
 
     const animationProgress = useSharedValue(0);
 
