@@ -5,6 +5,8 @@
         {
             "path": "../../suite-common/apps-embedding"
         },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/react-utils" },
         { "path": "../../packages/utils" }
     ]
 }

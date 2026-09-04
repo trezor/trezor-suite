@@ -10590,7 +10590,6 @@ __metadata:
   resolution: "@suite-common/apps-embedding@workspace:suite-common/apps-embedding"
   dependencies:
     "@trezor/type-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -15186,6 +15185,8 @@ __metadata:
   resolution: "@suite/apps-embedding-web@workspace:suite/apps-embedding-web"
   dependencies:
     "@suite-common/apps-embedding": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/react-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
     zod: "npm:4.3.6"

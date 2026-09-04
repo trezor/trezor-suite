@@ -12,6 +12,8 @@
     },
     "dependencies": {
         "@suite-common/apps-embedding": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/react-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
         "zod": "4.3.6"
