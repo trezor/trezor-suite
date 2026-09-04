@@ -9,6 +9,10 @@ const underlyingTokenAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const receiptTokenAddress = '0xde6c23e561f3e55846207ec45a91b777e0f7c889';
 const yieldId = 'ethereum-usdc-steakusdc';
 
+// Blockbook returns EVM token contracts checksummed rather than lowercased. The exact
+// checksum does not matter here, only that the casing differs from the normalized form.
+const toBackendContractCasing = (address: string) => `0x${address.slice(2).toUpperCase()}`;
+
 const account = {
     key: accountKey,
     symbol: 'eth',
@@ -118,6 +122,27 @@ describe('getResolvedYieldFlowData', () => {
 
         expect(result.flowKey).toBe(`${accountKey}:${yieldId}:${receiptTokenAddress}`);
         expect(result.depositedSharesAmount).toBe('1.5');
+    });
+
+    it('normalizes the contract casing the backend returns for held tokens', () => {
+        const checksummedAccount = {
+            ...account,
+            tokens: account.tokens?.map(accountToken => ({
+                ...accountToken,
+                contract: toBackendContractCasing(accountToken.contract),
+            })),
+        } as unknown as Account;
+
+        const result = getResolvedYieldFlowData({ account: checksummedAccount, vault });
+
+        // The tokens must still be matched and their balances kept ...
+        expect(result.token?.balance).toBe('25');
+        expect(result.depositedSharesAmount).toBe('1.5');
+        // ... while the exposed contracts stay normalized, so that the derived asset logo URLs
+        // and fiat rate tickers keep resolving.
+        expect(result.token?.contractAddress).toBe(underlyingTokenAddress);
+        expect(result.receiptToken?.contractAddress).toBe(receiptTokenAddress);
+        expect(result.flowKey).toBe(`${accountKey}:${yieldId}:${underlyingTokenAddress}`);
     });
 
     it('falls back to the vault token data when the account does not hold the token', () => {
