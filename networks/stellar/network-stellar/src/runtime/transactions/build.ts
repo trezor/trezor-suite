@@ -20,6 +20,7 @@ type CreateTransactionBuilderParams = {
     descriptor: string;
     sequence: string;
     fee: string;
+    memo?: string;
     isTestnet?: boolean;
 };
 
@@ -27,14 +28,21 @@ const createTransactionBuilder = ({
     descriptor,
     sequence,
     fee,
+    memo,
     isTestnet = false,
 }: CreateTransactionBuilderParams) => {
     const source = new Account(descriptor, sequence);
 
-    return new TransactionBuilder(source, {
+    const txBuilder = new TransactionBuilder(source, {
         fee,
         networkPassphrase: isTestnet ? Networks.TESTNET : Networks.PUBLIC,
     }).setTimebounds(0, 0);
+
+    if (memo) {
+        txBuilder.addMemo(Memo.text(memo));
+    }
+
+    return txBuilder;
 };
 
 type BuildSendTransactionParams = CreateTransactionBuilderParams & {
@@ -42,7 +50,6 @@ type BuildSendTransactionParams = CreateTransactionBuilderParams & {
     destination: string;
     amount: string;
     asset: StellarAsset;
-    destinationTag?: string;
 };
 
 export const buildSendTransaction = ({
@@ -53,14 +60,10 @@ export const buildSendTransaction = ({
     destination,
     amount,
     asset,
-    destinationTag,
+    memo,
     isTestnet,
 }: BuildSendTransactionParams) => {
-    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, isTestnet });
-
-    if (destinationTag) {
-        txBuilder.addMemo(Memo.text(destinationTag));
-    }
+    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, memo, isTestnet });
 
     if (destinationActivated) {
         txBuilder.addOperation(
@@ -93,9 +96,10 @@ const buildTrustlineTransaction = ({
     fee,
     asset,
     limit,
+    memo,
     isTestnet,
 }: BuildTrustlineTransactionParams) => {
-    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, isTestnet });
+    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, memo, isTestnet });
 
     txBuilder.addOperation(
         Operation.changeTrust({
@@ -109,23 +113,11 @@ const buildTrustlineTransaction = ({
 
 type BuildTrustlineParams = Omit<BuildTrustlineTransactionParams, 'limit'>;
 
-export const buildAddTrustlineTransaction = ({
-    descriptor,
-    sequence,
-    fee,
-    asset,
-    isTestnet,
-}: BuildTrustlineParams) =>
-    buildTrustlineTransaction({ descriptor, sequence, fee, asset, isTestnet });
+export const buildAddTrustlineTransaction = (params: BuildTrustlineParams) =>
+    buildTrustlineTransaction(params);
 
-export const buildRemoveTrustlineTransaction = ({
-    descriptor,
-    sequence,
-    fee,
-    asset,
-    isTestnet,
-}: BuildTrustlineParams) =>
-    buildTrustlineTransaction({ descriptor, sequence, fee, asset, limit: '0', isTestnet });
+export const buildRemoveTrustlineTransaction = (params: BuildTrustlineParams) =>
+    buildTrustlineTransaction({ ...params, limit: '0' });
 
 type BuildContractTokenTransferParams = CreateTransactionBuilderParams & {
     /** The `C…` id of the SEP-41 token being sent. */
