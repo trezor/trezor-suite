@@ -6,13 +6,9 @@ import {
     type StackNavigationProps,
     YieldStackRoutes,
 } from '@suite-native/navigation';
-import { BigNumber } from '@trezor/utils';
 
 import { type YieldNavigationItem } from '../../types';
-import {
-    getYieldVaultDepositableBalance,
-    hasPositiveContractTokenBalance,
-} from '../earn/contractTokenBalanceUtils';
+import { hasPositiveContractTokenBalance } from '../earn/contractTokenBalanceUtils';
 
 type YieldNavigateFn = StackNavigationProps<
     RootStackParamList,
@@ -20,10 +16,7 @@ type YieldNavigateFn = StackNavigationProps<
 >['navigate'];
 
 export type YieldAccountNavigationDestination =
-    | 'vault-detail'
-    | 'deposit-in-a-nutshell-modal'
-    | 'insufficient-balance-screen'
-    | 'firmware-update-alert';
+    'vault-detail' | 'deposit-in-a-nutshell-modal' | 'firmware-update-alert';
 
 export const navigateByYieldAccountState = (
     account: Account,
@@ -46,41 +39,25 @@ export const navigateByYieldAccountState = (
         return 'vault-detail';
     }
 
-    // For a wrapped-native (WETH) vault the wrappable native balance counts in as depositable
-    // too, so an account holding only the native asset still routes into the deposit flow.
-    const hasDepositableBalance = new BigNumber(
-        getYieldVaultDepositableBalance(account, underlyingTokenContract),
-    ).gt(0);
+    if (
+        !isFirmwareSupported('deposit', {
+            networkSymbol: account.symbol,
+            contractAddress: underlyingTokenContract,
+        })
+    ) {
+        showFirmwareUpdateAlert();
 
-    if (hasDepositableBalance) {
-        if (
-            !isFirmwareSupported('deposit', {
-                networkSymbol: account.symbol,
-                contractAddress: underlyingTokenContract,
-            })
-        ) {
-            showFirmwareUpdateAlert();
-
-            return 'firmware-update-alert';
-        }
-
-        navigate(RootStackRoutes.YieldNavigator, {
-            screen: YieldStackRoutes.HowYieldWorks,
-            params: {
-                accountKey: account.key,
-                tokenContract: underlyingTokenContract,
-                yieldId,
-            },
-        });
-
-        return 'deposit-in-a-nutshell-modal';
+        return 'firmware-update-alert';
     }
 
-    navigate(RootStackRoutes.YieldInsufficientBalance, {
-        accountKey: account.key,
-        tokenContract: underlyingTokenContract,
-        yieldId,
+    navigate(RootStackRoutes.YieldNavigator, {
+        screen: YieldStackRoutes.HowYieldWorks,
+        params: {
+            accountKey: account.key,
+            tokenContract: underlyingTokenContract,
+            yieldId,
+        },
     });
 
-    return 'insufficient-balance-screen';
+    return 'deposit-in-a-nutshell-modal';
 };
