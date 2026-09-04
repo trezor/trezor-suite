@@ -56,7 +56,6 @@ export const FixResultSchema = z.object({
 export const SlackFixSummarySchema = FixResultSchema.extend({
     prUrl: z.string().nullable().default(null),
     costUsd: z.number().nullable().default(null),
-    error: z.string().nullable().default(null),
 });
 
 // ── Cross-run ledger ─────────────────────────────────────────────────────────

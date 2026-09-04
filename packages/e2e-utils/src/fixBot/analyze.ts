@@ -6,6 +6,7 @@ import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
 import { loadLedger, runAgent } from './common';
+import { reportToSlack } from './errors';
 import { AnalysisReportJsonSchema, AnalysisReportSchema } from './schemas';
 
 const MODEL = 'claude-opus-4-8';
@@ -31,6 +32,7 @@ async function main(): Promise<void> {
 
     if (!process.env.CURRENTS_API_KEY) {
         error('CURRENTS_API_KEY is not set. It must be provided via the workflow environment.');
+        reportToSlack('CURRENTS_API_KEY is not set, so no nightly runs could be analyzed.');
         process.exit(1);
     }
 
@@ -71,16 +73,19 @@ async function main(): Promise<void> {
         error(
             `Analysis agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no report produced.`,
         );
+        reportToSlack('Analysis agent hit its timeout and was killed; no report was produced.');
         process.exit(1);
     }
 
     if (runError) {
         error(`Failed to run the analysis agent: ${runError}`);
+        reportToSlack('Analysis agent could not be started; no report was produced.');
         process.exit(1);
     }
 
     if (result?.subtype !== 'success') {
         error(`Analysis agent ended with '${result?.subtype ?? 'no result'}'; no report produced.`);
+        reportToSlack('Analysis agent ended without a result; no report was produced.');
         process.exit(1);
     }
 
@@ -89,6 +94,9 @@ async function main(): Promise<void> {
     if (!report.success) {
         writeFileSync(reportJsonPath, `${JSON.stringify(result.structured_output, null, 2)}\n`);
         error(`structured output failed schema validation: ${prettifyError(report.error)}`);
+        reportToSlack(
+            "Analysis agent's report did not match the expected schema; no fix tasks were created.",
+        );
         process.exit(1);
     }
 

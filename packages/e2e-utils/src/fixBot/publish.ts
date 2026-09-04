@@ -4,6 +4,7 @@ import { join } from 'node:path';
 
 import { error, log } from '../logger';
 import { getErrorText } from './common';
+import { reportToSlack } from './errors';
 import { type FixResult, FixResultSchema, type SlackFixSummary } from './schemas';
 
 const BASE_BRANCH = 'develop';
@@ -128,8 +129,10 @@ function runPublish(
         summary.prUrl = createPr(prArgs);
         assignToProject(summary.prUrl);
     } catch (err) {
-        summary.error = getErrorText(err);
-        error(`Publish failed: ${summary.error}`);
+        error(`Publish failed: ${getErrorText(err)}`);
+        reportToSlack(
+            'Pushing the branch or creating the PR failed, so no PR exists for this fix.',
+        );
         process.exitCode = 1;
     }
 }
@@ -150,6 +153,7 @@ function publishPR(): void {
     if (!existsSync(resultFile)) {
         error(`Result: ❌  fix-result.json missing — agent did not complete`);
         error(`         expected at: ${resultFile}`);
+        reportToSlack('The fix agent produced no result, so nothing was published.');
 
         return;
     }
@@ -159,7 +163,6 @@ function publishPR(): void {
         ...fixResult,
         prUrl: null,
         costUsd: readCostUsd(),
-        error: null,
     };
 
     log(`Raw result summary: \n\n${JSON.stringify(summary, null, 2)}`);

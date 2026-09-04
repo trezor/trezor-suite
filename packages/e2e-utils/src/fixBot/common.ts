@@ -10,6 +10,7 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { log, warn } from '../logger';
+import { reportToSlack } from './errors';
 import {
     type AgentName,
     type Ledger,
@@ -21,7 +22,13 @@ import {
 export const EMPTY_LEDGER: Ledger = { version: 1, updatedAt: '1970-01-01', entries: [] };
 
 export function loadLedger(path: string): Ledger {
-    if (!existsSync(path)) return EMPTY_LEDGER;
+    if (!existsSync(path)) {
+        reportToSlack(
+            `[ledger] not found at ${path} — the S3 download failed or no ledger exists yet.`,
+        );
+
+        return EMPTY_LEDGER;
+    }
 
     try {
         const parsed = LedgerSchema.safeParse(JSON.parse(readFileSync(path, 'utf-8')));
@@ -33,14 +40,21 @@ export function loadLedger(path: string): Ledger {
         warn(`[ledger] could not read ${path} (${(e as Error).message}) — starting from empty.`);
     }
 
+    reportToSlack('[ledger] could not be loaded — this run analyzed with an empty ledger.');
+
     return EMPTY_LEDGER;
 }
 
-/** Skips schema-invalid files instead of throwing — see docs.md "Partial runs, missing summaries". */
-export function readSummaries(summariesDir: string | undefined): SlackFixSummary[] {
-    if (!summariesDir || !existsSync(summariesDir)) return [];
+export interface ReadSummariesResult {
+    summaries: SlackFixSummary[];
+    problemsByTaskId: Record<string, string>;
+}
 
-    const parsedSummaries: SlackFixSummary[] = [];
+export function readSummaries(summariesDir: string | undefined): ReadSummariesResult {
+    const result: ReadSummariesResult = { summaries: [], problemsByTaskId: {} };
+
+    if (!summariesDir || !existsSync(summariesDir)) return result;
+
     const allSummariesFiles = readdirSync(summariesDir).filter(
         n => n.startsWith('slack-fix-summary-') && n.endsWith('.json'),
     );
@@ -51,13 +65,16 @@ export function readSummaries(summariesDir: string | undefined): SlackFixSummary
 
         if (!parsed.success) {
             warn(`[summaries] Failed to parse ${filename}: ${parsed.error.message}`);
+            const taskId = filename.slice('slack-fix-summary-'.length, -'.json'.length);
+            result.problemsByTaskId[taskId] =
+                'Its result file could not be read, so this task shows as not completed.';
             continue;
         }
 
-        parsedSummaries.push(parsed.data);
+        result.summaries.push(parsed.data);
     }
 
-    return parsedSummaries;
+    return result;
 }
 
 /** Prefers subprocess stderr, which usually holds the real cause, over the wrapper message. */
@@ -140,8 +157,9 @@ function writeCostFile(totalCostUsd: number | undefined): void {
             '/tmp/llm-token-usage.json',
             JSON.stringify({ total_cost_usd: totalCostUsd }),
         );
-    } catch {
-        // non-critical
+    } catch (e) {
+        warn(`[cost] could not write the cost file: ${(e as Error).message}`);
+        reportToSlack('Agent cost could not be recorded — the cost shown here is incomplete.');
     }
 }
 
