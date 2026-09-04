@@ -36,6 +36,7 @@ describe('isNameLike', () => {
         ['.eth'],
         // Digits are ordinary labels: numeric names are registered and traded, and a numeric
         // last segment is a namespace elsewhere (e.g. Unstoppable's `.888`).
+        ['123.eth'],
         ['1234.eth'],
         ['vitalik.888'],
     ])('accepts %s', value => {

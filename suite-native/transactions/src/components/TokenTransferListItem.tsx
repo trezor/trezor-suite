@@ -78,7 +78,11 @@ export const TokenTransferListItemValues = ({
             />
             <CompactTokenAmountFormatter
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                tokenSymbol={toTokenSymbol(getDisplaySymbol(tokenTransfer.symbol))}
+                tokenSymbol={
+                    tokenTransfer.symbol
+                        ? toTokenSymbol(getDisplaySymbol(tokenTransfer.symbol))
+                        : null
+                }
                 tokenDecimals={tokenTransfer.decimals}
                 numberOfLines={1}
                 ellipsizeMode="tail"
