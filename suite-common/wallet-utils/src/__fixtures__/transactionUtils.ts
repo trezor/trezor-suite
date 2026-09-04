@@ -787,7 +787,14 @@ export const findChainedTransactions = [
     },
 ];
 
-export const getRbfParams = [
+type GetRbfParamsFixture = {
+    description: string;
+    account: unknown;
+    tx: unknown;
+    result: unknown;
+};
+
+export const getRbfParams: GetRbfParamsFixture[] = [
     {
         description: 'invalid account',
         account: { networkType: 'ethereum' },
