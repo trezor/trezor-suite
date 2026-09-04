@@ -86,10 +86,10 @@ import {
     DebugLinkGcInfo,
     DebugLinkGetGcInfo,
     DebugLinkGetPairingInfo,
-    DebugLinkN4W1Connected,
-    DebugLinkN4W1Read,
-    DebugLinkN4W1Response,
-    DebugLinkN4W1Write,
+    DebugLinkN1W1Connected,
+    DebugLinkN1W1Read,
+    DebugLinkN1W1Response,
+    DebugLinkN1W1Write,
     DebugLinkOptigaSetSecMax,
     DebugLinkPairingInfo,
     DebugLinkResetDebugEvents,
@@ -106,14 +106,12 @@ import {
 } from './messages-eos';
 import {
     EthereumAddress,
-    EthereumAuth7702Signature,
     EthereumDefinitionAck,
     EthereumDefinitionRequest,
     EthereumGetAddress,
     EthereumGetPublicKey,
     EthereumMessageSignature,
     EthereumPublicKey,
-    EthereumSignAuth7702,
     EthereumSignMessage,
     EthereumSignTx,
     EthereumSignTxEIP1559,
@@ -303,12 +301,14 @@ import {
 import {
     TronAddress,
     TronContractRequest,
+    TronDelegateResourceContract,
     TronFreezeBalanceV2Contract,
     TronGetAddress,
     TronSignTx,
     TronSignature,
     TronTransferContract,
     TronTriggerSmartContract,
+    TronUnDelegateResourceContract,
     TronUnfreezeBalanceV2Contract,
     TronVoteWitnessContract,
     TronWithdrawBalance,
@@ -478,10 +478,10 @@ export const MessageType = Type.Object(
         DebugLinkGetGcInfo,
         DebugLinkGcInfo,
         DebugLinkSetLogFilter,
-        DebugLinkN4W1Connected,
-        DebugLinkN4W1Write,
-        DebugLinkN4W1Read,
-        DebugLinkN4W1Response,
+        DebugLinkN1W1Connected,
+        DebugLinkN1W1Write,
+        DebugLinkN1W1Read,
+        DebugLinkN1W1Response,
         EosGetPublicKey,
         EosPublicKey,
         EosSignTx,
@@ -503,8 +503,6 @@ export const MessageType = Type.Object(
         EthereumVerifyMessage,
         EthereumSignTypedHash,
         EthereumTypedDataSignature,
-        EthereumSignAuth7702,
-        EthereumAuth7702Signature,
         EthereumSignTypedData,
         EthereumTypedDataStructRequest,
         EthereumTypedDataStructAck,
@@ -632,6 +630,8 @@ export const MessageType = Type.Object(
         TronUnfreezeBalanceV2Contract,
         TronWithdrawUnfreeze,
         TronWithdrawBalance,
+        TronDelegateResourceContract,
+        TronUnDelegateResourceContract,
         TronSignature,
     },
     { $id: 'MessageType' },
@@ -737,7 +737,6 @@ export type WireInMessage =
     | 'EthereumSignMessage'
     | 'EthereumVerifyMessage'
     | 'EthereumSignTypedHash'
-    | 'EthereumSignAuth7702'
     | 'EthereumSignTypedData'
     | 'EthereumTypedDataStructAck'
     | 'EthereumTypedDataValueAck'
@@ -812,7 +811,9 @@ export type WireInMessage =
     | 'TronFreezeBalanceV2Contract'
     | 'TronUnfreezeBalanceV2Contract'
     | 'TronWithdrawUnfreeze'
-    | 'TronWithdrawBalance';
+    | 'TronWithdrawBalance'
+    | 'TronDelegateResourceContract'
+    | 'TronUnDelegateResourceContract';
 
 export type WireOutMessage =
     | 'Success'
@@ -864,7 +865,6 @@ export type WireOutMessage =
     | 'EthereumDefinitionRequest'
     | 'EthereumMessageSignature'
     | 'EthereumTypedDataSignature'
-    | 'EthereumAuth7702Signature'
     | 'EthereumTypedDataStructRequest'
     | 'EthereumTypedDataValueRequest'
     | 'EvoluNode'
