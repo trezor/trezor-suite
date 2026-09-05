@@ -5,14 +5,12 @@ import { BigNumber } from '@trezor/utils';
 import { getYieldClaimRewardsSnapshot } from './yieldClaimRewards';
 
 const ethSymbol = asNetworkSymbol('eth');
-
-const createReward = ({
-    claimable,
-    fiatClaimable,
-}: {
+type CreateRewardParams = {
     claimable: string;
     fiatClaimable: string | null;
-}) => ({
+};
+
+const createReward = ({ claimable, fiatClaimable }: CreateRewardParams) => ({
     token: {
         address: '0x0000000000000000000000000000000000000001',
         symbol: 'USDC',

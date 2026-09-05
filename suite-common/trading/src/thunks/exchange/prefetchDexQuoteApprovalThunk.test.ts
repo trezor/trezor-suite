@@ -229,9 +229,10 @@ describe('prefetchDexQuoteApprovalThunk', () => {
 
         let resolveA: (() => void) | undefined;
         let resolveB: (() => void) | undefined;
+        type TradeParams = { trade: ExchangeTrade };
 
         jest.spyOn(tradeApi, 'doExchangeTrade').mockImplementation(
-            ({ trade }: { trade: ExchangeTrade }) =>
+            ({ trade }: TradeParams) =>
                 new Promise(resolve => {
                     const done = () => resolve({ quoteId: trade.quoteId } as ExchangeTrade);
                     if (trade.quoteId === quoteA.quoteId) {

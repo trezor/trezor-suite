@@ -106,16 +106,17 @@ const buildUpdatedDevice = () =>
         minor_version: 12,
         patch_version: 4,
     });
+type BuildPrecomposedTransactionParams = {
+    isTokenKnown?: boolean;
+    to: string;
+    token?: TokenInfo;
+};
 
 const buildPrecomposedTransaction = ({
     isTokenKnown = true,
     to,
     token,
-}: {
-    isTokenKnown?: boolean;
-    to: string;
-    token?: TokenInfo;
-}): GeneralPrecomposedTransactionFinal =>
+}: BuildPrecomposedTransactionParams): GeneralPrecomposedTransactionFinal =>
     ({
         outputs: [{ address: to, amount: '1000000' }],
         fee: '21000',

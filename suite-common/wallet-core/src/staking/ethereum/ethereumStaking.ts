@@ -110,17 +110,18 @@ export const buildClaimWithdrawRequestData = () => {
 
     return data;
 };
+type VerifyEthereumStakingCalldataParams = {
+    stakeType: StakeType;
+    calldata: string;
+    source?: string;
+};
 
 // Re-verifies calldata that was produced at compose time. Returns the Verifier issues so callers can fail with a specific message instead of throwing. For unstake the user-typed amount is not persisted in the form draft, so only the function selector and the SDK `source` field are checked — enough to reject calldata that targets a different function or wasn't produced by our SDK.
 export const verifyEthereumStakingCalldata = ({
     stakeType,
     calldata,
     source = WALLET_SDK_SOURCE,
-}: {
-    stakeType: StakeType;
-    calldata: string;
-    source?: string;
-}): { isValid: boolean; issues: VerifyIssue[] } => {
+}: VerifyEthereumStakingCalldataParams): { isValid: boolean; issues: VerifyIssue[] } => {
     const data = calldata as `0x${string}`;
     const sourceBigInt = BigInt(source);
 

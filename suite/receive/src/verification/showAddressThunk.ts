@@ -25,8 +25,10 @@ type ShowAddressThunkState = DeviceRootState &
 
 type ShowAddressThunkDeps = WithServices<DesktopAnalyticsDep>;
 
+type ShowAddressThunkParams = { path: string };
+
 export const showAddressThunk =
-    ({ path }: { path: string }) =>
+    ({ path }: ShowAddressThunkParams) =>
     async (
         dispatch: Dispatch,
         getState: () => ShowAddressThunkState,

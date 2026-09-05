@@ -156,14 +156,16 @@ export const getNextYieldFlowStep = (
 
     return sequence[stepIndex + 1] ?? step;
 };
+type GetYieldWithdrawInputTokenParams = {
+    flowData: YieldFlowResolvedData;
+    flowType: YieldWithdrawFlowType;
+};
 
 export const getYieldWithdrawInputToken = ({
     flowData,
     flowType,
-}: {
-    flowData: YieldFlowResolvedData;
-    flowType: YieldWithdrawFlowType;
-}): YieldFlowDisplayToken => (flowType === 'redeem' ? flowData.receiptToken : flowData.token);
+}: GetYieldWithdrawInputTokenParams): YieldFlowDisplayToken =>
+    flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
 export const buildYieldWithdrawCalldata = ({
     amount,

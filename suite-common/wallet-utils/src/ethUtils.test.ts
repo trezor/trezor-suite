@@ -311,16 +311,13 @@ describe('eth utils', () => {
         const DEPOSIT = '0xd0e30db0';
         const WITHDRAW =
             '0x2e1a7d4d0000000000000000000000000000000000000000000000000de0b6b3a7640000';
-
-        const tx = ({
-            targets = [],
-            internalTransfers = [],
-            data,
-        }: {
+        type TxParams = {
             targets?: { addresses?: string[] }[];
             internalTransfers?: { from: string }[];
             data?: string;
-        }) =>
+        };
+
+        const tx = ({ targets = [], internalTransfers = [], data }: TxParams) =>
             ({
                 symbol: 'eth',
                 targets,
@@ -369,16 +366,13 @@ describe('eth utils', () => {
         const ERC4626_WITHDRAW = `0xb460af94${AMOUNT}${RECEIVER}${RECEIVER}`;
         const ERC4626_REDEEM = `0xba087652${AMOUNT}${RECEIVER}${RECEIVER}`;
         const TRANSFER = `0xa9059cbb${RECEIVER}${AMOUNT}`;
-
-        const tx = ({
-            targets = [],
-            internalTransfers = [],
-            data,
-        }: {
+        type TxParams = {
             targets?: { addresses?: string[] }[];
             internalTransfers?: { from: string }[];
             data?: string;
-        }) =>
+        };
+
+        const tx = ({ targets = [], internalTransfers = [], data }: TxParams) =>
             ({
                 symbol: 'eth',
                 targets,
@@ -430,14 +424,12 @@ describe('eth utils', () => {
     describe('getWrappedNativeTxTarget', () => {
         const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
         const OTHER = '0x1111111111111111111111111111111111111111';
-
-        const tx = ({
-            targets = [],
-            internalTransfers = [],
-        }: {
+        type TxParams = {
             targets?: { addresses?: string[] }[];
             internalTransfers?: { from: string }[];
-        }) =>
+        };
+
+        const tx = ({ targets = [], internalTransfers = [] }: TxParams) =>
             ({
                 symbol: 'eth',
                 targets,

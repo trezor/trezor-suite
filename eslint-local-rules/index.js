@@ -8,6 +8,7 @@ require('ts-node').register({
 const { analyticsEventNameRule } = require('./analytics-event-name/rule');
 const { enforceDiFactoryContractsRule } = require('./named-contracts/di/rule');
 const { enforceThunkContractsRule } = require('./named-contracts/thunks/rule');
+const { enforceNamedParameterTypesRule } = require('./named-parameter-types/rule');
 const { noOverrideDsComponentRule } = require('./no-override-ds-component/rule');
 const { noPackageDeepImportsRule } = require('./no-package-deep-imports/rule');
 const { noSuiteImportsInSuiteCommonRule } = require('./no-suite-imports-in-suite-common/rule');
@@ -17,6 +18,7 @@ const { enforceThunkNamesRule } = require('./thunk-names/rule');
 module.exports = {
     'analytics-event-name': analyticsEventNameRule,
     'enforce-di-factory-contracts': enforceDiFactoryContractsRule,
+    'enforce-named-parameter-types': enforceNamedParameterTypesRule,
     'enforce-thunk-contracts': enforceThunkContractsRule,
     'enforce-thunk-names': enforceThunkNamesRule,
     'no-override-ds-component': noOverrideDsComponentRule,

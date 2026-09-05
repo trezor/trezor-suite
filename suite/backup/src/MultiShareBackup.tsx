@@ -11,8 +11,9 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
+type MultiShareBackupProps = { isDeviceLocked: boolean };
 
-export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }) => {
+export const MultiShareBackup = ({ isDeviceLocked }: MultiShareBackupProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();

@@ -919,6 +919,13 @@ export const accountSearchFn = (
         tokenMatch
     );
 };
+type GetUtxoFromSignedTransactionParams = {
+    account: Account;
+    receivingAccount?: boolean;
+    tx: GeneralPrecomposedTransactionFinal;
+    txid: string;
+    prevTxid?: string;
+};
 
 export const getUtxoFromSignedTransaction = ({
     account,
@@ -926,13 +933,7 @@ export const getUtxoFromSignedTransaction = ({
     tx,
     txid,
     prevTxid,
-}: {
-    account: Account;
-    receivingAccount?: boolean;
-    tx: GeneralPrecomposedTransactionFinal;
-    txid: string;
-    prevTxid?: string;
-}) => {
+}: GetUtxoFromSignedTransactionParams) => {
     if (tx.type !== 'final') return [];
 
     // find utxo to replace
@@ -1006,6 +1007,12 @@ export const getAccountAddresses = (account: Account) =>
     account.addresses
         ? account.addresses.unused.concat(account.addresses.used).concat(account.addresses.change)
         : [];
+type GetPendingAccountParams = {
+    account: Account;
+    receivingAccount?: boolean;
+    tx: GeneralPrecomposedTransactionFinal;
+    txid: string;
+};
 
 // update account before BLOCKCHAIN.NOTIFICATION or BLOCKCHAIN.BLOCK events
 // solves race condition between pushing transaction and received notification
@@ -1014,12 +1021,7 @@ export const getPendingAccount = ({
     receivingAccount,
     tx,
     txid,
-}: {
-    account: Account;
-    receivingAccount?: boolean;
-    tx: GeneralPrecomposedTransactionFinal;
-    txid: string;
-}): Account => {
+}: GetPendingAccountParams): Account => {
     // calculate availableBalance
     let availableBalanceBig = new BigNumber(account.availableBalance);
 
@@ -1163,6 +1165,15 @@ export const parseAccountKey = (accountKey: AccountKey) => {
  * @deprecated use createAccountKey directly
  */
 export const getAccountKey = createAccountKey;
+type PrepareNewAccountPayloadParams = {
+    accountType: AccountType;
+    networkSymbol: NetworkSymbol;
+    index: number;
+    backendType?: TrezorConnectBackendType;
+    selectedAccount?: NetworkAccount;
+    accountTypes?: NetworkAccount[];
+    device: TrezorDevice;
+};
 
 export const prepareNewAccountPayload = async ({
     accountType,
@@ -1172,15 +1183,7 @@ export const prepareNewAccountPayload = async ({
     selectedAccount,
     accountTypes,
     device,
-}: {
-    accountType: AccountType;
-    networkSymbol: NetworkSymbol;
-    index: number;
-    backendType?: TrezorConnectBackendType;
-    selectedAccount?: NetworkAccount;
-    accountTypes?: NetworkAccount[];
-    device: TrezorDevice;
-}) => {
+}: PrepareNewAccountPayloadParams) => {
     const network = getNetwork(networkSymbol);
     const networkAccount =
         selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);

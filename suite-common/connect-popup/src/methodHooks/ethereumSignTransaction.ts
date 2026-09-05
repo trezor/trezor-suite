@@ -23,14 +23,15 @@ import { selectConnectPopupCall } from '../connectPopupReducer';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
 
 const temporaryAccounts: Account[] = [];
+type _storePrecomposedTransactionParams = {
+    typedPayload: EthereumSignTransaction;
+    txSigningPrecomposed: PrecomposedTransactionFinal;
+};
 
 const _storePrecomposedTransaction = ({
     typedPayload,
     txSigningPrecomposed,
-}: {
-    typedPayload: EthereumSignTransaction;
-    txSigningPrecomposed: PrecomposedTransactionFinal;
-}) =>
+}: _storePrecomposedTransactionParams) =>
     sendFormActions.storePrecomposedTransaction({
         formState: {
             // Can be left empty, not used in tx review modal

@@ -27,6 +27,10 @@ export const DecryptionFailed = (): DecryptionFailed => ({
 export type EncryptionError = EncryptionUnavailable;
 export type DecryptionError = EncryptionUnavailable | DecryptionFailed;
 
+export type EncryptParams<T extends EncryptableBranded> = { value: T };
+
+export type DecryptParams<T extends EncryptableBranded> = { value: EncryptedHex<T> };
+
 export type PlatformEncryptionDep = { platformEncryption: PlatformEncryption };
 
 export const selectPlatformEncryptionDep = (services: any): PlatformEncryptionDep => ({
@@ -34,11 +38,11 @@ export const selectPlatformEncryptionDep = (services: any): PlatformEncryptionDe
 });
 
 export interface PlatformEncryption {
-    encrypt: <T extends EncryptableBranded>(params: {
-        value: T;
-    }) => Promise<Result<EncryptedHex<T>, EncryptionError>>;
+    encrypt: <T extends EncryptableBranded>(
+        params: EncryptParams<T>,
+    ) => Promise<Result<EncryptedHex<T>, EncryptionError>>;
 
-    decrypt: <T extends EncryptableBranded>(params: {
-        value: EncryptedHex<T>;
-    }) => Promise<Result<T, DecryptionError>>;
+    decrypt: <T extends EncryptableBranded>(
+        params: DecryptParams<T>,
+    ) => Promise<Result<T, DecryptionError>>;
 }

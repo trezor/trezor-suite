@@ -31,41 +31,36 @@ const getCompactCryptoAmountScale = (absoluteValue: BigNumber): CompactCryptoAmo
 
     return null;
 };
+type FormatTruncatedCryptoAmountParams = {
+    value: BigNumber;
+    locale: Locale;
+    minDecimalPlaces?: number;
+    decimalPlaces: number;
+};
 
 const formatTruncatedCryptoAmount = ({
     value,
     locale,
     minDecimalPlaces = 0,
     decimalPlaces,
-}: {
-    value: BigNumber;
-    locale: Locale;
-    minDecimalPlaces?: number;
-    decimalPlaces: number;
-}): string => {
+}: FormatTruncatedCryptoAmountParams): string => {
     const truncatedValue = truncateCryptoAmount(value, decimalPlaces);
 
     return localizeNumber(truncatedValue.toFixed(), locale, minDecimalPlaces, decimalPlaces);
+};
+type FormatCompactDustLimitParams = {
+    limit: BigNumber;
+    locale: Locale;
+    decimalPlaces: number;
 };
 
 const formatCompactDustLimit = ({
     limit,
     locale,
     decimalPlaces,
-}: {
-    limit: BigNumber;
-    locale: Locale;
-    decimalPlaces: number;
-}): string => `<${localizeNumber(limit.toFixed(), locale, decimalPlaces, decimalPlaces)}`;
-
-export const formatCompactCryptoAmount = ({
-    value,
-    locale,
-    // Money-like values (e.g. tokens with 6 decimals such as stablecoins) are rendered with
-    // two decimals to resemble fiat, with a higher `<0.01` dust threshold.
-    isMoneyLike = false,
-    areSubunitsDisplayed = false,
-}: {
+}: FormatCompactDustLimitParams): string =>
+    `<${localizeNumber(limit.toFixed(), locale, decimalPlaces, decimalPlaces)}`;
+type FormatCompactCryptoAmountParams = {
     value: string;
     locale: Locale;
     isMoneyLike?: boolean;
@@ -75,7 +70,16 @@ export const formatCompactCryptoAmount = ({
      * unit the user deliberately switched to.
      */
     areSubunitsDisplayed?: boolean;
-}): string => {
+};
+
+export const formatCompactCryptoAmount = ({
+    value,
+    locale,
+    // Money-like values (e.g. tokens with 6 decimals such as stablecoins) are rendered with
+    // two decimals to resemble fiat, with a higher `<0.01` dust threshold.
+    isMoneyLike = false,
+    areSubunitsDisplayed = false,
+}: FormatCompactCryptoAmountParams): string => {
     const cryptoAmount = new BigNumber(value);
     const absoluteCryptoAmount = cryptoAmount.abs();
 

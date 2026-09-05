@@ -4,14 +4,15 @@ import { type DeviceRootState } from '@suite-common/device';
 import { selectShouldAnimateLoadingSkeleton } from './loadingSkeletonSelectors';
 
 type LoadingSkeletonRootState = DeviceRootState & ModalRootState;
+type GetStateParams = {
+    hasActiveModal?: boolean;
+    isDeviceAuthorized?: boolean;
+};
 
 const getState = ({
     hasActiveModal = false,
     isDeviceAuthorized = true,
-}: {
-    hasActiveModal?: boolean;
-    isDeviceAuthorized?: boolean;
-} = {}): LoadingSkeletonRootState =>
+}: GetStateParams = {}): LoadingSkeletonRootState =>
     ({
         device: {
             selectedDevice: isDeviceAuthorized

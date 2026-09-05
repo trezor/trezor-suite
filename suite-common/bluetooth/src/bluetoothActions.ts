@@ -10,10 +10,11 @@ import {
 } from './types';
 
 export const BLUETOOTH_PREFIX = '@suite/bluetooth';
+type StatusParams = { status: BluetoothAdapterStatus };
 
 const adapterEventAction = createAction(
     `${BLUETOOTH_PREFIX}/adapter-event`,
-    ({ status }: { status: BluetoothAdapterStatus }) => ({ payload: { status } }),
+    ({ status }: StatusParams) => ({ payload: { status } }),
 );
 
 type BluetoothNearbyDevicesUpdateActionPayload = {
@@ -37,37 +38,38 @@ const knownDevicesUpdateAction = createAction(
         payload: { knownDevices },
     }),
 );
+type IdParams = { id: BluetoothDeviceId };
 
 const removeKnownDeviceAction = createAction(
     `${BLUETOOTH_PREFIX}/remove-known-device`,
-    ({ id }: { id: BluetoothDeviceId }) => ({
+    ({ id }: IdParams) => ({
         payload: { id },
     }),
 );
+type DeviceParams = { device: BluetoothDeviceCommon };
 
 const deviceUpdateAction = createAction(
     `${BLUETOOTH_PREFIX}/device-update-event`,
-    ({ device }: { device: BluetoothDeviceCommon }) => ({
+    ({ device }: DeviceParams) => ({
         payload: { device },
     }),
 );
+type DeviceIdConnectionStatusParams = {
+    deviceId: BluetoothDeviceId;
+    connectionStatus: DeviceBluetoothConnectionStatus;
+};
 
 const updateDeviceConnectionStatus = createAction(
     `${BLUETOOTH_PREFIX}/update-device-connection-status`,
-    ({
-        deviceId,
-        connectionStatus,
-    }: {
-        deviceId: BluetoothDeviceId;
-        connectionStatus: DeviceBluetoothConnectionStatus;
-    }) => ({
+    ({ deviceId, connectionStatus }: DeviceIdConnectionStatusParams) => ({
         payload: { deviceId, connectionStatus },
     }),
 );
+type StatusParams2 = { status: BluetoothScanStatus };
 
 const scanStatusAction = createAction(
     `${BLUETOOTH_PREFIX}/scan-status`,
-    ({ status }: { status: BluetoothScanStatus }) => ({ payload: { status } }),
+    ({ status }: StatusParams2) => ({ payload: { status } }),
 );
 
 const enableAutoConnect = createAction(
