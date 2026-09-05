@@ -3,10 +3,7 @@ import { useEffect, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { useDispatch } from '@suite-common/redux-utils';
-import {
-    type EnhancedTokenInfo,
-    type TokenManagementAction,
-} from '@suite-common/token-definitions';
+import { type TokenInfo, type TokenManagementAction } from '@suite-common/token-definitions';
 import { tradingThunks } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -31,8 +28,8 @@ export const NoSearchResultsWrapped = () => (
 interface TokensTableProps {
     type?: TokensTableType;
     account: Account;
-    tokensWithBalance: EnhancedTokenInfo[];
-    tokensWithoutBalance: EnhancedTokenInfo[];
+    tokensWithBalance: TokenInfo[];
+    tokensWithoutBalance: TokenInfo[];
     network: Network;
     tokenStatusType: TokenManagementAction;
     hideRates?: boolean;

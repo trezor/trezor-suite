@@ -8,7 +8,7 @@ import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
-    type EnhancedTokenInfo,
+    type TokenInfo,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
@@ -51,7 +51,7 @@ import { DropdownRow } from '../../tokens/DropdownRow';
 import { BlurUrls } from '../../tokens/common/BlurUrls';
 
 type NftsRowProps = {
-    nft: EnhancedTokenInfo;
+    nft: TokenInfo;
     network: Network;
     selectedAccount: SelectedAccountStatus;
     isShown?: boolean;
