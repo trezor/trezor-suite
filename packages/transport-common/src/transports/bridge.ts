@@ -403,7 +403,13 @@ export class BridgeTransport extends AbstractTransport {
     private async post(
         endpoint: '/release',
         options: IncompleteRequestOptions,
-    ): AsyncResultWithTypedError<undefined, BridgeCommonErrors | typeof ERRORS.SESSION_NOT_FOUND>;
+    ): AsyncResultWithTypedError<
+        undefined,
+        | BridgeCommonErrors
+        | typeof ERRORS.SESSION_NOT_FOUND
+        | typeof ERRORS.DEVICE_NOT_FOUND
+        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
+    >;
     private async post(
         endpoint: '/abort',
         options: IncompleteRequestOptions,
@@ -464,6 +470,8 @@ export class BridgeTransport extends AbstractTransport {
                 case '/release':
                     return this.unknownError(response.error.code, [
                         ERRORS.SESSION_NOT_FOUND,
+                        // device disconnected between releaseIntent and releaseDone
+                        ERRORS.DEVICE_NOT_FOUND,
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
                     ]);
                 default:
