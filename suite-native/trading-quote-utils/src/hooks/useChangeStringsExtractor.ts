@@ -11,7 +11,6 @@ export const useChangeStringsExtractor = (
 ): TradeOperationData & {
     fromStringValue: string | undefined;
     toStringValue: string | undefined;
-    formattedRate?: string | undefined;
 } => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const formatCryptoValue = useFormatCryptoValue();
@@ -38,35 +37,6 @@ export const useChangeStringsExtractor = (
         );
     };
 
-    const formatExchangeRate = () => {
-        if (!fromValue || !toValue || !fromCurrency || !toCurrency) {
-            return undefined;
-        }
-
-        const fromBigNumber = new BigNumber(fromValue);
-        const toBigNumber = new BigNumber(toValue);
-
-        if (fromBigNumber.isNaN() || toBigNumber.isNaN() || toBigNumber.isZero()) {
-            return undefined;
-        }
-
-        const rate = fromBigNumber.div(toBigNumber);
-
-        const rateFormatted = isFromCrypto
-            ? formatCryptoValue(rate.toString(), fromCurrency, false)
-            : formatFiatValue(asBaseCurrencyAmount(rate), fromCurrency);
-
-        const targetCurrencyFormatted = isToCrypto
-            ? formatCryptoValue('1', toCurrency, false)
-            : formatFiatValue(asBaseCurrencyAmount(new BigNumber('1')), toCurrency, 0);
-
-        if (!rateFormatted || !targetCurrencyFormatted) {
-            return undefined;
-        }
-
-        return `${rateFormatted} / ${targetCurrencyFormatted}`;
-    };
-
     const fromStringValue = isFromCrypto
         ? formatCryptoValue(fromValue, fromCurrency)
         : formatFiatValue(
@@ -85,6 +55,5 @@ export const useChangeStringsExtractor = (
         ...tradeOperationData,
         fromStringValue,
         toStringValue,
-        formattedRate: formatExchangeRate(),
     };
 };
