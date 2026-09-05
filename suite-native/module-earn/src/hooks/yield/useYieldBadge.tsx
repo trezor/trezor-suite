@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { selectBestEnabledYieldVault } from '@suite-common/earn-stablecoin';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { type EnhancedTokenInfo } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     getYieldVaultForOutputToken,
@@ -23,7 +22,7 @@ interface YieldBadgeData {
 
 interface UseYieldBadgeProps {
     networkSymbol?: NetworkSymbol;
-    token?: EnhancedTokenInfo;
+    token?: TokenInfo;
     accountTokens: TokenInfo[] | undefined;
     type: 'default' | 'defi';
     yieldOpportunities?: YieldDtoV2[];

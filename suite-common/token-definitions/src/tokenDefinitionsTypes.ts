@@ -54,4 +54,4 @@ export type TokenDefinitions = {
 
 export type TokenManagementStorage = { key: string; value: SimpleTokenStructure };
 
-export type EnhancedTokenInfo = TokenInfo;
+export type { TokenInfo };
