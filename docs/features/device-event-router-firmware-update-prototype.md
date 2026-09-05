@@ -116,10 +116,11 @@ recursing through the patch. Test teardown and hot reload explicitly uninstall
 the bridge. The static reference is isolated to this infrastructure adapter and
 can be removed after callers migrate to DI.
 
-For each intercepted legacy call, the bridge registers its
-`callId -> connectionId` association with a read-only routing index. A
-legacy-call compatibility handler owns only UI events for those registered call
-IDs. It projects each request for the explicitly mapped device and never
+For each intercepted legacy call that supplies a call ID, the bridge registers
+its `callId -> connectionId` association with a read-only routing index. The
+bridge preserves an explicit call ID but does not generate one when it is
+missing. A legacy-call compatibility handler owns only UI events for registered
+call IDs. It projects each request for the explicitly mapped device and never
 resolves `selectedDevice`. Registration is removed in `finally` when the call
 finishes, fails, or is cancelled.
 
@@ -532,6 +533,8 @@ fallback.
 ## Known Connect constraints
 
 - Firmware method UI events and requests carry the method `callId`.
+- Connect does not generate a missing method call ID. UI events are annotated
+  only when the caller supplied one.
 - General device lifecycle events do not carry that `callId`.
 - Connect's internal firmware reconnect logic currently uses
   `deviceList.getOnlyDevice(apiType)`. Two devices on the same transport type can
@@ -572,7 +575,9 @@ fallback.
 
 1. Define the exact normal connection and firmware state graphs, including
    command validity and recovery transitions.
-2. Define which safe device fields are projected into the pre-connection UI
+2. Decide how legacy UI events without a call ID or device payload are routed
+   without selected-device context.
+3. Define which safe device fields are projected into the pre-connection UI
    slice.
-3. Decide how much of the prototype debug UI is retained when the architecture
+4. Decide how much of the prototype debug UI is retained when the architecture
    moves toward production.
