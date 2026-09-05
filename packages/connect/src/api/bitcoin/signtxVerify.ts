@@ -124,7 +124,7 @@ export const verifyTx = (
         const { outs } = bitcoinTx;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const txOut: (typeof outs)[number] = outs[i];
-        if (output.amount) {
+        if (output.amount != null) {
             if (output.amount.toString() !== txOut.value) {
                 throw ERRORS.TypedError(
                     'Runtime',
