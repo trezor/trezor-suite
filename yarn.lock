@@ -15258,6 +15258,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/component-tests@workspace:suite/component-tests":
+  version: 0.0.0-use.local
+  resolution: "@suite/component-tests@workspace:suite/component-tests"
+  dependencies:
+    "@playwright/browser-chromium": "npm:1.62.1"
+    "@playwright/test": "npm:1.62.1"
+    "@trezor/eslint": "workspace:*"
+    "@trezor/suite-build": "workspace:*"
+    "@types/node": "npm:22.13.10"
+    "@vitejs/plugin-react": "npm:^6.0.1"
+    react: "npm:19.2.3"
+    react-dom: "npm:19.2.3"
+    vite: "npm:^8.0.7"
+  languageName: unknown
+  linkType: soft
+
 "@suite/debug@workspace:*, @suite/debug@workspace:suite/debug":
   version: 0.0.0-use.local
   resolution: "@suite/debug@workspace:suite/debug"
@@ -17646,7 +17662,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-build@workspace:packages/suite-build":
+"@trezor/suite-build@workspace:*, @trezor/suite-build@workspace:packages/suite-build":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-build@workspace:packages/suite-build"
   dependencies:

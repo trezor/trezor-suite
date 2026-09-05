@@ -1,0 +1,13 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "jsx": "react-jsx",
+        "types": ["node", "vite/client"]
+    },
+    "include": ["gallery", "*.ts", "*.mts"],
+    "references": [
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/suite-build" }
+    ]
+}

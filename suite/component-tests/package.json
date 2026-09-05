@@ -1,0 +1,26 @@
+{
+    "name": "@suite/component-tests",
+    "version": "0.0.0",
+    "private": true,
+    "license": "SEE LICENSE IN LICENSE.md",
+    "sideEffects": false,
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "build:gallery": "vite build --config vite.config.mts",
+        "test:component": "yarn build:gallery && playwright test",
+        "test:component:ui": "COMPONENT_TESTS_DEV=1 playwright test --ui"
+    },
+    "devDependencies": {
+        "@playwright/browser-chromium": "1.62.1",
+        "@playwright/test": "1.62.1",
+        "@trezor/eslint": "workspace:*",
+        "@trezor/suite-build": "workspace:*",
+        "@types/node": "22.13.10",
+        "@vitejs/plugin-react": "^6.0.1",
+        "react": "19.2.3",
+        "react-dom": "19.2.3",
+        "vite": "^8.0.7"
+    }
+}
