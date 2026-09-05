@@ -12,7 +12,6 @@ export type CardanoStaking = {
     loading: boolean;
     fee?: string;
     deposit?: string;
-    isActive?: boolean;
     rewards?: string;
     calculateFeeAndDeposit: (action: CardanoAction) => Promise<void>;
     isStakingDisabled: boolean;
