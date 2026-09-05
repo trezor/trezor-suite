@@ -48,8 +48,6 @@ export type MetadataAddPayload = { skipSave?: boolean } & (
           entityKey: string;
           defaultValue: string;
           value?: string;
-          networkType?: string;
-          path?: string;
       }
     | {
           type: 'walletLabel';
