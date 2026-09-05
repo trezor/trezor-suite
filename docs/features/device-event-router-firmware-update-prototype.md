@@ -152,6 +152,22 @@ by that machine receives a fresh `callId`. The manager maintains an index from
 each active call ID to its owning connection. A late event from an earlier call
 cannot satisfy a transition for a later method in the same workflow.
 
+Each device permits at most one active operation. Commands that do not belong to
+the current operation are rejected immediately with a typed `deviceBusy` result;
+they are not queued. Connect events, UI responses, and effect completions that
+belong to the active call remain valid inputs for that operation.
+
+Transitions run synchronously to completion and never await. Asynchronous
+effects return through new inputs tagged with their call ID and machine
+generation. A small reentrancy guard may defer an input raised synchronously by
+another transition, but there is no general asynchronous command mailbox.
+
+A device disconnect is a terminal interrupt. At the next JavaScript turn it
+invalidates the machine generation and all active call IDs, rejects pending UI
+requests, discards deferred commands, removes temporary presentation state, and
+destroys an unfinished connection machine. Any later result from invalidated
+work is ignored. Other devices' machines continue independently.
+
 If a device disconnects before its normal connection workflow is complete, the
 manager terminates that machine. It cancels active call IDs, rejects or clears
 pending child-workflow requests, and removes the temporary UI projection. A
