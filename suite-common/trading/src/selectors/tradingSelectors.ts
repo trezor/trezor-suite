@@ -144,9 +144,7 @@ export type TradingSellInfoSelector = Omit<
     supportedFiatCurrencies: Set<FiatCurrencyCode>;
 };
 
-export type TradingSellStateSelector = Omit<TradingSellState, 'sellInfo'> & {
-    sell?: TradingSellInfoSelector;
-};
+export type TradingSellStateSelector = Omit<TradingSellState, 'sellInfo'>;
 
 export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell'> & {
     buy: TradingBuyStateSelector;

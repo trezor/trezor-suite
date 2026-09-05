@@ -8,17 +8,13 @@ import {
 } from 'invity-api';
 
 import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { type CardanoOutput, type FeeLevel, type PROTO } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 
 import { type TradingTransaction, type TradingType, type TradingVerifiedAddress } from '../types';
 import { type TradingBuyState, buyInitialState } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
 import { type TradingExchangeState, exchangeInitialState } from './exchangeReducer';
 import { type TradingSellState, sellInitialState } from './sellReducer';
-
-type TradingComposedTransactionInfoOutputs = {
-    outputs?: PROTO.TxOutputType[] | CardanoOutput[];
-};
 
 export interface TradingComposedTransactionInfo {
     composed?: Pick<
@@ -30,8 +26,7 @@ export interface TradingComposedTransactionInfo {
         | 'maxFeePerGas'
         | 'maxPriorityFeePerGas'
         | 'token'
-    > &
-        TradingComposedTransactionInfoOutputs;
+    >;
     selectedFee?: FeeLevel['label'];
 }
 

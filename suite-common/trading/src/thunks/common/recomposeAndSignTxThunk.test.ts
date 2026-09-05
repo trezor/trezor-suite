@@ -875,7 +875,6 @@ describe('recomposeAndSignTxThunk', () => {
                     feeLimit: '64285', // energy units
                     token: { contract: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' } as TokenInfo,
                     fee: '6428500',
-                    outputs: [],
                 },
             },
         });
@@ -930,7 +929,6 @@ describe('recomposeAndSignTxThunk', () => {
                     // Offers-page estimate against the cold stand-in recipient:
                     // 0.1 create-account fee + 1 activation.
                     fee: '1100000',
-                    outputs: [],
                 },
             },
         });
@@ -985,7 +983,6 @@ describe('recomposeAndSignTxThunk', () => {
                     feeLimit: '64285',
                     token: { contract: '0x123457' } as TokenInfo,
                     fee: '1000',
-                    outputs: [],
                 },
             },
         });
