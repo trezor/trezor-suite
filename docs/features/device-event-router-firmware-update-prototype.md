@@ -311,6 +311,12 @@ user continues after a confirmed failure, the completed workflow projects both
 the device and its failed-authenticity result into Redux. No partial device state
 is projected into the ordinary device collection while the check is pending.
 
+A known device with a still-valid confirmed failure has already completed that
+decision flow. On reconnect it is projected immediately together with the
+stored failed result, allowing the compromised-device UI to block its use. The
+device is never projected as normally authenticated, and retrying the check is a
+separate explicit operation.
+
 The authenticity service receives a narrow injected policy getter. Its Suite
 implementation may read configuration through Redux selectors, including
 feature gates and whether debug keys are allowed. The business service does not
