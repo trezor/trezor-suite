@@ -1,12 +1,17 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 
+import { messages as definedMessages } from '@suite/intl';
 import { selectLanguage, selectShowTranslationKeys } from '@suite/settings';
 import type { Locale } from '@suite-common/suite-types';
 import { isDevEnv } from '@suite-common/suite-utils';
 import enMessages from '@trezor/suite-data/files/translations/en-US.json';
 
 import { useSelector } from 'src/hooks/suite';
+
+import { getEffectiveIntlMessages } from './getEffectiveIntlMessages';
+
+const DEFINED_MESSAGE_IDS = Object.keys(definedMessages);
 
 const useFetchMessages = (locale: Locale) => {
     const [messages, setMessages] = useState<{ [key: string]: any }>({});
@@ -43,11 +48,15 @@ export const ConnectedIntlProvider = ({ children }: ConnectedIntlProviderProps) 
     const locale = useSelector(selectLanguage);
     const showTranslationKeys = useSelector(selectShowTranslationKeys);
     const messages = useFetchMessages(locale);
-    const effectiveMessages = useMemo(() => {
-        if (!showTranslationKeys) return messages;
-
-        return Object.fromEntries(Object.keys(messages).map(id => [id, id]));
-    }, [messages, showTranslationKeys]);
+    const effectiveMessages = useMemo(
+        () =>
+            getEffectiveIntlMessages({
+                localizedMessages: messages,
+                definedMessageIds: DEFINED_MESSAGE_IDS,
+                showTranslationKeys,
+            }),
+        [messages, showTranslationKeys],
+    );
 
     return (
         <IntlProvider
