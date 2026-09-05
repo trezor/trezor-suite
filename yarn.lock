@@ -17132,6 +17132,7 @@ __metadata:
     "@vitest/browser-playwright": "npm:^4.1.10"
     cross-fetch: "npm:^4.1.0"
     crypto-browserify: "npm:3.12.1"
+    fast-check: "npm:^4.8.0"
     jest: "npm:29.7.0"
     jws: "npm:^4.0.1"
     process: "npm:^0.11.10"
@@ -28898,6 +28899,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-check@npm:^4.8.0":
+  version: 4.8.0
+  resolution: "fast-check@npm:4.8.0"
+  dependencies:
+    pure-rand: "npm:^8.0.0"
+  checksum: 10/32101d27e69f7f0a3ea486f1a6feee6b34c824ba14bf3efce2ad1741fcd412817ac3ed14f53ef57a55d6fe2e00038e399c4a9c62444446a6e7a1a4b04bc6b88d
+  languageName: node
+  linkType: hard
+
 "fast-content-type-parse@npm:^2.0.0":
   version: 2.0.1
   resolution: "fast-content-type-parse@npm:2.0.1"
@@ -40470,6 +40480,13 @@ __metadata:
   version: 7.0.1
   resolution: "pure-rand@npm:7.0.1"
   checksum: 10/c61a576fda5032ec9763ecb000da4a8f19263b9e2f9ae9aa2759c8fbd9dc6b192b2ce78391ebd41abb394a5fedb7bcc4b03c9e6141ac8ab20882dd5717698b80
+  languageName: node
+  linkType: hard
+
+"pure-rand@npm:^8.0.0":
+  version: 8.4.1
+  resolution: "pure-rand@npm:8.4.1"
+  checksum: 10/3bdbd3be06f672a397218eaabbfe60aab8ac489b0eeb01d3963497d6ce245b4ffc8e7aefe9d9f62eff925c4264e597b733a16c1c23a3d7d019af1d32edd0b266
   languageName: node
   linkType: hard
 

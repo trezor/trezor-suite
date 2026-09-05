@@ -187,6 +187,13 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     private sessionDfd?: Deferred<Session | null>;
 
+    // Terminal flag: set once `disconnect()` has torn down this instance's
+    // transport listeners. A disconnected Device must never start a new run — its
+    // `onTransportDeviceEvent` listener is gone, so `acquire()`'s
+    // `waitAndCompareSession` would await a `sessionDfd` nothing ever resolves and
+    // hang forever (see CONCURRENCY_MODEL.md Finding 3).
+    private disconnected = false;
+
     constructor({ id, transport, descriptor, createLogger }: DeviceParams) {
         super();
 
@@ -357,6 +364,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     // call only once, right after device creation
     async handshake() {
+        // Disconnected while queued behind DeviceList's handshakeLock: report
+        // not-connected so DeviceList skips the push and the lock is released for
+        // the next device (see CONCURRENCY_MODEL.md Finding 3).
+        if (this.disconnected) {
+            return false;
+        }
         if (this.isUsedElsewhere()) {
             return true;
         }
@@ -394,7 +407,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     private async updateDescriptor(descriptor: Descriptor) {
         this.sessionDfd?.resolve(descriptor.session);
 
-        await Promise.all([this.acquirePromise, this.releasePromise]);
+        // Only wait for any in-flight acquire/release to settle before reading
+        // `sessionAcquired` below; their outcome is irrelevant here and a rejecting
+        // `acquirePromise` (e.g. SESSION_WRONG_PREVIOUS when the session was taken
+        // elsewhere mid-acquire) is already handled by the run path. `Promise.all`
+        // would re-raise that rejection on this uncaught event-handler path.
+        await Promise.allSettled([this.acquirePromise, this.releasePromise]);
 
         // TODO improve these conditions
 
@@ -445,6 +463,13 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     // TODO empty fn variant can be split/removed
     run(fn?: () => Promise<void>, options: RunOptions = {}) {
+        if (this.disconnected) {
+            // A handshake queued behind DeviceList's handshakeLock can reach this
+            // point after the device disconnected; acquiring now would hang on a
+            // sessionDfd no listener resolves, stalling the lock for every later
+            // device (see CONCURRENCY_MODEL.md Finding 3).
+            throw ERRORS.TypedError('Device_Disconnected');
+        }
         if (this.runPromise) {
             this.logger.warn('Previous call is still running');
             throw ERRORS.TypedError('Device_CallInProgress');
@@ -529,6 +554,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
         const acquireNeeded = !this.isUsedHere() || this.currentSession?.isDisposed();
         if (acquireNeeded) {
+            // If the run was already aborted while parked above (e.g. interrupted
+            // while waiting on a previous release), bail before acquiring: the
+            // run's catch handler has already run its release path against the
+            // session state it saw at abort time, so a session acquired here would
+            // never be released — a leaked transport session.
+            if (abortSignal.aborted) throw abortSignal.reason;
             // acquire session
             await this.acquire();
         }
@@ -957,6 +988,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     private disconnect() {
         this.logger.debug('Disconnect cleanup');
 
+        this.disconnected = true;
         this.transport.off(TRANSPORT.STOPPED, this.onTransportStopped);
         this.transport.deviceEvents.off(this.descriptor.path, this.onTransportDeviceEvent);
         this.removeAllListeners();
