@@ -1,3 +1,5 @@
+/// <reference lib="webworker" />
+
 // Abstract class extended by WorkerModule (see /src/workers/*/index.ts)
 // Provides an interface of WorkerGlobalScope to behave as regular WebWorker (see /src/index.ts)
 // Goal is to Make no difference from the implementation point of view between:
