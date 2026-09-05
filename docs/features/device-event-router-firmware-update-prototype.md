@@ -296,10 +296,13 @@ later physical connection starts a new workflow. Normal connection machines do
 not guess identity across a disconnect; firmware is the explicit exception
 because it owns a guarded lease and enters states that expect device reboots.
 
-The user must explicitly start the Optiga/device-authenticity check. Until that
-workflow reaches an accepted terminal outcome, the service publishes safe
-presentation data to a dedicated UI slice but does not add the device to the
-ordinary Redux device collection.
+The authenticity gate is policy-driven and independent of whether onboarding UI
+is mounted. A new or unverified device must wait for the user to explicitly
+start the Optiga/device-authenticity check. Until that workflow reaches an
+accepted terminal outcome, the service publishes safe presentation data to a
+dedicated UI slice but does not add the device to the ordinary Redux device
+collection. A known device with a still-valid accepted result may skip the gate
+and complete its normal projection immediately.
 
 A successful authenticity result continues the connection workflow
 automatically. A confirmed failure or inconclusive result stays in the
@@ -314,7 +317,8 @@ feature gates and whether debug keys are allowed. The business service does not
 depend on the store or selectors directly, and Redux does not contain the
 connection process state. The workflow snapshots the returned policy when an
 authenticity check starts so a configuration update cannot change the meaning of
-an active check.
+an active check. The getter also resolves stored verification information from
+the explicitly supplied device identity; it never infers `selectedDevice`.
 
 ## Child workflows
 
