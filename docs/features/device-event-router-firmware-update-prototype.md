@@ -110,6 +110,19 @@ recursing through the patch. Test teardown and hot reload explicitly uninstall
 the bridge. The static reference is isolated to this infrastructure adapter and
 can be removed after callers migrate to DI.
 
+The existing typed `connect-init` blacklist of methods that do not require the
+current lock is the starting point for classifying global and device calls. The
+classification moves behind `@suite-common/device-operation` and is covered
+exhaustively against Connect's callable method union. Mixed methods are resolved
+from their actual parameters; in particular, `getAccountInfo` must no longer be
+globally exempt when invoked with a device.
+
+The existing Redux `lockDevice` counter may remain as a presentation projection
+while callers migrate, but it is not the lock authority. Likewise, the current
+application-wide `getSynchronize` wrapper cannot remain the execution model
+because it prevents independent devices from running in parallel. The
+coordinator replaces that enforcement with per-device leases.
+
 The coordinator maintains locks per device rather than one application-wide
 lock. Independent devices may run operations in parallel. An incompatible call
 against a locked device returns a typed `deviceBusy` result before reaching
