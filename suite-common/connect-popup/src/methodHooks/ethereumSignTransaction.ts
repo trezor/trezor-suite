@@ -1,14 +1,8 @@
-import { type Dispatch } from '@reduxjs/toolkit/react';
-
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { isEvmTxSimulationSupported } from '@suite-common/tx-simulation';
 import { asNetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
-import {
-    accountsActions,
-    selectAccountForNetworkSymbolAndPath,
-    sendFormActions,
-} from '@suite-common/wallet-core';
+import { selectAccountForNetworkSymbolAndPath, sendFormActions } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getPrecomposedTxWithAccountToken } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
@@ -22,12 +16,12 @@ import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
-import { createPlaceholderAccount } from './utils';
+import { createPlaceholderAccount, createTemporaryAccountsRegistry } from './utils';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { selectConnectPopupCall } from '../connectPopupReducer';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
 
-const temporaryAccounts: Account[] = [];
+const temporaryAccounts = createTemporaryAccountsRegistry();
 type _storePrecomposedTransactionParams = {
     typedPayload: EthereumSignTransaction;
     txSigningPrecomposed: PrecomposedTransactionFinal;
@@ -109,7 +103,7 @@ const preCallHook = async <M extends CallMethodKeys>({
             const createdAccount = await dispatch(
                 createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
             );
-            temporaryAccounts.push(createdAccount.payload.account);
+            temporaryAccounts.track(createdAccount.payload.account);
             selectedAccount = createdAccount.payload.account;
         }
         if (!selectedAccount) {
@@ -205,17 +199,8 @@ const preCallHook = async <M extends CallMethodKeys>({
     }
 };
 
-const cleanupHook = (dispatch: Dispatch) => {
-    if (temporaryAccounts.length) {
-        // Dispatch a copy: temporaryAccounts is cleared below and Redux carries the payload by
-        // reference, so mutating it would mutate the already-dispatched action's payload.
-        dispatch(accountsActions.removeAccount([...temporaryAccounts]));
-        temporaryAccounts.length = 0;
-    }
-};
-
 const postCallHook = <M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) => {
-    cleanupHook(dispatch);
+    temporaryAccounts.cleanup(dispatch);
 
     return false;
 };
@@ -223,5 +208,4 @@ const postCallHook = <M extends CallMethodKeys>({ dispatch }: PostCallHookParams
 export const ethereumSignTransaction = {
     preCallHook,
     postCallHook,
-    cleanupHook,
 };
