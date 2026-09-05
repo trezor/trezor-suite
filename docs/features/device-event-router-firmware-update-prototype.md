@@ -168,6 +168,12 @@ requests, discards deferred commands, removes temporary presentation state, and
 destroys an unfinished connection machine. Any later result from invalidated
 work is ignored. Other devices' machines continue independently.
 
+A transport stop or failure is a broadcast terminal interrupt. The ingress
+registry identifies every machine associated with the affected transport, and
+the router delivers a `transportUnavailable` input to each one. Each affected
+machine performs the same invalidation and cleanup as for an explicit device
+disconnect; machines on other transports continue independently.
+
 If a device disconnects before its normal connection workflow is complete, the
 manager terminates that machine. It cancels active call IDs, rejects or clears
 pending child-workflow requests, and removes the temporary UI projection. A
