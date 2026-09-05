@@ -246,6 +246,12 @@ The normal product UI may expose only one connection workflow at a time. The
 prototype UI may render independent workflows side by side to prove that the
 service architecture supports parallel connections.
 
+This is exclusively a presentation policy. Every machine publishes its own UI
+state keyed by `connectionId` and may independently wait for user input while
+holding its device lease. Production Redux/UI chooses one connection ID to
+render; the debug split view may render all of them. The state-machine manager
+does not grant a global UI slot and does not read which workflow is visible.
+
 A representative connection sequence is:
 
 ```text
