@@ -127,9 +127,8 @@ export const simpleSearchTransactions = (
         }
 
         // Is number?
-        if (!Number.isNaN(search)) {
-            const amount = new BigNumber(search);
-
+        const amount = new BigNumber(search);
+        if (!amount.isNaN()) {
             return transactions.filter(t => numberSearchFilter(t, amount, searchOperator));
         }
 
@@ -140,7 +139,7 @@ export const simpleSearchTransactions = (
     const txsToSearch: string[] = [];
 
     // Searching for an amount (without operator)
-    if (!Number.isNaN(search)) {
+    if (!new BigNumber(search).isNaN()) {
         const foundTxsForNumber = transactions.flatMap(transaction => {
             const targetAmounts = getTargetAmounts(transaction);
             if (targetAmounts.filter(targetAmount => targetAmount.includes(search)).length === 0) {

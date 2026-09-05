@@ -139,6 +139,12 @@ export const searchTransactionsFixture = [
         ],
     },
     {
+        // A non-numeric value after an operator must not match any transaction.
+        description: 'Non-numeric operator search matches nothing',
+        search: '!= notanumber',
+        result: [],
+    },
+    {
         description: 'Date search',
         search: '2020-12-03',
         result: [
