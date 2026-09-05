@@ -17879,6 +17879,7 @@ __metadata:
     "@trezor/network-solana": "workspace:*"
     "@trezor/perf-e2e": "workspace:*"
     "@trezor/protobuf": "workspace:*"
+    "@trezor/suite": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop": "workspace:*"
     "@trezor/theme": "workspace:*"

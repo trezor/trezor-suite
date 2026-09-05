@@ -24,6 +24,7 @@ import { GuidePanel } from './pageObjects/guidePanel';
 import { MetadataPage } from './pageObjects/metadata/metadataPage';
 import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
 import { PaginationControl } from './pageObjects/pagination';
+import { PromoBanner } from './pageObjects/promoBanner';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { StakingSection } from './pageObjects/staking/stakingSection';
@@ -87,6 +88,7 @@ type Fixtures = {
             interaction: () => Promise<void>,
         ) => Promise<PerfMetrics | null>;
     };
+    promoBanner: PromoBanner;
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
@@ -217,6 +219,9 @@ const test = suiteBaseTest.extend<Fixtures>({
             measure: (scenario, interaction) =>
                 measurePerformance(page, testInfo, scenario, interaction),
         });
+    },
+    promoBanner: async ({ page }, use) => {
+        await use(new PromoBanner(page));
     },
 });
 

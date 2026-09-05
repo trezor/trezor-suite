@@ -17,6 +17,7 @@ export class DebugTab {
     readonly quotaManagerUrlSaveButton: Locator;
     readonly quotaManagerEnforceCheckbox: Locator;
     readonly suiteSyncDebugToggle: Locator;
+    readonly messageSystemLocalButton: Locator;
 
     constructor(private readonly page: Page) {
         this.suiteSyncUrlInput = page.getByTestId('@settings/debug/suite-sync/relay-url-input');
@@ -41,6 +42,7 @@ export class DebugTab {
             '@settings/debug/quota-manager-enforce-for-custom-relay-checkbox',
         );
         this.suiteSyncDebugToggle = page.getByTestId('@settings/debug/suite-sync/debug-toggle');
+        this.messageSystemLocalButton = page.getByTestId('select-bar/local');
     }
 
     @step()

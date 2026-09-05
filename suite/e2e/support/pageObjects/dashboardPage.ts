@@ -8,7 +8,6 @@ import { DeviceFixture } from '../device';
 import { expect } from '../testExtends/customMatchers';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
-export type PromoBannerType = 'ts7' | 'stablecoin-yield' | 'defi-yield' | 'eth-vault';
 
 export class DashboardPage {
     readonly suiteLayout: Locator;
@@ -59,8 +58,7 @@ export class DashboardPage {
     readonly discoveryEmptyHeader: Locator;
     readonly discoveryEmptyDesc: Locator;
     readonly discoveryEmptyPrimaryButton: Locator;
-    readonly promoBannerButton = (bannerTyp: PromoBannerType): Locator =>
-        this.page.getByTestId(`@dashboard/promo-banner/${bannerTyp}/button`);
+
     readonly discoveryFailed: Locator;
     readonly discoveryFailedHeader: Locator;
     readonly discoveryFailedDesc: Locator;

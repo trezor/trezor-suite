@@ -45,8 +45,6 @@ export class OnboardingPage {
     readonly pairingInputAtIndex = (index: number) =>
         this.thpPairingModal.locator('input').nth(index);
     readonly walletBackupTypeCard: Locator;
-    readonly onboardingFeedbackBanner: Locator;
-    readonly onboardingFeedbackBannerCTAButton: Locator;
 
     constructor(
         public page: Page,
@@ -84,12 +82,6 @@ export class OnboardingPage {
         this.finalButton = this.page.getByTestId('@onboarding/final-button');
         this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
         this.deviceCompromisedModal = this.page.getByTestId('@device-compromised');
-        this.onboardingFeedbackBanner = this.page.getByTestId(
-            '@dashboard/onboarding-feedback-banner',
-        );
-        this.onboardingFeedbackBannerCTAButton = this.page.getByTestId(
-            '@dashboard/onboarding-feedback-banner/button',
-        );
         this.walletBackupTypeCard = this.page.getByTestId('@onboarding/wallet-backup-type');
         this.thpPairingModal = this.page.getByTestId('@modal/thp-paring');
     }
