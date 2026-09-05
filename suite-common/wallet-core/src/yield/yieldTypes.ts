@@ -25,7 +25,6 @@ export type YieldFlowDisplayToken = {
     symbol: string;
     decimals: number;
     contractAddress?: string | null;
-    coingeckoId?: string;
 };
 
 export type YieldFlowToken = YieldFlowDisplayToken & {
@@ -68,7 +67,6 @@ export type YieldApproveModalState = {
     amount: string;
     contractAddress: string;
     spender: string;
-    preapprovedAmount?: string;
     txType: Extract<YieldPendingTransactionState['type'], 'approve' | 'revoke'>;
 };
 
