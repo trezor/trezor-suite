@@ -10866,6 +10866,7 @@ __metadata:
     "@sentry/core": "npm:10.69.0"
     "@suite-common/http-client": "workspace:*"
     "@suite-common/react-query": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     orval: "npm:8.19.0"
