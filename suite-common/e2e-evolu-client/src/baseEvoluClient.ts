@@ -161,6 +161,36 @@ const QUOTA_TOTAL_STORAGE_SIZE = 1048576;
 const QUOTA_UNSPENT_STORAGE_SIZE = 1038090;
 const QUOTA_DB_CREDENTIALS = '-U suite-sync -d suite-sync-gate';
 
+const runQuotaDbSql = (sql: string) =>
+    execFileSync(
+        'docker',
+        [
+            'compose',
+            '-f',
+            'docker/docker-compose.suite-ci-e2e.yml',
+            'exec',
+            '-T',
+            'quota-db',
+            'psql',
+            ...QUOTA_DB_CREDENTIALS.split(' '),
+            '--csv',
+            '-c',
+            sql,
+        ],
+        { cwd: REPO_ROOT },
+    ).toString();
+
+const parseCsvRows = (csv: string) => {
+    const [headerLine, ...rowLines] = csv.trim().split('\n');
+    const columns = headerLine?.split(',') ?? [];
+
+    return rowLines.map(rowLine => {
+        const values = rowLine.split(',');
+
+        return Object.fromEntries(columns.map((column, index) => [column, values[index] ?? '']));
+    });
+};
+
 const waitForRelayReady = async (maxWaitMs = 30_000) => {
     const pollIntervalMs = 500;
     const deadline = Date.now() + maxWaitMs;
@@ -193,21 +223,8 @@ export const wipeAndRestartEvoluRelayServer = async () => {
         ],
         { cwd: REPO_ROOT },
     );
-    execFileSync(
-        'docker',
-        [
-            'compose',
-            '-f',
-            'docker/docker-compose.suite-ci-e2e.yml',
-            'exec',
-            '-T',
-            'quota-db',
-            'psql',
-            ...QUOTA_DB_CREDENTIALS.split(' '),
-            '-c',
-            'TRUNCATE challenges, owner_storage_limits, pubkey_storage_limits RESTART IDENTITY CASCADE;',
-        ],
-        { cwd: REPO_ROOT },
+    runQuotaDbSql(
+        'TRUNCATE challenges, owner_storage_limits, pubkey_storage_limits RESTART IDENTITY CASCADE;',
     );
     execFileSync(
         'docker',
@@ -226,38 +243,66 @@ export const wipeAndRestartEvoluRelayServer = async () => {
 
 export const seedQuotaManagerData = ({ ownerId }: { ownerId: string }) => {
     const safeOwnerId = ownerId.replace(/'/g, "''");
-    execFileSync(
-        'docker',
-        [
-            'compose',
-            '-f',
-            'docker/docker-compose.suite-ci-e2e.yml',
-            'exec',
-            '-T',
-            'quota-db',
-            'psql',
-            ...QUOTA_DB_CREDENTIALS.split(' '),
-            '-c',
-            `INSERT INTO owner_storage_limits ("ownerId", "storageLimit") VALUES ('${safeOwnerId}', ${QUOTA_STORAGE_LIMIT}) ON CONFLICT DO NOTHING;`,
-        ],
-        { cwd: REPO_ROOT },
+    runQuotaDbSql(
+        `INSERT INTO owner_storage_limits ("ownerId", "storageLimit") VALUES ('${safeOwnerId}', ${QUOTA_STORAGE_LIMIT}) ON CONFLICT DO NOTHING;`,
     );
-    execFileSync(
-        'docker',
-        [
-            'compose',
-            '-f',
-            'docker/docker-compose.suite-ci-e2e.yml',
-            'exec',
-            '-T',
-            'quota-db',
-            'psql',
-            ...QUOTA_DB_CREDENTIALS.split(' '),
-            '-c',
-            `INSERT INTO pubkey_storage_limits ("publicKey", "totalStorageSize", "unspentStorageSize") VALUES ('${QUOTA_PUBLIC_KEY}', ${QUOTA_TOTAL_STORAGE_SIZE}, ${QUOTA_UNSPENT_STORAGE_SIZE}) ON CONFLICT DO NOTHING;`,
-        ],
-        { cwd: REPO_ROOT },
+    runQuotaDbSql(
+        `INSERT INTO pubkey_storage_limits ("publicKey", "totalStorageSize", "unspentStorageSize") VALUES ('${QUOTA_PUBLIC_KEY}', ${QUOTA_TOTAL_STORAGE_SIZE}, ${QUOTA_UNSPENT_STORAGE_SIZE}) ON CONFLICT DO NOTHING;`,
     );
+};
+
+// Updates all registered devices; the wiped test environment has exactly one.
+export const setDeviceUnspentStorageSize = ({
+    unspentStorageSize,
+}: {
+    unspentStorageSize: number;
+}) => {
+    runQuotaDbSql(`UPDATE pubkey_storage_limits SET "unspentStorageSize" = ${unspentStorageSize};`);
+};
+
+export const setOwnerStorageLimit = ({
+    ownerId,
+    storageLimit,
+}: {
+    ownerId: string;
+    storageLimit: number;
+}) => {
+    const safeOwnerId = ownerId.replace(/'/g, "''");
+    runQuotaDbSql(
+        `UPDATE owner_storage_limits SET "storageLimit" = ${storageLimit} WHERE "ownerId" = '${safeOwnerId}';`,
+    );
+};
+
+export type QuotaManagerDeviceRow = {
+    publicKey: string;
+    totalStorageSize: number;
+    unspentStorageSize: number;
+};
+
+export type QuotaManagerOwnerRow = {
+    ownerId: string;
+    storageLimit: number;
+};
+
+export const readQuotaManagerData = () => {
+    const devices: QuotaManagerDeviceRow[] = parseCsvRows(
+        runQuotaDbSql(
+            'SELECT "publicKey", "totalStorageSize", "unspentStorageSize" FROM pubkey_storage_limits;',
+        ),
+    ).map(row => ({
+        publicKey: row.publicKey ?? '',
+        totalStorageSize: Number(row.totalStorageSize),
+        unspentStorageSize: Number(row.unspentStorageSize),
+    }));
+
+    const owners: QuotaManagerOwnerRow[] = parseCsvRows(
+        runQuotaDbSql('SELECT "ownerId", "storageLimit" FROM owner_storage_limits;'),
+    ).map(row => ({
+        ownerId: row.ownerId ?? '',
+        storageLimit: Number(row.storageLimit),
+    }));
+
+    return { devices, owners };
 };
 
 export const checkEvoluRelayServerRunning = async () => {
