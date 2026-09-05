@@ -40,7 +40,6 @@ type Props = UseFormReturn<FormState> & {
     updateContext: SendContextValues['updateContext'];
     setLoading: Dispatch<SetStateAction<boolean>>;
     setAmount: (index: number, amount: string) => void;
-    targetAnonymity?: number;
     prison?: Record<string, unknown>;
     setShowReserveBanner: SendContextValues['setShowReserveBanner'];
 };
