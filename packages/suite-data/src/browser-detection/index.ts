@@ -27,8 +27,6 @@ type MainHtmlProps = {
     supportedDevicesList?: boolean;
     supportedBrowsers?: SupportedBrowser[];
     shouldUpdate?: boolean;
-    iosAppBanner?: boolean;
-    androidAppBanner?: boolean;
     metaTags?: string[];
 };
 
@@ -197,7 +195,6 @@ window.addEventListener('load', () => {
         subtitle:
             'Trezor Safe 7 can connect via Bluetooth using the Trezor Suite desktop app. Trezor Suite is also available on:',
         supportedDevicesList: true,
-        iosAppBanner: true,
         metaTags: [
             '<meta name="apple-itunes-app" content="app-id=1631884497, affiliate-data=, app-argument=https://trezor.io/suite" />',
         ],
