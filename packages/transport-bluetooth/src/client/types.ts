@@ -94,12 +94,14 @@ export interface BluetoothIpcState {
     knownDevices: BluetoothDevice[];
 }
 
+export type ScanOwner = 'ui' | 'background';
+
 export type BluetoothIpcApi = {
     init(state?: BluetoothIpcState): Promise<IpcResponse>;
     getInfo(): Promise<IpcResponse<BluetoothInfo>>;
     dispose(): Promise<IpcResponse>;
-    startScan(): Promise<IpcResponse>;
-    stopScan(): Promise<IpcResponse>;
+    startScan(owner?: ScanOwner): Promise<IpcResponse>;
+    stopScan(owner?: ScanOwner): Promise<IpcResponse>;
     connectDevice(id: string): Promise<IpcResponse>;
     disconnectDevice(id: string): Promise<IpcResponse>;
     /**

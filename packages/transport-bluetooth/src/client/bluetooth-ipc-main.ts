@@ -8,6 +8,7 @@ import type {
     BluetoothIpcEvents,
     BluetoothIpcState,
     IpcResponse,
+    ScanOwner,
     TrezorBluetoothSettings,
 } from './types';
 
@@ -19,6 +20,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     private api: TrezorBluetooth;
     private state: BluetoothIpcState = { knownDevices: [] };
     private isScanning = false;
+    private scanOwners = new Set<ScanOwner>();
 
     constructor(settings: TrezorBluetoothSettings) {
         super();
@@ -139,11 +141,19 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         return Promise.resolve(this.result());
     }
 
-    async startScan() {
+    async startScan(owner?: ScanOwner) {
+        if (owner) {
+            this.scanOwners.add(owner);
+        }
+
         try {
             await this.connectApi();
         } catch (error) {
             return this.result(error.message);
+        }
+
+        if (this.isScanning) {
+            return this.result();
         }
 
         try {
@@ -157,13 +167,19 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         return this.result();
     }
 
-    async stopScan() {
+    async stopScan(owner?: ScanOwner) {
+        if (owner) {
+            this.scanOwners.delete(owner);
+        }
+
+        if (this.scanOwners.size > 0 || !this.isScanning) {
+            return this.result();
+        }
+
         try {
             await this.connectApi();
-            if (this.state.knownDevices.length === 0) {
-                this.isScanning = false;
-                await this.api.send('stop_scan');
-            }
+            this.isScanning = false;
+            await this.api.send('stop_scan');
         } catch (error) {
             return this.result(error.message);
         }
