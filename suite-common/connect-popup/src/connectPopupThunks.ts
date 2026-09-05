@@ -50,7 +50,7 @@ import {
     isUtxoNetwork,
 } from './connectPopupTypes';
 import {
-    cleanupHooks,
+    cleanupAllTemporaryAccounts,
     compatibilityHooks,
     postCallHooks,
     preCallHooks,
@@ -299,7 +299,7 @@ export const connectPopupCallInnerThunk = createThunk<
         } finally {
             // Tear down any placeholder accounts created in preCallHooks even if the call threw
             // before postCallHooks ran, so they cannot leak into a later removeAccount payload.
-            cleanupHooks(dispatch);
+            cleanupAllTemporaryAccounts(dispatch);
             extra.services.lockDevice(false);
         }
     },
