@@ -137,12 +137,12 @@ export const DeviceManagerContent = () => {
             >
                 <VStack spacing="sp24">
                     {isDeviceListVisible && <DeviceList onSelectDevice={handleSelectDevice} />}
-                    {!isPortfolioTrackerDevice && !shouldFactoryResetBeVisible && (
+                    {!isPortfolioTrackerDevice && (
                         <AnimatedVStack
                             layout={LinearTransition}
                             marginTop={!isDeviceListVisible ? 'sp12' : undefined}
                         >
-                            {deviceStaticSessionId && (
+                            {!shouldFactoryResetBeVisible && deviceStaticSessionId && (
                                 <WalletList onSelectDevice={handleSelectDevice} />
                             )}
                             <VStack paddingHorizontal="sp16" paddingBottom="sp16" spacing="sp12">
