@@ -27,6 +27,8 @@ flow or Redux.
   Desktop.
 - A device operation coordinator is the single entry point for Connect calls
   targeting a device and enforces an exclusive per-device lock.
+- Business services do not import or call `TrezorConnect` directly. They receive
+  an injected device-call gateway.
 - Business logic never uses `selectedDevice`. A device is always supplied
   explicitly to a command or resolved from local workflow state.
 - Every device-targeted Connect call has an explicit device. Missing device
@@ -59,8 +61,8 @@ The current package split is:
 - A device operation coordinator, with its exact package location still to be
   decided.
     - Owns exclusive per-device operation locks.
-    - Executes every device-targeted Connect call for both new services and legacy
-      Suite callers during migration.
+    - Exposes the injected gateway that executes every device-targeted Connect
+      call.
 - `@suite-common/firmware-update-service`
     - Sole owner of the prototype firmware update workflow.
     - Kept separate from the existing Redux-oriented `@suite-common/firmware`
@@ -86,10 +88,11 @@ describe workflow state, while the coordinator prevents multiple operations
 from using the same physical device concurrently.
 
 Every device-targeted Connect call must pass through this coordinator. New
-services use its DI API directly. Existing Web/Desktop callers must also be
-migrated to provide an explicit device and pass through the coordinator, so
+services use its injected gateway. Existing Web/Desktop business callers must
+also be migrated to provide an explicit device and use that contract, so
 firmware cannot claim a device while an older signing, address-confirmation, or
-settings call is active.
+settings call is active. Raw `TrezorConnect` access is confined to the
+composition and infrastructure layer.
 
 A device-targeted call without explicit device context is rejected with a typed
 error before reaching Connect. It does not acquire a global compatibility lock
@@ -422,12 +425,11 @@ old source for reference:
 - Existing Connect UI-response thunks are not used by the new workflows.
 - Native keeps its current path.
 
-The global `TrezorConnect.call` wrapper remains as the migration boundary for
-legacy callers and reports device-targeted calls to the operation coordinator.
-Its post-call button-request cleanup currently resolves the selected device.
-The prototype will change that cleanup to resolve the explicitly supplied
-`params.device.path`, with a focused test. Device-targeted calls without that
-context fail instead of using a legacy fallback.
+The current global `TrezorConnect.call` wrapper does not remain the business
+coordination boundary. Its synchronization and post-call cleanup behavior move
+behind the injected gateway as needed. Button-request cleanup resolves the
+explicitly supplied `params.device.path`, with a focused test. Device-targeted
+calls without that context fail instead of using a legacy fallback.
 
 ## Known Connect constraints
 
@@ -450,6 +452,8 @@ context fail instead of using a legacy fallback.
   coordinator, while different devices can remain active in parallel.
 - No device-targeted call reaches Connect without an explicit device, and no new
   business path reads `selectedDevice`.
+- Business services use the injected device-call gateway and do not import raw
+  `TrezorConnect`.
 - THP and device-authenticity flows use explicit IDs and local service state.
 - No new service reads `selectedDevice` or Redux business state.
 - A device is projected into normal Redux state only after required connection
