@@ -1,4 +1,3 @@
-import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -7,13 +6,10 @@ import { Translation } from '@suite-native/intl';
 
 import { selectIsFirmwareUpdateFeatureEnabled } from '../hooks/useIsFirmwareUpdateFeatureEnabled';
 
-type ConfirmFirmwareUpdateScreenProps = {
+type ConfirmFirmwareUpdateScreenFooterProps = {
     onUpdateConfirmation: () => void;
     onSkipUpdate?: () => void;
-    header?: ReactNode;
 };
-
-type ConfirmFirmwareUpdateScreenFooterProps = Exclude<ConfirmFirmwareUpdateScreenProps, 'header'>;
 
 export const ConfirmFirmwareUpdateScreenFooter = ({
     onUpdateConfirmation,
