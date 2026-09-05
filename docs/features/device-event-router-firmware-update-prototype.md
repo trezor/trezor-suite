@@ -195,6 +195,13 @@ late calls. A handler that assumes temporary ownership can request an explicit
 one-shot deferred continuation. That continuation resumes the remaining chain
 when ownership ends; it is not a retained ordinary `next` callback.
 
+A handler may pass either the original envelope or an immutable replacement to
+`next`. A replacement continues only through the remaining handlers; it does
+not re-enter the router from the beginning. Diagnostic ancestry retains the
+original event for local tracing, while downstream business behavior depends
+only on the replacement's typed contents. Firmware uses this mechanism to hand
+off one canonical current-device snapshot without consuming its own event.
+
 Envelope metadata such as `origin: 'firmware-handoff'` is diagnostic only. A
 parent handler must not use it as a business instruction.
 
