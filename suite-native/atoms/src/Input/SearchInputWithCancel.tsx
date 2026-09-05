@@ -19,7 +19,6 @@ export type SearchComponentProps = {
     value: string;
     onFocus?: () => void;
     onBlur?: () => void;
-    autoCorrect?: boolean;
 };
 
 export type SearchInputWithCancelProps<R extends ClearAndBlur | null> = {
