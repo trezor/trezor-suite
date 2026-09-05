@@ -8923,7 +8923,7 @@ export const messages = defineMessages({
     TR_EARN_INSTANTLY_UNSTAKED_WITH_DAYS: {
         id: 'TR_EARN_INSTANTLY_UNSTAKED_WITH_DAYS',
         defaultMessage:
-            "You've received {amount} {symbol} instantly. {days, plural, =0 {} one {The remaining is paid out within # day.} other {The remaining is paid out within # days.}}",
+            "You've received {amount} {symbol} instantly. {days, plural, =0 {} one {The remainder is paid out within # day.} other {The remainder is paid out within # days.}}",
     },
     TR_EARN_STAKING_GETTING_READY: {
         id: 'TR_EARN_STAKING_GETTING_READY',
@@ -11189,7 +11189,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_VOTES_TO_ALLOCATE: {
         id: 'TR_EARN_TRON_VOTES_TO_ALLOCATE',
-        defaultMessage: '{count} remaining votes',
+        defaultMessage: '{count, plural, one {1 remaining vote} other {# remaining votes}}',
     },
     TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP: {
         id: 'TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP',

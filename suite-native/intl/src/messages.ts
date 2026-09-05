@@ -2738,7 +2738,7 @@ export const messages = {
             instantUnstakeBanner: {
                 title: '{amount} {symbol} unstaked instantly',
                 descriptionWithDays:
-                    "You've received {amount} {symbol} instantly. The remaining is paid out within {days, plural, one {# day} other {# days}}.",
+                    "You've received {amount} {symbol} instantly. The remainder is paid out within {days, plural, one {# day} other {# days}}.",
                 descriptionWithoutDays: "You've received {amount} {symbol} instantly.",
             },
             outsideStakingBanner: {
@@ -2780,7 +2780,7 @@ export const messages = {
                 sol: {
                     stepWarmUpPeriod:
                         'Warm-up period (~{days, plural, one {# day} other {# days}})',
-                    stepStakedReceivingRewards: 'Staked & receiving rewards',
+                    stepStakedReceivingRewards: 'Staked & earning rewards',
                     stepCoolDownPeriod:
                         'Cool-down period (~{days, plural, one {# day} other {# days}})',
                     stepUnstakedReadyToClaim: 'Unstaked and ready to claim',
@@ -2982,7 +2982,7 @@ export const messages = {
                 invalidUnstakeAmountHigherOnly:
                     "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher}{higherFiat}.",
                 insufficientBalance: 'Insufficient staked balance to unstake this amount.',
-                tooManyDecimals: 'Too many decimals places.',
+                tooManyDecimals: 'Too many decimal places.',
                 amountBelowMin: 'The minimum amount to unstake is {minAmount} {networkSymbol}.',
             },
         },
@@ -3320,7 +3320,7 @@ export const messages = {
             title: 'Revoke {tokenSymbol} spending',
             subtitle: 'Revoke this provider’s access to spend your {tokenSymbol}.',
             lowLimitInfoAlert:
-                'The spending limit too low. Revoke the current spending limit and approve a higher amount.',
+                'The spending limit is too low. Revoke the current spending limit and approve a higher amount.',
             account: 'Account',
             provider: 'Provider',
             limit: 'Limit',
@@ -3379,28 +3379,28 @@ export const messages = {
             },
         },
         yieldDepositApprovalReviewScreen: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Approve',
             successMessage: "You're all set",
         },
         yieldDepositRevokeReviewScreen: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Revoke',
             successMessage: 'Revoke approval transaction signed',
         },
         yieldDepositReviewScreen: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Deposit',
             successMessage: "You're all set",
         },
         yieldWithdrawReviewScreen: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Withdraw',
             redeemSubmitButton: 'Redeem',
             successMessage: "You're all set.",
         },
         yieldClaimReviewScreen: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Claim now',
             successMessage: "You're all set.",
         },
@@ -3556,7 +3556,7 @@ export const messages = {
                         description: 'Review the transaction and sign it again.',
                     },
                     pushTransactionFailed: {
-                        title: 'Withdrawal not submitted',
+                        title: 'Withdrawal was not submitted',
                         description:
                             'The withdrawal transaction was signed but could not be sent to the network.',
                     },
@@ -3608,7 +3608,7 @@ export const messages = {
         rewardsPerEpoch: 'Next estimated reward',
         rate: 'Rate',
         apy: 'Annual Percentage Yield',
-        apr: 'Annual Percentage Return',
+        apr: 'Annual Percentage Rate',
         apyAbbr: 'APY',
         apyValueWithLabel: '{value} APY',
         aprAbbr: 'APR',
