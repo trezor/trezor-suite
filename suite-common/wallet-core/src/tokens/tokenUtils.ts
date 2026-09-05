@@ -1,8 +1,4 @@
-import {
-    type EnhancedTokenInfo,
-    type TokenDefinition,
-    isTokenDefinitionKnown,
-} from '@suite-common/token-definitions';
+import { type TokenDefinition, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import {
     type NetworkSymbol,
     getNetworkDisplaySymbol,
@@ -13,7 +9,7 @@ import { isNftMatchesSearch, isNftToken, isTokenMatchesSearch } from '@suite-com
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-type GetTokensInput<T extends EnhancedTokenInfo | TokenInfo> = {
+type GetTokensInput<T extends TokenInfo> = {
     tokens?: T[];
     symbol: NetworkSymbol;
     tokenDefinitions?: TokenDefinition;
@@ -21,7 +17,7 @@ type GetTokensInput<T extends EnhancedTokenInfo | TokenInfo> = {
     isNft?: boolean;
 };
 
-export type GetTokensOutputType<T extends EnhancedTokenInfo | TokenInfo = EnhancedTokenInfo> = {
+export type GetTokensOutputType<T extends TokenInfo = TokenInfo> = {
     shownWithBalance: T[];
     shownWithoutBalance: T[];
     hiddenWithBalance: T[];
@@ -30,7 +26,7 @@ export type GetTokensOutputType<T extends EnhancedTokenInfo | TokenInfo = Enhanc
     unverifiedWithoutBalance: T[];
 };
 
-export const getTokens = <T extends EnhancedTokenInfo | TokenInfo = EnhancedTokenInfo>({
+export const getTokens = <T extends TokenInfo = TokenInfo>({
     tokens = [],
     symbol,
     tokenDefinitions,
