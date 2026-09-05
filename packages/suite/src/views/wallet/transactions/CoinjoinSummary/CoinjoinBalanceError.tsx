@@ -7,7 +7,7 @@ const StyledBalanceContainer = styled.div`
     padding: 0 24px;
 `;
 
-const Heading = styled.p<{ $color?: string }>`
+const Heading = styled.p`
     margin-bottom: 4px;
     color: ${({ theme, color }) => color || theme.contentSecondary};
     ${typography['body-xs']}

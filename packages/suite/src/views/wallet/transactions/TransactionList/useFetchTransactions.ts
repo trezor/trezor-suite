@@ -95,7 +95,6 @@ export const useFetchTransactions = (
         (
             page: number,
             options: {
-                recursive?: boolean;
                 noLoading?: boolean;
             } = {},
         ) => {

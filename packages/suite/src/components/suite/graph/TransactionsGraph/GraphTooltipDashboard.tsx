@@ -13,7 +13,6 @@ interface GraphTooltipDashboardProps extends TooltipProps<number, any> {
     localCurrency: string;
     sentValueFn: FiatGraphProps['sentValueFn'];
     receivedValueFn: FiatGraphProps['receivedValueFn'];
-    balanceValueFn?: FiatGraphProps['balanceValueFn'];
     onShow?: (index: number) => void;
     extendedDataForInterval?: CommonAggregatedHistory[];
 }
