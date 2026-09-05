@@ -52,11 +52,6 @@ export default class SignMessage extends AbstractMethod<'signMessage', Params> {
 
         this.coinInfo = coinInfo;
         this.requiredFirmwareCoins = [coinInfo];
-        // firmware range depends on used no_script_type parameter
-        // no_script_type is possible since 1.10.4 / 2.4.3
-        if (payload.no_script_type) {
-            this.requiredFirmwareCapabilities = ['signMessageNoScriptType'];
-        }
     }
 
     coinInfo: BitcoinNetworkInfo | undefined;
