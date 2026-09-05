@@ -1,0 +1,29 @@
+# conveyor-team.example.yml — the roster the team-assembly step reads.
+#
+# Put the real one at .github/conveyor-team.yml in your repo. It maps people to
+# the human gate-roles they can own and the areas they know, so the assembly step
+# in conveyor-2-plan-review can propose a team scaled to the plan.
+#
+# The roster is OPTIONAL: without it, Product owner still defaults to the issue
+# creator, and the reviewer / eng / tester are asked of the human instead of
+# proposed. Handles are stored WITHOUT a leading "@" so nobody is notified until
+# the API request at their own gate.
+
+members:
+  - handle: alice            # GitHub username, no "@"
+    name: Alice N.
+    roles: [product, review] # gates this person can own: product | eng | review | qa
+    areas: [suite, suite-web] # packages/surfaces they know — matched to the plan's "Affected areas"
+
+  - handle: bob
+    name: Bob K.
+    roles: [eng, review]
+    areas: [connect, transport, suite-common]
+
+  - handle: carol
+    name: Carol M.
+    roles: [qa, review]
+    areas: [e2e, suite-native]
+
+# Capacity / load-balancing (who is overloaded) is intentionally not modelled yet
+# — assembly matches on role + area only. Add it here later if needed.
