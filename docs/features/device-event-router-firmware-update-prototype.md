@@ -132,8 +132,16 @@ transitions. Each user command includes `connectionId`; it never relies on the
 selected device.
 
 The user must explicitly start the Optiga/device-authenticity check. Until that
-check succeeds, the service publishes safe presentation data to a dedicated UI
-slice but does not add the device to the ordinary Redux device collection.
+workflow reaches an accepted terminal outcome, the service publishes safe
+presentation data to a dedicated UI slice but does not add the device to the
+ordinary Redux device collection.
+
+A successful authenticity result continues the connection workflow
+automatically. A confirmed failure or inconclusive result stays in the
+service-owned workflow until the user retries or explicitly continues. If the
+user continues after a confirmed failure, the completed workflow projects both
+the device and its failed-authenticity result into Redux. No partial device state
+is projected into the ordinary device collection while the check is pending.
 
 ## Child workflows
 
