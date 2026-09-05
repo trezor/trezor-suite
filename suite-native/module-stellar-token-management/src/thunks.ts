@@ -12,9 +12,11 @@ import {
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
     selectDeepCopyOfFormDraft,
+    updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import {
     type AccountKey,
+    type FeeInfo,
     type FormState,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
@@ -29,6 +31,11 @@ import {
 const STELLAR_TOKEN_MODULE_PREFIX = '@suite-native/stellar-token';
 
 const STELLAR_DEFAULT_FEE_STROOPS = '100';
+
+// Fee info of a network with no data yet is converted into levels containing only the synthetic
+// 'custom' level, which cannot be composed with.
+const hasPredefinedFeeLevels = (feeInfo: FeeInfo | null): feeInfo is FeeInfo =>
+    !!feeInfo?.levels.some(level => level.label !== 'custom');
 
 const STELLAR_TOKEN_FORM_DRAFT_PREFIX = 'stellar-token';
 
@@ -133,8 +140,15 @@ export const composeStellarTrustlineFeesThunk = createThunk<
             return rejectWithValue('Account not found');
         }
 
-        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
-        if (!feeInfo) {
+        // Fees are preloaded only for the networks enabled at app start and are not persisted, so
+        // they can be missing here. Nothing else in the trustline flow fetches them.
+        let feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
+        if (!hasPredefinedFeeLevels(feeInfo)) {
+            await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol }));
+            feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
+        }
+
+        if (!hasPredefinedFeeLevels(feeInfo)) {
             return rejectWithValue('Fee info not available');
         }
 
