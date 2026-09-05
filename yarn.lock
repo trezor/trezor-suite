@@ -10585,6 +10585,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/apps-embedding@workspace:*, @suite-common/apps-embedding@workspace:suite-common/apps-embedding":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/apps-embedding@workspace:suite-common/apps-embedding"
+  dependencies:
+    "@trezor/type-utils": "workspace:*"
+    zod: "npm:4.3.6"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/assets@workspace:*, @suite-common/assets@workspace:suite-common/assets":
   version: 0.0.0-use.local
   resolution: "@suite-common/assets@workspace:suite-common/assets"
@@ -15168,6 +15177,19 @@ __metadata:
     "@suite/router": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite/apps-embedding-web@workspace:suite/apps-embedding-web":
+  version: 0.0.0-use.local
+  resolution: "@suite/apps-embedding-web@workspace:suite/apps-embedding-web"
+  dependencies:
+    "@suite-common/apps-embedding": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/react-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.2.3"
+    zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
 
