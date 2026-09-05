@@ -11,7 +11,9 @@
         { "path": "../eslint" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },
+        { "path": "../e2e-utils" },
         { "path": "../node-utils" },
+        { "path": "../request-manager" },
         { "path": "../type-utils" }
     ]
 }
