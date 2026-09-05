@@ -30,7 +30,6 @@ import type {
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import {
-    type AccountsState,
     type ConfirmAddressOnDeviceThunkState,
     type WalletSettingsRootState,
 } from '@suite-common/wallet-core';
@@ -123,7 +122,6 @@ export interface TradingSellFormContextProps
     isComposing: boolean;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     feeInfo: FeeInfo;
-    suiteReceiveAccounts?: AccountsState;
     // form - additional helpers for form
     form: {
         state: TradingFormStateProps;
@@ -156,7 +154,6 @@ export interface TradingExchangeFormContextProps
         helpers: TradingUseFormActionsReturnProps;
     };
 
-    suiteReceiveAccounts?: AccountsState;
     feeInfo: FeeInfo;
 
     amountLimits?: CryptoAmountLimitProps;
