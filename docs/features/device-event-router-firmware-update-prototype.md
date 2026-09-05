@@ -126,6 +126,13 @@ application-wide `getSynchronize` wrapper cannot remain the execution model
 because it prevents independent devices from running in parallel. The
 coordinator replaces that enforcement with per-device leases.
 
+The coordinator publishes lock changes through an injected presentation
+callback, keeping `@suite-common/device-operation` free of Redux. The Suite
+adapter projects safe lock metadata keyed by `connectionId` for new UI,
+including the parallel-flow demonstration. It also maintains the existing
+aggregate Redux lock as an "at least one device is busy" compatibility view for
+legacy components. Neither projection can grant, extend, or release a lease.
+
 The coordinator maintains locks per device rather than one application-wide
 lock. Independent devices may run operations in parallel. An incompatible call
 against a locked device returns a typed `deviceBusy` result before reaching
@@ -431,6 +438,7 @@ second Redux store instance. At minimum, the UI state must represent:
 - current display phase;
 - safe device display information;
 - pending request metadata;
+- per-connection lock state and a safe operation kind;
 - recoverable error or final result;
 - the mandatory additional-device warning.
 
