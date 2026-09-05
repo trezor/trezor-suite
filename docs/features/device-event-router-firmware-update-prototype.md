@@ -205,6 +205,7 @@ Opening the prototype firmware modal calls `prepare(deviceA)`. Preparation:
 - requires an explicitly supplied device;
 - requires A to be the only connected device;
 - generates a UUID used as the sole firmware operation `callId`;
+- leaves A's last completed normal Redux projection frozen;
 - starts event ownership before the install command is issued.
 
 `install(callId)` starts `TrezorConnect.firmwareUpdate` with the same call ID.
@@ -284,6 +285,13 @@ Successful completion, failure, or cancellation updates a dedicated prototype
 Redux UI slice. If another device is present, public completion and ownership
 release wait until it is disconnected.
 
+A normally connected A already has a completed Redux projection when firmware
+preparation begins. That projection remains frozen throughout the update. The
+firmware UI slice shows live progress, while transient disconnect, bootloader,
+and reconnect states remain exclusively in service memory. Final handoff
+refreshes the existing normal projection. This prevents a bootloader duplicate
+from appearing in the device switcher and preserves account and UI context.
+
 ## Redux and UI
 
 The new services may dispatch plain Redux actions that project presentation
@@ -347,6 +355,8 @@ that genuinely have no explicit device.
 - Firmware preparation and installation use an explicitly supplied A and one
   call ID.
 - Firmware owns A across normal-mode and bootloader reconnects.
+- A's existing Redux projection remains stable during firmware ownership and is
+  refreshed only by final handoff.
 - Every B blocks firmware, remains outside Redux, and produces the mandatory UI
   state.
 - Cancellation or failure hands one canonical current A snapshot to the
