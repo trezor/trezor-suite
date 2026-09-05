@@ -3,7 +3,6 @@
 import { arrayDistinct, createCooldown, promiseAllSequence } from '@trezor/utils';
 import type { Network } from '@trezor/utxo-lib';
 
-import type { Logger } from '../types';
 import { getAllTxAddresses, isDoublespend } from './backendUtils';
 import { getAddressScript, getMultiFilter } from './filters';
 import { MEMPOOL_PURGE_CYCLE, PROGRESS_INFO_COOLDOWN } from '../constants';
@@ -20,7 +19,6 @@ type CoinjoinMempoolControllerSettings = {
     client: MempoolClient;
     network: Network;
     filter?: (address: string) => boolean;
-    logger?: Logger;
 };
 
 export class CoinjoinMempoolController implements MempoolControllerShape {
