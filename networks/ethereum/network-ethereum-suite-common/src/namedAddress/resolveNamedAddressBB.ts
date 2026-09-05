@@ -1,5 +1,6 @@
 import TrezorConnect from '@trezor/connect';
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { NamedAddressResolveOptions } from '@trezor/network-module-suite-common-types';
 
 /**
  * Forward-resolve a named input (ENS or other TLD) to its onchain address via Blockbook.
@@ -11,12 +12,18 @@ import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
  *
  * @param value - ENS name or other TLD name.
  * @param symbol - Network symbol the name should be resolved on (e.g. `eth`).
+ * @param options - Carries the backend identity the lookup should ride on.
  * @returns The resolved onchain address.
  */
-export const resolveViaBlockbook = async (value: string, symbol: EthereumNetworkSymbol) => {
+export const resolveViaBlockbook = async (
+    value: string,
+    symbol: EthereumNetworkSymbol,
+    options?: NamedAddressResolveOptions,
+) => {
     const result = await TrezorConnect.getAccountInfo({
         descriptor: value,
         coin: symbol,
+        identity: options?.identity,
         details: 'basic',
     });
 

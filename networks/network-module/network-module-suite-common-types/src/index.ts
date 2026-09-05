@@ -1,6 +1,10 @@
 export { addressType } from './AddressValidator';
 export type { AddressType, AddressValidator } from './AddressValidator';
-export type { NamedAddressProfile, NamedAddressResolver } from './NamedAddressResolver';
+export type {
+    NamedAddressProfile,
+    NamedAddressResolveOptions,
+    NamedAddressResolver,
+} from './NamedAddressResolver';
 export { asProtocol } from './Protocol';
 export type { Protocol } from './Protocol';
 export type {
