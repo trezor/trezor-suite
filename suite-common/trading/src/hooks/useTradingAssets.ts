@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import {
     type CoinInfo,
@@ -9,10 +9,9 @@ import {
 } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { selectGetSupportedNetworksDep, selectIsTestnetDep } from '@suite-common/networks';
 import {
     type Network,
-    type NetworkConfigWithoutTestnets,
     type NetworkSymbol,
     getDisplaySymbol,
     getMainnets,
@@ -42,13 +41,21 @@ import {
     getTradingPlatformsInfoByCryptoId,
 } from '../utils/infoUtils';
 
+type TradingNetwork = Network & {
+    readonly coingeckoId: CryptoId;
+    readonly tradeCryptoId: string;
+};
+
+const isTradingNetwork = (network: Network | undefined): network is TradingNetwork =>
+    network?.coingeckoId !== undefined && network.tradeCryptoId !== undefined;
+
 const mainnets = new Set(getMainnets().map(network => network.symbol));
 
 function hasSupportedAddressValidator(
     platforms: Platforms,
     coins: Coins,
     cryptoId: CryptoId,
-    supportedAddressValidatorSymbols: Set<NetworkSymbol>,
+    supportedNetworks: readonly NetworkSymbol[],
 ) {
     const prodCryptoId = testnetToProdCryptoId(cryptoId);
     const networkSymbol =
@@ -58,16 +65,8 @@ function hasSupportedAddressValidator(
     return (
         networkSymbol !== undefined &&
         isNetworkSymbol(networkSymbol) &&
-        supportedAddressValidatorSymbols.has(networkSymbol)
+        supportedNetworks.includes(networkSymbol)
     );
-}
-
-function getNonTestnetNetworkSymbol(
-    network?: Network,
-): NetworkConfigWithoutTestnets['symbol'] | null {
-    return !network || network.testnet
-        ? null
-        : (network.symbol as NetworkConfigWithoutTestnets['symbol']);
 }
 
 function isAssetWithSupportedNetwork(
@@ -100,19 +99,21 @@ export function createAssetOption({
     );
 
     if (isNativeToken) {
-        const networkConfig = network as NetworkConfigWithoutTestnets;
+        if (!isTradingNetwork(network)) {
+            return null;
+        }
 
         return {
             isNativeToken: true,
-            id: networkConfig.tradeCryptoId as CryptoId,
-            name: networkConfig.name,
-            coingeckoId: networkConfig.coingeckoId,
-            symbol: networkConfig.symbol,
-            displaySymbol: networkConfig.displaySymbol,
+            id: network.tradeCryptoId as CryptoId,
+            name: network.name,
+            coingeckoId: network.coingeckoId,
+            symbol: network.symbol,
+            displaySymbol: network.displaySymbol,
             contractAddress: contractAddress as TradingAssetOptionNativeToken['contractAddress'],
-            networkName: networkConfig.name,
-            networkSymbol: networkConfig.symbol,
-            displaySymbolName: getNetworkDisplaySymbolName(networkConfig.symbol),
+            networkName: network.name,
+            networkSymbol: network.symbol,
+            displaySymbolName: getNetworkDisplaySymbolName(network.symbol),
         } satisfies TradingAssetOptionNativeToken;
     }
 
@@ -123,7 +124,11 @@ export function createAssetOption({
         return null;
     }
 
-    const networkConfig = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const networkConfig = getNetwork(networkSymbol);
+
+    if (!isTradingNetwork(networkConfig)) {
+        return null;
+    }
 
     const coinInfoSymbol = coinInfo.symbol;
 
@@ -192,9 +197,15 @@ export function createAssetOption({
  */
 
 export function createAssetNativeTokenOption(
-    networkSymbol: NetworkConfigWithoutTestnets['symbol'],
+    networkSymbol: NetworkSymbol,
 ): TradingAssetOptionNativeToken {
-    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const network = getNetwork(networkSymbol);
+
+    if (!isTradingNetwork(network)) {
+        // The previous implementation trusted this invariant through a type assertion, so a
+        // violation indicates an invalid caller or network configuration.
+        throw new Error(`Network ${networkSymbol} is not supported by trading.`);
+    }
 
     return {
         isNativeToken: true,
@@ -213,7 +224,13 @@ export function createAssetNativeTokenOption(
 export function createAssetTokenOption<
     Token extends Pick<TokenInfo, 'contract' | 'symbol' | 'name'>,
 >(networkSymbol: NetworkSymbol, token: Token): TradingAssetOptionWithContractAddress {
-    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const network = getNetwork(networkSymbol);
+
+    if (!isTradingNetwork(network)) {
+        // The previous implementation trusted this invariant through a type assertion, so a
+        // violation indicates an invalid caller or network configuration.
+        throw new Error(`Network ${networkSymbol} is not supported by trading.`);
+    }
 
     return {
         id: getCryptoId(networkSymbol, token.contract),
@@ -237,11 +254,11 @@ export function createAssetTokenOption<
  */
 export function useTradingAssets() {
     const getCoinsAndPlatforms = useCoinsAndPlatforms();
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
-    const supportedAddressValidatorSymbols = useMemo(
-        () => new Set(networkModuleRepository.getSupportedNetworks()),
-        [networkModuleRepository],
+    const { getSupportedNetworks, isTestnet } = useServices(
+        selectGetSupportedNetworksDep,
+        selectIsTestnetDep,
     );
+    const supportedNetworks = getSupportedNetworks();
 
     const buildAssetOptions = useCallback(
         ({ includedCryptoIds = new Set() }: { includedCryptoIds?: Set<CryptoId> }) => {
@@ -255,7 +272,7 @@ export function useTradingAssets() {
                             platforms,
                             coins,
                             cryptoId,
-                            supportedAddressValidatorSymbols,
+                            supportedNetworks,
                         ) &&
                         coins[cryptoId],
                 )
@@ -285,17 +302,21 @@ export function useTradingAssets() {
                 networks,
             };
         },
-        [getCoinsAndPlatforms, supportedAddressValidatorSymbols],
+        [getCoinsAndPlatforms, supportedNetworks],
     );
 
     const createAssetOptionFromCryptoId = useCallback<(cryptoId?: CryptoId) => TradingAssetOption>(
         cryptoId => {
             const { coins, platforms } = getCoinsAndPlatforms();
 
-            const network = cryptoIdToNetwork(cryptoId);
-            const resolvedNetworkSymbol =
-                getNonTestnetNetworkSymbol(network) ?? TRADING_DEFAULT_CRYPTO_CURRENCY;
-            const defaultAssetOption = createAssetNativeTokenOption(resolvedNetworkSymbol);
+            const networkSymbol =
+                cryptoIdToNetwork(cryptoId)?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY;
+
+            if (isTestnet(networkSymbol)) {
+                return createAssetNativeTokenOption(TRADING_DEFAULT_CRYPTO_CURRENCY);
+            }
+
+            const defaultAssetOption = createAssetNativeTokenOption(networkSymbol);
 
             if (cryptoId && coins[cryptoId]) {
                 return (
@@ -309,7 +330,7 @@ export function useTradingAssets() {
 
             return defaultAssetOption;
         },
-        [getCoinsAndPlatforms],
+        [getCoinsAndPlatforms, isTestnet],
     );
 
     const resolveAssetTokenOption = useCallback(

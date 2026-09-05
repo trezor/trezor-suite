@@ -10,10 +10,13 @@ import { getNetworkConfig } from './networkConfig';
 
 export type StellarNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<StellarNetworkSymbol>;
 
+const isTestnet = (symbol: StellarNetworkSymbol): boolean => getNetworkConfig(symbol).testnet;
+
 export const createStellarSuiteCommonNetworkModule =
     (): StellarNetworkSuiteCommonNetworkModule => ({
         addressValidator: stellarValidator,
         getSupportedNetworks: () => supportedStellarNetworks,
         isSupportedNetwork: isSupportedStellarNetwork,
+        isTestnet,
         getNetworkConfig,
     });

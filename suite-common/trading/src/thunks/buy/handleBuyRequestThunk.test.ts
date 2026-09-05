@@ -3,7 +3,7 @@ import { type CryptoId } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
-import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
 import { ALTERNATIVE_QUOTES } from '../../__fixtures__/buyUtils';
 import {
@@ -25,7 +25,7 @@ import { buyThunks } from './index';
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const btcSymbol = asNetworkSymbol('btc');
 const createMockQuotes = () =>
     [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES].map(quote => ({ ...quote }));
 
@@ -91,7 +91,7 @@ describe('handleBuyRequestThunk', () => {
                 isNativeToken: true,
                 name: 'Bitcoin',
                 symbol: btcSymbol,
-                coingeckoId: 'bitcoin',
+                coingeckoId: 'bitcoin' as CryptoId,
                 displaySymbol: 'BTC',
                 displaySymbolName: 'Bitcoin',
                 contractAddress: null,

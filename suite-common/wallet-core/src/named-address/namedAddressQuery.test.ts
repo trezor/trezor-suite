@@ -1,8 +1,12 @@
-import type { NetworkModuleRepository, NetworkSymbol } from '@suite-common/networks';
+import type {
+    GetNamedAddressSupport,
+    NetworkSymbol,
+    SymbolNamedAddressResolver,
+} from '@suite-common/networks';
+import { mockGetNamedAddressSupport } from '@suite-common/networks/mocks';
 import { QueryClient } from '@suite-common/react-query';
 
 import { getResolveNamedAddressQueryOptions } from './namedAddressQuery';
-import type { SymbolNamedAddressResolver } from './namedAddressResolver';
 
 const mockResolveNamedAddress = jest.fn();
 const mockReverseResolveAddress = jest.fn();
@@ -18,12 +22,11 @@ const namedAddressResolver: SymbolNamedAddressResolver = {
     resolveNamedProfile: jest.fn(),
 };
 
-const networkModuleRepository = {
-    get: () => ({ namedAddressResolver }),
-} as unknown as NetworkModuleRepository;
+const getNamedAddressSupport: GetNamedAddressSupport =
+    mockGetNamedAddressSupport(namedAddressResolver);
 
 const queryOptions = (value: string, symbol: NetworkSymbol | null) =>
-    getResolveNamedAddressQueryOptions({ networkModuleRepository, value, symbol });
+    getResolveNamedAddressQueryOptions({ getNamedAddressSupport, value, symbol });
 
 const RESOLVED_HEX = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 

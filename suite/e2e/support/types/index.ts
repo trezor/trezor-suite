@@ -1,7 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { AnalyticsDesktopEvents } from '@suite/analytics';
-import type { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
 import { LaunchSuiteParams } from '../electron';
@@ -56,7 +56,7 @@ export type TrezorUserEnv = Pick<
     | 'sendToAddressAndMineBlock'
 >;
 
-export type AssetPickerNetworkFilter = 'all-networks' | NetworkConfigWithoutTestnets['symbol'];
+export type AssetPickerNetworkFilter = 'all-networks' | NetworkSymbol;
 
 export type BuyAsset = {
     searchFilter?: string;

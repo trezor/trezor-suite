@@ -1,7 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
-import { type NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { TokenIcon, type TokenIconSize } from '@suite-native/icons';
 
 export type IconByCryptoIdProps = {
@@ -19,9 +19,7 @@ export const IconByCryptoId = ({ cryptoId, size, withNetwork = false }: IconByCr
 
     // when there is no contract address, we want to use display symbol instead
     // this way we can present ETH icon for EVMs instead of network icon
-    const adjustedSymbol = contractAddress
-        ? symbol
-        : (getDisplaySymbol(symbol) as NetworkDisplaySymbol);
+    const adjustedSymbol = contractAddress ? symbol : getNetworkDisplaySymbol(symbol);
 
     return (
         <TokenIcon

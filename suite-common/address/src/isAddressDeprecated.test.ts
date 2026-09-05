@@ -1,10 +1,6 @@
-import {
-    createNetworkModuleRepository,
-    createNetworksCompositionRoot,
-} from '@suite-common/networks';
+import { mockAddressValidator } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { createAddressValidator } from './AddressValidator';
 import { isAddressDeprecated } from './isAddressDeprecated';
 
 const ltcSymbol = asNetworkSymbol('ltc');
@@ -13,49 +9,47 @@ const bchSymbol = asNetworkSymbol('bch');
 // https://litecoin-project.github.io/p2sh-convert/
 // https://cashaddr.bitcoincash.org/
 describe('isAddressDeprecated', () => {
-    const networkModules = createNetworksCompositionRoot();
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
-    const addressValidator = createAddressValidator({
-        networkModuleRepository,
+    it.each([
+        {
+            address: '3NP9U8dbNzBcwhChpX8nk4F3Bf2oSucXj1',
+            symbol: ltcSymbol,
+            expected: 'LTC_ADDRESS_INFO_URL',
+        },
+        {
+            address: '12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y',
+            symbol: bchSymbol,
+            expected: 'HELP_CENTER_CASHADDR_URL',
+        },
+    ])('detects a deprecated $symbol address', ({ address, symbol, expected }) => {
+        const isAddressValid = jest.fn().mockReturnValue(true);
+        const addressValidator = mockAddressValidator({ isAddressValid });
+
+        expect(isAddressDeprecated({ addressValidator, address, symbol })).toBe(expected);
+        expect(isAddressValid).toHaveBeenCalledWith(address, 'btc');
     });
 
-    it('returns undefined for non-deprecated LTC address', () => {
+    it('does not deprecate an address rejected by the BTC validator', () => {
+        const isAddressValid = jest.fn().mockReturnValue(false);
+        const addressValidator = mockAddressValidator({ isAddressValid });
+        const address = '3notValid';
+
+        expect(
+            isAddressDeprecated({ addressValidator, address, symbol: ltcSymbol }),
+        ).toBeUndefined();
+        expect(isAddressValid).toHaveBeenCalledWith(address, 'btc');
+    });
+
+    it('does not validate an address without a deprecated prefix', () => {
+        const isAddressValid = jest.fn();
+        const addressValidator = mockAddressValidator({ isAddressValid });
+
         expect(
             isAddressDeprecated({
                 addressValidator,
-                address: '3notValid',
+                address: 'LTC1QKZYARPKHDECU5RZEUJ78PWPR5SFM798AFNY4N6',
                 symbol: ltcSymbol,
             }),
-        ).toBe(undefined);
-    });
-
-    it('detects deprecated LTC address starting with "3"', () => {
-        expect(
-            isAddressDeprecated({
-                addressValidator,
-                address: '3NP9U8dbNzBcwhChpX8nk4F3Bf2oSucXj1',
-                symbol: ltcSymbol,
-            }),
-        ).toBe('LTC_ADDRESS_INFO_URL');
-    });
-
-    it('returns undefined for non-deprecated BCH address', () => {
-        expect(
-            isAddressDeprecated({
-                addressValidator,
-                address: '1notValid',
-                symbol: bchSymbol,
-            }),
-        ).toBe(undefined);
-    });
-
-    it('detects deprecated BCH address starting with "1"', () => {
-        expect(
-            isAddressDeprecated({
-                addressValidator,
-                address: '12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y',
-                symbol: bchSymbol,
-            }),
-        ).toBe('HELP_CENTER_CASHADDR_URL');
+        ).toBeUndefined();
+        expect(isAddressValid).not.toHaveBeenCalled();
     });
 });

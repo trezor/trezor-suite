@@ -5,19 +5,17 @@ import { base58 } from '@scure/base';
 
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
+import { resolveBlockaidEvmChain } from '@trezor/network-ethereum-suite-common';
+import { asNetworkChainId } from '@trezor/network-module-suite-common-types';
 
-import {
-    resolveBlockaidEvmChain,
-    resolveBlockaidSolanaChain,
-    resolveBlockaidStellarChain,
-} from '../chains';
+import { resolveBlockaidSolanaChain, resolveBlockaidStellarChain } from '../chains';
 
 function transformPayloadOfEthereumSignTransaction({
     payload: { transaction },
     fromAddress,
     sourceOrigin,
 }: TxSimulationMethod<'ethereumSignTransaction'>) {
-    const chain = resolveBlockaidEvmChain(transaction.chainId);
+    const chain = resolveBlockaidEvmChain(asNetworkChainId(transaction.chainId));
 
     if (!chain) {
         return null;
@@ -55,7 +53,7 @@ function transformPayloadOfEthereumSignTypedData({
     sourceOrigin,
 }: TxSimulationMethod<'ethereumSignTypedData'>) {
     const chain = resolveBlockaidEvmChain(
-        data.domain.chainId ? Number(data.domain.chainId) : undefined,
+        data.domain.chainId ? asNetworkChainId(Number(data.domain.chainId)) : undefined,
     );
 
     if (!chain) {

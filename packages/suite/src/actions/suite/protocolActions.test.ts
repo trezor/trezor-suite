@@ -26,7 +26,7 @@ const createHandleProtocolRequestDeps = () => {
         actions: { lockDevice: mockLockDevice() },
         services: {
             analytics: mockDesktopAnalytics(),
-            findNetworkSymbolForProtocol,
+            networks: { findNetworkSymbolForProtocol },
             suiteRouterHistory: {
                 getLocation: jest.fn(),
                 navigate: jest.fn(),

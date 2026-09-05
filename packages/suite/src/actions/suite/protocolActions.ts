@@ -44,7 +44,7 @@ export const resetProtocol = createAction(PROTOCOL.RESET);
 export type HandleProtocolRequestThunkState = GotoThunkState & WalletConnectInitThunkState;
 
 export type HandleProtocolRequestThunkDeps = WithServices<
-    DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep & SuiteRouterHistoryDep
+    DesktopAnalyticsDep & { networks: FindNetworkSymbolForProtocolDep } & SuiteRouterHistoryDep
 >;
 
 export type HandleProtocolRequestDispatchDeps = HandleProtocolRequestThunkDeps &

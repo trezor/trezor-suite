@@ -50,9 +50,6 @@
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         {
-            "path": "../../networks/network-module/network-module-suite-common-types"
-        },
-        {
             "path": "../../networks/ripple/network-ripple"
         },
         {

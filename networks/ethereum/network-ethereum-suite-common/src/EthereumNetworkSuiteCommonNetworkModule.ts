@@ -12,11 +12,14 @@ import { getNetworkConfig } from './networkConfig';
 export type EthereumNetworkSuiteCommonNetworkModule =
     SuiteCommonNetworkModule<EthereumNetworkSymbol>;
 
+const isTestnet = (symbol: EthereumNetworkSymbol): boolean => getNetworkConfig(symbol).testnet;
+
 export const createEthereumSuiteCommonNetworkModule =
     (): EthereumNetworkSuiteCommonNetworkModule => ({
         addressValidator: ethereumValidator,
         namedAddressResolver: ethereumNamedAddressResolver,
         getSupportedNetworks: () => supportedEthereumNetworks,
         isSupportedNetwork: isSupportedEthereumNetwork,
+        isTestnet,
         getNetworkConfig,
     });

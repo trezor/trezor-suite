@@ -4,7 +4,7 @@ import {
     type TradingAssetOption,
     type TradingAssetOptionWithContractAddress,
 } from '@suite-common/trading';
-import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     type TokenDisplayNameSource,
@@ -12,7 +12,7 @@ import {
     getTokensDisplaySymbolNames,
 } from './tokenDisplayNames';
 
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
+const ethSymbol = asNetworkSymbol('eth');
 
 const createAsset = (
     overrides: Partial<TradingAssetOptionWithContractAddress> &
@@ -22,7 +22,7 @@ const createAsset = (
 
     return {
         id,
-        coingeckoId: 'ethereum',
+        coingeckoId: 'ethereum' as CryptoId,
         isNativeToken: false,
         name: 'Asset Name',
         symbol: 'asset',

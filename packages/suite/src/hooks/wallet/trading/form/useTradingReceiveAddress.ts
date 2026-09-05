@@ -5,9 +5,9 @@ import { type CryptoId } from 'invity-api';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { selectIsDebugModeActive } from '@suite/debug';
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectAddressValidatorDep } from '@suite-common/networks';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,

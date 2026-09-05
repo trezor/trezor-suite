@@ -10879,7 +10879,6 @@ __metadata:
   resolution: "@suite-common/extra-dependencies@workspace:suite-common/extra-dependencies"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bip329-types": "workspace:*"
     "@suite-common/delegated-identity-key-types": "workspace:*"
@@ -11600,6 +11599,8 @@ __metadata:
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/network-ethereum-suite-common": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -11612,7 +11613,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/validators@workspace:suite-common/validators"
   dependencies:
-    "@suite-common/address": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/network-solana": "workspace:*"
@@ -11627,13 +11628,8 @@ __metadata:
   dependencies:
     "@suite-common/earn-stablecoin-defs": "workspace:*"
     "@suite-common/networks": "workspace:*"
-    "@trezor/crypto-utils": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
-    "@trezor/network-cardano": "workspace:*"
-    "@trezor/network-ripple": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
-    "@trezor/network-stellar": "workspace:*"
-    "@trezor/network-tron": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -11690,7 +11686,6 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
-    "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-ripple": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
@@ -13034,9 +13029,9 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.12.0"
     "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.6.2"
-    "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/validators": "workspace:*"
@@ -14310,7 +14305,6 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@rozenite/redux-devtools-plugin": "npm:^2.1.0"
-    "@suite-common/address": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/bip329": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
@@ -14755,7 +14749,6 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/trading": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
@@ -15812,9 +15805,9 @@ __metadata:
   resolution: "@suite/sign-verify@workspace:suite/sign-verify"
   dependencies:
     "@hookform/resolvers": "npm:^5.4.0"
-    "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/receive": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -17290,6 +17283,7 @@ __metadata:
   resolution: "@trezor/network-cardano-suite-common@workspace:networks/cardano/network-cardano-suite-common"
   dependencies:
     "@scure/base": "npm:^2.0.0"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/network-cardano": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     cbor: "npm:^10.0.12"
@@ -17311,6 +17305,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-ethereum-suite-common@workspace:networks/ethereum/network-ethereum-suite-common"
   dependencies:
+    "@blockaid/client": "npm:1.5.0"
     "@noble/hashes": "npm:^2.0.1"
     "@suite-common/calldata": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -17334,6 +17329,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-module-suite-common-types@workspace:networks/network-module/network-module-suite-common-types"
   dependencies:
+    "@trezor/crypto-utils": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -17363,6 +17360,7 @@ __metadata:
   resolution: "@trezor/network-solana-suite-common@workspace:networks/solana/network-solana-suite-common"
   dependencies:
     "@scure/base": "npm:^2.0.0"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
   languageName: unknown
@@ -17413,6 +17411,7 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-tron": "workspace:*"
   languageName: unknown
@@ -17847,7 +17846,6 @@ __metadata:
     "@playwright/browser-webkit": "npm:1.62.1"
     "@playwright/test": "npm:1.62.1"
     "@scure/base": "npm:^2.0.0"
-    "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/e2e-evolu-client": "workspace:*"

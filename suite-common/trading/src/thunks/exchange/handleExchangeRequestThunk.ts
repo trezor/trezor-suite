@@ -1,6 +1,6 @@
 import { type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
 
-import { type AddressValidatorDep } from '@suite-common/address';
+import { type AddressValidatorDep } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -77,7 +77,7 @@ export const getQuoteRequestData = ({
 
 type HandleExchangeRequestThunkState = AccountsRootState & TradingRootState;
 
-type HandleExchangeRequestThunkDeps = WithServices<AddressValidatorDep>;
+type HandleExchangeRequestThunkDeps = WithServices<{ networks: AddressValidatorDep }>;
 
 export const handleExchangeRequestThunk = createThunk<
     ExchangeTrade[],
@@ -112,7 +112,7 @@ export const handleExchangeRequestThunk = createThunk<
 
         if (
             !isReceiveAddressCoherent({
-                addressValidator: extra.services.addressValidator,
+                addressValidator: extra.services.networks.addressValidator,
                 receiveAddress: requestData.receiveAddress,
                 receiveCryptoId: requestData.receive,
                 receiveAccountKey,

@@ -1,9 +1,9 @@
 import {
-    type AddressValidator,
     isAddressDeprecated,
     isBech32AddressUppercase,
     isTaprootAddress,
 } from '@suite-common/address';
+import { type AddressValidator } from '@suite-common/networks';
 import { formInputsMaxLength, yup } from '@suite-common/validators';
 import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';

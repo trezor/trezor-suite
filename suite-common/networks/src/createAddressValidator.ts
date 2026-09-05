@@ -1,5 +1,7 @@
-import type { NetworkModuleRepositoryDep, NetworkSymbol } from '@suite-common/networks';
 import type { AddressValidator as NetworkAddressValidator } from '@trezor/network-module-suite-common-types';
+
+import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
+import type { NetworkSymbol } from './NetworkModules';
 
 export type AddressValidator = NetworkAddressValidator<NetworkSymbol>;
 
@@ -10,7 +12,7 @@ export type AddressValidatorDep = {
 };
 
 export const selectAddressValidatorDep = (services: any): AddressValidatorDep => ({
-    addressValidator: services.addressValidator,
+    addressValidator: services.networks.addressValidator,
 });
 
 export const createAddressValidator = (deps: AddressValidatorDeps): AddressValidator => ({
