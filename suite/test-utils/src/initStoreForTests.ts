@@ -25,6 +25,7 @@ export type TestStore = SuiteStore['store'];
 
 export type InitStoreForTestsResult = {
     store: TestStore;
+    services: SuiteStore['services'];
     suiteRouterHistory: SuiteRouterHistory;
     memoryHistory: MemoryHistory;
     platformEncryption: PlatformEncryption;
@@ -40,7 +41,7 @@ export const initStoreForTests = (
     const memoryHistory = createMemoryHistory();
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
 
-    const { store } = initStore(
+    const { store, services } = initStore(
         {
             history: memoryHistory,
             platformEncryption: testPlatformEncryption,
@@ -57,6 +58,7 @@ export const initStoreForTests = (
 
     return {
         store,
+        services,
         suiteRouterHistory,
         memoryHistory,
         platformEncryption: testPlatformEncryption,
