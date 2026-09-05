@@ -40,7 +40,6 @@ export const NoNetworksConfigured = () => {
                         subtitle={
                             <Translation id="moduleHome.emptyState.initializedDevice.subtitle" />
                         }
-                        alignSelf="stretch"
                     />
                     <Button
                         onPress={navigateToNetworkConfiguration}

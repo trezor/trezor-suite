@@ -6,7 +6,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 type DigitBoxProps = {
     value?: string;
     isFocused: boolean;
-    testID?: string;
 };
 
 const digitBoxStyle = prepareNativeStyle<{ isFocused: boolean }>(
