@@ -24,7 +24,7 @@ jobs:
           node-version-file: ".nvmrc"
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
+        uses: safedep/pmg@64d9f1409273c9a5e36e5d7b2b883be099f1ea60 # v0.27.0
         continue-on-error: true
         with:
           version: v0.19.1
