@@ -31,6 +31,7 @@ import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
 import { useReceiveAccountPreselectionEffect } from '../general/form/useReceiveAccountPreselectionEffect';
+import { useTradeableAssetValidityEffect } from '../general/form/useTradeableAssetValidityEffect';
 
 const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
     const quotes = useSelector(selectValidTradingBuyQuotesNative);
@@ -169,6 +170,7 @@ export const useBuyForm = (): BuyFormType => {
     }, [asset?.contractAddress, asset?.cryptoId, setContractAddress, setSendNetworkSymbol]);
 
     useReceiveAccountChangeEffect(setValue, selectBuySelectedReceiveAccount);
+    useTradeableAssetValidityEffect(setValue, asset?.cryptoId);
     useReceiveAccountPreselectionEffect({
         receiveAsset: asset,
         selectReceiveAccount: selectBuySelectedReceiveAccount,

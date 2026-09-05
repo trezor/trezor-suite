@@ -78,7 +78,10 @@ export const loadInitialDataThunk = createThunk<
             if (isDifferentAccount || !platforms || !coins) {
                 const info = await tradeApi.getInfo();
 
-                dispatch(tradingActions.saveInfo(info));
+                // Skip saveInfo on failure so we never replace an existing catalog with empty data.
+                if (info) {
+                    dispatch(tradingActions.saveInfo(info));
+                }
             }
 
             if (isDifferentAccount || !buyInfo) {
