@@ -66,8 +66,7 @@ Functions accepting multiple parameters tend to be less readable and more error-
 
 When a function destructures an object parameter, its object type must be declared separately as a
 named type. Never inline the object type in the function signature, regardless of how many properties
-it contains or whether the function is a local callback. Name the type `${FunctionName}Params`; for a
-React component, use `${ComponentName}Props`.
+it contains or whether the function is a local callback.
 
 🔴 Confusing function call with many arguments:
 
