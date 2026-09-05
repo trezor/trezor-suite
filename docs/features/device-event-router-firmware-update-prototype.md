@@ -54,10 +54,15 @@ The current package split is:
     - Sole owner of the prototype firmware update workflow.
     - Kept separate from the existing Redux-oriented `@suite-common/firmware`
       package.
-- A shared THP child-workflow service, with its exact package location still to
-  be decided.
-- A device-authenticity child-workflow service, with its exact package location
-  still to be decided.
+- `@suite-common/thp`
+    - Gains a shared DI child-workflow service used by normal connection and
+      firmware state machines.
+    - Retains its legacy Redux thunks in source, but the new route does not use
+      them.
+- `@suite-common/device-authenticity`
+    - Gains a DI child-workflow service for the pre-Redux authenticity gate.
+    - Retains its legacy selected-device thunk in source, but the new route does
+      not use it.
 
 Services are created through the existing dependency-injection conventions and
 wired in the Suite composition root.
@@ -156,9 +161,11 @@ middleware. The owning top-level state machine retains event ownership,
 delegates relevant inputs to its active child, awaits the result, and then
 continues its own transition.
 
-The firmware and standard connection services use the same THP service. This
-removes the current duplication between ordinary connection and firmware flows.
-No Redux thunk participates in THP.
+The firmware and standard connection services use the same THP service from
+`@suite-common/thp`. This removes the current duplication between ordinary
+connection and firmware flows. The authenticity workflow similarly evolves the
+existing `@suite-common/device-authenticity` package. No Redux thunk participates
+in either new child workflow.
 
 A child workflow follows this interaction model:
 
@@ -338,11 +345,9 @@ that genuinely have no explicit device.
 
 ## Open decisions
 
-1. Choose the package boundaries for the shared THP and device-authenticity
-   child-workflow services.
-2. Define the exact normal connection and firmware state graphs, including
+1. Define the exact normal connection and firmware state graphs, including
    command validity and recovery transitions.
-3. Define which safe device fields are projected into the pre-connection UI
+2. Define which safe device fields are projected into the pre-connection UI
    slice.
-4. Decide how much of the prototype debug UI is retained when the architecture
+3. Decide how much of the prototype debug UI is retained when the architecture
    moves toward production.
