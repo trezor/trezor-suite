@@ -115,6 +115,12 @@ disconnects and rebinds an accepted reconnect candidate to that ID. Normal
 connections that cannot be correlated follow the registry's new-connection
 rules.
 
+Registry mutation requires a router-issued ownership lease. Firmware claims A
+with its operation `callId` and receives a guarded lease. Only that live lease
+may adopt a candidate, rebind its descriptor to A's connection ID, and release
+ownership. Completing or cancelling the operation invalidates the lease, so a
+delayed callback from stale work cannot change registry identity.
+
 ## Standard connection state machines
 
 The connection service contains a state-machine manager keyed by
@@ -245,7 +251,8 @@ Any additional physical device or conflicting evidence blocks the update.
 After adopting a reconnect candidate, firmware rebinds its physical descriptor
 to A's original `connectionId`. The stable connection identity belongs to the
 logical workflow rather than to a temporary transport path or bootloader
-descriptor.
+descriptor. Rebinding is performed through the operation's ownership lease,
+not through an unrestricted registry mutation API.
 
 The proposed matching evidence is:
 
