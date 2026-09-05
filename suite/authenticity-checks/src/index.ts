@@ -1,13 +1,12 @@
 export {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
-    selectIsDeviceCompromised,
     selectIsDeviceIdCheckEnabledAndFailed,
     selectIsDeviceInvariabilityEnabledAndFailed,
     selectIsEntropyCheckEnabledAndFailed,
     selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
+    selectIsDeviceCompromised,
     selectShouldDisplayDeviceCompromised,
-    selectShouldDisplayDeviceCompromisedOnRoute,
     selectShouldRetryFirmwareRevisionCheckError,
     type AuthenticityChecksRootState,
 } from './authenticityChecksSelectors';

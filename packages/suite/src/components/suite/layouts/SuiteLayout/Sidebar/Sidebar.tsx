@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks';
+import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { TrafficLightOffset } from '@suite/macos';
 import { suiteSettingsActions } from '@suite/settings';
 import { selectIsAnyDeviceSelected, selectSelectedDevice } from '@suite-common/device';
@@ -105,7 +105,7 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
     const [maxResizableSidebarWidth, setMaxResizableSidebarWidth] =
         useState<number>(SIDEBAR_MAX_WIDTH);
 
-    const shouldDisplayDeviceCompromised = useSelector(selectShouldDisplayDeviceCompromised);
+    const shouldDisplayDeviceCompromised = useSelector(selectIsDeviceCompromised);
     const selectedDevice = useSelector(selectSelectedDevice);
 
     const handleSidebarWidthChanged = (width: number) => {
