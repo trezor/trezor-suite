@@ -27,7 +27,9 @@ flow or Redux.
   Desktop.
 - Business logic never uses `selectedDevice`. A device is always supplied
   explicitly to a command or resolved from local workflow state.
-- Services own business state in memory. Redux contains presentation state only.
+- Services own workflow state in memory. Redux may contain presentation and
+  application configuration, but it does not contain the authoritative state of
+  a connection or firmware workflow.
 - A Redux update may request or describe UI, but it never drives a business
   transition.
 - User commands, Connect events, and asynchronous operation results may all
@@ -154,6 +156,14 @@ user continues after a confirmed failure, the completed workflow projects both
 the device and its failed-authenticity result into Redux. No partial device state
 is projected into the ordinary device collection while the check is pending.
 
+The authenticity service receives a narrow injected policy getter. Its Suite
+implementation may read configuration through Redux selectors, including
+feature gates and whether debug keys are allowed. The business service does not
+depend on the store or selectors directly, and Redux does not contain the
+connection process state. The workflow snapshots the returned policy when an
+authenticity check starts so a configuration update cannot change the meaning of
+an active check.
+
 ## Child workflows
 
 THP and device authenticity are child workflows rather than peer router
@@ -277,7 +287,8 @@ release wait until it is disconnected.
 ## Redux and UI
 
 The new services may dispatch plain Redux actions that project presentation
-state. They never read Redux to make a workflow decision.
+state. They do not read workflow state from Redux. A narrowly typed injected
+configuration getter may be backed by Redux selectors at the composition root.
 
 The prototype uses dedicated slices in the existing Suite store rather than a
 second Redux store instance. At minimum, the UI state must represent:
