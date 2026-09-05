@@ -692,15 +692,23 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 JSON.stringify(freshInfo?.misc?.stakingPools) !==
                     JSON.stringify(account?.misc?.stakingPools)
             );
-        case 'cardano':
+        case 'cardano': {
+            const freshDrep = freshInfo.misc!.staking?.drep ?? null;
+            const storedDrep = account.misc.staking.drep ?? null;
+
             return (
                 // stake address (de)registration
                 freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive ||
                 // changed rewards amount (rewards are distributed every epoch (5 days))
                 freshInfo.misc!.staking?.rewards !== account.misc.staking.rewards ||
                 // changed stake pool
-                freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId
+                freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId ||
+                // changed DRep vote or its (de)registration; `amount` drifts with other delegators
+                freshDrep?.drep_id !== storedDrep?.drep_id ||
+                freshDrep?.active !== storedDrep?.active ||
+                freshDrep?.active_epoch !== storedDrep?.active_epoch
             );
+        }
         case 'solana':
             return (
                 // compare last transaction signature since the total number of txs may not be fetched fully
