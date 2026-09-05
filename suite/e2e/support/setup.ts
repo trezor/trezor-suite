@@ -9,6 +9,12 @@ import { getVideoPath, mockRemoteMessageSystem } from './common';
 import { Suite, launchSuite } from './electron';
 import { ElectronConf } from './types';
 
+type AutoStartDesktopApi = {
+    appAutoStartPopupResponse: (response: 'quit-now') => Promise<void>;
+};
+
+type DesktopApiWindow = Window & { desktopApi: AutoStartDesktopApi };
+
 export const electronSetup = async (
     testInfo: TestInfo,
     locale: string | undefined,
@@ -83,16 +89,30 @@ export const electronTeardown = async (
         });
     }
     const closePromise = suite.electronApp.close();
-    // Handle modal that asks to enable auto-start
-    if (electronConf.exposeConnectWs) {
-        const autoStartQuitButton = suite.window.getByTestId('@auto-start-before-quit/button-quit');
-        await expect(
-            autoStartQuitButton,
-            'expected the AutoStart Quit button to be enabled',
-        ).toBeEnabled();
-        await autoStartQuitButton.click();
+    try {
+        // Handle modal that asks to enable auto-start.
+        if (electronConf.exposeConnectWs) {
+            const confirmQuitPromise = expect(async () => {
+                if (suite.window.isClosed()) {
+                    return;
+                }
+
+                await suite.window.evaluate(async () => {
+                    await (
+                        window as unknown as DesktopApiWindow
+                    ).desktopApi.appAutoStartPopupResponse('quit-now');
+                });
+            }).toPass({ timeout: 15_000 });
+
+            await Promise.race([closePromise, confirmQuitPromise]);
+        }
+    } catch (error) {
+        suite.electronApp.process().kill();
+
+        throw error;
+    } finally {
+        await closePromise.catch(() => undefined);
     }
-    await closePromise;
 };
 
 export const webSetup = async (browserContext: BrowserContext) => {
