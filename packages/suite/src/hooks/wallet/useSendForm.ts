@@ -56,7 +56,6 @@ export interface SendFormProps {
     localCurrency: BaseCurrencyCode;
     fees: AppState['wallet']['fees'];
     online: boolean;
-    sendRaw?: boolean;
     metadataEnabled: boolean;
     targetAnonymity?: number;
     prison?: Record<string, unknown>;

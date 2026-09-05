@@ -6,7 +6,6 @@ import {
     type FormOptions,
     type FormState,
     type Output,
-    type Rate,
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
@@ -27,7 +26,6 @@ export type GetCurrentRateParams = {
 };
 
 type UseSendFormFieldsParams = UseFormReturn<FormState> & {
-    fiatRate?: Rate;
     network: UseSendFormState['network'];
 };
 
