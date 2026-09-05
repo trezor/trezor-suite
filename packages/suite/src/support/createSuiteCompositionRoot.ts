@@ -202,7 +202,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getIsWindowVisible: toGetter(deps.getState, selectIsWindowVisible),
         getTradingEnvironment: toGetter(deps.getState, selectTradeServerEnvironment),
         getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
-        getIsViewOnlyByDefaultEnabled: toGetter(deps.getState, (_: AppState) => true),
         getThpSettings: toGetter(deps.getState, (state: AppState) => ({
             appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
             pairingMethods: ['CodeEntry'],

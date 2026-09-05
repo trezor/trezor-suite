@@ -60,7 +60,6 @@ export type CommonServices = SuiteSyncDep &
             [],
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;
-        getIsViewOnlyByDefaultEnabled: Getter<[], boolean>;
         getThpSettings: Getter<[], ThpSettings>;
     } & ReportSecurityCheckDep &
     ReloadAppDep &
