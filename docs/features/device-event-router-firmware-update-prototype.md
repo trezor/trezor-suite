@@ -102,6 +102,12 @@ and never falls back to `selectedDevice`. Connect initialization, transport
 management, and other operations that do not target a device remain outside the
 per-device lock.
 
+An explicit transport path must resolve to a currently connected
+`connectionId` in the ingress registry. An unknown path is rejected with a typed
+`unknownDeviceTarget` error. Outbound calls cannot create provisional registry
+identities. Firmware candidate adoption remains the only controlled identity
+exception and requires its live ownership lease in an expected reconnect state.
+
 The composition root constructs the coordinator normally and installs it into a
 set-once static bridge before Connect becomes usable. The bridge patches
 `TrezorConnect.call` and delegates legacy calls to that instance. The coordinator
