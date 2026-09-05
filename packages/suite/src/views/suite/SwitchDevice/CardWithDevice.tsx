@@ -23,7 +23,6 @@ type CardWithDeviceProps = {
     actions?: ReactNode | null;
     onCancel?: ForegroundAppProps['onCancel'];
     device: TrezorDevice;
-    isFindTrezorVisible?: boolean;
     onBackButtonClick?: () => void;
     isDeviceStatusVisible?: boolean;
 };
