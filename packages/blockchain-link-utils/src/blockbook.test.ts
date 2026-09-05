@@ -1,5 +1,5 @@
 import * as fixtures from './__fixtures__/blockbook';
-import { filterTokenTransfers, transformTransaction } from './blockbook';
+import { filterTokenTransfers, transformTokenInfo, transformTransaction } from './blockbook';
 
 describe('blockbook/utils', () => {
     describe('filterTokenTransfers', () => {
@@ -8,6 +8,14 @@ describe('blockbook/utils', () => {
                 // @ts-expect-error incorrect params
                 const transfers = filterTokenTransfers(f.addresses, f.transfers);
                 expect(transfers).toEqual(f.parsed);
+            });
+        });
+    });
+
+    describe('transformTokenInfo', () => {
+        fixtures.transformTokenInfo.forEach(f => {
+            it(f.description, () => {
+                expect(transformTokenInfo(f.tokens)).toEqual(f.parsed);
             });
         });
     });
