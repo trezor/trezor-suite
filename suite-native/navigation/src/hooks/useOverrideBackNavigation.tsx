@@ -7,7 +7,7 @@ import { useDisableIOSGesture } from './useDisableIOSGesture';
 /** @deprecated Use `useNavigationRemoveActionInterceptor` instead. */
 export const useOverrideBackNavigation = ({
     onNavigateBack,
-}: { onNavigateBack?: () => void; gestureEnabled?: boolean } = {}) => {
+}: { onNavigateBack?: () => void } = {}) => {
     useDisableIOSGesture();
     const navigation = useNavigation();
 
