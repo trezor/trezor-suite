@@ -592,7 +592,7 @@ export const useYieldFlow = ({
     const approvalAction = getYieldApprovalAction({
         liveAmount,
         allowanceAmount: session.approval.allowanceAmount,
-        isModifyMode: session.approval.isModifyMode,
+        shouldConsiderAllowance: session.approval.origin === 'modify',
         isRevokeRequired: session.approval.isRevokeRequired,
         tokenContractAddress: token?.contractAddress,
     });
@@ -697,7 +697,7 @@ export const useYieldFlow = ({
     const allowanceAmount = session.approval.allowanceAmount ?? '0';
     const canRevokeAllowance = isAmountGreaterThan({ amount: allowanceAmount, threshold: '0' });
     const isApprovalInsufficient =
-        !session.approval.isModifyMode &&
+        session.approval.origin !== 'modify' &&
         session.approval.allowanceStatus === 'loaded' &&
         isAmountGreaterThan({
             amount: liveAmount,
