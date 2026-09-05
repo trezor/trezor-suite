@@ -131,8 +131,8 @@ export const WalletInstance = ({
         >
             <Box padding={{ vertical: 12, right: 12, left: 16 }}>
                 <Collapsible isOpen={isEjecting}>
-                    <Column gap={8}>
-                        <Row justifyContent="space-between">
+                    <Column gap={8} alignItems="flex-start">
+                        <Row justifyContent="space-between" width="100%">
                             <Text
                                 as="div"
                                 intent="neutral"
