@@ -43,7 +43,6 @@ export interface WalletConnectSession {
             description: string;
             url: string;
             icons: string[];
-            verifyUrl?: string;
         };
     };
     lastAccount?: Account;
