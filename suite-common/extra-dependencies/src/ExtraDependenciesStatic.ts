@@ -13,7 +13,6 @@ type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload:
 export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */
     thunks: FetchAndSaveMetadataDep & {
-        initMetadata: SuiteCompatibleThunk<boolean>;
         forgetBluetoothDevice: SuiteCompatibleThunk<{
             bluetoothId: BluetoothDeviceId;
             skipToggleModalConnection?: boolean;

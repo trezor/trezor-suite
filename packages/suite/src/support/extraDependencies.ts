@@ -43,7 +43,6 @@ export type ExtraDependenciesSuite = ExtraDependenciesStatic &
 
 export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddlewareDeps = {
     thunks: {
-        initMetadata: metadataLabelingActions.initThunk,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadataThunk,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
     },

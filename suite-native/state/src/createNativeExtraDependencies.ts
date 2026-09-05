@@ -19,7 +19,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         // need for this is architectural mistake. Please DO NOT add more and try
         // to remove them.
         fetchAndSaveMetadata: notImplementedThunk('fetchAndSaveMetadata'),
-        initMetadata: notImplementedThunk('initMetadata'),
     },
     actions: {
         // Not implemented. We assume those are NEVER called on Native
