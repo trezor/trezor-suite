@@ -212,6 +212,14 @@ may adopt a candidate, rebind its descriptor to A's connection ID, and release
 ownership. Completing or cancelling the operation invalidates the lease, so a
 delayed callback from stale work cannot change registry identity.
 
+This event-ownership lease is distinct from the device-operation lease. The
+event lease grants temporary exclusive control over inbound Connect events and
+registry identity changes; the operation lease grants exclusive outbound use of
+A through Connect calls. Firmware acquires the device-operation lease and then
+the event-ownership lease synchronously, without an awaited boundary. Failure to
+acquire either rolls back both. Cleanup releases both capabilities explicitly,
+so neither subsystem depends on the other one's token.
+
 ## Standard connection state machines
 
 The connection service contains a state-machine manager keyed by
