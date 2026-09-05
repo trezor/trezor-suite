@@ -5,7 +5,6 @@ import { type Padding } from '../../utils/frameProps';
 
 type PaddingMapArgs = {
     paddingType: PaddingType;
-    hasHeading?: boolean;
 };
 
 type CardTypeMapArgs = {

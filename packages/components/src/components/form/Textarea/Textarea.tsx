@@ -40,7 +40,6 @@ type TextareaHTMLProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
 export type TextareaProps = AllowedFrameProps &
     TextareaHTMLProps &
     Omit<FormCellProps, 'children'> & {
-        isDisabled?: boolean;
         label?: ReactNode;
         innerRef?: Ref<HTMLTextAreaElement>;
         value?: string;
