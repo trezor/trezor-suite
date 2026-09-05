@@ -94,6 +94,14 @@ lock. Independent devices may run operations in parallel. An incompatible call
 against a locked device returns a typed `deviceBusy` result before reaching
 Connect.
 
+A lock is a workflow-scoped lease rather than a method-scoped mutex. A normal
+connection machine holds one lease across THP and while waiting for the user to
+start or resolve authenticity. Firmware holds one lease across preparation,
+reboots, and every installation stage. Child workflows inherit the parent's
+owner token instead of acquiring a competing lock. The lease is released only
+when the workflow completes or is cancelled, or when disconnect or transport
+loss revokes it.
+
 ## Event router
 
 The router subscribes to all Connect streams currently registered by
