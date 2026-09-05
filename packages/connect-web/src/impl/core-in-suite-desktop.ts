@@ -14,6 +14,15 @@ import {
 } from '@trezor/connect-common/src/utils/cancelParams';
 import { WebsocketClient, WebsocketError } from '@trezor/websocket-client';
 
+// Ports the Suite desktop http-receiver may bind its connect-ws endpoint to. Mirrors
+// HTTP_RECEIVER_PORTS in packages/suite-desktop-core/src/libs/http-receiver.ts: the
+// receiver falls back to the next port when 21335 is taken, so the client probes the
+// same range to find it. Kept in sync by hand — connect-web sits below the suite-desktop
+// layer and cannot import from it.
+const CONNECT_WS_PORTS = [21335, 21336, 21337, 21338, 21339] as const;
+
+const connectWsUrl = (port: number) => `ws://127.0.0.1:${port}/connect-ws`;
+
 /**
  * CoreInSuiteDesktop implementation for TrezorConnect factory.
  */
@@ -25,7 +34,7 @@ export class CoreInSuiteDesktop implements ConnectImpl {
     private localNetworkPermissionState: PermissionState | 'unknown' = 'unknown';
 
     public constructor() {
-        this.ws = new WebsocketClient({ url: 'ws://127.0.0.1:21335/connect-ws' });
+        this.ws = new WebsocketClient({ url: connectWsUrl(CONNECT_WS_PORTS[0]) });
     }
 
     public dispose() {
@@ -123,11 +132,36 @@ export class CoreInSuiteDesktop implements ConnectImpl {
     }
 
     private async connect(): Promise<void> {
-        try {
-            await this.ws.connect();
-        } catch (err) {
-            throw this.error(err);
+        if (this.ws.isConnected()) {
+            return;
         }
+
+        let lastError: Error | undefined;
+        for (const port of CONNECT_WS_PORTS) {
+            // Reuse the client the constructor built for the default port; probe the
+            // remaining ports with throwaway clients and keep the first one that accepts
+            // a connection (the receiver may have fallen back off 21335).
+            const candidate =
+                this.ws.options.url === connectWsUrl(port)
+                    ? this.ws
+                    : new WebsocketClient<Record<never, never>>({ url: connectWsUrl(port) });
+            try {
+                await candidate.connect();
+                if (candidate !== this.ws) {
+                    this.ws.dispose();
+                    this.ws = candidate;
+                }
+
+                return;
+            } catch (err) {
+                if (candidate !== this.ws) {
+                    candidate.dispose();
+                }
+                lastError = err instanceof Error ? err : new WebsocketError(String(err));
+            }
+        }
+
+        throw this.error(lastError ?? new WebsocketError('websocket_not_initialized'));
     }
 
     public async call(params: CallMethodPayload): Promise<CallMethodAnyResponse> {
