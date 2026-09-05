@@ -116,6 +116,13 @@ recursing through the patch. Test teardown and hot reload explicitly uninstall
 the bridge. The static reference is isolated to this infrastructure adapter and
 can be removed after callers migrate to DI.
 
+For each intercepted legacy call, the bridge registers its
+`callId -> connectionId` association with a read-only routing index. A
+legacy-call compatibility handler owns only UI events for those registered call
+IDs. It projects each request for the explicitly mapped device and never
+resolves `selectedDevice`. Registration is removed in `finally` when the call
+finishes, fails, or is cancelled.
+
 The existing typed `connect-init` blacklist of methods that do not require the
 current lock is the starting point for classifying global and device calls. The
 classification becomes an exhaustive map behind
@@ -178,6 +185,7 @@ Connect event
     -> ingress device registry update
     -> firmware update service
     -> standard device connection service
+    -> legacy-call compatibility handler
     -> root Suite projection
 ```
 
