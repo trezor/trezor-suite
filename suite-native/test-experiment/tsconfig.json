@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/formatters"
+        },
+        { "path": "../formatters-config" },
+        { "path": "../intl" },
+        { "path": "../services" },
+        { "path": "../state" },
+        { "path": "../test-utils" },
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" }
+    ]
+}

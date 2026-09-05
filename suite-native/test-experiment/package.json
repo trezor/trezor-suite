@@ -1,0 +1,32 @@
+{
+    "name": "@suite-native/test-experiment",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "heap-check-5": "./heap-check.sh 5",
+        "heap-check-10": "./heap-check.sh 10"
+    },
+    "dependencies": {
+        "@gorhom/bottom-sheet": "5.2.8",
+        "@react-navigation/native": "7.1.28",
+        "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/formatters": "workspace:*",
+        "@suite-native/formatters-config": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/services": "workspace:*",
+        "@suite-native/state": "workspace:*",
+        "@suite-native/test-utils": "workspace:*",
+        "@testing-library/react-native": "13.3.3",
+        "@trezor/styles": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-native-safe-area-context": "5.6.2",
+        "react-redux": "9.2.0"
+    }
+}
