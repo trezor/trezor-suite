@@ -16,18 +16,18 @@ import {
 
 const bitcoinAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 const ethereumAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+type StorageLoadReceiveAccountsParams = {
+    payload: {
+        receive?: { key: string; value: ReceiveAccountState }[];
+    };
+};
+
 const extraDependencies: ReceiveSliceDeps = {
     actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: {
         storageLoadReceiveAccounts: (
             state: ReceiveState,
-            {
-                payload,
-            }: {
-                payload: {
-                    receive?: { key: string; value: ReceiveAccountState }[];
-                };
-            },
+            { payload }: StorageLoadReceiveAccountsParams,
         ) => {
             state.accounts =
                 payload.receive?.reduce<ReceiveState['accounts']>((accounts, { key, value }) => {

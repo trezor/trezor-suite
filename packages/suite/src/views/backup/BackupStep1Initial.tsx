@@ -21,13 +21,12 @@ const canStart = (userConfirmed: ConfirmKey[], isDeviceLocked: boolean) =>
         userConfirmed.includes(e),
     ) && !isDeviceLocked;
 
-export const BackupStep1Initial = ({
-    onCancel,
-    backup,
-}: {
+type BackupStep1InitialProps = {
     onCancel: () => void;
     backup: BackupState;
-}) => {
+};
+
+export const BackupStep1Initial = ({ onCancel, backup }: BackupStep1InitialProps) => {
     const device = useSelector(selectSelectedDevice);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const { dispatch } = useServices(injectDispatch);

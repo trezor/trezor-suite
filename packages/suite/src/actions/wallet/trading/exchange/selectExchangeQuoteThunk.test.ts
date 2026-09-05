@@ -58,9 +58,11 @@ const DEFAULT_QUOTES_REQUEST: ExchangeTradeQuoteRequest = {
     sendStringAmount: '1',
 };
 
+type BuildStoreParams = { quotesRequest?: ExchangeTradeQuoteRequest };
+
 const buildStore = (
     report: jest.Mock,
-    { quotesRequest }: { quotesRequest?: ExchangeTradeQuoteRequest } = {
+    { quotesRequest }: BuildStoreParams = {
         quotesRequest: DEFAULT_QUOTES_REQUEST,
     },
 ) =>

@@ -147,15 +147,17 @@ export const useFetchTransactions = (
     return { fetchNext, pagesFetched, fetchPage, fetchAll, isFetching, fetchedAll };
 };
 
+type UseVisibleTransactionsParams = {
+    account: Account;
+    numberOfPagesRequested: number;
+    enableFiltering?: boolean;
+};
+
 export const useVisibleTransactions = ({
     account,
     numberOfPagesRequested,
     enableFiltering = false,
-}: {
-    account: Account;
-    numberOfPagesRequested: number;
-    enableFiltering?: boolean;
-}) => {
+}: UseVisibleTransactionsParams) => {
     const allTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, account.key),
     );

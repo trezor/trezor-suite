@@ -11,7 +11,9 @@ import {
     selectRedactedDesktopApplicationInfo,
 } from 'src/selectors/suite/logsSelectors';
 
-export const useApplicationLogs = ({ hideSensitiveInfo }: { hideSensitiveInfo: boolean }) => {
+type UseApplicationLogsParams = { hideSensitiveInfo: boolean };
+
+export const useApplicationLogs = ({ hideSensitiveInfo }: UseApplicationLogsParams) => {
     const { dispatch } = useServices(injectDispatch);
     const commonAppLogs = useCommonApplicationLogs(hideSensitiveInfo);
     const desktopApplicationInfo = useSelector((state: SuiteLogsApplicationInfoRootState) =>

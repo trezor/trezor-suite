@@ -9,13 +9,15 @@ import { Button, Column, Modal } from '@trezor/components';
 import { LaptopIcon, TrezorSafe7Icon } from '@trezor/icons';
 import { StepCard } from '@trezor/product-components';
 
+type OsAndTrezorCleanupModalProps = {
+    onCancel: () => void;
+    onTrezorRemovalConfirm: () => void;
+};
+
 export const OsAndTrezorCleanupModal = ({
     onCancel,
     onTrezorRemovalConfirm,
-}: {
-    onCancel: () => void;
-    onTrezorRemovalConfirm: () => void;
-}) => {
+}: OsAndTrezorCleanupModalProps) => {
     const [osRemovalConfirmed, setOsRemovalConfirmed] = useState(false);
     const { dispatch } = useServices(injectDispatch);
 

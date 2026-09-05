@@ -31,7 +31,9 @@ const getUpdateStateMessage = (state: UpdateState) => {
     }
 };
 
-const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdateState }) => {
+type DescriptionProps = { desktopUpdateState: DesktopUpdateState };
+
+const Description = ({ desktopUpdateState }: DescriptionProps) => {
     const appVersion = process.env.VERSION || '';
     const { dispatch } = useServices(injectDispatch);
     const openChangelog = () => dispatch(desktopUpdateActions.setIsVersionInfoModalVisible(true));

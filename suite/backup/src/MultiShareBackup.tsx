@@ -12,7 +12,9 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
-export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }) => {
+type MultiShareBackupProps = { isDeviceLocked: boolean };
+
+export const MultiShareBackup = ({ isDeviceLocked }: MultiShareBackupProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);

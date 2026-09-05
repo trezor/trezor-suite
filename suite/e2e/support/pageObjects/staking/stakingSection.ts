@@ -7,6 +7,22 @@ import { RewardsList } from './rewardList';
 import { step, toCompactAmountWithSymbol } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
+type VerifyStakingToastParams = {
+    type: 'staked' | 'unstaked' | 'claimed';
+    account: string;
+    amount: string;
+};
+
+type ExpectStakingAmountsParams = {
+    expected: {
+        pending: string | 'hidden';
+        staked: string | 'hidden';
+        rewards: string | 'hidden';
+        unstaking: string | 'hidden';
+    };
+    options?: { fastForward?: string; timeout?: number };
+};
+
 export class StakingSection {
     readonly rewardList: RewardsList;
     // Timers
@@ -161,15 +177,7 @@ export class StakingSection {
      * @param params.amount - The expected amount with symbol (e.g., '0.1 SOL')
      */
     @step()
-    async verifyStakingToast({
-        type,
-        account,
-        amount,
-    }: {
-        type: 'staked' | 'unstaked' | 'claimed';
-        account: string;
-        amount: string;
-    }) {
+    async verifyStakingToast({ type, account, amount }: VerifyStakingToastParams) {
         const toasts = {
             staked: {
                 messageLocator: this.stakedToastMessage,
@@ -236,18 +244,7 @@ export class StakingSection {
     }
 
     @step()
-    async expectStakingAmounts({
-        expected,
-        options,
-    }: {
-        expected: {
-            pending: string | 'hidden';
-            staked: string | 'hidden';
-            rewards: string | 'hidden';
-            unstaking: string | 'hidden';
-        };
-        options?: { fastForward?: string; timeout?: number };
-    }) {
+    async expectStakingAmounts({ expected, options }: ExpectStakingAmountsParams) {
         await expect(async () => {
             if (options?.fastForward) {
                 await this.page.clock.fastForward(options.fastForward);

@@ -26,6 +26,11 @@ const EMULATOR_CENTER_COORDINATES: Record<Model, { x: number; y: number }> = {
     [Model.T3B1]: { x: 0, y: 0 },
 };
 
+type OpenFeeInfoParams = {
+    buttonIndexT3W1?: number;
+    buttonIndexT3T1?: number;
+};
+
 export class DeviceFixture {
     public readonly hasTHP: boolean;
     public readonly hasSecureElement: boolean;
@@ -270,13 +275,7 @@ export class DeviceFixture {
     };
 
     @step()
-    async openFeeInfo({
-        buttonIndexT3W1 = 1,
-        buttonIndexT3T1 = 1,
-    }: {
-        buttonIndexT3W1?: number;
-        buttonIndexT3T1?: number;
-    } = {}) {
+    async openFeeInfo({ buttonIndexT3W1 = 1, buttonIndexT3T1 = 1 }: OpenFeeInfoParams = {}) {
         const EMULATOR_BURGER_MENU_COORDINATES: Record<Model, { x: number; y: number }> = {
             [Model.T3T1]: { x: 200, y: 20 },
             [Model.T3W1]: { x: 300, y: 20 },

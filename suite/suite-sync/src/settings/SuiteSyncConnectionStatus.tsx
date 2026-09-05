@@ -27,8 +27,9 @@ const formatLogEntry = (entry: SuiteSyncRelayConnectionLogEntry) => {
 
     return `${timestamp} ${message}`;
 };
+type LogProps = { entries: SuiteSyncRelayConnectionLogEntry[] };
 
-const Log = ({ entries }: { entries: SuiteSyncRelayConnectionLogEntry[] }) => {
+const Log = ({ entries }: LogProps) => {
     if (entries.length === 0) return null;
 
     return (

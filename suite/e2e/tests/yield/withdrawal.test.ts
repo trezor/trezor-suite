@@ -21,13 +21,12 @@ const YIELD_USDC_DEPOSITED_AMOUNT_COMPACT = '10.00';
 const YIELD_USDC_REMAINING_AMOUNT_COMPACT = '5.00';
 const WITHDRAW_MAX_FEE = '0.00010840280031 ETH';
 
-const buildEthAccountTokens = ({
-    usdcBalance,
-    shareBalance,
-}: {
+type BuildEthAccountTokensParams = {
     usdcBalance: string;
     shareBalance: string;
-}) => [
+};
+
+const buildEthAccountTokens = ({ usdcBalance, shareBalance }: BuildEthAccountTokensParams) => [
     ...ETH_MOCKED_ACCOUNT.tokens.map(token =>
         token.symbol === 'USDC' ? { ...token, balance: usdcBalance } : token,
     ),

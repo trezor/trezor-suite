@@ -1,9 +1,11 @@
 import { type Log, type LogMessage as UtilsLogMessage } from '@trezor/logger';
 
+type ConvertILoggerToLogParams = { serviceName: string };
+
 /** take an instance of ILogger and return mimicked instance of Log while keeping more or less the same behavior  */
 export const convertILoggerToLog = (
     iLogger: ILogger,
-    { serviceName }: { serviceName: string },
+    { serviceName }: ConvertILoggerToLogParams,
 ): Log => ({
     log: (msg: string) => iLogger.info(serviceName, msg),
     info: (msg: string) => iLogger.info(serviceName, msg),

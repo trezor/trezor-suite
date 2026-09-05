@@ -10,6 +10,16 @@ import {
     getGlobalReceiveAssetSections,
 } from './globalReceiveAssetUtils';
 
+type CreateAssetParams = {
+    id: string;
+    name: string;
+    displaySymbol: string;
+    contractAddress?: string;
+    isNativeToken?: boolean;
+    networkName?: string;
+    networkSymbol: 'btc' | 'eth' | 'arb';
+};
+
 const createAsset = ({
     id,
     name,
@@ -18,15 +28,7 @@ const createAsset = ({
     isNativeToken = false,
     networkName,
     networkSymbol,
-}: {
-    id: string;
-    name: string;
-    displaySymbol: string;
-    contractAddress?: string;
-    isNativeToken?: boolean;
-    networkName?: string;
-    networkSymbol: 'btc' | 'eth' | 'arb';
-}): TradingAssetOption =>
+}: CreateAssetParams): TradingAssetOption =>
     ({
         id: id as CryptoId,
         name,

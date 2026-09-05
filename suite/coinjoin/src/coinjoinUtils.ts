@@ -34,6 +34,12 @@ export type CoinjoinBalanceBreakdown = {
     anonymized: string;
 };
 
+type BreakdownCoinjoinBalanceParams = {
+    targetAnonymity: number | undefined;
+    anonymitySet: AnonymitySet | undefined;
+    utxos: Account['utxo'];
+};
+
 /**
  * Breaks down account balance based on anonymity status
  */
@@ -41,11 +47,7 @@ export const breakdownCoinjoinBalance = ({
     targetAnonymity,
     anonymitySet,
     utxos,
-}: {
-    targetAnonymity: number | undefined;
-    anonymitySet: AnonymitySet | undefined;
-    utxos: Account['utxo'];
-}): CoinjoinBalanceBreakdown => {
+}: BreakdownCoinjoinBalanceParams): CoinjoinBalanceBreakdown => {
     const balanceBreakdown = {
         notAnonymized: '0',
         anonymized: '0',
@@ -73,6 +75,12 @@ export const breakdownCoinjoinBalance = ({
     return balanceBreakdown;
 };
 
+type CalculateAnonymityProgressParams = {
+    targetAnonymity: number | undefined;
+    anonymitySet: AnonymitySet | undefined;
+    utxos: Account['utxo'];
+};
+
 /**
  * Calculates account anonymity progress – how much UTXOs are anonymized relatively to the target anonymity
  */
@@ -80,11 +88,7 @@ export const calculateAnonymityProgress = ({
     targetAnonymity,
     anonymitySet,
     utxos,
-}: {
-    targetAnonymity: number | undefined;
-    anonymitySet: AnonymitySet | undefined;
-    utxos: Account['utxo'];
-}): number => {
+}: CalculateAnonymityProgressParams): number => {
     if (!anonymitySet || targetAnonymity === undefined || !utxos?.length) {
         return 0;
     }
@@ -211,19 +215,21 @@ export const getEstimatedTimePerRound = (
     skipRounds?: [number, number],
 ) => hoursToMilliseconds(roundsDurationInHours) * getSkipRoundsRate(skipRounds);
 
+type GetSessionDeadlineParams = {
+    currentTimestamp: number;
+    roundDeadline: number;
+    timePerRound: number;
+    roundsLeft: number;
+    roundsNeeded: number;
+};
+
 export const getSessionDeadline = ({
     currentTimestamp,
     roundDeadline,
     timePerRound,
     roundsLeft,
     roundsNeeded,
-}: {
-    currentTimestamp: number;
-    roundDeadline: number;
-    timePerRound: number;
-    roundsLeft: number;
-    roundsNeeded: number;
-}) => {
+}: GetSessionDeadlineParams) => {
     const timeLeftTillRoundEnd = Math.max(roundDeadline - currentTimestamp, 0);
 
     const sessionDeadlineRaw = currentTimestamp + Math.min(roundsNeeded, roundsLeft) * timePerRound;

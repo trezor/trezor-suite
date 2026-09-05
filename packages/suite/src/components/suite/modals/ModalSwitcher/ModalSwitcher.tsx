@@ -17,7 +17,9 @@ import { ReduxModal } from '../ReduxModal/ReduxModal';
 
 type ModalParams = ReturnType<typeof usePreferredModal>;
 
-const Inner = ({ modal }: { modal: ModalParams }) => {
+type InnerProps = { modal: ModalParams };
+
+const Inner = ({ modal }: InnerProps) => {
     switch (modal.type) {
         case 'redux-modal':
             return <ReduxModal {...modal.payload} />;

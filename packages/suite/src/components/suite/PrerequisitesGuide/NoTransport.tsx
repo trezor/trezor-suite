@@ -18,7 +18,9 @@ const tipItems: TroubleshootingTipsItem[] = [
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
 ] as const;
 
-const Tips = ({ items }: { items: TroubleshootingTipsItem[] }) => (
+type TipsProps = { items: TroubleshootingTipsItem[] };
+
+const Tips = ({ items }: TipsProps) => (
     // No transport layer (bridge/webUSB) is available
     // On web it makes sense to
     // - offer downloading Trezor Suite desktop, or
@@ -31,7 +33,9 @@ const Tips = ({ items }: { items: TroubleshootingTipsItem[] }) => (
     />
 );
 
-const TransportDesktop = ({ items }: { items: TroubleshootingTipsItem[] }) => {
+type TransportDesktopProps = { items: TroubleshootingTipsItem[] };
+
+const TransportDesktop = ({ items }: TransportDesktopProps) => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { bridgeProcess } = useBridgeDesktopApi();
 

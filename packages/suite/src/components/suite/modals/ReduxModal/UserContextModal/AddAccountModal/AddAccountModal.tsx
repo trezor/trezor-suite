@@ -297,15 +297,17 @@ export const AddAccountModal = ({
         closeModalAndNotifyCompletion();
     }
 
+    type EnableAccountParams = {
+        selectedAccount?: NetworkAccount;
+        accountTypes?: NetworkAccount[];
+    };
+
     async function enableAccount(
         account: Account,
         {
             selectedAccount: nextSelectedAccount = selectedAccount,
             accountTypes: nextAccountTypes = accountTypes,
-        }: {
-            selectedAccount?: NetworkAccount;
-            accountTypes?: NetworkAccount[];
-        } = {},
+        }: EnableAccountParams = {},
     ) {
         if (addingAccountNetworkSymbolRef.current) {
             return;
@@ -381,15 +383,17 @@ export const AddAccountModal = ({
         }
     }
 
+    type AddNewAccountParams = {
+        network: Network;
+        account: NetworkAccount;
+        accountTypes: NetworkAccount[];
+    };
+
     async function addNewAccount({
         network,
         account,
         accountTypes: nextAccountTypes,
-    }: {
-        network: Network;
-        account: NetworkAccount;
-        accountTypes: NetworkAccount[];
-    }) {
+    }: AddNewAccountParams) {
         if (!shouldStartAddingAccount(network.symbol)) {
             return;
         }

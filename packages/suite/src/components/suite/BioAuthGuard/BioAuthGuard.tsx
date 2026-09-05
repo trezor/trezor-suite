@@ -33,13 +33,12 @@ const Container = styled.div`
     padding: 12px 4px;
 `;
 
-const BioAuthOverlay = ({
-    isBioAuthAvailable,
-    onPrimaryButtonClick,
-}: {
+type BioAuthOverlayProps = {
     isBioAuthAvailable: boolean;
     onPrimaryButtonClick: () => void;
-}) => {
+};
+
+const BioAuthOverlay = ({ isBioAuthAvailable, onPrimaryButtonClick }: BioAuthOverlayProps) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     return (
@@ -92,7 +91,9 @@ const BioAuthOverlay = ({
     );
 };
 
-export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
+type BioAuthGuardProps = { children: React.ReactNode };
+
+export const BioAuthGuard = ({ children }: BioAuthGuardProps) => {
     const [isWindowFocused, setIsWindowFocused] = useState(true);
 
     const {

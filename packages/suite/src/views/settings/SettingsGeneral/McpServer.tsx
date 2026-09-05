@@ -68,13 +68,12 @@ const getSnippet = (client: McpClient, url: string, token: string | null) => {
     return JSON.stringify({ mcpServers: { 'trezor-suite': { url: authUrl } } }, null, 4);
 };
 
-const RegenerateTokenModal = ({
-    onCancel,
-    onSubmit,
-}: {
+type RegenerateTokenModalProps = {
     onCancel: () => void;
     onSubmit: () => void;
-}) => (
+};
+
+const RegenerateTokenModal = ({ onCancel, onSubmit }: RegenerateTokenModalProps) => (
     <Modal
         heading={<Translation id="TR_MCP_REGENERATE_TOKEN_HEADING" />}
         onCancel={onCancel}

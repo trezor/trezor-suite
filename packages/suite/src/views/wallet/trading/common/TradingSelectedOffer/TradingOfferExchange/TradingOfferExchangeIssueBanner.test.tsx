@@ -15,9 +15,11 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { TradingOfferExchangeIssueBanner } from './TradingOfferExchangeIssueBanner';
 import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
 
+type TranslationProps = { id: string; values?: { percent?: string } };
+
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
-    Translation: ({ id, values }: { id: string; values?: { percent?: string } }) => (
+    Translation: ({ id, values }: TranslationProps) => (
         <span>{values?.percent ? `${id} ${values.percent}` : id}</span>
     ),
 }));
@@ -48,7 +50,9 @@ const slippageTooLowIssue: ExchangeIssue = {
 
 const onContinueAnywayClick = jest.fn();
 
-const renderIssueBanner = ({ issue }: { issue: ExchangeIssue }) => {
+type RenderIssueBannerParams = { issue: ExchangeIssue };
+
+const renderIssueBanner = ({ issue }: RenderIssueBannerParams) => {
     const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
         preloadedState: mockInitialAppState satisfies AppState,
         services: () => ({ analytics: mockDesktopAnalytics() }),

@@ -53,9 +53,11 @@ const DEFAULT_QUOTES_REQUEST: SellFiatTradeQuoteRequest = {
     amountInCrypto: false,
 };
 
+type BuildStoreParams = { quotesRequest?: SellFiatTradeQuoteRequest };
+
 const buildStore = (
     report: jest.Mock,
-    { quotesRequest }: { quotesRequest?: SellFiatTradeQuoteRequest } = {
+    { quotesRequest }: BuildStoreParams = {
         quotesRequest: DEFAULT_QUOTES_REQUEST,
     },
 ) =>

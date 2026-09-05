@@ -42,9 +42,11 @@ const getNamedAddressSupport: GetNamedAddressSupport = symbol => {
     return { isSupported: true, isNameLike, resolver: namedAddressResolver };
 };
 
+type WrapperProps = { children: ReactNode };
+
 const renderResolveHook = (value: string, symbol: NetworkSymbol | null) =>
     renderHookWithQueryClient(() => useResolveNamedAddress(value, symbol), {
-        wrapper: ({ children }: { children: ReactNode }) => (
+        wrapper: ({ children }: WrapperProps) => (
             <ServicesProvider services={{ networks: { getNamedAddressSupport } }}>
                 {children}
             </ServicesProvider>

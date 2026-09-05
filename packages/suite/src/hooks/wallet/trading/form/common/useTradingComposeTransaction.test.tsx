@@ -132,8 +132,10 @@ const renderComposeTransaction = ({
         } as any,
     });
 
+    type TradingComposeTransactionHookParams = { account: Account };
+
     return renderHookWithStoreProvider(
-        ({ account }: { account: Account }) => {
+        ({ account }: TradingComposeTransactionHookParams) => {
             const methods = useForm<TradingSellFormProps | TradingExchangeFormProps>({
                 mode: 'onChange',
                 defaultValues: { ...buildDefaults(), ...defaultValues },

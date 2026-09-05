@@ -68,17 +68,19 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
     return false;
 };
 
+type ExposeConnectWsParams = {
+    mainThreadEmitter: Dependencies['mainThreadEmitter'];
+    mainWindowProxy: Dependencies['mainWindowProxy'];
+    httpReceiver: ReturnType<typeof createHttpReceiver>;
+    store: Dependencies['store'];
+};
+
 export const exposeConnectWs = ({
     mainThreadEmitter,
     mainWindowProxy,
     httpReceiver,
     store,
-}: {
-    mainThreadEmitter: Dependencies['mainThreadEmitter'];
-    mainWindowProxy: Dependencies['mainWindowProxy'];
-    httpReceiver: ReturnType<typeof createHttpReceiver>;
-    store: Dependencies['store'];
-}) => {
+}: ExposeConnectWsParams) => {
     const { logger } = global;
 
     const wss = new WebSocketServer({

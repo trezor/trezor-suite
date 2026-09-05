@@ -35,9 +35,11 @@ jest.mock('@suite/device', () => ({
     useDevice: () => ({ device: { connected: true } }),
 }));
 
+type TranslationProps = { id: string };
+
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
-    Translation: ({ id }: { id: string }) => <span>{id}</span>,
+    Translation: ({ id }: TranslationProps) => <span>{id}</span>,
 }));
 
 jest.mock('@suite-common/trading', () => ({
@@ -59,16 +61,14 @@ jest.mock('./TradingOfferExchangeDetails', () => ({
     TradingOfferExchangeDetails: () => null,
 }));
 
+type TradingInfoItemProps = {
+    isReceive?: boolean;
+    amount?: string;
+    isAmountLoading?: boolean;
+};
+
 jest.mock('../TradingInfo/TradingInfoItem', () => ({
-    TradingInfoItem: ({
-        isReceive,
-        amount,
-        isAmountLoading,
-    }: {
-        isReceive?: boolean;
-        amount?: string;
-        isAmountLoading?: boolean;
-    }) => (
+    TradingInfoItem: ({ isReceive, amount, isAmountLoading }: TradingInfoItemProps) => (
         <div data-testid={`info-item-${isReceive ? 'receive' : 'send'}`}>
             {isAmountLoading ? 'loading' : amount}
         </div>

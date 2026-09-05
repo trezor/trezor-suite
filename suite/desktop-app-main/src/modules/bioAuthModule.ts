@@ -214,13 +214,12 @@ class BioAuthWindows extends BioAuth {
     }
 }
 
-export const initBioAuthModule = ({
-    mainWindowProxy,
-    store,
-}: {
+type InitBioAuthModuleParams = {
     mainWindowProxy: Dependencies['mainWindowProxy'];
     store: Dependencies['store'];
-}) => {
+};
+
+export const initBioAuthModule = ({ mainWindowProxy, store }: InitBioAuthModuleParams) => {
     let bioAuth: BioAuth | undefined;
     let interval: NodeJS.Timeout;
     const onLoad = async () => {

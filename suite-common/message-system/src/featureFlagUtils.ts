@@ -27,13 +27,15 @@ const getYieldVaultContractAddresses = (payload: Feature['payload']) => {
         .map(address => address.toLowerCase());
 };
 
+type IsYieldFeatureApplicableForVaultParams = {
+    feature: Feature;
+    vaultContractAddress?: string | null;
+};
+
 export const isYieldFeatureApplicableForVault = ({
     feature,
     vaultContractAddress,
-}: {
-    feature: Feature;
-    vaultContractAddress?: string | null;
-}) => {
+}: IsYieldFeatureApplicableForVaultParams) => {
     if (feature.payload === undefined) {
         return true;
     }

@@ -49,13 +49,12 @@ const Wrapper = styled.div`
     scroll-margin-top: 48px;
 `;
 
-const SectionHeading = ({
-    output,
-    index,
-}: {
+type SectionHeadingProps = {
     output: TransactionReviewOutputType;
     index: number;
-}) => (
+};
+
+const SectionHeading = ({ output, index }: SectionHeadingProps) => (
     <H4 margin={{ top: index === 0 ? 0 : 8 }}>
         {output.type === 'address' ? (
             <Translation

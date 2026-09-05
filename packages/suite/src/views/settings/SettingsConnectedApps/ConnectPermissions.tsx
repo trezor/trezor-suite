@@ -118,10 +118,12 @@ export const getPermissionText = (permissionType: MethodPermission | string) => 
     }
 };
 
+type GroupBadgeProps = { coin?: string };
+
 // Network icon for a coin group; falls back to a rounded-square badge that
 // mirrors NetworkIcon for the device group (no coin) or altcoins that suite has
 // no network icon for.
-const GroupBadge = ({ coin }: { coin?: string }) => {
+const GroupBadge = ({ coin }: GroupBadgeProps) => {
     const symbol = coin?.toLowerCase();
 
     if (symbol && isNetworkSymbolWithIcon(symbol)) {
@@ -141,12 +143,16 @@ const GroupBadge = ({ coin }: { coin?: string }) => {
     );
 };
 
+type PermissionIconProps = { permission: MethodPermission };
+
 // Shared so the collapsed preview and the expanded rows render identical icons.
-const PermissionIcon = ({ permission }: { permission: MethodPermission }) => (
+const PermissionIcon = ({ permission }: PermissionIconProps) => (
     <Icon as={getPermissionIcon(permission)} size={20} intent="neutral" priority="secondary" />
 );
 
-const PermissionPreview = ({ permissions }: { permissions: MethodPermission[] }) => {
+type PermissionPreviewProps = { permissions: MethodPermission[] };
+
+const PermissionPreview = ({ permissions }: PermissionPreviewProps) => {
     const shown = permissions.slice(0, PERMISSION_PREVIEW_LIMIT);
     const remaining = permissions.length - shown.length;
 

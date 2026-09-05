@@ -42,7 +42,9 @@ export function useReduxAccountSearchActions() {
     );
 }
 
-export const ReduxAccountSearchProvider = ({ children }: { children: React.ReactNode }) => {
+type ReduxAccountSearchProviderProps = { children: React.ReactNode };
+
+export const ReduxAccountSearchProvider = ({ children }: ReduxAccountSearchProviderProps) => {
     const filters = useSelector(state => selectAccountSearch(state));
     const actions = useReduxAccountSearchActions();
 

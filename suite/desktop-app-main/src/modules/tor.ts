@@ -219,12 +219,11 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
         }
     };
 
+    type ChangeTorSettingsParams = { useExternalTor: boolean; externalPort: number };
+
     ipcMain.handle(
         'tor/change-settings',
-        (
-            _,
-            { useExternalTor, externalPort }: { useExternalTor: boolean; externalPort: number },
-        ) => {
+        (_, { useExternalTor, externalPort }: ChangeTorSettingsParams) => {
             try {
                 store.setTorSettings({
                     ...store.getTorSettings(),

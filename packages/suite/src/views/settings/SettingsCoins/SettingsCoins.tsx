@@ -150,13 +150,12 @@ export const SettingsCoins = () => {
         dispatch(openModal({ type: 'advanced-coin-settings', symbol }));
     };
 
-    const renderRightContent = ({
-        networkSymbol,
-        isEnabled,
-    }: {
+    type RenderRightContentParams = {
         networkSymbol: NetworkSymbol;
         isEnabled: boolean;
-    }) => (
+    };
+
+    const renderRightContent = ({ networkSymbol, isEnabled }: RenderRightContentParams) => (
         <Switch
             size="medium"
             isChecked={isEnabled}

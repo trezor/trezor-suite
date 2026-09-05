@@ -13,13 +13,12 @@ import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-component
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
 import { useSelector } from 'src/hooks/suite';
 
-const AutoEjectConfirmationModal = ({
-    onCancel,
-    onSubmit,
-}: {
+type AutoEjectConfirmationModalProps = {
     onCancel: () => void;
     onSubmit: () => void;
-}) => {
+};
+
+const AutoEjectConfirmationModal = ({ onCancel, onSubmit }: AutoEjectConfirmationModalProps) => {
     const handleConfirmClick = () => {
         onSubmit();
         onCancel();

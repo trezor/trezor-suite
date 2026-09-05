@@ -2,13 +2,15 @@ import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { arrayPartition } from '@trezor/utils';
 
+type GetSortedNetworksParams = {
+    availableNetworks: Network[];
+    enabledNetworkSymbols: NetworkSymbol[];
+};
+
 export const getSortedNetworks = ({
     availableNetworks,
     enabledNetworkSymbols,
-}: {
-    availableNetworks: Network[];
-    enabledNetworkSymbols: NetworkSymbol[];
-}) => {
+}: GetSortedNetworksParams) => {
     const [enabledNetworks, disabledNetworks] = arrayPartition(availableNetworks, network =>
         enabledNetworkSymbols.includes(network.symbol),
     );

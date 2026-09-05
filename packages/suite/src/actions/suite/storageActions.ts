@@ -104,16 +104,12 @@ import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 
 import { STORAGE } from './constants';
 
-export const saveExplorer = (
-    deps: DbDep,
-    {
-        symbol,
-        explorer,
-    }: {
-        symbol: NetworkSymbol;
-        explorer?: Explorer;
-    },
-) => {
+type SaveExplorerParams = {
+    symbol: NetworkSymbol;
+    explorer?: Explorer;
+};
+
+export const saveExplorer = (deps: DbDep, { symbol, explorer }: SaveExplorerParams) => {
     if (!deps.db.isAccessible()) return;
 
     deps.db.removeItemByPK('explorer', symbol);

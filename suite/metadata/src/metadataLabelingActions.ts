@@ -46,16 +46,18 @@ const getLabelableEntitiesThunk =
 
 type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntitiesThunk>>[number];
 
+type FetchMetadataParams = {
+    provider: MetadataProvider;
+    entity: LabelableEntity;
+    encryptionVersion?: MetadataEncryptionVersion;
+};
+
 const fetchMetadata =
     ({
         provider,
         entity,
         encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION,
-    }: {
-        provider: MetadataProvider;
-        entity: LabelableEntity;
-        encryptionVersion?: MetadataEncryptionVersion;
-    }) =>
+    }: FetchMetadataParams) =>
     async (dispatch: Dispatch) => {
         const dataType = 'labels';
 
