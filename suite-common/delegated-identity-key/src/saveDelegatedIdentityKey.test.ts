@@ -1,6 +1,10 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
-import { type EncryptableBranded, asEncryptedHex } from '@suite-common/platform-encryption';
+import {
+    type EncryptParams,
+    type EncryptableBranded,
+    asEncryptedHex,
+} from '@suite-common/platform-encryption';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { ok } from '@trezor/type-utils';
 
@@ -17,7 +21,7 @@ describe(createSaveDelegatedIdentityKey.name, () => {
                 return action;
             },
             platformEncryption: {
-                encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
+                encrypt: <T extends EncryptableBranded>({ value }: EncryptParams<T>) =>
                     Promise.resolve(ok(asEncryptedHex<T>(`${value}-<encrypted>`))),
                 decrypt: () => {
                     throw new Error('Not expected!');

@@ -23,15 +23,17 @@ const USER_MODAL = {
 
 const DEFAULT_MODAL_APP_PARAMS = { cancelable: true, variant: undefined };
 
+type RenderPreferredModalParams = {
+    pathname: PathString;
+    hash?: '' | `#${string}`;
+    modal?: ModalState;
+};
+
 const renderPreferredModal = ({
     pathname,
     hash = '',
     modal = NO_MODAL,
-}: {
-    pathname: PathString;
-    hash?: '' | `#${string}`;
-    modal?: ModalState;
-}) => {
+}: RenderPreferredModalParams) => {
     const { store } = createTestCompositionRoot<void, ModalRootState & RouterRootState>({
         preloadedState: {
             router: { loaded: true, ...getAppWithParams({ pathname, hash }) },

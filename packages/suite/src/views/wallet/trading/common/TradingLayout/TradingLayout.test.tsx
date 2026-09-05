@@ -15,13 +15,17 @@ import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
+type TranslationProps = { id: string };
+
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
-    Translation: ({ id }: { id: string }) => <span data-testid={id}>{id}</span>,
+    Translation: ({ id }: TranslationProps) => <span data-testid={id}>{id}</span>,
 }));
 
+type TradingLayoutNavigationProps = { route?: string };
+
 jest.mock('./TradingLayoutNavigation', () => ({
-    TradingLayoutNavigation: ({ route }: { route?: string }) => (
+    TradingLayoutNavigation: ({ route }: TradingLayoutNavigationProps) => (
         <div data-testid="trading-layout-navigation">{route}</div>
     ),
 }));

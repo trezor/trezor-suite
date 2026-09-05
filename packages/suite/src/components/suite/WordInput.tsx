@@ -18,6 +18,8 @@ export const WordInput = memo(() => {
     const { translationString } = useTranslation();
     const requestId = useSelector(selectModalRequestId);
 
+    type NoOptionsMessageParams = { inputValue: string };
+
     return (
         <Select
             // eslint-disable-next-line jsx-a11y/no-autofocus
@@ -25,7 +27,7 @@ export const WordInput = memo(() => {
             isSearchable
             isClearable={false}
             isMenuOpen
-            noOptionsMessage={({ inputValue }: { inputValue: string }) =>
+            noOptionsMessage={({ inputValue }: NoOptionsMessageParams) =>
                 translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
             }
             onChange={async (item: Option, ref?: SelectRef | null) => {

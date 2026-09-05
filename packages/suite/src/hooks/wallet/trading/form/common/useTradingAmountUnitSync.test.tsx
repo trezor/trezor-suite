@@ -82,8 +82,10 @@ const renderAmountUnitSync = (account: Account) => {
         },
     });
 
+    type TradingAmountUnitSyncHookParams = { account: Account };
+
     return renderHookWithStoreProvider(
-        ({ account: syncedAccount }: { account: Account }) => {
+        ({ account: syncedAccount }: TradingAmountUnitSyncHookParams) => {
             const methods = useForm<TradingSellFormProps>({
                 mode: 'onChange',
                 defaultValues: DEFAULTS,

@@ -3,6 +3,15 @@ import { expect } from '@playwright/test';
 import { MetadataBase } from './metadataBase';
 import { step } from '../../common';
 
+type ChangeLabelParams = {
+    outputId: string;
+    txNumber: number;
+    label: string;
+    confirmSuiteSync?: boolean;
+};
+
+type RemoveLabelParams = { outputId: string; txNumber: number };
+
 export class OutputMetadata extends MetadataBase {
     readonly outputLabel = (outputId: string, txNumber: number) =>
         this.page.getByTestId(`${this.getLabelTestId(outputId, txNumber)}/hover-container`);
@@ -34,17 +43,7 @@ export class OutputMetadata extends MetadataBase {
     }
 
     @step()
-    async changeLabel({
-        outputId,
-        txNumber,
-        label,
-        confirmSuiteSync,
-    }: {
-        outputId: string;
-        txNumber: number;
-        label: string;
-        confirmSuiteSync?: boolean;
-    }) {
+    async changeLabel({ outputId, txNumber, label, confirmSuiteSync }: ChangeLabelParams) {
         await this.clickAddLabelButton(outputId, txNumber);
         await this.outputMetadataInput(outputId, txNumber).fill(label);
         await this.page.keyboard.press('Enter');
@@ -55,7 +54,7 @@ export class OutputMetadata extends MetadataBase {
     }
 
     @step()
-    async removeLabel({ outputId, txNumber }: { outputId: string; txNumber: number }) {
+    async removeLabel({ outputId, txNumber }: RemoveLabelParams) {
         await this.page.resetMousePosition();
         await expect(this.outputLabel(outputId, txNumber)).toHaveText(/[A-Za-z]+/);
         await this.outputLabel(outputId, txNumber).hover();

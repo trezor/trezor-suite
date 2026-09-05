@@ -18,20 +18,17 @@ export type PlaywrightProjectDefinition = RequireAtLeastOne<
     'name' | 'model'
 >;
 
+type PlaywrightProjectBuilderParams = {
+    target: PlaywrightTarget;
+    name?: string;
+    model?: Model;
+    nameSuffix?: string;
+};
+
 export class PlaywrightProjectBuilder {
     private project: Project<SuiteTestOptions & PlaywrightTestOptions, PlaywrightWorkerOptions>;
 
-    constructor({
-        target,
-        name,
-        model,
-        nameSuffix,
-    }: {
-        target: PlaywrightTarget;
-        name?: string;
-        model?: Model;
-        nameSuffix?: string;
-    }) {
+    constructor({ target, name, model, nameSuffix }: PlaywrightProjectBuilderParams) {
         const namePrefix = name ?? model; // at least one of them is guaranteed to be defined
         const projectName = nameSuffix ? `${namePrefix}_${nameSuffix}` : namePrefix;
 

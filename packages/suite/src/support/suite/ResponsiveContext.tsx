@@ -39,7 +39,9 @@ export const normalizePersistedSidebarWidth = (width: number) => {
 
 export const ResponsiveContext = createContext<ResponsiveContextType | undefined>(undefined);
 
-export const ResponsiveContextProvider = ({ children }: { children: React.ReactNode }) => {
+type ResponsiveContextProviderProps = { children: React.ReactNode };
+
+export const ResponsiveContextProvider = ({ children }: ResponsiveContextProviderProps) => {
     const sidebarWidthFromRedux = useSelector(selectSidebarWidth);
     const { dispatch } = useServices(injectDispatch);
     const initialSidebarWidth = normalizePersistedSidebarWidth(sidebarWidthFromRedux);

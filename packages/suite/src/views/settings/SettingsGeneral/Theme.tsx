@@ -58,7 +58,9 @@ export const Theme = () => {
     const themeVariant = autodetectTheme ? 'system' : theme.variant;
     const selectedValue = getOption(themeVariant === 'light' ? 'standard' : themeVariant);
 
-    const onChange = ({ value }: { value: ThemeColorVariantWithSystem }) => {
+    type OnChangeParams = { value: ThemeColorVariantWithSystem };
+
+    const onChange = ({ value }: OnChangeParams) => {
         // Inconsistency between types (standard = light)
         const themeValue = value === 'standard' ? 'light' : value;
 

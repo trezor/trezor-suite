@@ -28,6 +28,12 @@ export type TradeableAssetSearchFields = {
 export type TradeableAssetSearchEntry = TradeableAssetSearchFields & { sortName: string };
 
 export type TradeableAssetSearchIndex<TAsset> = ReadonlyMap<TAsset, TradeableAssetSearchEntry>;
+type OrderTradeableAssetsByOwnershipParams<TAsset> = {
+    assets: readonly TAsset[];
+    balances: TradeableAssetBalances;
+    threshold: BaseCurrencyAmount | null;
+    getAssetCryptoId: (asset: TAsset) => CryptoId;
+};
 
 /**
  * Featured assets first in their fixed order, then owned assets worth more than the threshold
@@ -38,12 +44,7 @@ export const orderTradeableAssetsByOwnership = <TAsset>({
     balances,
     threshold,
     getAssetCryptoId,
-}: {
-    assets: readonly TAsset[];
-    balances: TradeableAssetBalances;
-    threshold: BaseCurrencyAmount | null;
-    getAssetCryptoId: (asset: TAsset) => CryptoId;
-}): TAsset[] => {
+}: OrderTradeableAssetsByOwnershipParams<TAsset>): TAsset[] => {
     const featuredAssets = new Array<TAsset | undefined>(FEATURED_ASSET_CRYPTO_IDS.length);
     const ownedAssets: TAsset[] = [];
     const remainingAssets: TAsset[] = [];
@@ -82,14 +83,15 @@ export const orderTradeableAssetsByOwnership = <TAsset>({
         ...remainingAssets,
     ];
 };
+type BuildTradeableAssetSearchIndexParams<TAsset extends object> = {
+    assets: readonly TAsset[];
+    getSearchFields: (asset: TAsset) => TradeableAssetSearchFields;
+};
 
 export const buildTradeableAssetSearchIndex = <TAsset extends object>({
     assets,
     getSearchFields,
-}: {
-    assets: readonly TAsset[];
-    getSearchFields: (asset: TAsset) => TradeableAssetSearchFields;
-}): TradeableAssetSearchIndex<TAsset> =>
+}: BuildTradeableAssetSearchIndexParams<TAsset>): TradeableAssetSearchIndex<TAsset> =>
     new Map(
         assets.map(asset => {
             const fields = getSearchFields(asset);
@@ -160,6 +162,11 @@ const getAssetWeight = (searchFields: TradeableAssetSearchFields, query: string)
 
     return 13;
 };
+type FilterTradeableAssetsBySearchParams<TAsset extends object> = {
+    assets: readonly TAsset[];
+    searchIndex: TradeableAssetSearchIndex<TAsset>;
+    search: string;
+};
 
 /**
  * Keeps only assets matching the search, ranked by how well they match — an exact name hit wins
@@ -169,11 +176,7 @@ export const filterTradeableAssetsBySearch = <TAsset extends object>({
     assets,
     searchIndex,
     search,
-}: {
-    assets: readonly TAsset[];
-    searchIndex: TradeableAssetSearchIndex<TAsset>;
-    search: string;
-}): TAsset[] => {
+}: FilterTradeableAssetsBySearchParams<TAsset>): TAsset[] => {
     const query = normalizeForSearch(search);
 
     if (!query) {

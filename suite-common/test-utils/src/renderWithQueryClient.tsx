@@ -10,13 +10,14 @@ export const newTestQueryClient = () =>
     new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
 
 type Options<Props> = RenderHookOptions<Props> & { queryClient?: QueryClient };
+type WrapperParams = { children: ReactNode };
 
 export const renderHookWithQueryClient = <Result, Props>(
     callback: (props: Props) => Result,
     { wrapper: Wrapper, queryClient = newTestQueryClient(), ...options }: Options<Props> = {},
 ) =>
     renderHook(callback, {
-        wrapper: ({ children }: { children: ReactNode }) => (
+        wrapper: ({ children }: WrapperParams) => (
             <QueryClientProvider client={queryClient}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </QueryClientProvider>

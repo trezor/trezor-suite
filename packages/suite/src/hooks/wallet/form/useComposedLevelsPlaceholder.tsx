@@ -3,19 +3,21 @@ import { useMemo } from 'react';
 import { type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
 
+type UseComposedLevelsPlaceholderParams = {
+    feeInfo: FeeInfo;
+    selectedFee?: FeeLevel['label'];
+    feePerUnit: string;
+    maxFeePerGas?: string;
+    feeTotalCalculation?: (feeValue: string) => string;
+};
+
 export const useComposedLevelsPlaceholder = ({
     feeInfo,
     selectedFee,
     feePerUnit,
     maxFeePerGas,
     feeTotalCalculation,
-}: {
-    feeInfo: FeeInfo;
-    selectedFee?: FeeLevel['label'];
-    feePerUnit: string;
-    maxFeePerGas?: string;
-    feeTotalCalculation?: (feeValue: string) => string;
-}) => {
+}: UseComposedLevelsPlaceholderParams) => {
     const composedLevels = useMemo(() => {
         const levels: PrecomposedLevels = {};
 

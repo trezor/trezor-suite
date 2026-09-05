@@ -24,19 +24,21 @@ const getFormState = (overrides: Partial<FormState> = {}): FormState => ({
     ...overrides,
 });
 
+type GetTranslationParams = {
+    precomposedForm: FormState;
+    approvalToken: TokenInfo | undefined;
+    source: 'heading' | 'button';
+    routeName?: string;
+    isBumpFeeRbfAction?: boolean;
+};
+
 const getTranslation = ({
     precomposedForm,
     approvalToken,
     source,
     routeName,
     isBumpFeeRbfAction = false,
-}: {
-    precomposedForm: FormState;
-    approvalToken: TokenInfo | undefined;
-    source: 'heading' | 'button';
-    routeName?: string;
-    isBumpFeeRbfAction?: boolean;
-}) =>
+}: GetTranslationParams) =>
     getTransactionReviewModalActionTranslation({
         symbol: asNetworkSymbol('eth'),
         stakeType: null,

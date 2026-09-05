@@ -14,6 +14,12 @@ type WalletParams = {
     subAccount?: 'tokens' | 'staking';
 };
 
+type GetTokenBalanceParams = {
+    symbol: NetworkSymbol;
+    atIndex: number;
+    tokenName: string;
+};
+
 export class WalletPage {
     readonly transactionSearch: Locator;
     readonly accountSearch: Locator;
@@ -292,15 +298,7 @@ export class WalletPage {
     }
 
     @step()
-    async getTokenBalance({
-        symbol,
-        atIndex,
-        tokenName,
-    }: {
-        symbol: NetworkSymbol;
-        atIndex: number;
-        tokenName: string;
-    }) {
+    async getTokenBalance({ symbol, atIndex, tokenName }: GetTokenBalanceParams) {
         await this.openAccount({ symbol, atIndex });
         await this.page.getByTestId('@wallet/menu/wallet-tokens').click();
         const tokenCryptoAmount = this.page.getByTestId(`@token-row/${tokenName}/crypto-amount`);

@@ -10,7 +10,9 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/pro
 
 import { type AcquiredDevice } from 'src/types/suite';
 
-const getButtonLabelId = ({ device }: { device: AcquiredDevice }) => {
+type GetButtonLabelIdParams = { device: AcquiredDevice };
+
+const getButtonLabelId = ({ device }: GetButtonLabelIdParams) => {
     if (!device.firmwareReleaseConfigInfo?.isNewer) {
         return 'TR_REINSTALL';
     }

@@ -55,13 +55,15 @@ export const SettingsDebug = () => {
     const { dispatch } = useServices(injectDispatch);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
 
+    type HandleWipeSuiteSyncLabelsErrorParams = {
+        error: EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;
+        deviceStaticSessionId: StaticSessionId;
+    };
+
     const handleWipeSuiteSyncLabelsError = ({
         error,
         deviceStaticSessionId,
-    }: {
-        error: EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;
-        deviceStaticSessionId: StaticSessionId;
-    }) => {
+    }: HandleWipeSuiteSyncLabelsErrorParams) => {
         suiteSyncErrorHandler({
             error,
             dispatch,

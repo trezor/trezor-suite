@@ -58,16 +58,17 @@ const createBalances = (
     );
 
 const threshold = asBaseCurrencyAmount(new BigNumber('0.1'));
+type OrderAssetsParams = {
+    assets: TestAsset[];
+    balances?: TradeableAssetBalances;
+    thresholdAmount?: BaseCurrencyAmount | null;
+};
 
 const orderAssets = ({
     assets,
     balances = new Map(),
     thresholdAmount = threshold,
-}: {
-    assets: TestAsset[];
-    balances?: TradeableAssetBalances;
-    thresholdAmount?: BaseCurrencyAmount | null;
-}) =>
+}: OrderAssetsParams) =>
     orderTradeableAssetsByOwnership({
         assets,
         balances,

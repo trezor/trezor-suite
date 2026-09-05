@@ -28,11 +28,11 @@ export const formDraftSlice = createSlice({
                     return;
                 }
 
-                payload.formDrafts.forEach(
-                    ({ key, value }: { key: string; value: FieldValues }) => {
-                        state[key] = value;
-                    },
-                );
+                type StoredFormDraft = { key: string; value: FieldValues };
+
+                payload.formDrafts.forEach(({ key, value }: StoredFormDraft) => {
+                    state[key] = value;
+                });
             })
             .addMatcher(
                 action => action.type.startsWith(COMMON_FORM_DRAFT),

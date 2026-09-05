@@ -243,9 +243,10 @@ export function useTradingAssets() {
         () => new Set(supportedNetworks),
         [supportedNetworks],
     );
+    type BuildAssetOptionsParams = { includedCryptoIds?: Set<CryptoId> };
 
     const buildAssetOptions = useCallback(
-        ({ includedCryptoIds = new Set() }: { includedCryptoIds?: Set<CryptoId> }) => {
+        ({ includedCryptoIds = new Set() }: BuildAssetOptionsParams) => {
             const { coins, platforms } = getCoinsAndPlatforms();
 
             const assets = Array.from(includedCryptoIds)

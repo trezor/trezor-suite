@@ -171,10 +171,12 @@ const createTestServices = ({
 interface TestCallback {
     getContextValues?: () => SendContextValues;
 }
+type ComponentProps = { callback: TestCallback };
+
 // component rendered inside of SendIndex
 // callback prop is an object passed from single test case
 // getContextValues returns actual state of SendFormContext
-const Component = ({ callback }: { callback: TestCallback }) => {
+const Component = ({ callback }: ComponentProps) => {
     const values = useSendFormContext();
     // eslint-disable-next-line react-hooks/immutability
     callback.getContextValues = () => values;

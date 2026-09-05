@@ -11,6 +11,15 @@ const vaultDepositData =
 
 const accountDescriptor = '0x09ea3721b5bf3b64b4418c38b603154d2d597fae3';
 const foreignSigner = '0x0f6666bc699aec39b846e898473e9caec5a6b821';
+type CreateTransactionParams = {
+    txid: string;
+    nonce: number;
+    data?: string;
+    targetAddress?: string;
+    blockHeight?: number;
+    type?: WalletAccountTransaction['type'];
+    signer?: string;
+};
 
 // `signer` decides authorship (see isSignedByAccount): only a transaction this account signed
 // carries the account's own nonce, so a foreign one must never be mistaken for a replacement.
@@ -22,15 +31,7 @@ const createTransaction = ({
     blockHeight = 1,
     type = 'sent',
     signer = accountDescriptor,
-}: {
-    txid: string;
-    nonce: number;
-    data?: string;
-    targetAddress?: string;
-    blockHeight?: number;
-    type?: WalletAccountTransaction['type'];
-    signer?: string;
-}) =>
+}: CreateTransactionParams) =>
     ({
         txid,
         symbol: 'eth',

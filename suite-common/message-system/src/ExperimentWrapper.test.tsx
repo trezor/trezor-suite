@@ -33,13 +33,15 @@ const defaultComponents = [
     { variant: 'B', element: <div>variant B</div> },
 ];
 
+type RenderWrapperParams = {
+    messageSystem?: MessageSystemState;
+    components?: typeof defaultComponents;
+};
+
 const renderWrapper = ({
     messageSystem = createMessageSystemState(),
     components = defaultComponents,
-}: {
-    messageSystem?: MessageSystemState;
-    components?: typeof defaultComponents;
-} = {}) =>
+}: RenderWrapperParams = {}) =>
     render(
         <Provider store={createStore(messageSystem)}>
             <ExperimentWrapper id={ExperimentId.tradingFeedbackForm} components={components} />

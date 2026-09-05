@@ -70,7 +70,9 @@ const ETHEREUM_ASSET: TradingAssetOption = {
     networkSymbol: ETH_SYMBOL,
 };
 
-const TradingFormTestHarness = ({ asset }: { asset: TradingAssetOption }) => {
+type TradingFormTestHarnessProps = { asset: TradingAssetOption };
+
+const TradingFormTestHarness = ({ asset }: TradingFormTestHarnessProps) => {
     const methods = useForm<TradingBuyFormProps>({
         defaultValues: {
             fiatInput: '100',

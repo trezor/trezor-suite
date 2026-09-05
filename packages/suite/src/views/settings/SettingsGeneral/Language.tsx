@@ -75,7 +75,9 @@ export const Language = () => {
               label: LANGUAGES[language].name,
           };
 
-    const onChange = ({ value }: { value: Locale | 'system' }) => {
+    type OnChangeParams = { value: Locale | 'system' };
+
+    const onChange = ({ value }: OnChangeParams) => {
         analytics.report({
             type: events.settingsGeneralChangeLanguageEvent.name,
             payload: {

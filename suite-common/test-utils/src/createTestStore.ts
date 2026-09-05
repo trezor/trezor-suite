@@ -63,13 +63,12 @@ export type CreateTestStoreParams<S, A extends UnknownAction, Extra> = {
     ? { extra?: TestStoreExtraDependencies<Extra> }
     : { extra: TestStoreExtraDependencies<Extra> });
 
-export const initPreloadedState = ({
-    rootReducer,
-    partialState,
-}: {
+type InitPreloadedStateParams = {
     rootReducer: Reducer<any, any, any>;
     partialState: any;
-}) =>
+};
+
+export const initPreloadedState = ({ rootReducer, partialState }: InitPreloadedStateParams) =>
     mergeDeepObject.withOptions(
         { mergeArrays: false },
         rootReducer(undefined, { type: 'test-init' }),

@@ -242,8 +242,10 @@ export const initProvider = () => (dispatch: Dispatch) => {
     return decision.promise;
 };
 
+type SelectProviderParams = { dataType: DataType; clientId: string };
+
 const selectProvider =
-    ({ dataType, clientId }: { dataType: DataType; clientId: string }) =>
+    ({ dataType, clientId }: SelectProviderParams) =>
     (dispatch: Dispatch) => {
         dispatch({
             type: METADATA.SET_SELECTED_PROVIDER,

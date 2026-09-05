@@ -9,15 +9,17 @@ import { useBackendReconnection } from 'src/hooks/settings/backends';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 
+type DisconnectedNotificationProps = {
+    symbol: NetworkSymbol;
+    identity?: string;
+    resolveTime: number | undefined;
+};
+
 const DisconnectedNotification = ({
     symbol,
     identity,
     resolveTime,
-}: {
-    symbol: NetworkSymbol;
-    identity?: string;
-    resolveTime: number | undefined;
-}) => {
+}: DisconnectedNotificationProps) => {
     const { reconnect, isReconnecting, countdownSeconds } = useBackendReconnection(
         symbol,
         identity,

@@ -93,8 +93,10 @@ export const SecurityStep = () => {
         }
     }, [dispatch, getResetDeviceParams, updateAnalytics]);
 
+    type HandleSkipBackupParams = { showFinishedScreen?: boolean };
+
     const handleSkipBackup = useCallback(
-        async ({ showFinishedScreen = false }: { showFinishedScreen?: boolean } = {}) => {
+        async ({ showFinishedScreen = false }: HandleSkipBackupParams = {}) => {
             updateAnalytics({ backup: 'skip' });
             setShowSkipConfirmation(false);
             setStatus('skipping-backup');

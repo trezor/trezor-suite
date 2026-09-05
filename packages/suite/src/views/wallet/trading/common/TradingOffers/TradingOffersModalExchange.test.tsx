@@ -18,8 +18,10 @@ jest.mock('react-hook-form', () => ({
     useFormContext: () => ({ getValues: () => undefined, setValue: () => undefined }),
 }));
 
+type TradingOffersModalItemProps = { quote: ExchangeTrade };
+
 jest.mock('./TradingOffersModalItem', () => ({
-    TradingOffersModalItem: ({ quote }: { quote: ExchangeTrade }) => (
+    TradingOffersModalItem: ({ quote }: TradingOffersModalItemProps) => (
         <div data-testid="@trading/offers/quote">{quote.exchange}</div>
     ),
 }));

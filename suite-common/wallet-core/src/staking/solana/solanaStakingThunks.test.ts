@@ -89,16 +89,18 @@ type State = {
     };
 };
 
+type BuildStoreParams = {
+    accounts?: Account[];
+    blockchain?: Partial<Record<'sol' | 'dsol', { url: string }>>;
+};
+
 const buildStore = ({
     accounts = [solAccount],
     blockchain = {
         sol: { url: 'http://localhost:8899' },
         dsol: { url: 'http://localhost:8899' },
     },
-}: {
-    accounts?: Account[];
-    blockchain?: Partial<Record<'sol' | 'dsol', { url: string }>>;
-} = {}) =>
+}: BuildStoreParams = {}) =>
     createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             wallet: combineReducers({

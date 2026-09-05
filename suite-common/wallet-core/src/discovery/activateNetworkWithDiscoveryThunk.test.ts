@@ -71,15 +71,17 @@ const createDevice = (): TrezorDevice =>
         available: true,
     });
 
+type CreateStateParams = {
+    accounts?: Account[];
+    enabledNetworks?: NetworkSymbol[];
+    device?: TrezorDevice;
+};
+
 const createState = ({
     accounts = [],
     enabledNetworks = [],
     device = createDevice(),
-}: {
-    accounts?: Account[];
-    enabledNetworks?: NetworkSymbol[];
-    device?: TrezorDevice;
-} = {}): ActivateNetworkWithDiscoveryThunkState => ({
+}: CreateStateParams = {}): ActivateNetworkWithDiscoveryThunkState => ({
     wallet: {
         accounts,
         blockchain: blockchainInitialState,

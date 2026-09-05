@@ -218,19 +218,23 @@ export const getYieldFiatRateToken = ({
     };
 };
 
-/** Crypto → fiat for display. Empty string when the amount is empty or no rate is available. */
-export const getYieldFiatInputValue = ({
-    amount,
-    rate,
-}: {
+type GetYieldFiatInputValueParams = {
     amount: string;
     rate: number | undefined;
-}): string => {
+};
+
+/** Crypto → fiat for display. Empty string when the amount is empty or no rate is available. */
+export const getYieldFiatInputValue = ({ amount, rate }: GetYieldFiatInputValueParams): string => {
     if (!amount || rate === undefined) {
         return '';
     }
 
     return toFiatCurrency({ amount, rate })?.toFixed(FIAT_DISPLAY_DECIMALS) ?? '';
+};
+
+type GetYieldMaxFiatInputValueParams = {
+    amount: string;
+    rate: number | undefined;
 };
 
 /**
@@ -241,10 +245,7 @@ export const getYieldFiatInputValue = ({
 export const getYieldMaxFiatInputValue = ({
     amount,
     rate,
-}: {
-    amount: string;
-    rate: number | undefined;
-}): string => {
+}: GetYieldMaxFiatInputValueParams): string => {
     if (!amount || rate === undefined) {
         return '';
     }
@@ -254,16 +255,18 @@ export const getYieldMaxFiatInputValue = ({
     );
 };
 
+type GetYieldCryptoInputValueParams = {
+    fiat: string;
+    rate: number | undefined;
+    decimals: number;
+};
+
 /** Fiat → crypto (the source of truth). Empty string when the fiat is empty or no rate is available. */
 export const getYieldCryptoInputValue = ({
     fiat,
     rate,
     decimals,
-}: {
-    fiat: string;
-    rate: number | undefined;
-    decimals: number;
-}): string => {
+}: GetYieldCryptoInputValueParams): string => {
     if (!fiat || rate === undefined) {
         return '';
     }

@@ -1,6 +1,8 @@
 import { StepList } from '@trezor/components';
 
-export const TradingDetailStepList = ({ children }: { children: React.ReactNode }) => (
+type TradingDetailStepListProps = { children: React.ReactNode };
+
+export const TradingDetailStepList = ({ children }: TradingDetailStepListProps) => (
     <StepList bulletSize="medium" bulletGap={12} gap={24} titleGap={12}>
         {children}
     </StepList>

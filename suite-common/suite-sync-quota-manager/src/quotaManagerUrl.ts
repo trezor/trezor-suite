@@ -54,8 +54,9 @@ const getTorVariant = (isTorEnabled: boolean): TorVariant => (isTorEnabled ? 'on
 
 export const getQuotaManagerUrl = ({ env, isTorEnabled }: GetQuotaManagerUrlParams) =>
     QUOTA_MANAGER_URL[env][getTorVariant(isTorEnabled)];
+type GetQuotaManagerDefaultUrlParams = { isTorEnabled: boolean };
 
-export const getQuotaManagerDefaultUrl = ({ isTorEnabled }: { isTorEnabled: boolean }) =>
+export const getQuotaManagerDefaultUrl = ({ isTorEnabled }: GetQuotaManagerDefaultUrlParams) =>
     getQuotaManagerUrl({ env: getQuotaManagerUrlEnvironment(), isTorEnabled });
 
 export const selectQuotaManagerCustomUrl = (state: WithSuiteSyncQuotaManagerState) => {

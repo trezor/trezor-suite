@@ -44,13 +44,12 @@ const rootReducer = combineReducers({
     messageSystem: (state = messageSystemInitialState) => state,
 });
 
-const initStore = ({
-    wallet,
-    metadata,
-}: {
+type InitStoreParams = {
     wallet: MoveLabelsForRbfThunkState['wallet'];
     metadata: MoveLabelsForRbfThunkState['metadata'];
-}) =>
+};
+
+const initStore = ({ wallet, metadata }: InitStoreParams) =>
     createTestCompositionRoot<MoveLabelsForRbfThunkDeps, MoveLabelsForRbfThunkState>({
         reducer: rootReducer,
         preloadedState: initPreloadedState({

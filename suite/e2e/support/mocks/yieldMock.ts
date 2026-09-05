@@ -185,13 +185,12 @@ type BlockaidTransfer = {
     summary: string;
 };
 
-const createBlockaidBenignResponse = ({
-    sent,
-    received,
-}: {
+type CreateBlockaidBenignResponseParams = {
     sent?: BlockaidTransfer;
     received: BlockaidTransfer;
-}) => ({
+};
+
+const createBlockaidBenignResponse = ({ sent, received }: CreateBlockaidBenignResponseParams) => ({
     validation: {
         status: 'Success',
         result_type: 'Benign',

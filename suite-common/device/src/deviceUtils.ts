@@ -25,14 +25,15 @@ export const DeviceNotConnectedError = (
     type: 'DeviceNotConnectedError' as const,
     message: message ?? 'Device is not connected',
 });
+type ShouldDeviceBeRememberedParams = {
+    device: TrezorDevice | Device;
+    isAutoEjectEnabled?: boolean;
+};
 
 export const shouldDeviceBeRemembered = ({
     device,
     isAutoEjectEnabled = false,
-}: {
-    device: TrezorDevice | Device;
-    isAutoEjectEnabled?: boolean;
-}) => {
+}: ShouldDeviceBeRememberedParams) => {
     if (device.mode !== 'normal') return false;
 
     if (device.type !== 'acquired') return false;

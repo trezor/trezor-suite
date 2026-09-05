@@ -16,13 +16,12 @@ import { ConnectPopupModals } from './ConnectPopupModals';
 import { ConnectedFormatterProvider } from './ConnectedFormatterProvider';
 import { RouterHandler } from './RouterHandler';
 
-export const Main = ({
-    trafficLightOffset,
-    children,
-}: {
+type MainProps = {
     trafficLightOffset?: React.ReactNode;
     children: React.ReactNode;
-}) => (
+};
+
+export const Main = ({ trafficLightOffset, children }: MainProps) => (
     // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
     // <StrictMode>
     <HelmetProvider>

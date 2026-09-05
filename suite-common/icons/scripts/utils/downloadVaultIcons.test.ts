@@ -52,16 +52,18 @@ const fakeResponse = ({ status = 200, json, buffer }: FakeResponseInit): Respons
 
     return response as unknown as Response;
 };
-
-const vault = ({
-    address,
-    underlyingToken,
-    coingeckoId,
-}: {
+type VaultParams = {
     address: string;
     underlyingToken: string;
     coingeckoId: string;
-}) => ({ yieldId: `vault-${address}`, address, underlyingToken, coingeckoId });
+};
+
+const vault = ({ address, underlyingToken, coingeckoId }: VaultParams) => ({
+    yieldId: `vault-${address}`,
+    address,
+    underlyingToken,
+    coingeckoId,
+});
 
 const iconUrl = (coingeckoId: string, size: (typeof COIN_IMAGE_SIZES)[number]) =>
     `${ICONS_URL_BASE}/${createCoinImageName({ coingeckoId, size })}`;

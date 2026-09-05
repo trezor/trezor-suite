@@ -55,13 +55,15 @@ export const useExchangeApproval = ({
             );
         };
 
+    type ConfirmApprovalParams = {
+        trade?: ExchangeTrade;
+        receiveAddress: string;
+    };
+
     const confirmApproval = async ({
         trade: approvalTrade,
         receiveAddress: approvalReceiveAddress,
-    }: {
-        trade?: ExchangeTrade;
-        receiveAddress: string;
-    }) => {
+    }: ConfirmApprovalParams) => {
         if (!account) {
             return undefined;
         }

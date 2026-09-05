@@ -199,7 +199,9 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
     </Card>
 );
 
-export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
+type ConnectDeviceGlobalModalProps = { onCancel: () => void };
+
+export const ConnectDeviceGlobalModal = ({ onCancel }: ConnectDeviceGlobalModalProps) => {
     const { analytics } = useServices(injectDesktopAnalytics);
     const [isModeSelected, setIsModeSelected] = useState(false);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));

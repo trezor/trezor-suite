@@ -29,16 +29,20 @@ jest.mock(
     () => ({ useTradingFormOfferCommon: () => mockUseTradingFormOfferCommon() }),
 );
 
+type TradingFormOfferConfirmButtonProps = {
+    isDisabled: boolean;
+    testId: string;
+};
+
 jest.mock(
     'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton',
     () => ({
         TradingFormOfferConfirmButton: ({
             isDisabled,
             testId,
-        }: {
-            isDisabled: boolean;
-            testId: string;
-        }) => <button data-testid={testId} disabled={isDisabled} />,
+        }: TradingFormOfferConfirmButtonProps) => (
+            <button data-testid={testId} disabled={isDisabled} />
+        ),
     }),
 );
 

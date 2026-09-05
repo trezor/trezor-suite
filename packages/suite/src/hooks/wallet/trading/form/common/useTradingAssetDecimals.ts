@@ -14,8 +14,10 @@ import { useTradingFindAccountOrToken } from './useTradingFindAccountOrToken';
 export function useTradingAssetDecimals(defaultDecimals = getNetwork('btc').decimals) {
     const findAccountOrToken = useTradingFindAccountOrToken();
 
+    type GetAssetDecimalsParams = { accountKey?: AccountKey; cryptoId?: CryptoId };
+
     const getAssetDecimals = useCallback(
-        ({ accountKey, cryptoId }: { accountKey?: AccountKey; cryptoId?: CryptoId }) => {
+        ({ accountKey, cryptoId }: GetAssetDecimalsParams) => {
             if (!accountKey || !cryptoId) {
                 return defaultDecimals;
             }

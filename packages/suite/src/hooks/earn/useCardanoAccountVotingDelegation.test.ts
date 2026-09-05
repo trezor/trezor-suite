@@ -121,9 +121,11 @@ describe('useSeededCardanoVotingDelegation', () => {
             serializableCheck: { ignoredActions: [] },
         });
 
+        type VotingDelegationHookParams = { account: Account };
+
         const { rerender } = renderHookWithProviders(
             services,
-            ({ account: renderedAccount }: { account: Account }) =>
+            ({ account: renderedAccount }: VotingDelegationHookParams) =>
                 useSeededCardanoVotingDelegation(renderedAccount),
             { initialProps: { account } },
         );

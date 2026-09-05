@@ -4,15 +4,13 @@ import { type Route as RouteType, selectRouteName } from '@suite/router';
 
 import { useSelector } from 'src/hooks/suite';
 
-const RouteComponent = ({
-    children,
-    fallback,
-    name,
-}: {
+type RouteComponentProps = {
     children: React.ReactNode;
     fallback?: React.ReactNode;
     name: RouteType['name'];
-}) => {
+};
+
+const RouteComponent = ({ children, fallback, name }: RouteComponentProps) => {
     const routeName = useSelector(selectRouteName);
 
     if (routeName !== name) {

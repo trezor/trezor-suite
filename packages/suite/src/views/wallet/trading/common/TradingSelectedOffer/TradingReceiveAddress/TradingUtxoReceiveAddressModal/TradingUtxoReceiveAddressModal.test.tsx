@@ -28,9 +28,11 @@ global.ResizeObserver = class MockedResizeObserver {
     disconnect = jest.fn();
 };
 
+type TranslationProps = { id: string };
+
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
-    Translation: ({ id }: { id: string }) => <span data-testid={id}>{id}</span>,
+    Translation: ({ id }: TranslationProps) => <span data-testid={id}>{id}</span>,
 }));
 
 jest.mock('../useTradingReceiveAddressValues', () => ({
