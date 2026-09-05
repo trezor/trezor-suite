@@ -59,14 +59,12 @@ type OpenYieldApproveModalParams = YieldSessionDataPayload & {
     dispatch: Dispatch;
     amount: string;
     spender: string;
-    preapprovedAmount?: string;
     txType: 'approve' | 'revoke';
 };
 
 type OpenYieldRevokeModalParams = YieldSessionDataPayload & {
     dispatch: Dispatch;
     approveAmount: string;
-    allowanceAmount: string;
     spender: string | null;
 };
 
@@ -125,7 +123,6 @@ export const openYieldApproveModal = ({
     flowData,
     amount,
     spender,
-    preapprovedAmount,
     txType,
 }: OpenYieldApproveModalParams) => {
     const contractAddress = getApprovalContractAddress({ flowType, flowData });
@@ -144,7 +141,6 @@ export const openYieldApproveModal = ({
                 amount,
                 contractAddress,
                 spender,
-                preapprovedAmount,
                 txType,
             },
         }),
@@ -159,7 +155,6 @@ export const openYieldRevokeModal = ({
     flowType,
     flowData,
     approveAmount,
-    allowanceAmount,
     spender,
 }: OpenYieldRevokeModalParams) => {
     if (!spender) {
@@ -175,7 +170,6 @@ export const openYieldRevokeModal = ({
         flowData,
         amount: getRevokeModalAmount({ flowType, amount: approveAmount, flowData }),
         spender,
-        preapprovedAmount: allowanceAmount || undefined,
         txType: 'revoke',
     });
 };
@@ -304,28 +298,23 @@ export const submitYieldRevokeThunk = createThunk<
     void,
     YieldSessionDataAmountPayload,
     { state: SubmitYieldRevokeThunkState }
->(
-    `${YIELD_THUNK_PREFIX}/submitRevoke`,
-    ({ flowKey, flowType, flowData, amount }, { dispatch, getState }) => {
-        const { approval } = selectYieldSession(getState(), flowType, flowKey);
-        const spender = getYieldVaultAddress(flowData);
+>(`${YIELD_THUNK_PREFIX}/submitRevoke`, ({ flowKey, flowType, flowData, amount }, { dispatch }) => {
+    const spender = getYieldVaultAddress(flowData);
 
-        dispatch(yieldActions.clearError({ flowType, flowKey }));
-        dispatch(yieldActions.startSubmittingApproval({ flowType, flowKey }));
+    dispatch(yieldActions.clearError({ flowType, flowKey }));
+    dispatch(yieldActions.startSubmittingApproval({ flowType, flowKey }));
 
-        openYieldRevokeModal({
-            dispatch,
-            flowKey,
-            flowType,
-            flowData,
-            approveAmount: amount,
-            allowanceAmount: approval.allowanceAmount ?? '',
-            spender,
-        });
+    openYieldRevokeModal({
+        dispatch,
+        flowKey,
+        flowType,
+        flowData,
+        approveAmount: amount,
+        spender,
+    });
 
-        dispatch(yieldActions.finishSubmittingApproval({ flowType, flowKey }));
-    },
-);
+    dispatch(yieldActions.finishSubmittingApproval({ flowType, flowKey }));
+});
 
 export const submitYieldApproveThunk = createThunk<void, SubmitYieldApprovePayload, void>(
     `${YIELD_THUNK_PREFIX}/submitApprove`,

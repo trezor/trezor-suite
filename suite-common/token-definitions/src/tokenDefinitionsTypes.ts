@@ -1,6 +1,5 @@
 import { type Getter } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Rate } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import type { PartialRecord } from '@trezor/type-utils';
 
@@ -55,4 +54,4 @@ export type TokenDefinitions = {
 
 export type TokenManagementStorage = { key: string; value: SimpleTokenStructure };
 
-export type EnhancedTokenInfo = TokenInfo & { fiatRate?: Rate };
+export type EnhancedTokenInfo = TokenInfo;

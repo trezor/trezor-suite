@@ -169,7 +169,6 @@ const isAccountSubscribable = (account: Account) =>
 
 type SubscribeBlockchainThunkParams = {
     symbol: NetworkSymbol;
-    fiatRates?: boolean;
     onConnect?: boolean;
 };
 
@@ -356,9 +355,7 @@ export const onBlockchainConnectThunk = createThunk<
 
     await dispatch(getOrFetchRawFeeInfoThunk({ networkSymbol: network.symbol }));
 
-    await dispatch(
-        subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),
-    );
+    await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, onConnect: true }));
     // update accounts for connected network
     await dispatch(syncAccountsWithBlockchainThunk(network.symbol));
     dispatch(blockchainActions.connected(network.symbol));
