@@ -169,6 +169,8 @@ export const initBluetoothThunk = createThunk<void, void, { state: InitBluetooth
 
         bluetoothIpc.on('open-bluetooth-settings', async ({ id }) => {
             const result = await desktopApi.openSystemSettings('bluetooth');
+            // Restore app focus after user closes the OS Bluetooth settings dialog.
+            desktopApi.appFocus();
             if (!result.success) {
                 // stop here and disconnect the device (abort pairing before it starts)
                 // this should throw BluetoothSettingsMissing error in current connection process
