@@ -317,6 +317,15 @@ stored failed result, allowing the compromised-device UI to block its use. The
 device is never projected as normally authenticated, and retrying the check is a
 separate explicit operation.
 
+The service preserves the current authenticity-result classification rather
+than introducing a new `inconclusive` value. A completed verification with an
+invalid proof stores `{ valid: false, ...result }`. A Connect-level failure with
+an unlocked bootloader also stores a definite `{ valid: false, error }`. Other
+Connect-level failures store `undefined`, because the check did not establish
+failure. If the user explicitly continues after such an unavailable check, the
+device may be projected without a stored result and remains eligible for the
+authenticity gate on a later reconnect.
+
 The authenticity service receives a narrow injected policy getter. Its Suite
 implementation may read configuration through Redux selectors, including
 feature gates and whether debug keys are allowed. The business service does not
