@@ -133,18 +133,19 @@ const getExchangeRequestedAndQuoteAmounts = (
         cryptoId: quote.send,
     };
 };
+type GetRequestedAndQuoteAmountsParams = {
+    quote: TradingTradeType;
+    buyQuotesRequest: ReturnType<typeof selectTradingBuyQuotesRequest>;
+    sellQuotesRequest: ReturnType<typeof selectTradingSellQuotesRequest>;
+    exchangeQuotesRequest: ReturnType<typeof selectTradingExchangeQuotesRequest>;
+};
 
 const getRequestedAndQuoteAmounts = ({
     quote,
     buyQuotesRequest,
     sellQuotesRequest,
     exchangeQuotesRequest,
-}: {
-    quote: TradingTradeType;
-    buyQuotesRequest: ReturnType<typeof selectTradingBuyQuotesRequest>;
-    sellQuotesRequest: ReturnType<typeof selectTradingSellQuotesRequest>;
-    exchangeQuotesRequest: ReturnType<typeof selectTradingExchangeQuotesRequest>;
-}) => {
+}: GetRequestedAndQuoteAmountsParams) => {
     if (isBuyTrade(quote)) {
         return getBuyRequestedAndQuoteAmounts(quote, buyQuotesRequest);
     }

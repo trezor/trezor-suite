@@ -16,6 +16,12 @@ type EvmGas = {
 };
 
 export const FOREIGN_SIGNER = '0x0F6666bC699aec39b846E898473e9CAec5a6b821';
+type EvmTxParams = {
+    confirmed?: boolean;
+    type?: WalletAccountTransaction['type'];
+    gas?: EvmGas;
+    signer?: string;
+};
 
 /**
  * Minimal EVM `WalletAccountTransaction` for nonce/fee unit tests. Only the fields the code under
@@ -25,17 +31,7 @@ export const FOREIGN_SIGNER = '0x0F6666bC699aec39b846E898473e9CAec5a6b821';
  */
 export const evmTx = (
     nonce: number,
-    {
-        confirmed = true,
-        type = 'sent',
-        gas,
-        signer = ethAccount.descriptor,
-    }: {
-        confirmed?: boolean;
-        type?: WalletAccountTransaction['type'];
-        gas?: EvmGas;
-        signer?: string;
-    } = {},
+    { confirmed = true, type = 'sent', gas, signer = ethAccount.descriptor }: EvmTxParams = {},
 ): WalletAccountTransaction =>
     ({
         type,

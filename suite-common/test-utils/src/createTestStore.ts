@@ -35,14 +35,12 @@ export type CreateTestStoreParams<S, A extends UnknownAction, Extra> = {
 // createThunk represents `void` dependencies as an empty object internally. Mirror that here so
 // dependency-free thunks remain dispatchable while tests still have to pass `extra: undefined`.
 type MockStoreExtra<Extra> = [Extra] extends [void] ? Record<never, never> : Extra;
-
-export const initPreloadedState = ({
-    rootReducer,
-    partialState,
-}: {
+type InitPreloadedStateParams = {
     rootReducer: Reducer<any, any, any>;
     partialState: any;
-}) =>
+};
+
+export const initPreloadedState = ({ rootReducer, partialState }: InitPreloadedStateParams) =>
     mergeDeepObject.withOptions(
         { mergeArrays: false },
         rootReducer(undefined, { type: 'test-init' }),

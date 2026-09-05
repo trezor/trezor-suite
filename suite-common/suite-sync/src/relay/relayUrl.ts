@@ -50,8 +50,11 @@ export const getSuiteSyncRelayUrl = ({ env, isTorEnabled }: GetSuiteSyncRelayUrl
     SUITE_SYNC_RELAY_URL[env][getTorVariant(isTorEnabled)];
 
 const getSuiteSyncRelayUrlEnvironment = (): Environment => (isCodesignBuild() ? 'prod' : 'dev');
+type GetSuiteSyncDefaultRelayUrlParams = { isTorEnabled: boolean };
 
-export const getSuiteSyncDefaultRelayUrl = ({ isTorEnabled }: { isTorEnabled: boolean }): string =>
+export const getSuiteSyncDefaultRelayUrl = ({
+    isTorEnabled,
+}: GetSuiteSyncDefaultRelayUrlParams): string =>
     getSuiteSyncRelayUrl({
         env: getSuiteSyncRelayUrlEnvironment(),
         isTorEnabled,

@@ -63,16 +63,17 @@ const ethereumAccount = mockWalletAccount({
     symbol: ethSymbol,
     descriptor: asAccountDescriptor(RBF_ACCOUNT_DESCRIPTOR),
 });
+type GetPendingTokenMovingContractTransactionParams = {
+    data: string;
+    nativeValue: string;
+    tokenAmount: string;
+};
 
 const getPendingTokenMovingContractTransaction = ({
     data,
     nativeValue,
     tokenAmount,
-}: {
-    data: string;
-    nativeValue: string;
-    tokenAmount: string;
-}) =>
+}: GetPendingTokenMovingContractTransactionParams) =>
     getWalletTransaction({
         descriptor: asAccountDescriptor(RBF_ACCOUNT_DESCRIPTOR),
         symbol: ethSymbol,
@@ -804,7 +805,9 @@ describe('transaction utils', () => {
     });
 
     describe('getEvmPrivatePendingHint', () => {
-        const pendingTx = (nonce: number, { txid = `0x${nonce}` }: { txid?: string } = {}) =>
+        type PendingTxParams = { txid?: string };
+
+        const pendingTx = (nonce: number, { txid = `0x${nonce}` }: PendingTxParams = {}) =>
             getOwnEvmTransaction({ nonce, blockHeight: -1, txid });
 
         it('returns undefined when there is no pending own-nonce tx', () => {

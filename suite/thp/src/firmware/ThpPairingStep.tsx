@@ -10,9 +10,10 @@ import { ThpCodeEntryStep } from './ThpCodeEntryStep';
 import { ThpCodeInvalidStep } from './ThpCodeInvalidStep';
 import { ThpPairingConfirmStep } from './ThpPairingConfirmStep';
 import { ThpPairingStartStep } from './ThpPairingStartStep';
+type ThpPairingStepProps = { heading: ReactNode };
 
 // reflection of packages/suite/src/components/onboarding/ThpPairingStep/ThpPairingStep.tsx
-export const ThpPairingStep = ({ heading }: { heading: ReactNode }) => {
+export const ThpPairingStep = ({ heading }: ThpPairingStepProps) => {
     const device = useSelector(selectSelectedDevice);
     const thpStep = useSelector(selectThpStep);
     const prevStepRef = useRef(thpStep);

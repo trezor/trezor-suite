@@ -96,6 +96,17 @@ export const localRulesConfig = [
         },
     },
     {
+        files: [
+            'networks/**/*.{ts,tsx}',
+            'packages/suite/**/*.{ts,tsx}',
+            'suite/**/*.{ts,tsx}',
+            'suite-common/**/*.{ts,tsx}',
+        ],
+        rules: {
+            'local-rules/enforce-named-parameter-types': 'error',
+        },
+    },
+    {
         files: ['**/src/**/*.{ts,tsx}'],
         ignores: ['**/__fixtures__/**', '**/*.test.{ts,tsx}', '**/*.type-test.ts'],
         rules: {

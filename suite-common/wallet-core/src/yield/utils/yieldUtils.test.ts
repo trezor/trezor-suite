@@ -542,6 +542,16 @@ describe('yieldUtils', () => {
         const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
         const USDT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
         const RECEIPT_ADDRESS = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
+        type CreateVaultFixtureParams = {
+            network?: YieldDtoV2['network'];
+            tokenAddress?: string;
+            tokenSymbol?: string;
+            tokenDecimals?: number;
+            outputTokenAddress?: string;
+            underMaintenance?: boolean;
+            deprecated?: boolean;
+            enter?: boolean;
+        };
 
         const createVaultFixture = ({
             network = 'ethereum',
@@ -552,16 +562,7 @@ describe('yieldUtils', () => {
             underMaintenance = false,
             deprecated = false,
             enter = true,
-        }: {
-            network?: YieldDtoV2['network'];
-            tokenAddress?: string;
-            tokenSymbol?: string;
-            tokenDecimals?: number;
-            outputTokenAddress?: string;
-            underMaintenance?: boolean;
-            deprecated?: boolean;
-            enter?: boolean;
-        }) =>
+        }: CreateVaultFixtureParams) =>
             ({
                 metadata: { name: 'Vault', underMaintenance, deprecated },
                 network,

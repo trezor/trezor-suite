@@ -1,6 +1,7 @@
 import {
+    type DecryptParams,
+    type EncryptParams,
     type EncryptableBranded,
-    type EncryptedHex,
     type PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
@@ -15,13 +16,13 @@ export type ElectronPlatformEncryptionDeps = {
 export const createElectronPlatformEncryption = (
     deps: ElectronPlatformEncryptionDeps,
 ): PlatformEncryption => ({
-    encrypt: async <T extends EncryptableBranded>({ value }: { value: T }) => {
+    encrypt: async <T extends EncryptableBranded>({ value }: EncryptParams<T>) => {
         const result = await deps.desktopApi.safeStoreEncrypt({ value });
 
         return result.success ? ok(asEncryptedHex(result.payload as T)) : result;
     },
 
-    decrypt: async <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) => {
+    decrypt: async <T extends EncryptableBranded>({ value }: DecryptParams<T>) => {
         const result = await deps.desktopApi.safeStoreDecrypt({ value });
 
         return result.success ? ok(result.payload as T) : result;

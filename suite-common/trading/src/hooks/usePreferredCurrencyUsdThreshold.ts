@@ -21,16 +21,17 @@ const BTC_TICKERS: TickerId[] = [{ symbol: 'btc' }];
 const NO_MISSING_TICKERS: TickerId[] = [];
 
 type PreferredCurrencyUsdThresholdRootState = FiatRatesRootState;
+type CalculatePreferredCurrencyUsdThresholdParams = {
+    baseCurrency: BaseCurrencyCode;
+    btcUsdRate: number | undefined;
+    btcBaseCurrencyRate: number | undefined;
+};
 
 export const calculatePreferredCurrencyUsdThreshold = ({
     baseCurrency,
     btcUsdRate,
     btcBaseCurrencyRate,
-}: {
-    baseCurrency: BaseCurrencyCode;
-    btcUsdRate: number | undefined;
-    btcBaseCurrencyRate: number | undefined;
-}): BaseCurrencyAmount | null => {
+}: CalculatePreferredCurrencyUsdThresholdParams): BaseCurrencyAmount | null => {
     if (baseCurrency === 'usd') {
         return asBaseCurrencyAmount(USD_ASSET_THRESHOLD);
     }

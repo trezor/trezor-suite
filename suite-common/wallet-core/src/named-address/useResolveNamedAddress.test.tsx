@@ -32,10 +32,11 @@ const namedAddressResolver: SymbolNamedAddressResolver = {
 const networkModuleRepository = {
     get: () => ({ namedAddressResolver }),
 } as unknown as NetworkModuleRepository;
+type WrapperParams = { children: ReactNode };
 
 const renderResolveHook = (value: string, symbol: NetworkSymbol | null) =>
     renderHookWithQueryClient(() => useResolveNamedAddress(value, symbol), {
-        wrapper: ({ children }: { children: ReactNode }) => (
+        wrapper: ({ children }: WrapperParams) => (
             <ServicesProvider services={{ networkModuleRepository }}>{children}</ServicesProvider>
         ),
     });

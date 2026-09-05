@@ -13,14 +13,15 @@ import { validatePath } from '@trezor/connect-common';
 import { BigNumber, formatBigUintToLE } from '@trezor/utils';
 
 import { cryptoIdToNetworkAndContractAddress } from '../../utils';
+type FormatSlip24SendAmountByNetworkParams = {
+    value: string | number;
+    network: Network;
+};
 
 export const formatSlip24SendAmountByNetwork = ({
     value,
     network,
-}: {
-    value: string | number;
-    network: Network;
-}): string => {
+}: FormatSlip24SendAmountByNetworkParams): string => {
     // SLIP-24: 8 bytes for Bitcoin-like coins and 32 bytes for EVM assets
     const bytesLength = network.networkType === 'ethereum' ? 32 : 8;
 
@@ -28,6 +29,11 @@ export const formatSlip24SendAmountByNetwork = ({
         value: new BigNumber(value),
         bytesLength,
     });
+};
+type FormatSlip24AddressByNetworkParams = {
+    address: string;
+    network: Network;
+    destinationTag?: string;
 };
 
 /**
@@ -46,11 +52,7 @@ export const formatSlip24AddressByNetwork = ({
     address,
     network,
     destinationTag,
-}: {
-    address: string;
-    network: Network;
-    destinationTag?: string;
-}): string => {
+}: FormatSlip24AddressByNetworkParams): string => {
     switch (network.networkType) {
         case 'ethereum':
             return toChecksumAddress(address);
