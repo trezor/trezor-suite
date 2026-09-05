@@ -1514,3 +1514,44 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         },
     },
 };
+
+export const getCardanoStakingAmount: {
+    description: string;
+    cardanoSpecific: NonNullable<WalletAccountTransaction['cardanoSpecific']>;
+    result: string;
+}[] = [
+    {
+        description: 'deregistration with rewards adds the refunded deposit to the rewards',
+        cardanoSpecific: {
+            subtype: 'stake_deregistration',
+            deposit: '2',
+            withdrawal: '0.140366',
+        },
+        result: '2.140366',
+    },
+    {
+        description: 'deregistration without rewards is just the refunded deposit',
+        cardanoSpecific: { subtype: 'stake_deregistration', deposit: '2' },
+        result: '2',
+    },
+    {
+        description: 'rewards withdrawal is the withdrawn amount',
+        cardanoSpecific: { subtype: 'withdrawal', withdrawal: '0.140366' },
+        result: '0.140366',
+    },
+    {
+        description: 'registration is the paid deposit',
+        cardanoSpecific: { subtype: 'stake_registration', deposit: '2' },
+        result: '2',
+    },
+    {
+        description: 'delegation moves nothing',
+        cardanoSpecific: { subtype: 'stake_delegation' },
+        result: '0',
+    },
+    {
+        description: 'governance delegation moves nothing',
+        cardanoSpecific: { subtype: 'governance_delegation' },
+        result: '0',
+    },
+];

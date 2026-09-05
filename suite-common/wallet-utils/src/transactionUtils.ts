@@ -455,6 +455,27 @@ export const getCardanoStakingSignValue = (transaction: WalletAccountTransaction
     return 'positive';
 };
 
+type CardanoSpecific = NonNullable<WalletAccountTransaction['cardanoSpecific']>;
+
+export const getCardanoStakingAmount = ({
+    subtype,
+    deposit = '0',
+    withdrawal = '0',
+}: CardanoSpecific) => {
+    switch (subtype) {
+        case 'withdrawal':
+            return withdrawal;
+        case 'stake_deregistration':
+            // Unstaking with rewards refunds the deposit and withdraws in one transaction.
+            return new BigNumber(deposit).plus(withdrawal).toString();
+        case 'stake_registration':
+        case 'stake_delegation':
+            return deposit;
+        default:
+            return '0';
+    }
+};
+
 export const isTxFeePaid = (tx: WalletAccountTransaction) => {
     const showFeeRowForSolSent = !!tx?.solanaSpecific && tx.type === 'sent';
     const showFeeRowForStellar = tx?.stellarSpecific?.feeSource === tx.descriptor;

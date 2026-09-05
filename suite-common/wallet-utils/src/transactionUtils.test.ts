@@ -16,6 +16,7 @@ import {
     findChainedTransactions,
     generateTransactionMonthKey,
     getAccountTransactions,
+    getCardanoStakingAmount,
     getDecreaseOutputId,
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
@@ -551,6 +552,14 @@ describe('transaction utils', () => {
                 newTransactions: [{ blockHeight: 4, blockHash: '1', txid: '1' }],
                 add: [{ blockHeight: 4, blockHash: '1', txid: '1' }],
                 remove: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 5 }],
+            });
+        });
+    });
+
+    describe('getCardanoStakingAmount', () => {
+        fixtures.getCardanoStakingAmount.forEach(f => {
+            it(f.description, () => {
+                expect(getCardanoStakingAmount(f.cardanoSpecific)).toEqual(f.result);
             });
         });
     });
