@@ -17,7 +17,6 @@ export type ExchangeInfoAmountSide = 'send' | 'receive';
 export type ExchangeInfoAsset = Pick<ExchangeToastAssetData, 'symbol' | 'contractAddress'> & {
     amount: ReactNode;
     displaySymbol?: string;
-    coingeckoId?: string;
     icon?: ReactNode;
 };
 
