@@ -440,6 +440,11 @@ export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
         ? formatNetworkAmount(tx.cardanoSpecific.deposit, tx.symbol)
         : undefined;
 
+// A deregistration refunds the deposit a registration paid, and `deposit` holds the absolute
+// amount for both, so the subtype decides the direction.
+const isCardanoDepositRefunded = (tx: WalletAccountTransaction) =>
+    tx.cardanoSpecific?.subtype === 'stake_deregistration';
+
 export const getCardanoStakingSignValue = (transaction: WalletAccountTransaction) => {
     if (!transaction?.cardanoSpecific) return 'negative';
     const subtype = transaction.cardanoSpecific?.subtype;
@@ -510,7 +515,9 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
 
             const cardanoDeposit = formatCardanoDeposit(tx);
             if (cardanoDeposit) {
-                totalAmount = totalAmount.minus(cardanoDeposit);
+                totalAmount = isCardanoDepositRefunded(tx)
+                    ? totalAmount.plus(cardanoDeposit)
+                    : totalAmount.minus(cardanoDeposit);
             }
         }
 
@@ -566,9 +573,12 @@ export const sumTransactionsFiat = (
 
             const cardanoDeposit = formatCardanoDeposit(tx);
             if (cardanoDeposit) {
-                totalAmount = totalAmount.minus(
-                    toFiatCurrency({ amount: cardanoDeposit, rate: historicRate }) ?? 0,
-                );
+                const depositFiat =
+                    toFiatCurrency({ amount: cardanoDeposit, rate: historicRate }) ?? 0;
+
+                totalAmount = isCardanoDepositRefunded(tx)
+                    ? totalAmount.plus(depositFiat)
+                    : totalAmount.minus(depositFiat);
             }
         }
 
