@@ -110,8 +110,10 @@ not use Redux.
 The registry provides the current physical connection picture to both firmware
 and normal connection workflows without making either service query the other.
 It assigns a `connectionId` for tracking a normal connection workflow. The
-precise rules for preserving or replacing that ID over physical reconnects will
-be defined with the state-machine model.
+firmware workflow preserves A's existing connection ID across its physical
+disconnects and rebinds an accepted reconnect candidate to that ID. Normal
+connections that cannot be correlated follow the registry's new-connection
+rules.
 
 ## Standard connection state machines
 
@@ -240,6 +242,11 @@ to reconnect, it may adopt the sole compatible connected candidate as A. A
 candidate that appears outside an expected reconnect state is not adopted.
 Any additional physical device or conflicting evidence blocks the update.
 
+After adopting a reconnect candidate, firmware rebinds its physical descriptor
+to A's original `connectionId`. The stable connection identity belongs to the
+logical workflow rather than to a temporary transport path or bootloader
+descriptor.
+
 The proposed matching evidence is:
 
 - expected firmware phase;
@@ -280,6 +287,11 @@ latest state to the remaining generic handler chain:
 Intermediate bootloader and UI events are not replayed. Work already completed,
 including THP, is represented in the latest snapshot so the standard connection
 state machine can continue from the current state.
+
+Because the handoff carries A's preserved `connectionId`, the standard
+connection manager resumes the existing completed machine. It refreshes the
+normal Redux projection without discovering identity through Redux and without
+repeating onboarding or authenticity checks.
 
 Successful completion, failure, or cancellation updates a dedicated prototype
 Redux UI slice. If another device is present, public completion and ownership
