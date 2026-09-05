@@ -18,7 +18,6 @@ interface Page {
     frontMatter?: {
         title?: string;
         description?: string;
-        date?: string;
     };
     name: string;
 }

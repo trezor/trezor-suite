@@ -3,7 +3,7 @@ import { type TorConnectionOptions } from '@trezor/request-manager/src/types';
 
 import { BaseProcess, type Status } from './BaseProcess';
 
-export type TorProcessStatus = Status & { isBootstrapping?: boolean };
+export type TorProcessStatus = Status;
 
 export class TorProcess extends BaseProcess {
     torController: TorController;
@@ -42,7 +42,6 @@ export class TorProcess extends BaseProcess {
         return {
             service: torControllerStatus === TOR_CONTROLLER_STATUS.CircuitEstablished,
             process: Boolean(this.process),
-            isBootstrapping: torControllerStatus === TOR_CONTROLLER_STATUS.Bootstrapping,
         };
     }
 

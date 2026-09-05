@@ -2,7 +2,7 @@ import { TOR_CONTROLLER_STATUS, TorControllerExternal } from '@trezor/request-ma
 
 import { type Status } from './BaseProcess';
 
-export type TorProcessStatus = Status & { isBootstrapping?: boolean };
+export type TorProcessStatus = Status;
 
 export class TorExternalProcess {
     torController: TorControllerExternal;
@@ -29,7 +29,6 @@ export class TorExternalProcess {
         return {
             service: torControllerStatus === TOR_CONTROLLER_STATUS.ExternalTorRunning,
             process: torControllerStatus === TOR_CONTROLLER_STATUS.ExternalTorRunning,
-            isBootstrapping: false, // For Tor external we fake bootstrap process.
         };
     }
 
