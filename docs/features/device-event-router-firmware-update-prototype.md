@@ -152,6 +152,13 @@ by that machine receives a fresh `callId`. The manager maintains an index from
 each active call ID to its owning connection. A late event from an earlier call
 cannot satisfy a transition for a later method in the same workflow.
 
+If a device disconnects before its normal connection workflow is complete, the
+manager terminates that machine. It cancels active call IDs, rejects or clears
+pending child-workflow requests, and removes the temporary UI projection. A
+later physical connection starts a new workflow. Normal connection machines do
+not guess identity across a disconnect; firmware is the explicit exception
+because it owns a guarded lease and enters states that expect device reboots.
+
 The user must explicitly start the Optiga/device-authenticity check. Until that
 workflow reaches an accepted terminal outcome, the service publishes safe
 presentation data to a dedicated UI slice but does not add the device to the
