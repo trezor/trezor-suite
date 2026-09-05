@@ -30,8 +30,6 @@ export interface WalletConnectNamespace {
 export interface WalletConnectSession {
     topic: string;
     validation?: 'VALID' | 'INVALID' | 'UNKNOWN';
-    expiry: number;
-    acknowledged: boolean;
     namespaces: Record<string, Partial<WalletConnectNamespace>>;
     requiredNamespaces: ProposalTypes.RequiredNamespaces;
     optionalNamespaces: ProposalTypes.OptionalNamespaces;
