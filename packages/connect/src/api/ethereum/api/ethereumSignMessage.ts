@@ -2,7 +2,7 @@
 
 import type { EthereumNetworkInfo, PermissionRequest } from '@trezor/connect-common';
 import { EthereumSignMessage as EthereumSignMessageSchema } from '@trezor/connect-common';
-import type { MessagesSchema, MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
@@ -18,7 +18,6 @@ type Params = {
     proto: PROTO.EthereumSignMessage;
     readableMessage: string;
     network?: EthereumNetworkInfo;
-    definitions?: MessagesSchema.EthereumDefinitions;
 };
 
 export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMessage', Params> {
