@@ -118,7 +118,6 @@ describe('claimSigningUtils', () => {
             feePerUnit: '2',
             maxFeePerGas: '2',
             maxPriorityFeePerGas: '1',
-            baseFeePerGas: '1',
             transactionData: CLAIM_CALLDATA,
         });
         expect(result.precomposedTransaction).toMatchObject({
@@ -158,7 +157,6 @@ describe('claimSigningUtils', () => {
             feePerUnit: '1',
             maxFeePerGas: undefined,
             maxPriorityFeePerGas: undefined,
-            baseFeePerGas: undefined,
         });
         expect(result.precomposedTransaction).toMatchObject({
             fee: '21000000000000',

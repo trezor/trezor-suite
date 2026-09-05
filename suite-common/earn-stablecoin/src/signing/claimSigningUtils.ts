@@ -93,7 +93,6 @@ type BuildClaimTransactionReviewResult = BuildClaimReviewStateResult & {
 type ClaimEip1559Fields = {
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
-    baseFeePerGas?: string;
 };
 
 const getNonceHex = (nonceValue: string | number): `0x${string}` => {
@@ -123,7 +122,6 @@ const getClaimFeeData = (fee: EvmFeeHex) => {
             ? {
                   maxFeePerGas: fromHex(fee.maxFeePerGas).asWei().toGwei(),
                   maxPriorityFeePerGas: fromHex(fee.maxPriorityFeePerGas).asWei().toGwei(),
-                  baseFeePerGas: fromHex(fee.baseFeePerGas).asWei().toGwei(),
               }
             : {}) satisfies ClaimEip1559Fields,
     };
@@ -234,7 +232,6 @@ export const buildClaimReviewState = ({
         feeLimit: feeLimitWei,
         maxFeePerGas: eip1559Fields.maxFeePerGas,
         maxPriorityFeePerGas: eip1559Fields.maxPriorityFeePerGas,
-        baseFeePerGas: eip1559Fields.baseFeePerGas,
         options: ['broadcast', 'transactionData'],
         transactionData: data,
         isCoinControlEnabled: false,
