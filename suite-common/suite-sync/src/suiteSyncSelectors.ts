@@ -8,9 +8,14 @@ import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { type StaticSessionId } from '@trezor/connect';
 
+import { selectSuiteSyncCustomRelayUrl } from './relay/relayUrl';
 import { type WithSuiteSyncState } from './suiteSyncSlice';
 import { type SuiteSyncInteraction } from './suiteSyncTypes';
-import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from './suiteSyncUtils';
+import {
+    canDeviceSignEvoluRegistrationRequest,
+    isFwUpgradeNeededForSuiteSync,
+    isSuiteSyncSupportedByDevice,
+} from './suiteSyncUtils';
 
 export type WithSuiteSyncAndDeviceState = WithSuiteSyncState & DeviceRootState;
 
@@ -40,7 +45,14 @@ export const selectIsSuiteSyncInitPossible = (
         return false;
     }
 
-    return device.connected && isSuiteSyncSupportedByDevice(device);
+    return (
+        device.connected &&
+        isSuiteSyncSupportedByDevice(device) &&
+        // Devices that cannot sign the evolu registration request (e.g. Model T) can only sync
+        // against a custom relay, since Quota Manager registration is not possible for them.
+        (canDeviceSignEvoluRegistrationRequest(device) ||
+            selectSuiteSyncCustomRelayUrl(state) !== null)
+    );
 };
 
 export const selectSuiteSyncOwnerForDeviceStaticId = (
@@ -68,6 +80,16 @@ export const selectSuiteSyncInteraction = (
     // IMPORTANT: Order is very important here!
 
     if (!isSuiteSyncSupportedByDevice(device)) {
+        return 'unsupported';
+    }
+
+    // Devices that cannot sign the evolu registration request (e.g. Model T) cannot register with
+    // the Quota Manager, so Suite Sync is only offered when a custom relay is configured
+    // (custom relays skip QM registration).
+    if (
+        !canDeviceSignEvoluRegistrationRequest(device) &&
+        selectSuiteSyncCustomRelayUrl(state) === null
+    ) {
         return 'unsupported';
     }
 

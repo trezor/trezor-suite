@@ -245,7 +245,12 @@ export const config: Config = {
             ],
             min: {
                 T1B1: '0',
-                T2T1: '0',
+                // PoC: Model T firmware ships the evolu commands, so the methods are no longer
+                // `no-support`. The secure-element-only `evoluSignRegistrationRequest` is never
+                // invoked on Model T because Suite restricts it to custom relays (see
+                // `canDeviceSignEvoluRegistrationRequest` gate in suite-sync). Replace with the exact
+                // Model T firmware version that introduced evolu.
+                T2T1: '2.11.0',
                 T2B1: '2.11.0',
                 T3B1: '2.11.0',
                 T3T1: '2.11.0',

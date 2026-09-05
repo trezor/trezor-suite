@@ -10,10 +10,16 @@ import {
 } from '@suite-common/suite-sync-types';
 import { err } from '@trezor/type-utils';
 
-import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
+import { selectSuiteSyncCustomRelayUrl } from '../relay/relayUrl';
+import { type WithSuiteSyncState } from '../suiteSyncSlice';
+import {
+    canDeviceSignEvoluRegistrationRequest,
+    isFwUpgradeNeededForSuiteSync,
+    isSuiteSyncSupportedByDevice,
+} from '../suiteSyncUtils';
 
 export type EnsureWalletSuiteSyncOnDeps = {
-    getState: () => DeviceRootState;
+    getState: () => DeviceRootState & WithSuiteSyncState;
 } & EnsureSubscribedStorageDep &
     OnStorageEnsuredDep;
 
@@ -34,6 +40,17 @@ export const createEnsureWalletSuiteSyncOn =
             device && isTrezorDeviceWithState(device) && isSuiteSyncSupportedByDevice(device);
 
         if (!canTurnOnSuiteSync) {
+            return err({ type: 'SuiteSyncUnavailableOnDeviceError' });
+        }
+
+        // Devices that cannot sign the evolu registration request (e.g. Model T) cannot register
+        // with the Quota Manager, so they may only turn on Suite Sync against a custom relay (which
+        // skips QM registration). This prevents a confusing device error from
+        // `evoluSignRegistrationRequest` on the default Trezor relay.
+        if (
+            !canDeviceSignEvoluRegistrationRequest(device) &&
+            selectSuiteSyncCustomRelayUrl(deps.getState()) === null
+        ) {
             return err({ type: 'SuiteSyncUnavailableOnDeviceError' });
         }
 
