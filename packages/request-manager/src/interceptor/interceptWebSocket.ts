@@ -17,7 +17,7 @@ export const interceptWebSocket: Interceptor = ({ context, validateRequest }) =>
             const urlString = url.toString();
             const { hostname } = new URL(urlString);
 
-            validateRequest({ hostname });
+            validateRequest({ hostname, fullUrl: urlString, interceptType: 'webSocket' });
 
             if (context.getTorSettings().running) {
                 const agent = context.torIdentities.getIdentity(

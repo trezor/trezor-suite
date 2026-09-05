@@ -82,6 +82,14 @@ export type InterceptorOptions = {
     getWhitelistedDomains: () => string[];
 };
 
+type ValidateRequestParams = {
+    hostname: string;
+    fullUrl?: string;
+    interceptType:
+        'netSocketConnect' | 'netConnect' | 'http' | 'https' | 'tlsConnect' | 'fetch' | 'webSocket';
+};
+export type ValidateRequestCallback = ({ hostname }: ValidateRequestParams) => void;
+
 export const TOR_CONTROLLER_STATUS = {
     Bootstrapping: 'Bootstrapping',
     Stopped: 'Stopped',

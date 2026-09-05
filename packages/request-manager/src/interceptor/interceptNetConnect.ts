@@ -32,7 +32,7 @@ export const interceptNetConnect: Interceptor = ({ context, validateRequest }) =
             hostname = typeof callback === 'string' ? callback : options.toString();
         }
 
-        validateRequest({ hostname });
+        validateRequest({ hostname, interceptType: 'netConnect' });
 
         context.handler({
             type: 'INTERCEPTED_REQUEST',

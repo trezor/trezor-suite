@@ -39,7 +39,7 @@ export const interceptTlsConnect: Interceptor = ({ context, validateRequest }) =
         // This is here for defensive reasons, the original `tls.connect` implementation (AFAIK)
         // uses net.connect to create new socket, and it already contains the interception logic.
         // But to be 100% sure, lets do the check here as well.
-        validateRequest({ hostname });
+        validateRequest({ hostname, interceptType: 'tlsConnect' });
 
         return originalTlsConnect(...(args as Parameters<typeof tls.connect>));
     };
