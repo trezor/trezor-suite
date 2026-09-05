@@ -1514,3 +1514,95 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         },
     },
 };
+
+export const getCardanoStakingAmount: {
+    description: string;
+    cardanoSpecific: NonNullable<WalletAccountTransaction['cardanoSpecific']>;
+    result: string;
+}[] = [
+    {
+        description: 'deregistration with rewards adds the refunded deposit to the rewards',
+        cardanoSpecific: {
+            subtype: 'stake_deregistration',
+            deposit: '2',
+            withdrawal: '0.140366',
+        },
+        result: '2.140366',
+    },
+    {
+        description: 'deregistration without rewards is just the refunded deposit',
+        cardanoSpecific: { subtype: 'stake_deregistration', deposit: '2' },
+        result: '2',
+    },
+    {
+        description: 'rewards withdrawal is the withdrawn amount',
+        cardanoSpecific: { subtype: 'withdrawal', withdrawal: '0.140366' },
+        result: '0.140366',
+    },
+    {
+        description: 'registration is the paid deposit',
+        cardanoSpecific: { subtype: 'stake_registration', deposit: '2' },
+        result: '2',
+    },
+    {
+        description: 'delegation moves nothing',
+        cardanoSpecific: { subtype: 'stake_delegation' },
+        result: '0',
+    },
+    {
+        description: 'governance delegation moves nothing',
+        cardanoSpecific: { subtype: 'governance_delegation' },
+        result: '0',
+    },
+];
+
+const mockCardanoStakingTx = (
+    cardanoSpecific: NonNullable<WalletAccountTransaction['cardanoSpecific']>,
+    fee: string,
+): WalletAccountTransaction => ({
+    symbol: 'ada',
+    type: 'self',
+    txid: 'e0f3b5f2a3ee6d6e5b2b4a4b1a51b2ff2c1a4de0f2c9d7b7f8b1a2c3d4e5f6a7',
+    deviceState: '1stTestnetAddress@device_id:0',
+    descriptor: asAccountDescriptor(
+        'stake_test1uzrmpvz9pv4kv3fgs3wl6vfhkbz4jm5lmxr3q0k7z0t3fzgs6f9lm',
+    ),
+    amount: fee,
+    fee,
+    targets: [],
+    tokens: [],
+    internalTransfers: [],
+    details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
+    cardanoSpecific,
+});
+
+export const sumTransactionsCardanoStaking: {
+    description: string;
+    transactions: WalletAccountTransaction[];
+    result: string;
+}[] = [
+    {
+        description: 'a registration pays the deposit',
+        transactions: [
+            mockCardanoStakingTx({ subtype: 'stake_registration', deposit: '2000000' }, '179537'),
+        ],
+        result: '-2.179537',
+    },
+    {
+        description: 'a deregistration refunds the deposit',
+        transactions: [
+            mockCardanoStakingTx({ subtype: 'stake_deregistration', deposit: '2000000' }, '175489'),
+        ],
+        result: '1.824511',
+    },
+    {
+        description: 'a deregistration that withdrew rewards refunds the deposit and adds them',
+        transactions: [
+            mockCardanoStakingTx(
+                { subtype: 'stake_deregistration', deposit: '2000000', withdrawal: '140366' },
+                '175489',
+            ),
+        ],
+        result: '1.964877',
+    },
+];

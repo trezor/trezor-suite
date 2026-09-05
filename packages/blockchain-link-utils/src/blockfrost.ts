@@ -57,8 +57,8 @@ const getSubtype = (
 ) => {
     const { withdrawal_count, stake_cert_count, delegation_count, deposit, fees } = tx.txData;
 
-    const withdrawal = withdrawal_count > 0;
-    if (withdrawal) {
+    // Deregistering needs an empty reward account, so a withdrawal here means unstake, not claim.
+    if (withdrawal_count > 0 && stake_cert_count === 0) {
         return 'withdrawal';
     }
 
@@ -280,13 +280,12 @@ export const transformTransaction = (
         }
 
         if (blockfrostTxData.txData.withdrawal_count > 0) {
-            // output including fee is larger than the sum of all inputs,
-            // so there must be more coin somewhere and that's the withdrawal amount
+            // Outputs plus fee exceed inputs by the withdrawal and any refunded deposit.
+            // `deposit` is negative on a deregistration, so adding it back cancels the refund.
             const extra = new BigNumber(totalOutput)
                 .plus(blockfrostTxData.txData.fees || 0)
                 .minus(totalInput);
-            const withdrawalBn = depositBn.isNegative() ? extra.minus(depositBn) : extra;
-            withdrawal = withdrawalBn.abs().toString();
+            withdrawal = extra.plus(depositBn).abs().toString();
         }
     } else if (outgoing.length === 0 && incoming.length > 0) {
         // none of the input is mine but and output or token transfer is mine

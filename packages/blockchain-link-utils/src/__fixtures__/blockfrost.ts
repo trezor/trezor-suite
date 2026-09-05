@@ -1365,6 +1365,171 @@ export default {
             },
         },
         {
+            description: 'Transform transaction (self, stake deregistration with rewards)',
+            descriptor:
+                '6d17587575a3b4f0f86ebad3977e8f7e4981faa863eccf5c1467065c74fe3435943769446dd290d103fb3d360128e86de4b47faea73ffb0900c94c6a61ef9ea2',
+            accountAddress: {
+                change: [
+                    {
+                        address:
+                            'addr1qy2mdeuujt253nzxz2v669nn8q0nlmsp7hx7e7qm73nwlpxhh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxslxqfwt',
+                        path: "m/1852'/1815'/i'/1/0",
+                        transfers: 1,
+                        received: '6966065',
+                        sent: '0',
+                    },
+                    {
+                        address:
+                            'addr1qyx542efp7w244zpjkf2gj805leqls76hjyn7cpn8jw4rdkhh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxsn7vajz',
+                        path: "m/1852'/1815'/i'/1/1",
+                        transfers: 0,
+                        received: '0',
+                        sent: '0',
+                    },
+                ],
+                used: [
+                    {
+                        address:
+                            'addr1qx6jxvhq2pnusc6xh0m9pt7pyrjyxy2rtpsx7lnsc325907hh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs9zkqe2',
+                        path: "m/1852'/1815'/i'/0/0",
+                        transfers: 2,
+                        received: '2400000',
+                        sent: '2400000',
+                    },
+                    {
+                        address:
+                            'addr1q8dsx5dtjd9rjuv78l5rn8827nw9hg7rj42q8gaakzg29g7hh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs0hzyx8',
+                        path: "m/1852'/1815'/i'/0/1",
+                        transfers: 2,
+                        received: '5000000',
+                        sent: '5000000',
+                    },
+                ],
+                unused: [
+                    {
+                        address:
+                            'addr1qy84tj63d8323q5rs3e7e3ds274h6zpx8ktuw3twl9yjr6khh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs530lvf',
+                        path: "m/1852'/1815'/i'/0/2",
+                        transfers: 0,
+                        received: '0',
+                        sent: '0',
+                    },
+                ],
+            },
+            data: {
+                txData: {
+                    hash: '81b41f2d9e3b62f1353c1821a8bc106c9ec6fe7d4036d4ebe1c0f691f9caa001',
+                    block: '691ab3192155653929eb9bedfe6c3020326cae543ddc817c052d7585f78cf291',
+                    block_height: 7004268,
+                    block_time: 1647445260,
+                    slot: 55878969,
+                    index: 15,
+                    output_amount: [
+                        {
+                            unit: 'lovelace',
+                            quantity: '6966065',
+                            decimals: 6,
+                        },
+                    ],
+                    fees: '174301',
+                    deposit: '-2000000',
+                    size: 425,
+                    invalid_before: null,
+                    invalid_hereafter: '55885702',
+                    utxo_count: 2,
+                    withdrawal_count: 1,
+                    mir_cert_count: 0,
+                    delegation_count: 0,
+                    stake_cert_count: 1,
+                    pool_update_count: 0,
+                    pool_retire_count: 0,
+                    asset_mint_or_burn_count: 0,
+                    redeemer_count: 0,
+                    valid_contract: true,
+                },
+                txUtxos: {
+                    hash: '81b41f2d9e3b62f1353c1821a8bc106c9ec6fe7d4036d4ebe1c0f691f9caa001',
+                    inputs: [
+                        {
+                            address:
+                                'addr1q8dsx5dtjd9rjuv78l5rn8827nw9hg7rj42q8gaakzg29g7hh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs0hzyx8',
+                            amount: [
+                                {
+                                    unit: 'lovelace',
+                                    quantity: '5000000',
+                                    decimals: 6,
+                                },
+                            ],
+                            tx_hash:
+                                '6d88e622cb69163eca9df8ebda0a3e92fa5084dbcd2b6adfa8746841c31e87e9',
+                            output_index: 0,
+                            collateral: false,
+                            data_hash: null,
+                        },
+                    ],
+                    outputs: [
+                        {
+                            address:
+                                'addr1qy2mdeuujt253nzxz2v669nn8q0nlmsp7hx7e7qm73nwlpxhh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxslxqfwt',
+                            amount: [
+                                {
+                                    unit: 'lovelace',
+                                    quantity: '6966065',
+                                    decimals: 6,
+                                },
+                            ],
+                            output_index: 0,
+                            data_hash: null,
+                        },
+                    ],
+                },
+                address:
+                    'addr1q8dsx5dtjd9rjuv78l5rn8827nw9hg7rj42q8gaakzg29g7hh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs0hzyx8',
+                txHash: '81b41f2d9e3b62f1353c1821a8bc106c9ec6fe7d4036d4ebe1c0f691f9caa001',
+            },
+            result: {
+                type: 'self',
+                txid: '81b41f2d9e3b62f1353c1821a8bc106c9ec6fe7d4036d4ebe1c0f691f9caa001',
+                blockTime: 1647445260,
+                blockHeight: 7004268,
+                blockHash: '691ab3192155653929eb9bedfe6c3020326cae543ddc817c052d7585f78cf291',
+                amount: '174301',
+                fee: '174301',
+                targets: [],
+                tokens: [],
+                cardanoSpecific: {
+                    subtype: 'stake_deregistration',
+                    withdrawal: '140366',
+                    deposit: '2000000',
+                },
+                details: {
+                    vin: [
+                        {
+                            n: 0,
+                            addresses: [
+                                'addr1q8dsx5dtjd9rjuv78l5rn8827nw9hg7rj42q8gaakzg29g7hh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs0hzyx8',
+                            ],
+                            isAddress: true,
+                            value: '5000000',
+                        },
+                    ],
+                    vout: [
+                        {
+                            n: 0,
+                            addresses: [
+                                'addr1qy2mdeuujt253nzxz2v669nn8q0nlmsp7hx7e7qm73nwlpxhh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxslxqfwt',
+                            ],
+                            isAddress: true,
+                            value: '6966065',
+                        },
+                    ],
+                    size: 425,
+                    totalInput: '5000000',
+                    totalOutput: '6966065',
+                },
+            },
+        },
+        {
             description: 'Transform transaction (self, stake delegation)',
             descriptor:
                 '6d17587575a3b4f0f86ebad3977e8f7e4981faa863eccf5c1467065c74fe3435943769446dd290d103fb3d360128e86de4b47faea73ffb0900c94c6a61ef9ea2',
