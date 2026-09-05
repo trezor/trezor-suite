@@ -38,6 +38,7 @@ const postMessageToExtension = (message: ConnectPopupOutgoingMessage, extensionI
 
 export const useConnectPopupWebextension = () => {
     const [extensionId, setExtensionId] = useState<string | null>(null);
+    const extensionIdRef = useRef<string | null>(null);
     const lastProcessedMessageIdRef = useRef<number | undefined>(undefined);
     const [incomingMessages, setIncomingMessages] = useState<ConnectPopupMessage[]>([]);
 
@@ -69,8 +70,25 @@ export const useConnectPopupWebextension = () => {
     // Read messages from URL hash (webextension link).
     const readUrl = useCallback(() => {
         const hash = new URLSearchParams(window.location.hash.replace('#', '?'));
-        const newExtensionId = hash.get('extension-id');
+        const hashExtensionId = hash.get('extension-id');
         const message = hash.get('message');
+
+        // A popup session belongs to exactly one extension. Its service worker
+        // writes its own chrome.runtime.id into the hash, which never changes
+        // for the session. Pin the first id we see and reject any hash write
+        // carrying a different id: the response route is `chrome.runtime.sendMessage(extensionId)`,
+        // so another extension able to write this tab's hash (host_permissions
+        // for the popup origin) must not be able to repoint it and receive the
+        // method result (address / xpub / signed tx), nor inject calls into the session.
+        if (hashExtensionId) {
+            if (extensionIdRef.current === null) {
+                extensionIdRef.current = hashExtensionId;
+                setExtensionId(hashExtensionId);
+            } else if (hashExtensionId !== extensionIdRef.current) {
+                return;
+            }
+        }
+
         let parsedMessage: ConnectPopupMessage | null = null;
         if (message) {
             try {
@@ -79,10 +97,6 @@ export const useConnectPopupWebextension = () => {
                 // Malformed message in hash — ignore.
                 return;
             }
-        }
-
-        if (newExtensionId) {
-            setExtensionId(newExtensionId);
         }
 
         if (parsedMessage) {
