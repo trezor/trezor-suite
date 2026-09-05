@@ -1,0 +1,412 @@
+appId: io.trezor.suite.develop
+name: Finish onboarding, import dev accounts, and open transaction details
+tags:
+    - suite-native
+    - portfolio-tracker
+    - flashlight
+env:
+    BTC_SEGWIT_ACCOUNT_NAME: 'BTC SegWit'
+    ETH_ACCOUNT_NAME: 'Ethereum'
+    SOL_ACCOUNT_NAME: 'Solana'
+---
+- launchApp:
+      clearState: true
+- extendedWaitUntil:
+      visible:
+          id: '@onboarding/Welcome/nextBtn'
+      timeout: 35000
+- tapOn:
+      id: '@onboarding/Welcome/nextBtn'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@onboarding/AnalyticsConsent/nextBtn'
+      timeout: 10000
+- tapOn:
+      id: '@onboarding/AnalyticsConsent/nextBtn'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@onboarding/Biometrics/skipBtn'
+      timeout: 10000
+- tapOn:
+      id: '@onboarding/Biometrics/skipBtn'
+      retryTapIfNoChange: true
+- waitForAnimationToEnd
+- runFlow:
+      when:
+          visible:
+              id: '@trading-residence'
+      commands:
+          - tapOn:
+                text: 'Not now'
+                retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Home'
+      timeout: 35000
+- extendedWaitUntil:
+      visible:
+          id: '@screen/mainScrollView'
+      timeout: 35000
+- scrollUntilVisible:
+      element:
+          id: '@home/portfolio/sync-coins-button'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@home/portfolio/sync-coins-button'
+      retryTapIfNoChange: true
+- assertVisible:
+      id: '@screen/SelectNetwork'
+- scrollUntilVisible:
+      element:
+          id: '@onboarding/select-coin/btc'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@onboarding/select-coin/btc'
+      retryTapIfNoChange: true
+- assertVisible:
+      id: '@screen/XpubScan'
+- scrollUntilVisible:
+      element:
+          id: '@accounts-import/sync-coins/dev-xpub/btc'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@accounts-import/sync-coins/dev-xpub/btc'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountImportSummary'
+      timeout: 45000
+- tapOn:
+      id: '@account-import/coin-synced/label-input'
+- eraseText
+- inputText: ${BTC_SEGWIT_ACCOUNT_NAME}
+- hideKeyboard
+- scrollUntilVisible:
+      element:
+          id: '@account-import/coin-synced/confirm-button'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@account-import/coin-synced/confirm-button'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Home'
+      timeout: 30000
+- extendedWaitUntil:
+      visible:
+          id: '@home/portfolio/graph'
+      timeout: 45000
+- tapOn:
+      id: '@tabBar/AccountsStack'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Accounts'
+      timeout: 30000
+- tapOn:
+      id: '@myAssets/addAccountButton/import'
+      retryTapIfNoChange: true
+- assertVisible:
+      id: '@screen/SelectNetwork'
+- scrollUntilVisible:
+      element:
+          id: '@onboarding/select-coin/eth'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@onboarding/select-coin/eth'
+      retryTapIfNoChange: true
+- assertVisible:
+      id: '@screen/XpubScan'
+- scrollUntilVisible:
+      element:
+          id: '@accounts-import/sync-coins/dev-xpub/eth'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@accounts-import/sync-coins/dev-xpub/eth'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountImportSummary'
+      timeout: 45000
+- tapOn:
+      id: '@account-import/coin-synced/label-input'
+- eraseText
+- inputText: ${ETH_ACCOUNT_NAME}
+- hideKeyboard
+- scrollUntilVisible:
+      element:
+          id: '@account-import/coin-synced/confirm-button'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@account-import/coin-synced/confirm-button'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Accounts'
+      timeout: 30000
+- tapOn:
+      id: '@myAssets/addAccountButton/import'
+      retryTapIfNoChange: true
+- assertVisible:
+      id: '@screen/SelectNetwork'
+- scrollUntilVisible:
+      element:
+          id: '@onboarding/select-coin/sol'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@onboarding/select-coin/sol'
+      retryTapIfNoChange: true
+- assertVisible:
+      id: '@screen/XpubScan'
+- scrollUntilVisible:
+      element:
+          id: '@accounts-import/sync-coins/dev-xpub/sol'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@accounts-import/sync-coins/dev-xpub/sol'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountImportSummary'
+      timeout: 45000
+- tapOn:
+      id: '@account-import/coin-synced/label-input'
+- eraseText
+- inputText: ${SOL_ACCOUNT_NAME}
+- hideKeyboard
+- scrollUntilVisible:
+      element:
+          id: '@account-import/coin-synced/confirm-button'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@account-import/coin-synced/confirm-button'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Accounts'
+      timeout: 30000
+- tapOn:
+      id: '@tabBar/HomeStack'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Home'
+      timeout: 30000
+- extendedWaitUntil:
+      visible:
+          id: '@home/portfolio/graph'
+      timeout: 45000
+- tapOn:
+      id: '@tabBar/AccountsStack'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Accounts'
+      timeout: 30000
+- scrollUntilVisible:
+      element:
+          id: '@accountList/item/title'
+          text: ${BTC_SEGWIT_ACCOUNT_NAME}
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@accountList/item/title'
+      text: ${BTC_SEGWIT_ACCOUNT_NAME}
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountDetail'
+      timeout: 30000
+- extendedWaitUntil:
+      visible:
+          id: '@transactions/item/.*'
+      timeout: 30000
+- repeat:
+      times: 10
+      commands:
+          - swipe:
+                start: '50%,92%'
+                end: '50%,72%'
+                duration: 300
+          - runFlow:
+                when:
+                    visible:
+                        id: '@transactions/list/more-button'
+                commands:
+                    - tapOn:
+                          id: '@transactions/list/more-button'
+                          retryTapIfNoChange: true
+                    - waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          id: '@transactions/item/.*'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 50
+- tapOn:
+      id: '@transactions/item/.*'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/TransactionDetail'
+      timeout: 15000
+- pressKey: 'back'
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountDetail'
+      timeout: 15000
+- pressKey: 'back'
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Accounts'
+      timeout: 15000
+- scrollUntilVisible:
+      element:
+          id: '@accountList/item/title'
+          text: ${ETH_ACCOUNT_NAME}
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@accountList/item/title'
+      text: ${ETH_ACCOUNT_NAME}
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountAssets'
+      timeout: 30000
+- tapOn:
+      id: '@accountList/item/title'
+      text: ${ETH_ACCOUNT_NAME}
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountDetail'
+      timeout: 30000
+- extendedWaitUntil:
+      visible:
+          id: '@transactions/item/.*'
+      timeout: 30000
+- repeat:
+      times: 10
+      commands:
+          - swipe:
+                start: '50%,92%'
+                end: '50%,72%'
+                duration: 300
+          - runFlow:
+                when:
+                    visible:
+                        id: '@transactions/list/more-button'
+                commands:
+                    - tapOn:
+                          id: '@transactions/list/more-button'
+                          retryTapIfNoChange: true
+                    - waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          id: '@transactions/item/.*'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 50
+- tapOn:
+      id: '@transactions/item/.*'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/TransactionDetail'
+      timeout: 15000
+- pressKey: 'back'
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountDetail'
+      timeout: 15000
+- pressKey: 'back'
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountAssets'
+      timeout: 15000
+- pressKey: 'back'
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Accounts'
+      timeout: 15000
+- scrollUntilVisible:
+      element:
+          id: '@accountList/item/title'
+          text: ${SOL_ACCOUNT_NAME}
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 75
+- tapOn:
+      id: '@accountList/item/title'
+      text: ${SOL_ACCOUNT_NAME}
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountAssets'
+      timeout: 30000
+- tapOn:
+      id: '@accountList/item/title'
+      text: ${SOL_ACCOUNT_NAME}
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountDetail'
+      timeout: 30000
+- extendedWaitUntil:
+      visible:
+          id: '@transactions/item/.*'
+      timeout: 30000
+- repeat:
+      times: 10
+      commands:
+          - swipe:
+                start: '50%,92%'
+                end: '50%,72%'
+                duration: 300
+          - runFlow:
+                when:
+                    visible:
+                        id: '@transactions/list/more-button'
+                commands:
+                    - tapOn:
+                          id: '@transactions/list/more-button'
+                          retryTapIfNoChange: true
+                    - waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          id: '@transactions/item/.*'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 50
+- tapOn:
+      id: '@transactions/item/.*'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/TransactionDetail'
+      timeout: 15000
