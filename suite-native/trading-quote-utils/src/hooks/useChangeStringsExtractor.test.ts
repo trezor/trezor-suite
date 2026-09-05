@@ -30,7 +30,6 @@ describe('useChangeStringsExtractor', () => {
             toValue: '0.462586',
             isFromCrypto: false,
             isToCrypto: true,
-            formattedRate: '$2,667.61 / 1 ETH',
         });
     });
 
@@ -47,7 +46,6 @@ describe('useChangeStringsExtractor', () => {
             toValue: '100',
             isFromCrypto: true,
             isToCrypto: false,
-            formattedRate: '0.0122 BTC / $1',
         });
     });
 
@@ -64,7 +62,6 @@ describe('useChangeStringsExtractor', () => {
             toValue: '0.462586',
             isFromCrypto: true,
             isToCrypto: true,
-            formattedRate: '21.8839307717916236 JTO / 1 SOL',
         });
     });
 
@@ -80,7 +77,6 @@ describe('useChangeStringsExtractor', () => {
             toValue: undefined,
             isFromCrypto: undefined,
             isToCrypto: undefined,
-            formattedRate: undefined,
         });
     });
 
@@ -103,7 +99,6 @@ describe('useChangeStringsExtractor', () => {
             toValue: undefined,
             isFromCrypto: false,
             isToCrypto: true,
-            formattedRate: undefined,
         });
     });
 });
