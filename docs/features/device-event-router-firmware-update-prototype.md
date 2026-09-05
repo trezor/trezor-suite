@@ -29,6 +29,8 @@ flow or Redux.
   targeting a device and enforces an exclusive per-device lock.
 - Business logic never uses `selectedDevice`. A device is always supplied
   explicitly to a command or resolved from local workflow state.
+- Every device-targeted Connect call has an explicit device. Missing device
+  context is an error rather than a reason to infer the selected device.
 - Services own workflow state in memory. Redux may contain presentation and
   application configuration, but it does not contain the authoritative state of
   a connection or firmware workflow.
@@ -84,10 +86,16 @@ describe workflow state, while the coordinator prevents multiple operations
 from using the same physical device concurrently.
 
 Every device-targeted Connect call must pass through this coordinator. New
-services use its DI API directly. Existing Suite calls are observed and guarded
-through the shared Connect call wrapper during migration, so firmware cannot
-claim a device while an older signing, address-confirmation, or settings call is
-active.
+services use its DI API directly. Existing Web/Desktop callers must also be
+migrated to provide an explicit device and pass through the coordinator, so
+firmware cannot claim a device while an older signing, address-confirmation, or
+settings call is active.
+
+A device-targeted call without explicit device context is rejected with a typed
+error before reaching Connect. It does not acquire a global compatibility lock
+and never falls back to `selectedDevice`. Connect initialization, transport
+management, and other operations that do not target a device remain outside the
+per-device lock.
 
 The coordinator maintains locks per device rather than one application-wide
 lock. Independent devices may run operations in parallel. An incompatible call
@@ -418,8 +426,8 @@ The global `TrezorConnect.call` wrapper remains as the migration boundary for
 legacy callers and reports device-targeted calls to the operation coordinator.
 Its post-call button-request cleanup currently resolves the selected device.
 The prototype will change that cleanup to resolve the explicitly supplied
-`params.device.path`, with a focused test and a legacy fallback only for calls
-that genuinely have no explicit device.
+`params.device.path`, with a focused test. Device-targeted calls without that
+context fail instead of using a legacy fallback.
 
 ## Known Connect constraints
 
@@ -440,6 +448,8 @@ that genuinely have no explicit device.
 - Several normal device connection state machines can exist concurrently.
 - Every device-targeted Connect call passes through the per-device operation
   coordinator, while different devices can remain active in parallel.
+- No device-targeted call reaches Connect without an explicit device, and no new
+  business path reads `selectedDevice`.
 - THP and device-authenticity flows use explicit IDs and local service state.
 - No new service reads `selectedDevice` or Redux business state.
 - A device is projected into normal Redux state only after required connection
