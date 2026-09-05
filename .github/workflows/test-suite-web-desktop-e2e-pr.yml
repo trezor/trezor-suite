@@ -165,6 +165,7 @@ jobs:
       - determine-strategy
     if: github.repository == 'trezor/trezor-suite' && needs.determine-strategy.outputs.strategy == 'analyze'
     runs-on: ubuntu-latest
+    continue-on-error: true
     timeout-minutes: 15
     outputs:
       spec-list: ${{ steps.llm-select.outputs.spec-list }}
