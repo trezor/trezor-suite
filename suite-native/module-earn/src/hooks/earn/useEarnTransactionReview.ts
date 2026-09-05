@@ -39,7 +39,6 @@ const isRejectedThunkResult = <TFulfilled, TRejected>(
 
 export type EarnReviewPushErrorPayload = {
     error: 'push-transaction-failed' | 'push-transaction-pending-conflict';
-    message?: string;
 };
 
 type UseEarnTransactionReviewParams<TSigned, TPushed> = {
