@@ -56,7 +56,6 @@ type NftsRowProps = {
     selectedAccount: SelectedAccountStatus;
     isShown?: boolean;
     isEmptyCollection?: boolean;
-    setIsEmptyCollectionsOpen?: (open: boolean) => void;
     isEmptyCollectionsOpen?: boolean;
 };
 
