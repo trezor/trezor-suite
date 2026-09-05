@@ -302,7 +302,6 @@ export interface TradingUseComposeTransactionReturnProps extends TradingUseCompo
 }
 
 export interface TradingOfferCommonProps {
-    account?: Account;
     selectedQuote: TradingTradeType;
     providers: TradingGetProvidersInfoProps;
     type: TradingType;
@@ -327,5 +326,4 @@ export interface TradingOfferExchangeProps extends Omit<
 export interface TradingSelectedOfferInfoProps extends TradingOfferCommonProps {
     selectedAccount?: Account;
     receiveAddress?: string;
-    transactionId?: string;
 }
