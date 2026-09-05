@@ -1,583 +1,698 @@
-# Device event router and firmware update service prototype
+# Device lifecycle router and firmware update service prototype
 
 Status: planning checkpoint; implementation has not started.
 
-Branch: `feat/device-event-router-prototype`, based on `origin/develop`.
+Branch: **feat/device-event-router-prototype**, based on **origin/develop**.
 
-This document records the current design discussion. It is intended to evolve in
-small commits as the remaining decisions are made and the prototype is built.
+This document defines prerequisite work and then describes the prototype as if
+those prerequisites were already complete. It replaces the earlier proposal in
+which one router had to correlate every Connect event, legacy call, UI request,
+device identity, and Redux interaction.
 
-## Goal
+## Why prerequisites are necessary
 
-Move device connection and firmware update workflows out of Redux thunks and UI
-components into stateful dependency-injected services. A single event router
-receives Trezor Connect events and passes them through an ordered service
-pipeline.
+The firmware problem is primarily a device-lifecycle ownership problem. During
+an update, one logical device disconnects, appears in bootloader mode, disconnects
+again, and returns in normal mode. Suite must keep that sequence out of the
+ordinary connection flow until firmware deliberately hands the device back.
 
-The prototype covers Suite Web and Desktop. Suite Native is outside its scope.
+Today, unrelated concerns make that problem appear much larger:
 
-The prototype must demonstrate that a firmware update can own its target device
-through disconnects, bootloader reconnects, THP interactions, and the final
-reconnect without exposing intermediate device states to the normal connection
-flow or Redux.
+- business logic can infer its target from Redux **selectedDevice**;
+- device calls emit UI requests onto a global event stream;
+- responses are often handled by Redux thunks outside the code that started the
+  call;
+- business code imports a static **TrezorConnect** singleton;
+- call ownership, device identity, presentation state, and device locking are
+  mixed together.
 
-## Core invariants
+Building the router first would force it to compensate for all of those global
+dependencies. It would need to route PINs, THP, confirmations, firmware progress,
+legacy calls without correlation, lifecycle events, transport events, and
+blockchain events. That is the source of most of the complexity in the earlier
+design.
 
-- The router is the single entry point for Connect events entering Suite Web and
-  Desktop.
-- A device operation coordinator is the single entry point for Connect calls
-  targeting a device and enforces an exclusive per-device lock.
-- New business services do not import or call `TrezorConnect` directly. They
-  receive an injected device-call gateway. Existing callers are intercepted by
-  a temporary static bridge during migration.
-- Business logic never uses `selectedDevice`. A device is always supplied
-  explicitly to a command or resolved from local workflow state.
-- Every device-targeted Connect call has an explicit device. Missing device
-  context is an error rather than a reason to infer the selected device.
-- Services own workflow state in memory. Redux may contain presentation and
-  application configuration, but it does not contain the authoritative state of
-  a connection or firmware workflow.
-- A Redux update may request or describe UI, but it never drives a business
-  transition.
-- User commands, Connect events, and asynchronous operation results may all
-  trigger state-machine transitions.
-- PINs, THP credentials, and other secret responses never enter Redux or remote
-  logging.
-- A device owned by the firmware workflow does not enter the ordinary Redux
-  device collection until ownership is deliberately handed off.
-- The existing source may remain for reference, but the routed Web/Desktop path
-  will not call `deviceConnectThunk` or the old Connect UI thunks.
+The prerequisite work makes every device call explicit and locally owned. Once
+that is true, the router only needs to handle events that are genuinely global:
+device lifecycle changes and transport loss.
 
-## Proposed packages
+## Prerequisite 1: remove selected device from business logic
 
-The current package split is:
-
-- `@suite-common/connect-event-router`
-    - Connect event adapter and ordered handler pipeline.
-    - In-memory device registry owned at ingress.
-    - Immediate and deferred continuation primitives.
-- `@suite-common/device-connection-service`
-    - Manager for independent per-device connection state machines.
-    - Normal connection workflow and the final Redux device projection.
-- `@suite-common/device-operation`
-    - Owns exclusive per-device operation locks.
-    - Exposes the injected gateway that executes every device-targeted Connect
-      call.
-    - Has no Redux dependency and forms the shared foundation for connection,
-      firmware, THP, authenticity, and wallet operations.
-- `@suite-common/firmware-update-service`
-    - Sole owner of the prototype firmware update workflow.
-    - Kept separate from the existing Redux-oriented `@suite-common/firmware`
-      package.
-- `@suite-common/thp`
-    - Gains a shared DI child-workflow service used by normal connection and
-      firmware state machines.
-    - Retains its legacy Redux thunks in source, but the new route does not use
-      them.
-- `@suite-common/device-authenticity`
-    - Gains a DI child-workflow service for the pre-Redux authenticity gate.
-    - Retains its legacy selected-device thunk in source, but the new route does
-      not use it.
-
-Services are created through the existing dependency-injection conventions and
-wired in the Suite composition root.
-
-## Outbound device operation coordination
-
-The event router controls inbound Connect events. A separate device operation
-coordinator controls outbound Connect method calls. Connection state machines
-describe workflow state, while the coordinator prevents multiple operations
-from using the same physical device concurrently.
-
-Every device-targeted Connect call must pass through this coordinator. New
-services use its injected gateway. Existing Web/Desktop callers continue using
-the public Connect API during the prototype, but its patched static `call`
-entrypoint delegates them to the same coordinator. Firmware therefore cannot
-claim a device while an older signing, address-confirmation, or settings call is
-active.
-
-A device-targeted call without explicit device context is rejected with a typed
-error before reaching Connect. It does not acquire a global compatibility lock
-and never falls back to `selectedDevice`. Connect initialization, transport
-management, and other operations that do not target a device remain outside the
-per-device lock.
-
-An explicit transport path must resolve to a currently connected
-`connectionId` in the ingress registry. An unknown path is rejected with a typed
-`unknownDeviceTarget` error. Outbound calls cannot create provisional registry
-identities. Firmware candidate adoption remains the only controlled identity
-exception and requires its live ownership lease in an expected reconnect state.
-
-The composition root constructs the coordinator normally and installs it into a
-set-once static bridge before Connect becomes usable. The bridge patches
-`TrezorConnect.call` and delegates legacy calls to that instance. The coordinator
-receives the captured original call implementation and uses it to avoid
-recursing through the patch. Test teardown and hot reload explicitly uninstall
-the bridge. The static reference is isolated to this infrastructure adapter and
-can be removed after callers migrate to DI.
-
-For each intercepted legacy call that supplies a call ID, the bridge registers
-its `callId -> connectionId` association with a read-only routing index. The
-bridge preserves an explicit call ID but does not generate one when it is
-missing. A legacy-call compatibility handler owns only UI events for registered
-call IDs. It projects each request for the explicitly mapped device and never
-resolves `selectedDevice`. Registration is removed in `finally` when the call
-finishes, fails, or is cancelled.
-
-The existing typed `connect-init` blacklist of methods that do not require the
-current lock is the starting point for classifying global and device calls. The
-classification becomes an exhaustive map behind
-`@suite-common/device-operation`. Every member of Connect's callable-method
-union is marked `global`, `device`, or parameter-dependent. Adding a Connect
-method fails type checking until its scope is declared, and an unknown runtime
-method is rejected. Mixed methods are resolved from their actual parameters; in
-particular, `getAccountInfo` must no longer be globally exempt when invoked with
-a device.
-
-The existing Redux `lockDevice` counter may remain as a presentation projection
-while callers migrate, but it is not the lock authority. Likewise, the current
-application-wide `getSynchronize` wrapper cannot remain the execution model
-because it prevents independent devices from running in parallel. The
-coordinator replaces that enforcement with per-device leases.
-
-The coordinator publishes lock changes through an injected presentation
-callback, keeping `@suite-common/device-operation` free of Redux. The Suite
-adapter projects safe lock metadata keyed by `connectionId` for new UI,
-including the parallel-flow demonstration. It also maintains the existing
-aggregate Redux lock as an "at least one device is busy" compatibility view for
-legacy components. Neither projection can grant, extend, or release a lease.
-
-The coordinator maintains locks per device rather than one application-wide
-lock. Independent devices may run operations in parallel. An incompatible call
-against a locked device returns a typed `deviceBusy` result before reaching
-Connect.
-
-A lock is a workflow-scoped lease rather than a method-scoped mutex. A normal
-connection machine holds one lease across THP and while waiting for the user to
-start or resolve authenticity. Firmware holds one lease across preparation,
-reboots, and every installation stage. Child workflows inherit the parent's
-owner token instead of acquiring a competing lock. The lease is released only
-when the workflow completes or is cancelled, or when disconnect or transport
-loss revokes it.
-
-A lease permits one primary device method at a time. While that method is
-pending, only protocol-control calls correlated by its active `callId` may run,
-including `uiResponse` and scoped cancellation. PIN, THP, and confirmation
-responses can therefore unblock the primary method without allowing another
-device operation to start. A second primary method remains blocked even when it
-presents the same lease token; sequential workflow stages start it only after
-the prior method finishes.
-
-## Event router
-
-The router subscribes to all Connect streams currently registered by
-`connectInitThunk`:
-
-- `DEVICE_EVENT`
-- `UI_EVENT`
-- `UI_REQUEST`
-- `TRANSPORT_EVENT`
-- `BLOCKCHAIN_EVENT`
-
-It wraps each event in a typed envelope and invokes a static handler chain:
+**selectedDevice** remains valid presentation state. The UI may use it to decide
+which device the user intends to act on, but it must pass that decision into the
+business command explicitly.
 
 ```text
-Connect event
-    -> ingress device registry update
-    -> firmware update service
-    -> standard device connection service
-    -> legacy-call compatibility handler
-    -> root Suite projection
+UI reads selectedDevice
+    -> command({ connectionId, device, ...input })
+    -> service validates the explicit target
+    -> business workflow starts
 ```
 
-Handlers are independent and know only their own continuation, so another
-handler can be inserted between firmware and standard connection handling.
-Every handler is eligible to inspect every event-bus envelope in its configured
-order. It may pass the event immediately, consume it, or retain it through the
-guarded deferred-continuation mechanism. Processing continues through later
-handlers only when the current handler calls its continuation. This makes the
-pipeline extensible without giving handlers direct knowledge of their parent or
-child.
+The following code must not read **selectedDevice**:
 
-Ordinary `next(event)` is synchronous, one-shot, and guarded against repeated or
-late calls. A handler that assumes temporary ownership can request an explicit
-one-shot deferred continuation. That continuation resumes the remaining chain
-when ownership ends; it is not a retained ordinary `next` callback.
+- services and state machines;
+- device-aware thunks that remain during migration;
+- Connect call wrappers and cleanup;
+- THP, authenticity, and firmware workflows;
+- helpers that choose or reacquire a device.
 
-A handler may pass either the original envelope or an immutable replacement to
-`next`. A replacement continues only through the remaining handlers; it does
-not re-enter the router from the beginning. Diagnostic ancestry retains the
-original event for local tracing, while downstream business behavior depends
-only on the replacement's typed contents. Firmware uses this mechanism to hand
-off one canonical current-device snapshot without consuming its own event.
+A child operation receives the same explicit device context from its parent. It
+does not reselect the device after an asynchronous boundary.
 
-Envelope metadata such as `origin: 'firmware-handoff'` is diagnostic only. A
-parent handler must not use it as a business instruction.
+Completion criteria:
 
-## Ingress device registry
+- every device-aware business entry point accepts an explicit device or
+  **connectionId**;
+- every child workflow receives that context explicitly;
+- the Connect call cleanup uses the call's device rather than the currently
+  selected device;
+- an audit or architectural rule prevents new selected-device reads in
+  device-aware business code.
 
-The router adapter updates a neutral in-memory registry before routing each
-device lifecycle event. The registry exposes a read-only DI interface and does
-not use Redux.
+## Prerequisite 2: make every device call locally owned
 
-The registry provides the current physical connection picture to both firmware
-and normal connection workflows without making either service query the other.
-It assigns a `connectionId` for tracking a normal connection workflow. The
-firmware workflow preserves A's existing connection ID across its physical
-disconnects and rebinds an accepted reconnect candidate to that ID. Normal
-connections that cannot be correlated follow the registry's new-connection
-rules.
+Every device-aware primary Connect call has a UUID **callId**. The workflow owner
+creates it before starting the call and registers ownership before Connect can
+emit an event.
 
-Registry mutation requires a router-issued ownership lease. Firmware claims A
-with its operation `callId` and receives a guarded lease. Only that live lease
-may adopt a candidate, rebind its descriptor to A's connection ID, and release
-ownership. Completing or cancelling the operation invalidates the lease, so a
-delayed callback from stale work cannot change registry identity.
+Three identifiers have distinct lifetimes:
 
-This event-ownership lease is distinct from the device-operation lease. The
-event lease grants temporary interception rights across the entire inbound
-Connect event bus and authority over registry identity changes; the operation
-lease grants exclusive outbound use of A through Connect calls. Interception
-does not imply consumption. Firmware passes most unrelated UI, transport, and
-blockchain events, but it may consume or defer any event when its state-machine
-policy requires that. Firmware acquires the device-operation lease and then the
-event-ownership lease synchronously, without an awaited boundary. Failure to
-acquire either rolls back both. Cleanup releases both capabilities explicitly,
-so neither subsystem depends on the other one's token.
+- **connectionId** identifies one logical device connection;
+- **callId** identifies one primary Connect method invocation;
+- **requestId** identifies one prompt and response within that call.
 
-## Standard connection state machines
-
-The connection service contains a state-machine manager keyed by
-`connectionId`. The underlying architecture supports several devices and
-several workflows progressing independently.
-
-The normal product UI may expose only one connection workflow at a time. The
-prototype UI may render independent workflows side by side to prove that the
-service architecture supports parallel connections.
-
-This is exclusively a presentation policy. Every machine publishes its own UI
-state keyed by `connectionId` and may independently wait for user input while
-holding its device lease. Production Redux/UI chooses one connection ID to
-render; the debug split view may render all of them. The state-machine manager
-does not grant a global UI slot and does not read which workflow is visible.
-
-A representative connection sequence is:
+Connect UI requests, UI events, progress, and cancellation related to a method
+are routed directly to the owner registered for that call ID. They do not enter
+the device-lifecycle router.
 
 ```text
-connected
-    -> THP required?
-    -> awaiting user start of device-authenticity check
-    -> authenticity check running
-    -> ready for normal Suite projection
-    -> added to Redux device state
+service starts call(device, callId)
+    -> Connect emits UI request(callId, requestId)
+    -> injected Connect service delivers it to the call owner
+    -> owner stores the pending request in memory
+    -> owner projects safe UI metadata to Redux
+    -> user calls owner method(callId, requestId, response)
+    -> owner sends the response to Connect
+    -> original call continues
 ```
 
-The exact state graph will use typed discriminated unions and exhaustive
-transitions. Each user command includes `connectionId`; it never relies on the
-selected device.
+The pending promise, resolver, PIN, THP credential, and other secret inputs stay
+inside service memory. Redux contains only safe presentation state. A UI command
+with a stale call ID or request ID returns a typed error and cannot resolve a
+newer request.
 
-`connectionId` and Connect `callId` have separate lifetimes. A stable
-`connectionId` identifies the state machine, while every Connect method started
-by that machine receives a fresh `callId`. The manager maintains an index from
-each active call ID to its owning connection. A late event from an earlier call
-cannot satisfy a transition for a later method in the same workflow.
+Call-scoped cancellation uses the same call ID. A late completion from a
+cancelled call is ignored.
 
-Each device permits at most one active operation. Commands that do not belong to
-the current operation are rejected immediately with a typed `deviceBusy` result;
-they are not queued. Connect events, UI responses, and effect completions that
-belong to the active call remain valid inputs for that operation.
+Completion criteria:
 
-Transitions run synchronously to completion and never await. Asynchronous
-effects return through new inputs tagged with their call ID and machine
-generation. A small reentrancy guard may defer an input raised synchronously by
-another transition, but there is no general asynchronous command mailbox.
+- every device-aware call supplies a call ID before execution;
+- all call-scoped UI events reach the registered call owner;
+- responses are handled by the service that owns the call;
+- Redux thunks do not mediate PIN, THP, confirmation, or other Connect
+  request-response mechanics;
+- unowned or missing call IDs on device-call UI events are treated as contract
+  violations rather than resolved through selected-device context.
 
-A device disconnect is a terminal interrupt. At the next JavaScript turn it
-invalidates the machine generation and all active call IDs, rejects pending UI
-requests, discards deferred commands, removes temporary presentation state, and
-destroys an unfinished connection machine. Any later result from invalidated
-work is ignored. Other devices' machines continue independently.
+Device lifecycle events do not carry method call IDs and remain outside this
+mechanism.
 
-A transport stop or failure is a broadcast terminal interrupt. The ingress
-registry identifies every machine associated with the affected transport, and
-the router delivers a `transportUnavailable` input to each one. Each affected
-machine performs the same invalidation and cleanup as for an explicit device
-disconnect; machines on other transports continue independently.
+## Prerequisite 3: inject Trezor Connect
 
-If a device disconnects before its normal connection workflow is complete, the
-manager terminates that machine. It cancels active call IDs, rejects or clears
-pending child-workflow requests, and removes the temporary UI projection. A
-later physical connection starts a new workflow. Normal connection machines do
-not guess identity across a disconnect; firmware is the explicit exception
-because it owns a guarded lease and enters states that expect device reboots.
+Business code receives a dependency-injected adapter owned by Suite. Raw static
+**TrezorConnect** access is confined to the adapter implementation and Connect
+initialization infrastructure.
 
-The authenticity gate is policy-driven and independent of whether onboarding UI
-is mounted. A new or unverified device must wait for the user to explicitly
-start the Optiga/device-authenticity check. Until that workflow reaches an
-accepted terminal outcome, the service publishes safe presentation data to a
-dedicated UI slice but does not add the device to the ordinary Redux device
-collection. A known device with a still-valid accepted result may skip the gate
-and complete its normal projection immediately.
+The adapter separates:
 
-A successful authenticity result continues the connection workflow
-automatically. A confirmed failure or inconclusive result stays in the
-service-owned workflow until the user retries or explicitly continues. If the
-user continues after a confirmed failure, the completed workflow projects both
-the device and its failed-authenticity result into Redux. No partial device state
-is projected into the ordinary device collection while the check is pending.
+- global runtime and transport operations;
+- device-aware primary methods requiring explicit device context and **callId**;
+- correlated UI responses;
+- scoped cancellation;
+- call-local event delivery.
 
-A known device with a still-valid confirmed failure has already completed that
-decision flow. On reconnect it is projected immediately together with the
-stored failed result, allowing the compromised-device UI to block its use. The
-device is never projected as normally authenticated, and retrying the check is a
-separate explicit operation.
+The adapter is an application service rather than the raw Connect singleton. Its
+contract can therefore enforce Suite's invariants and can be replaced by a small
+fake in tests.
 
-The service preserves the current authenticity-result classification rather
-than introducing a new `inconclusive` value. A completed verification with an
-invalid proof stores `{ valid: false, ...result }`. A Connect-level failure with
-an unlocked bootloader also stores a definite `{ valid: false, error }`. Other
-Connect-level failures store `undefined`, because the check did not establish
-failure. If the user explicitly continues after such an unavailable check, the
-device may be projected without a stored result and remains eligible for the
-authenticity gate on a later reconnect.
+The device-aware side of the adapter also owns per-device operation leases:
 
-The authenticity service receives a narrow injected policy getter. Its Suite
-implementation may read configuration through Redux selectors, including
-feature gates and whether debug keys are allowed. The business service does not
-depend on the store or selectors directly, and Redux does not contain the
-connection process state. The workflow snapshots the returned policy when an
-authenticity check starts so a configuration update cannot change the meaning of
-an active check. The getter also resolves stored verification information from
-the explicitly supplied device identity; it never infers `selectedDevice`.
+- one high-level workflow may own a device at a time;
+- independent devices may run in parallel;
+- a workflow holds its lease across all of its stages and while waiting for user
+  interaction;
+- a child workflow inherits its parent's lease;
+- only one primary Connect method may be active under a lease;
+- correlated **uiResponse** and cancellation control messages may run while that
+  primary method is pending;
+- another command for the same device returns a typed **deviceBusy** result;
+- disconnect or transport loss revokes the lease and invalidates outstanding
+  work.
 
-## Child workflows
+Redux may mirror safe per-device and aggregate busy state for UI, but it cannot
+grant or release a lease.
 
-THP and device authenticity are child workflows rather than peer router
-middleware. The owning top-level state machine retains event ownership,
-delegates relevant inputs to its active child, awaits the result, and then
-continues its own transition.
+Completion criteria:
 
-The firmware and standard connection services use the same THP service from
-`@suite-common/thp`. This removes the current duplication between ordinary
-connection and firmware flows. The authenticity workflow similarly evolves the
-existing `@suite-common/device-authenticity` package. No Redux thunk participates
-in either new child workflow.
+- new business code cannot import raw **TrezorConnect**;
+- all device-aware calls use the injected service;
+- the static Connect override and global synchronizer are no longer business
+  coordination mechanisms;
+- device locking and call ownership are testable without a Redux store;
+- different devices are not serialized by one application-wide lock.
 
-A child workflow follows this interaction model:
+## Recommended prerequisite implementation order
 
-1. Store the pending Connect request and resolver in service memory.
-2. Dispatch safe request metadata to Redux so the UI can render.
-3. Let the user call a DI service method with the workflow ID and request ID.
-4. Validate the command and send `TrezorConnect.uiResponse` synchronously from
-   the service.
-5. Resolve the local pending promise, clear the request, and resume the parent
-   state machine.
+The three prerequisites describe the required end state. The safest
+implementation order is:
 
-## Firmware update workflow
+1. Introduce the injected Connect adapter while preserving behavior.
+2. Add the explicit device and call-ID contracts.
+3. Move call-scoped UI event delivery and responses behind the adapter.
+4. Migrate device-aware business callers away from **selectedDevice**.
+5. Enable per-device operation leases after all calls provide reliable device
+   context.
 
-The firmware service is a permanent first handler in the event chain. Its
-internal state determines its routing behavior:
+Each step should have characterization tests and remain independently
+reviewable. The firmware prototype begins only after all three prerequisite
+completion criteria are satisfied.
 
-- While idle, it immediately calls `next`.
-- While prepared or running, it owns relevant events and does not pass them to
-  the normal connection service.
+## Assumed baseline for the prototype
+
+The rest of this document assumes:
+
+- business workflows never infer a device from Redux;
+- every device-aware call has an explicit device and call ID;
+- call-scoped UI and progress events are delivered locally to the call owner;
+- responses are sent by that owner without Redux thunk mediation;
+- every device-aware call uses the injected Connect service;
+- per-device workflow leases prevent conflicting operations;
+- **selectedDevice** is used only to choose presentation and command input.
+
+This removes the need for a static legacy bridge, a legacy UI-event compatibility
+handler, and firmware interception of unrelated Connect events.
+
+## Prototype goal
+
+Create a device-lifecycle router, a normal connection service, and a firmware
+update service for Suite Web and Desktop.
+
+The prototype must demonstrate that:
+
+- normal device connections are owned by independent state machines;
+- firmware takes temporary ownership of one explicit device A;
+- A can reboot through bootloader and normal modes without intermediate device
+  snapshots entering normal Redux state;
+- any additional device B is withheld from the normal connection flow and
+  produces a mandatory disconnect warning;
+- the final state of A is handed back to the generic connection handler;
+- no firmware or connection business decision uses Redux workflow state.
+
+Suite Native is outside the prototype scope.
 
 The prototype supports the standard offered upgrade for the device's current
 firmware type. Custom firmware, reinstall, firmware-type changes, and devkit
 variants are outside its scope.
 
-Opening the prototype firmware modal calls `prepare(deviceA)`. Preparation:
+## Event categories after the prerequisites
 
-- requires an explicitly supplied device;
-- requires A to be the only connected device;
-- generates a UUID used as the sole firmware operation `callId`;
-- leaves A's last completed normal Redux projection frozen;
-- starts event ownership before the install command is issued.
+| Category            | Examples                                                | Owner                                              |
+| ------------------- | ------------------------------------------------------- | -------------------------------------------------- |
+| Call-scoped         | PIN, THP, confirmation, firmware progress, cancellation | Service that started the call, through **callId**  |
+| Device lifecycle    | Connected, unacquired, changed, disconnected            | Device lifecycle router                            |
+| Transport lifecycle | Transport stopped or failed                             | Transport adapter, normalized for affected devices |
+| Other global events | Blockchain updates and global runtime status            | Existing dedicated application services            |
 
-`install(callId)` starts `TrezorConnect.firmwareUpdate` with the same call ID.
-UI requests and UI events carrying that call ID are owned exactly. A second
-firmware operation is rejected with a typed already-running result.
+Only device lifecycle events enter the handler pipeline. Transport loss is
+translated into a terminal input for every affected device. Blockchain events
+and unrelated global UI events do not pass through firmware or connection
+handlers.
 
-The modal may cancel while prepared. Once installation starts, it is
-non-dismissible, matching the current firmware UI. A scoped cancellation method
-remains available for teardown and tests.
+## Proposed package boundaries
 
-## Firmware reconnect identity
+- **@suite-common/device-operation**
+    - Injected Connect adapter.
+    - Call-ID ownership and local event delivery.
+    - Per-device workflow leases.
+    - Correlated UI responses and cancellation.
+- **@suite-common/device-event-router**
+    - Device lifecycle event adapter.
+    - Ordered handler pipeline.
+    - In-memory device registry and connection identities.
+- **@suite-common/device-connection-service**
+    - Manager for independent normal connection state machines.
+    - Final projection into the existing Redux device state.
+- **@suite-common/thp**
+    - Gains a reusable DI child workflow.
+    - Legacy thunk source may remain, but the new path does not call it.
+- **@suite-common/device-authenticity**
+    - Gains a reusable DI child workflow.
+    - Legacy selected-device thunk source may remain, but the new path does not
+      call it.
+- **@suite-common/firmware-update-service**
+    - Sole owner of the prototype firmware update workflow.
+    - Separate from the existing Redux-oriented **@suite-common/firmware**
+      implementation.
 
-A firmware update includes several physical lifecycle changes:
+All business packages live under **suite-common**. Suite Web/Desktop provides the
+composition root and presentation adapters.
+
+## Device lifecycle router
+
+The router is the only Web/Desktop subscriber that turns Connect device
+lifecycle events into Suite business inputs.
+
+The static handler order is:
 
 ```text
-normal device
-    -> disconnect
-    -> bootloader reconnect
-    -> firmware operation
-    -> disconnect
-    -> normal-mode reconnect
-    -> possible additional firmware stage
+Connect DEVICE_EVENT
+    -> registry update
+    -> firmware update handler
+    -> normal connection handler
+    -> root presentation adapter
 ```
 
-Bootloader events may not contain a stable device ID, and Connect device paths
-can change across reconnects. Therefore the service cannot always prove that a
-reconnecting device is A.
+Every handler receives each lifecycle envelope in order and may:
 
-The firmware workflow uses phase-gated singleton adoption. Preparation starts
-with exactly one connected device. When the state machine explicitly expects A
-to reconnect, it may adopt the sole compatible connected candidate as A. A
-candidate that appears outside an expected reconnect state is not adopted.
-Any additional physical device or conflicting evidence blocks the update.
+- forward the original envelope;
+- forward an immutable replacement envelope;
+- consume it;
+- retain lifecycle ownership and later hand off one replacement envelope to the
+  remaining chain.
 
-After adopting a reconnect candidate, firmware rebinds its physical descriptor
-to A's original `connectionId`. The stable connection identity belongs to the
-logical workflow rather than to a temporary transport path or bootloader
-descriptor. Rebinding is performed through the operation's ownership lease,
-not through an unrestricted registry mutation API.
+Forwarding is one-shot. A replacement continues with the next handler and does
+not re-enter the beginning of the router. Diagnostic ancestry may record that a
+replacement came from firmware, but downstream business behavior never depends
+on an **origin** flag.
 
-The proposed matching evidence is:
+Handlers do not know which handler comes next. Another handler can be inserted
+between firmware and normal connection handling without changing either one.
 
-- expected firmware phase;
-- exactly one connected candidate;
-- compatible transport/API type;
-- compatible model and other available descriptors;
-- reconnect timing where useful.
+Routing transitions are synchronous and never await. Asynchronous results return
+to the owning state machine as explicit inputs.
 
-Conflicting or ambiguous evidence causes a mandatory request to leave only the
-upgraded device connected. This cannot detect a deliberate physical swap for a
-sufficiently similar device during the identity gap.
+## In-memory device registry
 
-## Additional-device behavior
+The lifecycle adapter updates a neutral registry before routing an event. The
+registry is authoritative for current physical paths and logical
+**connectionId** values. It does not read Redux.
 
-Any device B connected while firmware is prepared or running is consumed by the
-firmware handler and never passed to the normal connection service. The UI shows
-a mandatory "Disconnect the other device" state. B's disconnect event is also
-consumed, and the warning clears only when all unexpected devices are gone.
+The registry provides:
 
-B is not replayed later. The user reconnects it after the firmware workflow has
-released ownership.
+- current connected devices grouped by transport;
+- exact path-to-connection lookup;
+- stable connection IDs for ordinary connected sessions;
+- transport association for termination;
+- guarded firmware candidate adoption and identity rebinding.
 
-This rule applies across transports. Connect itself maintains its internal
-device list, so downstream routing cannot hide B from Connect. During an active
-low-level firmware call, the service can block UI responses and final workflow
-completion safely, but it cannot claim to pause bytes already being flashed.
+An outbound device call must resolve to a currently known connection. Unknown
+paths return a typed **unknownDeviceTarget** error.
 
-## Firmware completion and handoff
+Normal connection flows do not guess identity across disconnects. Firmware is
+the only exception because it explicitly owns A, expects reboots, and begins
+with exactly one physical device.
 
-Firmware-owned lifecycle events are reduced into one current snapshot of A.
-When ownership ends, the service uses its deferred continuation to hand the
-latest state to the remaining generic handler chain:
+## Normal connection state-machine manager
 
-- `DEVICE.CONNECT` with the latest acquired snapshot;
-- `DEVICE.CONNECT_UNACQUIRED` when acquisition remains incomplete; or
-- `DEVICE.DISCONNECT` when A is currently disconnected.
+The connection service holds one machine per **connectionId**. Machines for
+different devices progress independently and use separate device-operation
+leases.
 
-Intermediate bootloader and UI events are not replayed. Work already completed,
-including THP, is represented in the latest snapshot so the standard connection
-state machine can continue from the current state.
+A representative state graph is:
 
-Because the handoff carries A's preserved `connectionId`, the standard
-connection manager resumes the existing completed machine. It refreshes the
-normal Redux projection without discovering identity through Redux and without
-repeating onboarding or authenticity checks.
+```text
+observed
+    -> acquiring
+    -> awaiting THP interaction, when required
+    -> evaluating authenticity policy
+    -> awaiting user start, when a check is required
+    -> authenticity call running
+    -> awaiting failure decision, when required
+    -> projected
+    -> terminated
+```
 
-Successful completion, failure, or cancellation updates a dedicated prototype
-Redux UI slice. If another device is present, public completion and ownership
-release wait until it is disconnected.
+The exact discriminated union may split these states further, but every
+transition must be exhaustive and accept only inputs valid for its current
+state.
 
-A normally connected A already has a completed Redux projection when firmware
-preparation begins. That projection remains frozen throughout the update. The
-firmware UI slice shows live progress, while transient disconnect, bootloader,
-and reconnect states remain exclusively in service memory. Final handoff
-refreshes the existing normal projection. This prevents a bootloader duplicate
-from appearing in the device switcher and preserves account and UI context.
+Connect calls started by the machine use the injected adapter. THP and
+authenticity are child workflows that inherit the machine's explicit device
+context and operation lease. Their UI request-response traffic remains local to
+their call owner.
 
-## Redux and UI
+An unrelated command received while the machine owns its device returns
+**deviceBusy**; commands are not queued.
 
-The new services may dispatch plain Redux actions that project presentation
-state. They do not read workflow state from Redux. A narrowly typed injected
-configuration getter may be backed by Redux selectors at the composition root.
+A disconnect before projection terminates the machine. It revokes the lease,
+cancels active calls, rejects pending UI requests, removes temporary
+presentation state, and ignores later stale completions. A later physical
+connection starts a new machine.
 
-The prototype uses dedicated slices in the existing Suite store rather than a
-second Redux store instance. At minimum, the UI state must represent:
+A transport stop or failure performs the same termination for every machine on
+that transport. Machines on other transports continue.
 
-- connection ID or firmware call ID;
+## Device authenticity gate
+
+The authenticity gate is policy-driven and independent of whether onboarding UI
+is mounted.
+
+- A new or unverified device waits outside the ordinary Redux device collection.
+- The user explicitly starts the check.
+- A known device with a still-valid accepted result may skip the check.
+- A known device with a still-valid confirmed failure is projected immediately
+  together with that failure so the compromised-device UI can block its use.
+
+The authenticity service receives a narrow injected policy getter. Its Suite
+implementation may read settings and feature configuration through Redux
+selectors. This does not make Redux the connection state machine: the service
+snapshots the returned policy when the check starts and never reads workflow
+state from Redux.
+
+Current result semantics are preserved:
+
+- a valid proof stores a successful result;
+- an invalid proof stores **{ valid: false, ...result }**;
+- a Connect-level failure with an unlocked bootloader stores
+  **{ valid: false, error }**;
+- other Connect-level failures store **undefined** because failure was not
+  established.
+
+A confirmed failure or unavailable check remains in the local flow until the
+user retries or explicitly continues. Continuing after confirmed failure
+projects both the device and its failed result. Continuing after an unavailable
+check projects no conclusive result, so a later reconnect remains eligible for
+the gate.
+
+The device enters the ordinary Redux device collection only after the connection
+flow reaches one of these accepted terminal decisions.
+
+## Parallel connection behavior and UI
+
+The manager supports multiple connection machines even though the normal product
+UI presents one connection flow at a time.
+
+Every machine publishes safe UI state keyed by **connectionId**. Presentation
+chooses which flow to show; business machines do not acquire a global UI slot and
+do not read which flow is visible. A prototype split view may show several
+pending flows side by side to demonstrate the underlying concurrency.
+
+Safe presentation state may contain:
+
+- **connectionId**;
+- model and connection mode needed by the UI;
 - current display phase;
-- safe device display information;
-- pending request metadata;
-- per-connection lock state and a safe operation kind;
-- recoverable error or final result;
-- the mandatory additional-device warning.
+- pending request kind and request ID;
+- safe progress and error categories;
+- per-device busy state.
 
-Secrets and pending promise resolvers remain only in service memory.
+PINs, THP credentials, device state secrets, promise resolvers, and raw
+confidential identifiers are not copied into the prototype UI slice.
 
-The demonstration UI will live in Suite debug settings and work in both Web and
-Desktop. It includes an explicit device picker for firmware preparation and may
-show parallel normal connection flows in a split view.
+## Firmware update service
 
-## Existing integration points
+The firmware service is a permanent first handler in the lifecycle pipeline. Its
+internal state determines its behavior:
 
-Implementation will replace the Web/Desktop runtime entry path while preserving
-old source for reference:
+- while idle, it forwards lifecycle events immediately;
+- while prepared or running, it owns A's lifecycle and applies the additional
+  device policy;
+- call-scoped firmware UI and progress events arrive locally through the
+  injected Connect service, not through this handler.
 
-- `suite-common/connect-init/src/connectInitThunks.ts` will start the router
-  instead of directly dispatching the five Connect event streams.
-- `deviceConnectThunk` remains in source but becomes dead code for the new path.
-- Existing Connect UI-response thunks are not used by the new workflows.
-- Native keeps its current path.
+Opening the prototype modal calls **prepare(deviceA)** with an explicit device.
+Preparation succeeds only when:
 
-The current global `TrezorConnect.call` override becomes the temporary static
-bridge into the device operation coordinator. Its synchronization and post-call
-cleanup behavior move behind the coordinator. Button-request cleanup resolves
-the explicitly supplied `params.device.path`, with a focused test.
-Device-targeted calls without that context fail instead of using a legacy
-fallback.
+- A resolves to a ready, projected connection machine;
+- A is the only physically connected device;
+- no other operation holds A's device lease;
+- no other firmware workflow is active.
 
-## Known Connect constraints
+Preparation creates the firmware call ID, then synchronously acquires two
+separate capabilities:
 
-- Firmware method UI events and requests carry the method `callId`.
-- Connect does not generate a missing method call ID. UI events are annotated
-  only when the caller supplied one.
-- General device lifecycle events do not carry that `callId`.
-- Connect's internal firmware reconnect logic currently uses
-  `deviceList.getOnlyDevice(apiType)`. Two devices on the same transport type can
-  prevent it from choosing A.
-- Removing Suite event listeners does not remove devices from Connect's internal
-  list.
-- Disposing Connect would terminate the entire connection layer and the active
-  firmware operation, so it is not a selective isolation mechanism.
+- a device-operation lease for exclusive outbound use of A;
+- a lifecycle-ownership lease for consuming lifecycle events and rebinding A's
+  connection identity.
+
+If either acquisition fails, preparation rolls back both. The original call ID
+is the firmware workflow's public command ID and the ID of its primary
+**firmwareUpdate** call.
+
+The modal may cancel while prepared. Once installation starts, it is
+non-dismissible, matching the current firmware UI. Scoped cancellation remains
+available for controlled teardown and tests.
+
+## Firmware lifecycle and identity
+
+A representative lifecycle is:
+
+```text
+prepared in normal mode
+    -> firmware call started
+    -> waiting for disconnect
+    -> waiting for bootloader
+    -> installing
+    -> waiting for disconnect
+    -> waiting for normal mode
+    -> possible additional Connect-managed stage
+    -> completed
+    -> handoff
+```
+
+Connect may omit stable identity in bootloader mode, and physical paths may
+change. The service therefore uses phase-gated singleton adoption:
+
+- preparation establishes A as the sole physical device;
+- adoption is allowed only in a state that explicitly expects A to reconnect;
+- exactly one compatible candidate must be present;
+- available transport type, model, mode, and descriptor evidence must not
+  conflict;
+- ambiguous or conflicting candidates block progress.
+
+An accepted candidate is rebound to A's original **connectionId** through the
+lifecycle-ownership lease. The logical connection identity therefore survives
+temporary bootloader paths and descriptors.
+
+This cannot detect a deliberate physical swap for a sufficiently similar device
+during the identity gap. Connect's current firmware reconnect behavior has the
+same physical-singleton limitation.
+
+## Additional device behavior
+
+Any additional device B connected while firmware is prepared or running is
+consumed by the firmware lifecycle handler.
+
+- B is never passed to the normal connection manager.
+- B is never added to Redux.
+- The firmware UI shows a mandatory “Disconnect the other device” state.
+- B's disconnect event is also consumed.
+- Progress resumes only when no unexpected device remains.
+- B is not replayed later; the user reconnects it after firmware finishes.
+
+This applies across transports. A second device can interfere with Connect's
+internal reconnect selection, especially when it shares A's transport type. The
+service may safely withhold UI responses, starting a stage, or public completion,
+but it does not claim to pause bytes already being flashed by an active
+low-level call.
+
+When B disconnects, the firmware machine reevaluates the current registry. If
+exactly one compatible A candidate remains in an expected reconnect phase, it
+may adopt that candidate and continue.
+
+## Redux behavior during firmware
+
+A normally connected A is already projected into Redux before firmware begins.
+That last normal snapshot remains frozen throughout firmware ownership.
+
+The firmware service publishes progress, prompts, blocking warnings, and final
+results into a dedicated prototype UI slice. It never publishes bootloader or
+intermediate reconnect snapshots into the ordinary device collection.
+
+This is a central benefit of ownership:
+
+- no duplicate bootloader device appears in the switcher;
+- account and navigation context remain attached to A;
+- normal business logic cannot react to a temporary firmware state;
+- the firmware modal can represent the live process independently.
+
+Redux may also hold application settings read through narrow injected getters.
+The firmware and connection machines do not read their authoritative state from
+Redux.
+
+## Firmware handoff
+
+Firmware reduces A's owned lifecycle events into one current snapshot. On
+completion, failure, or cancellation, it hands one immutable replacement
+envelope to the remaining handler chain:
+
+- acquired **DEVICE.CONNECT** with the latest normal snapshot;
+- **DEVICE.CONNECT_UNACQUIRED** if acquisition remains incomplete; or
+- **DEVICE.DISCONNECT** if A is currently absent.
+
+Intermediate bootloader events are not replayed. Work already completed, such as
+THP, is represented by the latest snapshot.
+
+The envelope keeps A's original **connectionId**, so the normal connection
+manager resumes the existing projected machine and refreshes its Redux
+projection. It does not rediscover identity through Redux or rerun onboarding
+checks merely because firmware temporarily changed the physical path.
+
+Diagnostic metadata may record that the envelope is a firmware handoff.
+Downstream handlers remain generic and never branch on that origin.
+
+If B remains connected, public completion and ownership release wait until B is
+removed.
+
+## Redux and command boundary
+
+The prototype uses dedicated presentation slices in the existing Suite store,
+not a second Redux store instance.
+
+Services may dispatch plain presentation actions. User interaction calls a DI
+service method with explicit identifiers:
+
+```text
+UI renders state from Redux
+    -> user acts
+    -> service.command({ connectionId or callId, requestId, value })
+    -> service validates current state
+    -> local state-machine transition
+    -> optional call-local response to Connect
+    -> updated presentation action
+```
+
+Redux actions do not resolve Connect promises and reducers do not decide the
+next workflow transition.
+
+## Web/Desktop integration
+
+The prototype replaces the Web/Desktop connection entry path:
+
+- Connect initialization registers the device lifecycle router.
+- Call-scoped events remain inside the injected Connect adapter.
+- The router invokes the firmware handler and normal connection service.
+- **deviceConnectThunk** and the old UI-response thunks remain in source for
+  reference but are dead on the new path.
+- Existing production firmware source remains present and separate.
+- The prototype UI is added to Suite debug settings and uses explicit device
+  commands.
+- Native keeps its current implementation.
+
+There must be no period where both the old listener path and the new router
+process the same lifecycle event.
+
+## Prototype implementation sequence
+
+Assuming the three prerequisites are complete:
+
+1. **Router and registry**
+    - Create the lifecycle envelope and ordered handler contract.
+    - Add the in-memory registry and transport termination.
+    - Start with a root adapter and prove each lifecycle event is handled once.
+2. **Shared child workflows**
+    - Add DI THP and authenticity workflows using the already local call-session
+      API.
+    - Preserve existing authenticity result semantics.
+3. **Normal connection manager**
+    - Implement one machine per connection ID.
+    - Project devices only after required checks reach an accepted decision.
+    - Demonstrate two independent connection flows in tests.
+4. **Normal connection cutover**
+    - Replace the runtime call to **deviceConnectThunk**.
+    - Keep the old source but ensure it is unreachable from the new listener.
+5. **Firmware service**
+    - Add preparation, leases, lifecycle ownership, singleton adoption, B
+      blocking, cancellation, and canonical handoff.
+6. **Debug UI**
+    - Add an explicit A picker and firmware controls.
+    - Add optional split presentation for parallel normal connection flows.
+7. **Web/Desktop integration verification**
+    - Prove there is one lifecycle ingress.
+    - Exercise real or emulated normal connection and firmware reconnect flows.
+
+All new **suite-common** behavior follows the repository's TDD requirement:
+write focused failing tests, implement the smallest transition, and refactor
+only after the tests pass.
+
+## Required tests
+
+### Injected Connect and call sessions
+
+- explicit device and call-ID enforcement;
+- local delivery of UI requests and progress;
+- request-ID validation;
+- stale response and stale completion rejection;
+- one primary call plus correlated control messages;
+- per-device exclusion and cross-device concurrency;
+- disconnect and transport-loss revocation.
+
+### Router and registry
+
+- deterministic handler order;
+- one-shot forwarding;
+- immutable event replacement;
+- consumed events never reach later handlers;
+- path and transport lookup;
+- connection-ID preservation;
+- transport-loss fan-out;
+- guarded firmware adoption and rebinding.
+
+### Normal connection
+
+- parallel machines do not share state;
+- unrelated commands return **deviceBusy**;
+- THP and authenticity child transitions;
+- no ordinary Redux device before an accepted terminal decision;
+- current authenticity success, failure, and unavailable-result semantics;
+- disconnect cleanup and stale result rejection.
+
+### Firmware
+
+- idle forwarding;
+- preparation preconditions and transactional lease acquisition;
+- explicit A ownership without selected-device reads;
+- normal-to-bootloader-to-normal rebinding;
+- conservative handling of ambiguous candidates;
+- B consumption, warning, and disconnect recovery;
+- frozen Redux device projection;
+- successful, failed, and cancelled canonical handoff;
+- no intermediate bootloader projection;
+- call-local firmware UI and progress behavior.
 
 ## Prototype acceptance criteria
 
-- Web and Desktop receive Connect events only through the router.
-- Handler order and one-shot continuations are deterministic and tested.
-- Several normal device connection state machines can exist concurrently.
-- Every device-targeted Connect call passes through the per-device operation
-  coordinator, while different devices can remain active in parallel.
-- No device-targeted call reaches Connect without an explicit device, and no new
-  business path reads `selectedDevice`.
-- New business services use the injected device-call gateway. Legacy direct
-  callers reach the same coordinator through the temporary static bridge.
-- THP and device-authenticity flows use explicit IDs and local service state.
-- No new service reads `selectedDevice` or Redux business state.
-- A device is projected into normal Redux state only after required connection
-  checks finish.
-- Firmware preparation and installation use an explicitly supplied A and one
-  call ID.
-- Firmware owns A across normal-mode and bootloader reconnects.
-- A's existing Redux projection remains stable during firmware ownership and is
-  refreshed only by final handoff.
-- Every B blocks firmware, remains outside Redux, and produces the mandatory UI
-  state.
-- Cancellation or failure hands one canonical current A snapshot to the
-  remaining handler chain without requiring a physical replug.
-- The debug UI demonstrates a real firmware flow and parallel normal connection
-  workflows.
+- The three prerequisites are complete before router implementation begins.
+- Web and Desktop have one device lifecycle ingress.
+- Device-aware calls and UI responses remain local to their call owner.
+- New business logic does not read **selectedDevice** or import raw
+  **TrezorConnect**.
+- Several normal connection machines can exist independently.
+- Per-device leases block conflicting calls without serializing other devices.
+- THP and authenticity run as reusable child workflows.
+- A device enters normal Redux only after required checks finish.
+- Firmware owns explicit A across bootloader and normal reconnects.
+- A's normal Redux snapshot remains stable during the update.
+- Every B is withheld from normal connection handling and produces the
+  mandatory warning.
+- Firmware releases one canonical current state to the remaining generic
+  handler chain.
+- The debug UI demonstrates the workflow without integrating the old production
+  firmware components.
 
-## Open decisions
+## Explicitly removed from the earlier design
 
-1. Define the exact normal connection and firmware state graphs, including
-   command validity and recovery transitions.
-2. Decide how legacy UI events without a call ID or device payload are routed
-   without selected-device context.
-3. Define which safe device fields are projected into the pre-connection UI
-   slice.
-4. Decide how much of the prototype debug UI is retained when the architecture
-   moves toward production.
+The prototype no longer requires:
+
+- routing all five Connect event streams through one middleware pipeline;
+- allowing firmware to inspect blockchain or unrelated application events;
+- a static bridge from legacy Connect calls into a new coordinator;
+- a legacy call-ID compatibility handler in the router;
+- selected-device fallback for unscoped UI events;
+- router-level handling of PIN, THP, confirmation, or firmware progress;
+- solving legacy calls without call IDs inside the firmware prototype.
+
+Those responsibilities disappear because the prerequisite migration makes
+device-aware calls explicit, correlated, injected, and locally owned before the
+prototype starts.
