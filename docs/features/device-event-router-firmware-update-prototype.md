@@ -58,11 +58,12 @@ The current package split is:
 - `@suite-common/device-connection-service`
     - Manager for independent per-device connection state machines.
     - Normal connection workflow and the final Redux device projection.
-- A device operation coordinator, with its exact package location still to be
-  decided.
+- `@suite-common/device-operation`
     - Owns exclusive per-device operation locks.
     - Exposes the injected gateway that executes every device-targeted Connect
       call.
+    - Has no Redux dependency and forms the shared foundation for connection,
+      firmware, THP, authenticity, and wallet operations.
 - `@suite-common/firmware-update-service`
     - Sole owner of the prototype firmware update workflow.
     - Kept separate from the existing Redux-oriented `@suite-common/firmware`
