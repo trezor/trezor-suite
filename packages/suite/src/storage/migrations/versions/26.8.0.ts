@@ -11,7 +11,7 @@ type LegacyReceiveInfo = {
 
 type LegacyReceiveAccountState = {
     touchedAddresses?: LegacyReceiveInfo[];
-    revealedAddresses?: (LegacyReceiveInfo & { isVerified?: boolean })[];
+    revealedAddresses?: LegacyReceiveInfo[];
     currentFreshAddress?: LegacyReceiveInfo;
 };
 
