@@ -131,6 +131,12 @@ The exact state graph will use typed discriminated unions and exhaustive
 transitions. Each user command includes `connectionId`; it never relies on the
 selected device.
 
+`connectionId` and Connect `callId` have separate lifetimes. A stable
+`connectionId` identifies the state machine, while every Connect method started
+by that machine receives a fresh `callId`. The manager maintains an index from
+each active call ID to its owning connection. A late event from an earlier call
+cannot satisfy a transition for a later method in the same workflow.
+
 The user must explicitly start the Optiga/device-authenticity check. Until that
 workflow reaches an accepted terminal outcome, the service publishes safe
 presentation data to a dedicated UI slice but does not add the device to the
