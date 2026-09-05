@@ -261,7 +261,6 @@ export const solanaAdapter = {
     networkType: 'solana',
     namespaceId: 'solana',
     requestThunk: solanaRequestThunk,
-    getChainId,
     getNamespace,
     processNamespaces,
 } satisfies WalletConnectAdapter;

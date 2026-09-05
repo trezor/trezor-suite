@@ -4,7 +4,7 @@ import type { ProposalTypes } from '@walletconnect/types';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
@@ -215,14 +215,6 @@ const bitcoinRequestThunk = createThunk<
     }
 });
 
-export const getChainId = (network: Network) => {
-    if (network.caipId) {
-        return [network.caipId];
-    }
-
-    return [];
-};
-
 export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
     const bip122 = {
         chains: [],
@@ -293,7 +285,6 @@ export const bitcoinAdapter = {
     networkType: 'bitcoin',
     namespaceId: 'bip122',
     requestThunk: bitcoinRequestThunk,
-    getChainId,
     getNamespace,
     processNamespaces,
 } satisfies WalletConnectAdapter;

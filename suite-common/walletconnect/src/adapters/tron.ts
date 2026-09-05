@@ -194,7 +194,6 @@ export const tronAdapter = {
     networkType: 'tron',
     namespaceId: 'tron',
     requestThunk: tronRequestThunk,
-    getChainId,
     getNamespace,
     processNamespaces,
 } satisfies WalletConnectAdapter;
