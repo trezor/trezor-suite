@@ -1,13 +1,6 @@
-import { type Dispatch } from '@reduxjs/toolkit/react';
-
 import { selectSelectedDevice } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    accountsActions,
-    selectAccountForNetworkSymbolAndPath,
-    sendFormActions,
-} from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { selectAccountForNetworkSymbolAndPath, sendFormActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import type { CallMethodKeys, SolanaSignTransaction } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect-common';
@@ -16,9 +9,9 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
-import { createPlaceholderAccount } from './utils';
+import { createPlaceholderAccount, createTemporaryAccountsRegistry } from './utils';
 
-const temporaryAccounts: Account[] = [];
+const temporaryAccounts = createTemporaryAccountsRegistry();
 
 const preCallHook = async <M extends CallMethodKeys>({
     method,
@@ -42,7 +35,7 @@ const preCallHook = async <M extends CallMethodKeys>({
             if (!selectedAccount) {
                 // Create a new placeholder account
                 const createdAccount = await dispatch(createPlaceholderAccount(network, path));
-                temporaryAccounts.push(createdAccount.payload);
+                temporaryAccounts.track(createdAccount.payload);
                 selectedAccount = createdAccount.payload;
             }
             if (!selectedAccount) {
@@ -107,17 +100,8 @@ const preCallHook = async <M extends CallMethodKeys>({
     }
 };
 
-const cleanupHook = (dispatch: Dispatch) => {
-    if (temporaryAccounts.length) {
-        // Dispatch a copy: temporaryAccounts is cleared below and Redux carries the payload by
-        // reference, so mutating it would mutate the already-dispatched action's payload.
-        dispatch(accountsActions.removeAccount([...temporaryAccounts]));
-        temporaryAccounts.length = 0;
-    }
-};
-
 export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) {
-    cleanupHook(dispatch);
+    temporaryAccounts.cleanup(dispatch);
 
     return false;
 }
@@ -125,5 +109,4 @@ export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHoo
 export const solanaSignTransaction = {
     preCallHook,
     postCallHook,
-    cleanupHook,
 };
