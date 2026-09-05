@@ -13,7 +13,6 @@ export type NotificationId = number;
 
 export interface NotificationOptions {
     seen?: boolean;
-    resolved?: boolean;
     autoClose?: number | false;
     style?: CSSProperties;
 }
@@ -272,7 +271,6 @@ export type NotificationEventPayload = (
     | {
           type: typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
           device: TrezorDevice;
-          needAttention?: boolean;
       }
 ) &
     NotificationOptions;
