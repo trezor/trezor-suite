@@ -43,9 +43,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         status: false,
     });
 
-    const { rewards: rewardsAmount, isActive: isStakingActive } = isCardano
-        ? account.misc.staking
-        : {};
+    const { rewards: rewardsAmount } = isCardano ? account.misc.staking : {};
 
     const isStakingDisabled =
         (account?.availableBalance === '0' || !delegatingAvailable.status || hasPendingTx) &&
@@ -109,7 +107,6 @@ export const useCardanoStaking = (): CardanoStaking => {
             loading: false,
             delegatingAvailable: { status: false },
             withdrawingAvailable: { status: false },
-            isActive: false,
             rewards: '0',
             calculateFeeAndDeposit: () => Promise.resolve(),
         };
@@ -122,7 +119,6 @@ export const useCardanoStaking = (): CardanoStaking => {
         loading,
         delegatingAvailable,
         withdrawingAvailable,
-        isActive: isStakingActive,
         rewards: rewardsAmount,
         calculateFeeAndDeposit,
     };
