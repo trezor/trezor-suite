@@ -27,8 +27,9 @@ flow or Redux.
   Desktop.
 - A device operation coordinator is the single entry point for Connect calls
   targeting a device and enforces an exclusive per-device lock.
-- Business services do not import or call `TrezorConnect` directly. They receive
-  an injected device-call gateway.
+- New business services do not import or call `TrezorConnect` directly. They
+  receive an injected device-call gateway. Existing callers are intercepted by
+  a temporary static bridge during migration.
 - Business logic never uses `selectedDevice`. A device is always supplied
   explicitly to a command or resolved from local workflow state.
 - Every device-targeted Connect call has an explicit device. Missing device
@@ -89,17 +90,25 @@ describe workflow state, while the coordinator prevents multiple operations
 from using the same physical device concurrently.
 
 Every device-targeted Connect call must pass through this coordinator. New
-services use its injected gateway. Existing Web/Desktop business callers must
-also be migrated to provide an explicit device and use that contract, so
-firmware cannot claim a device while an older signing, address-confirmation, or
-settings call is active. Raw `TrezorConnect` access is confined to the
-composition and infrastructure layer.
+services use its injected gateway. Existing Web/Desktop callers continue using
+the public Connect API during the prototype, but its patched static `call`
+entrypoint delegates them to the same coordinator. Firmware therefore cannot
+claim a device while an older signing, address-confirmation, or settings call is
+active.
 
 A device-targeted call without explicit device context is rejected with a typed
 error before reaching Connect. It does not acquire a global compatibility lock
 and never falls back to `selectedDevice`. Connect initialization, transport
 management, and other operations that do not target a device remain outside the
 per-device lock.
+
+The composition root constructs the coordinator normally and installs it into a
+set-once static bridge before Connect becomes usable. The bridge patches
+`TrezorConnect.call` and delegates legacy calls to that instance. The coordinator
+receives the captured original call implementation and uses it to avoid
+recursing through the patch. Test teardown and hot reload explicitly uninstall
+the bridge. The static reference is isolated to this infrastructure adapter and
+can be removed after callers migrate to DI.
 
 The coordinator maintains locks per device rather than one application-wide
 lock. Independent devices may run operations in parallel. An incompatible call
@@ -426,11 +435,12 @@ old source for reference:
 - Existing Connect UI-response thunks are not used by the new workflows.
 - Native keeps its current path.
 
-The current global `TrezorConnect.call` wrapper does not remain the business
-coordination boundary. Its synchronization and post-call cleanup behavior move
-behind the injected gateway as needed. Button-request cleanup resolves the
-explicitly supplied `params.device.path`, with a focused test. Device-targeted
-calls without that context fail instead of using a legacy fallback.
+The current global `TrezorConnect.call` override becomes the temporary static
+bridge into the device operation coordinator. Its synchronization and post-call
+cleanup behavior move behind the coordinator. Button-request cleanup resolves
+the explicitly supplied `params.device.path`, with a focused test.
+Device-targeted calls without that context fail instead of using a legacy
+fallback.
 
 ## Known Connect constraints
 
@@ -453,8 +463,8 @@ calls without that context fail instead of using a legacy fallback.
   coordinator, while different devices can remain active in parallel.
 - No device-targeted call reaches Connect without an explicit device, and no new
   business path reads `selectedDevice`.
-- Business services use the injected device-call gateway and do not import raw
-  `TrezorConnect`.
+- New business services use the injected device-call gateway. Legacy direct
+  callers reach the same coordinator through the temporary static bridge.
 - THP and device-authenticity flows use explicit IDs and local service state.
 - No new service reads `selectedDevice` or Redux business state.
 - A device is projected into normal Redux state only after required connection
