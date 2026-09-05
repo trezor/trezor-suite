@@ -183,6 +183,12 @@ Connect event
 
 Handlers are independent and know only their own continuation, so another
 handler can be inserted between firmware and standard connection handling.
+Every handler is eligible to inspect every event-bus envelope in its configured
+order. It may pass the event immediately, consume it, or retain it through the
+guarded deferred-continuation mechanism. Processing continues through later
+handlers only when the current handler calls its continuation. This makes the
+pipeline extensible without giving handlers direct knowledge of their parent or
+child.
 
 Ordinary `next(event)` is synchronous, one-shot, and guarded against repeated or
 late calls. A handler that assumes temporary ownership can request an explicit
@@ -213,10 +219,13 @@ ownership. Completing or cancelling the operation invalidates the lease, so a
 delayed callback from stale work cannot change registry identity.
 
 This event-ownership lease is distinct from the device-operation lease. The
-event lease grants temporary exclusive control over inbound Connect events and
-registry identity changes; the operation lease grants exclusive outbound use of
-A through Connect calls. Firmware acquires the device-operation lease and then
-the event-ownership lease synchronously, without an awaited boundary. Failure to
+event lease grants temporary interception rights across the entire inbound
+Connect event bus and authority over registry identity changes; the operation
+lease grants exclusive outbound use of A through Connect calls. Interception
+does not imply consumption. Firmware passes most unrelated UI, transport, and
+blockchain events, but it may consume or defer any event when its state-machine
+policy requires that. Firmware acquires the device-operation lease and then the
+event-ownership lease synchronously, without an awaited boundary. Failure to
 acquire either rolls back both. Cleanup releases both capabilities explicitly,
 so neither subsystem depends on the other one's token.
 
