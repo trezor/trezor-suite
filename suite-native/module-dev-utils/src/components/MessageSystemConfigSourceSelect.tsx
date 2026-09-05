@@ -31,7 +31,7 @@ export const MessageSystemConfigSourceSelect = () => {
             items={options}
             value={messageSystemConfigSource}
             onSelectItem={handleSelect}
-            isLabelShown
+            labelType="innerLabel"
         />
     );
 };

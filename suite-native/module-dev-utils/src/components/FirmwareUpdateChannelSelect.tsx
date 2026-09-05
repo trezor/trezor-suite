@@ -40,7 +40,7 @@ export const FirmwareUpdateChannelSelect = () => {
             items={options}
             value={selectedFirmwareChannel}
             onSelectItem={handleSelectEnvironment}
-            isLabelShown
+            labelType="innerLabel"
         />
     );
 };

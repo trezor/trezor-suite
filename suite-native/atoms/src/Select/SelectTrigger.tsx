@@ -4,53 +4,115 @@ import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
+import { type TextInputType } from '../Input/Input';
 import { PressableOpacity } from '../Pressable';
-import { HStack } from '../Stack';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
 
 type SelectTriggerProps = {
+    labelType?: TextInputType;
     label?: ReactNode;
     value: string | null;
     icon?: ReactNode;
     handlePress: () => void;
+    hasError?: boolean;
+    isDisabled?: boolean;
     testID?: string;
 };
 
-const SELECT_HEIGHT = 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const SELECT_MIN_HEIGHT = 56 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 
-const selectStyle = prepareNativeStyle(utils => ({
+type SelectStyleProps = {
+    hasError: boolean;
+    isDisabled: boolean;
+};
+
+const selectStyle = prepareNativeStyle<SelectStyleProps>((utils, { hasError, isDisabled }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: utils.spacings.sp16,
+    paddingVertical: utils.spacings.sp6,
     backgroundColor: utils.colors.elementFillField,
-    borderWidth: utils.borders.widths.small,
+    outlineWidth: utils.borders.widths.small,
+    outlineColor: utils.colors.elementBorderField,
     borderRadius: utils.borders.radii.r12,
-    borderColor: utils.colors.elementBorderField,
-    color: utils.colors.contentSecondary,
-    paddingLeft: utils.spacings.sp12,
-    paddingRight: 23.25,
-    height: SELECT_HEIGHT,
+    minHeight: SELECT_MIN_HEIGHT,
+    extend: [
+        {
+            condition: isDisabled,
+            style: {
+                backgroundColor: utils.colors.elementFillFieldDisabled,
+                outlineColor: utils.colors.elementBorderFieldDisabled,
+            },
+        },
+        {
+            condition: hasError && !isDisabled,
+            style: {
+                outlineColor: utils.colors.elementBorderFieldError,
+                outlineWidth: utils.borders.widths.large,
+            },
+        },
+    ],
 }));
 
-export const SelectTrigger = ({ label, value, icon, handlePress, testID }: SelectTriggerProps) => {
+export const SelectTrigger = ({
+    labelType = 'noLabel',
+    label,
+    value,
+    icon,
+    handlePress,
+    hasError = false,
+    isDisabled = false,
+    testID,
+}: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
 
+    const hasValue = value !== null && value !== undefined;
+    const isInnerLabel = labelType === 'innerLabel';
+    const showMinimizedLabel = isInnerLabel && hasValue;
+    const showFullLabel = isInnerLabel && !hasValue;
+
+    const labelColor = isDisabled ? 'contentDisabled' : 'contentTertiary';
+    const valueColor = isDisabled ? 'contentDisabled' : 'contentPrimary';
+
     return (
-        <PressableOpacity onPress={handlePress} style={applyStyle(selectStyle)} testID={testID}>
-            <Box>
-                {label && (
-                    <Text variant="body-xs" color="contentSecondary">
+        <PressableOpacity
+            onPress={handlePress}
+            style={applyStyle(selectStyle, { hasError, isDisabled })}
+            disabled={isDisabled}
+            testID={testID}
+        >
+            <Box flex={1} justifyContent="center">
+                {showFullLabel && (
+                    <Text variant="body-md" color="contentSecondary" numberOfLines={1}>
                         {label}
                     </Text>
                 )}
-                <HStack alignItems="center">
-                    {icon}
-                    <Text numberOfLines={1} ellipsizeMode="tail">
-                        {value}
+                {showMinimizedLabel && (
+                    <Text variant="body-sm" color={labelColor} numberOfLines={1}>
+                        {label}
                     </Text>
-                </HStack>
+                )}
+                {hasValue && (
+                    <Box flexDirection="row" alignItems="center">
+                        {icon}
+                        <Text
+                            variant="body-md"
+                            color={valueColor}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={{ flex: 1 }}
+                        >
+                            {value}
+                        </Text>
+                    </Box>
+                )}
             </Box>
-            <Icon size="large" color="contentSecondary" name="caretDown" />
+            <Icon
+                size="large"
+                color={isDisabled ? 'contentDisabled' : 'contentSecondary'}
+                name="caretDown"
+            />
         </PressableOpacity>
     );
 };
