@@ -67,7 +67,6 @@ export interface FormState {
     feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
     maxPriorityFeePerGas?: string; // ethereum eip1559 only
     maxFeePerGas?: string; // ethereum eip1559 only
-    baseFeePerGas?: string; // ethereum eip1559 only
     feeLimit: string; // ethereum: gas limit; tron: fee_limit cap in SUN for TRC-20 transfers
     estimatedFeeLimit?: string; // ethereum: estimated gas limit; tron: estimated fee_limit cap in SUN for TRC-20 transfers
 

@@ -66,7 +66,7 @@ const getStellarValidation = (
     validation: StellarValidation | null | undefined,
 ): ValidationLike | undefined => (validation && 'features' in validation ? validation : undefined);
 
-export type TxSimulationFailure = { error: string; description?: string };
+export type TxSimulationFailure = { error: string };
 
 // Beyond each network's own error arm, the three readers below share one rule: a scan that answers
 // with a success status but no account summary has nothing to show and nothing to trust, so it
@@ -79,7 +79,7 @@ export const getEvmSimulationFailure = (
     const { simulation } = response;
 
     if (simulation?.status === 'Error') {
-        return { error: simulation.error, description: simulation.description };
+        return { error: simulation.error };
     }
 
     if (simulation && !getEvmSimulationSummary(response)) {

@@ -36,7 +36,6 @@ export type PopoverProps = {
     isOpen?: boolean;
     content?: React.ReactNode;
     onOpenChange?: (isOpen: boolean) => void;
-    onInteraction?: () => void;
     popoverOffset?: number;
     zIndex?: number;
     'data-testid'?: string;

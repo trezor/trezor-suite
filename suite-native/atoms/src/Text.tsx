@@ -25,7 +25,6 @@ export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProp
     color?: Color;
     priority?: TextPriority;
     textAlign?: TextStyle['textAlign'];
-    alignSelf?: TextStyle['alignSelf'];
     style?: NativeStyleObject;
 }
 

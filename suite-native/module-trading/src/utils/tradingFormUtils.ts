@@ -137,7 +137,6 @@ export const createFormStateForSendForm = ({
         feePerUnit: feeLevel.feePerUnit || '',
         maxPriorityFeePerGas: feeLevel?.maxPriorityFeePerGas || '',
         maxFeePerGas: feeLevel?.maxFeePerGas || '',
-        baseFeePerGas: '',
         feeLimit: feeLevel.feeLimit || '',
         estimatedFeeLimit: '',
         baseFee: undefined,

@@ -29,10 +29,8 @@ import { type BigNumber } from '@trezor/utils';
 type UseConvertFiatToCryptoParams = {
     symbol: NetworkSymbol | null;
     tokenContract?: TokenAddress;
-    tokenDecimals?: number;
     historicRate?: number;
     useHistoricRate?: boolean;
-    isBalance?: boolean;
 };
 
 export const useCryptoFiatConverters = ({

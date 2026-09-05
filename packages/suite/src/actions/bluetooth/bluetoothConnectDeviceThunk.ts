@@ -13,7 +13,6 @@ import {
 
 type BluetoothConnectDeviceThunkResult = {
     success: boolean;
-    unpaired?: boolean;
 };
 
 export const bluetoothConnectDeviceThunk = createThunk<

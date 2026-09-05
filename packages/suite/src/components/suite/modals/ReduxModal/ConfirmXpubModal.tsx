@@ -15,10 +15,7 @@ import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
 
 export const ConfirmXpubModal = (
-    props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'> & {
-        descriptor?: string;
-        descriptorChecksum?: string;
-    },
+    props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'>,
 ) => {
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectSelectedAccount);

@@ -128,8 +128,6 @@ export const useStablecoinYieldListData = () => {
                 tokenBalance: null,
                 apy,
                 token: vault.token,
-                outputToken: vault.outputToken,
-                pricePerShareState: vault.state?.pricePerShareState,
             };
 
             promoItems.push(defaultYieldItem);
