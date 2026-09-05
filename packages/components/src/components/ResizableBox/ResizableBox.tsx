@@ -61,11 +61,15 @@ type ResizersProps = TransientProps<AllowedResizableBoxFrameProps> &
         $minHeight?: number;
         $maxHeight?: number;
         $isResizing?: boolean;
+        $isSnapping?: boolean;
     };
 
 const MINIMAL_BOX_SIZE = 1;
 const REACTIVE_AREA_WIDTH = 16;
 const BORDER_WIDTH = 4;
+// Short transition used when the size "snaps" across a disabled interval, so the
+// jump between the interval edges animates smoothly instead of changing abruptly.
+const SNAP_TRANSITION_DURATION = 100;
 
 type ResizePointerEvent = MouseEvent | TouchEvent;
 
@@ -94,6 +98,13 @@ const Resizers = styled.div<ResizersProps>`
         css`
             user-select: none;
             cursor: ${$isResizing ? 'ns-resize' : 'auto'};
+        `}
+    ${({ $isSnapping }) =>
+        $isSnapping &&
+        css`
+            transition:
+                width ${SNAP_TRANSITION_DURATION}ms ease,
+                height ${SNAP_TRANSITION_DURATION}ms ease;
         `}
 
     ${withFrameProps}
@@ -225,13 +236,14 @@ type ResizeState = {
     height: number;
     isResizing: boolean;
     isHovering: boolean;
+    isSnapping: boolean;
     direction: Direction | null;
 };
 
 type ResizeAction =
     | { type: 'SET_POSITION'; x: number; y: number }
-    | { type: 'SET_WIDTH'; width: number }
-    | { type: 'SET_HEIGHT'; height: number }
+    | { type: 'SET_WIDTH'; width: number; snapping?: boolean }
+    | { type: 'SET_HEIGHT'; height: number; snapping?: boolean }
     | { type: 'START_RESIZE'; direction: Direction }
     | { type: 'STOP_RESIZE' }
     | { type: 'MOUSE_OVER'; direction: Direction }
@@ -242,9 +254,9 @@ const resizeReducer = (state: ResizeState, action: ResizeAction): ResizeState =>
         case 'SET_POSITION':
             return { ...state, x: action.x, y: action.y };
         case 'SET_WIDTH':
-            return { ...state, width: action.width };
+            return { ...state, width: action.width, isSnapping: action.snapping ?? false };
         case 'SET_HEIGHT':
-            return { ...state, height: action.height };
+            return { ...state, height: action.height, isSnapping: action.snapping ?? false };
         case 'START_RESIZE':
             return {
                 ...state,
@@ -253,7 +265,7 @@ const resizeReducer = (state: ResizeState, action: ResizeAction): ResizeState =>
                 direction: action.direction,
             };
         case 'STOP_RESIZE':
-            return { ...state, isResizing: false };
+            return { ...state, isResizing: false, isSnapping: false };
         case 'MOUSE_OVER':
             return {
                 ...state,
@@ -308,11 +320,19 @@ export const ResizableBox = ({
         height: height || minHeight,
         isResizing: false,
         isHovering: false,
+        isSnapping: false,
         direction: null,
     };
 
     const [state, dispatch] = useReducer(resizeReducer, initialState);
-    const { width: widthState, height: heightState, isResizing, isHovering, direction } = state;
+    const {
+        width: widthState,
+        height: heightState,
+        isResizing,
+        isHovering,
+        isSnapping,
+        direction,
+    } = state;
 
     const effectiveWidth = typeof forcedWidth === 'number' ? forcedWidth : widthState;
 
@@ -352,41 +372,41 @@ export const ResizableBox = ({
                 let nextHeight = heightState;
 
                 if (direction === 'top') {
-                    const diff = anchor.bottom - mouseY;
-                    let result = ensureMinimalSize(diff);
-                    result = calculateDisabledInterval(result, disabledHeightInterval);
+                    const diff = ensureMinimalSize(anchor.bottom - mouseY);
+                    const snapping = !!isInDisabledInterval(diff, disabledHeightInterval);
+                    const result = calculateDisabledInterval(diff, disabledHeightInterval);
                     nextHeight =
                         result > originalHeight
                             ? getMaxResult(maxHeight, result)
                             : getMinResult(minHeight, result);
-                    dispatch({ type: 'SET_HEIGHT', height: nextHeight });
+                    dispatch({ type: 'SET_HEIGHT', height: nextHeight, snapping });
                 } else if (direction === 'bottom') {
-                    const diff = mouseY - anchor.y;
-                    let result = ensureMinimalSize(diff);
-                    result = calculateDisabledInterval(result, disabledHeightInterval);
+                    const diff = ensureMinimalSize(mouseY - anchor.y);
+                    const snapping = !!isInDisabledInterval(diff, disabledHeightInterval);
+                    const result = calculateDisabledInterval(diff, disabledHeightInterval);
                     nextHeight =
                         result > originalHeight
                             ? getMaxResult(maxHeight, result)
                             : getMinResult(minHeight, result);
-                    dispatch({ type: 'SET_HEIGHT', height: nextHeight });
+                    dispatch({ type: 'SET_HEIGHT', height: nextHeight, snapping });
                 } else if (direction === 'left') {
-                    const diff = anchor.right - mouseX;
-                    let result = ensureMinimalSize(diff);
-                    result = calculateDisabledInterval(result, disabledWidthInterval);
+                    const diff = ensureMinimalSize(anchor.right - mouseX);
+                    const snapping = !!isInDisabledInterval(diff, disabledWidthInterval);
+                    const result = calculateDisabledInterval(diff, disabledWidthInterval);
                     nextWidth =
                         result > originalWidth
                             ? getMaxResult(maxWidth, result)
                             : getMinResult(minWidth, result);
-                    dispatch({ type: 'SET_WIDTH', width: nextWidth });
+                    dispatch({ type: 'SET_WIDTH', width: nextWidth, snapping });
                 } else if (direction === 'right') {
-                    const diff = mouseX - anchor.x;
-                    let result = ensureMinimalSize(diff);
-                    result = calculateDisabledInterval(result, disabledWidthInterval);
+                    const diff = ensureMinimalSize(mouseX - anchor.x);
+                    const snapping = !!isInDisabledInterval(diff, disabledWidthInterval);
+                    const result = calculateDisabledInterval(diff, disabledWidthInterval);
                     nextWidth =
                         result > originalWidth
                             ? getMaxResult(maxWidth, result)
                             : getMinResult(minWidth, result);
-                    dispatch({ type: 'SET_WIDTH', width: nextWidth });
+                    dispatch({ type: 'SET_WIDTH', width: nextWidth, snapping });
                 }
 
                 onWidthResizeMove?.(nextWidth);
@@ -508,6 +528,7 @@ export const ResizableBox = ({
             ref={resizableBoxRef}
             $highlightDirection={highlightDirection}
             $isResizing={isResizing}
+            $isSnapping={isSnapping}
             $zIndex={zIndex}
             {...frameProps}
         >
