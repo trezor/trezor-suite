@@ -55,6 +55,7 @@ const tradingReducer = prepareTradingReducer({
 });
 const trxSymbol = asNetworkSymbol('trx');
 const ethSymbol = asNetworkSymbol('eth');
+const polSymbol = asNetworkSymbol('pol');
 const btcFeeData = {
     blockHeight: 890366,
     blockTime: 10,
@@ -86,6 +87,10 @@ const fees: FeesState = {
         data: btcFeeData,
     },
     [trxSymbol]: {
+        status: 'loaded',
+        data: btcFeeData,
+    },
+    [polSymbol]: {
         status: 'loaded',
         data: btcFeeData,
     },
@@ -957,6 +962,122 @@ describe('recomposeAndSignTxThunk', () => {
         expect(mockSignAndPushSendFormTransaction.mock.calls[0][0].formState.feeLimit).toBe(
             '64285',
         );
+    });
+
+    it('should not attach a token for a Tron approve transaction so the approve calldata is preserved', async () => {
+        const { store, tradingFormState } = getMocks({
+            composedTransactionInfo: {
+                selectedFee: 'normal',
+                composed: {
+                    feePerByte: '100',
+                    estimatedFeeLimit: '6428500',
+                    feeLimit: '64285',
+                    token: { contract: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' } as TokenInfo,
+                    fee: '6428500',
+                    outputs: [],
+                },
+            },
+        });
+
+        const account = { ...accountBtc, symbol: 'trx', networkType: 'tron' } as Account;
+        const tronApproveCalldata =
+            '0x095ea7b3000000000000000000000000c6594cd50c39ba5f23538fdc3b8492c95edb6fe1000000000000000000000000000000000000000000000000000000000133e122';
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: { txid: 'txid' },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            feeLimit: '120000',
+                            estimatedFeeLimit: '12000000',
+                            fee: '12000000',
+                            outputs: [{ amount: '0' }],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+                amount: '0',
+                transactionData: tronApproveCalldata,
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+
+        const { formState } = (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock)
+            .mock.calls[0][0];
+        expect(formState.outputs[0].token).toBeNull();
+        expect(formState.transactionData).toBe(tronApproveCalldata);
+    });
+
+    it('should attach the token for an EVM approve transaction (approval flow)', async () => {
+        const tokenContract = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+        const { store, tradingFormState } = getMocks({
+            composedTransactionInfo: {
+                selectedFee: 'normal',
+                composed: {
+                    feePerByte: '10',
+                    estimatedFeeLimit: '1000',
+                    feeLimit: '1000',
+                    token: { contract: tokenContract } as TokenInfo,
+                    fee: '1000',
+                    outputs: [],
+                },
+            },
+        });
+
+        const account = { ...accountBtc, symbol: 'pol', networkType: 'ethereum' } as Account;
+        const approveCalldata =
+            '0x095ea7b3000000000000000000000000c6594cd50c39ba5f23538fdc3b8492c95edb6fe1000000000000000000000000000000000000000000000000000000000133e122';
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: { txid: 'txid' },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            outputs: [{ amount: '0' }],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: tokenContract,
+                amount: '0',
+                transactionData: approveCalldata,
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+
+        const { formState } = (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock)
+            .mock.calls[0][0];
+        expect(formState.outputs[0].token).toBe(tokenContract);
+        expect(formState.transactionData).toBe(approveCalldata);
     });
 
     it('should create payment requests when SLIP24 is active and conditions are met', async () => {

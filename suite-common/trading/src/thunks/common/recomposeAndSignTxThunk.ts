@@ -130,11 +130,11 @@ export const recomposeAndSignTxThunk = createThunk<
             });
         }
 
-        // Token is being used for approval transactions unless on firmware < 2.9.0.
-        // Otherwise if transactionData is present, token is not used as details are in the transactionData.
         const shouldIncludeToken =
             !transactionData ||
-            (isApprovalFlowSupported(device) && isEvmApprovalTx(transactionData));
+            (network.networkType === 'ethereum' &&
+                isApprovalFlowSupported(device) &&
+                isEvmApprovalTx(transactionData));
 
         // prepare the fee levels, set custom values from composed
         // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data

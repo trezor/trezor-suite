@@ -22,6 +22,7 @@ import {
 
 const ethSymbol = asNetworkSymbol('eth');
 const bscSymbol = asNetworkSymbol('bsc');
+const trxSymbol = asNetworkSymbol('trx');
 
 const buildPrecomposedTx = (to: string | undefined): GeneralPrecomposedTransactionFinal =>
     ({
@@ -350,6 +351,29 @@ describe('constructTransactionReviewOutputs', () => {
             expect.arrayContaining([
                 expect.objectContaining({ type: 'swap_intent', value: 'swap' }),
             ]),
+        );
+    });
+
+    it('renders the raw data row for a Tron approve instead of treating it as an EVM approval', () => {
+        const tronAccount = mockWalletAccount({ symbol: trxSymbol, accountType: 'normal' });
+
+        const outputs = constructTransactionReviewOutputs({
+            account: tronAccount,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: ERC20_APPROVE_DATA }),
+            precomposedTx: buildPrecomposedTransaction({
+                to: '0x0000000000000000000000000000000000001234',
+            }),
+        });
+
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'data', value: ERC20_APPROVE_DATA }),
+            ]),
+        );
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([expect.objectContaining({ type: 'approve_data' })]),
         );
     });
 

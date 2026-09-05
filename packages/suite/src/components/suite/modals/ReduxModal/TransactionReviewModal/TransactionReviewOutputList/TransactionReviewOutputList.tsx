@@ -108,17 +108,20 @@ export const TransactionReviewOutputList = ({
 
     const isStaking = stakeType;
 
-    const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
+    const isEthereum = networkType === 'ethereum';
+    const isApprovalTx = isEthereum && isEvmApprovalTx(precomposedForm.transactionData);
 
     // Resolved from the full context, not the calldata alone, so a WETH deposit()/withdraw() is
     // classified as wrap/unwrap — the review rows for those mirror the device's clear-signing
     // screens and need to know which of the two it is.
-    const evmTxType = getEvmTransactionPurpose({
-        networkSymbol: symbol,
-        to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
-            ?.address,
-        data: precomposedForm.transactionData,
-    });
+    const evmTxType = isEthereum
+        ? getEvmTransactionPurpose({
+              networkSymbol: symbol,
+              to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
+                  ?.address,
+              data: precomposedForm.transactionData,
+          })
+        : undefined;
 
     const isYieldOperation = isEvmYieldTxByTextSignature(evmTxType) || evmTxType === 'claim';
 

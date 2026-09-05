@@ -451,7 +451,8 @@ const constructNewFlow = ({
     const tronStaking = isTron ? precomposedForm.tronStaking : undefined;
     const isTronStakeFreeze = tronStaking?.kind === 'freeze' || tronStaking?.kind === 'unstake';
     const evmApprovalTxData = Calldata.evm.erc20.approve.decode(precomposedForm.transactionData);
-    const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
+    const isEvmApproval =
+        account.networkType === 'ethereum' && isEvmApprovalTx(precomposedForm.transactionData);
     const stakeType = getStakeType(precomposedForm);
 
     const { networkType, symbol } = account;
