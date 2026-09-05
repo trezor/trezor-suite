@@ -1,5 +1,8 @@
 import {
     type Instruction,
+    type TransactionMessage,
+    type TransactionMessageWithFeePayer,
+    type TransactionMessageWithLifetime,
     decompileTransactionMessage,
     getBase16Encoder,
     getCompiledTransactionMessageDecoder,
@@ -100,11 +103,31 @@ const parseInstruction = (instruction: Instruction) => {
 
 const SOLANA_BASE_FEE = 5000; // lamports
 
-export const getDecompiledMessage = (serializedTx: string, serialize: boolean) => {
+export type DecompiledMessage = {
+    message: TransactionMessage & TransactionMessageWithFeePayer & TransactionMessageWithLifetime;
+    baseFee: BigNumber;
+    instructions: ReturnType<typeof parseInstruction>[];
+};
+
+export const getDecompiledMessage = (
+    serializedTx: string,
+    serialize: boolean,
+): DecompiledMessage | undefined => {
     const messageBytes = serialize
         ? pipe(serializedTx, getBase16Encoder().encode, getTransactionDecoder().decode).messageBytes
         : getBase16Encoder().encode(serializedTx);
     const compiledMessage = pipe(messageBytes, getCompiledTransactionMessageDecoder().decode);
+
+    // The contents of address lookup tables live on chain and cannot be resolved in this
+    // offline path, so a transaction referencing them (typically a dapp swap) is expected
+    // to be non-decodable.
+    if (
+        'addressTableLookups' in compiledMessage &&
+        (compiledMessage.addressTableLookups?.length ?? 0) > 0
+    ) {
+        return;
+    }
+
     const message = decompileTransactionMessage(compiledMessage);
     const baseFee = new BigNumber(SOLANA_BASE_FEE).multipliedBy(
         compiledMessage.header.numSignerAccounts,

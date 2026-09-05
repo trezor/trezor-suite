@@ -97,10 +97,14 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
     async payloadToPrecomposed() {
         try {
             const { getDecompiledMessage } = await solana();
-            const { message, baseFee, instructions } = getDecompiledMessage(
+            const decompiledMessage = getDecompiledMessage(
                 this.params.proto.serialized_tx,
                 this.params.serialize,
             );
+
+            if (!decompiledMessage) return;
+
+            const { message, baseFee, instructions } = decompiledMessage;
             const outputs = [];
             let feePerUnit = new BigNumber(0);
             let feeLimit = new BigNumber(0);
