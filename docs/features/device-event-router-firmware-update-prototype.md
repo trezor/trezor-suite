@@ -112,10 +112,13 @@ can be removed after callers migrate to DI.
 
 The existing typed `connect-init` blacklist of methods that do not require the
 current lock is the starting point for classifying global and device calls. The
-classification moves behind `@suite-common/device-operation` and is covered
-exhaustively against Connect's callable method union. Mixed methods are resolved
-from their actual parameters; in particular, `getAccountInfo` must no longer be
-globally exempt when invoked with a device.
+classification becomes an exhaustive map behind
+`@suite-common/device-operation`. Every member of Connect's callable-method
+union is marked `global`, `device`, or parameter-dependent. Adding a Connect
+method fails type checking until its scope is declared, and an unknown runtime
+method is rejected. Mixed methods are resolved from their actual parameters; in
+particular, `getAccountInfo` must no longer be globally exempt when invoked with
+a device.
 
 The existing Redux `lockDevice` counter may remain as a presentation projection
 while callers migrate, but it is not the lock authority. Likewise, the current
