@@ -26,7 +26,6 @@ type GetDescriptor = (
 type DiscoveryOptions = {
     blockchain: Blockchain;
     getDescriptor: GetDescriptor;
-    limit?: number;
 };
 
 interface Events {
