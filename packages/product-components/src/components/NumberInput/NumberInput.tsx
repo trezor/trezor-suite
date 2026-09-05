@@ -73,7 +73,6 @@ export type NumberInputProps<TFieldValues extends FieldValues> = Omit<
     'defaultValue' | 'name' | 'onChange'
 > &
     Omit<UseControllerProps<TFieldValues>, 'rules'> & {
-        decimalScale?: number;
         onChange?: (value: string) => void;
         rules?: UseControllerProps['rules'];
         locale: Locale;

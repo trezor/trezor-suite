@@ -23,7 +23,6 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 interface LineProps {
-    $width?: number;
     $isFilled: boolean;
 }
 

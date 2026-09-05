@@ -5,11 +5,7 @@ import { StoryColumn } from '@trezor/components';
 
 import { TrezorLogo } from './TrezorLogo';
 
-interface WrapperProps {
-    isDark?: boolean;
-}
-
-const LogoWrapper = styled.div<WrapperProps>`
+const LogoWrapper = styled.div`
     display: flex;
     min-height: 100px;
     flex-direction: column;

@@ -44,13 +44,11 @@ const exchangeInfoContent = (
             symbol: 'sol',
             amount: 3,
             displaySymbol: 'SOL',
-            coingeckoId: 'solana',
         }}
         receive={{
             symbol: 'eth',
             amount: 0.0051663,
             displaySymbol: 'ETH',
-            coingeckoId: 'ethereum',
         }}
     />
 );
