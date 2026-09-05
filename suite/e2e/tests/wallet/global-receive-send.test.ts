@@ -8,7 +8,8 @@ const REGTEST_ADDRESS = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
 test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage, tradingMock }) => {
+        await tradingMock.routeTradeGeneralEndpoints();
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await dashboardPage.navigateTo();
@@ -20,17 +21,22 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
             await expect(page.modalHeader).toHaveTranslation('TR_NAV_RECEIVE');
         });
 
-        await test.step('Add ETH account', async () => {
+        await test.step('Open Add account and return to Receive', async () => {
+            await page.getByTestId('@global-receive/tab/accounts').click();
             await tradingPage.assetPicker.globalAddAccountButton.click();
-            await expect(walletPage.addAccountNetworkSearchInput).toBeVisible();
-            await walletPage.addAccountNetworkSearchInput.fill('eth');
-            await tradingPage.receiveAccount.addAccountModalNetworkButton('eth').click();
-            await page.discoveryShouldFinish();
-            await walletPage.closeAddAccountModal();
+            await expect(page.modalHeader).toHaveTranslation('TR_ADD_ACCOUNT');
+            await page.getByTestId('@modal/back-button').click();
+            await expect(page.modalHeader).toHaveTranslation('TR_NAV_RECEIVE');
+            await page.getByTestId('@global-receive/tab/assets').click();
         });
 
-        await test.step('Filter and select account', async () => {
+        await test.step('Select ETH and set up its inactive network', async () => {
             await tradingPage.assetPicker.filterSendReceiveByNetwork('eth');
+            await page.getByTestId('@global-receive/asset/ethereum').click();
+            await page.discoveryShouldFinish();
+        });
+
+        await test.step('Select one of the discovered ETH accounts', async () => {
             await tradingPage.assetPicker
                 .receiveOption({
                     accountType: 'normal',

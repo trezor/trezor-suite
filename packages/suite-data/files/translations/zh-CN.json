@@ -2162,7 +2162,6 @@
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING": "在 Trezor 设备上验证地址",
   "TR_RECEIVE_ADDRESS_FAILED_BACKUP": "钱包备份失败。向此钱包发送的资金既不安全也不可靠。",
   "TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED": "您的设备可能已被篡改。请勿向其发送资金。",
-  "TR_RECEIVE_DESCRIPTION": "了解如何<a>选择正确的网络</a>来接收您的代币",
   "TR_RECEIVE_NETWORK": "接收 {networkDisplaySymbol}",
   "TR_RECEIVE_SEARCH": "搜索账户",
   "TR_RECEIVING_SYMBOL": "正在接收{multiple, select, true {多种代币} false { {symbol}} other { {symbol}}}",

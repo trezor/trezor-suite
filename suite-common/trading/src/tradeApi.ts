@@ -52,6 +52,16 @@ type BodyType =
 
 type SignalType = AbortSignal | null | undefined;
 
+type TradingApiRequestIdentity = {
+    apiKey: string;
+    traceId: string;
+};
+
+type TradingApiRequestOptions = {
+    identity?: TradingApiRequestIdentity;
+    signal?: SignalType;
+};
+
 class TradeApi {
     readonly SERVERS: TradeServers = {
         production: 'https://exchange.trezor.io',
@@ -144,7 +154,7 @@ class TradeApi {
     private options(
         body: BodyType = {},
         method = 'POST',
-        apiHeaderValue?: string,
+        requestIdentity?: TradingApiRequestIdentity,
         signal?: SignalType,
     ): RequestInit {
         const apiHeader = this.getOptionAPIHeader();
@@ -153,8 +163,8 @@ class TradeApi {
             method,
             mode: 'cors',
             headers: {
-                [apiHeader]: apiHeaderValue || this.getApiKey(),
-                'X-Trace-Id': this.getSuiteTraceHeader(),
+                [apiHeader]: requestIdentity?.apiKey ?? this.getApiKey(),
+                'X-Trace-Id': requestIdentity?.traceId ?? this.getSuiteTraceHeader(),
                 'X-Suite-Version': getSuiteVersion(),
                 'X-Suite-Platform': getOsName(),
                 ...(method === 'POST' && {
@@ -173,11 +183,11 @@ class TradeApi {
         url: string,
         body: BodyType = {},
         method = 'POST',
-        apiHeaderValue?: string,
+        requestIdentity?: TradingApiRequestIdentity,
         signal?: SignalType,
     ): Promise<any> {
         const finalUrl = `${this.getApiServerUrl()}${url}`;
-        const opts = this.options(body, method, apiHeaderValue, signal);
+        const opts = this.options(body, method, requestIdentity, signal);
 
         return await fetch(finalUrl, opts).then(response => {
             if (response.ok) {
@@ -203,9 +213,12 @@ class TradeApi {
         });
     }
 
-    getInfo = async (): Promise<InfoResponse> => {
+    getInfo = async ({
+        identity,
+        signal,
+    }: TradingApiRequestOptions = {}): Promise<InfoResponse> => {
         try {
-            const response = await this.request(this.INFO, {}, 'GET');
+            const response = await this.request(this.INFO, {}, 'GET', identity, signal);
             if (response) {
                 return response;
             }
@@ -216,9 +229,12 @@ class TradeApi {
         return { platforms: {}, coins: {}, config: {} };
     };
 
-    getExchangeList = async (): Promise<ExchangeListResponse> => {
+    getExchangeList = async ({
+        identity,
+        signal,
+    }: TradingApiRequestOptions = {}): Promise<ExchangeListResponse> => {
         try {
-            const response = await this.request(this.EXCHANGE_LIST, {}, 'GET');
+            const response = await this.request(this.EXCHANGE_LIST, {}, 'GET', identity, signal);
 
             if (response) {
                 return response;

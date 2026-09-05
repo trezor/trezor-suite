@@ -9,7 +9,6 @@ import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
-import { type AccountItemType } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { GlobalReceiveModal } from './GlobalReceiveModal/GlobalReceiveModal';
@@ -42,13 +41,9 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
         closeModal('wallet-send', account);
     };
 
-    const handleReceiveSubmit = (
-        account: Account,
-        type: AccountItemType,
-        filledSearch: boolean,
-    ) => {
+    const handleReceiveSubmit = (account: Account, filledSearch: boolean) => {
         receiveAnalytics.account(filledSearch);
-        closeModal(type === 'tokens' ? 'wallet-tokens' : 'wallet-receive', account);
+        closeModal('wallet-receive', account);
     };
 
     const handleSendCancel = (filledSearch: boolean) => {
@@ -68,6 +63,7 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
         <AppNavigationTooltip>
             <GlobalSendReceiveButtons
                 setActiveModal={modal => {
+                    dispatch(globalSendReceiveFiltersActions.resetFilters());
                     openModal(modal);
                 }}
                 intent={buttonIntent}

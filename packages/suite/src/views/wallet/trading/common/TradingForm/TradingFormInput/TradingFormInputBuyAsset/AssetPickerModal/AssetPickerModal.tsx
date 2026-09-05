@@ -1,6 +1,6 @@
 import { memo, useCallback, useState } from 'react';
 
-import { type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column } from '@trezor/components';
@@ -57,7 +57,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     );
 
     return (
-        <AssetsModal onClose={closeModal} heading={{ id: heading }} width={480}>
+        <AssetsModal onClose={closeModal} heading={<Translation id={heading} />} width={480}>
             <Column gap={8}>
                 <AssetPickerSearchHeader
                     placeholder="TR_ASSET_PICKER_SEARCH_PLACEHOLDER"

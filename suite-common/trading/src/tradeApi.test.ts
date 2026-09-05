@@ -136,6 +136,31 @@ describe('TradeApi', () => {
             expect(consoleSpy).toHaveBeenCalledWith('[getInfo]', error);
             expect(info).toEqual({ platforms: {}, coins: {}, config: {} });
         });
+
+        it('uses a request-scoped API key without changing the current account', async () => {
+            const requestIdentity = {
+                apiKey: 'anonymous-api-key',
+                traceId: 'anonymous-trace-id',
+            };
+            const currentAccountDescriptor = tradeApi.getCurrentAccountDescriptor();
+            (global.fetch as jest.Mock).mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve({ platforms: {}, coins: {}, config: {} }),
+            });
+
+            await tradeApi.getInfo({ identity: requestIdentity });
+
+            expect(global.fetch).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        'X-SuiteW-Api': requestIdentity.apiKey,
+                        'X-Trace-Id': requestIdentity.traceId,
+                    }),
+                }),
+            );
+            expect(tradeApi.getCurrentAccountDescriptor()).toBe(currentAccountDescriptor);
+        });
     });
 
     describe.each([
