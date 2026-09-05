@@ -178,9 +178,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         getBinFilesBaseUrl: asGetter(() => resolveConnectPath('data')),
 
         // Not implemented. We assume those are NEVER called on Native.
-        getSelectedAccountStatus: notImplementedGetter('getSelectedAccountStatus', 'loaded'),
         getIsWindowVisible: notImplementedGetter('getIsWindowVisible', true),
-        getIsViewOnlyByDefaultEnabled: notImplementedGetter('getIsViewOnlyByDefaultEnabled', true),
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,
