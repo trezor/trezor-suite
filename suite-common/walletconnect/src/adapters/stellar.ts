@@ -227,7 +227,6 @@ export const stellarAdapter = {
     networkType: 'stellar',
     namespaceId: 'stellar',
     requestThunk: stellarRequestThunk,
-    getChainId,
     getNamespace,
     processNamespaces,
 } satisfies WalletConnectAdapter;

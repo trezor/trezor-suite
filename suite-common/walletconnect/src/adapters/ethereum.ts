@@ -322,6 +322,5 @@ export const ethereumAdapter = {
     namespaceId: 'eip155',
     requestThunk: ethereumRequestThunk,
     getNamespace,
-    getChainId,
     processNamespaces,
 } satisfies WalletConnectAdapter;
