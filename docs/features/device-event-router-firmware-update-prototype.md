@@ -36,6 +36,44 @@ The prerequisite work makes every device call explicit and locally owned. Once
 that is true, the router only needs to handle events that are genuinely global:
 device lifecycle changes and transport loss.
 
+## State ownership: Redux is UI state
+
+Redux is not the authoritative state of the application workflow. Connection,
+THP, authenticity, device-operation, and firmware state live privately inside
+their owning service instances and state machines.
+
+The direction of data flow is:
+
+```text
+Connect event, call result, or user command
+    -> service validates the input against its private current state
+    -> service performs a business transition
+    -> service decides whether presentation must change
+    -> service dispatches a plain Redux action
+    -> Redux stores the UI projection
+    -> UI renders that projection
+```
+
+Redux actions report a decision that the service has already made. A reducer
+cannot advance, cancel, resume, or reconstruct a business workflow. Components
+do not dispatch workflow transitions and wait for thunks to perform them; they
+call an injected service command, and that service may then update Redux.
+
+The UI projection may intentionally differ from current physical state. During
+firmware, for example, Redux retains A's last normal device snapshot while the
+firmware service privately owns its bootloader and reconnect state. That
+difference is part of the design rather than stale business state.
+
+Resetting, replaying, persisting, or time-travelling Redux does not alter a live
+workflow. Service teardown owns cancellation and cleanup. Restoring a workflow
+after application restart would require an explicit service recovery design; it
+cannot happen by rehydrating Redux presentation state.
+
+Redux may contain application configuration and remembered results. A service
+can receive those through a narrow injected getter. It does not read its own
+workflow state from Redux, and a configuration value does not become the owner
+of a transition.
+
 ## Prerequisite 1: remove selected device from business logic
 
 **selectedDevice** remains valid presentation state. The UI may use it to decide
@@ -564,7 +602,9 @@ UI renders state from Redux
 ```
 
 Redux actions do not resolve Connect promises and reducers do not decide the
-next workflow transition.
+next workflow transition. Redux stores a projection produced after the owning
+service has completed a transition; it is never read back as the source of that
+transition's business state.
 
 ## Web/Desktop integration
 
@@ -665,6 +705,11 @@ only after the tests pass.
 
 - The three prerequisites are complete before router implementation begins.
 - Web and Desktop have one device lifecycle ingress.
+- Services keep authoritative workflow state in private memory. Redux contains
+  only UI projections, configuration, and remembered terminal results.
+- UI interaction calls service commands, and only an owning service's completed
+  business transition causes a corresponding presentation action to be
+  dispatched.
 - Device-aware calls and UI responses remain local to their call owner.
 - New business logic does not read **selectedDevice** or import raw
   **TrezorConnect**.
