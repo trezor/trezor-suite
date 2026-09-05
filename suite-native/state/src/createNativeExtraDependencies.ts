@@ -20,7 +20,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         // to remove them.
         fetchAndSaveMetadata: notImplementedThunk('fetchAndSaveMetadata'),
         initMetadata: notImplementedThunk('initMetadata'),
-        addAccountMetadata: notImplementedThunk('addAccountMetadata'),
     },
     actions: {
         // Not implemented. We assume those are NEVER called on Native

@@ -1,9 +1,6 @@
 import { type ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
-import {
-    type FetchAndSaveMetadataDep,
-    type MetadataAddPayload,
-} from '@suite-common/metadata-types';
+import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
 import { type OnModalCancelDep, type OpenModalDep } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
@@ -17,9 +14,6 @@ export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */
     thunks: FetchAndSaveMetadataDep & {
         initMetadata: SuiteCompatibleThunk<boolean>;
-        addAccountMetadata: SuiteCompatibleThunk<
-            Exclude<MetadataAddPayload, { type: 'walletLabel' }>
-        >;
         forgetBluetoothDevice: SuiteCompatibleThunk<{
             bluetoothId: BluetoothDeviceId;
             skipToggleModalConnection?: boolean;

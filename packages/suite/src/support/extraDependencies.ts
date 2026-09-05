@@ -45,7 +45,6 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
     thunks: {
         initMetadata: metadataLabelingActions.initThunk,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadataThunk,
-        addAccountMetadata: metadataLabelingActions.addAccountMetadataThunk,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
     },
     actions: {
