@@ -31,8 +31,6 @@ export interface WalletConnectSession {
     topic: string;
     validation?: 'VALID' | 'INVALID' | 'UNKNOWN';
     namespaces: Record<string, Partial<WalletConnectNamespace>>;
-    requiredNamespaces: ProposalTypes.RequiredNamespaces;
-    optionalNamespaces: ProposalTypes.OptionalNamespaces;
     peer: {
         publicKey: string;
         metadata: {
