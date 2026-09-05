@@ -97,7 +97,6 @@ export const TransactionListItemValues = ({
 type TransactionTargetProps = Target & {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
-    isActionDisabled?: boolean;
     isPhishingTransaction?: boolean;
 };
 

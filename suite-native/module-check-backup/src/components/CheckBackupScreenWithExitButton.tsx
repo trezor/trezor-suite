@@ -19,10 +19,6 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
-type DeviceOnboardingExitButtonScreenHeaderProps = {
-    onAlertContinueButtonPress?: () => void;
-};
-
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
@@ -60,11 +56,7 @@ export const useHandleCheckBackupExitButtonPress = () => {
     return handleExitButtonPress;
 };
 
-export const CheckBackupScreenWithExitButton = ({
-    children,
-    onAlertContinueButtonPress,
-    ...screenProps
-}: ScreenProps & DeviceOnboardingExitButtonScreenHeaderProps) => {
+export const CheckBackupScreenWithExitButton = ({ children, ...screenProps }: ScreenProps) => {
     const handleExitButtonPress = useHandleCheckBackupExitButtonPress();
 
     useOverrideBackNavigation({
