@@ -1,23 +1,26 @@
+use log::info;
+
 use crate::server::{
     adapter_manager::AdapterManager,
-    types::{AbortProcess, ChannelMessage, CloseDeviceParams, MethodResult, WsResponsePayload},
+    types::{CloseDeviceParams, MethodResult, WsResponsePayload},
     ConnectionBroadcast,
 };
 
-use log::info;
-
 pub async fn close_device(
-    _manager: AdapterManager,
+    manager: AdapterManager,
     broadcast: ConnectionBroadcast,
     params: CloseDeviceParams,
 ) -> MethodResult {
     let id = params.id;
     info!("close_device {id}");
 
-    broadcast.send(ChannelMessage::Abort(AbortProcess::NotificationStream(
-        id,
-        params.characteristic,
-    )));
+    manager
+        .close_notification_streams(
+            Some(broadcast.get_peer()),
+            Some(&id),
+            params.characteristic.as_ref(),
+        )
+        .await;
 
     Ok(WsResponsePayload::Success { success: true })
 }
