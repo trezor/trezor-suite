@@ -213,8 +213,6 @@ export type TradingFormContextValues<T extends TradingType> = TradingFormMapProp
 
 export interface TradingFormInputDefaultProps {
     label?: TranslationKey;
-    placeholder?: TranslationKey;
-    'data-testid'?: string;
 }
 
 export interface TradingFormInputCryptoSelectProps<
