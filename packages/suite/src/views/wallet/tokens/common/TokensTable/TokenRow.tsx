@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
-    type EnhancedTokenInfo,
+    type TokenInfo,
     type TokenManagementAction,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
@@ -31,7 +31,7 @@ import type { TokensTableType } from './types';
 type TokenRowProps = {
     type?: TokensTableType;
     account: Account;
-    token: EnhancedTokenInfo;
+    token: TokenInfo;
     network: Network;
     tokenStatusType: TokenManagementAction;
     hideRates?: boolean;

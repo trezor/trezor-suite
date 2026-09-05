@@ -17,7 +17,7 @@ import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
-    type EnhancedTokenInfo,
+    type TokenInfo,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
@@ -81,7 +81,7 @@ import type { TokensTableType } from './types';
 
 interface TokenRowBasicActionsProps {
     type?: TokensTableType;
-    token: EnhancedTokenInfo;
+    token: TokenInfo;
     tokenStatusType: TokenManagementAction;
     account: Account;
     network: Network;
@@ -641,7 +641,7 @@ const TokenRowBasicActions = ({
 
 interface TokenRowActionsProps {
     type?: TokensTableType;
-    token: EnhancedTokenInfo;
+    token: TokenInfo;
     tokenStatusType: TokenManagementAction;
     account: Account;
     network: Network;
