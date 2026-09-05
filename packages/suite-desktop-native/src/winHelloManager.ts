@@ -150,9 +150,7 @@ export class WinHelloProcessManager implements WinHelloManager {
 
     private sendRequest<T extends 'isHelloAvailable' | 'requestHello'>(
         method: T,
-        params?: T extends 'requestHello'
-            ? { message?: string; windowHandle?: Buffer | null }
-            : undefined,
+        params?: T extends 'requestHello' ? { message?: string } : undefined,
     ): Promise<T extends 'isHelloAvailable' ? boolean : string> {
         if (!this.childProcess || !this.isReady) {
             throw new Error('Child process not initialized. Call create() first.');
