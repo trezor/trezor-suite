@@ -180,6 +180,25 @@ describe('permissionsAreCovered', () => {
             false,
         );
     });
+
+    // A persisted record can reach this without `allowedPermissions` on native, where the
+    // reducer's storageLoad validation never runs (SUITE-NATIVE-4PR).
+    it.each([
+        ['undefined', undefined],
+        ['null', null],
+        ['a non-array', 'read_address'],
+    ])('is not covered when the granted list is %s', (_name, badGranted) => {
+        expect(
+            permissionsAreCovered(
+                [{ permission: 'read_address', coin: 'btc' }],
+                badGranted as unknown as PermissionRequest[],
+            ),
+        ).toBe(false);
+    });
+
+    it('is not covered by an empty granted list, even for an empty request', () => {
+        expect(permissionsAreCovered([{ permission: 'read_features' }], [])).toBe(false);
+    });
 });
 
 describe('groupPermissionsByCoin', () => {
