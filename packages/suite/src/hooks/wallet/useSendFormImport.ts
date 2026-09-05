@@ -8,7 +8,6 @@ import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
     type FiatRatesResult,
     type Output,
-    type Rate,
     type RatesByKey,
     type Timestamp,
 } from '@suite-common/wallet-types';
@@ -29,7 +28,6 @@ type useSendFormImportProps = {
     network: UseSendFormState['network'];
     tokens: UseSendFormState['account']['tokens'];
     localCurrencyOption: UseSendFormState['localCurrencyOption'];
-    fiatRate?: Rate;
     currentRates?: RatesByKey;
 };
 
