@@ -234,7 +234,6 @@ export const buildClaimReviewState = ({
         feeLimit: feeLimitWei,
         maxFeePerGas: eip1559Fields.maxFeePerGas,
         maxPriorityFeePerGas: eip1559Fields.maxPriorityFeePerGas,
-        baseFeePerGas: eip1559Fields.baseFeePerGas,
         options: ['broadcast', 'transactionData'],
         transactionData: data,
         isCoinControlEnabled: false,

@@ -23,7 +23,6 @@ export type FeesFormValues = Pick<
     | 'feePerUnit'
     | 'maxPriorityFeePerGas'
     | 'maxFeePerGas'
-    | 'baseFeePerGas'
 >;
 
 interface Props<TFieldValues extends FeesFormValues> extends UseFormReturn<TFieldValues> {
