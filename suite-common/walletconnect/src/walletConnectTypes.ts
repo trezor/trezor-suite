@@ -30,7 +30,6 @@ export interface WalletConnectNamespace {
 export interface WalletConnectSession {
     topic: string;
     validation?: 'VALID' | 'INVALID' | 'UNKNOWN';
-    pairingTopic: string;
     expiry: number;
     acknowledged: boolean;
     namespaces: Record<string, Partial<WalletConnectNamespace>>;
@@ -61,7 +60,6 @@ export interface PendingConnectionProposal {
     params: ProposalTypes.Struct;
     origin: string;
     validation: 'UNKNOWN' | 'VALID' | 'INVALID';
-    verifyUrl: string;
     isScam?: boolean;
     expired: boolean;
     networks: PendingConnectionProposalNetwork[];
