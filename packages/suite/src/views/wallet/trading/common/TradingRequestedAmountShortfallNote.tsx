@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { Translation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
 import {
     type TradingTradeType,
@@ -10,29 +11,22 @@ import {
     useTradingRequestedAmountShortfall,
 } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { Text } from '@suite-native/atoms';
-import { Translation, selectLocale } from '@suite-native/intl';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { localizePercentage } from '@suite-common/wallet-utils';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-export type RequestedAmountShortfallNoteProps = {
+type TradingRequestedAmountShortfallNoteProps = {
     quote: TradingTradeType;
 };
 
-export const RequestedAmountShortfallNote = ({ quote }: RequestedAmountShortfallNoteProps) => {
-    const locale = useSelector(selectLocale);
+export const TradingRequestedAmountShortfallNote = ({
+    quote,
+}: TradingRequestedAmountShortfallNoteProps) => {
+    const language = useSelector(selectLanguage);
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const formatCryptoValue = useFormatCryptoValue();
     const shortfall = useTradingRequestedAmountShortfall({ quote });
-
-    const percentFormatter = useMemo(
-        () =>
-            new Intl.NumberFormat(locale, {
-                style: 'percent',
-                maximumFractionDigits: 1,
-            }),
-        [locale],
-    );
 
     if (!shortfall) {
         return null;
@@ -67,12 +61,20 @@ export const RequestedAmountShortfallNote = ({ quote }: RequestedAmountShortfall
         return null;
     }
 
-    const formattedShortfallRatio = percentFormatter.format(shortfall.shortfallRatio);
+    const formattedShortfallRatio = localizePercentage({
+        valueInFraction: shortfall.shortfallRatio,
+        locale: language,
+    });
 
     return (
-        <Text variant="body-sm" color="contentSecondary">
+        <Text
+            typographyStyle="body-sm"
+            intent="neutral"
+            priority="secondary"
+            data-testid="@trading/quote/shortfall-note"
+        >
             <Translation
-                id="moduleTrading.providerListItem.lessToReceiveThanRequested"
+                id="TR_TRADING_LESS_TO_RECEIVE_THAN_REQUESTED"
                 values={{ percent: formattedShortfallRatio, amount: formattedShortfall }}
             />
         </Text>

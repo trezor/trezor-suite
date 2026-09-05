@@ -1,10 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { type SlippageFormValues, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import {
+    type SlippageFormValues,
+    selectTradingExchangeSelectedQuote,
+    useFormatCryptoValue,
+} from '@suite-common/trading';
 import { Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { useFormatCryptoValue } from '@suite-native/trading-atoms';
 import { BigNumber } from '@trezor/utils';
 
 type SlippageSummaryProps = {

@@ -3,17 +3,16 @@ import {
     useChangeStringsExtractor,
     useTradingRequestedSide,
 } from '@suite-common/trading';
-import { Text } from '@suite-native/atoms';
+import { Text } from '@trezor/components';
 
-export type ProviderListItemAmountProps<T extends TradingTradeType> = {
-    quote: T;
+type TradingQuoteAmountProps = {
+    quote: TradingTradeType;
 };
 
-export const ProviderListItemAmount = <T extends TradingTradeType>({
-    quote,
-}: ProviderListItemAmountProps<T>) => {
+export const TradingQuoteAmount = ({ quote }: TradingQuoteAmountProps) => {
     const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
     const requestedSide = useTradingRequestedSide(quote);
+
     const displayValue = requestedSide === 'to' ? fromStringValue : toStringValue;
 
     if (!displayValue) {
@@ -21,7 +20,7 @@ export const ProviderListItemAmount = <T extends TradingTradeType>({
     }
 
     return (
-        <Text variant="body-md-strong" color="contentPrimary">
+        <Text typographyStyle="body-sm-strong" data-testid="@trading/quote/amount">
             {displayValue}
         </Text>
     );

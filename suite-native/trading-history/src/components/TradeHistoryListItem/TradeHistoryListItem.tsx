@@ -3,11 +3,10 @@ import { memo } from 'react';
 import type { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type TradingTransaction } from '@suite-common/trading';
+import { type TradingTransaction, useChangeStringsExtractor } from '@suite-common/trading';
 import { Card, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { FiatCurrencyIcon, IconByCryptoId } from '@suite-native/trading-atoms';
-import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeStatusIcon } from './TradeStatusIcon';
