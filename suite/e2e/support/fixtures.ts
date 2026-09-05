@@ -193,9 +193,7 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(new YieldConsentModal(page));
     },
     yieldMock: async ({ page }, use) => {
-        const yieldMock = new YieldMock(page);
-        await use(yieldMock);
-        await yieldMock.stop();
+        await use(new YieldMock(page));
     },
     txSimulationModal: async ({ page }, use) => {
         await use(new TxSimulationModal(page));
