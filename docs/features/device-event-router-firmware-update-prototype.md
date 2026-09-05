@@ -102,6 +102,14 @@ owner token instead of acquiring a competing lock. The lease is released only
 when the workflow completes or is cancelled, or when disconnect or transport
 loss revokes it.
 
+A lease permits one primary device method at a time. While that method is
+pending, only protocol-control calls correlated by its active `callId` may run,
+including `uiResponse` and scoped cancellation. PIN, THP, and confirmation
+responses can therefore unblock the primary method without allowing another
+device operation to start. A second primary method remains blocked even when it
+presents the same lease token; sequential workflow stages start it only after
+the prior method finishes.
+
 ## Event router
 
 The router subscribes to all Connect streams currently registered by
