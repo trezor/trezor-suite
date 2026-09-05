@@ -1,6 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
-import { Icon, type IconName, type IconSize, TokenIcon, icons } from '@suite-native/icons';
+import { Icon, type IconName, type IconSize } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
@@ -13,9 +11,7 @@ export const ROUNDED_ICON_SIZES = [20, 24, 32, 40, 48] as const;
 export type RoundedIconSize = (typeof ROUNDED_ICON_SIZES)[number];
 
 export type RoundedIconProps = {
-    name?: IconName;
-    symbol?: NetworkSymbol;
-    contractAddress?: TokenAddress;
+    name: IconName;
     intent?: RoundedIconIntent;
     size?: RoundedIconSize;
     accessibilityLabel?: string;
@@ -70,8 +66,6 @@ const iconContainerStyle = prepareNativeStyle<{ backgroundColor: Color; size: Ro
 
 export const RoundedIcon = ({
     name,
-    symbol,
-    contractAddress,
     intent = 'neutral',
     size = 48,
     accessibilityLabel,
@@ -86,11 +80,7 @@ export const RoundedIcon = ({
             accessibilityLabel={accessibilityLabel}
             accessibilityRole="image"
         >
-            {name && name in icons ? (
-                <Icon name={name} color={iconColor} size={iconSize} />
-            ) : (
-                symbol && <TokenIcon symbol={symbol} contractAddress={contractAddress} />
-            )}
+            <Icon name={name} color={iconColor} size={iconSize} />
         </Box>
     );
 };

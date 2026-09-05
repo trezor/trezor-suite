@@ -7,13 +7,14 @@ import {
     AccountLabelFieldHint,
     MAX_ACCOUNT_LABEL_LENGTH,
 } from '@suite-native/accounts';
-import { RoundedIcon, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountLargeFormatter,
     ExactCryptoAmountFormatter,
     useFiatFromCryptoValue,
 } from '@suite-native/formatters';
 import { TextInputField } from '@suite-native/forms';
+import { TokenIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
@@ -38,7 +39,7 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
 
     return (
         <AccountImportOverviewCard
-            icon={<RoundedIcon symbol={symbol} />}
+            icon={<TokenIcon symbol={symbol} />}
             coinName={getNetwork(symbol).name}
             cryptoAmount={
                 <ExactCryptoAmountFormatter

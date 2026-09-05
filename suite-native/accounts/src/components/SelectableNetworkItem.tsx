@@ -1,7 +1,7 @@
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Badge, Box, HStack, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
-import { Icon, type IconName } from '@suite-native/icons';
+import { Badge, Box, HStack, PressableOpacity, Text } from '@suite-native/atoms';
+import { Icon, type IconName, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -12,12 +12,11 @@ type SelectableAssetItemProps = {
     onPress?: (symbol: NetworkSymbol) => void;
 };
 
-const selectableAssetContentStyle = prepareNativeStyle(utils => ({
+const selectableAssetContentStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     flex: 1,
-    marginLeft: utils.spacings.sp12,
 }));
 
 const tokensBadgeStyle = prepareNativeStyle(utils => ({
@@ -43,8 +42,8 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
             onPress={handlePress}
             testID={`@onboarding/select-coin/${symbol}`}
         >
-            <Box flexDirection="row" alignItems="center">
-                <RoundedIcon symbol={symbol} />
+            <HStack alignItems="center" spacing="sp16">
+                <TokenIcon symbol={symbol} />
                 <Box style={applyStyle(selectableAssetContentStyle)}>
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
                         <Text variant="body-md">{networkName}</Text>
@@ -68,7 +67,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                     </Box>
                 </Box>
                 {rightIcon && <Icon name={rightIcon} color="contentDisabled" size="large" />}
-            </Box>
+            </HStack>
         </PressableOpacity>
     );
 };
