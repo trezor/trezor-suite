@@ -202,10 +202,11 @@ Bootloader events may not contain a stable device ID, and Connect device paths
 can change across reconnects. Therefore the service cannot always prove that a
 reconnecting device is A.
 
-The agreed safety boundary is that firmware preparation starts with exactly one
-connected device and any additional physical device blocks the update. The
-remaining open decision is whether a sole compatible device may be adopted as A
-only while the firmware state machine is explicitly expecting a reconnect.
+The firmware workflow uses phase-gated singleton adoption. Preparation starts
+with exactly one connected device. When the state machine explicitly expects A
+to reconnect, it may adopt the sole compatible connected candidate as A. A
+candidate that appears outside an expected reconnect state is not adopted.
+Any additional physical device or conflicting evidence blocks the update.
 
 The proposed matching evidence is:
 
@@ -323,13 +324,11 @@ that genuinely have no explicit device.
 
 ## Open decisions
 
-1. Confirm phase-gated singleton adoption for identifying A during expected
-   firmware reconnects.
-2. Choose the package boundaries for the shared THP and device-authenticity
+1. Choose the package boundaries for the shared THP and device-authenticity
    child-workflow services.
-3. Define the exact normal connection and firmware state graphs, including
+2. Define the exact normal connection and firmware state graphs, including
    command validity and recovery transitions.
-4. Define which safe device fields are projected into the pre-connection UI
+3. Define which safe device fields are projected into the pre-connection UI
    slice.
-5. Decide how much of the prototype debug UI is retained when the architecture
+4. Decide how much of the prototype debug UI is retained when the architecture
    moves toward production.
