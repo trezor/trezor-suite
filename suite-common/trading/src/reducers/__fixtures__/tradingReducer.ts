@@ -85,7 +85,6 @@ const composedTransactionInfo: TradingComposedTransactionInfo = {
         feePerByte: '10',
         feeLimit: '100',
         fee: '1000',
-        outputs: [],
     },
 };
 
