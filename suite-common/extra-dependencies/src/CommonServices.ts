@@ -56,7 +56,6 @@ export type CommonServices = SuiteSyncDep &
         getTokenDefinitionsEnabledNetworks: Getter<[], NetworkSymbol[]>;
         getDebugSettings: Getter<[], any>;
         getSelectedAccount: Getter<[], SelectedAccountStatus>;
-        getSelectedAccountStatus: Getter<[], SelectedAccountStatus['status']>;
         getTradingEnvironment: Getter<
             [],
             'production' | 'staging' | 'dev' | 'localhost' | undefined

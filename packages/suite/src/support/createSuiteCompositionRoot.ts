@@ -199,10 +199,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             deps.getState,
             (state: AppState) => state.wallet.selectedAccount,
         ),
-        getSelectedAccountStatus: toGetter(
-            deps.getState,
-            (state: AppState) => state.wallet.selectedAccount.status,
-        ),
         getIsWindowVisible: toGetter(deps.getState, selectIsWindowVisible),
         getTradingEnvironment: toGetter(deps.getState, selectTradeServerEnvironment),
         getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
