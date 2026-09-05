@@ -32,10 +32,8 @@ export interface WalletConnectSession {
     validation?: 'VALID' | 'INVALID' | 'UNKNOWN';
     namespaces: Record<string, Partial<WalletConnectNamespace>>;
     peer: {
-        publicKey: string;
         metadata: {
             name: string;
-            description: string;
             url: string;
             icons: string[];
         };
