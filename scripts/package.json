@@ -6,6 +6,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
+        "test:unit": "node --test ci/__tests__/typescriptPerformanceSentinel.test.js",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "generate-package": "tsx generatePackage.ts"
     },

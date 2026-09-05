@@ -58,7 +58,19 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Type Check
-        run: yarn type-check --output-style=stream
+        id: type-check
+        shell: bash
+        run: |
+          set -o pipefail
+          yarn type-check --output-style=stream -- --extendedDiagnostics | tee "$RUNNER_TEMP/typescript-extended-diagnostics.log"
+      - name: Upload TypeScript performance diagnostics
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: typescript-performance-diagnostics
+          path: ${{ runner.temp }}/typescript-extended-diagnostics.log
+          if-no-files-found: error
+          retention-days: 7
       - name: Check Type Declaration Sizes
         run: yarn requirements:verify --only=type-declaration-size
 

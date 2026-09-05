@@ -1,0 +1,49 @@
+name: "[Check] TypeScript Performance Baseline"
+
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  baseline:
+    name: Generate develop baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        with:
+          submodules: true
+      - name: Minimal yarn install
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Type check all projects with extended diagnostics
+        shell: bash
+        run: |
+          set -o pipefail
+          yarn type-check:all --output-style=stream -- --extendedDiagnostics | tee "$RUNNER_TEMP/typescript-extended-diagnostics.log"
+      - name: Create baseline snapshot
+        run: |
+          node scripts/ci/typescriptPerformanceSentinel.js parse \
+            --input "$RUNNER_TEMP/typescript-extended-diagnostics.log" \
+            --output "$RUNNER_TEMP/typescript-performance-baseline.json" \
+            --source-sha "${{ github.sha }}"
+      - name: Upload baseline snapshot
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: typescript-performance-baseline
+          path: ${{ runner.temp }}/typescript-performance-baseline.json
+          if-no-files-found: error
+          retention-days: 14

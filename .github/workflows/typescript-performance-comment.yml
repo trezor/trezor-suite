@@ -1,0 +1,122 @@
+name: "[Bot] TypeScript Performance Comment"
+
+on:
+  workflow_run:
+    workflows:
+      - "[Check] Validation"
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+
+jobs:
+  comment:
+    name: Update TypeScript performance comment
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.pull_requests[0].number != null
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout trusted reporter
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+
+      - name: Download PR diagnostics
+        id: download-current
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          gh run download "$WORKFLOW_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name typescript-performance-diagnostics \
+            --dir "$RUNNER_TEMP/current"
+
+      - name: Resolve type-check outcome
+        id: type-check-outcome
+        env:
+          CURRENT_DOWNLOAD_OUTCOME: ${{ steps.download-current.outcome }}
+          GH_TOKEN: ${{ github.token }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          outcome=$(gh api \
+            "repos/$GITHUB_REPOSITORY/actions/runs/$WORKFLOW_RUN_ID/jobs" \
+            --paginate \
+            --jq '.jobs[].steps[] | select(.name == "Type Check") | .conclusion' \
+            | tail -n 1)
+
+          if [[ "$CURRENT_DOWNLOAD_OUTCOME" != "success" || "$outcome" != "success" ]]; then
+            outcome="failure"
+          fi
+
+          echo "value=$outcome" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare current snapshot
+        env:
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/current"
+          diagnostics="$RUNNER_TEMP/current/typescript-extended-diagnostics.log"
+          if [[ ! -f "$diagnostics" ]]; then
+            touch "$diagnostics"
+          fi
+
+          node scripts/ci/typescriptPerformanceSentinel.js parse \
+            --input "$diagnostics" \
+            --output "$RUNNER_TEMP/current.json" \
+            --source-sha "$HEAD_SHA"
+
+      - name: Download latest develop baseline
+        id: download-baseline
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          baseline_run_id=$(gh run list \
+            --repo "$GITHUB_REPOSITORY" \
+            --workflow typescript-performance-baseline.yml \
+            --branch develop \
+            --status success \
+            --limit 1 \
+            --json databaseId \
+            --jq '.[0].databaseId')
+
+          if [[ -z "$baseline_run_id" || "$baseline_run_id" == "null" ]]; then
+            exit 1
+          fi
+
+          gh run download "$baseline_run_id" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name typescript-performance-baseline \
+            --dir "$RUNNER_TEMP/baseline"
+
+      - name: Create PR report
+        env:
+          TYPE_CHECK_OUTCOME: ${{ steps.type-check-outcome.outputs.value }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          node scripts/ci/typescriptPerformanceSentinel.js report \
+            --current "$RUNNER_TEMP/current.json" \
+            --baseline "$RUNNER_TEMP/baseline/typescript-performance-baseline.json" \
+            --output "$RUNNER_TEMP/typescript-performance-comment.md" \
+            --type-check-outcome "$TYPE_CHECK_OUTCOME" \
+            --workflow-run-url "https://github.com/$GITHUB_REPOSITORY/actions/runs/$WORKFLOW_RUN_ID"
+
+      - name: Find existing PR comment
+        id: find-comment
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4
+        with:
+          issue-number: ${{ github.event.workflow_run.pull_requests[0].number }}
+          comment-author: "github-actions[bot]"
+          body-includes: "<!-- typescript-performance-sentinel:v1 -->"
+
+      - name: Create or update PR comment
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.workflow_run.pull_requests[0].number }}
+          body-path: ${{ runner.temp }}/typescript-performance-comment.md
+          edit-mode: replace
