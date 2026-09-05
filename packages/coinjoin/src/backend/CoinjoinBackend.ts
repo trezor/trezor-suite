@@ -44,7 +44,6 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
             client: this.client,
             network: this.network,
             filter: address => isTaprootAddress(address, this.network),
-            logger,
         });
     }
 
