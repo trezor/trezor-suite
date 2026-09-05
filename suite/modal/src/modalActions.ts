@@ -37,7 +37,6 @@ export const preserveModalOnTxTimeout = createAction(MODAL_PRESERVE_ON_TX_TIMEOU
 type OnReceiveConfirmationThunkState = {
     modal: {
         context: string;
-        requestId?: string;
     };
 };
 

@@ -64,7 +64,6 @@ export type NavigationItemProps = {
     hasNewContentIndicator?: boolean;
     isNewContentIndicatorAnimated?: boolean;
     'data-testid'?: string;
-    className?: string;
     values?: ExtendedMessageDescriptor['values'];
     onClick?: () => void;
     shortcut?: ShortcutBadgeProps['shortcut'];

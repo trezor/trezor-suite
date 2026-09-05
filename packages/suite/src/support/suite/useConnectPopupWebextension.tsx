@@ -14,7 +14,6 @@ import {
  */
 interface ChromeRuntime {
     sendMessage: (extensionId: string, message: Record<string, unknown>) => void;
-    lastError?: { message: string };
 }
 
 declare const chrome: { runtime?: ChromeRuntime } | undefined;
