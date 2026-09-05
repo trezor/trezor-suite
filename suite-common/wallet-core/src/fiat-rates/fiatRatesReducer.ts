@@ -113,12 +113,21 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                 const errorMessage = `${action.error?.message}\n${action.error?.stack}`;
 
                 tickers.forEach(ticker => {
+                    if (isTestnet(ticker.symbol)) {
+                        return;
+                    }
+
                     const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
-                    const rates = state[rateType];
-                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                    const rateEntry: (typeof rates)[string] = rates[fiatRateKey];
-                    rateEntry.error = errorMessage;
-                    rateEntry.isLoading = false;
+                    const currentRate = state[rateType]?.[fiatRateKey];
+
+                    // The pending handler skips testnet tickers and can be raced by a state reset
+                    // (e.g. currency change), so the entry may not exist here.
+                    if (!currentRate) {
+                        return;
+                    }
+
+                    currentRate.error = errorMessage;
+                    currentRate.isLoading = false;
                 });
             })
             .addCase(updateTxsFiatRatesThunk.fulfilled, (state, action) => {
