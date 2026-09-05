@@ -4,8 +4,6 @@ import type { FirmwareChannel } from '@trezor/connect-common/src/types/firmware'
 import { getFirmwareReleaseJwsPublicKey } from '@trezor/connect-data';
 import type { FirmwareReleaseConfig } from '@trezor/device-utils';
 
-import { firmwareReleaseConfigAssets } from './assetUtils';
-
 interface RemoteBaseInfo {
     BASE_URL: string;
     MIDDLE_PATH: string;
@@ -61,20 +59,11 @@ type OnlineFirmwareBaseUrl = RemoteBaseInfo & { firmwareChannel: FirmwareChannel
  *   { BASE_URL: 'http://localhost:3000', MIDDLE_PATH: 'firmware/unsigned', firmwareChannel: 'localhost-unsigned' }
  */
 export const getOnlineFirmwareBaseUrl = (
-    firmwareChannel?: FirmwareChannel,
-): OnlineFirmwareBaseUrl => {
-    if (!firmwareChannel) {
-        return {
-            ...FIRMWARE_REMOTE_BASE_URLS['production'],
-            firmwareChannel: 'production',
-        };
-    }
-
-    return {
-        ...FIRMWARE_REMOTE_BASE_URLS[firmwareChannel],
-        firmwareChannel,
-    };
-};
+    firmwareChannel: FirmwareChannel = 'production',
+): OnlineFirmwareBaseUrl => ({
+    ...FIRMWARE_REMOTE_BASE_URLS[firmwareChannel],
+    firmwareChannel,
+});
 
 const JWS_CONFIG = {
     SIGN_ALGORITHM: 'ES256',
@@ -166,7 +155,7 @@ const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConf
     return parsedPayload;
 };
 
-export const getFirmwareReleaseConfig = async (firmwareChannel?: FirmwareChannel) => {
+export const fetchFirmwareReleaseConfig = async (firmwareChannel?: FirmwareChannel) => {
     try {
         if (firmwareChannel === 'test-unsigned-nightly') {
             // Nightly does not use JWS signing
@@ -176,34 +165,14 @@ export const getFirmwareReleaseConfig = async (firmwareChannel?: FirmwareChannel
         }
 
         const { jws, firmwareChannel: resolvedChannel } = await fetchRemoteJws(firmwareChannel);
-
         const useProductionKey = ['test-signed', 'production-early-access', 'production'].includes(
             resolvedChannel,
         );
         const publicKey = getFirmwareReleaseJwsPublicKey(useProductionKey);
         const remoteConfig = verifyAndDecodeJws(jws, publicKey);
 
-        if (remoteConfig.sequence > firmwareReleaseConfigAssets.sequence) {
-            return {
-                config: remoteConfig,
-                isRemote: true,
-            };
-        }
-        // If we reach here, the local config is the same or newer. We use the local one.
+        return remoteConfig;
     } catch {
-        // If there is any failure in the `try` block we use the local as fallback.
+        // empty
     }
-
-    return {
-        config: firmwareReleaseConfigAssets,
-        isRemote: false,
-    };
 };
-
-export const getOnlyLocalFirmwareReleaseConfig = (): {
-    config: FirmwareReleaseConfig;
-    isRemote: false;
-} => ({
-    config: firmwareReleaseConfigAssets,
-    isRemote: false,
-});
