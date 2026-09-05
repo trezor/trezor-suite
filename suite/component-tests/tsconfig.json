@@ -12,6 +12,7 @@
     },
     "include": [
         "gallery",
+        "mocks",
         "stories",
         "support",
         "tests",
@@ -27,6 +28,12 @@
         },
         {
             "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
         },
         { "path": "../intl" },
         { "path": "../test-utils" },

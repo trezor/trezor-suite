@@ -18,6 +18,8 @@
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
         "@suite/intl": "workspace:^",
         "@suite/test-utils": "workspace:*",
         "@tanstack/react-query": "5.101.2",
