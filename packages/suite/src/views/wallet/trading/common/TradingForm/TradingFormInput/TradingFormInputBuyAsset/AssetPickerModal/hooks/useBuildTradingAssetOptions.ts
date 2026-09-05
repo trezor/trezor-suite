@@ -1,14 +1,17 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     type TradeableAssetBalance,
     type TradeableAssetSearchFields,
     type TradingAssetOption,
+    buildAssetOptions,
     buildTradeableAssetSearchIndex,
     filterTradeableAssetsBySearch,
     orderTradeableAssetsByOwnership,
+    selectTradingInfo,
     usePreferredCurrencyUsdThreshold,
-    useTradingAssets,
 } from '@suite-common/trading';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 
@@ -42,15 +45,21 @@ export function useBuildTradingAssetOptions({
     networkSymbol,
 }: UseBuildTradingAssetOptionsProps) {
     const { includedCryptoIds, excludedCryptoIds } = useAssetsContext();
-    const { buildAssetOptions } = useTradingAssets();
+    const { coins, platforms } = useSelector(selectTradingInfo);
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const balances = useSelector(selectTradeableAssetBalances);
     const preferredCurrencyUsdThreshold = usePreferredCurrencyUsdThreshold();
 
     const includedAssets = useMemo(() => {
-        const { assets } = buildAssetOptions({ includedCryptoIds });
+        const { assets } = buildAssetOptions({
+            coins,
+            platforms,
+            includedCryptoIds,
+            supportedAddressValidatorSymbols: networkModuleRepository.getSupportedNetworks(),
+        });
 
         return assets.filter(asset => !excludedCryptoIds.has(asset.id));
-    }, [buildAssetOptions, includedCryptoIds, excludedCryptoIds]);
+    }, [coins, excludedCryptoIds, includedCryptoIds, networkModuleRepository, platforms]);
 
     const searchIndex = useMemo(
         () =>

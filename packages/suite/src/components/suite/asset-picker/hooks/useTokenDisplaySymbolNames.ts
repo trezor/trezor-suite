@@ -1,6 +1,14 @@
 import { useMemo } from 'react';
 
-import { type TradingAssetOption, useTradingAssets } from '@suite-common/trading';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import {
+    type TradingAssetOption,
+    buildAssetOptions,
+    selectTradingInfo,
+} from '@suite-common/trading';
+
+import { useSelector } from 'src/hooks/suite';
 
 import {
     type TokenDisplayNameSource,
@@ -12,7 +20,8 @@ export const useTokenDisplaySymbolNames = (
     tokens: TokenDisplayNameSource[],
     assets?: TradingAssetOption[],
 ) => {
-    const { buildAssetOptions } = useTradingAssets();
+    const { coins, platforms } = useSelector(selectTradingInfo);
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
 
     const resolvedAssets = useMemo(() => {
         if (assets) {
@@ -25,10 +34,15 @@ export const useTokenDisplaySymbolNames = (
             return [];
         }
 
-        const { assets: builtAssets } = buildAssetOptions({ includedCryptoIds });
+        const { assets: builtAssets } = buildAssetOptions({
+            coins,
+            platforms,
+            includedCryptoIds,
+            supportedAddressValidatorSymbols: networkModuleRepository.getSupportedNetworks(),
+        });
 
         return builtAssets;
-    }, [assets, buildAssetOptions, tokens]);
+    }, [assets, coins, networkModuleRepository, platforms, tokens]);
 
     return useMemo(
         () => getTokensDisplaySymbolNames({ assets: resolvedAssets, tokens }),

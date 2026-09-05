@@ -2,7 +2,6 @@ export * from './constants';
 export * from './reducers/tradingReducer';
 export * from './reducers/tradingCommonReducer';
 export * from './currency';
-export * from './hooks/useTradingAssets';
 export * from './hooks/useTradingUtils';
 export * from './hooks/useListDataFilter';
 export * from './hooks/useSectionDataFilter';
@@ -62,5 +61,12 @@ export * from './utils/countryUtils';
 export * from './utils/typeGuards';
 export * from './utils/numberUtils';
 export * from './utils/slippageFormValidationSchema';
+export {
+    buildAssetOptions,
+    createAssetNativeTokenOption,
+    createAssetOption,
+    createAssetOptionFromCryptoId,
+    resolveAssetTokenOption,
+} from './utils/tradingAssets';
 export { getOtcProvidersByCountry, useFetchOtc } from './queries';
 export * from './utils/currencyUtils';

@@ -1,6 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
-import { createAssetOption } from './useTradingAssets';
+import { createAssetOption } from './tradingAssets';
 import coins from '../__fixtures__/coins.json';
 import platforms from '../__fixtures__/platforms.json';
 
