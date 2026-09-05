@@ -45,6 +45,7 @@ export const prepareInitialState = <T extends BluetoothDeviceCommon>(): Bluetoot
 });
 
 export type BluetoothReducerDeps = ActionTypesDep<'storageLoad'>;
+type DescriptorDeviceIdParams = { payload: DeviceConnectActionPayload };
 
 export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() =>
     createReducerWithExtraDeps(prepareInitialState<T>(), (builder, extra: BluetoothReducerDeps) =>
@@ -155,7 +156,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                         payload: {
                             device: { descriptor, id: deviceId },
                         },
-                    }: { payload: DeviceConnectActionPayload },
+                    }: DescriptorDeviceIdParams,
                 ) => {
                     if (descriptor.apiType !== 'bluetooth' || !descriptor.id) {
                         return;

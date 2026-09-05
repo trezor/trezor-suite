@@ -4,19 +4,20 @@ import { type SuiteRouterHistory, createSuiteRouterHistory } from '@suite/router
 import { asGetter } from '@suite-common/dependency-injection';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import {
+    type DecryptParams,
+    type EncryptParams,
     type EncryptableBranded,
-    type EncryptedHex,
     type PlatformEncryption,
 } from '@suite-common/platform-encryption';
 import { type PreloadedState, type SuiteStore, initStore } from '@trezor/suite';
 import { type DeepPartial, ok } from '@trezor/type-utils';
 
 const testPlatformEncryption: PlatformEncryption = {
-    encrypt<T extends EncryptableBranded>({ value }: { value: T }) {
+    encrypt<T extends EncryptableBranded>({ value }: EncryptParams<T>) {
         return Promise.resolve(ok(asEncryptedHex<T>(value as string)));
     },
 
-    decrypt<T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) {
+    decrypt<T extends EncryptableBranded>({ value }: DecryptParams<T>) {
         return Promise.resolve(ok(value as unknown as T));
     },
 };

@@ -239,6 +239,16 @@ export const addFakePendingTxThunk = createThunk<
         });
     },
 );
+type BuildFakePendingEvmTxParams = {
+    precomposedTransaction: PrecomposedTransactionFinal;
+    precomposedForm: FormState;
+    txid: string;
+    account: Account;
+    nonce: string;
+    blockHeight: number;
+    deadline: number;
+    token?: TokenInfo;
+};
 
 const buildFakePendingEvmTx = ({
     precomposedTransaction,
@@ -249,16 +259,7 @@ const buildFakePendingEvmTx = ({
     blockHeight,
     deadline,
     token,
-}: {
-    precomposedTransaction: PrecomposedTransactionFinal;
-    precomposedForm: FormState;
-    txid: string;
-    account: Account;
-    nonce: string;
-    blockHeight: number;
-    deadline: number;
-    token?: TokenInfo;
-}): AccountTransaction & Partial<WalletAccountTransaction> => {
+}: BuildFakePendingEvmTxParams): AccountTransaction & Partial<WalletAccountTransaction> => {
     const { outputs: precomposedOutputs } = precomposedTransaction;
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const output: (typeof precomposedOutputs)[number] = precomposedOutputs[0];

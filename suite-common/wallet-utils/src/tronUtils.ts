@@ -11,18 +11,19 @@ import { asAmountSubunit } from './AmountTypes';
 import { subunitsToUnits } from './amountUtils';
 
 export type TronFeeLevel = ResponseTypes.EstimateFee['payload'][number];
+type ComputeBandwidthFeeLevelParams = {
+    availableStakedBandwidth: number;
+    availableFreeBandwidth: number;
+    bytes: number;
+    isNewAccount?: boolean;
+};
 
 export const computeBandwidthFeeLevel = ({
     availableStakedBandwidth,
     availableFreeBandwidth,
     bytes,
     isNewAccount = false,
-}: {
-    availableStakedBandwidth: number;
-    availableFreeBandwidth: number;
-    bytes: number;
-    isNewAccount?: boolean;
-}): TronFeeLevel => {
+}: ComputeBandwidthFeeLevelParams): TronFeeLevel => {
     if (isNewAccount) {
         const feeInSun = availableStakedBandwidth < bytes ? TRON_CREATE_ACCOUNT_FEE_SUN : 0;
 

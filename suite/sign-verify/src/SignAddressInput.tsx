@@ -9,8 +9,9 @@ import { type AddressItem, useSignAddressOptions } from './useSignAddressOptions
 
 const optionToAddress = (option: AddressItem | null) =>
     option ? { address: option.label, path: option.value } : null;
+type WrappingSingleValueProps = { children?: ReactNode };
 
-const WrappingSingleValue = ({ children }: { children?: ReactNode }) => (
+const WrappingSingleValue = ({ children }: WrappingSingleValueProps) => (
     <Text as="div" maxWidth="100%" intent="neutral" priority="primary" padding={{ vertical: 8 }}>
         {children}
     </Text>

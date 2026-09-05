@@ -175,14 +175,15 @@ describe('selectNonPhishingTransactionNotifications', () => {
         FiatRatesRootState &
         PhishingRootState &
         DeviceRootState;
+    type GetPhishingStateParams = {
+        amount: string;
+        isDustPhishingEnabled?: boolean;
+    };
 
     const getPhishingState = ({
         amount,
         isDustPhishingEnabled = true,
-    }: {
-        amount: string;
-        isDustPhishingEnabled?: boolean;
-    }): PhishingState =>
+    }: GetPhishingStateParams): PhishingState =>
         ({
             notifications: [receivedNotification],
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },

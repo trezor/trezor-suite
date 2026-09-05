@@ -223,8 +223,9 @@ export const wipeAndRestartEvoluRelayServer = async () => {
     );
     await waitForRelayReady();
 };
+type SeedQuotaManagerDataParams = { ownerId: string };
 
-export const seedQuotaManagerData = ({ ownerId }: { ownerId: string }) => {
+export const seedQuotaManagerData = ({ ownerId }: SeedQuotaManagerDataParams) => {
     const safeOwnerId = ownerId.replace(/'/g, "''");
     execFileSync(
         'docker',

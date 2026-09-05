@@ -51,8 +51,9 @@ export const TorExternal = () => {
         const matchedOption = options.find(o => o.value === externalPort);
         setSelectedOption(matchedOption);
     }, [torSettings]);
+    type OnChangeParams = { value: number };
 
-    const onChange = async ({ value }: { value: number }) => {
+    const onChange = async ({ value }: OnChangeParams) => {
         if (!torSettings) return;
         await desktopApi.changeTorSettings({
             ...torSettings,

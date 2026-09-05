@@ -1,17 +1,18 @@
 import type { AppUpdateEvent } from '@suite/analytics';
 import { type UpdateInfo } from '@trezor/suite-desktop-api';
+type GetAppUpdatePayloadParams = {
+    status: AppUpdateEvent['status'];
+    earlyAccessProgram: boolean;
+    updateInfo?: UpdateInfo;
+    isAutoUpdated?: boolean;
+};
 
 export const getAppUpdatePayload = ({
     status,
     earlyAccessProgram,
     updateInfo,
     isAutoUpdated,
-}: {
-    status: AppUpdateEvent['status'];
-    earlyAccessProgram: boolean;
-    updateInfo?: UpdateInfo;
-    isAutoUpdated?: boolean;
-}): AppUpdateEvent => ({
+}: GetAppUpdatePayloadParams): AppUpdateEvent => ({
     fromVersion: process.env.VERSION || '',
     toVersion: updateInfo?.version,
     status,

@@ -317,19 +317,20 @@ const getAccountHistoryMovementItemETH = ({
         tokens: sortedTokensSummaries,
     };
 };
+type GetAccountHistoryMovementFromTransactionsParams = {
+    transactions: WalletAccountTransaction[];
+    // We need to revaluate if we want to calculate BTC history from transactions or use blockbook
+    symbol: LocalBalanceHistoryCoin | 'btc';
+    from?: number;
+    to?: number;
+};
 
 export const getAccountHistoryMovementFromTransactions = ({
     transactions,
     symbol,
     from,
     to,
-}: {
-    transactions: WalletAccountTransaction[];
-    // We need to revaluate if we want to calculate BTC history from transactions or use blockbook
-    symbol: LocalBalanceHistoryCoin | 'btc';
-    from?: number;
-    to?: number;
-}): AccountHistoryMovement => {
+}: GetAccountHistoryMovementFromTransactionsParams): AccountHistoryMovement => {
     switch (symbol) {
         case 'btc':
             return getAccountHistoryMovementItemBTC({ transactions, from, to });

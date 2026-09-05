@@ -76,8 +76,11 @@ const createSuiteSyncFixtures = ({
             outputIndex,
             txId,
         }) as OutputSeed;
+    type BuildExpectedWalletParams<T extends string | null> = { label: T };
 
-    const buildExpectedWallet = <T extends string | null>({ label }: { label: T }) => ({
+    const buildExpectedWallet = <T extends string | null>({
+        label,
+    }: BuildExpectedWalletParams<T>) => ({
         id: createWalletRowId(walletDescriptor),
         updatedAt: null,
         isDeleted: null,
@@ -85,8 +88,11 @@ const createSuiteSyncFixtures = ({
         walletDescriptor,
         label,
     });
+    type BuildExpectedAccountParams<T extends string | null> = { label: T };
 
-    const buildExpectedAccount = <T extends string | null>({ label }: { label: T }) => ({
+    const buildExpectedAccount = <T extends string | null>({
+        label,
+    }: BuildExpectedAccountParams<T>) => ({
         id: createAccountRowId(accountDescriptor, networkSymbol),
         updatedAt: null,
         isDeleted: null,
@@ -95,14 +101,15 @@ const createSuiteSyncFixtures = ({
         networkSymbol,
         label,
     });
+    type BuildExpectedAddressParams<T extends string | null> = {
+        address: string;
+        label: T;
+    };
 
     const buildExpectedAddress = <T extends string | null>({
         address,
         label,
-    }: {
-        address: string;
-        label: T;
-    }) => ({
+    }: BuildExpectedAddressParams<T>) => ({
         id: createAddressRowId(address, networkSymbol),
         updatedAt: null,
         isDeleted: null,
@@ -112,16 +119,17 @@ const createSuiteSyncFixtures = ({
         address,
         label,
     });
+    type BuildExpectedOutputParams<T extends string | null> = {
+        txId: string;
+        outputIndex: string;
+        label: T;
+    };
 
     const buildExpectedOutput = <T extends string | null>({
         txId,
         outputIndex,
         label,
-    }: {
-        txId: string;
-        outputIndex: string;
-        label: T;
-    }) => ({
+    }: BuildExpectedOutputParams<T>) => ({
         id: createOutputRowId(txId, asTxTargetId(outputIndex)),
         updatedAt: null,
         isDeleted: null,

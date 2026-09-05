@@ -74,16 +74,17 @@ const addBalanceForAccountMovementHistory = (
 
     return historyWithBalance;
 };
+type GetLatestAccountInfoParams = {
+    symbol: NetworkSymbol;
+    identity?: string;
+    descriptor: string;
+};
 
 const getLatestAccountInfo = async ({
     symbol,
     identity,
     descriptor,
-}: {
-    symbol: NetworkSymbol;
-    identity?: string;
-    descriptor: string;
-}) => {
+}: GetLatestAccountInfoParams) => {
     const accountInfo = await TrezorConnect.getAccountInfo({
         coin: asCoinSymbol(symbol),
         identity,
@@ -98,16 +99,17 @@ const getLatestAccountInfo = async ({
 
     return accountInfo.payload;
 };
+type GetBalanceFromAccountInfoParams = {
+    accountInfo: AccountInfo;
+    symbol: NetworkSymbol;
+    contractId?: string;
+};
 
 const getBalanceFromAccountInfo = ({
     accountInfo,
     symbol,
     contractId,
-}: {
-    accountInfo: AccountInfo;
-    symbol: NetworkSymbol;
-    contractId?: string;
-}) => {
+}: GetBalanceFromAccountInfoParams) => {
     const networkType = getNetworkType(symbol);
 
     const findTokenBalance = () => {
@@ -138,6 +140,13 @@ const getBalanceFromAccountInfo = ({
 };
 
 const accountBalanceHistoryCache: Record<string, AccountBalanceHistoryWithTokens> = {};
+type GetAccountBalanceHistoryParams = {
+    accountItem: AccountItem;
+    endOfTimeFrameDate: Date;
+    startOfTimeFrameDate: Date | null;
+    forceRefetch?: boolean;
+    dispatch: Dispatch;
+};
 
 const getAccountBalanceHistory = async ({
     accountItem,
@@ -147,13 +156,7 @@ const getAccountBalanceHistory = async ({
     // We pass dispatch because we need to fetch all transactions using redux thunk. This is a workaround for now to keep things simple.
     // In future we should convert this to proper thunk so we can use dispatch and selectors from thunkAPI.
     dispatch,
-}: {
-    accountItem: AccountItem;
-    endOfTimeFrameDate: Date;
-    startOfTimeFrameDate: Date | null;
-    forceRefetch?: boolean;
-    dispatch: Dispatch;
-}): Promise<AccountBalanceHistoryWithTokens> => {
+}: GetAccountBalanceHistoryParams): Promise<AccountBalanceHistoryWithTokens> => {
     const { symbol, identity, descriptor, accountKey, tokensFilter } = accountItem;
     const endTimeFrameTimestamp = getUnixTime(endOfTimeFrameDate);
     const startOfTimeFrameDateTimestamp = startOfTimeFrameDate
@@ -492,13 +495,13 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     ];
 
     type CoinKey = `${NetworkSymbol}-${TokenAddress}` | `${NetworkSymbol}-`;
-    const getCoinKey = ({
-        symbol,
-        contractId,
-    }: {
+    type GetCoinKeyParams = {
         symbol: NetworkSymbol;
         contractId?: TokenAddress;
-    }): CoinKey => `${symbol}-${contractId ?? ''}`;
+    };
+
+    const getCoinKey = ({ symbol, contractId }: GetCoinKeyParams): CoinKey =>
+        `${symbol}-${contractId ?? ''}`;
 
     // Using Set is faster than A.uniq because it's O(n) instead of O(n^2)
     const coinsSet = new Set<CoinKey>();

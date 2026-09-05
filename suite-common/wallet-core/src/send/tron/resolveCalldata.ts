@@ -3,18 +3,19 @@ import { type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 type CalldataResult = { data: string } | { data: null } | { error: string };
+type ResolveCalldataParams = {
+    token: TokenInfo | undefined;
+    outputAddress: string;
+    amountInSubunits: string;
+    userCallDataHex: string;
+};
 
 export const resolveCalldata = ({
     token,
     outputAddress,
     amountInSubunits,
     userCallDataHex,
-}: {
-    token: TokenInfo | undefined;
-    outputAddress: string;
-    amountInSubunits: string;
-    userCallDataHex: string;
-}): CalldataResult => {
+}: ResolveCalldataParams): CalldataResult => {
     if (token) {
         const result = Calldata.tron.trc20.transfer.encode({
             to: outputAddress,
