@@ -1,8 +1,6 @@
 /* eslint-disable jest/no-jasmine-globals */
 
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { TimeoutError } from '@trezor/network-ripple';
 
 import { allTestWorkers } from './__fixtures__/allTestWorkers';
 
@@ -58,33 +56,30 @@ allTestWorkers.forEach(instance => {
         }, 9000);
 
         it('Handle message timeout', async () => {
+            const method = {
+                blockbook: 'getInfo',
+                blockfrost: 'GET_SERVER_INFO',
+                ripple: 'server_info',
+            }[instance.name];
+
             server.setFixtures([
+                // xrpl v5 requests `server_info` while connecting, and that request must not time out,
+                // otherwise the connection itself fails before the message under test is ever sent
+                ...(instance.name === 'ripple' ? [{ method }] : []),
                 {
-                    method: {
-                        blockbook: 'getInfo',
-                        blockfrost: 'GET_SERVER_INFO',
-                        ripple: 'server_info',
-                    }[instance.name],
+                    method,
                     response: undefined,
                     delay: 400, // wait 0.4 sec. to send response
                 },
             ]);
 
-            const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
             blockchain.settings.timeout = 200;
 
             try {
                 await blockchain.getInfo();
                 fail('Did not throw');
             } catch (error) {
-                if (instance.name === 'ripple') {
-                    expect(consoleSpy).toHaveBeenCalled();
-                    expect(consoleSpy).toHaveBeenCalledWith(expect.any(TimeoutError));
-                } else {
-                    expect(error.code).toEqual('blockchain_link/websocket_timeout');
-                }
-            } finally {
-                consoleSpy.mockRestore();
+                expect(error.code).toEqual('blockchain_link/websocket_timeout');
             }
         });
 

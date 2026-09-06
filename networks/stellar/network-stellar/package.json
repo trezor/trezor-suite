@@ -49,7 +49,7 @@
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
     "dependencies": {
-        "@stellar/stellar-sdk": "16.1.0",
+        "@stellar/stellar-sdk": "16.2.0",
         "@trezor/utils": "workspace:*"
     }
 }
