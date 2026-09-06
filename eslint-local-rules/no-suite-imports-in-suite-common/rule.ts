@@ -15,7 +15,6 @@ export const noSuiteImportsInSuiteCommonRule: Rule.RuleModule = {
         docs: {
             description:
                 'Disallows imports from suite and suite-native packages in suite-common code.',
-            category: 'Best Practices',
             recommended: false,
         },
         messages: {

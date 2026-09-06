@@ -21,7 +21,6 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
         docs: {
             description:
                 'Enforces explicit, named dependency and return contracts for dependency-injected service factories.',
-            category: 'Best Practices',
             recommended: false,
         },
         fixable: 'code',
@@ -126,12 +125,14 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
                         }
 
                         const serviceProperties = getServiceDependencyMembers(statement).filter(
-                            member =>
+                            (member): member is ts.PropertySignature =>
                                 ts.isPropertySignature(member) &&
                                 getTypeReferenceName(member.type) === serviceName,
                         );
 
                         serviceProperties.forEach(property => {
+                            const propertyName = property.name;
+
                             if (statement.name.text !== expectedServiceDepName) {
                                 report(statement.name, 'contractMustBeNamed', {
                                     consumerName: serviceName,
@@ -140,10 +141,11 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
                             }
 
                             if (
-                                !ts.isIdentifier(property.name) ||
-                                property.name.text !== expectedServicePropertyName
+                                propertyName === undefined ||
+                                !ts.isIdentifier(propertyName) ||
+                                propertyName.text !== expectedServicePropertyName
                             ) {
-                                report(property.name, 'serviceDependencyProperty', {
+                                report(propertyName ?? property, 'serviceDependencyProperty', {
                                     serviceName,
                                     propertyName: expectedServicePropertyName,
                                 });

@@ -10,7 +10,6 @@ export default [
                     devDependencies: [
                         ...globalNoExtraneousDependenciesDevDependencies,
                         '**/connect-examples/**', // This must be here, connect-examples are not a package
-                        '**/eslint-local-rules/**', // Uses ts-node at runtime when loaded by ESLint
                     ],
                 },
             ],

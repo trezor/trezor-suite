@@ -1073,8 +1073,17 @@ const addDispatchedThunkUsages = (
     contractsBySymbol: ReadonlyMap<ts.Symbol, IntersectionContract[]>,
     checker: ts.TypeChecker,
 ) => {
+    const isFunctionLikeDeclaration = (node: ts.Node): node is ts.FunctionLikeDeclaration =>
+        ts.isArrowFunction(node) ||
+        ts.isConstructorDeclaration(node) ||
+        ts.isFunctionDeclaration(node) ||
+        ts.isFunctionExpression(node) ||
+        ts.isGetAccessorDeclaration(node) ||
+        ts.isMethodDeclaration(node) ||
+        ts.isSetAccessorDeclaration(node);
+
     const visitNode = (node: ts.Node) => {
-        if (ts.isFunctionLike(node)) {
+        if (isFunctionLikeDeclaration(node)) {
             addVanillaThunkUsages(node, contractsBySymbol, checker);
         }
 
@@ -1111,19 +1120,23 @@ const addDispatchedThunkUsages = (
 };
 
 const getWrappedServicesIntersection = (node: ts.TypeNode, checker: ts.TypeChecker) => {
+    const typeArgument = ts.isTypeReferenceNode(node) ? node.typeArguments?.[0] : undefined;
+
     if (
         !ts.isTypeReferenceNode(node) ||
         node.typeArguments?.length !== 1 ||
-        !ts.isIntersectionTypeNode(node.typeArguments[0])
+        typeArgument === undefined ||
+        !ts.isIntersectionTypeNode(typeArgument)
     ) {
         return undefined;
     }
 
-    const servicesIntersection = node.typeArguments[0];
+    const servicesIntersection = typeArgument;
     const wrapperType = checker.getTypeFromTypeNode(node);
     const wrapperProperties = checker.getPropertiesOfType(wrapperType);
+    const wrapperProperty = wrapperProperties[0];
 
-    if (wrapperProperties.length !== 1 || wrapperProperties[0].name !== 'services') {
+    if (wrapperProperties.length !== 1 || wrapperProperty?.name !== 'services') {
         return undefined;
     }
 
@@ -1161,7 +1174,6 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
         docs: {
             description:
                 'Reports contract members that are not required by their local implementation.',
-            category: 'Best Practices',
             recommended: false,
         },
         messages: {

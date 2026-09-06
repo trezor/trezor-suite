@@ -10,6 +10,7 @@
     },
     "workspaces": {
         "packages": [
+            "eslint-local-rules",
             "networks/*/*",
             "packages/*",
             "packages/connect-examples/*",
