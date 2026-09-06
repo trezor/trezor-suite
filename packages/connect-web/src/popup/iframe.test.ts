@@ -106,6 +106,23 @@ describe('getIframeInstance', () => {
         await expect(promise).resolves.toBeUndefined();
     });
 
+    // Regression: the first attempt's rejection reactions run as microtasks, so
+    // a create() issued synchronously after destroy() has already armed its own
+    // load timeout by the time they run. Clearing the shared timeout without
+    // checking whose it is left the second attempt without a timeout.
+    it('keeps the load timeout of a create() issued right after destroy()', async () => {
+        const iframe = getIframeInstance();
+        const first = iframe.create(SRC).catch(error => error);
+        iframe.destroy();
+        const second = iframe.create(SRC).catch(error => error);
+
+        await expect(first).resolves.toMatchObject({ message: 'iframe-destroyed' });
+
+        jest.advanceTimersByTime(10000);
+        await expect(second).resolves.toMatchObject({ message: 'iframe-timeout' });
+        expect(iframe.get()).toBeUndefined();
+    });
+
     it('destroy() leaves an iframe created by another instance alone', async () => {
         const owner = getIframeInstance();
         await createAndLoad(owner);

@@ -102,7 +102,11 @@ export const getIframeInstance = () => {
 
         return init.promise
             .finally(() => {
-                clearInitTimeout();
+                // Skip once destroy() has moved on; the timeout then belongs
+                // to the next attempt.
+                if (initPromise === init) {
+                    clearInitTimeout();
+                }
             })
             .catch(error => {
                 // Reset state to allow initialization again, unless destroy()
