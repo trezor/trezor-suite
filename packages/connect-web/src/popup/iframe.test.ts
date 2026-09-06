@@ -4,81 +4,34 @@
 
 import { getIframeInstance } from './iframe';
 
-const IFRAME_ID = 'trezor-connect-bootstrap';
 const SRC = 'https://suite.trezor.io/connect-popup/bootstrap.html';
+
+type Iframe = ReturnType<typeof getIframeInstance>;
 
 jest.useFakeTimers();
 
-// Fully mock the DOM iframe handling so we never create a real jsdom browsing
-// context (whose teardown breaks on a stubbed contentWindow). `registry` mirrors
-// what the manager appends/removes, keyed by element id.
-let registry: Record<string, any> = {};
-let created: any[] = [];
-
-const makeFakeIframe = () => {
-    const el: any = {
-        id: '',
-        frameBorder: '',
-        width: '',
-        height: '',
-        style: {},
-        onload: null,
-        setAttribute: jest.fn((key: string, value: string) => {
-            el[key] = value;
-        }),
-        contentWindow: { location: { origin: 'https://suite.trezor.io' } },
-        parentNode: null,
-        remove: jest.fn(() => {
-            if (el.id) delete registry[el.id];
-            el.parentNode = null;
-        }),
-    };
-    created.push(el);
-
-    return el;
-};
-
-const origCreateElement = document.createElement.bind(document);
-
 beforeEach(() => {
-    registry = {};
-    created = [];
+    document.body.innerHTML = '';
     jest.clearAllTimers();
-
-    jest.spyOn(document, 'createElement').mockImplementation((tag: string) =>
-        tag === 'iframe' ? makeFakeIframe() : origCreateElement(tag),
-    );
-    jest.spyOn(document, 'getElementById').mockImplementation((id: string) => registry[id] ?? null);
-    jest.spyOn(document.body, 'appendChild').mockImplementation((el: any) => {
-        el.parentNode = {
-            removeChild: (child: any) => {
-                if (child.id) delete registry[child.id];
-                child.parentNode = null;
-            },
-        };
-        if (el.id) registry[el.id] = el;
-
-        return el;
-    });
 });
 
-afterEach(() => {
-    jest.restoreAllMocks();
-});
+const getElement = (iframe: Iframe) => {
+    const element = iframe.get();
+    if (!element) throw new Error('iframe element not appended');
 
-const currentEl = () => registry[IFRAME_ID] ?? null;
-
-// Drive the appended iframe's onload; contentWindow reports a valid cross-origin
-// location, which is what makes handleIframeLoad resolve the init promise.
-const fireLoad = () => {
-    const el = currentEl();
-    if (!el) throw new Error('iframe element not appended');
-    el.onload?.(new Event('load'));
+    return element;
 };
 
-const createAndLoad = async (iframe: ReturnType<typeof getIframeInstance>) => {
+// jsdom never fetches the iframe document, so the load event is dispatched by
+// hand. contentWindow still reports the origin of `src`, which is what
+// handleIframeLoad checks before resolving.
+const fireLoad = (iframe: Iframe) => {
+    getElement(iframe).dispatchEvent(new Event('load'));
+};
+
+const createAndLoad = async (iframe: Iframe) => {
     const promise = iframe.create(SRC);
-    fireLoad();
+    fireLoad(iframe);
     await promise;
 };
 
@@ -86,19 +39,19 @@ describe('getIframeInstance', () => {
     it('resolves create() once the iframe finishes loading', async () => {
         const iframe = getIframeInstance();
         const promise = iframe.create(SRC);
-        expect(currentEl()).not.toBeNull();
+        expect(iframe.get()).toBeDefined();
 
-        fireLoad();
+        fireLoad(iframe);
         await expect(promise).resolves.toBeUndefined();
     });
 
     it('reuses the existing iframe on a subsequent create()', async () => {
         const iframe = getIframeInstance();
         await createAndLoad(iframe);
-        expect(created).toHaveLength(1);
+        const first = getElement(iframe);
 
         await iframe.create(SRC);
-        expect(created).toHaveLength(1);
+        expect(iframe.get()).toBe(first);
     });
 
     // Regression: a failure that happens AFTER the iframe has loaded (e.g. the
@@ -108,21 +61,16 @@ describe('getIframeInstance', () => {
     it('destroy() tears the loaded iframe down so create() rebuilds a fresh one', async () => {
         const iframe = getIframeInstance();
         await createAndLoad(iframe);
-
-        const first = currentEl();
-        expect(first).not.toBeNull();
+        const first = getElement(iframe);
 
         iframe.destroy();
-        expect(currentEl()).toBeNull();
-        expect(first.remove).toHaveBeenCalled();
+        expect(iframe.get()).toBeUndefined();
+        expect(first.isConnected).toBe(false);
 
         const promise = iframe.create(SRC);
-        const second = currentEl();
-        expect(second).not.toBeNull();
-        expect(second).not.toBe(first);
-        expect(created).toHaveLength(2);
+        expect(getElement(iframe)).not.toBe(first);
 
-        fireLoad();
+        fireLoad(iframe);
         await expect(promise).resolves.toBeUndefined();
     });
 
@@ -131,18 +79,16 @@ describe('getIframeInstance', () => {
     it('clears the rejected init promise on load timeout (#29770)', async () => {
         const iframe = getIframeInstance();
         const settled = iframe.create(SRC).catch(error => error);
-        expect(currentEl()).not.toBeNull();
+        const first = getElement(iframe);
 
         jest.advanceTimersByTime(10000);
-        const error = await settled;
-        expect(error).toBeDefined();
-        expect(currentEl()).toBeNull();
+        await expect(settled).resolves.toMatchObject({ message: 'iframe-timeout' });
+        expect(iframe.get()).toBeUndefined();
 
         const promise = iframe.create(SRC);
-        expect(currentEl()).not.toBeNull();
-        expect(created).toHaveLength(2);
+        expect(getElement(iframe)).not.toBe(first);
 
-        fireLoad();
+        fireLoad(iframe);
         await expect(promise).resolves.toBeUndefined();
     });
 });
