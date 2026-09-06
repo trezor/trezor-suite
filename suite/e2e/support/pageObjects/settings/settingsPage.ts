@@ -14,7 +14,6 @@ import { DeviceFixture } from '../../device';
 import { expect } from '../../testExtends/customMatchers';
 
 export enum Theme {
-    System = 'system',
     Dark = 'dark',
     Light = 'light',
 }

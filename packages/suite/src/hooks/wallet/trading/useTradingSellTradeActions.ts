@@ -170,5 +170,3 @@ export const useTradingSellTradeActions = () => {
         sendTransaction,
     };
 };
-
-export type TradingSellTradeActionsValues = ReturnType<typeof useTradingSellTradeActions>;

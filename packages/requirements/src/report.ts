@@ -8,10 +8,6 @@ export type ReportDeps = {
 
 export type Report = (results: ReadonlyArray<RequirementResult>) => number;
 
-export type ReportDep = {
-    readonly report: Report;
-};
-
 type RequirementTiming = {
     readonly requirement: string;
     runCount: number;

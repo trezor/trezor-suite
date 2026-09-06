@@ -1,5 +1,5 @@
 import type React from 'react';
-import type { FieldPath, UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 import { type UnknownAction } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
@@ -62,10 +62,6 @@ export type TradingAllFormProps =
 
 export interface TradingSellFormDefaultValuesProps {
     defaultValues: TradingSellFormProps;
-}
-
-export interface TradingExchangeFormDefaultValuesProps {
-    defaultValues: TradingExchangeFormProps;
 }
 
 interface TradingFormStateProps {
@@ -201,8 +197,6 @@ export interface TradingExchangeFormContextProps
     setShowReserveBanner: (showReserveBanner: boolean) => void;
 }
 
-export type TradingExchangeApprovalType = 'APPROVE' | 'REVOKE';
-
 export type TradingFormMapProps = {
     buy: TradingBuyFormContextProps;
     sell: TradingSellFormContextProps;
@@ -215,16 +209,6 @@ export interface TradingFormInputDefaultProps {
     label?: TranslationKey;
     placeholder?: TranslationKey;
     'data-testid'?: string;
-}
-
-export interface TradingFormInputCryptoSelectProps<
-    TFieldValues extends TradingAllFormProps,
-> extends TradingFormInputDefaultProps {
-    cryptoSelectName: FieldPath<TFieldValues>;
-    supportedCryptoCurrencies: Set<CryptoId> | undefined;
-    methods: UseFormReturn<TFieldValues>;
-    isDisabled?: boolean;
-    sortTokensByFiatBalanceInDesc?: boolean;
 }
 
 export interface TradingFormInputFiatCryptoProps {
@@ -316,13 +300,6 @@ export interface TradingOfferBuyProps {
     selectedQuote: BuyTrade;
     isConfirmDisabled: boolean;
     confirmTrade: () => Promise<BuyTrade | undefined>;
-}
-
-export interface TradingOfferExchangeProps extends Omit<
-    TradingOfferCommonProps,
-    'paymentMethod' | 'paymentMethodName'
-> {
-    selectedQuote: ExchangeTrade;
 }
 
 export interface TradingSelectedOfferInfoProps extends TradingOfferCommonProps {

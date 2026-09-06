@@ -79,7 +79,6 @@ export const LedgerSchema = z.object({
 export type AnalysisReport = z.infer<typeof AnalysisReportSchema>;
 export type FixResult = z.infer<typeof FixResultSchema>;
 export type SlackFixSummary = z.infer<typeof SlackFixSummarySchema>;
-export type SkipReason = z.infer<typeof SkipReasonSchema>;
 export type LedgerEntry = z.infer<typeof LedgerEntrySchema>;
 export type Ledger = z.infer<typeof LedgerSchema>;
 

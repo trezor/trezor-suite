@@ -12,8 +12,6 @@ export type WorkspaceContext = {
     readonly workspaceName: string;
 };
 
-export type RequirementContext = RepoContext | WorkspaceContext;
-
 export type Requirement<T extends RequirementScope> = {
     readonly name: string;
 
