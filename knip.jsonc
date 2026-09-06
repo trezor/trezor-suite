@@ -1,0 +1,51 @@
+{
+    "$schema": "https://unpkg.com/knip@6.32.2/schema.json",
+
+    // Advisory dead-code detection for the whole monorepo.
+    //
+    // Knip complements the type-aware `no-unused-intersection-members` ESLint rule: that rule
+    // proves dead *members* on local contract types (file-local, blocking, expensive-checks gated),
+    // while knip resolves the cross-package module graph and finds the *adjacent* dead-code classes
+    // the member rule structurally cannot see — unused files, dependencies, whole exports/types and
+    // enum members (e.g. a deleted `settings.ts`, a dropped exported alias, unused enum members).
+    //
+    // Posture: ADVISORY. The reported issue types are `warn`, so `yarn knip` exits 0 even with
+    // findings and never blocks a build. See docs/misc/dead-code-detection.md for how to triage the
+    // baseline and the path to graduating `files` + `dependencies` to a blocking gate.
+    //
+    // Workspaces are auto-detected from the root package.json `workspaces` globs.
+
+    // Report only the issue types we trust for this repo. `devDependencies`/`unlisted` etc. are left
+    // to the existing `depcheck` gate; circular imports are covered by the madge check. Narrowing
+    // here keeps the first advisory runs legible.
+    "include": ["files", "dependencies", "exports", "types", "enumMembers"],
+
+    // Advisory severity: findings are warnings, so knip exits 0. To graduate a type to a blocking
+    // gate, change it to `error` here and drop `continue-on-error` in the workflow.
+    "rules": {
+        "files": "warn",
+        "dependencies": "warn",
+        "exports": "warn",
+        "types": "warn",
+        "enumMembers": "warn"
+    },
+
+    // Publishable packages expose a curated public API from their barrel; entry-file exports are
+    // read by external npm consumers, so they must never count as unused.
+    "includeEntryExports": false,
+
+    // An export referenced only within its own file is reported by default as "should not be
+    // exported". Silence that during the advisory phase to focus on genuinely unreachable code.
+    "ignoreExportsUsedInFile": true,
+
+    // Vendored third-party fork — not our code to prune.
+    "ignoreWorkspaces": ["suite-native/react-native-graph"],
+
+    // Skip clusters: declaration files whose members are "used" off-repo and are undecidable by any
+    // static tool — an external API-shape mirror and the persisted IndexedDB migration schemas.
+    "ignoreFiles": [
+        "packages/blockchain-link-types/src/blockbook-api.ts",
+        "packages/suite/src/storage/migrations/**",
+        "suite-native/storage/src/migrations/**"
+    ]
+}

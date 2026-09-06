@@ -74,4 +74,5 @@
     - [development on Nix](./misc/development-on-nix.md)
     - [device naming](./misc/device-naming.md)
     - [review](./misc/review.md)
+    - [dead code detection](./misc/dead-code-detection.md)
     - [videos](./misc/videos.md)
