@@ -2896,7 +2896,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emurgo/cardano-serialization-lib-browser@npm:^13.2.0":
+"@emurgo/cardano-serialization-lib-browser@npm:13.2.0, @emurgo/cardano-serialization-lib-browser@npm:^13.2.0":
   version: 13.2.0
   resolution: "@emurgo/cardano-serialization-lib-browser@npm:13.2.0"
   checksum: 10/f60f47b7df9e1e783302921d9f225696d09e01b124a75dd8672effae17acdd42779da66a068c923261aabead52ac7aae9426ef13c875f48b5ef7b9d629b8b993
@@ -17282,6 +17282,18 @@ __metadata:
   resolution: "@trezor/network-bitcoin@workspace:networks/bitcoin/network-bitcoin"
   dependencies:
     "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-cardano-coin-selection@workspace:networks/cardano/network-cardano-coin-selection":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-cardano-coin-selection@workspace:networks/cardano/network-cardano-coin-selection"
+  dependencies:
+    "@emurgo/cardano-serialization-lib-browser": "npm:13.2.0"
+    "@emurgo/cardano-serialization-lib-nodejs": "npm:13.2.0"
+    "@trezor/eslint": "workspace:*"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
