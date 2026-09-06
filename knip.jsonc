@@ -30,14 +30,14 @@
         "enumMembers": "warn"
     },
 
-    // Disable the plugins that *execute* React Native / Metro / Storybook config files to discover
-    // entry points. `suite-native/app/metro.config.js` calls `withStorybook(...)`, which throws when
-    // run outside its normal Metro context (it resolves the RN storybook config to a path that does
-    // not exist), crashing the whole scan. Turning these plugins off costs only some framework entry
-    // auto-detection in the native workspaces (revisit during triage); everything else still runs.
+    // The `metro` plugin executes `suite-native/app/metro.config.js`, which calls `withStorybook(...)`
+    // and throws when run outside its normal Metro context (it resolves the RN storybook config to a
+    // path that does not exist), crashing the whole scan. Disable metro and its native siblings that
+    // load app config files, but keep `storybook` on — the `.storybook/main.ts` files are plain CSF
+    // configs, so stories are still recognised as entry points (otherwise every story reads as an
+    // unused file). Cost: some framework entry auto-detection in native workspaces (revisit in triage).
     "metro": false,
     "react-native": false,
-    "storybook": false,
     "expo": false,
 
     // Publishable packages expose a curated public API from their barrel; entry-file exports are
