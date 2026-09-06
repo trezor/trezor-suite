@@ -91,4 +91,32 @@ describe('getIframeInstance', () => {
         fireLoad(iframe);
         await expect(promise).resolves.toBeUndefined();
     });
+
+    it('destroy() rejects a load still in flight so create() settles', async () => {
+        const iframe = getIframeInstance();
+        const settled = iframe.create(SRC).catch(error => error);
+        expect(iframe.get()).toBeDefined();
+
+        iframe.destroy();
+        await expect(settled).resolves.toMatchObject({ message: 'iframe-destroyed' });
+        expect(iframe.get()).toBeUndefined();
+
+        const promise = iframe.create(SRC);
+        fireLoad(iframe);
+        await expect(promise).resolves.toBeUndefined();
+    });
+
+    it('destroy() leaves an iframe created by another instance alone', async () => {
+        const owner = getIframeInstance();
+        await createAndLoad(owner);
+        const element = getElement(owner);
+
+        // A second instance adopts the existing element instead of creating one.
+        const other = getIframeInstance();
+        await other.create(SRC);
+        other.destroy();
+
+        expect(element.isConnected).toBe(true);
+        expect(owner.get()).toBe(element);
+    });
 });

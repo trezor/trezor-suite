@@ -25,6 +25,10 @@ const createIframeElement = (): HTMLIFrameElement => {
 export const getIframeInstance = () => {
     let initPromise: Deferred<void> | undefined;
     let initTimeout: ReturnType<typeof setTimeout> | undefined;
+    // The element this instance appended, as opposed to one it merely adopted
+    // because it already carried IFRAME_ID (e.g. created by another copy of
+    // connect-web on the same page).
+    let ownedInstance: HTMLIFrameElement | undefined;
 
     const clearInitTimeout = () => {
         if (initTimeout) {
@@ -58,6 +62,21 @@ export const getIframeInstance = () => {
         initPromise?.resolve();
     };
 
+    // Tear down the iframe this instance created so the next create() rebuilds
+    // it from scratch, mirroring what a page reload does. A failure that happens
+    // after the iframe has loaded (e.g. the bootstrap handshake) leaves a resolved
+    // initPromise and a live iframe behind, which create() would otherwise reuse.
+    // A load still in flight is rejected so its awaiting create() settles instead
+    // of hanging. An adopted element is left alone.
+    const destroy = () => {
+        const pendingInit = initPromise;
+        clearInitTimeout();
+        initPromise = undefined;
+        ownedInstance?.remove();
+        ownedInstance = undefined;
+        pendingInit?.reject(ERRORS.TypedError('Handshake_Error', 'iframe-destroyed'));
+    };
+
     const create = (src: string) => {
         if (initPromise) {
             return initPromise.promise;
@@ -68,44 +87,32 @@ export const getIframeInstance = () => {
             return Promise.resolve();
         }
 
-        initPromise = createDeferred();
+        const init = createDeferred();
+        initPromise = init;
 
         const newInstance = createIframeElement();
+        ownedInstance = newInstance;
         initTimeout = setTimeout(() => {
-            initPromise?.reject(ERRORS.TypedError('Handshake_Error', 'iframe-timeout'));
+            init.reject(ERRORS.TypedError('Handshake_Error', 'iframe-timeout'));
         }, IFRAME_TIMEOUT);
 
         newInstance.onload = handleIframeLoad;
         newInstance.setAttribute('src', src);
         document.body.appendChild(newInstance);
 
-        return initPromise.promise
+        return init.promise
             .finally(() => {
                 clearInitTimeout();
             })
             .catch(error => {
-                // Reset state to allow initialization again.
-                if (newInstance.parentNode) {
-                    newInstance.parentNode.removeChild(newInstance);
+                // Reset state to allow initialization again, unless destroy()
+                // already did so (its rejection is what brought us here).
+                if (initPromise === init) {
+                    destroy();
                 }
-                // Clear the rejected deferred, otherwise the `if (initPromise)` guard above would
-                // keep returning this same rejected promise and the iframe would never be recreated.
-                initPromise = undefined;
                 // Propagate TypedError to caller.
                 throw error;
             });
-    };
-
-    // Tear the iframe down completely so the next create() rebuilds it from
-    // scratch. The `.catch` above only clears state when the iframe *load*
-    // rejects; a later failure (e.g. the bootstrap handshake) leaves a resolved
-    // `initPromise` and a live iframe whose bootstrap/storage-access state is
-    // reused. Recreating it mirrors what a page reload does (the only thing that
-    // currently recovers such a failure).
-    const destroy = () => {
-        clearInitTimeout();
-        getIframeElement()?.remove();
-        initPromise = undefined;
     };
 
     return {
