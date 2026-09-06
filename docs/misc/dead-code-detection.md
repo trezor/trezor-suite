@@ -50,6 +50,18 @@ Triaging a finding means one of:
 - **An off-repo / undecidable consumer** (external API-shape mirror, persisted migration schema,
   vendored fork, serialized wire/analytics payload) → add it to `ignoreFiles` / `ignoreWorkspaces`.
 
+### Known first-baseline noise
+
+Two systematic false-positive sources are expected in the initial baseline and should be the first
+triage targets:
+
+- **Platform files** (`*.android.tsx`, `*.ios.tsx`, `*.native.tsx`) reported as unused. The `metro`
+  plugin is disabled (it crashes on `suite-native/app/metro.config.js`), so knip does not model React
+  Native's platform-extension resolution. `react-native`/`expo` are disabled alongside it.
+- **Dynamically loaded data files** (e.g. `packages/connect-explorer/src/data/methods/**`) reported
+  as unused because they are picked up by a glob at runtime rather than a static import — add their
+  directory to `entry`.
+
 ## Graduating to a blocking gate
 
 Once a subtype reaches a clean baseline, promote it:
