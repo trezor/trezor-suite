@@ -15,7 +15,7 @@ import {
 
 import { EarnNoBalanceCard } from '../../components/earn/EarnNoBalanceCard';
 import { EarnNoBalanceFooter } from '../../components/earn/EarnNoBalanceFooter';
-import { YieldDepositFlowScreenHeader } from '../../components/yield/YieldDepositFlowScreenHeader';
+import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import {
     type EarnNoBalanceAction,
     useEarnNoBalanceActions,
@@ -140,7 +140,7 @@ export const YieldDepositNoBalanceScreen = () => {
     return (
         <Screen
             header={
-                <YieldDepositFlowScreenHeader
+                <YieldFlowScreenHeader
                     account={account}
                     closeAction={navigateToInitialScreen}
                     title={vaultTokenName}
