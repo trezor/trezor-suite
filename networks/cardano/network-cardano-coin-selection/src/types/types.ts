@@ -1,6 +1,7 @@
 import type * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';
 
 import { type CertificateType } from '../constants';
+import { type CardanoProtocolParams } from '../protocolParams';
 
 export interface Asset {
     unit: string;
@@ -145,7 +146,8 @@ export type Certificate =
     | CertificateVoteDelegation;
 
 export interface Options {
-    feeParams?: { a: string };
+    /** Overrides; omitted values fall back to `DEFAULT_CARDANO_PROTOCOL_PARAMS`. */
+    protocolParams?: Partial<CardanoProtocolParams>;
     debug?: boolean;
     forceLargestFirstSelection?: boolean;
     _maxTokensPerOutput?: number;

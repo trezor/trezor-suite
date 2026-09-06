@@ -1,12 +1,7 @@
 import * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';
 
-import {
-    CARDANO_PARAMS,
-    CertificateType,
-    DATA_COST_PER_UTXO_BYTE,
-    ERROR,
-    MAX_TOKENS_PER_OUTPUT,
-} from '../constants';
+import { CARDANO_PARAMS, CertificateType, ERROR, MAX_TOKENS_PER_OUTPUT } from '../constants';
+import { type CardanoProtocolParams } from '../protocolParams';
 import { CoinSelectionError } from './errors';
 import {
     type Asset,
@@ -171,6 +166,7 @@ export const buildTxInput = (
 export const buildTxOutput = (
     output: Output,
     dummyAddress: string,
+    dataCost: CardanoWasm.DataCost,
 ): CardanoWasm.TransactionOutput => {
     // If output.address was not defined fallback to bech32 address (useful for "precompose" tx
     // which doesn't have all necessary data, but we can fill in the blanks and return some info such as fee)
@@ -191,7 +187,7 @@ export const buildTxOutput = (
 
     // Calculate min required ADA for the output
     let txOutput = CardanoWasm.TransactionOutput.new(outputAddr, outputValue);
-    const minAdaRequired = CardanoWasm.min_ada_for_output(txOutput, DATA_COST_PER_UTXO_BYTE);
+    const minAdaRequired = CardanoWasm.min_ada_for_output(txOutput, dataCost);
 
     // If calculated min required ada is greater than current output value than adjust it
     if (outputAmount.compare(minAdaRequired) < 0) {
@@ -205,14 +201,11 @@ export const buildTxOutput = (
     return txOutput;
 };
 
-export const getOutputCost = (
-    txBuilder: CardanoWasm.TransactionBuilder,
-    output: Output,
-    dummyAddress: string,
-): OutputCost => {
-    const txOutput = buildTxOutput(output, dummyAddress);
+export const getOutputCost = (ctx: TxContext, output: Output, dummyAddress: string): OutputCost => {
+    const { txBuilder, dataCost } = ctx;
+    const txOutput = buildTxOutput(output, dummyAddress, dataCost);
     const outputFee = txBuilder.fee_for_output(txOutput);
-    const minAda = CardanoWasm.min_ada_for_output(txOutput, DATA_COST_PER_UTXO_BYTE);
+    const minAda = CardanoWasm.min_ada_for_output(txOutput, dataCost);
 
     return {
         output: txOutput,
@@ -305,26 +298,31 @@ export const prepareCertificates = (
     return preparedCertificates;
 };
 
-export const calculateRequiredDeposit = (certificates: Certificate[]): number => {
+export const calculateRequiredDeposit = (
+    certificates: Certificate[],
+    protocolParams: CardanoProtocolParams,
+): number => {
+    const keyDeposit = Number(protocolParams.keyDeposit);
     const CertificateDeposit = {
         [CertificateType.STAKE_DELEGATION]: 0,
         [CertificateType.VOTE_DELEGATION]: 0,
-        [CertificateType.STAKE_POOL_REGISTRATION]: 500000000,
-        [CertificateType.STAKE_REGISTRATION]: 2000000,
-        [CertificateType.STAKE_DEREGISTRATION]: -2000000,
+        [CertificateType.STAKE_POOL_REGISTRATION]: Number(protocolParams.poolDeposit),
+        [CertificateType.STAKE_REGISTRATION]: keyDeposit,
+        // Deregistration refunds the deposit locked by the registration.
+        [CertificateType.STAKE_DEREGISTRATION]: -keyDeposit,
     } as const;
 
     return certificates.reduce((acc, cert) => acc + CertificateDeposit[cert.type], 0);
 };
 
 export const setMinUtxoValueForOutputs = (
-    txBuilder: CardanoWasm.TransactionBuilder,
+    ctx: TxContext,
     outputs: UserOutput[],
     dummyAddress: string,
 ): UserOutput[] => {
     const preparedOutputs = outputs.map(output => {
         // sets minimal output ADA amount in case of multi-asset output
-        const { minOutputAmount } = getOutputCost(txBuilder, output, dummyAddress);
+        const { minOutputAmount } = getOutputCost(ctx, output, dummyAddress);
         const outputAmount = bigNumFromStr(output.amount || '0');
 
         let amount: string | undefined;
@@ -367,11 +365,12 @@ export const setMinUtxoValueForOutputs = (
 };
 
 export const splitChangeOutput = (
-    txBuilder: CardanoWasm.TransactionBuilder,
+    ctx: TxContext,
     singleChangeOutput: OutputCost,
     changeAddress: string,
     maxTokensPerOutput = MAX_TOKENS_PER_OUTPUT,
 ): OutputCost[] => {
+    const { dataCost } = ctx;
     // TODO: https://github.com/Emurgo/cardano-serialization-lib/pull/236
     const multiAsset = singleChangeOutput.output.amount().multiasset();
     if (!multiAsset || (multiAsset && multiAsset.len() < maxTokensPerOutput)) {
@@ -397,7 +396,7 @@ export const splitChangeOutput = (
             outputValue,
         );
 
-        const minAdaRequired = CardanoWasm.min_ada_for_output(txOutput, DATA_COST_PER_UTXO_BYTE);
+        const minAdaRequired = CardanoWasm.min_ada_for_output(txOutput, dataCost);
 
         changeOutputs.push({
             isChange: true,
@@ -408,7 +407,7 @@ export const splitChangeOutput = (
     }
 
     const changeOutputsCost = changeOutputs.map((partialChange, i) => {
-        let changeOutputCost = getOutputCost(txBuilder, partialChange, changeAddress);
+        let changeOutputCost = getOutputCost(ctx, partialChange, changeAddress);
         lovelaceAvailable = lovelaceAvailable.clamped_sub(
             bigNumFromStr(partialChange.amount).checked_add(changeOutputCost.outputFee),
         );
@@ -425,7 +424,7 @@ export const splitChangeOutput = (
                 changeOutputAmount = changeOutputCost.minOutputAmount;
             }
             partialChange.amount = changeOutputAmount.to_str();
-            changeOutputCost = getOutputCost(txBuilder, partialChange, changeAddress);
+            changeOutputCost = getOutputCost(ctx, partialChange, changeAddress);
         }
 
         return changeOutputCost;
@@ -435,7 +434,7 @@ export const splitChangeOutput = (
 };
 
 export const prepareChangeOutput = (
-    txBuilder: CardanoWasm.TransactionBuilder,
+    ctx: TxContext,
     usedUtxos: Utxo[],
     preparedOutputs: Output[],
     changeAddress: string,
@@ -444,6 +443,7 @@ export const prepareChangeOutput = (
     totalFeesAmount: CardanoWasm.BigNum,
     pickAdditionalUtxo?: () => ReturnType<typeof getRandomUtxo>,
 ): OutputCost | null => {
+    const { txBuilder, dataCost } = ctx;
     // change output amount should be lowered by the cost of the change output (fee + minUtxoVal)
     // The cost will be subtracted once we calculate it.
     const placeholderChangeOutputAmount = utxosTotalAmount.clamped_sub(
@@ -472,7 +472,7 @@ export const prepareChangeOutput = (
         .filter(asset => asset.quantity !== '0');
 
     const changeOutputCost = getOutputCost(
-        txBuilder,
+        ctx,
         {
             address: changeAddress,
             amount: placeholderChangeOutputAmount.to_str(),
@@ -502,7 +502,7 @@ export const prepareChangeOutput = (
             const newTotalFee = txBuilder.min_fee();
 
             return prepareChangeOutput(
-                txBuilder,
+                ctx,
                 usedUtxos,
                 preparedOutputs,
                 changeAddress,
@@ -529,6 +529,7 @@ export const prepareChangeOutput = (
                 assets: changeOutputAssets,
             },
             changeAddress,
+            dataCost,
         );
 
         // WARNING: It returns a change output also in a case where we don't have enough utxos to cover the output cost, but the change output is needed because it contains additional assets
@@ -543,17 +544,40 @@ export const prepareChangeOutput = (
     return null;
 };
 
-export const getTxBuilder = (a = '44'): CardanoWasm.TransactionBuilder =>
-    CardanoWasm.TransactionBuilder.new(
+/**
+ * Everything derived from the protocol parameters, built once per coin selection run.
+ *
+ * `dataCost` is threaded alongside the builder because `min_ada_for_output` needs it and it is a
+ * function of `coinsPerUtxoByte`; upstream held it in a module-scope constant, which is what made
+ * the parameter impossible to override.
+ */
+export type TxContext = {
+    txBuilder: CardanoWasm.TransactionBuilder;
+    dataCost: CardanoWasm.DataCost;
+    protocolParams: CardanoProtocolParams;
+};
+
+export const createTxContext = (protocolParams: CardanoProtocolParams): TxContext => ({
+    txBuilder: CardanoWasm.TransactionBuilder.new(
         CardanoWasm.TransactionBuilderConfigBuilder.new()
-            .fee_algo(CardanoWasm.LinearFee.new(bigNumFromStr(a), bigNumFromStr('155381')))
-            .pool_deposit(bigNumFromStr('500000000'))
-            .key_deposit(bigNumFromStr('2000000'))
-            .coins_per_utxo_byte(bigNumFromStr(CARDANO_PARAMS.COINS_PER_UTXO_BYTE))
-            .max_value_size(CARDANO_PARAMS.MAX_VALUE_SIZE)
-            .max_tx_size(CARDANO_PARAMS.MAX_TX_SIZE)
+            .fee_algo(
+                CardanoWasm.LinearFee.new(
+                    bigNumFromStr(protocolParams.minFeeA),
+                    bigNumFromStr(protocolParams.minFeeB),
+                ),
+            )
+            .pool_deposit(bigNumFromStr(protocolParams.poolDeposit))
+            .key_deposit(bigNumFromStr(protocolParams.keyDeposit))
+            .coins_per_utxo_byte(bigNumFromStr(protocolParams.coinsPerUtxoByte))
+            .max_value_size(protocolParams.maxValueSize)
+            .max_tx_size(protocolParams.maxTxSize)
             .build(),
-    );
+    ),
+    dataCost: CardanoWasm.DataCost.new_coins_per_byte(
+        bigNumFromStr(protocolParams.coinsPerUtxoByte),
+    ),
+    protocolParams,
+});
 
 export const getUnsatisfiedAssets = (selectedUtxos: Utxo[], outputs: Output[]): string[] => {
     const assets: string[] = [];
@@ -610,12 +634,13 @@ export const getInitialUtxoSet = (
 };
 
 export const setMaxOutput = (
-    txBuilder: CardanoWasm.TransactionBuilder,
+    ctx: TxContext,
     maxOutput: UserOutput,
     changeOutput: OutputCost | null,
 ): {
     maxOutput: UserOutput;
 } => {
+    const { dataCost } = ctx;
     const [maxOutputAssetEntry] = maxOutput.assets;
     const maxOutputAsset = maxOutputAssetEntry?.unit ?? 'lovelace';
     let newMaxAmount = bigNumFromStr('0');
@@ -627,7 +652,7 @@ export const setMaxOutput = (
         if (changeOutput) {
             // Calculate the cost of previous dummy set-max output
             const previousMaxOutputCost = getOutputCost(
-                txBuilder,
+                ctx,
                 maxOutput,
                 maxOutput.address ?? changeOutput.output.address().to_bech32(),
             );
@@ -642,10 +667,7 @@ export const setMaxOutput = (
                     changeOutput.output.address(),
                     CardanoWasm.Value.new(newMaxAmount),
                 );
-                const minUtxoVal = CardanoWasm.min_ada_for_output(
-                    txOutput,
-                    DATA_COST_PER_UTXO_BYTE,
-                );
+                const minUtxoVal = CardanoWasm.min_ada_for_output(txOutput, dataCost);
 
                 if (newMaxAmount.compare(minUtxoVal) < 0) {
                     // the amount would be less than min required ADA
@@ -671,10 +693,7 @@ export const setMaxOutput = (
             );
 
             // adjust ADA amount to cover min ada for the asset
-            maxOutput.amount = CardanoWasm.min_ada_for_output(
-                txOutput,
-                DATA_COST_PER_UTXO_BYTE,
-            ).to_str();
+            maxOutput.amount = CardanoWasm.min_ada_for_output(txOutput, dataCost).to_str();
         }
     }
 
@@ -698,13 +717,14 @@ export const filterUtxos = (utxos: Utxo[], asset: string): Utxo[] =>
     utxos.filter(utxo => utxo.amount.find(a => a.unit === asset));
 
 export const getRandomUtxo = (
-    txBuilder: CardanoWasm.TransactionBuilder,
+    ctx: TxContext,
     utxoRemaining: Utxo[],
     utxoSelected: Utxo[],
 ): {
     utxo: Utxo;
     addUtxo: () => void;
 } | null => {
+    const { txBuilder } = ctx;
     const index = Math.floor(Math.random() * utxoRemaining.length);
     const utxo = utxoRemaining[index];
 
@@ -722,12 +742,12 @@ export const getRandomUtxo = (
 };
 
 export const calculateUserOutputsFee = (
-    txBuilder: CardanoWasm.TransactionBuilder,
+    ctx: TxContext,
     userOutputs: UserOutput[],
     changeAddress: string,
 ) => {
     // Calculate fee and minUtxoValue for all external outputs
-    const outputsCost = userOutputs.map(output => getOutputCost(txBuilder, output, changeAddress));
+    const outputsCost = userOutputs.map(output => getOutputCost(ctx, output, changeAddress));
 
     const totalOutputsFee = outputsCost.reduce(
         (acc, output) => acc.checked_add(output.outputFee),

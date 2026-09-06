@@ -1,6 +1,7 @@
 import * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';
 
 import { ERROR } from '../constants';
+import { resolveProtocolParams } from '../protocolParams';
 import {
     type CoinSelectionParams,
     type CoinSelectionResult,
@@ -11,13 +12,14 @@ import {
     type Utxo,
 } from '../types/types';
 import {
+    type TxContext,
     bigNumFromStr,
     buildTxInput,
     buildTxOutput,
+    createTxContext,
     filterUtxos,
     getOutputQuantity,
     getRandomUtxo,
-    getTxBuilder,
     getUnsatisfiedAssets,
     getUserOutputQuantityWithDeposit,
     getUtxoQuantity,
@@ -54,17 +56,13 @@ const improvesSelection = (
     return false;
 };
 
-const selection = (
-    utxos: Utxo[],
-    outputs: UserOutput[],
-    txBuilder: CardanoWasm.TransactionBuilder,
-    dummyAddress: string,
-) => {
+const selection = (utxos: Utxo[], outputs: UserOutput[], ctx: TxContext, dummyAddress: string) => {
+    const { txBuilder, dataCost } = ctx;
     const utxoSelected: Utxo[] = [];
     const utxoRemaining = JSON.parse(JSON.stringify(utxos)) as Utxo[];
-    const preparedOutputs = setMinUtxoValueForOutputs(txBuilder, outputs, dummyAddress);
+    const preparedOutputs = setMinUtxoValueForOutputs(ctx, outputs, dummyAddress);
     preparedOutputs.forEach(output => {
-        const txOutput = buildTxOutput(output, dummyAddress);
+        const txOutput = buildTxOutput(output, dummyAddress, dataCost);
         txBuilder.add_output(txOutput);
     });
     // Check for UTXO_BALANCE_INSUFFICIENT comparing provided inputs with requested outputs
@@ -113,24 +111,25 @@ const calculateChange = (
     preparedOutputs: UserOutput[],
     changeAddress: string,
     maxTokensPerOutput: number | undefined,
-    txBuilder: CardanoWasm.TransactionBuilder,
+    ctx: TxContext,
 ): { changeOutputs: OutputCost[] } => {
+    const { txBuilder } = ctx;
     const totalFeesAmount = txBuilder.min_fee();
     const totalUserOutputsAmount = getUserOutputQuantityWithDeposit(preparedOutputs, 0);
 
     const singleChangeOutput = prepareChangeOutput(
-        txBuilder,
+        ctx,
         utxoSelected,
         preparedOutputs,
         changeAddress,
         getUtxoQuantity(utxoSelected, 'lovelace'),
         getUserOutputQuantityWithDeposit(preparedOutputs, 0),
         totalFeesAmount,
-        () => getRandomUtxo(txBuilder, utxoRemaining, utxoSelected),
+        () => getRandomUtxo(ctx, utxoRemaining, utxoSelected),
     );
 
     const changeOutputs = singleChangeOutput
-        ? splitChangeOutput(txBuilder, singleChangeOutput, changeAddress, maxTokensPerOutput)
+        ? splitChangeOutput(ctx, singleChangeOutput, changeAddress, maxTokensPerOutput)
         : [];
 
     let requiredAmount = totalFeesAmount.checked_add(totalUserOutputsAmount);
@@ -142,7 +141,7 @@ const calculateChange = (
     });
 
     if (requiredAmount.compare(getUtxoQuantity(utxoSelected, 'lovelace')) > 0) {
-        const randomUtxo = getRandomUtxo(txBuilder, utxoRemaining, utxoSelected);
+        const randomUtxo = getRandomUtxo(ctx, utxoRemaining, utxoSelected);
         if (randomUtxo?.utxo) {
             randomUtxo.addUtxo();
 
@@ -152,7 +151,7 @@ const calculateChange = (
                 preparedOutputs,
                 changeAddress,
                 maxTokensPerOutput,
-                txBuilder,
+                ctx,
             );
         } else {
             throw new CoinSelectionError(ERROR.UTXO_BALANCE_INSUFFICIENT);
@@ -174,7 +173,8 @@ export const randomImprove = (
         );
         throw new CoinSelectionError(ERROR.UTXO_NOT_FRAGMENTED_ENOUGH);
     }
-    const txBuilder = getTxBuilder(options?.feeParams?.a);
+    const ctx = createTxContext(resolveProtocolParams(options?.protocolParams));
+    const { txBuilder, dataCost } = ctx;
     if (ttl) {
         txBuilder.set_ttl(ttl);
     }
@@ -182,7 +182,7 @@ export const randomImprove = (
     const { utxoSelected, utxoRemaining, preparedOutputs } = selection(
         utxos,
         outputs,
-        txBuilder,
+        ctx,
         changeAddress,
     );
 
@@ -193,7 +193,7 @@ export const randomImprove = (
         preparedOutputs,
         changeAddress,
         options?._maxTokensPerOutput,
-        txBuilder,
+        ctx,
     );
 
     const finalOutputs: Output[] = JSON.parse(JSON.stringify(preparedOutputs));
@@ -205,7 +205,7 @@ export const randomImprove = (
             assets: multiAssetToArray(change.output.amount().multiasset()),
         };
         finalOutputs.push(ch);
-        txBuilder.add_output(buildTxOutput(ch, changeAddress));
+        txBuilder.add_output(buildTxOutput(ch, changeAddress, dataCost));
     });
 
     const totalUserOutputsAmount = getUserOutputQuantityWithDeposit(preparedOutputs, 0);

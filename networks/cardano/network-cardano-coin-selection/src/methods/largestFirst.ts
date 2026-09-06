@@ -1,6 +1,7 @@
 import * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';
 
 import { ERROR } from '../constants';
+import { resolveProtocolParams } from '../protocolParams';
 import {
     type ChangeOutput,
     type CoinSelectionParams,
@@ -16,9 +17,9 @@ import {
     buildTxOutput,
     calculateRequiredDeposit,
     calculateUserOutputsFee,
+    createTxContext,
     getAssetAmount,
     getInitialUtxoSet,
-    getTxBuilder,
     getUnsatisfiedAssets,
     getUserOutputQuantityWithDeposit,
     multiAssetToArray,
@@ -38,7 +39,8 @@ export const largestFirst = (
     options?: Options,
 ): CoinSelectionResult => {
     const { utxos, outputs, changeAddress, certificates, withdrawals, accountPubKey, ttl } = params;
-    const txBuilder = getTxBuilder(options?.feeParams?.a);
+    const ctx = createTxContext(resolveProtocolParams(options?.protocolParams));
+    const { txBuilder, dataCost, protocolParams } = ctx;
     if (ttl) {
         txBuilder.set_ttl(ttl);
     }
@@ -59,7 +61,7 @@ export const largestFirst = (
     }
 
     // TODO: negative value in case of deregistration (-2000000), but we still need enough utxos to cover fee which can't be (is that right?) paid from returned deposit
-    const deposit = calculateRequiredDeposit(certificates);
+    const deposit = calculateRequiredDeposit(certificates, protocolParams);
     const totalWithdrawal = withdrawals.reduce(
         (acc, withdrawal) => acc.checked_add(bigNumFromStr(withdrawal.amount)),
         bigNumFromStr('0'),
@@ -75,7 +77,7 @@ export const largestFirst = (
         );
     }
 
-    const preparedOutputs = setMinUtxoValueForOutputs(txBuilder, outputs, changeAddress);
+    const preparedOutputs = setMinUtxoValueForOutputs(ctx, outputs, changeAddress);
 
     const addUtxoToSelection = (utxo: Utxo) => {
         const { input, address, amount } = buildTxInput(utxo);
@@ -95,7 +97,7 @@ export const largestFirst = (
 
     // add cost of external outputs to total fee amount
     totalFeesAmount = totalFeesAmount.checked_add(
-        calculateUserOutputsFee(txBuilder, preparedOutputs, changeAddress),
+        calculateUserOutputsFee(ctx, preparedOutputs, changeAddress),
     );
 
     let totalUserOutputsAmount = getUserOutputQuantityWithDeposit(preparedOutputs, deposit);
@@ -108,7 +110,7 @@ export const largestFirst = (
             // Reset previously computed maxOutput in order to correctly calculate a potential change output
             // when new utxo is added to the set
             const [recalculatedMaxOutput] = setMinUtxoValueForOutputs(
-                txBuilder,
+                ctx,
                 [maxOutput],
                 changeAddress,
             );
@@ -119,7 +121,7 @@ export const largestFirst = (
 
         // Calculate change output
         let singleChangeOutput: OutputCost | null = prepareChangeOutput(
-            txBuilder,
+            ctx,
             usedUtxos,
             preparedOutputs,
             changeAddress,
@@ -130,11 +132,7 @@ export const largestFirst = (
 
         if (maxOutput) {
             // set amount for a max output from a changeOutput calculated above
-            const { maxOutput: newMaxOutput } = setMaxOutput(
-                txBuilder,
-                maxOutput,
-                singleChangeOutput,
-            );
+            const { maxOutput: newMaxOutput } = setMaxOutput(ctx, maxOutput, singleChangeOutput);
 
             // change output may be completely removed if all ADA are consumed by max output
             preparedOutputs[maxOutputIndex] = newMaxOutput;
@@ -144,11 +142,11 @@ export const largestFirst = (
             // recalculate fees for outputs as cost for max output may be larger than before
             totalFeesAmount = txBuilder
                 .min_fee()
-                .checked_add(calculateUserOutputsFee(txBuilder, preparedOutputs, changeAddress));
+                .checked_add(calculateUserOutputsFee(ctx, preparedOutputs, changeAddress));
 
             // recalculate change after setting amount to max output
             singleChangeOutput = prepareChangeOutput(
-                txBuilder,
+                ctx,
                 usedUtxos,
                 preparedOutputs,
                 changeAddress,
@@ -160,7 +158,7 @@ export const largestFirst = (
 
         const changeOutputs = singleChangeOutput
             ? splitChangeOutput(
-                  txBuilder,
+                  ctx,
                   singleChangeOutput,
                   changeAddress,
                   options?._maxTokensPerOutput,
@@ -233,7 +231,7 @@ export const largestFirst = (
     }
 
     preparedOutputs.forEach(output => {
-        const txOutput = buildTxOutput(output, changeAddress);
+        const txOutput = buildTxOutput(output, changeAddress, dataCost);
         txBuilder.add_output(txOutput);
     });
 
@@ -241,7 +239,7 @@ export const largestFirst = (
     if (changeOutput) {
         changeOutput.forEach(change => {
             finalOutputs.push(change);
-            txBuilder.add_output(buildTxOutput(change, changeAddress));
+            txBuilder.add_output(buildTxOutput(change, changeAddress, dataCost));
         });
     }
 

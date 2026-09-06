@@ -17292,6 +17292,7 @@ __metadata:
     "@emurgo/cardano-serialization-lib-browser": "npm:13.2.0"
     "@emurgo/cardano-serialization-lib-nodejs": "npm:13.2.0"
     "@trezor/eslint": "workspace:*"
+    "@trezor/utils": "workspace:*"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown

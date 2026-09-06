@@ -38,16 +38,43 @@ const txPlan = coinSelection(
         ttl?: number;
     },
     {
-        feeParams?: { a: string };
+        protocolParams?: Partial<CardanoProtocolParams>;
         debug?: boolean;
         forceLargestFirstSelection?: boolean;
     },
 );
 ```
 
+## Protocol parameters
+
+Every protocol parameter the transaction builder needs is an **input**, not a constant:
+
+```typescript
+import { DEFAULT_CARDANO_PROTOCOL_PARAMS } from '@trezor/network-cardano-coin-selection/src/protocolParams';
+```
+
+`options.protocolParams` is merged over `DEFAULT_CARDANO_PROTOCOL_PARAMS`, so a caller may override
+any subset. The defaults track current Cardano mainnet values and are the documented fallback for
+callers that have no live source.
+
+`getProtocolParamsDrift` compares values obtained from a live source against the compiled-in
+defaults and reports the ones that disagree, so a protocol-parameter update does not pass unnoticed.
+
+The `src/protocolParams` module is deliberately cheap to import — in particular it does not touch
+the serialization lib — so packages that only need the values can read them without pulling in
+~4.4 MB of WASM.
+
 ## Main differences from upstream
 
+- **Protocol parameters are an input.** Upstream hardcoded `min_fee_b`, `key_deposit`,
+  `pool_deposit`, `coins_per_utxo_byte`, `max_value_size` and `max_tx_size` inside `getTxBuilder`
+  and `calculateRequiredDeposit`, exposing only `min_fee_a` through `options.feeParams.a`. That
+  option is replaced by `options.protocolParams`, and `getTxBuilder` by `createTxContext`, which
+  derives both the transaction builder and the min-UTxO data cost from the resolved parameters.
+- **No WASM at module scope.** Upstream's constants module called into the serialization lib while
+  being imported (`NetworkInfo.*()` for the protocol magics and network ids, plus a never-freed
+  `DataCost`), so merely importing a type dragged in the WASM module. Protocol magics and network
+  ids are plain literals now, and the data cost is derived per call.
 - Tests are colocated with their sources, per the monorepo convention.
 - Narrowing added where `noUncheckedIndexedAccess` (enabled repo-wide, not upstream) exposed
-  unchecked index access, and a handful of no-op statements removed to satisfy the shared lint
-  config. Behaviour is unchanged — the full upstream test suite passes as-is.
+  unchecked index access, and a few no-op statements removed to satisfy the shared lint config.

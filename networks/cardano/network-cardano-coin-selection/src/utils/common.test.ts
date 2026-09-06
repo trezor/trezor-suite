@@ -1,5 +1,7 @@
 import * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';
 
+import { CertificateType } from '../constants';
+import { resolveProtocolParams } from '../protocolParams';
 import * as fixtures from './__fixtures__/common';
 import * as utils from './common';
 
@@ -28,7 +30,11 @@ describe('common utils', () => {
 
     fixtures.buildTxOutput.forEach(f => {
         test(f.description, () => {
-            const output = utils.buildTxOutput(f.output, f.dummyAddress);
+            const output = utils.buildTxOutput(
+                f.output,
+                f.dummyAddress,
+                utils.createTxContext(resolveProtocolParams()).dataCost,
+            );
             const assets = utils.multiAssetToArray(output.amount().multiasset());
 
             let address;
@@ -54,5 +60,43 @@ describe('common utils', () => {
             );
             expect(inputs).toStrictEqual(f.result);
         });
+    });
+});
+
+describe('calculateRequiredDeposit', () => {
+    it('charges the supplied key deposit for a stake registration', () => {
+        expect(
+            utils.calculateRequiredDeposit(
+                [{ type: CertificateType.STAKE_REGISTRATION }],
+                resolveProtocolParams({ keyDeposit: '3000000' }),
+            ),
+        ).toBe(3000000);
+    });
+
+    it('refunds the supplied key deposit for a deregistration', () => {
+        expect(
+            utils.calculateRequiredDeposit(
+                [{ type: CertificateType.STAKE_DEREGISTRATION }],
+                resolveProtocolParams({ keyDeposit: '3000000' }),
+            ),
+        ).toBe(-3000000);
+    });
+
+    it('charges the supplied pool deposit for a pool registration', () => {
+        expect(
+            utils.calculateRequiredDeposit(
+                [{ type: CertificateType.STAKE_POOL_REGISTRATION, pool_parameters: {} }],
+                resolveProtocolParams({ poolDeposit: '400000000' }),
+            ),
+        ).toBe(400000000);
+    });
+
+    it('charges nothing for delegation certificates', () => {
+        expect(
+            utils.calculateRequiredDeposit(
+                [{ type: CertificateType.STAKE_DELEGATION, pool: 'abc' }],
+                resolveProtocolParams(),
+            ),
+        ).toBe(0);
     });
 });

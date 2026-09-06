@@ -511,7 +511,7 @@ export const coinSelection = [
         withdrawals: [],
         accountPubKey:
             'ec8fdf616242f430855ad7477acda53395eb30c295f5a7ef038712578877375b5a2f00353c9c5cc88c7ff18e71dc08724d90fc238213b789c0b02438e336be07',
-        options: { feeParams: { a: '0' } },
+        options: { protocolParams: { minFeeA: '0' } },
         result: {
             tx: {
                 body: 'a300d90102818258203c388acb799a37a4f1cc99bec7626637b0b80626b9ef7c7a687282cab701178d000182825839013af9d8434bea8de03cd698d5fa1c6b82b991146a755f509e95d6b53b15ab05b40d24d39c9d14dfec04d87ed071f2c66484b3ab83ab3d603d1a002dc6c082583901f8a4be8308c12b910252b6fd6ee4a98730300009382becc049a6e618476aacdafaf01e68c2f072270f078c9689da6139eba4b309e1d5615f1a001c258b021a00025ef5',

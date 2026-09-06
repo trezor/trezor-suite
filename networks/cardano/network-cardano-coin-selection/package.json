@@ -18,9 +18,6 @@
     "sideEffects": false,
     "type": "module",
     "main": "./src/index.ts",
-    "exports": {
-        ".": "./src/index.ts"
-    },
     "browser": {
         "@emurgo/cardano-serialization-lib-nodejs": "@emurgo/cardano-serialization-lib-browser"
     },
@@ -48,7 +45,8 @@
     },
     "dependencies": {
         "@emurgo/cardano-serialization-lib-browser": "13.2.0",
-        "@emurgo/cardano-serialization-lib-nodejs": "13.2.0"
+        "@emurgo/cardano-serialization-lib-nodejs": "13.2.0",
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*"

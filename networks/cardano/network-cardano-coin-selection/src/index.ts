@@ -97,3 +97,10 @@ export const coinSelection = (
 export * as trezorUtils from './utils/trezor';
 export * as types from './types/types';
 export { CoinSelectionError } from './utils/errors';
+export {
+    type CardanoProtocolParams,
+    DEFAULT_CARDANO_PROTOCOL_PARAMS,
+    getProtocolParamsDrift,
+    type ProtocolParamDrift,
+    resolveProtocolParams,
+} from './protocolParams';
