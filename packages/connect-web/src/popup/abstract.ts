@@ -168,14 +168,16 @@ export abstract class Popup extends EventEmitter {
      * Rejects pending promises so callers get an error instead of hanging forever.
      */
     protected handleOpenFailure(reason: string): void {
-        // A single failed open() can report the failure twice (e.g. the iframe
-        // posts `channel-handshake-error` AND the awaited channel handshake then
-        // rejects). Only handle the first: the first call's reset() recreates a
-        // fresh handshakePromise, and a second call would reject that fresh one
-        // (reset() early-returns because `locked` is already false), leaving a
-        // permanently rejected handshakePromise that fails every later call()
-        // until the page is reloaded. `locked` is true for exactly one open().
-        if (!this.locked) return;
+        // A failure can be reported after reset() already handled this open()
+        // (a duplicate report, or a late webextension callback). reset() has
+        // recreated a fresh handshakePromise for the next open(); rejecting it
+        // here would leave it permanently rejected and fail every later call()
+        // until the page is reloaded.
+        if (!this.locked) {
+            this.logger.debug('Ignoring open failure after reset:', reason);
+
+            return;
+        }
 
         this.logger.error('Failed to open popup:', reason);
         const error = new Error(reason);

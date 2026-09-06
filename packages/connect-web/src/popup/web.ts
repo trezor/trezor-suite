@@ -100,7 +100,7 @@ export class WebPopup extends Popup {
                     popupOrigin,
                 );
 
-                this.handleOpenFailure(message.error);
+                // Rejects the awaited init() below, which reports the failure once.
                 iframeWindowChannel.abortHandshake(message.error);
             }
         });

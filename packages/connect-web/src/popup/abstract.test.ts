@@ -49,11 +49,11 @@ class TestPopup extends Popup {
     }
 }
 
-const createParams = (): Params => ({
+const createParams = (logger = initLog('test')): Params => ({
     popupSrc: 'https://suite.trezor.io/connect-popup',
     manifest: { appName: 'Test app', appUrl: 'https://app.example', email: 'dev@example.com' },
     version: '1.0.0',
-    logger: initLog('test'),
+    logger,
 });
 
 const getHandshakePromise = (popup: Popup) => {
@@ -80,18 +80,24 @@ describe('Popup.handleOpenFailure', () => {
         expect(popup.openCount).toBe(2);
     });
 
-    // Regression: a single failed open() can report the failure twice (iframe
-    // `channel-handshake-error` + the awaited channel handshake rejecting). The
-    // second report used to reject the handshakePromise that the first report's
-    // reset() had just recreated (reset() early-returns the second time because
-    // `locked` is already false), leaving it permanently rejected so every later
-    // call() failed until a page reload.
+    // Regression: a failure reported again after reset() (a duplicate report
+    // of the same open(), or a late webextension callback) used to reject the
+    // handshakePromise that reset() had just recreated (reset() early-returns
+    // the second time because `locked` is already false), leaving it
+    // permanently rejected so every later call() failed until a page reload.
     it('keeps a usable handshakePromise when the same open() failure is reported twice', async () => {
-        const popup = new TestPopup(createParams());
+        const logger = initLog('test');
+        const debug = jest.spyOn(logger, 'debug');
+        const popup = new TestPopup(createParams(logger));
         await popup.focusOrCreate();
 
         popup.failOpen('channel-handshake-error');
         popup.failOpen('handshake-timeout');
+
+        expect(debug).toHaveBeenCalledWith(
+            'Ignoring open failure after reset:',
+            'handshake-timeout',
+        );
 
         // The next call() resolves it via POPUP.CORE_LOADED; a permanently
         // rejected deferred would ignore resolve() and fail this.
