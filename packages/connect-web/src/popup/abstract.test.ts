@@ -1,104 +1,102 @@
-/**
- * @jest-environment jsdom
- */
-
 import { type CoreEventMessage } from '@trezor/connect-common/src/events';
-import { type AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
+import { AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
+import { initLog } from '@trezor/connect-common/src/utils/debug';
 
 import { type Params, Popup } from './abstract';
 
-const createMockChannel = () => ({
-    on: jest.fn(),
-    postMessage: jest.fn(),
-    abortHandshake: jest.fn(),
-    disconnect: jest.fn(),
-    connect: jest.fn(),
-    clear: jest.fn(),
-    resolveMessagePromises: jest.fn(),
-    clearPendingSends: jest.fn(),
-    isConnected: false,
-});
+// Channel without a peer: nothing is ever delivered, so a handshake only
+// settles through the manager's own abortHandshake()/reset() paths.
+class MockChannel extends AbstractMessageChannel<CoreEventMessage> {
+    constructor() {
+        super({
+            sendFn: () => {},
+            channel: { here: '@trezor/connect-web', peer: '@trezor/connect-popup' },
+        });
+    }
+
+    connect(): void {
+        this.isConnected = true;
+    }
+
+    disconnect(): void {
+        this.isConnected = false;
+    }
+}
 
 class TestPopup extends Popup {
+    openCount = 0;
+
     protected createChannel(): AbstractMessageChannel<CoreEventMessage> {
-        return createMockChannel() as unknown as AbstractMessageChannel<CoreEventMessage>;
+        return new MockChannel();
     }
+
     protected open(): Promise<void> {
+        this.openCount += 1;
+
         return Promise.resolve();
     }
+
     protected closePopup(): void {}
+
     protected isOpen(): Promise<boolean> {
         return Promise.resolve(false);
     }
+
     protected onReset(): void {}
 
-    // Test helpers.
-    lock(): void {
-        (this as unknown as { locked: boolean }).locked = true;
-    }
     failOpen(reason: string): void {
         this.handleOpenFailure(reason);
     }
 }
 
-const params = {
+const createParams = (): Params => ({
     popupSrc: 'https://suite.trezor.io/connect-popup',
-    manifest: { appUrl: 'https://app.example', email: 'dev@example.com' },
+    manifest: { appName: 'Test app', appUrl: 'https://app.example', email: 'dev@example.com' },
     version: '1.0.0',
-    logger: {
-        enabled: false,
-        error: jest.fn(),
-        debug: jest.fn(),
-        warn: jest.fn(),
-        log: jest.fn(),
-    },
-} as unknown as Params;
+    logger: initLog('test'),
+});
 
-const settlement = async (promise: Promise<unknown>) => {
-    let state = 'pending';
-    promise.then(
-        () => {
-            state = 'resolved';
-        },
-        () => {
-            state = 'rejected';
-        },
-    );
-    await Promise.resolve();
-    await Promise.resolve();
+const getHandshakePromise = (popup: Popup) => {
+    const { handshakePromise } = popup;
+    if (!handshakePromise) throw new Error('handshakePromise is not set');
 
-    return state;
+    return handshakePromise;
 };
 
 describe('Popup.handleOpenFailure', () => {
+    it('rejects the pending handshake with the failure reason and unlocks the manager', async () => {
+        const popup = new TestPopup(createParams());
+        const abortHandshake = jest.spyOn(popup.channel, 'abortHandshake');
+        await popup.focusOrCreate();
+        const { promise: handshake } = getHandshakePromise(popup);
+
+        popup.failOpen('handshake-timeout');
+
+        await expect(handshake).rejects.toThrow('handshake-timeout');
+        expect(abortHandshake).toHaveBeenCalledWith('handshake-timeout');
+
+        // Unlocked: the next focusOrCreate() opens again instead of focusing.
+        await popup.focusOrCreate();
+        expect(popup.openCount).toBe(2);
+    });
+
     // Regression: a single failed open() can report the failure twice (iframe
     // `channel-handshake-error` + the awaited channel handshake rejecting). The
     // second report used to reject the handshakePromise that the first report's
     // reset() had just recreated (reset() early-returns the second time because
     // `locked` is already false), leaving it permanently rejected so every later
     // call() failed until a page reload.
-    it('keeps a pending, usable handshakePromise after a double open-failure', async () => {
-        const popup = new TestPopup(params);
-        popup.lock();
+    it('keeps a usable handshakePromise when the same open() failure is reported twice', async () => {
+        const popup = new TestPopup(createParams());
+        await popup.focusOrCreate();
 
         popup.failOpen('channel-handshake-error');
         popup.failOpen('handshake-timeout');
 
-        const { handshakePromise } = popup;
-        expect(handshakePromise).toBeDefined();
-        expect(await settlement(handshakePromise!.promise)).toBe('pending');
-
-        // The next call() resolves it via POPUP.CORE_LOADED.
-        handshakePromise!.resolve();
-        await expect(handshakePromise!.promise).resolves.toBeUndefined();
-    });
-
-    it('unlocks so the next open() can proceed', () => {
-        const popup = new TestPopup(params);
-        popup.lock();
-
-        popup.failOpen('handshake-timeout');
-
-        expect((popup as unknown as { locked: boolean }).locked).toBe(false);
+        // The next call() resolves it via POPUP.CORE_LOADED; a permanently
+        // rejected deferred would ignore resolve() and fail this.
+        const handshakePromise = getHandshakePromise(popup);
+        handshakePromise.resolve();
+        await expect(handshakePromise.promise).resolves.toBeUndefined();
     });
 });
