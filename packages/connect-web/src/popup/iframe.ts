@@ -1,15 +1,12 @@
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import { type Deferred, createDeferred } from '@trezor/utils';
+import { getWeakRandomId } from '@trezor/utils/src/getWeakRandomId';
 
-const IFRAME_ID = 'trezor-connect-bootstrap';
 const IFRAME_TIMEOUT = 10000;
 
-const getIframeElement = (): HTMLIFrameElement | undefined =>
-    (document.getElementById(IFRAME_ID) as HTMLIFrameElement | null) ?? undefined;
-
-const createIframeElement = (): HTMLIFrameElement => {
+const createIframeElement = (id: string): HTMLIFrameElement => {
     const instance = document.createElement('iframe');
-    instance.id = IFRAME_ID;
+    instance.id = id;
     instance.frameBorder = '0';
     instance.width = '0px';
     instance.height = '0px';
@@ -23,12 +20,15 @@ const createIframeElement = (): HTMLIFrameElement => {
 };
 
 export const getIframeInstance = () => {
+    // Unique per manager, so two copies of connect-web on one page (or an
+    // iframe left behind by a previous bundle) never share, and never tear
+    // down, each other's iframe.
+    const iframeId = `trezor-connect-bootstrap-${getWeakRandomId(8)}`;
     let initPromise: Deferred<void> | undefined;
     let initTimeout: ReturnType<typeof setTimeout> | undefined;
-    // The element this instance appended, as opposed to one it merely adopted
-    // because it already carried IFRAME_ID (e.g. created by another copy of
-    // connect-web on the same page).
-    let ownedInstance: HTMLIFrameElement | undefined;
+
+    const getIframeElement = (): HTMLIFrameElement | undefined =>
+        (document.getElementById(iframeId) as HTMLIFrameElement | null) ?? undefined;
 
     const clearInitTimeout = () => {
         if (initTimeout) {
@@ -62,18 +62,17 @@ export const getIframeInstance = () => {
         initPromise?.resolve();
     };
 
-    // Tear down the iframe this instance created so the next create() rebuilds
-    // it from scratch, mirroring what a page reload does. A failure that happens
-    // after the iframe has loaded (e.g. the bootstrap handshake) leaves a resolved
-    // initPromise and a live iframe behind, which create() would otherwise reuse.
-    // A load still in flight is rejected so its awaiting create() settles instead
-    // of hanging. An adopted element is left alone.
+    // Tear the iframe down so the next create() rebuilds it from scratch,
+    // mirroring what a page reload does. A failure that happens after the
+    // iframe has loaded (e.g. the bootstrap handshake) leaves a resolved
+    // initPromise and a live iframe behind, which create() would otherwise
+    // reuse. A load still in flight is rejected so its awaiting create()
+    // settles instead of hanging.
     const destroy = () => {
         const pendingInit = initPromise;
         clearInitTimeout();
         initPromise = undefined;
-        ownedInstance?.remove();
-        ownedInstance = undefined;
+        getIframeElement()?.remove();
         pendingInit?.reject(ERRORS.TypedError('Handshake_Error', 'iframe-destroyed'));
     };
 
@@ -82,16 +81,10 @@ export const getIframeInstance = () => {
             return initPromise.promise;
         }
 
-        const instance = getIframeElement();
-        if (instance) {
-            return Promise.resolve();
-        }
-
         const init = createDeferred();
         initPromise = init;
 
-        const newInstance = createIframeElement();
-        ownedInstance = newInstance;
+        const newInstance = createIframeElement(iframeId);
         initTimeout = setTimeout(() => {
             init.reject(ERRORS.TypedError('Handshake_Error', 'iframe-timeout'));
         }, IFRAME_TIMEOUT);

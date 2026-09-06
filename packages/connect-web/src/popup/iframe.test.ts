@@ -123,17 +123,28 @@ describe('getIframeInstance', () => {
         expect(iframe.get()).toBeUndefined();
     });
 
-    it('destroy() leaves an iframe created by another instance alone', async () => {
-        const owner = getIframeInstance();
-        await createAndLoad(owner);
-        const element = getElement(owner);
+    it('gives each instance its own iframe', async () => {
+        const first = getIframeInstance();
+        const second = getIframeInstance();
+        await createAndLoad(first);
+        await createAndLoad(second);
+        expect(getElement(second)).not.toBe(getElement(first));
 
-        // A second instance adopts the existing element instead of creating one.
-        const other = getIframeInstance();
-        await other.create(SRC);
-        other.destroy();
+        second.destroy();
+        expect(second.get()).toBeUndefined();
+        expect(getElement(first).isConnected).toBe(true);
+    });
 
-        expect(element.isConnected).toBe(true);
-        expect(owner.get()).toBe(element);
+    it('does not adopt a foreign iframe left in the document', async () => {
+        const foreign = document.createElement('iframe');
+        foreign.id = 'trezor-connect-bootstrap';
+        document.body.appendChild(foreign);
+
+        const iframe = getIframeInstance();
+        await createAndLoad(iframe);
+        expect(getElement(iframe)).not.toBe(foreign);
+
+        iframe.destroy();
+        expect(foreign.isConnected).toBe(true);
     });
 });
