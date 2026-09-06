@@ -59,7 +59,7 @@ export default class CardanoComposeTransaction extends AbstractMethod<
                         changeAddress.address,
                         !!testnet,
                     ),
-                    { feeParams: feePerUnit ? { a: feePerUnit } : undefined },
+                    { protocolParams: feePerUnit ? { minFeeA: feePerUnit } : undefined },
                 );
 
                 return {
