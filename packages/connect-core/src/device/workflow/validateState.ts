@@ -33,19 +33,16 @@ const preauthorizeState = ({ device, method }: WorkflowContext) => {
     }
 };
 
-// A state is "unexpected" only when it describes a DIFFERENT wallet, i.e. a different
-// `walletDescriptor`. The descriptor is the first Testnet address (44'/1'/0'/0/0), a pure
-// function of (seed, passphrase), so a mismatch is exactly what the "Passphrase is incorrect"
-// (Device_InvalidState) guard exists to catch: a passphrase/seed that derives a wallet the host
-// did not expect.
-//
-// `deviceId` and `instance` are intentionally NOT compared:
-//   - A differing `deviceId` with the same `walletDescriptor` is the same wallet on a
-//     re-provisioned device — wiping and recovering the same seed mints a fresh hardware
-//     `device_id`. Reporting that as "Passphrase is incorrect" (as an earlier revision did) is
-//     wrong: the passphrase is fine, only the device identity changed. Physical-device selection
-//     is enforced upstream in `DeviceList.getDeviceByStaticState`, not here.
-//   - `instance` is a host-side number that can differ across reconnects for the same wallet.
+/**
+ * Two states are "unexpected" when they describe different wallets, i.e. their `walletDescriptor`
+ * (the first Testnet address, a pure function of seed and passphrase) differs. That is the only
+ * thing the "Passphrase is incorrect" (Device_InvalidState) guard exists to catch.
+ *
+ * `deviceId` is not compared: wiping and recovering the same seed mints a fresh hardware
+ * `device_id`, and a host that kept the previous state would otherwise get a passphrase error for
+ * a wallet that did not change. `instance` is not compared either: it is a host-side number that
+ * can differ across reconnects for the same wallet.
+ */
 export const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) => {
     if (!expected || !current) return false;
 
@@ -180,11 +177,10 @@ const validateThpDeviceState = async (context: WorkflowContext) => {
         throw ERRORS.TypedError('Device_InvalidState');
     }
 
-    // Mirror the non-THP `validate` above: refresh the saved state whenever it changed, not only
-    // when it was absent. Reaching here means the wallet matches (a differing `walletDescriptor`
-    // would have thrown), so a difference is a benign `deviceId` change from a re-provisioned
-    // device — adopt it, otherwise `getState()`/`getDeviceState` would keep leaking the stale
-    // `device_id` and later state-only calls would miss in `getDeviceByStaticState`.
+    // Mirror the non-THP `validate` above and adopt the freshly derived id whenever it differs. The
+    // wallet matches at this point (a differing `walletDescriptor` would have thrown), so the
+    // difference is a new `deviceId` of a re-provisioned device or a caller-supplied `instance`.
+    // Adopting it keeps `getState()`/`getDeviceState` reporting the current `device_id`.
     if (!expectedState || expectedState !== uniqueState) {
         device.setState({ staticSessionId: uniqueState });
     }
