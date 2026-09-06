@@ -7,7 +7,7 @@ import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { type CloseActionType, ScreenHeader } from '@suite-native/navigation';
 
-type YieldDepositFlowScreenHeaderProps = {
+type YieldFlowScreenHeaderProps = {
     account: Account;
     closeAction?: () => void;
     closeActionType?: CloseActionType;
@@ -15,13 +15,13 @@ type YieldDepositFlowScreenHeaderProps = {
     tokenContract: TokenAddress;
 };
 
-export const YieldDepositFlowScreenHeader = ({
+export const YieldFlowScreenHeader = ({
     account,
     closeAction,
     closeActionType = 'close',
     title,
     tokenContract,
-}: YieldDepositFlowScreenHeaderProps) => {
+}: YieldFlowScreenHeaderProps) => {
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
 
     return (
