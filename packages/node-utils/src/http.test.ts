@@ -1,14 +1,20 @@
+import { EventEmitter } from 'events';
+
 import { type Log } from '@trezor/utils';
 
 import { getFreePort } from './getFreePort';
 import {
     HttpServer,
+    MAX_TOTAL_BODY_SIZE,
     type ParamsValidatorHandler,
+    PayloadTooLargeError,
     type RequestHandler,
     allowReferers,
     parseBodyJSON,
     parseBodyJSONWithLimit,
     parseBodyText,
+    parseBodyTextHelper,
+    requestBodyBudget,
 } from './http';
 import { parseRequestUrl } from './parseRequestUrl';
 
@@ -976,6 +982,144 @@ describe('HttpServer', () => {
 
             expect(res.status).toEqual(200);
             expect(await res.json()).toEqual({});
+        });
+    });
+
+    describe('request body size cap', () => {
+        const flushAsync = () => new Promise(resolve => setImmediate(resolve));
+
+        const makeReq = (headers: Record<string, string>) => {
+            const req = new EventEmitter() as any;
+            req.headers = headers;
+            req.resume = jest.fn();
+
+            return req;
+        };
+
+        beforeEach(() => {
+            requestBodyBudget.inFlightBytes = 0;
+            requestBodyBudget.maxTotalBytes = MAX_TOTAL_BODY_SIZE;
+        });
+
+        afterEach(() => {
+            requestBodyBudget.maxTotalBytes = MAX_TOTAL_BODY_SIZE;
+        });
+
+        // --- end-to-end over a real socket ---
+
+        test('parseBodyText passes a within-cap body to the handler (200)', async () => {
+            const handler = jest.fn((request, response) => {
+                response.end(request.body);
+            });
+            server.post('/text', [parseBodyText, handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/text`, {
+                method: 'POST',
+                body: 'hello bridge',
+            });
+
+            expect(res.status).toEqual(200);
+            expect(await res.text()).toEqual('hello bridge');
+            expect(handler).toHaveBeenCalled();
+        });
+
+        test('parseBodyText responds 413 for an over-cap body and never calls the handler', async () => {
+            const handler = jest.fn((_request, response) => response.end('ok'));
+            // drive the aggregate guard with a tiny limit so we can trip the 413 path with a
+            // small body instead of streaming the full 8 MiB per-request cap over the socket
+            requestBodyBudget.maxTotalBytes = 10;
+            server.post('/text', [parseBodyText, handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/text`, {
+                method: 'POST',
+                body: 'x'.repeat(50),
+            });
+
+            expect(res.status).toEqual(413);
+            expect((await res.json()).error).toContain('Payload too large');
+            expect(handler).not.toHaveBeenCalled();
+        });
+
+        test('releases the aggregate budget after a completed request (no leak)', async () => {
+            const handler = jest.fn((request, response) => response.end(request.body));
+            server.post('/text', [parseBodyText, handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            await fetch(`http://${address}:${port}/text`, { method: 'POST', body: 'payload' });
+            await flushAsync();
+
+            expect(requestBodyBudget.inFlightBytes).toEqual(0);
+        });
+
+        // --- unit level: every termination path settles once and refunds the budget ---
+
+        test('parseBodyTextHelper resolves an empty string and never charges the budget when there is no body', async () => {
+            const req = makeReq({});
+            await expect(parseBodyTextHelper(req)).resolves.toEqual('');
+            expect(requestBodyBudget.inFlightBytes).toEqual(0);
+        });
+
+        test('parseBodyTextHelper resolves a body within the cap', async () => {
+            const req = makeReq({ 'content-length': '5' });
+            const promise = parseBodyTextHelper(req, 10);
+            req.emit('data', Buffer.from('hello'));
+            req.emit('end');
+
+            await expect(promise).resolves.toEqual('hello');
+            expect(requestBodyBudget.inFlightBytes).toEqual(0);
+        });
+
+        test('parseBodyTextHelper rejects over-cap, drains via resume(), and ignores later chunks', async () => {
+            const req = makeReq({ 'transfer-encoding': 'chunked' });
+            const promise = parseBodyTextHelper(req, 3);
+            req.emit('data', Buffer.from('abcd')); // 4 > 3 -> reject
+            req.emit('data', Buffer.from('should-not-be-buffered'));
+            req.emit('end');
+
+            await expect(promise).rejects.toBeInstanceOf(PayloadTooLargeError);
+            expect(req.resume).toHaveBeenCalled();
+            expect(requestBodyBudget.inFlightBytes).toEqual(0);
+        });
+
+        test('parseBodyTextHelper rejects when the shared aggregate cap is exceeded even though each request is within its own cap', async () => {
+            requestBodyBudget.maxTotalBytes = 10;
+            const first = makeReq({ 'transfer-encoding': 'chunked' });
+            const second = makeReq({ 'transfer-encoding': 'chunked' });
+            // per-request cap is high; only the process-wide aggregate across both trips
+            const p1 = parseBodyTextHelper(first, 1000);
+            const p2 = parseBodyTextHelper(second, 1000);
+            first.emit('data', Buffer.from('123456')); // in-flight 6
+            second.emit('data', Buffer.from('7890123')); // in-flight 13 > 10 -> reject second
+
+            await expect(p2).rejects.toBeInstanceOf(PayloadTooLargeError);
+            first.emit('end');
+            await expect(p1).resolves.toEqual('123456');
+            expect(requestBodyBudget.inFlightBytes).toEqual(0);
+        });
+
+        test('parseBodyTextHelper settles on a socket error instead of hanging, and refunds the budget', async () => {
+            const req = makeReq({ 'transfer-encoding': 'chunked' });
+            const promise = parseBodyTextHelper(req);
+            req.emit('data', Buffer.from('partial'));
+            req.emit('error', new Error('socket boom'));
+
+            await expect(promise).rejects.toThrow('socket boom');
+            expect(requestBodyBudget.inFlightBytes).toEqual(0);
+        });
+
+        test('parseBodyTextHelper settles on a premature close (client abort), and refunds the budget', async () => {
+            const req = makeReq({ 'transfer-encoding': 'chunked' });
+            const promise = parseBodyTextHelper(req);
+            req.emit('data', Buffer.from('partial'));
+            req.emit('close');
+
+            await expect(promise).rejects.toThrow('closed before completion');
+            expect(requestBodyBudget.inFlightBytes).toEqual(0);
         });
     });
 });

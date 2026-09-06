@@ -647,8 +647,63 @@ export const allowReferers =
         }
     };
 
-export const parseBodyTextHelper = (request: Request) =>
-    new Promise<string>(resolve => {
+/**
+ * Upper bound on a single request body we buffer in memory before rejecting with 413.
+ *
+ * Only the bridge `/call` and `/post` routes carry a large body — a hex-encoded device
+ * message (`data`), i.e. ~2x the message byte size. The largest legitimate one is a
+ * firmware-upload frame: on T1 the whole image (<= ~960 kB per `firmwareSizeMap`) is sent
+ * in a single `FirmwareUpload` → ~1.9 MiB of hex. T2/T3 chunk the upload device-side via
+ * `FirmwareRequest` (~128 kB per chunk), so no single message carries a whole image, and
+ * everything else (signing, `/listen` descriptors, `/acquire` params, `/read`) is a few
+ * kB. 8 MiB clears the real worst case (~1.9 MiB) with a wide margin. Without a cap a
+ * caller streaming an unbounded chunked body would grow the buffer until `Buffer.concat`
+ * OOMs and takes down the bridge process.
+ */
+export const MAX_BODY_SIZE = 8 * 1024 * 1024;
+
+/**
+ * Upper bound on the sum of all request bodies buffered concurrently across the whole
+ * process. The per-request cap alone does not bound memory: N simultaneous in-flight
+ * requests, each just under `MAX_BODY_SIZE`, could still buffer N × 8 MiB. This aggregate
+ * budget caps total in-flight buffering regardless of connection count. It is generous
+ * relative to real traffic (a single ~1.9 MiB firmware upload at a time) so it never
+ * rejects legitimate requests, but it turns an unbounded fan-out into a hard ceiling.
+ */
+export const MAX_TOTAL_BODY_SIZE = 32 * 1024 * 1024;
+
+/**
+ * Live accounting for {@link MAX_TOTAL_BODY_SIZE}. Exported so tests can drive the
+ * aggregate guard with a small limit and assert the budget is released on every code path.
+ */
+export const requestBodyBudget = {
+    inFlightBytes: 0,
+    maxTotalBytes: MAX_TOTAL_BODY_SIZE,
+};
+
+export class PayloadTooLargeError extends Error {
+    constructor() {
+        super('Payload too large');
+        this.name = 'PayloadTooLargeError';
+    }
+}
+
+/**
+ * A body-parse rejection is either an over-cap body (respond 413) or a dead socket
+ * (socket error / client abort — the connection is already gone, so nothing to respond
+ * to). A synchronous throw from a *downstream* handler never reaches here: it is raised in
+ * the `onFulfilled` branch of the parser's `.then(...)`, so it surfaces as an unhandled
+ * rejection (handled process-wide) instead of being mis-reported as a body error.
+ */
+const handleBodyParseRejection = (error: unknown, response: Response) => {
+    if (error instanceof PayloadTooLargeError && response.writable) {
+        response.statusCode = 413;
+        response.end(JSON.stringify({ error: 'Payload too large' }));
+    }
+};
+
+export const parseBodyTextHelper = (request: Request, maxBytes: number = MAX_BODY_SIZE) =>
+    new Promise<string>((resolve, reject) => {
         const hasData =
             (request.headers['content-length'] &&
                 Number.parseInt(request.headers['content-length']) > 0) ||
@@ -657,100 +712,105 @@ export const parseBodyTextHelper = (request: Request) =>
         if (!hasData) {
             return resolve('');
         }
+
         const tmp: Buffer[] = [];
+        // bytes this request has added to the shared budget so far
+        let charged = 0;
+        let settled = false;
+
+        // Settle exactly once and return this request's bytes to the shared budget. Every
+        // termination path (end / cap / socket error / premature close) funnels through
+        // here, so the aggregate budget can never leak and the buffered chunks are always
+        // released for garbage collection.
+        const settle = (finalize: () => void) => {
+            if (settled) return;
+            settled = true;
+            requestBodyBudget.inFlightBytes -= charged;
+            finalize();
+            // Drop references to the buffered chunks now, so their memory is freed together
+            // with the budget refund instead of lingering until `request` is garbage
+            // collected. On the cap path this would otherwise keep ~maxBytes resident while
+            // the stream drains; on the resolve path a long-poll (/listen) holds `request` —
+            // and therefore this closure — open for a long time. `finalize` has already
+            // produced the concatenated body above, so clearing `tmp` here is safe.
+            tmp.length = 0;
+        };
+
         request
-            .on('data', chunk => {
+            .on('data', (chunk: Buffer) => {
+                if (settled) return;
+                charged += chunk.length;
+                requestBodyBudget.inFlightBytes += chunk.length;
+                // per-request cap OR process-wide aggregate cap
+                if (
+                    charged > maxBytes ||
+                    requestBodyBudget.inFlightBytes > requestBodyBudget.maxTotalBytes
+                ) {
+                    // stop buffering, drain-and-discard the rest of the stream, and bail
+                    request.resume();
+                    settle(() => reject(new PayloadTooLargeError()));
+
+                    return;
+                }
                 tmp.push(chunk);
             })
-            .on('end', () => {
-                const body = Buffer.concat(tmp).toString();
-                // at this point, `body` has the entire request body stored in it as a string
-                resolve(body);
-            });
+            .on('end', () => settle(() => resolve(Buffer.concat(tmp).toString())))
+            // A socket error must settle the promise; otherwise it hangs forever, pinning
+            // the buffered chunks and this request's slice of the aggregate budget.
+            .on('error', error => settle(() => reject(error)))
+            // The socket can also go away without `end`/`error` (client abort). Settle so a
+            // flood of aborted uploads cannot leak the buffer or the aggregate budget.
+            .on('close', () =>
+                settle(() => reject(new Error('Request stream closed before completion'))),
+            );
     });
 
 /**
- * set request.body as parsed JSON
- */
-export const parseBodyJSON: RequestHandler<unknown, JSON> = (request, response, next) => {
-    parseBodyTextHelper(request)
-        .then(body => {
-            if (!body) {
-                return {};
-            }
-
-            return JSON.parse(body);
-        })
-        .then(body => {
-            next({ ...request, body }, response);
-        })
-        .catch(error => {
-            response.statusCode = 400;
-            response.end(JSON.stringify({ error: `Invalid json body: ${error.message}` }));
-        });
-};
-
-/**
- * Factory that creates a body parser middleware with a maximum body size limit.
- * Returns 413 if the body exceeds the limit.
+ * Factory that creates a JSON body-parser middleware with a maximum body size limit.
+ * Buffers at most `maxBytes`; responds 413 on an over-cap body and 400 on malformed JSON.
+ * Shares the single capping implementation in {@link parseBodyTextHelper}.
  */
 export const parseBodyJSONWithLimit =
     (maxBytes: number): RequestHandler<unknown, JSON> =>
     (request, response, next) => {
-        const hasData =
-            (request.headers['content-length'] &&
-                Number.parseInt(request.headers['content-length']) > 0) ||
-            request.headers['transfer-encoding'] === 'chunked';
-
-        if (!hasData) {
-            next(
-                Object.assign(request, { body: {} }) as unknown as RequestWithParams<JSON>,
-                response,
-            );
-
-            return;
-        }
-
-        const chunks: Buffer[] = [];
-        let size = 0;
-        let rejected = false;
-
-        request
-            .on('data', (chunk: Buffer) => {
-                if (rejected) return;
-                size += chunk.length;
-                if (size > maxBytes) {
-                    rejected = true;
-                    request.resume();
-                    response.statusCode = 413;
-                    response.end(JSON.stringify({ error: 'Payload too large' }));
+        parseBodyTextHelper(request, maxBytes).then(
+            text => {
+                let body: unknown;
+                try {
+                    body = text ? JSON.parse(text) : {};
+                } catch (error) {
+                    // malformed JSON is a client error and the socket is still open
+                    if (response.writable) {
+                        response.statusCode = 400;
+                        response.end(
+                            JSON.stringify({
+                                error: `Invalid json body: ${error instanceof Error ? error.message : String(error)}`,
+                            }),
+                        );
+                    }
 
                     return;
                 }
-                chunks.push(chunk);
-            })
-            .on('end', () => {
-                if (rejected) return;
-                try {
-                    const text = Buffer.concat(chunks).toString();
-                    const body = text ? JSON.parse(text) : {};
-                    next(Object.assign(request, { body }), response);
-                } catch (error) {
-                    response.statusCode = 400;
-                    response.end(
-                        JSON.stringify({
-                            error: `Invalid json body: ${error instanceof Error ? error.message : String(error)}`,
-                        }),
-                    );
-                }
-            });
+                next(
+                    Object.assign(request, { body }) as unknown as RequestWithParams<JSON>,
+                    response,
+                );
+            },
+            error => handleBodyParseRejection(error, response),
+        );
     };
+
+/**
+ * set request.body as parsed JSON
+ */
+export const parseBodyJSON: RequestHandler<unknown, JSON> = parseBodyJSONWithLimit(MAX_BODY_SIZE);
 
 /**
  * set request.body as string
  */
 export const parseBodyText: RequestHandler<unknown, string> = (request, response, next) => {
-    parseBodyTextHelper(request).then(body => {
-        next({ ...request, body }, response);
-    });
+    parseBodyTextHelper(request).then(
+        body => next({ ...request, body }, response),
+        error => handleBodyParseRejection(error, response),
+    );
 };
