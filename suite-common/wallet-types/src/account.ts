@@ -174,6 +174,9 @@ export const createAccountKey = ({
 export type AccountDescriptor = string & Branded<'AccountDescriptor'>;
 export const asAccountDescriptor = (value: string) => value as AccountDescriptor;
 
+/** An earn opportunity whose onboarding the user confirmed; built by `getEarnOpportunityKey`. */
+export type EarnOpportunityKey = `staking:${string}` | `yield:${string}`;
+
 export type AccountBase = {
     deviceState: StaticSessionId;
     key: AccountKey;
