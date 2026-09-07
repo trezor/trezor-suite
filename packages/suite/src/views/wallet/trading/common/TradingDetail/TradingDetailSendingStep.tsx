@@ -72,7 +72,10 @@ export const TradingDetailSendingStep = ({
                         </InfoItem>
                     )}
                     {!!txIdLink && (
-                        <InfoItem label={<Translation id="TR_TXID" />} direction="row">
+                        <InfoItem
+                            label={<Translation id="TR_TRADING_DETAIL_TRANSACTION_ID" />}
+                            direction="row"
+                        >
                             {txIdLink}
                         </InfoItem>
                     )}

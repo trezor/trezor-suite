@@ -1,12 +1,23 @@
+import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
+
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
+import { TradingDetailTerminalDetails } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';
 import { TradingDetailTerminalState } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalState';
 
-export const TradingBuyDetailPaymentFailed = () => {
+type TradingBuyDetailPaymentFailedProps = {
+    trade: BuyTrade;
+    provider?: BuyProviderInfo;
+};
+
+export const TradingBuyDetailPaymentFailed = ({
+    trade,
+    provider,
+}: TradingBuyDetailPaymentFailedProps) => {
     const dispatch = useDispatch();
 
     const handleClick = () => dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
@@ -22,6 +33,8 @@ export const TradingBuyDetailPaymentFailed = () => {
                     <Translation id="TR_BUY_DETAIL_ERROR_BUTTON" />
                 </Button>
             }
-        />
+        >
+            <TradingDetailTerminalDetails provider={provider} trade={trade} />
+        </TradingDetailTerminalState>
     );
 };
