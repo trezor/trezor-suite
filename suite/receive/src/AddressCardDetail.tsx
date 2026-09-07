@@ -16,6 +16,9 @@ import { CoinQrCode } from './CoinQrCode';
 import { type ReceiveAddressItem } from './address/buildReceiveAddressItems';
 import { canShareAddress, shareAddress } from './sharing/share';
 
+const QR_CODE_SIZE = 200;
+const COMPACT_QR_CODE_SIZE = 148;
+
 type AddressCardDetailProps = {
     item: ReceiveAddressItem;
     accountKey: AccountKey;
@@ -65,16 +68,22 @@ export const AddressCardDetail = ({
 
     const isUtxo = isUtxoBased(account);
     const hasLabel = !!item.label;
+    const qrCodeSize = isBelowTablet ? COMPACT_QR_CODE_SIZE : QR_CODE_SIZE;
 
     return (
         <Box padding={24}>
             <Grid
-                columns={isBelowTablet ? '1fr' : 'minmax(max-content, 1fr) auto'}
+                columns={isBelowTablet ? '1fr' : 'minmax(0, 1fr) auto'}
                 gap={24}
                 alignItems="stretch"
             >
-                <Column gap={32} alignItems="flex-start" justifyContent="space-between">
-                    <Column gap={isUtxo ? 8 : 16} alignItems="flex-start">
+                <Column
+                    gap={32}
+                    alignItems="flex-start"
+                    justifyContent="space-between"
+                    minWidth={0}
+                >
+                    <Column gap={isUtxo ? 8 : 16} alignItems="flex-start" minWidth={0}>
                         {isUtxo ? (
                             item.pathIndex !== undefined && (
                                 <Text
@@ -90,29 +99,28 @@ export const AddressCardDetail = ({
                                 <Translation id="RECEIVE_ADDRESS_TITLE" />
                             </Text>
                         )}
-                        <Column gap={8} alignItems="flex-start">
-                            <Text
+                        <Column gap={8} alignItems="flex-start" minWidth={0}>
+                            <AddressLabeling
+                                accountDescriptor={account.descriptor}
+                                networkSymbol={account.symbol}
+                                deviceStaticSessionId={account.deviceState}
+                                address={item.address}
+                                label={item.label}
                                 typographyStyle={hasLabel ? 'headline-sm' : 'headline-md'}
-                                data-testid="@wallet/receive/address"
-                            >
-                                <AddressLabeling
-                                    accountDescriptor={account.descriptor}
-                                    networkSymbol={account.symbol}
-                                    deviceStaticSessionId={account.deviceState}
-                                    address={item.address}
-                                    label={item.label}
-                                />
-                            </Text>
+                                isAddressTruncated={false}
+                                isDisplayValueMultiline
+                                addressDataTestId={hasLabel ? undefined : '@wallet/receive/address'}
+                            />
                             {hasLabel && (
                                 <Address
                                     value={item.address}
-                                    isTruncated
                                     typographyStyle="headline-sm"
+                                    data-testid="@wallet/receive/address"
                                 />
                             )}
                         </Column>
                     </Column>
-                    <Row gap={12} flexWrap="wrap">
+                    <Row gap={12} flexWrap="wrap" width="100%">
                         <Button
                             size="large"
                             iconLeft={CopyIcon}
@@ -147,12 +155,7 @@ export const AddressCardDetail = ({
                         </Button>
                     </Row>
                 </Column>
-                <Box
-                    aspectRatio="1"
-                    width={isBelowTablet ? 148 : undefined}
-                    height={isBelowTablet ? 148 : '100%'}
-                    maxHeight={200}
-                >
+                <Box aspectRatio="1" width={qrCodeSize} maxWidth="100%">
                     <CoinQrCode value={item.address} symbol={account.symbol} />
                 </Box>
             </Grid>

@@ -17,7 +17,7 @@ const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
     model === Model.T3W1 ? btcDiscoveryFinishedStateT3W1 : btcDiscoveryFinishedStateT3T1,
 );
-const expectedReceiveAddress = 'bc1q czeu ... xlma n6';
+const expectedReceiveAddress = 'bc1q czeu 64q3 86jv rdd7 ks8g m3t9 jfwa rs83 xlma n6';
 
 describe('Receive [@androidOnly @T3T1 @T3W1]', () => {
     beforeEach(async () => {

@@ -74,7 +74,7 @@ export const ReceiveAddressDetails = ({
                 <ClipboardCopyMenu onCopy={handleCopyAddress} style={applyStyle(addressContainer)}>
                     <AddressFormatter
                         value={address}
-                        format="long"
+                        format="full"
                         variant="headline-sm"
                         textAlign="center"
                         testID="@receive/confirmed-receive-address"
