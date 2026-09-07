@@ -1,15 +1,21 @@
 import { encodeErrorResult, parseAbi } from 'viem';
 
 import { createResolveNamedAddress } from './resolveNamedAddress';
+import { createResolveViaBlockbook } from './resolveNamedAddressBB';
+import { createUniversalResolver } from './universalResolver';
 
 const mockBlockchainEvmRpcCall = jest.fn();
 const mockGetAccountInfo = jest.fn();
 
-const { resolveNamedAddress } = createResolveNamedAddress({
-    getTrezorConnect: () => ({
-        blockchainEvmRpcCall: mockBlockchainEvmRpcCall,
-        getAccountInfo: mockGetAccountInfo,
-    }),
+const getTrezorConnect = () => ({
+    blockchainEvmRpcCall: mockBlockchainEvmRpcCall,
+    getAccountInfo: mockGetAccountInfo,
+});
+
+const { resolveNamedAddressOnchain } = createUniversalResolver({ getTrezorConnect });
+const resolveNamedAddress = createResolveNamedAddress({
+    resolveNamedAddressOnchain,
+    resolveViaBlockbook: createResolveViaBlockbook({ getTrezorConnect }),
 });
 
 /**

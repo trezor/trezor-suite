@@ -3,16 +3,9 @@ import { createResolveNamedAddress } from './resolveNamedAddress';
 const mockResolveOnchain = jest.fn();
 const mockResolveViaBlockbook = jest.fn();
 
-jest.mock('./universalResolver', () => ({
-    createUniversalResolver: () => ({ resolveNamedAddressOnchain: mockResolveOnchain }),
-}));
-
-jest.mock('./resolveNamedAddressBB', () => ({
-    createResolveViaBlockbook: () => mockResolveViaBlockbook,
-}));
-
-const { resolveNamedAddress } = createResolveNamedAddress({
-    getTrezorConnect: () => ({ getAccountInfo: jest.fn(), blockchainEvmRpcCall: jest.fn() }),
+const resolveNamedAddress = createResolveNamedAddress({
+    resolveNamedAddressOnchain: mockResolveOnchain,
+    resolveViaBlockbook: mockResolveViaBlockbook,
 });
 
 const VITALIK_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';

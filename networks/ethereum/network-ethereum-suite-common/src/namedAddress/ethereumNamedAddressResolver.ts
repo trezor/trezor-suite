@@ -5,6 +5,8 @@ import type {
 } from '@trezor/network-module-suite-common-types';
 
 import { isAddressLike, isNameLike, supportsNamedAddress } from './namedAddressUtils';
+import { createResolveNamedAddress } from './resolveNamedAddress';
+import { createResolveViaBlockbook } from './resolveNamedAddressBB';
 
 type EthereumNamedAddressResolverDeps = NetworkSuiteCommonModuleApi;
 
@@ -19,8 +21,18 @@ type EthereumNamedAddressResolver = NamedAddressResolver<EthereumNetworkSymbol>;
 export const createEthereumNamedAddressResolver = (
     deps: EthereumNamedAddressResolverDeps,
 ): EthereumNamedAddressResolver => {
-    const loadResolver = async () =>
-        (await import('./resolveNamedAddress')).createResolveNamedAddress(deps);
+    const loadResolver = async () => {
+        const { createUniversalResolver } = await import('./universalResolver');
+        const universalResolver = createUniversalResolver(deps);
+
+        return {
+            ...universalResolver,
+            resolveNamedAddress: createResolveNamedAddress({
+                resolveNamedAddressOnchain: universalResolver.resolveNamedAddressOnchain,
+                resolveViaBlockbook: createResolveViaBlockbook(deps),
+            }),
+        };
+    };
 
     return {
         supportsNamedAddress,
