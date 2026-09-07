@@ -28,17 +28,17 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
             settingsPage,
             walletPage,
             tradingPage,
-            tradingMockNew,
+            tradingMock,
             tradingResponses,
         }) => {
-            tradingMockNew.setTradeFlow('sell');
-            await tradingMockNew.rewriteProviderRedirect();
-            await tradingMockNew.setWatchFields({
+            tradingMock.setTradeFlow('sell');
+            await tradingMock.rewriteProviderRedirect();
+            await tradingMock.setWatchFields({
                 destinationAddress: depositAddress,
                 destinationPaymentExtraId: depositPaymentExtraId,
             });
-            await tradingMockNew.setStatus('SEND_CRYPTO');
-            const btcBackend = await tradingMockNew.startBackend('btc');
+            await tradingMock.setStatus('SEND_CRYPTO');
+            const btcBackend = await tradingMock.startBackend('btc');
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
@@ -60,7 +60,7 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
             page,
             device,
             devicePrompt,
-            tradingMockNew,
+            tradingMock,
             toastSection,
             tradingResponses,
         }) => {
@@ -182,13 +182,13 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 // The row truncates the text, so the full txid is only in the id attribute.
                 await expect(tradingPage.transactionDetailTxid).toHaveAttribute(
                     'id',
-                    tradingMockNew.lastBroadcastTxid,
+                    tradingMock.lastBroadcastTxid,
                 );
             });
 
             for (const phase of sellStatusFlow) {
                 await test.step(`Wait for status change to ${phase.status}`, async () => {
-                    await tradingMockNew.advanceStatus(phase.status);
+                    await tradingMock.advanceStatus(phase.status);
                     const values = phase.translationValues?.(providerName);
                     await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                         phase.translationKey,

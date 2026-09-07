@@ -51,10 +51,7 @@ const assertPassphraseEnv = () => {
 // Everything passes through untouched except the transaction broadcast (blocked by the
 // custom backend so no funds ever leave the account) and the post-send watch status
 // (mocked, since the provider never receives the blocked payment so it would never progress).
-//
-// `New` is transient: it coexists with the legacy page.route-based `TradingMock` during the
-// migration and is renamed once the legacy one is gone (see e2e-mocking-target-state.md).
-export class TradingMockNew {
+export class TradingMock {
     private flow?: TradeFlow;
     private backend?: TradingChainBackend;
     private capturedTxSimulation: TxSimulationResult | null = null;
@@ -73,9 +70,7 @@ export class TradingMockNew {
 
     private get tradeFlow(): TradeFlow {
         if (!this.flow) {
-            throw new Error(
-                'TradingMockNew: setTradeFlow(...) must be called first (in beforeEach).',
-            );
+            throw new Error('TradingMock: setTradeFlow(...) must be called first (in beforeEach).');
         }
 
         return this.flow;

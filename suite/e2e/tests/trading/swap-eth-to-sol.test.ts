@@ -17,9 +17,9 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(
-        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
-            tradingMockNew.setTradeFlow('swap');
-            const ethBackend = await tradingMockNew.startBackend('eth');
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
+            tradingMock.setTradeFlow('swap');
+            const ethBackend = await tradingMock.startBackend('eth');
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
@@ -34,7 +34,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test(
         'Swap ETH to SOL',
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
-        async ({ tradingPage, page, device, devicePrompt, tradingMockNew, tradingResponses }) => {
+        async ({ tradingPage, page, device, devicePrompt, tradingMock, tradingResponses }) => {
             await test.step('Fill in a Swap form', async () => {
                 await tradingPage.fillSwapForm({
                     amount: sendAmount,
@@ -107,7 +107,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Send crypto to provider (broadcast blocked by mock)', async () => {
-                await tradingMockNew.setStatus('SENDING');
+                await tradingMock.setStatus('SENDING');
                 await page.clock.install();
                 await devicePrompt.sendButton.click();
 
@@ -124,7 +124,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             for (const step of swapStatusFlow) {
                 await test.step(`Wait for status change to ${step.status}`, async () => {
-                    await tradingMockNew.advanceStatus(step.status);
+                    await tradingMock.advanceStatus(step.status);
                     const values = step.translationValues?.(providerName);
                     await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                         step.translationKey,

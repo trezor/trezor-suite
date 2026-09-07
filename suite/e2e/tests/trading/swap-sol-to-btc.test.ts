@@ -17,10 +17,10 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(
-        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
-            tradingMockNew.setTradeFlow('swap');
-            await tradingMockNew.mockProviderStatusPage();
-            const solBackend = await tradingMockNew.startBackend('sol');
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
+            tradingMock.setTradeFlow('swap');
+            await tradingMock.mockProviderStatusPage();
+            const solBackend = await tradingMock.startBackend('sol');
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
@@ -40,7 +40,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             page,
             device,
             devicePrompt,
-            tradingMockNew,
+            tradingMock,
             tradingResponses,
             target,
         }) => {
@@ -117,7 +117,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Send crypto to provider (broadcast blocked by mock)', async () => {
-                await tradingMockNew.setStatus('SENDING');
+                await tradingMock.setStatus('SENDING');
                 await page.clock.install();
                 await devicePrompt.sendButton.click();
 
@@ -134,7 +134,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             for (const phase of swapStatusFlow) {
                 await test.step(`Wait for status change to ${phase.status}`, async () => {
-                    await tradingMockNew.advanceStatus(phase.status);
+                    await tradingMock.advanceStatus(phase.status);
                     const values = phase.translationValues?.(providerName);
                     await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                         phase.translationKey,

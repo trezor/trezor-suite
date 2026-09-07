@@ -264,22 +264,6 @@ export class TradingPage {
         await this.quotes.waitForSync();
     }
 
-    @step()
-    async fillSellFormMinimumQuoteError(
-        amount: string = '0.00000001',
-        country: TradingCountryCode = 'CZ',
-    ) {
-        await this.inputs.selectCountryOfResidence(country);
-        await this.inputs.cryptoAmount.fill(amount);
-        await this.page.waitForRequest(tradeEndpoint.sellQuotes);
-        await expect(
-            this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
-            'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
-        ).toBeHidden();
-
-        await expect(this.quotes.loadingSpinner).toBeHidden({ timeout: 30000 });
-    }
-
     /**
      * Fills the swap form with the specified sell and buy assets and amount.
      *
