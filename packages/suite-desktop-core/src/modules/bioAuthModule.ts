@@ -6,6 +6,7 @@ import { TypedEmitter, serializeError } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
 import { type Dependencies } from './module';
+import { isMainWindowUsable } from '../libs/isMainWindowUsable';
 
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 const BLUR_LOCK_TIMEOUT_MS = 5 * 60 * 1000;
@@ -319,9 +320,12 @@ export const initBioAuthModule = ({
                     if (prevAvailable === value) return;
                     prevAvailable = value;
                     logger.info('bioAuth', `Availability changed: ${value}`);
-                    mainWindowProxy
-                        .getInstance()
-                        ?.webContents.send('bio-auth/bio-auth-availability-changed', value);
+                    const mainWindow = mainWindowProxy.getInstance();
+
+                    // Main Suite window was closed, no point in responding with IPC event.
+                    if (!isMainWindowUsable(mainWindow)) return;
+
+                    mainWindow.webContents.send('bio-auth/bio-auth-availability-changed', value);
                 });
             }, 10_000);
         });
