@@ -1,6 +1,6 @@
 import type { GetTrezorConnectDep } from '@trezor/network-module-suite-common-types';
 
-import type { ResolveNamedAddress as ResolveViaBlockbook } from './ResolveNamedAddress';
+import type { ResolveNamedAddress } from './ResolveNamedAddress';
 
 export type ResolveViaBlockbookDeps = GetTrezorConnectDep<'getAccountInfo'>;
 
@@ -14,8 +14,9 @@ import { isAddressLike } from './namedAddressUtils';
  * `@trezor/connect` getAccountInfo). We request `details: 'basic'` since we only need
  * the resolved descriptor, not the account's transaction history.
  */
+// eslint-disable-next-line local-rules/enforce-di-factory-contracts -- Blockbook implements the shared ResolveNamedAddress contract.
 export const createResolveViaBlockbook =
-    (deps: ResolveViaBlockbookDeps): ResolveViaBlockbook =>
+    (deps: ResolveViaBlockbookDeps): ResolveNamedAddress =>
     async (value, symbol) => {
         const result = await deps.getTrezorConnect().getAccountInfo({
             descriptor: value,
