@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { RoundedIcon } from '@suite-native/atoms';
+import { IconCircle } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -56,7 +56,7 @@ export const AdaAccountsListStakingItem = ({
             {...props}
             isLast={isLast}
             showDivider={!isLast}
-            icon={<RoundedIcon name="piggyBankFilled" intent="neutral" size={32} />}
+            icon={<IconCircle name="piggyBankFilled" intent="neutral" size={32} />}
             title={<Translation id="accountList.staking" />}
             mainValue={mainValue}
             secondaryValue={undefined}

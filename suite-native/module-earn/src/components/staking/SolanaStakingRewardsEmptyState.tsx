@@ -1,10 +1,10 @@
-import { RoundedIcon, Text, VStack } from '@suite-native/atoms';
+import { IconCircle, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 export const SolanaStakingRewardsEmptyState = () => (
     <VStack marginTop="sp24" marginHorizontal="sp16" spacing="sp16" alignItems="center">
-        <RoundedIcon name="arrowLineDown" intent="neutral" size={48} />
+        <IconCircle name="arrowLineDown" intent="neutral" size={48} />
         <VStack alignItems="center" spacing="sp4">
             <Text textAlign="center" variant="headline-sm">
                 <Translation id="earn.stakingManagementScreen.rewardsList.empty.title" />

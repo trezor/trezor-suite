@@ -1,7 +1,7 @@
 import { type SolRewardsHistoryRewardsItem } from '@suite-common/earn-staking-api';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, Card, HStack, RoundedIcon, Text, VStack } from '@suite-native/atoms';
+import { Box, Card, HStack, IconCircle, Text, VStack } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
@@ -24,7 +24,7 @@ export const SolanaStakingRewardItem = ({ reward, symbol }: SolanaStakingRewardI
             </Text>
             <Card>
                 <HStack alignItems="center" spacing="sp12">
-                    <RoundedIcon name="piggyBank" intent="neutral" size={40} />
+                    <IconCircle name="piggyBank" intent="neutral" size={40} />
                     <VStack flex={1} spacing="sp2">
                         <Text variant="body-md">
                             <Translation id="earn.stakingManagementScreen.rewardsList.itemLabel" />

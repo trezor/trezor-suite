@@ -8,7 +8,7 @@ import { type Color } from '@trezor/theme';
 
 import { BannerInline, type BannerInlineProps } from '../BannerInline/BannerInline';
 import { Box } from '../Box';
-import { RoundedIcon, type RoundedIconIntent } from '../Icon/RoundedIcon';
+import { IconCircle, type IconCircleIntent } from '../Icon/IconCircle';
 import { Loader } from '../Loader';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
@@ -30,7 +30,7 @@ export type CompactCardWithIconLayoutProps = {
 } & Omit<CardProps, 'children' | 'borderColor'>;
 
 type CardColorScheme = {
-    iconIntent: RoundedIconIntent;
+    iconIntent: IconCircleIntent;
     titleColor: Color;
     subtitleColor: Color;
     caretColor: Color;
@@ -97,7 +97,7 @@ export const CompactCardWithIconLayout = ({
                         spacing="sp12"
                         alignItems="center"
                     >
-                        <RoundedIcon intent={iconIntent} name={icon} />
+                        <IconCircle intent={iconIntent} name={icon} />
                         <VStack spacing="sp2" style={applyStyle(contentStyle)}>
                             <Text color={titleColor}>{title}</Text>
                             {subtitle && (

@@ -1,12 +1,12 @@
 import { type TradingTransactionStatus } from '@suite-common/trading';
-import { RoundedIcon, type RoundedIconIntent } from '@suite-native/atoms';
+import { IconCircle, type IconCircleIntent } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 
 type TradeStatusIconConfig = {
     iconName: IconName;
-    intent: RoundedIconIntent;
+    intent: IconCircleIntent;
     accessibilityLabelId: TxKeyPath;
 };
 
@@ -80,7 +80,7 @@ export const TradeStatusIcon = ({ status }: TradeStatusIconProps) => {
     }
 
     return (
-        <RoundedIcon
+        <IconCircle
             name={config.iconName}
             intent={config.intent}
             size={24}

@@ -3,23 +3,23 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import { icons } from '@suite-native/icons';
 
 import {
-    ROUNDED_ICON_INTENTS,
-    ROUNDED_ICON_SIZES,
-    RoundedIcon as RoundedIconComponent,
-    type RoundedIconProps,
-} from '../../Icon/RoundedIcon';
+    ICON_CIRCLE_INTENTS,
+    ICON_CIRCLE_SIZES,
+    IconCircle as IconCircleComponent,
+    type IconCircleProps,
+} from '../../Icon/IconCircle';
 
-type RoundedIconStory = StoryObj<RoundedIconProps>;
+type IconCircleStory = StoryObj<IconCircleProps>;
 
-const meta: Meta<RoundedIconProps> = {
-    title: 'Atoms',
-    component: RoundedIconComponent,
+const meta: Meta<IconCircleProps> = {
+    title: 'Atoms/Icons',
+    component: IconCircleComponent,
 };
 
 export default meta;
 
-export const RoundedIcon: RoundedIconStory = {
-    name: 'RoundedIcon',
+export const IconCircle: IconCircleStory = {
+    name: 'IconCircle',
     args: {
         name: 'flag',
         intent: 'neutral',
@@ -32,11 +32,11 @@ export const RoundedIcon: RoundedIconStory = {
         },
         intent: {
             control: { type: 'select' },
-            options: ROUNDED_ICON_INTENTS,
+            options: ICON_CIRCLE_INTENTS,
         },
         size: {
             control: { type: 'select' },
-            options: ROUNDED_ICON_SIZES,
+            options: ICON_CIRCLE_SIZES,
         },
     },
 };

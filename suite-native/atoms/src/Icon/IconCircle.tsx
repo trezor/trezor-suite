@@ -4,25 +4,25 @@ import { type Color } from '@trezor/theme';
 
 import { Box } from '../Box';
 
-export const ROUNDED_ICON_INTENTS = ['neutral', 'brand', 'warning', 'critical', 'info'] as const;
-export type RoundedIconIntent = (typeof ROUNDED_ICON_INTENTS)[number];
+export const ICON_CIRCLE_INTENTS = ['neutral', 'brand', 'warning', 'critical', 'info'] as const;
+export type IconCircleIntent = (typeof ICON_CIRCLE_INTENTS)[number];
 
-export const ROUNDED_ICON_SIZES = [20, 24, 32, 40, 48] as const;
-export type RoundedIconSize = (typeof ROUNDED_ICON_SIZES)[number];
+export const ICON_CIRCLE_SIZES = [20, 24, 32, 40, 48] as const;
+export type IconCircleSize = (typeof ICON_CIRCLE_SIZES)[number];
 
-export type RoundedIconProps = {
+export type IconCircleProps = {
     name: IconName;
-    intent?: RoundedIconIntent;
-    size?: RoundedIconSize;
+    intent?: IconCircleIntent;
+    size?: IconCircleSize;
     accessibilityLabel?: string;
 };
 
-type RoundedIconStyle = {
+type IconCircleStyle = {
     backgroundColor: Color;
     iconColor: Color;
 };
 
-const roundedIconIntentToStylePropsMap = {
+const iconCircleIntentToStylePropsMap = {
     neutral: {
         backgroundColor: 'elementFillNeutralSoft',
         iconColor: 'contentSecondary',
@@ -43,9 +43,9 @@ const roundedIconIntentToStylePropsMap = {
         backgroundColor: 'elementFillInfoSoft',
         iconColor: 'contentInfo',
     },
-} as const satisfies Record<RoundedIconIntent, RoundedIconStyle>;
+} as const satisfies Record<IconCircleIntent, IconCircleStyle>;
 
-const roundedIconSizeToIconSizeMap: Record<RoundedIconSize, IconSize> = {
+const iconCircleSizeToIconSizeMap: Record<IconCircleSize, IconSize> = {
     20: 'small',
     24: 'small',
     32: 'medium',
@@ -53,7 +53,7 @@ const roundedIconSizeToIconSizeMap: Record<RoundedIconSize, IconSize> = {
     48: 'large',
 };
 
-const iconContainerStyle = prepareNativeStyle<{ backgroundColor: Color; size: RoundedIconSize }>(
+const iconCircleStyle = prepareNativeStyle<{ backgroundColor: Color; size: IconCircleSize }>(
     (utils, { backgroundColor, size }) => ({
         justifyContent: 'center',
         alignItems: 'center',
@@ -64,19 +64,19 @@ const iconContainerStyle = prepareNativeStyle<{ backgroundColor: Color; size: Ro
     }),
 );
 
-export const RoundedIcon = ({
+export const IconCircle = ({
     name,
     intent = 'neutral',
     size = 48,
     accessibilityLabel,
-}: RoundedIconProps) => {
+}: IconCircleProps) => {
     const { applyStyle } = useNativeStyles();
-    const { backgroundColor, iconColor } = roundedIconIntentToStylePropsMap[intent];
-    const iconSize = roundedIconSizeToIconSizeMap[size];
+    const { backgroundColor, iconColor } = iconCircleIntentToStylePropsMap[intent];
+    const iconSize = iconCircleSizeToIconSizeMap[size];
 
     return (
         <Box
-            style={applyStyle(iconContainerStyle, { backgroundColor, size })}
+            style={applyStyle(iconCircleStyle, { backgroundColor, size })}
             accessibilityLabel={accessibilityLabel}
             accessibilityRole="image"
         >

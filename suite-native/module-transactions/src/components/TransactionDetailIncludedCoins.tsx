@@ -3,8 +3,8 @@ import {
     BottomSheetModal,
     Box,
     Card,
+    IconCircle,
     PressableOpacity,
-    RoundedIcon,
     Text,
     useBottomSheetModal,
 } from '@suite-native/atoms';
@@ -42,7 +42,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
                 <Box flexDirection="row" alignItems="center" justifyContent="space-between">
                     <Box flexDirection="row" alignItems="center">
                         <Box marginRight="sp16">
-                            <RoundedIcon name="treeStructure" />
+                            <IconCircle name="treeStructure" />
                         </Box>
                         <Text>{title}</Text>
                     </Box>

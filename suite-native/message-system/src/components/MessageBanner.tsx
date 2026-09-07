@@ -6,9 +6,9 @@ import { type Message, type Variant } from '@suite-common/suite-types';
 import {
     Box,
     HStack,
+    IconCircle,
+    type IconCircleIntent,
     PressableOpacity,
-    RoundedIcon,
-    type RoundedIconIntent,
     Text,
     VStack,
 } from '@suite-native/atoms';
@@ -28,7 +28,7 @@ type MessageBannerStyle = {
     backgroundColor: Color;
     icon: IconName;
     iconColor: Color;
-    iconIntent: RoundedIconIntent;
+    iconIntent: IconCircleIntent;
 };
 
 const MessageBannerVariantToStyleMap = {
@@ -76,11 +76,11 @@ const MessageCloseButton = ({
     intent,
     onClose,
 }: {
-    intent: RoundedIconIntent;
+    intent: IconCircleIntent;
     onClose: () => void;
 }) => (
     <PressableOpacity onPress={onClose}>
-        <RoundedIcon name="x" intent={intent} size={40} />
+        <IconCircle name="x" intent={intent} size={40} />
     </PressableOpacity>
 );
 

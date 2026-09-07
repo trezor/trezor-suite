@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Image, RoundedIcon } from '@suite-native/atoms';
+import { IconCircle, Image } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { IMAGE_PROXY_API_AUTH_BEARER, IMAGE_PROXY_API_URL } from '@trezor/urls';
 
@@ -27,9 +27,7 @@ export const ConnectAppIcon = ({
     const [isFallback, setIsFallback] = useState(false);
 
     if (isFallback || !src) {
-        return (
-            <RoundedIcon name={type === 'walletConnect' ? 'walletConnect' : 'plugs'} size={48} />
-        );
+        return <IconCircle name={type === 'walletConnect' ? 'walletConnect' : 'plugs'} size={48} />;
     }
 
     return (
