@@ -23,6 +23,20 @@ export default class ComposePsbt extends AbstractMethod<'composePsbt', Params> {
             { name: 'psbtData', type: 'string', required: true },
             { name: 'coin', type: 'string', required: true },
         ]);
+        validateParams(payload.account, [
+            { name: 'addresses', type: 'object', required: true },
+            // an empty utxo set is a valid shape; parsePsbt then throws the precise
+            // "Utxo not found" for any input that is not owned by the account.
+            { name: 'utxo', type: 'array', required: true, allowEmpty: true },
+        ]);
+        // `type: 'object'` also accepts arrays, so validate the address sub-arrays that
+        // parsePsbt dereferences (`addresses.used`/`unused`/`change`) to reject a malformed
+        // `addresses` up front instead of leaking a raw TypeError to the caller.
+        validateParams(payload.account.addresses, [
+            { name: 'used', type: 'array', required: true, allowEmpty: true },
+            { name: 'unused', type: 'array', required: true, allowEmpty: true },
+            { name: 'change', type: 'array', required: true, allowEmpty: true },
+        ]);
 
         const coinInfo = getBitcoinNetworkOrThrow(payload.coin);
 
