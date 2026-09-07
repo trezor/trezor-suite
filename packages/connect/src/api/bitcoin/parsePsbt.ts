@@ -97,6 +97,10 @@ export const parsePsbt = ({
     }
 
     const fee = sumOfInputs - sumOfOutputs;
+    if (fee <= BigInt(0)) {
+        // A non-positive fee (outputs >= inputs) is not a signable transaction.
+        throw TypedError('Method_InvalidParameter', 'parsePsbt: Transaction fee is non-positive');
+    }
     const bytes = psbt.unsignedTx.virtualSize();
     const feePerByte = Number(fee) / bytes;
 
