@@ -45,12 +45,26 @@ export const parsePsbt = ({
         }
 
         const address_n = getHDPath(utxo.path);
+        const script_type = getScriptType(address_n);
+        if (!script_type) {
+            throw TypedError(
+                'Method_InvalidParameter',
+                `parsePsbt: Unsupported input script type at [${index}]`,
+            );
+        }
+        if (script_type === 'SPENDMULTISIG') {
+            // Multisig inputs require a `multisig` (pubkeys) field that cannot be derived here.
+            throw TypedError(
+                'Method_InvalidParameter',
+                `parsePsbt: Multisig inputs are not supported at [${index}]`,
+            );
+        }
         inputs.push({
             prev_hash: utxo.txid,
             prev_index: input.index,
             amount: utxo.amount,
             address_n,
-            script_type: getScriptType(address_n),
+            script_type,
             sequence: input.sequence,
         });
 
