@@ -10,12 +10,17 @@ test.describe.skip('Application log', { tag: ['@group=manual'] }, () => {
             annotation: createTestAnnotation({
                 testCase:
                     'Verifies that a user can open the application log modal in the Suite settings.',
-                prerequisites: ['Seeded Trezor device', 'Connected Trezor Suite'],
+                prerequisites: [
+                    'Seeded Trezor device with a labelled account',
+                    'Connected Trezor Suite',
+                ],
                 steps: [
                     'Navigate to "Settings"',
                     'Go to "Application settings"',
-                    'Click on "Show log"',
+                    'In the "Application log" section click on "Show log"',
                     'Application log modal should open',
+                    'Confirm the log can be copied and exported',
+                    'Confirm the log contains no confidential data - no device label or id, no account labels, no xpub, no addresses and no exact balances',
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.Medium,

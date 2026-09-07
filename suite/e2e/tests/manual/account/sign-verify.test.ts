@@ -26,7 +26,7 @@ test.describe.skip('Sign and verify', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Accounts,
                 priority: TestPriority.Low,
-                stream: TestStream.Wallet,
+                stream: TestStream.Network,
             }),
         },
         async () => {},
