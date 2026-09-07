@@ -68,9 +68,9 @@ const mockResponse = (method: string, params: any) =>
 
 const init = (params: any): Promise<void> => mockResponse('init', params);
 
-const call = (params: CallMethodPayload) => {
+const call = async (params: CallMethodPayload) => {
     if (params?.__info) {
-        connect.default.init({
+        await connect.default.init({
             manifest: {
                 email: 'email@trezor.io',
                 appUrl: 'https://trezor.io',
