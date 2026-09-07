@@ -1,18 +1,8 @@
-import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { ResolveNamedAddress } from './ResolveNamedAddress';
 
-import type { ResolveViaBlockbookDep } from './createResolveViaBlockbook';
-import type { UniversalResolver } from './createUniversalResolver';
-
-export type ResolveNamedAddressDeps = Pick<UniversalResolver, 'resolveNamedAddressOnchain'> &
-    ResolveViaBlockbookDep;
-
-export type ResolveNamedAddress = (
-    value: string,
-    symbol: EthereumNetworkSymbol,
-) => Promise<string | null>;
-
-export type ResolveNamedAddressDep = {
-    resolveNamedAddress: ResolveNamedAddress;
+export type ResolveNamedAddressDeps = {
+    resolveNamedAddressOnchain: ResolveNamedAddress;
+    resolveViaBlockbook: ResolveNamedAddress;
 };
 
 /**

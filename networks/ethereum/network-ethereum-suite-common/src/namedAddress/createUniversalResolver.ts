@@ -17,6 +17,7 @@ import type {
 } from '@trezor/network-module-suite-common-types';
 import { BigNumber } from '@trezor/utils';
 
+import type { ResolveNamedAddress } from './ResolveNamedAddress';
 import { getNamedAddressChainId } from './namedAddressUtils';
 
 export type UniversalResolverDeps = GetTrezorConnectDep<'blockchainEvmRpcCall'>;
@@ -27,11 +28,6 @@ type ResolveNamedProfileOnchain = (
     textKeys?: readonly string[],
 ) => Promise<NamedAddressProfile>;
 
-type ResolveNamedAddressOnchain = (
-    value: string,
-    symbol: EthereumNetworkSymbol,
-) => Promise<string | null>;
-
 type ReverseResolveAddressOnchain = (
     address: string,
     symbol: EthereumNetworkSymbol,
@@ -39,7 +35,7 @@ type ReverseResolveAddressOnchain = (
 
 export type UniversalResolver = {
     resolveNamedProfileOnchain: ResolveNamedProfileOnchain;
-    resolveNamedAddressOnchain: ResolveNamedAddressOnchain;
+    resolveNamedAddressOnchain: ResolveNamedAddress;
     reverseResolveAddressOnchain: ReverseResolveAddressOnchain;
 };
 
@@ -340,7 +336,7 @@ export const createUniversalResolver = (deps: UniversalResolverDeps): UniversalR
      *
      * @returns The resolved address, or `null` when the name has no address record.
      */
-    const resolveNamedAddressOnchain: ResolveNamedAddressOnchain = async (value, symbol) =>
+    const resolveNamedAddressOnchain: ResolveNamedAddress = async (value, symbol) =>
         (await resolveNamedProfileOnchain(value, symbol)).address;
 
     /**
