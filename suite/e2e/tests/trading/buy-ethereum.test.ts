@@ -13,10 +13,10 @@ const detailFiatAmount = localizeNumber(fiatAmount, 'en-US');
 const receiveAccountLabel = 'Ethereum #1';
 
 test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage, tradingMockNew }) => {
-        tradingMockNew.setTradeFlow('buy');
-        await tradingMockNew.rewriteProviderRedirect();
-        await tradingMockNew.setStatus('SUBMITTED');
+    test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage, tradingMock }) => {
+        tradingMock.setTradeFlow('buy');
+        await tradingMock.rewriteProviderRedirect();
+        await tradingMock.setStatus('SUBMITTED');
 
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
@@ -27,7 +27,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
         'Enable Ethereum on account by buying it',
 
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
-        async ({ page, walletPage, tradingPage, tradingMockNew, tradingResponses }) => {
+        async ({ page, walletPage, tradingPage, tradingMock, tradingResponses }) => {
             let receiveAmount: string;
             let providerName: string;
 
@@ -85,7 +85,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',
                 );
 
-                await tradingMockNew.advanceStatus('SUCCESS');
+                await tradingMock.advanceStatus('SUCCESS');
 
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                     'TR_BUY_DETAIL_COMPLETE_TITLE',

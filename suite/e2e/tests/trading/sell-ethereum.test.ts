@@ -37,13 +37,13 @@ test.describe('Trading - Sell ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
             settingsPage,
             walletPage,
             tradingPage,
-            tradingMockNew,
+            tradingMock,
         }) => {
-            tradingMockNew.setTradeFlow('sell');
-            await tradingMockNew.rewriteProviderRedirect();
-            await tradingMockNew.setWatchFields({ destinationAddress: depositAddress });
-            await tradingMockNew.setStatus('SEND_CRYPTO');
-            const ethBackend = await tradingMockNew.startBackend('eth');
+            tradingMock.setTradeFlow('sell');
+            await tradingMock.rewriteProviderRedirect();
+            await tradingMock.setWatchFields({ destinationAddress: depositAddress });
+            await tradingMock.setStatus('SEND_CRYPTO');
+            const ethBackend = await tradingMock.startBackend('eth');
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
@@ -64,7 +64,7 @@ test.describe('Trading - Sell ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
             page,
             device,
             devicePrompt,
-            tradingMockNew,
+            tradingMock,
             toastSection,
             tradingResponses,
         }) => {
@@ -210,13 +210,13 @@ test.describe('Trading - Sell ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
                 // The row truncates the text, so the full txid is only in the id attribute.
                 await expect(tradingPage.transactionDetailTxid).toHaveAttribute(
                     'id',
-                    tradingMockNew.lastBroadcastTxid,
+                    tradingMock.lastBroadcastTxid,
                 );
             });
 
             for (const phase of sellStatusFlow) {
                 await test.step(`Wait for status change to ${phase.status}`, async () => {
-                    await tradingMockNew.advanceStatus(phase.status);
+                    await tradingMock.advanceStatus(phase.status);
                     const values = phase.translationValues?.(providerName);
                     await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                         phase.translationKey,

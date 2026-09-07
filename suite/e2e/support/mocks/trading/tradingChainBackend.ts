@@ -16,7 +16,7 @@ import {
 // except the outbound broadcast, which is answered locally so no real crypto ever leaves.
 //
 // This adapter is the only place chain specifics live (Solana's tx-derived signature, the
-// Blockbook chains' tx-derived txid); TradingMockNew stays chain-agnostic.
+// Blockbook chains' tx-derived txid); TradingMock stays chain-agnostic.
 export interface TradingChainBackend {
     readonly backendType: BackendType;
     readonly url: string;

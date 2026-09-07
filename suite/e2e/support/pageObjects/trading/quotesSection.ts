@@ -45,11 +45,6 @@ export class TradingQuotesSection {
         return amount;
     }
 
-    @step()
-    async selectQuoteByProvider(provider: string) {
-        await this.provider.filter({ hasText: provider }).click();
-    }
-
     //  When `provider` is given, that specific provider is selected(must be
     //  present in the list) Otherwise a random provider different from the currently
     //  selected one is picked. When only a single provider is available it re-selects it
