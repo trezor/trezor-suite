@@ -17,6 +17,3 @@ export const updateBreakpoints = createAction(
         payload: breakpointFlags,
     }),
 );
-
-export type WindowAction =
-    ReturnType<typeof updateWindowVisibility> | ReturnType<typeof updateBreakpoints>;
