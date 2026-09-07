@@ -88,7 +88,6 @@ export type TradingFormContext = Partial<TradingAmountLimitProps> & {
     sendAssetSymbol: string | undefined;
     contractAddress: TokenAddress | undefined;
     balance: string | undefined;
-    networkReserve?: string;
     maxSpendableAmount?: string;
 };
 
