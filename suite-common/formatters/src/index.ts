@@ -10,4 +10,8 @@ export {
     type CryptoAmountFormatterFormatStyle,
 } from './formatters/prepareCryptoAmountFormatter';
 export { getCompactAmount } from './utils/getCompactAmount';
+export {
+    formatCompactNotificationNetworkAmount,
+    formatCompactNotificationTokenAmount,
+} from './utils/formatCompactNotificationAmount';
 export { AddressFormatter, type AddressFormat } from './formatters/AddressFormatter';

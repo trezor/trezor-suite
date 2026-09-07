@@ -5,6 +5,10 @@ import { type AnalyticsDep } from '@suite-common/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
+    formatCompactNotificationNetworkAmount,
+    formatCompactNotificationTokenAmount,
+} from '@suite-common/formatters';
+import {
     type ActionsFromAsyncThunk,
     type WithServices,
     createThunk,
@@ -27,10 +31,8 @@ import {
     type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
-    asAmountSubunit,
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
-    formatNetworkAmount,
     getAccountDecimals,
     getAreSatoshisUsed,
     getEvmTransactionTextSignature,
@@ -43,7 +45,6 @@ import {
     isEvmYieldTxByTextSignature,
     isExchangeTradingForm,
     isRbfCancelTransaction,
-    subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
@@ -480,10 +481,13 @@ export const pushSendFormTransactionThunk = createThunk<
                     decimals: token.decimals,
                     isSubunit: true,
                 });
-                const amount = subunitsToUnits({
-                    value: asAmountSubunit(new BigNumber(amountString)),
+                // Bare amount (no symbol): the approval toast renderer appends the token symbol
+                // itself, so the tested "missing symbol yields the bare amount" path is used here.
+                const amount = formatCompactNotificationTokenAmount({
+                    amount: amountString,
                     decimals: token.decimals,
-                }).toString();
+                    symbol: '',
+                });
 
                 dispatch(
                     notificationsActions.addToast({
@@ -512,23 +516,18 @@ export const pushSendFormTransactionThunk = createThunk<
                     }),
                 );
             } else {
-                const amount = token
-                    ? subunitsToUnits({
-                          value: asAmountSubunit(new BigNumber(precomposedTransaction.totalSpent)),
-                          decimals: token.decimals,
-                      })
-                    : null;
-
                 // get total amount without fee OR token amount
-                const formattedAmount =
-                    token && amount
-                        ? `${amount} ${token.symbol}`
-                        : formatNetworkAmount(
-                              spentWithoutFee,
-                              selectedAccount.symbol,
-                              true,
-                              areSatoshisUsed,
-                          );
+                const formattedAmount = token
+                    ? formatCompactNotificationTokenAmount({
+                          amount: precomposedTransaction.totalSpent,
+                          decimals: token.decimals,
+                          symbol: token.symbol,
+                      })
+                    : formatCompactNotificationNetworkAmount(
+                          spentWithoutFee,
+                          selectedAccount.symbol,
+                          areSatoshisUsed,
+                      );
                 dispatch(
                     notificationsActions.addToast({
                         type: 'tx-sent',

@@ -1,5 +1,9 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import {
+    formatCompactNotificationNetworkAmount,
+    formatCompactNotificationTokenAmount,
+} from '@suite-common/formatters';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -16,8 +20,6 @@ import {
 import {
     analyzeTransactions,
     findAccountDevice,
-    formatNetworkAmount,
-    formatTokenAmount,
     getAccountTransactions,
     getAreSatoshisUsed,
     isAccountOutdated,
@@ -278,8 +280,12 @@ export const fetchAndUpdateAccountThunk = createThunk<
                 const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, account);
 
                 const formattedAmount = token
-                    ? formatTokenAmount(token)
-                    : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+                    ? formatCompactNotificationTokenAmount(token)
+                    : formatCompactNotificationNetworkAmount(
+                          tx.amount,
+                          account.symbol,
+                          areSatoshisUsed,
+                      );
 
                 dispatch(
                     notificationsActions.addEvent({
