@@ -28,7 +28,7 @@ export const BackupAvailability = Type.KeyOfEnum(Enum_BackupAvailability, {
 
 export enum BackupMethod {
     Display = 0,
-    N4W1 = 1,
+    N1W1 = 1,
 }
 
 export type EnumBackupMethod = Static<typeof EnumBackupMethod>;
@@ -82,8 +82,9 @@ export enum Enum_Capability {
     Capability_BLE = 22,
     Capability_NFC = 23,
     Capability_Tron = 24,
-    Capability_N4W1 = 25,
+    Capability_N1W1 = 25,
     Capability_TouchWakeup = 26,
+    Capability_Ethereum_EIP7702 = 28,
 }
 
 export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>;
@@ -444,6 +445,7 @@ export const Features = Type.Object(
         usb_connected: Type.Optional(Type.Boolean()),
         wireless_connected: Type.Optional(Type.Boolean()),
         tap_to_wake: Type.Optional(Type.Boolean()),
+        max_passphrase_len: Type.Optional(Type.Number()),
     },
     { $id: 'Features' },
 );

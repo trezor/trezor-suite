@@ -86,10 +86,10 @@ import {
     DebugLinkGcInfo,
     DebugLinkGetGcInfo,
     DebugLinkGetPairingInfo,
-    DebugLinkN4W1Connected,
-    DebugLinkN4W1Read,
-    DebugLinkN4W1Response,
-    DebugLinkN4W1Write,
+    DebugLinkN1W1Connected,
+    DebugLinkN1W1Read,
+    DebugLinkN1W1Response,
+    DebugLinkN1W1Write,
     DebugLinkOptigaSetSecMax,
     DebugLinkPairingInfo,
     DebugLinkResetDebugEvents,
@@ -303,12 +303,14 @@ import {
 import {
     TronAddress,
     TronContractRequest,
+    TronDelegateResourceContract,
     TronFreezeBalanceV2Contract,
     TronGetAddress,
     TronSignTx,
     TronSignature,
     TronTransferContract,
     TronTriggerSmartContract,
+    TronUnDelegateResourceContract,
     TronUnfreezeBalanceV2Contract,
     TronVoteWitnessContract,
     TronWithdrawBalance,
@@ -478,10 +480,10 @@ export const MessageType = Type.Object(
         DebugLinkGetGcInfo,
         DebugLinkGcInfo,
         DebugLinkSetLogFilter,
-        DebugLinkN4W1Connected,
-        DebugLinkN4W1Write,
-        DebugLinkN4W1Read,
-        DebugLinkN4W1Response,
+        DebugLinkN1W1Connected,
+        DebugLinkN1W1Write,
+        DebugLinkN1W1Read,
+        DebugLinkN1W1Response,
         EosGetPublicKey,
         EosPublicKey,
         EosSignTx,
@@ -632,6 +634,8 @@ export const MessageType = Type.Object(
         TronUnfreezeBalanceV2Contract,
         TronWithdrawUnfreeze,
         TronWithdrawBalance,
+        TronDelegateResourceContract,
+        TronUnDelegateResourceContract,
         TronSignature,
     },
     { $id: 'MessageType' },
@@ -812,7 +816,9 @@ export type WireInMessage =
     | 'TronFreezeBalanceV2Contract'
     | 'TronUnfreezeBalanceV2Contract'
     | 'TronWithdrawUnfreeze'
-    | 'TronWithdrawBalance';
+    | 'TronWithdrawBalance'
+    | 'TronDelegateResourceContract'
+    | 'TronUnDelegateResourceContract';
 
 export type WireOutMessage =
     | 'Success'
