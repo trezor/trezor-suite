@@ -135,7 +135,7 @@ export const typescriptConfig = [
                         networksPackagePattern,
                         ...connectDeepImportPatterns,
                         {
-                            regex: '^@trezor/connect(?:-web|-mobile|-webextension)?(?:/|$)',
+                            regex: '^@trezor/connect(?:-web|-mobile|-webextension|-electron)?(?:/|$)',
                             message:
                                 'Network modules must receive Connect through dependency injection. Import contracts from @trezor/connect-common.',
                         },

@@ -3,9 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
-    "sideEffects": [
-        "./src/networksCompositionRoot.ts"
-    ],
+    "sideEffects": false,
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",

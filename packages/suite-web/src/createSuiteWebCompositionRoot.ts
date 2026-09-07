@@ -7,6 +7,9 @@ import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
+import { createNetworksCompositionRoot, registerNetworkServices } from '@suite-common/networks';
+import TrezorConnect from '@trezor/connect';
+
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
 import { rootReducer } from 'src/reducers/store';
@@ -20,6 +23,9 @@ import { getWebThpHostName } from './support/getWebThpHostName';
 type SuiteWebCompositionRoot = { init: WebInit };
 
 export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
+    const networks = createNetworksCompositionRoot({ getTrezorConnect: () => TrezorConnect });
+    registerNetworkServices(networks);
+
     const history = createBrowserHistory();
     const platformEncryption = createWebauthnPlatformEncryption();
     const reloadApp = () => window.location.reload();
@@ -49,6 +55,7 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         extraDependencies,
     });
     const suiteServices = createSuiteServicesCompositionRoot({
+        networks,
         dispatch: store.dispatch,
         getState: store.getState,
         history,

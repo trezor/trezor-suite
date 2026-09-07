@@ -28,6 +28,7 @@ import { toGetter } from '@suite-common/dependency-injection';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
+import type { NetworksServicesDep } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
@@ -47,7 +48,6 @@ import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 import { createConnectInitHooks } from './createConnectInitHooks';
-import { networkServices } from './networksCompositionRoot';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
@@ -73,7 +73,8 @@ export type StoreAPIDep = {
     dispatch: ThunkDispatch<AppState, Record<never, never>, UnknownAction>;
 };
 
-export type SuiteAppDeps = StoreAPIDep &
+export type SuiteAppDeps = NetworksServicesDep &
+    StoreAPIDep &
     HistoryDep &
     PlatformEncryptionDep &
     CreateLoggerDep &
@@ -150,7 +151,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     };
 
     return {
-        networks: networkServices,
+        networks: deps.networks,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

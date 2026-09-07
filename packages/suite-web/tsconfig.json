@@ -6,6 +6,7 @@
     },
     "include": ["."],
     "references": [
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/dependency-injection"
         },

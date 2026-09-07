@@ -17775,6 +17775,7 @@ __metadata:
   dependencies:
     "@sentry/electron": "npm:^7.16.0"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/debug": "workspace:*"
@@ -17787,6 +17788,7 @@ __metadata:
     "@suite/sentry": "workspace:*"
     "@suite/tor-desktop": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
     "@trezor/connect-electron": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/suite": "workspace:*"
@@ -17903,6 +17905,7 @@ __metadata:
   dependencies:
     "@sentry/browser": "npm:10.69.0"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"

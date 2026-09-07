@@ -5,13 +5,29 @@ import { pathToFileURL } from 'node:url';
 import { type PackageJson, readPackageJson } from '@trezor/node-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
-import type { AllowedOnlyInRule, ForbiddenDepsConfig } from './forbiddenDepsTypes';
+import type {
+    AllowedOnlyInRule,
+    ForbiddenDependency,
+    ForbiddenDepsConfig,
+} from './forbiddenDepsTypes';
 import { getWorkspaceDirectoryMap } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
 const FORBIDDEN_DEPS_CONFIG_FILE = 'forbiddenDeps.config.ts';
 
 const PACKAGE_JSON_FILE = 'package.json';
+
+// Network modules receive Connect clients from their host app; only contracts may be imported.
+const networkModuleForbiddenDeps: readonly ForbiddenDependency[] = [
+    '@trezor/connect',
+    '@trezor/connect-web',
+    '@trezor/connect-mobile',
+    '@trezor/connect-webextension',
+    '@trezor/connect-electron',
+].map(packageName => ({
+    packageName,
+    reason: 'Network modules must receive Connect through dependency injection. Import contracts from @trezor/connect-common.',
+}));
 
 const DEPENDENCY_FIELDS = [
     'dependencies',
@@ -146,7 +162,10 @@ export const getForbiddenDependencyErrors = ({
     dependencyRule,
     workspaceName,
 }: ForbiddenDependencyErrorsParams): ReadonlyArray<string> => {
-    const forbiddenDepsMap = createForbiddenDepsMap(dependencyRule?.['forbidden-deps'] ?? []);
+    const forbiddenDepsMap = createForbiddenDepsMap([
+        ...(workspaceName.startsWith('@trezor/network-') ? networkModuleForbiddenDeps : []),
+        ...(dependencyRule?.['forbidden-deps'] ?? []),
+    ]);
     const forbiddenDependencyPrefixes = getForbiddenDependencyPrefixes(
         dependencyRule?.['forbidden-deps'] ?? [],
     );

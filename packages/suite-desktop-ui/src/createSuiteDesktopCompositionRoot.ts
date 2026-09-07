@@ -4,6 +4,9 @@ import { createElectronPlatformEncryption } from '@suite/platform-encryption-ele
 import { toGetter } from '@suite-common/dependency-injection';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
+import { createNetworksCompositionRoot, registerNetworkServices } from '@suite-common/networks';
+import TrezorConnect from '@trezor/connect';
+
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
 import { rootReducer } from 'src/reducers/store';
@@ -15,6 +18,9 @@ import { type DesktopInit, createDesktopInit } from './createDesktopInit';
 type SuiteDesktopCompositionRoot = { init: DesktopInit };
 
 export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot => {
+    const networks = createNetworksCompositionRoot({ getTrezorConnect: () => TrezorConnect });
+    registerNetworkServices(networks);
+
     const history = createMemoryHistory();
     const platformEncryption = createElectronPlatformEncryption({ desktopApi });
     const reloadApp = desktopApi.appRestart;
@@ -34,6 +40,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
         extraDependencies,
     });
     const suiteServices = createSuiteServicesCompositionRoot({
+        networks,
         dispatch: store.dispatch,
         getState: store.getState,
         history,
