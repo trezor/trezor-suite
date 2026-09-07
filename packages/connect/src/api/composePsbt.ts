@@ -1,13 +1,12 @@
 import {
     type BitcoinNetworkInfo,
     type ComposePsbtParams,
-    ERRORS,
     type PermissionRequest,
 } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getBitcoinNetwork } from '../data/coinInfo';
+import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { parsePsbt } from './bitcoin/parsePsbt';
 import { validateParams } from './common/paramsValidator';
 
@@ -25,10 +24,7 @@ export default class ComposePsbt extends AbstractMethod<'composePsbt', Params> {
             { name: 'coin', type: 'string', required: true },
         ]);
 
-        const coinInfo = getBitcoinNetwork(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getBitcoinNetworkOrThrow(payload.coin);
 
         const params = {
             account: payload.account,
