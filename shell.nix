@@ -11,6 +11,13 @@ let
     config.android_sdk.accept_license = true;
   };
 in
+# Select Android before evaluating desktop dependencies, as the flake does.
+if builtins.getEnv "USE_ANDROID" == "1" then
+  import ./.nix/android.nix {
+    inherit pkgs;
+    shared = import ./.nix/shared.nix { inherit pkgs; };
+  }
+else
 with pkgs;
 
 let
@@ -24,11 +31,6 @@ let
     sha256 = "0l5b1libi46sc3ly7a5vj04098f63aj5jynxpz44sb396nncnivl";
   }) {};
 
-  useAndroid = builtins.getEnv "USE_ANDROID" == "1";
-  androidEnv = if useAndroid then import ./.nix/android.nix { inherit pkgs; } else {};
-  extraBuildInputs = pkgs.lib.concatLists [
-    (if useAndroid then [ androidEnv.jdk androidEnv.androidSdk ] ++ androidEnv.extraPackages else [jre])
-  ];
 in
   stdenvNoCC.mkDerivation {
     name = "trezor-suite-dev";
@@ -53,7 +55,7 @@ in
       pixman cairo giflib libjpeg libpng librsvg pango            # build dependencies for node-canvas
       shellcheck
       vips
-    ] ++ extraBuildInputs
+    ] ++ [jre]
       ++ lib.optionals stdenv.isLinux [
       nsis openjpeg osslsigncode p7zip squashfsTools gccPkgs.gcc # binaries used by node_module: electron-builder
       udev  # used by node_module: usb
@@ -71,8 +73,7 @@ in
       export CURDIR="$(pwd)"
       export PATH="$PATH:$CURDIR/node_modules/.bin"
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
-     '' + lib.optionalString useAndroid androidEnv.shellHook
-        + lib.optionalString stdenv.isDarwin ''
+     '' + lib.optionalString stdenv.isDarwin ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
     '' + lib.optionalString stdenv.isLinux ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"

@@ -115,7 +115,7 @@ yarn test:unit
 
 ## shell.nix
 
-For environments without flakes, use `nix-shell` with the root [shell.nix](../shell.nix).
+For environments without flakes, use `nix-shell` with the root [shell.nix](../../shell.nix).
 
 ### Default (web/desktop)
 
@@ -125,7 +125,8 @@ nix-shell
 
 ### Android
 
-Pass `USE_ANDROID=1` to include the Android SDK, JDK, and emulator:
+Pass `USE_ANDROID=1` to select the shared and Android configuration, including the SDK, JDK, and
+emulator. Desktop dependencies are excluded, just as with `nix develop .#android`:
 
 ```bash
 USE_ANDROID=1 nix-shell
