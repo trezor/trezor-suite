@@ -119,6 +119,32 @@ export const typescriptConfig = [
         },
     },
     {
+        files: ['networks/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        rules: {
+            '@typescript-eslint/no-restricted-imports': [
+                'error',
+                {
+                    paths: [
+                        { name: '.' },
+                        { name: '..' },
+                        { name: '../..' },
+                        electronIpcMainRestrictedImport,
+                    ],
+                    patterns: [
+                        buildArtifactPatterns,
+                        networksPackagePattern,
+                        ...connectDeepImportPatterns,
+                        {
+                            regex: '^@trezor/connect(?:-web|-mobile|-webextension)?(?:/|$)',
+                            message:
+                                'Network modules must receive Connect through dependency injection. Import contracts from @trezor/connect-common.',
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    {
         // restrict import of suite-common and suite-native packages outside of suite
         files: ['packages/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
         ignores: ['packages/suite*/**/*'],

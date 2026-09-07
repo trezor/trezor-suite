@@ -1,16 +1,16 @@
-import { type NetworkSymbol, createNetworksCompositionRoot } from '@suite-common/networks';
+import { type NetworkSymbol, getNetworkServices } from '@suite-common/networks';
 import { typedObjectFromEntries } from '@trezor/utils';
 
 import type { Network, NetworkType, Networks } from './types';
 
 /**
- * @deprecated This module-level composition is temporary during the modularization transition.
+ * @deprecated This static compatibility API is temporary during the modularization transition.
  * Access network services through the application composition root: use `useServices` in
  * components and `extra` in thunks.
  */
-const networkServices = createNetworksCompositionRoot();
-const { getNetworkConfig, getSupportedNetworks } = networkServices;
-export const { isTestnet } = networkServices;
+const getNetworkConfig = (symbol: NetworkSymbol) => getNetworkServices().getNetworkConfig(symbol);
+const getSupportedNetworks = () => getNetworkServices().getSupportedNetworks();
+export const isTestnet = (symbol: NetworkSymbol) => getNetworkServices().isTestnet(symbol);
 
 const createNetwork = (networkSymbol: NetworkSymbol): Network => {
     const { settlementLayer, yieldXyzId, ...networkConfig } = getNetworkConfig(networkSymbol);

@@ -1,15 +1,15 @@
 import { decodeFunctionData, parseAbi } from 'viem';
 
-import { resolveNamedAddressOnchain } from './universalResolver';
+import { createUniversalResolver } from './universalResolver';
 
 const mockBlockchainEvmRpcCall = jest.fn();
 
-jest.mock('@trezor/connect', () => ({
-    __esModule: true,
-    default: {
-        blockchainEvmRpcCall: (...args: unknown[]) => mockBlockchainEvmRpcCall(...args),
-    },
-}));
+const { resolveNamedAddressOnchain } = createUniversalResolver({
+    getTrezorConnect: () => ({
+        blockchainEvmRpcCall: mockBlockchainEvmRpcCall,
+        getAccountInfo: jest.fn(),
+    }),
+});
 
 /**
  * Golden vectors from a real mainnet `cast` session against the deployed UniversalResolver,

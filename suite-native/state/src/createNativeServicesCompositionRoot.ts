@@ -7,7 +7,6 @@ import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
 import { notImplementedGetter } from '@suite-common/extra-dependencies';
-import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
@@ -33,6 +32,7 @@ import { NativeUsbTransport } from '@trezor/transport-native-usb';
 
 import { type NativeServices } from './NativeServices';
 import { type NativeReduxStore } from './createReduxStore';
+import { networkServices } from './networksCompositionRoot';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
@@ -82,7 +82,6 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
-    const networks = createNetworksCompositionRoot();
 
     const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
         initLog(prefix, false);
@@ -90,7 +89,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     const logger = createLogger('native-transport');
 
     return {
-        networks,
+        networks: networkServices,
         suiteSync,
         bip329,
         ensureDelegatedIdentityKey,

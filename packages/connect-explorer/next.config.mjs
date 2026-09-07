@@ -16,9 +16,6 @@ const withNextra = nextra({
 const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
 export default withNextra({
-    experimental: {
-        optimizePackageImports: ['@trezor/product-components'],
-    },
     basePath: process.env.CONNECT_EXPLORER_BASE_PATH,
     assetPrefix: process.env.CONNECT_EXPLORER_ASSET_PREFIX,
     trailingSlash: true,

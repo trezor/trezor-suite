@@ -1,3 +1,5 @@
+import 'src/support/networksCompositionRoot';
+
 import { createSuiteDesktopCompositionRoot } from './createSuiteDesktopCompositionRoot';
 
 __webpack_nonce__ = window.cspNonce;

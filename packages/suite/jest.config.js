@@ -37,6 +37,7 @@ module.exports = {
     ],
     setupFiles: [
         'jest-canvas-mock', // for lottie-react
+        ...baseConfig.setupFiles,
     ],
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     moduleNameMapper: {

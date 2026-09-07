@@ -10,8 +10,11 @@ import {
 import { namehash, normalize, packetToBytes, toCoinType } from 'viem/ens';
 
 import { Calldata, EVM_ABI } from '@suite-common/calldata';
-import TrezorConnect from '@trezor/connect';
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type {
+    NamedAddressProfile,
+    NetworkSuiteCommonModuleApi,
+} from '@trezor/network-module-suite-common-types';
 import { BigNumber } from '@trezor/utils';
 
 import { getNamedAddressChainId } from './namedAddressUtils';
@@ -127,145 +130,226 @@ const isRevertError = (error: unknown) => {
     return /revert/i.test(error instanceof Error ? error.message : String(error));
 };
 
-const callUniversalResolver = async (symbol: EthereumNetworkSymbol, data: Hex) => {
-    // The loser of the race has to be cleaned up: an uncleared timer keeps the event loop
-    // busy for the full timeout after every single resolution.
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+export const createUniversalResolver = ({ getTrezorConnect }: NetworkSuiteCommonModuleApi) => {
+    const callUniversalResolver = async (symbol: EthereumNetworkSymbol, data: Hex) => {
+        // The loser of the race has to be cleaned up: an uncleared timer keeps the event loop
+        // busy for the full timeout after every single resolution.
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-    try {
-        const response = await Promise.race([
-            TrezorConnect.blockchainEvmRpcCall({
-                coin: symbol,
-                from: ZERO_ADDRESS,
-                to: UNIVERSAL_RESOLVER_ADDRESS,
-                data,
-            }),
-            new Promise<never>((_, reject) => {
-                timeoutId = setTimeout(
-                    () => reject(new Error('Name resolution timed out')),
-                    ONCHAIN_CALL_TIMEOUT_MS,
-                );
-            }),
-        ]);
+        try {
+            const response = await Promise.race([
+                getTrezorConnect().blockchainEvmRpcCall({
+                    coin: symbol,
+                    from: ZERO_ADDRESS,
+                    to: UNIVERSAL_RESOLVER_ADDRESS,
+                    data,
+                }),
+                new Promise<never>((_, reject) => {
+                    timeoutId = setTimeout(
+                        () => reject(new Error('Name resolution timed out')),
+                        RESOLVE_TIMEOUT_MS,
+                    );
+                }),
+            ]);
 
-        if (!response.success) {
-            throw new Error(response.error.message);
+            if (!response.success) {
+                throw new Error(response.error.message);
+            }
+
+            return asHex(response.payload.data);
+        } finally {
+            clearTimeout(timeoutId);
         }
+    };
 
-        return asHex(response.payload.data);
-    } finally {
-        clearTimeout(timeoutId);
-    }
-};
+    /** Run one resolver profile call through `UniversalResolver.resolve` and return its raw result. */
+    const resolveProfileData = async (
+        name: string,
+        symbol: EthereumNetworkSymbol,
+        profileData: Hex,
+    ) => {
+        const response = await callUniversalResolver(
+            symbol,
+            buildCalldata(
+                Calldata.evm.ens.resolve.encode({
+                    name: toHex(packetToBytes(name)),
+                    data: profileData,
+                }),
+                'resolve',
+            ),
+        );
 
-/** Run one resolver profile call through `UniversalResolver.resolve` and return its raw result. */
-const resolveProfileData = async (
-    name: string,
-    symbol: EthereumNetworkSymbol,
-    profileData: Hex,
-) => {
-    const response = await callUniversalResolver(
-        symbol,
-        buildCalldata(
-            Calldata.evm.ens.resolve.encode({
-                name: toHex(packetToBytes(name)),
-                data: profileData,
-            }),
-            'resolve',
-        ),
-    );
+        const [result] = decodeFunctionResult({
+            abi: EVM_ABI.ens.resolve,
+            functionName: 'resolve',
+            data: response,
+        });
 
-    const [result] = decodeFunctionResult({
-        abi: EVM_ABI.ens.resolve,
-        functionName: 'resolve',
-        data: response,
-    });
+        return result;
+    };
 
-    return result;
-};
+    const decodeAddressResult = (result: Hex) => {
+        if (result === '0x') return null;
 
-const decodeAddressResult = (result: Hex) => {
-    if (result === '0x') return null;
+        const address = decodeFunctionResult({
+            abi: EVM_ABI.ens.addr,
+            functionName: 'addr',
+            data: result,
+        });
 
-    const address = decodeFunctionResult({
-        abi: EVM_ABI.ens.addr,
-        functionName: 'addr',
-        data: result,
-    });
+        return trim(address) === '0x00' ? null : address;
+    };
 
-    return trim(address) === '0x00' ? null : address;
-};
+    /**
+     * Batch every requested profile into the resolver's own `multicall` so one proxied request
+     * covers the address and any text records.
+     */
+    const resolveProfileViaMulticall = async (
+        name: string,
+        node: Hex,
+        symbol: EthereumNetworkSymbol,
+        textKeys: readonly string[],
+    ): Promise<NamedAddressProfile> => {
+        const profileCalls = [
+            buildCalldata(Calldata.evm.ens.addr.encode({ node }), 'addr'),
+            ...textKeys.map(key =>
+                buildCalldata(Calldata.evm.ens.text.encode({ node, key }), 'text'),
+            ),
+        ];
 
-/**
- * Forward-resolve a name to its onchain address.
- *
- * @returns The resolved address, or `null` when the name has no address record.
- */
-export const resolveNamedAddressOnchain = async (
-    value: string,
-    symbol: EthereumNetworkSymbol,
-): Promise<string | null> => {
-    // A name no conformant resolver could hold — `isNameLike` accepts shapes ENSIP-15
-    // rejects, such as an underscore. Answering "no record" beats falling through to a backend
-    // that cannot do better either.
-    let name: string;
-    try {
-        name = normalize(value);
-    } catch {
-        return null;
-    }
-
-    try {
         const result = await resolveProfileData(
             name,
             symbol,
-            buildCalldata(Calldata.evm.ens.addr.encode({ node: namehash(name) }), 'addr'),
+            buildCalldata(Calldata.evm.ens.multicall.encode({ data: profileCalls }), 'multicall'),
         );
 
-        return decodeAddressResult(result);
-    } catch (error) {
-        // A resolver that holds the record answers with the zero address instead of reverting,
-        // so a revert of the `addr` profile means the name has no resolver or no record.
-        // Falling through to Blockbook for that costs a request and can only fail too.
-        if (isRevertError(error)) return null;
-        throw error;
-    }
-};
-
-/**
- * Reverse-resolve an address to its primary name.
- *
- * @returns The primary name, or `null` when the address has none.
- */
-export const reverseResolveAddressOnchain = async (
-    address: string,
-    symbol: EthereumNetworkSymbol,
-) => {
-    const data = buildCalldata(
-        Calldata.evm.ens.reverse.encode({
-            lookupAddress: asHex(address),
-            // The builder validates the coin type as a uint256, which it expresses as a BigNumber.
-            coinType: new BigNumber(getReverseCoinType(symbol).toString()),
-        }),
-        'reverse',
-    );
-
-    try {
-        const [primary] = decodeFunctionResult({
-            abi: EVM_ABI.ens.reverse,
-            functionName: 'reverse',
-            data: await callUniversalResolver(symbol, data),
+        const [addressResult, ...textResults] = decodeFunctionResult({
+            abi: EVM_ABI.ens.multicall,
+            functionName: 'multicall',
+            data: result,
         });
 
-        return primary || null;
-    } catch (error) {
-        // Every answer the contract can give leaves nothing to display — including one asking for
-        // an offchain hop we cannot make — and a truncated response that fails to decode is no
-        // different. Nothing blocks on a primary name, so none of it is worth failing over.
-        if (isRevertError(error) || isOffchainError(error) || error instanceof BaseError) {
-            return null;
+        // A resolver may answer some profiles and leave others empty, so decode entry by entry.
+        const texts = textKeys.reduce<Record<string, string>>((accumulator, key, index) => {
+            const textResult = textResults[index];
+            if (!textResult || textResult === '0x') return accumulator;
+
+            try {
+                const value = decodeFunctionResult({
+                    abi: EVM_ABI.ens.text,
+                    functionName: 'text',
+                    data: textResult,
+                });
+                if (value) accumulator[key] = value;
+            } catch {
+                // Leave the key out rather than failing the whole profile.
+            }
+
+            return accumulator;
+        }, {});
+
+        return { address: addressResult ? decodeAddressResult(addressResult) : null, texts };
+    };
+
+    const resolveAddressOnly = async (name: string, node: Hex, symbol: EthereumNetworkSymbol) => {
+        try {
+            const result = await resolveProfileData(
+                name,
+                symbol,
+                buildCalldata(Calldata.evm.ens.addr.encode({ node }), 'addr'),
+            );
+
+            return decodeAddressResult(result);
+        } catch (error) {
+            // A resolver that holds the record answers with the zero address instead of reverting,
+            // so a revert of the bare `addr` profile means the name has no resolver or no record.
+            // Falling through to Blockbook for that costs a request and can only fail too.
+            if (isRevertError(error)) return null;
+            throw error;
+        }
+    };
+
+    /**
+     * Forward-resolve a name to its address and any requested text records.
+     *
+     * @returns The profile; `address` is `null` when the name has no address record.
+     */
+    const resolveNamedProfileOnchain = async (
+        value: string,
+        symbol: EthereumNetworkSymbol,
+        textKeys: readonly string[] = [],
+    ): Promise<NamedAddressProfile> => {
+        // A name no conformant resolver could hold — `isNameLike` accepts shapes ENSIP-15
+        // rejects, such as an empty label. Answering "no record" beats falling through to a backend
+        // that cannot do better either.
+        let name: string;
+        try {
+            name = normalize(value);
+        } catch {
+            return EMPTY_PROFILE;
         }
 
-        throw error;
-    }
+        const node = namehash(name);
+
+        try {
+            return await resolveProfileViaMulticall(name, node, symbol, textKeys);
+        } catch (error) {
+            if (isNameUnresolvable(error)) return EMPTY_PROFILE;
+
+            // The bare retry exists for exactly two reasons — the resolver may not implement
+            // `multicall`, or its batch response did not decode — and both surface as a revert or a
+            // viem decode error. Anything else means the call never reached a resolver, so retrying
+            // it here only pays the timeout a second time before the caller's fallback runs.
+            if (!isRevertError(error) && !(error instanceof BaseError)) throw error;
+
+            // `multicall` is optional for a resolver, and a malformed batch response decodes just as
+            // badly as a missing one. Either way the address is still reachable on its own.
+            return { address: await resolveAddressOnly(name, node, symbol), texts: {} };
+        }
+    };
+
+    /**
+     * Forward-resolve a name to its onchain address.
+     *
+     * @returns The resolved address, or `null` when the name has no address record.
+     */
+    const resolveNamedAddressOnchain = async (value: string, symbol: EthereumNetworkSymbol) =>
+        (await resolveNamedProfileOnchain(value, symbol)).address;
+
+    /**
+     * Reverse-resolve an address to its primary name.
+     *
+     * @returns The primary name, or `null` when the address has none.
+     */
+    const reverseResolveAddressOnchain = async (address: string, symbol: EthereumNetworkSymbol) => {
+        const data = buildCalldata(
+            Calldata.evm.ens.reverse.encode({
+                lookupAddress: asHex(address),
+                // The builder validates the coin type as a uint256, which it expresses as a BigNumber.
+                coinType: new BigNumber(getReverseCoinType(symbol).toString()),
+            }),
+            'reverse',
+        );
+
+        try {
+            const [primary] = decodeFunctionResult({
+                abi: EVM_ABI.ens.reverse,
+                functionName: 'reverse',
+                data: await callUniversalResolver(symbol, data),
+            });
+
+            return primary || null;
+        } catch (error) {
+            // Every answer the contract can give leaves nothing to display — including one asking for
+            // an offchain hop we cannot make — and a truncated response that fails to decode is no
+            // different. Nothing blocks on a primary name, so none of it is worth failing over.
+            if (isRevertError(error) || isOffchainError(error) || error instanceof BaseError) {
+                return null;
+            }
+
+            throw error;
+        }
+    };
+
+    return { resolveNamedProfileOnchain, resolveNamedAddressOnchain, reverseResolveAddressOnchain };
 };

@@ -1,4 +1,5 @@
 export { createNetworksCompositionRoot } from './createNetworksCompositionRoot';
+export { getNetworkServices, registerNetworkServices } from './networkServicesRegistry';
 export {
     selectAddressValidatorDep,
     type AddressValidator,

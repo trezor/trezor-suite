@@ -1,4 +1,5 @@
 import 'core-js/actual';
+import 'src/support/networksCompositionRoot';
 
 import { Suspense } from 'react';
 

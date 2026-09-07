@@ -1,15 +1,20 @@
 import { decodeFunctionData, encodeErrorResult, parseAbi } from 'viem';
 
-import { resolveNamedAddressOnchain, reverseResolveAddressOnchain } from './universalResolver';
+import {
+    createUniversalResolver,
+    isNameUnresolvable,
+    isUnsupportedProfileError,
+} from './universalResolver';
 
 const mockBlockchainEvmRpcCall = jest.fn();
 
-jest.mock('@trezor/connect', () => ({
-    __esModule: true,
-    default: {
-        blockchainEvmRpcCall: (...args: unknown[]) => mockBlockchainEvmRpcCall(...args),
-    },
-}));
+const { resolveNamedAddressOnchain, resolveNamedProfileOnchain, reverseResolveAddressOnchain } =
+    createUniversalResolver({
+        getTrezorConnect: () => ({
+            blockchainEvmRpcCall: mockBlockchainEvmRpcCall,
+            getAccountInfo: jest.fn(),
+        }),
+    });
 
 const VITALIK_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 

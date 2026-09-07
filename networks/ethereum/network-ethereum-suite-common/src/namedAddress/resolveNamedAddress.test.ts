@@ -1,19 +1,19 @@
-import { SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE } from '@trezor/utils';
+import { createResolveNamedAddress } from './resolveNamedAddress';
 
-import { resolveNamedAddress } from './resolveNamedAddress';
-import { resolveViaBlockbook } from './resolveNamedAddressBB';
-import { resolveNamedAddressOnchain } from './universalResolver';
+const mockResolveOnchain = jest.fn();
+const mockResolveViaBlockbook = jest.fn();
 
 jest.mock('./universalResolver', () => ({
-    resolveNamedAddressOnchain: jest.fn(),
+    createUniversalResolver: () => ({ resolveNamedAddressOnchain: mockResolveOnchain }),
 }));
 
 jest.mock('./resolveNamedAddressBB', () => ({
-    resolveViaBlockbook: jest.fn(),
+    createResolveViaBlockbook: () => mockResolveViaBlockbook,
 }));
 
-const mockResolveOnchain = jest.mocked(resolveNamedAddressOnchain);
-const mockResolveViaBlockbook = jest.mocked(resolveViaBlockbook);
+const { resolveNamedAddress } = createResolveNamedAddress({
+    getTrezorConnect: () => ({ getAccountInfo: jest.fn(), blockchainEvmRpcCall: jest.fn() }),
+});
 
 const VITALIK_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 

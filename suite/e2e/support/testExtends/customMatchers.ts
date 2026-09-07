@@ -5,7 +5,7 @@ import { diff } from 'jest-diff';
 import { isEqualWith } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
-import { createNetworksCompositionRoot } from '@suite-common/networks';
+import type { NetworksServicesDep } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { Model } from '@trezor/trezor-user-env-link';
 import { getIndexOrThrow } from '@trezor/utils';
@@ -16,12 +16,11 @@ import type { NormalizedDisplayContent } from '../helpers/displayContentNormaliz
 import { decodeQrCodes } from '../helpers/qrCodeDecoder';
 
 type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'cardanoTetragrams' | 'fullLine';
+type AddressValidationDeps = { services: NetworksServicesDep };
 
 const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
 const intlEn = createIntl({ locale: 'en', messages: {} }, createIntlCache());
-
-const { addressValidator } = createNetworksCompositionRoot();
 
 const compareTextAndNumber = async (
     locator: Locator,
@@ -327,9 +326,17 @@ export const expect = baseExpect.extend({
         await baseExpect(locator).toBeVisible();
         const text = await locator.innerText();
         const stripped = text.replace(/\s/g, '');
+        const isAddressValid = await locator.evaluate(
+            (_, { address, networkSymbol }) =>
+                window.store.dispatch(
+                    (_dispatch: unknown, _getState: unknown, { services }: AddressValidationDeps) =>
+                        services.networks.addressValidator.isAddressValid(address, networkSymbol),
+                ),
+            { address: stripped, networkSymbol: symbol },
+        );
 
         return {
-            pass: addressValidator.isAddressValid(stripped, symbol),
+            pass: isAddressValid,
             message: () =>
                 `expected locator text to be a valid '${symbol}' address, but got '${text}' (stripped: '${stripped}')`,
         };

@@ -1,17 +1,16 @@
 import { encodeErrorResult, parseAbi } from 'viem';
 
-import { resolveNamedAddress } from './resolveNamedAddress';
+import { createResolveNamedAddress } from './resolveNamedAddress';
 
 const mockBlockchainEvmRpcCall = jest.fn();
 const mockGetAccountInfo = jest.fn();
 
-jest.mock('@trezor/connect', () => ({
-    __esModule: true,
-    default: {
-        blockchainEvmRpcCall: (...args: unknown[]) => mockBlockchainEvmRpcCall(...args),
-        getAccountInfo: (...args: unknown[]) => mockGetAccountInfo(...args),
-    },
-}));
+const { resolveNamedAddress } = createResolveNamedAddress({
+    getTrezorConnect: () => ({
+        blockchainEvmRpcCall: mockBlockchainEvmRpcCall,
+        getAccountInfo: mockGetAccountInfo,
+    }),
+});
 
 /**
  * Guards the number of requests a single resolution costs, through the real resolver and its
