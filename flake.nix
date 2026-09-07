@@ -52,7 +52,6 @@
           (pkgs.yarn.override { nodejs = null; })
           pkgs.python3
           pkgs.python3Packages.pip
-          electron
           pkgs.pkg-config
           pkgs.pixman # build dependencies for node-canvas
           pkgs.cairo # build dependencies for node-canvas
@@ -62,16 +61,9 @@
           pkgs.librsvg # build dependencies for node-canvas
           pkgs.pango # build dependencies for node-canvas
           pkgs.shellcheck
-          pkgs.playwright-test # From playwright-web-flake
           pkgs.vips
         ]
         ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
-          pkgs.nsis
-          pkgs.p7zip
-          pkgs.openjpeg
-          pkgs.osslsigncode
-          pkgs.squashfsTools
-          pkgs.gccPkgs.gcc # Older GCC
           pkgs.udev # used by node_module: usb
         ]
         ++ pkgs.lib.optionals pkgs.stdenv.isDarwin (
@@ -82,13 +74,32 @@
           ]
         );
 
+        desktopBuildInputs = [
+          electron
+          pkgs.playwright-test # From playwright-web-flake.
+        ]
+        ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+          pkgs.nsis
+          pkgs.p7zip
+          pkgs.openjpeg
+          pkgs.osslsigncode
+          pkgs.squashfsTools
+          pkgs.gccPkgs.gcc # Older GCC
+        ];
+
         commonShellHook = ''
           export NODE_OPTIONS=--max_old_space_size=8192
           export CURDIR="$(pwd)"
           export PATH="$PATH:$CURDIR/node_modules/.bin"
+          export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+        ''
+        + pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+          export npm_config_build_from_source=true
+        '';
+
+        desktopShellHook = ''
           export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
           export ELECTRON_DISABLE_SANDBOX=1
-          export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
           export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
           export PLAYWRIGHT_BROWSERS_PATH="${pkgs.playwright-driver.browsers}"
         ''
@@ -97,7 +108,6 @@
         ''
         + pkgs.lib.optionalString pkgs.stdenv.isLinux ''
           export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
-          export npm_config_build_from_source=true
         '';
 
         welcomeMessage = ''
@@ -105,7 +115,6 @@
           echo "- Node.js $(node --version)"
           echo "- npm $(npm --version)"
           echo "- Yarn $(yarn --version)"
-          echo "- Playwright $(playwright --version)"
         '';
 
       in
@@ -113,15 +122,22 @@
         devShells =
           let
             androidShell = pkgs.mkShell {
-              buildInputs = commonBuildInputs ++ [
-                 androidEnv.jdk
-                 androidEnv.androidSdk
-               ] ++ androidEnv.extraPackages;
+              buildInputs =
+                commonBuildInputs
+                ++ [
+                  androidEnv.jdk
+                  androidEnv.androidSdk
+                ]
+                ++ androidEnv.extraPackages;
 
               NIX_PATCHELF_LIBRARY_PATH = "${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.gcc.cc.lib}/lib";
               NIX_CC = "${pkgs.gcc}";
 
-              shellHook = commonShellHook
+              shellHook =
+                commonShellHook
+                + ''
+                  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+                ''
                 + androidEnv.nixLdHook
                 + androidEnv.shellHook
                 + welcomeMessage;
@@ -129,10 +145,16 @@
           in
           {
             default = pkgs.mkShell {
-              buildInputs = commonBuildInputs;
+              buildInputs = commonBuildInputs ++ desktopBuildInputs;
               NIX_PATCHELF_LIBRARY_PATH = "${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.gcc.cc.lib}/lib";
               NIX_CC = "${pkgs.gcc}";
-              shellHook = commonShellHook + welcomeMessage;
+              shellHook =
+                commonShellHook
+                + desktopShellHook
+                + welcomeMessage
+                + ''
+                  echo "- Playwright $(playwright --version)"
+                '';
             };
 
             android = androidShell;

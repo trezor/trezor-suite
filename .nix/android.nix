@@ -3,64 +3,95 @@
 let
   androidComposition = pkgs.androidenv.composeAndroidPackages {
     # 34 is the Pixel_6_API_34 emulator image; 36 is RN/Expo compileSdk.
-    platformVersions = [ "34" "36" ];
+    platformVersions = [
+      "34"
+      "36"
+    ];
     # 36 is RN's default; 35 is still requested by native modules (e.g. quick-crypto).
-    buildToolsVersions = [ "35.0.0" "36.0.0" ];
+    buildToolsVersions = [
+      "35.0.0"
+      "36.0.0"
+    ];
+    includeEmulator = false;
+    includeSystemImages = false;
+    includeNDK = true;
+    # 27.1 is RN's default; 27.0 is still requested by expo-sqlite.
+    ndkVersions = [
+      "27.1.12297006"
+      "27.0.12077973"
+    ];
+    cmakeVersions = [ "3.22.1" ];
+  };
+
+  # Image versions follow platformVersions, so compose the emulator separately.
+  emulatorComposition = pkgs.androidenv.composeAndroidPackages {
+    platformVersions = [ "34" ];
+    buildToolsVersions = [ ];
     includeEmulator = true;
     includeSystemImages = true;
     systemImageTypes = [ "google_apis" ];
     abiVersions = [ "x86_64" ];
-    includeNDK = true;
-    # 27.1 is RN's default; 27.0 is still requested by expo-sqlite.
-    ndkVersions = [ "27.1.12297006" "27.0.12077973" ];
-    cmakeVersions = [ "3.22.1" ];
+    includeNDK = false;
+    includeCmake = false;
   };
 in
 rec {
-  androidSdk = androidComposition.androidsdk;
+  # Keep one SDK root so avdmanager can discover the image alongside build tools.
+  androidSdk = androidComposition.androidsdk.overrideAttrs (old: {
+    postInstall = (old.postInstall or "") + ''
+      ln -s ${emulatorComposition.emulator}/libexec/android-sdk/emulator "$out/libexec/android-sdk/emulator"
+      ln -s ${emulatorComposition.emulator}/libexec/android-sdk/system-images "$out/libexec/android-sdk/system-images"
+      ln -s ${emulatorComposition.emulator}/bin/* "$out/bin/"
+    '';
+  });
   jdk = pkgs.jdk17;
-  extraPackages = [ pkgs.nix-ld pkgs.aapt ];
+  extraPackages = [
+    pkgs.nix-ld
+    pkgs.aapt
+  ];
 
   nixLdHook = ''
-    export NIX_LD=$(nix eval --raw nixpkgs#stdenv.cc.bintools.dynamicLinker)
-    export NIX_LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [
-      pkgs.stdenv.cc.cc
-      pkgs.gcc.cc.lib
-      pkgs.glibc
-      pkgs.zlib
-      pkgs.icu
-      pkgs.openssl
-      pkgs.libcxx
-      pkgs.libxcb
-      pkgs.xorg.libX11
-    ]}"
+    export NIX_LD="${pkgs.stdenv.cc.bintools.dynamicLinker}"
+    export NIX_LD_LIBRARY_PATH="${
+      pkgs.lib.makeLibraryPath [
+        pkgs.stdenv.cc.cc
+        pkgs.gcc.cc.lib
+        pkgs.glibc
+        pkgs.zlib
+        pkgs.icu
+        pkgs.openssl
+        pkgs.libcxx
+        pkgs.libxcb
+        pkgs.xorg.libX11
+      ]
+    }"
   '';
-  
+
   shellHook = ''
     # Java & Android SDK setup for React Native / Expo Android
     export JAVA_HOME="${pkgs.jdk17}"
     export PATH="$JAVA_HOME/bin:$PATH"
-    
+
     # Set up composite Android SDK with required components
     export ANDROID_SDK_ROOT="$HOME/.android/nix-sdk"
     export ANDROID_HOME="$ANDROID_SDK_ROOT"
     mkdir -p "$ANDROID_HOME"
-    
+
     # Link SDK components from Nix store
-    ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/emulator" "$ANDROID_HOME/emulator"
-    ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/system-images" "$ANDROID_HOME/system-images"
-    ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/platform-tools" "$ANDROID_HOME/platform-tools"
-    ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/cmdline-tools" "$ANDROID_HOME/cmdline-tools"
-    ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/build-tools" "$ANDROID_HOME/build-tools"
-    ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/platforms" "$ANDROID_HOME/platforms"
-    ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/ndk" "$ANDROID_HOME/ndk"
-    ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/cmake" "$ANDROID_HOME/cmake"
-    ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/licenses" "$ANDROID_HOME/licenses"
-    
+    ln -sfn "${androidSdk}/libexec/android-sdk/emulator" "$ANDROID_HOME/emulator"
+    ln -sfn "${androidSdk}/libexec/android-sdk/system-images" "$ANDROID_HOME/system-images"
+    ln -sfn "${androidSdk}/libexec/android-sdk/platform-tools" "$ANDROID_HOME/platform-tools"
+    ln -sfn "${androidSdk}/libexec/android-sdk/cmdline-tools" "$ANDROID_HOME/cmdline-tools"
+    ln -sfn "${androidSdk}/libexec/android-sdk/build-tools" "$ANDROID_HOME/build-tools"
+    ln -sfn "${androidSdk}/libexec/android-sdk/platforms" "$ANDROID_HOME/platforms"
+    ln -sfn "${androidSdk}/libexec/android-sdk/ndk" "$ANDROID_HOME/ndk"
+    ln -sfn "${androidSdk}/libexec/android-sdk/cmake" "$ANDROID_HOME/cmake"
+    ln -sfn "${androidSdk}/libexec/android-sdk/licenses" "$ANDROID_HOME/licenses"
+
     # Add Android tools to PATH
-    export PATH="${androidComposition.androidsdk}/bin:$PATH"
+    export PATH="${androidSdk}/bin:$PATH"
     export PATH="$ANDROID_HOME/platform-tools:$PATH"
-    
+
     # Using the nixpkgs aapt2 to resolve an issue with dynamically linked executables
     export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${pkgs.aapt}/bin/aapt2"
 
