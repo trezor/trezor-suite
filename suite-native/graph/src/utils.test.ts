@@ -1,6 +1,6 @@
 import { type FiatGraphPoint } from '@suite-common/graph';
 
-import { getExtremaFromGraphPoints, omitErrorMessageSensitiveData } from './utils';
+import { getExtremaFromGraphPoints, getGraphError, omitErrorMessageSensitiveData } from './utils';
 
 describe('Suite native graph utils', () => {
     test('getExtremaFromGraphPoints', () => {
@@ -88,5 +88,51 @@ describe('omitErrorMessageSensitiveData', () => {
 
     it('should handle empty string', () => {
         expect(omitErrorMessageSensitiveData('')).toBe('');
+    });
+});
+
+describe('getGraphError', () => {
+    it('should return the same Error instance unchanged', () => {
+        const error = new Error('boom');
+        expect(getGraphError(error)).toBe(error);
+    });
+
+    it('should return a subclassed Error instance unchanged', () => {
+        class RippledError extends Error {}
+        const error = new RippledError('invalidParams');
+        expect(getGraphError(error)).toBe(error);
+    });
+
+    it('should rebuild an Error from a worker-boundary plain object, preserving name and stack', () => {
+        // blockchain-link workers post errors across the worker boundary as plain objects,
+        // so `instanceof Error` is false even though the shape looks like an Error.
+        const workerError = {
+            message: 'XRP: RippledError invalidParams',
+            name: 'RippledError',
+            stack: 'Error: RippledError invalidParams\n    at ?anon_0_',
+        };
+
+        const result = getGraphError(workerError);
+
+        expect(result).toBeInstanceOf(Error);
+        expect(result.message).toBe('XRP: RippledError invalidParams');
+        expect(result.name).toBe('RippledError');
+        expect(result.stack).toBe(workerError.stack);
+    });
+
+    it('should keep the default name and stack when the plain object omits them', () => {
+        const result = getGraphError({ message: 'partial error' });
+
+        expect(result).toBeInstanceOf(Error);
+        expect(result.message).toBe('partial error');
+        expect(result.name).toBe('Error');
+        expect(typeof result.stack).toBe('string');
+    });
+
+    it('should fall back to String() for primitive values', () => {
+        expect(getGraphError('plain string').message).toBe('plain string');
+        expect(getGraphError(42).message).toBe('42');
+        expect(getGraphError(null).message).toBe('null');
+        expect(getGraphError(undefined).message).toBe('undefined');
     });
 });

@@ -23,7 +23,7 @@ import {
 } from './graphThunkTypes';
 import { portfolioGraphAtoms } from './portfolioGraphAtoms';
 import { type TimeframeHoursValue } from './types';
-import { checkAndReportGraphError, omitErrorMessageSensitiveData } from './utils';
+import { checkAndReportGraphError, getGraphError, omitErrorMessageSensitiveData } from './utils';
 
 const GRAPH_MODULE_PREFIX = '@suite-native/graph';
 const GRAPH_NOT_AVAILABLE_ERROR_MESSAGE = 'Graph is not available for testnet coins.';
@@ -72,14 +72,6 @@ const setGraphPointsForInstanceId = (
         accountDetailGraphAtoms.graphPointsAtom,
         points as FiatGraphPointWithCryptoBalance[],
     );
-};
-
-const getGraphError = (error: unknown): Error => {
-    if (error instanceof Error) {
-        return error;
-    }
-
-    return new Error(String(error));
 };
 
 const fetchGraphDataToAtoms = async ({
