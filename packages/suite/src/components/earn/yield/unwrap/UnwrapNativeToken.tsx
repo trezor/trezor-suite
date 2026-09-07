@@ -99,7 +99,7 @@ export const UnwrapNativeToken = ({
     const isAmountTooHigh = amount.gt(tokenBalance);
     const isAmountValid = amount.gt(0) && !isAmountTooHigh && methods.formState.isValid;
 
-    const shouldCheckUnwrapAmount = !!broadcast;
+    const shouldCheckUnwrapAmount = !broadcast;
 
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
 

@@ -103,7 +103,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
     const isReserveRecommended = shouldRecommendWrapReserve(amountInput, account.formattedBalance);
     const isAmountValid = amount.gt(0) && !isAmountTooHigh && methods.formState.isValid;
 
-    const shouldCheckWrapAmount = !!broadcast;
+    const shouldCheckWrapAmount = !broadcast;
 
     useEffect(() => {
         if (pendingTxStatus !== 'failed') {
