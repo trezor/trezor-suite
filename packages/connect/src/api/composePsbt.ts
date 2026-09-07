@@ -64,7 +64,7 @@ export default class ComposePsbt extends AbstractMethod<'composePsbt', Params> {
     run() {
         const tx = parsePsbt({
             psbtTransactionData: this.params.psbtData,
-            network: this.params.coinInfo.network,
+            coinInfo: this.params.coinInfo,
             addresses: this.params.account.addresses,
             utxos: this.params.account.utxo,
         });

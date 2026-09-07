@@ -36,9 +36,9 @@ const composePsbt: TestCase = {
             },
             result: {
                 type: 'final',
-                bytes: 119,
+                bytes: 226,
                 fee: '10000',
-                feePerByte: '84.03361344537815',
+                feePerByte: '44.24778761061947',
                 totalSpent: '20000',
                 inputs: [{ script_type: 'SPENDADDRESS' }],
                 outputs: [
@@ -87,9 +87,9 @@ const composePsbt: TestCase = {
             },
             result: {
                 type: 'final',
-                bytes: 97,
+                bytes: 125,
                 fee: '150',
-                feePerByte: '1.5463917525773196',
+                feePerByte: '1.2',
                 totalSpent: '150',
                 inputs: [{ script_type: 'SPENDWITNESS' }],
                 outputs: [

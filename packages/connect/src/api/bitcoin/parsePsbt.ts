@@ -1,26 +1,32 @@
-import type { AccountAddresses, AccountUtxo, PrecomposeResultFinal } from '@trezor/connect-common';
+import type {
+    AccountAddresses,
+    AccountUtxo,
+    BitcoinNetworkInfo,
+    PrecomposeResultFinal,
+} from '@trezor/connect-common';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { bufferUtils } from '@trezor/utils';
-import type { Network } from '@trezor/utxo-lib';
 import { Psbt } from '@trezor/utxo-lib';
 
 import { parseOutputScript } from './outputs';
+import { getTransactionVbytes } from './transactionBytes';
 import { getHDPath, getOutputScriptType, getScriptType } from '../../utils/pathUtils';
 
 type ParsePsbtParams = {
     psbtTransactionData: string;
-    network: Network;
+    coinInfo: BitcoinNetworkInfo;
     addresses: AccountAddresses;
     utxos: AccountUtxo[];
 };
 
 export const parsePsbt = ({
     psbtTransactionData,
-    network,
+    coinInfo,
     addresses,
     utxos,
 }: ParsePsbtParams): PrecomposeResultFinal => {
+    const { network } = coinInfo;
     const psbt = Psbt.fromHex(psbtTransactionData, { network });
 
     const inputs: PROTO.TxInputType[] = [];
@@ -101,7 +107,10 @@ export const parsePsbt = ({
         // A non-positive fee (outputs >= inputs) is not a signable transaction.
         throw TypedError('Method_InvalidParameter', 'parsePsbt: Transaction fee is non-positive');
     }
-    const bytes = psbt.unsignedTx.virtualSize();
+    // Estimate the SIGNED virtual size. The unsigned tx has empty scriptSigs and no
+    // witnesses, so its size would understate the real tx and inflate the fee rate.
+    // Fall back to the unsigned size only if the weight calculator cannot process the inputs.
+    const bytes = getTransactionVbytes(inputs, outputs, coinInfo) || psbt.unsignedTx.virtualSize();
     const feePerByte = Number(fee) / bytes;
 
     return {
