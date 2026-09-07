@@ -131,10 +131,10 @@ const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
 
     const text =
         !hasEnoughBalanceForStaking || !hasPotentialRewards ? (
-            <Translation id="TR_STAKING_CARD_TEXT_EMPTY" values={{ displaySymbol }} />
+            <Translation id="TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY" values={{ displaySymbol }} />
         ) : (
             <Translation
-                id="TR_STAKING_CARD_TEXT_EMPTY"
+                id="TR_STAKING_CARD_TEXT_FUNDS_STAY"
                 values={{ potentialRewards, displaySymbol }}
             />
         );
@@ -214,10 +214,10 @@ const getDefaultContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
 
     const text =
         !hasEnoughBalanceForStaking || !hasPotentialRewards ? (
-            <Translation id="TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY" values={{ displaySymbol }} />
+            <Translation id="TR_STAKING_CARD_TEXT_EMPTY" values={{ displaySymbol }} />
         ) : (
             <Translation
-                id="TR_STAKING_CARD_TEXT_FUNDS_STAY"
+                id="TR_STAKING_CARD_TEXT_EMPTY"
                 values={{ potentialRewards, displaySymbol }}
             />
         );
