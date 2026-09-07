@@ -9,8 +9,12 @@ import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading
 import { TradingDetailLayout } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailLayout';
 import { TradingDetailProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
 import { TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
-import { getTradingDetailStepState } from 'src/views/wallet/trading/common/TradingDetail/utils';
+import {
+    getTradingDetailStepState,
+    getTradingProviderName,
+} from 'src/views/wallet/trading/common/TradingDetail/utils';
 
+import { TradingBuyDetailPaymentBanner } from './TradingBuyDetailPaymentBanner';
 import { TradingBuyDetailPaymentFailed } from './TradingBuyDetailPaymentFailed';
 import { TradingBuyDetailPaymentSuccessful } from './TradingBuyDetailPaymentSuccessful';
 import { TradingBuyDetailPaymentWaitingForUserStep } from './TradingBuyDetailPaymentWaitingForUserStep';
@@ -20,7 +24,7 @@ import { getBuyDetailHeaderMessages, getBuyDetailProgress, getBuyDetailStatusSte
 export const TradingBuyDetailContent = () => {
     const accounts = useSelector(selectAccounts);
     const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
-    const { trade, info, account } = useTradingDetailContext<TradingBuyType>();
+    const { trade, info } = useTradingDetailContext<TradingBuyType>();
     const { translationString } = useTranslation();
 
     const tradeStatus = trade?.data?.status;
@@ -31,7 +35,6 @@ export const TradingBuyDetailContent = () => {
     const provider = exchange ? info?.providerInfos?.[exchange] : undefined;
 
     const receiveAccount = accounts.find(account => account.key === trade?.receiveAccountKey);
-    const waitingStepAccount = receiveAccount ?? account;
 
     useTradingDetailMissingTradeRedirect('buy', trade);
 
@@ -51,26 +54,24 @@ export const TradingBuyDetailContent = () => {
     const getContent = () => {
         switch (tradeStatusStep) {
             case 'success':
-                return <TradingBuyDetailPaymentSuccessful />;
+                return <TradingBuyDetailPaymentSuccessful trade={trade.data} provider={provider} />;
             case 'error':
-                return <TradingBuyDetailPaymentFailed />;
+                return <TradingBuyDetailPaymentFailed trade={trade.data} provider={provider} />;
             default:
                 return (
                     <TradingDetailProgress
                         {...getBuyDetailHeaderMessages(tradeStatus)}
                         type={translationString('TR_BUY').toLowerCase()}
                     >
-                        {waitingStepAccount && (
-                            <TradingBuyDetailPaymentWaitingForUserStep
-                                state={getTradingDetailStepState(progress, 'customerAction')}
-                                trade={trade.data}
-                                account={waitingStepAccount}
-                                providerName={provider?.brandName || provider?.companyName}
-                            />
-                        )}
+                        <TradingBuyDetailPaymentWaitingForUserStep
+                            state={getTradingDetailStepState(progress, 'customerAction')}
+                            trade={trade.data}
+                            providerName={getTradingProviderName(provider)}
+                        />
                         <TradingDetailProcessingStep
                             state={getTradingDetailStepState(progress, 'providerProcessing')}
                             tradeType="buy"
+                            trade={trade.data}
                             provider={provider}
                         />
                     </TradingDetailProgress>
@@ -87,6 +88,7 @@ export const TradingBuyDetailContent = () => {
             tradeId={trade.data.id}
             quoteAmounts={quoteAmounts}
             country={trade.data.country}
+            banner={<TradingBuyDetailPaymentBanner trade={trade.data} provider={provider} />}
             sidebar={
                 <TradingBuyDetailSidebar
                     receiveAccount={receiveAccount}

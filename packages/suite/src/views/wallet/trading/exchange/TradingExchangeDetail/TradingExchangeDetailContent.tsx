@@ -63,11 +63,32 @@ export const TradingExchangeDetailContent = () => {
     const getContent = () => {
         switch (tradeStatusStep) {
             case 'success':
-                return <TradingExchangeDetailPaymentSuccessful />;
+                return (
+                    <TradingExchangeDetailPaymentSuccessful
+                        trade={trade.data}
+                        account={sendAccount}
+                        receiveAccountKey={trade.receiveAccountKey}
+                        provider={provider}
+                    />
+                );
             case 'error':
-                return <TradingExchangeDetailPaymentFailed />;
+                return (
+                    <TradingExchangeDetailPaymentFailed
+                        trade={trade.data}
+                        account={sendAccount}
+                        receiveAccountKey={trade.receiveAccountKey}
+                        provider={provider}
+                    />
+                );
             case 'kyc':
-                return <TradingExchangeDetailPaymentKYC supportUrl={provider?.supportUrl} />;
+                return (
+                    <TradingExchangeDetailPaymentKYC
+                        trade={trade.data}
+                        account={sendAccount}
+                        receiveAccountKey={trade.receiveAccountKey}
+                        provider={provider}
+                    />
+                );
             default:
                 return (
                     <TradingDetailProgress
@@ -86,6 +107,7 @@ export const TradingExchangeDetailContent = () => {
                         <TradingDetailProcessingStep
                             state={getTradingDetailStepState(progress, 'providerProcessing')}
                             tradeType="exchange"
+                            trade={trade.data}
                             provider={provider}
                             isDex={trade.data.isDex}
                         />

@@ -41,7 +41,6 @@ export class TradingPage {
     readonly sellBestOfferButton: Locator;
     readonly swapBestOfferButton: Locator;
     readonly kycWarning: Locator;
-    readonly proceedToPayButton: Locator;
     readonly approveSpendingButton: Locator;
     readonly pendingApprovalTransactionLabel: Locator;
     readonly pendingApprovalTransactionIdLabel: Locator;
@@ -60,6 +59,7 @@ export class TradingPage {
     // Transactions
     readonly backButton: Locator;
     readonly transactionDetailStatus: Locator;
+    readonly transactionDetailStatusLink: Locator;
     readonly transactionDetailHeader: Locator;
     readonly transactionDetail: Locator;
     readonly transactionDetailTxid: Locator;
@@ -91,7 +91,6 @@ export class TradingPage {
         this.sellBestOfferButton = this.page.getByTestId('@trading/form/sell-button');
         this.swapBestOfferButton = this.page.getByTestId('@trading/form/exchange-button');
         this.kycWarning = this.page.getByTestId('@trading/form/kyc-warning');
-        this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
         this.approveSpendingButton = this.page.getByTestId('@trading/form/approve-button');
         this.pendingApprovalTransactionLabel = this.page.getByTestId('@pending-transaction/title');
         this.pendingApprovalTransactionIdLabel = this.page.getByTestId(
@@ -111,6 +110,9 @@ export class TradingPage {
 
         this.backButton = this.page.getByTestId('@account-subpage/back');
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
+        this.transactionDetailStatusLink = this.page.getByTestId(
+            '@trading/transaction/detail/status-link',
+        );
         this.transactionDetailHeader = this.page.getByTestId('@trading/transaction/detail/header');
         this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
         this.transactionDetailTxid = this.page.getByTestId('@tx-detail/txid-value');

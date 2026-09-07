@@ -28,6 +28,7 @@ type TradingDetailLayoutProps = {
     tradeId?: string;
     quoteAmounts: TradingGetCryptoQuoteAmountProps;
     country?: string;
+    banner?: ReactNode;
     sidebar: ReactNode;
     children: ReactNode;
 };
@@ -40,6 +41,7 @@ export const TradingDetailLayout = ({
     tradeId,
     quoteAmounts,
     country,
+    banner,
     sidebar,
     children,
 }: TradingDetailLayoutProps) => {
@@ -51,6 +53,7 @@ export const TradingDetailLayout = ({
                 <Card paddingType="large" data-testid="@trading/transaction/detail/status-card">
                     {children}
                 </Card>
+                {banner}
                 <AfterTradeExperiment
                     status={tradeStatus}
                     type={tradeType}

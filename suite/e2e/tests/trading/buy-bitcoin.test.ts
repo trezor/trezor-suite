@@ -124,7 +124,7 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                     'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',
                 );
-                await expect(tradingPage.proceedToPayButton).toBeVisible();
+                await expect(tradingPage.transactionDetailStatusLink).toBeVisible();
             });
 
             await test.step('Wait 30s for watch refresh and status change to Approved', async () => {

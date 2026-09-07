@@ -1,22 +1,13 @@
-import { useState } from 'react';
-
 import { type BuyTrade } from 'invity-api';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
-import { tradeApi } from '@suite-common/trading';
-import { Button, Column, Paragraph, type StepListItemState } from '@trezor/components';
-import { ArrowSquareOutIcon } from '@trezor/icons';
+import { Paragraph, type StepListItemState } from '@trezor/components';
 
-import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { type Account } from 'src/types/wallet';
-import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
 
 type TradingBuyDetailPaymentWaitingForUserStepProps = {
     state: StepListItemState;
     trade: BuyTrade;
-    account: Account;
     providerName?: string;
 };
 
@@ -34,48 +25,14 @@ const getDescriptionId = (trade: BuyTrade): TranslationKey => {
     }
 };
 
-const getButtonLabelId = (trade: BuyTrade): TranslationKey => {
-    switch (trade.status) {
-        case 'SUBMITTED':
-            return 'TR_BUY_DETAIL_SUBMITTED_GATE';
-        default:
-            return 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE';
-    }
-};
-
 export const TradingBuyDetailPaymentWaitingForUserStep = ({
     state,
     trade,
-    account,
     providerName,
-}: TradingBuyDetailPaymentWaitingForUserStepProps) => {
-    const [isWorking, setIsWorking] = useState(false);
-    const dispatch = useDispatch();
-
-    const goToPayment = async () => {
-        setIsWorking(true);
-        const returnUrl = await createTxLink(trade, account);
-        const response = await tradeApi.getBuyTradeForm({ trade, returnUrl });
-        if (response) {
-            dispatch(submitRequestForm(response.form));
-        }
-    };
-
-    return (
-        <TradingDetailStep state={state} title={<Translation id={getTitleId(state)} />}>
-            <Column gap={20} alignItems="flex-start">
-                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    <Translation id={getDescriptionId(trade)} values={{ providerName }} />
-                </Paragraph>
-                <Button
-                    onClick={goToPayment}
-                    isLoading={isWorking}
-                    isDisabled={isWorking}
-                    iconRight={ArrowSquareOutIcon}
-                >
-                    <Translation id={getButtonLabelId(trade)} />
-                </Button>
-            </Column>
-        </TradingDetailStep>
-    );
-};
+}: TradingBuyDetailPaymentWaitingForUserStepProps) => (
+    <TradingDetailStep state={state} title={<Translation id={getTitleId(state)} />}>
+        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
+            <Translation id={getDescriptionId(trade)} values={{ providerName }} />
+        </Paragraph>
+    </TradingDetailStep>
+);

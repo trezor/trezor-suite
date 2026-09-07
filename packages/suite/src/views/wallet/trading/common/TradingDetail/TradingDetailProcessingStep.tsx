@@ -1,10 +1,15 @@
 import { type ReactNode } from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { type TradingProviderInfo, type TradingType } from '@suite-common/trading';
-import { type StepListItemState } from '@trezor/components';
+import {
+    type TradingProviderInfo,
+    type TradingTradeType,
+    type TradingType,
+} from '@suite-common/trading';
+import { Column, type StepListItemState } from '@trezor/components';
 
 import { translationKeys } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingDetailProviderStatusLink } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderStatusLink';
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
 import { getTradingProviderName } from 'src/views/wallet/trading/common/TradingDetail/utils';
 
@@ -28,6 +33,7 @@ const getTitleId = (state: StepListItemState, isDex?: boolean): TranslationKey =
 type TradingDetailProcessingStepProps = {
     state: StepListItemState;
     tradeType: TradingType;
+    trade: TradingTradeType;
     provider?: TradingProviderInfo;
     isDex?: boolean;
     children?: ReactNode;
@@ -36,6 +42,7 @@ type TradingDetailProcessingStepProps = {
 export const TradingDetailProcessingStep = ({
     state,
     tradeType,
+    trade,
     provider,
     isDex,
     children,
@@ -55,7 +62,10 @@ export const TradingDetailProcessingStep = ({
                 />
             }
         >
-            {children}
+            <Column gap={12} alignItems="flex-start">
+                {children}
+                <TradingDetailProviderStatusLink provider={provider} trade={trade} />
+            </Column>
         </TradingDetailStep>
     );
 };

@@ -57,7 +57,13 @@ export const TradingSellDetailContent = () => {
     const getContent = () => {
         switch (tradeStatusStep) {
             case 'error':
-                return <TradingSellDetailPaymentFailed />;
+                return (
+                    <TradingSellDetailPaymentFailed
+                        trade={trade.data}
+                        account={sendAccount}
+                        provider={provider}
+                    />
+                );
             default:
                 return (
                     <TradingDetailProgress
@@ -73,6 +79,7 @@ export const TradingSellDetailContent = () => {
                         <TradingDetailProcessingStep
                             state={getTradingDetailStepState(progress, 'providerProcessing')}
                             tradeType="sell"
+                            trade={trade.data}
                             provider={provider}
                         >
                             <Paragraph

@@ -397,6 +397,14 @@ export const messages = defineMessages({
         defaultMessage: 'Placed',
         id: 'TR_TRADING_DETAIL_PLACED',
     },
+    TR_TRADING_DETAIL_TRANSACTION_ID: {
+        defaultMessage: 'Transaction ID',
+        id: 'TR_TRADING_DETAIL_TRANSACTION_ID',
+    },
+    TR_TRADING_DETAIL_CHECK_STATUS: {
+        defaultMessage: 'Check status on {providerName}',
+        id: 'TR_TRADING_DETAIL_CHECK_STATUS',
+    },
     TR_TRADING_SWAP_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
         id: 'TR_TRADING_SWAP_MODAL_SECURITY_HEADER',
@@ -1051,10 +1059,6 @@ export const messages = defineMessages({
         defaultMessage: 'Trade ID',
         id: 'TR_TRADE_ID',
     },
-    TR_TRADING_PROCESSING_STATUS: {
-        defaultMessage: "<link>Check your order status</link> on the {providerName}'s website.",
-        id: 'TR_TRADING_PROCESSING_STATUS',
-    },
     TR_TRADING_PROCESSING_SUPPORT: {
         defaultMessage: "Need help? Reach out to <link>{providerName}'s support</link>.",
         id: 'TR_TRADING_PROCESSING_SUPPORT',
@@ -1104,10 +1108,6 @@ export const messages = defineMessages({
         defaultMessage: "Click to complete your details on the provider's website.",
         id: 'TR_BUY_DETAIL_SUBMITTED_TEXT',
     },
-    TR_BUY_DETAIL_SUBMITTED_GATE: {
-        defaultMessage: 'Proceed to pay',
-        id: 'TR_BUY_DETAIL_SUBMITTED_GATE',
-    },
     TR_BUY_DETAIL_WAITING_FOR_USER_TITLE: {
         defaultMessage: 'Complete your transaction',
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',
@@ -1121,9 +1121,14 @@ export const messages = defineMessages({
             '{providerName} needs some final details to finish this transaction. Visit their site to proceed.',
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_TEXT',
     },
-    TR_BUY_DETAIL_WAITING_FOR_USER_GATE: {
-        defaultMessage: "Go to the provider's website",
-        id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
+    TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TITLE: {
+        defaultMessage: "Left the provider's website before paying?",
+        id: 'TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TITLE',
+    },
+    TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TEXT: {
+        defaultMessage:
+            "No worries – you haven't been charged. Just go back and create a new trade.",
+        id: 'TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TEXT',
     },
     TR_BUY_SELL_OFFERS_EMPTY: {
         defaultMessage: 'Select your assets and amount to search for your best offer.',
