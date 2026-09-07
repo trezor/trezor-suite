@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+# Android builds can saturate a developer's CPU and memory: Gradle workers and
+# Ninja compiler jobs have separate concurrency limits, and building every ABI
+# does unnecessary work when testing on one emulator or device. This opt-in
+# command builds one ABI and limits both build systems, the Gradle heap, and
+# process priority to keep the machine responsive, potentially at the cost of
+# longer build time. These settings apply only to this invocation.
+# Run with yarn native:android:build:local; override ANDROID_BUILD_ABI or
+# ANDROID_BUILD_JOBS as needed. Uses the installed Java and Android SDK, with no
+# Nix dependency; requires Bash, nice, and an already generated Android project.
+
 set -euo pipefail
 
 app_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
