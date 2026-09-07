@@ -26,12 +26,7 @@ test.describe.skip('Firmware update', { tag: ['@group=manual'] }, () => {
                 category: TestCategory.Firmware,
                 priority: TestPriority.High,
                 stream: TestStream.Firmware,
-                osMatrix: [
-                    TestOsMatrix.Linux,
-                    TestOsMatrix.Windows,
-                    TestOsMatrix.MacOSArm,
-                    TestOsMatrix.MacOSIntel,
-                ],
+                osMatrix: [TestOsMatrix.Linux, TestOsMatrix.Windows, TestOsMatrix.MacOSArm],
             }),
         },
         async () => {},

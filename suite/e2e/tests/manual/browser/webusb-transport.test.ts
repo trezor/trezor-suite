@@ -33,7 +33,6 @@ test.describe.skip('Web usb transport', { tag: ['@group=manual'] }, () => {
                     TestOsMatrix.Linux,
                     TestOsMatrix.Windows,
                     TestOsMatrix.MacOSArm,
-                    TestOsMatrix.MacOSIntel,
                     TestOsMatrix.Android,
                 ],
             }),

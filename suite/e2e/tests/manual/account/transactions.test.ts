@@ -98,9 +98,9 @@ test.describe.skip('Account transactions', { tag: ['@group=manual'] }, () => {
                     'Funded account supporting fee bump (BTC or ETH)',
                 ],
                 steps: [
-                    'Send a transaction with a low fee',
-                    'Open the pending transaction detail',
-                    'Click "Speed up" / "Bump fee"',
+                    'Send a transaction with a low fee to another account of the same device',
+                    'Confirm the pending transaction is listed in both the sending and the receiving account',
+                    'Click the "Speed up" button on the pending transaction row',
                     'Increase the fee and confirm the replacement on the Trezor device',
                     'Confirm a success notification and that the replaced transaction is updated in the list',
                     'For ETH: repeat with the "Cancel" option and confirm the cancel transaction replaces the original',
