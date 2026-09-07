@@ -23,5 +23,3 @@ export function useFilterAccounts(accounts: AccountOption[]) {
         [accounts, networkSymbol, search],
     );
 }
-
-export type FilteredAccountOption = ReturnType<typeof useFilterAccounts>[number];

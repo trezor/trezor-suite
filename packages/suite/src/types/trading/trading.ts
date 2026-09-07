@@ -14,8 +14,6 @@ import type {
     TradingProviderInfo,
     TradingSellInfoSelector,
     TradingSellType,
-    TradingStateSelector,
-    TradingTransaction,
     TradingTransactionBuy,
     TradingTransactionExchange,
     TradingTransactionSell,
@@ -42,31 +40,9 @@ export type TradingTradeInfoMapProps = {
     exchange: TradingExchangeInfoSelector;
 };
 
-export interface TradingGetTypedTradeProps {
-    trades: TradingTransaction[];
-    tradeType: TradingType;
-    transactionId: string | undefined;
-}
-
-export interface TradingGetDetailDataProps {
-    trading: TradingStateSelector;
-    tradeType: TradingType;
-    infos: {
-        buy: TradingBuyInfoSelector | undefined;
-        sell: TradingSellInfoSelector | undefined;
-        exchange: TradingExchangeInfoSelector | undefined;
-    };
-}
-
 export interface TradingUseWatchTradeProps<T extends TradingType> {
     account: Account | undefined;
     trade: TradingTradeMapProps[T] | undefined;
-}
-
-export interface TradingCryptoListProps {
-    value: CryptoId;
-    label: string; // token shortcut
-    cryptoName?: string | undefined; // full name
 }
 
 export type TradingCoinLogoProps = {

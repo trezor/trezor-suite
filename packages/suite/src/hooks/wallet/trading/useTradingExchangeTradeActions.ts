@@ -196,5 +196,3 @@ export const useTradingExchangeTradeActions = () => {
         signDataAndConfirm,
     };
 };
-
-export type TradingExchangeTradeActionsValues = ReturnType<typeof useTradingExchangeTradeActions>;
