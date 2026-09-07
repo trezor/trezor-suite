@@ -136,7 +136,9 @@ export class Psbt {
     }
 
     static fromHex(hex: string, options: PsbtOptions = {}) {
-        return this.fromBuffer(Buffer.from(hex, 'hex'), { ...options, nostrict: false });
+        // `fromBuffer` already defaults to strict parsing when `nostrict` is unset,
+        // so forward the caller's options instead of hard-overriding `nostrict`.
+        return this.fromBuffer(Buffer.from(hex, 'hex'), options);
     }
 
     toBuffer() {
