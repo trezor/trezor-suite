@@ -1,165 +1,62 @@
-import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
-import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { type RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
+
 import {
-    Screen,
-    ScreenHeader,
-    type StackNavigationProps,
-    type YieldStackParamList,
-    YieldStackRoutes,
-} from '@suite-native/navigation';
+    type EarnOnboardingRootState,
+    getYieldEarnOpportunityKey,
+    getYieldVaultContractAddress,
+    selectIsEarnOnboardingConfirmed,
+} from '@suite-common/wallet-core';
+import { type YieldStackParamList, type YieldStackRoutes } from '@suite-native/navigation';
 
-import { HowEarnWorksBenefitsSection } from '../../components/earn/HowEarnWorks/HowEarnWorksBenefitsSection';
-import { HowEarnWorksHeaderSection } from '../../components/earn/HowEarnWorks/HowEarnWorksHeaderSection';
-import { HowEarnWorksTimelineCard } from '../../components/earn/HowEarnWorks/HowEarnWorksTimelineCard';
-import { useHowYieldWorksPreset } from '../../components/earn/HowEarnWorks/yieldPresets';
-import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
-import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
+import { HowYieldWorksScreenContent } from './HowYieldWorksScreenContent';
+import { StartYieldDepositScreen } from './StartYieldDepositScreen';
+import { EarnLoadingScreen } from '../../components/earn/EarnLoadingScreen';
 import { useMessageSystemYield } from '../../hooks/yield/useMessageSystemYield';
-import { useYieldApyBreakdownAlert } from '../../hooks/yield/useYieldApyBreakdownAlert';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
-type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.HowYieldWorks>;
-
 export const HowYieldWorksScreen = () => {
-    const navigation = useNavigation<NavigationProps>();
     const route = useRoute<RouteProp<YieldStackParamList, YieldStackRoutes.HowYieldWorks>>();
-
     const yieldFlowData = useYieldFlowData(route.params);
+    const { vault, resolutionStatus } = yieldFlowData;
+    const isFocused = useIsFocused();
+    const isResolved = resolutionStatus === 'resolved';
 
-    const {
-        account,
-        apy,
-        vault,
-        tokenSymbol,
-        vaultTokenSymbol,
-        bonusRewardTokenSymbol,
-        resolutionStatus,
-        wrappedNativeSymbol,
-    } = yieldFlowData;
-
-    const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
-        type: events.yieldNavigateEvent.name,
-        payload: {
-            action: 'cancel',
-            from: 'deposit-in-a-nutshell-modal',
-            to: 'deposit-in-a-nutshell-modal',
-            networkSymbol: account?.symbol,
-            vaultId: vault?.id,
-        },
+    const vaultAddress = vault && getYieldVaultContractAddress(vault);
+    const { isDisabled: isDepositDisabled } = useMessageSystemYield('deposit', {
+        vaultContractAddress: vaultAddress ?? undefined,
     });
+    const isConfirmed = useSelector((state: EarnOnboardingRootState) =>
+        selectIsEarnOnboardingConfirmed(
+            state,
+            route.params.accountKey,
+            getYieldEarnOpportunityKey(vaultAddress),
+        ),
+    );
 
-    const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
-    const {
-        isDisabled: isDepositDisabled,
-        content: depositDisabledContent,
-        variant: depositDisabledVariant,
-    } = useMessageSystemYield('deposit', { vaultContractAddress });
+    const [hasShownOnboarding, setHasShownOnboarding] = useState(false);
+    const shouldStartDeposit =
+        isResolved &&
+        isConfirmed &&
+        !route.params.isInfoOnly &&
+        !isDepositDisabled &&
+        !hasShownOnboarding;
 
-    const handleNavigateToYieldConsents = () => {
-        analytics.report({
-            type: events.yieldNavigateEvent.name,
-            payload: {
-                action: 'continue',
-                from: 'deposit-in-a-nutshell-modal',
-                to: 'deposit-legal-modal',
-                networkSymbol: account?.symbol,
-                vaultId: vault?.id,
-            },
-        });
-        registerNavigateBackAnalytics();
-        navigation.navigate(YieldStackRoutes.YieldConsents, route.params);
-    };
+    useEffect(() => {
+        if (isResolved && !shouldStartDeposit && !hasShownOnboarding) {
+            setHasShownOnboarding(true);
+        }
+    }, [isResolved, shouldStartDeposit, hasShownOnboarding]);
 
-    const handleTimelineOpen = () => {
-        analytics.report({
-            type: events.yieldInteractionEvent.name,
-            payload: {
-                element: 'in-a-nutshell-process-tab',
-                value: 'deposit',
-                networkSymbol: account?.symbol,
-                vaultId: vault?.id,
-            },
-        });
-    };
-
-    const { benefitItems, timelineSections } = useHowYieldWorksPreset({
-        tokenSymbol: tokenSymbol ?? '',
-        vaultTokenSymbol: vaultTokenSymbol ?? '',
-        apy,
-        onApyPress: showYieldApyBreakdownAlert,
-        bonusRewardTokenSymbol,
-        wrappedNativeSymbol,
-    });
-
-    if (resolutionStatus !== 'resolved') {
-        return null;
+    if (!isResolved) {
+        return <EarnLoadingScreen />;
     }
 
-    return (
-        <Screen header={<ScreenHeader closeActionType="back" />}>
-            <VStack flex={1} justifyContent="space-between">
-                <VStack alignItems="flex-start" spacing="sp32">
-                    <HowEarnWorksHeaderSection
-                        title={
-                            <Translation
-                                id={
-                                    wrappedNativeSymbol !== null
-                                        ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldTitle'
-                                        : 'earn.howYieldWorksScreen.defiYieldTitle'
-                                }
-                                values={{ nativeSymbol: wrappedNativeSymbol }}
-                            />
-                        }
-                        subtitle={
-                            <Translation
-                                id={
-                                    wrappedNativeSymbol !== null
-                                        ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldSubtitle'
-                                        : 'earn.howYieldWorksScreen.defiYieldSubtitle'
-                                }
-                                values={{ nativeSymbol: wrappedNativeSymbol }}
-                            />
-                        }
-                    />
-                    <HowEarnWorksBenefitsSection items={benefitItems} />
-                    <HowEarnWorksTimelineCard
-                        cardTitle={<Translation id="earn.howYieldWorksScreen.timelineCardTitle" />}
-                        bottomSheetTitle={
-                            <Translation id="earn.howYieldWorksScreen.timelineBottomSheetTitle" />
-                        }
-                        onOpen={handleTimelineOpen}
-                    >
-                        {timelineSections.map(section => (
-                            <TimelineDetailsCard
-                                key={section.id}
-                                headerTitle={section.title}
-                                headerIconName={section.iconName}
-                                items={section.items}
-                            />
-                        ))}
-                    </HowEarnWorksTimelineCard>
-                </VStack>
-                <VStack spacing="sp16">
-                    {isDepositDisabled && (
-                        <YieldDisabledAlert
-                            type="deposit"
-                            content={depositDisabledContent}
-                            variant={depositDisabledVariant}
-                        />
-                    )}
-                    <Button onPress={handleNavigateToYieldConsents} isDisabled={isDepositDisabled}>
-                        <Translation id="generic.buttons.continue" />
-                    </Button>
-                </VStack>
-            </VStack>
-        </Screen>
-    );
+    if (shouldStartDeposit) {
+        return isFocused ? <StartYieldDepositScreen yieldFlowData={yieldFlowData} /> : null;
+    }
+
+    return <HowYieldWorksScreenContent yieldFlowData={yieldFlowData} />;
 };

@@ -25,11 +25,13 @@ import { BigNumber } from '@trezor/utils';
 import { useStartYieldDepositFlow } from './useStartYieldDepositFlow';
 
 const mockNavigate = jest.fn();
+const mockReplace = jest.fn();
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({
         navigate: mockNavigate,
+        replace: mockReplace,
     }),
 }));
 
@@ -136,6 +138,7 @@ type HookParams = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
     routeParams: YieldFlowParams;
+    shouldReplaceRoute?: boolean;
 };
 
 const defaultHookParams: HookParams = { flowData, flowKey, routeParams };
@@ -155,6 +158,22 @@ describe('useStartYieldDepositFlow', () => {
         jest.clearAllMocks();
         fetchAllowanceMock.mockResolvedValue(allowanceSubunits('0'));
         fetchWrappedNativeTokenInfoMock.mockResolvedValue(null);
+    });
+
+    it('replaces the skipped onboarding route after initializing allowance', async () => {
+        const store = buildStore();
+        const { result } = await renderUseStartYieldDepositFlow(store, {
+            ...defaultHookParams,
+            shouldReplaceRoute: true,
+        });
+        await act(async () => {
+            await result.current.handleStartYieldDepositFlow();
+        });
+        expect(mockReplace).toHaveBeenCalledWith(
+            YieldStackRoutes.YieldDepositApproval,
+            routeParams,
+        );
+        expect(mockNavigate).not.toHaveBeenCalled();
     });
 
     it('navigates to deposit when allowance initialization skips to action step', async () => {

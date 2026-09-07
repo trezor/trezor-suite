@@ -2846,14 +2846,10 @@ export const messages = {
             },
         },
         earnConsentsScreen: {
+            maintained: 'Your staked funds are maintained by Everstake.',
+            acknowledge: 'I acknowledge and consent to stake with Everstake.',
             title: 'Before you continue',
-            entryPeriodCard: {
-                title: 'Confirm activation period',
-                firstItem: 'Staking activation currently takes up to {entryPeriodInDays} days.',
-                secondItem: "You can't cancel your stake during this period.",
-            },
             delegatingCard: {
-                title: 'Delegate to Everstake',
                 eth: {
                     firstItem:
                         'Everstake maintains and protects your staked {displaySymbol} with their smart contracts, infrastructure, and technology.',
@@ -3227,6 +3223,7 @@ export const messages = {
             subtitle: 'Put your assets to work and earn yield.',
         },
         yieldConsentsScreen: {
+            terms: "By using the {providerName} protocol in this app, you agree to Trezor's <tos>Terms of Use</tos> and acknowledge <disclaimer>{providerName}'s Disclaimer</disclaimer>.",
             title: 'Before you continue',
             providerCard: {
                 title: 'Deposit to {providerName}',

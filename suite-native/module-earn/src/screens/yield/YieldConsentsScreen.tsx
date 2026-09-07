@@ -2,6 +2,12 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
+import {
+    earnOnboardingActions,
+    getEarnOpportunityKey,
+    getYieldVaultContractAddress,
+} from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -26,6 +32,7 @@ type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldConsents>
 
 export const YieldConsentsScreen = () => {
     const { applyStyle } = useNativeStyles();
+    const dispatch = useDispatch();
     const route = useRoute<RouteProps>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
@@ -60,6 +67,14 @@ export const YieldConsentsScreen = () => {
     });
 
     const handleConfirmConsents = () => {
+        const vaultAddress = vault && getYieldVaultContractAddress(vault);
+        if (!account || !vaultAddress) return;
+        dispatch(
+            earnOnboardingActions.confirmEarnOnboarding({
+                accountKey: account.key,
+                opportunity: getEarnOpportunityKey({ type: 'yield', vaultAddress }),
+            }),
+        );
         void handleStartYieldDepositFlow().then(hasStartedDepositFlow => {
             if (!hasStartedDepositFlow) {
                 return;

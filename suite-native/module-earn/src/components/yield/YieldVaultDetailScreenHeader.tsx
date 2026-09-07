@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import {
@@ -7,13 +9,18 @@ import {
     type NativeAccountsRootState,
     selectAccountFiatBalance,
 } from '@suite-native/accounts';
-import { Box, HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
+import { Box, HStack, IconButton } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
-import { ScreenHeader } from '@suite-native/navigation';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    ScreenHeader,
+    type StackNavigationProps,
+    YieldStackRoutes,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { YieldDepositInfoBottomSheet } from './YieldDepositInfoBottomSheet';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
 const headerStyle = prepareNativeStyle(utils => ({
@@ -36,6 +43,8 @@ export const YieldVaultDetailScreenHeader = ({
     tokenContract,
 }: YieldVaultDetailScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
+    const navigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.YieldVaultDetail>>();
 
     const { networkSymbol, deviceStaticSessionId } = parseAccountKey(account.key);
 
@@ -43,20 +52,11 @@ export const YieldVaultDetailScreenHeader = ({
         selectAccountFiatBalance(state, account.key),
     );
 
-    const {
-        apy,
-        bonusRewardTokenSymbol,
-        tokenSymbol,
-        vault,
-        vaultTokenSymbol,
-        wrappedNativeSymbol,
-    } = useYieldFlowData({
+    const { vault } = useYieldFlowData({
         accountKey: account.key,
         tokenContract,
         displayError: false,
     });
-
-    const { bottomSheetRef, closeModal, openModal } = useBottomSheetModal();
 
     return (
         <>
@@ -90,26 +90,21 @@ export const YieldVaultDetailScreenHeader = ({
                             priority="secondary"
                             size="medium"
                             iconName="info"
-                            onPress={openModal}
+                            onPress={() =>
+                                navigation.navigate(RootStackRoutes.YieldNavigator, {
+                                    screen: YieldStackRoutes.HowYieldWorks,
+                                    params: {
+                                        accountKey: account.key,
+                                        tokenContract,
+                                        isInfoOnly: true,
+                                    },
+                                })
+                            }
                         />
                     )
                 }
                 closeActionType="back"
             />
-
-            {vault && tokenSymbol && vaultTokenSymbol && (
-                <YieldDepositInfoBottomSheet
-                    ref={bottomSheetRef}
-                    apy={apy}
-                    bonusRewardTokenSymbol={bonusRewardTokenSymbol}
-                    onClose={closeModal}
-                    tokenSymbol={tokenSymbol}
-                    vaultTokenSymbol={vaultTokenSymbol}
-                    account={account}
-                    vault={vault}
-                    wrappedNativeSymbol={wrappedNativeSymbol}
-                />
-            )}
         </>
     );
 };

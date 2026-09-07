@@ -1,14 +1,16 @@
-import { type RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { getNetwork } from '@suite-common/wallet-config';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { AccountLabel } from '@suite-native/accounts';
-import { HStack, Text } from '@suite-native/atoms';
+import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
-    type RootStackRoutes,
+    RootStackRoutes,
     ScreenHeader,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -24,11 +26,16 @@ const headerTextStyle = prepareNativeStyle(() => ({
 
 export const StakingDetailScreenHeader = () => {
     const { applyStyle } = useNativeStyles();
+    const navigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.StakingDetail>>();
 
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingDetail>>();
     const { accountKey } = route.params;
 
     const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
+
+    const { networkType } = getNetwork(networkSymbol);
+    const hasHowItWorks = networkType === 'ethereum' || networkType === 'solana';
 
     return (
         <ScreenHeader
@@ -54,6 +61,23 @@ export const StakingDetailScreenHeader = () => {
                         showAccountTypeBadge
                     />
                 </>
+            }
+            rightIcon={
+                hasHowItWorks && (
+                    <IconButton
+                        iconName="info"
+                        intent="neutral"
+                        priority="secondary"
+                        size="medium"
+                        onPress={() =>
+                            navigation.navigate(RootStackRoutes.HowStakeWorksScreen, {
+                                accountKey,
+                                symbol: networkSymbol,
+                                isInfoOnly: true,
+                            })
+                        }
+                    />
+                )
             }
             closeActionType="back"
         />
