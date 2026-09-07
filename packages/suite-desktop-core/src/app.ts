@@ -16,6 +16,7 @@ import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './libs/auto-st
 import { APP_NAME } from './libs/constants';
 import { createElectronSessionInterceptor } from './libs/create-electron-session-interceptor';
 import { getBuildInfo, getComputerInfo } from './libs/info';
+import { isMainWindowUsable } from './libs/isMainWindowUsable';
 import { loadIndex } from './libs/loadIndex';
 import { Logger } from './libs/logger';
 import { MainWindowProxy } from './libs/main-window-proxy';
@@ -52,9 +53,6 @@ type CreateMainWindowParams = {
     store: Store;
     cspNonce: string;
 };
-
-const isMainWindowUsable = (mainWindow: BrowserWindow | undefined): mainWindow is BrowserWindow =>
-    !!mainWindow && !mainWindow.isDestroyed();
 
 const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams) => {
     const darkTheme =
@@ -409,7 +407,12 @@ const init = async () => {
                 // https://source.chromium.org/chromium/chromium/src/+/main:net/base/net_error_list.h
                 if (!isMainFrame || errorCode === -3) return;
                 // Delay retry to avoid a busy loop if the failure persists.
-                setTimeout(() => loadIndex(mainWindow), 1000);
+                setTimeout(() => {
+                    // Main Suite window was closed, no point in loading index.
+                    if (!isMainWindowUsable(mainWindow)) return;
+
+                    loadIndex(mainWindow);
+                }, 1000);
             },
         );
 

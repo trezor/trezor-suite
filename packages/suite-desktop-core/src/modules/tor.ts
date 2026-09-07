@@ -12,6 +12,7 @@ import { type BootstrapEvent } from '@trezor/request-manager';
 import { type BootstrapTorEvent, type HandshakeTorModule } from '@trezor/suite-desktop-api';
 
 import { ipcMain } from '../ipcMain';
+import { isMainWindowUsable } from '../libs/isMainWindowUsable';
 import { hasSwitch } from '../libs/process-switches';
 import { TorExternalProcess } from '../libs/processes/TorExternalProcess';
 import { TorProcess, type TorProcessStatus } from '../libs/processes/TorProcess';
@@ -108,8 +109,13 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
     };
 
     const handleBootstrapEvent = (bootstrapEvent: BootstrapEvent) => {
+        const mainWindow = mainWindowProxy.getInstance();
+
+        // Main Suite window was closed, no point in responding with IPC event.
+        if (!isMainWindowUsable(mainWindow)) return;
+
         if (bootstrapEvent.type === 'slow') {
-            mainWindowProxy.getInstance()?.webContents.send('tor/bootstrap', {
+            mainWindow.webContents.send('tor/bootstrap', {
                 type: 'slow',
             });
         }
@@ -128,7 +134,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
                 },
             };
 
-            mainWindowProxy.getInstance()?.webContents.send('tor/bootstrap', event);
+            mainWindow.webContents.send('tor/bootstrap', event);
         }
     };
 

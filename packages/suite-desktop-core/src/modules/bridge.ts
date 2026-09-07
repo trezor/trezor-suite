@@ -7,6 +7,7 @@ import { scheduleAction } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
 import type { Dependencies } from './module';
+import { isMainWindowUsable } from '../libs/isMainWindowUsable';
 import { hasSwitch } from '../libs/process-switches';
 import { ThreadProxy } from '../libs/thread-proxy';
 import { b2t } from '../libs/utils';
@@ -93,7 +94,12 @@ const handleBridgeStatus = async ({
     const status = await bridge.status();
     logger.info('bridge', `Toggling bridge. Status: ${JSON.stringify(status)}`);
 
-    mainWindowProxy.getInstance()?.webContents.send('bridge/status', status);
+    // Respond with IPC event only if the main Suite window is open, but Suite can also run in daemon mode → then just continue.
+    const mainWindow = mainWindowProxy.getInstance();
+    if (isMainWindowUsable(mainWindow)) {
+        mainWindow.webContents.send('bridge/status', status);
+    }
+
     mainThreadEmitter.emit('module/bridge/status', status);
 
     return status;
