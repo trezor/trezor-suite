@@ -86,6 +86,12 @@ const toastIntentToStyleMap = {
         iconBackgroundColor: 'elementFillInfoSoft',
         contentColor: 'contentInfo',
     },
+    debug: {
+        backgroundColor: 'surfaceFillModelessDebug',
+        borderColor: 'surfaceBorderModelessDebug',
+        iconBackgroundColor: 'elementFillDebugSoft',
+        contentColor: 'contentDebug',
+    },
 } as const satisfies Record<ToastIntent, ToastStyle>;
 
 export const Toast = ({ toast }: ToastProps) => {

@@ -18,6 +18,7 @@ import {
 import { Row } from '../../Flex/Flex';
 import { Icon } from '../../Icon/Icon';
 import { Text } from '../../typography/Text/Text';
+import { type SelectionControlIntent } from '../types';
 import { commonCheckInputStyles } from '../utils';
 
 export const allowedCheckboxFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -33,7 +34,7 @@ const HiddenInput = styled.input`
     height: 0;
 `;
 
-const FakeInput = styled.div`
+const FakeInput = styled.div<{ $intent: SelectionControlIntent }>`
     ${commonCheckInputStyles}
 
     border-radius: 4px;
@@ -51,6 +52,7 @@ const FakeInput = styled.div`
 `;
 
 export type CheckboxProps = AllowedCheckboxFrameProps & {
+    intent?: SelectionControlIntent;
     isChecked?: boolean;
     isDisabled?: boolean;
     labelAlignment?: LabelAlignment;
@@ -62,6 +64,7 @@ export type CheckboxProps = AllowedCheckboxFrameProps & {
 };
 
 export const Checkbox = ({
+    intent = 'brand',
     isChecked,
     isDisabled = false,
     labelAlignment = 'end',
@@ -72,6 +75,8 @@ export const Checkbox = ({
     children,
     ...rest
 }: CheckboxProps) => {
+    const checkmarkColor =
+        intent === 'debug' ? 'contentButtonDebugPrimary' : 'contentPrimaryInverse';
     const frameProps = pickAndPrepareFrameProps(rest, allowedCheckboxFrameProps, false);
 
     return (
@@ -93,10 +98,10 @@ export const Checkbox = ({
                 tabIndex={0}
             />
 
-            <FakeInput>
+            <FakeInput $intent={intent}>
                 <Icon
                     size={16}
-                    color={isDisabled ? 'contentDisabled' : 'contentPrimaryInverse'}
+                    color={isDisabled ? 'contentDisabled' : checkmarkColor}
                     as={CheckIcon}
                 />
             </FakeInput>

@@ -101,7 +101,7 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                                             <Button
                                                 size="small"
                                                 iconLeft={CopyIcon}
-                                                intent="neutral"
+                                                intent="debug"
                                                 onClick={() =>
                                                     copyToClipboard(
                                                         JSON.stringify(

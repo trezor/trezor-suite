@@ -12,7 +12,7 @@ export const DevCheckBoxListItem = ({
     <PressableOpacity onPress={onPress}>
         <HStack justifyContent="space-between" alignItems="center">
             <Text variant="body-md">{title}</Text>
-            <CheckBox isChecked={isChecked} onChange={onPress} />
+            <CheckBox intent="debug" isChecked={isChecked} onChange={onPress} />
         </HStack>
     </PressableOpacity>
 );

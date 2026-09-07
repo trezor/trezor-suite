@@ -23,7 +23,7 @@ export const MessageSystemManagerTranslations = ({
                     <Collapsible.Toggle>
                         <TextButton
                             iconRight={showAll ? CaretUpFilledIcon : CaretDownFilledIcon}
-                            intent="neutral"
+                            intent="debug"
                             onClick={handleToggle}
                         >
                             Translations ({Object.keys(messages).length}){' '}

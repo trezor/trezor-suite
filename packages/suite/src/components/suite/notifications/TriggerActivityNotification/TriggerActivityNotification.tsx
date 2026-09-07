@@ -198,6 +198,7 @@ export const TriggerActivityNotification = () => {
                         data-testid="@activity/debug/preset-select"
                     />
                     <Checkbox
+                        intent="debug"
                         isChecked={addAsUnseen}
                         labelAlignment="end"
                         onChange={() => setAddAsUnseen(prev => !prev)}
@@ -206,7 +207,7 @@ export const TriggerActivityNotification = () => {
                         <TextColumn description="Add as unseen (new)" />
                     </Checkbox>
                     <ActionButton
-                        intent="brand"
+                        intent="debug"
                         onClick={handleAdd}
                         data-testid="@activity/debug/add-button"
                     >

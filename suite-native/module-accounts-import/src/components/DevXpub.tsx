@@ -88,7 +88,7 @@ export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
                             key={address}
                             testID={`@accounts-import/sync-coins/dev-xpub/${symbol}${testIdSuffix}`}
                             onPress={() => onSelect({ xpubAddress: address })}
-                            intent="neutral"
+                            intent="debug"
                             priority="secondary"
                         >
                             DEV: {title}
@@ -103,7 +103,7 @@ export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
         <Button
             testID={`@accounts-import/sync-coins/dev-xpub/${symbol}`}
             onPress={() => onSelect({ xpubAddress: xpub })}
-            intent="neutral"
+            intent="debug"
             priority="secondary"
         >
             Use dev xPub

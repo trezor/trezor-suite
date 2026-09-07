@@ -39,6 +39,7 @@ export const ResetThpCredentials = () => {
             />
             <ActionColumn>
                 <ActionButton
+                    intent="debug"
                     isTooltipActive={!device}
                     tooltipContent="Connect device to reset THP credentials"
                     isDisabled={!device}

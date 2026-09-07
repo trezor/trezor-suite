@@ -12,6 +12,7 @@ import { Row } from '../../Flex/Flex';
 import { Text } from '../../typography/Text/Text';
 import { type AllowedCheckboxFrameProps, allowedCheckboxFrameProps } from '../Checkbox/Checkbox';
 import { type LabelAlignment, type VerticalAlignment } from '../Checkbox/types';
+import { type SelectionControlIntent } from '../types';
 import { commonCheckInputStyles } from '../utils';
 
 const HiddenInput = styled.input`
@@ -21,7 +22,7 @@ const HiddenInput = styled.input`
     height: 0;
 `;
 
-const FakeInput = styled.div`
+const FakeInput = styled.div<{ $intent: SelectionControlIntent }>`
     ${commonCheckInputStyles}
 
     border-radius: calc(infinity * 1px);
@@ -36,7 +37,7 @@ const FakeInput = styled.div`
         transform: scale(0);
     }
 
-    ${({ theme }) => css`
+    ${({ theme, $intent }) => css`
         input:checked + & {
             border-color: transparent;
 
@@ -47,7 +48,7 @@ const FakeInput = styled.div`
         }
 
         input:checked:not(:disabled) + &::after {
-            background-color: ${theme.contentPrimaryInverse};
+            background-color: ${theme[$intent === 'debug' ? 'contentButtonDebugPrimary' : 'contentPrimaryInverse']};
         }
 
         input:checked:disabled + & {
@@ -61,6 +62,7 @@ const FakeInput = styled.div`
 `;
 
 export type RadioProps = AllowedCheckboxFrameProps & {
+    intent?: SelectionControlIntent;
     isChecked?: boolean;
     isDisabled?: boolean;
     labelAlignment?: LabelAlignment;
@@ -72,6 +74,7 @@ export type RadioProps = AllowedCheckboxFrameProps & {
 };
 
 export const Radio = ({
+    intent = 'brand',
     isChecked,
     labelAlignment = 'end',
     verticalAlignment = 'start',
@@ -104,7 +107,7 @@ export const Radio = ({
                 tabIndex={0}
             />
 
-            <FakeInput />
+            <FakeInput $intent={intent} />
 
             {children && (
                 <Text typographyStyle="body-md" flex="1" isDisabled={isDisabled} as="div">

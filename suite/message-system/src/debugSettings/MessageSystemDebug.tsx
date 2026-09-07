@@ -30,14 +30,19 @@ export const MessageSystemDebug = () => {
                     <Paragraph>Timestamp: {config?.timestamp}</Paragraph>
                 </Box>
                 <ButtonGroup size="small">
-                    <Button onClick={handleCopyConfig}>Copy full config</Button>
+                    <Button intent="debug" onClick={handleCopyConfig}>
+                        Copy full config
+                    </Button>
                     <Button
+                        intent="debug"
                         onClick={() => toggleOpenMessageManager(true)}
                         data-testid="@settings/debug/message-system/message-manager-button"
                     >
                         Message Manager
                     </Button>
-                    <Button onClick={() => toggleOpenExperiments(true)}>Experiments</Button>
+                    <Button intent="debug" onClick={() => toggleOpenExperiments(true)}>
+                        Experiments
+                    </Button>
                 </ButtonGroup>
             </Row>
             {isMessageManagerModalOpen && config?.actions && (

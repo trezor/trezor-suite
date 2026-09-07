@@ -95,7 +95,7 @@ export const AlertSheet: AlertSheetStory = {
         },
         primaryButtonIntent: {
             control: { type: 'select' },
-            options: ['brand', 'neutral', 'info', 'warning', 'critical', 'accentViolet'],
+            options: ['brand', 'neutral', 'info', 'warning', 'critical', 'accentViolet', 'debug'],
         },
         primaryButtonPriority: {
             control: { type: 'select' },
@@ -106,7 +106,7 @@ export const AlertSheet: AlertSheetStory = {
         },
         secondaryButtonIntent: {
             control: { type: 'select' },
-            options: ['brand', 'neutral', 'info', 'warning', 'critical', 'accentViolet'],
+            options: ['brand', 'neutral', 'info', 'warning', 'critical', 'accentViolet', 'debug'],
         },
         secondaryButtonPriority: {
             control: { type: 'select' },

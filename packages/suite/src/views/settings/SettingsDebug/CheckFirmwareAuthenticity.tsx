@@ -35,7 +35,11 @@ export const CheckFirmwareAuthenticity = () => {
                     description="Carry out entropy check when a wallet is created."
                 />
                 <ActionColumn>
-                    <Switch onChange={toggleEntropyCheck} isChecked={isEntropyCheckEnabled} />
+                    <Switch
+                        intent="debug"
+                        onChange={toggleEntropyCheck}
+                        isChecked={isEntropyCheckEnabled}
+                    />
                 </ActionColumn>
             </SectionItem>
             <SectionItem>
@@ -45,6 +49,7 @@ export const CheckFirmwareAuthenticity = () => {
                 />
                 <ActionColumn>
                     <Switch
+                        intent="debug"
                         onChange={toggleFirmwareHashCheck}
                         isChecked={isFirmwareHashCheckEnabled}
                     />
@@ -57,6 +62,7 @@ export const CheckFirmwareAuthenticity = () => {
                 />
                 <ActionColumn>
                     <Switch
+                        intent="debug"
                         onChange={toggleFirmwareRevisionCheck}
                         isChecked={isFirmwareRevisionCheckEnabled}
                     />
@@ -69,6 +75,7 @@ export const CheckFirmwareAuthenticity = () => {
                 />
                 <ActionColumn>
                     <Switch
+                        intent="debug"
                         onChange={toggleDeviceMetaChecks}
                         isChecked={areDeviceMetaChecksEnabled}
                     />

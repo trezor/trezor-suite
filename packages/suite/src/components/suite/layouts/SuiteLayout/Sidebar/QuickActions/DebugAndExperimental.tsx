@@ -45,9 +45,9 @@ const DebugAndExperimentalTooltip = ({
         {isDebugMode && (
             <TooltipRow
                 icon={CheckIcon}
-                intent="brand"
+                intent="debug"
                 header="Debug Mode"
-                leftItem={<Icon as={DotOutlineFilledIcon} intent="critical" size={16} />}
+                leftItem={<Icon as={DotOutlineFilledIcon} intent="debug" size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -85,7 +85,7 @@ export const DebugAndExperimental = () => {
                 <Box position={{ type: 'relative' }} width={16} height={16}>
                     {isDebug && (
                         <Box position={position}>
-                            <Icon as={DotOutlineFilledIcon} intent="critical" size={16} />
+                            <Icon as={DotOutlineFilledIcon} intent="debug" size={16} />
                         </Box>
                     )}
                     {isExperimental && (

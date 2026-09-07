@@ -9,11 +9,13 @@ import { commonFocusStyles, focusStyleTransition } from '../../../utils/utils';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
 import { Text } from '../../typography/Text/Text';
+import { type SelectionControlIntent } from '../types';
 
 export const allowedSwitchFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSwitchFrameProps)[number]>;
 
 export type SwitchProps = AllowedFrameProps & {
+    intent?: SelectionControlIntent;
     isChecked: boolean;
     label?: ReactNode;
     onChange?: (isChecked: boolean) => void;
@@ -24,6 +26,7 @@ export type SwitchProps = AllowedFrameProps & {
 };
 
 const Container = styled.div<{
+    $intent: SelectionControlIntent;
     $isChecked: boolean;
     $isDisabled?: boolean;
 }>`
@@ -35,7 +38,7 @@ const Container = styled.div<{
         ${focusStyleTransition};
     cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
 
-    ${({ $isDisabled, theme, $isChecked }) =>
+    ${({ $isDisabled, theme, $isChecked, $intent }) =>
         $isDisabled
             ? css`
                   background: ${
@@ -46,14 +49,24 @@ const Container = styled.div<{
               `
             : css`
                   background: ${
-                      $isChecked ? theme.elementFillFieldSelected : theme.elementFillNeutralBold
+                      $isChecked
+                          ? theme[
+                                $intent === 'debug'
+                                    ? 'elementFillDebugBold'
+                                    : 'elementFillFieldSelected'
+                            ]
+                          : theme.elementFillNeutralBold
                   };
 
                   :focus-within:has(:focus-visible),
                   &:hover {
                       background: ${
                           $isChecked
-                              ? theme.elementFillFieldSelectedHovered
+                              ? theme[
+                                    $intent === 'debug'
+                                        ? 'elementFillDebugBoldHovered'
+                                        : 'elementFillFieldSelectedHovered'
+                                ]
                               : theme.elementFillNeutralBoldHovered
                       };
                   }
@@ -64,13 +77,17 @@ const Container = styled.div<{
               `};
 `;
 
-const Handle = styled.button<{ $isChecked: boolean }>`
+const Handle = styled.button<{
+    $isChecked: boolean;
+    $intent: SelectionControlIntent;
+    $isDisabled: boolean;
+}>`
     display: block;
     height: 100%;
     aspect-ratio: 1;
     border: none;
     border-radius: calc(infinity * 1px);
-    background: ${({ theme }) => theme.contentPrimaryInverse};
+    background: ${({ theme, $intent, $isChecked, $isDisabled }) => theme[$intent === 'debug' && $isChecked && !$isDisabled ? 'contentButtonDebugPrimary' : 'contentPrimaryInverse']};
     transform: ${({ $isChecked }) => $isChecked && `translateX(100%)`};
     transition: transform 0.25s ease 0s;
     pointer-events: none;
@@ -90,6 +107,7 @@ const CheckboxInput = styled.input`
 `;
 
 export const Switch = ({
+    intent = 'brand',
     onChange,
     isDisabled = false,
     size = 'medium',
@@ -125,6 +143,7 @@ export const Switch = ({
             <Container
                 // @ts-expect-error - needed for playwright retry-ability
                 disabled={isDisabled}
+                $intent={intent}
                 $isChecked={isChecked}
                 $isDisabled={isDisabled}
                 data-testid={dataTest}
@@ -135,7 +154,13 @@ export const Switch = ({
                     margin={2}
                     opacity={isDisabled ? 0.74 : 1}
                 >
-                    <Handle tabIndex={-1} $isChecked={isChecked} type="button" />
+                    <Handle
+                        $intent={intent}
+                        $isDisabled={isDisabled}
+                        tabIndex={-1}
+                        $isChecked={isChecked}
+                        type="button"
+                    />
                 </Box>
                 <CheckboxInput
                     id={id}

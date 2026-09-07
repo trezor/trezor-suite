@@ -24,6 +24,8 @@ export const uiIntents = [
     'critical',
     // TODO: Replace with intent-like label
     'accentViolet',
+    // Reserved for developer tools and debug-only UI.
+    'debug',
 ] as const;
 export type UIIntent = (typeof uiIntents)[number];
 

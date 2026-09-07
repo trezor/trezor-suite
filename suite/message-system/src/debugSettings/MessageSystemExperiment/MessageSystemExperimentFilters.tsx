@@ -9,7 +9,7 @@ export const MessageSystemExperimentFilters = ({
     onToggleActive,
 }: MessageSystemExperimentFiltersProps) => (
     <Row alignItems="center" justifyContent="flex-end" gap={12}>
-        <Checkbox onChange={onToggleActive} isChecked={showActive}>
+        <Checkbox intent="debug" onChange={onToggleActive} isChecked={showActive}>
             Show only active
         </Checkbox>
     </Row>

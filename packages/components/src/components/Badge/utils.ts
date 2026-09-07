@@ -11,6 +11,7 @@ export const mapIntentToBackgroundColor = (intent: BadgeIntent): Color => {
         warning: 'elementFillWarningSoft',
         critical: 'elementFillCriticalSoft',
         accentViolet: 'elementFillAccentVioletSoft',
+        debug: 'elementFillDebugSoft',
     };
 
     return colorMap[intent];
@@ -24,6 +25,7 @@ export const mapIntentToIconColor = (intent: BadgeIntent): Color => {
         warning: 'contentWarning',
         critical: 'contentCritical',
         accentViolet: 'contentAccentViolet',
+        debug: 'contentDebug',
     };
 
     return colorMap[intent];

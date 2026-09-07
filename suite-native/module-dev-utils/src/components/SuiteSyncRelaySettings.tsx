@@ -73,6 +73,7 @@ export const SuiteSyncRelaySettings = () => {
                     <HStack justifyContent="space-between">
                         <Text>Enable Suite Sync Debug</Text>
                         <CheckBox
+                            intent="debug"
                             isChecked={isSuiteSyncDebugEnabled}
                             onChange={handleSuiteSyncDebugToggle}
                         />
@@ -87,7 +88,7 @@ export const SuiteSyncRelaySettings = () => {
                         />
                         <Button
                             testID="@suiteSync/custom-relay-url-save-button"
-                            intent="neutral"
+                            intent="debug"
                             priority="secondary"
                             size="medium"
                             onPress={onSubmit}
@@ -95,7 +96,7 @@ export const SuiteSyncRelaySettings = () => {
                             Save
                         </Button>
                         <Button
-                            intent="neutral"
+                            intent="debug"
                             priority="secondary"
                             size="medium"
                             onPress={handleResetToDefault}

@@ -20,6 +20,7 @@ type CompactCardVariant = (typeof COMPACT_CARD_VARIANTS)[number];
 
 export type CompactCardWithIconLayoutProps = {
     icon: IconName;
+    iconIntent?: RoundedIconIntent;
     title: ReactNode;
     subtitle?: ReactNode;
     isDisabled?: boolean;
@@ -64,6 +65,7 @@ const contentStyle = prepareNativeStyle(() => ({
 
 export const CompactCardWithIconLayout = ({
     icon,
+    iconIntent: customIconIntent,
     title,
     subtitle,
     alertBoxProps,
@@ -97,7 +99,7 @@ export const CompactCardWithIconLayout = ({
                         spacing="sp12"
                         alignItems="center"
                     >
-                        <RoundedIcon intent={iconIntent} name={icon} />
+                        <RoundedIcon intent={customIconIntent ?? iconIntent} name={icon} />
                         <VStack spacing="sp2" style={applyStyle(contentStyle)}>
                             <Text color={titleColor}>{title}</Text>
                             {subtitle && (

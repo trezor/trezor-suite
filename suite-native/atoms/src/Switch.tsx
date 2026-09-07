@@ -13,6 +13,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
 export type SwitchProps = {
+    intent?: 'brand' | 'debug';
     isChecked: boolean;
     onChange: (value: boolean) => void;
     isDisabled?: boolean;
@@ -34,10 +35,17 @@ const switchContainerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
 }));
 
-const switchCircleStyle = prepareNativeStyle(utils => ({
+const switchCircleStyle = prepareNativeStyle<
+    Pick<SwitchProps, 'intent' | 'isChecked' | 'isDisabled'>
+>((utils, { intent, isChecked, isDisabled }) => ({
     width: SWITCH_CIRCLE_SIZE,
     height: SWITCH_CIRCLE_SIZE,
-    backgroundColor: utils.colors.contentPrimaryInverse,
+    backgroundColor:
+        utils.colors[
+            intent === 'debug' && isChecked && !isDisabled
+                ? 'contentButtonDebugPrimary'
+                : 'contentPrimaryInverse'
+        ],
     borderRadius: utils.borders.radii.round,
     margin: SWITCH_CIRCLE_MARGIN,
     alignSelf: 'center',
@@ -46,7 +54,8 @@ const switchCircleStyle = prepareNativeStyle(utils => ({
 const useAnimationStyles = ({
     isChecked,
     isDisabled,
-}: Pick<SwitchProps, 'isChecked' | 'isDisabled'>) => {
+    intent,
+}: Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'intent'>) => {
     const trackWidth = !isChecked ? 0 : SWITCH_CIRCLE_TRACK_WIDTH;
     const { utils } = useNativeStyles();
     const translateX = useSharedValue(trackWidth);
@@ -63,7 +72,7 @@ const useAnimationStyles = ({
         : utils.colors.elementFillNeutralBold;
     const checkedColor = isDisabled
         ? utils.colors.elementFillFieldSelectedDisabled
-        : utils.colors.elementFillFieldSelected;
+        : utils.colors[intent === 'debug' ? 'elementFillDebugBold' : 'elementFillFieldSelected'];
 
     const animatedSwitchCircleStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: translateX.value }],
@@ -83,12 +92,19 @@ const useAnimationStyles = ({
     };
 };
 
-export const Switch = ({ isChecked, onChange, isDisabled = false, testID }: SwitchProps) => {
+export const Switch = ({
+    intent = 'brand',
+    isChecked,
+    onChange,
+    isDisabled = false,
+    testID,
+}: SwitchProps) => {
     const { applyStyle } = useNativeStyles();
 
     const { animatedSwitchCircleStyle, animatedSwitchContainerStyle } = useAnimationStyles({
         isChecked,
         isDisabled,
+        intent,
     });
 
     const handlePress = () => {
@@ -99,7 +115,12 @@ export const Switch = ({ isChecked, onChange, isDisabled = false, testID }: Swit
     return (
         <Pressable onPress={handlePress} accessibilityRole="switch" testID={testID}>
             <Animated.View style={[animatedSwitchContainerStyle, applyStyle(switchContainerStyle)]}>
-                <Animated.View style={[animatedSwitchCircleStyle, applyStyle(switchCircleStyle)]} />
+                <Animated.View
+                    style={[
+                        animatedSwitchCircleStyle,
+                        applyStyle(switchCircleStyle, { intent, isChecked, isDisabled }),
+                    ]}
+                />
             </Animated.View>
         </Pressable>
     );

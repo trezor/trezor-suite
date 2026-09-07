@@ -103,7 +103,7 @@ export const MessageSystemFormExperiment = () => {
 
     if (!showForm) {
         return (
-            <Button size="small" onClick={() => setShowForm(true)}>
+            <Button intent="debug" size="small" onClick={() => setShowForm(true)}>
                 Add new experiment
             </Button>
         );
@@ -128,12 +128,17 @@ export const MessageSystemFormExperiment = () => {
             />
 
             <Row isReversed gap={8}>
-                <Button isDisabled={!isValid} onClick={handleAddExperiment} size="small">
+                <Button
+                    intent="debug"
+                    isDisabled={!isValid}
+                    onClick={handleAddExperiment}
+                    size="small"
+                >
                     Add experiment
                 </Button>
                 <Button
                     size="small"
-                    intent="neutral"
+                    intent="debug"
                     priority="secondary"
                     onClick={() => setShowForm(false)}
                 >

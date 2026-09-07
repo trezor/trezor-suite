@@ -17,7 +17,11 @@ export const ShowBluetoothDebugInfo = () => {
         <SectionItem>
             <TextColumn title="Show Bluetooth Debug Info" />
             <ActionColumn>
-                <Checkbox isChecked={showBluetoothDebugInfo} onChange={handleOnClick} />
+                <Checkbox
+                    intent="debug"
+                    isChecked={showBluetoothDebugInfo}
+                    onChange={handleOnClick}
+                />
             </ActionColumn>
         </SectionItem>
     );

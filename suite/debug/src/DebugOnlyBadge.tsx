@@ -9,7 +9,7 @@ type DebugOnlyBadgeProps = {
 export const DebugOnlyBadge = ({ children }: DebugOnlyBadgeProps) => (
     <Row gap={8}>
         {children}
-        <Badge intent="warning" size="small">
+        <Badge intent="debug" size="small">
             <Translation id="TR_DEBUG_ONLY" />
         </Badge>
     </Row>

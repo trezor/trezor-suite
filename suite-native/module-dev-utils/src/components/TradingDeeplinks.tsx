@@ -26,7 +26,7 @@ export const TradingDeeplinks = () => {
             </Text>
             <HStack>
                 <Button
-                    intent="neutral"
+                    intent="debug"
                     priority="secondary"
                     size="medium"
                     onPress={() => {
@@ -39,7 +39,7 @@ export const TradingDeeplinks = () => {
                     Go to Buy
                 </Button>
                 <Button
-                    intent="neutral"
+                    intent="debug"
                     priority="secondary"
                     size="medium"
                     onPress={() => {

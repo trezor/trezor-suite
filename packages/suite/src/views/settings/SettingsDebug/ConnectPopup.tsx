@@ -28,7 +28,7 @@ export const ConnectPopup = () => {
                 description="Enable communication between Connect in 3rd party apps and Trezor Suite. Toggling restarts the application."
             />
             <ActionColumn>
-                <Switch isChecked={isEnabled} onChange={handleOnChange} />
+                <Switch intent="debug" isChecked={isEnabled} onChange={handleOnChange} />
             </ActionColumn>
         </SectionItem>
     );

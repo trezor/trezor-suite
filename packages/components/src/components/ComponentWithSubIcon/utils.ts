@@ -10,6 +10,7 @@ export const mapIntentToBackgroundColor = (intent: ComponentWithSubIconIntent): 
         warning: 'elementFillWarningBold',
         critical: 'elementFillCriticalBold',
         accentViolet: 'elementFillAccentVioletBold',
+        debug: 'elementFillDebugBold',
     };
 
     return colorMap[intent];
@@ -23,6 +24,7 @@ export const mapIntentToIconColor = (intent: ComponentWithSubIconIntent): Color 
         warning: 'contentButtonWarningPrimary',
         critical: 'contentButtonCriticalPrimary',
         accentViolet: 'contentButtonAccentVioletPrimary',
+        debug: 'contentButtonDebugPrimary',
     };
 
     return colorMap[intent];

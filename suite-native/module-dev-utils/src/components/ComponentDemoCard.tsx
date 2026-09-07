@@ -16,7 +16,10 @@ export const ComponentDemoCard = () => {
         <Card>
             <VStack spacing="sp12">
                 <TitleHeader title="Component Demo" />
-                <Button onPress={() => navigation.navigate(RootStackRoutes.Storybook)}>
+                <Button
+                    intent="debug"
+                    onPress={() => navigation.navigate(RootStackRoutes.Storybook)}
+                >
                     Open StoryBook
                 </Button>
             </VStack>

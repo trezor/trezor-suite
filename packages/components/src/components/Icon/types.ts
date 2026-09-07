@@ -7,6 +7,7 @@ export const iconIntents = [
     'warning',
     'critical',
     'accentViolet',
+    'debug',
 ] as const satisfies UIIntent[];
 export type IconIntent = Extract<UIIntent, (typeof iconIntents)[number]>;
 

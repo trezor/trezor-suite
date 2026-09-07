@@ -9,7 +9,7 @@ import { type BoxProps } from './Box';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-export const BADGE_INTENTS = ['neutral', 'brand', 'warning', 'critical', 'info'] as const;
+export const BADGE_INTENTS = ['neutral', 'brand', 'warning', 'critical', 'info', 'debug'] as const;
 export type BadgeIntent = (typeof BADGE_INTENTS)[number];
 
 export const BADGE_SIZES = ['small', 'medium'] as const;
@@ -62,6 +62,10 @@ const badgeIntentToStylePropsMap = {
     info: {
         backgroundColor: 'elementFillInfoSoft',
         textColor: 'contentInfo',
+    },
+    debug: {
+        backgroundColor: 'elementFillDebugSoft',
+        textColor: 'contentDebug',
     },
 } as const satisfies Record<BadgeIntent, BadgeStyle>;
 

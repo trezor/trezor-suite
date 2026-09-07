@@ -2,7 +2,7 @@ import { css } from 'styled-components';
 
 import { type SpacingValue, type TypographyStyle } from '@trezor/theme';
 
-import { type InputSize } from './types';
+import { type InputSize, type SelectionControlIntent } from './types';
 import { commonFocusStyles } from '../../utils/utils';
 
 const heightMap: Record<InputSize, number> = {
@@ -53,7 +53,7 @@ export const commonInputStyles = css`
 
 export const INPUT_PADDING: SpacingValue = 16;
 
-export const commonCheckInputStyles = css`
+export const commonCheckInputStyles = css<{ $intent?: SelectionControlIntent }>`
     display: flex;
     flex-shrink: 0;
     align-items: center;
@@ -63,7 +63,7 @@ export const commonCheckInputStyles = css`
     border: 2px solid;
     transition: 0.1s ease-in-out;
 
-    ${({ theme }) => css`
+    ${({ theme, $intent }) => css`
         border-color: ${theme.elementBorderField};
         background-color: ${theme.elementFillField};
 
@@ -73,13 +73,13 @@ export const commonCheckInputStyles = css`
         }
 
         input:checked + & {
-            border-color: ${theme.elementFillFieldSelected};
-            background-color: ${theme.elementFillFieldSelected};
+            border-color: ${theme[$intent === 'debug' ? 'elementFillDebugBold' : 'elementFillFieldSelected']};
+            background-color: ${theme[$intent === 'debug' ? 'elementFillDebugBold' : 'elementFillFieldSelected']};
         }
 
         input:checked:hover + & {
-            background-color: ${theme.elementFillFieldSelectedHovered};
-            border-color: ${theme.elementFillFieldSelectedHovered};
+            background-color: ${theme[$intent === 'debug' ? 'elementFillDebugBoldHovered' : 'elementFillFieldSelectedHovered']};
+            border-color: ${theme[$intent === 'debug' ? 'elementFillDebugBoldHovered' : 'elementFillFieldSelectedHovered']};
         }
 
         input:disabled:not(:checked) + & {

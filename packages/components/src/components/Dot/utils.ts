@@ -9,6 +9,7 @@ const intentToBackgroundColorMap: Record<DotIntent, Color> = {
     warning: 'elementFillWarningBold',
     critical: 'elementFillCriticalBold',
     accentViolet: 'elementFillAccentVioletBold',
+    debug: 'elementFillDebugBold',
 };
 
 export const mapIntentToBackgroundColor = (intent: DotIntent): Color =>

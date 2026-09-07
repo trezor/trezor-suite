@@ -36,7 +36,7 @@ export const MessageSystemMessageItem = ({
                 <Text variant="body-sm">{message.content.en}</Text>
                 <Text variant="body-xs">{JSON.stringify(conditions, null, 2)}</Text>
                 <Button
-                    intent="neutral"
+                    intent="debug"
                     priority="secondary"
                     size="medium"
                     onPress={() =>

@@ -8,6 +8,7 @@ export const mapIntentToBorderColor = (intent: IllustrationIntent): Color => {
         info: 'illustrationBorderInfo',
         critical: 'illustrationBorderCritical',
         warning: 'illustrationBorderWarning',
+        debug: 'illustrationBorderDebug',
     };
 
     return colorMap[intent];
@@ -19,6 +20,7 @@ export const mapIntentToFillColor = (intent: IllustrationIntent): Color => {
         info: 'illustrationFillInfo',
         critical: 'illustrationFillCritical',
         warning: 'illustrationFillWarning',
+        debug: 'illustrationFillDebug',
     };
 
     return colorMap[intent];

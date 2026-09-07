@@ -272,12 +272,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
                 )}
             </HStack>
             {isDebugEnv() && (
-                <Button
-                    size="medium"
-                    intent="neutral"
-                    priority="secondary"
-                    onPress={fillSelfAddress}
-                >
+                <Button size="medium" intent="debug" priority="secondary" onPress={fillSelfAddress}>
                     DEV: self address
                 </Button>
             )}

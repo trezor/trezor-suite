@@ -75,7 +75,7 @@ export const ExchangeUsdcPresetButton = () => {
         <Button
             size="medium"
             onPress={handlePress}
-            intent="accentViolet"
+            intent="debug"
             style={applyStyle(ButtonStyleOverride)}
         >
             Prefill 1 USDC→USDT

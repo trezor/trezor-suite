@@ -29,7 +29,7 @@ export const ForgetAllDevicesButton = () => {
                 <ActionButton
                     onClick={handleOpenSettingsButtonClick}
                     size="small"
-                    intent="neutral"
+                    intent="debug"
                     priority="secondary"
                 >
                     Open system settings

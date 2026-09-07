@@ -23,7 +23,12 @@ export const Metadata = () => {
                 description="Export labeling files to your computer. You may use this to transfer your labeling files from your Google drive account to your Dropbox account."
             />
             <ActionColumn>
-                <Button onClick={onClick} isDisabled={exporting} isLoading={exporting}>
+                <Button
+                    intent="debug"
+                    onClick={onClick}
+                    isDisabled={exporting}
+                    isLoading={exporting}
+                >
                     Export
                 </Button>
             </ActionColumn>

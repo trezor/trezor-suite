@@ -19,7 +19,7 @@ export const N4w1Backup = () => {
                 description="Enable Trezor device N4W1 backup features."
             />
             <ActionColumn>
-                <Switch isChecked={isN4w1BackupEnabled} onChange={toggle} />
+                <Switch intent="debug" isChecked={isN4w1BackupEnabled} onChange={toggle} />
             </ActionColumn>
         </SectionItem>
     );

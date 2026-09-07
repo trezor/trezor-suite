@@ -106,7 +106,7 @@ const BackendItem = ({
                 {!connected && (
                     <Button
                         size="small"
-                        intent="neutral"
+                        intent="debug"
                         priority="secondary"
                         isLoading={isReconnecting}
                         onClick={reconnect}
@@ -143,7 +143,7 @@ const CoinItem = ({ symbol }: CoinItemProps) => {
                         <TokenIcon symbol={symbol} />
                         <Title>{getNetwork(symbol).name}</Title>
                     </CoinCell>
-                    <Button size="small" intent="neutral" priority="secondary" onClick={onSettings}>
+                    <Button size="small" intent="debug" priority="secondary" onClick={onSettings}>
                         <Translation id="TR_SETTINGS" />
                     </Button>
                 </div>

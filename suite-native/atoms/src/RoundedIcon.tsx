@@ -6,7 +6,14 @@ import { type Color } from '@trezor/theme';
 
 import { Box, type BoxProps } from './Box';
 
-export const ROUNDED_ICON_INTENTS = ['neutral', 'brand', 'warning', 'critical', 'info'] as const;
+export const ROUNDED_ICON_INTENTS = [
+    'neutral',
+    'brand',
+    'warning',
+    'critical',
+    'info',
+    'debug',
+] as const;
 export type RoundedIconIntent = (typeof ROUNDED_ICON_INTENTS)[number];
 
 export const ROUNDED_ICON_SIZES = [20, 24, 32, 40, 48] as const;
@@ -45,6 +52,10 @@ const roundedIconIntentToStylePropsMap = {
     info: {
         backgroundColor: 'elementFillInfoSoft',
         iconColor: 'contentInfo',
+    },
+    debug: {
+        backgroundColor: 'elementFillDebugSoft',
+        iconColor: 'contentDebug',
     },
 } as const satisfies Record<RoundedIconIntent, RoundedIconStyle>;
 

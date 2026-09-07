@@ -1,4 +1,4 @@
-import { InfoIcon, LightbulbIcon, WarningIcon } from '@trezor/icons';
+import { BugIcon, InfoIcon, LightbulbIcon, WarningIcon } from '@trezor/icons';
 import { type Color } from '@trezor/theme';
 
 import { type BannerIntent } from './types';
@@ -9,6 +9,7 @@ export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
         brand: 'elementFillBrandSoft',
         info: 'elementFillInfoSoft',
         warning: 'elementFillWarningSoft',
+        debug: 'elementFillDebugSoft',
         critical: 'elementFillCriticalSoft',
         neutral: 'elementFillNeutralSoft',
     };
@@ -21,6 +22,7 @@ export const mapIntentToBorderColor = (intent: BannerIntent): Color => {
         brand: 'elementBorderBrandSofter',
         info: 'elementBorderInfoSofter',
         warning: 'elementBorderWarningSofter',
+        debug: 'elementBorderDebugSofter',
         critical: 'elementBorderCriticalSofter',
         neutral: 'elementBorderNeutralSofter',
     };
@@ -33,6 +35,7 @@ export const mapIntentToIconColor = (intent: BannerIntent): Color => {
         brand: 'contentBrand',
         info: 'contentInfo',
         warning: 'contentWarning',
+        debug: 'contentDebug',
         critical: 'contentCritical',
         neutral: 'contentPrimary',
     };
@@ -45,6 +48,7 @@ export const mapIntentToIcon = (intent: BannerIntent): IconComponent => {
         brand: LightbulbIcon,
         info: InfoIcon,
         warning: WarningIcon,
+        debug: BugIcon,
         critical: WarningIcon,
         neutral: InfoIcon,
     };

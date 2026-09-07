@@ -32,12 +32,7 @@ export const DevAddressBook = ({ account, outputId }: DevAddressBookProps) => {
 
     return (
         <>
-            <Button
-                size="small"
-                priority="secondary"
-                intent="accentViolet"
-                onClick={onSelectAddressClick}
-            >
+            <Button size="small" priority="secondary" intent="debug" onClick={onSelectAddressClick}>
                 Address book
             </Button>
 

@@ -5,7 +5,7 @@ import { atom } from 'jotai';
 
 import { type IconName } from '@suite-native/icons';
 
-export type ToastIntent = 'neutral' | 'brand' | 'warning' | 'critical' | 'info';
+export type ToastIntent = 'neutral' | 'brand' | 'warning' | 'critical' | 'info' | 'debug';
 
 export type Toast = {
     id: number;

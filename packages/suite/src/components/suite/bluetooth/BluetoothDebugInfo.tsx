@@ -19,7 +19,7 @@ const TimeAgo = ({ timestamp }: { timestamp: number }) => {
 
     return (
         <Text>
-            <Text intent="warning">{secAgo}</Text>&nbsp;s ago
+            <Text intent="debug">{secAgo}</Text>&nbsp;s ago
         </Text>
     );
 };
@@ -40,18 +40,16 @@ export const BluetoothDebugInfo = ({ device }: BluetoothDeviceProps) => {
     return (
         <>
             <InfoSegments>
-                {isKnownDevice && (
-                    <Icon as={FloppyDiskBackFilledIcon} size={16} intent="critical" />
-                )}
+                {isKnownDevice && <Icon as={FloppyDiskBackFilledIcon} size={16} intent="debug" />}
                 {isNearbyDevice && (
                     <>
-                        <Icon as={CellSignalFullIcon} size={16} intent="brand" />
+                        <Icon as={CellSignalFullIcon} size={16} intent="debug" />
                         {isNearbyDevice.rssi} dBm
                     </>
                 )}
                 <TimeAgo timestamp={device.lastUpdatedTimestamp} />
             </InfoSegments>
-            <Text typographyStyle="body-sm" intent="accentViolet">
+            <Text typographyStyle="body-sm" intent="debug">
                 <Code>{device.macAddress}</Code>
             </Text>
         </>

@@ -36,10 +36,16 @@ export const intentToColorMap = {
         borderColor: 'elementBorderInfoSofter',
         textColor: 'contentInfo',
     },
+    debug: {
+        backgroundColor: 'elementFillDebugSofter',
+        borderColor: 'elementBorderDebugSofter',
+        textColor: 'contentDebug',
+    },
 } as const satisfies Record<AlertBoxIntent, AlertBoxStyles>;
 
 export const intentToIconName = {
     info: 'info',
+    debug: 'bugBeetle',
     brand: 'checkCircle',
     warning: 'warning',
     critical: 'warningCircle',

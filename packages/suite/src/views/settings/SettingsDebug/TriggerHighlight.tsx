@@ -13,7 +13,7 @@ export const TriggerHighlight = () => {
             />
             <ActionColumn>
                 <ActionButton
-                    intent="brand"
+                    intent="debug"
                     onClick={() =>
                         dispatch(
                             goto({ routeName: 'settings-index', anchor: SettingsAnchor.Labeling }),

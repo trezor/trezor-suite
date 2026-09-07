@@ -6,7 +6,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
-import { Box, Column, motionEasing } from '@trezor/components';
+import { Box, Column, Text, motionEasing } from '@trezor/components';
 
 import {
     type NavigationItem,
@@ -64,7 +64,11 @@ const SettingsHeader = () => {
             },
             {
                 id: 'settings-debug',
-                title: <Translation id="TR_DEBUG_SETTINGS" />,
+                title: (
+                    <Text intent="debug">
+                        <Translation id="TR_DEBUG_SETTINGS" />
+                    </Text>
+                ),
                 position: 'primary',
                 isHidden: !isDebugModeActive,
                 'data-testid': '@settings/menu/debug',

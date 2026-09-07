@@ -49,7 +49,7 @@ export const MessageSystemManagerToolbar = ({
                 <Text>Preset:</Text>
                 <ButtonGroup intent="neutral" priority="secondary" size="small">
                     {categories.map(c => (
-                        <Button key={c.value} onClick={() => onPreset(c.value)}>
+                        <Button intent="debug" key={c.value} onClick={() => onPreset(c.value)}>
                             {c.label}
                         </Button>
                     ))}
@@ -73,7 +73,7 @@ export const MessageSystemManagerToolbar = ({
                     <Button
                         size="small"
                         iconLeft={PlusIcon}
-                        intent="neutral"
+                        intent="debug"
                         priority="secondary"
                         isDisabled={!canAddCondition}
                     >
@@ -101,7 +101,7 @@ export const MessageSystemManagerToolbar = ({
                     <Button
                         size="small"
                         iconLeft={CodeBlockFilledIcon}
-                        intent="neutral"
+                        intent="debug"
                         priority="secondary"
                     >
                         Context patterns
@@ -125,7 +125,7 @@ export const MessageSystemManagerToolbar = ({
                     <Button
                         size="small"
                         iconLeft={CheckFatIcon}
-                        intent="neutral"
+                        intent="debug"
                         priority="secondary"
                     >
                         Feature list
@@ -144,7 +144,7 @@ export const MessageSystemManagerToolbar = ({
                 >
                     <IconButton
                         icon={QuestionIcon}
-                        intent="neutral"
+                        intent="debug"
                         priority="secondary"
                         tooltip={{ content: 'Manual' }}
                     />

@@ -20,7 +20,7 @@ export const Devkit = () => {
                 description="Offer devkit versions of firmware binaries. Never install regular firmware on devkit and vice versa! Use this only if you know what you are doing."
             />
             <ActionColumn>
-                <Switch onChange={onChangeRegularCheck} isChecked={useDevkit} />
+                <Switch intent="debug" onChange={onChangeRegularCheck} isChecked={useDevkit} />
             </ActionColumn>
         </SectionItem>
     );

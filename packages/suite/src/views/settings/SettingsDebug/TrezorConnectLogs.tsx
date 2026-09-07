@@ -18,7 +18,7 @@ export const TrezorConnectLogs = () => {
         <SectionItem>
             <TextColumn title="TrezorConnect logs" description={logsDescription} />
             <ActionColumn>
-                <Switch isChecked={showConnectLogs} onChange={toggleLogs} />
+                <Switch intent="debug" isChecked={showConnectLogs} onChange={toggleLogs} />
             </ActionColumn>
         </SectionItem>
     );

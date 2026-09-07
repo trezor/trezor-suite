@@ -21,7 +21,7 @@ type RelayConnectionStatusListProps = {
 
 const RelayConnectionStatusList = ({ connections }: RelayConnectionStatusListProps) => (
     <Column gap={4} width="100%" minWidth={0}>
-        <Text typographyStyle="body-sm-strong" intent="accentViolet">
+        <Text typographyStyle="body-sm-strong" intent="debug">
             Relays:
         </Text>
         <Column as="ul" gap={4} width="100%" minWidth={0} margin={{}} padding={{}}>
@@ -31,7 +31,7 @@ const RelayConnectionStatusList = ({ connections }: RelayConnectionStatusListPro
                     <Text
                         isMonospaced
                         typographyStyle="body-xs"
-                        intent="accentViolet"
+                        intent="debug"
                         overflowWrap="anywhere"
                         flex="1"
                         minWidth={0}

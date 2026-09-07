@@ -67,12 +67,13 @@ export const AnalyticsLogging = () => {
                                         data-testid="@settings/debug/analytics/reset-button"
                                         onClick={handleReset}
                                         size="small"
-                                        intent="neutral"
+                                        intent="debug"
                                     >
                                         Reset
                                     </Button>
                                 ) : (
                                     <Button
+                                        intent="debug"
                                         data-testid="@settings/debug/analytics/save-button"
                                         onClick={handleSave}
                                         size="small"
@@ -99,6 +100,7 @@ export const AnalyticsLogging = () => {
                 />
                 <ActionColumn>
                     <Switch
+                        intent="debug"
                         data-testid="@settings/debug/analytics/logger-switch"
                         isChecked={!!loggerEnabled}
                         onChange={() => {

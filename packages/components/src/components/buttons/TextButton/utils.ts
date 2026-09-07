@@ -39,6 +39,7 @@ const colorMap: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'>, Colo
         warning: 'contentWarning',
         critical: 'contentCritical',
         accentViolet: 'contentAccentViolet',
+        debug: 'contentDebug',
     },
     inverse: {
         brand: 'contentOnDarkBrand',
@@ -46,6 +47,7 @@ const colorMap: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'>, Colo
         warning: 'contentOnDarkWarning',
         critical: 'contentOnDarkCritical',
         accentViolet: 'contentOnDarkAccentViolet',
+        debug: 'contentOnDarkDebug',
     },
 };
 
@@ -67,6 +69,7 @@ const colorMapHovered: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'
         warning: 'contentWarningHovered',
         critical: 'contentCriticalHovered',
         accentViolet: 'contentAccentVioletHovered',
+        debug: 'contentDebugHovered',
     },
     inverse: {
         brand: 'contentOnDarkBrandHovered',
@@ -74,6 +77,7 @@ const colorMapHovered: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'
         warning: 'contentOnDarkWarningHovered',
         critical: 'contentOnDarkCriticalHovered',
         accentViolet: 'contentOnDarkAccentVioletHovered',
+        debug: 'contentOnDarkDebugHovered',
     },
 };
 
@@ -95,6 +99,7 @@ const colorMapPressed: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'
         warning: 'contentWarningPressed',
         critical: 'contentCriticalPressed',
         accentViolet: 'contentAccentVioletPressed',
+        debug: 'contentDebugPressed',
     },
     inverse: {
         brand: 'contentOnDarkBrandPressed',
@@ -102,6 +107,7 @@ const colorMapPressed: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'
         warning: 'contentOnDarkWarningPressed',
         critical: 'contentOnDarkCriticalPressed',
         accentViolet: 'contentOnDarkAccentVioletPressed',
+        debug: 'contentOnDarkDebugPressed',
     },
 };
 

@@ -5,6 +5,7 @@ import {
 
 export const AppSettingsCardWithIconLayout = ({
     icon,
+    iconIntent,
     title,
     onPress,
     testID,
@@ -15,6 +16,7 @@ export const AppSettingsCardWithIconLayout = ({
 }: CompactCardWithIconLayoutProps) => (
     <CompactCardWithIconLayout
         icon={icon}
+        iconIntent={iconIntent}
         title={title}
         noShadow={noShadow}
         onPress={onPress}

@@ -10,7 +10,9 @@ import { TranslationUtils } from './TranslationUtils';
 export const DebuggingCard = () => (
     <Card>
         <VStack spacing="sp12">
-            <Text variant="headline-sm">Debugging</Text>
+            <Text variant="headline-sm" color="contentDebug">
+                Debugging
+            </Text>
             {isDevelopOrDebugEnv() && (
                 <>
                     <RenderingUtils />
@@ -19,6 +21,7 @@ export const DebuggingCard = () => (
             )}
             <VStack>
                 <Button
+                    intent="debug"
                     onPress={() => {
                         const errorMessage = `Sentry test error - ${Date.now()}`;
                         captureSentryException(new Error(errorMessage));

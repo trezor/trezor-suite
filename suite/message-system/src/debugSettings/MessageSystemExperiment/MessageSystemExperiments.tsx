@@ -119,7 +119,7 @@ export const MessageSystemExperiments = ({
                                     <Button
                                         size="small"
                                         iconLeft={CopyIcon}
-                                        intent="brand"
+                                        intent="debug"
                                         onClick={() =>
                                             copyToClipboard(
                                                 JSON.stringify({ conditions, experiment }, null, 2),

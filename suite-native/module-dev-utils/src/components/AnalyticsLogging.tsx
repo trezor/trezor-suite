@@ -91,6 +91,7 @@ export const AnalyticsLogging = () => {
                         />
                         {isDirty && (
                             <Button
+                                intent="debug"
                                 testID="@analytics-url-control/save-button"
                                 size="medium"
                                 onPress={onSubmit}
@@ -100,7 +101,7 @@ export const AnalyticsLogging = () => {
                         )}
                         {customUrl && (
                             <Button
-                                intent="neutral"
+                                intent="debug"
                                 priority="secondary"
                                 size="medium"
                                 onPress={handleResetToDefault}
@@ -117,6 +118,7 @@ export const AnalyticsLogging = () => {
                         {loggerEnabled && !isAnalyticsEnabled && renderAnalyticsDisabledBadge()}
                     </VStack>
                     <CheckBox
+                        intent="debug"
                         testID="@analytics-url-control/logger-checkbox"
                         isChecked={!!loggerEnabled}
                         onChange={() => {

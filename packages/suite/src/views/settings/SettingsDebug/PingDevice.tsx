@@ -48,6 +48,7 @@ export const PingDevice = () => {
 
             <ActionColumn>
                 <Checkbox
+                    intent="debug"
                     isChecked={buttonProtection}
                     labelAlignment="end"
                     onChange={() => setButtonProtection(prev => !prev)}
@@ -55,6 +56,7 @@ export const PingDevice = () => {
                     <TextColumn description="With confirmation" />
                 </Checkbox>
                 <ActionButton
+                    intent="debug"
                     onClick={handleClick}
                     size="small"
                     isDisabled={isDeviceLocked}

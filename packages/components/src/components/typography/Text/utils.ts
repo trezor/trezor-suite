@@ -12,6 +12,7 @@ const colorMap: Record<TextIntent, Color> = {
     warning: 'contentWarning',
     critical: 'contentCritical',
     accentViolet: 'contentAccentViolet',
+    debug: 'contentDebug',
 };
 
 const inverseColorMap: Record<TextIntent, Color> = {
@@ -21,6 +22,7 @@ const inverseColorMap: Record<TextIntent, Color> = {
     warning: 'contentOnDarkWarning',
     critical: 'contentOnDarkCritical',
     accentViolet: 'contentOnDarkAccentViolet',
+    debug: 'contentOnDarkDebug',
 };
 
 export const mapIntentToCSS = (

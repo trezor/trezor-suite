@@ -44,12 +44,7 @@ export const MessageSystemExperimentToolbar = ({
         <Row justifyContent="space-between" alignItems="center">
             <Row alignItems="center" gap={8}>
                 <Text>Preset:</Text>
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    size="small"
-                    onClick={() => onPreset()}
-                >
+                <Button intent="debug" priority="secondary" size="small" onClick={() => onPreset()}>
                     Default experiment
                 </Button>
 
@@ -71,7 +66,7 @@ export const MessageSystemExperimentToolbar = ({
                     <Button
                         size="small"
                         iconLeft={PlusIcon}
-                        intent="neutral"
+                        intent="debug"
                         priority="secondary"
                         isDisabled={!canAddCondition}
                     >
@@ -100,7 +95,7 @@ export const MessageSystemExperimentToolbar = ({
                     <Button
                         size="small"
                         iconLeft={CodeBlockFilledIcon}
-                        intent="neutral"
+                        intent="debug"
                         priority="secondary"
                     >
                         Experiment map
@@ -119,7 +114,7 @@ export const MessageSystemExperimentToolbar = ({
                 >
                     <IconButton
                         icon={QuestionIcon}
-                        intent="neutral"
+                        intent="debug"
                         priority="secondary"
                         tooltip={{ content: 'Manual' }}
                     />

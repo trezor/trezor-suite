@@ -26,7 +26,7 @@ export const MessageSystemManagerFilters = ({
         />
         <Box flexDirection="row" justifyContent="space-between" alignItems="center">
             <Text>Show only active</Text>
-            <CheckBox isChecked={showActive} onChange={onToggleActive} />
+            <CheckBox intent="debug" isChecked={showActive} onChange={onToggleActive} />
         </Box>
     </VStack>
 );

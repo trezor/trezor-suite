@@ -20,7 +20,7 @@ const ProviderStatusDevButtonsContent = () => {
             </HStack>
             <HStack justifyContent="center" spacing="sp4">
                 <Button
-                    intent="critical"
+                    intent="debug"
                     priority="secondary"
                     size="medium"
                     onPress={() => {
@@ -30,7 +30,7 @@ const ProviderStatusDevButtonsContent = () => {
                     incomplete
                 </Button>
                 <Button
-                    intent="info"
+                    intent="debug"
                     priority="secondary"
                     size="medium"
                     onPress={() => {
@@ -42,7 +42,7 @@ const ProviderStatusDevButtonsContent = () => {
             </HStack>
             <HStack justifyContent="center">
                 <Button
-                    intent="critical"
+                    intent="debug"
                     priority="primary"
                     size="medium"
                     onPress={() => {
@@ -52,6 +52,7 @@ const ProviderStatusDevButtonsContent = () => {
                     failed
                 </Button>
                 <Button
+                    intent="debug"
                     size="medium"
                     onPress={() => {
                         dispatchHelper('confirmation_success');
@@ -60,7 +61,7 @@ const ProviderStatusDevButtonsContent = () => {
                     success
                 </Button>
                 <Button
-                    intent="warning"
+                    intent="debug"
                     priority="secondary"
                     size="medium"
                     onPress={() => {

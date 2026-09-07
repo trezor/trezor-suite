@@ -90,7 +90,7 @@ export const MessageSystemExperimentInfo = ({
             <Column alignItems="flex-end">
                 <Button
                     size="small"
-                    intent="warning"
+                    intent="debug"
                     iconLeft={ArrowCounterClockwiseIcon}
                     isDisabled={localInclusion === inclusion}
                     onClick={onResetInclusion}

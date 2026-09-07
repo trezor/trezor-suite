@@ -47,7 +47,7 @@ export const MessageSystemJsonEditor = ({
                         <Button
                             isDisabled={!canFormat}
                             size="small"
-                            intent="neutral"
+                            intent="debug"
                             priority="secondary"
                             onClick={onFormat}
                         >

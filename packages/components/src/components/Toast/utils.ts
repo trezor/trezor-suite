@@ -1,4 +1,4 @@
-import { CheckIcon, InfoIcon, WarningIcon } from '@trezor/icons';
+import { BugIcon, CheckIcon, InfoIcon, WarningIcon } from '@trezor/icons';
 import { type Color } from '@trezor/theme';
 
 import { type ToastAction, type ToastIntent } from './types';
@@ -9,6 +9,7 @@ export const mapToastIntentToIcon = (intent: ToastIntent): IconComponent => {
         brand: CheckIcon,
         info: InfoIcon,
         warning: WarningIcon,
+        debug: BugIcon,
         critical: WarningIcon,
         neutral: InfoIcon,
     };
@@ -21,6 +22,7 @@ export const mapToastIntentToBackgroundColor = (intent: ToastIntent): Color => {
         brand: 'surfaceFillModelessBrand',
         info: 'surfaceFillModelessInfo',
         warning: 'surfaceFillModelessWarning',
+        debug: 'surfaceFillModelessDebug',
         critical: 'surfaceFillModelessCritical',
         neutral: 'surfaceFillModelessNeutralDark',
     };
@@ -33,6 +35,7 @@ export const mapToastIntentToBorderColor = (intent: ToastIntent): Color => {
         brand: 'surfaceBorderModelessBrand',
         info: 'surfaceBorderModelessInfo',
         warning: 'surfaceBorderModelessWarning',
+        debug: 'surfaceBorderModelessDebug',
         critical: 'surfaceBorderModelessCritical',
         neutral: 'surfaceBorderModelessNeutralDark',
     };

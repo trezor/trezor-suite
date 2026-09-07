@@ -81,6 +81,7 @@ export const Transport = () => {
                     />
                     <ActionColumn>
                         <Checkbox
+                            intent="debug"
                             isChecked={transport.checked}
                             onChange={() => {
                                 const nextTransports = items

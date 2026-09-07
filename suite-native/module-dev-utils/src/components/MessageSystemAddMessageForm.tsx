@@ -89,7 +89,7 @@ export const MessageSystemAddMessageForm = () => {
                 ))
             )}
             <Button
-                intent="neutral"
+                intent="debug"
                 priority="secondary"
                 size="medium"
                 isDisabled={!canFormat}
@@ -97,7 +97,7 @@ export const MessageSystemAddMessageForm = () => {
             >
                 Format JSON
             </Button>
-            <Button size="medium" isDisabled={!isValid} onPress={handleAddMessage}>
+            <Button intent="debug" size="medium" isDisabled={!isValid} onPress={handleAddMessage}>
                 Add message
             </Button>
         </VStack>

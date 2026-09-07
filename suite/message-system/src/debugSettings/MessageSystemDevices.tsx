@@ -29,7 +29,7 @@ export const MessageSystemDevices = ({ devices }: MessageSystemDevicesProps) => 
                     <Collapsible.Toggle>
                         <TextButton
                             iconRight={expanded ? CaretUpFilledIcon : CaretDownFilledIcon}
-                            intent="neutral"
+                            intent="debug"
                             onClick={handleToggle}
                         >
                             Devices ({devices.length})

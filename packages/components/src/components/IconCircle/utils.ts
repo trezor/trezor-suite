@@ -11,6 +11,7 @@ export const mapIntentToBorderColor = (intent: IconCircleIntent): Color => {
         info: 'elementBorderInfoSofter',
         neutral: 'elementBorderNeutralSofter',
         accentViolet: 'elementBorderAccentVioletSofter',
+        debug: 'elementBorderDebugSofter',
     };
 
     return colorMap[intent];
@@ -42,6 +43,7 @@ export const mapIntentToBackgroundColor = (
         info: 'elementFillInfoSoft',
         neutral: 'elementFillNeutralSoft',
         accentViolet: 'elementFillAccentVioletSofter',
+        debug: 'elementFillDebugSofter',
     };
 
     const borderColorMap: Record<IconCircleIntent, Color> = {
@@ -51,6 +53,7 @@ export const mapIntentToBackgroundColor = (
         info: 'elementFillInfoSofter',
         neutral: 'elementFillField',
         accentViolet: 'elementFillAccentVioletSoft',
+        debug: 'elementFillDebugSoft',
     };
 
     return (mapSizeToBorderWidth(size) === 0 ? noBorderColorMap : borderColorMap)[intent];

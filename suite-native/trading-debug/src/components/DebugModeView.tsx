@@ -10,8 +10,8 @@ const DebugModeViewStyle = prepareNativeStyle(({ colors, spacings, borders }) =>
     paddingHorizontal: spacings.sp8,
     paddingVertical: spacings.sp2,
     borderWidth: 1,
-    borderColor: colors.elementBorderAccentVioletSofter,
-    backgroundColor: colors.elementFillAccentVioletSoft,
+    borderColor: colors.elementBorderDebugSofter,
+    backgroundColor: colors.elementFillDebugSoft,
     borderRadius: borders.radii.r12,
 }));
 

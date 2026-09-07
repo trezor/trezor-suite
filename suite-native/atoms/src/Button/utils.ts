@@ -32,6 +32,7 @@ const colorMap = {
             warning: 'contentButtonWarningPrimary',
             critical: 'contentButtonCriticalPrimary',
             accentViolet: 'contentButtonAccentVioletPrimary',
+            debug: 'contentButtonDebugPrimary',
         },
         secondary: {
             brand: 'contentBrand',
@@ -40,6 +41,7 @@ const colorMap = {
             warning: 'contentWarning',
             critical: 'contentCritical',
             accentViolet: 'contentAccentViolet',
+            debug: 'contentDebug',
         },
     },
     inverse: {
@@ -50,6 +52,7 @@ const colorMap = {
             warning: 'contentOnDarkButtonWarningPrimary',
             critical: 'contentOnDarkButtonCriticalPrimary',
             accentViolet: 'contentOnDarkButtonAccentVioletPrimary',
+            debug: 'contentOnDarkButtonDebugPrimary',
         },
         secondary: {
             brand: 'contentOnDarkBrand',
@@ -58,6 +61,7 @@ const colorMap = {
             warning: 'contentOnDarkWarning',
             critical: 'contentOnDarkCritical',
             accentViolet: 'contentOnDarkAccentViolet',
+            debug: 'contentOnDarkDebug',
         },
     },
 } as const satisfies Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, Color>>>;
@@ -82,6 +86,7 @@ const backgroundMapBase = {
             warning: 'elementFillWarningBold',
             critical: 'elementFillCriticalBold',
             accentViolet: 'elementFillAccentVioletBold',
+            debug: 'elementFillDebugBold',
         },
         secondary: {
             brand: 'elementFillBrandSoft',
@@ -90,6 +95,7 @@ const backgroundMapBase = {
             warning: 'elementFillWarningSoft',
             critical: 'elementFillCriticalSoft',
             accentViolet: 'elementFillAccentVioletSoft',
+            debug: 'elementFillDebugSoft',
         },
     },
     inverse: {
@@ -100,6 +106,7 @@ const backgroundMapBase = {
             warning: 'elementFillOnDarkWarningBold',
             critical: 'elementFillOnDarkCriticalBold',
             accentViolet: 'elementFillOnDarkAccentVioletBold',
+            debug: 'elementFillOnDarkDebugBold',
         },
         secondary: {
             brand: 'elementFillOnDarkBrandSoft',
@@ -108,6 +115,7 @@ const backgroundMapBase = {
             warning: 'elementFillOnDarkWarningSoft',
             critical: 'elementFillOnDarkCriticalSoft',
             accentViolet: 'elementFillOnDarkAccentVioletSoft',
+            debug: 'elementFillOnDarkDebugSoft',
         },
     },
 } as const satisfies Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, Color>>>;
@@ -121,6 +129,7 @@ const backgroundMapPressed = {
             warning: 'elementFillWarningBoldPressed',
             critical: 'elementFillCriticalBoldPressed',
             accentViolet: 'elementFillAccentVioletBoldPressed',
+            debug: 'elementFillDebugBoldPressed',
         },
         secondary: {
             brand: 'elementFillBrandSoftPressed',
@@ -129,6 +138,7 @@ const backgroundMapPressed = {
             warning: 'elementFillWarningSoftPressed',
             critical: 'elementFillCriticalSoftPressed',
             accentViolet: 'elementFillAccentVioletSoftPressed',
+            debug: 'elementFillDebugSoftPressed',
         },
     },
     inverse: {
@@ -139,6 +149,7 @@ const backgroundMapPressed = {
             warning: 'elementFillOnDarkWarningBoldPressed',
             critical: 'elementFillOnDarkCriticalBoldPressed',
             accentViolet: 'elementFillOnDarkAccentVioletBoldPressed',
+            debug: 'elementFillOnDarkDebugBoldPressed',
         },
         secondary: {
             brand: 'elementFillOnDarkBrandSoftPressed',
@@ -147,6 +158,7 @@ const backgroundMapPressed = {
             warning: 'elementFillOnDarkWarningSoftPressed',
             critical: 'elementFillOnDarkCriticalSoftPressed',
             accentViolet: 'elementFillOnDarkAccentVioletSoftPressed',
+            debug: 'elementFillOnDarkDebugSoftPressed',
         },
     },
 } as const satisfies Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, Color>>>;
@@ -215,6 +227,7 @@ const textButtonColorMap = {
         warning: 'contentWarning',
         critical: 'contentCritical',
         accentViolet: 'contentAccentViolet',
+        debug: 'contentDebug',
     },
     inverse: {
         brand: 'contentOnDarkBrand',
@@ -222,6 +235,7 @@ const textButtonColorMap = {
         warning: 'contentOnDarkWarning',
         critical: 'contentOnDarkCritical',
         accentViolet: 'contentOnDarkAccentViolet',
+        debug: 'contentOnDarkDebug',
     },
 } as const satisfies Record<InverseKey, Record<FilledButtonIntent, Color>>;
 
@@ -243,6 +257,7 @@ const textButtonColorMapPressed = {
         warning: 'contentWarningPressed',
         critical: 'contentCriticalPressed',
         accentViolet: 'contentAccentVioletPressed',
+        debug: 'contentDebugPressed',
     },
     inverse: {
         brand: 'contentOnDarkBrandPressed',
@@ -250,6 +265,7 @@ const textButtonColorMapPressed = {
         warning: 'contentOnDarkWarningPressed',
         critical: 'contentOnDarkCriticalPressed',
         accentViolet: 'contentOnDarkAccentVioletPressed',
+        debug: 'contentOnDarkDebugPressed',
     },
 } as const satisfies Record<InverseKey, Record<FilledButtonIntent, Color>>;
 

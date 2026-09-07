@@ -20,21 +20,21 @@ export const ConfirmationQuoteDebugView = ({
     return (
         <DebugModeView>
             <HStack justifyContent="center">
-                <Button size="medium" onPress={() => forceStatus('no-override')} intent="neutral">
+                <Button size="medium" onPress={() => forceStatus('no-override')} intent="debug">
                     No override
                 </Button>
-                <Button size="medium" onPress={() => forceStatus('none')} intent="accentViolet">
+                <Button size="medium" onPress={() => forceStatus('none')} intent="debug">
                     None
                 </Button>
             </HStack>
             <HStack justifyContent="center" paddingTop="sp2">
-                <Button size="medium" onPress={() => forceStatus('isPending')} intent="warning">
+                <Button size="medium" onPress={() => forceStatus('isPending')} intent="debug">
                     Pending
                 </Button>
-                <Button size="medium" onPress={() => forceStatus('isFailed')} intent="critical">
+                <Button size="medium" onPress={() => forceStatus('isFailed')} intent="debug">
                     Failed
                 </Button>
-                <Button size="medium" onPress={() => forceStatus('isConfirmed')} intent="brand">
+                <Button size="medium" onPress={() => forceStatus('isConfirmed')} intent="debug">
                     Confirmed
                 </Button>
             </HStack>

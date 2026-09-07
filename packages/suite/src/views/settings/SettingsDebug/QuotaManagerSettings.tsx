@@ -72,6 +72,7 @@ export const QuotaManagerSettings = () => {
                             onChange={e => setQuotaManagerUrl(e.target.value)}
                             rightContent={
                                 <Button
+                                    intent="debug"
                                     data-testid="@settings/debug/quota-manager-url-save-button"
                                     onClick={() => onQuotaManagerBaseUrlSave()}
                                     size="small"
@@ -97,7 +98,7 @@ export const QuotaManagerSettings = () => {
                                 Production
                             </Button>
                             <Button
-                                intent="brand"
+                                intent="debug"
                                 isDisabled={isUpdateUrlLoading}
                                 onClick={() =>
                                     onQuotaManagerUrlPresetClick(
@@ -108,7 +109,7 @@ export const QuotaManagerSettings = () => {
                                 Dev
                             </Button>
                             <Button
-                                intent="info"
+                                intent="debug"
                                 isDisabled={isUpdateUrlLoading}
                                 onClick={() =>
                                     onQuotaManagerUrlPresetClick(
@@ -119,7 +120,7 @@ export const QuotaManagerSettings = () => {
                                 Local
                             </Button>
                             <Button
-                                intent="neutral"
+                                intent="debug"
                                 isDisabled={isUpdateUrlLoading}
                                 onClick={() => onQuotaManagerUrlPresetClick('')}
                             >
@@ -180,6 +181,7 @@ export const QuotaManagerSettings = () => {
                 <TextColumn title="Enforce Quota Manager for custom relay" />
                 <ActionColumn>
                     <Checkbox
+                        intent="debug"
                         data-testid="@settings/debug/quota-manager-enforce-for-custom-relay-checkbox"
                         isChecked={enforceQuotaManager}
                         onChange={onToggleEnforceQuotaManager}

@@ -5,6 +5,8 @@ export const BUTTON_INTENTS = [
     'warning',
     'critical',
     'accentViolet',
+    // Reserved for developer tools and debug-only UI.
+    'debug',
 ] as const;
 export type ButtonIntent = (typeof BUTTON_INTENTS)[number];
 

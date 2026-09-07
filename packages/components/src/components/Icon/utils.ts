@@ -12,6 +12,7 @@ const colorMap: Record<IconIntent, Color> = {
     warning: 'contentWarning',
     critical: 'contentCritical',
     accentViolet: 'contentAccentViolet',
+    debug: 'contentDebug',
 };
 
 const inverseColorMap: Record<IconIntent, Color> = {
@@ -21,6 +22,7 @@ const inverseColorMap: Record<IconIntent, Color> = {
     warning: 'contentOnDarkWarning',
     critical: 'contentOnDarkCritical',
     accentViolet: 'contentOnDarkAccentViolet',
+    debug: 'contentOnDarkDebug',
 };
 
 export const mapIntentToCSS = (

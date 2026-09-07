@@ -63,7 +63,7 @@ export const SuiteSyncQuotaManager = () => {
                         />
                         <Button
                             testID="@suiteSyncQuotaManager/save-button"
-                            intent="neutral"
+                            intent="debug"
                             priority="secondary"
                             size="medium"
                             onPress={onSubmit}
@@ -115,6 +115,7 @@ export const SuiteSyncQuotaManager = () => {
                         </Text>
                     </Box>
                     <Switch
+                        intent="debug"
                         testID="@suiteSyncQuotaManager/enforce-switch"
                         isChecked={enforceQuotaManager}
                         onChange={onToggleEnforceQuotaManager}

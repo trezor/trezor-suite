@@ -30,7 +30,8 @@ export const FeaturesSettings = () => {
         <TitledSection title={<Translation id="moduleSettings.items.features.title" />}>
             {isDevButtonVisible && (
                 <AppSettingsCardWithIconLayout
-                    icon="circleDashed"
+                    icon="bugBeetle"
+                    iconIntent="debug"
                     title={<Translation id="moduleSettings.items.features.devUtils.title" />}
                     subtitle={<Translation id="moduleSettings.items.features.devUtils.subtitle" />}
                     onPress={() => navigation.navigate(RootStackRoutes.DevUtils)}

@@ -36,7 +36,7 @@ export const Flags = () => {
                     <SectionItem key={key}>
                         <TextColumn title={key} />
                         <ActionColumn>
-                            <Switch isChecked={value} onChange={handleChange} />
+                            <Switch intent="debug" isChecked={value} onChange={handleChange} />
                         </ActionColumn>
                     </SectionItem>
                 );
@@ -51,7 +51,7 @@ export const Flags = () => {
                     <SectionItem key={indicatorId}>
                         <TextColumn title={`seenNewContentIndicators.${indicatorId}`} />
                         <ActionColumn>
-                            <Switch isChecked={isSeen} onChange={handleChange} />
+                            <Switch intent="debug" isChecked={isSeen} onChange={handleChange} />
                         </ActionColumn>
                     </SectionItem>
                 );

@@ -61,8 +61,12 @@ export const PlatformEncryption = () => {
                         rows={1}
                     />
                     <ButtonGroup>
-                        <Button onClick={encrypt}>Encrypt</Button>
-                        <Button onClick={decrypt}>Decrypt</Button>
+                        <Button intent="debug" onClick={encrypt}>
+                            Encrypt
+                        </Button>
+                        <Button intent="debug" onClick={decrypt}>
+                            Decrypt
+                        </Button>
                     </ButtonGroup>
                 </Column>
             </SectionItem>

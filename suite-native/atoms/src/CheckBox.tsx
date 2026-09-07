@@ -5,6 +5,7 @@ import { PressableOpacity } from './Pressable';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
 export type CheckBoxProps = {
+    intent?: 'brand' | 'debug';
     isChecked: boolean;
     isDisabled?: boolean;
     onChange: (value: boolean) => void;
@@ -13,6 +14,7 @@ export type CheckBoxProps = {
 };
 
 type CheckBoxStyleProps = {
+    intent: 'brand' | 'debug';
     isChecked: boolean;
     isDisabled: boolean;
 };
@@ -20,35 +22,41 @@ type CheckBoxStyleProps = {
 const CHECKBOX_SIZE = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const CHECKMARK_SIZE = 16 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 
-const checkBoxStyle = prepareNativeStyle<CheckBoxStyleProps>((utils, { isChecked, isDisabled }) => {
-    const backgroundColor = (() => {
-        if (isChecked && isDisabled) return utils.colors.elementFillFieldSelectedDisabled;
-        if (isChecked) return utils.colors.elementFillFieldSelected;
-        if (isDisabled) return utils.colors.elementFillFieldDisabled;
+const checkBoxStyle = prepareNativeStyle<CheckBoxStyleProps>(
+    (utils, { isChecked, isDisabled, intent }) => {
+        const backgroundColor = (() => {
+            if (isChecked && isDisabled) return utils.colors.elementFillFieldSelectedDisabled;
+            if (isChecked)
+                return utils.colors[
+                    intent === 'debug' ? 'elementFillDebugBold' : 'elementFillFieldSelected'
+                ];
+            if (isDisabled) return utils.colors.elementFillFieldDisabled;
 
-        return utils.colors.elementFillField;
-    })();
+            return utils.colors.elementFillField;
+        })();
 
-    const borderColor = (() => {
-        if (isChecked) return 'transparent';
-        if (isDisabled) return utils.colors.elementBorderFieldDisabled;
+        const borderColor = (() => {
+            if (isChecked) return 'transparent';
+            if (isDisabled) return utils.colors.elementBorderFieldDisabled;
 
-        return utils.colors.elementBorderField;
-    })();
+            return utils.colors.elementBorderField;
+        })();
 
-    return {
-        height: CHECKBOX_SIZE,
-        width: CHECKBOX_SIZE,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: utils.borders.radii.r4,
-        borderWidth: utils.borders.widths.large,
-        borderColor,
-        backgroundColor,
-    };
-});
+        return {
+            height: CHECKBOX_SIZE,
+            width: CHECKBOX_SIZE,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: utils.borders.radii.r4,
+            borderWidth: utils.borders.widths.large,
+            borderColor,
+            backgroundColor,
+        };
+    },
+);
 
 export const CheckBox = ({
+    intent = 'brand',
     isChecked,
     isDisabled = false,
     onChange,
@@ -64,9 +72,19 @@ export const CheckBox = ({
             onPress={() => onChange(!isChecked)}
             accessibilityRole="checkbox"
             accessibilityState={{ checked: isChecked, disabled: isDisabled }}
-            style={[applyStyle(checkBoxStyle, { isChecked, isDisabled }), style]}
+            style={[applyStyle(checkBoxStyle, { isChecked, isDisabled, intent }), style]}
         >
-            {isChecked && <Icon name="check" color="contentPrimaryInverse" size={CHECKMARK_SIZE} />}
+            {isChecked && (
+                <Icon
+                    name="check"
+                    color={
+                        intent === 'debug' && !isDisabled
+                            ? 'contentButtonDebugPrimary'
+                            : 'contentPrimaryInverse'
+                    }
+                    size={CHECKMARK_SIZE}
+                />
+            )}
         </PressableOpacity>
     );
 };

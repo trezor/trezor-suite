@@ -44,7 +44,7 @@ export const MessageSystemCard = () => {
                     <Text variant="body-xs">Sequence: {config?.sequence}</Text>
                     <Text variant="body-xs">Timestamp: {config?.timestamp}</Text>
                     <Button
-                        intent="neutral"
+                        intent="debug"
                         priority="secondary"
                         size="medium"
                         onPress={handleCopyConfig}
@@ -52,7 +52,7 @@ export const MessageSystemCard = () => {
                         Copy full config
                     </Button>
                     <Button
-                        intent="neutral"
+                        intent="debug"
                         priority="secondary"
                         size="medium"
                         onPress={() => navigation.navigate(RootStackRoutes.MessageSystemManager)}

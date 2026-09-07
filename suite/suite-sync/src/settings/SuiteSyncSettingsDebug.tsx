@@ -24,6 +24,7 @@ export const SuiteSyncSettingsDebug = () => {
                 <TextColumn title="Suite Sync (Evolu) Debug" />
                 <ActionColumn>
                     <Checkbox
+                        intent="debug"
                         data-testid="@settings/debug/suite-sync/debug-toggle"
                         isChecked={isSuiteSyncDebugEnabled}
                         onChange={handleToggleSuiteSyncDebug}

@@ -7,6 +7,7 @@ export const dotIntents = [
     'warning',
     'critical',
     'accentViolet',
+    'debug',
 ] as const satisfies UIIntent[];
 
 export type DotIntent = Extract<UIIntent, (typeof dotIntents)[number]>;
