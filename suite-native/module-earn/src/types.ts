@@ -21,8 +21,6 @@ export type YieldReviewActionStatus = 'idle' | 'signing' | 'sending';
 
 export type YieldReviewStatus = YieldReviewActionStatus | 'signed';
 
-export type YieldDepositReviewStatus = YieldReviewStatus;
-
 export type YieldReviewSigningResult =
     'signed' | 'cancelled' | 'failed' | 'not-ready' | 'already-running';
 
