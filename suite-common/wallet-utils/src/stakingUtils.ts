@@ -37,7 +37,7 @@ export const isStakingNetworkType = (type: NetworkType): type is StakingNetworkT
 export const isStakingSymbol = (symbol: NetworkSymbol): symbol is StakingNetworkSymbol =>
     (STAKING_SYMBOLS as readonly string[]).includes(symbol);
 
-export const getEverstakePool = (account?: Account) => {
+const getEverstakePool = (account?: Account) => {
     if (account?.networkType !== 'ethereum') {
         return undefined;
     }
@@ -190,7 +190,7 @@ export const getTxStakeNameByDataHex = (dataHex: string | undefined): StakeType 
     return stakeType;
 };
 
-export const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState =>
+const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState =>
     'stakeType' in form;
 
 export const getStakeType = (precomposedForm: FormState) =>

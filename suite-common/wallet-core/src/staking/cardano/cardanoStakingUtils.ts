@@ -5,7 +5,6 @@ import {
     EVERSTAKE_POOLS,
     FIVE_BINARIES_POOLS,
     type NetworkSymbol,
-    getNetworkFeatures,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -24,18 +23,6 @@ export function isSupportedAdaStakingNetworkSymbol(
 ): symbol is SupportedCardanoNetworkSymbols {
     return isArrayMember(symbol, supportedCardanoNetworkSymbols);
 }
-
-export const getCardanoStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
-    networkSymbols.reduce((acc, networkSymbol) => {
-        if (
-            isSupportedAdaStakingNetworkSymbol(networkSymbol) &&
-            getNetworkFeatures(networkSymbol).includes('staking')
-        ) {
-            acc.push(networkSymbol);
-        }
-
-        return acc;
-    }, [] as SupportedCardanoNetworkSymbols[]);
 
 export const isCardanoStakingActive = (account: Account | null) => {
     if (!account?.misc || account.networkType !== 'cardano') return false;
