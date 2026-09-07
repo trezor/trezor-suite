@@ -1057,6 +1057,79 @@ describe('recomposeAndSignTxThunk', () => {
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
     });
 
+    it('should align a SLIP24 sell review with the recomposed whole-balance amount', async () => {
+        const { store, account } = getMocks(
+            {
+                composedTransactionInfo: {
+                    ...mockComposedTransactionInfo,
+                },
+            },
+            {
+                minor_version: 12,
+                patch_version: 1,
+            },
+        );
+        const tradingFormState = {
+            activeSection: 'sell' as const,
+            isSlip24Active: true,
+            recipientName: 'Test Exchange',
+            send: {
+                cryptoId: undefined,
+                accountKey: account.key,
+                symbol: account.symbol,
+                amount: '0.2',
+            },
+            receive: {
+                amount: '2500',
+                fiatCurrency: 'USD',
+            },
+        };
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: { txid: 'sell-txid' },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            outputs: [{ amount: '10000000' }],
+                        },
+                    }),
+            ),
+        );
+
+        await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.2',
+                isSlip24Active: true,
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(tradingThunks.createPaymentRequestsThunk).toHaveBeenCalledWith(
+            expect.objectContaining({
+                formattedMaxAmount: '0.1',
+                type: 'sell',
+            }),
+        );
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                formState: expect.objectContaining({
+                    trading: expect.objectContaining({
+                        send: expect.objectContaining({ amount: '0.1' }),
+                    }),
+                }),
+            }),
+        );
+    });
+
     it('should not create payment requests when SLIP24 is not active', async () => {
         const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {

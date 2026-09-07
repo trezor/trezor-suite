@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { useStore } from 'react-redux';
 
+import type { FiatCurrencyCode } from 'invity-api';
+
 import type { DeviceRootState } from '@suite-common/device';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { HStack, Text, VStack } from '@suite-native/atoms';
@@ -10,6 +12,7 @@ import { type ReviewOutputItemListProps } from '@suite-native/transaction-manage
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CryptoAmountRow } from '../../components/general/CryptoAmountRow';
+import { FiatAmountRow } from '../../components/general/FiatAmountRow';
 
 type ContentBuilderFunction = NonNullable<ReviewOutputItemListProps['contentBuilder']>;
 
@@ -28,16 +31,14 @@ export const useTradingContentBuilder = (): ContentBuilderFunction => {
                 return undefined;
             }
 
-            // Fiat receive (sell flow) is rendered by the generic content builder.
-            if (receive && !('cryptoId' in receive)) {
-                return undefined;
-            }
+            const cryptoReceive = receive && 'cryptoId' in receive ? receive : undefined;
+            const fiatReceive = receive && 'fiatCurrency' in receive ? receive : undefined;
 
             // receive is undefined on a partial clear-signed swap — render send-only.
-            const account = receive
+            const account = cryptoReceive
                 ? selectAccountByKey(
                       getState() as AccountsRootState & DeviceRootState,
-                      receive.accountKey,
+                      cryptoReceive.accountKey,
                   )
                 : undefined;
 
@@ -49,12 +50,19 @@ export const useTradingContentBuilder = (): ContentBuilderFunction => {
                         cryptoId={send.cryptoId}
                         withNetworkIcon
                     />
-                    {!!receive && (
+                    {!!cryptoReceive && (
                         <CryptoAmountRow
                             direction="to"
-                            amount={receiveAmountMultiplier(receive.amount)}
-                            cryptoId={receive.cryptoId}
+                            amount={receiveAmountMultiplier(cryptoReceive.amount)}
+                            cryptoId={cryptoReceive.cryptoId}
                             withNetworkIcon
+                        />
+                    )}
+                    {!!fiatReceive && (
+                        <FiatAmountRow
+                            direction="to"
+                            amount={fiatReceive.amount}
+                            fiatCurrency={fiatReceive.fiatCurrency as FiatCurrencyCode}
                         />
                     )}
                     {!!account && (
