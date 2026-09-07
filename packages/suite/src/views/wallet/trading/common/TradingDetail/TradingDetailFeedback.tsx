@@ -22,14 +22,14 @@ import { FeedbackCard } from '@trezor/product-components';
 import { useSelector } from 'src/hooks/suite';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 
-interface TradingDetailFeedbackProps {
+type TradingDetailFeedbackProps = {
     status: ExchangeTradeStatus | SellTradeStatus | BuyTradeStatus | undefined;
     type: TradingType;
     provider?: ExchangeProviderInfo['name'];
     id?: string;
     quoteAmounts: TradingGetCryptoQuoteAmountProps;
     country?: string;
-}
+};
 
 export const TradingDetailFeedback = ({
     status,
@@ -88,7 +88,8 @@ export const TradingDetailFeedback = ({
         <FeedbackCard
             heading={<Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_TITLE" />}
             description={<Translation id="TR_FEEDBACK_CARD_DESCRIPTION" />}
-            submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND" />}
+            submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND_FEEDBACK" />}
+            cancelLabel={<Translation id="TR_CANCEL" />}
             successHeading={<Translation id="TR_FEEDBACK_CARD_SUCCESS_TITLE" />}
             successDescription={<Translation id="TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION" />}
             onSubmit={handleSubmit}

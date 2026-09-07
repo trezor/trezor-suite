@@ -12858,9 +12858,9 @@ export const messages = defineMessages({
         id: 'TR_FEEDBACK_CARD_DESCRIPTION',
         defaultMessage: "Tell us what's working and what's not—we read every reply.",
     },
-    TR_FEEDBACK_CARD_SEND: {
-        id: 'TR_FEEDBACK_CARD_SEND',
-        defaultMessage: 'Submit',
+    TR_FEEDBACK_CARD_SEND_FEEDBACK: {
+        id: 'TR_FEEDBACK_CARD_SEND_FEEDBACK',
+        defaultMessage: 'Send feedback',
     },
     TR_FEEDBACK_CARD_SUCCESS_TITLE: {
         id: 'TR_FEEDBACK_CARD_SUCCESS_TITLE',

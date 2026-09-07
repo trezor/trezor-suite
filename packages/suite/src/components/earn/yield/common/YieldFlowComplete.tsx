@@ -149,7 +149,8 @@ export const YieldFlowComplete = ({
                         />
                     }
                     description={<Translation id="TR_FEEDBACK_CARD_DESCRIPTION" />}
-                    submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND" />}
+                    submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND_FEEDBACK" />}
+                    cancelLabel={<Translation id="TR_CANCEL" />}
                     successHeading={<Translation id="TR_FEEDBACK_CARD_SUCCESS_TITLE" />}
                     successDescription={<Translation id="TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION" />}
                     onSubmit={handleFeedbackSubmit}

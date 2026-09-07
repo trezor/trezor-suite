@@ -1,28 +1,31 @@
 import { type ReactNode, useState } from 'react';
 
 import { type Rating } from '@suite-common/feedback';
-import { Button, Card, Column, H3, IconCircle, Paragraph, Row, Textarea } from '@trezor/components';
+import { Card, Column, H3, IconCircle, Paragraph, Row } from '@trezor/components';
 import { CheckIcon } from '@trezor/icons';
 
+import { FeedbackFormModal } from './FeedbackFormModal';
 import { EmojiRatingSelector } from '../EmojiRatingSelector/EmojiRatingSelector';
 
 type FeedbackCardView = 'form' | 'success';
 
-export interface FeedbackCardProps {
+export type FeedbackCardProps = {
     heading: ReactNode;
     description?: ReactNode;
     submitLabel: ReactNode;
+    cancelLabel: ReactNode;
     successHeading: ReactNode;
     successDescription: ReactNode;
     onSubmit: (rating: Rating, description: string) => void;
     onRatingSelect?: (rating: Rating) => void;
     defaultView?: FeedbackCardView;
-}
+};
 
 export const FeedbackCard = ({
     heading,
     description,
     submitLabel,
+    cancelLabel,
     successHeading,
     successDescription,
     onSubmit,
@@ -40,8 +43,15 @@ export const FeedbackCard = ({
         onRatingSelect?.(selectedRating);
     };
 
+    const handleCancel = () => {
+        setRating(undefined);
+        setFeedbackText('');
+    };
+
     const handleSubmit = () => {
-        if (!isFormValid) return;
+        if (!isFormValid) {
+            return;
+        }
 
         onSubmit(rating, feedbackText);
         setView('success');
@@ -64,35 +74,30 @@ export const FeedbackCard = ({
     }
 
     return (
-        <Card>
-            <Column gap={16} alignItems="start" margin={{ vertical: 8 }}>
-                <H3>{heading}</H3>
+        <>
+            <Card>
+                <Row gap={16} justifyContent="space-between" alignItems="center" flexWrap="wrap">
+                    <H3 typographyStyle="body-md-strong">{heading}</H3>
 
-                <EmojiRatingSelector value={rating} onChange={handleRatingSelect} />
+                    <EmojiRatingSelector value={rating} onChange={handleRatingSelect} />
+                </Row>
+            </Card>
 
-                {description && (
-                    <Paragraph margin={{ top: 12 }} typographyStyle="body-sm">
-                        {description}
-                    </Paragraph>
-                )}
-
-                <Textarea
-                    rows={3}
-                    value={feedbackText}
-                    onChange={e => setFeedbackText(e.target.value)}
-                    characterCount
-                    maxLength={1000}
+            {rating !== undefined && (
+                <FeedbackFormModal
+                    heading={heading}
+                    description={description}
+                    submitLabel={submitLabel}
+                    cancelLabel={cancelLabel}
+                    rating={rating}
+                    feedbackText={feedbackText}
+                    isSubmitDisabled={!isFormValid}
+                    onRatingSelect={handleRatingSelect}
+                    onFeedbackTextChange={setFeedbackText}
+                    onSubmit={handleSubmit}
+                    onCancel={handleCancel}
                 />
-
-                <Button
-                    isDisabled={!isFormValid}
-                    intent="brand"
-                    type="button"
-                    onClick={handleSubmit}
-                >
-                    {submitLabel}
-                </Button>
-            </Column>
-        </Card>
+            )}
+        </>
     );
 };
