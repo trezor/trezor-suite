@@ -143,4 +143,16 @@ describe('Psbt', () => {
 
         expect(psbt.unsignedTx.toHex()).toEqual(UNSIGNED_TX_HEX);
     });
+
+    it('forwards options to fromBuffer in fromHex', () => {
+        const psbtHex = Buffer.concat([
+            getSimplePsbtBuffer(UNSIGNED_TX_HEX),
+            Buffer.from([0xaa]),
+        ]).toString('hex');
+
+        expect(() => Psbt.fromHex(psbtHex)).toThrow('PSBT has unexpected data.');
+        expect(Psbt.fromHex(psbtHex, { nostrict: true }).unsignedTx.toHex()).toEqual(
+            UNSIGNED_TX_HEX,
+        );
+    });
 });
