@@ -3,6 +3,7 @@ import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { tradeEndpoint } from '../../fixtures/trading';
 import { PENDING_TRADE, SEEDED_TRADES } from '../../fixtures/trading/swap/swap-history';
@@ -24,6 +25,19 @@ const formatTradeDate = (date: string) =>
         minute: '2-digit',
         hourCycle: 'h23',
     }).format(new Date(date));
+
+// Trade history amounts are compact: two decimals from 1 upwards, up to five below, truncated.
+const toCompactAmount = (value: string) => {
+    const amount = new BigNumber(value);
+    const isBelowOne = amount.abs().isLessThan(1);
+
+    return localizeNumber(
+        amount.decimalPlaces(isBelowOne ? 5 : 2, BigNumber.ROUND_DOWN),
+        'en-US',
+        isBelowOne ? 0 : 2,
+        isBelowOne ? 5 : 2,
+    );
+};
 
 test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
@@ -87,12 +101,12 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                     await expect
                         .soft(row.sendAmount)
                         .toHaveText(
-                            `${localizeNumber(trade.data.sendStringAmount)} ${trade.sendSymbol.toUpperCase()}`,
+                            `${toCompactAmount(trade.data.sendStringAmount)} ${trade.sendSymbol.toUpperCase()}`,
                         );
                     await expect
                         .soft(row.receiveAmount)
                         .toHaveText(
-                            `${localizeNumber(trade.data.receiveStringAmount)} ${receiveSymbol}`,
+                            `${toCompactAmount(trade.data.receiveStringAmount)} ${receiveSymbol}`,
                         );
                 }
             });
