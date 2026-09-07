@@ -50,7 +50,6 @@ import { BigNumber } from '@trezor/utils';
 import { EarnApproximateFiatAmount } from '../../components/earn/EarnApproximateFiatAmount';
 import { EarnMaxSwitch } from '../../components/earn/EarnMaxSwitch';
 import { YieldDepositFlowScreenHeader } from '../../components/yield/YieldDepositFlowScreenHeader';
-import { YieldDepositInfoBottomSheet } from '../../components/yield/YieldDepositInfoBottomSheet';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../../components/yield/YieldFeeEstimationErrorAlert';
 import { YieldFormattedAmount } from '../../components/yield/YieldFormattedAmount';
@@ -117,11 +116,6 @@ export const YieldWithdrawScreen = () => {
     const isSharesInput = flowType === 'redeem';
     const amount = isSharesInput ? sharesAmount : assetAmount;
     const {
-        bottomSheetRef: infoBottomSheetRef,
-        closeModal: closeInfoBottomSheet,
-        openModal: openInfoBottomSheet,
-    } = useBottomSheetModal({ isNestedSheet: true });
-    const {
         bottomSheetRef: pendingBottomSheetRef,
         closeModal: closePendingBottomSheet,
         openModal: openPendingBottomSheet,
@@ -130,8 +124,6 @@ export const YieldWithdrawScreen = () => {
     const yieldFlowData = useYieldFlowData(route.params);
     const {
         account,
-        apy,
-        bonusRewardTokenSymbol,
         flowData,
         flowKey,
         isWrappedNativeVault,
@@ -139,9 +131,7 @@ export const YieldWithdrawScreen = () => {
         depositedAmount,
         depositedSharesAmount,
         vault,
-        vaultTokenSymbol: resolvedVaultTokenSymbol,
         vaultTokenName,
-        wrappedNativeSymbol,
     } = yieldFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
@@ -517,19 +507,6 @@ export const YieldWithdrawScreen = () => {
         vault,
     ]);
 
-    const handleOpenInfoBottomSheet = useCallback(() => {
-        analytics.report({
-            type: events.yieldInteractionEvent.name,
-            payload: {
-                element: 'in-a-nutshell-process-tab',
-                value: 'withdraw',
-                networkSymbol: account?.symbol,
-                vaultId: vault?.id,
-            },
-        });
-        openInfoBottomSheet();
-    }, [account?.symbol, analytics, openInfoBottomSheet, vault?.id]);
-
     if (resolutionStatus !== 'resolved' || !activeInputToken) {
         return null;
     }
@@ -557,7 +534,6 @@ export const YieldWithdrawScreen = () => {
                 <YieldDepositFlowScreenHeader
                     account={account}
                     closeAction={handleClose}
-                    onInfoPress={handleOpenInfoBottomSheet}
                     title={vaultTokenName}
                     tokenContract={headerTokenContract}
                 />
@@ -758,18 +734,6 @@ export const YieldWithdrawScreen = () => {
                     vaultTokenContract={vaultTokenContract}
                 />
             )}
-
-            <YieldDepositInfoBottomSheet
-                ref={infoBottomSheetRef}
-                apy={apy}
-                bonusRewardTokenSymbol={bonusRewardTokenSymbol}
-                onClose={closeInfoBottomSheet}
-                tokenSymbol={underlyingTokenSymbol}
-                vaultTokenSymbol={resolvedVaultTokenSymbol}
-                account={account}
-                vault={vault}
-                wrappedNativeSymbol={wrappedNativeSymbol}
-            />
         </Screen>
     );
 };

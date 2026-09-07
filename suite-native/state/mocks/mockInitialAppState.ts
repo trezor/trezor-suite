@@ -16,6 +16,7 @@ import {
     accountsRefreshTimeInitialState,
     blockchainInitialState,
     discoveryInitialState,
+    earnOnboardingInitialState,
     explorerInitialState,
     feesInitialState,
     fiatRatesInitialState,
@@ -82,6 +83,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
 
     wallet: {
         accounts: accountsInitialState,
+        earnOnboarding: earnOnboardingInitialState,
         accountsRefreshTime: accountsRefreshTimeInitialState,
         blockchain: blockchainInitialState,
         explorer: explorerInitialState,

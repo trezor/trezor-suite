@@ -44,6 +44,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadBlockchain: notImplementedReducer('storageLoadBlockchain'),
         storageLoadExplorer: notImplementedReducer('storageLoadExplorer'),
         storageLoadAccounts: notImplementedReducer('storageLoadAccounts'),
+        storageLoadEarnOnboarding: notImplementedReducer('storageLoadEarnOnboarding'),
         storageLoadTransactions: notImplementedReducer('storageLoadTransactions'),
         storageLoadPhishingMetadata: notImplementedReducer('storageLoadPhishingMetadata'),
         storageLoadHistoricRates: notImplementedReducer('storageLoadHistoricRates'),

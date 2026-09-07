@@ -1,10 +1,8 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { getNetwork } from '@suite-common/wallet-config';
+import { useDispatch } from '@suite-common/redux-utils';
+import { earnOnboardingActions, getEarnOpportunityKey } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -15,27 +13,10 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    type NativeStakingRootState,
-    selectEntryPeriodInDaysBySymbol,
-} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import {
-    HELP_CENTER_ADA_STAKING,
-    HELP_CENTER_ETH_STAKING,
-    HELP_CENTER_SOL_STAKING,
-    type Url,
-} from '@trezor/urls';
 
 import { EarnConsentsDelegatingCard } from '../../components/earn/EarnConsentsDelegatingCard';
-import { EarnConsentsEntryPeriodCard } from '../../components/earn/EarnConsentsEntryPeriodCard';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
-
-const STAKING_LEARN_MORE_URLS: Partial<Record<string, Url>> = {
-    ethereum: HELP_CENTER_ETH_STAKING,
-    solana: HELP_CENTER_SOL_STAKING,
-    cardano: HELP_CENTER_ADA_STAKING,
-};
 
 const titleStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp44,
@@ -43,7 +24,7 @@ const titleStyle = prepareNativeStyle(utils => ({
 
 export const EarnConsentsScreen = () => {
     const { applyStyle } = useNativeStyles();
-    const [isSecondCardExpanded, setIsSecondCardExpanded] = useState(false);
+    const dispatch = useDispatch();
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.EarnConsents>>();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.EarnConsents>>();
@@ -55,24 +36,18 @@ export const EarnConsentsScreen = () => {
         type: events.stakingStakeEvent.name,
         payload: {
             action: 'cancel',
-            step: isSecondCardExpanded ? 'funds-maintained-modal' : 'entry-period-stake-modal',
+            step: 'funds-maintained-modal',
             networkSymbol,
         },
     });
 
-    const handleEntryPeriodConfirm = () => {
-        analytics.report({
-            type: events.stakingStakeEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'entry-period-stake-modal',
-                networkSymbol,
-            },
-        });
-        setIsSecondCardExpanded(true);
-    };
-
     const handleConfirm = () => {
+        dispatch(
+            earnOnboardingActions.confirmEarnOnboarding({
+                accountKey,
+                opportunity: getEarnOpportunityKey({ type: 'staking', provider: 'everstake' }),
+            }),
+        );
         registerNavigateBackAnalytics();
 
         analytics.report({
@@ -91,28 +66,13 @@ export const EarnConsentsScreen = () => {
         });
     };
 
-    const entryPeriodInDays = useSelector((state: NativeStakingRootState) =>
-        selectEntryPeriodInDaysBySymbol(state, networkSymbol),
-    );
-
-    const learnMoreUrl = STAKING_LEARN_MORE_URLS[getNetwork(account.symbol).networkType];
-
     return (
         <Screen header={<ScreenHeader closeActionType="back" />}>
             <VStack marginTop="sp32" spacing="sp16">
                 <Text variant="headline-md" style={applyStyle(titleStyle)}>
                     <Translation id="earn.earnConsentsScreen.title" />
                 </Text>
-                <EarnConsentsEntryPeriodCard
-                    onConfirm={handleEntryPeriodConfirm}
-                    entryPeriodInDays={entryPeriodInDays}
-                    learnMoreUrl={learnMoreUrl}
-                />
-                <EarnConsentsDelegatingCard
-                    isExpanded={isSecondCardExpanded}
-                    symbol={account.symbol}
-                    onConfirm={handleConfirm}
-                />
+                <EarnConsentsDelegatingCard symbol={account.symbol} onConfirm={handleConfirm} />
             </VStack>
         </Screen>
     );

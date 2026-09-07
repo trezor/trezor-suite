@@ -15,7 +15,7 @@ import {
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { BannerFull, Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { BannerFull, Box, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
@@ -28,7 +28,6 @@ import {
 
 import { WrappedNativeTokenAmountInputCard } from '../../components/earn/WrappedNativeTokenAmountInputCard';
 import { YieldDepositFlowScreenHeader } from '../../components/yield/YieldDepositFlowScreenHeader';
-import { YieldDepositInfoBottomSheet } from '../../components/yield/YieldDepositInfoBottomSheet';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
@@ -51,27 +50,16 @@ export const YieldDepositWrapScreen = () => {
     const isFocused = useIsFocused();
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
-    const {
-        bottomSheetRef: infoBottomSheetRef,
-        closeModal: closeInfoBottomSheet,
-        openModal: openInfoBottomSheet,
-    } = useBottomSheetModal({ isNestedSheet: true });
-
     const yieldFlowData = useYieldFlowData(route.params);
 
     const {
         account,
-        apy,
-        bonusRewardTokenSymbol,
         flowKey,
         isWrappedNativeVault,
         token,
-        tokenSymbol,
         vault,
-        vaultTokenSymbol,
         vaultTokenName,
         resolutionStatus,
-        wrappedNativeSymbol,
     } = yieldFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
@@ -191,7 +179,6 @@ export const YieldDepositWrapScreen = () => {
                 <YieldDepositFlowScreenHeader
                     account={account}
                     closeAction={step.handleClose}
-                    onInfoPress={openInfoBottomSheet}
                     title={vaultTokenName}
                     tokenContract={route.params.tokenContract}
                 />
@@ -330,17 +317,6 @@ export const YieldDepositWrapScreen = () => {
                     vaultTokenContract={route.params.tokenContract}
                 />
             )}
-            <YieldDepositInfoBottomSheet
-                ref={infoBottomSheetRef}
-                apy={apy}
-                bonusRewardTokenSymbol={bonusRewardTokenSymbol}
-                onClose={closeInfoBottomSheet}
-                tokenSymbol={tokenSymbol}
-                vaultTokenSymbol={vaultTokenSymbol}
-                account={account}
-                vault={vault}
-                wrappedNativeSymbol={wrappedNativeSymbol}
-            />
             {simulation.preparedTx && (
                 <YieldTxSimulationBottomSheet
                     ref={simulation.simulationBottomSheetRef}

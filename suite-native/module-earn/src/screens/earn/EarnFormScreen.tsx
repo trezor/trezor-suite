@@ -4,7 +4,13 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type EarnOnboardingRootState,
+    getEarnOpportunityKey,
+    selectAccountNetworkSymbol,
+    selectIsEarnOnboardingConfirmed,
+} from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type ActiveView, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -31,6 +37,13 @@ export const EarnFormScreen = () => {
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.EarnForm>>();
 
     const earnForm = useEarnForm(accountKey);
+    const isOnboardingConfirmed = useSelector((state: EarnOnboardingRootState) =>
+        selectIsEarnOnboardingConfirmed(
+            state,
+            accountKey,
+            getEarnOpportunityKey({ type: 'staking', provider: 'everstake' }),
+        ),
+    );
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -78,6 +91,15 @@ export const EarnFormScreen = () => {
                 currency: currencyRef.current,
             },
         });
+        if (isOnboardingConfirmed) {
+            navigation.navigate(RootStackRoutes.StakingTransactionDataReview, {
+                stakeType: 'stake',
+                accountKey,
+                amount: amountValue,
+            });
+
+            return;
+        }
         navigation.navigate(RootStackRoutes.EarnConsents, {
             accountKey,
             amount: amountValue,

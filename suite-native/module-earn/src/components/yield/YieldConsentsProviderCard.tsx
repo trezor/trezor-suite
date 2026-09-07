@@ -1,7 +1,11 @@
-import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { useState } from 'react';
+
+import { Box, Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
 
 import { EarnConsentsItem } from '../earn/EarnConsentsItem';
 
@@ -40,6 +44,7 @@ export const YieldConsentsProviderCard = ({
     onConfirm,
 }: YieldConsentsProviderCardProps) => {
     const { applyStyle } = useNativeStyles();
+    const [hasAgreed, setHasAgreed] = useState(false);
 
     return (
         <Card noPadding>
@@ -71,10 +76,34 @@ export const YieldConsentsProviderCard = ({
                         values={{ providerName }}
                     />
                 </EarnConsentsItem>
+                <HStack spacing="sp12" alignItems="center">
+                    <CheckBox
+                        isChecked={hasAgreed}
+                        onChange={setHasAgreed}
+                        testID="@earn/yield-consent/checkbox"
+                    />
+                    <Box flex={1}>
+                        <Text>
+                            <Translation
+                                id="earn.yieldConsentsScreen.terms"
+                                values={{
+                                    providerName,
+                                    tos: chunks => (
+                                        <Link href={TREZOR_SUITE_TOS_URL} label={chunks} />
+                                    ),
+                                    disclaimer: chunks => (
+                                        <Link href={MORPHO_DISCLAIMER_URL} label={chunks} />
+                                    ),
+                                }}
+                            />
+                        </Text>
+                    </Box>
+                </HStack>
             </VStack>
             <HStack style={applyStyle(buttonRowStyle)}>
                 <Button
                     intent="info"
+                    isDisabled={!hasAgreed}
                     isLoading={isConfirmLoading}
                     onPress={onConfirm}
                     style={applyStyle(buttonStyle)}

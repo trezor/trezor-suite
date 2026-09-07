@@ -33,7 +33,6 @@ import { YieldAmountInputCard } from '../../components/yield/YieldAmountInputCar
 import { YieldDepositApprovedAmountCard } from '../../components/yield/YieldDepositApprovedAmountCard';
 import { YieldDepositFlowFooter } from '../../components/yield/YieldDepositFlowFooter';
 import { YieldDepositFlowScreenHeader } from '../../components/yield/YieldDepositFlowScreenHeader';
-import { YieldDepositInfoBottomSheet } from '../../components/yield/YieldDepositInfoBottomSheet';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
@@ -70,12 +69,6 @@ export const YieldDepositScreen = () => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const {
-        bottomSheetRef: infoBottomSheetRef,
-        closeModal: closeInfoBottomSheet,
-        openModal: openInfoBottomSheet,
-    } = useBottomSheetModal({ isNestedSheet: true });
-
-    const {
         bottomSheetRef: simulationBottomSheetRef,
         closeModal: closeSimulationBottomSheet,
         openModal: openSimulationBottomSheet,
@@ -89,16 +82,13 @@ export const YieldDepositScreen = () => {
     const {
         account,
         apy,
-        bonusRewardTokenSymbol,
         flowData,
         flowKey,
         token,
         tokenSymbol,
         vault,
-        vaultTokenSymbol,
         vaultTokenName,
         resolutionStatus,
-        wrappedNativeSymbol,
     } = yieldFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
@@ -353,19 +343,6 @@ export const YieldDepositScreen = () => {
         vaultId: yieldFlowData.vault?.id,
     });
 
-    const handleOpenInfoBottomSheet = useCallback(() => {
-        analytics.report({
-            type: events.yieldInteractionEvent.name,
-            payload: {
-                element: 'in-a-nutshell-process-tab',
-                value: 'deposit',
-                networkSymbol: account?.symbol,
-                vaultId: yieldFlowData.vault?.id,
-            },
-        });
-        openInfoBottomSheet();
-    }, [account?.symbol, analytics, openInfoBottomSheet, yieldFlowData.vault?.id]);
-
     const handleCloseDeposit = useCallback(() => {
         navigateToInitialScreen();
 
@@ -395,7 +372,6 @@ export const YieldDepositScreen = () => {
                 <YieldDepositFlowScreenHeader
                     account={account}
                     closeAction={handleCloseDeposit}
-                    onInfoPress={handleOpenInfoBottomSheet}
                     title={vaultTokenName}
                     tokenContract={route.params.tokenContract}
                 />
@@ -517,18 +493,6 @@ export const YieldDepositScreen = () => {
                     vaultTokenContract={route.params.tokenContract}
                 />
             )}
-
-            <YieldDepositInfoBottomSheet
-                ref={infoBottomSheetRef}
-                apy={apy}
-                bonusRewardTokenSymbol={bonusRewardTokenSymbol}
-                onClose={closeInfoBottomSheet}
-                tokenSymbol={tokenSymbol}
-                vaultTokenSymbol={vaultTokenSymbol}
-                account={account}
-                vault={yieldFlowData.vault}
-                wrappedNativeSymbol={wrappedNativeSymbol}
-            />
             {simulationPreparedAction && (
                 <YieldTxSimulationBottomSheet
                     ref={simulationBottomSheetRef}

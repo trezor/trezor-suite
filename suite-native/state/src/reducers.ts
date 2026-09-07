@@ -26,6 +26,7 @@ import {
     prepareAccountsReducer,
     prepareBlockchainReducer,
     prepareDiscoveryReducer,
+    prepareEarnOnboardingReducer,
     prepareExplorerReducer,
     prepareFiatRatesReducer,
     preparePhishingReducer,
@@ -87,6 +88,7 @@ import { receivePersistTransform } from './receivePersistTransform';
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 const phishingReducer = preparePhishingReducer(extraDependencies);
 const accountsReducer = prepareAccountsReducer(extraDependencies);
+const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);
 const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 const explorerReducer = prepareExplorerReducer(extraDependencies);
@@ -266,6 +268,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const walletReducers = combineReducers({
         accounts: accountsReducer,
+        earnOnboarding: earnOnboardingReducer,
         accountsRefreshTime: accountsRefreshTimeReducer,
         blockchain: blockchainPersistedReducer,
         explorer: explorerPersistedReducer,

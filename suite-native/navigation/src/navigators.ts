@@ -138,7 +138,7 @@ export type YieldWithdrawParams = YieldFlowParams & {
 };
 
 export type YieldStackParamList = {
-    [YieldStackRoutes.HowYieldWorks]: YieldFlowParams;
+    [YieldStackRoutes.HowYieldWorks]: YieldFlowParams & { isInfoOnly?: boolean };
     [YieldStackRoutes.YieldConsents]: YieldFlowParams;
     [YieldStackRoutes.YieldClaim]: YieldClaimParams;
     [YieldStackRoutes.YieldClaimReview]: YieldClaimParams;
@@ -528,6 +528,7 @@ export type RootStackParamList = {
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
     [RootStackRoutes.YieldVaultDetail]: { accountKey: AccountKey; tokenContract: TokenAddress };
     [RootStackRoutes.HowStakeWorksScreen]: {
+        isInfoOnly?: boolean;
         accountKey?: AccountKey;
         symbol: NetworkSymbol;
     };

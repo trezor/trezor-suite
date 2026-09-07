@@ -31,6 +31,7 @@ type UseStartYieldDepositFlowParams = {
     flowData: YieldFlowResolvedData | null;
     flowKey: string | null;
     routeParams: YieldFlowParams;
+    shouldReplaceRoute?: boolean;
 };
 
 type YieldDepositStepId = (typeof YIELD_FLOW_AVAILABLE_STEPS)['deposit'][number];
@@ -50,6 +51,7 @@ export const useStartYieldDepositFlow = ({
     flowData,
     flowKey,
     routeParams,
+    shouldReplaceRoute = false,
 }: UseStartYieldDepositFlowParams) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
@@ -78,7 +80,11 @@ export const useStartYieldDepositFlow = ({
                 return;
             }
 
-            navigation.navigate(DEPOSIT_STEP_ROUTES[step], routeParams);
+            if (shouldReplaceRoute) {
+                navigation.replace(DEPOSIT_STEP_ROUTES[step], routeParams);
+            } else {
+                navigation.navigate(DEPOSIT_STEP_ROUTES[step], routeParams);
+            }
         };
 
         const navigateBySessionStep = () => {
@@ -144,7 +150,7 @@ export const useStartYieldDepositFlow = ({
         }
 
         return true;
-    }, [dispatch, flowData, flowKey, navigation, routeParams, store]);
+    }, [dispatch, flowData, flowKey, navigation, routeParams, store, shouldReplaceRoute]);
 
     return {
         handleStartYieldDepositFlow,
