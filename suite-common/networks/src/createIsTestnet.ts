@@ -13,5 +13,7 @@ export const selectIsTestnetDep = (services: any): IsTestnetDep => ({
     isTestnet: services.networks.isTestnet,
 });
 
-export const createIsTestnet = (deps: IsTestnetDeps): IsTestnet =>
-    deps.networkModuleRepository.isTestnet;
+export const createIsTestnet =
+    (deps: IsTestnetDeps): IsTestnet =>
+    symbol =>
+        deps.networkModuleRepository.get(symbol).isTestnet(symbol);

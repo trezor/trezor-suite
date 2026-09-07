@@ -1,5 +1,5 @@
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
-import { isArrayMember, typedObjectValues } from '@trezor/utils';
+import { typedObjectValues } from '@trezor/utils';
 
 import type { NetworkSymbol, StaticNetworkModulesDep } from './NetworkModules';
 
@@ -7,9 +7,6 @@ export type NetworkModuleRepositoryDeps = StaticNetworkModulesDep;
 
 export type NetworkModuleRepository = {
     get: <T extends NetworkSymbol>(symbol: T) => SuiteCommonNetworkModule<T>;
-    getSupportedNetworks: () => readonly NetworkSymbol[];
-    isSupportedNetwork: (symbol: string) => symbol is NetworkSymbol;
-    isTestnet: (symbol: NetworkSymbol) => boolean;
 };
 
 export type NetworkModuleRepositoryDep = {
@@ -30,8 +27,6 @@ export const createNetworkModuleRepository = (
         });
     });
 
-    const supportedNetworks = Array.from(networkModuleByNetworkSymbol.keys());
-
     return {
         get: <T extends NetworkSymbol>(symbol: T): SuiteCommonNetworkModule<T> => {
             const networkModule = networkModuleByNetworkSymbol.get(symbol);
@@ -41,14 +36,6 @@ export const createNetworkModuleRepository = (
             }
 
             return networkModule as SuiteCommonNetworkModule<T>;
-        },
-        getSupportedNetworks: () => supportedNetworks,
-        isSupportedNetwork: (symbol): symbol is NetworkSymbol =>
-            isArrayMember(symbol, supportedNetworks),
-        isTestnet: symbol => {
-            const networkModule = networkModuleByNetworkSymbol.get(symbol);
-
-            return networkModule?.isTestnet(symbol) ?? false;
         },
     };
 };

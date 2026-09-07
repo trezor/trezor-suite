@@ -14,6 +14,7 @@ import { createFindNetworkSymbolForProtocol } from './createFindNetworkSymbolFor
 import { createGetNamedAddressSupport } from './createGetNamedAddressSupport';
 import { createGetNetworkConfig } from './createGetNetworkConfig';
 import { createGetSupportedNetworks } from './createGetSupportedNetworks';
+import { createIsSupportedNetwork } from './createIsSupportedNetwork';
 import { createIsTestnet } from './createIsTestnet';
 import { createNetworkModuleRepository } from './createNetworkModuleRepository';
 
@@ -37,7 +38,7 @@ export const createNetworksCompositionRoot = (
 
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
-    const getSupportedNetworks = createGetSupportedNetworks({ networkModuleRepository });
+    const getSupportedNetworks = createGetSupportedNetworks({ networkModules });
 
     return {
         addressValidator: createAddressValidator({ networkModuleRepository }),
@@ -49,5 +50,6 @@ export const createNetworksCompositionRoot = (
         getNetworkConfig,
         getSupportedNetworks,
         isTestnet: createIsTestnet({ networkModuleRepository }),
+        isSupportedNetwork: createIsSupportedNetwork({ getSupportedNetworks }),
     };
 };

@@ -3,6 +3,7 @@ import type { FindNetworkSymbolForProtocolDep } from './createFindNetworkSymbolF
 import type { GetNamedAddressSupportDep } from './createGetNamedAddressSupport';
 import type { GetNetworkConfigDep } from './createGetNetworkConfig';
 import type { GetSupportedNetworksDep } from './createGetSupportedNetworks';
+import type { IsSupportedNetworkDep } from './createIsSupportedNetwork';
 import type { IsTestnetDep } from './createIsTestnet';
 
 export type NetworksServices = AddressValidatorDep &
@@ -10,7 +11,8 @@ export type NetworksServices = AddressValidatorDep &
     GetNamedAddressSupportDep &
     GetNetworkConfigDep &
     GetSupportedNetworksDep &
-    IsTestnetDep;
+    IsTestnetDep &
+    IsSupportedNetworkDep;
 
 export type NetworksServicesDep = {
     networks: NetworksServices;

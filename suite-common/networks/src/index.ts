@@ -24,6 +24,11 @@ export {
 } from './createGetSupportedNetworks';
 export { selectIsTestnetDep, type IsTestnet, type IsTestnetDep } from './createIsTestnet';
 export {
+    selectIsSupportedNetworkDep,
+    type IsSupportedNetwork,
+    type IsSupportedNetworkDep,
+} from './createIsSupportedNetwork';
+export {
     selectFindNetworkSymbolForProtocolDep,
     type FindNetworkSymbolForProtocol,
     type FindNetworkSymbolForProtocolDep,

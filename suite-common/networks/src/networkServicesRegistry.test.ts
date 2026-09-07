@@ -1,3 +1,4 @@
+import type { NetworkSymbol } from './NetworkModules';
 import type { NetworksServices } from './NetworksServices';
 import type * as NetworkServicesRegistry from './networkServicesRegistry';
 import { mockAddressValidator } from '../mocks/mockAddressValidator';
@@ -19,6 +20,7 @@ describe('network services registry', () => {
                 getNetworkConfig: mockGetNetworkConfig,
                 getSupportedNetworks: mockGetSupportedNetworks,
                 isTestnet: () => false,
+                isSupportedNetwork: (symbol): symbol is NetworkSymbol => symbol === 'btc',
             };
 
             expect(getNetworkServices).toThrow('Network services have not been registered.');
