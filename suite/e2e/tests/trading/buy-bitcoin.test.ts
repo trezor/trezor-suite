@@ -131,7 +131,7 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
                 await tradingMock.changeBuyWatchResponseTo('SUCCESS');
                 await page.clock.fastForward(tradingMock.watchPeriod);
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                    'TR_BUY_DETAIL_SUCCESS_TITLE',
+                    'TR_BUY_DETAIL_COMPLETE_TITLE',
                 );
                 await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
                 await expect(tradingPage.confirmation.cryptoAmount).toHaveText(bestBuyCryptoAmount);

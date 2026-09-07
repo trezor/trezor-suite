@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { useTranslation } from '@suite/intl';
 import {
     type TradingExchangeType,
@@ -19,11 +21,15 @@ import {
     processingHeaderMessages,
 } from 'src/views/wallet/trading/common/TradingDetail/utils';
 
-import { TradingExchangeDetailPaymentFailed } from './TradingExchangeDetailPaymentFailed';
 import { TradingExchangeDetailPaymentKYC } from './TradingExchangeDetailPaymentKYC';
+import { TradingExchangeDetailPaymentReturned } from './TradingExchangeDetailPaymentReturned';
 import { TradingExchangeDetailPaymentSuccessful } from './TradingExchangeDetailPaymentSuccessful';
 import { TradingExchangeDetailSidebar } from './TradingExchangeDetailSidebar';
-import { getExchangeDetailProgress, getExchangeDetailStatusStep } from './utils';
+import {
+    type ExchangeDetailStatusStep,
+    getExchangeDetailProgress,
+    getExchangeDetailStatusStep,
+} from './utils';
 
 export const TradingExchangeDetailContent = () => {
     const accounts = useSelector(selectAccounts);
@@ -61,59 +67,46 @@ export const TradingExchangeDetailContent = () => {
     };
 
     const getContent = () => {
-        switch (tradeStatusStep) {
-            case 'success':
-                return (
-                    <TradingExchangeDetailPaymentSuccessful
-                        trade={trade.data}
+        const progressContent = (
+            <TradingDetailProgress
+                {...processingHeaderMessages}
+                type={translationString('TR_TRADING_SWAP').toLowerCase()}
+            >
+                {!trade.data.isDex && (
+                    <TradingDetailSendingStep
+                        state={getTradingDetailStepState(progress, 'customerAction')}
                         account={sendAccount}
                         receiveAccountKey={trade.receiveAccountKey}
-                        provider={provider}
+                        txId={trade.data.receiveTxHash}
+                        composedTransaction={composedTransaction}
                     />
-                );
-            case 'error':
-                return (
-                    <TradingExchangeDetailPaymentFailed
-                        trade={trade.data}
-                        account={sendAccount}
-                        receiveAccountKey={trade.receiveAccountKey}
-                        provider={provider}
-                    />
-                );
-            case 'kyc':
-                return (
-                    <TradingExchangeDetailPaymentKYC
-                        trade={trade.data}
-                        account={sendAccount}
-                        receiveAccountKey={trade.receiveAccountKey}
-                        provider={provider}
-                    />
-                );
-            default:
-                return (
-                    <TradingDetailProgress
-                        {...processingHeaderMessages}
-                        type={translationString('TR_TRADING_SWAP').toLowerCase()}
-                    >
-                        {!trade.data.isDex && (
-                            <TradingDetailSendingStep
-                                state={getTradingDetailStepState(progress, 'customerAction')}
-                                account={sendAccount}
-                                receiveAccountKey={trade.receiveAccountKey}
-                                txId={trade.data.receiveTxHash}
-                                composedTransaction={composedTransaction}
-                            />
-                        )}
-                        <TradingDetailProcessingStep
-                            state={getTradingDetailStepState(progress, 'providerProcessing')}
-                            tradeType="exchange"
-                            trade={trade.data}
-                            provider={provider}
-                            isDex={trade.data.isDex}
-                        />
-                    </TradingDetailProgress>
-                );
-        }
+                )}
+                <TradingDetailProcessingStep
+                    state={getTradingDetailStepState(progress, 'providerProcessing')}
+                    tradeType="exchange"
+                    trade={trade.data}
+                    provider={provider}
+                    isDex={trade.data.isDex}
+                />
+            </TradingDetailProgress>
+        );
+
+        const terminalProps = {
+            trade: trade.data,
+            account: sendAccount,
+            receiveAccountKey: trade.receiveAccountKey,
+            provider,
+        };
+
+        const contentByStatusStep: Record<NonNullable<ExchangeDetailStatusStep>, ReactNode> = {
+            sending: progressContent,
+            converting: progressContent,
+            kyc: <TradingExchangeDetailPaymentKYC {...terminalProps} />,
+            success: <TradingExchangeDetailPaymentSuccessful {...terminalProps} />,
+            error: <TradingExchangeDetailPaymentReturned {...terminalProps} />,
+        };
+
+        return tradeStatusStep ? contentByStatusStep[tradeStatusStep] : progressContent;
     };
 
     return (

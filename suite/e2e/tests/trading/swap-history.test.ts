@@ -115,8 +115,8 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
             });
 
             const detailStatusTranslationKeys = {
-                SUCCESS: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
-                ERROR: 'TR_EXCHANGE_DETAIL_ERROR_TITLE',
+                SUCCESS: 'TR_EXCHANGE_DETAIL_COMPLETE_TITLE',
+                ERROR: 'TR_EXCHANGE_DETAIL_RETURNED_TITLE',
                 CONFIRMING: 'TR_TRADING_DETAIL_SENDING_TRANSACTION',
             } as const;
 

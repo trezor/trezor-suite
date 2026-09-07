@@ -39,6 +39,7 @@ const svgoConfig = {
                     removeUnknownsAndDefaults: {
                         keepRoleAttr: true,
                     },
+                    inlineStyles: false,
                 },
             },
         },

@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { useTranslation } from '@suite/intl';
 import { type TradingBuyType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
@@ -19,7 +21,12 @@ import { TradingBuyDetailPaymentFailed } from './TradingBuyDetailPaymentFailed';
 import { TradingBuyDetailPaymentSuccessful } from './TradingBuyDetailPaymentSuccessful';
 import { TradingBuyDetailPaymentWaitingForUserStep } from './TradingBuyDetailPaymentWaitingForUserStep';
 import { TradingBuyDetailSidebar } from './TradingBuyDetailSidebar';
-import { getBuyDetailHeaderMessages, getBuyDetailProgress, getBuyDetailStatusStep } from './utils';
+import {
+    type BuyDetailStatusStep,
+    getBuyDetailHeaderMessages,
+    getBuyDetailProgress,
+    getBuyDetailStatusStep,
+} from './utils';
 
 export const TradingBuyDetailContent = () => {
     const accounts = useSelector(selectAccounts);
@@ -52,31 +59,33 @@ export const TradingBuyDetailContent = () => {
     };
 
     const getContent = () => {
-        switch (tradeStatusStep) {
-            case 'success':
-                return <TradingBuyDetailPaymentSuccessful trade={trade.data} provider={provider} />;
-            case 'error':
-                return <TradingBuyDetailPaymentFailed trade={trade.data} provider={provider} />;
-            default:
-                return (
-                    <TradingDetailProgress
-                        {...getBuyDetailHeaderMessages(tradeStatus)}
-                        type={translationString('TR_BUY').toLowerCase()}
-                    >
-                        <TradingBuyDetailPaymentWaitingForUserStep
-                            state={getTradingDetailStepState(progress, 'customerAction')}
-                            trade={trade.data}
-                            providerName={getTradingProviderName(provider)}
-                        />
-                        <TradingDetailProcessingStep
-                            state={getTradingDetailStepState(progress, 'providerProcessing')}
-                            tradeType="buy"
-                            trade={trade.data}
-                            provider={provider}
-                        />
-                    </TradingDetailProgress>
-                );
-        }
+        const progressContent = (
+            <TradingDetailProgress
+                {...getBuyDetailHeaderMessages(tradeStatus)}
+                type={translationString('TR_BUY').toLowerCase()}
+            >
+                <TradingBuyDetailPaymentWaitingForUserStep
+                    state={getTradingDetailStepState(progress, 'customerAction')}
+                    trade={trade.data}
+                    providerName={getTradingProviderName(provider)}
+                />
+                <TradingDetailProcessingStep
+                    state={getTradingDetailStepState(progress, 'providerProcessing')}
+                    tradeType="buy"
+                    trade={trade.data}
+                    provider={provider}
+                />
+            </TradingDetailProgress>
+        );
+
+        const contentByStatusStep: Record<NonNullable<BuyDetailStatusStep>, ReactNode> = {
+            waiting: progressContent,
+            processing: progressContent,
+            success: <TradingBuyDetailPaymentSuccessful trade={trade.data} provider={provider} />,
+            error: <TradingBuyDetailPaymentFailed trade={trade.data} provider={provider} />,
+        };
+
+        return tradeStatusStep ? contentByStatusStep[tradeStatusStep] : progressContent;
     };
 
     return (
