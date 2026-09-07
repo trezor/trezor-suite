@@ -279,7 +279,7 @@ export const StakingCard = ({
                         />
                     ) : (
                         <Item
-                            label={<Translation id="TR_STAKE_STAKE" />}
+                            label={<Translation id="TR_STAKE_STAKED" />}
                             icon={LockIcon}
                             title={
                                 <FormattedCryptoAmount

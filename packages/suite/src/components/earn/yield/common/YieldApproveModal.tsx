@@ -69,6 +69,7 @@ export const YieldApproveModal = ({
                   size: 80,
               }),
         label: 'TR_EARN_YIELD_VAULT',
+        kind: 'vault',
     };
 
     useEffect(() => {

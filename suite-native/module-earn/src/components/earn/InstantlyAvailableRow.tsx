@@ -30,7 +30,7 @@ export const InstantlyAvailableRow = ({
 
     const showInfoAlert = () =>
         showAlert({
-            title: translate('earn.unstakeFlowScreen.instantlyAvailable.infoTitle'),
+            title: translate('earn.unstakeFlowScreen.instantlyAvailable.label'),
             description: translate('earn.unstakeFlowScreen.instantlyAvailable.infoDescription'),
             primaryButtonTitle: translate('generic.buttons.gotIt'),
             onPressPrimaryButton: hideAlert,
@@ -47,14 +47,19 @@ export const InstantlyAvailableRow = ({
                 </HStack>
                 <HStack alignItems="center" spacing="sp4">
                     <TokenIcon symbol={account.symbol} size="extraSmall" />
-                    <CompactCryptoAmountFormatter
-                        value={approximatedAmount}
-                        symbol={account.symbol}
-                        numberOfLines={1}
-                        adjustsFontSizeToFit
-                        variant="body-sm"
-                        color="contentPrimary"
-                    />
+                    <HStack alignItems="center" spacing={0}>
+                        <Text variant="body-sm" color="contentPrimary">
+                            ~
+                        </Text>
+                        <CompactCryptoAmountFormatter
+                            value={approximatedAmount}
+                            symbol={account.symbol}
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                            variant="body-sm"
+                            color="contentPrimary"
+                        />
+                    </HStack>
                 </HStack>
             </HStack>
         </PressableOpacity>

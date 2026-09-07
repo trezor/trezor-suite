@@ -5,12 +5,13 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { useAccountAlerts } from '@suite-native/accounts';
+import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useBottomSheetModal, useBottomSheetModalControls } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 import {
     AddCoinAccountStackRoutes,
     type RootStackParamList,
@@ -31,7 +32,8 @@ export const useStakingPromoNavigation = () => {
         >();
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
-    const { showViewOnlyAddAccountAlert } = useAccountAlerts();
+    const { showAlert, hideAlert } = useAlert();
+    const { translate } = useTranslate();
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
@@ -88,6 +90,25 @@ export const useStakingPromoNavigation = () => {
         });
     }, [analytics, closeChooseAccountModal]);
 
+    const showViewOnlyEnableNetworkAlert = useCallback(
+        (symbol: NetworkSymbol) => {
+            const networkName = getNetwork(symbol).name;
+
+            showAlert({
+                title: translate('earn.earnScreen.enableNetworkModal.viewOnlyAlert.title', {
+                    networkName,
+                }),
+                description: translate(
+                    'earn.earnScreen.enableNetworkModal.viewOnlyAlert.description',
+                    { networkName },
+                ),
+                primaryButtonTitle: translate('generic.buttons.gotIt'),
+                onPressPrimaryButton: hideAlert,
+            });
+        },
+        [hideAlert, showAlert, translate],
+    );
+
     const handleEnableNetworkPress = useCallback(() => {
         if (!pendingEnableSymbol) {
             return;
@@ -97,7 +118,7 @@ export const useStakingPromoNavigation = () => {
         closeEnableNetworkModal();
 
         if (isDeviceInViewOnlyMode) {
-            showViewOnlyAddAccountAlert();
+            showViewOnlyEnableNetworkAlert(pendingEnableSymbol);
 
             return;
         }
@@ -114,7 +135,7 @@ export const useStakingPromoNavigation = () => {
         pendingEnableSymbol,
         closeEnableNetworkModal,
         isDeviceInViewOnlyMode,
-        showViewOnlyAddAccountAlert,
+        showViewOnlyEnableNetworkAlert,
         navigation,
     ]);
 

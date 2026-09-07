@@ -116,7 +116,7 @@ export const ClaimCard = () => {
                 </InfoItem>
                 <InfoItem label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />} icon={LightningIcon}>
                     <Paragraph typographyStyle="headline-sm">
-                        <Translation id="TR_STAKE_INSTANT" />
+                        <Translation id="TR_EARN_INSTANTLY" />
                     </Paragraph>
                 </InfoItem>
 

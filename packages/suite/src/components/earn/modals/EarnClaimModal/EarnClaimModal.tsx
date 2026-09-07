@@ -233,7 +233,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                             account={account}
                                             composedLevels={composedLevels}
                                             changeFeeLevel={changeFeeLevel}
-                                            label="TR_TRADING_NETWORK_FEE"
+                                            label="TR_NETWORK_FEE"
                                         />
                                     </Column>
                                 </Card>
@@ -269,9 +269,9 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
 
                                 <InfoItem
                                     direction="column"
-                                    label={<Translation id="TR_STAKE_CLAIMING_PERIOD" />}
+                                    label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />}
                                 >
-                                    <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
+                                    <Translation id="TR_EARN_INSTANTLY" />
                                 </InfoItem>
 
                                 <Fees
