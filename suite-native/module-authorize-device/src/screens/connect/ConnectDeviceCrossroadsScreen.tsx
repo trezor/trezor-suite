@@ -4,9 +4,9 @@ import {
     Box,
     Card,
     HStack,
+    IconCircle,
     Image,
     PressableOpacity,
-    RoundedIcon,
     Text,
     TextDivider,
     VStack,
@@ -56,7 +56,7 @@ const ConnectCard = ({ image, title, subtitle, icon, onPress }: ConnectCardProps
                         <Text variant="headline-sm">
                             <Translation id={subtitle} />
                         </Text>
-                        <RoundedIcon name={icon} size={32} />
+                        <IconCircle name={icon} size={32} />
                     </HStack>
                 </Box>
             </VStack>

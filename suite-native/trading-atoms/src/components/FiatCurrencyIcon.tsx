@@ -1,7 +1,7 @@
 import type { FiatCurrencyCode } from 'invity-api';
 
 import { getFiatCurrencyFlag } from '@suite-common/flags';
-import { Flag, type RoundedIconSize } from '@suite-native/atoms';
+import { Flag, type IconCircleSize } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 
 export type FiatCurrencyIconProps = {
@@ -9,7 +9,7 @@ export type FiatCurrencyIconProps = {
     value?: FiatCurrencyCode;
 };
 
-const fiatIconSizes: Record<FiatCurrencyIconProps['size'], RoundedIconSize> = {
+const fiatIconSizes: Record<FiatCurrencyIconProps['size'], IconCircleSize> = {
     extraSmall: 20,
     small: 32,
     medium: 40,

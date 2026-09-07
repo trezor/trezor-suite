@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { View } from 'react-native';
 
-import { HStack, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
+import { HStack, IconCircle, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -119,7 +119,7 @@ const StepRow = ({
                     {children}
                 </Text>
             </HStack>
-            {isEditable && <RoundedIcon name="arrowLeft" intent="brand" size={24} />}
+            {isEditable && <IconCircle name="arrowLeft" intent="brand" size={24} />}
         </HStack>
     );
 };

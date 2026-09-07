@@ -11,9 +11,9 @@ import {
 import {
     Box,
     CircularSpinner,
-    RoundedIcon,
-    type RoundedIconIntent,
-    type RoundedIconSize,
+    IconCircle,
+    type IconCircleIntent,
+    type IconCircleSize,
 } from '@suite-native/atoms';
 import { type IconName, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -24,8 +24,8 @@ type TransactionIconProps = {
     symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
     isAnimated?: boolean;
-    intent?: RoundedIconIntent;
-    size?: RoundedIconSize;
+    intent?: IconCircleIntent;
+    size?: IconCircleSize;
 };
 
 const transactionIconMap: Record<TransactionType, IconName> = {
@@ -79,7 +79,7 @@ export const TransactionIcon = ({
 
     return (
         <Box>
-            <RoundedIcon name={iconName} intent={intent} size={size} />
+            <IconCircle name={iconName} intent={intent} size={size} />
             {isAnimated && <CircularSpinner size={size} color="elementFillWarningBold" width={3} />}
             {iconSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>

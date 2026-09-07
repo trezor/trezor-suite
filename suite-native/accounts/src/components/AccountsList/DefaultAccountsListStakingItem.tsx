@@ -1,5 +1,5 @@
 import { type Account } from '@suite-common/wallet-types';
-import { RoundedIcon } from '@suite-native/atoms';
+import { IconCircle } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
@@ -30,7 +30,7 @@ export const DefaultAccountsListStakingItem = ({
         {...props}
         isLast={isLast}
         showDivider={!isLast}
-        icon={<RoundedIcon name="piggyBankFilled" intent="neutral" size={32} />}
+        icon={<IconCircle name="piggyBankFilled" intent="neutral" size={32} />}
         title={<Translation id="accountList.staking" />}
         mainValue={
             <CryptoToFiatAmountFormatter
