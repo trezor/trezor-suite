@@ -48,6 +48,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { EarnApproximateFiatAmount } from '../../components/earn/EarnApproximateFiatAmount';
+import { EarnMaxSwitch } from '../../components/earn/EarnMaxSwitch';
 import { YieldDepositFlowScreenHeader } from '../../components/yield/YieldDepositFlowScreenHeader';
 import { YieldDepositInfoBottomSheet } from '../../components/yield/YieldDepositInfoBottomSheet';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
@@ -109,6 +110,7 @@ export const YieldWithdrawScreen = () => {
     const [assetAmount, setAssetAmount] = useState('');
     const [sharesAmount, setSharesAmount] = useState('');
     const [isMaxWithdrawInfoVisible, setIsMaxWithdrawInfoVisible] = useState(false);
+    const [isMaxSelected, setIsMaxSelected] = useState(false);
     const [flowType, setFlowType] = useState<YieldWithdrawFlowType>(
         route.params.withdrawFlowType ?? 'withdraw',
     );
@@ -357,10 +359,21 @@ export const YieldWithdrawScreen = () => {
         [account, resolutionStatus, vault],
     );
 
-    const handleMaxPress = () => {
+    const handleMaxChange = (value: boolean) => {
+        if (!value) {
+            setIsMaxSelected(false);
+            setAssetAmount('');
+            setSharesAmount('');
+            setIsMaxWithdrawInfoVisible(false);
+
+            return;
+        }
+
         if (!depositedAmount || !depositedSharesAmount) {
             return;
         }
+
+        setIsMaxSelected(true);
 
         analytics.report({
             type: events.yieldInteractionEvent.name,
@@ -581,9 +594,18 @@ export const YieldWithdrawScreen = () => {
                     )}
                     <Card style={applyStyle(withdrawFormCardStyle)}>
                         <VStack spacing="sp12">
-                            <Text variant="body-sm">
-                                <Translation id="earn.yieldWithdrawFlowScreen.withdrawalAmount" />
-                            </Text>
+                            <HStack justifyContent="space-between" alignItems="center">
+                                <Text variant="body-sm">
+                                    <Translation id="earn.yieldWithdrawFlowScreen.withdrawalAmount" />
+                                </Text>
+                                {!!maxAmount && (
+                                    <EarnMaxSwitch
+                                        isChecked={isMaxSelected}
+                                        onChange={handleMaxChange}
+                                        testID="@yield-withdraw/max-switch"
+                                    />
+                                )}
+                            </HStack>
 
                             <AnimatedDoubleInput
                                 activeView={isSharesInput ? 'secondary' : 'primary'}
@@ -598,7 +620,7 @@ export const YieldWithdrawScreen = () => {
                                         placeholder="0"
                                         keyboardType="numeric"
                                         maxLength={AMOUNT_INPUT_MAX_LENGTH}
-                                        editable={!isDisabled}
+                                        editable={!isDisabled && !isMaxSelected}
                                         onChangeText={handleAmountChange}
                                         onPress={onPress}
                                         hasError={!isDisabled && isAmountValidationErrorDisplayed}
@@ -627,7 +649,7 @@ export const YieldWithdrawScreen = () => {
                                         placeholder="0"
                                         keyboardType="numeric"
                                         maxLength={AMOUNT_INPUT_MAX_LENGTH}
-                                        editable={!isDisabled}
+                                        editable={!isDisabled && !isMaxSelected}
                                         onChangeText={handleAmountChange}
                                         onPress={onPress}
                                         style={applyStyle(withdrawOutputAmountInputStyle)}
@@ -662,34 +684,23 @@ export const YieldWithdrawScreen = () => {
                                     justifyContent="space-between"
                                     alignItems="center"
                                 >
-                                    <HStack spacing="sp8" alignItems="center" flexShrink={1}>
-                                        <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-                                            <Text variant="body-sm" color="contentSecondary">
-                                                <Translation id="earn.yieldWithdrawFlowScreen.deposited" />
-                                            </Text>
-                                            <Box flexShrink={1}>
-                                                <YieldFormattedAmount
-                                                    value={maxAmount}
-                                                    networkSymbol={account.symbol}
-                                                    tokenContract={activeUnitTokenContract}
-                                                    tokenDecimals={activeInputToken.decimals}
-                                                    tokenSymbol={activeUnitSymbol}
-                                                    variant="body-sm"
-                                                    color="contentSecondary"
-                                                    numberOfLines={1}
-                                                    ellipsizeMode="tail"
-                                                />
-                                            </Box>
-                                        </HStack>
-                                        <Button
-                                            size="medium"
-                                            intent="neutral"
-                                            priority="secondary"
-                                            onPress={handleMaxPress}
-                                            testID="@yield-withdraw/max-button"
-                                        >
-                                            <Translation id="earn.yieldWithdrawFlowScreen.maxButton" />
-                                        </Button>
+                                    <HStack spacing="sp4" alignItems="center" flexShrink={1}>
+                                        <Text variant="body-sm" color="contentSecondary">
+                                            <Translation id="earn.yieldWithdrawFlowScreen.deposited" />
+                                        </Text>
+                                        <Box flexShrink={1}>
+                                            <YieldFormattedAmount
+                                                value={maxAmount}
+                                                networkSymbol={account.symbol}
+                                                tokenContract={activeUnitTokenContract}
+                                                tokenDecimals={activeInputToken.decimals}
+                                                tokenSymbol={activeUnitSymbol}
+                                                variant="body-sm"
+                                                color="contentSecondary"
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                            />
+                                        </Box>
                                     </HStack>
                                     <EarnApproximateFiatAmount
                                         amount={assetAmount || (depositedAmount ?? '')}
