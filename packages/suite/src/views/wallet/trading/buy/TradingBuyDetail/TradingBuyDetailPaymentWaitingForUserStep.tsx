@@ -5,7 +5,7 @@ import { type BuyTrade } from 'invity-api';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
 import { tradeApi } from '@suite-common/trading';
-import { Button, Card, Column, Paragraph, type StepListItemState } from '@trezor/components';
+import { Button, Column, Paragraph, type StepListItemState } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
@@ -14,28 +14,16 @@ import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
 
 type TradingBuyDetailPaymentWaitingForUserStepProps = {
+    state: StepListItemState;
     trade: BuyTrade;
     account: Account;
     providerName?: string;
 };
 
-const getStepState = (trade: BuyTrade): StepListItemState => {
-    switch (trade.status) {
-        case 'APPROVAL_PENDING':
-            return 'done';
-        default:
-            return 'active';
-    }
-};
-
-const getTitleId = (trade: BuyTrade): TranslationKey => {
-    switch (trade.status) {
-        case 'APPROVAL_PENDING':
-            return 'TR_BUY_DETAIL_PAYMENT_SUCCESSFUL_TITLE';
-        default:
-            return 'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE';
-    }
-};
+const getTitleId = (state: StepListItemState): TranslationKey =>
+    state === 'active'
+        ? 'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE'
+        : 'TR_BUY_DETAIL_PAYMENT_SUCCESSFUL_TITLE';
 
 const getDescriptionId = (trade: BuyTrade): TranslationKey => {
     switch (trade.status) {
@@ -56,13 +44,13 @@ const getButtonLabelId = (trade: BuyTrade): TranslationKey => {
 };
 
 export const TradingBuyDetailPaymentWaitingForUserStep = ({
+    state,
     trade,
     account,
     providerName,
 }: TradingBuyDetailPaymentWaitingForUserStepProps) => {
     const [isWorking, setIsWorking] = useState(false);
     const dispatch = useDispatch();
-    const state = getStepState(trade);
 
     const goToPayment = async () => {
         setIsWorking(true);
@@ -74,22 +62,20 @@ export const TradingBuyDetailPaymentWaitingForUserStep = ({
     };
 
     return (
-        <TradingDetailStep state={state} title={<Translation id={getTitleId(trade)} />}>
-            <Card>
-                <Column gap={20}>
-                    <Paragraph typographyStyle="body-sm">
-                        <Translation id={getDescriptionId(trade)} values={{ providerName }} />
-                    </Paragraph>
-                    <Button
-                        onClick={goToPayment}
-                        isLoading={isWorking}
-                        isDisabled={isWorking}
-                        iconRight={ArrowSquareOutIcon}
-                    >
-                        <Translation id={getButtonLabelId(trade)} />
-                    </Button>
-                </Column>
-            </Card>
+        <TradingDetailStep state={state} title={<Translation id={getTitleId(state)} />}>
+            <Column gap={20} alignItems="flex-start">
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
+                    <Translation id={getDescriptionId(trade)} values={{ providerName }} />
+                </Paragraph>
+                <Button
+                    onClick={goToPayment}
+                    isLoading={isWorking}
+                    isDisabled={isWorking}
+                    iconRight={ArrowSquareOutIcon}
+                >
+                    <Translation id={getButtonLabelId(trade)} />
+                </Button>
+            </Column>
         </TradingDetailStep>
     );
 };

@@ -1,9 +1,14 @@
 import { Translation } from '@suite/intl';
-import type { TradingPaymentMethodType } from '@suite-common/trading';
+import type {
+    TradingPaymentMethodType,
+    TradingProviderInfo,
+    TradingTradeType,
+} from '@suite-common/trading';
 import { Card, Column } from '@trezor/components';
 
 import type { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
+import { TradingDetailTradeInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTradeInfo';
 import { TradingFiatAmountInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingFiatAmountInfoItem';
 import { TradingInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoItem';
 import { TradingPaymentMethodInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingPaymentMethodInfoItem';
@@ -13,6 +18,10 @@ type TradingBuyDetailSidebarProps = {
     paymentMethod?: TradingPaymentMethodType;
     paymentMethodName?: string;
     quoteAmounts: TradingGetCryptoQuoteAmountProps;
+    date: string;
+    orderId?: string;
+    provider?: TradingProviderInfo;
+    trade: TradingTradeType;
 };
 
 export const TradingBuyDetailSidebar = ({
@@ -20,6 +29,10 @@ export const TradingBuyDetailSidebar = ({
     paymentMethod,
     paymentMethodName,
     quoteAmounts,
+    date,
+    orderId,
+    provider,
+    trade,
 }: TradingBuyDetailSidebarProps) => (
     <Card paddingType="none" data-testid="@trading/transaction/detail/sidebar">
         <Column gap={24} padding={24}>
@@ -46,6 +59,13 @@ export const TradingBuyDetailSidebar = ({
                     />
                 )}
             </Column>
+
+            <TradingDetailTradeInfo
+                date={date}
+                orderId={orderId}
+                provider={provider}
+                trade={trade}
+            />
         </Column>
     </Card>
 );

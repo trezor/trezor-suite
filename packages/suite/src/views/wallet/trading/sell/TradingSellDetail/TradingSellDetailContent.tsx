@@ -1,155 +1,119 @@
-import { useEffect } from 'react';
-import { usePrevious } from 'react-use';
-
-import { type SellTradeStatus } from 'invity-api';
-import styled from 'styled-components';
-
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { useTranslation } from '@suite/intl';
-import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { Translation, useTranslation } from '@suite/intl';
 import { type TradingSellType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Box, Card, Column } from '@trezor/components';
+import { Paragraph } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
-import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { useTradingDetailMissingTradeRedirect } from 'src/hooks/wallet/trading/useTradingDetailMissingTradeRedirect';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
-import { TradingDetailHeader } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailHeader';
-import { TradingDetailStepList } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStepList';
-import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
+import { TradingDetailLayout } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailLayout';
+import { TradingDetailProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
+import { TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
+import { TradingDetailSendingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSendingStep';
+import {
+    getTradingDetailStepState,
+    getTradingProviderName,
+} from 'src/views/wallet/trading/common/TradingDetail/utils';
 
 import { TradingSellDetailPaymentFailed } from './TradingSellDetailPaymentFailed';
-import { TradingSellDetailPaymentSending } from './TradingSellDetailPaymentSending';
-import { TradingSellDetailPaymentSuccessful } from './TradingSellDetailPaymentSuccessful';
 import { TradingSellDetailSidebar } from './TradingSellDetailSidebar';
-import { getSellDetailHeaderMessages } from './utils';
-
-const Wrapper = styled.div`
-    ${TradingWrapper}
-`;
-
-const getTradeStatusStep = (tradeStatus: SellTradeStatus) => {
-    switch (tradeStatus) {
-        case 'SUCCESS':
-            return 'success';
-        default: {
-            return tradeFinalStatuses['sell'].includes(tradeStatus) ? 'error' : 'pending';
-        }
-    }
-};
+import {
+    getSellDetailHeaderMessages,
+    getSellDetailProgress,
+    getSellDetailStatusStep,
+} from './utils';
 
 export const TradingSellDetailContent = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const accounts = useSelector(selectAccounts);
+    const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
     const { trade, info } = useTradingDetailContext<TradingSellType>();
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
     const tradeStatus = trade?.data?.status || 'PENDING';
-    const previousTradeStatus = usePrevious(tradeStatus);
-    const tradeStatusStep = getTradeStatusStep(tradeStatus);
-    const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
+    const tradeStatusStep = getSellDetailStatusStep(tradeStatus);
+    const progress = getSellDetailProgress(tradeStatus);
 
     const exchange = trade?.data?.exchange;
     const provider = exchange ? info?.providerInfos?.[exchange] : undefined;
 
-    const country = trade?.data?.country;
-
-    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
-        amountInCrypto: trade?.data?.amountInCrypto,
-        sendAmount: trade?.data?.fiatStringAmount ?? '',
-        sendCurrency: trade?.data?.fiatCurrency,
-        receiveAmount: trade?.data?.cryptoStringAmount ?? '',
-        receiveCurrency: trade?.data?.cryptoCurrency,
-        networkFee: composedTransaction?.composed?.fee,
-    };
-
     const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
 
-    useEffect(() => {
-        // if tradeStatus hasn't changed, don't send the analytics event
-        // also safeguard the initial tradeStatus change from undefined to defined
-        if (!previousTradeStatus || previousTradeStatus === tradeStatus) {
-            return;
-        }
+    useTradingDetailMissingTradeRedirect('sell', trade);
 
-        analytics.report({
-            type: events.tradeStatusEvent.name,
-            payload: {
-                type: 'sell',
-                status: tradeStatusStep,
-            },
-        });
-    }, [tradeStatus, previousTradeStatus, tradeStatusStep, analytics]);
-
-    // if trade not found, it is because user refreshed the page and stored transactionId got removed
-    // go to the default trading page, the trade is shown there in the previous trades
     if (!trade) {
-        dispatch(gotoThunk({ routeName: 'wallet-trading-sell' }));
-
         return null;
     }
+
+    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
+        amountInCrypto: trade.data.amountInCrypto,
+        sendAmount: trade.data.fiatStringAmount ?? '',
+        sendCurrency: trade.data.fiatCurrency,
+        receiveAmount: trade.data.cryptoStringAmount ?? '',
+        receiveCurrency: trade.data.cryptoCurrency,
+        networkFee: composedTransaction?.composed?.fee,
+    };
 
     const getContent = () => {
         switch (tradeStatusStep) {
             case 'error':
-                return (
-                    <TradingSellDetailPaymentFailed
-                        account={sendAccount!}
-                        provider={provider}
-                        trade={trade.data}
-                    />
-                );
+                return <TradingSellDetailPaymentFailed />;
             default:
                 return (
-                    <>
-                        <TradingDetailHeader
-                            {...getSellDetailHeaderMessages(tradeStatus)}
-                            type={translationString('TR_TRADING_SELL').toLowerCase()}
+                    <TradingDetailProgress
+                        {...getSellDetailHeaderMessages(tradeStatus)}
+                        type={translationString('TR_TRADING_SELL').toLowerCase()}
+                    >
+                        <TradingDetailSendingStep
+                            state={getTradingDetailStepState(progress, 'customerAction')}
+                            account={sendAccount}
+                            txId={trade.data.txid}
+                            composedTransaction={composedTransaction}
                         />
-                        <Box margin={{ top: 32, bottom: 12 }}>
-                            <TradingDetailStepList>
-                                <TradingSellDetailPaymentSending
-                                    trade={trade.data}
-                                    account={sendAccount}
-                                    composedTransaction={composedTransaction}
+                        <TradingDetailProcessingStep
+                            state={getTradingDetailStepState(progress, 'providerProcessing')}
+                            tradeType="sell"
+                            provider={provider}
+                        >
+                            <Paragraph
+                                typographyStyle="body-sm"
+                                intent="neutral"
+                                priority="secondary"
+                            >
+                                <Translation
+                                    id="TR_SELL_DETAIL_PROCESSING_TEXT"
+                                    values={{ providerName: getTradingProviderName(provider) }}
                                 />
-                                <TradingSellDetailPaymentSuccessful
-                                    trade={trade.data}
-                                    provider={provider}
-                                />
-                            </TradingDetailStepList>
-                        </Box>
-                    </>
+                            </Paragraph>
+                        </TradingDetailProcessingStep>
+                    </TradingDetailProgress>
                 );
         }
     };
 
     return (
-        <Wrapper data-testid="@trading/transaction/detail">
-            <Column gap={20}>
-                <Card paddingType="large" data-testid="@trading/transaction/detail/status-card">
-                    {getContent()}
-                </Card>
-                <AfterTradeExperiment
-                    status={tradeStatus}
-                    type={trade.tradeType}
-                    provider={provider?.name}
-                    id={trade.data.id}
+        <TradingDetailLayout
+            tradeType="sell"
+            tradeStatus={tradeStatus}
+            statusStep={tradeStatusStep}
+            provider={provider}
+            tradeId={trade.data.id}
+            quoteAmounts={quoteAmounts}
+            country={trade.data.country}
+            sidebar={
+                <TradingSellDetailSidebar
+                    sendAccount={sendAccount}
                     quoteAmounts={quoteAmounts}
-                    country={country}
+                    paymentMethod={trade.data.paymentMethod}
+                    paymentMethodName={trade.data.paymentMethodName}
+                    date={trade.date}
+                    orderId={trade.data.orderId}
+                    provider={provider}
+                    trade={trade.data}
                 />
-            </Column>
-            <TradingSellDetailSidebar
-                sendAccount={sendAccount}
-                quoteAmounts={quoteAmounts}
-                paymentMethod={trade.data.paymentMethod}
-                paymentMethodName={trade.data.paymentMethodName}
-            />
-        </Wrapper>
+            }
+        >
+            {getContent()}
+        </TradingDetailLayout>
     );
 };

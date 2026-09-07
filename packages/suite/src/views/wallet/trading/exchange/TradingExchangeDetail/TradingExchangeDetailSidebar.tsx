@@ -10,6 +10,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import type { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
+import { TradingDetailTradeInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTradeInfo';
 import { TradingExchangeMevProtectionInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeMevProtectionInfoItem';
 import { TradingExchangeMinimumReceivedInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeMinimumReceivedInfoItem';
 import { TradingExchangeRateInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeRateInfoItem';
@@ -23,6 +24,7 @@ type TradingExchangeDetailSidebarProps = {
     receiveAccount?: Account;
     sendAccount?: Account;
     trade: ExchangeTrade;
+    date: string;
 };
 
 export const TradingExchangeDetailSidebar = ({
@@ -30,6 +32,7 @@ export const TradingExchangeDetailSidebar = ({
     receiveAccount,
     sendAccount,
     trade,
+    date,
 }: TradingExchangeDetailSidebarProps) => {
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
@@ -80,19 +83,14 @@ export const TradingExchangeDetailSidebar = ({
                     accountInfoTestId="@trading/transaction/detail/receive-account"
                 />
 
-                <Column gap={12}>
-                    {trade.isDex && swapSlippage !== undefined && (
-                        <TradingExchangeSlippageInfoItem slippage={swapSlippage} />
-                    )}
+                <TradingUtilsProviderKyc exchange={trade.exchange} providers={providers} />
 
-                    {trade.isDex && minimumYouGetAmount && (
-                        <TradingExchangeMinimumReceivedInfoItem
-                            minimumYouGetAmount={minimumYouGetAmount}
-                            symbol={receiveCoinSymbol}
-                            contractAddress={receiveContractAddress}
-                        />
-                    )}
-
+                <TradingDetailTradeInfo
+                    date={date}
+                    orderId={trade.orderId}
+                    provider={provider}
+                    trade={trade}
+                >
                     {trade.isDex && isMevProtectionFeatureEnabled && isMevProtectionSupported && (
                         <TradingExchangeMevProtectionInfoItem
                             isMevProtectionEnabled={isMevProtectionEnabled}
@@ -100,9 +98,20 @@ export const TradingExchangeDetailSidebar = ({
                         />
                     )}
 
+                    {trade.isDex && swapSlippage !== undefined && (
+                        <TradingExchangeSlippageInfoItem slippage={swapSlippage} />
+                    )}
+
+                    {trade.isDex && !!minimumYouGetAmount && (
+                        <TradingExchangeMinimumReceivedInfoItem
+                            minimumYouGetAmount={minimumYouGetAmount}
+                            symbol={receiveCoinSymbol}
+                            contractAddress={receiveContractAddress}
+                        />
+                    )}
+
                     {!trade.isDex && <TradingExchangeRateInfoItem rateType={rateType} />}
-                </Column>
-                <TradingUtilsProviderKyc exchange={trade.exchange} providers={providers} />
+                </TradingDetailTradeInfo>
             </Column>
         </Card>
     );

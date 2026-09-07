@@ -369,6 +369,34 @@ export const messages = defineMessages({
         defaultMessage: '{providerName} is processing your {type}',
         id: 'TR_TRADING_DETAIL_PROCESSING',
     },
+    TR_TRADING_DETAIL_WILL_PROCESS: {
+        defaultMessage: '{providerName} will process your {type}',
+        id: 'TR_TRADING_DETAIL_WILL_PROCESS',
+    },
+    TR_TRADING_DETAIL_PROCESSED: {
+        defaultMessage: '{providerName} has processed your {type}',
+        id: 'TR_TRADING_DETAIL_PROCESSED',
+    },
+    TR_TRADING_DETAIL_SWAPPING_ON_PROVIDER: {
+        defaultMessage: 'Swapping on {providerName}',
+        id: 'TR_TRADING_DETAIL_SWAPPING_ON_PROVIDER',
+    },
+    TR_TRADING_DETAIL_SWAPPED_ON_PROVIDER: {
+        defaultMessage: 'Swapped on {providerName}',
+        id: 'TR_TRADING_DETAIL_SWAPPED_ON_PROVIDER',
+    },
+    TR_TRADING_DETAIL_SENDING_TRANSACTION: {
+        defaultMessage: 'Sending transaction',
+        id: 'TR_TRADING_DETAIL_SENDING_TRANSACTION',
+    },
+    TR_TRADING_DETAIL_TRANSACTION_SENT: {
+        defaultMessage: 'Transaction sent',
+        id: 'TR_TRADING_DETAIL_TRANSACTION_SENT',
+    },
+    TR_TRADING_DETAIL_PLACED: {
+        defaultMessage: 'Placed',
+        id: 'TR_TRADING_DETAIL_PLACED',
+    },
     TR_TRADING_SWAP_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
         id: 'TR_TRADING_SWAP_MODAL_SECURITY_HEADER',
@@ -610,18 +638,6 @@ export const messages = defineMessages({
     TR_EXCHANGE_DETAIL_KYC_SUPPORT: {
         defaultMessage: 'Go to provider support',
         id: 'TR_EXCHANGE_DETAIL_KYC_SUPPORT',
-    },
-    TR_EXCHANGE_DETAIL_SENDING_TRANSACTION: {
-        defaultMessage: 'Sending transaction',
-        id: 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION',
-    },
-    TR_EXCHANGE_DETAIL_TRANSACTION_SENT: {
-        defaultMessage: 'Transaction sent',
-        id: 'TR_EXCHANGE_DETAIL_TRANSACTION_SENT',
-    },
-    TR_EXCHANGE_COMPLETE: {
-        defaultMessage: 'Swap complete',
-        id: 'TR_EXCHANGE_COMPLETE',
     },
     TR_APPROVAL_APPROVE_TOKEN_SPENDING: {
         defaultMessage: 'Approve {displaySymbol} spending',
@@ -953,14 +969,6 @@ export const messages = defineMessages({
         defaultMessage: 'Your sell',
         id: 'TR_SELL_HEADER_TITLE',
     },
-    TR_SELL_DETAIL_SENDING_TRANSACTION: {
-        defaultMessage: 'Sending transaction',
-        id: 'TR_SELL_DETAIL_SENDING_TRANSACTION',
-    },
-    TR_SELL_DETAIL_TRANSACTION_SENT: {
-        defaultMessage: 'Transaction sent',
-        id: 'TR_SELL_DETAIL_TRANSACTION_SENT',
-    },
     TR_SELL_DETAIL_PROCESSING_TEXT: {
         defaultMessage:
             "Your rate is locked—you'll get exactly what you see. Once your sell is processed, {providerName} will send the funds to your account. You can check your account to see if they've arrived.",
@@ -1050,10 +1058,6 @@ export const messages = defineMessages({
     TR_TRADING_PROCESSING_SUPPORT: {
         defaultMessage: "Need help? Reach out to <link>{providerName}'s support</link>.",
         id: 'TR_TRADING_PROCESSING_SUPPORT',
-    },
-    TR_BUY_COMPLETE: {
-        defaultMessage: 'Buy complete',
-        id: 'TR_BUY_COMPLETE',
     },
     TR_BUY_HEADER_TITLE: {
         defaultMessage: 'Your buy',

@@ -117,7 +117,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
             const detailStatusTranslationKeys = {
                 SUCCESS: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
                 ERROR: 'TR_EXCHANGE_DETAIL_ERROR_TITLE',
-                CONFIRMING: 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION',
+                CONFIRMING: 'TR_TRADING_DETAIL_SENDING_TRANSACTION',
             } as const;
 
             for (const trade of SEEDED_TRADES) {
@@ -154,15 +154,13 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                             `${localizeNumber(trade.data.receiveStringAmount)} ${receiveSymbol}`,
                         );
 
+                    await expect.soft(tradingPage.transactionDetailSidebar.provider).toBeVisible();
                     await expect
-                        .soft(tradingPage.transactionDetailSidebar.providerInStatusCard)
-                        .toBeVisible();
-                    await expect
-                        .soft(tradingPage.transactionDetailSidebar.providerInStatusCard)
+                        .soft(tradingPage.transactionDetailSidebar.provider)
                         .toHaveText(trade.data.exchange, { ignoreCase: true });
 
                     await expect
-                        .soft(tradingPage.transactionDetailSidebar.orderIdInStatusCard)
+                        .soft(tradingPage.transactionDetailSidebar.orderId)
                         .toHaveText(trade.orderId);
 
                     await expect(tradingPage.transactionDetailSidebar.sendAccount).toContainText(
