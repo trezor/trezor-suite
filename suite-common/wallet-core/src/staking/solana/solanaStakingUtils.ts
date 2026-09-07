@@ -1,4 +1,4 @@
-import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 import {
     calculateTotalSolStakingBalance,
@@ -21,18 +21,6 @@ export function isSupportedSolStakingNetworkSymbol(
 ): symbol is SolanaNetworkSymbol {
     return isSupportedSolanaNetwork(symbol);
 }
-
-export const getSolanaStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
-    networkSymbols.reduce((acc, networkSymbol) => {
-        if (
-            isSupportedSolStakingNetworkSymbol(networkSymbol) &&
-            getNetworkFeatures(networkSymbol).includes('staking')
-        ) {
-            acc.push(networkSymbol);
-        }
-
-        return acc;
-    }, [] as SolanaNetworkSymbol[]);
 
 export const getSolanaCryptoBalanceWithStaking = (account: Account) => {
     const stakingBalance = getSolAccountTotalStakingBalance(account);

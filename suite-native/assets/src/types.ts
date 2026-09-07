@@ -6,7 +6,6 @@ import {
     type DiscoveryRootState,
     type FiatRatesRootState,
     type StakeRootState,
-    type TronStakeRootState,
     type WalletSettingsRootState,
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -27,6 +26,5 @@ export type AssetsRootState = AccountsRootState &
     WalletSettingsRootState &
     TokenDefinitionsRootState &
     StakeRootState &
-    TronStakeRootState &
     DeviceRootState &
     DiscoveryRootState;

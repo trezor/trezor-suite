@@ -391,5 +391,3 @@ export const selectVotingDelegationOption = (
 
 export const selectStakePrecomposedForm = (state: StakeRootState) =>
     selectStake(state).precomposedForm;
-
-export const selectStakePrecomposedTx = (state: StakeRootState) => selectStake(state).precomposedTx;
