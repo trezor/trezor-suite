@@ -176,7 +176,8 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
     private async onStatusUpdate({
         changed,
         rounds,
-    }: Pick<CoinjoinStatusEvent, 'changed' | 'rounds'>) {
+        prevStatusTimestamp,
+    }: Pick<CoinjoinStatusEvent, 'changed' | 'rounds' | 'prevStatusTimestamp'>) {
         // try to release inputs from prison
         this.prison.release(rounds.map(r => r.Id));
 
@@ -187,7 +188,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
                 if (currentRound) {
                     // try to finish/interrupt current running process on changed round (if any)
                     // and update fresh data from Status
-                    return currentRound.onPhaseChange(round);
+                    return currentRound.onPhaseChange(round, prevStatusTimestamp);
                 }
 
                 return [];
