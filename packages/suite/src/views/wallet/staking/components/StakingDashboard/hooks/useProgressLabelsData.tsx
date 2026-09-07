@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import {
     CARDANO_ACTIVATION_PERIOD_DAYS,
-    CARDANO_EPOCH_DAYS,
     getStakingAccountCurrentStatus,
     getTxStakeType,
 } from '@suite-common/wallet-core';
@@ -126,20 +125,7 @@ const buildSolanaLabels = ({
 
             return 'stale';
         })(),
-        children: (
-            <Column>
-                <Translation id="TR_STAKE_STAKED_AND_EARNING" />
-
-                <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
-                    <Translation
-                        id="TR_UP_TO_DAYS"
-                        values={{
-                            count: SOLANA_EPOCH_DAYS,
-                        }}
-                    />
-                </Paragraph>
-            </Column>
-        ),
+        children: <Translation id="TR_STAKE_STAKED_AND_EARNING" />,
     },
 ];
 
@@ -200,18 +186,11 @@ const buildCardanoLabels = ({
                         <Translation id="TR_STAKE_STAKED_AND_EARNING" />
                     )}
 
-                    <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
-                        {isUnstake ? (
-                            <Translation id="TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY" />
-                        ) : (
-                            <Translation
-                                id="TR_UP_TO_DAYS"
-                                values={{
-                                    count: CARDANO_EPOCH_DAYS,
-                                }}
-                            />
-                        )}
-                    </Paragraph>
+                    {isUnstake && (
+                        <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
+                            <Translation id="TR_EARN_INSTANTLY" />
+                        </Paragraph>
+                    )}
                 </Column>
             ),
         },

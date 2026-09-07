@@ -207,7 +207,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
 
                     <Card>
                         <Fees
-                            label="TR_TX_FEE"
+                            label="TR_NETWORK_FEE"
                             feeInfo={feeInfo}
                             account={account}
                             composedLevels={composedLevels}

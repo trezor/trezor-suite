@@ -42,10 +42,23 @@ const TYPE_LABEL_ID = {
     MINIMAL: 'TR_APPROVAL_VALUE_MINIMAL',
 } as const satisfies Record<SelectableType, TranslationKey>;
 
+type ProviderKind = NonNullable<AllowanceModalProvider['kind']>;
+
 const TYPE_INFO_ID = {
-    INFINITE: 'TR_APPROVAL_VALUE_INFINITE_INFO',
-    MINIMAL: 'TR_APPROVAL_VALUE_MINIMAL_INFO',
-} as const satisfies Record<SelectableType, TranslationKey>;
+    provider: {
+        INFINITE: 'TR_APPROVAL_VALUE_INFINITE_INFO',
+        MINIMAL: 'TR_APPROVAL_VALUE_MINIMAL_INFO',
+    },
+    vault: {
+        INFINITE: 'TR_EARN_YIELD_APPROVAL_VALUE_INFINITE_INFO',
+        MINIMAL: 'TR_EARN_YIELD_APPROVAL_VALUE_MINIMAL_INFO',
+    },
+} as const satisfies Record<ProviderKind, Record<SelectableType, TranslationKey>>;
+
+const INFINITE_WARNING_ID = {
+    provider: 'TR_APPROVAL_VALUE_INFINITE_WARNING',
+    vault: 'TR_EARN_YIELD_APPROVAL_VALUE_INFINITE_WARNING',
+} as const satisfies Record<ProviderKind, TranslationKey>;
 
 const toSelectable = (type: DexApprovalType): SelectableType =>
     type === 'INFINITE' ? 'INFINITE' : 'MINIMAL';
@@ -65,6 +78,8 @@ export const ApproveModalTypeSelector = ({
         ? getDisplaySymbol(token.symbol, token.contract)
         : token.name;
 
+    const providerKind: ProviderKind = provider.kind ?? 'provider';
+
     const translationValues = {
         value: subunitsToUnits({ value: displayAmount, decimals: token.decimals }).toString(),
         send: displaySymbol,
@@ -79,14 +94,14 @@ export const ApproveModalTypeSelector = ({
     const renderDetails = (type: SelectableType) => (
         <>
             <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                <Translation id={TYPE_INFO_ID[type]} values={translationValues} />
+                <Translation id={TYPE_INFO_ID[providerKind][type]} values={translationValues} />
             </Paragraph>
             {type === 'INFINITE' && (
                 <Text intent="warning" typographyStyle="body-sm">
                     <Row gap={8}>
                         <Icon as={WarningIcon} size={16} />
                         <Translation
-                            id="TR_APPROVAL_VALUE_INFINITE_WARNING"
+                            id={INFINITE_WARNING_ID[providerKind]}
                             values={{ send: displaySymbol }}
                         />
                     </Row>

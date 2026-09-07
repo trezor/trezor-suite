@@ -9,6 +9,7 @@ export type AllowanceModalProvider = {
     companyName?: string;
     logo?: string | TokenIconProps;
     label: TranslationKey;
+    kind?: 'provider' | 'vault';
 };
 
 interface AllowanceModalProviderInfoProps {

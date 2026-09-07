@@ -1,4 +1,4 @@
-import { Tooltip } from '@trezor/components';
+import { Row, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
@@ -17,14 +17,20 @@ export const ApproximateInstantEthAmount = ({
     const hasDecimals = value.toString().includes('.');
 
     if (!hasDecimals) {
-        return <FormattedCryptoAmount value={value} symbol={symbol} />;
+        return (
+            <Row>
+                ~<FormattedCryptoAmount value={value} symbol={symbol} />
+            </Row>
+        );
     }
 
     const trimmedAmount = new BigNumber(value).toFixed(DEFAULT_MAX_DECIMAL_PLACES, 1);
 
     return (
         <Tooltip content={<FormattedCryptoAmount value={value} symbol={symbol} />}>
-            <FormattedCryptoAmount value={trimmedAmount} symbol={symbol} />
+            <Row>
+                ~<FormattedCryptoAmount value={trimmedAmount} symbol={symbol} />
+            </Row>
         </Tooltip>
     );
 };

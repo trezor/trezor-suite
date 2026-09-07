@@ -474,7 +474,7 @@ const TokenRowBasicActions = ({
                         isHidden: !isWrappedNativeToken(account.symbol, token.contract),
                     },
                     {
-                        label: <Translation id="TR_EARN_YIELD_DEPOSIT" />,
+                        label: <Translation id="TR_EARN_YIELD_DEPOSIT_BUTTON" />,
                         icon: PlusIcon,
                         onClick: navigateToYieldDeposit,
                         isDisabled: type === 'defi' ? isDepositButtonDisabled : true,
@@ -581,7 +581,7 @@ const TokenRowBasicActions = ({
                                         content: isDepositButtonDisabled ? (
                                             <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />
                                         ) : (
-                                            <Translation id="TR_EARN_YIELD_DEPOSIT" />
+                                            <Translation id="TR_EARN_YIELD_DEPOSIT_BUTTON" />
                                         ),
                                     }}
                                 />
