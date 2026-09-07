@@ -18,6 +18,7 @@ import {
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainState,
+    type EarnOnboardingState,
     type ExplorerConfig,
     type FiatRatesState,
     type PhishingState,
@@ -180,6 +181,8 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
 
             state.persistentDeviceData = payload.persistentDeviceData ?? [];
         },
+        storageLoadEarnOnboarding: (_: EarnOnboardingState, { payload }: StorageLoadAction) =>
+            Object.fromEntries(payload.earnOnboarding.map(({ key, value }) => [key, value])),
         storageLoadFormDrafts: (state: SendState, { payload }: StorageLoadAction) => {
             payload.sendFormDrafts.forEach(d => {
                 state.drafts[d.key] = d.value;

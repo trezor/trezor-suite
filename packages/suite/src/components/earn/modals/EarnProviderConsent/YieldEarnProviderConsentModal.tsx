@@ -61,6 +61,7 @@ export const YieldEarnProviderConsentModal = ({
     const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Yield,
         onCancel,
+        provider,
         account,
         networkSymbol: account.symbol,
         yieldContext,

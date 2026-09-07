@@ -1,7 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { openModal } from '@suite/modal';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -9,14 +12,21 @@ import {
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
+import {
+    getEarnOpportunityKey,
+    getYieldEarnOpportunityKey,
+    selectIsEarnOnboardingConfirmed,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
+import { useSelector } from 'src/hooks/suite';
 
 import { StakingEarnInANutshellModal } from './StakingEarnInANutshellModal';
 import { UpdateEarnInANutshellModal } from './UpdateEarnInANutshellModal';
 import { YieldEarnInANutshellModal } from './YieldEarnInANutshellModal';
+import { getEarnRouteParams } from '../../utils/getEarnRouteParams';
 
 type EarnInANutshellBaseProps = {
     provider: EarnProvider;
@@ -51,6 +61,50 @@ export const EarnInANutshellModal = ({
     onCancel,
 }: EarnInANutshellModalProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const dispatch = useDispatch();
+
+    const opportunity =
+        flow === EarnFlow.Yield
+            ? getYieldEarnOpportunityKey(yieldContext?.vaultAddress)
+            : getEarnOpportunityKey({ type: 'staking', provider });
+    const isConfirmed = useSelector(state =>
+        selectIsEarnOnboardingConfirmed(state, account.key, opportunity),
+    );
+    // The update-provider flow must always be shown, and an explicit 'close' action means the modal
+    // was opened as info only, never as an entry into the earn flow.
+    const shouldSkip =
+        isConfirmed &&
+        (!actionType || actionType === 'continue') &&
+        flow !== EarnFlow.UpdateProvider;
+
+    const hasSkipped = useRef(false);
+
+    useEffect(() => {
+        if (!shouldSkip || hasSkipped.current) return;
+        hasSkipped.current = true;
+
+        onCancel();
+
+        if (flow === EarnFlow.Yield && yieldContext?.vaultAddress) {
+            dispatch(
+                gotoThunk({
+                    routeName: 'earn-yield-deposit',
+                    params: getEarnRouteParams({
+                        account,
+                        vaultAddress: yieldContext.vaultAddress,
+                    }),
+                }),
+            );
+        } else if (flow === EarnFlow.Stake) {
+            if (account.networkType === 'cardano') {
+                // Cardano still needs the provider consent modal for the voting delegation choice;
+                // its legal content and checkbox are hidden for a confirmed opportunity.
+                dispatch(openModal({ type: 'earn-provider-consent', flow, provider, account }));
+            } else {
+                dispatch(openModal({ type: 'stake', flow, account }));
+            }
+        }
+    }, [shouldSkip, flow, yieldContext?.vaultAddress, onCancel, account, provider, dispatch]);
 
     useEffect(() => {
         switch (flow) {
@@ -72,6 +126,8 @@ export const EarnInANutshellModal = ({
                 exhaustive(flow);
         }
     }, [account.symbol, analytics, analyticsStep, flow]);
+
+    if (shouldSkip) return null;
 
     switch (flow) {
         case EarnFlow.Stake:

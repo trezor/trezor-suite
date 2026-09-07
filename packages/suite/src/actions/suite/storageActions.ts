@@ -52,6 +52,7 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import {
     type AccountsRootState,
     type BlockchainRootState,
+    type EarnOnboardingRootState,
     type FiatRatesRootState,
     type FormDraftRootState,
     type PhishingRootState,
@@ -61,6 +62,7 @@ import {
     type WalletSettingsRootState,
     selectAccounts,
     selectBlockchainState,
+    selectConfirmedEarnOpportunities,
     selectFormDraft,
     selectHistoricFiatRates,
     selectPhishing,
@@ -165,6 +167,26 @@ export const saveAccountReceiveThunk =
 
         return receiveAccount ? db.addItem('receive', receiveAccount, accountKey, true) : undefined;
     };
+
+type SaveEarnOnboardingThunkState = EarnOnboardingRootState;
+
+export const saveEarnOnboardingThunk =
+    (accountKey: AccountKey) =>
+    (_: Dispatch<UnknownAction>, getState: () => SaveEarnOnboardingThunkState) => {
+        if (!db.isAccessible()) return;
+
+        const confirmedOpportunities = selectConfirmedEarnOpportunities(getState(), accountKey);
+
+        return confirmedOpportunities
+            ? db.addItem('earnOnboarding', confirmedOpportunities, accountKey, true)
+            : undefined;
+    };
+
+const removeEarnOnboarding = (accountKey: AccountKey) => {
+    if (!db.isAccessible()) return Promise.resolve();
+
+    return db.removeItemByPK('earnOnboarding', accountKey);
+};
 
 const removeAccountDraft = (account: Account) => {
     if (!db.isAccessible()) return Promise.resolve();
@@ -360,6 +382,7 @@ export const removeAccountWithDependencies =
             removeAccount(account),
             removeAccountHistoricRates(account.key),
             removeAccountPhishing(account.key),
+            removeEarnOnboarding(account.key),
         ]);
 
 type ForgetDeviceThunkState = AccountsRootState &
@@ -490,6 +513,7 @@ export const savePhishingMetadataThunk =
 
 type RememberDeviceThunkState = AccountsRootState &
     CoinjoinRootState &
+    EarnOnboardingRootState &
     FiatRatesRootState &
     FormDraftRootState &
     ReceiveRootState &
@@ -526,6 +550,7 @@ export const rememberDeviceThunk =
                         dispatch(saveAccountDraftThunk(account)),
                         dispatch(saveCoinjoinAccountThunk(account.key)),
                         dispatch(saveAccountHistoricRatesThunk(account.key, historicRates)),
+                        dispatch(saveEarnOnboardingThunk(account.key)),
                     ],
                     FormDraftPrefixKeyValues.map(prefix =>
                         dispatch(saveAccountFormDraftThunk(prefix, account.key)),

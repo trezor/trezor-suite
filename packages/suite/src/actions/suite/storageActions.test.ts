@@ -36,6 +36,7 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import {
     accountsReducer,
     discoveryReducer,
+    earnOnboardingReducer,
     fiatRatesReducer,
     sendFormReducer,
     transactionsReducer,
@@ -147,6 +148,7 @@ type PartialState = Pick<
             | 'transactions'
             | 'graph'
             | 'fiat'
+            | 'earnOnboarding'
         >
     >;
 };
@@ -196,6 +198,10 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
         ),
         fiat: fiatRatesReducer(prevState?.wallet?.fiat, action || ({ type: 'foo' } as any)),
         graph: graphReducer(prevState?.wallet?.graph, action || ({ type: 'foo' } as any)),
+        earnOnboarding: earnOnboardingReducer(
+            prevState?.wallet?.earnOnboarding,
+            action || ({ type: 'foo' } as any),
+        ),
         formDrafts: {},
     },
 });

@@ -16,6 +16,7 @@ interface EarnProviderConsentModalLayoutProps {
     onCancel: () => void;
     account: Account;
     children?: ReactNode;
+    requiresAcknowledgement?: boolean;
 }
 
 export const EarnProviderConsentModalLayout = ({
@@ -27,6 +28,7 @@ export const EarnProviderConsentModalLayout = ({
     onCancel,
     account,
     children,
+    requiresAcknowledgement = true,
 }: EarnProviderConsentModalLayoutProps) => {
     const [hasAgreed, setHasAgreed] = useState(false);
     const selectedVotingDelegation = useSelector(state =>
@@ -52,7 +54,7 @@ export const EarnProviderConsentModalLayout = ({
             bottomContent={
                 <>
                     <Modal.Button
-                        isDisabled={!hasAgreed || !isDrepValid}
+                        isDisabled={(requiresAcknowledgement && !hasAgreed) || !isDrepValid}
                         onClick={onConfirm}
                         data-testid="@modal/staking/confirm-button"
                     >
@@ -64,21 +66,27 @@ export const EarnProviderConsentModalLayout = ({
                 </>
             }
         >
-            <Column gap={12} margin={{ top: 8, bottom: 20 }}>
-                {banners}
-            </Column>
+            {!!banners && (
+                <Column gap={12} margin={{ top: 8, bottom: 20 }}>
+                    {banners}
+                </Column>
+            )}
             <Column gap={12}>
                 {children}
-                <Card>
-                    <Checkbox
-                        data-testid="@staking/provider-acknowledge-checkbox"
-                        verticalAlignment="center"
-                        onChange={() => setHasAgreed(!hasAgreed)}
-                        isChecked={hasAgreed}
-                    >
-                        {consentText}
-                    </Checkbox>
-                </Card>
+                {requiresAcknowledgement ? (
+                    <Card>
+                        <Checkbox
+                            data-testid="@staking/provider-acknowledge-checkbox"
+                            verticalAlignment="center"
+                            onChange={() => setHasAgreed(!hasAgreed)}
+                            isChecked={hasAgreed}
+                        >
+                            {consentText}
+                        </Checkbox>
+                    </Card>
+                ) : (
+                    !!consentText && <Card>{consentText}</Card>
+                )}
             </Column>
         </Modal>
     );

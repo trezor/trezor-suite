@@ -29,6 +29,7 @@ export const UpdateEarnProviderConsentModal = ({
     const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.UpdateProvider,
         onCancel,
+        provider,
         includeVotingDelegation: true,
         account,
         networkSymbol: account.symbol,
