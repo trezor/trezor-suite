@@ -282,6 +282,7 @@ export const StellarInvokeContractArgs = Type.Object(
         contract_address: Type.String(),
         function_name: Type.String(),
         args: Type.Array(StellarSCVal),
+        asset_hint: Type.Optional(StellarAsset),
     },
     { $id: 'StellarInvokeContractArgs' },
 );

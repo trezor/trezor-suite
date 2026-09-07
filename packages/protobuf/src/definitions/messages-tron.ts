@@ -11,6 +11,8 @@ export enum TronRawContractType {
     FreezeBalanceV2Contract = 54,
     UnfreezeBalanceV2Contract = 55,
     WithdrawExpireUnfreezeContract = 56,
+    DelegateResourceContract = 57,
+    UnDelegateResourceContract = 58,
 }
 
 export type EnumTronRawContractType = Static<typeof EnumTronRawContractType>;
@@ -37,6 +39,19 @@ export type TronContractRequest = Static<typeof TronContractRequest>;
 export const TronContractRequest = Type.Record(Type.Never(), Type.Never(), {
     $id: 'TronContractRequest',
 });
+
+export type TronDelegateResourceContract = Static<typeof TronDelegateResourceContract>;
+export const TronDelegateResourceContract = Type.Object(
+    {
+        owner_address: Type.String(),
+        resource: Type.Optional(EnumTronResourceCode),
+        balance: Type.Number(),
+        receiver_address: Type.String(),
+        lock: Type.Optional(Type.Boolean()),
+        lock_period: Type.Optional(Type.Number()),
+    },
+    { $id: 'TronDelegateResourceContract' },
+);
 
 export type TronFreezeBalanceV2Contract = Static<typeof TronFreezeBalanceV2Contract>;
 export const TronFreezeBalanceV2Contract = Type.Object(
@@ -128,9 +143,21 @@ export const TronTriggerSmartContract = Type.Object(
     {
         owner_address: Type.String(),
         contract_address: Type.String(),
+        call_value: Type.Optional(Type.Number()),
         data: Type.String(),
     },
     { $id: 'TronTriggerSmartContract' },
+);
+
+export type TronUnDelegateResourceContract = Static<typeof TronUnDelegateResourceContract>;
+export const TronUnDelegateResourceContract = Type.Object(
+    {
+        owner_address: Type.String(),
+        resource: Type.Optional(EnumTronResourceCode),
+        balance: Type.Number(),
+        receiver_address: Type.String(),
+    },
+    { $id: 'TronUnDelegateResourceContract' },
 );
 
 export type TronUnfreezeBalanceV2Contract = Static<typeof TronUnfreezeBalanceV2Contract>;
