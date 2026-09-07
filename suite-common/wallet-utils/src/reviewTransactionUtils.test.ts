@@ -5,6 +5,7 @@ import {
     type Account,
     type FormState,
     type FormStateTrading,
+    type FormStateTradingSell,
     type GeneralPrecomposedTransaction,
     type GeneralPrecomposedTransactionFinal,
     type StakeFormState,
@@ -75,6 +76,23 @@ const buildTrading = (overrides: Partial<FormStateTrading> = {}): FormStateTradi
         amount: '0.97',
     },
     receiveAddress: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
+    ...overrides,
+});
+
+const buildSellTrading = (overrides: Partial<FormStateTradingSell> = {}): FormStateTradingSell => ({
+    activeSection: 'sell',
+    isSlip24Active: true,
+    recipientName: 'Banxa',
+    send: {
+        cryptoId: undefined,
+        accountKey: 'eth-account' as Account['key'],
+        symbol: ethSymbol,
+        amount: '1',
+    },
+    receive: {
+        amount: '2500',
+        fiatCurrency: 'USD',
+    },
     ...overrides,
 });
 
@@ -279,6 +297,50 @@ describe('isClearSignedWrappedNativeTransaction', () => {
 describe('constructTransactionReviewOutputs', () => {
     const account = buildEthereumAccount();
     const device = buildUpdatedDevice();
+
+    it('renders provider and fiat receive amount for a SLIP-24 sell', () => {
+        const trading = buildSellTrading();
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ trading }),
+            precomposedTx: buildPrecomposedTransaction({ to: '0x1234' }),
+        });
+
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                { type: 'recipient_name', value: 'Banxa' },
+                {
+                    type: 'traded_assets',
+                    value: '',
+                    value2: '',
+                    send: trading.send,
+                    receive: trading.receive,
+                    receiveAddress: undefined,
+                },
+            ]),
+        );
+    });
+
+    it('renders regular transaction outputs for a sell without SLIP-24', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                trading: buildSellTrading({ isSlip24Active: false }),
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: '0x1234' }),
+        });
+
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'recipient_name' }),
+                expect.objectContaining({ type: 'traded_assets' }),
+            ]),
+        );
+    });
 
     it('renders swap-specific outputs only for clear-signed exchange swap', () => {
         const outputs = constructTransactionReviewOutputs({

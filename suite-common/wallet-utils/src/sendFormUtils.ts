@@ -29,6 +29,7 @@ import type {
     FormState,
     FormStateTrading,
     FormStateTradingExchange,
+    FormStateTradingSell,
     GeneralPrecomposedTransactionFinal,
     Output,
     RbfTransactionParams,
@@ -668,7 +669,13 @@ export const getMevProtectedTxData = (
 
 export const isExchangeTradingForm = (
     form: FormStateTrading | undefined,
-): form is FormStateTradingExchange => form?.activeSection === 'exchange';
+): form is FormStateTradingExchange =>
+    form?.activeSection === 'exchange' && 'send' in form && 'receive' in form;
+
+export const isCompleteTradingForm = (
+    form: FormStateTrading | undefined,
+): form is FormStateTradingSell | FormStateTradingExchange =>
+    form !== undefined && 'send' in form && 'receive' in form;
 
 interface GetNetworkReserveProps {
     symbol: NetworkSymbol;

@@ -46,7 +46,7 @@ type FormStateTradingCommon = {
     isSlip24Active: boolean;
 };
 
-type FormStateTradingSell = {
+export type FormStateTradingSell = {
     activeSection: 'sell';
     receive: FormStateTradingFiatCurrency;
 } & FormStateTradingCommon;
