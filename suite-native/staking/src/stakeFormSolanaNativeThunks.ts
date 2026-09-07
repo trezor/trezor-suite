@@ -141,7 +141,7 @@ export const composeSolanaStakingTransactionFeeLevelsNativeThunk = createThunk<
 
         const resolved = await resolveSolanaStakingContext(getState(), accountKey);
         if (!resolved.success) {
-            return rejectWithValue({ error: resolved.error, message: resolved.message });
+            return rejectWithValue({ error: resolved.error });
         }
 
         const { account, blockchainUrl } = resolved;

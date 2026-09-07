@@ -6,4 +6,4 @@ export type SolanaAccount = Account & {
     symbol: SolanaNetworkSymbol;
 };
 
-export type SolanaStakingComposeRejectValue = { error: string; message?: string };
+export type SolanaStakingComposeRejectValue = { error: string };
