@@ -554,6 +554,8 @@ export const composeTransaction = async (api: TrezorConnect) => {
         utxo: [],
         feeLevels: [{ feePerUnit: '1' }],
         coin: 'btc',
+        // @ts-expect-error `push` is not a valid composeTransaction param
+        push: true,
     });
 
     if (precompose.success) {
