@@ -87,6 +87,14 @@ export const parsePsbt = ({
                     `parsePsbt: Invalid op_return_data at [${index}]`,
                 );
             }
+            if (BigInt(output.value) !== BigInt(0)) {
+                // Trezor forces OP_RETURN amount to 0; a non-zero value here would make the
+                // reported fee/totalSpent diverge from the transaction that gets signed.
+                throw TypedError(
+                    'Method_InvalidParameter',
+                    `parsePsbt: OP_RETURN output must have zero value at [${index}]`,
+                );
+            }
             outputs.push({
                 script_type: 'PAYTOOPRETURN',
                 amount: '0',
