@@ -125,7 +125,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 await page.clock.install();
                 await devicePrompt.sendButton.click();
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                    'TR_SELL_DETAIL_SENDING_TRANSACTION',
+                    'TR_TRADING_DETAIL_SENDING_TRANSACTION',
                 );
                 await expect(page.getByTestId('@toast/tx-sent')).toContainTranslation(
                     'TOAST_TX_SENT',

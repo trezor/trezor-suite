@@ -13,9 +13,8 @@ export class TransactionDetailSidebar {
     readonly receiveNetworkName: Locator;
     readonly receiveAmount: Locator;
     readonly cryptoAmounts: Locator;
-    readonly statusCard: Locator;
-    readonly providerInStatusCard: Locator;
-    readonly orderIdInStatusCard: Locator;
+    readonly provider: Locator;
+    readonly orderId: Locator;
 
     constructor(page: Page) {
         this.container = page.getByTestId('@trading/transaction/detail/sidebar');
@@ -34,10 +33,7 @@ export class TransactionDetailSidebar {
         );
         this.receiveAmount = this.receiveSection.getByTestId('@trading/form/info/crypto-amount');
         this.cryptoAmounts = this.container.getByTestId('@trading/form/info/crypto-amount');
-        this.statusCard = page.getByTestId('@trading/transaction/detail/status-card');
-        this.providerInStatusCard = this.statusCard.getByTestId('@trading/form/info/provider');
-        this.orderIdInStatusCard = this.statusCard.getByTestId(
-            '@trading/transaction/detail/order-id',
-        );
+        this.provider = this.container.getByTestId('@trading/form/info/provider');
+        this.orderId = this.container.getByTestId('@trading/transaction/detail/order-id');
     }
 }

@@ -30,6 +30,9 @@ const tradingSections = {
     },
 } as const satisfies Record<TradingType, TradingSection>;
 
+export const getTradingFormRoute = (tradeType: TradingType): TradingRoute =>
+    tradingSections[tradeType].form;
+
 const sections = Object.values(tradingSections);
 const topLevelRoutes: TradingRoute[] = [...sections.map(s => s.form), 'wallet-trading-concierge'];
 const detailRoutes: TradingRoute[] = sections.map(s => s.detail);

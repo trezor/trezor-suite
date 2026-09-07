@@ -3,7 +3,7 @@ import { fromGwei, localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { swapStatusFlow } from '../../fixtures/trading/statusFlow';
+import { dexSwapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -12,9 +12,6 @@ const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const accountLabel = 'Ethereum #1';
 const usdcCryptoId = getCryptoId('eth', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const usdcDecimals = 6;
-
-// A DEX swap broadcasts the swap itself, so there is no CONFIRMING deposit phase.
-const dexStatusFlow = swapStatusFlow.filter(phase => phase.status !== 'CONFIRMING');
 
 // Firmware strings on the DEX review pages.
 const deviceReview = {
@@ -263,7 +260,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 });
             });
 
-            for (const step of dexStatusFlow) {
+            for (const step of dexSwapStatusFlow) {
                 await test.step(`Wait for status change to ${step.status}`, async () => {
                     await tradingMockNew.advanceStatus(step.status);
                     await expect(tradingPage.transactionDetailStatus).toHaveTranslation(

@@ -1,6 +1,13 @@
 import { type SellTradeStatus } from 'invity-api';
 
-import { getSellDetailHeaderMessages } from './utils';
+import { type TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/utils';
+
+import {
+    type SellDetailStatusStep,
+    getSellDetailHeaderMessages,
+    getSellDetailProgress,
+    getSellDetailStatusStep,
+} from './utils';
 
 describe('getSellDetailHeaderMessages', () => {
     it.each<SellTradeStatus>([
@@ -25,4 +32,40 @@ describe('getSellDetailHeaderMessages', () => {
             });
         },
     );
+});
+
+describe('getSellDetailStatusStep', () => {
+    it.each<[SellTradeStatus, SellDetailStatusStep]>([
+        ['REQUESTING', 'pending'],
+        ['LOGIN_REQUEST', 'pending'],
+        ['SITE_ACTION_REQUEST', 'pending'],
+        ['SUBMITTED', 'pending'],
+        ['SEND_CRYPTO', 'pending'],
+        ['PENDING', 'pending'],
+        ['SUCCESS', 'success'],
+        ['ERROR', 'error'],
+        ['BLOCKED', 'error'],
+        ['CANCELLED', 'error'],
+        ['REFUNDED', 'error'],
+    ])('maps %s to the %s step', (tradeStatus, expected) => {
+        expect(getSellDetailStatusStep(tradeStatus)).toBe(expected);
+    });
+});
+
+describe('getSellDetailProgress', () => {
+    it.each<[SellTradeStatus, TradingDetailProgress]>([
+        ['REQUESTING', 'customerAction'],
+        ['LOGIN_REQUEST', 'customerAction'],
+        ['SITE_ACTION_REQUEST', 'customerAction'],
+        ['SUBMITTED', 'customerAction'],
+        ['SEND_CRYPTO', 'customerAction'],
+        ['PENDING', 'providerProcessing'],
+        ['SUCCESS', 'completed'],
+        ['ERROR', 'completed'],
+        ['BLOCKED', 'completed'],
+        ['CANCELLED', 'completed'],
+        ['REFUNDED', 'completed'],
+    ])('maps %s to %s', (tradeStatus, expected) => {
+        expect(getSellDetailProgress(tradeStatus)).toBe(expected);
+    });
 });
