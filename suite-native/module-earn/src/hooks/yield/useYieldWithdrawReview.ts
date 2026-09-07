@@ -25,7 +25,7 @@ import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
 import {
     pushYieldActionReviewThunk,
     signYieldActionReviewThunk,
-} from '../../thunks/yieldTransactionThunks';
+} from '../../thunks/yield/yieldTransactionThunks';
 import { getSelectedEvmFeeFromFormDraft } from '../../utils/yield/yieldSelectedFeeUtils';
 import { getYieldWithdrawFormDraftKey } from '../../utils/yield/yieldWithdrawUtils';
 import { useEarnTransactionReview } from '../earn/useEarnTransactionReview';

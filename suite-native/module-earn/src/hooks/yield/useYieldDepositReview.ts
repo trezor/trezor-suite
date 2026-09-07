@@ -20,7 +20,7 @@ import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
 import {
     pushYieldActionReviewThunk,
     signYieldActionReviewThunk,
-} from '../../thunks/yieldTransactionThunks';
+} from '../../thunks/yield/yieldTransactionThunks';
 import { useEarnTransactionReview } from '../earn/useEarnTransactionReview';
 
 type NavigationProps = StackNavigationProps<

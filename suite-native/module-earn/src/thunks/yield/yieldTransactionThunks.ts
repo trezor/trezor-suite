@@ -25,11 +25,11 @@ import {
 } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
 
-import { EARN_MODULE_PREFIX } from '../constants';
+import { EARN_MODULE_PREFIX } from '../../constants';
 import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
-} from '../utils/earn/deviceTransactionUtils';
+} from '../../utils/earn/deviceTransactionUtils';
 
 const YIELD_TRANSACTION_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/yield-transaction`;
 

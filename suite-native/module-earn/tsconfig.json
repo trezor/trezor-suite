@@ -85,7 +85,6 @@
         { "path": "../navigation" },
         { "path": "../scrollview" },
         { "path": "../settings" },
-        { "path": "../staking" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../tokens" },

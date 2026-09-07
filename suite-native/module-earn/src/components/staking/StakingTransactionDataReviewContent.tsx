@@ -3,8 +3,10 @@ import { useSelector } from 'react-redux';
 
 import {
     type AccountsRootState,
+    type StakeRootState,
     isSupportedSolStakingNetworkSymbol,
     selectAccountByKey,
+    selectClaimableAmountByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isDeviceReviewOnlyTransaction } from '@suite-common/wallet-utils';
@@ -18,10 +20,6 @@ import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { ScrollToEndOnMount } from '@suite-native/scrollview';
-import {
-    selectClaimableAmountByAccountKey,
-    useSelector as useNativeStakingSelector,
-} from '@suite-native/staking';
 import {
     TxValidityTimer,
     selectIsTransactionAlreadySigned,
@@ -100,7 +98,7 @@ export const StakingTransactionDataReviewContent = ({
 
     const isReadyToContinue = isTransactionAlreadySigned && !!account;
 
-    const claimableAmount = useNativeStakingSelector(state =>
+    const claimableAmount = useSelector((state: StakeRootState) =>
         stakeType === 'claim' ? selectClaimableAmountByAccountKey(state, accountKey) : undefined,
     );
 

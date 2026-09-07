@@ -31,7 +31,7 @@ import { useDebounce } from '@trezor/react-utils';
 import {
     getYieldAllowanceFormDraftKey,
     updateYieldAllowanceSelectedFeeLevelThunk,
-} from '../../thunks/yieldApprovalThunks';
+} from '../../thunks/yield/yieldApprovalThunks';
 import { type YieldAllowanceFormDraftTransactionType } from '../../types';
 import {
     buildYieldAllowanceFormState,

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type StakeRootState,
-    type TronStakeRootState,
     selectAccountNetworkSymbol,
     selectIsStakeConfirmingByAccountKey,
     selectIsStakePendingByAccountKey,
@@ -88,10 +87,10 @@ export const StakePendingCard = ({
             selectTotalStakePendingByAccountKey(state, accountKey),
         ) ?? null;
 
-    const isStakePending = useSelector((state: StakeRootState & TronStakeRootState) =>
+    const isStakePending = useSelector((state: StakeRootState) =>
         selectIsStakePendingByAccountKey(state, accountKey),
     );
-    const isStakeConfirming = useSelector((state: StakeRootState & TronStakeRootState) =>
+    const isStakeConfirming = useSelector((state: StakeRootState) =>
         selectIsStakeConfirmingByAccountKey(state, accountKey),
     );
 

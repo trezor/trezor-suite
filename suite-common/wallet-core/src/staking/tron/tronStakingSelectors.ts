@@ -2,6 +2,9 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/r
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
+import { type AccountsRootState } from '../../accounts/accountsReducer';
+import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
+import { getStakingDataForNetwork } from '../shared/stakingUtils';
 import { type StakeRootState } from '../stakingReducerTypes';
 import {
     type TronStakeRootState,
@@ -18,13 +21,8 @@ import {
     getTronWithdrawableBalance,
     isTronStakingActive,
 } from './tronStakingUtils';
-import { type AccountsRootState } from '../../accounts/accountsReducer';
-import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
-import { getStakingDataForNetwork } from '../shared/stakingUtils';
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<
-    StakeRootState & TronStakeRootState
->();
+const createMemoizedSelector = createWeakMapSelector.withTypes<StakeRootState>();
 
 export const selectVisibleDeviceTronAccountsWithStakingByNetworkSymbol = createMemoizedSelector(
     [selectDeviceAccounts, (_state, symbol: NetworkSymbol) => symbol],
@@ -92,9 +90,10 @@ export const selectTronPendingUnstakeBalanceByAccountKey = (
 
 export const selectTronVotesByAccountKey = (state: AccountsRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);
-    if (account?.networkType !== 'tron') return [];
 
-    return getTronVotes(account);
+    const votes = account?.networkType === 'tron' ? getTronVotes(account) : undefined;
+
+    return returnStableArrayIfEmpty(votes);
 };
 
 export const selectTronTotalVotingPowerByAccountKey = (

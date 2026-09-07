@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import {
     type StakeRootState,
-    type TronStakeRootState,
     isSupportedSolStakingNetworkSymbol,
     selectAccountByKey,
     selectAccountNetworkSymbol,
@@ -64,11 +63,11 @@ export const StakingManagementPendingStakeModal = ({
         selectAccountStakeTransactions(state, accountKey),
     );
 
-    const isStakeConfirming = useSelector((state: StakeRootState & TronStakeRootState) =>
+    const isStakeConfirming = useSelector((state: StakeRootState) =>
         selectIsStakeConfirmingByAccountKey(state, accountKey),
     );
 
-    const isStakePending = useSelector((state: StakeRootState & TronStakeRootState) =>
+    const isStakePending = useSelector((state: StakeRootState) =>
         selectIsStakePendingByAccountKey(state, accountKey),
     );
 

@@ -18,7 +18,6 @@ import {
     type RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { signStakeTransactionNativeThunk } from '@suite-native/staking';
 import {
     selectIsTransactionAlreadySigned,
     useTxValidityTimer,
@@ -27,6 +26,7 @@ import TrezorConnect from '@trezor/connect';
 
 import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
 import { useHandleEarnReviewError } from './useHandleEarnReviewError';
+import { signStakeTransactionThunk } from '../../thunks/staking/stakingThunks';
 import { type EarnFormDraftPrefix } from '../../types';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
@@ -67,7 +67,7 @@ export const useEarnTxValidityFlow = ({
 
         const trySign = () =>
             dispatch(
-                signStakeTransactionNativeThunk({
+                signStakeTransactionThunk({
                     accountKey,
                     stakeType,
                     precomposedTransaction: txToRetry,
