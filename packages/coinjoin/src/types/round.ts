@@ -46,6 +46,7 @@ export interface CoinjoinRoundShape {
     inputs: AliceShape[]; // list of registered inputs
     failed: AliceShape[]; // list of failed inputs
     phaseDeadline: number; // deadline is inaccurate, phase may change earlier
+    phaseStartLowerBound?: number; // safe lower bound (ms) for when the current phase started (see getSigningSendDeadline)
     roundDeadline: number; // deadline is inaccurate,round may end earlier
     commitmentData: string; // commitment data used for ownership proof and witness requests
     addresses: (AccountAddress & { accountKey: string })[]; // list of addresses (outputs) used in this round in outputRegistration phase
