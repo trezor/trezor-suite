@@ -519,7 +519,6 @@ export const sendTransaction = async (api: TrezorConnect) => {
 export const composePsbt = async (api: TrezorConnect) => {
     const precompose = await api.composePsbt({
         account: {
-            path: 'm/49',
             addresses: {
                 used: [],
                 unused: [],

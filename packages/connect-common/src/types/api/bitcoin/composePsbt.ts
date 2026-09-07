@@ -9,7 +9,8 @@ export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
 
 export type ComposePsbtParams = {
     account: {
-        path: string;
+        // composePsbt derives every path from the per-utxo / per-change-address entries,
+        // so no account-level `path` is needed (unlike composeTransaction).
         addresses: AccountAddresses;
         utxo: ComposeUtxo[];
     };
