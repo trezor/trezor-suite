@@ -6,6 +6,7 @@ export * from './accounts/accountsMiddleware';
 export * from './accounts/accountsReducer';
 export * from './accounts/accountsSelectors';
 export * from './accounts/accountsThunks';
+export * from './accounts/earnOnboarding';
 export * from './allowance/allowanceConstants';
 export * from './allowance/composeAllowanceTransactionThunk';
 export * from './allowance/fetchAllowance';

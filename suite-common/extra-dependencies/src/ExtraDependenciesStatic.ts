@@ -41,6 +41,7 @@ export type ExtraDependenciesStatic = {
         storageLoadBlockchain: StorageLoadReducer;
         storageLoadExplorer: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
+        storageLoadEarnOnboarding: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
         storageLoadPhishingMetadata: StorageLoadReducer;
         storageLoadHistoricRates: StorageLoadReducer;
