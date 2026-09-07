@@ -3,32 +3,19 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import { ICON_SIZES } from '@suite-native/icons';
 import { COLOR_TOKENS, nativeBorders } from '@trezor/theme';
 
-import {
-    OrderedListIcon as OrderedListIconComponent,
-    type OrderedListIconProps,
-} from '../../OrderedListIcon';
-import { HStack } from '../../Stack';
-import { Text } from '../../Text';
+import { IconSquare as IconSquareComponent, type IconSquareProps } from '../../Icon/IconSquare';
 
-type OrderedListIconStory = StoryObj<OrderedListIconProps>;
+type IconSquareStory = StoryObj<IconSquareProps>;
 
-const meta: Meta<OrderedListIconProps> = {
-    title: 'Atoms/Lists',
-    component: OrderedListIconComponent,
-    decorators: [
-        Story => (
-            <HStack spacing="sp12" alignItems="center">
-                <Story />
-                <Text variant="body-md">Text value</Text>
-            </HStack>
-        ),
-    ],
+const meta: Meta<IconSquareProps> = {
+    title: 'Atoms/Icons',
+    component: IconSquareComponent,
 };
 
 export default meta;
 
-export const OrderedListIcon: OrderedListIconStory = {
-    name: 'OrderedListIcon',
+export const IconSquare: IconSquareStory = {
+    name: 'IconSquare',
     args: {
         iconNumber: 1,
         iconBorderRadius: 'r12',

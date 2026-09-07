@@ -4,7 +4,7 @@ import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
-import { OrderedListIcon } from '../OrderedListIcon';
+import { IconSquare } from '../Icon/IconSquare';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 import { Card } from './Card';
@@ -62,7 +62,7 @@ const defaultItemIconProps = {
 } as const;
 
 const renderDefaultItemIcon = (index: number) => (
-    <OrderedListIcon iconNumber={index + 1} {...defaultItemIconProps} />
+    <IconSquare iconNumber={index + 1} {...defaultItemIconProps} />
 );
 
 interface TimelineDetailsCardItemComponentProps {

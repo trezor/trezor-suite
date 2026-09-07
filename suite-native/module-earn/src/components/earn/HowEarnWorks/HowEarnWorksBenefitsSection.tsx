@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { HStack, OrderedListIcon, Text, VStack } from '@suite-native/atoms';
+import { HStack, IconSquare, Text, VStack } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -40,7 +40,7 @@ export const HowEarnWorksBenefitsSection = ({ items }: HowEarnWorksBenefitsSecti
         <VStack spacing="sp16">
             {items.map(item => (
                 <HStack key={item.id} spacing="sp12" style={applyStyle(benefitRowStyle)}>
-                    <OrderedListIcon
+                    <IconSquare
                         iconName={item.icon}
                         iconSize="large"
                         iconColor="contentBrand"

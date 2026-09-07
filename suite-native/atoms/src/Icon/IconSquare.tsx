@@ -4,10 +4,10 @@ import { Icon, type IconName, type IconSize, getIconSize } from '@suite-native/i
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color, type NativeRadius } from '@trezor/theme';
 
-import { Box } from './Box';
-import { Text } from './Text';
+import { Box } from '../Box';
+import { Text } from '../Text';
 
-const iconBackgroundStyle = prepareNativeStyle<{
+const iconSquareStyle = prepareNativeStyle<{
     iconSize: number;
     backgroundColor: Color;
     borderColor: Color;
@@ -23,7 +23,7 @@ const iconBackgroundStyle = prepareNativeStyle<{
     borderColor: utils.colors[borderColor],
 }));
 
-export type OrderedListIconProps = RequireExactlyOne<
+export type IconSquareProps = RequireExactlyOne<
     {
         iconName: IconName;
         iconNumber: number;
@@ -36,7 +36,7 @@ export type OrderedListIconProps = RequireExactlyOne<
     'iconName' | 'iconNumber'
 >;
 
-export const OrderedListIcon = ({
+export const IconSquare = ({
     iconName,
     iconNumber,
     iconColor,
@@ -44,12 +44,12 @@ export const OrderedListIcon = ({
     iconBackgroundColor = 'elementFillNeutralSofter',
     iconBorderColor = 'elementBorderNeutralSofter',
     iconBorderRadius = 'r12',
-}: OrderedListIconProps) => {
+}: IconSquareProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Box
-            style={applyStyle(iconBackgroundStyle, {
+            style={applyStyle(iconSquareStyle, {
                 iconSize: getIconSize(iconSize),
                 backgroundColor: iconBackgroundColor,
                 borderColor: iconBorderColor,

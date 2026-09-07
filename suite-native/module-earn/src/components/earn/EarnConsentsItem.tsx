@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { HStack, OrderedListIcon, Text } from '@suite-native/atoms';
+import { HStack, IconSquare, Text } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
@@ -24,7 +24,7 @@ export const EarnConsentsItem = ({
 
     return (
         <HStack spacing="sp12" alignItems="center">
-            <OrderedListIcon
+            <IconSquare
                 iconName={iconName}
                 iconSize="large"
                 iconColor="contentInfo"

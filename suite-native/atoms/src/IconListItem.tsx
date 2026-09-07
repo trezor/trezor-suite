@@ -5,7 +5,7 @@ import { type IconName, type IconSize } from '@suite-native/icons';
 import { type Color, type NativeSpacing, type NativeTypographyStyle } from '@trezor/theme';
 
 import { Box } from './Box';
-import { OrderedListIcon } from './OrderedListIcon';
+import { IconSquare } from './Icon/IconSquare';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
@@ -85,7 +85,7 @@ export const IconListItem = ({
 
     return (
         <HStack spacing={spacing} alignItems={verticalAlign}>
-            <OrderedListIcon iconName={icon} iconSize={iconSize} {...iconColors} />
+            <IconSquare iconName={icon} iconSize={iconSize} {...iconColors} />
             <Box flexShrink={1}>{children}</Box>
         </HStack>
     );
