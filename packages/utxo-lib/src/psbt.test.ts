@@ -6,8 +6,9 @@ import { PSBT_FIXTURES } from './__fixtures__/psbt';
 const UNSIGNED_TX_KEY = Buffer.from([0x00]);
 const MAP_SEPARATOR = Buffer.from([0x00]);
 
+// Unsigned transaction (empty scriptSig) as required by BIP-174 for the PSBT global tx.
 const TX_HEX =
-    '0100000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000';
+    '0100000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000';
 
 function toVarSlice(buffer: Buffer) {
     const out = Buffer.allocUnsafe(varIntSize(buffer.length) + buffer.length);
