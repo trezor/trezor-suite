@@ -121,6 +121,7 @@ export const parsePsbt = ({
         bytes,
         inputs,
         outputs,
-        outputsPermutation: [],
+        // PSBT output order is fixed and preserved 1:1, so the permutation is the identity.
+        outputsPermutation: outputs.map((_, index) => index),
     };
 };
