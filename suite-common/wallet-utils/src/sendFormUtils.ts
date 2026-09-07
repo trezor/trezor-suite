@@ -441,7 +441,13 @@ export const getExternalComposeOutput = (
     if (!values || !Array.isArray(values.outputs) || !values.outputs[0]) return;
     const out = values.outputs[0];
     if (!out || typeof out !== 'object') return;
-    const { address, amount, token } = out;
+    const { address, amount, token, resolvedAddress } = out;
+
+    // A named input (e.g. ENS) keeps what the user typed on `address`, and the transaction has to
+    // carry the address it resolved to: that is what gets signed, what the device shows for the
+    // user to check the review against, and what identifies the recipient to everything else
+    // reading the composed output.
+    const recipient = resolvedAddress ?? address;
 
     const isMaxActive = typeof values.setMaxOutputId === 'number';
     if (!isMaxActive && !amount) return; // incomplete Output
@@ -452,10 +458,10 @@ export const getExternalComposeOutput = (
 
     let output: ExternalOutput;
     if (isMaxActive) {
-        if (address) {
+        if (recipient) {
             output = {
                 type: 'send-max',
-                address,
+                address: recipient,
                 amount: formattedAmount,
             };
         } else {
@@ -463,10 +469,10 @@ export const getExternalComposeOutput = (
                 type: 'send-max-noaddress',
             };
         }
-    } else if (address) {
+    } else if (recipient) {
         output = {
             type: 'payment',
-            address,
+            address: recipient,
             amount: formattedFallbackAmount || formattedAmount,
         };
     } else {

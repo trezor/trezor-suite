@@ -358,6 +358,62 @@ describe('sendForm utils', () => {
             output: { type: 'payment', address: 'A', amount: '1' },
             tokenInfo: EthAccount.tokens![0],
         });
+
+        // A named input composes to the address it resolved to. That address is what gets signed
+        // and what the device shows, so it has to be the one the review screen reads back.
+        const ENS_NAME = 'vitalik.eth';
+        const RESOLVED_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
+
+        expect(
+            getExternalComposeOutput(
+                {
+                    outputs: [
+                        {
+                            ...OUTPUT,
+                            address: ENS_NAME,
+                            resolvedAddress: RESOLVED_ADDRESS,
+                            amount: '1',
+                        },
+                    ],
+                },
+                EthAccount,
+                EthNetwork,
+            ),
+        ).toEqual({
+            decimals: 18,
+            output: {
+                type: 'payment',
+                address: RESOLVED_ADDRESS,
+                amount: '1000000000000000000',
+            },
+            tokenInfo: undefined,
+        });
+
+        expect(
+            getExternalComposeOutput(
+                {
+                    setMaxOutputId: 0,
+                    outputs: [
+                        {
+                            ...OUTPUT,
+                            address: ENS_NAME,
+                            resolvedAddress: RESOLVED_ADDRESS,
+                            amount: '1',
+                        },
+                    ],
+                },
+                EthAccount,
+                EthNetwork,
+            ),
+        ).toEqual({
+            decimals: 18,
+            output: {
+                type: 'send-max',
+                address: RESOLVED_ADDRESS,
+                amount: '1000000000000000000',
+            },
+            tokenInfo: undefined,
+        });
     });
 
     it('calculateTotalGasCost', () => {
