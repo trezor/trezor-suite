@@ -418,9 +418,9 @@ export const onCoinjoinRoundChangedThunk =
                         session?.isAutoStopEnabled,
                 );
 
-                accountsWithAutostop.forEach(({ account: { key } }) => {
-                    dispatch(stopCoinjoinSessionThunk(key));
-                });
+                for (const { account } of accountsWithAutostop) {
+                    await dispatch(stopCoinjoinSessionThunk(account.key));
+                }
             } else if (
                 round.phase > RoundPhase.InputRegistration &&
                 !dispatch(hasCriticalPhaseModalThunk())

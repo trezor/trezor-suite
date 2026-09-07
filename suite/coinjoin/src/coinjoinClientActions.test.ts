@@ -416,7 +416,7 @@ describe('coinjoinClientActions', () => {
 
         await store.dispatch(initCoinjoinServiceThunk(btcSymbol));
 
-        store.dispatch(stopCoinjoinSessionThunk(accountAKey));
+        await store.dispatch(stopCoinjoinSessionThunk(accountAKey));
     });
 
     it('stopCoinjoinSessionThunk with error from Trezor', async () => {
@@ -437,7 +437,7 @@ describe('coinjoinClientActions', () => {
 
         await store.dispatch(initCoinjoinServiceThunk(btcSymbol));
 
-        store.dispatch(stopCoinjoinSessionThunk(accountAKey));
+        await store.dispatch(stopCoinjoinSessionThunk(accountAKey));
 
         expect(TrezorConnect.cancelCoinjoinAuthorization).toHaveBeenCalledTimes(1);
     });
@@ -480,7 +480,7 @@ describe('coinjoinClientActions', () => {
 
         await store.dispatch(initCoinjoinServiceThunk(btcSymbol));
 
-        store.dispatch(stopCoinjoinSessionThunk(accountAKey));
+        await store.dispatch(stopCoinjoinSessionThunk(accountAKey));
 
         expect(TrezorConnect.cancelCoinjoinAuthorization).toHaveBeenCalledTimes(0);
     });
