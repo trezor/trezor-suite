@@ -163,6 +163,16 @@ jobs:
         run: yarn requirements:verify
       - name: Check Files for Correct Formatting
         run: yarn format:verify
+      - name: Collect Markdown link inputs
+        # Start with repository instructions and skills; exclude dependencies and generated files.
+        run: |
+          git ls-files -- 'AGENTS.md' 'AGENTS.override.md' '**/AGENTS.md' '**/AGENTS.override.md' 'skills/*.md' '**/skills/*.md' > "$RUNNER_TEMP/markdown-link-inputs.txt"
+      - name: Lint Markdown links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          lycheeVersion: v0.24.2
+          args: --offline --no-progress --root-dir '${{ github.workspace }}' --files-from '${{ runner.temp }}/markdown-link-inputs.txt'
+          output: ${{ runner.temp }}/markdown-links.md
       - name: Verify TS Project References
         run: yarn verify-project-references
       - name: Detect unused dependencies

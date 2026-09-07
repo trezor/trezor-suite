@@ -1,7 +1,7 @@
 # Test Tagging and Playwright Project Selection
 
 > **When to use**: When writing new E2E tests or editing old ones to ensure they run on the intended configurations (device models, platforms, execution contexts). Tags are how tests select which projects execute them.
-> **Prerequisites**: [./device-fixture.md](device-fixture.md) for device model understanding and basic E2E test structure knowledge.
+> **Prerequisites**: [Suite base fixture](../support/testExtends/suiteBaseFixture.ts) for device setup and basic E2E test structure knowledge.
 
 ## Tag Categories
 
