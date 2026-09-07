@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { updateTxsFiatRatesThunk } from './fiatRatesThunks';
+import { pruneHistoricFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
 
 jest.mock('@suite-common/fiat-services', () => ({
@@ -31,11 +31,15 @@ const ethAccount = {
     ],
 } as unknown as Account;
 
+// Historic rates are keyed by the transaction's block time rounded down to the whole hour.
+const HOUR = 1700002800;
+const NEXT_HOUR = HOUR + 3600;
+
 const tokenTransaction = (contract: TokenAddress): WalletAccountTransaction =>
     ({
         txid: `tx-${contract}`,
         symbol: 'eth',
-        blockTime: 1700002800,
+        blockTime: HOUR,
         tokens: [{ contract, standard: 'ERC20', amount: '1000000', decimals: 6 }],
     }) as unknown as WalletAccountTransaction;
 
@@ -88,5 +92,70 @@ describe('updateTxsFiatRatesThunk', () => {
 
         expect(tokenAddresses).toContain(USDT_CONTRACT);
         expect(tokenAddresses).not.toContain(VAULT_CONTRACT);
+    });
+});
+
+const USDT_RATE_KEY = `eth-${USDT_CONTRACT}-usd`;
+
+const btcTransaction = {
+    txid: 'btc-tx',
+    symbol: 'btc',
+    blockTime: HOUR,
+    tokens: [],
+} as unknown as WalletAccountTransaction;
+
+const initPruneStore = ({
+    transactions,
+    historic,
+}: {
+    transactions: Record<string, Array<WalletAccountTransaction | null>>;
+    historic: Record<string, Record<number, number>>;
+}) =>
+    createTestStore({
+        extra: undefined,
+        preloadedState: {
+            wallet: {
+                fiat: { current: {}, lastWeek: {}, historic },
+                transactions: { transactions },
+            },
+        },
+    });
+
+describe('pruneHistoricFiatRatesThunk', () => {
+    it('keeps token rates of a referenced transaction', async () => {
+        const store = initPruneStore({
+            transactions: { 'acc-a': [tokenTransaction(USDT_CONTRACT)] },
+            historic: {
+                'eth-usd': { [HOUR]: 3000 },
+                [USDT_RATE_KEY]: { [HOUR]: 1 },
+                'btc-usd': { [HOUR]: 50000 },
+            },
+        });
+
+        const { payload } = await store.dispatch(pruneHistoricFiatRatesThunk());
+
+        expect(payload).toEqual({ 'eth-usd': { [HOUR]: 3000 }, [USDT_RATE_KEY]: { [HOUR]: 1 } });
+    });
+
+    it('returns nothing when every rate is still referenced', async () => {
+        const store = initPruneStore({
+            transactions: { 'acc-a': [btcTransaction] },
+            historic: { 'btc-usd': { [HOUR]: 50000 } },
+        });
+
+        const { payload } = await store.dispatch(pruneHistoricFiatRatesThunk());
+
+        expect(payload).toBeUndefined();
+    });
+
+    it('drops unreferenced rates, ignoring empty slots in a paginated transaction list', async () => {
+        const store = initPruneStore({
+            transactions: { 'acc-a': [null, btcTransaction, null] },
+            historic: { 'btc-usd': { [HOUR]: 50000, [NEXT_HOUR]: 51000 } },
+        });
+
+        const { payload } = await store.dispatch(pruneHistoricFiatRatesThunk());
+
+        expect(payload).toEqual({ 'btc-usd': { [HOUR]: 50000 } });
     });
 });
