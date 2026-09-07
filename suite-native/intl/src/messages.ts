@@ -1020,7 +1020,7 @@ export const messages = {
             qrCodeCopiedToClipboard: 'QR code copied to clipboard.',
             photoPermissionDenied: {
                 title: 'Photo access denied',
-                description: 'Enable photo access in your device settings to save QR codes.',
+                description: 'Allow photo access in settings to save QR codes.',
                 openSettings: 'Open settings',
             },
         },
@@ -2558,7 +2558,7 @@ export const messages = {
             accountActivationFee: 'Activation fee',
             accountActivationFeeTitle: 'Activation fee',
             accountActivationFeeDescription:
-                'New TRON accounts require a one-time 1 {networkDisplaySymbol} network fee to activate.',
+                'New {networkName} accounts require a one-time 1 {networkDisplaySymbol} network fee to activate.',
         },
         fees: {
             recipient: {
@@ -2690,11 +2690,11 @@ export const messages = {
         promoStakeBanner: {
             eth: {
                 title: 'Earn up to {apy}% on your ETH',
-                description: 'Stake ETH for network rewards, or deposit it in a yield vault.',
+                description: 'Stake {symbol} for network rewards, or deposit it in a yield vault.',
             },
             sol: {
                 title: 'Earn ~{apy}% APY by staking your SOL',
-                description: 'Put your SOL to work. Stake now to earn rewards.',
+                description: 'Put your {symbol} to work. Stake now to earn rewards.',
             },
             exploreButton: 'Explore',
         },
@@ -2711,9 +2711,9 @@ export const messages = {
             cardanoDesktopOnlyBanner:
                 'Staking {symbol} can only be managed in Trezor Suite on desktop.',
             cardanoAutoStakedBadge: 'Auto-staked',
-            cardanoLearnMoreLink: 'learn more',
+            cardanoLearnMoreLink: 'Learn more',
             cardanoNotEarningBanner: {
-                title: 'Your Cardano is no longer earning',
+                title: 'Your Cardano is no longer earning rewards',
                 description:
                     'Use Trezor Suite on desktop to switch your provider and start earning again.',
                 button: 'Learn more',
@@ -2724,11 +2724,11 @@ export const messages = {
                     "Your full balance is delegated to a pool that isn't managed in Trezor Suite.",
             },
             cardanoAutoStakedModal: {
-                title: 'Your whole balance earns',
+                title: 'Your whole balance earns rewards',
                 delegationDescription:
                     'On Cardano you delegate your entire balance, not a set amount. Everything in this account earns rewards automatically, including {symbol} you receive later.',
                 accessibilityDescription:
-                    'Nothing gets locked. You can send or spend at any time and your stake adjusts on its own.',
+                    'Nothing gets locked. You can send or spend at any time and your stake adjusts automatically.',
             },
             unstakeButton: 'Unstake',
             stakeButton: 'Stake',
@@ -2738,7 +2738,7 @@ export const messages = {
             instantUnstakeBanner: {
                 title: '{amount} {symbol} unstaked instantly',
                 descriptionWithDays:
-                    "You've received {amount} {symbol} instantly. The remaining is paid out within {days, plural, one {# day} other {# days}}.",
+                    "You've received {amount} {symbol} instantly. The remainder is paid out within {days, plural, one {# day} other {# days}}.",
                 descriptionWithoutDays: "You've received {amount} {symbol} instantly.",
             },
             outsideStakingBanner: {
@@ -2780,7 +2780,7 @@ export const messages = {
                 sol: {
                     stepWarmUpPeriod:
                         'Warm-up period (~{days, plural, one {# day} other {# days}})',
-                    stepStakedReceivingRewards: 'Staked & receiving rewards',
+                    stepStakedReceivingRewards: 'Staked & earning rewards',
                     stepCoolDownPeriod:
                         'Cool-down period (~{days, plural, one {# day} other {# days}})',
                     stepUnstakedReadyToClaim: 'Unstaked and ready to claim',
@@ -2894,7 +2894,7 @@ export const messages = {
             signTransactionFailedAlert: {
                 title: 'Transaction was not signed',
                 description: 'Your account balance may have changed. Review and try again.',
-                primaryButton: 'Go to Dashboard',
+                primaryButton: 'Try again',
             },
             successMessage: 'You’re all set',
         },
@@ -2920,7 +2920,7 @@ export const messages = {
             signTransactionFailedAlert: {
                 title: 'Transaction was not signed',
                 description: 'Your account balance may have changed. Review and try again.',
-                primaryButton: 'Go to Dashboard',
+                primaryButton: 'Try again',
             },
             successMessage: "You're all set",
         },
@@ -2931,7 +2931,7 @@ export const messages = {
         },
         earnStakeOutputItem: {
             title: 'Stake',
-            description: 'Stake {displaySymbol} on Everstake?',
+            description: 'Stake {displaySymbol}?',
         },
         earnSummaryOutputItem: {
             title: 'Total including fee',
@@ -2982,7 +2982,7 @@ export const messages = {
                 invalidUnstakeAmountHigherOnly:
                     "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher}{higherFiat}.",
                 insufficientBalance: 'Insufficient staked balance to unstake this amount.',
-                tooManyDecimals: 'Too many decimals places.',
+                tooManyDecimals: 'Too many decimal places.',
                 amountBelowMin: 'The minimum amount to unstake is {minAmount} {networkSymbol}.',
             },
         },
@@ -3037,12 +3037,12 @@ export const messages = {
             enableNetworkModal: {
                 title: 'Enable {networkName} to start staking',
                 subtitle:
-                    'Grow your crypto by locking it to help secure the {networkName} network—and earn rewards in return.',
+                    'Stake your crypto to help secure the {networkName} network and earn rewards in return.',
                 cta: 'Enable {networkName}',
                 defiYield: {
-                    title: 'Enable {networkName} to use DeFi Yield',
+                    title: 'Enable {networkName} to start earning yield',
                     subtitle:
-                        'Add the {networkName} network to deposit eligible assets and earn yield.',
+                        'Put your assets to work on the {networkName} network—deposit them into a vault and earn yield.',
                     cta: 'Enable {networkName}',
                 },
                 stablecoinYield: {
@@ -3219,8 +3219,8 @@ export const messages = {
                     description: 'Instantly',
                 },
             },
-            title: 'How stablecoin yield works',
-            subtitle: 'Put your stablecoins to work and earn rewards.',
+            title: 'How DeFi Yield works',
+            subtitle: 'Put your assets to work and earn rewards.',
         },
         yieldConsentsScreen: {
             title: 'Before you continue',
@@ -3320,7 +3320,7 @@ export const messages = {
             title: 'Revoke {tokenSymbol} spending',
             subtitle: 'Revoke this provider’s access to spend your {tokenSymbol}.',
             lowLimitInfoAlert:
-                'The spending limit too low. Revoke the current spending limit and approve a higher amount.',
+                'The spending limit is too low. Revoke the current spending limit and approve a higher amount.',
             account: 'Account',
             provider: 'Provider',
             limit: 'Limit',
@@ -3379,28 +3379,28 @@ export const messages = {
             },
         },
         yieldDepositApprovalReviewScreen: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Approve',
             successMessage: "You're all set",
         },
         yieldDepositRevokeReviewScreen: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Revoke',
             successMessage: 'Revoke approval transaction signed',
         },
         yieldDepositReviewScreen: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Deposit',
             successMessage: "You're all set",
         },
         yieldWithdrawReviewScreen: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Withdraw',
             redeemSubmitButton: 'Redeem',
             successMessage: "You're all set.",
         },
         yieldClaimReviewScreen: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Claim now',
             successMessage: "You're all set.",
         },
@@ -3524,14 +3524,14 @@ export const messages = {
                         description: 'Review the transaction and sign it again.',
                     },
                     pushTransactionFailed: {
-                        title: 'Revoke approval transaction not broadcast',
+                        title: 'Revoke approval was not submitted',
                         description:
-                            "The revoke transaction was signed but couldn't be broadcast to the network.",
+                            'The revoke approval transaction was signed but could not be submitted to the network.',
                     },
                     pendingTransactionConflict: {
-                        title: 'Revoke approval transaction not broadcast',
+                        title: 'Revoke approval was not submitted',
                         description:
-                            'A revoke approval transaction is already pending for this account. Wait for it to finish, then try again.',
+                            'A revoke approval transaction is already pending for this account. Wait for it to finish before trying again.',
                     },
                 },
                 deposit: {
@@ -3556,7 +3556,7 @@ export const messages = {
                         description: 'Review the transaction and sign it again.',
                     },
                     pushTransactionFailed: {
-                        title: 'Withdrawal not submitted',
+                        title: 'Withdrawal was not submitted',
                         description:
                             'The withdrawal transaction was signed but could not be sent to the network.',
                     },
@@ -3608,7 +3608,7 @@ export const messages = {
         rewardsPerEpoch: 'Next estimated reward',
         rate: 'Rate',
         apy: 'Annual Percentage Yield',
-        apr: 'Annual Percentage Return',
+        apr: 'Annual Percentage Rate',
         apyAbbr: 'APY',
         apyValueWithLabel: '{value} APY',
         aprAbbr: 'APR',
@@ -3697,7 +3697,7 @@ export const messages = {
             signTransactionFailedAlert: {
                 title: 'Transaction was not signed',
                 description: 'Your account balance may have changed. Review and try again.',
-                primaryButton: 'Go to Dashboard',
+                primaryButton: 'Try again',
             },
             successMessage: "You're all set",
         },
@@ -3775,8 +3775,8 @@ export const messages = {
             noProviders: 'No offers available.',
         },
         kyc: {
-            noRefund: 'KYC is only required in exceptional cases. It may be needed for refunds.',
-            yesRefund: "KYC is only required in exceptional cases. It's not needed for refunds.",
+            noRefund: 'KYC may be required in exceptional cases.',
+            yesRefund: 'KYC may be required in exceptional cases.',
             kycRequired: 'KYC is required.',
         },
         tradingScreen: {
@@ -3911,8 +3911,7 @@ export const messages = {
                     title: 'Account not found',
                 },
                 networkNotEnabled: {
-                    noAccountDescription:
-                        'It seems that you don’t have any account matching selected asset.',
+                    noAccountDescription: 'No accounts match the selected asset.',
                     title: 'Account not found',
                     description: 'No account found for selected asset.',
                 },
@@ -3996,7 +3995,7 @@ export const messages = {
         tradingSellPreviewScreen: {
             headerTitle: 'Continue your sell on {companyName}',
             subtitle:
-                'Complete all the steps on the {companyName} website, then come back here to confirm the transaction on your Trezor.',
+                'Complete all the steps on the {companyName} website, then return to confirm the transaction on your Trezor.',
             sellVia: 'Sell with {companyName}',
             youPay: 'You pay',
             youGet: 'You get',
@@ -4072,7 +4071,7 @@ export const messages = {
             pending: 'Pending',
             error: 'Failed to confirm transaction. Try again.',
             date: 'Date',
-            transactionId: 'Transaction id',
+            transactionId: 'Transaction ID',
             exploreInBlockchain: 'Explore on blockchain',
             approvalPendingAlert:
                 'Your approval is still processing. When confirmed, you’ll be able to use this approval with the same provider.',
@@ -4182,8 +4181,7 @@ export const messages = {
                 },
                 paymentInterruptionBanner: {
                     title: "Left the provider's website before paying?",
-                    description:
-                        "No worries – you haven't been charged. Just go back and create a new trade.",
+                    description: "You haven't been charged. Go back and create a new trade.",
                 },
                 statusStepper: {
                     estimatedTime: 'Estimated time',
@@ -4219,7 +4217,7 @@ export const messages = {
                             processingTitle: '{providerName} is processing your sell',
                             completedTitle: '{providerName} has processed your sell',
                             description:
-                                'Your rate is locked—you’ll get exactly what you see. Once your sell is processed, {providerName} will send the funds to your account. You can check your account to see if they’ve arrived.',
+                                'Your rate is locked, so you’ll get exactly what you see. Once your sell is processed, {providerName} will send the funds to your account. Check your account to see if they’ve arrived.',
                         },
                         exchange: {
                             pendingTitle: '{providerName} will process your swap',
@@ -4262,14 +4260,14 @@ export const messages = {
                         failed: {
                             title: 'Sell failed',
                             description:
-                                'Your transaction failed or was rejected. Funds are in your account.',
+                                'Your transaction failed or was rejected. The funds are in your account.',
                         },
                     },
                     exchange: {
                         processing: {
                             title: 'Your swap is being processed',
                             description:
-                                'You can leave this screen. View your swap status anytime in trade history.',
+                                'You can leave this screen. Check swap status anytime in trade history.',
                         },
                         completed: {
                             title: 'Swap complete',
@@ -4282,7 +4280,7 @@ export const messages = {
                                 'The provider has marked this transaction as “suspicious” and you may be required to complete their KYC process to finish the trade. Contact {providerName}’s support to proceed.',
                         },
                         returned: {
-                            title: 'Your swap returned',
+                            title: 'Swap returned',
                             description:
                                 'Your funds have been returned to your account. Reach out to {providerName}’s support if you have any issues.',
                         },
