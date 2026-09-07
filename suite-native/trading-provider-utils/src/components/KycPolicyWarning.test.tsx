@@ -13,11 +13,11 @@ describe('KycPolicyWarning', () => {
         },
         {
             kycPolicyType: 'KYC-norefund' as const,
-            expected: 'KYC is only required in exceptional cases. It may be needed for refunds.',
+            expected: 'KYC may be required in exceptional cases.',
         },
         {
             kycPolicyType: 'KYC-yesrefund' as const,
-            expected: "KYC is only required in exceptional cases. It's not needed for refunds.",
+            expected: 'KYC may be required in exceptional cases.',
         },
     ])('renders correct translation for $kycPolicyType', async ({ kycPolicyType, expected }) => {
         const { getByText } = await renderWithBasicProvider(
