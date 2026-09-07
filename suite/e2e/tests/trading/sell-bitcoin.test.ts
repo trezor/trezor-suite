@@ -26,16 +26,16 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
             settingsPage,
             walletPage,
             tradingPage,
-            tradingMockNew,
+            tradingMock,
         }) => {
-            tradingMockNew.setTradeFlow('sell');
-            await tradingMockNew.rewriteProviderRedirect();
-            await tradingMockNew.setWatchFields({
+            tradingMock.setTradeFlow('sell');
+            await tradingMock.rewriteProviderRedirect();
+            await tradingMock.setWatchFields({
                 destinationAddress: depositAddress,
                 destinationPaymentExtraId: depositPaymentExtraId,
             });
-            await tradingMockNew.setStatus('SEND_CRYPTO');
-            const btcBackend = await tradingMockNew.startBackend('btc');
+            await tradingMock.setStatus('SEND_CRYPTO');
+            const btcBackend = await tradingMock.startBackend('btc');
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
@@ -53,7 +53,7 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
         page,
         device,
         devicePrompt,
-        tradingMockNew,
+        tradingMock,
         tradingResponses,
     }) => {
         await test.step('Fill in a sell request', async () => {
@@ -166,7 +166,7 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         for (const phase of sellStatusFlow) {
             await test.step(`Wait for status change to ${phase.status}`, async () => {
-                await tradingMockNew.advanceStatus(phase.status);
+                await tradingMock.advanceStatus(phase.status);
                 const values = phase.translationValues?.(providerName);
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                     phase.translationKey,

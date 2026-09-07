@@ -10,10 +10,10 @@ const formattedCryptoAmount = `${localizeNumber(cryptoAmount)} JUP`;
 const jupiterCryptoId = 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' as CryptoId;
 
 test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ onboardingPage, settingsPage, walletPage, tradingMockNew }) => {
-        tradingMockNew.setTradeFlow('buy');
-        await tradingMockNew.rewriteProviderRedirect();
-        await tradingMockNew.setStatus('SUBMITTED');
+    test.beforeEach(async ({ onboardingPage, settingsPage, walletPage, tradingMock }) => {
+        tradingMock.setTradeFlow('buy');
+        await tradingMock.rewriteProviderRedirect();
+        await tradingMock.setStatus('SUBMITTED');
 
         await onboardingPage.completeOnboarding();
 
@@ -26,7 +26,7 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
     test('Buy Solana Jupiter token - amount specified in crypto', async ({
         page,
         tradingPage,
-        tradingMockNew,
+        tradingMock,
         tradingResponses,
     }) => {
         let fiatAmount: string;
@@ -80,7 +80,7 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
                 'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',
             );
 
-            await tradingMockNew.advanceStatus('SUCCESS');
+            await tradingMock.advanceStatus('SUCCESS');
 
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                 'TR_BUY_DETAIL_SUCCESS_TITLE',
