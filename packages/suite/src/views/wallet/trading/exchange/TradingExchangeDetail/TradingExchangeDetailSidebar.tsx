@@ -75,7 +75,7 @@ export const TradingExchangeDetailSidebar = ({
                     />
                 </TradingDetailSidebarSection>
 
-                <Divider margin={{ top: 0, bottom: 0 }} />
+                <Divider margin={0} />
 
                 <TradingDetailSidebarSection>
                     <TradingDetailAssetRow
@@ -90,7 +90,7 @@ export const TradingExchangeDetailSidebar = ({
                     />
                 </TradingDetailSidebarSection>
 
-                <Divider margin={{ top: 0, bottom: 0 }} />
+                <Divider margin={0} />
 
                 <TradingDetailSidebarSection>
                     <TradingDetailTradeInfo

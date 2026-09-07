@@ -64,7 +64,11 @@ export const TradingDetailProcessingStep = ({
         >
             <Column gap={12} alignItems="flex-start">
                 {children}
-                <TradingDetailProviderStatusLink provider={provider} trade={trade} />
+                <TradingDetailProviderStatusLink
+                    provider={provider}
+                    trade={trade}
+                    priority={state === 'active' ? 'primary' : 'secondary'}
+                />
             </Column>
         </TradingDetailStep>
     );

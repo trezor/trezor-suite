@@ -55,8 +55,6 @@ export const TradingDetailSendingStep = ({
             doneContent={
                 hasTxId ? (
                     <TradingDetailTxId
-                        intent="neutral"
-                        priority="secondary"
                         value={txId}
                         account={account}
                         receiveAccountKey={receiveAccountKey}
