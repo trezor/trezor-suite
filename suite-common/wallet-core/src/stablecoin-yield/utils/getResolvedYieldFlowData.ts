@@ -193,19 +193,12 @@ export const getResolvedYieldFlowData = ({
         token: vault.outputToken,
     });
 
-    const matchedTokenContract = matchedToken
-        ? getContractAddressForNetworkSymbol(account.symbol, matchedToken.contract)
-        : null;
-    const matchedReceiptTokenContract = matchedReceiptToken
-        ? getContractAddressForNetworkSymbol(account.symbol, matchedReceiptToken.contract)
-        : null;
-
     const token: YieldFlowToken = {
         networkSymbol: account.symbol,
         symbol:
             matchedToken?.symbol ?? vault.token.symbol ?? getNetworkDisplaySymbol(account.symbol),
         decimals: matchedToken?.decimals ?? vault.token.decimals,
-        contractAddress: matchedTokenContract ?? underlyingTokenContract,
+        contractAddress: matchedToken?.contract ?? underlyingTokenContract,
         coingeckoId: vault.token.coinGeckoId,
         balance: matchedToken?.balance ?? '0',
     };
@@ -214,7 +207,7 @@ export const getResolvedYieldFlowData = ({
         networkSymbol: account.symbol,
         symbol: matchedReceiptToken?.symbol ?? vault.outputToken.symbol,
         decimals: matchedReceiptToken?.decimals ?? vault.outputToken.decimals,
-        contractAddress: matchedReceiptTokenContract ?? receiptTokenContract,
+        contractAddress: matchedReceiptToken?.contract ?? receiptTokenContract,
         coingeckoId: vault.outputToken.coinGeckoId ?? vault.token.coinGeckoId,
     };
 
