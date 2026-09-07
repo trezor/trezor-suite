@@ -47,7 +47,3 @@ const globalSendReceiveFiltersSlice = createSlice({
 export const globalSendReceiveFiltersActions = globalSendReceiveFiltersSlice.actions;
 export const globalSendReceiveFiltersReducer = globalSendReceiveFiltersSlice.reducer;
 export const globalSendReceiveFiltersSelectors = globalSendReceiveFiltersSlice.selectors;
-
-export type GlobalSendReceiveAction = ReturnType<
-    (typeof globalSendReceiveFiltersActions)[keyof typeof globalSendReceiveFiltersActions]
->;
