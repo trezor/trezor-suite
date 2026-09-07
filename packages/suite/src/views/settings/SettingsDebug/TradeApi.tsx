@@ -1,6 +1,6 @@
 import { selectTradeServerEnvironment, suiteSettingsActions } from '@suite/settings';
 import { useDispatch } from '@suite-common/redux-utils';
-import { type TradeServerEnvironment, tradeApi } from '@suite-common/trading';
+import { type TradeServerEnvironment, tradeApi, tradingActions } from '@suite-common/trading';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -21,6 +21,7 @@ export const TradeApi = () => {
         dispatch(suiteSettingsActions.setDebugMode({ tradeServerEnvironment: item.value }));
         tradeApi.setServersEnvironment(item.value);
         tradeApi.resetCurrentAccount();
+        dispatch(tradingActions.invalidateCatalog());
     };
 
     return (
