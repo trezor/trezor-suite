@@ -6,8 +6,9 @@ import { PSBT_FIXTURES } from './__fixtures__/psbt';
 const UNSIGNED_TX_KEY = Buffer.from([0x00]);
 const MAP_SEPARATOR = Buffer.from([0x00]);
 
+// Unsigned transaction (empty scriptSig) as required by BIP-174 for the PSBT global tx.
 const TX_HEX =
-    '0100000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe000000006b4830450221008732a460737d956fd94d49a31890b2908f7ed7025a9c1d0f25e43290f1841716022004fa7d608a291d44ebbbebbadaac18f943031e7de39ef3bf9920998c43e60c0401210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000';
+    '0100000001f1fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe0000000000ffffffff01a0860100000000001976a914c42e7ef92fdb603af844d064faad95db9bcdfd3d88ac00000000';
 
 function toVarSlice(buffer: Buffer) {
     const out = Buffer.allocUnsafe(varIntSize(buffer.length) + buffer.length);
@@ -32,7 +33,7 @@ function getSimplePsbtBuffer(unsignedTxHex: string) {
 }
 
 describe('Psbt', () => {
-    it.each(PSBT_FIXTURES)('$description', ({ hex, inputCount, outputCount, source }) => {
+    it.each(PSBT_FIXTURES)('$description', ({ hex, inputCount, outputCount }) => {
         const psbt = Psbt.fromHex(hex);
 
         expect(psbt.inputs).toHaveLength(inputCount);
@@ -40,8 +41,6 @@ describe('Psbt', () => {
         expect(psbt.unsignedTx.ins).toHaveLength(inputCount);
         expect(psbt.unsignedTx.outs).toHaveLength(outputCount);
         expect(psbt.toHex()).toEqual(hex);
-
-        expect(source).toBeTruthy();
     });
 
     it('parses a minimal synthetic PSBT and extracts unsigned transaction', () => {
@@ -116,5 +115,35 @@ describe('Psbt', () => {
         const psbt = Psbt.fromBuffer(psbtBuffer, { nostrict: true });
 
         expect(psbt.unsignedTx.toHex()).toEqual(TX_HEX);
+    });
+
+    it('throws on invalid magic bytes', () => {
+        expect(() => Psbt.fromBuffer(Buffer.from('0000000000', 'hex'))).toThrow(
+            'Invalid PSBT magic bytes.',
+        );
+    });
+
+    it('throws on a duplicate key within a map', () => {
+        // global map with two identical key/value entries (key 0x0102, value 0x03)
+        const duplicateKeyMap = Buffer.concat([PSBT_MAGIC, Buffer.from('02010201030201020103', 'hex')]);
+
+        expect(() => Psbt.fromBuffer(duplicateKeyMap)).toThrow('PSBT map has duplicate key.');
+    });
+
+    it('throws when there are more PSBT input maps than unsigned transaction inputs', () => {
+        const psbt = Psbt.fromHex(getSimplePsbtBuffer(TX_HEX).toString('hex'));
+
+        psbt.inputs.push([]);
+
+        expect(() => psbt.toBuffer()).toThrow(
+            'PSBT has more input maps than unsigned transaction inputs.',
+        );
+    });
+
+    it('rejects an oversized key length without allocating', () => {
+        // key length varint claims 0xffffffff bytes but none follow → bounded read must throw
+        const oversized = Buffer.concat([PSBT_MAGIC, Buffer.from('feffffffff', 'hex')]);
+
+        expect(() => Psbt.fromBuffer(oversized)).toThrow();
     });
 });

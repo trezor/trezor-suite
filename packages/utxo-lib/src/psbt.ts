@@ -57,10 +57,19 @@ function getUnsignedTx(map: PsbtKeyValue[], options: PsbtOptions) {
         throw new Error('PSBT must contain exactly one unsigned transaction.');
     }
 
-    return Transaction.fromBuffer(unsignedTxEntries[0].value, {
+    const unsignedTx = Transaction.fromBuffer(unsignedTxEntries[0].value, {
         network: options.network,
         nostrict: false,
     });
+
+    // BIP-174: the global unsigned transaction must have empty scriptSigs and carry
+    // no witness data. Reject anything else so a (partially) signed transaction cannot
+    // masquerade as an unsigned one.
+    if (unsignedTx.ins.some(input => input.script.length > 0) || unsignedTx.hasWitnesses()) {
+        throw new Error('PSBT unsigned transaction must not contain signatures.');
+    }
+
+    return unsignedTx;
 }
 
 function getMapByteLength(map: PsbtKeyValue[]) {
@@ -136,7 +145,9 @@ export class Psbt {
     }
 
     static fromHex(hex: string, options: PsbtOptions = {}) {
-        return this.fromBuffer(Buffer.from(hex, 'hex'), { ...options, nostrict: false });
+        // `fromBuffer` already defaults to strict parsing when `nostrict` is unset,
+        // so forward the caller's options instead of hard-overriding `nostrict`.
+        return this.fromBuffer(Buffer.from(hex, 'hex'), options);
     }
 
     toBuffer() {

@@ -1,26 +1,32 @@
-import type { AccountAddresses, AccountUtxo, PrecomposeResultFinal } from '@trezor/connect-common';
+import type {
+    AccountAddresses,
+    AccountUtxo,
+    BitcoinNetworkInfo,
+    PrecomposeResultFinal,
+} from '@trezor/connect-common';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { bufferUtils } from '@trezor/utils';
-import type { Network } from '@trezor/utxo-lib';
 import { Psbt } from '@trezor/utxo-lib';
 
 import { parseOutputScript } from './outputs';
+import { getTransactionVbytes } from './transactionBytes';
 import { getHDPath, getOutputScriptType, getScriptType } from '../../utils/pathUtils';
 
 type ParsePsbtParams = {
     psbtTransactionData: string;
-    network: Network;
+    coinInfo: BitcoinNetworkInfo;
     addresses: AccountAddresses;
     utxos: AccountUtxo[];
 };
 
 export const parsePsbt = ({
     psbtTransactionData,
-    network,
+    coinInfo,
     addresses,
     utxos,
 }: ParsePsbtParams): PrecomposeResultFinal => {
+    const { network } = coinInfo;
     const psbt = Psbt.fromHex(psbtTransactionData, { network });
 
     const inputs: PROTO.TxInputType[] = [];
@@ -39,12 +45,26 @@ export const parsePsbt = ({
         }
 
         const address_n = getHDPath(utxo.path);
+        const script_type = getScriptType(address_n);
+        if (!script_type) {
+            throw TypedError(
+                'Method_InvalidParameter',
+                `parsePsbt: Unsupported input script type at [${index}]`,
+            );
+        }
+        if (script_type === 'SPENDMULTISIG') {
+            // Multisig inputs require a `multisig` (pubkeys) field that cannot be derived here.
+            throw TypedError(
+                'Method_InvalidParameter',
+                `parsePsbt: Multisig inputs are not supported at [${index}]`,
+            );
+        }
         inputs.push({
             prev_hash: utxo.txid,
             prev_index: input.index,
             amount: utxo.amount,
             address_n,
-            script_type: getScriptType(address_n),
+            script_type,
             sequence: input.sequence,
         });
 
@@ -81,6 +101,14 @@ export const parsePsbt = ({
                     `parsePsbt: Invalid op_return_data at [${index}]`,
                 );
             }
+            if (BigInt(output.value) !== BigInt(0)) {
+                // Trezor forces OP_RETURN amount to 0; a non-zero value here would make the
+                // reported fee/totalSpent diverge from the transaction that gets signed.
+                throw TypedError(
+                    'Method_InvalidParameter',
+                    `parsePsbt: OP_RETURN output must have zero value at [${index}]`,
+                );
+            }
             outputs.push({
                 script_type: 'PAYTOOPRETURN',
                 amount: '0',
@@ -97,7 +125,14 @@ export const parsePsbt = ({
     }
 
     const fee = sumOfInputs - sumOfOutputs;
-    const bytes = psbt.unsignedTx.virtualSize();
+    if (fee <= BigInt(0)) {
+        // A non-positive fee (outputs >= inputs) is not a signable transaction.
+        throw TypedError('Method_InvalidParameter', 'parsePsbt: Transaction fee is non-positive');
+    }
+    // Estimate the SIGNED virtual size. The unsigned tx has empty scriptSigs and no
+    // witnesses, so its size would understate the real tx and inflate the fee rate.
+    // Fall back to the unsigned size only if the weight calculator cannot process the inputs.
+    const bytes = getTransactionVbytes(inputs, outputs, coinInfo) || psbt.unsignedTx.virtualSize();
     const feePerByte = Number(fee) / bytes;
 
     return {
@@ -108,6 +143,7 @@ export const parsePsbt = ({
         bytes,
         inputs,
         outputs,
-        outputsPermutation: [],
+        // PSBT output order is fixed and preserved 1:1, so the permutation is the identity.
+        outputsPermutation: outputs.map((_, index) => index),
     };
 };

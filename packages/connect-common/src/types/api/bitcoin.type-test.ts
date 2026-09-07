@@ -519,7 +519,6 @@ export const sendTransaction = async (api: TrezorConnect) => {
 export const composePsbt = async (api: TrezorConnect) => {
     const precompose = await api.composePsbt({
         account: {
-            path: 'm/49',
             addresses: {
                 used: [],
                 unused: [],
@@ -558,6 +557,8 @@ export const composeTransaction = async (api: TrezorConnect) => {
         },
         feeLevels: [{ feePerUnit: '1' }],
         coin: 'btc',
+        // @ts-expect-error `push` is not a valid composeTransaction param
+        push: true,
     });
 
     if (precompose.success) {
