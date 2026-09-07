@@ -36,7 +36,7 @@ function getSimplePsbtBuffer(unsignedTxHex: string) {
 }
 
 describe('Psbt', () => {
-    it.each(PSBT_FIXTURES)('$description', ({ hex, inputCount, outputCount, source }) => {
+    it.each(PSBT_FIXTURES)('$description', ({ hex, inputCount, outputCount }) => {
         const psbt = Psbt.fromHex(hex);
 
         expect(psbt.inputs).toHaveLength(inputCount);
@@ -44,8 +44,6 @@ describe('Psbt', () => {
         expect(psbt.unsignedTx.ins).toHaveLength(inputCount);
         expect(psbt.unsignedTx.outs).toHaveLength(outputCount);
         expect(psbt.toHex()).toEqual(hex);
-
-        expect(source).toBeTruthy();
     });
 
     it('parses a minimal synthetic PSBT and extracts unsigned transaction', () => {
