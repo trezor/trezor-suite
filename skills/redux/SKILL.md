@@ -297,17 +297,10 @@ should verify the resulting state or rendered UI. Do not call `createTestStore` 
 reserve it for low-level store or middleware infrastructure tests where an application service
 container is deliberately outside the test boundary.
 
-Global application state and dependency contracts are wiring details. Application code may refer to
-them only in these composition-root files, where the final stores and service graphs are assembled:
+### Composition roots
 
-- `packages/suite/src/support/extraDependencies.ts`
-- `packages/suite/src/reducers/store.ts`
-- `suite-native/state/src/extraDependencies.ts`
-- `suite-native/state/src/store.ts`
-
-Do not add another exception locally. If a new composition root is necessary, update this allowlist
-and the corresponding architectural enforcement in the same change so the exception remains
-visible and reviewable.
+Composition roots must be synchronous. They construct and wire services; asynchronous startup
+belongs in services that are called after composition is complete.
 
 ## Middlewares
 

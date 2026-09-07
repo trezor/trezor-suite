@@ -9,8 +9,12 @@ const observer = new MutationObserver(() => {
     if (appElement) {
         observer.disconnect();
 
-        import(/* webpackChunkName: "app" */ './MainWeb')
-            .then(comp => comp.init(appElement))
+        import(/* webpackChunkName: "app" */ './createSuiteWebCompositionRoot')
+            .then(({ createSuiteWebCompositionRoot }) => {
+                const { init } = createSuiteWebCompositionRoot();
+
+                return init(appElement);
+            })
             .catch(err => console.error(err)); // Fatal error
     }
 });

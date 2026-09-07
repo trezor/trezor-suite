@@ -7,7 +7,13 @@ const observer = new MutationObserver(() => {
     if (appElement) {
         observer.disconnect();
 
-        import('../MainWeb').then(comp => comp.init(appElement)).catch(err => console.error(err)); // Fatal error
+        import('../createSuiteWebCompositionRoot')
+            .then(({ createSuiteWebCompositionRoot }) => {
+                const { init } = createSuiteWebCompositionRoot();
+
+                return init(appElement);
+            })
+            .catch(err => console.error(err)); // Fatal error
     }
 });
 

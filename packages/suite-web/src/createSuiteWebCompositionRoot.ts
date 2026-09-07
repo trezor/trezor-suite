@@ -7,17 +7,19 @@ import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
-import { initStore } from 'src/reducers/store';
+import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
+import { createReduxStore } from 'src/reducers/createReduxStore';
+import { rootReducer } from 'src/reducers/store';
 import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFactory';
-import { type CreateGetBinFilesBaseUrl } from 'src/support/createGetBinFilesBaseUrl';
-import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
+import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
+import { extraDependencies } from 'src/support/extraDependencies';
 
+import { type WebInit, createWebInit } from './createWebInit';
 import { getWebThpHostName } from './support/getWebThpHostName';
 
-const createGetBinFilesBaseUrl: CreateGetBinFilesBaseUrl<unknown> = () =>
-    asGetter(() => resolveConnectPath('data'));
+type SuiteWebCompositionRoot = { init: WebInit };
 
-export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreAction) => {
+export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     const history = createBrowserHistory();
     const platformEncryption = createWebauthnPlatformEncryption();
     const reloadApp = () => window.location.reload();
@@ -42,16 +44,26 @@ export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreA
         };
     };
 
-    return initStore(
-        {
-            history,
-            platformEncryption,
-            createConnectLoggerFactory,
-            createGetBinFilesBaseUrl,
-            reloadApp,
-            thpHostName: getWebThpHostName(),
-            getTransportsFactories,
-        },
-        preloadStoreAction,
-    );
+    const { store, injectServicesIntoReduxExtra } = createReduxStore({
+        reducer: rootReducer,
+        extraDependencies,
+    });
+    const suiteServices = createSuiteServicesCompositionRoot({
+        dispatch: store.dispatch,
+        getState: store.getState,
+        history,
+        platformEncryption,
+        createLogger: createConnectLoggerFactory({ getState: store.getState }),
+        getBinFilesBaseUrl: asGetter(() => resolveConnectPath('data')),
+        reloadApp,
+        thpHostName: getWebThpHostName(),
+        getTransportsFactories,
+    });
+    const hydrateReduxStore = createHydrateReduxStore({ store, reducer: rootReducer });
+    const services = { ...suiteServices, store, hydrateReduxStore };
+    // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
+    // Inject them after construction to break the cycle, before init can dispatch any actions.
+    injectServicesIntoReduxExtra(services);
+
+    return { init: createWebInit({ services }) };
 };

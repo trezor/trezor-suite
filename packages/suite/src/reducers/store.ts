@@ -2,40 +2,29 @@
 import {
     type DevToolsEnhancerOptions,
     type Dispatch,
-    type EnhancedStore,
     type Middleware,
-    type MiddlewareAPI,
     type Reducer,
     type ReducersMapObject,
     type UnknownAction,
     combineReducers,
-    configureStore,
 } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
-import { type ThunkDispatch } from 'redux-thunk';
 
 import { type BackupState, backupMiddleware, backupReducer } from '@suite/backup';
-import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { type RecoveryState, recoveryReducer } from '@suite/recovery';
-import { type HistoryDep } from '@suite/router';
 import { type DesktopSuiteSyncState, prepareSuiteSyncReducer } from '@suite/suite-sync';
-import { type GetTransportsFactoriesDep } from '@suite-common/connect-init';
 import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
-import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
-import { castExtraStore, createStoreWithExtraStoreMiddleware } from '@suite-common/redux-utils';
 import { type SuiteSyncDataState, suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { type SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
-import { type ReloadAppDep } from '@suite-common/suite-types';
-import { type ThpHostNameDep, type ThpState, prepareThpReducer } from '@suite-common/thp';
+import { type ThpState, prepareThpReducer } from '@suite-common/thp';
 import {
     type TokenDefinitionsState,
     prepareTokenDefinitionsReducer,
 } from '@suite-common/token-definitions';
 import { isCodesignBuild } from '@trezor/env-utils';
-import { mergeDeepObject } from '@trezor/utils';
 
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
@@ -50,7 +39,6 @@ import {
     type GlobalSendReceiveFiltersState,
     globalSendReceiveFiltersReducer,
 } from 'src/slices/wallet/globalSendReceiveFilters';
-import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 import { type BioAuthState, prepareBioAuthReducer } from './bioAuth';
 import { type DesktopState, desktopReducer } from './desktop';
@@ -58,13 +46,7 @@ import {
     type DesktopBluetoothState,
     prepareDesktopBluetoothReducer,
 } from '../actions/bluetooth/desktopBluetoothReducer';
-import { type CreateConnectLoggerFactoryDep } from '../support/createConnectLoggerFactory';
-import { type CreateGetBinFilesBaseUrlDep } from '../support/createGetBinFilesBaseUrl';
-import {
-    type SuiteServices,
-    createSuiteServicesCompositionRoot,
-} from '../support/createSuiteCompositionRoot';
-import { type ExtraDependenciesSuite, extraDependencies } from '../support/extraDependencies';
+import { extraDependencies } from '../support/extraDependencies';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
@@ -93,7 +75,9 @@ export type AppState = SuiteReducersState & {
     globalSendReceiveFilters: GlobalSendReceiveFiltersState;
 };
 
-const rootReducer = combineReducers({
+export type SuiteRootReducer = Reducer<AppState, UnknownAction, Partial<AppState>>;
+
+export const rootReducer: SuiteRootReducer = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
     receive: receiveReducer,
@@ -117,7 +101,7 @@ const loggerExcludedActions = [addLog.type];
 
 type GetCustomMiddlewareDeps = GetSuiteMiddlewareDeps & GetWalletMiddlewaresDeps;
 
-const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => {
+export const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => {
     const middleware = [
         toastMiddleware,
         ...getSuiteMiddleware(getExtra),
@@ -145,7 +129,7 @@ const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => 
     return middleware as Middleware<Dispatch, AppState>[];
 };
 
-const devTools: DevToolsEnhancerOptions | false =
+export const devTools: DevToolsEnhancerOptions | false =
     typeof window === 'object' &&
     '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__' in window &&
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
@@ -153,107 +137,3 @@ const devTools: DevToolsEnhancerOptions | false =
               actionsDenylist: loggerExcludedActions,
           }
         : false;
-
-const patchConfirm = (statePatch: any) =>
-    !isCodesignBuild() ||
-    confirm(
-        `Trezor Suite is starting with partially predefined state. Press OK only if you intended to do that!\n\n` +
-            JSON.stringify(statePatch, null, 4),
-    );
-
-type RootReducerShape = typeof rootReducer;
-export type PreloadedState = Partial<AppState>;
-type InferredAction = Parameters<RootReducerShape>[1];
-
-export type SuiteStoreDeps = HistoryDep &
-    PlatformEncryptionDep &
-    CreateConnectLoggerFactoryDep &
-    CreateGetBinFilesBaseUrlDep<AppState> &
-    ReloadAppDep &
-    ThpHostNameDep &
-    GetTransportsFactoriesDep;
-
-export type SuiteStore = ReturnType<
-    typeof castExtraStore<ExtraDependenciesSuite, EnhancedStore<AppState, UnknownAction>>
-> & {
-    services: SuiteServices;
-};
-
-export const initStore = (
-    deps: SuiteStoreDeps,
-    preloadStoreAction?: PreloadStoreAction,
-    options: { statePatch?: Record<string, any> } = {},
-): SuiteStore => {
-    // get initial state by calling STORAGE.LOAD action with optional payload
-    // payload will be processed in each reducer explicitly
-    const preloadedState = preloadStoreAction
-        ? rootReducer(undefined, preloadStoreAction)
-        : undefined;
-
-    const patchedState =
-        preloadedState && options?.statePatch && patchConfirm(options.statePatch)
-            ? mergeDeepObject.withOptions(
-                  { dotNotation: true },
-                  preloadedState,
-                  options.statePatch as Partial<AppState>,
-              )
-            : preloadedState;
-
-    const extraFactory = (
-        api: MiddlewareAPI<
-            ThunkDispatch<AppState, ExtraDependenciesSuite, UnknownAction>,
-            AppState
-        >,
-    ) => ({
-        ...extraDependencies,
-        services: createSuiteServicesCompositionRoot({
-            getState: api.getState,
-            dispatch: api.dispatch,
-            history: deps.history,
-            platformEncryption: deps.platformEncryption,
-            reloadApp: deps.reloadApp,
-            createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),
-            getBinFilesBaseUrl: deps.createGetBinFilesBaseUrl({ getState: api.getState }),
-            thpHostName: deps.thpHostName,
-            getTransportsFactories: deps.getTransportsFactories,
-        }),
-    });
-
-    let extra: ReturnType<typeof extraFactory> | null = null as ReturnType<
-        typeof extraFactory
-    > | null;
-
-    const store = configureStore({
-        reducer: rootReducer as Reducer<AppState, InferredAction, PreloadedState>,
-        preloadedState: patchedState,
-        middleware: getDefaultMiddleware =>
-            getDefaultMiddleware({
-                immutableCheck: false,
-                serializableCheck: {
-                    ignoredActions: [MODAL_OPEN_USER_CONTEXT],
-                    ignoredPaths: [
-                        'modal.payload.decision.promise',
-                        'modal.payload.decision.resolve',
-                        'modal.payload.decision.reject',
-                    ],
-                },
-            })
-                .prepend(
-                    createStoreWithExtraStoreMiddleware({
-                        extraFactory,
-                        onExtraCreated: (initializedExtra: ReturnType<typeof extraFactory>) => {
-                            extra = initializedExtra;
-                        },
-                    }),
-                )
-                .concat(getCustomMiddleware(() => extra)),
-        devTools,
-    } as const);
-
-    const castedStore = castExtraStore(store, extra);
-
-    return {
-        ...castedStore,
-        services: castedStore.extra.services,
-    };
-};

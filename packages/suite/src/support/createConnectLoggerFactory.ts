@@ -11,8 +11,7 @@ export type CreateConnectLoggerFactoryDep = {
     createConnectLoggerFactory?: CreateConnectLoggerFactory;
 };
 
-export const createConnectLoggerFactory: CreateConnectLoggerFactory = ({ getState }) => {
-    const enabled = selectShowConnectLogs(getState());
-
-    return prefix => initLog(prefix, enabled);
-};
+export const createConnectLoggerFactory: CreateConnectLoggerFactory =
+    ({ getState }) =>
+    prefix =>
+        initLog(prefix, selectShowConnectLogs(getState()));
