@@ -19,7 +19,6 @@ import { type ReceiveAddressItem } from './address/buildReceiveAddressItems';
 import { type ReceiveAmountComponent } from './receive';
 import { canShareAddress, shareAddress } from './sharing/share';
 
-const ADDRESS_MAX_WIDTH = 300;
 // Labeling reserves room next to the address for its edit button, but only while the label action
 // is enabled, and it takes more of it on hover. The actions have to keep out of the way of both.
 const ACTIONS_GAP_WITHOUT_LABEL_ACTION = 8;
@@ -33,6 +32,7 @@ const revealed = css`
 
 const Label = styled.div`
     min-width: 0;
+    flex: 1;
 `;
 
 const Actions = styled.div<{ $hasLabelAction: boolean }>`
@@ -132,18 +132,18 @@ export const AddressHistoryRow = ({
                             {item.pathIndex}
                         </Text>
                     )}
-                    <Row minWidth={0}>
+                    <Row minWidth={0} flex="1">
                         <Label>
-                            <Text typographyStyle="body-sm">
-                                <AddressLabeling
-                                    accountDescriptor={account.descriptor}
-                                    networkSymbol={account.symbol}
-                                    deviceStaticSessionId={account.deviceState}
-                                    address={item.address}
-                                    label={item.label}
-                                    maxWidth={ADDRESS_MAX_WIDTH}
-                                />
-                            </Text>
+                            <AddressLabeling
+                                accountDescriptor={account.descriptor}
+                                networkSymbol={account.symbol}
+                                deviceStaticSessionId={account.deviceState}
+                                address={item.address}
+                                label={item.label}
+                                typographyStyle="body-sm"
+                                isAddressTruncated={false}
+                                isDisplayValueMultiline
+                            />
                         </Label>
                         <Actions $hasLabelAction={isLabelActionEnabled}>
                             <Row gap={4}>
