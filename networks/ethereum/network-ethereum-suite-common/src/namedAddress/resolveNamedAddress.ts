@@ -1,4 +1,5 @@
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { NamedAddressResolveOptions } from '@trezor/network-module-suite-common-types';
 
 import { resolveViaBlockbook } from './resolveNamedAddressBB';
 import { resolveNamedAddressOnchain } from './universalResolver';
@@ -10,11 +11,15 @@ import { resolveNamedAddressOnchain } from './universalResolver';
  * A `null` result is a definitive "no record" answer, so only a thrown error — an unreachable
  * or erroring backend — is worth retrying through Blockbook.
  */
-export const resolveNamedAddress = async (value: string, symbol: EthereumNetworkSymbol) => {
+export const resolveNamedAddress = async (
+    value: string,
+    symbol: EthereumNetworkSymbol,
+    options?: NamedAddressResolveOptions,
+) => {
     try {
-        return await resolveNamedAddressOnchain(value, symbol);
+        return await resolveNamedAddressOnchain(value, symbol, options);
     } catch {
-        return resolveViaBlockbook(value, symbol);
+        return resolveViaBlockbook(value, symbol, options);
     }
 };
 

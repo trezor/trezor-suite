@@ -154,7 +154,7 @@ describe('universalResolver', () => {
             succeedWith(MULTICALL_ADDRESS_AND_TEXT);
 
             await expect(
-                resolveNamedProfileOnchain('vitalik.eth', 'eth', ['description']),
+                resolveNamedProfileOnchain('vitalik.eth', 'eth', { textKeys: ['description'] }),
             ).resolves.toEqual({
                 address: VITALIK_ADDRESS,
                 texts: { description: DESCRIPTION },
@@ -166,7 +166,7 @@ describe('universalResolver', () => {
             succeedWith(MULTICALL_EMPTY_TEXT);
 
             await expect(
-                resolveNamedProfileOnchain('vitalik.eth', 'eth', ['description']),
+                resolveNamedProfileOnchain('vitalik.eth', 'eth', { textKeys: ['description'] }),
             ).resolves.toEqual({ address: VITALIK_ADDRESS, texts: {} });
         });
 
@@ -200,6 +200,16 @@ describe('universalResolver', () => {
                     coin: 'tsep',
                     to: '0xeeeeeeee14d718c2b47d9923deab1335e144eeee',
                 }),
+            );
+        });
+
+        it('sends the lookup on the given backend identity', async () => {
+            succeedWith(MULTICALL_ADDRESS_ONLY);
+
+            await resolveNamedAddressOnchain('vitalik.eth', 'eth', { identity: 'deviceState' });
+
+            expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+                expect.objectContaining({ identity: 'deviceState' }),
             );
         });
 
@@ -350,6 +360,16 @@ describe('universalResolver', () => {
 
             await expect(reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth')).resolves.toBe(
                 'nick.eth',
+            );
+        });
+
+        it('sends the lookup on the given backend identity', async () => {
+            succeedWith(REVERSE_SUCCESS);
+
+            await reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth', { identity: 'deviceState' });
+
+            expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+                expect.objectContaining({ identity: 'deviceState' }),
             );
         });
 

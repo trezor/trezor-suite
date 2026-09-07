@@ -32,6 +32,8 @@ export const getResolveMode = (
 export type ResolveNamedAddressQueryParams = NetworkModuleRepositoryDep & {
     value: string;
     symbol: NetworkSymbol | null | undefined;
+    /** Backend identity the lookup rides on; see `getAccountIdentity`. */
+    identity?: string;
 };
 
 /**
@@ -46,11 +48,12 @@ export const getResolveNamedAddressQueryOptions = ({
     networkModuleRepository,
     value,
     symbol,
+    identity,
 }: ResolveNamedAddressQueryParams) => {
     const trimmedValue = value.trim();
     const { resolver } = getNamedAddressSupport(networkModuleRepository, symbol);
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is symbol + value; the resolver is the network module those two select, and a live object never belongs in a key
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is symbol + value; the resolver is the network module those two select, and a live object never belongs in a key. The backend identity picks the connection, not the answer, so accounts share one entry rather than each paying for the same lookup
     return {
         queryKey: commonQueryKeys.resolveNamedAddress(symbol ?? 'unknown', trimmedValue),
         queryFn: () => {
@@ -63,8 +66,8 @@ export const getResolveNamedAddressQueryOptions = ({
             }
 
             return mode === 'forward'
-                ? resolver.resolveNamedAddress(trimmedValue, symbol)
-                : resolver.reverseResolveAddress(trimmedValue, symbol);
+                ? resolver.resolveNamedAddress(trimmedValue, symbol, { identity })
+                : resolver.reverseResolveAddress(trimmedValue, symbol, { identity });
         },
         staleTime: STALE_TIME_MS,
         gcTime: GC_TIME_MS,

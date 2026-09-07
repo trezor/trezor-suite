@@ -3,6 +3,16 @@ export type NamedAddressProfile = {
     texts: Record<string, string>;
 };
 
+/** Concerns of the request itself, as opposed to what is being resolved. */
+export type NamedAddressResolveOptions = {
+    /**
+     * Backend identity the lookup rides on. Suite opens one backend connection per identity, so
+     * passing the sending account's keeps a recipient lookup on that account's circuit rather
+     * than on the shared default one.
+     */
+    identity?: string;
+};
+
 /**
  * Resolution between human-readable names and onchain addresses (ENS and its equivalents).
  *
@@ -19,14 +29,22 @@ export type NamedAddressResolver<TSymbol extends string> = {
     isAddressLike(value: string): boolean;
 
     /** Resolves to `null` when the name exists but holds no address record. */
-    resolveNamedAddress(value: string, symbol: TSymbol): Promise<string | null>;
+    resolveNamedAddress(
+        value: string,
+        symbol: TSymbol,
+        options?: NamedAddressResolveOptions,
+    ): Promise<string | null>;
 
     /** Resolves to `null` when the address has no primary name. */
-    reverseResolveAddress(address: string, symbol: TSymbol): Promise<string | null>;
+    reverseResolveAddress(
+        address: string,
+        symbol: TSymbol,
+        options?: NamedAddressResolveOptions,
+    ): Promise<string | null>;
 
     resolveNamedProfile(
         value: string,
         symbol: TSymbol,
-        textKeys?: readonly string[],
+        options?: NamedAddressResolveOptions & { textKeys?: readonly string[] },
     ): Promise<NamedAddressProfile>;
 };

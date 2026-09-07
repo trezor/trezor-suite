@@ -33,8 +33,8 @@ const networkModuleRepository = {
     get: () => ({ namedAddressResolver }),
 } as unknown as NetworkModuleRepository;
 
-const renderResolveHook = (value: string, symbol: NetworkSymbol | null) =>
-    renderHookWithQueryClient(() => useResolveNamedAddress(value, symbol), {
+const renderResolveHook = (value: string, symbol: NetworkSymbol | null, identity?: string) =>
+    renderHookWithQueryClient(() => useResolveNamedAddress(value, symbol, identity), {
         wrapper: ({ children }: { children: ReactNode }) => (
             <ServicesProvider services={{ networkModuleRepository }}>{children}</ServicesProvider>
         ),
@@ -99,7 +99,9 @@ describe('useResolveNamedAddress', () => {
             expect(result.current.resolvedAddress).toBe(RESOLVED_HEX);
             expect(result.current.reverseResolvedName).toBeUndefined();
             expect(result.current.isResolveError).toBe(false);
-            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth');
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth', {
+                identity: undefined,
+            });
         });
 
         it('resolves a named input on tsep', async () => {
@@ -109,7 +111,20 @@ describe('useResolveNamedAddress', () => {
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
             expect(result.current.resolvedAddress).toBe(RESOLVED_HEX);
-            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'tsep');
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'tsep', {
+                identity: undefined,
+            });
+        });
+
+        it('resolves on the given backend identity', async () => {
+            mockResolveNamedAddress.mockResolvedValue(RESOLVED_HEX);
+
+            const { result } = renderResolveHook('vitalik.eth', 'eth', 'deviceState');
+
+            await waitFor(() => expect(result.current.isSuccess).toBe(true));
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth', {
+                identity: 'deviceState',
+            });
         });
 
         it('trims whitespace before resolving', async () => {
@@ -118,7 +133,9 @@ describe('useResolveNamedAddress', () => {
             const { result } = renderResolveHook('  vitalik.eth  ', 'eth');
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
-            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth');
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth', {
+                identity: undefined,
+            });
         });
     });
 
@@ -134,7 +151,9 @@ describe('useResolveNamedAddress', () => {
 
             expect(result.current.reverseResolvedName).toBe('vitalik.eth');
             expect(result.current.resolvedAddress).toBeUndefined();
-            expect(mockReverseResolveAddress).toHaveBeenCalledWith(RESOLVED_HEX, 'eth');
+            expect(mockReverseResolveAddress).toHaveBeenCalledWith(RESOLVED_HEX, 'eth', {
+                identity: undefined,
+            });
             expect(mockResolveNamedAddress).not.toHaveBeenCalled();
         });
 
