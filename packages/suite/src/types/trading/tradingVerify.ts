@@ -1,4 +1,3 @@
-import { type ReactNode } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
 import { type CryptoId } from 'invity-api';
@@ -39,19 +38,3 @@ export interface TradingVerifyAccountReturnProps {
     selectNonSuiteAddress: (address?: string) => void;
     openAddSuiteAccount: () => void;
 }
-
-export type TradingVerifyOptionsProps = {
-    receiveNetwork: CryptoId;
-    label: ReactNode;
-    isDisabled?: boolean;
-} & Pick<
-    TradingVerifyAccountReturnProps,
-    | 'suiteReceiveAccounts'
-    | 'selectedAccount'
-    | 'canAddSuiteAccount'
-    | 'canUseNonSuiteAccount'
-    | 'onChangeAccount'
-    | 'selectNonSuiteAddress'
-    | 'openAddSuiteAccount'
-    | 'isMenuOpen'
->;
