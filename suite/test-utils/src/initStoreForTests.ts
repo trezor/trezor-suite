@@ -8,7 +8,16 @@ import {
     type EncryptedHex,
     type PlatformEncryption,
 } from '@suite-common/platform-encryption';
-import { type PreloadedState, type SuiteStore, initStore } from '@trezor/suite';
+import {
+    type AppState,
+    type PreloadStoreAction,
+    type SuiteReduxStore,
+    createHydrateReduxStore,
+    createReduxStore,
+    createSuiteServicesCompositionRoot,
+    extraDependencies,
+    rootReducer,
+} from '@trezor/suite';
 import { type DeepPartial, ok } from '@trezor/type-utils';
 
 const testPlatformEncryption: PlatformEncryption = {
@@ -21,7 +30,8 @@ const testPlatformEncryption: PlatformEncryption = {
     },
 };
 
-export type TestStore = SuiteStore['store'];
+export type PreloadedState = Partial<AppState>;
+export type TestStore = SuiteReduxStore;
 
 export type InitStoreForTestsResult = {
     store: TestStore;
@@ -31,7 +41,7 @@ export type InitStoreForTestsResult = {
 };
 
 /**
- * Test-friendly wrapper for initStore that provides necessary dependencies like history.
+ * Creates a Redux store with test dependencies and hydrates it with the supplied state.
  * Returns both the store and history for test assertions.
  */
 export const initStoreForTests = (
@@ -40,20 +50,26 @@ export const initStoreForTests = (
     const memoryHistory = createMemoryHistory();
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
 
-    const { store } = initStore(
-        {
-            history: memoryHistory,
-            platformEncryption: testPlatformEncryption,
-            reloadApp: () => {},
-            getTransportsFactories: () => ({}),
-            createGetBinFilesBaseUrl: () => asGetter(() => '/bin'),
-        },
-        // A benign preload action: initStore merges `statePatch` only when a preload action
-        // produced a base state, and an action type unknown to every reducer produces exactly the
-        // initial state — hence the cast to the storage-action union.
-        { type: '@@test/preload' } as unknown as Parameters<typeof initStore>[1],
-        { statePatch: preloadedState },
-    );
+    const { store, injectServicesIntoReduxExtra } = createReduxStore({
+        reducer: rootReducer,
+        extraDependencies,
+    });
+    const suiteServices = createSuiteServicesCompositionRoot({
+        dispatch: store.dispatch,
+        getState: store.getState,
+        history: memoryHistory,
+        platformEncryption: testPlatformEncryption,
+        reloadApp: () => {},
+        getTransportsFactories: () => ({}),
+        getBinFilesBaseUrl: asGetter(() => '/bin'),
+    });
+    const hydrateReduxStore = createHydrateReduxStore({ store, reducer: rootReducer });
+    const services = { ...suiteServices, store, hydrateReduxStore };
+    injectServicesIntoReduxExtra(services);
+
+    // An action unknown to every reducer produces the initial state before applying the patch.
+    // The production hydration service accepts only storage actions, hence the cast.
+    hydrateReduxStore({ type: '@@test/preload' } as unknown as PreloadStoreAction, preloadedState);
 
     return {
         store,

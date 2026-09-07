@@ -1,10 +1,8 @@
 import { type PropsWithChildren, useMemo } from 'react';
 import { Provider } from 'react-redux';
 
-import { type PreloadedState } from '@trezor/suite';
-
 import { BasicProviderForTests } from './BasicProviderForTests';
-import { type TestStore, initStoreForTests } from './initStoreForTests';
+import { type PreloadedState, type TestStore, initStoreForTests } from './initStoreForTests';
 
 export type { TestStore } from './initStoreForTests';
 

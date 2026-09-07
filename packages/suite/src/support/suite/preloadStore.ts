@@ -1,8 +1,8 @@
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 import { db } from 'src/storage';
 
-// This function should be called before first render
-// PreloadedState will be used in redux store creation
+// Load persisted state before rendering the Redux-connected app. The store is created
+// synchronously during composition and hydrated with this result during initialization.
 export const preloadStore = async () => {
     if (!db.isSupported()) return;
 

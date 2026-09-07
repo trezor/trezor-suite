@@ -7,9 +7,8 @@ import {
     renderHook,
 } from '@testing-library/react';
 
-import { type PreloadedState } from '@trezor/suite';
-
 import { StoreProviderForTests, type TestStore } from './StoreProviderForTests';
+import { type PreloadedState } from './initStoreForTests';
 
 type RenderWithStoreProviderOptions = {
     preloadedState?: PreloadedState;

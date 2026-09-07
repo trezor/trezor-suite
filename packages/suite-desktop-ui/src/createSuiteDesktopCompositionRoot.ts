@@ -4,17 +4,17 @@ import { createElectronPlatformEncryption } from '@suite/platform-encryption-ele
 import { toGetter } from '@suite-common/dependency-injection';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { type AppState, initStore } from 'src/reducers/store';
-import { type CreateGetBinFilesBaseUrl } from 'src/support/createGetBinFilesBaseUrl';
-import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
+import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
+import { createReduxStore } from 'src/reducers/createReduxStore';
+import { rootReducer } from 'src/reducers/store';
+import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
+import { extraDependencies } from 'src/support/extraDependencies';
 
-const createGetBinFilesBaseUrl: CreateGetBinFilesBaseUrl<AppState> = ({ getState }) =>
-    toGetter(getState, state => state.desktop?.paths?.binDir);
+import { type DesktopInit, createDesktopInit } from './createDesktopInit';
 
-export const createSuiteDesktopCompositionRoot = (
-    preloadStoreAction?: PreloadStoreAction,
-    statePatch?: Record<string, any>,
-) => {
+type SuiteDesktopCompositionRoot = { init: DesktopInit };
+
+export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot => {
     const history = createMemoryHistory();
     const platformEncryption = createElectronPlatformEncryption({ desktopApi });
     const reloadApp = desktopApi.appRestart;
@@ -29,17 +29,26 @@ export const createSuiteDesktopCompositionRoot = (
         UdpTransport: () => 'UdpTransport' as const,
     });
 
-    return initStore(
-        {
-            history,
-            platformEncryption,
-            createConnectLoggerFactory: undefined,
-            createGetBinFilesBaseUrl,
-            reloadApp,
-            thpHostName: undefined,
-            getTransportsFactories,
-        },
-        preloadStoreAction,
-        { statePatch },
-    );
+    const { store, injectServicesIntoReduxExtra } = createReduxStore({
+        reducer: rootReducer,
+        extraDependencies,
+    });
+    const suiteServices = createSuiteServicesCompositionRoot({
+        dispatch: store.dispatch,
+        getState: store.getState,
+        history,
+        platformEncryption,
+        createLogger: undefined,
+        getBinFilesBaseUrl: toGetter(store.getState, state => state.desktop?.paths?.binDir),
+        reloadApp,
+        thpHostName: undefined,
+        getTransportsFactories,
+    });
+    const hydrateReduxStore = createHydrateReduxStore({ store, reducer: rootReducer });
+    const services = { ...suiteServices, store, hydrateReduxStore };
+    // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
+    // Inject them after construction to break the cycle, before init can dispatch any actions.
+    injectServicesIntoReduxExtra(services);
+
+    return { init: createDesktopInit({ services }) };
 };
