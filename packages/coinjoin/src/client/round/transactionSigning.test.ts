@@ -591,4 +591,83 @@ describe('transactionSigning signature delay', () => {
         expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
         expect(response.isSignedSuccessfully()).toBe(true);
     });
+
+});
+
+describe('transactionSigning send window (phaseStartLowerBound)', () => {
+    let server: Awaited<ReturnType<typeof createServer>>;
+    const affiliateRequest = Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64');
+
+    beforeAll(async () => {
+        server = await createServer();
+    });
+
+    beforeEach(() => {
+        server?.removeAllListeners('test-request');
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    afterAll(() => {
+        server?.close();
+    });
+
+    const signingRound = (roundOverrides: Partial<ReturnType<typeof createCoinjoinRound>>) =>
+        createCoinjoinRound(
+            [
+                createInput(
+                    'account-A',
+                    'a00000000000000000000000000000000000000000000000000000000000000001000000',
+                    {
+                        witness: 'aa',
+                        witnessIndex: 0,
+                        resolved: [{ type: 'signature', timestamp: 5000 }],
+                    },
+                ),
+            ],
+            {
+                ...server?.requestOptions,
+                round: { phase: 3, affiliateRequest, ...roundOverrides },
+            },
+        );
+
+    it('bounds the send spread by phaseStartLowerBound, not the poll-lagged phaseDeadline', async () => {
+        // now = 100s; signing was first detected here, but the previous committed poll was at 70s,
+        // so the real phase start is >= 70s. phaseDeadline (240s budget) is anchored to the later
+        // detection time and is optimistic; the send must be bounded by phaseStartLowerBound +
+        // TransactionSigningTimeout (70s + 60s = 130s) instead.
+        jest.spyOn(Date, 'now').mockReturnValue(100000);
+        const round = signingRound({
+            phaseStartLowerBound: 70000,
+            phaseDeadline: 100000 + 60000 * 4,
+        });
+        round.roundParameters.DelayTransactionSigning = false;
+
+        const response = await transactionSigning(round, [], server?.requestOptions);
+
+        // budget = sendDeadline(130s) - now(100s) = 30s; reserve 10s -> deadlineOffset 20s
+        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 20000);
+        expect(response.isSignedSuccessfully()).toBe(true);
+    });
+
+    it('collapses to an immediate send when the budget is exhausted (fail-safe over the 50s delay)', async () => {
+        // The lower bound is stale (phase started long ago) so the conservative send deadline is
+        // nearly in the past. The witness must be sent immediately instead of waiting the 50s
+        // DelayTransactionSigning window -- a fail-safe to still make the round, not a budget grab.
+        jest.spyOn(Date, 'now').mockReturnValue(100000);
+        const round = signingRound({
+            phaseStartLowerBound: 45000, // sendDeadline = 45s + 60s = 105s -> only 5s of budget left
+            phaseDeadline: 100000 + 60000 * 4,
+        });
+        round.roundParameters.DelayTransactionSigning = true; // would otherwise defer sends by ~50s
+
+        const response = await transactionSigning(round, [], server?.requestOptions);
+
+        // 5s budget - 10s reserve floors deadlineOffset to 1s -> immediate send (0-1s), overriding
+        // the 50s (45-95s) DelayTransactionSigning window
+        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+        expect(response.isSignedSuccessfully()).toBe(true);
+    });
 });

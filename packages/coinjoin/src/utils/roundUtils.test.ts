@@ -4,11 +4,13 @@ import {
     getAffiliateRequest,
     getCommitmentData,
     getRoundParams,
+    getSigningSendDeadline,
     readTimeSpan,
     scheduleDelay,
     transformStatus,
 } from './roundUtils';
-import { STATUS_EVENT, STATUS_TRANSFORMED } from '../__fixtures__/round.fixture';
+import { ROUND_CREATION_EVENT, STATUS_EVENT, STATUS_TRANSFORMED } from '../__fixtures__/round.fixture';
+import type { CoinjoinRoundParameters } from '../types/coordinator';
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {
@@ -121,5 +123,36 @@ describe('roundUtils', () => {
         // min < 0 && max < 0 && deadlineOffset < 0, range 0-1 sec.
         resultInRange(scheduleDelay(7500, -10000, -5000), 0, 1000);
         expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+    });
+
+    describe('getSigningSendDeadline', () => {
+        const SIGNING_TIMEOUT = 60_000; // fixture TransactionSigningTimeout = '0d 0h 1m 0s'
+        const roundParameters = ROUND_CREATION_EVENT.RoundParameters as CoinjoinRoundParameters;
+
+        it('anchors the send deadline to phaseStartLowerBound + TransactionSigningTimeout', () => {
+            // the lower bound (previous committed poll) is <= the real phase start, so the send
+            // deadline stays below the poll-lagged phaseDeadline and a witness is never scheduled
+            // past the coordinator's real signing-phase end (which would ban the input)
+            const phaseStartLowerBound = 1_000_000;
+            const phaseDeadline = phaseStartLowerBound + SIGNING_TIMEOUT + 15_000; // inflated ~15s
+            expect(getSigningSendDeadline(phaseStartLowerBound, phaseDeadline, roundParameters)).toBe(
+                phaseStartLowerBound + SIGNING_TIMEOUT,
+            );
+        });
+
+        it('never exceeds the optimistic phaseDeadline (defensive min)', () => {
+            const phaseStartLowerBound = 1_000_000;
+            const phaseDeadline = phaseStartLowerBound + 10_000; // shorter than the signing timeout
+            expect(getSigningSendDeadline(phaseStartLowerBound, phaseDeadline, roundParameters)).toBe(
+                phaseDeadline,
+            );
+        });
+
+        it('falls back to phaseDeadline when the phase start is unknown', () => {
+            const phaseDeadline = 1_234_567;
+            expect(getSigningSendDeadline(undefined, phaseDeadline, roundParameters)).toBe(
+                phaseDeadline,
+            );
+        });
     });
 });

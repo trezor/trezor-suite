@@ -391,4 +391,104 @@ describe('Status', () => {
         status.setMode('idle');
         status.setMode('idle'); // set same mode twice
     });
+
+    it('prevStatusTimestamp anchors to the request-sent time, not the response-processing time', async () => {
+        // Regression guard: on a slow connection the coordinator can switch to the signing phase
+        // while the previous poll's response is still in transit. Anchoring to the response-
+        // *processing* time would place the anchor after the real phase start and let a witness be
+        // scheduled past the phase end (-> InputBanned). The anchor must be the request-*sent* time,
+        // captured before the round-trip.
+        jest.useFakeTimers();
+        jest.setSystemTime(1_000_000);
+
+        let statusCall = 0;
+        (coordinatorRequest as jest.Mock).mockImplementation((url: string) => {
+            if (url !== 'status') {
+                return Promise.resolve({ ...STATUS_EVENT, RoundStates: [] }); // getVersion etc.
+            }
+            statusCall += 1;
+            if (statusCall === 1) {
+                jest.setSystemTime(1_015_000); // response takes 15s to arrive
+
+                return Promise.resolve({
+                    ...STATUS_EVENT,
+                    RoundStates: [{ ...DEFAULT_ROUND, Phase: 0 }], // still pre-signing
+                });
+            }
+
+            return Promise.resolve({
+                ...STATUS_EVENT,
+                RoundStates: [{ ...DEFAULT_ROUND, Phase: 3 }], // signing observed on the next poll
+            });
+        });
+
+        status = new Status(server?.requestOptions);
+        const onUpdate = jest.fn();
+        status.on('update', onUpdate);
+
+        await status.start(); // poll #1: request sent at 1_000_000, processed at 1_015_000
+
+        jest.setSystemTime(1_035_000);
+        await status.getStatus(); // poll #2 observes the signing phase
+
+        const signingUpdate = onUpdate.mock.calls
+            .map(call => call[0])
+            .find(event => event.changed.some((round: { Phase: number }) => round.Phase === 3));
+        // request-sent time of poll #1 (1_000_000), NOT its processing time (1_015_000)
+        expect(signingUpdate?.prevStatusTimestamp).toBe(1_000_000);
+    });
+
+    it('a poll whose transformStatus throws does not advance the anchor', async () => {
+        // Regression guard: a poll can fetch successfully but fail to transform (e.g. empty
+        // CoinJoinFeeRateMedians). Such a poll must NOT become the "previous poll" for the anchor --
+        // its snapshot may already show the signing phase, so using its request time would place the
+        // anchor after the real phase start and let a witness be scheduled past the phase end.
+        jest.useFakeTimers();
+        jest.setSystemTime(1_000_000);
+
+        let statusCall = 0;
+        (coordinatorRequest as jest.Mock).mockImplementation((url: string) => {
+            if (url !== 'status') {
+                return Promise.resolve({ ...STATUS_EVENT, RoundStates: [] }); // getVersion etc.
+            }
+            statusCall += 1;
+            if (statusCall === 1) {
+                return Promise.resolve({
+                    ...STATUS_EVENT,
+                    RoundStates: [{ ...DEFAULT_ROUND, Phase: 2 }], // pre-signing
+                });
+            }
+            if (statusCall === 2) {
+                // signing observed, but transformStatus throws (empty medians) -> not committed
+                return Promise.resolve({
+                    ...STATUS_EVENT,
+                    CoinJoinFeeRateMedians: [],
+                    RoundStates: [{ ...DEFAULT_ROUND, Phase: 3 }],
+                });
+            }
+
+            return Promise.resolve({
+                ...STATUS_EVENT,
+                RoundStates: [{ ...DEFAULT_ROUND, Phase: 3 }], // signing, valid transform
+            });
+        });
+
+        status = new Status(server?.requestOptions);
+        const onUpdate = jest.fn();
+        status.on('update', onUpdate);
+
+        await status.start(); // poll #1 @1_000_000 (phase 2)
+
+        jest.setSystemTime(1_020_000);
+        await status.getStatus().catch(() => {}); // poll #2: transformStatus throws, uncommitted
+
+        jest.setSystemTime(1_040_000);
+        await status.getStatus(); // poll #3: phase 3, valid
+
+        const signingUpdate = onUpdate.mock.calls
+            .map(call => call[0])
+            .find(event => event.changed.some((round: { Phase: number }) => round.Phase === 3));
+        // anchor stays poll #1 (1_000_000), NOT the uncommitted poll #2 (1_020_000)
+        expect(signingUpdate?.prevStatusTimestamp).toBe(1_000_000);
+    });
 });

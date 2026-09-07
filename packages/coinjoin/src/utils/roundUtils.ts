@@ -154,6 +154,35 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
     }
 };
 
+// Conservative deadline for scheduling the randomized witness send in the signing phase. This is
+// the single source of the poll-lag-safe send-window rationale; other call sites just reference it.
+//
+// `phaseStartLowerBound` is a safe lower bound of when the signing phase actually started (the
+// previous committed status poll's request-sent time). Status is polled every ~20s, so the
+// phase-detection time -- and therefore `phaseDeadline`, which is anchored to it -- can lag the
+// coordinator's real phase start by up to one poll interval. Sizing the randomized privacy spread
+// against that inflated deadline lets a witness be scheduled after the coordinator has already
+// closed the phase -> the input is banned. Anchoring the spread to `phaseStartLowerBound` instead
+// guarantees it is never scheduled past the real phase end.
+//
+// Only the send spread is bounded by this; the request keeps the optimistic `phaseDeadline` as its
+// hard cancellation deadline, so a slowly-signed but still valid witness is not aborted early. When
+// the lower bound is stale the window can collapse to ~0 and the witness is sent immediately (a
+// fail-safe to still make the round, not a way to reclaim signing budget -- so it also overrides the
+// DelayTransactionSigning 50s minimum). Falls back to `phaseDeadline` when the phase start is unknown
+// (round first observed already signing).
+export const getSigningSendDeadline = (
+    phaseStartLowerBound: number | undefined,
+    phaseDeadline: number,
+    roundParameters: CoinjoinRoundParameters,
+) =>
+    phaseStartLowerBound != null
+        ? Math.min(
+              phaseStartLowerBound + readTimeSpan(roundParameters.TransactionSigningTimeout),
+              phaseDeadline,
+          )
+        : phaseDeadline;
+
 // get relevant round data from the most recent round
 const getDataFromRounds = (rounds: Round[]) => {
     const lastRound = rounds.at(-1);
