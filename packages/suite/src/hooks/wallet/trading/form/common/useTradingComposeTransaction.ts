@@ -55,7 +55,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const device = useSelector(selectSelectedDevice);
     const addressDisplayType = useSelector(selectAddressDisplayType);
     const tradingInfo = useSelector(selectTradingInfo);
-    const btcSwapDummyData = tradingInfo?.config?.btcSwapDummyData;
+    const btcSwapComposeTemplate = tradingInfo?.config?.btcSwapComposeTemplate;
     const { translationString } = useTranslation();
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
@@ -266,7 +266,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             const currentOutputAmount = values.outputs?.[0]?.amount;
 
             // For BTC exchange swaps, the max amount is handled by the eager derivation effect below,
-            // which accounts for swap-specific overhead (OP_RETURN + fee outputs)
+            // which accounts for swap-specific extra outputs from trading config.
             const isBtcExchangeSwap = type === 'exchange' && account.networkType === 'bitcoin';
 
             if (typeof setMaxOutputId === 'number' && composed.max && !isBtcExchangeSwap) {
@@ -338,7 +338,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             decimals: network.decimals,
             setMaxOutputId,
             feePerUnit,
-            btcSwapDummyData,
+            btcSwapComposeTemplate,
         }).then(result => {
             if (cancelled) return;
 
@@ -350,7 +350,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             }
 
             // For max amount swaps, update the amount to reflect the true maximum
-            // after accounting for swap-specific outputs (OP_RETURN + fee outputs).
+            // after accounting for swap-specific extra outputs.
             if (typeof setMaxOutputId === 'number' && result?.amount) {
                 const swapAmount = shouldSendInSats
                     ? result.amount
@@ -383,7 +383,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         setValue,
         clearErrors,
         feePerUnit,
-        btcSwapDummyData,
+        btcSwapComposeTemplate,
     ]);
 
     return {

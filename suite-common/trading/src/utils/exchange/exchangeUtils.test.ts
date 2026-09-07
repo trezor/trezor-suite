@@ -1,4 +1,4 @@
-import { type CryptoId } from 'invity-api';
+import { type BtcSwapComposeTemplate, type CryptoId } from 'invity-api';
 
 import { type Network } from '@suite-common/wallet-config';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
@@ -498,22 +498,22 @@ describe('deriveBitcoinSwapFromAddresses', () => {
         decimals: 8,
     } as unknown as Network;
 
+    const defaultOpreturnHex =
+        '3078306632656166663639313734646264333963366533346661366465653966326266626566663363313139366462303666636238356339313364376531663466643d7c6c6966696351';
+
+    const btcSwapComposeTemplateWithPercent = (
+        percent: number,
+        dataHex = defaultOpreturnHex,
+    ): BtcSwapComposeTemplate => ({
+        extraOutputs: [
+            { type: 'opreturn', dataHex },
+            { type: 'payment', amount: { kind: 'percent', value: percent } },
+            { type: 'payment', amount: { kind: 'percent', value: percent } },
+        ],
+    });
+
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-
-    it('should return undefined if btcSwapDummyData is not provided', async () => {
-        const result = await deriveBitcoinSwapFromAddresses({
-            account,
-            network,
-            sendStringAmount: '0.0001',
-            decimals: 8,
-        });
-
-        expect(result).toBeUndefined();
-    });
-
-    it('should calculate swap from address with default mock config', async () => {
         (TrezorConnect.composeTransaction as jest.Mock).mockResolvedValue({
             success: true,
             payload: [
@@ -524,19 +524,27 @@ describe('deriveBitcoinSwapFromAddresses', () => {
                 },
             ],
         });
+    });
 
+    it('should return undefined if btcSwapComposeTemplate is not provided', async () => {
         const result = await deriveBitcoinSwapFromAddresses({
             account,
             network,
             sendStringAmount: '0.0001',
             decimals: 8,
-            btcSwapDummyData: {
-                opreturn: {
-                    dataHex:
-                        '3078306632656166663639313734646264333963366533346661366465653966326266626566663363313139366462303666636238356339313364376531663466643d7c6c6966696351',
-                },
-                feePercentage: 2,
-            },
+        });
+
+        expect(result).toBeUndefined();
+        expect(TrezorConnect.composeTransaction).not.toHaveBeenCalled();
+    });
+
+    it('should compose extraOutputs with percent amounts relative to send amount', async () => {
+        const result = await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '0.0001',
+            decimals: 8,
+            btcSwapComposeTemplate: btcSwapComposeTemplateWithPercent(2),
         });
 
         expect(result).toEqual({
@@ -545,64 +553,58 @@ describe('deriveBitcoinSwapFromAddresses', () => {
         });
         expect(TrezorConnect.composeTransaction).toHaveBeenCalledWith(
             expect.objectContaining({
-                outputs: expect.arrayContaining([
-                    expect.objectContaining({
-                        type: 'opreturn',
-                        dataHex:
-                            '3078306632656166663639313734646264333963366533346661366465653966326266626566663363313139366462303666636238356339313364376531663466643d7c6c6966696351',
-                    }),
-                    expect.objectContaining({
-                        type: 'payment',
-                        amount: '200',
-                        address: 'unused-address',
-                    }),
-                ]),
+                outputs: [
+                    { type: 'payment', amount: '10000', address: 'unused-address' },
+                    { type: 'opreturn', dataHex: defaultOpreturnHex },
+                    { type: 'payment', amount: '200', address: 'unused-address' },
+                    { type: 'payment', amount: '200', address: 'unused-address' },
+                ],
             }),
         );
     });
 
-    it('should calculate swap from address with custom btcSwapDummyData config', async () => {
-        (TrezorConnect.composeTransaction as jest.Mock).mockResolvedValue({
-            success: true,
-            payload: [
-                {
-                    type: 'final',
-                    inputs: [{ prev_hash: 'abc', prev_index: 0 }],
-                    outputs: [{ amount: '4000' }],
-                },
-            ],
-        });
-
-        const result = await deriveBitcoinSwapFromAddresses({
+    it('should compose extraOutputs with a custom percent', async () => {
+        await deriveBitcoinSwapFromAddresses({
             account,
             network,
             sendStringAmount: '0.0001',
             decimals: 8,
-            btcSwapDummyData: {
-                opreturn: {
-                    dataHex: 'custom_opreturn',
-                },
-                feePercentage: 5,
+            btcSwapComposeTemplate: btcSwapComposeTemplateWithPercent(5, 'custom_opreturn'),
+        });
+
+        expect(TrezorConnect.composeTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                outputs: [
+                    { type: 'payment', amount: '10000', address: 'unused-address' },
+                    { type: 'opreturn', dataHex: 'custom_opreturn' },
+                    { type: 'payment', amount: '500', address: 'unused-address' },
+                    { type: 'payment', amount: '500', address: 'unused-address' },
+                ],
+            }),
+        );
+    });
+
+    it('should compose extraOutputs with sats amounts and preserve output order', async () => {
+        await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '0.0001',
+            decimals: 8,
+            btcSwapComposeTemplate: {
+                extraOutputs: [
+                    { type: 'payment', amount: { kind: 'sats', value: '123' } },
+                    { type: 'opreturn', dataHex: 'custom_opreturn' },
+                ],
             },
         });
 
-        expect(result).toEqual({
-            addresses: ['used-address'],
-            amount: '4000',
-        });
         expect(TrezorConnect.composeTransaction).toHaveBeenCalledWith(
             expect.objectContaining({
-                outputs: expect.arrayContaining([
-                    expect.objectContaining({
-                        type: 'opreturn',
-                        dataHex: 'custom_opreturn',
-                    }),
-                    expect.objectContaining({
-                        type: 'payment',
-                        amount: '500',
-                        address: 'unused-address',
-                    }),
-                ]),
+                outputs: [
+                    { type: 'payment', amount: '10000', address: 'unused-address' },
+                    { type: 'payment', amount: '123', address: 'unused-address' },
+                    { type: 'opreturn', dataHex: 'custom_opreturn' },
+                ],
             }),
         );
     });

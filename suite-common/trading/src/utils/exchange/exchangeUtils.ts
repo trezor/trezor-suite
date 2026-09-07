@@ -1,4 +1,11 @@
-import type { CryptoId, ExchangeTrade, ExchangeTradeStatus, InfoResponse } from 'invity-api';
+import type {
+    BtcSwapComposeAmount,
+    BtcSwapComposeOutput,
+    BtcSwapComposeTemplate,
+    CryptoId,
+    ExchangeTrade,
+    ExchangeTradeStatus,
+} from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import { type Network } from '@suite-common/wallet-config';
@@ -12,6 +19,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
@@ -202,6 +210,60 @@ export const getDexEstimationData = (quote: ExchangeTrade): string | undefined =
     return quote.dexTx.data;
 };
 
+type GetBtcSwapComposeOutputAmountParams = {
+    amount: BtcSwapComposeAmount;
+    sendAmountSubunit: BigNumber;
+};
+
+const getBtcSwapComposeOutputAmount = ({
+    amount,
+    sendAmountSubunit,
+}: GetBtcSwapComposeOutputAmountParams): string => {
+    switch (amount.kind) {
+        case 'percent':
+            return sendAmountSubunit
+                .multipliedBy(amount.value / 100)
+                .integerValue(BigNumber.ROUND_CEIL)
+                .toString();
+        case 'sats':
+            return amount.value;
+        default:
+            return exhaustive(amount);
+    }
+};
+
+type GetBtcSwapComposeOutputsParams = {
+    extraOutputs: BtcSwapComposeOutput[];
+    sendAmountSubunit: BigNumber;
+    simulationAddress: string;
+};
+
+const getBtcSwapComposeOutputs = ({
+    extraOutputs,
+    sendAmountSubunit,
+    simulationAddress,
+}: GetBtcSwapComposeOutputsParams) =>
+    extraOutputs.map(output => {
+        switch (output.type) {
+            case 'opreturn':
+                return {
+                    type: 'opreturn' as const,
+                    dataHex: output.dataHex,
+                };
+            case 'payment':
+                return {
+                    type: 'payment' as const,
+                    amount: getBtcSwapComposeOutputAmount({
+                        amount: output.amount,
+                        sendAmountSubunit,
+                    }),
+                    address: simulationAddress,
+                };
+            default:
+                return exhaustive(output);
+        }
+    });
+
 type DeriveBitcoinSwapFromAddressesParams = {
     account: Account;
     network: Network;
@@ -209,12 +271,13 @@ type DeriveBitcoinSwapFromAddressesParams = {
     decimals: number;
     setMaxOutputId?: number;
     feePerUnit?: string;
-    btcSwapDummyData?: InfoResponse['config']['btcSwapDummyData'];
+    btcSwapComposeTemplate?: BtcSwapComposeTemplate;
 };
 
 /**
- * Calculates the fromAddress for a Bitcoin swap by simulating composition with dummy
- * OP_RETURN and fee outputs. Some DEXes need the input addresses for accurate quotes.
+ * Calculates the fromAddress for a Bitcoin swap by simulating composition with
+ * extra outputs from the trading compose template. Some DEXes need the input
+ * addresses for accurate quotes.
  */
 export const deriveBitcoinSwapFromAddresses = async ({
     account,
@@ -223,11 +286,11 @@ export const deriveBitcoinSwapFromAddresses = async ({
     decimals,
     setMaxOutputId,
     feePerUnit,
-    btcSwapDummyData,
+    btcSwapComposeTemplate,
 }: DeriveBitcoinSwapFromAddressesParams): Promise<
     { addresses: string[]; amount?: string } | undefined
 > => {
-    if (!btcSwapDummyData) {
+    if (!btcSwapComposeTemplate) {
         return undefined;
     }
 
@@ -259,19 +322,12 @@ export const deriveBitcoinSwapFromAddresses = async ({
         return undefined;
     }
 
-    const amountSubunitRaw = sendStringAmount
+    const sendAmountSubunit = sendStringAmount
         ? unitsToSubunits({
               value: asAmountUnit(new BigNumber(sendStringAmount)),
               decimals,
           })
         : new BigNumber(account.availableBalance);
-
-    const feeAmount = amountSubunitRaw
-        .multipliedBy(btcSwapDummyData.feePercentage / 100)
-        .integerValue(BigNumber.ROUND_CEIL)
-        .toString();
-
-    const amountSubunit = amountSubunitRaw.toString();
 
     const composeParams: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
         outputs: [
@@ -282,23 +338,14 @@ export const deriveBitcoinSwapFromAddresses = async ({
                   }
                 : {
                       type: 'payment',
-                      amount: amountSubunit,
+                      amount: sendAmountSubunit.toString(),
                       address: simulationAddress,
                   },
-            {
-                type: 'opreturn',
-                dataHex: btcSwapDummyData.opreturn.dataHex,
-            },
-            {
-                type: 'payment',
-                amount: feeAmount,
-                address: simulationAddress,
-            },
-            {
-                type: 'payment',
-                amount: feeAmount,
-                address: simulationAddress,
-            },
+            ...getBtcSwapComposeOutputs({
+                extraOutputs: btcSwapComposeTemplate.extraOutputs,
+                sendAmountSubunit,
+                simulationAddress,
+            }),
         ],
         coin: asCoinSymbol(network.symbol),
         account: {
