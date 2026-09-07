@@ -258,11 +258,11 @@ export function useTradingAssets() {
         selectGetSupportedNetworksDep,
         selectIsTestnetDep,
     );
-    const supportedNetworks = getSupportedNetworks();
 
     const buildAssetOptions = useCallback(
         ({ includedCryptoIds = new Set() }: { includedCryptoIds?: Set<CryptoId> }) => {
             const { coins, platforms } = getCoinsAndPlatforms();
+            const supportedNetworks = getSupportedNetworks();
 
             const assets = Array.from(includedCryptoIds)
                 .filter(
@@ -302,7 +302,7 @@ export function useTradingAssets() {
                 networks,
             };
         },
-        [getCoinsAndPlatforms, supportedNetworks],
+        [getCoinsAndPlatforms, getSupportedNetworks],
     );
 
     const createAssetOptionFromCryptoId = useCallback<(cryptoId?: CryptoId) => TradingAssetOption>(
