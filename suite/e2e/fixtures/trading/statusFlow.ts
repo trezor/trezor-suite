@@ -14,7 +14,7 @@ export const swapStatusFlow: readonly TradeStatusPhase[] = [
         translationKey: 'TR_TRADING_DETAIL_PROCESSING',
         translationValues: provider => ({ providerName: provider, type: 'swap' }),
     },
-    { status: 'SUCCESS', translationKey: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE' },
+    { status: 'SUCCESS', translationKey: 'TR_EXCHANGE_DETAIL_COMPLETE_TITLE' },
 ];
 
 // A DEX swap broadcasts the swap itself, so there is no CONFIRMING deposit phase,
@@ -25,11 +25,11 @@ export const dexSwapStatusFlow: readonly TradeStatusPhase[] = [
         translationKey: 'TR_TRADING_DETAIL_SWAPPING_ON_PROVIDER',
         translationValues: provider => ({ providerName: provider }),
     },
-    { status: 'SUCCESS', translationKey: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE' },
+    { status: 'SUCCESS', translationKey: 'TR_EXCHANGE_DETAIL_COMPLETE_TITLE' },
 ];
 
 export const sellStatusFlow: readonly TradeStatusPhase[] = [
-    { status: 'PENDING', translationKey: 'TR_SELL_DETAIL_SENDING_TRANSACTION' },
+    { status: 'PENDING', translationKey: 'TR_TRADING_DETAIL_SENDING_TRANSACTION' },
     {
         status: 'SUCCESS',
         translationKey: 'TR_TRADING_DETAIL_PROCESSING',

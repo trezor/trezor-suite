@@ -17,10 +17,10 @@ export const TradingDetailProgress = ({
     type,
     children,
 }: TradingDetailProgressProps) => (
-    <>
+    <Box padding={20}>
         <TradingDetailHeader title={title} description={description} type={type} />
         <Box margin={{ top: 32, bottom: 12 }}>
             <TradingDetailStepList>{children}</TradingDetailStepList>
         </Box>
-    </>
+    </Box>
 );

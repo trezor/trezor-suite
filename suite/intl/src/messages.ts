@@ -609,43 +609,43 @@ export const messages = defineMessages({
         defaultMessage: 'Converting',
         id: 'TR_EXCHANGE_STATUS_CONVERTING',
     },
-    TR_EXCHANGE_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Swap successful',
-        id: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
+    TR_EXCHANGE_DETAIL_COMPLETE_TITLE: {
+        defaultMessage: 'Swap complete',
+        id: 'TR_EXCHANGE_DETAIL_COMPLETE_TITLE',
     },
-    TR_EXCHANGE_DETAIL_SUCCESS_TEXT: {
-        defaultMessage: 'Your transaction was successful.',
-        id: 'TR_EXCHANGE_DETAIL_SUCCESS_TEXT',
+    TR_EXCHANGE_DETAIL_COMPLETE_TEXT: {
+        defaultMessage: 'Funds are in your account. View your swap in trade history.',
+        id: 'TR_EXCHANGE_DETAIL_COMPLETE_TEXT',
     },
-    TR_EXCHANGE_DETAIL_SUCCESS_BUTTON: {
-        defaultMessage: 'Make another Swap',
-        id: 'TR_EXCHANGE_DETAIL_SUCCESS_BUTTON',
+    TR_EXCHANGE_DETAIL_COMPLETE_BUTTON: {
+        defaultMessage: 'Start new swap',
+        id: 'TR_EXCHANGE_DETAIL_COMPLETE_BUTTON',
     },
-    TR_EXCHANGE_DETAIL_ERROR_TITLE: {
-        defaultMessage: 'Transaction failed',
-        id: 'TR_EXCHANGE_DETAIL_ERROR_TITLE',
+    TR_EXCHANGE_DETAIL_RETURNED_TITLE: {
+        defaultMessage: 'Your swap returned',
+        id: 'TR_EXCHANGE_DETAIL_RETURNED_TITLE',
     },
-    TR_EXCHANGE_DETAIL_ERROR_TEXT: {
+    TR_EXCHANGE_DETAIL_RETURNED_TEXT: {
         defaultMessage:
-            "Your transaction failed or was rejected. Your assets haven't been swapped.",
-        id: 'TR_EXCHANGE_DETAIL_ERROR_TEXT',
+            'Your funds have been returned to your account. Reach out to {providerName}’s support if you have any issues.',
+        id: 'TR_EXCHANGE_DETAIL_RETURNED_TEXT',
     },
-    TR_EXCHANGE_DETAIL_ERROR_BUTTON: {
-        defaultMessage: 'Back to Swap',
-        id: 'TR_EXCHANGE_DETAIL_ERROR_BUTTON',
+    TR_EXCHANGE_DETAIL_RETURNED_BUTTON: {
+        defaultMessage: 'Start new swap',
+        id: 'TR_EXCHANGE_DETAIL_RETURNED_BUTTON',
     },
-    TR_EXCHANGE_DETAIL_KYC_TITLE: {
-        defaultMessage: 'KYC request',
-        id: 'TR_EXCHANGE_DETAIL_KYC_TITLE',
+    TR_EXCHANGE_DETAIL_KYC_REQUESTED_TITLE: {
+        defaultMessage: 'KYC requested',
+        id: 'TR_EXCHANGE_DETAIL_KYC_REQUESTED_TITLE',
     },
-    TR_EXCHANGE_DETAIL_KYC_TEXT: {
+    TR_EXCHANGE_DETAIL_KYC_REQUESTED_TEXT: {
         defaultMessage:
-            "The provider has marked this transaction as suspicious and you may be required to complete their KYC process to finish the trade. Contact the provider's support to proceed.",
-        id: 'TR_EXCHANGE_DETAIL_KYC_TEXT',
+            'The provider has marked this transaction as “suspicious” and you may be required to complete their KYC process to finish the trade. Contact {providerName}’s support to proceed.',
+        id: 'TR_EXCHANGE_DETAIL_KYC_REQUESTED_TEXT',
     },
-    TR_EXCHANGE_DETAIL_KYC_SUPPORT: {
-        defaultMessage: 'Go to provider support',
-        id: 'TR_EXCHANGE_DETAIL_KYC_SUPPORT',
+    TR_EXCHANGE_DETAIL_KYC_REQUESTED_BUTTON: {
+        defaultMessage: 'Contact {providerName}',
+        id: 'TR_EXCHANGE_DETAIL_KYC_REQUESTED_BUTTON',
     },
     TR_APPROVAL_APPROVE_TOKEN_SPENDING: {
         defaultMessage: 'Approve {displaySymbol} spending',
@@ -949,29 +949,29 @@ export const messages = defineMessages({
         defaultMessage: 'Proceed',
         id: 'TR_SELL_GO_TO_TRANSACTION',
     },
-    TR_SELL_DETAIL_SUCCESS_TITLE: {
+    TR_SELL_DETAIL_COMPLETE_TITLE: {
         defaultMessage: 'Sell complete',
-        id: 'TR_SELL_DETAIL_SUCCESS_TITLE',
+        id: 'TR_SELL_DETAIL_COMPLETE_TITLE',
     },
-    TR_SELL_DETAIL_SUCCESS_TEXT: {
+    TR_SELL_DETAIL_COMPLETE_TEXT: {
         defaultMessage: 'Funds are in your account. View your sell in trade history.',
-        id: 'TR_SELL_DETAIL_SUCCESS_TEXT',
+        id: 'TR_SELL_DETAIL_COMPLETE_TEXT',
     },
-    TR_SELL_DETAIL_SUCCESS_BUTTON: {
+    TR_SELL_DETAIL_COMPLETE_BUTTON: {
         defaultMessage: 'Start new sell',
-        id: 'TR_SELL_DETAIL_SUCCESS_BUTTON',
+        id: 'TR_SELL_DETAIL_COMPLETE_BUTTON',
     },
-    TR_SELL_DETAIL_ERROR_TITLE: {
-        defaultMessage: 'Transaction failed',
-        id: 'TR_SELL_DETAIL_ERROR_TITLE',
+    TR_SELL_DETAIL_FAILED_TITLE: {
+        defaultMessage: 'Sell failed',
+        id: 'TR_SELL_DETAIL_FAILED_TITLE',
     },
-    TR_SELL_DETAIL_ERROR_TEXT: {
-        defaultMessage: 'Your transaction was rejected or failed.',
-        id: 'TR_SELL_DETAIL_ERROR_TEXT',
+    TR_SELL_DETAIL_FAILED_TEXT: {
+        defaultMessage: 'Your transaction failed or was rejected. Funds are in your account.',
+        id: 'TR_SELL_DETAIL_FAILED_TEXT',
     },
-    TR_SELL_DETAIL_ERROR_BUTTON: {
-        defaultMessage: 'Back to Sell',
-        id: 'TR_SELL_DETAIL_ERROR_BUTTON',
+    TR_SELL_DETAIL_FAILED_BUTTON: {
+        defaultMessage: 'Start new sell',
+        id: 'TR_SELL_DETAIL_FAILED_BUTTON',
     },
     TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO: {
         defaultMessage: 'Waiting for {providerName}',
@@ -1091,30 +1091,30 @@ export const messages = defineMessages({
         defaultMessage: 'Receive account',
         id: 'TR_BUY_RECEIVING_ACCOUNT',
     },
-    TR_BUY_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Buy successful',
-        id: 'TR_BUY_DETAIL_SUCCESS_TITLE',
+    TR_BUY_DETAIL_COMPLETE_TITLE: {
+        defaultMessage: 'Buy complete',
+        id: 'TR_BUY_DETAIL_COMPLETE_TITLE',
     },
-    TR_BUY_DETAIL_SUCCESS_TEXT: {
-        defaultMessage: 'Your transaction has been approved. Wait for it to finish.',
-        id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
+    TR_BUY_DETAIL_COMPLETE_TEXT: {
+        defaultMessage: 'Funds are in your account. View your buy in trade history.',
+        id: 'TR_BUY_DETAIL_COMPLETE_TEXT',
     },
-    TR_BUY_DETAIL_SUCCESS_BUTTON: {
-        defaultMessage: 'Make another Buy',
-        id: 'TR_BUY_DETAIL_SUCCESS_BUTTON',
+    TR_BUY_DETAIL_COMPLETE_BUTTON: {
+        defaultMessage: 'Start new buy',
+        id: 'TR_BUY_DETAIL_COMPLETE_BUTTON',
     },
-    TR_BUY_DETAIL_ERROR_TITLE: {
-        defaultMessage: 'Transaction failed',
-        id: 'TR_BUY_DETAIL_ERROR_TITLE',
+    TR_BUY_DETAIL_FAILED_TITLE: {
+        defaultMessage: 'Buy failed',
+        id: 'TR_BUY_DETAIL_FAILED_TITLE',
     },
-    TR_BUY_DETAIL_ERROR_TEXT: {
+    TR_BUY_DETAIL_FAILED_TEXT: {
         defaultMessage:
             "Your transaction failed or was rejected. Your payment method hasn't been charged.",
-        id: 'TR_BUY_DETAIL_ERROR_TEXT',
+        id: 'TR_BUY_DETAIL_FAILED_TEXT',
     },
-    TR_BUY_DETAIL_ERROR_BUTTON: {
-        defaultMessage: 'Back to Buy',
-        id: 'TR_BUY_DETAIL_ERROR_BUTTON',
+    TR_BUY_DETAIL_FAILED_BUTTON: {
+        defaultMessage: 'Start new buy',
+        id: 'TR_BUY_DETAIL_FAILED_BUTTON',
     },
     TR_BUY_DETAIL_SUBMITTED_TEXT: {
         defaultMessage: "Click to complete your details on the provider's website.",

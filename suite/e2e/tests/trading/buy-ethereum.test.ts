@@ -62,7 +62,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
 
             await test.step('Verify transaction detail', async () => {
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                    'TR_BUY_DETAIL_SUCCESS_TITLE',
+                    'TR_BUY_DETAIL_COMPLETE_TITLE',
                 );
                 await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
                 await expect(tradingPage.confirmation.cryptoAmount).toHaveText(

@@ -22,7 +22,7 @@ import { TradingSellDetailPaymentFailed } from './TradingSellDetailPaymentFailed
 import { TradingSellDetailPaymentSuccessful } from './TradingSellDetailPaymentSuccessful';
 import { TradingSellDetailSidebar } from './TradingSellDetailSidebar';
 import {
-    type SellDetailTerminalStep,
+    type SellDetailStatusStep,
     getSellDetailHeaderMessages,
     getSellDetailProgress,
     getSellDetailStatusStep,
@@ -59,28 +59,7 @@ export const TradingSellDetailContent = () => {
     };
 
     const getContent = () => {
-        if (tradeStatusStep !== 'pending') {
-            const terminalStates: Record<SellDetailTerminalStep, ReactNode> = {
-                success: (
-                    <TradingSellDetailPaymentSuccessful
-                        trade={trade.data}
-                        account={sendAccount}
-                        provider={provider}
-                    />
-                ),
-                error: (
-                    <TradingSellDetailPaymentFailed
-                        trade={trade.data}
-                        account={sendAccount}
-                        provider={provider}
-                    />
-                ),
-            };
-
-            return terminalStates[tradeStatusStep];
-        }
-
-        return (
+        const progressContent = (
             <TradingDetailProgress
                 {...getSellDetailHeaderMessages(tradeStatus)}
                 type={translationString('TR_TRADING_SELL').toLowerCase()}
@@ -106,6 +85,26 @@ export const TradingSellDetailContent = () => {
                 </TradingDetailProcessingStep>
             </TradingDetailProgress>
         );
+
+        const contentByStatusStep: Record<SellDetailStatusStep, ReactNode> = {
+            pending: progressContent,
+            success: (
+                <TradingSellDetailPaymentSuccessful
+                    trade={trade.data}
+                    account={sendAccount}
+                    provider={provider}
+                />
+            ),
+            error: (
+                <TradingSellDetailPaymentFailed
+                    trade={trade.data}
+                    account={sendAccount}
+                    provider={provider}
+                />
+            ),
+        };
+
+        return contentByStatusStep[tradeStatusStep];
     };
 
     return (

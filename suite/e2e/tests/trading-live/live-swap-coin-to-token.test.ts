@@ -137,7 +137,7 @@ test.describe(
                     });
 
                     await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                        'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
+                        'TR_EXCHANGE_DETAIL_COMPLETE_TITLE',
                         { timeout: tenMinutes },
                     );
                     await expect(tradingPage.confirmation.cryptoAmount.first()).toHaveText(

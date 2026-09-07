@@ -50,7 +50,7 @@ export const TradingDetailLayout = ({
     return (
         <Wrapper data-testid="@trading/transaction/detail">
             <Column gap={20}>
-                <Card paddingType="large" data-testid="@trading/transaction/detail/status-card">
+                <Card paddingType="none" data-testid="@trading/transaction/detail/status-card">
                     {children}
                 </Card>
                 {banner}

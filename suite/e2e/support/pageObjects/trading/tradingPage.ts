@@ -47,7 +47,7 @@ export class TradingPage {
     readonly pendingApprovalTransactionId: Locator;
     readonly swapButton: Locator;
     readonly backToAccountButton = (type: 'Buy' | 'Sell' | 'Swap') =>
-        this.page.getByRole('button', { name: `Make another ${type}` });
+        this.page.getByRole('button', { name: `Start new ${type.toLowerCase()}` });
 
     // Send fields and buttons
     readonly sendAddressInput: Locator;
