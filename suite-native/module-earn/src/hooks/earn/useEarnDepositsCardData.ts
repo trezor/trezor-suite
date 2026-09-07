@@ -113,9 +113,10 @@ export const useEarnDepositsCardData = ({
                     ({
                         id: deposit.id,
                         type: 'staking',
-                        title: deposit.accountLabel ?? getNetworkDisplaySymbolName(deposit.symbol),
+                        title: getNetworkDisplaySymbolName(deposit.symbol),
                         symbol: deposit.symbol,
                         accountKey: deposit.accountKey,
+                        accountLabel: deposit.accountLabel,
                         balance,
                         fiatAmount,
                     }) satisfies EarnDepositsCardActiveItem,

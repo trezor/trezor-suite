@@ -3012,10 +3012,8 @@ export const messages = {
                 incompleteFiatTotal: 'Some fiat rates couldn’t load. Total may be incomplete.',
             },
             activeSheet: {
-                stakingPositionsTitle: 'Staking positions',
-                yieldPositionsTitle: 'Yield positions',
-                stakingTitle: 'Your stakes',
-                stablecoinYieldTitle: 'Your yields',
+                stakingPositionsTitle: 'Your staking positions',
+                yieldPositionsTitle: 'Your DeFi yield positions',
             },
             stablecoinYieldLoadError: {
                 title: 'Unable to load yield opportunities',
@@ -3023,7 +3021,8 @@ export const messages = {
                     'This may be due to a network or connectivity issue. Check your connection and try again.',
             },
             chooseAccountSheet: {
-                title: 'Choose account',
+                stakingTitle: 'Choose account to stake',
+                yieldTitle: 'Choose account to yield',
             },
             earnItem: {
                 rewards: 'Rewards',
@@ -3059,8 +3058,7 @@ export const messages = {
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
             claimRewards: {
-                title: 'Claim rewards from an account',
-                subtitle: 'Select an account to claim bonus rewards.',
+                title: 'Bonus rewards to claim',
             },
             title: 'Earn',
         },

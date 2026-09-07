@@ -12,6 +12,7 @@ import { getChooseAccountBalanceData } from '../../utils/staking/chooseAccountBa
 
 type ChooseStakingAccountBottomSheetProps = {
     ref: BottomSheetModalRef;
+    type: 'staking' | 'yield';
     accounts: Account[];
     onAccountSelected: (account: Account) => void;
     onClose: () => void;
@@ -21,6 +22,7 @@ type ChooseStakingAccountBottomSheetProps = {
 
 export const ChooseStakingAccountBottomSheet = ({
     ref,
+    type,
     accounts,
     onAccountSelected,
     onClose,
@@ -45,7 +47,13 @@ export const ChooseStakingAccountBottomSheet = ({
     return (
         <BottomSheetModal
             ref={ref}
-            title={<Translation id="earn.earnScreen.chooseAccountSheet.title" />}
+            title={
+                type === 'staking' ? (
+                    <Translation id="earn.earnScreen.chooseAccountSheet.stakingTitle" />
+                ) : (
+                    <Translation id="earn.earnScreen.chooseAccountSheet.yieldTitle" />
+                )
+            }
             isCloseDisplayed
             onClose={onClose}
             onDismiss={onDismiss}

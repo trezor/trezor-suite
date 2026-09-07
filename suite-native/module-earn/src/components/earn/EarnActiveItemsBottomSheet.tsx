@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useStore } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { events } from '@suite-common/analytics';
@@ -10,19 +9,12 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
 
 import { EarnAccountCard } from './EarnAccountCard';
 import { useStakingDetailNavigation } from '../../hooks/staking/useStakingDetailNavigation';
 import { useStakingNavigateAnalytics } from '../../hooks/staking/useStakingNavigateAnalytics';
 import { useYieldDetailNavigation } from '../../hooks/yield/useYieldDetailNavigation';
 import { type EarnDepositsCardActiveItem } from '../../types';
-
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
 
 type EarnActiveItemsBottomSheetProps = {
     ref: BottomSheetModalRef;
@@ -37,7 +29,6 @@ export const EarnActiveItemsBottomSheet = ({
     items,
     onClose,
 }: EarnActiveItemsBottomSheetProps) => {
-    const navigation = useNavigation<NavigationProp>();
     const reportStakingNavigate = useStakingNavigateAnalytics();
     const store = useStore<AccountsRootState>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -100,29 +91,11 @@ export const EarnActiveItemsBottomSheet = ({
         ],
     );
 
-    const handleClaimPress = useCallback(
-        (item: EarnDepositsCardActiveItem) => {
-            if (item.type !== 'staking') return;
-
-            onClose();
-
-            navigation.navigate(RootStackRoutes.StakingClaimReview, {
-                accountKey: item.accountKey,
-                symbol: item.symbol,
-            });
-        },
-        [navigation, onClose],
-    );
-
     const renderItem = useCallback(
         ({ item }: { item: EarnDepositsCardActiveItem }) => (
-            <EarnAccountCard
-                item={item}
-                onPress={() => handlePress(item)}
-                onClaimPress={() => handleClaimPress(item)}
-            />
+            <EarnAccountCard item={item} onPress={() => handlePress(item)} />
         ),
-        [handlePress, handleClaimPress],
+        [handlePress],
     );
 
     return (
