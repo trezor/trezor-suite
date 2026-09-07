@@ -1,14 +1,7 @@
 import { type ReactNode } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
 
-import {
-    Box,
-    Card,
-    HStack,
-    OrderedListIcon,
-    type OrderedListIconProps,
-    Text,
-} from '@suite-native/atoms';
+import { Box, Card, HStack, IconSquare, type IconSquareProps, Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -19,7 +12,7 @@ type AddressReviewStepProps = {
     onLayout?: (event: LayoutChangeEvent) => void;
 };
 
-const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): OrderedListIconProps =>
+const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): IconSquareProps =>
     stepNumber
         ? {
               iconNumber: stepNumber,
@@ -59,7 +52,7 @@ export const AddressReviewStep = ({
         <View onLayout={onLayout}>
             <Card style={applyStyle(cardStyle, { isFinalStep: !stepNumber })}>
                 <HStack spacing="sp12" flexDirection="row" alignItems="center">
-                    <OrderedListIcon {...getIconProps(stepNumber)} />
+                    <IconSquare {...getIconProps(stepNumber)} />
                     <Box flexShrink={1}>
                         <Text variant="body-sm-strong">
                             <Translation id={translationId} />

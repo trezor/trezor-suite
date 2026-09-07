@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
-import { Card, HStack, OrderedListIcon, Radio, Text } from '@suite-native/atoms';
+import { Card, HStack, IconSquare, Radio, Text } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -52,7 +52,7 @@ export const DemoAccountQuestionnaireAnswer = ({
                     spacing="sp12"
                 >
                     <HStack spacing="sp12" alignItems="center" flex={1}>
-                        {!!iconName && <OrderedListIcon iconName={iconName} iconSize="large" />}
+                        {!!iconName && <IconSquare iconName={iconName} iconSize="large" />}
                         <Text
                             variant="body-md"
                             color="contentPrimary"
