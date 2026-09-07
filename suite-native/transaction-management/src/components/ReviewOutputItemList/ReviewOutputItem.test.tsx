@@ -57,7 +57,7 @@ describe('ReviewOutputItem', () => {
         ['approve_data', getTranslation('transactionManagement.review.outputs.approveLabel')],
         [
             'recipient_name',
-            getTranslation('transactionManagement.review.outputs.recipientNameOutputLabel'),
+            getTranslation('transactionManagement.review.outputs.recipientProviderNameOutputLabel'),
         ],
         [
             'traded_assets',
