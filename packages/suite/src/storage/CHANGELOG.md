@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.10.0
+
+- add `earnOnboarding` store (confirmed earn opportunities per account key)
+
 ## 26.9.0
 
 - replace `walletSettings.hideSuspiciousTransactions` (per-network boolean) with `walletSettings.suspiciousTransactionsFilter` (per-network filter value)

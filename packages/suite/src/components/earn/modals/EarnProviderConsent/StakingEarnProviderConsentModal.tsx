@@ -5,7 +5,10 @@ import {
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getEarnOpportunityKey, selectIsEarnOnboardingConfirmed } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { StakingProviderConsentBanners } from './components/StakingProviderConsentBanners';
@@ -29,31 +32,50 @@ export const StakingEarnProviderConsentModal = ({
     const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Stake,
         onCancel,
+        provider,
         account,
         networkSymbol: account.symbol,
         yieldContext,
     });
+
+    const isConfirmed = useSelector(state =>
+        selectIsEarnOnboardingConfirmed(
+            state,
+            account.key,
+            getEarnOpportunityKey({ type: 'staking', provider }),
+        ),
+    );
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const providerName = getEarnProviderName(provider);
 
     return (
         <EarnProviderConsentModalLayout
+            requiresAcknowledgement={!isConfirmed}
             heading={<Translation id="TR_EARN_STAKE_TOKEN" values={{ symbol: displaySymbol }} />}
             description={
-                <Translation id="TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED" values={{ providerName }} />
+                !isConfirmed && (
+                    <Translation
+                        id="TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED"
+                        values={{ providerName }}
+                    />
+                )
             }
             banners={
-                <StakingProviderConsentBanners
-                    networkType={account.networkType}
-                    displaySymbol={displaySymbol}
-                />
+                !isConfirmed && (
+                    <StakingProviderConsentBanners
+                        networkType={account.networkType}
+                        displaySymbol={displaySymbol}
+                    />
+                )
             }
             consentText={
-                <Translation
-                    id="TR_EARN_CONSENT_TO_STAKING_WITH_PROVIDER"
-                    values={{ providerName }}
-                />
+                !isConfirmed && (
+                    <Translation
+                        id="TR_EARN_CONSENT_TO_STAKING_WITH_PROVIDER"
+                        values={{ providerName }}
+                    />
+                )
             }
             onConfirm={proceedToEarnFlow}
             onCancel={onCancelClick}

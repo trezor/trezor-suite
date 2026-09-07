@@ -5,7 +5,7 @@ import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { useDispatch } from '@suite-common/redux-utils';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -144,16 +144,15 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 },
             }),
         );
-        dispatch(openModal({ type: 'stake', flow: EarnFlow.Stake, account }));
-
-        analytics.report({
-            type: events.stakingStakeEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'staking-dashboard',
-                networkSymbol: account.symbol,
-            },
-        });
+        dispatch(
+            openModal({
+                type: 'earn-in-a-nutshell',
+                flow: EarnFlow.Stake,
+                provider: EarnProvider.Everstake,
+                account,
+                analyticsStep: 'staking-dashboard',
+            }),
+        );
     };
 
     const openClaimModal = (event: React.MouseEvent<HTMLButtonElement>) => {

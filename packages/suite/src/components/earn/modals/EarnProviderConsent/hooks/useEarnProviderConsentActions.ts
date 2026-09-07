@@ -6,10 +6,17 @@ import { useDispatch } from '@suite-common/redux-utils';
 import {
     EarnFlow,
     type EarnModalAction,
+    type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectVotingDelegationOption, stakeActions } from '@suite-common/wallet-core';
+import {
+    earnOnboardingActions,
+    getEarnOpportunityKey,
+    getYieldEarnOpportunityKey,
+    selectVotingDelegationOption,
+    stakeActions,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -19,6 +26,7 @@ import { useSelector } from 'src/hooks/suite';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;
+    provider: EarnProvider;
     onCancel: () => void;
     includeVotingDelegation?: boolean;
     account: Account;
@@ -28,6 +36,7 @@ interface UseEarnProviderConsentActionsProps {
 
 export const useEarnProviderConsentActions = ({
     flow,
+    provider,
     onCancel,
     includeVotingDelegation = false,
     account,
@@ -57,6 +66,20 @@ export const useEarnProviderConsentActions = ({
     };
 
     const proceedToEarnFlow = () => {
+        const opportunity =
+            flow === EarnFlow.Yield
+                ? getYieldEarnOpportunityKey(yieldContext?.vaultAddress)
+                : getEarnOpportunityKey({ type: 'staking', provider });
+
+        if (opportunity) {
+            dispatch(
+                earnOnboardingActions.confirmEarnOnboarding({
+                    accountKey: account.key,
+                    opportunity,
+                }),
+            );
+        }
+
         onCancel();
 
         switch (flow) {

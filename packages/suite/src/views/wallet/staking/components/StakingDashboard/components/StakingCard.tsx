@@ -4,7 +4,7 @@ import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
 import { useDispatch } from '@suite-common/redux-utils';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getStakingDataForNetwork,
@@ -170,20 +170,13 @@ export const StakingCard = ({
         if (!isStakingDisabled) {
             dispatch(
                 openModal({
-                    type: 'stake',
+                    type: 'earn-in-a-nutshell',
                     flow: EarnFlow.Stake,
+                    provider: EarnProvider.Everstake,
                     account,
+                    analyticsStep: 'staking-dashboard',
                 }),
             );
-
-            analytics.report({
-                type: events.stakingStakeEvent.name,
-                payload: {
-                    action: 'continue',
-                    step: 'staking-dashboard',
-                    networkSymbol: account.symbol,
-                },
-            });
         }
     };
 

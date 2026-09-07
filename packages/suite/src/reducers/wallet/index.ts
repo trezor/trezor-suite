@@ -6,6 +6,7 @@ import { type TradingState, prepareTradingReducer } from '@suite-common/trading'
 import {
     type AccountsRefreshTimeState,
     type AccountsState,
+    type EarnOnboardingState,
     type ExplorerConfig,
     type FiatRatesState,
     type FormDraftState,
@@ -20,6 +21,7 @@ import {
     prepareAccountsReducer,
     prepareBlockchainReducer,
     prepareDiscoveryReducer,
+    prepareEarnOnboardingReducer,
     prepareExplorerReducer,
     prepareFiatRatesReducer,
     preparePhishingReducer,
@@ -47,6 +49,7 @@ import graphReducer, { type GraphState } from './graphReducer';
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const phishingReducer = preparePhishingReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
+export const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);
 export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 export const explorerReducer = prepareExplorerReducer(extraDependencies);
 export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
@@ -77,6 +80,7 @@ export type WalletState = {
     settings: WalletSettings;
     stablecoinYield: YieldState;
     tronStake: TronStakeReducerState;
+    earnOnboarding: EarnOnboardingState;
 };
 
 export const walletReducers: Reducer<
@@ -104,4 +108,5 @@ export const walletReducers: Reducer<
     settings: walletSettingsReducer,
     stablecoinYield: yieldReducer,
     tronStake: tronStakeReducer,
+    earnOnboarding: earnOnboardingReducer,
 });

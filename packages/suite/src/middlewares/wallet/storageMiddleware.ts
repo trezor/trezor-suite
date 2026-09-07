@@ -53,6 +53,7 @@ import {
     accountsActions,
     blockchainActions,
     changeNetworks,
+    earnOnboardingActions,
     explorerActions,
     phishingActions,
     selectAccountByKey,
@@ -143,8 +144,9 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             accountsActions.updateAccount.match,
         ],
         getDevice: (action, state) => findAccountDevice(action.payload, selectDevices(state)),
-        save: ({ action }, { dispatch }) => {
-            const account = action.payload;
+        save: ({ action }, { dispatch, getState }) => {
+            const account = selectAccountByKey(getState(), action.payload.key);
+            if (!account) return;
 
             if (!isAccountSuccessful(account)) {
                 return;
@@ -193,6 +195,13 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
         save: ({ action }, { dispatch }) => {
             dispatch(storageActions.saveAccountReceiveThunk(action.payload.accountKey));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [earnOnboardingActions.confirmEarnOnboarding.match],
+        getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
+        save: ({ action }, { dispatch }) => {
+            dispatch(storageActions.saveEarnOnboardingThunk(action.payload.accountKey));
         },
     }),
     defineRememberedDeviceHandler({

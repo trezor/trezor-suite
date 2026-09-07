@@ -146,6 +146,12 @@ export const EarnYieldAccountOpportunity = ({
         );
     };
 
+    const yieldContext = {
+        id: opportunity.vault.id,
+        vaultAddress: vaultContractAddress ?? undefined,
+        tokenContractAddress: opportunity.vault.token.address ?? undefined,
+    };
+
     const openYieldDepositFlow = () => {
         if (!opportunity.account) {
             return;
@@ -184,53 +190,7 @@ export const EarnYieldAccountOpportunity = ({
                 provider: EarnProvider.Morpho,
                 account: opportunity.account,
                 analyticsStep: 'earn-dashboard',
-                yieldContext: {
-                    id: opportunity.vault.id,
-                    vaultAddress: vaultContractAddress ?? undefined,
-                    tokenContractAddress: opportunity.vault.token.address ?? undefined,
-                },
-            }),
-        );
-    };
-
-    const navigateToYieldDeposit = () => {
-        if (!opportunity.account || !vaultContractAddress) {
-            return;
-        }
-
-        if (isFirmwareOutdated) {
-            analytics.report({
-                type: sharedEvents.yieldDepositEvent.name,
-                payload: {
-                    action: 'continue',
-                    type: 'firmware-upgrade-needed-modal',
-                    networkSymbol: opportunity.account.symbol,
-                    vaultId: opportunity.vault.id,
-                },
-            });
-            openFirmwareModal();
-
-            return;
-        }
-
-        analytics.report({
-            type: sharedEvents.yieldNavigateEvent.name,
-            payload: {
-                action: 'continue',
-                from: 'earn-dashboard',
-                to: 'deposit-form',
-                networkSymbol: opportunity.account.symbol,
-                vaultId: opportunity.vault.id,
-            },
-        });
-
-        dispatch(
-            gotoThunk({
-                routeName: 'earn-yield-deposit',
-                params: getEarnRouteParams({
-                    account: opportunity.account,
-                    vaultAddress: vaultContractAddress,
-                }),
+                yieldContext,
             }),
         );
     };
@@ -319,7 +279,7 @@ export const EarnYieldAccountOpportunity = ({
         isWithdrawDisabled,
         depositMessageContent: depositMessageSystem.content,
         withdrawMessageContent: withdrawMessageSystem.content,
-        onDepositMore: navigateToYieldDeposit,
+        onDepositMore: openYieldDepositFlow,
         onWithdraw: navigateToYieldWithdraw,
         onDepositNow: openYieldDepositFlow,
         onBuy: navigateToTradingBuy,

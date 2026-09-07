@@ -15,6 +15,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { useDispatch } from '@suite-common/redux-utils';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     DefinitionType,
     type TokenInfo,
@@ -179,19 +180,24 @@ const TokenRowBasicActions = ({
             payload: {
                 action: 'continue',
                 from: analyticsFrom,
-                to: 'deposit-form',
+                to: 'deposit-in-a-nutshell-modal',
                 networkSymbol: account.symbol,
                 vaultId: availableVault.id,
             },
         });
 
         dispatch(
-            gotoThunk({
-                routeName: 'earn-yield-deposit',
-                params: getEarnRouteParams({
-                    account,
+            openModal({
+                type: 'earn-in-a-nutshell',
+                flow: EarnFlow.Yield,
+                provider: EarnProvider.Morpho,
+                account,
+                analyticsStep: 'earn-dashboard',
+                yieldContext: {
+                    id: availableVault.id,
                     vaultAddress: availableVaultAddress,
-                }),
+                    tokenContractAddress: availableVault.token.address ?? undefined,
+                },
             }),
         );
     };

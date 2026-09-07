@@ -30,6 +30,7 @@ import { type PhishingState } from '@suite-common/wallet-core';
 import type {
     AccountKey,
     BackendSettings,
+    EarnOpportunityKey,
     FormState,
     RatesByTimestamps,
     WalletSettings,
@@ -89,6 +90,10 @@ export interface SuiteDBSchema extends DBSchema {
     sendFormDrafts: {
         key: AccountKey;
         value: FormState;
+    };
+    earnOnboarding: {
+        key: AccountKey;
+        value: EarnOpportunityKey[];
     };
     receive: {
         key: AccountKey;
