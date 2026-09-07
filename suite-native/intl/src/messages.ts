@@ -4749,7 +4749,7 @@ export const messages = {
                 transactionDataEmpty: 'No data',
                 transactionDataShowMore: 'Show more',
                 transactionDataShowLess: 'Show less',
-                recipientNameOutputLabel: 'Trading partner',
+                recipientProviderNameOutputLabel: 'Provider',
                 tradedAssetsOutputLabel: 'My assets',
                 tradedAssetsSendLabel: 'You send',
                 tradedAssetsReceiveLabel: 'You receive',
