@@ -118,4 +118,34 @@ describe('Psbt', () => {
 
         expect(psbt.unsignedTx.toHex()).toEqual(TX_HEX);
     });
+
+    it('throws on invalid magic bytes', () => {
+        expect(() => Psbt.fromBuffer(Buffer.from('0000000000', 'hex'))).toThrow(
+            'Invalid PSBT magic bytes.',
+        );
+    });
+
+    it('throws on a duplicate key within a map', () => {
+        // global map with two identical key/value entries (key 0x0102, value 0x03)
+        const duplicateKeyMap = Buffer.concat([PSBT_MAGIC, Buffer.from('02010201030201020103', 'hex')]);
+
+        expect(() => Psbt.fromBuffer(duplicateKeyMap)).toThrow('PSBT map has duplicate key.');
+    });
+
+    it('throws when there are more PSBT input maps than unsigned transaction inputs', () => {
+        const psbt = Psbt.fromHex(getSimplePsbtBuffer(TX_HEX).toString('hex'));
+
+        psbt.inputs.push([]);
+
+        expect(() => psbt.toBuffer()).toThrow(
+            'PSBT has more input maps than unsigned transaction inputs.',
+        );
+    });
+
+    it('rejects an oversized key length without allocating', () => {
+        // key length varint claims 0xffffffff bytes but none follow → bounded read must throw
+        const oversized = Buffer.concat([PSBT_MAGIC, Buffer.from('feffffffff', 'hex')]);
+
+        expect(() => Psbt.fromBuffer(oversized)).toThrow();
+    });
 });
