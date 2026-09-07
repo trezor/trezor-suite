@@ -7,7 +7,6 @@ import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-sui
 import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
 import { createTronSuiteCommonNetworkModule } from '@trezor/network-tron-suite-common';
 
-import { createNetworkModuleRepository } from './NetworkModuleRepository';
 import { type NetworkModules } from './NetworkModules';
 import type { NetworksServices } from './NetworksServices';
 import { createAddressValidator } from './createAddressValidator';
@@ -16,9 +15,12 @@ import { createGetNamedAddressSupport } from './createGetNamedAddressSupport';
 import { createGetNetworkConfig } from './createGetNetworkConfig';
 import { createGetSupportedNetworks } from './createGetSupportedNetworks';
 import { createIsTestnet } from './createIsTestnet';
+import { createNetworkModuleRepository } from './createNetworkModuleRepository';
+
+type NetworksCompositionRootDeps = NetworkSuiteCommonModuleApi;
 
 export const createNetworksCompositionRoot = (
-    deps: NetworkSuiteCommonModuleApi,
+    deps: NetworksCompositionRootDeps,
 ): NetworksServices => {
     // When adding a new Network Module, you have to
     //    1. register it here to have the runtime object for DI
@@ -35,16 +37,17 @@ export const createNetworksCompositionRoot = (
 
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+    const getSupportedNetworks = createGetSupportedNetworks({ networkModuleRepository });
 
     return {
         addressValidator: createAddressValidator({ networkModuleRepository }),
         findNetworkSymbolForProtocol: createFindNetworkSymbolForProtocol({
             getNetworkConfig,
-            networkModuleRepository,
+            getSupportedNetworks,
         }),
         getNamedAddressSupport: createGetNamedAddressSupport({ networkModuleRepository }),
         getNetworkConfig,
-        getSupportedNetworks: createGetSupportedNetworks({ networkModuleRepository }),
+        getSupportedNetworks,
         isTestnet: createIsTestnet({ networkModuleRepository }),
     };
 };

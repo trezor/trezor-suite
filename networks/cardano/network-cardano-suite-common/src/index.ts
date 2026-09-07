@@ -1,2 +1,2 @@
-export { createCardanoSuiteCommonNetworkModule } from './CardanoNetworkSuiteCommonNetworkModule';
-export type { CardanoNetworkSuiteCommonNetworkModule } from './CardanoNetworkSuiteCommonNetworkModule';
+export { createCardanoSuiteCommonNetworkModule } from './createCardanoSuiteCommonNetworkModule';
+export type { CardanoNetworkSuiteCommonNetworkModule } from './createCardanoSuiteCommonNetworkModule';

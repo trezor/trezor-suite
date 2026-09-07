@@ -1,5 +1,7 @@
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
-import type { NetworkSuiteCommonModuleApi } from '@trezor/network-module-suite-common-types';
+import type { GetTrezorConnectDep } from '@trezor/network-module-suite-common-types';
+
+export type ResolveViaBlockbookDeps = GetTrezorConnectDep<'getAccountInfo'>;
 
 import { isAddressLike } from './namedAddressUtils';
 
@@ -15,10 +17,16 @@ import { isAddressLike } from './namedAddressUtils';
  * @param symbol - Network symbol the name should be resolved on (e.g. `eth`).
  * @returns The resolved onchain address, or `null` when the answer is not one.
  */
+export type ResolveViaBlockbook = (value: string, symbol: EthereumNetworkSymbol) => Promise<string>;
+
+export type ResolveViaBlockbookDep = {
+    resolveViaBlockbook: ResolveViaBlockbook;
+};
+
 export const createResolveViaBlockbook =
-    ({ getTrezorConnect }: NetworkSuiteCommonModuleApi) =>
-    async (value: string, symbol: EthereumNetworkSymbol) => {
-        const result = await getTrezorConnect().getAccountInfo({
+    (deps: ResolveViaBlockbookDeps): ResolveViaBlockbook =>
+    async (value, symbol) => {
+        const result = await deps.getTrezorConnect().getAccountInfo({
             descriptor: value,
             coin: symbol,
             details: 'basic',

@@ -1,9 +1,9 @@
-import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { NetworkSymbol } from './NetworkModules';
-
-export type IsTestnet = (symbol: NetworkSymbol) => boolean;
+import type { NetworkModuleRepositoryDep } from './createNetworkModuleRepository';
 
 export type IsTestnetDeps = NetworkModuleRepositoryDep;
+
+export type IsTestnet = (symbol: NetworkSymbol) => boolean;
 
 export type IsTestnetDep = {
     isTestnet: IsTestnet;

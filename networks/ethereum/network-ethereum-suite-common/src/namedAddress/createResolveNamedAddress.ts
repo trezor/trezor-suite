@@ -1,11 +1,19 @@
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 
-type ResolveNamedAddressDeps = {
-    resolveNamedAddressOnchain: ResolveNamedAddress;
-    resolveViaBlockbook: ResolveNamedAddress;
-};
+import type { ResolveViaBlockbookDep } from './createResolveViaBlockbook';
+import type { UniversalResolver } from './createUniversalResolver';
 
-type ResolveNamedAddress = (value: string, symbol: EthereumNetworkSymbol) => Promise<string | null>;
+export type ResolveNamedAddressDeps = Pick<UniversalResolver, 'resolveNamedAddressOnchain'> &
+    ResolveViaBlockbookDep;
+
+export type ResolveNamedAddress = (
+    value: string,
+    symbol: EthereumNetworkSymbol,
+) => Promise<string | null>;
+
+export type ResolveNamedAddressDep = {
+    resolveNamedAddress: ResolveNamedAddress;
+};
 
 /**
  * Forward-resolve a named input, preferring a direct UniversalResolver call over Blockbook's

@@ -1,4 +1,4 @@
-import { createResolveViaBlockbook } from './resolveNamedAddressBB';
+import { createResolveViaBlockbook } from './createResolveViaBlockbook';
 
 it('reads the current Connect implementation when resolving, not when constructing the resolver', async () => {
     const firstGetAccountInfo = jest.fn().mockResolvedValue({
@@ -9,7 +9,7 @@ it('reads the current Connect implementation when resolving, not when constructi
         success: true,
         payload: { descriptor: 'second-address' },
     });
-    let connect = { getAccountInfo: firstGetAccountInfo, blockchainEvmRpcCall: jest.fn() };
+    let connect = { getAccountInfo: firstGetAccountInfo };
     const getTrezorConnect = jest.fn(() => connect);
     const resolveViaBlockbook = createResolveViaBlockbook({ getTrezorConnect });
 

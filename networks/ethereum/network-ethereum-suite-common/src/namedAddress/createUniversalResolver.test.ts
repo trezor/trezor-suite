@@ -4,7 +4,7 @@ import {
     createUniversalResolver,
     isNameUnresolvable,
     isUnsupportedProfileError,
-} from './universalResolver';
+} from './createUniversalResolver';
 
 const mockBlockchainEvmRpcCall = jest.fn();
 
@@ -12,7 +12,6 @@ const { resolveNamedAddressOnchain, resolveNamedProfileOnchain, reverseResolveAd
     createUniversalResolver({
         getTrezorConnect: () => ({
             blockchainEvmRpcCall: mockBlockchainEvmRpcCall,
-            getAccountInfo: jest.fn(),
         }),
     });
 

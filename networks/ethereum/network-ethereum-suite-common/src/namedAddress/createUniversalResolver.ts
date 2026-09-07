@@ -12,15 +12,42 @@ import { namehash, normalize, packetToBytes, toCoinType } from 'viem/ens';
 import { Calldata, EVM_ABI } from '@suite-common/calldata';
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 import type {
+    GetTrezorConnectDep,
     NamedAddressProfile,
-    NetworkSuiteCommonModuleApi,
 } from '@trezor/network-module-suite-common-types';
 import { BigNumber } from '@trezor/utils';
 
 import { getNamedAddressChainId } from './namedAddressUtils';
 
-/** One RPC round trip's share of the resolution budget `resolveNamedAddress` enforces. */
-export const ONCHAIN_CALL_TIMEOUT_MS = 10_000;
+export type UniversalResolverDeps = GetTrezorConnectDep<'blockchainEvmRpcCall'>;
+
+type ResolveNamedProfileOnchain = (
+    value: string,
+    symbol: EthereumNetworkSymbol,
+    textKeys?: readonly string[],
+) => Promise<NamedAddressProfile>;
+
+type ResolveNamedAddressOnchain = (
+    value: string,
+    symbol: EthereumNetworkSymbol,
+) => Promise<string | null>;
+
+type ReverseResolveAddressOnchain = (
+    address: string,
+    symbol: EthereumNetworkSymbol,
+) => Promise<string | null>;
+
+export type UniversalResolver = {
+    resolveNamedProfileOnchain: ResolveNamedProfileOnchain;
+    resolveNamedAddressOnchain: ResolveNamedAddressOnchain;
+    reverseResolveAddressOnchain: ReverseResolveAddressOnchain;
+};
+
+export type UniversalResolverDep = {
+    universalResolver: UniversalResolver;
+};
+
+const RESOLVE_TIMEOUT_MS = 15_000;
 
 // ENSIP-19 UniversalResolver. Deployed at the same address on every chain we support,
 // mainnet and Sepolia included (see viem's `chains` contract registry).
@@ -130,7 +157,7 @@ const isRevertError = (error: unknown) => {
     return /revert/i.test(error instanceof Error ? error.message : String(error));
 };
 
-export const createUniversalResolver = ({ getTrezorConnect }: NetworkSuiteCommonModuleApi) => {
+export const createUniversalResolver = (deps: UniversalResolverDeps): UniversalResolver => {
     const callUniversalResolver = async (symbol: EthereumNetworkSymbol, data: Hex) => {
         // The loser of the race has to be cleaned up: an uncleared timer keeps the event loop
         // busy for the full timeout after every single resolution.
@@ -138,7 +165,7 @@ export const createUniversalResolver = ({ getTrezorConnect }: NetworkSuiteCommon
 
         try {
             const response = await Promise.race([
-                getTrezorConnect().blockchainEvmRpcCall({
+                deps.getTrezorConnect().blockchainEvmRpcCall({
                     coin: symbol,
                     from: ZERO_ADDRESS,
                     to: UNIVERSAL_RESOLVER_ADDRESS,
@@ -274,11 +301,11 @@ export const createUniversalResolver = ({ getTrezorConnect }: NetworkSuiteCommon
      *
      * @returns The profile; `address` is `null` when the name has no address record.
      */
-    const resolveNamedProfileOnchain = async (
-        value: string,
-        symbol: EthereumNetworkSymbol,
-        textKeys: readonly string[] = [],
-    ): Promise<NamedAddressProfile> => {
+    const resolveNamedProfileOnchain: ResolveNamedProfileOnchain = async (
+        value,
+        symbol,
+        textKeys = [],
+    ) => {
         // A name no conformant resolver could hold — `isNameLike` accepts shapes ENSIP-15
         // rejects, such as an empty label. Answering "no record" beats falling through to a backend
         // that cannot do better either.
@@ -313,7 +340,7 @@ export const createUniversalResolver = ({ getTrezorConnect }: NetworkSuiteCommon
      *
      * @returns The resolved address, or `null` when the name has no address record.
      */
-    const resolveNamedAddressOnchain = async (value: string, symbol: EthereumNetworkSymbol) =>
+    const resolveNamedAddressOnchain: ResolveNamedAddressOnchain = async (value, symbol) =>
         (await resolveNamedProfileOnchain(value, symbol)).address;
 
     /**
@@ -321,7 +348,7 @@ export const createUniversalResolver = ({ getTrezorConnect }: NetworkSuiteCommon
      *
      * @returns The primary name, or `null` when the address has none.
      */
-    const reverseResolveAddressOnchain = async (address: string, symbol: EthereumNetworkSymbol) => {
+    const reverseResolveAddressOnchain: ReverseResolveAddressOnchain = async (address, symbol) => {
         const data = buildCalldata(
             Calldata.evm.ens.reverse.encode({
                 lookupAddress: asHex(address),

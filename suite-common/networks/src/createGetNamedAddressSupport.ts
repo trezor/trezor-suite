@@ -1,6 +1,9 @@
-import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
-import type { NetworkSymbol } from './NetworkModules';
 import type { NamedAddressResolver } from '@trezor/network-module-suite-common-types';
+
+import type { NetworkSymbol } from './NetworkModules';
+import type { NetworkModuleRepositoryDep } from './createNetworkModuleRepository';
+
+export type GetNamedAddressSupportDeps = NetworkModuleRepositoryDep;
 
 export type SymbolNamedAddressResolver = NamedAddressResolver<NetworkSymbol>;
 

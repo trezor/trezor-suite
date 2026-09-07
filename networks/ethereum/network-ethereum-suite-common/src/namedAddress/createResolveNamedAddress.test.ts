@@ -1,4 +1,4 @@
-import { createResolveNamedAddress } from './resolveNamedAddress';
+import { createResolveNamedAddress } from './createResolveNamedAddress';
 
 const mockResolveOnchain = jest.fn();
 const mockResolveViaBlockbook = jest.fn();

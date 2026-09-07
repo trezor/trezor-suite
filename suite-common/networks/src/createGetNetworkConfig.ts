@@ -1,11 +1,11 @@
 import type { SuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types';
 
-import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { NetworkSymbol } from './NetworkModules';
-
-export type GetNetworkConfig = (symbol: NetworkSymbol) => SuiteCommonNetworkConfig;
+import type { NetworkModuleRepositoryDep } from './createNetworkModuleRepository';
 
 export type GetNetworkConfigDeps = NetworkModuleRepositoryDep;
+
+export type GetNetworkConfig = (symbol: NetworkSymbol) => SuiteCommonNetworkConfig;
 
 export type GetNetworkConfigDep = {
     getNetworkConfig: GetNetworkConfig;

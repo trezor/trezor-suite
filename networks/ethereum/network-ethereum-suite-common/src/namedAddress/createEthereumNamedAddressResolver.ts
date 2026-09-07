@@ -1,16 +1,21 @@
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
-import type {
-    NamedAddressResolver,
-    NetworkSuiteCommonModuleApi,
-} from '@trezor/network-module-suite-common-types';
+import type { NamedAddressResolver } from '@trezor/network-module-suite-common-types';
 
+import { createResolveNamedAddress } from './createResolveNamedAddress';
+import {
+    type ResolveViaBlockbookDeps,
+    createResolveViaBlockbook,
+} from './createResolveViaBlockbook';
+import type { UniversalResolverDeps } from './createUniversalResolver';
 import { isAddressLike, isNameLike, supportsNamedAddress } from './namedAddressUtils';
-import { createResolveNamedAddress } from './resolveNamedAddress';
-import { createResolveViaBlockbook } from './resolveNamedAddressBB';
 
-type EthereumNamedAddressResolverDeps = NetworkSuiteCommonModuleApi;
+export type EthereumNamedAddressResolverDeps = UniversalResolverDeps & ResolveViaBlockbookDeps;
 
-type EthereumNamedAddressResolver = NamedAddressResolver<EthereumNetworkSymbol>;
+export type EthereumNamedAddressResolver = NamedAddressResolver<EthereumNetworkSymbol>;
+
+export type EthereumNamedAddressResolverDep = {
+    ethereumNamedAddressResolver: EthereumNamedAddressResolver;
+};
 
 /**
  * Loaded on first use rather than imported: `@suite-common/networks` composes every network
@@ -22,7 +27,7 @@ export const createEthereumNamedAddressResolver = (
     deps: EthereumNamedAddressResolverDeps,
 ): EthereumNamedAddressResolver => {
     const loadResolver = async () => {
-        const { createUniversalResolver } = await import('./universalResolver');
+        const { createUniversalResolver } = await import('./createUniversalResolver');
         const universalResolver = createUniversalResolver(deps);
 
         return {

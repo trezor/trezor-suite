@@ -3,20 +3,21 @@ import {
     isSupportedEthereumNetwork,
     supportedEthereumNetworks,
 } from '@trezor/network-ethereum/constants';
-import type {
-    NetworkSuiteCommonModuleApi,
-    SuiteCommonNetworkModule,
-} from '@trezor/network-module-suite-common-types';
+import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
-import { createEthereumNamedAddressResolver } from './namedAddress/ethereumNamedAddressResolver';
+import {
+    type EthereumNamedAddressResolverDeps,
+    createEthereumNamedAddressResolver,
+} from './namedAddress/createEthereumNamedAddressResolver';
 import { getNetworkConfig } from './networkConfig';
+
+type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverDeps;
 
 export type EthereumNetworkSuiteCommonNetworkModule =
     SuiteCommonNetworkModule<EthereumNetworkSymbol>;
 
 type EthereumSuiteCommonNetworkModule = EthereumNetworkSuiteCommonNetworkModule;
-type EthereumSuiteCommonNetworkModuleDeps = NetworkSuiteCommonModuleApi;
 
 const isTestnet = (symbol: EthereumNetworkSymbol): boolean => getNetworkConfig(symbol).testnet;
 

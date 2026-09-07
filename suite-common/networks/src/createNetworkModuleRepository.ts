@@ -42,10 +42,10 @@ export const createNetworkModuleRepository = (
 
             return networkModule as SuiteCommonNetworkModule<T>;
         },
-        getSupportedNetworks: (): readonly NetworkSymbol[] => supportedNetworks,
-        isSupportedNetwork: (symbol: string): symbol is NetworkSymbol =>
+        getSupportedNetworks: () => supportedNetworks,
+        isSupportedNetwork: (symbol): symbol is NetworkSymbol =>
             isArrayMember(symbol, supportedNetworks),
-        isTestnet: (symbol: NetworkSymbol): boolean => {
+        isTestnet: symbol => {
             const networkModule = networkModuleByNetworkSymbol.get(symbol);
 
             return networkModule?.isTestnet(symbol) ?? false;

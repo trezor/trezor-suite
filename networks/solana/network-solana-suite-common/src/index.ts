@@ -1,2 +1,2 @@
-export { createSolanaSuiteCommonNetworkModule } from './SolanaNetworkSuiteCommonNetworkModule';
-export type { SolanaNetworkSuiteCommonNetworkModule } from './SolanaNetworkSuiteCommonNetworkModule';
+export { createSolanaSuiteCommonNetworkModule } from './createSolanaSuiteCommonNetworkModule';
+export type { SolanaNetworkSuiteCommonNetworkModule } from './createSolanaSuiteCommonNetworkModule';

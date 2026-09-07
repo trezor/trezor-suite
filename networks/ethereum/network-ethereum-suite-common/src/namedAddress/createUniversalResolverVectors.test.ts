@@ -1,13 +1,12 @@
 import { decodeFunctionData, parseAbi } from 'viem';
 
-import { createUniversalResolver } from './universalResolver';
+import { createUniversalResolver } from './createUniversalResolver';
 
 const mockBlockchainEvmRpcCall = jest.fn();
 
 const { resolveNamedAddressOnchain } = createUniversalResolver({
     getTrezorConnect: () => ({
         blockchainEvmRpcCall: mockBlockchainEvmRpcCall,
-        getAccountInfo: jest.fn(),
     }),
 });
 

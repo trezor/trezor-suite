@@ -1,9 +1,9 @@
-import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { NetworkSymbol } from './NetworkModules';
-
-export type GetSupportedNetworks = () => readonly NetworkSymbol[];
+import type { NetworkModuleRepositoryDep } from './createNetworkModuleRepository';
 
 export type GetSupportedNetworksDeps = NetworkModuleRepositoryDep;
+
+export type GetSupportedNetworks = () => readonly NetworkSymbol[];
 
 export type GetSupportedNetworksDep = {
     getSupportedNetworks: GetSupportedNetworks;

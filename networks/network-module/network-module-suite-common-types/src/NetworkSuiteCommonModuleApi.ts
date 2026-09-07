@@ -1,6 +1,5 @@
-import type { TrezorConnectCallable } from '@trezor/connect-common';
+import type { GetTrezorConnectDep } from './GetTrezorConnect';
 
-export type NetworkSuiteCommonModuleApi = {
-    // Read Connect at call time: legacy initialization replaces methods on the application instance.
-    getTrezorConnect: () => Pick<TrezorConnectCallable, 'getAccountInfo' | 'blockchainEvmRpcCall'>;
-};
+export type NetworkSuiteCommonModuleApi = GetTrezorConnectDep<
+    'getAccountInfo' | 'blockchainEvmRpcCall'
+>;

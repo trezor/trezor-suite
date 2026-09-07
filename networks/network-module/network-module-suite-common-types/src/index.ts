@@ -5,6 +5,7 @@ export { asProtocol } from './Protocol';
 export type { Protocol } from './Protocol';
 export type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
 export type { NetworkSuiteCommonModuleApi } from './NetworkSuiteCommonModuleApi';
+export type { GetTrezorConnect, GetTrezorConnectDep } from './GetTrezorConnect';
 export {
     TREZOR_CONNECT_BACKENDS,
     asNetworkChainId,

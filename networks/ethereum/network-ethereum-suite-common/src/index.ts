@@ -1,5 +1,7 @@
-export { createEthereumSuiteCommonNetworkModule } from './EthereumNetworkSuiteCommonNetworkModule';
-export type { EthereumNetworkSuiteCommonNetworkModule } from './EthereumNetworkSuiteCommonNetworkModule';
+export {
+    createEthereumSuiteCommonNetworkModule,
+    type EthereumNetworkSuiteCommonNetworkModule,
+} from './createEthereumSuiteCommonNetworkModule';
 
 // These exports are temporary migration aids. Once network modularization is complete,
 // wrapped-native token configuration shall remain private to the Ethereum network module.

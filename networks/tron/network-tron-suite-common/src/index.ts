@@ -1,2 +1,2 @@
-export { createTronSuiteCommonNetworkModule } from './TronNetworkSuiteCommonNetworkModule';
-export type { TronNetworkSuiteCommonNetworkModule } from './TronNetworkSuiteCommonNetworkModule';
+export { createTronSuiteCommonNetworkModule } from './createTronSuiteCommonNetworkModule';
+export type { TronNetworkSuiteCommonNetworkModule } from './createTronSuiteCommonNetworkModule';
