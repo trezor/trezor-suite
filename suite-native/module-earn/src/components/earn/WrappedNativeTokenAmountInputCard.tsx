@@ -1,19 +1,11 @@
-import { type ReactNode, useCallback, useEffect, useRef } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
-import {
-    type ActiveView,
-    BaseAmountInputs,
-    Button,
-    Card,
-    HStack,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
+import { type ActiveView, BaseAmountInputs, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
@@ -26,6 +18,7 @@ import { BigNumber } from '@trezor/utils';
 import { EarnAmountErrorMessage } from './EarnAmountErrorMessage';
 import { EarnCryptoAmountInput } from './EarnCryptoAmountInput';
 import { EarnFiatAmountInput } from './EarnFiatAmountInput';
+import { EarnMaxSwitch } from './EarnMaxSwitch';
 import { AMOUNT_INPUT_UNFOCUSED_OFFSET, AMOUNT_INPUT_WRAPPER_HEIGHT } from '../../constants';
 import { type YieldDepositFormValues } from '../../utils/yield/yieldDepositFormSchema';
 
@@ -55,6 +48,7 @@ export const WrappedNativeTokenAmountInputCard = ({
     tokenSymbol,
 }: WrappedNativeTokenAmountInputCardProps) => {
     const { setValue, trigger } = useFormContext<YieldDepositFormValues>();
+    const [isMaxSelected, setIsMaxSelected] = useState(false);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
@@ -93,7 +87,16 @@ export const WrappedNativeTokenAmountInputCard = ({
         setAmountWithFiat(defaultAmount);
     }, [defaultAmount, setAmountWithFiat]);
 
-    const handleMaxPress = () => {
+    const handleMaxChange = (value: boolean) => {
+        setIsMaxSelected(value);
+
+        if (!value) {
+            setValue('amount', '', { shouldValidate: false });
+            setValue('fiat', '', { shouldValidate: false });
+
+            return;
+        }
+
         onMaxPress?.();
         setAmountWithFiat(maxAmount ?? balance);
     };
@@ -106,7 +109,16 @@ export const WrappedNativeTokenAmountInputCard = ({
                     onInputSwitch={onCurrencyChange}
                     unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
                     wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
-                    renderTopRow={() => <Text variant="body-sm">{amountLabel}</Text>}
+                    renderTopRow={() => (
+                        <>
+                            <Text variant="body-sm">{amountLabel}</Text>
+                            <EarnMaxSwitch
+                                isChecked={isMaxSelected}
+                                onChange={handleMaxChange}
+                                testID="@wrapped-native-token/max-switch"
+                            />
+                        </>
+                    )}
                     renderCryptoInput={({ onPress, isDisabled, inputRef }) => (
                         <EarnCryptoAmountInput
                             symbol={symbol}
@@ -115,7 +127,7 @@ export const WrappedNativeTokenAmountInputCard = ({
                             displaySymbol={tokenSymbol}
                             accessibilityLabel="amount input"
                             inputRef={inputRef}
-                            isDisabled={isDisabled}
+                            isDisabled={isMaxSelected || isDisabled}
                             onPress={onPress}
                         />
                     )}
@@ -126,7 +138,7 @@ export const WrappedNativeTokenAmountInputCard = ({
                             tokenDecimals={tokenDecimals}
                             accessibilityLabel="fiat amount input"
                             inputRef={inputRef}
-                            isDisabled={isDisabled}
+                            isDisabled={isMaxSelected || isDisabled}
                             onPress={onPress}
                         />
                     )}
@@ -134,28 +146,17 @@ export const WrappedNativeTokenAmountInputCard = ({
                         <EarnAmountErrorMessage isFiatDisplayed={isFiatDisplayed} />
                     )}
                 />
-                <HStack spacing="sp8" alignItems="center">
-                    <HStack spacing="sp4" alignItems="center">
-                        <Text variant="body-sm" color="contentSecondary">
-                            <Translation id="earn.yieldDepositFlowScreen.balance" />
-                        </Text>
-                        <CompactTokenAmountFormatter
-                            value={asDecimalTokenAmount(balance)}
-                            tokenSymbol={tokenSymbol}
-                            tokenDecimals={tokenDecimals}
-                            variant="body-sm"
-                            color="contentSecondary"
-                        />
-                    </HStack>
-                    <Button
-                        size="medium"
-                        intent="neutral"
-                        priority="secondary"
-                        onPress={handleMaxPress}
-                        testID="@wrapped-native-token/max-button"
-                    >
-                        <Translation id="earn.wrappedNativeToken.maxButton" />
-                    </Button>
+                <HStack spacing="sp4" alignItems="center">
+                    <Text variant="body-sm" color="contentSecondary">
+                        <Translation id="earn.yieldDepositFlowScreen.balance" />
+                    </Text>
+                    <CompactTokenAmountFormatter
+                        value={asDecimalTokenAmount(balance)}
+                        tokenSymbol={tokenSymbol}
+                        tokenDecimals={tokenDecimals}
+                        variant="body-sm"
+                        color="contentSecondary"
+                    />
                 </HStack>
             </VStack>
         </Card>

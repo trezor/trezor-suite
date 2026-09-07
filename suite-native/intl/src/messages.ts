@@ -2671,6 +2671,7 @@ export const messages = {
         staking: 'Staking',
         defiYield: 'DeFi Yield',
         poweredBy: 'Powered by',
+        max: 'Max',
         feeEstimationFailed:
             "The network fee couldn't be estimated, so the transaction can't be prepared. Try again later.",
         stakingOperatedByProviders: 'Staking is operated by independent providers',
@@ -3319,7 +3320,6 @@ export const messages = {
                 },
             },
             depositCompleteStepTitle: 'Deposit complete',
-            depositMax: 'Deposit max',
         },
         yieldDepositRevokeScreen: {
             title: 'Revoke {tokenSymbol} spending',
@@ -3359,7 +3359,6 @@ export const messages = {
                 amountIsZero: 'Amount must be greater than 0.',
                 tooManyDecimals: 'Too many decimal places.',
             },
-            withdrawMax: 'Withdraw max',
         },
         yieldClaimFlowScreen: {
             title: 'Claim rewards',

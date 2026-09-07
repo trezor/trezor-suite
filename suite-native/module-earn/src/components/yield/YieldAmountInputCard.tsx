@@ -1,11 +1,10 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import {
     type ActiveView,
     BaseAmountInputs,
-    Button,
     Card,
     Divider,
     HStack,
@@ -14,13 +13,16 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { CompactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
+import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { AMOUNT_INPUT_UNFOCUSED_OFFSET, AMOUNT_INPUT_WRAPPER_HEIGHT } from '../../constants';
+import { type YieldDepositFormValues } from '../../utils/yield/yieldDepositFormSchema';
 import { EarnAmountErrorMessage } from '../earn/EarnAmountErrorMessage';
 import { EarnCryptoAmountInput } from '../earn/EarnCryptoAmountInput';
 import { EarnFiatAmountInput } from '../earn/EarnFiatAmountInput';
+import { EarnMaxSwitch } from '../earn/EarnMaxSwitch';
 
 type YieldAmountInputCardProps = {
     amountLabel: ReactNode;
@@ -49,8 +51,25 @@ export const YieldAmountInputCard = ({
     tokenDecimals,
     tokenSymbol,
 }: YieldAmountInputCardProps) => {
+    const { setValue } = useFormContext<YieldDepositFormValues>();
+    const [isMaxSelected, setIsMaxSelected] = useState(false);
+
     const hasBalance = balance !== undefined;
     const shouldShowApprovalLimit = !!approvalLimitTitle && !!onApprovalLimitPress;
+
+    const handleMaxChange = (value: boolean) => {
+        setIsMaxSelected(value);
+
+        if (!value) {
+            setValue('amount', '', { shouldValidate: false });
+            setValue('fiat', '', { shouldValidate: false });
+
+            return;
+        }
+
+        onMaxPress();
+    };
+
     const approvalLimitRow = (
         <HStack
             justifyContent="space-between"
@@ -78,7 +97,16 @@ export const YieldAmountInputCard = ({
                     onInputSwitch={onCurrencyChange}
                     unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
                     wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
-                    renderTopRow={() => <Text variant="body-sm">{amountLabel}</Text>}
+                    renderTopRow={() => (
+                        <>
+                            <Text variant="body-sm">{amountLabel}</Text>
+                            <EarnMaxSwitch
+                                isChecked={isMaxSelected}
+                                onChange={handleMaxChange}
+                                testID="@yield-deposit/max-switch"
+                            />
+                        </>
+                    )}
                     renderCryptoInput={({ onPress, isDisabled, inputRef }) => (
                         <EarnCryptoAmountInput
                             symbol={symbol}
@@ -87,7 +115,7 @@ export const YieldAmountInputCard = ({
                             displaySymbol={tokenSymbol}
                             accessibilityLabel="amount to deposit input"
                             inputRef={inputRef}
-                            isDisabled={isDisabled}
+                            isDisabled={isMaxSelected || isDisabled}
                             onPress={onPress}
                         />
                     )}
@@ -98,7 +126,7 @@ export const YieldAmountInputCard = ({
                             tokenDecimals={tokenDecimals}
                             accessibilityLabel="fiat amount to deposit input"
                             inputRef={inputRef}
-                            isDisabled={isDisabled}
+                            isDisabled={isMaxSelected || isDisabled}
                             onPress={onPress}
                         />
                     )}
@@ -107,28 +135,17 @@ export const YieldAmountInputCard = ({
                     )}
                 />
                 {hasBalance && (
-                    <HStack spacing="sp8" alignItems="center">
-                        <HStack spacing="sp4" alignItems="center">
-                            <Text variant="body-sm" color="contentSecondary">
-                                <Translation id="earn.yieldDepositFlowScreen.balance" />
-                            </Text>
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(balance)}
-                                tokenSymbol={tokenSymbol}
-                                tokenDecimals={tokenDecimals}
-                                variant="body-sm"
-                                color="contentSecondary"
-                            />
-                        </HStack>
-                        <Button
-                            size="medium"
-                            intent="neutral"
-                            priority="secondary"
-                            onPress={onMaxPress}
-                            testID="@yield-deposit/max-button"
-                        >
-                            <Translation id="earn.yieldDepositFlowScreen.maxButton" />
-                        </Button>
+                    <HStack spacing="sp4" alignItems="center">
+                        <Text variant="body-sm" color="contentSecondary">
+                            <Translation id="earn.yieldDepositFlowScreen.balance" />
+                        </Text>
+                        <CompactTokenAmountFormatter
+                            value={asDecimalTokenAmount(balance)}
+                            tokenSymbol={tokenSymbol}
+                            tokenDecimals={tokenDecimals}
+                            variant="body-sm"
+                            color="contentSecondary"
+                        />
                     </HStack>
                 )}
             </VStack>
