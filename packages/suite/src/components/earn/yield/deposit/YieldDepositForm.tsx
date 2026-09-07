@@ -99,9 +99,9 @@ export const YieldDepositForm = () => {
     const isAmountInvalidDecimals = amountIssues.includes('amount-invalid-decimals');
     const hasBlockingAmountIssue = amountIssues.length > 0;
 
-    const shouldCheckWrapAmount = !isAmountInvalidDecimals && !!wrapPendingTransaction;
-    const shouldCheckApproveAmount = !isAmountInvalidDecimals && !!approvalPendingTransaction;
-    const shouldCheckDepositAmount = !isAmountInvalidDecimals && !!depositPendingTransaction;
+    const shouldCheckWrapAmount = !isAmountInvalidDecimals && !wrapPendingTransaction;
+    const shouldCheckApproveAmount = !isAmountInvalidDecimals && !approvalPendingTransaction;
+    const shouldCheckDepositAmount = !isAmountInvalidDecimals && !depositPendingTransaction;
 
     // Wrapping into the gas reserve is allowed — Max keeps it aside only while the balance covers
     // it — so recommend keeping it rather than blocking. `isAmountTooHigh` only fires above the

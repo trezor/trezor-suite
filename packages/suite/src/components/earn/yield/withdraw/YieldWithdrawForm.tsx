@@ -94,8 +94,8 @@ export const YieldWithdrawForm = () => {
         isWrappedNativeVault: flow.isWrappedNativeVault,
     });
 
-    const shouldCheckWithdrawAmount = !isAmountInvalidDecimals && !!withdrawPendingTransaction;
-    const shouldCheckUnwrapAmount = !isAmountInvalidDecimals && !!unwrapPendingTransaction;
+    const shouldCheckWithdrawAmount = !isAmountInvalidDecimals && !withdrawPendingTransaction;
+    const shouldCheckUnwrapAmount = !isAmountInvalidDecimals && !unwrapPendingTransaction;
 
     const handleOnWithdraw = () => {
         const apyBreakdown = getApyBreakdown(vault.rewardRate?.components);
