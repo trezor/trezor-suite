@@ -2183,12 +2183,6 @@ export const messages = defineMessages({
         description: 'Category in Settings, step in Onboarding',
         id: 'TR_DEVICE',
     },
-    TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION: {
-        defaultMessage:
-            'Your Trezor was disconnected during the wallet backup setup. We strongly recommend that you use the factory reset option in device settings to wipe your device and start the wallet backup setup again.',
-        description: 'Error message. Instruction what to do.',
-        id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
-    },
     TR_DEVICE_LABEL_IS_NOT_BACKED_UP: {
         defaultMessage: "Device {deviceLabel} isn't backed up",
         id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
