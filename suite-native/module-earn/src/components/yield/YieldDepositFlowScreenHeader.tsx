@@ -1,12 +1,10 @@
 import { type ReactNode } from 'react';
-import { useSelector } from 'react-redux';
 
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
-import { formatCoinBalance } from '@suite-common/wallet-utils';
-import { Box, DiscreetText, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
+import { Box, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
+import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
-import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { type CloseActionType, ScreenHeader } from '@suite-native/navigation';
 
 type YieldDepositFlowScreenHeaderProps = {
@@ -26,11 +24,7 @@ export const YieldDepositFlowScreenHeader = ({
     title,
     tokenContract,
 }: YieldDepositFlowScreenHeaderProps) => {
-    const locale = useSelector(selectSupportedLanguageLocale);
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
-    // Same format as the desktop yield page header: `formatCoinBalance` keeps the leading
-    // significant digits and appends an ellipsis (…) once the fractional part gets too long.
-    const formattedBalance = `${formatCoinBalance(account.formattedBalance, locale)} ${getNetworkDisplaySymbol(account.symbol)}`;
 
     return (
         <ScreenHeader
@@ -60,14 +54,14 @@ export const YieldDepositFlowScreenHeader = ({
                                     {accountLabel}
                                 </Text>
                             </Box>
-                            <DiscreetText
+                            <CompactCryptoAmountFormatter
+                                value={account.formattedBalance}
+                                symbol={account.symbol}
                                 variant="body-xs"
                                 color="contentSecondary"
                                 numberOfLines={1}
                                 testID="@yield/flow-header/balance"
-                            >
-                                {formattedBalance}
-                            </DiscreetText>
+                            />
                         </HStack>
                     </VStack>
                 </HStack>
