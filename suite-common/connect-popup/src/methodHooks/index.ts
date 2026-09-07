@@ -65,3 +65,8 @@ export async function postCallHooks<M extends CallMethodKeys>(params: PostCallHo
 
     return hooks.some(Boolean);
 }
+
+// Unconditional safety net invoked from the thunk's finally: tears down every sign hook's
+// placeholder accounts (registered via createTemporaryAccountsRegistry) so the leak cannot survive a
+// call even when it throws between preCallHook and postCallHook.
+export { cleanupAllTemporaryAccounts } from './utils';
