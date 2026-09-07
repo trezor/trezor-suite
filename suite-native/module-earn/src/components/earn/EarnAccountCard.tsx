@@ -1,13 +1,9 @@
-import { useSelector } from 'react-redux';
-
-import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
     formatTronApr,
     getTronVotedApr,
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { ZeroApyBadge } from '@suite-native/accounts';
 import { Text } from '@suite-native/atoms';
@@ -15,8 +11,6 @@ import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     selectApy,
-    selectCanClaimByAccountKey,
-    selectClaimableAmountByAccountKey,
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
     selectTronAvailableVotingPowerByAccountKey,
@@ -27,22 +21,17 @@ import {
 import { ApyValue } from './ApyValue';
 import { EarnAccountCardLayout } from './EarnAccountCardLayout';
 import { EarnAccountCardValue } from './EarnAccountCardValue';
-import { EarnClaimAlert } from './EarnClaimAlert';
 import { EarnTronVotingAlert } from './EarnTronVotingAlert';
-import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
 import { type EarnDepositsCardActiveItem } from '../../types';
 
 type EarnAccountCardProps = {
     item: EarnDepositsCardActiveItem;
     onPress: () => void;
-    onClaimPress?: () => void;
 };
 
-export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCardProps) => {
+export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
     const isStakingItem = item.type === 'staking';
     const isDefiYieldItem = item.type === 'stablecoin-yield';
-    const isSupportedStaking = isStakingItem && isSupportedStakingNetworkSymbol(item.symbol);
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
 
@@ -82,19 +71,6 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         selectIsCardanoStakedWithFiveBinaries(state, item.accountKey),
     );
 
-    const canClaim = useStakingSelector(state =>
-        isSupportedStaking ? selectCanClaimByAccountKey(state, item.accountKey) : false,
-    );
-
-    const claimableAmount =
-        useStakingSelector(state =>
-            isSupportedStaking ? selectClaimableAmountByAccountKey(state, item.accountKey) : '0',
-        ) ?? '0';
-
-    const { isClaimingDisabled } = useMessageSystemStaking(isStakingItem ? item.symbol : null);
-
-    const showClaimAlert = canClaim && !isClaimingDisabled && !isPortfolioTrackerDevice;
-
     const showTronVotingAlert =
         isStakingItem && item.symbol === 'trx' && availableTronVotingPower !== '0';
 
@@ -102,7 +78,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
 
     const secondaryDescription = isDefiYieldItem
         ? item.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)
-        : null;
+        : item.accountLabel || null;
 
     return (
         <EarnAccountCardLayout
@@ -135,7 +111,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                             <ApyValue apy={null} withLabel />
                         ) : (
                             <>
-                                {item.type === 'staking' ? (
+                                {isStakingItem ? (
                                     <Translation
                                         id={
                                             symbol === 'trx'
@@ -156,19 +132,9 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                 ))
             }
             alerts={
-                <>
-                    {showClaimAlert && onClaimPress && (
-                        <EarnClaimAlert
-                            claimableAmount={claimableAmount}
-                            symbol={symbol}
-                            onClaimPress={onClaimPress}
-                        />
-                    )}
-
-                    {showTronVotingAlert && (
-                        <EarnTronVotingAlert votesRemaining={availableTronVotingPower} />
-                    )}
-                </>
+                showTronVotingAlert && (
+                    <EarnTronVotingAlert votesRemaining={availableTronVotingPower} />
+                )
             }
             onPress={onPress}
         />

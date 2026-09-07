@@ -141,6 +141,7 @@ export type EarnDepositsCardActiveItem =
           title: string;
           symbol: StakingNetworkSymbol;
           accountKey: AccountKey;
+          accountLabel?: string;
           balance: string;
           fiatAmount: BaseCurrencyAmount;
       }

@@ -37,7 +37,6 @@ export const YieldClaimRewardsBottomSheet = ({
         <BottomSheetModal
             ref={ref}
             title={<Translation id="earn.earnScreen.claimRewards.title" />}
-            subtitle={<Translation id="earn.earnScreen.claimRewards.subtitle" />}
             isCloseDisplayed
             onClose={onClose}
         >

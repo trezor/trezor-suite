@@ -265,6 +265,7 @@ const EarnScreenContent = () => {
                 <EarnItemInfoModal ref={staking.infoSheetRef} type="staking" />
                 <ChooseStakingAccountBottomSheet
                     ref={staking.chooseAccountSheetRef}
+                    type="staking"
                     accounts={staking.chosenAccounts}
                     onAccountSelected={staking.handleAccountSelected}
                     onClose={staking.closeChooseAccountModal}
@@ -278,6 +279,7 @@ const EarnScreenContent = () => {
                 />
                 <ChooseStakingAccountBottomSheet
                     ref={stablecoinYield.chooseAccountSheetRef}
+                    type="yield"
                     accounts={stablecoinYield.chosenAccounts}
                     onAccountSelected={stablecoinYield.handleAccountSelected}
                     onClose={stablecoinYield.closeChooseAccountModal}
