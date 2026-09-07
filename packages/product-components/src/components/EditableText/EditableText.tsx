@@ -42,6 +42,7 @@ export type EditableTextProps = AllowedFrameProps & {
     leftAddon?: ReactNode;
     rightAddon?: ReactNode;
     gap?: SpacingValue;
+    isDisplayValueMultiline?: boolean;
     'data-testid'?: string;
 } & (
         | { defaultValue?: undefined; displayValue?: undefined }
@@ -109,6 +110,7 @@ type ContainerProps = {
     $gap: SpacingValue;
     $isActive: boolean;
     $isAlwaysActive: boolean;
+    $isDisplayValueMultiline: boolean;
 } & TransientProps<AllowedFrameProps>;
 
 const Container = styled.span<ContainerProps>`
@@ -119,12 +121,18 @@ const Container = styled.span<ContainerProps>`
     position: relative;
     max-width: 100%;
     gap: ${({ $gap }) => $gap}px;
-    overflow: hidden;
-    height: 28px;
+    min-height: 28px;
     box-sizing: content-box;
     padding: var(--padding);
     padding-left: ${({ $gap }) => $gap}px;
     cursor: ${({ $isAlwaysActive }) => ($isAlwaysActive ? 'pointer' : 'inherit')};
+
+    ${({ $isDisplayValueMultiline }) =>
+        !$isDisplayValueMultiline &&
+        css`
+            overflow: hidden;
+            height: 28px;
+        `}
 
     &::before {
         content: '';
@@ -175,6 +183,7 @@ export const EditableText = ({
     leftAddon,
     rightAddon,
     gap = 8,
+    isDisplayValueMultiline = false,
     'data-testid': dataTestId,
     ...rest
 }: EditableTextProps) => {
@@ -418,6 +427,7 @@ export const EditableText = ({
             $gap={gap}
             $isActive={isActive && !isDisabled}
             $isAlwaysActive={isAlwaysActive && !isDisabled}
+            $isDisplayValueMultiline={isDisplayValueMultiline}
             {...frameProps}
         >
             {leftAddon && (
@@ -441,7 +451,7 @@ export const EditableText = ({
                     alignSelf="baseline"
                     maxWidth="100%"
                     display="inline-flex"
-                    overflow="hidden"
+                    overflow={isDisplayValueMultiline ? 'visible' : 'hidden'}
                     zIndex={zIndex}
                 >
                     <EditableContainer
@@ -467,8 +477,9 @@ export const EditableText = ({
                     </EditableContainer>
                     {hasDisplayValue && (
                         <Text
-                            ellipsisLineCount={1}
+                            ellipsisLineCount={isDisplayValueMultiline ? undefined : 1}
                             as="div"
+                            minWidth={0}
                             pointerEvents="none"
                             color={isActive ? 'contentPrimary' : undefined}
                         >

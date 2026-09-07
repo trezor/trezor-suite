@@ -164,7 +164,7 @@ test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1']
             await metadataPage.address.removeLabel({ address: addressSeed.address });
             await expect
                 .soft(metadataPage.address.addressHoverContainer(addressSeed.address))
-                .toHaveText('bc1q kkr2 ... qfxy fa');
+                .toHaveText('bc1q kkr2 uvry 034t sj4p 52za 2pg4 2ug4 pxg5 qfxy fa');
         });
 
         await test.step('Remove output label', async () => {
