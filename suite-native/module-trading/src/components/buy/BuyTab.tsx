@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ServerOffline } from '@suite-native/trading-atoms';
@@ -11,13 +11,12 @@ import { useBuyData } from '../../hooks/buy/useBuyData';
 import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
 
 const BuyTabEnabled = () => {
-    const [reloadOrdinal, setReloadOrdinal] = useState(0);
-    const { isLoading, lastLoadedTimestamp, isFullyLoaded } = useBuyData(reloadOrdinal);
+    const { isLoading, lastLoadedTimestamp, isFullyLoaded, refetch } = useBuyData();
     const isLoadingFinished = !isLoading && lastLoadedTimestamp > 0;
     const wasSkeletonDisplayed = useRef(!isLoadingFinished);
 
     if (isLoadingFinished && !isFullyLoaded) {
-        return <ServerOffline onRetryPress={() => setReloadOrdinal(n => n + 1)} />;
+        return <ServerOffline onRetryPress={refetch} />;
     }
 
     if (!isFullyLoaded) {

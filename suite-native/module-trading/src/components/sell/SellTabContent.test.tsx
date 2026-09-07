@@ -108,17 +108,13 @@ describe('SellTabContent', () => {
     });
 
     it('should reload data when server error info is displayed and user presses "Try again" button', async () => {
-        mockUseSellData
-            .mockReturnValueOnce({
-                isLoading: false,
-                lastLoadedTimestamp: 1,
-                isFullyLoaded: false,
-            })
-            .mockReturnValue({
-                isLoading: false,
-                lastLoadedTimestamp: 1,
-                isFullyLoaded: true,
-            });
+        const refetch = jest.fn();
+        mockUseSellData.mockReturnValue({
+            isLoading: false,
+            lastLoadedTimestamp: 1,
+            isFullyLoaded: false,
+            refetch,
+        });
 
         const { getByText } = await renderSellTabContent();
 
@@ -128,9 +124,6 @@ describe('SellTabContent', () => {
             await userEvent.press(reloadButton);
         });
 
-        expectSellForm();
-        expect(mockUseSellData).toHaveBeenCalledTimes(2);
-        expect(mockUseSellData).toHaveBeenCalledWith(0);
-        expect(mockUseSellData).toHaveBeenCalledWith(1);
+        expect(refetch).toHaveBeenCalledTimes(1);
     });
 });

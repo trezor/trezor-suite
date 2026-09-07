@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { tradingBuyActions, tradingThunks } from '@suite-common/trading';
 import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
@@ -17,11 +17,8 @@ import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading
 import { tradingSlice } from '@suite-native/trading-state';
 
 import { useBuyData } from './useBuyData';
-
-jest.mock('@suite-common/trading', () => ({
-    ...jest.requireActual('@suite-common/trading'),
-    getRandomAccountDescriptor: () => 'random_string',
-}));
+import { useExchangeData } from '../exchange/useExchangeData';
+import { useSellData } from '../sell/useSellData';
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount2') });
@@ -60,17 +57,13 @@ describe('useBuyData', () => {
         };
         preloadedState.wallet.trading.buy.tradingAccountKey = tradingAccountKey;
 
-        return createTestStore({ extra, reducer, preloadedState });
+        return createTestCompositionRoot({ extra, reducer, preloadedState }).store;
     };
 
-    const renderUseBuyData = async (reloadRequestOrdinalInitialValue: number, store: TestStore) => {
-        const ret = await renderHookWithStoreProvider(
-            ({ reloadRequestOrdinal }) => useBuyData(reloadRequestOrdinal),
-            {
-                initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
-                store,
-            },
-        );
+    const renderUseBuyData = async (store: TestStore) => {
+        const ret = await renderHookWithStoreProvider(useBuyData, {
+            store,
+        });
 
         await act(() => Promise.resolve()); // Wait for all effects to run
 
@@ -78,10 +71,11 @@ describe('useBuyData', () => {
     };
 
     beforeEach(() => {
+        jest.restoreAllMocks();
         jest.clearAllMocks();
         global.fetch = jest.fn().mockImplementation(() =>
             Promise.resolve({
-                json: () => Promise.resolve({}),
+                json: () => Promise.resolve({ coins: {}, platforms: {}, config: {} }),
                 ok: true,
             }),
         );
@@ -93,49 +87,108 @@ describe('useBuyData', () => {
                 new Promise(resolve => {
                     setTimeout(() => {
                         resolve({
-                            json: () => Promise.resolve({}),
+                            json: () => Promise.resolve({ coins: {}, platforms: {}, config: {} }),
                             ok: true,
                         });
                     }, 100);
                 }),
         );
-        const store = createTestStore({ extra, reducer });
-        const { result } = await renderUseBuyData(0, store);
+        const { store } = createTestCompositionRoot({ extra, reducer });
+        const { result } = await renderUseBuyData(store);
 
         expect(result.current.isLoading).toBe(true);
         expect(result.current.lastLoadedTimestamp).toBe(0);
     });
 
     it('should settle after API queries are resolved', async () => {
-        const store = createTestStore({ extra, reducer });
-        const { result } = await renderUseBuyData(0, store);
+        const { store } = createTestCompositionRoot({ extra, reducer });
+        const { result } = await renderUseBuyData(store);
 
         expect(result.current.isLoading).toBe(false);
         expect(result.current.lastLoadedTimestamp).toBeGreaterThan(0);
     });
+
+    it.each([
+        { section: 'exchange', useData: useExchangeData },
+        { section: 'sell', useData: useSellData },
+        { section: 'buy', useData: useBuyData },
+    ])(
+        'reuses the catalog when remounting $section and refetches on Retry',
+        async ({ useData }) => {
+            const { store } = createTestCompositionRoot({ extra, reducer });
+            const buy = await renderUseBuyData(store);
+            await buy.unmount();
+            expect(global.fetch).toHaveBeenCalledTimes(4);
+
+            const tab = await renderHookWithStoreProvider(useData, { store });
+            expect(global.fetch).toHaveBeenCalledTimes(4);
+            await tab.unmount();
+
+            const retry = await renderHookWithStoreProvider(useData, { store });
+            expect(global.fetch).toHaveBeenCalledTimes(4);
+            await act(async () => {
+                await retry.result.current.refetch();
+            });
+            expect(global.fetch).toHaveBeenCalledTimes(8);
+            expect(jest.mocked(global.fetch).mock.calls.map(([url]) => url)).toEqual(
+                [
+                    ...[
+                        '/api/info',
+                        '/api/v3/buy/list',
+                        '/api/v3/exchange/list',
+                        '/api/v3/sell/list',
+                    ],
+                    ...[
+                        '/api/info',
+                        '/api/v3/buy/list',
+                        '/api/v3/exchange/list',
+                        '/api/v3/sell/list',
+                    ],
+                ].map(path => expect.stringContaining(path)),
+            );
+        },
+    );
 
     it('should dispatch loadInitialDataThunk only once', async () => {
         const initialThunkLoadActionSpy = jest
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const store = createTestStore({ extra, reducer });
-        const { rerender } = await renderUseBuyData(0, store);
-        await rerender({ reloadRequestOrdinal: 0 });
+        const { store } = createTestCompositionRoot({ extra, reducer });
+        const { rerender } = await renderUseBuyData(store);
+        await rerender({});
 
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should dispatch loadInitialDataThunk when reloadRequestOrdinal changes', async () => {
+    it('should force reload on refetch and respect the cache on subsequent account changes', async () => {
         const initialThunkLoadActionSpy = jest
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const store = createTestStore({ extra, reducer });
-        const { rerender } = await renderUseBuyData(0, store);
-        await rerender({ reloadRequestOrdinal: 1 });
+        const { store } = createTestCompositionRoot({ extra, reducer });
+        const { result } = await renderUseBuyData(store);
+        await act(async () => {
+            await result.current.refetch();
+        });
 
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(2);
+        expect(initialThunkLoadActionSpy).toHaveBeenNthCalledWith(1, {
+            activeSection: 'buy',
+            forceReload: false,
+        });
+        expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
+            activeSection: 'buy',
+            forceReload: true,
+        });
+
+        await act(() => {
+            store.dispatch(tradingBuyActions.setTradingAccountKey(btc2Account.key));
+        });
+        expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
+            activeSection: 'buy',
+            forceReload: false,
+        });
     });
 
     describe('on receive account descriptor change', () => {
@@ -149,7 +202,7 @@ describe('useBuyData', () => {
 
         it('should dispatch loadInitialDataThunk when account is changed with descriptor', async () => {
             const store = getInitializedStore(undefined);
-            await renderUseBuyData(0, store);
+            await renderUseBuyData(store);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
@@ -165,13 +218,13 @@ describe('useBuyData', () => {
 
             expect(initialThunkLoadActionSpy).toHaveBeenCalledWith({
                 activeSection: 'buy',
-                forcedApiKey: undefined,
+                forceReload: false,
             });
         });
 
         it('should not dispatch loadInitialDataThunk when descriptor is not changed', async () => {
             const store = getInitializedStore(btc2Account.key);
-            await renderUseBuyData(0, store);
+            await renderUseBuyData(store);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
@@ -188,9 +241,9 @@ describe('useBuyData', () => {
             expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(0);
         });
 
-        it('should dispatch loadInitialDataThunk with random string when descriptor is empty string', async () => {
+        it('should dispatch loadInitialDataThunk without a forced API key when descriptor is empty string', async () => {
             const store = getInitializedStore(btc1Account.key);
-            await renderUseBuyData(0, store);
+            await renderUseBuyData(store);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
@@ -207,13 +260,13 @@ describe('useBuyData', () => {
             expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
             expect(initialThunkLoadActionSpy).toHaveBeenCalledWith({
                 activeSection: 'buy',
-                forcedApiKey: 'random_string',
+                forceReload: false,
             });
         });
 
-        it('should dispatch loadInitialDataThunk with random string when descriptor is undefined', async () => {
+        it('should dispatch loadInitialDataThunk without a forced API key when descriptor is undefined', async () => {
             const store = getInitializedStore(btc1Account.key);
-            await renderUseBuyData(0, store);
+            await renderUseBuyData(store);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
@@ -230,7 +283,7 @@ describe('useBuyData', () => {
             expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
             expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
                 activeSection: 'buy',
-                forcedApiKey: 'random_string',
+                forceReload: false,
             });
         });
     });

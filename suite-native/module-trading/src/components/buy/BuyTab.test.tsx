@@ -114,17 +114,13 @@ describe('BuyTab', () => {
     });
 
     it('should reload data when server error info is displayed and user presses "Try again" button', async () => {
-        mockUseTradingBuyData
-            .mockReturnValueOnce({
-                isLoading: false,
-                lastLoadedTimestamp: 1,
-                isFullyLoaded: false,
-            })
-            .mockReturnValue({
-                isLoading: false,
-                lastLoadedTimestamp: 1,
-                isFullyLoaded: true,
-            });
+        const refetch = jest.fn();
+        mockUseTradingBuyData.mockReturnValue({
+            isLoading: false,
+            lastLoadedTimestamp: 1,
+            isFullyLoaded: false,
+            refetch,
+        });
 
         const { getByText } = await renderBuyTab();
 
@@ -134,10 +130,7 @@ describe('BuyTab', () => {
             await userEvent.press(reloadButton);
         });
 
-        expectBuyForm();
-        expect(mockUseTradingBuyData).toHaveBeenCalledTimes(2);
-        expect(mockUseTradingBuyData).toHaveBeenCalledWith(0);
-        expect(mockUseTradingBuyData).toHaveBeenCalledWith(1);
+        expect(refetch).toHaveBeenCalledTimes(1);
     });
 
     it('should render disabled info when buy is disabled by FFs', async () => {

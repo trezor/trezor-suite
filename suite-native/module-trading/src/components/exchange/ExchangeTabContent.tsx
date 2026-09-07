@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { ServerOffline } from '@suite-native/trading-atoms';
 
 import { ExchangeForm } from './ExchangeForm';
@@ -8,12 +6,11 @@ import { ExchangeFormSkeleton } from './ExchangeFormSkeleton';
 import { useExchangeData } from '../../hooks/exchange/useExchangeData';
 
 export const ExchangeTabContent = () => {
-    const [reloadOrdinal, setReloadOrdinal] = useState(0);
-    const { isLoading, lastLoadedTimestamp, isFullyLoaded } = useExchangeData(reloadOrdinal);
+    const { isLoading, lastLoadedTimestamp, isFullyLoaded, refetch } = useExchangeData();
     const isLoadingFinished = !isLoading && lastLoadedTimestamp > 0;
 
     if (isLoadingFinished && !isFullyLoaded) {
-        return <ServerOffline onRetryPress={() => setReloadOrdinal(n => n + 1)} />;
+        return <ServerOffline onRetryPress={refetch} />;
     }
 
     if (!isFullyLoaded) {

@@ -110,17 +110,13 @@ describe('ExchangeTab', () => {
     });
 
     it('should reload data when server error info is displayed and user presses "Try again" button', async () => {
-        mockUseTradingExchangeData
-            .mockReturnValueOnce({
-                isLoading: false,
-                lastLoadedTimestamp: 1,
-                isFullyLoaded: false,
-            })
-            .mockReturnValue({
-                isLoading: false,
-                lastLoadedTimestamp: 1,
-                isFullyLoaded: true,
-            });
+        const refetch = jest.fn();
+        mockUseTradingExchangeData.mockReturnValue({
+            isLoading: false,
+            lastLoadedTimestamp: 1,
+            isFullyLoaded: false,
+            refetch,
+        });
 
         const { getByText } = await renderExchangeTab();
 
@@ -130,9 +126,6 @@ describe('ExchangeTab', () => {
             await userEvent.press(reloadButton);
         });
 
-        expectExchangeForm();
-        expect(mockUseTradingExchangeData).toHaveBeenCalledTimes(2);
-        expect(mockUseTradingExchangeData).toHaveBeenCalledWith(0);
-        expect(mockUseTradingExchangeData).toHaveBeenCalledWith(1);
+        expect(refetch).toHaveBeenCalledTimes(1);
     });
 });

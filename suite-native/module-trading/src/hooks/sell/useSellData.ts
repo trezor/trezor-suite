@@ -1,28 +1,32 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useDispatch } from '@suite-common/redux-utils';
-import {
-    getRandomAccountDescriptor,
-    selectTradingSellLoadingTimestampAndStatus,
-    tradingThunks,
-} from '@suite-common/trading';
+import { selectTradingSellLoadingTimestampAndStatus, tradingThunks } from '@suite-common/trading';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
-export const useSellData = (reloadRequestOrdinal: number) => {
+export const useSellData = () => {
     const dispatch = useDispatch();
     const account = useSelector(selectSellSelectedSendAccount);
 
     const descriptor = account?.descriptor;
 
-    useEffect(() => {
-        dispatch(
-            tradingThunks.loadInitialDataThunk({
-                activeSection: 'sell',
-                forcedApiKey: descriptor ? undefined : getRandomAccountDescriptor(),
-            }),
-        );
-    }, [descriptor, dispatch, reloadRequestOrdinal]);
+    const loadData = useCallback(
+        (forceReload = true) =>
+            dispatch(
+                tradingThunks.loadInitialDataThunk({
+                    activeSection: 'sell',
+                    forceReload,
+                }),
+            ),
+        [dispatch],
+    );
 
-    return useSelector(selectTradingSellLoadingTimestampAndStatus);
+    useEffect(() => {
+        loadData(false);
+    }, [descriptor, loadData]);
+
+    const loadingStatus = useSelector(selectTradingSellLoadingTimestampAndStatus);
+
+    return { ...loadingStatus, refetch: loadData };
 };
