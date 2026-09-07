@@ -157,6 +157,7 @@ const getPlugins = (): ExpoPlugins => {
         ],
         './plugins/withGradleProperties.js',
         './plugins/withAndroidNdkVersion.js',
+        './plugins/withAndroidArchitectures.js',
         [
             '@config-plugins/detox',
             {

@@ -87,6 +87,7 @@
         "prepare-desktop-release": "./scripts/prepare-desktop-release.sh",
         "prepare-mobile-release": "./scripts/prepare-mobile-release.sh",
         "native:android": "yarn workspace @suite-native/app android",
+        "native:android:build:local": "yarn workspace @suite-native/app android:build:local",
         "native:ios": "yarn workspace @suite-native/app ios",
         "native:prebuild": "yarn workspace @suite-native/app prebuild",
         "native:prebuild:no-clean": "yarn workspace @suite-native/app prebuild:no-clean",

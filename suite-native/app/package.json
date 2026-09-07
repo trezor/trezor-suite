@@ -17,6 +17,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "android": "expo run:android",
+        "android:build:local": "bash ./scripts/android-build-local.sh",
         "android:clean": "cd android && ./gradlew clean",
         "ios": "expo run:ios",
         "start": "expo start --dev-client",
