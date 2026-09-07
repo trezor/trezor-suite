@@ -6,7 +6,8 @@ import {
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Link, type TextProps } from '@trezor/components';
+import { Icon, Link, Row } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
@@ -15,18 +16,12 @@ type TradingDetailTxIdProps = {
     value: string;
     account: Account;
     receiveAccountKey?: AccountKey;
-    intent?: TextProps['intent'];
-    priority?: TextProps['priority'];
-    isDisabled?: TextProps['isDisabled'];
 };
 
 export const TradingDetailTxId = ({
     value,
     account,
     receiveAccountKey,
-    intent,
-    priority,
-    isDisabled,
 }: TradingDetailTxIdProps) => {
     const dispatch = useDispatch();
 
@@ -52,15 +47,10 @@ export const TradingDetailTxId = ({
                 )
             }
         >
-            <Address
-                isTruncated
-                isChunked={false}
-                isCopyAllowed
-                value={value}
-                intent={intent}
-                priority={priority}
-                isDisabled={isDisabled}
-            />
+            <Row gap={4}>
+                <Address isTruncated isChunked={false} isCopyAllowed value={value} intent="brand" />
+                <Icon as={CaretRightIcon} size={16} intent="brand" />
+            </Row>
         </Link>
     );
 };

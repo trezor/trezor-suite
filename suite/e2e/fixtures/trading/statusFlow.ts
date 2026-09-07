@@ -28,11 +28,14 @@ export const dexSwapStatusFlow: readonly TradeStatusPhase[] = [
     { status: 'SUCCESS', translationKey: 'TR_EXCHANGE_DETAIL_COMPLETE_TITLE' },
 ];
 
+// A sell has no status for a transaction that is broadcast but not yet received, so the sending
+// step is active while the trade still sits in SEND_CRYPTO and PENDING already means the provider
+// has the funds.
 export const sellStatusFlow: readonly TradeStatusPhase[] = [
-    { status: 'PENDING', translationKey: 'TR_TRADING_DETAIL_SENDING_TRANSACTION' },
     {
-        status: 'SUCCESS',
+        status: 'PENDING',
         translationKey: 'TR_TRADING_DETAIL_PROCESSING',
         translationValues: provider => ({ providerName: provider, type: 'sell' }),
     },
+    { status: 'SUCCESS', translationKey: 'TR_SELL_DETAIL_COMPLETE_TITLE' },
 ];

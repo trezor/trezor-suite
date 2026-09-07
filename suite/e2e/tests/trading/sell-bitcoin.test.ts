@@ -168,6 +168,9 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(tradingPage.transactionDetailHeader).toHaveTranslation(
                     'TR_SELL_HEADER_TITLE',
                 );
+                await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                    'TR_TRADING_DETAIL_SENDING_TRANSACTION',
+                );
                 // Unlike the swap toast, this one carries the composed amount rather than the
                 // provider's own formatting of it, so it matches the amount the test typed.
                 await expect(toastSection.txSent).toContainTranslation('TOAST_TX_SENT', {

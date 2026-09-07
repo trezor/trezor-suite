@@ -25,6 +25,7 @@ import {
 } from './utils';
 import { commonFocusStyles } from '../../utils/utils';
 import { IconCircle } from '../IconCircle/IconCircle';
+import { Spinner } from '../loaders/Spinner/Spinner';
 import { Text } from '../typography/Text/Text';
 
 const Item = styled.li<{ $direction: StepListDirection }>`
@@ -213,6 +214,7 @@ export type StepListItemProps = {
     children?: React.ReactNode;
     title: React.ReactNode;
     state?: StepListItemState;
+    isLoading?: boolean;
     onClick?: () => void;
     'data-testid'?: string;
 };
@@ -220,6 +222,7 @@ export type StepListItemProps = {
 export const StepListItem = ({
     state = 'default',
     title,
+    isLoading = false,
     onClick,
     'data-testid': dataTestId,
     children,
@@ -244,6 +247,10 @@ export const StepListItem = ({
     };
 
     const renderStepIndicator = () => {
+        if (isLoading) {
+            return <Spinner size={mapSizeToDimension({ $size: bulletSize })} />;
+        }
+
         if (state !== 'done') {
             return <StepIndicator $state={state} $isOrdered={isOrdered} $size={bulletSize} />;
         }
