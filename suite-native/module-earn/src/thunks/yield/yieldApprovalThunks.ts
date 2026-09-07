@@ -22,13 +22,16 @@ import {
 } from '@suite-native/transaction-management';
 import { exhaustive } from '@trezor/type-utils';
 
-import { EARN_MODULE_PREFIX } from '../constants';
-import { type YieldAllowanceFormDraftTransactionType, type YieldApprovalLimitType } from '../types';
+import { EARN_MODULE_PREFIX } from '../../constants';
+import {
+    type YieldAllowanceFormDraftTransactionType,
+    type YieldApprovalLimitType,
+} from '../../types';
 import {
     buildYieldAllowanceFormState,
     getYieldAllowanceFeeState,
     getYieldApprovalAllowanceAmount,
-} from '../utils/yield/yieldApprovalUtils';
+} from '../../utils/yield/yieldApprovalUtils';
 
 const yieldAllowanceFormDraftPrefixes: Record<YieldAllowanceFormDraftTransactionType, string> = {
     approve: 'yield-approval',

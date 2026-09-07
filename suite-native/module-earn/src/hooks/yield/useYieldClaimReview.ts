@@ -20,7 +20,7 @@ import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
 import {
     pushYieldClaimReviewThunk,
     signYieldClaimReviewThunk,
-} from '../../thunks/yieldClaimThunks';
+} from '../../thunks/yield/yieldClaimThunks';
 import { useEarnTransactionReview } from '../earn/useEarnTransactionReview';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaimReview>;

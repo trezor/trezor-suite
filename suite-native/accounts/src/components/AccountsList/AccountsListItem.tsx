@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import {
     type AccountsRootState,
     type StakeRootState,
-    type TronStakeRootState,
     selectAccountHasStaking,
     selectFormattedAccountType,
     selectIsCardanoStakedWithFiveBinaries,
@@ -76,7 +75,7 @@ const AccountsListItemComponent = ({
         (state: NativeAccountsRootState) => selectActiveAndDefiTokensCount(state, account.key) > 0,
     );
 
-    const accountHasStaking = useSelector((state: StakeRootState & TronStakeRootState) =>
+    const accountHasStaking = useSelector((state: StakeRootState) =>
         selectAccountHasStaking(state, account.key),
     );
 

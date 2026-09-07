@@ -31,7 +31,7 @@ import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-mana
 
 import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNavigation';
 import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';
-import { getYieldAllowanceFormDraftKey } from '../../thunks/yieldApprovalThunks';
+import { getYieldAllowanceFormDraftKey } from '../../thunks/yield/yieldApprovalThunks';
 import {
     type YieldAllowanceFormDraftTransactionType,
     type YieldApprovalLimitType,

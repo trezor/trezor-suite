@@ -25,7 +25,7 @@ import { useYieldFlowData } from './useYieldFlowData';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 import { useYieldSession } from './useYieldSession';
-import { prepareYieldAllowanceReviewTransactionThunk } from '../../thunks/yieldApprovalThunks';
+import { prepareYieldAllowanceReviewTransactionThunk } from '../../thunks/yield/yieldApprovalThunks';
 import { isYieldApprovalAllowanceUnlimited } from '../../utils/yield/yieldApprovalUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositRevoke>;

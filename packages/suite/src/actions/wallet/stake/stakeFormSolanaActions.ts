@@ -8,7 +8,9 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type BlockchainRootState,
     type WalletSettingsRootState,
+    applySolanaStakingSignature,
     composeSolanaStakingTransaction,
+    getSolanaStakingUserAgent,
     isSupportedSolStakingNetworkSymbol,
     prepareSolanaStakeTxData,
     selectAddressDisplayType,
@@ -21,10 +23,6 @@ import {
     type StakeFormState,
 } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import { getSuiteVersion } from '@trezor/env-utils';
-import solana from '@trezor/network-solana/runtime';
-
-const getSolanaUserAgent = () => `Trezor Suite ${getSuiteVersion()}`;
 
 type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState;
 
@@ -46,7 +44,7 @@ export const composeTransactionThunk =
             formValues,
             composeContext: formState,
             blockchainUrl,
-            userAgent: getSolanaUserAgent(),
+            userAgent: getSolanaStakingUserAgent(),
         });
     };
 
@@ -100,7 +98,7 @@ export const signTransactionThunk =
             amount: formValues.outputs[0]?.amount ?? '0',
             stakeType: formValues.stakeType,
             blockchainUrl,
-            userAgent: getSolanaUserAgent(),
+            userAgent: getSolanaStakingUserAgent(),
             estimatedFee: {
                 feePerTx: transactionInfo.fee,
                 feeLimit: transactionInfo.feeLimit,
@@ -168,9 +166,9 @@ export const signTransactionThunk =
             return signedTx;
         }
 
-        const { address } = await solana();
-
-        txData.txShim.addSignature(address(account.descriptor), signedTx.payload.signature);
-
-        return txData.txShim.serialize();
+        return applySolanaStakingSignature({
+            txShim: txData.txShim,
+            descriptor: account.descriptor,
+            signature: signedTx.payload.signature,
+        });
     };

@@ -17,7 +17,7 @@ import {
     type SignedWrappedNativeTokenTransaction,
     pushWrappedNativeTokenThunk,
     signWrappedNativeTokenThunk,
-} from '../../thunks/wrappedNativeTokenThunks';
+} from '../../thunks/earn/wrappedNativeTokenThunks';
 import {
     type YieldBroadcastTransaction,
     type YieldReviewSigningResult,

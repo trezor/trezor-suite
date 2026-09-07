@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
     type StakeRootState,
-    type TronStakeRootState,
     selectStakedBalanceByAccountKey,
     selectTronAvailableVotingPowerByAccountKey,
     selectTronTotalVotingPowerByAccountKey,
@@ -75,10 +75,10 @@ export const ManualStakedBalancesCard = ({
 
     const isTron = symbol === 'trx';
 
-    const totalVotingPower = useSelector((state: StakeRootState & TronStakeRootState) =>
+    const totalVotingPower = useSelector((state: AccountsRootState) =>
         selectTronTotalVotingPowerByAccountKey(state, accountKey),
     );
-    const availableVotingPower = useSelector((state: StakeRootState & TronStakeRootState) =>
+    const availableVotingPower = useSelector((state: AccountsRootState) =>
         selectTronAvailableVotingPowerByAccountKey(state, accountKey),
     );
 

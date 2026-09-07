@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type StakeRootState,
-    type TronStakeRootState,
     selectHasAnyDeviceAccountsWithStaking,
 } from '@suite-common/wallet-core';
 import {
@@ -51,7 +50,7 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const hasAnyTokens = useSelector((state: TokensRootState) =>
         selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
-    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState & TronStakeRootState) =>
+    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
     );
     const hasAnyFailedAccount = useSelector((state: NativeAccountsRootState) =>

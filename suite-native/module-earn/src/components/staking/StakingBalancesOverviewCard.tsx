@@ -6,8 +6,8 @@ import {
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
 import {
+    type AccountsRootState,
     type StakeRootState,
-    type TronStakeRootState,
     selectAccountNetworkSymbol,
     selectApy,
     selectRewardsBalanceByAccountKey,
@@ -37,7 +37,7 @@ export const StakingBalancesOverviewCard = ({
         enabled: symbol === 'trx',
     });
 
-    const tronVotes = useSelector((state: StakeRootState & TronStakeRootState) =>
+    const tronVotes = useSelector((state: AccountsRootState) =>
         selectTronVotesByAccountKey(state, accountKey),
     );
 

@@ -10,7 +10,9 @@ import {
     type AccountsRootState,
     type FeesRootState,
     type FormDraftRootState,
+    WALLET_SDK_SOURCE_MOBILE,
     composeSendFormTransactionFeeLevelsThunk,
+    composeSolanaStakingTransactionFeeLevelsThunk,
     formDraftActions,
     selectAccountByKey,
     selectAreFeesLoading,
@@ -23,7 +25,6 @@ import {
     type FormState,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { composeSolanaStakingTransactionFeeLevelsNativeThunk } from '@suite-native/staking';
 import {
     type NativeSendRootState,
     type UpdateSelectedFeeLevelThunkParams,
@@ -150,10 +151,11 @@ export const useComposeEarnFees = ({
                 const response =
                     account.networkType === 'solana'
                         ? await dispatch(
-                              composeSolanaStakingTransactionFeeLevelsNativeThunk({
+                              composeSolanaStakingTransactionFeeLevelsThunk({
                                   accountKey,
                                   stakeType: formDraftPrefix,
                                   amount: mergedFormState.outputs?.[0]?.amount ?? '',
+                                  source: WALLET_SDK_SOURCE_MOBILE,
                               }),
                           )
                         : await dispatch(

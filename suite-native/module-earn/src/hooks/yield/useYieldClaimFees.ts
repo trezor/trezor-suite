@@ -36,7 +36,7 @@ import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import {
     getYieldClaimFormDraftKey,
     updateYieldClaimSelectedFeeLevelThunk,
-} from '../../thunks/yieldClaimThunks';
+} from '../../thunks/yield/yieldClaimThunks';
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
 import { type StablecoinYieldAccountRewards } from '../../utils/yield/stablecoinYieldClaimSummaryUtils';
 import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../../utils/yield/yieldClaimFeeUtils';

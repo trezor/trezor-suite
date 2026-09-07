@@ -15,14 +15,14 @@ import {
 import {
     type Account,
     type AccountKey,
+    type BaseStakeType,
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { signEthereumStakingTransactionNativeThunk } from './stakeFormEthereumNativeThunks';
-import { type StakeNativeType } from './stakeNativeTypes';
+import { signEthereumStakingTransactionThunk } from './ethereumStakingThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -103,7 +103,7 @@ const buildPrecomposedTransaction = (
         ...overrides,
     }) as PrecomposedTransactionFinal;
 
-const buildCalldataForKind = (kind: StakeNativeType): string => {
+const buildCalldataForKind = (kind: BaseStakeType): string => {
     if (kind === 'stake') return buildStakeData(WALLET_SDK_SOURCE_MOBILE);
     if (kind === 'unstake')
         return buildUnstakeData(
@@ -115,7 +115,7 @@ const buildCalldataForKind = (kind: StakeNativeType): string => {
     return buildClaimWithdrawRequestData();
 };
 
-const buildComposeFormDraft = (kind: StakeNativeType, amount: string): FormState =>
+const buildComposeFormDraft = (kind: BaseStakeType, amount: string): FormState =>
     ({
         outputs: [
             {
@@ -179,9 +179,9 @@ const getAccountInfoMock = TrezorConnect.getAccountInfo as jest.Mock;
 
 const dispatchFlow = async (
     store: ReturnType<typeof buildStore>,
-    args: Parameters<typeof signEthereumStakingTransactionNativeThunk>[0],
+    args: Parameters<typeof signEthereumStakingTransactionThunk>[0],
 ) => {
-    const action = await store.dispatch(signEthereumStakingTransactionNativeThunk(args) as any);
+    const action = await store.dispatch(signEthereumStakingTransactionThunk(args) as any);
 
     if (isFulfilled(action)) return { ok: true as const };
     if (isRejected(action)) return { ok: false as const, error: action.payload };
@@ -204,7 +204,7 @@ beforeEach(() => {
     getAccountInfoMock.mockResolvedValue(VALID_LIVE_STAKING_POOL);
 });
 
-describe('signEthereumStakingTransactionNativeThunk', () => {
+describe('signEthereumStakingTransactionThunk', () => {
     it('reads the stake variant from the compose form draft and forwards it to ethereumSignTransaction', async () => {
         const store = buildStore({
             formDrafts: {

@@ -23,12 +23,12 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 
-import { EARN_MODULE_PREFIX } from '../constants';
-import { getPushErrorType } from './yieldTransactionThunks';
+import { EARN_MODULE_PREFIX } from '../../constants';
 import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
-} from '../utils/earn/deviceTransactionUtils';
+} from '../../utils/earn/deviceTransactionUtils';
+import { getPushErrorType } from '../yield/yieldTransactionThunks';
 
 const WRAPPED_NATIVE_TOKEN_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/wrapped-native-token`;
 

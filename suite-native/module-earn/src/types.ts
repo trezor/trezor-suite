@@ -2,6 +2,11 @@ import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type EarnDashboardType } from '@suite-common/message-system';
 import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type SignTransactionError,
+    type SignTransactionTimeoutError,
+    type StakeLiveStateInvalidError,
+} from '@suite-common/wallet-core';
+import {
     type Account,
     type AccountKey,
     type BaseCurrencyAmount,
@@ -12,6 +17,9 @@ import {
 type YieldPricePerShareState = NonNullable<YieldDtoV2['state']>['pricePerShareState'];
 
 export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
+
+export type SignStakeTransactionRejectValue =
+    SignTransactionError | SignTransactionTimeoutError | StakeLiveStateInvalidError | undefined;
 
 export type YieldApprovalLimitType = 'per-deposit' | 'unlimited';
 

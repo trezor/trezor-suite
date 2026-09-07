@@ -7,9 +7,11 @@ import { mockGetIsWindowVisible, mockOnModalCancel } from '@suite-common/suite-t
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type PushStakeTransactionThunkDeps,
     WALLET_SDK_SOURCE_MOBILE,
     buildStakeData,
     prepareSendFormReducer,
+    pushStakeTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -22,11 +24,7 @@ import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import {
-    type PushStakeTransactionNativeThunkDeps,
-    pushStakeTransactionNativeThunk,
-    signStakeTransactionNativeThunk,
-} from './stakeNativeThunks';
+import { signStakeTransactionThunk } from './stakingThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -113,7 +111,7 @@ const SOL_ACCOUNT_KEY = mockAccountKey({
     deviceStaticSessionId: STATIC_SESSION_ID,
 });
 const POOL_ADDRESS = '0xD523794C879D9eC028960a231F866758e405bE34';
-const extra: PushStakeTransactionNativeThunkDeps = {
+const extra: PushStakeTransactionThunkDeps = {
     actions: { onModalCancel: mockOnModalCancel() },
     services: {
         analytics: mockNativeAnalytics(),
@@ -242,9 +240,9 @@ const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 
 const dispatchDispatcher = async (
     store: ReturnType<typeof buildStore>,
-    args: Parameters<typeof signStakeTransactionNativeThunk>[0],
+    args: Parameters<typeof signStakeTransactionThunk>[0],
 ) => {
-    const action = await store.dispatch(signStakeTransactionNativeThunk(args) as any);
+    const action = await store.dispatch(signStakeTransactionThunk(args) as any);
     if (isFulfilled(action)) return { ok: true as const };
     if (isRejected(action)) return { ok: false as const, error: action.payload };
     throw new Error('Unexpected dispatch outcome');
@@ -252,9 +250,9 @@ const dispatchDispatcher = async (
 
 const dispatchPush = async (
     store: ReturnType<typeof buildStore>,
-    args: Parameters<typeof pushStakeTransactionNativeThunk>[0],
+    args: Parameters<typeof pushStakeTransactionThunk>[0],
 ) => {
-    const action = await store.dispatch(pushStakeTransactionNativeThunk(args) as any);
+    const action = await store.dispatch(pushStakeTransactionThunk(args) as any);
     if (isFulfilled(action)) return { ok: true as const, txid: action.payload.txid };
     if (isRejected(action)) return { ok: false as const, error: action.payload };
     throw new Error('Unexpected dispatch outcome');
@@ -279,7 +277,7 @@ beforeEach(() => {
     });
 });
 
-describe('signStakeTransactionNativeThunk', () => {
+describe('signStakeTransactionThunk', () => {
     it('routes ethereum accounts to the ethereum staking thunk and signs without broadcasting', async () => {
         const store = buildStore({
             formDrafts: {
@@ -399,7 +397,9 @@ describe('signStakeTransactionNativeThunk', () => {
     });
 });
 
-describe('pushStakeTransactionNativeThunk', () => {
+// Integration coverage of the shared wallet-core push thunk against the mobile deferred
+// sign flow (sign stores the transaction, push broadcasts it).
+describe('pushStakeTransactionThunk', () => {
     it('broadcasts the transaction signed during a deferred sign', async () => {
         const store = buildStore({
             formDrafts: {
@@ -415,7 +415,10 @@ describe('pushStakeTransactionNativeThunk', () => {
         });
         expect(pushTransactionMock).not.toHaveBeenCalled();
 
-        const result = await dispatchPush(store, { accountKey: ETH_ACCOUNT_KEY });
+        const result = await dispatchPush(store, {
+            accountKey: ETH_ACCOUNT_KEY,
+            isMevProtectionFeatureEnabled: true,
+        });
 
         expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
         expect(pushTransactionMock).toHaveBeenCalledTimes(1);
@@ -435,7 +438,10 @@ describe('pushStakeTransactionNativeThunk', () => {
         });
         expect(pushTransactionMock).not.toHaveBeenCalled();
 
-        const result = await dispatchPush(store, { accountKey: SOL_ACCOUNT_KEY });
+        const result = await dispatchPush(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            isMevProtectionFeatureEnabled: true,
+        });
 
         expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
         expect(pushTransactionMock).toHaveBeenCalledTimes(1);
@@ -445,7 +451,10 @@ describe('pushStakeTransactionNativeThunk', () => {
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
         const store = buildStore({ accounts: [] });
 
-        const result = await dispatchPush(store, { accountKey: ETH_ACCOUNT_KEY });
+        const result = await dispatchPush(store, {
+            accountKey: ETH_ACCOUNT_KEY,
+            isMevProtectionFeatureEnabled: true,
+        });
 
         expect(result).toEqual({
             ok: false,
@@ -474,7 +483,10 @@ describe('pushStakeTransactionNativeThunk', () => {
             precomposedTransaction: buildPrecomposedTransaction(),
         });
 
-        const result = await dispatchPush(store, { accountKey: ETH_ACCOUNT_KEY });
+        const result = await dispatchPush(store, {
+            accountKey: ETH_ACCOUNT_KEY,
+            isMevProtectionFeatureEnabled: true,
+        });
 
         expect(result).toMatchObject({
             ok: false,

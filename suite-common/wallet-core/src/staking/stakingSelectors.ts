@@ -45,7 +45,6 @@ import { getSolanaCryptoBalanceWithStaking } from './solana/solanaStakingUtils';
 import type { AccountVotingDelegation, VotingDelegationOption } from './stakingActions';
 import { DEFAULT_VOTING_OPTION } from './stakingConstants';
 import type { StakeRootState } from './stakingReducerTypes';
-import { type TronStakeRootState } from './tron/tronStakingReducer';
 import {
     selectTronAccountHasStaked,
     selectTronRewardsBalanceByAccountKey,
@@ -58,7 +57,7 @@ import { getTronCryptoBalanceWithStaking } from './tron/tronStakingUtils';
 const EMPTY_ACCOUNT_ARRAY: Account[] = [];
 
 const selectDeviceAccountsWithStaking = (
-    state: StakeRootState & TronStakeRootState,
+    state: StakeRootState,
     symbol: NetworkSymbol,
 ): Account[] => {
     if (!isStakingSymbol(symbol)) {
@@ -82,7 +81,7 @@ const selectDeviceAccountsWithStaking = (
 };
 
 export const selectHasAnyDeviceAccountsWithStaking = (
-    state: StakeRootState & TronStakeRootState,
+    state: StakeRootState,
     symbol: NetworkSymbol,
 ) => selectDeviceAccountsWithStaking(state, symbol).length > 0;
 

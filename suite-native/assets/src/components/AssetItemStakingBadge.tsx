@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type StakeRootState,
-    type TronStakeRootState,
     selectFirstCardanoAccountStakedWithFiveBinaries,
     selectHasAnyDeviceAccountsWithStaking,
 } from '@suite-common/wallet-core';
@@ -15,7 +14,7 @@ type AssetItemStakingBadgeProps = {
 };
 
 export const AssetItemStakingBadge = memo(({ symbol }: AssetItemStakingBadgeProps) => {
-    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState & TronStakeRootState) =>
+    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, symbol),
     );
     const stakedWithFiveBinariesAccount = useSelector((state: StakeRootState) =>

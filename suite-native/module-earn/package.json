@@ -63,7 +63,6 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/scrollview": "workspace:*",
         "@suite-native/settings": "workspace:*",
-        "@suite-native/staking": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/tokens": "workspace:*",

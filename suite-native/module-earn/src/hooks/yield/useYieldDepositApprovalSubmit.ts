@@ -22,7 +22,7 @@ import {
 } from '@suite-native/navigation';
 
 import { useShowYieldAlert } from './useShowYieldAlert';
-import { prepareYieldAllowanceReviewTransactionThunk } from '../../thunks/yieldApprovalThunks';
+import { prepareYieldAllowanceReviewTransactionThunk } from '../../thunks/yield/yieldApprovalThunks';
 import { type YieldApprovalLimitType } from '../../types';
 
 type NavigationProps = StackNavigationProps<

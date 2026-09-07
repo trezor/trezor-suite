@@ -24,15 +24,15 @@ import {
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { type UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
 
-import { EARN_MODULE_PREFIX } from '../constants';
 import { getPushErrorType } from './yieldTransactionThunks';
 import type { YieldPushTransactionError } from './yieldTransactionThunks';
+import { EARN_MODULE_PREFIX } from '../../constants';
 import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
-} from '../utils/earn/deviceTransactionUtils';
-import { getSelectedFeeFromUnsignedClaimTransaction } from '../utils/yield/yieldClaimFeeUtils';
-import { buildYieldClaimRewards } from '../utils/yield/yieldClaimReviewUtils';
+} from '../../utils/earn/deviceTransactionUtils';
+import { getSelectedFeeFromUnsignedClaimTransaction } from '../../utils/yield/yieldClaimFeeUtils';
+import { buildYieldClaimRewards } from '../../utils/yield/yieldClaimReviewUtils';
 
 export const getYieldClaimFormDraftKey = (flowKey: string) => `yield-claim/${flowKey}`;
 
