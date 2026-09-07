@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, shared }:
 
 let
   androidComposition = pkgs.androidenv.composeAndroidPackages {
@@ -34,8 +34,7 @@ let
     includeNDK = false;
     includeCmake = false;
   };
-in
-rec {
+
   # Keep one SDK root so avdmanager can discover the image alongside build tools.
   androidSdk = androidComposition.androidsdk.overrideAttrs (old: {
     postInstall = (old.postInstall or "") + ''
@@ -67,7 +66,7 @@ rec {
     }"
   '';
 
-  shellHook = ''
+  androidShellHook = ''
     # Java & Android SDK setup for React Native / Expo Android
     export JAVA_HOME="${pkgs.jdk17}"
     export PATH="$JAVA_HOME/bin:$PATH"
@@ -112,4 +111,24 @@ rec {
     command -v adb >/dev/null 2>&1 && echo "- adb $(adb version | head -n1)" || echo "- adb not found (install SDK packages)"
     command -v emulator >/dev/null 2>&1 && echo "- emulator $(emulator -version | head -n1)" || echo "- emulator not found"
   '';
-}
+in
+pkgs.mkShell (
+  shared
+  // {
+    buildInputs =
+      shared.buildInputs
+      ++ [
+        jdk
+        androidSdk
+      ]
+      ++ extraPackages;
+    shellHook =
+      shared.shellHook
+      + ''
+        # Workspace installation includes Electron, but Android does not need its binary.
+        export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+      ''
+      + nixLdHook
+      + androidShellHook;
+  }
+)
