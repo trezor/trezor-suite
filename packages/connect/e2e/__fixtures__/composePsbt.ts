@@ -105,6 +105,24 @@ const composePsbt: TestCase = {
                 ],
             },
         },
+        {
+            description: 'Fails when a PSBT input is not among the account utxos',
+            params: {
+                account: {
+                    path: "m/44'/0'/0'",
+                    utxo: [],
+                    addresses: {
+                        used: [],
+                        unused: [],
+                        change: [],
+                    },
+                },
+                psbtData:
+                    '70736274ff01007701000000016d20f69067ad1ffd50ee7c0f377dde2c932ccb03e84b5659732da99c20f1f6500100000000ffffffff0230750000000000001976a914954820f1de627a703596ac0396f986d958e3de4c88ac10270000000000001976a91405427736705cfbfaff76b1cff48283707fb1037088ac00000000000100e101000000016d20f69067ad1ffd50ee7c0f377dde2c932ccb03e84b5659732da99c20f1f650010000006a47304402203429bd3ce7b38c5c1e8a15340edd79ced41a2939aae62e259d2e3d18e0c5ee7602201b83b10ebc4d6dcee3f9eb42ba8f1ef8a059a05397e0c1b9223d1565a3e6ec01012102a7a079c1ef9916b289c2ff21a992c808d0de3dfcf8a9f163205c5c9e21f55d5cffffffff0230750000000000001976a914954820f1de627a703596ac0396f986d958e3de4c88ac10270000000000001976a91405427736705cfbfaff76b1cff48283707fb1037088ac00000000000000',
+                coin: 'btc',
+            },
+            result: false,
+        },
     ],
 };
 
