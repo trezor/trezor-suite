@@ -20,10 +20,10 @@ test.describe('Trading - Swap fees', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(
-        async ({ onboardingPage, dashboardPage, walletPage, settingsPage, tradingMockNew }) => {
-            tradingMockNew.setTradeFlow('swap');
+        async ({ onboardingPage, dashboardPage, walletPage, settingsPage, tradingMock }) => {
+            tradingMock.setTradeFlow('swap');
             // Backend is wired only as a broadcast guard; the test never gets past the device.
-            const ethBackend = await tradingMockNew.startBackend('eth');
+            const ethBackend = await tradingMock.startBackend('eth');
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({

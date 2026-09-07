@@ -35,10 +35,10 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(
-        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
-            tradingMockNew.setTradeFlow('swap');
-            const ethBackend = await tradingMockNew.startBackend('eth');
-            await tradingMockNew.captureTxSimulation();
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
+            tradingMock.setTradeFlow('swap');
+            const ethBackend = await tradingMock.startBackend('eth');
+            await tradingMock.captureTxSimulation();
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
@@ -55,7 +55,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
         device,
         tradingPage,
         devicePrompt,
-        tradingMockNew,
+        tradingMock,
         tradingResponses,
     }) => {
         const dexProvider = await tradingResponses.swap.companyName('lifi');
@@ -139,7 +139,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             // rendered value is compared against the last captured scan on each attempt.
             await expect(async () => {
                 await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
-                    `${localizeNumber(tradingMockNew.simulatedReceiveAmount(receive))} USDC`,
+                    `${localizeNumber(tradingMock.simulatedReceiveAmount(receive))} USDC`,
                     { timeout: 2_000 },
                 );
             }).toPass({ timeout: 15_000 });
@@ -238,7 +238,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
         });
 
         await test.step('Send the DEX transaction (broadcast blocked by mock)', async () => {
-            await tradingMockNew.setStatus('SENDING');
+            await tradingMock.setStatus('SENDING');
             await page.clock.install();
             await devicePrompt.sendButton.click();
 
@@ -255,7 +255,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
 
         for (const step of dexStatusFlow) {
             await test.step(`Wait for status change to ${step.status}`, async () => {
-                await tradingMockNew.advanceStatus(step.status);
+                await tradingMock.advanceStatus(step.status);
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                     step.translationKey,
                     { values: step.translationValues?.(dexProvider) },

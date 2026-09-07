@@ -18,9 +18,9 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
     });
 
     test.beforeEach(
-        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
-            tradingMockNew.setTradeFlow('swap');
-            const ethBackend = await tradingMockNew.startBackend('eth');
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
+            tradingMock.setTradeFlow('swap');
+            const ethBackend = await tradingMock.startBackend('eth');
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
@@ -36,7 +36,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
         tradingPage,
         devicePrompt,
         device,
-        tradingMockNew,
+        tradingMock,
         toastSection,
         tradingResponses,
     }) => {
@@ -190,14 +190,14 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
             // Pending TXID keeps the full value in its id attribute (text is truncated).
             await expect(tradingPage.pendingApprovalTransactionId).toHaveAttribute(
                 'id',
-                tradingMockNew.lastBroadcastTxid,
+                tradingMock.lastBroadcastTxid,
             );
             await tradingPage.pendingApprovalTransactionId.click();
             await expect(tradingPage.approvalModal.heading).toHaveTranslation(
                 'TR_TRANSACTION_DETAILS',
             );
             await expect(tradingPage.transactionDetailTxid).toHaveText(
-                tradingMockNew.lastBroadcastTxid,
+                tradingMock.lastBroadcastTxid,
             );
         });
     });

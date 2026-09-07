@@ -6,10 +6,10 @@ const fiatAmount = '1000';
 const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 
 test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ onboardingPage, settingsPage, walletPage, tradingMockNew }) => {
-        tradingMockNew.setTradeFlow('buy');
-        await tradingMockNew.rewriteProviderRedirect();
-        await tradingMockNew.setStatus('SUBMITTED');
+    test.beforeEach(async ({ onboardingPage, settingsPage, walletPage, tradingMock }) => {
+        tradingMock.setTradeFlow('buy');
+        await tradingMock.rewriteProviderRedirect();
+        await tradingMock.setStatus('SUBMITTED');
 
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
@@ -47,7 +47,7 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
     test('Buy Bitcoin from best offer', async ({
         page,
         tradingPage,
-        tradingMockNew,
+        tradingMock,
         tradingResponses,
     }) => {
         await test.step('Fill in a buy request', async () => {
@@ -101,7 +101,7 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
 
         await test.step('Wait for the watch refresh and status change to Approved', async () => {
-            await tradingMockNew.advanceStatus('SUCCESS');
+            await tradingMock.advanceStatus('SUCCESS');
 
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                 'TR_BUY_DETAIL_SUCCESS_TITLE',

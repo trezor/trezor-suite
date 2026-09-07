@@ -9,9 +9,8 @@ import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataMock } from './mocks/metadataMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
-import { TradingMockNew } from './mocks/trading/tradingMockNew';
+import { TradingMock } from './mocks/trading/tradingMock';
 import { TradingResponses, observeTradingResponses } from './mocks/trading/tradingResponses';
-import { TradingMock } from './mocks/tradingMock';
 import { YieldMock } from './mocks/yieldMock';
 import { ActivityPage } from './pageObjects/activityPage';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
@@ -63,7 +62,6 @@ type Fixtures = {
     blockbookMock: BlockbookMock;
     solanaStakingMock: SolanaStakingMock;
     tradingMock: TradingMock;
-    tradingMockNew: TradingMockNew;
     tradingResponses: TradingResponses;
     connectPermissionsModal: ConnectPermissionsModal;
     connectSelectAccountModal: ConnectSelectAccountModal;
@@ -161,12 +159,9 @@ const test = suiteBaseTest.extend<Fixtures>({
         await solanaStakingMock.stop();
     },
     tradingMock: async ({ page }, use) => {
-        await use(new TradingMock(page));
-    },
-    tradingMockNew: async ({ page }, use) => {
-        const tradingMockNew = new TradingMockNew(page);
-        await use(tradingMockNew);
-        await tradingMockNew.stop();
+        const tradingMock = new TradingMock(page);
+        await use(tradingMock);
+        await tradingMock.stop();
     },
     tradingResponses: async ({ page }, use) => {
         await use(observeTradingResponses(page));
