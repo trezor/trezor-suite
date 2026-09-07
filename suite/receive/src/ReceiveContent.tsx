@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    getNetwork,
+    getNetworkDisplaySymbol,
+    getNetworkFeatures,
+} from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { Banner, Column, H2 } from '@trezor/components';
+import { Banner, Column, H2, Text } from '@trezor/components';
 
 import { AddressHistory } from './AddressHistory';
 import { NewestAddressCard } from './NewestAddressCard';
@@ -32,6 +36,11 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
     const [verifyingAddressPath, setVerifyingAddressPath] = useState<string | undefined>();
 
     const disabled = locked || isReceiveDisabled;
+
+    const supportsTokens = useMemo(
+        () => getNetworkFeatures(account.symbol).includes('tokens'),
+        [account.symbol],
+    );
 
     const handleVerifyAddress = async (path: string) => {
         if (verifyingAddressPath !== undefined) {
@@ -70,12 +79,19 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
                 />
             )}
 
-            <H2>
-                <Translation
-                    id="RECEIVE_TITLE"
-                    values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
-                />
-            </H2>
+            <Column gap={4} alignItems="stretch">
+                <H2>
+                    <Translation
+                        id="RECEIVE_TITLE"
+                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+                    />
+                </H2>
+                {supportsTokens && (
+                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                        <Translation id="TR_INCLUDING_TOKENS" />
+                    </Text>
+                )}
+            </Column>
 
             <NewestAddressCard
                 accountKey={account.key}
