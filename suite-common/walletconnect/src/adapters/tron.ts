@@ -4,7 +4,7 @@ import type { ProposalTypes } from '@walletconnect/types';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type Network, getNetwork, getNetworksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type CallMethodResponse } from '@trezor/connect';
@@ -77,7 +77,7 @@ const processNamespaces = (
         ([key, namespace]: [string, ProposalTypes.RequiredNamespace]) => {
             if (key === 'tron') {
                 namespace.chains?.forEach(chain => {
-                    const supported = networksCollection
+                    const supported = getNetworksCollection()
                         .filter(nc => nc.networkType === 'tron')
                         .find(nc => getChainId(nc).includes(chain));
                     const alreadyAdded = networks.some(

@@ -3,7 +3,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type BackendSettings } from '@suite-common/wallet-types';
 
 import { type SetBackendPayload, blockchainActions } from './blockchainActions';
-import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
+import { getBlockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
 
 const blockchainReducer = prepareBlockchainReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -50,9 +50,9 @@ describe('blockchain reducer', () => {
                 expect(
                     blockchainReducer(
                         {
-                            ...blockchainInitialState,
+                            ...getBlockchainInitialState(),
                             [payload.symbol]: {
-                                ...blockchainInitialState[payload.symbol],
+                                ...getBlockchainInitialState()[payload.symbol],
                                 backends,
                             },
                         },

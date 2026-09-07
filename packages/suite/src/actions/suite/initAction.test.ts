@@ -72,7 +72,7 @@ import { initThunk } from 'src/actions/suite/initAction';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import windowReducer from 'src/reducers/suite/windowReducer';
-import { walletReducers } from 'src/reducers/wallet';
+import { createWalletReducer } from 'src/reducers/wallet';
 import type { AppState } from 'src/types/suite';
 
 const deviceReducer = prepareDeviceReducer({
@@ -127,7 +127,7 @@ const getInitialState = (initialRun?: boolean) => {
         router: routerReducer(undefined, EMPTY_ACTION),
         analytics: analyticsReducer(undefined, EMPTY_ACTION),
         modal: modalReducer(undefined, EMPTY_ACTION),
-        wallet: walletReducers(undefined, EMPTY_ACTION),
+        wallet: createWalletReducer()(undefined, EMPTY_ACTION),
         messageSystem: messageSystemReducer(undefined, EMPTY_ACTION),
         device: deviceReducer(undefined, EMPTY_ACTION),
         metadata: metadataReducer(undefined, EMPTY_ACTION),

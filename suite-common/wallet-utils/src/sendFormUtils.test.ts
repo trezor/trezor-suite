@@ -564,10 +564,10 @@ describe('sendForm utils', () => {
     });
 
     describe('getCryptoAmountWithReserve', () => {
-        const NETWORKS_WITH_RESERVE = networksCollection.filter(
+        const NETWORKS_WITH_RESERVE = getNetworksCollection().filter(
             network => !!network.nativeTokenReserve,
         );
-        const NETWORKS_WITHOUT_RESERVE = networksCollection.filter(
+        const NETWORKS_WITHOUT_RESERVE = getNetworksCollection().filter(
             network => !network.nativeTokenReserve,
         );
 
@@ -721,10 +721,10 @@ describe('sendForm utils', () => {
     });
 
     describe('getCryptoMaxAmountWithReserve', () => {
-        const NETWORKS_WITH_RESERVE = networksCollection.filter(
+        const NETWORKS_WITH_RESERVE = getNetworksCollection().filter(
             network => !!network.nativeTokenReserve,
         );
-        const NETWORKS_WITHOUT_RESERVE = networksCollection.filter(
+        const NETWORKS_WITHOUT_RESERVE = getNetworksCollection().filter(
             network => !network.nativeTokenReserve,
         );
 

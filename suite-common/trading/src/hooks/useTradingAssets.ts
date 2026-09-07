@@ -49,8 +49,6 @@ type TradingNetwork = Network & {
 const isTradingNetwork = (network: Network | undefined): network is TradingNetwork =>
     network?.coingeckoId !== undefined && network.tradeCryptoId !== undefined;
 
-const mainnets = new Set(getMainnets().map(network => network.symbol));
-
 function hasSupportedAddressValidator(
     platforms: Platforms,
     coins: Coins,
@@ -73,6 +71,7 @@ function isAssetWithSupportedNetwork(
     platforms: Platforms,
     coins: Coins,
     cryptoId: CryptoId,
+    mainnets: ReadonlySet<NetworkSymbol>,
 ): boolean {
     const networkSymbol =
         cryptoIdToNetwork(cryptoId)?.symbol ??
@@ -264,10 +263,11 @@ export function useTradingAssets() {
             const { coins, platforms } = getCoinsAndPlatforms();
             const supportedNetworks = getSupportedNetworks();
 
+            const mainnets = new Set(getMainnets().map(network => network.symbol));
             const assets = Array.from(includedCryptoIds)
                 .filter(
                     cryptoId =>
-                        isAssetWithSupportedNetwork(platforms, coins, cryptoId) &&
+                        isAssetWithSupportedNetwork(platforms, coins, cryptoId, mainnets) &&
                         hasSupportedAddressValidator(
                             platforms,
                             coins,

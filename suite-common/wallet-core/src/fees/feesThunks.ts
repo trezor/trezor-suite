@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork, getNetworksCollection } from '@suite-common/wallet-config';
 import { type FeeInfo } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
@@ -31,7 +31,7 @@ export const preloadFeeInfoThunk = createThunk<void, void, { state: PreloadFeeIn
         const enabledNetworks = selectEnabledNetworks(getState());
 
         // Fetch default fee levels
-        const networks = networksCollection.filter(
+        const networks = getNetworksCollection().filter(
             n => !n.isHidden && enabledNetworks?.includes(n.symbol),
         );
 

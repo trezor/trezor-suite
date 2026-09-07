@@ -6,6 +6,7 @@ import {
     type NetworkSymbol,
     getNetwork,
     getNetworkOptional,
+    getNetworks,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';

@@ -1,7 +1,7 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
 import { type Action, type GuideNode, type MessageSystem } from '@suite-common/suite-types';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworksCollection } from '@suite-common/wallet-config';
 import {
     type BlockchainNetworks,
     type FeeInfo,
@@ -462,7 +462,7 @@ const intlMock = {
     formatMessage: (s: any) => s.defaultMessage,
 };
 
-const mockedBlockchainNetworks = networksCollection.reduce((result, network) => {
+const mockedBlockchainNetworks = getNetworksCollection().reduce((result, network) => {
     result[network.symbol] = {
         connected: false,
         blockHash: '0',

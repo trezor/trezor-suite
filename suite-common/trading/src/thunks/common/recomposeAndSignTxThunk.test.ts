@@ -8,8 +8,8 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    blockchainInitialState,
     composeSendFormTransactionFeeLevelsThunk,
+    getBlockchainInitialState,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
 import { type Account, type FeesState } from '@suite-common/wallet-types';
@@ -152,7 +152,7 @@ describe('recomposeAndSignTxThunk', () => {
             reducer: combineReducers({
                 wallet: combineReducers({
                     accounts: () => [account],
-                    blockchain: () => blockchainInitialState,
+                    blockchain: () => getBlockchainInitialState(),
                     fees: mockedSuiteReducer,
                     settings: () => initialWalletSettingsState,
                     trading: tradingReducer,

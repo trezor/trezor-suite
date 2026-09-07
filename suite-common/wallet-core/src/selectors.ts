@@ -9,8 +9,8 @@ import {
     type Network,
     type NetworkSymbol,
     getNetwork,
+    getNetworksCollection,
     isSingleAccountType,
-    networksCollection,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -221,7 +221,7 @@ export const selectAccountsToBeForgotten = (
     const accounts = selectAccounts(state);
     const enabledNetworks = selectEnabledNetworks(state);
     // find disabled networks
-    const disabledNetworks = networksCollection
+    const disabledNetworks = getNetworksCollection()
         .filter(n => !enabledNetworks.includes(n.symbol) || n.isHidden)
         .map(n => n.symbol);
     // find accounts for disabled networks

@@ -2,14 +2,13 @@ import { createMemoryHistory } from 'history';
 
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { toGetter } from '@suite-common/dependency-injection';
-import { desktopApi } from '@trezor/suite-desktop-api';
-
 import { createNetworksCompositionRoot, registerNetworkServices } from '@suite-common/networks';
 import TrezorConnect from '@trezor/connect';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
-import { rootReducer } from 'src/reducers/store';
+import { createRootReducer } from 'src/reducers/store';
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
 import { extraDependencies } from 'src/support/extraDependencies';
 
@@ -18,8 +17,12 @@ import { type DesktopInit, createDesktopInit } from './createDesktopInit';
 type SuiteDesktopCompositionRoot = { init: DesktopInit };
 
 export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot => {
+    // Legacy wallet-config calls during reducer initialization need registered services.
+    // Persistence is loaded later by init, after this synchronous composition completes.
     const networks = createNetworksCompositionRoot({ getTrezorConnect: () => TrezorConnect });
     registerNetworkServices(networks);
+
+    const rootReducer = createRootReducer();
 
     const history = createMemoryHistory();
     const platformEncryption = createElectronPlatformEncryption({ desktopApi });

@@ -70,7 +70,7 @@ export const PortfolioCard = memo(() => {
     const passphraseEntryCanceled =
         accounts.length === 0 && discoveryStatus === undefined && discovery?.status === 'cancelled';
 
-    const hasNetworkWithEnabledGraph = networksCollection.some(
+    const hasNetworkWithEnabledGraph = getNetworksCollection().some(
         network =>
             isNetworkWithGraphFeature(network.symbol) && enabledNetworks.includes(network.symbol),
     );

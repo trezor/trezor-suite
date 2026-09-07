@@ -5,7 +5,7 @@ import { screen } from '@testing-library/react';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
-import { explorerInitialState } from '@suite-common/wallet-core';
+import { getExplorerInitialState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -40,7 +40,7 @@ const getInitialState = (): AppState => ({
     wallet: {
         ...mockInitialAppState.wallet,
         accounts: [bitcoinAccount, ethereumAccount],
-        explorer: explorerInitialState,
+        explorer: getExplorerInitialState(),
         selectedAccount: {
             status: 'loaded',
             account: ethereumAccount,
@@ -59,8 +59,8 @@ describe('IOGroup', () => {
 
         renderWithProviders(root, <IOGroup tx={bitcoinTransaction} inputs={inputs} outputs={[]} />);
 
-        const bitcoinAddressUrl = getExplorerUrl(explorerInitialState.btc.default, 'address');
-        const ethereumAddressUrl = getExplorerUrl(explorerInitialState.eth.default, 'address');
+        const bitcoinAddressUrl = getExplorerUrl(getExplorerInitialState().btc.default, 'address');
+        const ethereumAddressUrl = getExplorerUrl(getExplorerInitialState().eth.default, 'address');
 
         expect(bitcoinAddressUrl).not.toBe(ethereumAddressUrl);
         expect(screen.getByRole('link')).toHaveAttribute(

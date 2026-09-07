@@ -1,7 +1,8 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
+import { getNetworkServices } from '@suite-common/networks';
 import { exhaustive } from '@trezor/type-utils';
 
-import { networks } from './networksConfig';
+import { getNetwork, getSupportedNetworks } from './networksConfig';
 import {
     type AccountType,
     type Network,
@@ -14,27 +15,7 @@ import {
 
 export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
 
-/**
- * array from `networks` as a `Network[]` type instead of inferred type
- */
-export const networksCollection: Network[] = Object.values(networks);
-
-/**
- * array of network symbols
- */
-const networkSymbolCollection = networksCollection.map(n => n.symbol);
-
-export const getSupportedNetworks = (): NetworkSymbol[] => networkSymbolCollection;
-
-export const getNetworks = () => networks;
-
-/**
- * Preserve the inferred fields for a specific symbol (for example, Ethereum's chainId),
- * while keeping the common Network API available to existing callers.
- */
-export const getNetwork = <TSymbol extends NetworkSymbol>(
-    symbol: TSymbol,
-): Network & (typeof networks)[TSymbol] => networks[symbol];
+export const getNetworksCollection = (): Network[] => getSupportedNetworks().map(getNetwork);
 
 interface GetMainnetsProps {
     debug?: boolean;
@@ -45,7 +26,7 @@ interface GetMainnetsProps {
 export const getMainnets = ({
     debug = false,
     useExperimentalNetworks = false,
-    allNetworks = networksCollection,
+    allNetworks = getNetworksCollection(),
 }: GetMainnetsProps = {}): Network[] =>
     allNetworks.filter(
         n =>
@@ -65,7 +46,7 @@ export const getTestnets = ({
     debug = false,
     useExperimentalNetworks = false,
     useTestnetNetworks = false,
-    allNetworks = networksCollection,
+    allNetworks = getNetworksCollection(),
 }: GetTestnetsProps): Network[] =>
     allNetworks.filter(
         n =>
@@ -91,11 +72,21 @@ export const filterNetworksByName = (someNetworks: Network[], searchQuery: strin
     );
 };
 
+export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
+    getNetworkServices().isSupportedNetwork(symbol);
+
+/**
+ * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.
+ * @param symbol
+ */
+export const getNetworkOptional = (symbol?: string): Network | undefined =>
+    symbol && isNetworkSymbol(symbol) ? getNetwork(symbol) : undefined;
+
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
-    getNetwork(symbol)?.backendOptions.some(option => option.type === 'blockbook');
+    getNetworkOptional(symbol)?.backendOptions.some(option => option.type === 'blockbook');
 
 export const isNetworkUsingExternalBackend = (symbol: NetworkSymbol) =>
-    !!getNetwork(symbol)?.backendOptions.some(
+    !!getNetworkOptional(symbol)?.backendOptions.some(
         option => 'isExternalBackend' in option && option.isExternalBackend,
     );
 
@@ -128,16 +119,6 @@ export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
 export const getCoingeckoId = (symbol: NetworkSymbol): string | undefined =>
     getNetwork(symbol).coingeckoId;
 
-export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
-    Object.hasOwn(getNetworks(), symbol);
-
-/**
- * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.
- * @param symbol
- */
-export const getNetworkOptional = (symbol?: string): Network | undefined =>
-    symbol && isNetworkSymbol(symbol) ? getNetwork(symbol) : undefined;
-
 export const isAccountOfNetwork = (
     network: Network,
     accountType: string,
@@ -155,13 +136,13 @@ export const isSingleAccountType = (network: Network, accountType: string) => {
 };
 
 export const getNetworkByCoingeckoId = (coingeckoId: string): Network | undefined =>
-    networksCollection.find(n => n.coingeckoId === coingeckoId);
+    getNetworksCollection().find(n => n.coingeckoId === coingeckoId);
 
 export const getNetworkByTradeCryptoId = (tradeCryptoId: string): Network | undefined =>
-    networksCollection.find(n => n.tradeCryptoId === tradeCryptoId);
+    getNetworksCollection().find(n => n.tradeCryptoId === tradeCryptoId);
 
 export const getNetworkByEvmChainId = (chainId: number): Network | undefined =>
-    networksCollection.find(n => n.chainId === chainId);
+    getNetworksCollection().find(n => n.chainId === chainId);
 
 export const getNetworkDisplaySymbol = (symbol: NetworkSymbol): NetworkDisplaySymbol =>
     getNetwork(symbol).displaySymbol;
@@ -196,15 +177,15 @@ export const getNetworkDecimals = (symbol: NetworkSymbolExtended): number | unde
 };
 
 export const getNetworkByYieldXyzId = (yieldXyzId: TokenDtoV2['network']): Network | null =>
-    networksCollection.find(n => n.yieldXyzId === yieldXyzId) ?? null;
+    getNetworksCollection().find(n => n.yieldXyzId === yieldXyzId) ?? null;
 
 const formatNetworksAsString = (someNetworks: Network[]): string =>
     someNetworks.map(network => network.name).join(', ');
 
 export const getNetworksWithMevProtection = (): string =>
     formatNetworksAsString(
-        networksCollection.filter(network => network.features.includes('mev-protection')),
+        getNetworksCollection().filter(network => network.features.includes('mev-protection')),
     );
 
 export const getNetworksWithNativeTokenReserve = (): string =>
-    formatNetworksAsString(networksCollection.filter(network => !!network.nativeTokenReserve));
+    formatNetworksAsString(getNetworksCollection().filter(network => !!network.nativeTokenReserve));

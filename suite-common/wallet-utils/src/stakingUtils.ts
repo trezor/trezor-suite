@@ -1,10 +1,10 @@
 import {
     type NetworkSymbol,
     type NetworkType,
-    STAKING_SYMBOLS,
     STAKING_TYPES,
     type StakingNetworkSymbol,
     type StakingNetworkType,
+    getStakingSymbols,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -35,7 +35,7 @@ export const isStakingNetworkType = (type: NetworkType): type is StakingNetworkT
     (STAKING_TYPES as readonly string[]).includes(type);
 
 export const isStakingSymbol = (symbol: NetworkSymbol): symbol is StakingNetworkSymbol =>
-    (STAKING_SYMBOLS as readonly string[]).includes(symbol);
+    (getStakingSymbols() as readonly string[]).includes(symbol);
 
 const getEverstakePool = (account?: Account) => {
     if (account?.networkType !== 'ethereum') {

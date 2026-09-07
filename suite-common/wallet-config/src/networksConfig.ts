@@ -1,4 +1,5 @@
 import { type NetworkSymbol, getNetworkServices } from '@suite-common/networks';
+import type { SuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types';
 import { typedObjectFromEntries } from '@trezor/utils';
 
 import type { Network, NetworkType, Networks } from './types';
@@ -8,19 +9,30 @@ import type { Network, NetworkType, Networks } from './types';
  * Access network services through the application composition root: use `useServices` in
  * components and `extra` in thunks.
  */
-const getNetworkConfig = (symbol: NetworkSymbol) => getNetworkServices().getNetworkConfig(symbol);
-const getSupportedNetworks = () => getNetworkServices().getSupportedNetworks();
+export const getNetworkConfig = (symbol: NetworkSymbol) =>
+    getNetworkServices().getNetworkConfig(symbol);
 export const isTestnet = (symbol: NetworkSymbol) => getNetworkServices().isTestnet(symbol);
 
-const createNetwork = (networkSymbol: NetworkSymbol): Network => {
-    const { settlementLayer, yieldXyzId, ...networkConfig } = getNetworkConfig(networkSymbol);
+// Preserve the stable object references of the legacy registry without reading services on import.
+const legacyNetworks = new WeakMap<SuiteCommonNetworkConfig, Map<NetworkSymbol, Network>>();
 
-    return {
+export const getNetwork = (networkSymbol: NetworkSymbol): Network => {
+    const config = getNetworkConfig(networkSymbol);
+    const cachedNetworks = legacyNetworks.get(config) ?? new Map<NetworkSymbol, Network>();
+    const cachedNetwork = cachedNetworks.get(networkSymbol);
+    if (cachedNetwork) return cachedNetwork;
+
+    const { settlementLayer, yieldXyzId, ...networkConfig } = config;
+    const network: Network = {
         symbol: networkSymbol,
         settlementLayer: settlementLayer as NetworkSymbol | undefined,
         yieldXyzId: yieldXyzId as Network['yieldXyzId'],
         ...networkConfig,
     };
+    cachedNetworks.set(networkSymbol, network);
+    legacyNetworks.set(config, cachedNetworks);
+
+    return network;
 };
 
 /**
@@ -64,20 +76,23 @@ const getNetworkDisplayOrder = (networkSymbol: NetworkSymbol): number => {
     return order === -1 ? Number.MAX_SAFE_INTEGER : order;
 };
 
-const registeredNetworkSymbols = [...getSupportedNetworks()].sort(
-    (firstNetworkSymbol, secondNetworkSymbol) =>
-        getNetworkDisplayOrder(firstNetworkSymbol) - getNetworkDisplayOrder(secondNetworkSymbol),
-);
+export const getSupportedNetworks = (): NetworkSymbol[] =>
+    [...getNetworkServices().getSupportedNetworks()].sort(
+        (firstNetworkSymbol, secondNetworkSymbol) =>
+            getNetworkDisplayOrder(firstNetworkSymbol) -
+            getNetworkDisplayOrder(secondNetworkSymbol),
+    );
 
 /**
  * @deprecated Access network configuration through the application composition root: use
  * `useServices` in components and `extra` in thunks.
  */
-export const networks: Networks = typedObjectFromEntries(
-    registeredNetworkSymbols.map(
-        networkSymbol => [networkSymbol, createNetwork(networkSymbol)] as const,
-    ),
-);
+export const getNetworks = (): Networks =>
+    typedObjectFromEntries(
+        getSupportedNetworks().map(
+            networkSymbol => [networkSymbol, getNetwork(networkSymbol)] as const,
+        ),
+    );
 
 export type StakingNetworkSymbol = 'eth' | 'sol' | 'trx' | 'ada' | 'thod' | 'dsol';
 export type StakingNetworkType = Extract<NetworkType, 'ethereum' | 'solana' | 'tron' | 'cardano'>;
@@ -88,16 +103,15 @@ const isStakingNetworkSymbol = (
 ): networkSymbol is StakingNetworkSymbol =>
     getNetworkConfig(networkSymbol).features.includes('staking');
 
-export const STAKING_SYMBOLS: readonly StakingNetworkSymbol[] =
-    registeredNetworkSymbols.filter(isStakingNetworkSymbol);
+export const getStakingSymbols = (): readonly StakingNetworkSymbol[] =>
+    getSupportedNetworks().filter(isStakingNetworkSymbol);
 
 const isProdStakingNetworkSymbol = (
     networkSymbol: StakingNetworkSymbol,
 ): networkSymbol is ProdStakingNetworkSymbol => !getNetworkConfig(networkSymbol).testnet;
 
-export const PROD_STAKING_SYMBOLS: readonly ProdStakingNetworkSymbol[] = STAKING_SYMBOLS.filter(
-    isProdStakingNetworkSymbol,
-);
+export const getProdStakingSymbols = (): readonly ProdStakingNetworkSymbol[] =>
+    getStakingSymbols().filter(isProdStakingNetworkSymbol);
 
 export const STAKING_TYPES: readonly StakingNetworkType[] = [
     'ethereum',

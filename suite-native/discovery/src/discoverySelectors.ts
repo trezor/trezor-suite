@@ -9,8 +9,8 @@ import {
     filterNetworksByName,
     getMainnets,
     getNetwork,
+    getNetworksCollection,
     getTestnets,
-    networksCollection,
 } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -47,7 +47,7 @@ const filterUnavailableNetworks = (
     enabledNetworks: NetworkSymbol[],
     device?: TrezorDevice,
 ): Network[] =>
-    networksCollection.filter(n => {
+    getNetworksCollection().filter(n => {
         const firmwareVersion = getFirmwareVersion(device);
         const internalModel = device?.features?.internal_model;
 

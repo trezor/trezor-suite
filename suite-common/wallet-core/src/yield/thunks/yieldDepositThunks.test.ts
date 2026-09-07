@@ -10,7 +10,7 @@ import { BigNumber } from '@trezor/utils';
 import { composeYieldDepositTransactionThunk } from './yieldDepositThunks';
 import { accountsInitialState } from '../../accounts/accountsReducer';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
-import { blockchainInitialState } from '../../blockchain/blockchainReducer';
+import { getBlockchainInitialState } from '../../blockchain/blockchainReducer';
 import { feesReducer } from '../../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
 import { transactionsInitialState } from '../../transactions/transactionsReducer';
@@ -78,7 +78,7 @@ const initStore = () =>
             device: () => deviceInitialState,
             wallet: combineReducers({
                 accounts: () => accountsInitialState,
-                blockchain: () => blockchainInitialState,
+                blockchain: () => getBlockchainInitialState(),
                 fees: feesReducer,
                 transactions: () => transactionsInitialState,
             }),
@@ -87,7 +87,7 @@ const initStore = () =>
             device: deviceInitialState,
             wallet: {
                 accounts: accountsInitialState,
-                blockchain: blockchainInitialState,
+                blockchain: getBlockchainInitialState(),
                 fees: { eth: { status: 'loaded', data: ethFeeInfo } },
                 transactions: transactionsInitialState,
             },
