@@ -17,6 +17,7 @@ export const preparePersistReducer = <TReducer extends Reducer<any, any>>({
     migrations,
     transforms,
     mergeLevel = 1,
+    throttle,
     storage,
 }: {
     reducer: TReducer;
@@ -26,6 +27,8 @@ export const preparePersistReducer = <TReducer extends Reducer<any, any>>({
     migrations?: MigrationsManifest;
     transforms?: Array<Transform<any, any>>;
     mergeLevel?: 1 | 2;
+    /** Minimum delay between writes, in ms. Defaults to redux-persist's 0 (write per changed tick). */
+    throttle?: number;
     storage: MMKVStorage;
 }): TReducer => {
     const persistConfig = {
@@ -33,6 +36,7 @@ export const preparePersistReducer = <TReducer extends Reducer<any, any>>({
         storage,
         whitelist: persistedKeys as string[],
         version,
+        throttle,
         migrate: createAsyncMigrate<ReducerState<TReducer>>(migrations ?? {}),
         transforms,
         stateReconciler: (mergeLevel === 2 ? autoMergeLevel2 : autoMergeLevel1) as any,

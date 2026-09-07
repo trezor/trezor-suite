@@ -26,11 +26,13 @@ import {
     type InitStakeDataThunkState,
     type PeriodicFetchFiatRatesThunkDeps,
     type PeriodicFetchFiatRatesThunkState,
+    type PruneHistoricFiatRatesThunkState,
     createImportedDeviceThunk,
     initBlockchainThunk,
     initDevicesThunk,
     initStakeDataThunk,
     periodicFetchFiatRatesThunk,
+    pruneHistoricFiatRatesThunk,
     selectBaseCurrency,
 } from '@suite-common/wallet-core';
 import {
@@ -107,6 +109,7 @@ export const postOnboardingInitThunk = createThunk<
 type ApplicationInitThunkState = SettingsSliceRootState &
     MessageSystemRootState &
     InitAnalyticsThunkState &
+    PruneHistoricFiatRatesThunkState &
     PostOnboardingInitThunkState;
 
 type ApplicationInitThunkDeps = InitAnalyticsThunkDeps & PostOnboardingInitThunkDeps;
@@ -128,6 +131,9 @@ export const applicationInitThunk = createThunk<
 
     // Select latest remembered device or Portfolio Tracker device.
     dispatch(initDevicesThunk());
+
+    // Rehydration is finished by the time this runs (PersistGate).
+    dispatch(pruneHistoricFiatRatesThunk());
 
     if (selectIsOnboardingFinished(getState())) {
         await dispatch(postOnboardingInitThunk());
