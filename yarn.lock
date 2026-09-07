@@ -28625,7 +28625,7 @@ __metadata:
 
 "expo-updates@patch:expo-updates@npm%3A57.0.8#~/.yarn/patches/expo-updates-npm-57.0.8-detox-dev-client.patch":
   version: 57.0.8
-  resolution: "expo-updates@patch:expo-updates@npm%3A57.0.8#~/.yarn/patches/expo-updates-npm-57.0.8-detox-dev-client.patch::version=57.0.8&hash=d573bc"
+  resolution: "expo-updates@patch:expo-updates@npm%3A57.0.8#~/.yarn/patches/expo-updates-npm-57.0.8-detox-dev-client.patch::version=57.0.8&hash=9ec152"
   dependencies:
     "@expo/code-signing-certificates": "npm:^0.0.6"
     "@expo/plist": "npm:^0.8.1"
@@ -28652,7 +28652,7 @@ __metadata:
       optional: true
   bin:
     expo-updates: bin/cli.js
-  checksum: 10/1b775c2c24d5ba7edc3e8f6f062b6ec83ce6bf4f2617e99eabe10e9211e8f7d5070f848efaf4811fcd8bab81e5fcabdedbe0042322c5a53b9c8832131191a4c7
+  checksum: 10/b65e0432b498004b5c90da5164233ceaa001fc29804930487993f33d6d5b705366948b833fccf2a0b75322bb31df6ab3fe7b13951328901ccaee36d32f618b9b
   languageName: node
   linkType: hard
 
