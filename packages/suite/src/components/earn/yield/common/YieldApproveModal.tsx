@@ -8,6 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
@@ -65,7 +66,9 @@ export const YieldApproveModal = ({
               }
             : getAssetLogoUrl({
                   coingeckoId: networkId,
-                  contractAddress: parsedContract,
+                  contractAddress: parsedContract
+                      ? getContractAddressForNetworkSymbol(account.symbol, parsedContract)
+                      : undefined,
                   size: 80,
               }),
         label: 'TR_EARN_YIELD_VAULT',
