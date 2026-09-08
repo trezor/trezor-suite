@@ -10,11 +10,13 @@ import { ReceiveAddressVerificationSource } from '@suite-native/navigation';
 
 type UseReceiveAddressSharingParams = {
     address: string;
+    isDeviceVerificationEnabled: boolean;
     onVerifyAddress: (source: ReceiveAddressVerificationSource) => void;
 };
 
 export const useReceiveAddressSharing = ({
     address,
+    isDeviceVerificationEnabled,
     onVerifyAddress,
 }: UseReceiveAddressSharingParams) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -40,7 +42,10 @@ export const useReceiveAddressSharing = ({
             }
 
             analytics.report({ type: events.receiveShareAddressEvent.name });
-            openSharedAddressBottomSheet();
+
+            if (isDeviceVerificationEnabled) {
+                openSharedAddressBottomSheet();
+            }
         } catch {
             showAlert({
                 title: translate('generic.unknownError'),
@@ -48,7 +53,14 @@ export const useReceiveAddressSharing = ({
                 primaryButtonTitle: translate('generic.buttons.close'),
             });
         }
-    }, [address, analytics, openSharedAddressBottomSheet, showAlert, translate]);
+    }, [
+        address,
+        analytics,
+        isDeviceVerificationEnabled,
+        openSharedAddressBottomSheet,
+        showAlert,
+        translate,
+    ]);
 
     return {
         sharedAddressBottomSheetRef,

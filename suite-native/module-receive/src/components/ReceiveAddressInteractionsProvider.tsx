@@ -29,6 +29,7 @@ type ReceiveAddressInteractionsProviderProps = {
     address: string;
     addressPath: string;
     children: ReactNode;
+    isDeviceVerificationEnabled: boolean;
 };
 
 type NavigationProp = StackNavigationProps<ReceiveStackParamList, ReceiveStackRoutes>;
@@ -38,12 +39,17 @@ export const ReceiveAddressInteractionsProvider = ({
     address,
     addressPath,
     children,
+    isDeviceVerificationEnabled,
 }: ReceiveAddressInteractionsProviderProps) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const navigation = useNavigation<NavigationProp>();
 
     const handleVerifyAddress = (source: ReceiveAddressVerificationSource) => {
+        if (!isDeviceVerificationEnabled) {
+            return;
+        }
+
         analytics.report({ type: events.receiveStartVerificationEvent.name });
         navigation.navigate(ReceiveStackRoutes.ReceiveAddressVerification, {
             accountKey,
@@ -57,19 +63,25 @@ export const ReceiveAddressInteractionsProvider = ({
         closeCopiedAddressBottomSheet,
         handleCopyAddress,
         handleVerifyCopiedAddress,
-    } = useReceiveAddressCopy({ address, onVerifyAddress: handleVerifyAddress });
+    } = useReceiveAddressCopy({
+        address,
+        isDeviceVerificationEnabled,
+        onVerifyAddress: handleVerifyAddress,
+    });
 
     const contextValue = { handleCopyAddress, handleVerifyAddress };
 
     return (
         <ReceiveAddressInteractionsContext.Provider value={contextValue}>
             {children}
-            <ReceiveAddressVerificationBottomSheet
-                ref={copiedAddressBottomSheetRef}
-                source={ReceiveAddressVerificationSource.Pasted}
-                onVerifyAddress={handleVerifyCopiedAddress}
-                onSkipVerification={closeCopiedAddressBottomSheet}
-            />
+            {isDeviceVerificationEnabled && (
+                <ReceiveAddressVerificationBottomSheet
+                    ref={copiedAddressBottomSheetRef}
+                    source={ReceiveAddressVerificationSource.Pasted}
+                    onVerifyAddress={handleVerifyCopiedAddress}
+                    onSkipVerification={closeCopiedAddressBottomSheet}
+                />
+            )}
         </ReceiveAddressInteractionsContext.Provider>
     );
 };

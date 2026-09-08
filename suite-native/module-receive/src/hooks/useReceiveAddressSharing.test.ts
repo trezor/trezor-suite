@@ -30,11 +30,12 @@ jest.mock('@suite-native/alerts', () => ({
 describe('useReceiveAddressSharing', () => {
     const address = 'bc1qreceiveaddress';
 
-    const renderUseReceiveAddressSharing = async () =>
+    const renderUseReceiveAddressSharing = async (isDeviceVerificationEnabled = true) =>
         await renderHookWithBasicProvider(
             () =>
                 useReceiveAddressSharing({
                     address,
+                    isDeviceVerificationEnabled,
                     onVerifyAddress: mockVerifyAddress,
                 }),
             { services },
@@ -57,6 +58,18 @@ describe('useReceiveAddressSharing', () => {
 
         expect(mockShare).toHaveBeenCalledWith({ message: address });
         expect(mockOpenSharedAddressBottomSheet).toHaveBeenCalledTimes(1);
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.receiveShareAddressEvent.name,
+        });
+    });
+
+    it('does not open shared address verification when verification is disabled', async () => {
+        const { result } = await renderUseReceiveAddressSharing(false);
+
+        await act(() => result.current.handleShareAddress());
+
+        expect(mockShare).toHaveBeenCalledWith({ message: address });
+        expect(mockOpenSharedAddressBottomSheet).not.toHaveBeenCalled();
         expect(mockAnalyticsReport).toHaveBeenCalledWith({
             type: events.receiveShareAddressEvent.name,
         });

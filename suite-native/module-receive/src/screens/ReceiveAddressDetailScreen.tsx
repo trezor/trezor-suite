@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { ErrorMessage, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
@@ -33,6 +34,7 @@ export const ReceiveAddressDetailScreen = () => {
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     if (hasFirmwareAuthenticityCheckHardFailed) {
         return <ReceiveBlockedDeviceCompromisedScreen />;
@@ -60,6 +62,7 @@ export const ReceiveAddressDetailScreen = () => {
             accountKey={accountKey}
             address={address.address}
             addressPath={addressPath}
+            isDeviceVerificationEnabled={!isPortfolioTrackerDevice}
         >
             <Screen
                 header={<ReceiveAddressDetailHeader address={address} symbol={networkSymbol} />}
@@ -67,7 +70,10 @@ export const ReceiveAddressDetailScreen = () => {
                     <>
                         <ScreenFooterGradient />
                         <VStack paddingHorizontal="sp16" paddingTop="sp8" paddingBottom="sp16">
-                            <ReceiveAddressActions address={address.address} />
+                            <ReceiveAddressActions
+                                address={address.address}
+                                isDeviceVerificationEnabled={!isPortfolioTrackerDevice}
+                            />
                         </VStack>
                     </>
                 }

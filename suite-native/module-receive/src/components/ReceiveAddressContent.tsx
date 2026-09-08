@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { selectCurrentFreshAddress } from '@suite-common/receive';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
@@ -53,6 +54,7 @@ export const ReceiveAddressContent = ({
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const hasInitializedCurrentFreshAddress = initializedAccountKey === accountKey;
 
     if (hasFirmwareAuthenticityCheckHardFailed) {
@@ -74,6 +76,7 @@ export const ReceiveAddressContent = ({
             accountKey={accountKey}
             address={currentFreshAddress.address}
             addressPath={currentFreshAddress.path}
+            isDeviceVerificationEnabled={!isPortfolioTrackerDevice}
         >
             <Screen
                 header={
@@ -87,7 +90,10 @@ export const ReceiveAddressContent = ({
                     <>
                         <ScreenFooterGradient />
                         <VStack paddingHorizontal="sp16" paddingTop="sp8" paddingBottom="sp16">
-                            <ReceiveAddressActions address={currentFreshAddress.address} />
+                            <ReceiveAddressActions
+                                address={currentFreshAddress.address}
+                                isDeviceVerificationEnabled={!isPortfolioTrackerDevice}
+                            />
                         </VStack>
                     </>
                 }
