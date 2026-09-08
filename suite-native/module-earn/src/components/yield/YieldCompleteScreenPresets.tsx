@@ -3,16 +3,23 @@ import { type ReactNode } from 'react';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { YieldClaimRewardRow, getYieldClaimRewardFiatAmount } from './YieldClaimRewardRow';
-import { YieldFormattedAmount, type YieldFormattedAmountValue } from './YieldFormattedAmount';
 import { type EarnCompleteSummaryRow } from '../earn/EarnCompleteScreenContent';
+
+type YieldAmountValue = {
+    value: string;
+    tokenContract?: string | null;
+    tokenDecimals?: number;
+    tokenSymbol?: string | null;
+};
 
 type YieldCompleteAmountValueParams = {
     accountSymbol: NetworkSymbol;
-    amount: YieldFormattedAmountValue;
+    amount: YieldAmountValue;
     numberOfLines?: 1 | 2;
 };
 
@@ -28,9 +35,11 @@ const getYieldCompleteAmountValue = ({
             size="extraSmall"
         />
         <Box flexShrink={1}>
-            <YieldFormattedAmount
+            <CryptoAmountFormatter
                 {...amount}
-                networkSymbol={accountSymbol}
+                symbol={accountSymbol}
+                formatStyle="compact-balance"
+                isDiscreetText={false}
                 variant="body-md-strong"
                 color="contentPrimary"
                 numberOfLines={numberOfLines}
@@ -43,8 +52,8 @@ const getYieldCompleteAmountValue = ({
 type GetYieldDepositCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
     apyValue: ReactNode;
-    receivedAmount: YieldFormattedAmountValue;
-    sentAmount: YieldFormattedAmountValue;
+    receivedAmount: YieldAmountValue;
+    sentAmount: YieldAmountValue;
 };
 
 export const getYieldCompleteStatusRow = (): EarnCompleteSummaryRow => ({
@@ -92,8 +101,8 @@ export const getYieldDepositCompleteRows = ({
 
 type GetYieldWithdrawCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
-    receivedAmount: YieldFormattedAmountValue;
-    withdrawalAmount: YieldFormattedAmountValue;
+    receivedAmount: YieldAmountValue;
+    withdrawalAmount: YieldAmountValue;
 };
 
 export const getYieldWithdrawCompleteRows = ({
@@ -123,8 +132,8 @@ export const getYieldWithdrawCompleteRows = ({
 
 type GetWrappedNativeCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
-    receivedAmount: YieldFormattedAmountValue;
-    sentAmount: YieldFormattedAmountValue;
+    receivedAmount: YieldAmountValue;
+    sentAmount: YieldAmountValue;
 };
 
 export const getWrappedNativeCompleteRows = ({
