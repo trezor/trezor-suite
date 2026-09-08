@@ -189,8 +189,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             symbol: account.symbol,
             isBalance: true,
             withSymbol,
-            isEllipsisAppended: false,
-            maxDisplayedDecimals: 8,
+            formatStyle: 'compact-balance',
         });
 
     const currentRewards = calculateRewards(stakingBalance, rate);

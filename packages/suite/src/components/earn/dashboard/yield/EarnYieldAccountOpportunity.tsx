@@ -84,18 +84,20 @@ export const EarnYieldAccountOpportunity = ({
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
     const hasMaximumDeposited = hasDepositedBalance && !hasAdditionalDepositAmount;
     const shouldSpanRewardsCells = !hasApy && !hasPotentialRewards && !hasMaximumDeposited;
-    const formattedDepositedAmount = CryptoAmountFormatter.format(opportunity.depositedAmount, {
+    const compactAmountFormatterContext = {
         symbol: opportunity.depositedSymbol,
         withSymbol: false,
         isBalance: true,
-    });
+        formatStyle: 'compact-balance',
+        tokenDecimals: opportunity.depositedDecimals,
+    } as const;
+    const formattedDepositedAmount = CryptoAmountFormatter.format(
+        opportunity.depositedAmount,
+        compactAmountFormatterContext,
+    );
     const formattedAdditionalDepositAmount = CryptoAmountFormatter.format(
         opportunity.additionalDepositAmount,
-        {
-            symbol: opportunity.depositedSymbol,
-            withSymbol: false,
-            isBalance: true,
-        },
+        compactAmountFormatterContext,
     );
 
     const navigateToTradingBuy = () => {
@@ -255,6 +257,7 @@ export const EarnYieldAccountOpportunity = ({
         symbol: opportunity.depositedSymbol,
         rewards: yearlyRewards,
         apy: opportunity.apyPercentage,
+        tokenDecimals: opportunity.depositedDecimals,
         hasDisplayableDepositedAmount,
         formattedDepositedAmount,
         displaySymbol: opportunity.depositedSymbol,
@@ -266,6 +269,7 @@ export const EarnYieldAccountOpportunity = ({
         symbol: opportunity.depositedSymbol,
         rewards: potentialRewards,
         apy: opportunity.apyPercentage,
+        tokenDecimals: opportunity.depositedDecimals,
         formattedAdditionalDepositAmount,
         displaySymbol: opportunity.depositedSymbol,
     } as const;
@@ -296,6 +300,7 @@ export const EarnYieldAccountOpportunity = ({
                 value: opportunity.additionalDepositAmount,
                 symbol: opportunity.depositedSymbol,
                 contractAddress: opportunity.depositedContractAddress,
+                decimals: opportunity.depositedDecimals,
             }}
         />
     );

@@ -8,7 +8,7 @@ export const YIELD_VAULTS = {
         name: 'Trezor Steakhouse USDC Prime',
         apy: '~4.26%',
         yearlyReward: '0 USDC',
-        potentialReward: '42.6 USDC',
+        potentialReward: '42.60 USDC',
         apyBreakdown: {
             apyPercent: '4.26',
             symbols: ['USDC', 'MORPHO'],
@@ -20,7 +20,7 @@ export const YIELD_VAULTS = {
         name: 'Trezor Steakhouse USDT Prime',
         apy: '~6.4%',
         yearlyReward: '0 USDT',
-        potentialReward: '64 USDT',
+        potentialReward: '64.00 USDT',
     },
 } as const;
 

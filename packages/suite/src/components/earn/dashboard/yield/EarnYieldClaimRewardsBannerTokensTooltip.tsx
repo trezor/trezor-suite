@@ -114,22 +114,30 @@ export const EarnYieldClaimRewardsBannerTokensTooltip = ({
             width="auto"
             content={
                 <Grid columns="auto auto" rowGap={4} columnGap={24}>
-                    {rewards.map(({ symbol, networkSymbol, contractAddress, crypto, fiat }) => (
-                        <Fragment key={`${networkSymbol}-${contractAddress}`}>
-                            <Text>
-                                <FormattedCryptoAmount value={crypto.toString()} symbol={symbol} />
-                            </Text>
-
-                            <HiddenPlaceholder>
-                                <Text align="end">
-                                    <BaseCurrencyAmountFormatter
-                                        value={asBaseCurrencyAmount(fiat)}
-                                        currency={currency}
+                    {rewards.map(
+                        ({ symbol, networkSymbol, contractAddress, decimals, crypto, fiat }) => (
+                            <Fragment key={`${networkSymbol}-${contractAddress}`}>
+                                <Text>
+                                    <FormattedCryptoAmount
+                                        value={crypto.toString()}
+                                        symbol={symbol}
+                                        contractAddress={contractAddress}
+                                        tokenDecimals={decimals}
+                                        isCompact
                                     />
                                 </Text>
-                            </HiddenPlaceholder>
-                        </Fragment>
-                    ))}
+
+                                <HiddenPlaceholder>
+                                    <Text align="end">
+                                        <BaseCurrencyAmountFormatter
+                                            value={asBaseCurrencyAmount(fiat)}
+                                            currency={currency}
+                                        />
+                                    </Text>
+                                </HiddenPlaceholder>
+                            </Fragment>
+                        ),
+                    )}
                 </Grid>
             }
         >

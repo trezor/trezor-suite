@@ -138,6 +138,7 @@ describe(getYieldOpportunityData.name, () => {
 
             expect(data.depositedSymbol).toBe('ETH');
             expect(data.depositedContractAddress).toBeNull();
+            expect(data.depositedDecimals).toBe(18);
         });
     });
 
@@ -165,6 +166,7 @@ describe(getYieldOpportunityData.name, () => {
             expect(data.additionalDepositAmount).toBe('100');
             expect(data.depositedSymbol).toBe('USDC');
             expect(data.depositedContractAddress).toBe(USDC_ADDRESS);
+            expect(data.depositedDecimals).toBe(6);
         });
 
         it('is not depositable without the matched token, regardless of native balance', () => {
