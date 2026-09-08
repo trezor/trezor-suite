@@ -32,6 +32,10 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         // validate bundle type
         Assert(Bundle(GetPublicKeySchema), payload);
 
+        // Flag set by Suite for connect 9.x host apps (see connect-popup `getPublicKeyV9Compat`);
+        // restores the v9 fallback to btc for non-bitcoin coins/paths that connect 10 rejects.
+        const v9Compat = !!message.payload._v9_compat;
+
         const params = payload.bundle.map(batch => {
             let coinInfo: BitcoinNetworkInfo | undefined;
             if (batch.coin) {
@@ -44,13 +48,16 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             } else if (!coinInfo) {
                 // coin not provided (or not bitcoin-like), try to derive network from the path
                 coinInfo = getBitcoinNetwork(address_n);
+                // Non-bitcoin-like networks (e.g. "eth") used to be silently accepted here and
+                // fall back to btc for backward compatibility. Since connect 10 getPublicKey only
+                // supports bitcoin-like coins, a network that resolves via neither the coin nor
+                // the path is rejected, unless the v9 compat flag restores the btc fallback.
+                if (!coinInfo && v9Compat) {
+                    coinInfo = getBitcoinNetwork('btc');
+                }
             }
 
             if (!coinInfo) {
-                // Non-bitcoin-like networks (e.g. "eth") used to be silently accepted here and
-                // fall back to btc for backward compatibility. Since connect 10 getPublicKey only
-                // supports bitcoin-like coins, so a network that resolves via neither the coin nor
-                // the path is rejected.
                 throw ERRORS.TypedError('Method_UnknownCoin');
             }
 
