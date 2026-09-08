@@ -1,30 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTimeoutFn, useUnmount } from 'react-use';
 
-import {
-    type BuyTradeFinalStatus,
-    type ExchangeTradeFinalStatus,
-    type SellTradeFinalStatus,
-} from 'invity-api';
-
 import { useDispatch } from '@suite-common/redux-utils';
 import {
-    type TradingTradeStatusType,
     type TradingTransaction,
     type TradingType,
+    isFinalStatus,
     tradingThunks,
 } from '@suite-common/trading';
 
 import { type TradingUseWatchTradeProps } from 'src/types/trading/trading';
 
-export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
-    buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
-    sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
-    exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
-};
-
 const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
-    trade?.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
+    trade?.data.status !== undefined && !isFinalStatus(trade.tradeType, trade.data.status);
 
 export const useTradingWatchTrade = <T extends TradingType>({
     account,
