@@ -7,7 +7,7 @@ import { createAddressValidator, createGetNamedAddressSupport } from '@suite-com
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
-import { type CommonServices, notImplementedGetter } from '@suite-common/extra-dependencies';
+import { notImplementedGetter } from '@suite-common/extra-dependencies';
 import {
     createFindNetworkSymbolForProtocol,
     createGetNetworkConfig,
@@ -17,7 +17,7 @@ import {
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { type NativeAnalyticsDep, analytics } from '@suite-native/analytics';
+import { analytics } from '@suite-native/analytics';
 import {
     rerunFwAuthenticityChecksThunk,
     selectShouldRetryFirmwareRevisionCheckError,
@@ -25,7 +25,6 @@ import {
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
-import type { MMKVStorageDep } from '@suite-native/services';
 import type {
     EnsureEncryptionKeyDep,
     MMKVStorageDep as NativeStorageDep,
@@ -37,6 +36,9 @@ import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
+
+import { type NativeServices } from './NativeServices';
+import { type NativeReduxStore } from './createReduxStore';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
@@ -53,15 +55,11 @@ const transportsPerDeviceType = {
 
 const transports = transportsPerDeviceType[deviceType];
 
-type NativeAppDeps = {
-    getState: () => any;
-    dispatch: any;
-} & EnsureEncryptionKeyDep &
+type NativeAppDeps = Pick<NativeReduxStore, 'getState' | 'dispatch'> &
+    EnsureEncryptionKeyDep &
     NativeStorageDep;
 
-export type NativeServices = CommonServices & NativeAnalyticsDep & MMKVStorageDep;
-
-export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices => {
+export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): NativeServices => {
     const platformEncryption = createNativePlatformEncryption({
         ensureEncryptionKey: deps.ensureEncryptionKey,
     });

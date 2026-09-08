@@ -1,7 +1,9 @@
-import { type Store, type UnknownAction, configureStore } from '@reduxjs/toolkit';
-import { type ThunkDispatch, type ThunkMiddleware } from 'redux-thunk';
+import { configureStore } from '@reduxjs/toolkit';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
+import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
+import { type ReduxStoreWithThunk, createReduxExtra } from '@suite-common/redux-utils';
+import { type TokenDefinitionsMiddlewareDeps } from '@suite-common/token-definitions';
 
 import { type SuiteServices } from 'src/support/createSuiteCompositionRoot';
 import { type ExtraDependenciesSuite } from 'src/support/extraDependencies';
@@ -10,12 +12,10 @@ import { type AppState, type SuiteRootReducer, devTools, getCustomMiddleware } f
 
 type ReduxStoreDeps = {
     reducer: SuiteRootReducer;
-    extraDependencies: Omit<ExtraDependenciesSuite, 'services'>;
+    extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddlewareDeps;
 };
 
-export type SuiteReduxStore = Store<AppState> & {
-    dispatch: ThunkDispatch<AppState, ExtraDependenciesSuite, UnknownAction>;
-};
+export type SuiteReduxStore = ReduxStoreWithThunk<AppState, ExtraDependenciesSuite>;
 
 export type SuiteReduxStoreDep = { store: SuiteReduxStore };
 
@@ -27,31 +27,11 @@ export type ReduxStore = {
 export type ReduxStoreDep = { reduxStore: ReduxStore };
 
 export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
-    let extra: ExtraDependenciesSuite | null = null;
-
-    const getExtra = (): ExtraDependenciesSuite => {
-        if (extra === null) {
-            throw new Error(
-                'Redux services must be injected before dispatching application actions.',
-            );
-        }
-
-        return extra;
-    };
-
-    // Resolve extra at dispatch time: services need the real store to be constructed first.
-    const thunkMiddleware: ThunkMiddleware<AppState, UnknownAction, ExtraDependenciesSuite> =
-        ({ dispatch, getState }) =>
-        next =>
-        action => {
-            const currentExtra = getExtra();
-
-            if (typeof action === 'function') {
-                return action(dispatch, getState, currentExtra);
-            }
-
-            return next(action);
-        };
+    const { getExtra, thunkMiddleware, injectServicesIntoReduxExtra } = createReduxExtra<
+        AppState,
+        SuiteServices,
+        ExtraDependenciesStatic & TokenDefinitionsMiddlewareDeps
+    >({ extraDependencies: deps.extraDependencies });
 
     const store = configureStore({
         reducer: deps.reducer,
@@ -75,11 +55,6 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
 
     return {
         store,
-        injectServicesIntoReduxExtra: services => {
-            // Services depend on this store's dispatch/getState, while thunks depend on services.
-            // The parent composition root creates the store first, then builds and injects the
-            // services here to break that cycle before any application actions are dispatched.
-            extra = { ...deps.extraDependencies, services };
-        },
+        injectServicesIntoReduxExtra,
     };
 };
