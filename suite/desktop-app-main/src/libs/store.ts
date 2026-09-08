@@ -24,6 +24,7 @@ export class Store {
         connectSettings: ElectronConnectSettings;
         bioAuthSettings: BioAuthSettings;
         mcpSettings: McpSettings;
+        isDebugModeActive: boolean;
     }>;
 
     private constructor() {
@@ -152,6 +153,14 @@ export class Store {
             ...this.getMcpSettings(),
             ...mcpSettings,
         });
+    }
+
+    public getIsDebugModeActive() {
+        return this.store.get('isDebugModeActive', false);
+    }
+
+    public setIsDebugModeActive(isDebugModeActive: boolean) {
+        this.store.set('isDebugModeActive', isDebugModeActive);
     }
 
     /** Deletes all items from the store. */
