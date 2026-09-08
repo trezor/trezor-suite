@@ -3,6 +3,7 @@ import 'react-native-gesture-handler';
 import './rozeniteBootRecording';
 import './globalPolyfills';
 import './reanimatedLoggerFix';
+import './src/initSentry';
 
 import { registerRootComponent } from 'expo';
 
