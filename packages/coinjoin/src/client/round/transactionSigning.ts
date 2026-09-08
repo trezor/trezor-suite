@@ -1,6 +1,6 @@
 import { arrayShuffle, getWeakRandomInt } from '@trezor/utils';
 
-import { TX_SIGNING_DELAY } from '../../constants';
+import { ROUND_MAXIMUM_REQUEST_DELAY, TX_SIGNING_DELAY } from '../../constants';
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 import { type CoinjoinTransactionData } from '../../types';
 import type { AliceShape } from '../../types/alice';
@@ -154,7 +154,13 @@ const sendTxSignature = async (
         round.phaseDeadline,
         round.roundParameters,
     );
-    const delay = scheduleDelay(sendDeadline - Date.now(), minimumDelay, maximumDelay);
+    const remainingTime = sendDeadline - Date.now();
+    // The scheduler floors its random window to one second, so skip it when that window
+    // would consume the time reserved for the request.
+    const delay =
+        remainingTime < ROUND_MAXIMUM_REQUEST_DELAY + 1000
+            ? 0
+            : scheduleDelay(remainingTime, minimumDelay, maximumDelay);
 
     logger.info(
         `Sending signature of ~~${input.outpoint}~~ with delay ${delay}ms. Round signing delay: ${round.roundParameters.DelayTransactionSigning}`,

@@ -5,6 +5,12 @@ import { transactionSigning } from './transactionSigning';
 import { createServer } from '../../../mocks/server';
 import { createInput } from '../../__fixtures__/input.fixture';
 import { createCoinjoinRound } from '../../__fixtures__/round.fixture';
+import * as coordinator from '../coordinator';
+
+jest.mock('../coordinator', () => ({
+    ...jest.requireActual('../coordinator'),
+    transactionSignature: jest.fn(jest.requireActual('../coordinator').transactionSignature),
+}));
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {
@@ -604,9 +610,15 @@ describe('transactionSigning send window (phaseStartLowerBound)', () => {
 
     beforeEach(() => {
         server?.removeAllListeners('test-request');
+        jest.mocked(getWeakRandomNumberInRange).mockClear().mockReturnValue(900);
+        jest.mocked(coordinator.transactionSignature).mockClear().mockResolvedValue(undefined);
     });
 
     afterEach(() => {
+        jest.mocked(getWeakRandomNumberInRange).mockReturnValue(0);
+        jest
+            .mocked(coordinator.transactionSignature)
+            .mockImplementation(jest.requireActual('../coordinator').transactionSignature);
         jest.restoreAllMocks();
     });
 
@@ -649,25 +661,55 @@ describe('transactionSigning send window (phaseStartLowerBound)', () => {
 
         // budget = sendDeadline(130s) - now(100s) = 30s; reserve 10s -> deadlineOffset 20s
         expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 20000);
+        expect(coordinator.transactionSignature).toHaveBeenCalledWith(
+            round.id,
+            0,
+            'aa',
+            expect.objectContaining({ delay: 900, deadline: round.phaseDeadline }),
+        );
         expect(response.isSignedSuccessfully()).toBe(true);
     });
 
-    it('collapses to an immediate send when the budget is exhausted (fail-safe over the 50s delay)', async () => {
-        // The lower bound is stale (phase started long ago) so the conservative send deadline is
-        // nearly in the past. The witness must be sent immediately instead of waiting the 50s
-        // DelayTransactionSigning window -- a fail-safe to still make the round, not a budget grab.
+    it.each([-1000, 0, 500, 1000, 5000, 10000, 10999])(
+        'sends immediately with %i ms left before the conservative deadline',
+        async remainingTime => {
+            jest.spyOn(Date, 'now').mockReturnValue(100000);
+            const round = signingRound({
+                phaseStartLowerBound: 40000 + remainingTime,
+                phaseDeadline: 100000 + 60000 * 4,
+            });
+            round.roundParameters.DelayTransactionSigning = true;
+
+            const response = await transactionSigning(round, [], server?.requestOptions);
+
+            expect(coordinator.transactionSignature).toHaveBeenCalledWith(
+                round.id,
+                0,
+                'aa',
+                expect.objectContaining({ delay: 0, deadline: round.phaseDeadline }),
+            );
+            expect(getWeakRandomNumberInRange).not.toHaveBeenCalled();
+            expect(response.isSignedSuccessfully()).toBe(true);
+        },
+    );
+
+    it('retains randomization with one second left after the request reservation', async () => {
         jest.spyOn(Date, 'now').mockReturnValue(100000);
         const round = signingRound({
-            phaseStartLowerBound: 45000, // sendDeadline = 45s + 60s = 105s -> only 5s of budget left
+            phaseStartLowerBound: 51000,
             phaseDeadline: 100000 + 60000 * 4,
         });
-        round.roundParameters.DelayTransactionSigning = true; // would otherwise defer sends by ~50s
+        round.roundParameters.DelayTransactionSigning = true;
 
         const response = await transactionSigning(round, [], server?.requestOptions);
 
-        // 5s budget - 10s reserve floors deadlineOffset to 1s -> immediate send (0-1s), overriding
-        // the 50s (45-95s) DelayTransactionSigning window
         expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+        expect(coordinator.transactionSignature).toHaveBeenCalledWith(
+            round.id,
+            0,
+            'aa',
+            expect.objectContaining({ delay: 900, deadline: round.phaseDeadline }),
+        );
         expect(response.isSignedSuccessfully()).toBe(true);
     });
 });
