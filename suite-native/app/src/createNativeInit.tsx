@@ -5,7 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { applicationInitThunk } from '@suite-native/app-init';
 import { configureNetInfo } from '@suite-native/connection-status';
-import { initSentry, markStartupJsBundleEvaluated } from '@suite-native/sentry';
+import { markStartupJsBundleEvaluated } from '@suite-native/sentry';
 import {
     type HydrateReduxStoreDep,
     type NativeReduxStoreDep,
@@ -40,8 +40,6 @@ export const createNativeInit = (deps: NativeInitDeps): NativeInit => {
             if (__DEV__) {
                 require('./LogBox');
             }
-
-            initSentry();
 
             // Right-to-left language support is not supported yet.
             disableRTL();
