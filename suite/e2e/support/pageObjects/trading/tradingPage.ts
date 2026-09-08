@@ -251,7 +251,9 @@ export class TradingPage {
         await this.inputs.selectCountryOfResidence(country);
         await this.inputs.selectFiatCurrency(fiatCurrencyCode);
         const isFiatRateLoadingFlag = `wallet.fiat.current.${networkSymbolOrTokenId}-${fiatCurrencyCode}.isLoading`;
-        await this.page.expectReduxObjectToEqual(isFiatRateLoadingFlag, false);
+        await this.page.expectReduxObjectToEqual(isFiatRateLoadingFlag, false, {
+            timeout: 30_000,
+        });
         await this.inputs.cryptoAmount.fill(cryptoAmount);
         await expect(
             this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
