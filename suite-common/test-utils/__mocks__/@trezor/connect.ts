@@ -68,25 +68,7 @@ const mockResponse = (method: string, params: any) =>
 
 const init = (params: any): Promise<void> => mockResponse('init', params);
 
-const call = (params: CallMethodPayload) => {
-    if (params?.__info) {
-        connect.default.init({
-            manifest: {
-                email: 'email@trezor.io',
-                appUrl: 'https://trezor.io',
-                appName: 'Test App',
-            },
-        });
-
-        // call actual implementation
-        return connect.default[params.method](params).finally(() => {
-            // I needed to call dispose to get rid of 'Jest did not exit one second after the test run has completed.' warning
-            connect.default.dispose();
-        });
-    }
-
-    return mockResponse(params.method, params);
-};
+const call = (params: CallMethodPayload) => mockResponse(params.method, params);
 
 const on = jest.fn((event: string, cb) => (listeners[event] = cb));
 
