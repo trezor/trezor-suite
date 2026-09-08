@@ -3,7 +3,6 @@ import {
     DeviceTrackingPhase,
     resolveDeviceByRef,
     selectDevices,
-    selectSelectedDevice,
 } from '@suite-common/device';
 
 import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
@@ -29,20 +28,16 @@ export const selectIsOnboardedDeviceTrackingArmed = (state: OnboardingRootState)
  *
  * Onboarding wipes and initialises the device, so it disconnects and comes back with a new path
  * and a freshly generated `device_id` — and while it is away the global selection moves to
- * whatever else is around. Every step therefore addresses this device through the ref rather than
- * through the selection, and gets `undefined` when it is genuinely unreachable instead of
- * silently getting a different device.
+ * whatever else is around. Every step therefore addresses this device through the ref, and gets
+ * `undefined` when it is genuinely unreachable rather than silently getting a different device.
  *
- * The unarmed branch is the entry point only: before onboarding pins a device there is nothing to
- * resolve, so it follows the selection the user started from.
+ * Deliberately never falls back to the selection: a fallback is indistinguishable from a correct
+ * answer at the call site, which is exactly how the drift got in. Whatever starts onboarding arms
+ * the ref first — see the `armOnboardedDeviceTracking` call sites — so an unarmed read means
+ * onboarding was entered without a device, and `undefined` is the honest answer.
  */
-export const selectOnboardedDevice = (state: OnboardingRootState & DeviceRootState) => {
-    if (!selectIsOnboardedDeviceTrackingArmed(state)) {
-        return selectSelectedDevice(state);
-    }
-
-    return resolveDeviceByRef({
+export const selectOnboardedDevice = (state: OnboardingRootState & DeviceRootState) =>
+    resolveDeviceByRef({
         devices: selectDevices(state),
         ref: selectOnboardedDeviceRef(state),
     });
-};

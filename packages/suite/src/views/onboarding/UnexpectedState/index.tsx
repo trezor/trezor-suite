@@ -1,10 +1,10 @@
 import { type JSX } from 'react';
 
-import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 
 import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceDifferentStep } from './DeviceDifferentStep';
@@ -19,7 +19,7 @@ type UnexpectedStateProps = {
  * This component handles unexpected device states across various steps in the onboarding.
  */
 export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(selectOnboardedDevice);
     const prerequisite = useSelector(selectPrerequisite);
     const thpStep = useSelector(selectThpStep);
 

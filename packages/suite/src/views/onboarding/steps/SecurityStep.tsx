@@ -7,7 +7,7 @@ import { CreateNfcBackup, NoNfcTags } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
+import { selectIsDeviceBackupRequired } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Badge, Column } from '@trezor/components';
 import { CheckIcon, TrezorBackupIcon, WalletIcon, WarningIcon } from '@trezor/icons';
@@ -18,6 +18,7 @@ import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { ConfirmActionModal } from 'src/components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 type SecurityStepStatus = 'initial' | 'in-progress' | 'skipping-backup' | 'finished';
 
@@ -35,7 +36,7 @@ export const SecurityStep = () => {
         backupMedium,
     } = useOnboarding();
     const { isLocked } = useDevice();
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(selectOnboardedDevice);
     const { dispatch } = useServices(selectDispatch);
     const backup = useSelector(selectBackup);
     const isDeviceLocked = isLocked();

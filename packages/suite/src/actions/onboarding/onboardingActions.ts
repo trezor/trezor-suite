@@ -23,6 +23,7 @@ import {
     selectConnectedDevices,
     selectDeviceThunk,
     selectHasBitcoinOnlyFirmware,
+    selectSelectedDevice,
 } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
 import { type BackupType, type TrezorDevice } from '@suite-common/suite-types';
@@ -41,6 +42,8 @@ import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
 import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
 import {
+    selectIsOnboardedDeviceTrackingArmed,
+    selectOnboardedDevice,
     selectOnboardedDeviceRef,
     selectOnboardingActiveStepId,
     selectOnboardingAnalytics,
@@ -330,16 +333,31 @@ const resolveNextAfterSkippedThunk =
         return resolvedNextStep?.id;
     };
 
-type RerunRecoveryThunkState = DeviceRootState & GotoThunkState & { recovery: RecoveryState };
+type RerunRecoveryThunkState = DeviceRootState &
+    GotoThunkState &
+    OnboardingRootState & { recovery: RecoveryState };
 
 type RerunRecoveryThunkDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
 
 const rerunRecoveryThunk =
-    (onboardedDevice: TrezorDevice | undefined) =>
+    () =>
     async (
         dispatch: ThunkDispatch<RerunRecoveryThunkState, RerunRecoveryThunkDeps, UnknownAction>,
         getState: () => RerunRecoveryThunkState,
     ) => {
+        // Onboarding begins here too: a device reconnected mid-recovery drops the user straight
+        // into the recovery step, with no CTA in between. Pin the flow to it before the recovery
+        // call reboots it. Not when onboarding already pinned a device, which would throw away a
+        // ref that may be following one through a reboot right now.
+        if (!selectIsOnboardedDeviceTrackingArmed(getState())) {
+            const selectedDevice = selectSelectedDevice(getState());
+
+            if (selectedDevice?.connected) {
+                dispatch(armOnboardedDeviceTracking(selectedDevice));
+            }
+        }
+
+        const onboardedDevice = selectOnboardedDevice(getState());
         const result = await dispatch(recoveryRerunForDeviceThunk({ device: onboardedDevice }));
 
         if (!recoveryRerunForDeviceThunk.fulfilled.match(result)) {

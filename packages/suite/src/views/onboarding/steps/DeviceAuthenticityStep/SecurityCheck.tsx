@@ -38,6 +38,7 @@ import {
     TREZOR_URL,
 } from '@trezor/urls';
 
+import { armOnboardedDeviceTracking } from 'src/actions/onboarding/onboardingActions';
 import { Hologram } from 'src/components/onboarding/Hologram';
 import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/SecurityCheckButton';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
@@ -170,12 +171,25 @@ const SecurityCheckContent = ({
             { force: true },
         );
 
+        if (isOnboardingActive) {
+            // Already inside onboarding and already pinned to a device; this only unsticks the
+            // 'start' FullscreenApp, so re-arming here would throw away a ref that may be
+            // following the device through a reboot right now.
+            goToNextStep('firmware');
+            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
+
+            return;
+        }
+
+        // Onboarding begins here. Pin it to the device the user pressed the button for, which is
+        // the last moment the selection is guaranteed to be that device — from here on onboarding
+        // installs firmware and wipes it, so it disconnects and the selection drifts.
+        if (device?.connected) {
+            dispatch(armOnboardedDeviceTracking(device));
+        }
+
         if (isRecoveryInProgress) {
             rerun();
-        } else if (isOnboardingActive) {
-            goToNextStep('firmware');
-            // ensure that we are not stuck in the 'start' FullscreenApp
-            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
         } else {
             dispatch(gotoThunk({ routeName: 'onboarding-index' }));
         }

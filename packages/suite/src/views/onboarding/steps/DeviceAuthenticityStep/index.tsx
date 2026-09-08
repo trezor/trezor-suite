@@ -4,7 +4,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDeviceAuthenticityByDeviceId, selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceAuthenticityByDeviceId } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
@@ -13,6 +13,7 @@ import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
     { id: 'security', icon: ShieldCheckIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
@@ -25,7 +26,7 @@ type DeviceAuthenticityProps = {
 };
 
 export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) => {
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(selectOnboardedDevice);
     const selectedDeviceAuthenticity = useSelector(state =>
         selectDeviceAuthenticityByDeviceId(state, device?.id),
     );
