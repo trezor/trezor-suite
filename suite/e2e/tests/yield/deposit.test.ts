@@ -14,6 +14,8 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 const { usdcPrime, usdtPrime } = YIELD_VAULTS;
 const YIELD_USDC_VAULT_DISPLAY_NAME = ['Trezor Steakhouse', '\n', 'USDC Prime Vault'];
 const EXPECT_YIELD_DASHBOARD_ROWS = [usdcPrime, usdtPrime];
+// The toast shows the approved amount compactly, and a stablecoin reads money-like.
+const COMPACT_APPROVED_AMOUNT = '10.00';
 const APPROVE_MAX_FEE = '0.00003161748342375 ETH';
 const DEPOSIT_MAX_FEE = '0.00010840280031 ETH';
 
@@ -176,7 +178,9 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await devicePrompt.waitForFinalPromptAndConfirm();
                 await devicePrompt.sendButton.click();
                 await expect(toastSection.approved).toBeVisible();
-                await expect(toastSection.approvedAmount).toHaveText('10USDC');
+                await expect(toastSection.approvedAmount).toHaveText(
+                    `${COMPACT_APPROVED_AMOUNT}USDC`,
+                );
                 await expect(yieldFlowSection.pendingTransactionLabel).toHaveTranslation(
                     'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
                 );

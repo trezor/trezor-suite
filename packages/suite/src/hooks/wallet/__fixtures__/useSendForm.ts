@@ -1491,7 +1491,7 @@ export const signAndPush: SignAndPush[] = [
             actions: [
                 {
                     type: notificationsActions.addToast.type,
-                    payload: { type: 'tx-sent', formattedAmount: '1 ETH' }, // BUG ?
+                    payload: { type: 'tx-sent', amount: '1' },
                 },
                 {
                     type: routerLocationChange.type,
@@ -1547,7 +1547,7 @@ export const signAndPush: SignAndPush[] = [
             actions: [
                 {
                     type: notificationsActions.addToast.type,
-                    payload: { type: 'tx-sent', formattedAmount: '1 XRP' },
+                    payload: { type: 'tx-sent', amount: '1' },
                 },
                 {
                     type: routerLocationChange.type,
@@ -1650,7 +1650,7 @@ export const signAndPush: SignAndPush[] = [
             actions: [
                 {
                     type: notificationsActions.addToast.type,
-                    payload: { type: 'tx-sent', formattedAmount: '24.999999 BTC' },
+                    payload: { type: 'tx-sent', amount: '24.999999' },
                 },
                 {
                     type: accountsActions.updateAccount.type,
