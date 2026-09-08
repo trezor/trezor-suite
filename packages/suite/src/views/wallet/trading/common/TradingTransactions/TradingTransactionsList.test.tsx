@@ -1,176 +1,190 @@
 import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { type Coins, type CryptoId } from 'invity-api';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { initialState as tradingInitialState } from '@suite-common/trading';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type Account,
-    type SelectedAccountStatus,
-    asAccountDescriptor,
-    createAccountKey,
-} from '@suite-common/wallet-types';
+    type TradingTransaction,
+    type TradingTransactionBuy,
+    type TradingTransactionExchange,
+    type TradingTransactionSell,
+    initialState as tradingInitialState,
+} from '@suite-common/trading';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type StaticSessionId } from '@trezor/device-utils';
 
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingTransactionsList } from './TradingTransactionsList';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
-jest.mock('@suite-common/tx-simulation', () => ({}));
-
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
-    Translation: ({ id, values }: { id: string; values?: Record<string, unknown> }) => (
-        <span data-testid={id}>{values ? JSON.stringify(values) : id}</span>
-    ),
+jest.mock('@suite/router', () => ({
+    ...jest.requireActual('@suite/router'),
+    gotoThunk: (payload: unknown) => ({ type: '@router/goto', payload }),
 }));
 
-jest.mock('src/views/wallet/trading/common/TradingTransactions/TradingTransactionsBuy', () => ({
-    TradingTransactionBuy: ({ trade }: { trade: { key?: string } }) => (
-        <div data-testid={`@trading/transactions/buy/${trade.key}`} />
-    ),
-}));
+const BITCOIN = 'bitcoin' as CryptoId;
+const ETHEREUM = 'ethereum' as CryptoId;
+const DEVICE_STATIC_SESSION_ID = 'descriptor@deviceId:0' as StaticSessionId;
 
-jest.mock('src/views/wallet/trading/common/TradingTransactions/TradingTransactionsSell', () => ({
-    TradingTransactionSell: ({ trade }: { trade: { key?: string } }) => (
-        <div data-testid={`@trading/transactions/sell/${trade.key}`} />
-    ),
-}));
+const coins = {
+    bitcoin: {
+        symbol: 'btc',
+        name: 'Bitcoin',
+        coingeckoId: 'bitcoin',
+        services: { buy: true, sell: true, exchange: true },
+    },
+    ethereum: {
+        symbol: 'eth',
+        name: 'Ethereum',
+        coingeckoId: 'ethereum',
+        services: { buy: true, sell: true, exchange: true },
+    },
+} satisfies Coins;
 
-jest.mock('src/views/wallet/trading/common/TradingTransactions/TradingTransactionExchange', () => ({
-    TradingTransactionExchange: ({ trade }: { trade: { key?: string } }) => (
-        <div data-testid={`@trading/transactions/exchange/${trade.key}`} />
-    ),
-}));
-
-const DEVICE_SSID = 'btcAddress@deviceId:0' as const;
-const btcSymbol = asNetworkSymbol('btc');
-const SELECTED_DEVICE = mockSuiteDevice({
+const selectedDevice = mockSuiteDevice({
     connected: true,
     available: true,
-    state: { staticSessionId: DEVICE_SSID },
+    state: { staticSessionId: DEVICE_STATIC_SESSION_ID },
 });
 
-const ACCOUNT_KEY = createAccountKey({
-    accountDescriptor: asAccountDescriptor('btcDescriptor'),
-    networkSymbol: btcSymbol,
-    deviceStaticSessionId: DEVICE_SSID,
-});
-
-const btcAccount = {
-    key: ACCOUNT_KEY,
-    deviceState: DEVICE_SSID,
-    accountType: 'normal',
-    visible: true,
-    empty: false,
+const btcAccount = mockWalletAccount({
     symbol: 'btc',
-    networkType: 'bitcoin',
-} as unknown as Account;
+    descriptor: asAccountDescriptor('btcDescriptor'),
+    deviceState: DEVICE_STATIC_SESSION_ID,
+});
 
-const BUY_TRADE = {
-    date: '2026-01-02T00:00:00Z',
-    key: 'buy-1',
-    tradeType: 'buy' as const,
-    data: {},
-    selectedAccountKey: ACCOUNT_KEY,
-    receiveAccountKey: ACCOUNT_KEY,
-};
-
-const SELL_TRADE = {
+const buy: TradingTransactionBuy = {
+    tradeType: 'buy',
+    key: 'buy-key',
     date: '2026-01-01T00:00:00Z',
-    key: 'sell-1',
-    tradeType: 'sell' as const,
-    data: {},
-    sendAccountKey: ACCOUNT_KEY,
+    data: {
+        orderId: 'buy-order',
+        status: 'SUCCESS',
+        fiatStringAmount: '1000',
+        fiatCurrency: 'EUR',
+        receiveStringAmount: '0.02',
+        receiveCurrency: BITCOIN,
+    },
+    selectedAccountKey: btcAccount.key,
+    receiveAccountKey: btcAccount.key,
 };
 
-const EXCHANGE_TRADE = {
+const sell: TradingTransactionSell = {
+    tradeType: 'sell',
+    key: 'sell-key',
+    date: '2026-01-02T00:00:00Z',
+    data: {
+        orderId: 'sell-order',
+        status: 'SUCCESS',
+        cryptoStringAmount: '0.5',
+        cryptoCurrency: ETHEREUM,
+        fiatStringAmount: '900',
+        fiatCurrency: 'USD',
+    },
+    sendAccountKey: btcAccount.key,
+};
+
+const exchange: TradingTransactionExchange = {
+    tradeType: 'exchange',
+    key: 'exchange-key',
     date: '2026-01-03T00:00:00Z',
-    key: 'exchange-1',
-    tradeType: 'exchange' as const,
-    data: {},
-    sendAccountKey: ACCOUNT_KEY,
-    receiveAccountKey: ACCOUNT_KEY,
-};
-
-type BuildStateParams = {
-    selectedAccountStatus?: SelectedAccountStatus;
-    trades?: (typeof BUY_TRADE | typeof SELL_TRADE | typeof EXCHANGE_TRADE)[];
-};
-
-const buildState = ({
-    selectedAccountStatus = {
-        status: 'loaded',
-        account: btcAccount,
-        network: { symbol: 'btc' } as any,
-        params: {} as any,
+    data: {
+        orderId: 'exchange-order',
+        status: 'SUCCESS',
+        sendStringAmount: '0.5',
+        send: ETHEREUM,
+        receiveStringAmount: '0.02',
+        receive: BITCOIN,
     },
-    trades = [],
-}: BuildStateParams = {}) => ({
+    sendAccountKey: btcAccount.key,
+    receiveAccountKey: btcAccount.key,
+};
+
+const buildState = (trades: TradingTransaction[]): AppState => ({
     ...mockInitialAppState,
-    device: {
-        ...mockInitialAppState.device,
-        selectedDevice: SELECTED_DEVICE,
-    },
+    device: { ...mockInitialAppState.device, selectedDevice },
     wallet: {
         ...mockInitialAppState.wallet,
         accounts: [btcAccount],
-        selectedAccount: selectedAccountStatus,
         trading: {
             ...tradingInitialState,
-            trades: trades as any,
+            info: { ...tradingInitialState.info, coins },
+            trades,
         },
-    } as any,
+    },
 });
 
+const renderList = (trades: TradingTransaction[]) => {
+    const root = createTestCompositionRoot({
+        extra: { services: { analytics: mockDesktopAnalytics() } },
+        preloadedState: buildState(trades),
+    });
+
+    return renderWithProviders(root, <TradingTransactionsList />);
+};
+
+const getRowOrderIds = () =>
+    screen
+        .getAllByTestId(/^@trading\/transactions\/trade\//)
+        .map(row => row.dataset.testid?.split('/').pop());
+
+const selectTab = (tradeType: string) =>
+    userEvent.click(screen.getByTestId(`@trading/transactions/tab/${tradeType}`));
+
 describe('TradingTransactionsList', () => {
-    it('renders nothing when selectedAccount is not loaded', () => {
-        const services = { analytics: mockDesktopAnalytics() };
-        const root = createTestCompositionRoot({
-            extra: { services },
-            preloadedState: buildState({
-                selectedAccountStatus: { status: 'loading', loader: 'account-loading' },
-            }),
-        });
-        const { container } = renderWithProviders(root, <TradingTransactionsList />);
+    it('renders every trade, newest first', () => {
+        renderList([buy, sell, exchange]);
 
-        expect(container).toBeEmptyDOMElement();
+        expect(getRowOrderIds()).toEqual(['exchange-order', 'sell-order', 'buy-order']);
     });
 
-    it('renders empty state when there are no trades', () => {
-        const services = { analytics: mockDesktopAnalytics() };
-        const root = createTestCompositionRoot({
-            extra: { services },
-            preloadedState: buildState({ trades: [] }),
-        });
-        renderWithProviders(root, <TradingTransactionsList />);
+    it('renders only the trades of the selected type', async () => {
+        renderList([buy, sell, exchange]);
 
-        expect(screen.getByTestId('@trading/transactions/list')).toBeInTheDocument();
-        expect(screen.getByTestId('@trading/transactions/no-transaction')).toBeInTheDocument();
-        expect(screen.queryByTestId('@trading/transactions/count')).not.toBeInTheDocument();
+        await selectTab('sell');
+
+        expect(getRowOrderIds()).toEqual(['sell-order']);
     });
 
-    it('renders correct transaction counts and trade rows when there are trades', () => {
-        const services = { analytics: mockDesktopAnalytics() };
-        const root = createTestCompositionRoot({
-            extra: { services },
-            preloadedState: buildState({ trades: [BUY_TRADE, SELL_TRADE, EXCHANGE_TRADE] }),
-        });
-        renderWithProviders(root, <TradingTransactionsList />);
+    it('offers a way back to all trades when the selected type has none', async () => {
+        renderList([buy]);
 
+        await selectTab('exchange');
+
+        expect(screen.getByTestId('@trading/transactions/type-empty-state')).toBeInTheDocument();
+
+        await userEvent.click(screen.getByTestId('@trading/transactions/show-all-trades'));
+
+        expect(getRowOrderIds()).toEqual(['buy-order']);
         expect(
-            screen.queryByTestId('@trading/transactions/no-transaction'),
+            screen.queryByTestId('@trading/transactions/type-empty-state'),
         ).not.toBeInTheDocument();
+    });
 
-        expect(screen.getByTestId('TR_TRADING_TRADE_HISTORY_COUNTER')).toHaveTextContent(
-            JSON.stringify({ totalBuys: 1, totalSells: 1, totalSwaps: 1 }),
-        );
+    it('skips a trade that has no amount on one of its sides', () => {
+        renderList([
+            buy,
+            {
+                ...exchange,
+                key: 'no-amount',
+                data: { ...exchange.data, receiveStringAmount: undefined },
+            },
+        ]);
 
-        expect(screen.getByTestId('@trading/transactions/buy/buy-1')).toBeInTheDocument();
-        expect(screen.getByTestId('@trading/transactions/sell/sell-1')).toBeInTheDocument();
-        expect(screen.getByTestId('@trading/transactions/exchange/exchange-1')).toBeInTheDocument();
+        expect(getRowOrderIds()).toEqual(['buy-order']);
+    });
+
+    it('renders a trade without an order id, leaving it without a testid', () => {
+        renderList([buy, { ...sell, data: { ...sell.data, orderId: undefined } }]);
+
+        expect(getRowOrderIds()).toEqual(['buy-order']);
+        expect(screen.getAllByTestId('@trading/transactions/date')).toHaveLength(2);
     });
 });
