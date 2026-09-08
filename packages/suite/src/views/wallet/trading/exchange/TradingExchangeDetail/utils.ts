@@ -1,6 +1,7 @@
 import { type ExchangeTradeStatus } from 'invity-api';
 
-import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { isFinalStatus } from '@suite-common/trading';
+
 import { type TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/utils';
 
 export type ExchangeDetailStatusStep =
@@ -24,7 +25,7 @@ export const getExchangeDetailStatusStep = (
         case 'SUCCESS':
             return 'success';
         default: {
-            if (!tradeFinalStatuses['exchange'].includes(tradeStatus)) {
+            if (!isFinalStatus('exchange', tradeStatus)) {
                 return 'sending';
             }
 

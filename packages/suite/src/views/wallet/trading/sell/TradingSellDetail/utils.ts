@@ -1,6 +1,7 @@
 import { type SellTradeStatus } from 'invity-api';
 
-import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { isFinalStatus } from '@suite-common/trading';
+
 import {
     type DetailHeaderMessages,
     type TradingDetailProgress,
@@ -29,7 +30,7 @@ export const getSellDetailStatusStep = (tradeStatus: SellTradeStatus): SellDetai
         case 'SUCCESS':
             return 'success';
         default: {
-            return tradeFinalStatuses['sell'].includes(tradeStatus) ? 'error' : 'pending';
+            return isFinalStatus('sell', tradeStatus) ? 'error' : 'pending';
         }
     }
 };
