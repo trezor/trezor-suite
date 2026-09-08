@@ -15885,18 +15885,13 @@ __metadata:
   dependencies:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/formatters": "workspace:*"
-    "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite/intl": "workspace:*"
-    "@suite/router": "workspace:*"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/react": "npm:^16.3.2"
     "@testing-library/user-event": "npm:^14.6.4"
     "@trezor/suite": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
-    history: "npm:^5.3.0"
     react: "npm:19.2.3"
-    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
