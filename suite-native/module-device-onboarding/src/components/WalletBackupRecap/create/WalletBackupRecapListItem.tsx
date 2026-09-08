@@ -1,26 +1,34 @@
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { HStack, OrderedListIcon, Text, VStack } from '@suite-native/atoms';
+import { HStack, IconCircle, Text, VStack } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type ColorVariant, connectorColorsMap, iconColorsMap } from './presets';
+import { type ItemIntent, connectorColorsMap } from './presets';
 
 type WalletBackupRecapListItemProps = {
     labelId: TxKeyPath;
     iconName: IconName;
+    iconIntent: ItemIntent;
+    connectorIntent: ItemIntent;
     isLast: boolean;
-    iconVariant?: ColorVariant;
-    connectorVariant?: ColorVariant;
 };
 
+const ICON_SIZE = 40;
+
+const itemStyle = prepareNativeStyle(utils => ({
+    minHeight: ICON_SIZE + utils.spacings.sp8,
+    gap: utils.spacings.sp16,
+    alignItems: 'center',
+}));
+
 const connectorStyle = prepareNativeStyle(utils => ({
-    width: utils.spacings.sp2,
-    height: utils.spacings.sp36,
+    width: utils.borders.widths.large,
+    height: ICON_SIZE,
     backgroundColor: utils.colors.elementFillNeutralSofter,
     position: 'absolute',
-    bottom: -utils.spacings.sp36,
+    bottom: -ICON_SIZE,
 }));
 
 const textStyle = prepareNativeStyle(() => ({
@@ -30,24 +38,19 @@ const textStyle = prepareNativeStyle(() => ({
 export const WalletBackupRecapListItem = ({
     labelId,
     iconName,
+    iconIntent,
+    connectorIntent,
     isLast,
-    iconVariant = 'default',
-    connectorVariant = 'default',
 }: WalletBackupRecapListItemProps) => {
     const { applyStyle, utils } = useNativeStyles();
 
-    const connectorColor1 = utils.colors[connectorColorsMap[connectorVariant][0]];
-    const connectorColor2 = utils.colors[connectorColorsMap[connectorVariant][1]];
+    const connectorColor1 = utils.colors[connectorColorsMap[connectorIntent][0]];
+    const connectorColor2 = utils.colors[connectorColorsMap[connectorIntent][1]];
 
     return (
-        <HStack spacing="sp16" alignItems="center">
+        <HStack style={applyStyle(itemStyle)}>
             <VStack alignItems="center">
-                <OrderedListIcon
-                    iconBorderRadius="round"
-                    iconName={iconName}
-                    iconSize="large"
-                    {...iconColorsMap[iconVariant]}
-                />
+                <IconCircle name={iconName} intent={iconIntent} size={ICON_SIZE} />
                 {!isLast && (
                     <LinearGradient
                         colors={[connectorColor1, connectorColor2]}
