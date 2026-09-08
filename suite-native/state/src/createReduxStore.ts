@@ -1,19 +1,12 @@
-import {
-    type EnhancedStore,
-    type Middleware,
-    type MiddlewareAPI,
-    type StoreEnhancer,
-    type UnknownAction,
-    configureStore,
-} from '@reduxjs/toolkit';
-import { type Persistor, persistStore } from 'redux-persist';
+import { type Middleware, type StoreEnhancer, configureStore } from '@reduxjs/toolkit';
 
+import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { logsMiddleware } from '@suite-common/logger';
 import {
     type ReducerState,
+    type ReduxStoreWithThunk,
     type WithServices,
-    castExtraStore,
-    createStoreWithExtraStoreMiddleware,
+    createReduxExtra,
 } from '@suite-common/redux-utils';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
@@ -27,16 +20,15 @@ import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-nati
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
-import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
 import {
     prepareTradingLastErrorSentryMiddleware,
     prepareTradingMiddleware,
 } from '@suite-native/trading-state';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import { type NativeServices, createNativeCompositionRoot } from './createNativeCompositionRoot';
-import { type ExtraDependenciesNative, extraDependencies } from './createNativeExtraDependencies';
-import { prepareRootReducers } from './reducers';
+import { type NativeServices } from './NativeServices';
+import { type ExtraDependenciesNative } from './createNativeExtraDependencies';
+import { type prepareRootReducers } from './reducers';
 
 type RootReducerShape = ReturnType<typeof prepareRootReducers>;
 
@@ -61,16 +53,6 @@ export type FullAppState = ExcludeChildPersists<
 >;
 
 export type PreloadedState = DeepPartial<FullPersistedAppState> | undefined;
-
-export type StoreWithExtra = ReturnType<
-    typeof castExtraStore<
-        ExtraDependenciesNative,
-        EnhancedStore<FullPersistedAppState, UnknownAction>
-    >
-> & {
-    persistor: Persistor;
-    services: NativeServices;
-};
 
 const ENABLE_REDUX_LOGGER = false;
 const enhancers: Array<StoreEnhancer<any, any>> = [];
@@ -106,52 +88,48 @@ const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
     return middlewares;
 };
 
-export const initStore = (preloadedState?: PreloadedState): StoreWithExtra => {
-    let extra: ReturnType<typeof extraFactory> | null = null as ReturnType<
-        typeof extraFactory
-    > | null;
+type ReduxStoreDeps = {
+    reducer: ReturnType<typeof prepareRootReducers>;
+    extraDependencies: ExtraDependenciesStatic;
+    preloadedState?: PreloadedState;
+};
 
-    const ensureEncryptionKey = createEnsureEncryptionKey();
-    const mmkvStorage = createMMKVStorage({ ensureEncryptionKey });
+export type NativeReduxStore = ReduxStoreWithThunk<FullPersistedAppState, ExtraDependenciesNative>;
 
-    const extraFactory = (api: MiddlewareAPI) => ({
-        ...extraDependencies,
-        services: createNativeCompositionRoot({
-            ...api,
-            ensureEncryptionKey,
-            mmkvStorage,
-        }),
-    });
+export type NativeReduxStoreDep = { store: NativeReduxStore };
+
+export type ReduxStore = {
+    store: NativeReduxStore;
+    injectServicesIntoReduxExtra: (services: NativeServices) => void;
+};
+
+export type ReduxStoreDep = { reduxStore: ReduxStore };
+
+export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
+    const { getExtra, thunkMiddleware, injectServicesIntoReduxExtra } = createReduxExtra<
+        FullPersistedAppState,
+        NativeServices,
+        ExtraDependenciesStatic
+    >({ extraDependencies: deps.extraDependencies });
 
     const store = configureStore({
-        preloadedState: preloadedState as FullPersistedAppState,
-        reducer: prepareRootReducers({ mmkvStorage }),
+        preloadedState: deps.preloadedState as FullPersistedAppState,
+        reducer: deps.reducer,
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
+                thunk: false,
                 serializableCheck: false,
                 immutableCheck: false,
             })
-                .prepend(
-                    createStoreWithExtraStoreMiddleware({
-                        extraFactory,
-                        onExtraCreated: (initializedExtra: ReturnType<typeof extraFactory>) => {
-                            extra = initializedExtra;
-                        },
-                    }),
-                )
+                .prepend(thunkMiddleware)
                 .prepend(deviceConnectionMiddleware.middleware)
-                .concat(getMiddlewares(() => extra)),
-        devTools: false, // Rozenite DevTools will be used instead of default browser dev tools
+                .concat(getMiddlewares(getExtra)),
+        devTools: false, // Rozenite DevTools will be used instead of default browser dev tools.
         enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(enhancers),
     });
 
-    const castedStore = castExtraStore(store, extra);
-
     return {
-        ...castedStore,
-        persistor: persistStore(castedStore.store),
-        services: castedStore.extra.services,
+        store,
+        injectServicesIntoReduxExtra,
     };
 };
-
-export type Store = StoreWithExtra['store'];

@@ -8,3 +8,4 @@ export * from './hooks/useSelectorDeepComparison';
 export * from './hooks/useDispatch';
 export * from './selectorsUtils';
 export * from './extraWithStoreThunkMiddleware';
+export { createReduxExtra, type ReduxStoreWithThunk } from './createReduxExtra';

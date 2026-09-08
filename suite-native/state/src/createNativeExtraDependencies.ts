@@ -7,7 +7,7 @@ import {
 } from '@suite-common/extra-dependencies';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 
-import { type NativeServices } from './createNativeCompositionRoot';
+import { type NativeServices } from './NativeServices';
 
 export type ExtraDependenciesNative = ExtraDependenciesStatic & { services: NativeServices };
 
