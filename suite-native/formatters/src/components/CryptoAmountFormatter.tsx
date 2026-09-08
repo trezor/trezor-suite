@@ -1,102 +1,122 @@
-import { type CryptoAmountFormatterFormatStyle } from '@suite-common/formatters';
+import { type RequireAtLeastOne } from 'type-fest';
+
+import { type CryptoAmountFormatterFormatStyle, useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenSymbol } from '@suite-common/wallet-types';
+import { type TokenSymbol, toTokenSymbol } from '@suite-common/wallet-types';
+import { getAccountDecimals } from '@suite-common/wallet-utils';
 import { type TextProps } from '@suite-native/atoms';
 import { exhaustive } from '@trezor/type-utils';
 
-import { CompactCryptoAmountFormatter } from './CompactCryptoAmountFormatter';
-import { CompactTokenAmountFormatter } from './CompactTokenAmountFormatter';
-import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
-import { ExactCryptoAmountFormatter } from './ExactCryptoAmountFormatter';
-import { ExactTokenAmountFormatter } from './ExactTokenAmountFormatter';
-import { asDecimalTokenAmount } from '../utils';
+import { AmountText } from './AmountText';
+import { FormattedCryptoAmountText } from './FormattedCryptoAmountText';
 
-type CryptoAmountFormatterTokenProps =
-    | {
-          tokenContract?: null;
-          tokenDecimals?: undefined;
-          tokenSymbol?: undefined;
-      }
-    | {
-          tokenContract: string | null | undefined;
-          tokenDecimals?: number;
-          tokenSymbol?: string | null;
-      };
-
-export type CryptoAmountFormatterProps = {
+type CryptoAmountFormatterCommonProps = {
     value: string | number | null;
-    symbol: NetworkSymbol;
     formatStyle: CryptoAmountFormatterFormatStyle;
     isBalance?: boolean;
     isDiscreetText?: boolean;
+    isForcedDiscreetMode?: boolean;
+    isLoading?: boolean;
+    isPhishingTransaction?: boolean;
     maxDisplayedDecimals?: number;
-} & CryptoAmountFormatterTokenProps &
-    TextProps;
+    sign?: '+' | '-' | null;
+} & TextProps;
 
-export const CryptoAmountFormatter = ({
-    value,
-    symbol,
-    formatStyle,
-    isBalance,
-    isDiscreetText,
-    maxDisplayedDecimals,
-    tokenContract,
-    tokenDecimals,
-    tokenSymbol,
-    ...textProps
-}: CryptoAmountFormatterProps) => {
-    const resolvedTokenSymbol = tokenSymbol ? toTokenSymbol(tokenSymbol) : null;
+type CoinCryptoAmountFormatterProps = {
+    symbol: NetworkSymbol;
+} & Partial<TokenCryptoAmountMetadataProps>;
 
-    if (value === null) {
-        return <EmptyAmountSkeleton variant={textProps.variant ?? 'body-sm'} />;
+type TokenCryptoAmountMetadataProps = {
+    tokenContract: string | null | undefined;
+    tokenDecimals: number | undefined;
+    tokenSymbol: TokenSymbol | string | null | undefined;
+};
+
+type TokenCryptoAmountFormatterProps = {
+    symbol?: undefined;
+} & RequireAtLeastOne<TokenCryptoAmountMetadataProps>;
+
+export type CryptoAmountFormatterProps = CryptoAmountFormatterCommonProps &
+    (CoinCryptoAmountFormatterProps | TokenCryptoAmountFormatterProps);
+
+export const CryptoAmountFormatter = (props: CryptoAmountFormatterProps) => {
+    const {
+        value,
+        symbol,
+        formatStyle,
+        isBalance = true,
+        isDiscreetText,
+        isForcedDiscreetMode,
+        isLoading = false,
+        isPhishingTransaction = false,
+        maxDisplayedDecimals,
+        sign = null,
+        tokenContract,
+        tokenDecimals,
+        tokenSymbol,
+        variant = 'body-sm',
+        color = 'contentSecondary',
+        ...textProps
+    } = props;
+    const { CryptoAmountFormatter: formatter } = useFormatters();
+    const hasTokenAmountProps =
+        'tokenContract' in props || 'tokenSymbol' in props || 'tokenDecimals' in props;
+    const isTokenAmount = !!tokenContract || (symbol === undefined && hasTokenAmountProps);
+
+    if (isTokenAmount) {
+        const resolvedTokenSymbol = tokenSymbol ? toTokenSymbol(tokenSymbol) : undefined;
+        // Phishing transactions values may be equal to empty string, so we replace it with 0.
+        // These values are hidden by discreet mode, so the exact value does not matter anyway.
+        const decimalValue = isPhishingTransaction || !value ? '0' : value.toString();
+        const formattedValue = formatter.format(decimalValue, {
+            symbol: resolvedTokenSymbol,
+            maxDisplayedDecimals,
+            formatStyle,
+            tokenDecimals,
+        });
+
+        return (
+            <AmountText
+                value={formattedValue}
+                isDiscreetText={isDiscreetText}
+                variant={variant}
+                color={color}
+                isForcedDiscreetMode={isForcedDiscreetMode || isPhishingTransaction}
+                {...textProps}
+            />
+        );
     }
 
-    if (tokenContract) {
-        switch (formatStyle) {
-            case 'compact-balance':
-                return (
-                    <CompactTokenAmountFormatter
-                        value={asDecimalTokenAmount(value)}
-                        tokenDecimals={tokenDecimals}
-                        tokenSymbol={resolvedTokenSymbol}
-                        isDiscreetText={isDiscreetText}
-                        {...textProps}
-                    />
-                );
-            case 'exact':
-                return (
-                    <ExactTokenAmountFormatter
-                        value={asDecimalTokenAmount(value)}
-                        maxDisplayedDecimals={maxDisplayedDecimals}
-                        tokenSymbol={resolvedTokenSymbol}
-                        isDiscreetText={isDiscreetText}
-                        {...textProps}
-                    />
-                );
-            default:
-                return exhaustive(formatStyle);
-        }
+    if (symbol === undefined) {
+        return null;
     }
+
+    const resolvedMaxDisplayedDecimals =
+        formatStyle === 'exact' ? (maxDisplayedDecimals ?? getAccountDecimals(symbol)) : undefined;
+
+    const formattedValue =
+        value === null
+            ? null
+            : formatter.format(typeof value === 'number' ? value.toString() : value, {
+                  isBalance,
+                  maxDisplayedDecimals: resolvedMaxDisplayedDecimals,
+                  symbol,
+                  isEllipsisAppended: false,
+                  formatStyle,
+              });
 
     switch (formatStyle) {
         case 'compact-balance':
-            return (
-                <CompactCryptoAmountFormatter
-                    value={value}
-                    symbol={symbol}
-                    isBalance={isBalance}
-                    isDiscreetText={isDiscreetText}
-                    {...textProps}
-                />
-            );
         case 'exact':
             return (
-                <ExactCryptoAmountFormatter
-                    value={value}
-                    symbol={symbol}
-                    isBalance={isBalance}
+                <FormattedCryptoAmountText
+                    formattedValue={formattedValue}
                     isDiscreetText={isDiscreetText}
-                    maxDisplayedDecimals={maxDisplayedDecimals}
+                    isForcedDiscreetMode={isForcedDiscreetMode}
+                    isLoading={isLoading}
+                    sign={sign}
+                    variant={variant}
+                    color={color}
                     {...textProps}
                 />
             );

@@ -3,7 +3,7 @@ import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-nati
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
-import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -53,7 +53,8 @@ export const SendUtxoScreenFooter = ({
                         <Text variant={missingToAmount ? 'body-sm' : 'body-md'}>
                             <Translation id="moduleSend.coinControl.utxos.selected" />
                         </Text>
-                        <ExactCryptoAmountFormatter
+                        <CryptoAmountFormatter
+                            formatStyle="exact"
                             isBalance={false}
                             variant={missingToAmount ? 'body-sm' : 'body-md'}
                             color={missingToAmount ? 'contentSecondary' : 'contentPrimary'}
@@ -68,7 +69,8 @@ export const SendUtxoScreenFooter = ({
                                 <Text variant="body-md">
                                     <Translation id="moduleSend.coinControl.utxos.remaining" />
                                 </Text>
-                                <ExactCryptoAmountFormatter
+                                <CryptoAmountFormatter
+                                    formatStyle="exact"
                                     variant="body-md"
                                     value={missingToAmount}
                                     symbol={symbol}

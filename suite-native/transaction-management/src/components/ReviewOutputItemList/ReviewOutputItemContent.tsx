@@ -12,7 +12,7 @@ import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     AddressFormatter,
-    ExactTokenAmountFormatter,
+    CryptoAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -174,7 +174,8 @@ export const ReviewOutputItemContent = ({
                 }
 
                 return (
-                    <ExactTokenAmountFormatter
+                    <CryptoAmountFormatter
+                        formatStyle="exact"
                         variant="body-sm"
                         color="contentPrimary"
                         textAlign="right"

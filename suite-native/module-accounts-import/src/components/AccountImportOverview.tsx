@@ -10,7 +10,7 @@ import {
 import { VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountLargeFormatter,
-    ExactCryptoAmountFormatter,
+    CryptoAmountFormatter,
     useFiatFromCryptoValue,
 } from '@suite-native/formatters';
 import { TextInputField } from '@suite-native/forms';
@@ -42,7 +42,8 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
             icon={<TokenIcon symbol={symbol} />}
             coinName={getNetwork(symbol).name}
             cryptoAmount={
-                <ExactCryptoAmountFormatter
+                <CryptoAmountFormatter
+                    formatStyle="exact"
                     value={balance}
                     symbol={symbol}
                     isDiscreetText={false}

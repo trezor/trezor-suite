@@ -1,7 +1,7 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { Card, HStack, Text } from '@suite-native/atoms';
-import { ExactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
+import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
@@ -32,8 +32,9 @@ export const YieldWrappedNativeReceivingCard = ({
                     contractAddress={tokenContract}
                     size="extraSmall"
                 />
-                <ExactTokenAmountFormatter
-                    value={asDecimalTokenAmount(amount)}
+                <CryptoAmountFormatter
+                    formatStyle="exact"
+                    value={amount}
                     tokenSymbol={tokenSymbol}
                     maxDisplayedDecimals={tokenDecimals}
                     variant="body-md-strong"

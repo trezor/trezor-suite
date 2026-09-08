@@ -12,10 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type BannerInlineProps, Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -111,7 +108,8 @@ export const StakePendingCard = ({
                         <Text>{title}</Text>
                     </Box>
                     <Box style={applyStyle(valuesContainerStyle)}>
-                        <CompactCryptoAmountFormatter
+                        <CryptoAmountFormatter
+                            formatStyle="compact-balance"
                             value={totalStakePending}
                             symbol={symbol}
                             color="contentPrimary"

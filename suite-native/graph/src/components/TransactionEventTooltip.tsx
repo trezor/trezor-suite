@@ -9,12 +9,7 @@ import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
-import {
-    ExactCryptoAmountFormatter,
-    ExactTokenAmountFormatter,
-    SignValueFormatter,
-    asDecimalTokenAmount,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, SignValueFormatter } from '@suite-native/formatters';
 import { type EventTooltipComponentProps } from '@suite-native/react-native-graph';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -79,10 +74,11 @@ const TokenAmountTooltipFormatter = ({
     // We might want to add support for other networks in the future.
     if (getNetworkType(symbol) === 'ethereum') {
         return (
-            <ExactTokenAmountFormatter
+            <CryptoAmountFormatter
+                formatStyle="exact"
                 color="contentPrimary"
                 variant="body-xs"
-                value={asDecimalTokenAmount(value)}
+                value={value}
                 tokenSymbol={token.symbol}
             />
         );
@@ -106,7 +102,8 @@ const EventTooltipRow = ({
         <Box flexDirection="row">
             <SignValueFormatter value={signValue} variant="body-xs" />
             {!tokenAddress ? (
-                <ExactCryptoAmountFormatter
+                <CryptoAmountFormatter
+                    formatStyle="exact"
                     color="contentPrimary"
                     variant="body-xs"
                     value={value}

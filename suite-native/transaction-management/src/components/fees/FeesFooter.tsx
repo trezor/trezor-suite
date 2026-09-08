@@ -12,9 +12,8 @@ import { type FeesRootState, selectAreFeesLoading } from '@suite-common/wallet-c
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
+    CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
-    ExactCryptoAmountFormatter,
-    ExactTokenAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { FormContext } from '@suite-native/forms';
@@ -76,7 +75,8 @@ const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
                 isLoading={isLoading}
                 isDiscreetText={false}
             />
-            <ExactCryptoAmountFormatter
+            <CryptoAmountFormatter
+                formatStyle="exact"
                 variant="body-sm"
                 color="contentSecondary"
                 value={amount}
@@ -123,7 +123,8 @@ const TokenSummary = ({
                 </Text>
             </VStack>
             <VStack spacing="sp4" alignItems="flex-end">
-                <ExactTokenAmountFormatter
+                <CryptoAmountFormatter
+                    formatStyle="exact"
                     variant="body-sm-strong"
                     color="contentPrimary"
                     maxDisplayedDecimals={tokenDecimals ?? undefined}
@@ -131,7 +132,8 @@ const TokenSummary = ({
                     tokenSymbol={tokenSymbol}
                     isDiscreetText={false}
                 />
-                <ExactCryptoAmountFormatter
+                <CryptoAmountFormatter
+                    formatStyle="exact"
                     variant="body-sm"
                     color="contentSecondary"
                     value={mainnetFee}

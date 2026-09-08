@@ -40,10 +40,8 @@ import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
     AddressFormatter,
     CoinToFiatAmountFormatter,
-    ExactCryptoAmountFormatter,
-    ExactTokenAmountFormatter,
+    CryptoAmountFormatter,
     TokenToFiatAmountFormatter,
-    asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -272,8 +270,9 @@ export const TokenSettingsBottomSheet = forwardRef(
                                 <Box flex={1} alignItems="flex-end" marginLeft="sp8">
                                     <VStack spacing={0} alignItems="flex-end">
                                         {tokenContract ? (
-                                            <ExactTokenAmountFormatter
-                                                value={asDecimalTokenAmount(tokenBalance)}
+                                            <CryptoAmountFormatter
+                                                formatStyle="exact"
+                                                value={tokenBalance}
                                                 tokenSymbol={tokenSymbol}
                                                 variant="body-sm"
                                                 color="contentPrimary"
@@ -281,7 +280,8 @@ export const TokenSettingsBottomSheet = forwardRef(
                                                 ellipsizeMode="tail"
                                             />
                                         ) : (
-                                            <ExactCryptoAmountFormatter
+                                            <CryptoAmountFormatter
+                                                formatStyle="exact"
                                                 value={account.formattedBalance}
                                                 symbol={account.symbol}
                                                 variant="body-sm"

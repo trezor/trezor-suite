@@ -8,10 +8,6 @@ export { PercentageDifferenceFormatter } from './components/PercentageDifference
 export { BaseCurrencyAmountFormatter } from './components/BaseCurrencyAmountFormatter';
 export { CryptoAmountFormatter } from './components/CryptoAmountFormatter';
 export type { CryptoAmountFormatterProps } from './components/CryptoAmountFormatter';
-export { CompactCryptoAmountFormatter } from './components/CompactCryptoAmountFormatter';
-export { CompactTokenAmountFormatter } from './components/CompactTokenAmountFormatter';
-export { ExactCryptoAmountFormatter } from './components/ExactCryptoAmountFormatter';
-export { ExactTokenAmountFormatter } from './components/ExactTokenAmountFormatter';
 export { NetworkDisplaySymbolNameFormatter } from './components/NetworkDisplaySymbolNameFormatter';
 export { TokenToFiatAmountFormatter } from './components/TokenToFiatAmountFormatter';
 export { SignValueFormatter } from './components/SignValueFormatter';
@@ -20,5 +16,4 @@ export { EmptyAmountText } from './components/EmptyAmountText';
 export { useFiatFromCryptoValue } from './hooks/useFiatFromCryptoValue';
 export { useCryptoFiatConverters } from './hooks/useCryptoFiatConverters';
 export { useFormattedGraphHeaderValues } from './hooks/useFormattedGraphHeaderValues';
-export { convertTokenValueToDecimal, asDecimalTokenAmount } from './utils';
-export type { DecimalTokenAmount } from './utils';
+export { convertTokenValueToDecimal } from './utils';

@@ -22,7 +22,7 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -116,7 +116,8 @@ export const StakingManagementPendingStakeModal = ({
                 </Text>
                 {!!symbol && (
                     <VStack style={applyStyle(amountsStyle)} spacing="sp2">
-                        <ExactCryptoAmountFormatter
+                        <CryptoAmountFormatter
+                            formatStyle="exact"
                             value={totalStakePending}
                             symbol={symbol}
                             maxDisplayedDecimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}

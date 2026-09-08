@@ -6,11 +6,7 @@ import { type TradingRootState, selectTradingCoinSymbolByCryptoId } from '@suite
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import type { TokenSymbol } from '@suite-common/wallet-types';
 import type { TextProps } from '@suite-native/atoms';
-import {
-    ExactCryptoAmountFormatter,
-    ExactTokenAmountFormatter,
-    asDecimalTokenAmount,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter } from '@suite-native/formatters';
 
 export type TradingCoinAmountFormatterProps = TextProps & {
     cryptoId?: CryptoId;
@@ -32,7 +28,8 @@ export const TradingCoinAmountFormatter = ({
 
     if (isNetworkSymbol(coinSymbol)) {
         return (
-            <ExactCryptoAmountFormatter
+            <CryptoAmountFormatter
+                formatStyle="exact"
                 value={amount ?? '0'}
                 symbol={coinSymbol}
                 isBalance={false}
@@ -43,8 +40,9 @@ export const TradingCoinAmountFormatter = ({
     }
 
     return (
-        <ExactTokenAmountFormatter
-            value={asDecimalTokenAmount(amount ?? '0')}
+        <CryptoAmountFormatter
+            formatStyle="exact"
+            value={amount ?? '0'}
             tokenSymbol={coinSymbol as TokenSymbol}
             isDiscreetText={false}
             {...textProps}

@@ -4,7 +4,7 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
@@ -51,7 +51,8 @@ export const InstantlyAvailableRow = ({
                         <Text variant="body-sm" color="contentPrimary">
                             ~
                         </Text>
-                        <CompactCryptoAmountFormatter
+                        <CryptoAmountFormatter
+                            formatStyle="compact-balance"
                             value={approximatedAmount}
                             symbol={account.symbol}
                             numberOfLines={1}

@@ -6,11 +6,7 @@ import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wa
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { type ActiveView, BaseAmountInputs, Card, HStack, Text, VStack } from '@suite-native/atoms';
-import {
-    CompactTokenAmountFormatter,
-    asDecimalTokenAmount,
-    useCryptoFiatConverters,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
@@ -150,8 +146,9 @@ export const WrappedNativeTokenAmountInputCard = ({
                     <Text variant="body-sm" color="contentSecondary">
                         <Translation id="earn.yieldDepositFlowScreen.balance" />
                     </Text>
-                    <CompactTokenAmountFormatter
-                        value={asDecimalTokenAmount(balance)}
+                    <CryptoAmountFormatter
+                        formatStyle="compact-balance"
+                        value={balance}
                         tokenSymbol={tokenSymbol}
                         tokenDecimals={tokenDecimals}
                         variant="body-sm"

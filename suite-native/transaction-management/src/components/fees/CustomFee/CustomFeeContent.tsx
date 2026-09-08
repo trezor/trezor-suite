@@ -2,7 +2,7 @@ import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { BannerInline, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
 import { CustomFeeInputs } from './CustomFeeInputs';
@@ -33,7 +33,8 @@ export const CustomFeeContent = ({
                     symbol={symbol}
                     isDiscreetText={false}
                 />
-                <ExactCryptoAmountFormatter
+                <CryptoAmountFormatter
+                    formatStyle="exact"
                     value={feeValue}
                     symbol={symbol}
                     variant="body-md"
