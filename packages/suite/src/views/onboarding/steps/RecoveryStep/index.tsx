@@ -5,7 +5,7 @@ import { OnboardingCard } from '@suite/onboarding-components';
 import {
     type RecoveryInputType,
     isRecoveryInputTypeDisabled,
-    recoverDeviceThunk,
+    recoverForDeviceThunk,
     recoveryActions,
     selectRecoveryError,
     selectRecoveryStatus,
@@ -72,7 +72,7 @@ export const RecoveryStep = () => {
                             if (shouldSkipSelection) {
                                 dispatch(recoveryActions.setRecoveryInputType('advanced'));
                                 dispatch(updateAnalytics({ recoveryType: 'advanced' }));
-                                dispatch(recoverDeviceThunk());
+                                dispatch(recoverForDeviceThunk({ device }));
                             } else {
                                 dispatch(recoveryActions.setStatus('select-recovery-type'));
                             }
@@ -96,7 +96,7 @@ export const RecoveryStep = () => {
                 innerActions={
                     <OnboardingCard.Button
                         data-testid="@onboarding/recovery/start-button"
-                        onClick={() => dispatch(recoverDeviceThunk())}
+                        onClick={() => dispatch(recoverForDeviceThunk({ device }))}
                     >
                         <Translation id="TR_START_RECOVERY" />
                     </OnboardingCard.Button>
@@ -117,7 +117,7 @@ export const RecoveryStep = () => {
         const handleSelect = (type: RecoveryInputType) => {
             dispatch(recoveryActions.setRecoveryInputType(type));
             dispatch(updateAnalytics({ recoveryType: type }));
-            dispatch(recoverDeviceThunk());
+            dispatch(recoverForDeviceThunk({ device }));
         };
 
         return (
@@ -266,7 +266,7 @@ export const RecoveryStep = () => {
                         onClick={
                             deviceModelInternal === DeviceModelInternal.T1B1
                                 ? () => dispatch(recoveryActions.resetReducer())
-                                : () => dispatch(recoverDeviceThunk())
+                                : () => dispatch(recoverForDeviceThunk({ device }))
                         }
                         intent="critical"
                     >

@@ -11,10 +11,12 @@ import { TrezorBodyIcon } from '@trezor/icons';
 import { rerunRecoveryThunk } from 'src/actions/onboarding/onboardingActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 export const DeviceRecoveryMode = () => {
     const recoveryStatus = useSelector(selectRecoveryStatus);
     const { dispatch } = useServices(selectDispatch);
+    const onboardedDevice = useSelector(selectOnboardedDevice);
 
     const { isLocked } = useDevice();
 
@@ -24,7 +26,7 @@ export const DeviceRecoveryMode = () => {
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        dispatch(rerunRecoveryThunk());
+        dispatch(rerunRecoveryThunk(onboardedDevice));
     };
 
     return (

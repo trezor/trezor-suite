@@ -4,7 +4,7 @@ import { type ThunkDispatch } from 'redux-thunk';
 import { type DesktopAnalyticsDep, type OnboardingAnalytics, events } from '@suite/analytics';
 import { initialRunCompletedThunk } from '@suite/flags';
 import { closeModal } from '@suite/modal';
-import { type RecoveryState, recoveryRerunThunk } from '@suite/recovery';
+import { type RecoveryState, recoveryRerunForDeviceThunk } from '@suite/recovery';
 import {
     type GotoThunkState,
     type SuiteRouterHistoryDep,
@@ -293,14 +293,14 @@ type RerunRecoveryThunkState = DeviceRootState & GotoThunkState & { recovery: Re
 type RerunRecoveryThunkDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
 
 const rerunRecoveryThunk =
-    () =>
+    (onboardedDevice: TrezorDevice | undefined) =>
     async (
         dispatch: ThunkDispatch<RerunRecoveryThunkState, RerunRecoveryThunkDeps, UnknownAction>,
         getState: () => RerunRecoveryThunkState,
     ) => {
-        const result = await dispatch(recoveryRerunThunk());
+        const result = await dispatch(recoveryRerunForDeviceThunk({ device: onboardedDevice }));
 
-        if (!recoveryRerunThunk.fulfilled.match(result)) {
+        if (!recoveryRerunForDeviceThunk.fulfilled.match(result)) {
             return;
         }
 
