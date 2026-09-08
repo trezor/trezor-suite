@@ -29,6 +29,7 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
             walletPage,
             tradingPage,
             tradingMockNew,
+            tradingResponses,
         }) => {
             tradingMockNew.setTradeFlow('sell');
             await tradingMockNew.rewriteProviderRedirect();
@@ -47,6 +48,7 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openTrading({ symbol: 'btc' });
             await tradingPage.sellTabButton.click();
+            await tradingResponses.sell.list();
         },
     );
 
