@@ -42,7 +42,7 @@ import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
 import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
 import {
-    selectIsOnboardedDeviceTrackingArmed,
+    selectIsOnboardingInProgress,
     selectOnboardedDevice,
     selectOnboardedDeviceRef,
     selectOnboardingActiveStepId,
@@ -347,7 +347,7 @@ const rerunRecoveryThunk =
         // into the recovery step, with no CTA in between. Pin the flow to it before the recovery
         // call reboots it. Not when onboarding already pinned a device, which would throw away a
         // ref that may be following one through a reboot right now.
-        if (!selectIsOnboardedDeviceTrackingArmed(getState())) {
+        if (!selectIsOnboardingInProgress(getState())) {
             const selectedDevice = selectSelectedDevice(getState());
 
             if (selectedDevice?.connected) {

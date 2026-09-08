@@ -21,9 +21,6 @@ export const selectOnboardingAnalytics = (state: OnboardingRootState) =>
 export const selectOnboardedDeviceRef = (state: OnboardingRootState) =>
     state.onboarding.deviceTracking.currentRef;
 
-export const selectIsOnboardedDeviceTrackingArmed = (state: OnboardingRootState) =>
-    state.onboarding.deviceTracking.phase !== DeviceTrackingPhase.Idle;
-
 /**
  * Whether an onboarding run is under way.
  *
@@ -31,7 +28,8 @@ export const selectIsOnboardedDeviceTrackingArmed = (state: OnboardingRootState)
  * arms the ref, and every exit dispatches `resetOnboarding`, which clears it. This replaces the
  * `isActive` flag the reducer used to carry, and the enable/disable action that set it.
  */
-export const selectIsOnboardingInProgress = selectIsOnboardedDeviceTrackingArmed;
+export const selectIsOnboardingInProgress = (state: OnboardingRootState) =>
+    state.onboarding.deviceTracking.phase !== DeviceTrackingPhase.Idle;
 
 /**
  * The physical device being onboarded.

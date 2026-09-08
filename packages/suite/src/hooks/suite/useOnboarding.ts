@@ -33,7 +33,6 @@ export const useOnboarding = () => {
 
     const actions = useMemo(
         () => ({
-            goToStep: (stepId: AnyStepId) => dispatch(onboardingActions.goToStep(stepId)),
             goToNextStep: (stepId?: AnyStepId) =>
                 dispatch(onboardingActions.goToNextStepThunk(onboardedDevice, stepId)),
             goToPreviousStep: () =>

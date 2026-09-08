@@ -1,5 +1,4 @@
-import { type UnknownAction } from '@reduxjs/toolkit';
-import { produce } from 'immer';
+import { createReducer } from '@reduxjs/toolkit';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
 import {
@@ -51,50 +50,48 @@ const initialState: OnboardingState = {
     backupMedium: null,
 };
 
-const addPathToState = (path: AnyPath, state: OnboardingState) => {
-    if (!state.path.includes(path)) {
-        return [...state.path, path];
-    }
-
-    return [...state.path];
-};
-
-const removePathsFromState = (paths: AnyPath[], state: OnboardingState) =>
-    state.path.filter(p => !paths.includes(p));
-
-const onboarding = (state: OnboardingState = initialState, action: UnknownAction) =>
-    produce(state, draft => {
-        if (goToStep.match(action)) {
-            draft.activeStepId = action.payload;
-        } else if (addPath.match(action)) {
-            draft.path = addPathToState(action.payload, state);
-        } else if (removePath.match(action)) {
-            draft.path = removePathsFromState(action.payload, state);
-        } else if (armOnboardedDeviceTracking.match(action)) {
-            draft.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
+const onboardingReducer = createReducer(initialState, builder =>
+    builder
+        .addCase(goToStep, (state: OnboardingState, { payload }) => {
+            state.activeStepId = payload;
+        })
+        .addCase(addPath, (state: OnboardingState, { payload }) => {
+            if (!state.path.includes(payload)) {
+                state.path.push(payload);
+            }
+        })
+        .addCase(removePath, (state: OnboardingState, { payload }) => {
+            state.path = state.path.filter(path => !payload.includes(path));
+        })
+        .addCase(armOnboardedDeviceTracking, (state: OnboardingState, { payload }) => {
+            state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
                 type: 'arm',
-                device: action.payload,
+                device: payload,
             });
-        } else if (onboardedDeviceConnected.match(action)) {
-            draft.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
+        })
+        .addCase(onboardedDeviceConnected, (state: OnboardingState, { payload }) => {
+            state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
                 type: 'device-connect',
-                device: action.payload.device,
-                isOnlyCandidate: action.payload.isOnlyCandidate,
+                device: payload.device,
+                isOnlyCandidate: payload.isOnlyCandidate,
             });
-        } else if (onboardedDeviceDisconnected.match(action)) {
-            draft.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
+        })
+        .addCase(onboardedDeviceDisconnected, (state: OnboardingState, { payload }) => {
+            state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
                 type: 'device-disconnect',
-                device: action.payload,
+                device: payload,
             });
-        } else if (updateAnalytics.match(action)) {
-            draft.onboardingAnalytics = { ...state.onboardingAnalytics, ...action.payload };
-        } else if (updateBackupType.match(action)) {
-            draft.backupType = action.payload;
-        } else if (updateBackupMedium.match(action)) {
-            draft.backupMedium = action.payload;
-        } else if (resetOnboarding.match(action)) {
-            return initialState;
-        }
-    });
+        })
+        .addCase(updateAnalytics, (state: OnboardingState, { payload }) => {
+            state.onboardingAnalytics = { ...state.onboardingAnalytics, ...payload };
+        })
+        .addCase(updateBackupType, (state: OnboardingState, { payload }) => {
+            state.backupType = payload;
+        })
+        .addCase(updateBackupMedium, (state: OnboardingState, { payload }) => {
+            state.backupMedium = payload;
+        })
+        .addCase(resetOnboarding, () => initialState),
+);
 
-export default onboarding;
+export default onboardingReducer;
