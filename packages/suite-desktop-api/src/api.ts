@@ -44,6 +44,7 @@ export interface MainChannels {
     'update/download': void;
     'update/install': void;
     'logger/config': LoggerConfig;
+    'debug/set-mode': boolean;
 }
 
 // Event messages from main to renderer process
@@ -231,6 +232,8 @@ export type DesktopApi = {
     openUserDataDirectory: DesktopApiInvoke<'user-data/open'>;
     // Logger
     configLogger: DesktopApiSend<'logger/config'>;
+    // Debug
+    setDebugMode: DesktopApiSend<'debug/set-mode'>;
     // Bridge
     getBridgeStatus: DesktopApiInvoke<'bridge/get-status'>;
     toggleBridge: DesktopApiInvoke<'bridge/toggle'>;
