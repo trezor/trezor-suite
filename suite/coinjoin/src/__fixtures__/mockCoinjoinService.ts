@@ -46,7 +46,7 @@ export const mockCoinjoinService = () => {
                     changeCount: 20,
                 },
             })),
-            getAccountInfo: jest.fn(() => ({
+            getAccountInfo: jest.fn(descriptor => ({
                 history: {
                     transactions: [],
                 },
@@ -55,6 +55,7 @@ export const mockCoinjoinService = () => {
                     unused: [],
                     change: [],
                 },
+                descriptor,
             })),
             getAccountCheckpoint: jest.fn(() => undefined),
         };

@@ -863,7 +863,7 @@ type RestorePausedCoinjoinSessionsThunkState = CoinjoinRootState &
 
 // check for blocking conditions of interrupted sessions and restore those eligible
 export const restorePausedCoinjoinSessionsThunk =
-    () => (dispatch: Dispatch, getState: () => RestorePausedCoinjoinSessionsThunkState) => {
+    () => async (dispatch: Dispatch, getState: () => RestorePausedCoinjoinSessionsThunkState) => {
         const state = getState();
         const coinjoinAccounts = selectCoinjoinAccounts(state);
         const eligibleAccounts = coinjoinAccounts.filter(({ key, session }) => {
@@ -875,13 +875,18 @@ export const restorePausedCoinjoinSessionsThunk =
             return !hasSendFormOpen && !blocker && session?.paused;
         });
 
-        eligibleAccounts.forEach(account => dispatch(restoreCoinjoinSessionThunk(account.key)));
+        for (const account of eligibleAccounts) {
+            await dispatch(restoreCoinjoinSessionThunk(account.key));
+        }
+
+        // eligibleAccounts.forEach(account => dispatch(restoreCoinjoinSessionThunk(account.key)));
     };
 
 type StopCoinjoinAccountThunkState = CoinjoinRootState;
 
 export const stopCoinjoinAccountThunk =
-    (account: Account) => (dispatch: Dispatch, getState: () => StopCoinjoinAccountThunkState) => {
+    (account: Account) =>
+    async (dispatch: Dispatch, getState: () => StopCoinjoinAccountThunkState) => {
         const cjAccount = selectCoinjoinAccountByKey(getState(), account.key);
 
         if (cjAccount?.session) {
@@ -892,7 +897,7 @@ export const stopCoinjoinAccountThunk =
                     }),
                 );
             }
-            dispatch(coinjoinClientActions.stopCoinjoinSessionThunk(cjAccount.key));
+            await dispatch(coinjoinClientActions.stopCoinjoinSessionThunk(cjAccount.key));
         }
     };
 
@@ -902,7 +907,7 @@ type StopCoinjoinSessionByDeviceIdThunkState = AccountsRootState &
 
 export const stopCoinjoinSessionByDeviceIdThunk =
     (deviceID: string) =>
-    (dispatch: Dispatch, getState: () => StopCoinjoinSessionByDeviceIdThunkState) => {
+    async (dispatch: Dispatch, getState: () => StopCoinjoinSessionByDeviceIdThunkState) => {
         const state = getState();
 
         const devices = selectDevices(state);
@@ -913,7 +918,7 @@ export const stopCoinjoinSessionByDeviceIdThunk =
             ),
         );
 
-        affectedAccounts.forEach(account => {
+        for (const account of affectedAccounts) {
             const isAccountWithSession = selectIsAccountWithSessionByAccountKey(state, account.key);
 
             if (isAccountWithSession) {
@@ -929,9 +934,9 @@ export const stopCoinjoinSessionByDeviceIdThunk =
                     );
                 }
 
-                dispatch(coinjoinClientActions.stopCoinjoinSessionThunk(account.key));
+                await dispatch(coinjoinClientActions.stopCoinjoinSessionThunk(account.key));
             }
-        });
+        }
     };
 
 type RestoreCoinjoinAccountsThunkState = CoinjoinRootState;

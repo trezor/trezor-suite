@@ -116,6 +116,7 @@ describe('coinjoinMiddleware', () => {
             }
 
             store.dispatch(f.action);
+            await new Promise(resolve => setTimeout(resolve, 1)); // wait for async actions to finish
             expect(await store.getActions()).toEqual([f.action, ...f.expectedActions]);
         });
     });
