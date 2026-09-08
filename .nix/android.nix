@@ -2,18 +2,17 @@
 
 let
   androidComposition = pkgs.androidenv.composeAndroidPackages {
-    # 34 is the Pixel_6_API_34 emulator image; 36 is RN/Expo compileSdk.
-    platformVersions = [
-      "34"
-      "36"
-    ];
+    # Use the same API level for compilation, local emulators, and Android CI.
+    platformVersions = [ "36" ];
     # 36 is RN's default; 35 is still requested by native modules (e.g. quick-crypto).
     buildToolsVersions = [
       "35.0.0"
       "36.0.0"
     ];
-    includeEmulator = false;
-    includeSystemImages = false;
+    includeEmulator = true;
+    includeSystemImages = true;
+    systemImageTypes = [ "google_apis" ];
+    abiVersions = [ "x86_64" ];
     includeNDK = true;
     # Keep both versions required by React Native and native modules.
     ndkVersions = [
@@ -23,26 +22,7 @@ let
     cmakeVersions = [ "3.22.1" ];
   };
 
-  # Image versions follow platformVersions, so compose the emulator separately.
-  emulatorComposition = pkgs.androidenv.composeAndroidPackages {
-    platformVersions = [ "34" ];
-    buildToolsVersions = [ ];
-    includeEmulator = true;
-    includeSystemImages = true;
-    systemImageTypes = [ "google_apis" ];
-    abiVersions = [ "x86_64" ];
-    includeNDK = false;
-    includeCmake = false;
-  };
-
-  # Keep one SDK root so avdmanager can discover the image alongside build tools.
-  androidSdk = androidComposition.androidsdk.overrideAttrs (old: {
-    postInstall = (old.postInstall or "") + ''
-      ln -s ${emulatorComposition.emulator}/libexec/android-sdk/emulator "$out/libexec/android-sdk/emulator"
-      ln -s ${emulatorComposition.emulator}/libexec/android-sdk/system-images "$out/libexec/android-sdk/system-images"
-      ln -s ${emulatorComposition.emulator}/bin/* "$out/bin/"
-    '';
-  });
+  androidSdk = androidComposition.androidsdk;
   jdk = pkgs.jdk17;
   extraPackages = [
     pkgs.nix-ld
@@ -95,16 +75,16 @@ let
     export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${pkgs.aapt}/bin/aapt2"
 
     # Setup Android emulator device if it doesn't exist
-    if [ ! -d "$HOME/.android/avd/Pixel_6_API_34.avd" ]; then
-      avdmanager create avd -n Pixel_6_API_34 -d pixel_6 --package "system-images;android-34;google_apis;x86_64"
+    if [ ! -d "$HOME/.android/avd/Pixel_6_API_36.avd" ]; then
+      avdmanager create avd -n Pixel_6_API_36 -d pixel_6 --package "system-images;android-36;google_apis;x86_64"
 
       # enable GPU acceleration, this option is not available in avdmanager
       sed -i \
         -e 's/^hw\.gpu\.enabled=no$/hw.gpu.enabled=yes/' \
         -e 's/^hw\.gpu\.mode=auto$/hw.gpu.mode=host/' \
-        $HOME/.android/avd/Pixel_6_API_34.avd/config.ini
+        $HOME/.android/avd/Pixel_6_API_36.avd/config.ini
 
-      echo "✓ Created Android emulator device: Pixel_6_API_34"
+      echo "✓ Created Android emulator device: Pixel_6_API_36"
     fi
 
     echo "- Java $(java -version 2>&1 | head -n1)"

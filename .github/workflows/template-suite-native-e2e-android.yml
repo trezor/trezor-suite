@@ -145,7 +145,8 @@ jobs:
           CURRENTS_TAG: ${{ inputs.currents_tags }}
           COMMIT_INFO_BRANCH: ${{ github.head_ref }}
         with:
-          api-level: 34
+          api-level: 36
+          target: google_apis
           profile: pixel_6
           arch: x86_64
           working-directory: suite-native/app

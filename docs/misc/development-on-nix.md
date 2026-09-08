@@ -64,18 +64,21 @@ yarn a                  # Run on Android (in another terminal)
 
 ### Running the Android emulator
 
+Local development and Android CI use Android 16 (API 36). Re-enter the Android shell to create
+the `Pixel_6_API_36` AVD when upgrading an existing setup.
+
 ```bash
 nix develop .#android
 # list available AVDs with:
 avdmanager list avd
 emulator -avd <avd-name>
-emulator -avd Pixel_6_API_34
+emulator -avd Pixel_6_API_36
 ```
 
 If you have troubles with your GPU acceleration you can disable it when running emulator like:
 
 ```bash
-emulator -avd Pixel_6_API_34 -gpu swiftshader_indirect
+emulator -avd Pixel_6_API_36 -gpu swiftshader_indirect
 ```
 
 ### Running tests
