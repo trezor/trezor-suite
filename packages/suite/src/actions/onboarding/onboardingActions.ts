@@ -364,6 +364,11 @@ const rerunRecoveryThunk =
 
         const { initialized } = result.payload;
         if (initialized) {
+            // An initialised device is a plain seed check, not an onboarding run, and it happens
+            // on its own route. Unpin, or onboarding would read as in progress for the rest of
+            // the session — the arming above cannot know this yet, and the recovery call it
+            // pinned the device for has already happened.
+            dispatch(resetOnboarding());
             dispatch(gotoThunk({ routeName: 'recovery-index' }));
         } else {
             if (selectRouterApp(getState()) !== 'onboarding') {
