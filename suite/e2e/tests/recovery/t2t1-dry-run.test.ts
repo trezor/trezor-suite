@@ -114,6 +114,7 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@T2T1'] }, () => {
                 priority: TestPriority.Medium,
                 stream: TestStream.Growth,
             }),
+            tag: ['@desktopOnly'], // web runs are unstable for 6 months, race condition on product side
         },
         async ({ page, device, settingsPage, recoveryModal, trezorInput }) => {
             await test.step('Initiate recovery dry run in settings', async () => {
