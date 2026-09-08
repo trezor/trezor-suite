@@ -1,3 +1,4 @@
+import type { StakingBatch } from '@suite-common/earn-staking-api';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
@@ -19,17 +20,19 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test.beforeEach(async ({ page, onboardingPage, settingsPage, blockbookMock }) => {
         await test.step('Mock Cardano pool address', async () => {
-            await page.route(/\/staking\/v1\/\?networks=/, async route => {
-                const response = await route.fetch();
-                const body = await response.json();
-                const adaData = body.data?.find(
-                    (item: { symbol: string }) => item.symbol === 'ada',
-                );
-                if (adaData) {
-                    adaData.pools = [{ apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID }];
-                }
-                await route.fulfill({ body: JSON.stringify(body) });
-            });
+            await page.route(/\/staking\/v1\/\?networks=/, route =>
+                route.fulfill({
+                    json: {
+                        data: [
+                            {
+                                symbol: 'ada',
+                                pools: [{ apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID }],
+                            },
+                        ],
+                        errors: [],
+                    } satisfies StakingBatch,
+                }),
+            );
         });
 
         await onboardingPage.completeOnboarding();
