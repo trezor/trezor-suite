@@ -71,13 +71,14 @@ Detox and Android CI default to API 34. Re-enter the Android shell to create any
 nix develop .#android
 # list available AVDs with:
 avdmanager list avd
+emulator -avd <avd-name>
 emulator -avd Pixel_6_API_34
 ```
 
 If you have troubles with your GPU acceleration you can disable it when running emulator like:
 
 ```bash
-emulator -avd Pixel_6_API_36 -gpu swiftshader_indirect
+emulator -avd Pixel_6_API_34 -gpu swiftshader_indirect
 ```
 
 ### Running tests
