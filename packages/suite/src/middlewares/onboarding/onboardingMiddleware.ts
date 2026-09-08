@@ -10,6 +10,7 @@ import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
 import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 import { type AppState } from 'src/types/suite';
 
 const onboardingMiddleware =
@@ -25,7 +26,9 @@ const onboardingMiddleware =
             // After the THP pairing is finished we want to jump to the next step automatically.
             // User already drifted away from the installation flow and is not aware that THP is actually in the middle
             // of the Firmware installation.
-            api.dispatch(onboardingActions.goToNextStepThunk());
+            api.dispatch(
+                onboardingActions.goToNextStepThunk(selectOnboardedDevice(api.getState())),
+            );
             api.dispatch(firmwareActions.resetReducer());
         } else {
             // pass action

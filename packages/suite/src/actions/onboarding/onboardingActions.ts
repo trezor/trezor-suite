@@ -17,13 +17,9 @@ import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
-import {
-    type DeviceRootState,
-    selectHasBitcoinOnlyFirmware,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { type DeviceRootState, selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
-import { type BackupType } from '@suite-common/suite-types';
+import { type BackupType, type TrezorDevice } from '@suite-common/suite-types';
 import {
     type StartDiscoveryThunkDeps,
     type StartDiscoveryThunkState,
@@ -32,7 +28,7 @@ import {
     selectEnabledNetworks,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { type Device } from '@trezor/connect';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
@@ -57,13 +53,30 @@ const addPath = createAction<AnyPath>(ONBOARDING.ADD_PATH);
 
 const removePath = createAction<AnyPath[]>(ONBOARDING.REMOVE_PATH);
 
+/**
+ * Pins onboarding to one physical device, so every step addresses that device rather than
+ * whichever one happens to be selected. See `selectOnboardedDevice`.
+ */
+const armOnboardedDeviceTracking = createAction<Device | TrezorDevice>(
+    ONBOARDING.ARM_DEVICE_TRACKING,
+);
+
+const onboardedDeviceConnected = createAction<{ device: Device; isOnlyCandidate: boolean }>(
+    ONBOARDING.DEVICE_CONNECTED,
+);
+
+const onboardedDeviceDisconnected = createAction<Device>(ONBOARDING.DEVICE_DISCONNECTED);
+
 type GetAllStepsInPathState = DeviceRootState & OnboardingRootState & SuiteSettingsRootState;
 
-const getAllStepsInPath = (getState: () => GetAllStepsInPathState) => {
+const getAllStepsInPath = (
+    getState: () => GetAllStepsInPathState,
+    onboardedDevice: TrezorDevice | undefined,
+) => {
     const allSteps = stepCategories.flatMap(({ steps }) => steps);
 
     const isStepUsedProps = {
-        device: selectSelectedDevice(getState()),
+        device: onboardedDevice,
         onboardingPath: selectOnboardingPath(getState()),
         isDeviceAuthenticityCheckEnabled: selectIsDeviceAuthenticityCheckEnabled(getState()),
         isUnlockedBootloaderAllowed: selectIsUnlockedBootloaderAllowed(getState()),
@@ -75,12 +88,12 @@ const getAllStepsInPath = (getState: () => GetAllStepsInPathState) => {
 type GoToPreviousStepThunkState = DeviceRootState & OnboardingRootState & SuiteSettingsRootState;
 
 const goToPreviousStepThunk =
-    (stepId?: AnyStepId) =>
+    (onboardedDevice: TrezorDevice | undefined, stepId?: AnyStepId) =>
     (dispatch: Dispatch<UnknownAction>, getState: () => GoToPreviousStepThunkState) => {
         if (stepId) {
             return dispatch(goToStep(stepId));
         }
-        const stepsInPath = getAllStepsInPath(getState);
+        const stepsInPath = getAllStepsInPath(getState, onboardedDevice);
         const prevStep = findPrevStep(selectOnboardingActiveStepId(getState()), stepsInPath);
 
         if (!prevStep) {
@@ -116,13 +129,16 @@ export type GoToSuiteOptions = {
 };
 
 const goToSuiteThunk =
-    ({ skipDeviceSetupCompletedEvent }: GoToSuiteOptions = {}) =>
+    (
+        onboardedDevice: TrezorDevice | undefined,
+        { skipDeviceSetupCompletedEvent }: GoToSuiteOptions = {},
+    ) =>
     (
         dispatch: ThunkDispatch<GoToSuiteThunkState, GoToSuiteThunkDeps, UnknownAction>,
         getState: () => GoToSuiteThunkState,
         extra: GoToSuiteThunkDeps,
     ) => {
-        const device = selectSelectedDevice(getState());
+        const device = onboardedDevice;
         const onboardingAnalytics = selectOnboardingAnalytics(getState());
         // Clear modals that might block navigation. They aren't relevant anyway, as there is no <ModalSwitcher /> in onboarding.
         // After device interaction, Connect sends UI_EVENTS.CLOSE_UI_WINDOW to close any open modal. On Web this is
@@ -198,7 +214,7 @@ type GoToNextStepThunkDeps = {
 } & StartDiscoveryThunkDeps;
 
 const goToNextStepThunk =
-    (nextStepId?: AnyStepId) =>
+    (onboardedDevice: TrezorDevice | undefined, nextStepId?: AnyStepId) =>
     (
         dispatch: ThunkDispatch<GoToNextStepThunkState, GoToNextStepThunkDeps, UnknownAction>,
         getState: () => GoToNextStepThunkState,
@@ -206,16 +222,15 @@ const goToNextStepThunk =
         if (nextStepId) {
             return dispatch(goToStep(nextStepId));
         }
-        const device = selectSelectedDevice(getState());
-        const stepsInPath = getAllStepsInPath(getState);
+        const stepsInPath = getAllStepsInPath(getState, onboardedDevice);
         const nextStep = findNextStep(
             selectOnboardingActiveStepId(getState()),
             stepsInPath,
-            device ?? null,
+            onboardedDevice ?? null,
         );
         // we are at last step, so go to Suite
         if (nextStep === null) {
-            dispatch(goToSuiteThunk());
+            dispatch(goToSuiteThunk(onboardedDevice));
 
             return;
         }
@@ -242,20 +257,18 @@ type BeginOnboardingTutorialThunkDeps = {
 } & StartDiscoveryThunkDeps;
 
 const beginOnboardingTutorialThunk =
-    () =>
+    (onboardedDevice: TrezorDevice | undefined) =>
     async (
         dispatch: ThunkDispatch<
             BeginOnboardingTutorialThunkState,
             BeginOnboardingTutorialThunkDeps,
             UnknownAction
         >,
-        getState: () => BeginOnboardingTutorialThunkState,
     ) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return;
+        if (!onboardedDevice) return;
 
-        await TrezorConnect.showDeviceTutorial({ device });
-        dispatch(goToNextStepThunk());
+        await TrezorConnect.showDeviceTutorial({ device: onboardedDevice });
+        dispatch(goToNextStepThunk(onboardedDevice));
     };
 
 type ResolveNextAfterSkippedThunkState = DeviceRootState &
@@ -263,14 +276,13 @@ type ResolveNextAfterSkippedThunkState = DeviceRootState &
     SuiteSettingsRootState;
 
 const resolveNextAfterSkippedThunk =
-    (skippedToStepId: AnyStepId) =>
+    (onboardedDevice: TrezorDevice | undefined, skippedToStepId: AnyStepId) =>
     (_dispatch: Dispatch<UnknownAction>, getState: () => ResolveNextAfterSkippedThunkState) => {
-        const device = selectSelectedDevice(getState());
-        const stepsInPath = getAllStepsInPath(getState);
+        const stepsInPath = getAllStepsInPath(getState, onboardedDevice);
         const resolvedNextStep = resolveNextAvailableStep(
             skippedToStepId,
             stepsInPath,
-            device ?? null,
+            onboardedDevice ?? null,
         );
 
         return resolvedNextStep?.id;
@@ -305,6 +317,9 @@ const rerunRecoveryThunk =
     };
 
 export {
+    armOnboardedDeviceTracking,
+    onboardedDeviceConnected,
+    onboardedDeviceDisconnected,
     enableOnboardingReducer,
     goToNextStepThunk,
     goToStep,

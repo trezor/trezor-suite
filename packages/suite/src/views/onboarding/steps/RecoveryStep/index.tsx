@@ -12,7 +12,6 @@ import {
     selectWordsCount,
 } from '@suite/recovery';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSelectedDevice } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { Badge, Banner, Column } from '@trezor/components';
@@ -22,11 +21,12 @@ import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { goToNextStepThunk, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
 export const RecoveryStep = () => {
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(selectOnboardedDevice);
     const status = useSelector(selectRecoveryStatus);
     const error = useSelector(selectRecoveryError);
     const wordsCount = useSelector(selectWordsCount);
@@ -224,7 +224,7 @@ export const RecoveryStep = () => {
 
     if (device?.mode === 'normal') {
         // Ready to continue to the next step
-        const handleClick = () => dispatch(goToNextStepThunk('set-pin'));
+        const handleClick = () => dispatch(goToNextStepThunk(device, 'set-pin'));
 
         return (
             <RecoveryStepBox

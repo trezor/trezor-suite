@@ -2,13 +2,21 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
-import { deviceActions } from '@suite-common/device';
+import {
+    type DeviceTrackingState,
+    deviceActions,
+    deviceTrackingInitialState,
+    deviceTrackingReducer,
+} from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 
 import {
     addPath,
+    armOnboardedDeviceTracking,
     enableOnboardingReducer,
     goToStep,
+    onboardedDeviceConnected,
+    onboardedDeviceDisconnected,
     removePath,
     resetOnboarding,
     updateAnalytics,
@@ -30,6 +38,12 @@ export interface OnboardingState {
     activeStepId: AnyStepId;
     path: AnyPath[];
     onboardingAnalytics: Partial<OnboardingAnalytics>;
+    /**
+     * Which physical device is being onboarded. Onboarding wipes and initialises the device, so
+     * its identity changes underneath us; the ref follows it across those reconnects the same way
+     * the firmware update does. See `@suite-common/device` `deviceTracking`.
+     */
+    deviceTracking: DeviceTrackingState;
 }
 
 const initialState: OnboardingState = {
@@ -43,6 +57,7 @@ const initialState: OnboardingState = {
     activeStepId: STEP.ID_FIRMWARE_STEP,
     path: [],
     onboardingAnalytics: {},
+    deviceTracking: deviceTrackingInitialState,
     backupType: 'shamir-single',
     backupMedium: null,
 };
@@ -62,6 +77,8 @@ const ALLOWED_ACTION_TYPES = new Set<UnknownAction['type']>([
     resetOnboarding.type,
     enableOnboardingReducer.type,
     updateAnalytics.type,
+    // Arming happens as onboarding opens, before the reducer is enabled.
+    armOnboardedDeviceTracking.type,
 ]);
 
 const onboarding = (state: OnboardingState = initialState, action: UnknownAction) => {
@@ -80,6 +97,22 @@ const onboarding = (state: OnboardingState = initialState, action: UnknownAction
             draft.path = removePathsFromState(action.payload, state);
         } else if (deviceActions.deviceDisconnect.match(action)) {
             draft.prevDeviceId = action.payload.id ?? null;
+        } else if (armOnboardedDeviceTracking.match(action)) {
+            draft.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
+                type: 'arm',
+                device: action.payload,
+            });
+        } else if (onboardedDeviceConnected.match(action)) {
+            draft.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
+                type: 'device-connect',
+                device: action.payload.device,
+                isOnlyCandidate: action.payload.isOnlyCandidate,
+            });
+        } else if (onboardedDeviceDisconnected.match(action)) {
+            draft.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
+                type: 'device-disconnect',
+                device: action.payload,
+            });
         } else if (updateAnalytics.match(action)) {
             draft.onboardingAnalytics = { ...state.onboardingAnalytics, ...action.payload };
         } else if (updateBackupType.match(action)) {

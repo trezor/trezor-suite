@@ -62,7 +62,7 @@ describe('Backup Thunks', () => {
         testMocks.setTrezorConnectFixtures({ success: true });
         const { dispatch, getState, extra } = createThunkDependencies(defaultState);
 
-        await backupDeviceThunk({ params: {} })(dispatch, getState, extra);
+        await backupDeviceThunk({ device: selectedDevice, params: {} })(dispatch, getState, extra);
 
         expect(dispatch).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -96,7 +96,11 @@ describe('Backup Thunks', () => {
         testMocks.setTrezorConnectFixtures({ success: true });
         const { dispatch, getState, extra } = createThunkDependencies(defaultState);
 
-        await backupDeviceThunk({ params: {}, skipSuccessToast: true })(dispatch, getState, extra);
+        await backupDeviceThunk({ device: selectedDevice, params: {}, skipSuccessToast: true })(
+            dispatch,
+            getState,
+            extra,
+        );
 
         expect(dispatch).not.toHaveBeenCalledWith(
             expect.objectContaining({
@@ -113,7 +117,7 @@ describe('Backup Thunks', () => {
         });
         const { dispatch, getState, extra } = createThunkDependencies(defaultState);
 
-        await backupDeviceThunk({ params: {} })(dispatch, getState, extra);
+        await backupDeviceThunk({ device: selectedDevice, params: {} })(dispatch, getState, extra);
 
         expect(dispatch).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -136,14 +140,10 @@ describe('Backup Thunks', () => {
     });
 
     it('backup without device shows error toast', async () => {
-        const { dispatch, getState, extra } = createThunkDependencies({
-            device: {
-                ...defaultState.device,
-                selectedDevice: undefined,
-            },
-        });
+        const { dispatch, getState, extra } = createThunkDependencies(defaultState);
 
-        await backupDeviceThunk({ params: {} })(dispatch, getState, extra);
+        // The caller names the device; not naming one is what "no device" means now.
+        await backupDeviceThunk({ device: undefined, params: {} })(dispatch, getState, extra);
 
         expect(dispatch).toHaveBeenCalledWith(
             expect.objectContaining({

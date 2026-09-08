@@ -6,3 +6,6 @@ export const ENABLE_ONBOARDING_REDUCER = '@onboarding/enable-onboarding-reducer'
 export const ANALYTICS = '@onboarding/analytics' as const;
 export const SELECT_BACKUP_TYPE = '@onboarding/select-backup-type' as const;
 export const SELECT_BACKUP_MEDIUM = '@onboarding/select-backup-medium' as const;
+export const ARM_DEVICE_TRACKING = '@onboarding/arm-device-tracking' as const;
+export const DEVICE_CONNECTED = '@onboarding/device-connected' as const;
+export const DEVICE_DISCONNECTED = '@onboarding/device-disconnected' as const;

@@ -36,7 +36,7 @@ const RecoveryStepBox = (props: OnboardingCardProps) => {
             return dispatch(recoveryActions.setStatus('initial'));
         }
 
-        return dispatch(goToPreviousStepThunk());
+        return dispatch(goToPreviousStepThunk(device));
     };
 
     const isBackButtonVisible = () => {
