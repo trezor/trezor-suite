@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
-import { H3, Modal } from '@trezor/components';
+import { H3, Modal, Paragraph } from '@trezor/components';
 import { DatabaseIcon } from '@trezor/icons';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
 
-export const DatabaseCorruptedModal = () => {
+type DatabaseCorruptedModalProps = {
+    error: unknown;
+};
+
+export const DatabaseCorruptedModal = ({ error }: DatabaseCorruptedModalProps) => {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +33,11 @@ export const DatabaseCorruptedModal = () => {
             <H3>
                 <Translation id="TR_DATABASE_CORRUPTED" />
             </H3>
+            <Paragraph>
+                Suite could not load its database. If another Suite instance is using the same
+                profile, close it and restart this instance before trying to clear storage.
+            </Paragraph>
+            {typeof error === 'string' && <Paragraph>{error}</Paragraph>}
         </Modal>
     );
 };
