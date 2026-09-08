@@ -4,10 +4,6 @@ const example = `{
     "source": "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
     "fee": 100,
     "sequence": 4294967296,
-    "timebounds": {
-        "minTime": null,
-        "maxTime": null
-    },
     "memo": {
         "id": null,
         "type": 0,
@@ -19,7 +15,7 @@ const example = `{
             "type": "payment",
             "source": "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
             "destination": "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
-            "asset": null,
+            "asset": { "code": "XLM", "type": 0 },
             "amount": "10000"
         }
     ]
