@@ -1,3 +1,5 @@
+import { SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE } from '@trezor/utils';
+
 import { createResolveNamedAddress } from './createResolveNamedAddress';
 
 const mockResolveOnchain = jest.fn();

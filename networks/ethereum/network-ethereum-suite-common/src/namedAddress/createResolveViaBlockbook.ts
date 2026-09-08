@@ -1,10 +1,9 @@
 import type { GetTrezorConnectDep } from '@trezor/network-module-suite-common-types';
 
 import type { ResolveNamedAddress } from './ResolveNamedAddress';
+import { isAddressLike } from './namedAddressUtils';
 
 export type ResolveViaBlockbookDeps = GetTrezorConnectDep<'getAccountInfo'>;
-
-import { isAddressLike } from './namedAddressUtils';
 
 /**
  * Forward-resolve a named input (ENS or other TLD) to its onchain address via Blockbook.
@@ -28,5 +27,9 @@ export const createResolveViaBlockbook =
             throw new Error(result.error.message);
         }
 
-        return result.payload.descriptor;
+        // The descriptor is whatever the backend made of the name, and it is signed as the
+        // recipient. Anything that is not an address is no answer, not a different one.
+        const { descriptor } = result.payload;
+
+        return isAddressLike(descriptor) ? descriptor : null;
     };

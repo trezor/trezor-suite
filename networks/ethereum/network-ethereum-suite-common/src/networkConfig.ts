@@ -326,7 +326,7 @@ export const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, Netwo
             },
         },
         coingeckoId: 'hyperevm',
-        tradeCryptoId: 'hyperevm',
+        tradeCryptoId: 'hyperliquid',
         caipId: 'eip155:999',
         isDebugOnlyNetwork: true,
         yieldXyzId: null,

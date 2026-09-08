@@ -1,7 +1,4 @@
-import {
-    isAddressDeprecated,
-    isBech32AddressUppercase,
-} from '@suite-common/address';
+import { isAddressDeprecated, isBech32AddressUppercase } from '@suite-common/address';
 import { type AddressValidator, type NamedAddressSupport } from '@suite-common/networks';
 import { formInputsMaxLength, yup } from '@suite-common/validators';
 import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';

@@ -1,5 +1,5 @@
-import { type AddressValidator, type SymbolNamedAddressResolver } from '@suite-common/address';
-import { mockGetNamedAddressSupport } from '@suite-common/address/mocks';
+import { type AddressValidator, type SymbolNamedAddressResolver } from '@suite-common/networks';
+import { mockGetNamedAddressSupport } from '@suite-common/networks/mocks';
 
 import { type SendFormFormContext, sendOutputsFormValidationSchema } from './sendOutputsFormSchema';
 

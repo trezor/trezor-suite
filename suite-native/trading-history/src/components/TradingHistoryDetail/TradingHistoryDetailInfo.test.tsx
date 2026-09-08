@@ -1,7 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
-import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type GetSupportedNetworksDep, type IsTestnetDep } from '@suite-common/networks';
+import { mockGetSupportedNetworks } from '@suite-common/networks/mocks';
 import { type TradingTransaction } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils';
@@ -18,8 +18,8 @@ import { TradingHistoryDetailInfo } from './TradingHistoryDetailInfo';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
 const mockCopyToClipboard = jest.fn(() => Promise.resolve());
-const services: NetworkModuleRepositoryDep = {
-    networkModuleRepository: mockNetworkModuleRepository(),
+const services: { networks: GetSupportedNetworksDep & IsTestnetDep } = {
+    networks: { getSupportedNetworks: mockGetSupportedNetworks(), isTestnet: () => false },
 };
 
 jest.mock('@suite-native/clipboard', () => ({

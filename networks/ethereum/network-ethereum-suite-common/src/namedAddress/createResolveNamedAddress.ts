@@ -1,4 +1,9 @@
+import { scheduleAction } from '@trezor/utils';
+
 import type { ResolveNamedAddress } from './ResolveNamedAddress';
+import { ONCHAIN_CALL_TIMEOUT_MS } from './namedAddressUtils';
+
+const RESOLUTION_BUDGET_MS = ONCHAIN_CALL_TIMEOUT_MS + 5_000;
 
 export type ResolveNamedAddressDeps = {
     resolveNamedAddressOnchain: ResolveNamedAddress;
@@ -14,10 +19,14 @@ export type ResolveNamedAddressDeps = {
  */
 export const createResolveNamedAddress =
     (deps: ResolveNamedAddressDeps): ResolveNamedAddress =>
-    async (value, symbol) => {
-        try {
-            return await deps.resolveNamedAddressOnchain(value, symbol);
-        } catch {
-            return deps.resolveViaBlockbook(value, symbol);
-        }
-    };
+    (value, symbol) =>
+        scheduleAction(
+            async () => {
+                try {
+                    return await deps.resolveNamedAddressOnchain(value, symbol);
+                } catch {
+                    return deps.resolveViaBlockbook(value, symbol);
+                }
+            },
+            { attempts: 1, timeout: RESOLUTION_BUDGET_MS },
+        );

@@ -1,18 +1,18 @@
-import {
-    createNetworkModuleRepository,
-    createNetworksCompositionRoot,
-} from '@suite-common/networks';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
 
 import { createGetNamedAddressSupport } from './createGetNamedAddressSupport';
 
 describe('createGetNamedAddressSupport', () => {
-    const networkModules = createNetworksCompositionRoot();
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+    const ethereumModule = createEthereumSuiteCommonNetworkModule({
+        getTrezorConnect: () => ({ getAccountInfo: jest.fn(), blockchainEvmRpcCall: jest.fn() }),
+    });
+    const networkModuleRepository = {
+        get: jest.fn().mockImplementation(symbol => (symbol === 'btc' ? {} : ethereumModule)),
+    };
     const getNamedAddressSupport = createGetNamedAddressSupport({ networkModuleRepository });
 
     it('hands out a resolver for a network with a name system', () => {
-        const support = getNamedAddressSupport(asNetworkSymbol('eth'));
+        const support = getNamedAddressSupport('eth');
 
         expect(support.isSupported).toBe(true);
         expect(support.isSupported && support.resolver.isNameLike('vitalik.eth')).toBe(true);
@@ -20,14 +20,14 @@ describe('createGetNamedAddressSupport', () => {
     });
 
     it('recognizes names on a network whose module cannot resolve them', () => {
-        const support = getNamedAddressSupport(asNetworkSymbol('base'));
+        const support = getNamedAddressSupport('base');
 
         expect(support.isSupported).toBe(false);
         expect(support.isNameLike('vitalik.eth')).toBe(true);
     });
 
     it('recognizes no names on a network without a name system', () => {
-        const support = getNamedAddressSupport(asNetworkSymbol('btc'));
+        const support = getNamedAddressSupport('btc');
 
         expect(support.isSupported).toBe(false);
         expect(support.isNameLike('vitalik.eth')).toBe(false);

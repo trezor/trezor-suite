@@ -1,5 +1,5 @@
-import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type GetSupportedNetworksDep, type IsTestnetDep } from '@suite-common/networks';
+import { mockGetSupportedNetworks } from '@suite-common/networks/mocks';
 import { type TradingTransaction } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
@@ -7,8 +7,8 @@ import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/tradi
 import { TradingHistoryDetail } from './TradingHistoryDetail';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
-const services: NetworkModuleRepositoryDep = {
-    networkModuleRepository: mockNetworkModuleRepository(),
+const services: { networks: GetSupportedNetworksDep & IsTestnetDep } = {
+    networks: { getSupportedNetworks: mockGetSupportedNetworks(), isTestnet: () => false },
 };
 
 describe('TradingHistoryDetail', () => {

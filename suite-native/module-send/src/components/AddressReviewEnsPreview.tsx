@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { selectGetNamedAddressSupportDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNamedAddressSupportDep } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type SendRootState,
