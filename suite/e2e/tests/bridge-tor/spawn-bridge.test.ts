@@ -32,7 +32,7 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
         { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
         async ({ request }, testInfo) => {
             const suite = await launchSuite({
-                bridgeDaemon: true,
+                bridgeDaemon: 'with-ui',
                 artefactFolder: testInfo.outputDir,
                 viewport: testInfo.project.use.viewport!,
             });

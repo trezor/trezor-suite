@@ -16,7 +16,7 @@ const exposeStoreArgument = '--expose-store';
 
 export type LaunchSuiteParams = {
     keepUserData?: boolean;
-    bridgeDaemon?: boolean;
+    bridgeDaemon?: 'with-ui' | 'without-ui';
     exposeConnectWs?: boolean;
     offlineMode?: boolean;
     locale?: string;
@@ -56,7 +56,9 @@ const buildArgs = (params: LaunchSuiteParams) => {
     ];
 
     if (params.bridgeDaemon) {
-        args.push('--bridge-daemon-show-ui');
+        args.push(
+            params.bridgeDaemon === 'with-ui' ? '--bridge-daemon-show-ui' : '--bridge-daemon',
+        );
     }
 
     if (params.exposeConnectWs) {

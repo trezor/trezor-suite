@@ -6,25 +6,27 @@ import { db } from 'src/storage';
 export const preloadStore = async () => {
     if (!db.isSupported()) return;
 
-    // check if db is blocked/blocking before preloading start
-    const dbError = await new Promise<'blocked' | 'blocking' | undefined>(resolve => {
-        // set callbacks that are fired when upgrading the db is blocked because of multiple instances are running
-        db.onBlocked = () => resolve('blocked');
-        db.onBlocking = () => resolve('blocking');
-        // initialize
-        db.getDB()
-            .then(() => resolve(undefined))
-            .catch(() => {}); // So there isn't unhandled rejection
-    });
-
-    if (dbError) {
-        return {
-            type: STORAGE.ERROR,
-            payload: dbError,
-        } as const;
-    }
-
     try {
+        const { onBlocked, onBlocking } = db;
+        const dbError = await new Promise<'blocked' | 'blocking' | undefined>((resolve, reject) => {
+            db.onBlocked = () => resolve('blocked');
+            db.onBlocking = () => resolve('blocking');
+            // Opening can fail without a blocked event (e.g. an Electron profile lock).
+            // Let the storage-error handling below settle startup instead of leaving the loader hanging.
+            db.getDB().then(() => resolve(undefined), reject);
+        }).finally(() => {
+            // Store creation now precedes preloading, so restore the middleware's lifecycle handlers.
+            db.onBlocked = onBlocked;
+            db.onBlocking = onBlocking;
+        });
+
+        if (dbError) {
+            return {
+                type: STORAGE.ERROR,
+                payload: dbError,
+            } as const;
+        }
+
         // Load state from database in parallel using Promise.all
         const [
             suiteSettings,

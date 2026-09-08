@@ -27,7 +27,9 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
             await expectBridgeToBeStopped(request);
 
             const daemonApp = await launchSuiteElectronApp({
-                bridgeDaemon: true,
+                // A second UI would share the profile and race with this test's storage reset,
+                // leaving IndexedDB locked and the foreground app stuck on its loader.
+                bridgeDaemon: 'without-ui',
                 artefactFolder: testInfo.outputDir,
                 viewport: testInfo.project.use.viewport!,
             });
