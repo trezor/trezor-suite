@@ -2873,7 +2873,7 @@ export const messages = {
         },
         earnTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
-            pendingTitle: 'Confirming stake',
+            pendingTitle: 'Confirming stake…',
             amountLabel: 'Staking amount',
             completeTitle: 'Staking complete',
             completeAmountLabel: 'Staked',
@@ -2900,7 +2900,7 @@ export const messages = {
         },
         unstakeTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
-            pendingTitle: 'Confirming unstake',
+            pendingTitle: 'Confirming unstake…',
             amountLabel: 'Unstaking amount',
             completeTitle: 'Unstaking complete',
             completeAmountLabel: 'Unstaked',
@@ -3093,8 +3093,8 @@ export const messages = {
                     description: 'Network fee',
                 },
                 second: {
-                    titleEthereum: 'Enter staking pool',
-                    titleSolana: 'Enter warm-up period',
+                    titleEthereum: 'Staking activation',
+                    titleSolana: 'Staking activation',
                     description: '~{entryPeriod} days',
                     title: 'Staking activation',
                 },
@@ -3436,7 +3436,7 @@ export const messages = {
             stakeTitle: 'Staking complete',
             stakeAmountLabel: 'Staked',
             stakeDescription:
-                'You will earn rewards after the {days, plural, one {# day} other {# days}} warm-up period',
+                "You'll earn rewards after staking activation ({days, plural, one {# day} other {# days}}).",
             unstakeTitle: 'Unstaking complete',
             unstakeAmountLabel: 'Unstaked',
             claimTitle: 'Claim complete',
@@ -3681,7 +3681,7 @@ export const messages = {
         },
         claimTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
-            pendingTitle: 'Confirming claim',
+            pendingTitle: 'Confirming claim…',
             amountLabel: 'Claiming amount',
             completeTitle: 'Claim complete',
             completeAmountLabel: 'Claimed',
