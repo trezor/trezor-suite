@@ -4,6 +4,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "test:unit": "node --test --test-concurrency=1 eslint.test.ts",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
