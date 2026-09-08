@@ -39,7 +39,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                 stream: TestStream.Earn,
             }),
         },
-        async ({ walletPage, stakingSection }) => {
+        async ({ page, walletPage, stakingSection }) => {
             await test.step('Identify possible staking balance', async () => {
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
                 await expect(walletPage.topPanelBalance).toHaveText(/\d/);
@@ -49,6 +49,13 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                 );
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.stakeMoreButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKING_IN_A_NUTSHELL');
+                await stakingSection.continueButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKE_TOKEN', {
+                    values: { symbol: 'ETH' },
+                });
+                await stakingSection.everstakeAcknowledgeCheckbox.click();
+                await stakingSection.confirmButton.click();
             });
 
             await test.step('Check limits for staking', async () => {

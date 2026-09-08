@@ -62,6 +62,13 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Open and fill staking form', async () => {
                 await stakingSection.stakeMoreButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKING_IN_A_NUTSHELL');
+                await stakingSection.continueButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKE_TOKEN', {
+                    values: { symbol: 'SOL' },
+                });
+                await stakingSection.everstakeAcknowledgeCheckbox.click();
+                await stakingSection.confirmButton.click();
                 await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKE_TOKEN', {
                     values: { symbol: 'SOL' },
                 });
