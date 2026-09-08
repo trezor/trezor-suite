@@ -5,21 +5,18 @@ const example = `{
     "fee": 100,
     "sequence": 4294967296,
     "timebounds": {
-        "minTime": null,
-        "maxTime": null
+        "minTime": 0,
+        "maxTime": 0
     },
     "memo": {
-        "id": null,
-        "type": 0,
-        "text": null,
-        "hash": null
+        "type": 0
     },
     "operations": [
         {
             "type": "payment",
             "source": "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
             "destination": "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
-            "asset": null,
+            "asset": { "code": "XLM", "type": 0 },
             "amount": "10000"
         }
     ]
