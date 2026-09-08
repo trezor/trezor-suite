@@ -2,7 +2,7 @@ import { type TradingTransactionBuy } from '@suite-common/trading';
 import { BannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { getBuyTradeProgress, getTradeStatusUrl } from '../../utils/tradeStatusUtils';
+import { getBuyTradeProgress } from '../../utils/tradeStatusUtils';
 
 type TradingHistoryDetailBuyPaymentBannerProps = {
     trade: TradingTransactionBuy;
@@ -12,9 +12,8 @@ export const TradingHistoryDetailBuyPaymentBanner = ({
     trade,
 }: TradingHistoryDetailBuyPaymentBannerProps) => {
     const isWaitingForPayment = getBuyTradeProgress(trade.data.status) === 'customerAction';
-    const isStatusLinkAvailable = !!getTradeStatusUrl(trade);
 
-    if (!isWaitingForPayment || isStatusLinkAvailable) {
+    if (!isWaitingForPayment) {
         return null;
     }
 

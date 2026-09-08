@@ -18,7 +18,7 @@ export const TradingHistoryDetailPlacedAtRow = ({
                 <Translation id="moduleTrading.tradeHistory.detail.info.placed" />
             </Text>
             <Text variant="body-sm">
-                <DateTimeFormatter value={placedAt} />
+                <DateTimeFormatter value={placedAt} dateStyle="long" />
             </Text>
         </TradeInfoRow>
     );

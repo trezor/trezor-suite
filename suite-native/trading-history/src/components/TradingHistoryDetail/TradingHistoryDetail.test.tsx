@@ -49,30 +49,42 @@ describe('TradingHistoryDetail', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render a payment interruption banner for a buy without a status link while waiting for payment', async () => {
-        const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-        const trade = {
-            ...buyTrade,
-            data: { ...buyTrade.data, partnerData: undefined, statusUrl: null },
-        };
-        const { getByText } = await renderDetail(trade);
+    it.each([
+        ['with a status link', getBuyTrade({ status: 'SUBMITTED' })],
+        [
+            'without a status link',
+            {
+                ...getBuyTrade({ status: 'SUBMITTED' }),
+                data: {
+                    ...getBuyTrade({ status: 'SUBMITTED' }).data,
+                    partnerData: undefined,
+                    statusUrl: null,
+                },
+            },
+        ],
+    ] as const)(
+        'should render a payment interruption banner for a buy %s while waiting for payment',
+        async (_, trade) => {
+            const { getByText } = await renderDetail(trade);
 
-        expect(
-            getByText(
-                getTranslation('moduleTrading.tradeHistory.detail.paymentInterruptionBanner.title'),
-            ),
-        ).toBeOnTheScreen();
-        expect(
-            getByText(
-                getTranslation(
-                    'moduleTrading.tradeHistory.detail.paymentInterruptionBanner.description',
+            expect(
+                getByText(
+                    getTranslation(
+                        'moduleTrading.tradeHistory.detail.paymentInterruptionBanner.title',
+                    ),
                 ),
-            ),
-        ).toBeOnTheScreen();
-    });
+            ).toBeOnTheScreen();
+            expect(
+                getByText(
+                    getTranslation(
+                        'moduleTrading.tradeHistory.detail.paymentInterruptionBanner.description',
+                    ),
+                ),
+            ).toBeOnTheScreen();
+        },
+    );
 
     it.each([
-        ['a status link is available', getBuyTrade({ status: 'SUBMITTED' })],
         [
             'the waiting-for-payment step is completed',
             {

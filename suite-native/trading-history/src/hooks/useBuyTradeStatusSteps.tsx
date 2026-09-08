@@ -34,6 +34,7 @@ export const useBuyTradeStatusSteps = (trade: TradingTransactionBuy) => {
             statusUrl={statusUrl}
             key="provider"
             logo={provider?.logo}
+            isActive={progressId === 'providerProcessing'}
         />
     );
 

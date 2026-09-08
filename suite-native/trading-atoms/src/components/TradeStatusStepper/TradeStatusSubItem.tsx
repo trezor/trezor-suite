@@ -18,6 +18,7 @@ export type TradeStatusSubItemProps = {
     onPress?: () => void;
     textVariant?: NativeTypographyStyle;
     color?: Color;
+    isActive?: boolean;
 };
 
 export const TradeStatusSubItem = ({
@@ -26,6 +27,7 @@ export const TradeStatusSubItem = ({
     onPress,
     textVariant = 'body-sm',
     color = 'contentSecondary',
+    isActive = true,
 }: TradeStatusSubItemProps) => {
     const { applyStyle } = useNativeStyles();
     const isValueText = typeof value === 'string' || typeof value === 'number';
@@ -51,13 +53,21 @@ export const TradeStatusSubItem = ({
                                 ellipsizeMode="middle"
                                 isUnderlined
                                 textVariant="body-sm"
+                                textColor={isActive ? 'contentBrand' : 'contentSecondary'}
+                                textPressedColor={
+                                    isActive ? 'contentBrandPressed' : 'contentSecondaryPressed'
+                                }
                                 label={value}
                                 onPress={onPress}
                                 numberOfLines={1}
                                 style={applyStyle(shrinkableStyle)}
                             />
                         </Box>
-                        <Icon name="caretRight" size={20} />
+                        <Icon
+                            name="caretRight"
+                            size={20}
+                            color={isActive ? 'contentPrimary' : 'contentSecondary'}
+                        />
                     </HStack>
                 ) : (
                     renderValue

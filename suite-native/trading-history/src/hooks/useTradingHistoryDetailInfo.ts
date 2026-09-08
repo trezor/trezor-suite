@@ -107,7 +107,7 @@ const getTradingHistoryDetailAsset = ({
         type: 'crypto',
         accountLabel: accountLabel ?? cryptoAsset.networkName,
         amount,
-        contractAddress: cryptoAsset.contractAddress ?? undefined,
+        contractAddress: cryptoAsset.isNativeToken ? undefined : cryptoAsset.contractAddress,
         cryptoId,
         displaySymbol: cryptoAsset.displaySymbol,
         name: cryptoAsset.name,

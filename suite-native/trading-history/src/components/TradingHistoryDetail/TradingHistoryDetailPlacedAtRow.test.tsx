@@ -6,12 +6,12 @@ import { TradingHistoryDetailPlacedAtRow } from './TradingHistoryDetailPlacedAtR
 describe('TradingHistoryDetailPlacedAtRow', () => {
     it('renders the placement date', async () => {
         const { getByText } = await renderWithBasicProvider(
-            <TradingHistoryDetailPlacedAtRow placedAt={new Date('2025-01-15T10:00:00Z')} />,
+            <TradingHistoryDetailPlacedAtRow placedAt={new Date(2026, 2, 13, 12, 15)} />,
         );
 
         expect(
             getByText(getTranslation('moduleTrading.tradeHistory.detail.info.placed')),
         ).toBeOnTheScreen();
-        expect(getByText(/2025/)).toBeOnTheScreen();
+        expect(getByText('March 13, 2026 at 12:15')).toBeOnTheScreen();
     });
 });
