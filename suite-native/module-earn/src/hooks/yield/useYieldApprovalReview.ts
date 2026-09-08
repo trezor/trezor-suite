@@ -132,7 +132,7 @@ export const useYieldApprovalReview = ({
     const shouldConfirmApprovalCancellation =
         isSigningApproval || isApprovalSigned || isSendingApproval;
 
-    const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess } =
+    const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess, wasReviewCancelledByUser } =
         useYieldApprovalReviewNavigation({
             flowKey,
             onReviewLeave,
@@ -184,7 +184,10 @@ export const useYieldApprovalReview = ({
         if (isRejected(signTransactionResponse)) {
             setIsSigningApproval(false);
 
-            if (isUserCancelledSignError(signTransactionResponse.payload)) {
+            if (
+                isUserCancelledSignError(signTransactionResponse.payload) ||
+                wasReviewCancelledByUser()
+            ) {
                 reportApprovalReviewEvent({ action: 'cancel' });
 
                 return 'cancelled';
@@ -207,6 +210,7 @@ export const useYieldApprovalReview = ({
         isSigningApproval,
         reportApprovalReviewEvent,
         reviewTransaction,
+        wasReviewCancelledByUser,
     ]);
 
     const handleApprovalSubmitted = useCallback(async () => {

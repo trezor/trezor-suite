@@ -30,6 +30,7 @@ export const useYieldApprovalReviewNavigation = ({
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowYieldReviewCancellationAlert();
     const isCleanupHandledRef = useRef(false);
+    const isReviewCancelledByUserRef = useRef(false);
 
     useDisableIOSGesture();
 
@@ -55,10 +56,13 @@ export const useYieldApprovalReviewNavigation = ({
 
     const leaveReviewFromDeviceCancel = useCallback(() => {
         onReviewLeave?.();
+        isReviewCancelledByUserRef.current = true;
         cleanupCanceledReview();
         isCleanupHandledRef.current = true;
         navigation.goBack();
     }, [cleanupCanceledReview, navigation, onReviewLeave]);
+
+    const wasReviewCancelledByUser = useCallback(() => isReviewCancelledByUserRef.current, []);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', event => {
@@ -71,6 +75,7 @@ export const useYieldApprovalReviewNavigation = ({
                 showReviewCancellationAlert().then(({ wasReviewCanceled }) => {
                     if (wasReviewCanceled) {
                         onReviewLeave?.();
+                        isReviewCancelledByUserRef.current = true;
                         cleanupCanceledReview();
                         isCleanupHandledRef.current = true;
                         unsubscribe();
@@ -105,5 +110,6 @@ export const useYieldApprovalReviewNavigation = ({
     return {
         leaveReviewFromDeviceCancel,
         markReviewNavigationSuccess,
+        wasReviewCancelledByUser,
     };
 };
