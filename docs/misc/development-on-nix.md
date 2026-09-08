@@ -65,7 +65,7 @@ yarn a                  # Run on Android (in another terminal)
 ### Running the Android emulator
 
 The Android shell provides `Pixel_6_API_34` and `Pixel_6_API_36` for local testing.
-Detox and Android CI default to API 36. Re-enter the Android shell to create any missing AVDs.
+Detox and Android CI default to API 34. Re-enter the Android shell to create any missing AVDs.
 
 ```bash
 nix develop .#android
