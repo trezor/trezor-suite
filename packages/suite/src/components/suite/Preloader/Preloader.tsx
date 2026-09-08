@@ -105,7 +105,7 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     // Failed storage loading also prevents persisted analytics consent from loading.
     // Show the failure before consent so it cannot hide the database error.
     if (lifecycle.status === 'db-corrupted') {
-        return <DatabaseCorruptedModal error={lifecycle.error} />;
+        return <DatabaseCorruptedModal />;
     }
 
     if (!isAnalyticsConsentConfirmed) {
