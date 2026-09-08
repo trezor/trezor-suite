@@ -30,7 +30,7 @@ export const Onboarding = () => {
     useOnboardedDeviceTracking();
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
-    const { activeStepId, goToNextStep } = useOnboarding();
+    const { activeStepId, goToNextStep, onboardedDevice } = useOnboarding();
     const device = useSelector(selectOnboardedDevice);
     const thpStep = useSelector(selectThpStep);
 
@@ -63,7 +63,12 @@ export const Onboarding = () => {
                 return FirmwareStep;
             case STEP.ID_AUTHENTICATE_DEVICE_STEP:
                 // Device authenticity check
-                return () => <DeviceAuthenticityStep goToNext={() => goToNextStep()} />;
+                return () => (
+                    <DeviceAuthenticityStep
+                        device={onboardedDevice}
+                        goToNext={() => goToNextStep()}
+                    />
+                );
             case STEP.ID_TUTORIAL_STEP:
                 // Device tutorial
                 return DeviceTutorialStep;
@@ -88,7 +93,7 @@ export const Onboarding = () => {
             default:
                 return exhaustive(activeStepId);
         }
-    }, [activeStepId, goToNextStep]);
+    }, [activeStepId, goToNextStep, onboardedDevice]);
 
     return (
         <OnboardingLayout>

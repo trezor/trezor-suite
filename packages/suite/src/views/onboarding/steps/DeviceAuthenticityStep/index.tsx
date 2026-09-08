@@ -7,13 +7,13 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceAuthenticityByDeviceId } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectDispatch } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
     { id: 'security', icon: ShieldCheckIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
@@ -22,11 +22,17 @@ const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
 ];
 
 type DeviceAuthenticityProps = {
+    /**
+     * The device to check. Passed in rather than selected here, because this step renders in two
+     * places that mean different devices by it: inside onboarding, where it is the device
+     * onboarding pinned, and inline in `SecurityCheck` on the 'start' screen, where onboarding has
+     * not begun and it is simply the selected one.
+     */
+    device: TrezorDevice | undefined;
     goToNext: () => void;
 };
 
-export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) => {
-    const device = useSelector(selectOnboardedDevice);
+export const DeviceAuthenticityStep = ({ device, goToNext }: DeviceAuthenticityProps) => {
     const selectedDeviceAuthenticity = useSelector(state =>
         selectDeviceAuthenticityByDeviceId(state, device?.id),
     );

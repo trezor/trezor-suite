@@ -351,6 +351,7 @@ export const SecurityCheck = () => {
         return (
             <Box padding={{ top: 40 }} width="100%">
                 <DeviceAuthenticityStep
+                    device={selectedDevice}
                     goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
                 />
             </Box>
