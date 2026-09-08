@@ -44,7 +44,7 @@ import { tradingInitialState } from '@suite-native/trading-state';
 import { sendFormInitialState } from '@suite-native/transaction-management';
 
 import { appSliceInitialState } from '../src/appSlice';
-import type { FullAppState } from '../src/store';
+import type { FullAppState } from '../src/createReduxStore';
 
 /**
  * Create a complete app state for Suite Mobile to be used as basis for state fixtures in tests.
