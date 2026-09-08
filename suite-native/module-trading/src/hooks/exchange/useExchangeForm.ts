@@ -186,10 +186,19 @@ const useDexQuoteApprovalInfoChangeEffect = ({
     }, [dispatch, getValues, quote, sendAccount, setValue]);
 };
 
-const useValidations = (
-    { trigger, setValue }: ExchangeFormType,
-    limits: TradingExchangeAmountLimitProps | undefined,
-) => {
+type UseValidationsParams = {
+    form: ExchangeFormType;
+    limits: TradingExchangeAmountLimitProps | undefined;
+    balance: string | undefined;
+    maxSpendableAmount: string | undefined;
+};
+
+const useValidations = ({
+    form: { trigger, setValue },
+    limits,
+    balance,
+    maxSpendableAmount,
+}: UseValidationsParams) => {
     const { translate } = useTranslate();
     const quotes = useSelector(selectExchangeQuotes);
     const quoteRequest = useSelector(selectTradingExchangeQuotesRequest);
@@ -201,7 +210,7 @@ const useValidations = (
 
     useEffect(() => {
         trigger(['sendCryptoAmount']);
-    }, [limits, trigger]);
+    }, [limits, balance, maxSpendableAmount, trigger]);
 
     useEffect(() => {
         setValue('generalAlert', generalAlertMsg);
@@ -251,7 +260,12 @@ export const useExchangeForm = () => {
         setContractAddress,
         setAccountKey,
     });
-    useValidations(form, limits);
+    useValidations({
+        form,
+        limits,
+        balance: context.balance,
+        maxSpendableAmount: context.maxSpendableAmount,
+    });
     useProviderMetadataChangeEffect(control, 'exchange');
 
     return form;

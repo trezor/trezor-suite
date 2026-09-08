@@ -111,10 +111,19 @@ const useSellQuoteChangeEffect = ({ control, getValues, setValue }: SellFormType
     }, [quote, isAmountInSats, symbol, getValues, setValue]);
 };
 
-const useValidations = (
-    { trigger, setValue }: SellFormType,
-    limits: TradingAmountLimitProps | undefined,
-) => {
+type UseValidationsParams = {
+    form: SellFormType;
+    limits: TradingAmountLimitProps | undefined;
+    balance: string | undefined;
+    maxSpendableAmount: string | undefined;
+};
+
+const useValidations = ({
+    form: { trigger, setValue },
+    limits,
+    balance,
+    maxSpendableAmount,
+}: UseValidationsParams) => {
     const { translate } = useTranslate();
     const quotes = useSelector(selectValidTradingSellQuotes);
     const quoteRequest = useSelector(selectTradingSellQuotesRequest);
@@ -126,7 +135,7 @@ const useValidations = (
 
     useEffect(() => {
         trigger(['cryptoStringAmount', 'fiatStringAmount']);
-    }, [limits, trigger]);
+    }, [limits, balance, maxSpendableAmount, trigger]);
 
     useEffect(() => {
         setValue('generalAlert', generalAlertMsg);
@@ -170,7 +179,12 @@ export const useSellForm = (): SellFormType => {
     });
     useSellQuotesChangeEffect(form);
     useSellQuoteChangeEffect(form);
-    useValidations(form, limits);
+    useValidations({
+        form,
+        limits,
+        balance: context.balance,
+        maxSpendableAmount: context.maxSpendableAmount,
+    });
     useCountryChangeEffect(control);
     useProviderMetadataChangeEffect(control, 'sell');
 
