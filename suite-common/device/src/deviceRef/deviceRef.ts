@@ -16,9 +16,9 @@ import { DeviceModelInternal } from '@trezor/device-utils';
  * - `transportId` (`descriptor.id`) survives a reconnect over Bluetooth but not a USB replug.
  *
  * So the ref keeps all of them plus the model, and consumers match on the strongest field that is
- * still available. See `getFirmwareDeviceRefMatch`.
+ * still available. See `getDeviceRefMatch`.
  */
-export type FirmwareDeviceRef = {
+export type DeviceRef = {
     deviceId: Device['id'];
     path: DeviceUniquePath;
     transportId: Device['descriptor']['id'];
@@ -36,7 +36,7 @@ export type FirmwareDeviceRef = {
  *
  * The values are the ranking itself, so match strengths compare with `>=`.
  */
-export const FirmwareDeviceRefMatch = {
+export const DeviceRefMatch = {
     None: 0,
     /** Same internal model only. A guess — never trust it while other candidates exist. */
     Model: 1,
@@ -48,10 +48,9 @@ export const FirmwareDeviceRefMatch = {
     DeviceId: 4,
 } as const;
 
-export type FirmwareDeviceRefMatch =
-    (typeof FirmwareDeviceRefMatch)[keyof typeof FirmwareDeviceRefMatch];
+export type DeviceRefMatch = (typeof DeviceRefMatch)[keyof typeof DeviceRefMatch];
 
-export const createFirmwareDeviceRef = (device: Device | TrezorDevice): FirmwareDeviceRef => ({
+export const createDeviceRef = (device: Device | TrezorDevice): DeviceRef => ({
     deviceId: device.id ?? null,
     path: device.path,
     transportId: device.descriptor.id,
@@ -65,12 +64,12 @@ export const createFirmwareDeviceRef = (device: Device | TrezorDevice): Firmware
  * Rates how well `device` matches `ref`. Only fields present on both sides can produce a match, so
  * a device in bootloader mode (no `device_id`) can still match on transport, path, or model.
  */
-export const getFirmwareDeviceRefMatch = (
+export const getDeviceRefMatch = (
     device: Device | TrezorDevice,
-    ref: FirmwareDeviceRef,
-): FirmwareDeviceRefMatch => {
+    ref: DeviceRef,
+): DeviceRefMatch => {
     if (ref.deviceId !== null && device.id === ref.deviceId) {
-        return FirmwareDeviceRefMatch.DeviceId;
+        return DeviceRefMatch.DeviceId;
     }
 
     // A null/undefined descriptor id means "the transport cannot identify this device", not
@@ -81,11 +80,11 @@ export const getFirmwareDeviceRefMatch = (
         device.descriptor.id === ref.transportId &&
         device.descriptor.apiType === ref.apiType
     ) {
-        return FirmwareDeviceRefMatch.Transport;
+        return DeviceRefMatch.Transport;
     }
 
     if (device.path === ref.path) {
-        return FirmwareDeviceRefMatch.Path;
+        return DeviceRefMatch.Path;
     }
 
     if (
@@ -93,10 +92,10 @@ export const getFirmwareDeviceRefMatch = (
         getDeviceInternalModel(device) === ref.internalModel &&
         device.descriptor.apiType === ref.apiType
     ) {
-        return FirmwareDeviceRefMatch.Model;
+        return DeviceRefMatch.Model;
     }
 
-    return FirmwareDeviceRefMatch.None;
+    return DeviceRefMatch.None;
 };
 
 /**
@@ -108,25 +107,25 @@ export const getFirmwareDeviceRefMatch = (
  * instance the update started from, so ranking by instance first would resolve to an entry that
  * cannot be talked to.
  */
-const getCandidateScore = (device: TrezorDevice, ref: FirmwareDeviceRef) =>
-    getFirmwareDeviceRefMatch(device, ref) * 4 +
+const getCandidateScore = (device: TrezorDevice, ref: DeviceRef) =>
+    getDeviceRefMatch(device, ref) * 4 +
     (device.connected ? 2 : 0) +
     (device.instance === ref.instance ? 1 : 0);
 
 // Resolving on the model alone would silently hand back a different physical device.
-const MINIMUM_RESOLVABLE_MATCH = FirmwareDeviceRefMatch.Path;
+const MINIMUM_RESOLVABLE_MATCH = DeviceRefMatch.Path;
 
 /**
  * Finds the device the ref points at, preferring the strongest match and, among equally strong
  * matches, a connected device over a remembered one and then the passphrase wallet instance the
  * update was started from.
  */
-export const resolveDeviceByFirmwareRef = ({
+export const resolveDeviceByRef = ({
     devices,
     ref,
 }: {
     devices: readonly TrezorDevice[];
-    ref: FirmwareDeviceRef | undefined;
+    ref: DeviceRef | undefined;
 }): TrezorDevice | undefined => {
     if (!ref) {
         return undefined;
@@ -135,7 +134,7 @@ export const resolveDeviceByFirmwareRef = ({
     let best: { device: TrezorDevice; score: number } | undefined;
 
     devices.forEach(device => {
-        if (getFirmwareDeviceRefMatch(device, ref) < MINIMUM_RESOLVABLE_MATCH) {
+        if (getDeviceRefMatch(device, ref) < MINIMUM_RESOLVABLE_MATCH) {
             return;
         }
 
@@ -156,7 +155,7 @@ export const resolveDeviceByFirmwareRef = ({
  * only safe when nothing else could be mistaken for it. Without it, two identical Trezors on one
  * machine would swap identities mid-update.
  */
-export const getIsOnlyFirmwareDeviceRefCandidate = ({
+export const getIsOnlyDeviceRefCandidate = ({
     device,
     connectedDevices,
     ref,
@@ -164,11 +163,10 @@ export const getIsOnlyFirmwareDeviceRefCandidate = ({
     device: Device | TrezorDevice;
     /** Every device currently connected, including the one that just connected. */
     connectedDevices: readonly (Device | TrezorDevice)[];
-    ref: FirmwareDeviceRef;
+    ref: DeviceRef;
 }) => {
     const candidates = connectedDevices.filter(
-        connectedDevice =>
-            getFirmwareDeviceRefMatch(connectedDevice, ref) >= FirmwareDeviceRefMatch.Model,
+        connectedDevice => getDeviceRefMatch(connectedDevice, ref) >= DeviceRefMatch.Model,
     );
 
     return candidates.length === 1 && candidates[0]?.path === device.path;

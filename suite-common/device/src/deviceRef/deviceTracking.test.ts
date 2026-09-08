@@ -1,29 +1,29 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import {
-    type FirmwareDeviceTrackingEvent,
-    FirmwareDeviceTrackingPhase,
-    type FirmwareDeviceTrackingState,
-    firmwareDeviceTrackingInitialState,
-    firmwareDeviceTrackingReducer,
-} from './firmwareDeviceTracking';
+    type DeviceTrackingEvent,
+    DeviceTrackingPhase,
+    type DeviceTrackingState,
+    deviceTrackingInitialState,
+    deviceTrackingReducer,
+} from './deviceTracking';
 import { mockDevice } from '../../mocks';
 
 const run = (
-    events: FirmwareDeviceTrackingEvent[],
-    initialState: FirmwareDeviceTrackingState = firmwareDeviceTrackingInitialState,
-) => events.reduce(firmwareDeviceTrackingReducer, initialState);
+    events: DeviceTrackingEvent[],
+    initialState: DeviceTrackingState = deviceTrackingInitialState,
+) => events.reduce(deviceTrackingReducer, initialState);
 
 const deviceInNormalMode = mockDevice({ path: '1' });
 
-describe('firmwareDeviceTrackingReducer', () => {
+describe('deviceTrackingReducer', () => {
     it('starts idle and stays idle for events that arrive before arming', () => {
         const state = run([
             { type: 'device-connect', device: deviceInNormalMode, isOnlyCandidate: true },
             { type: 'device-disconnect', device: deviceInNormalMode },
         ]);
 
-        expect(state).toEqual(firmwareDeviceTrackingInitialState);
+        expect(state).toEqual(deviceTrackingInitialState);
     });
 
     it('follows the device through a bootloader reboot when the device id survives', () => {
@@ -36,7 +36,7 @@ describe('firmwareDeviceTrackingReducer', () => {
             { type: 'device-connect', device: inBootloader, isOnlyCandidate: false },
         ]);
 
-        expect(state.phase).toBe(FirmwareDeviceTrackingPhase.Tracking);
+        expect(state.phase).toBe(DeviceTrackingPhase.Tracking);
         expect(state.currentRef?.path).toBe('2');
         // The original ref must survive so the wallet instance is not lost.
         expect(state.initialRef?.path).toBe('1');
@@ -53,7 +53,7 @@ describe('firmwareDeviceTrackingReducer', () => {
             { type: 'device-connect', device: wiped, isOnlyCandidate: true },
         ]);
 
-        expect(state.phase).toBe(FirmwareDeviceTrackingPhase.Tracking);
+        expect(state.phase).toBe(DeviceTrackingPhase.Tracking);
         expect(state.currentRef?.deviceId).toBe('DEVICE_B');
     });
 
@@ -66,7 +66,7 @@ describe('firmwareDeviceTrackingReducer', () => {
             { type: 'device-connect', device: wiped, isOnlyCandidate: false },
         ]);
 
-        expect(state.phase).toBe(FirmwareDeviceTrackingPhase.AwaitingReconnect);
+        expect(state.phase).toBe(DeviceTrackingPhase.AwaitingReconnect);
         expect(state.currentRef?.deviceId).toBe('DEVICE_A');
     });
 
@@ -81,7 +81,7 @@ describe('firmwareDeviceTrackingReducer', () => {
             { type: 'device-connect', device: original, isOnlyCandidate: false },
         ]);
 
-        expect(state.phase).toBe(FirmwareDeviceTrackingPhase.Tracking);
+        expect(state.phase).toBe(DeviceTrackingPhase.Tracking);
         expect(state.currentRef?.path).toBe('4');
     });
 
@@ -98,7 +98,7 @@ describe('firmwareDeviceTrackingReducer', () => {
             { type: 'device-connect', device: otherModel, isOnlyCandidate: true },
         ]);
 
-        expect(state.phase).toBe(FirmwareDeviceTrackingPhase.AwaitingReconnect);
+        expect(state.phase).toBe(DeviceTrackingPhase.AwaitingReconnect);
     });
 
     it('does not adopt a device on a different transport', () => {
@@ -116,7 +116,7 @@ describe('firmwareDeviceTrackingReducer', () => {
             { type: 'device-connect', device: overBluetooth, isOnlyCandidate: true },
         ]);
 
-        expect(state.phase).toBe(FirmwareDeviceTrackingPhase.AwaitingReconnect);
+        expect(state.phase).toBe(DeviceTrackingPhase.AwaitingReconnect);
     });
 
     it('matches a Bluetooth device on its transport id even after a wipe', () => {
@@ -138,7 +138,7 @@ describe('firmwareDeviceTrackingReducer', () => {
             { type: 'device-connect', device: wipedOverBluetooth, isOnlyCandidate: false },
         ]);
 
-        expect(state.phase).toBe(FirmwareDeviceTrackingPhase.Tracking);
+        expect(state.phase).toBe(DeviceTrackingPhase.Tracking);
         expect(state.currentRef?.path).toBe('2');
     });
 
@@ -173,7 +173,7 @@ describe('firmwareDeviceTrackingReducer', () => {
             { type: 'device-disconnect', device: bystander },
         ]);
 
-        expect(state.phase).toBe(FirmwareDeviceTrackingPhase.Tracking);
+        expect(state.phase).toBe(DeviceTrackingPhase.Tracking);
     });
 
     it('keeps the wallet instance the update started from across a reconnect', () => {

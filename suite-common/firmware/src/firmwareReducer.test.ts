@@ -1,15 +1,16 @@
-import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    DeviceTrackingPhase,
+    type DeviceTrackingState,
+    createDeviceRef,
+    deviceInitialState,
+    deviceTrackingInitialState,
+    deviceTrackingReducer,
+} from '@suite-common/device';
+import { mockTrezorDevice } from '@suite-common/device/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Device } from '@trezor/connect';
 
-import { mockTrezorDevice } from '../mocks';
-import { createFirmwareDeviceRef } from './deviceRef/firmwareDeviceRef';
-import {
-    FirmwareDeviceTrackingPhase,
-    type FirmwareDeviceTrackingState,
-    firmwareDeviceTrackingInitialState,
-    firmwareDeviceTrackingReducer,
-} from './deviceRef/firmwareDeviceTracking';
 import {
     type FirmwareRootState,
     firmwareInitialState,
@@ -22,13 +23,13 @@ import {
 type CreateStateParams = {
     devices: TrezorDevice[];
     selectedDevice: TrezorDevice | undefined;
-    deviceTracking?: FirmwareDeviceTrackingState;
+    deviceTracking?: DeviceTrackingState;
 };
 
 const createState = ({
     devices,
     selectedDevice,
-    deviceTracking = firmwareDeviceTrackingInitialState,
+    deviceTracking = deviceTrackingInitialState,
 }: CreateStateParams): FirmwareRootState & DeviceRootState => ({
     firmware: { ...firmwareInitialState, deviceTracking },
     device: { ...deviceInitialState, devices, selectedDevice },
@@ -36,12 +37,12 @@ const createState = ({
 
 const deviceBeingUpdated = mockTrezorDevice({ path: '1' });
 
-const armedTracking = (device: Device | TrezorDevice): FirmwareDeviceTrackingState => {
-    const ref = createFirmwareDeviceRef(device);
+const armedTracking = (device: Device | TrezorDevice): DeviceTrackingState => {
+    const ref = createDeviceRef(device);
 
     return {
-        ...firmwareDeviceTrackingInitialState,
-        phase: FirmwareDeviceTrackingPhase.Tracking,
+        ...deviceTrackingInitialState,
+        phase: DeviceTrackingPhase.Tracking,
         initialRef: ref,
         currentRef: ref,
     };
@@ -96,8 +97,8 @@ describe('selectFirmwareDeviceRef', () => {
         // What `handleFirmwareTrackedDeviceConnectThunk` compares against to answer
         // "is this the device we were waiting for".
         const reconnected = mockTrezorDevice({ path: '5' });
-        const tracking = firmwareDeviceTrackingReducer(
-            firmwareDeviceTrackingReducer(armedTracking(deviceBeingUpdated), {
+        const tracking = deviceTrackingReducer(
+            deviceTrackingReducer(armedTracking(deviceBeingUpdated), {
                 type: 'device-disconnect',
                 device: deviceBeingUpdated,
             }),
@@ -116,8 +117,8 @@ describe('selectFirmwareDeviceRef', () => {
 
     it('still points at the original device when an unrelated one connects', () => {
         const bystander = mockTrezorDevice({ path: '9', deviceId: 'DEVICE_B' });
-        const tracking = firmwareDeviceTrackingReducer(
-            firmwareDeviceTrackingReducer(armedTracking(deviceBeingUpdated), {
+        const tracking = deviceTrackingReducer(
+            deviceTrackingReducer(armedTracking(deviceBeingUpdated), {
                 type: 'device-disconnect',
                 device: deviceBeingUpdated,
             }),

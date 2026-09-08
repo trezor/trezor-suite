@@ -1,8 +1,11 @@
-import { type DeviceRootState, selectConnectedDevices } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    getIsOnlyDeviceRefCandidate,
+    selectConnectedDevices,
+} from '@suite-common/device';
 import {
     type FirmwareRootState,
     firmwareActions,
-    getIsOnlyFirmwareDeviceRefCandidate,
     selectFirmwareDeviceRef,
 } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
@@ -43,7 +46,7 @@ export const handleTrackedDeviceConnectThunk = createThunk<
         dispatch(
             firmwareActions.trackedDeviceConnected({
                 device,
-                isOnlyCandidate: getIsOnlyFirmwareDeviceRefCandidate({
+                isOnlyCandidate: getIsOnlyDeviceRefCandidate({
                     device,
                     connectedDevices: selectConnectedDevices(getState()),
                     ref,

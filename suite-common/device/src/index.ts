@@ -1,5 +1,7 @@
 export * from './acquireDeviceThunk';
 export * from './deviceActions';
+export * from './deviceRef/deviceRef';
+export * from './deviceRef/deviceTracking';
 export * from './deviceConstants';
 export type * from './deviceDeps';
 export * from './deviceReducer';

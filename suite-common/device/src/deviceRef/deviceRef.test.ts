@@ -1,20 +1,16 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import {
-    createFirmwareDeviceRef,
-    getIsOnlyFirmwareDeviceRefCandidate,
-    resolveDeviceByFirmwareRef,
-} from './firmwareDeviceRef';
+import { createDeviceRef, getIsOnlyDeviceRefCandidate, resolveDeviceByRef } from './deviceRef';
 import { mockDevice, mockTrezorDevice } from '../../mocks';
 
-const ref = createFirmwareDeviceRef(mockDevice({ path: '1' }));
+const ref = createDeviceRef(mockDevice({ path: '1' }));
 
-describe('getIsOnlyFirmwareDeviceRefCandidate', () => {
+describe('getIsOnlyDeviceRefCandidate', () => {
     it('accepts a reconnected device when nothing else could be mistaken for it', () => {
         const reconnected = mockDevice({ path: '2', deviceId: 'DEVICE_B' });
 
         expect(
-            getIsOnlyFirmwareDeviceRefCandidate({
+            getIsOnlyDeviceRefCandidate({
                 device: reconnected,
                 connectedDevices: [reconnected],
                 ref,
@@ -27,7 +23,7 @@ describe('getIsOnlyFirmwareDeviceRefCandidate', () => {
         const bystander = mockDevice({ path: '3', deviceId: 'DEVICE_C' });
 
         expect(
-            getIsOnlyFirmwareDeviceRefCandidate({
+            getIsOnlyDeviceRefCandidate({
                 device: reconnected,
                 connectedDevices: [reconnected, bystander],
                 ref,
@@ -49,7 +45,7 @@ describe('getIsOnlyFirmwareDeviceRefCandidate', () => {
         });
 
         expect(
-            getIsOnlyFirmwareDeviceRefCandidate({
+            getIsOnlyDeviceRefCandidate({
                 device: reconnected,
                 connectedDevices: [reconnected, otherModel, otherTransport],
                 ref,
@@ -63,7 +59,7 @@ describe('getIsOnlyFirmwareDeviceRefCandidate', () => {
         const somethingElse = mockDevice({ path: '3', deviceId: 'DEVICE_C' });
 
         expect(
-            getIsOnlyFirmwareDeviceRefCandidate({
+            getIsOnlyDeviceRefCandidate({
                 device: reconnected,
                 connectedDevices: [somethingElse],
                 ref,
@@ -73,7 +69,7 @@ describe('getIsOnlyFirmwareDeviceRefCandidate', () => {
 
     it('rejects when nothing is connected', () => {
         expect(
-            getIsOnlyFirmwareDeviceRefCandidate({
+            getIsOnlyDeviceRefCandidate({
                 device: mockDevice({ path: '2', deviceId: 'DEVICE_B' }),
                 connectedDevices: [],
                 ref,
@@ -82,7 +78,7 @@ describe('getIsOnlyFirmwareDeviceRefCandidate', () => {
     });
 });
 
-describe('resolveDeviceByFirmwareRef', () => {
+describe('resolveDeviceByRef', () => {
     it('resolves nothing while the tracked device is away, even next to a same-model wallet', () => {
         // The scenario that made the flow report on the wrong device: our device is mid-reboot and
         // gone from the list, and the only thing left is a remembered wallet of the same model.
@@ -94,9 +90,7 @@ describe('resolveDeviceByFirmwareRef', () => {
             instance: 1,
         });
 
-        expect(
-            resolveDeviceByFirmwareRef({ devices: [rememberedOtherDevice], ref }),
-        ).toBeUndefined();
+        expect(resolveDeviceByRef({ devices: [rememberedOtherDevice], ref })).toBeUndefined();
     });
 
     it('prefers the live entry over the remembered one for the same physical device', () => {
@@ -111,7 +105,7 @@ describe('resolveDeviceByFirmwareRef', () => {
         const refWithInstance = { ...ref, instance: 2 };
 
         expect(
-            resolveDeviceByFirmwareRef({
+            resolveDeviceByRef({
                 devices: [rememberedSameDevice, reconnected],
                 ref: refWithInstance,
             }),
@@ -121,7 +115,7 @@ describe('resolveDeviceByFirmwareRef', () => {
     it('falls back to the remembered entry when nothing is connected', () => {
         const rememberedSameDevice = mockTrezorDevice({ path: '', connected: false });
 
-        expect(resolveDeviceByFirmwareRef({ devices: [rememberedSameDevice], ref })).toBe(
+        expect(resolveDeviceByRef({ devices: [rememberedSameDevice], ref })).toBe(
             rememberedSameDevice,
         );
     });
@@ -131,7 +125,7 @@ describe('resolveDeviceByFirmwareRef', () => {
         const hiddenWallet = mockTrezorDevice({ path: '5', instance: 2 });
 
         expect(
-            resolveDeviceByFirmwareRef({
+            resolveDeviceByRef({
                 devices: [standardWallet, hiddenWallet],
                 ref: { ...ref, instance: 2 },
             }),
@@ -140,7 +134,7 @@ describe('resolveDeviceByFirmwareRef', () => {
 
     it('resolves nothing without a ref', () => {
         expect(
-            resolveDeviceByFirmwareRef({
+            resolveDeviceByRef({
                 devices: [mockTrezorDevice({ path: '1' })],
                 ref: undefined,
             }),

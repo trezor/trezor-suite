@@ -1,9 +1,15 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
 import {
+    type DeviceRef,
     type DeviceRootState,
+    DeviceTrackingPhase,
+    type DeviceTrackingState,
+    deviceTrackingInitialState,
+    deviceTrackingReducer,
     getDeviceLabelOrName,
     getIsDeviceConnectedViaBluetoothLowOnBattery,
+    resolveDeviceByRef,
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/device';
@@ -26,13 +32,6 @@ import {
     type UiRequestConfirmation,
 } from '@trezor/connect';
 
-import { type FirmwareDeviceRef, resolveDeviceByFirmwareRef } from './deviceRef/firmwareDeviceRef';
-import {
-    FirmwareDeviceTrackingPhase,
-    type FirmwareDeviceTrackingState,
-    firmwareDeviceTrackingInitialState,
-    firmwareDeviceTrackingReducer,
-} from './deviceRef/firmwareDeviceTracking';
 import { firmwareActions } from './firmwareActions';
 
 type FirmwareUpdateUiEvent =
@@ -50,7 +49,7 @@ type FirmwareUpdateCommon = {
     uiEvent?: FirmwareUpdateUiEvent;
     firmwareChannel: FirmwareChannel;
     switchFirmwareType: boolean;
-    deviceTracking: FirmwareDeviceTrackingState;
+    deviceTracking: DeviceTrackingState;
 };
 
 export type FirmwareUpdateState =
@@ -72,7 +71,7 @@ const initialState: FirmwareUpdateState = {
     uiEvent: undefined,
     firmwareChannel: 'production',
     switchFirmwareType: false, // NOTE: flag that indicates when the user intents to change the type of FW universal -> bitcoin-only
-    deviceTracking: firmwareDeviceTrackingInitialState,
+    deviceTracking: deviceTrackingInitialState,
 };
 export const firmwareInitialState = initialState;
 
@@ -129,20 +128,20 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(
                 state.firmwareChannel = payload;
             })
             .addCase(firmwareActions.armDeviceTracking, (state, { payload }) => {
-                state.deviceTracking = firmwareDeviceTrackingReducer(state.deviceTracking, {
+                state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
                     type: 'arm',
                     device: payload,
                 });
             })
             .addCase(firmwareActions.trackedDeviceConnected, (state, { payload }) => {
-                state.deviceTracking = firmwareDeviceTrackingReducer(state.deviceTracking, {
+                state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
                     type: 'device-connect',
                     device: payload.device,
                     isOnlyCandidate: payload.isOnlyCandidate,
                 });
             })
             .addCase(firmwareActions.trackedDeviceDisconnected, (state, { payload }) => {
-                state.deviceTracking = firmwareDeviceTrackingReducer(state.deviceTracking, {
+                state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
                     type: 'device-disconnect',
                     device: payload,
                 });
@@ -214,11 +213,11 @@ const createFirmwareSelector = createWeakMapSelector.withTypes<
 export const selectFirmwareDeviceTracking = (state: FirmwareRootState) =>
     state.firmware.deviceTracking;
 
-export const selectFirmwareDeviceRef = (state: FirmwareRootState): FirmwareDeviceRef | undefined =>
+export const selectFirmwareDeviceRef = (state: FirmwareRootState): DeviceRef | undefined =>
     state.firmware.deviceTracking.currentRef;
 
 export const selectIsFirmwareDeviceTrackingArmed = (state: FirmwareRootState) =>
-    state.firmware.deviceTracking.phase !== FirmwareDeviceTrackingPhase.Idle;
+    state.firmware.deviceTracking.phase !== DeviceTrackingPhase.Idle;
 
 /**
  * The physical device this firmware update is pinned to, or `undefined` when nothing is pinned.
@@ -233,7 +232,7 @@ export const selectIsFirmwareDeviceTrackingArmed = (state: FirmwareRootState) =>
  */
 export const selectFirmwareDevice = createFirmwareSelector(
     [selectDevices, selectFirmwareDeviceRef],
-    (devices, ref) => resolveDeviceByFirmwareRef({ devices, ref }),
+    (devices, ref) => resolveDeviceByRef({ devices, ref }),
 );
 
 /**

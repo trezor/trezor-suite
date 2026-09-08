@@ -1,16 +1,15 @@
-import { deviceInitialState } from '@suite-common/device';
 import {
-    createFirmwareDeviceRef,
-    firmwareDeviceTrackingInitialState,
-    firmwareInitialState,
-} from '@suite-common/firmware';
+    createDeviceRef,
+    deviceInitialState,
+    deviceTrackingInitialState,
+} from '@suite-common/device';
+import { firmwareInitialState } from '@suite-common/firmware';
 import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import { asDeviceUniquePath } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import {
-    type AdoptFirmwareUpdatedDeviceThunkDeps,
     type AdoptFirmwareUpdatedDeviceThunkState,
     adoptFirmwareUpdatedDeviceThunk,
 } from './adoptFirmwareUpdatedDeviceThunk';
@@ -33,21 +32,21 @@ const createState = (status: FirmwareStatus | 'error') =>
             ...firmwareInitialState,
             status,
             deviceTracking: {
-                ...firmwareDeviceTrackingInitialState,
+                ...deviceTrackingInitialState,
                 phase: 'tracking',
-                initialRef: createFirmwareDeviceRef(deviceBeingUpdated),
-                currentRef: createFirmwareDeviceRef(deviceBeingUpdated),
+                initialRef: createDeviceRef(deviceBeingUpdated),
+                currentRef: createDeviceRef(deviceBeingUpdated),
             },
         },
     }) as unknown as AdoptFirmwareUpdatedDeviceThunkState;
 
 const runThunk = async (status: FirmwareStatus | 'error') => {
     const getState = () => createState(status);
-    const extra = {} as AdoptFirmwareUpdatedDeviceThunkDeps;
-    const { actions, dispatch } = createMockDispatch<
-        AdoptFirmwareUpdatedDeviceThunkState,
-        AdoptFirmwareUpdatedDeviceThunkDeps
-    >({ getState, extra });
+    const extra = {};
+    const { actions, dispatch } = createMockDispatch<AdoptFirmwareUpdatedDeviceThunkState, object>({
+        getState,
+        extra,
+    });
 
     await adoptFirmwareUpdatedDeviceThunk()(dispatch, getState, extra);
 
