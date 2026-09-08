@@ -77,6 +77,10 @@ const ALLOWED_ACTION_TYPES = new Set<UnknownAction['type']>([
     resetOnboarding.type,
     enableOnboardingReducer.type,
     updateAnalytics.type,
+    // Arming happens in the CTA that starts onboarding, which runs before the route change that
+    // enables this reducer. Without this the ref would be dropped and onboarding would run with no
+    // device pinned at all.
+    armOnboardedDeviceTracking.type,
 ]);
 
 const onboarding = (state: OnboardingState = initialState, action: UnknownAction) => {
