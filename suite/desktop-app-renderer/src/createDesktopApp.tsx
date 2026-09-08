@@ -48,6 +48,7 @@ export const createDesktopApp =
 
         // start logging to file if Debug menu is active
         if (preloadAction?.type === STORAGE.LOAD && preloadAction.payload.debug?.showDebugMenu) {
+            deps.desktopApi.setDebugMode(true);
             deps.desktopApi.configLogger({
                 level: 'debug',
                 writeToDisk: true,

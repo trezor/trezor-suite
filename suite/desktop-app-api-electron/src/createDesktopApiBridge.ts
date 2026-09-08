@@ -145,6 +145,13 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
         ipcRenderer.send('logger/config', config);
     },
 
+    // Debug
+    setDebugMode: isDebugModeActive => {
+        if (validation.isPrimitive('boolean', isDebugModeActive)) {
+            ipcRenderer.send('debug/set-mode', isDebugModeActive);
+        }
+    },
+
     // Bridge
     getBridgeStatus: () => ipcRenderer.invoke('bridge/get-status'),
 

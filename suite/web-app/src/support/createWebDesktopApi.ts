@@ -31,6 +31,7 @@ export const createWebDesktopApi = (): DesktopApi => ({
     getTorStatus: unavailable('getTorStatus'),
     clearStore: unavailable('clearStore'),
     configLogger: unavailable('configLogger'),
+    setDebugMode: unavailable('setDebugMode'),
     getAppAutoStartIsEnabled: unavailableAsync('getAppAutoStartIsEnabled'),
     appAutoStartPopupAck: unavailableAsync('appAutoStartPopupAck'),
     appAutoStartPopupResponse: unavailableAsync('appAutoStartPopupResponse'),
