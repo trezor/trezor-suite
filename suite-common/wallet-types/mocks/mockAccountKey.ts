@@ -5,6 +5,11 @@ import { type AccountKey, asAccountDescriptor, createAccountKey } from '../src/a
 
 const MOCK_DEVICE_STATIC_SESSION_ID: StaticSessionId =
     'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0';
+type MockAccountKeyParams = {
+    descriptor?: string;
+    symbol?: NetworkSymbol;
+    deviceStaticSessionId?: StaticSessionId;
+};
 
 /**
  * Build a valid `AccountKey` for tests without typing out the
@@ -17,11 +22,7 @@ export const mockAccountKey = ({
     descriptor = 'mockDescriptor',
     symbol = 'btc',
     deviceStaticSessionId = MOCK_DEVICE_STATIC_SESSION_ID,
-}: {
-    descriptor?: string;
-    symbol?: NetworkSymbol;
-    deviceStaticSessionId?: StaticSessionId;
-} = {}): AccountKey =>
+}: MockAccountKeyParams = {}): AccountKey =>
     createAccountKey({
         accountDescriptor: asAccountDescriptor(descriptor),
         networkSymbol: symbol,

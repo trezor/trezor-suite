@@ -151,6 +151,7 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
             ...overrideValues,
         });
     }, [reset, isSignPage, account?.key, account?.networkType, account?.path, account?.descriptor]);
+    type FormSetSignatureParams = { signature: string; pubKey?: string };
 
     return {
         isFormDirty: isDirty,
@@ -159,7 +160,7 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         formSubmit: handleSubmit,
         formValues,
         formErrors: errors,
-        formSetSignature: ({ signature, pubKey }: { signature: string; pubKey?: string }) => {
+        formSetSignature: ({ signature, pubKey }: FormSetSignatureParams) => {
             setValue('signature', signature);
             setValue('pubKey', pubKey || '');
         },

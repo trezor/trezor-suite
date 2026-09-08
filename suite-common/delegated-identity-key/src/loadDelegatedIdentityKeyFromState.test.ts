@@ -1,7 +1,7 @@
 import {
+    type DecryptParams,
     DecryptionFailed,
     type EncryptableBranded,
-    type EncryptedHex,
     EncryptionUnavailable,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
@@ -18,7 +18,7 @@ describe(createLoadDelegatedIdentityKeyFromState.name, () => {
                 encrypt: () => {
                     throw new Error('Not expected!');
                 },
-                decrypt: <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) =>
+                decrypt: <T extends EncryptableBranded>({ value }: DecryptParams<T>) =>
                     Promise.resolve(ok(value.replace('<encrypted>', '') as T)),
             },
         });
@@ -42,7 +42,7 @@ describe(createLoadDelegatedIdentityKeyFromState.name, () => {
                 encrypt: () => {
                     throw new Error('Not expected!');
                 },
-                decrypt: <T extends EncryptableBranded>(_: { value: EncryptedHex<T> }) =>
+                decrypt: <T extends EncryptableBranded>(_: DecryptParams<T>) =>
                     Promise.resolve(err(error)),
             },
         });

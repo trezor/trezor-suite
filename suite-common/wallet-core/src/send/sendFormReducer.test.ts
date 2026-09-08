@@ -16,11 +16,11 @@ const extraDependencies: SendFormReducerDeps = {
     actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: {
         storageLoadFormDrafts: (state, { payload }) => {
-            payload.sendFormDrafts.forEach(
-                ({ key, value }: { key: AccountKey; value: FormState }) => {
-                    state.drafts[key] = value;
-                },
-            );
+            type KeyValueParams = { key: AccountKey; value: FormState };
+
+            payload.sendFormDrafts.forEach(({ key, value }: KeyValueParams) => {
+                state.drafts[key] = value;
+            });
         },
     },
 };

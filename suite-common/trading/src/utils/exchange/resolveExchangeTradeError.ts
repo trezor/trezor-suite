@@ -40,16 +40,18 @@ export const isResolvedTradeError = (value: unknown): value is ResolvedTradeErro
 
 export type TradingErrorDisplay =
     { kind: 'detailed'; values: TradingErrorValuesRecord } | { kind: 'base'; message?: string };
+type GetTradingErrorDisplayParams = {
+    values?: TradingErrorValuesRecord;
+    message?: string;
+};
 
 // This helper is prepared for using in desktop and native mobile apps,
 // where we can use rich text formatting for structured error messages.
 export const getTradingErrorDisplay = ({
     values,
     message,
-}: {
-    values?: TradingErrorValuesRecord;
-    message?: string;
-}): TradingErrorDisplay => (values ? { kind: 'detailed', values } : { kind: 'base', message });
+}: GetTradingErrorDisplayParams): TradingErrorDisplay =>
+    values ? { kind: 'detailed', values } : { kind: 'base', message };
 
 export const resolveExchangeTradeError = (
     source: Partial<TradeError>,

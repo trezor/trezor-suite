@@ -124,18 +124,19 @@ describe(selectIsLabelActionEnabled.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
+    type TestLabelActionEnabledParams = {
+        deviceOverrides?: Parameters<typeof mockSuiteDevice>[0];
+        unavailableCapabilities: UnavailableCapabilities;
+        isSuiteSyncFeatureEnabled: boolean;
+        isSuiteSyncEnabled?: boolean;
+    };
 
     const testLabelActionEnabled = ({
         deviceOverrides,
         unavailableCapabilities,
         isSuiteSyncFeatureEnabled,
         isSuiteSyncEnabled = false,
-    }: {
-        deviceOverrides?: Parameters<typeof mockSuiteDevice>[0];
-        unavailableCapabilities: UnavailableCapabilities;
-        isSuiteSyncFeatureEnabled: boolean;
-        isSuiteSyncEnabled?: boolean;
-    }) => {
+    }: TestLabelActionEnabledParams) => {
         const state = createMockState(
             { unavailableCapabilities, ...deviceOverrides },
             {

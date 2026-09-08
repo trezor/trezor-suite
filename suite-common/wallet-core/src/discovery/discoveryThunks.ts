@@ -265,23 +265,16 @@ const applyDeviceStateErrorThunk = createThunk<
         );
     },
 );
+type CompleteDiscoveryParams = {
+    getState: () => DiscoveryReportingThunkState;
+    dispatch: ThunkDispatch<DiscoveryReportingThunkState, DiscoveryReportingDeps, UnknownAction>;
+    fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
+};
 
 const completeDiscovery = (
     devicePath: DeviceUniquePath,
     deviceState: TrezorDeviceWithState['state'],
-    {
-        dispatch,
-        fetchAndSaveMetadata,
-        getState,
-    }: {
-        getState: () => DiscoveryReportingThunkState;
-        dispatch: ThunkDispatch<
-            DiscoveryReportingThunkState,
-            DiscoveryReportingDeps,
-            UnknownAction
-        >;
-        fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
-    },
+    { dispatch, fetchAndSaveMetadata, getState }: CompleteDiscoveryParams,
 ) => {
     dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, devicePath));
     dispatch(fetchAndSaveMetadata(deviceState.staticSessionId));

@@ -81,14 +81,15 @@ const getStatusMessage = (status: SellTradeStatus) => {
             return 'TR_SELL_STATUS_PENDING';
     }
 };
+type NeedToRegisterOrVerifyBankAccountParams = {
+    sellInfo: TradingSellInfoSelector;
+    quote: SellFiatTrade;
+};
 
 const needToRegisterOrVerifyBankAccount = ({
     sellInfo,
     quote,
-}: {
-    sellInfo: TradingSellInfoSelector;
-    quote: SellFiatTrade;
-}) => {
+}: NeedToRegisterOrVerifyBankAccountParams) => {
     const provider = quote.exchange ? sellInfo.providerInfos[quote.exchange] : undefined;
 
     // for BANK_ACCOUNT flow a message is shown if bank account is not verified
