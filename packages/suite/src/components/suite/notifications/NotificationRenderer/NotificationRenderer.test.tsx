@@ -118,7 +118,7 @@ const wrapToastPayload = {
     descriptor: '0xdescriptor',
     symbol: ethSymbol,
     txid: '0xwrap',
-    formattedAmount: '1',
+    amount: '1',
 } as const;
 
 describe('NotificationRenderer wrap toast dismissal', () => {
@@ -247,7 +247,7 @@ describe('NotificationRenderer transaction broadcasts', () => {
     const transactionPayload = {
         context: 'toast' as const,
         id: 1,
-        formattedAmount: '1 ETH',
+        amount: '1',
         descriptor: 'descriptor',
         symbol: 'eth' as const,
         txid: 'txid',

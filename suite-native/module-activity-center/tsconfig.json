@@ -15,8 +15,12 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../activity-center" },
         { "path": "../atoms" },
+        { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },

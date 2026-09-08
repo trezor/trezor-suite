@@ -157,13 +157,13 @@ const pushTransactionThunk =
             .minus(precomposedTx.fee)
             .toString();
 
-        // get total amount without fee
-        const formattedAmount = formatNetworkAmount(spentWithoutFee, account.symbol, true, false);
+        // The total amount without the fee, in main units.
+        const amount = formatNetworkAmount(spentWithoutFee, account.symbol);
 
         if (sentTx.success) {
             const { txid } = sentTx.payload;
             const notificationPayload = {
-                formattedAmount,
+                amount,
                 device,
                 descriptor: account.descriptor,
                 symbol: account.symbol,

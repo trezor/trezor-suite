@@ -32,7 +32,6 @@ import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     getAccountDecimals,
-    getAreSatoshisUsed,
     getEvmTransactionTextSignature,
     getMevProtectedTxData,
     getPendingAccount,
@@ -102,7 +101,6 @@ import { type FeesRootState } from '../fees/feesReducer';
 import {
     type WalletSettingsRootState,
     selectAreSatsAmountUnit,
-    selectBitcoinAmountUnit,
     selectIsNetworkReserveEnabled,
 } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
@@ -431,7 +429,6 @@ export const pushSendFormTransactionThunk = createThunk<
         const precomposedTransaction = selectSendPrecomposedTx(getState());
         const serializedTx = selectSendSerializedTx(getState());
         const device = selectSelectedDevice(getState());
-        const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
         // Read the signed-with nonce before onModalCancel() so the fake pending tx (added in
         // synchronizeSentTransactionThunk) shows the true nonce rather than a re-derived one.
         const resolvedEthereumNonce = selectResolvedEthereumNonce(getState());
@@ -467,7 +464,6 @@ export const pushSendFormTransactionThunk = createThunk<
                   .toString()
             : '0';
 
-        const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, selectedAccount);
         const evmApprovalData = Calldata.evm.erc20.approve.decode(precomposedForm?.transactionData);
 
         if (pushTxResponse.success) {
@@ -489,7 +485,7 @@ export const pushSendFormTransactionThunk = createThunk<
                     notificationsActions.addToast({
                         type: evmApprovalData.amount === 0n ? 'tx-revoked' : 'tx-approved',
                         isInfiniteApproval,
-                        formattedAmount: amount,
+                        amount,
                         token,
                         device,
                         descriptor: selectedAccount.descriptor,
@@ -503,7 +499,7 @@ export const pushSendFormTransactionThunk = createThunk<
                     notificationsActions.addToast({
                         type: 'tx-exchange',
                         metadata: precomposedForm.trading,
-                        formattedAmount: precomposedForm.trading.send.amount,
+                        amount: precomposedForm.trading.send.amount,
                         device,
                         descriptor: selectedAccount.descriptor,
                         symbol: selectedAccount.symbol,
@@ -512,27 +508,18 @@ export const pushSendFormTransactionThunk = createThunk<
                     }),
                 );
             } else {
-                const amount = token
+                // The token amount, or the total amount without the fee, in main units.
+                const sentAmount = token
                     ? subunitsToUnits({
                           value: asAmountSubunit(new BigNumber(precomposedTransaction.totalSpent)),
                           decimals: token.decimals,
-                      })
-                    : null;
+                      }).toString()
+                    : formatNetworkAmount(spentWithoutFee, selectedAccount.symbol);
 
-                // get total amount without fee OR token amount
-                const formattedAmount =
-                    token && amount
-                        ? `${amount} ${token.symbol}`
-                        : formatNetworkAmount(
-                              spentWithoutFee,
-                              selectedAccount.symbol,
-                              true,
-                              areSatoshisUsed,
-                          );
                 dispatch(
                     notificationsActions.addToast({
                         type: 'tx-sent',
-                        formattedAmount,
+                        amount: sentAmount,
                         device,
                         token,
                         descriptor: selectedAccount.descriptor,

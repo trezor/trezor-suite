@@ -18,14 +18,15 @@ export interface NotificationOptions {
 }
 
 type TransactionNotificationPayload = {
-    formattedAmount: string;
+    /** The amount in main units, unformatted: the notification is rendered, not the string. */
+    amount: string;
     device?: TrezorDevice;
     descriptor: string;
     symbol: NetworkSymbol;
     txid: string;
 };
 
-type BaseTransactionNotificationPayload = Omit<TransactionNotificationPayload, 'formattedAmount'>;
+type BaseTransactionNotificationPayload = Omit<TransactionNotificationPayload, 'amount'>;
 
 type SentTransactionNotification = {
     type: 'tx-sent';
@@ -84,7 +85,7 @@ type UnwrapTransactionNotification = {
 
 type ReceivedTransactionNotification = {
     type: 'tx-received' | 'tx-confirmed';
-    token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol'>;
+    token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol' | 'decimals'>;
 } & TransactionNotificationPayload;
 
 type StakedTransactionNotification = {
