@@ -134,6 +134,46 @@ const encodeInnerContract = (contract: TronContracts): InnerContract => {
                 ),
             };
         }
+        case 'DelegateResourceContract': {
+            const { owner_address, receiver_address, balance, resource, lock, lock_period } =
+                contract.parameter.value;
+            const schema = getSchema('TronDelegateResourceContract');
+
+            return {
+                type: TronRawContractType.DelegateResourceContract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                        receiverAddress: hexToBytes(receiver_address ?? ''),
+                        balance: BigInt(balance ?? 0),
+                        // The default BANDWIDTH (0) is omitted to match the firmware signature.
+                        resource: resource || undefined,
+                        // The default false/0 are omitted to match the firmware signature.
+                        lock: lock || undefined,
+                        lockPeriod: lock_period ? BigInt(lock_period) : undefined,
+                    }),
+                ),
+            };
+        }
+        case 'UnDelegateResourceContract': {
+            const { owner_address, receiver_address, balance, resource } = contract.parameter.value;
+            const schema = getSchema('TronUnDelegateResourceContract');
+
+            return {
+                type: TronRawContractType.UnDelegateResourceContract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                        receiverAddress: hexToBytes(receiver_address ?? ''),
+                        balance: BigInt(balance ?? 0),
+                        // The default BANDWIDTH (0) is omitted to match the firmware signature.
+                        resource: resource || undefined,
+                    }),
+                ),
+            };
+        }
         default:
             throw new Error(
                 `Unsupported contract type for encoding: ${(contract as { type: string }).type}`,
