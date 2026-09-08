@@ -5,7 +5,6 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { applicationInitThunk } from '@suite-native/app-init';
 import { configureNetInfo } from '@suite-native/connection-status';
-import { markStartupJsBundleEvaluated } from '@suite-native/sentry';
 import {
     type HydrateReduxStoreDep,
     type NativeReduxStoreDep,
@@ -35,8 +34,6 @@ export const createNativeInit = (deps: NativeInitDeps): NativeInit => {
     return () => {
         // Repeated startup calls must not start duplicate Connect sessions or periodic workers.
         if (App === null) {
-            markStartupJsBundleEvaluated();
-
             if (__DEV__) {
                 require('./LogBox');
             }
