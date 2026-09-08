@@ -85,7 +85,14 @@ const buildCoinUrls = async (ticker: TickerId) => {
     }
 
     if (networkType === 'stellar') {
-        const { computeSorobanAssetContractId } = await stellar();
+        const { computeSorobanAssetContractId, isValidContractId } = await stellar();
+
+        // A native SEP-41 token is already addressed by its own contract id and has no
+        // classic `CODE-ISSUER` form, so there is nothing to derive - query it directly.
+        if (isValidContractId(ticker.tokenAddress)) {
+            return [`${baseUrl}/contract/${ticker.tokenAddress}`];
+        }
+
         const { assetCode, assetIsuer, sorobanAssetContractId } = computeSorobanAssetContractId(
             ticker.tokenAddress,
         );

@@ -4,6 +4,10 @@ export const isValidAssetCode = (code: string): boolean => /^[a-zA-Z0-9]{1,12}$/
 
 export const isValidAddress = (address: string): boolean => StrKey.isValidEd25519PublicKey(address);
 
+/**
+ * A Soroban contract address (`C…`), as used by native SEP-41 contract tokens.
+ * These have no issuer, so they are not expressible in classic `CODE-ISSUER` form.
+ */
 export const isValidContractId = (address: string): boolean => StrKey.isValidContract(address);
 
 /**
