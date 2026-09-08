@@ -1083,10 +1083,6 @@ export const messages = defineMessages({
         defaultMessage: 'Receive address',
         id: 'TR_BUY_RECEIVING_ADDRESS',
     },
-    TR_BUY_NOT_TRANSACTIONS: {
-        defaultMessage: 'No transactions',
-        id: 'TR_BUY_NOT_TRANSACTIONS',
-    },
     TR_BUY_RECEIVING_ACCOUNT: {
         defaultMessage: 'Receive account',
         id: 'TR_BUY_RECEIVING_ACCOUNT',
@@ -1330,6 +1326,50 @@ export const messages = defineMessages({
         defaultMessage:
             '{totalBuys, plural, =0 {{totalBuys} buys} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sells} one {{totalSells} sell} other {{totalSells} sells} } • {totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
         id: 'TR_TRADING_TRADE_HISTORY_COUNTER',
+    },
+    TR_TRADING_TRADE_HISTORY_TAB_ALL: {
+        defaultMessage: 'All trades',
+        id: 'TR_TRADING_TRADE_HISTORY_TAB_ALL',
+    },
+    TR_TRADING_TRADE_HISTORY_TAB_SWAPS: {
+        defaultMessage: 'Swaps',
+        id: 'TR_TRADING_TRADE_HISTORY_TAB_SWAPS',
+    },
+    TR_TRADING_TRADE_HISTORY_TAB_BUYS: {
+        defaultMessage: 'Buys',
+        id: 'TR_TRADING_TRADE_HISTORY_TAB_BUYS',
+    },
+    TR_TRADING_TRADE_HISTORY_TAB_SELLS: {
+        defaultMessage: 'Sells',
+        id: 'TR_TRADING_TRADE_HISTORY_TAB_SELLS',
+    },
+    TR_TRADING_TRADE_HISTORY_EMPTY_TITLE: {
+        defaultMessage: 'No trades yet',
+        id: 'TR_TRADING_TRADE_HISTORY_EMPTY_TITLE',
+    },
+    TR_TRADING_TRADE_HISTORY_EMPTY_DESCRIPTION: {
+        defaultMessage: 'Your trades will appear here and you can track their status.',
+        id: 'TR_TRADING_TRADE_HISTORY_EMPTY_DESCRIPTION',
+    },
+    TR_TRADING_TRADE_HISTORY_EMPTY_BUTTON: {
+        defaultMessage: 'Back to trade form',
+        id: 'TR_TRADING_TRADE_HISTORY_EMPTY_BUTTON',
+    },
+    TR_TRADING_TRADE_HISTORY_NO_SWAPS: {
+        defaultMessage: 'No swaps yet',
+        id: 'TR_TRADING_TRADE_HISTORY_NO_SWAPS',
+    },
+    TR_TRADING_TRADE_HISTORY_NO_BUYS: {
+        defaultMessage: 'No buys yet',
+        id: 'TR_TRADING_TRADE_HISTORY_NO_BUYS',
+    },
+    TR_TRADING_TRADE_HISTORY_NO_SELLS: {
+        defaultMessage: 'No sells yet',
+        id: 'TR_TRADING_TRADE_HISTORY_NO_SELLS',
+    },
+    TR_TRADING_TRADE_HISTORY_SHOW_ALL: {
+        defaultMessage: 'Show all trades',
+        id: 'TR_TRADING_TRADE_HISTORY_SHOW_ALL',
     },
     TR_TRADING_ENTER_AMOUNT_IN: {
         defaultMessage: 'Enter in {currency}',

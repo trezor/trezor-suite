@@ -1,106 +1,64 @@
-import { selectFullSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
-import {
-    selectDeviceTradingTradesOrderedByDate,
-    selectTradingBuyProviders,
-    selectTradingExchangeInfo,
-    selectTradingSellInfo,
-} from '@suite-common/trading';
-import { Box, Column, Paragraph, Text } from '@trezor/components';
-import { exhaustive } from '@trezor/type-utils';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { useSelector } from 'src/hooks/suite';
-import { TradingTransactionExchange } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionExchange';
-import { TradingTransactionBuy } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsBuy';
-import { TradingTransactionSell } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsSell';
+import { selectDeviceTradingTradesOrderedByDate } from '@suite-common/trading';
+import { Column } from '@trezor/components';
+
+import { TradingTransactionItem } from './TradingTransactionItem/TradingTransactionItem';
+import {
+    getTradingTransactionSides,
+    getTradingTransactionStatusData,
+} from './TradingTransactionItem/tradingTransactionItemUtils';
+import { type TradingTransactionsFilter, TradingTransactionsTabs } from './TradingTransactionsTabs';
+import { TradingTransactionsTypeEmptyState } from './TradingTransactionsTypeEmptyState';
+import { useTradingTransactionClick } from './useTradingTransactionClick';
+import { useTradingTransactionsWatcher } from './useTradingTransactionsWatcher';
 
 export const TradingTransactionsList = () => {
-    const selectedAccount = useSelector(selectFullSelectedAccount);
-    const buyProviders = useSelector(selectTradingBuyProviders);
-    const exchangeProviders = useSelector(selectTradingExchangeInfo)?.providerInfos;
-    const sellProviders = useSelector(selectTradingSellInfo)?.providerInfos;
+    const [activeFilter, setActiveFilter] = useState<TradingTransactionsFilter>('all');
     const trades = useSelector(selectDeviceTradingTradesOrderedByDate);
+    const handleTradeClick = useTradingTransactionClick();
 
-    if (selectedAccount.status !== 'loaded') {
-        return null;
-    }
+    useTradingTransactionsWatcher();
 
-    const { account } = selectedAccount;
-
-    const buyTransactions = trades.filter(tx => tx.tradeType === 'buy');
-    const exchangeTransactions = trades.filter(tx => tx.tradeType === 'exchange');
-    const sellTransactions = trades.filter(tx => tx.tradeType === 'sell');
-    const isEmpty = trades.length === 0;
+    const filteredTrades =
+        activeFilter === 'all' ? trades : trades.filter(trade => trade.tradeType === activeFilter);
 
     return (
         <Column alignItems="center">
-            <Box data-testid="@trading/transactions/list" maxWidth={800}>
-                {isEmpty && (
-                    <Paragraph
-                        data-testid="@trading/transactions/no-transaction"
-                        align="center"
-                        intent="neutral"
-                        priority="secondary"
-                    >
-                        <Translation id="TR_BUY_NOT_TRANSACTIONS" />
-                    </Paragraph>
-                )}
-                {!isEmpty && (
-                    <>
-                        <Column margin={{ bottom: 32 }}>
-                            <Text
-                                typographyStyle="body-sm"
-                                color="contentSecondary"
-                                data-testid="@trading/transactions/count"
-                            >
-                                <Translation
-                                    id="TR_TRADING_TRADE_HISTORY_COUNTER"
-                                    values={{
-                                        totalBuys: buyTransactions.length,
-                                        totalSells: sellTransactions.length,
-                                        totalSwaps: exchangeTransactions.length,
-                                    }}
-                                />
-                            </Text>
-                        </Column>
-                        {trades.map(trade => {
-                            const key = `${trade.tradeType}-${trade.key}`;
+            <Column width="100%" maxWidth={800} gap={24}>
+                <TradingTransactionsTabs activeFilter={activeFilter} onChange={setActiveFilter} />
+                <Column gap={8} data-testid="@trading/transactions/list">
+                    {filteredTrades.length === 0 && activeFilter !== 'all' && (
+                        <TradingTransactionsTypeEmptyState
+                            tradeType={activeFilter}
+                            onShowAllTrades={() => setActiveFilter('all')}
+                        />
+                    )}
+                    {filteredTrades.map(trade => {
+                        const sides = getTradingTransactionSides(trade.data);
+                        const { orderId } = trade.data;
 
-                            switch (trade.tradeType) {
-                                case 'buy':
-                                    return (
-                                        <TradingTransactionBuy
-                                            account={account}
-                                            key={key}
-                                            trade={trade}
-                                            providers={buyProviders}
-                                        />
-                                    );
-                                case 'sell':
-                                    return (
-                                        <TradingTransactionSell
-                                            account={account}
-                                            key={key}
-                                            trade={trade}
-                                            providers={sellProviders}
-                                        />
-                                    );
-                                case 'exchange':
-                                    return (
-                                        <TradingTransactionExchange
-                                            account={account}
-                                            key={key}
-                                            trade={trade}
-                                            providers={exchangeProviders}
-                                        />
-                                    );
-                                default:
-                                    return exhaustive(trade);
-                            }
-                        })}
-                    </>
-                )}
-            </Box>
+                        if (!sides) {
+                            return null;
+                        }
+
+                        return (
+                            <TradingTransactionItem
+                                key={`${trade.tradeType}-${trade.key}`}
+                                from={sides.from}
+                                to={sides.to}
+                                date={trade.date}
+                                status={getTradingTransactionStatusData(trade)}
+                                onClick={() => handleTradeClick(trade)}
+                                data-testid={
+                                    orderId ? `@trading/transactions/trade/${orderId}` : undefined
+                                }
+                            />
+                        );
+                    })}
+                </Column>
+            </Column>
         </Column>
     );
 };
