@@ -103,6 +103,7 @@ export enum EventType {
     SendAddressFilled = 'send/address_filled',
     // eslint-disable-next-line local-rules/analytics-event-name
     SendAmountInputSwitched = 'send/amount_input_switched',
+    SendEnsResolution = 'send/ens-resolution',
     // eslint-disable-next-line local-rules/analytics-event-name
     SendFeeLevelChanged = 'send/fee_level_changed',
     // eslint-disable-next-line local-rules/analytics-event-name
