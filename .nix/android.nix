@@ -1,9 +1,12 @@
-{ pkgs, shared }:
+{ pkgs }:
 
 let
   androidComposition = pkgs.androidenv.composeAndroidPackages {
-    # Use the same API level for compilation, local emulators, and Android CI.
-    platformVersions = [ "36" ];
+    # Keep API 34 available alongside the API 36 CI emulator.
+    platformVersions = [
+      "34"
+      "36"
+    ];
     # 36 is RN's default; 35 is still requested by native modules (e.g. quick-crypto).
     buildToolsVersions = [
       "35.0.0"
@@ -74,41 +77,33 @@ let
     # Using the nixpkgs aapt2 to resolve an issue with dynamically linked executables
     export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${pkgs.aapt}/bin/aapt2"
 
-    # Setup Android emulator device if it doesn't exist
-    if [ ! -d "$HOME/.android/avd/Pixel_6_API_36.avd" ]; then
-      avdmanager create avd -n Pixel_6_API_36 -d pixel_6 --package "system-images;android-36;google_apis;x86_64"
+    # Keep both emulator versions available for local testing.
+    for api in 34 36; do
+      avd_name="Pixel_6_API_$api"
+      if [ ! -d "$HOME/.android/avd/$avd_name.avd" ]; then
+        avdmanager create avd -n "$avd_name" -d pixel_6 --package "system-images;android-$api;google_apis;x86_64"
 
-      # enable GPU acceleration, this option is not available in avdmanager
-      sed -i \
-        -e 's/^hw\.gpu\.enabled=no$/hw.gpu.enabled=yes/' \
-        -e 's/^hw\.gpu\.mode=auto$/hw.gpu.mode=host/' \
-        $HOME/.android/avd/Pixel_6_API_36.avd/config.ini
+        # Enable GPU acceleration, which avdmanager cannot configure.
+        sed -i \
+          -e 's/^hw\.gpu\.enabled=no$/hw.gpu.enabled=yes/' \
+          -e 's/^hw\.gpu\.mode=auto$/hw.gpu.mode=host/' \
+          "$HOME/.android/avd/$avd_name.avd/config.ini"
 
-      echo "✓ Created Android emulator device: Pixel_6_API_36"
-    fi
+        echo "✓ Created Android emulator device: $avd_name"
+      fi
+    done
 
     echo "- Java $(java -version 2>&1 | head -n1)"
     command -v adb >/dev/null 2>&1 && echo "- adb $(adb version | head -n1)" || echo "- adb not found (install SDK packages)"
     command -v emulator >/dev/null 2>&1 && echo "- emulator $(emulator -version | head -n1)" || echo "- emulator not found"
   '';
 in
-pkgs.mkShell (
-  shared
-  // {
-    buildInputs =
-      shared.buildInputs
-      ++ [
-        jdk
-        androidSdk
-      ]
-      ++ extraPackages;
-    shellHook =
-      shared.shellHook
-      + ''
-        # Workspace installation includes Electron, but Android does not need its binary.
-        export ELECTRON_SKIP_BINARY_DOWNLOAD=1
-      ''
-      + nixLdHook
-      + androidShellHook;
-  }
-)
+{
+  inherit
+    androidSdk
+    jdk
+    extraPackages
+    nixLdHook
+    ;
+  shellHook = androidShellHook;
+}

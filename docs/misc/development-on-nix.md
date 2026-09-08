@@ -31,14 +31,12 @@ nix develop .#default
 
 ### Android shell (mobile development)
 
-Includes the shared development tools plus:
+Includes everything in the default shell (including Playwright and Electron), plus:
 
 - Java (JDK)
 - Android SDK (platforms, build tools, NDK)
 - Android Emulator with system images
-- A default AVD is auto-created on first run
-
-Electron, Playwright browsers, and desktop packaging tools are only included in the desktop shell.
+- API 34 and API 36 AVDs are auto-created on first run
 
 ```bash
 nix develop .#android
@@ -66,14 +64,15 @@ yarn a                  # Run on Android (in another terminal)
 
 ### Running the Android emulator
 
-Local development and Android CI use Android 16 (API 36). Re-enter the Android shell to create
-the `Pixel_6_API_36` AVD when upgrading an existing setup.
+The Android shell provides `Pixel_6_API_34` and `Pixel_6_API_36` for local testing.
+Detox and Android CI default to API 36. Re-enter the Android shell to create any missing AVDs.
 
 ```bash
 nix develop .#android
 # list available AVDs with:
 avdmanager list avd
-emulator -avd <avd-name>
+emulator -avd Pixel_6_API_34
+# Or select API 36:
 emulator -avd Pixel_6_API_36
 ```
 
@@ -104,8 +103,7 @@ nix-shell
 
 ### Android
 
-Pass `USE_ANDROID=1` to select the shared and Android configuration, including the SDK, JDK, and
-emulator. Desktop dependencies are excluded, just as with `nix develop .#android`:
+Pass `USE_ANDROID=1` to add the Android SDK, JDK, and emulator to the development environment:
 
 ```bash
 USE_ANDROID=1 nix-shell
