@@ -112,6 +112,21 @@ export const getCountryLabel = (country: TradingCountryCode) => {
     return countryOption.label.substring(countryOption.label.indexOf(' ') + 1);
 };
 
+/**
+ * The compact display rule for crypto: two decimals from 1 upwards, up to five below, truncated.
+ */
+export const toCompactAmount = (value: string) => {
+    const amount = new BigNumber(value);
+    const isBelowOne = amount.abs().isLessThan(1);
+
+    return localizeNumber(
+        amount.decimalPlaces(isBelowOne ? 5 : 2, BigNumber.ROUND_DOWN),
+        'en-US',
+        isBelowOne ? 0 : 2,
+        isBelowOne ? 5 : 2,
+    );
+};
+
 export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
     const maxDecimals = getAccountDecimals(params.symbol);
     const exactFraction = BigNumber(params.balance).times(params.percentage).div(100);

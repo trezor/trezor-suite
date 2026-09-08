@@ -16,7 +16,7 @@ import { TradingQuotesSection } from './quotesSection';
 import { TradingReceiveAccount } from './receiveAccount';
 import { TransactionDetailSidebar } from './transactionDetailSidebar';
 import { tradeEndpoint } from '../../../fixtures/trading';
-import { isDesktopProject, isWebProject, step } from '../../common';
+import { isDesktopProject, isWebProject, step, toCompactAmount } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 import { type PlaywrightTarget } from '../../testExtends/suiteTestOptions';
 import { BuyAsset, SellAsset } from '../../types';
@@ -391,8 +391,10 @@ export class TradingPage {
                 receiveAccount,
             },
         });
-        await expect(this.swapToastSendAmount).toHaveText(sendAmount);
-        await expect(this.swapToastReceiveAmount).toHaveText(receiveAmount);
+        // The toast shows compact amounts, so the exact values the callers pass are reduced here
+        // rather than in each of them.
+        await expect(this.swapToastSendAmount).toHaveText(toCompactAmount(sendAmount));
+        await expect(this.swapToastReceiveAmount).toHaveText(toCompactAmount(receiveAmount));
     }
 
     // temporary workaround which should be replaced with soon to be merged fixture tradingResponses
