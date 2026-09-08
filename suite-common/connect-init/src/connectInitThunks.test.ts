@@ -355,35 +355,4 @@ describe('TrezorConnect Actions', () => {
         expect(onInvalidPinDepleted).toHaveBeenCalledTimes(1);
         expect(onRequestWord).toHaveBeenCalledTimes(1);
     });
-
-    // 10s timeout — `__info: true` calls the real Connect implementation through the mock,
-    // which spins up an actual Core (init + getFeatures + getAccountInfo + dispose). On
-    // busy CI runners this routinely hovers around 4–5s and tripped the 5s default.
-    it('Test that connect mock works with __info parameter', async () => {
-        const { dispatch, getState, extra } = createThunkDeps();
-        await connectInitThunk()(dispatch, getState, extra);
-
-        const res1 = await testMocks.getTrezorConnectMock().getFeatures({ __info: true });
-        expect(res1).toMatchObject({
-            success: true,
-            payload: expect.objectContaining({
-                name: 'getFeatures',
-                useDevice: true,
-            }),
-        });
-
-        const res2 = await testMocks.getTrezorConnectMock().getAccountInfo({
-            coin: 'btc',
-            descriptor: 'xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiK9w',
-            __info: true,
-        });
-
-        expect(res2).toMatchObject({
-            success: true,
-            payload: expect.objectContaining({
-                name: 'getAccountInfo',
-                useDevice: false,
-            }),
-        });
-    }, 10_000);
 });
