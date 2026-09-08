@@ -11,6 +11,7 @@ import { useFormContext, useWatch } from '@suite-native/forms';
 
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { getOutputFieldName } from '../utils';
+import { useReportEnsResolutionToAnalytics } from './useReportEnsResolutionToAnalytics';
 
 type UseResolvedAddressArgs = {
     inputIndex: number;
@@ -42,6 +43,8 @@ export const useResolvedAddress = ({ inputIndex, accountKey }: UseResolvedAddres
         resolvedAddress,
         reverseResolvedName,
     } = useResolveNamedAddress(addressValue, symbol);
+
+    useReportEnsResolutionToAnalytics({ symbol, mode, isFetching, isSuccess, isError });
 
     useEffect(() => {
         const nextResolvedAddress = (() => {

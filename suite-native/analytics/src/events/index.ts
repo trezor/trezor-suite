@@ -56,6 +56,7 @@ export { referralButtonPressEvent } from './referralButtonPressEvent';
 export { screenChangeEvent } from './screenChangeEvent';
 export { sendAddressFilledEvent } from './sendAddressFilledEvent';
 export { sendAmountInputSwitchedEvent } from './sendAmountInputSwitchedEvent';
+export { sendEnsResolutionEvent } from './sendEnsResolutionEvent';
 export { sendFeeLevelChangedEvent } from './sendFeeLevelChangedEvent';
 export { sendFlowEnteredEvent } from './sendFlowEnteredEvent';
 export { sendFlowExitedEvent } from './sendFlowExitedEvent';
