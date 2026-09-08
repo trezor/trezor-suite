@@ -72,8 +72,6 @@ nix develop .#android
 # list available AVDs with:
 avdmanager list avd
 emulator -avd Pixel_6_API_34
-# Or select API 36:
-emulator -avd Pixel_6_API_36
 ```
 
 If you have troubles with your GPU acceleration you can disable it when running emulator like:
