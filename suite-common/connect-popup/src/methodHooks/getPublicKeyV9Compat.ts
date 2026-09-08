@@ -5,8 +5,7 @@ import { type CompatibilityHookParams, type CompatibilityHookResult } from './ty
 /**
  * Connect v10 rejects non-bitcoin coins/paths in `getPublicKey`, which broke host apps still on
  * `@trezor/connect` 9.x. For those callers, inject `_v9_compat` so connect restores the v9 btc
- * fallback (e.g. for Tron). A no-op for bitcoin-like calls; Ethereum is handled by
- * `ethereumGetPublicKeyCompat`.
+ * fallback (e.g. for Ethereum or Tron). A no-op for bitcoin-like calls.
  */
 const compatibilityHook = <M extends CallMethodKeys>({
     method,
