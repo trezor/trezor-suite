@@ -57,7 +57,6 @@ const watchTradeData = async <T extends TradingType>({
     const updates = {
         ...getDefinedWatchUpdates(response),
         // always apply, even if undefined
-        status: response.status,
         error: response.error,
     };
     const updateKeys = typedObjectKeys(updates);
