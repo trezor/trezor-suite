@@ -17,7 +17,13 @@ import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
-import { type DeviceRootState, selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    getIsOnlyDeviceRefCandidate,
+    selectConnectedDevices,
+    selectDeviceThunk,
+    selectHasBitcoinOnlyFirmware,
+} from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
 import { type BackupType, type TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -35,6 +41,7 @@ import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
 import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
 import {
+    selectOnboardedDeviceRef,
     selectOnboardingActiveStepId,
     selectOnboardingAnalytics,
     selectOnboardingPath,
@@ -66,6 +73,37 @@ const onboardedDeviceConnected = createAction<{ device: Device; isOnlyCandidate:
 );
 
 const onboardedDeviceDisconnected = createAction<Device>(ONBOARDING.DEVICE_DISCONNECTED);
+
+type HandleOnboardedDeviceConnectThunkState = DeviceRootState & OnboardingRootState;
+
+/**
+ * Feeds a connect device event into the tracking state machine, so the ref keeps pointing at the
+ * onboarded device after it comes back with a new path and a freshly generated `device_id`.
+ *
+ * The ambiguity guard needs to know what else is plugged in, and that lives in the store, so it is
+ * resolved here rather than by the caller. Disconnect needs nothing from the store and stays a
+ * plain action.
+ */
+const handleOnboardedDeviceConnectThunk =
+    (device: Device) =>
+    (dispatch: Dispatch<UnknownAction>, getState: () => HandleOnboardedDeviceConnectThunkState) => {
+        const ref = selectOnboardedDeviceRef(getState());
+
+        if (!ref) {
+            return;
+        }
+
+        dispatch(
+            onboardedDeviceConnected({
+                device,
+                isOnlyCandidate: getIsOnlyDeviceRefCandidate({
+                    device,
+                    connectedDevices: selectConnectedDevices(getState()),
+                    ref,
+                }),
+            }),
+        );
+    };
 
 type GetAllStepsInPathState = DeviceRootState & OnboardingRootState & SuiteSettingsRootState;
 
@@ -166,6 +204,10 @@ const goToSuiteThunk =
         // there must be a device to progress with onboarding
         if (device?.features === undefined) return;
 
+        // Handing over to Suite is where the onboarded device becomes the selected one. Onboarding
+        // itself addresses it through the ref, so this is the only point that needs the selection
+        // to be right — in particular the firmware update does not have to have restored it.
+        dispatch(selectDeviceThunk({ device }));
         dispatch(startDiscoveryThunk({ device }));
         const reportAnalytics = () => {
             const { analytics } = extra.services;
@@ -318,6 +360,7 @@ const rerunRecoveryThunk =
 
 export {
     armOnboardedDeviceTracking,
+    handleOnboardedDeviceConnectThunk,
     onboardedDeviceConnected,
     onboardedDeviceDisconnected,
     enableOnboardingReducer,

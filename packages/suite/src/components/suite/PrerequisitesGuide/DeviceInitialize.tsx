@@ -11,6 +11,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { TrezorBodyIcon } from '@trezor/icons';
 
 import {
+    armOnboardedDeviceTracking,
     enableOnboardingReducer,
     resetOnboarding,
     updateAnalytics,
@@ -34,6 +35,13 @@ export const DeviceInitialize = () => {
         dispatch(updateAnalytics({ startTime: Date.now() }));
 
         const device = selectSelectedDevice(getState());
+
+        // Onboarding begins here, and this is the last moment the selection is guaranteed to be
+        // the device the user meant: from now on it installs firmware and wipes the device, so it
+        // disconnects and the selection drifts. Pin the flow to it. See `selectOnboardedDevice`.
+        if (device?.connected) {
+            dispatch(armOnboardedDeviceTracking(device));
+        }
 
         analytics.report(
             {

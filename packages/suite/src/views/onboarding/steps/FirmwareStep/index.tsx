@@ -30,18 +30,19 @@ export const FirmwareStep = () => {
     useFirmwareDeviceTrackingListener();
     const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
     const modal = useSelector(selectModal);
-    const { goToNextStep, updateAnalytics } = useOnboarding();
-    const { error, originalDevice, resetReducer, firmwareUpdate, targetType, status } =
-        useFirmwareDesktopUpdate();
+    const { goToNextStep, updateAnalytics, onboardedDevice } = useOnboarding();
+    const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();
 
     const install = () => {
-        if (!originalDevice) {
+        if (!onboardedDevice) {
             return;
         }
 
-        firmwareUpdate({ device: originalDevice, firmwareType: targetType });
+        // Installing onto the device onboarding is pinned to, rather than the selected one, is
+        // what makes the two flows track the same device through the reboots the update forces.
+        firmwareUpdate({ device: onboardedDevice, firmwareType: targetType });
     };
     const goToNextStepAndResetReducer = useCallback(() => {
         goToNextStep();

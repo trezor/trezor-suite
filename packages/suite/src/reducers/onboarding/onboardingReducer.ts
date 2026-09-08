@@ -77,8 +77,6 @@ const ALLOWED_ACTION_TYPES = new Set<UnknownAction['type']>([
     resetOnboarding.type,
     enableOnboardingReducer.type,
     updateAnalytics.type,
-    // Arming happens as onboarding opens, before the reducer is enabled.
-    armOnboardedDeviceTracking.type,
 ]);
 
 const onboarding = (state: OnboardingState = initialState, action: UnknownAction) => {

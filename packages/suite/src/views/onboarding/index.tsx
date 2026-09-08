@@ -12,7 +12,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
 import { getOnboardingStepIndex } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboardedDeviceTracking, useOnboarding, useSelector } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
 import { BackupTypeStep } from 'src/views/onboarding/steps/BackupTypeStep';
 import { CreateOrRecoverStep } from 'src/views/onboarding/steps/CreateOrRecoverStep';
@@ -25,6 +25,9 @@ import { RecoveryStep } from 'src/views/onboarding/steps/RecoveryStep';
 import { SecurityStep } from 'src/views/onboarding/steps/SecurityStep';
 
 export const Onboarding = () => {
+    // Mounted for the whole flow rather than per step: the device reboots between steps, and the
+    // ref has to keep up across those boundaries. See `useOnboardedDeviceTracking`.
+    useOnboardedDeviceTracking();
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const { activeStepId, goToNextStep } = useOnboarding();
