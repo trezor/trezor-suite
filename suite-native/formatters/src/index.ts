@@ -6,6 +6,8 @@ export { BaseCurrencyAmountLargeFormatter } from './components/BaseCurrencyAmoun
 export { TransactionIdFormatter } from './components/TransactionIdFormatter';
 export { PercentageDifferenceFormatter } from './components/PercentageDifferenceFormatter';
 export { BaseCurrencyAmountFormatter } from './components/BaseCurrencyAmountFormatter';
+export { CryptoAmountFormatter } from './components/CryptoAmountFormatter';
+export type { CryptoAmountFormatterProps } from './components/CryptoAmountFormatter';
 export { CompactCryptoAmountFormatter } from './components/CompactCryptoAmountFormatter';
 export { CompactTokenAmountFormatter } from './components/CompactTokenAmountFormatter';
 export { ExactCryptoAmountFormatter } from './components/ExactCryptoAmountFormatter';

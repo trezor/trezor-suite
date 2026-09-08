@@ -1,10 +1,9 @@
 import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
+import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { YieldFormattedAmount } from './YieldFormattedAmount';
 
 const detailsRowValueStyle = prepareNativeStyle(() => ({
     flexShrink: 1,
@@ -58,12 +57,14 @@ export const YieldDepositRevokeLimitValue = ({
                 </Text>
             ) : null}
             {!isApprovedAmountUnlimited && approvedAmount ? (
-                <YieldFormattedAmount
+                <CryptoAmountFormatter
                     value={approvedAmount}
-                    networkSymbol={networkSymbol}
+                    symbol={networkSymbol}
+                    formatStyle="compact-balance"
                     tokenContract={tokenContract}
                     tokenDecimals={tokenDecimals}
                     tokenSymbol={tokenSymbol}
+                    isDiscreetText={false}
                     variant="body-sm-strong"
                     color="contentPrimary"
                     numberOfLines={1}
@@ -72,12 +73,14 @@ export const YieldDepositRevokeLimitValue = ({
                 />
             ) : null}
             <Icon name="arrowRight" size="medium" color="contentSecondary" />
-            <YieldFormattedAmount
+            <CryptoAmountFormatter
                 value="0"
-                networkSymbol={networkSymbol}
+                symbol={networkSymbol}
+                formatStyle="compact-balance"
                 tokenContract={tokenContract}
                 tokenDecimals={tokenDecimals}
                 tokenSymbol={tokenSymbol}
+                isDiscreetText={false}
                 variant="body-sm-strong"
                 color="contentPrimary"
             />
