@@ -2,6 +2,7 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import {
     type TestStore,
     act,
@@ -225,6 +226,56 @@ describe('useSellForm', () => {
             await waitFor(() => {
                 const { invalid } = result.current.getFieldState('cryptoStringAmount');
                 expect(invalid).toBe(true);
+            });
+        });
+
+        it('should revalidate crypto amount against balance after switching send accounts', async () => {
+            const richBtcAccount = getBtcAccount({
+                descriptor: asAccountDescriptor('btc1normal'),
+                balance: '100000000',
+                availableBalance: '100000000',
+                formattedBalance: '1',
+            });
+            const poorBtcAccount = getBtcAccount({
+                descriptor: asAccountDescriptor('btc2legacy'),
+                balance: '10000',
+                availableBalance: '10000',
+                formattedBalance: '0.0001',
+            });
+
+            store = createTradingLightStore({
+                tradeType: 'sell',
+                overrides: {
+                    wallet: { accounts: [richBtcAccount, poorBtcAccount] },
+                },
+            });
+
+            const { result } = await renderUseSellForm();
+
+            await act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey(richBtcAccount.key));
+                result.current.setValue('amountInCrypto', true);
+                result.current.setValue('sendAsset', btcAsset);
+                result.current.setValue('cryptoStringAmount', '0.5');
+            });
+
+            await act(() => result.current.trigger('cryptoStringAmount'));
+
+            expect(result.current.getFieldState('cryptoStringAmount').invalid).toBe(false);
+
+            await act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey(poorBtcAccount.key));
+            });
+
+            await waitFor(() => {
+                const { invalid, error } = result.current.getFieldState('cryptoStringAmount');
+                expect(invalid).toBe(true);
+                expect(error).toEqual(
+                    expect.objectContaining({
+                        message: getTranslation('moduleTrading.validators.insufficientBalance'),
+                        type: 'insufficient-balance',
+                    }),
+                );
             });
         });
 

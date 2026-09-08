@@ -5,6 +5,8 @@ import {
     selectTradingProviderMetadata,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import {
     type TestStore,
     act,
@@ -20,6 +22,7 @@ import {
     ethAsset,
     exchangeCexdirect,
     exchangeQuotes,
+    getBtcAccount,
     invityDexQuote,
     mercuryoFixedBestQuote,
     mercuryoFixedWorstQuote,
@@ -552,6 +555,64 @@ describe('useExchangeForm', () => {
             const { invalid } = result.current.getFieldState('sendCryptoAmount');
 
             expect(invalid).toBe(true);
+        });
+
+        it('should revalidate send amount against balance after switching send accounts', async () => {
+            const richBtcAccount = getBtcAccount({
+                descriptor: asAccountDescriptor('btc1normal'),
+                balance: '100000000',
+                availableBalance: '100000000',
+                formattedBalance: '1',
+            });
+            const poorBtcAccount = getBtcAccount({
+                descriptor: asAccountDescriptor('btc2legacy'),
+                balance: '10000',
+                availableBalance: '10000',
+                formattedBalance: '0.0001',
+            });
+
+            store = createTradingLightStore({
+                tradeType: 'exchange',
+                overrides: {
+                    device: {
+                        selectedDevice: {
+                            state: {
+                                staticSessionId: accountDeviceState,
+                            },
+                        },
+                    },
+                    wallet: {
+                        accounts: [richBtcAccount, poorBtcAccount],
+                    },
+                },
+            });
+
+            const { result } = await renderUseExchangeForm();
+
+            await act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(richBtcAccount.key));
+                result.current.setValue('sendAsset', btcAsset);
+                result.current.setValue('sendCryptoAmount', '0.005');
+            });
+
+            await act(() => result.current.trigger('sendCryptoAmount'));
+
+            expect(result.current.getFieldState('sendCryptoAmount').invalid).toBe(false);
+
+            await act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(poorBtcAccount.key));
+            });
+
+            await waitFor(() => {
+                const { invalid, error } = result.current.getFieldState('sendCryptoAmount');
+                expect(invalid).toBe(true);
+                expect(error).toEqual(
+                    expect.objectContaining({
+                        message: getTranslation('moduleTrading.validators.insufficientBalance'),
+                        type: 'insufficient-balance',
+                    }),
+                );
+            });
         });
 
         describe('generalAlert', () => {
