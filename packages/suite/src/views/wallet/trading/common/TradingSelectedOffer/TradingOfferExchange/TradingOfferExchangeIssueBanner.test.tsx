@@ -46,13 +46,7 @@ const slippageTooLowIssue: ExchangeIssue = {
 
 const onContinueAnywayClick = jest.fn();
 
-const renderIssueBanner = ({
-    issue,
-    isSimulationEnabled = true,
-}: {
-    issue: ExchangeIssue;
-    isSimulationEnabled?: boolean;
-}) => {
+const renderIssueBanner = ({ issue }: { issue: ExchangeIssue }) => {
     const store = configureMockStore({
         extra: undefined,
         preloadedState: mockInitialAppState satisfies AppState,
