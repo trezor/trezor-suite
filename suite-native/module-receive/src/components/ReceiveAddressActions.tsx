@@ -8,16 +8,24 @@ import { useReceiveAddressSharing } from '../hooks/useReceiveAddressSharing';
 
 type ReceiveAddressActionsProps = {
     address: string;
+    isDeviceVerificationEnabled: boolean;
 };
 
-export const ReceiveAddressActions = ({ address }: ReceiveAddressActionsProps) => {
+export const ReceiveAddressActions = ({
+    address,
+    isDeviceVerificationEnabled,
+}: ReceiveAddressActionsProps) => {
     const { handleCopyAddress, handleVerifyAddress } = useReceiveAddressInteractions();
     const {
         sharedAddressBottomSheetRef,
         closeSharedAddressBottomSheet,
         handleShareAddress,
         handleVerifySharedAddress,
-    } = useReceiveAddressSharing({ address, onVerifyAddress: handleVerifyAddress });
+    } = useReceiveAddressSharing({
+        address,
+        isDeviceVerificationEnabled,
+        onVerifyAddress: handleVerifyAddress,
+    });
 
     return (
         <>
@@ -35,25 +43,29 @@ export const ReceiveAddressActions = ({ address }: ReceiveAddressActionsProps) =
                     >
                         <Translation id="qrCode.shareButton" />
                     </Button>
-                    <Button
-                        iconLeft="trezorDevices"
-                        intent="neutral"
-                        priority="secondary"
-                        onPress={() =>
-                            handleVerifyAddress(ReceiveAddressVerificationSource.Verified)
-                        }
-                        flex={1}
-                    >
-                        <Translation id="moduleReceive.addressActions.verify" />
-                    </Button>
+                    {isDeviceVerificationEnabled && (
+                        <Button
+                            iconLeft="trezorDevices"
+                            intent="neutral"
+                            priority="secondary"
+                            onPress={() =>
+                                handleVerifyAddress(ReceiveAddressVerificationSource.Verified)
+                            }
+                            flex={1}
+                        >
+                            <Translation id="moduleReceive.addressActions.verify" />
+                        </Button>
+                    )}
                 </HStack>
             </VStack>
-            <ReceiveAddressVerificationBottomSheet
-                ref={sharedAddressBottomSheetRef}
-                source={ReceiveAddressVerificationSource.Shared}
-                onVerifyAddress={handleVerifySharedAddress}
-                onSkipVerification={closeSharedAddressBottomSheet}
-            />
+            {isDeviceVerificationEnabled && (
+                <ReceiveAddressVerificationBottomSheet
+                    ref={sharedAddressBottomSheetRef}
+                    source={ReceiveAddressVerificationSource.Shared}
+                    onVerifyAddress={handleVerifySharedAddress}
+                    onSkipVerification={closeSharedAddressBottomSheet}
+                />
+            )}
         </>
     );
 };

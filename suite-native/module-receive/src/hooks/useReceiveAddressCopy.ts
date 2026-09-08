@@ -8,11 +8,13 @@ import { ReceiveAddressVerificationSource } from '@suite-native/navigation';
 
 type UseReceiveAddressCopyParams = {
     address: string;
+    isDeviceVerificationEnabled: boolean;
     onVerifyAddress: (source: ReceiveAddressVerificationSource) => void;
 };
 
 export const useReceiveAddressCopy = ({
     address,
+    isDeviceVerificationEnabled,
     onVerifyAddress,
 }: UseReceiveAddressCopyParams) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -24,10 +26,21 @@ export const useReceiveAddressCopy = ({
     } = useBottomSheetModal();
 
     const handleCopyAddress = useCallback(async () => {
-        await copyToClipboard(address, undefined, { shouldShowToast: false });
+        await copyToClipboard(address, undefined, {
+            shouldShowToast: !isDeviceVerificationEnabled,
+        });
         analytics.report({ type: events.receiveCopyAddressEvent.name });
-        openCopiedAddressBottomSheet();
-    }, [address, analytics, copyToClipboard, openCopiedAddressBottomSheet]);
+
+        if (isDeviceVerificationEnabled) {
+            openCopiedAddressBottomSheet();
+        }
+    }, [
+        address,
+        analytics,
+        copyToClipboard,
+        isDeviceVerificationEnabled,
+        openCopiedAddressBottomSheet,
+    ]);
 
     const handleVerifyCopiedAddress = useCallback(() => {
         closeCopiedAddressBottomSheet();

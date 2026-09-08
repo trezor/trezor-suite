@@ -45,14 +45,18 @@ describe('ReceiveAddressActions', () => {
     const addressPath = "m/84'/0'/0'/0/0";
     const mockUseNavigation = jest.mocked(useNavigation);
 
-    const renderActions = async () =>
+    const renderActions = async (isDeviceVerificationEnabled = true) =>
         await renderWithBasicProvider(
             <ReceiveAddressInteractionsProvider
                 accountKey={accountKey}
                 address={address}
                 addressPath={addressPath}
+                isDeviceVerificationEnabled={isDeviceVerificationEnabled}
             >
-                <ReceiveAddressActions address={address} />
+                <ReceiveAddressActions
+                    address={address}
+                    isDeviceVerificationEnabled={isDeviceVerificationEnabled}
+                />
             </ReceiveAddressInteractionsProvider>,
             { services },
         );
@@ -125,6 +129,28 @@ describe('ReceiveAddressActions', () => {
         });
     });
 
+    it('does not display address verification for portfolio tracker', async () => {
+        const { queryByText } = await renderActions(false);
+
+        expect(queryByText(getTranslation('moduleReceive.addressActions.verify'))).toBeNull();
+    });
+
+    it('does not open the verification sheet after copying portfolio tracker address', async () => {
+        const { getByText } = await renderActions(false);
+
+        await userEvent.press(getByText(getTranslation('qrCode.copyButton')));
+
+        await waitFor(() => {
+            expect(mockCopyToClipboard).toHaveBeenCalledWith(address, undefined, {
+                shouldShowToast: true,
+            });
+            expect(mockOpenCopiedAddressBottomSheet).not.toHaveBeenCalled();
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.receiveCopyAddressEvent.name,
+            });
+        });
+    });
+
     it('opens shared address verification after sharing', async () => {
         const { getByText, getByTestId } = await renderActions();
 
@@ -144,6 +170,20 @@ describe('ReceiveAddressActions', () => {
         });
         expect(mockAnalyticsReport).toHaveBeenCalledWith({
             type: events.receiveStartVerificationEvent.name,
+        });
+    });
+
+    it('does not open shared address verification after sharing portfolio tracker address', async () => {
+        const { getByText } = await renderActions(false);
+
+        await userEvent.press(getByText(getTranslation('qrCode.shareButton')));
+
+        await waitFor(() => {
+            expect(mockShare).toHaveBeenCalledWith({ message: address });
+            expect(mockOpenSharedAddressBottomSheet).not.toHaveBeenCalled();
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.receiveShareAddressEvent.name,
+            });
         });
     });
 
