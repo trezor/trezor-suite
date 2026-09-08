@@ -7,7 +7,11 @@ import './src/initSentry';
 
 import { registerRootComponent } from 'expo';
 
+import { markStartupJsBundleEvaluated } from '@suite-native/sentry';
+
 import { createSuiteNativeCompositionRoot } from './src/createSuiteNativeCompositionRoot';
+
+markStartupJsBundleEvaluated();
 
 const { init } = createSuiteNativeCompositionRoot();
 const App = init();
