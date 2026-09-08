@@ -1,7 +1,7 @@
 {
     "name": "@suite-native/app",
     "version": "1.0.0",
-    "suiteNativeVersion": "26.9.1",
+    "suiteNativeVersion": "26.10.1",
     "main": "index.js",
     "expo": {
         "autolinking": {
