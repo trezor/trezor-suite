@@ -4182,7 +4182,7 @@ export const messages = {
             transactionId: 'Trans. ID: {orderId}',
             detail: {
                 info: {
-                    youPay: 'You pay',
+                    youPayLabel: 'You pay',
                     youGet: 'You get',
                     fromAccount: 'from {accountLabel}',
                     toAccount: 'to {accountLabel}',

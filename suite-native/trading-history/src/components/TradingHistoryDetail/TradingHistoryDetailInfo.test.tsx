@@ -61,7 +61,7 @@ describe('TradingHistoryDetailInfo', () => {
         );
 
         expect(
-            getByText(getTranslation('moduleTrading.tradeHistory.detail.info.youPay')),
+            getByText(getTranslation('moduleTrading.tradeHistory.detail.info.youPayLabel')),
         ).toBeOnTheScreen();
         expect(
             getByText(getTranslation('moduleTrading.tradeHistory.detail.info.youGet')),

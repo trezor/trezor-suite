@@ -43,6 +43,7 @@ export const useSellTradeStatusSteps = (trade: TradingTransactionSell) => {
             statusUrl={statusUrl}
             key="provider"
             logo={provider?.logo}
+            isActive={progressId === 'providerProcessing'}
         />
     );
 
@@ -67,6 +68,7 @@ export const useSellTradeStatusSteps = (trade: TradingTransactionSell) => {
                             value={trade.data.txid}
                             textVariant="body-md"
                             onPress={handleTxIdPress}
+                            isActive={false}
                         />
                     ),
                 },

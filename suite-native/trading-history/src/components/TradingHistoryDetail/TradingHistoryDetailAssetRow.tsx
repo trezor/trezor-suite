@@ -125,7 +125,7 @@ export const TradingHistoryDetailAssetRow = ({
                         <Translation
                             id={
                                 side === 'pay'
-                                    ? 'moduleTrading.tradeHistory.detail.info.youPay'
+                                    ? 'moduleTrading.tradeHistory.detail.info.youPayLabel'
                                     : 'moduleTrading.tradeHistory.detail.info.youGet'
                             }
                         />

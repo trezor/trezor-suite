@@ -48,6 +48,7 @@ export const useExchangeTradeStatusSteps = (trade: TradingTransactionExchange) =
             statusUrl={statusUrl}
             key="provider"
             logo={provider?.logo}
+            isActive={progressId === (isDex ? 'customerAction' : 'providerProcessing')}
         />
     );
 
@@ -59,6 +60,7 @@ export const useExchangeTradeStatusSteps = (trade: TradingTransactionExchange) =
             value={trade.data.receiveTxHash}
             onPress={handleTxIdPress}
             key="transaction-id"
+            isActive={progressId === 'customerAction'}
         />
     );
 
@@ -114,6 +116,7 @@ export const useExchangeTradeStatusSteps = (trade: TradingTransactionExchange) =
                             value={trade.data.receiveTxHash}
                             textVariant="body-md"
                             onPress={handleTxIdPress}
+                            isActive={false}
                         />
                     ),
                 },

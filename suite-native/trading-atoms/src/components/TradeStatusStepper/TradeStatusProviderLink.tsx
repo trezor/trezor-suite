@@ -10,12 +10,14 @@ type TradeStatusProviderLinkProps = {
     logo?: string;
     statusUrl?: string;
     providerName: string;
+    isActive?: boolean;
 };
 
 export const TradeStatusProviderLink = ({
     logo,
     providerName,
     statusUrl,
+    isActive = true,
 }: TradeStatusProviderLinkProps) => {
     const openLink = useOpenLink();
     const isStatusUrlAvailable = !!statusUrl;
@@ -26,13 +28,7 @@ export const TradeStatusProviderLink = ({
                 label={
                     <Translation id="moduleTrading.tradeHistory.detail.statusStepper.provider.label" />
                 }
-                value={
-                    <ProviderDisplay
-                        color="contentSecondary"
-                        logo={logo}
-                        providerName={providerName}
-                    />
-                }
+                value={<ProviderDisplay logo={logo} providerName={providerName} />}
             />
         );
     }
@@ -43,7 +39,8 @@ export const TradeStatusProviderLink = ({
             <Box flexShrink={1}>
                 <TextButton
                     size="small"
-                    intent="brand"
+                    intent={isActive ? 'brand' : 'neutral'}
+                    priority={isActive ? 'primary' : 'secondary'}
                     isUnderlined
                     iconRight="arrowSquareOut"
                     onPress={() => openLink(statusUrl)}
