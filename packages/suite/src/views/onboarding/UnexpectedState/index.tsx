@@ -4,7 +4,10 @@ import { selectThpStep } from '@suite-common/thp';
 
 import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
+import {
+    selectIsOnboardedDeviceReplaced,
+    selectOnboardedDevice,
+} from 'src/selectors/onboarding/onboardingSelectors';
 import { selectPrerequisiteForDevice } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceDifferentStep } from './DeviceDifferentStep';
@@ -22,8 +25,9 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectOnboardedDevice);
     const prerequisite = useSelector(state => selectPrerequisiteForDevice(state, device));
     const thpStep = useSelector(selectThpStep);
+    const isDeviceReplaced = useSelector(selectIsOnboardedDeviceReplaced);
 
-    const { prevDeviceId, activeStep, activeStepId, showPinMatrix } = useOnboarding();
+    const { activeStep, activeStepId, showPinMatrix } = useOnboarding();
 
     // After the PIN is set it may happen that it takes too long for an user to finish the onboarding process.
     // Then the device will get auto locked and requests to show a PIN matrix next before changing its setting.
@@ -32,9 +36,8 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
         return <ShowPinMatrixStep />;
     }
 
-    const isDeviceDifferent = prevDeviceId && device?.id && prevDeviceId !== device.id;
     // there may be specif onboarding prerequisites
-    if (activeStep?.prerequisites?.includes('device-different') && isDeviceDifferent) {
+    if (activeStep?.prerequisites?.includes('device-different') && isDeviceReplaced) {
         // in case we can 100% detect that user reconnected different device than he had previously connected
         return <DeviceDifferentStep />;
     }

@@ -22,6 +22,7 @@ import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectIsOnboardingInProgress } from 'src/selectors/onboarding/onboardingSelectors';
 
 const InstallButton = ({ children, ...rest }: ButtonProps) => (
     <Tooltip
@@ -98,7 +99,8 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
         showLowBatteryModal,
         switchFirmwareType,
     } = useFirmwareDesktopUpdate();
-    const { isActive: isOnboarding, updateAnalytics } = useOnboarding();
+    const { updateAnalytics } = useOnboarding();
+    const isOnboarding = useSelector(selectIsOnboardingInProgress);
     const { translationString } = useTranslation();
     const connectedDevices = useSelector(selectConnectedDevices);
     const isDebug = useSelector(selectIsDebugModeActive);

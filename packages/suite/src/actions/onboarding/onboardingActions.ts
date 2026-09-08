@@ -282,8 +282,6 @@ const goToNextStepThunk =
         dispatch(goToStep(nextStep.id));
     };
 
-const enableOnboardingReducer = createAction<boolean>(ONBOARDING.ENABLE_ONBOARDING_REDUCER);
-
 const updateAnalytics = createAction<Partial<OnboardingAnalytics>>(ONBOARDING.ANALYTICS);
 
 const updateBackupType = createAction<BackupType>(ONBOARDING.SELECT_BACKUP_TYPE);
@@ -381,7 +379,6 @@ export {
     handleOnboardedDeviceConnectThunk,
     onboardedDeviceConnected,
     onboardedDeviceDisconnected,
-    enableOnboardingReducer,
     goToNextStepThunk,
     goToStep,
     goToPreviousStepThunk,

@@ -45,7 +45,7 @@ import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCh
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
+import { selectIsOnboardingInProgress } from 'src/selectors/onboarding/onboardingSelectors';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { SecurityChecklist } from './SecurityChecklist';
@@ -126,7 +126,7 @@ const SecurityCheckContent = ({
     const isVerticalLayout = useIsContentBelowBreakpoint(breakpoints.tablet);
     const deviceId = device?.id;
     const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
-    const isOnboardingActive = useSelector(selectIsOnboardingActive);
+    const isOnboardingActive = useSelector(selectIsOnboardingInProgress);
     const [isFailed, setIsFailed] = useState(false);
 
     const { goToNextStep, rerun, updateAnalytics } = useOnboarding();

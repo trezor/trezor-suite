@@ -18,6 +18,7 @@ import {
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { type OnboardingService } from '@suite-common/suite-types';
 import { analytics } from '@suite-native/analytics';
 import {
     rerunFwAuthenticityChecksThunk,
@@ -106,6 +107,13 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
 
     const deviceReceiver = createDeviceReceiver();
 
+    // Mobile onboarding is driven entirely by its own screens; none of the shared-code moments
+    // the desktop flow hooks into mean anything to it. See `OnboardingService`.
+    const onboardingService: OnboardingService = {
+        onFirmwareInstallationFinished: () => {},
+        onSelectedDeviceUpdated: () => {},
+    };
+
     return {
         networkModuleRepository,
         getNetworkConfig,
@@ -118,6 +126,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         platformEncryption,
         analytics,
         deviceReceiver,
+        onboardingService,
         getMMKVStorage: () => deps.mmkvStorage.getMMKV(),
         reportSecurityCheck,
         reloadApp: RNRestart.restart,

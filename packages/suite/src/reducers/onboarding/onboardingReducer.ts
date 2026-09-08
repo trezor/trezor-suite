@@ -4,7 +4,6 @@ import { produce } from 'immer';
 import { type OnboardingAnalytics } from '@suite/analytics';
 import {
     type DeviceTrackingState,
-    deviceActions,
     deviceTrackingInitialState,
     deviceTrackingReducer,
 } from '@suite-common/device';
@@ -13,7 +12,6 @@ import { type BackupType } from '@suite-common/suite-types';
 import {
     addPath,
     armOnboardedDeviceTracking,
-    enableOnboardingReducer,
     goToStep,
     onboardedDeviceConnected,
     onboardedDeviceDisconnected,
@@ -33,8 +31,6 @@ export interface OnboardingRootState {
 export interface OnboardingState {
     backupType: BackupType;
     backupMedium: BackupMedium | null;
-    isActive: boolean;
-    prevDeviceId: string | null;
     activeStepId: AnyStepId;
     path: AnyPath[];
     onboardingAnalytics: Partial<OnboardingAnalytics>;
@@ -47,13 +43,6 @@ export interface OnboardingState {
 }
 
 const initialState: OnboardingState = {
-    isActive: false,
-    // todo: prevDevice is now used to solve two different things and it cant work
-    // would be better to implement field "isMatchingPrevDevice" along with prevDevice
-    // prevDevice is used only in firmwareUpdate so maybe move it to firmwareUpdate
-    // and here leave only isMatchingPrevDevice ?
-
-    prevDeviceId: null,
     activeStepId: STEP.ID_FIRMWARE_STEP,
     path: [],
     onboardingAnalytics: {},
@@ -73,32 +62,14 @@ const addPathToState = (path: AnyPath, state: OnboardingState) => {
 const removePathsFromState = (paths: AnyPath[], state: OnboardingState) =>
     state.path.filter(p => !paths.includes(p));
 
-const ALLOWED_ACTION_TYPES = new Set<UnknownAction['type']>([
-    resetOnboarding.type,
-    enableOnboardingReducer.type,
-    updateAnalytics.type,
-    // Arming happens in the CTA that starts onboarding, which runs before the route change that
-    // enables this reducer. Without this the ref would be dropped and onboarding would run with no
-    // device pinned at all.
-    armOnboardedDeviceTracking.type,
-]);
-
-const onboarding = (state: OnboardingState = initialState, action: UnknownAction) => {
-    if (!state.isActive && !ALLOWED_ACTION_TYPES.has(action.type)) {
-        return state;
-    }
-
-    return produce(state, draft => {
-        if (enableOnboardingReducer.match(action)) {
-            draft.isActive = action.payload;
-        } else if (goToStep.match(action)) {
+const onboarding = (state: OnboardingState = initialState, action: UnknownAction) =>
+    produce(state, draft => {
+        if (goToStep.match(action)) {
             draft.activeStepId = action.payload;
         } else if (addPath.match(action)) {
             draft.path = addPathToState(action.payload, state);
         } else if (removePath.match(action)) {
             draft.path = removePathsFromState(action.payload, state);
-        } else if (deviceActions.deviceDisconnect.match(action)) {
-            draft.prevDeviceId = action.payload.id ?? null;
         } else if (armOnboardedDeviceTracking.match(action)) {
             draft.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
                 type: 'arm',
@@ -125,8 +96,5 @@ const onboarding = (state: OnboardingState = initialState, action: UnknownAction
             return initialState;
         }
     });
-};
-
-export const selectIsOnboardingActive = (state: OnboardingRootState) => state.onboarding.isActive;
 
 export default onboarding;

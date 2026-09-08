@@ -2,6 +2,7 @@ import {
     type DeviceRootState,
     DeviceTrackingPhase,
     resolveDeviceByRef,
+    selectConnectedDevices,
     selectDevices,
 } from '@suite-common/device';
 
@@ -24,6 +25,15 @@ export const selectIsOnboardedDeviceTrackingArmed = (state: OnboardingRootState)
     state.onboarding.deviceTracking.phase !== DeviceTrackingPhase.Idle;
 
 /**
+ * Whether an onboarding run is under way.
+ *
+ * Being under way is the same thing as having a device pinned: everything that starts onboarding
+ * arms the ref, and every exit dispatches `resetOnboarding`, which clears it. This replaces the
+ * `isActive` flag the reducer used to carry, and the enable/disable action that set it.
+ */
+export const selectIsOnboardingInProgress = selectIsOnboardedDeviceTrackingArmed;
+
+/**
  * The physical device being onboarded.
  *
  * Onboarding wipes and initialises the device, so it disconnects and comes back with a new path
@@ -41,3 +51,19 @@ export const selectOnboardedDevice = (state: OnboardingRootState & DeviceRootSta
         devices: selectDevices(state),
         ref: selectOnboardedDeviceRef(state),
     });
+
+/**
+ * Whether the device in front of the user is a different one than onboarding was started with.
+ *
+ * Something is plugged in, and none of what is plugged in is the device onboarding pinned. That is
+ * a swap, as opposed to the device merely being away mid-reboot, which leaves nothing connected
+ * for the ref to fail against.
+ *
+ * Replaces comparing a remembered `prevDeviceId` against `device.id`, which onboarding itself
+ * invalidates: initialising a device regenerates its `device_id`, so that comparison reported a
+ * swap for the very same physical device.
+ */
+export const selectIsOnboardedDeviceReplaced = (state: OnboardingRootState & DeviceRootState) =>
+    selectIsOnboardingInProgress(state) &&
+    selectConnectedDevices(state).length > 0 &&
+    selectOnboardedDevice(state) === undefined;

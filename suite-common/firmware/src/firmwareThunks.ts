@@ -3,6 +3,7 @@ import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type GetBinFilesBaseUrlDep,
     type GetLanguageDep,
+    type OnboardingServiceDep,
     type ReportSecurityCheckDep,
     type TrezorDevice,
 } from '@suite-common/suite-types';
@@ -41,7 +42,7 @@ export type FirmwareUpdateResult = {
 export type FirmwareUpdateThunkState = DeviceRootState & FirmwareRootState;
 
 export type FirmwareUpdateThunkDeps = WithServices<
-    GetBinFilesBaseUrlDep & GetLanguageDep & ReportSecurityCheckDep
+    GetBinFilesBaseUrlDep & GetLanguageDep & OnboardingServiceDep & ReportSecurityCheckDep
 >;
 
 export const firmwareUpdateThunk = createThunk<
@@ -66,7 +67,7 @@ export const firmwareUpdateThunk = createThunk<
         }
 
         const {
-            services: { getBinFilesBaseUrl, getLanguage, reportSecurityCheck },
+            services: { getBinFilesBaseUrl, getLanguage, onboardingService, reportSecurityCheck },
         } = extra;
 
         // Pin the flow to the device the caller named. Not on a retry, where the device is already
@@ -164,7 +165,13 @@ export const firmwareUpdateThunk = createThunk<
                 releaseVersion,
             } = firmwareUpdateResponse.payload;
 
+            // Read before the status moves off it: onboarding presents a THP-paired install as
+            // pairing rather than as an install, so it has to be able to tell the two apart.
+            const wasThpPairing = selectFirmware(getState()).status === 'thp-pairing';
+
             dispatch(firmwareActions.setStatus('done'));
+
+            onboardingService.onFirmwareInstallationFinished({ wasThpPairing });
 
             // TODO: Add to the if-else block above and add handle in UI.
             if (!binary && !versionCheck) {

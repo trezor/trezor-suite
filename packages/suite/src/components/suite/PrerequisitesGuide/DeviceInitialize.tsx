@@ -12,7 +12,6 @@ import { TrezorBodyIcon } from '@trezor/icons';
 
 import {
     armOnboardedDeviceTracking,
-    enableOnboardingReducer,
     resetOnboarding,
     updateAnalytics,
 } from 'src/actions/onboarding/onboardingActions';
@@ -29,8 +28,6 @@ export const DeviceInitialize = () => {
         e.stopPropagation();
         // in case this prerequisite (device-initialize) is displayed inside onboarding app we need to reset onboarding state
         dispatch(resetOnboarding());
-        // and resetting state disables onboarding reducer so we need to enable it again
-        dispatch(enableOnboardingReducer(true));
 
         dispatch(updateAnalytics({ startTime: Date.now() }));
 

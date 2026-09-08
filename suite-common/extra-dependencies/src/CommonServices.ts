@@ -19,6 +19,7 @@ import {
     type GetBinFilesBaseUrlDep,
     type GetIsWindowVisibleDep,
     type GetLanguageDep,
+    type OnboardingServiceDep,
     type ReloadAppDep,
     type ReportSecurityCheckDep,
     type RerunFwAuthenticityChecksCallDep,
@@ -46,6 +47,7 @@ export type CommonServices = SuiteSyncDep &
     ConnectInitSettingsDep &
     ConnectInitHooksDeps &
     DeviceReceiverDep &
+    OnboardingServiceDep &
     GetAllowPrereleaseDep &
     GetBinFilesBaseUrlDep &
     ShouldRetryFirmwareRevisionCheckErrorDep &

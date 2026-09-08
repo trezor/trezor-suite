@@ -54,6 +54,7 @@ import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 import { createConnectInitHooks } from './createConnectInitHooks';
+import { createOnboardingService } from './createOnboardingService';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
@@ -100,6 +101,10 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     const analytics = createAnalytics();
     const deviceReceiver = createDeviceReceiver();
+    const onboardingService = createOnboardingService({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+    });
 
     const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
     const getAccountsByDeviceState = toGetter(deps.getState, selectAccountsByDeviceState);
@@ -175,6 +180,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getNamedAddressSupport,
         suiteSync,
         bip329,
+        onboardingService,
         migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,
         platformEncryption: deps.platformEncryption,

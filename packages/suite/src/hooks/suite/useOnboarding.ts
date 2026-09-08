@@ -39,8 +39,6 @@ export const useOnboarding = () => {
             goToPreviousStep: () =>
                 dispatch(onboardingActions.goToPreviousStepThunk(onboardedDevice)),
             resetOnboarding: () => dispatch(onboardingActions.resetOnboarding()),
-            enableOnboardingReducer: (enabled: boolean) =>
-                dispatch(onboardingActions.enableOnboardingReducer(enabled)),
             rerun: () => dispatch(onboardingActions.rerunRecoveryThunk()),
             updateAnalytics: (payload: Partial<OnboardingAnalytics>) =>
                 dispatch(onboardingActions.updateAnalytics(payload)),

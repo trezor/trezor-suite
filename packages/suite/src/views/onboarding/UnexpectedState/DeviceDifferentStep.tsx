@@ -7,7 +7,7 @@ import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 export const DeviceDifferentStep = () => {
-    const { resetOnboarding, enableOnboardingReducer } = useOnboarding();
+    const { resetOnboarding } = useOnboarding();
     const device = useSelector(selectOnboardedDevice);
 
     return (
@@ -29,7 +29,6 @@ export const DeviceDifferentStep = () => {
                 <OnboardingCard.Button
                     onClick={() => {
                         resetOnboarding();
-                        enableOnboardingReducer(true);
                     }}
                     intent="warning"
                     data-testid="@onboarding/unexpected-state/is-same/start-over-button"
