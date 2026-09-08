@@ -62,32 +62,6 @@ yarn native:start       # Start Metro bundler (in one terminal)
 yarn a                  # Run on Android (in another terminal)
 ```
 
-### Building Android with limited resources
-
-After generating the Android project, use this command to build a debug APK with one Gradle worker,
-two native compilation jobs, a 2 GiB Gradle heap, and reduced process priority:
-
-```bash
-yarn native:prebuild --platform android
-yarn native:android:build:local
-```
-
-This builds only the host emulator architecture (`x86_64`, or `arm64-v8a` on ARM hosts). Expo Updates
-also respects this architecture selection. Normal builds retain the configured architecture list.
-The Nix-provided `Pixel_6_API_34` emulator uses `x86_64`.
-
-Override the architecture for a physical device, or adjust compilation concurrency:
-
-```bash
-ANDROID_BUILD_ABI=arm64-v8a ANDROID_BUILD_JOBS=2 yarn native:android:build:local
-```
-
-The limits apply to this command only and may increase build time. The heap limit is for Gradle,
-not total build memory. The command creates `suite-native/app/android/app/build/outputs/apk/debug/app-debug.apk`;
-it does not start an emulator or Metro. With your emulator or device connected, install it using
-`adb install -r suite-native/app/android/app/build/outputs/apk/debug/app-debug.apk`, then start
-`yarn native:start` and open the app on the device.
-
 ### Running the Android emulator
 
 ```bash

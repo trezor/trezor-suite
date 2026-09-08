@@ -15,8 +15,11 @@ let
     includeEmulator = false;
     includeSystemImages = false;
     includeNDK = true;
-    # Match React Native's default; withAndroidNdkVersion fixes modules that omit it.
-    ndkVersions = [ "27.1.12297006" ];
+    # Keep both versions required by React Native and native modules.
+    ndkVersions = [
+      "27.1.12297006"
+      "27.0.12077973"
+    ];
     cmakeVersions = [ "3.22.1" ];
   };
 

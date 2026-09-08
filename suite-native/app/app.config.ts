@@ -136,6 +136,7 @@ const getPlugins = (): ExpoPlugins => {
                     minSdkVersion: 28,
                     // this fixes expo-updates build error
                     kotlinVersion: '2.1.20',
+                    ndkVersion: '27.0.12077973',
                     // react-native-quick-crypto (since v1) and expo-sqlite both bundle their
                     // own OpenSSL libcrypto.so, which collides during mergeDebugNativeLibs.
                     // pickFirst resolves the duplicate-.so packaging conflict.
@@ -156,7 +157,6 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         './plugins/withGradleProperties.js',
-        './plugins/withAndroidNdkVersion.js',
         [
             '@config-plugins/detox',
             {
