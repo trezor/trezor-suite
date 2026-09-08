@@ -7,13 +7,12 @@ import { CreateNfcBackup, NoNfcTags } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectIsDeviceBackupRequired } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Badge, Column } from '@trezor/components';
 import { CheckIcon, TrezorBackupIcon, WalletIcon, WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { resetDeviceThunk } from 'src/actions/settings/deviceSettingsActions';
+import { resetForDeviceThunk } from 'src/actions/settings/deviceSettingsActions';
 import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { ConfirmActionModal } from 'src/components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
@@ -22,7 +21,7 @@ import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelect
 
 type SecurityStepStatus = 'initial' | 'in-progress' | 'skipping-backup' | 'finished';
 
-type ResetDeviceParams = NonNullable<Parameters<typeof resetDeviceThunk>[0]>;
+type ResetDeviceParams = NonNullable<Parameters<typeof resetForDeviceThunk>[1]>;
 
 export const SecurityStep = () => {
     const [status, setStatus] = useState<SecurityStepStatus>('initial');
@@ -40,7 +39,7 @@ export const SecurityStep = () => {
     const { dispatch } = useServices(selectDispatch);
     const backup = useSelector(selectBackup);
     const isDeviceLocked = isLocked();
-    const isBackupRequired = useSelector(selectIsDeviceBackupRequired);
+    const isBackupRequired = device?.features?.backup_availability === 'Required';
     const isNfcBackup = backupMedium === 'nfc';
 
     const getResetDeviceParams = useCallback(
@@ -84,7 +83,7 @@ export const SecurityStep = () => {
 
         // Wallet creation + backup in one atomic call, same as native device onboarding.
         // If backup fails, the device wipes itself (skip_backup: false).
-        const result = await dispatch(resetDeviceThunk(getResetDeviceParams()));
+        const result = await dispatch(resetForDeviceThunk(device, getResetDeviceParams()));
 
         if (result?.success) {
             setStatus('finished');
@@ -92,14 +91,14 @@ export const SecurityStep = () => {
             // TODO: why should we go to the default dashboard when there is an error??
             dispatch(gotoThunk({ routeName: 'suite-index' }));
         }
-    }, [dispatch, getResetDeviceParams, updateAnalytics]);
+    }, [device, dispatch, getResetDeviceParams, updateAnalytics]);
 
     const handleSkipBackup = useCallback(
         async ({ showFinishedScreen = false }: { showFinishedScreen?: boolean } = {}) => {
             updateAnalytics({ backup: 'skip' });
             setShowSkipConfirmation(false);
             setStatus('skipping-backup');
-            const result = await dispatch(resetDeviceThunk(getResetDeviceParams(true)));
+            const result = await dispatch(resetForDeviceThunk(device, getResetDeviceParams(true)));
             if (result?.success) {
                 if (showFinishedScreen) {
                     setStatus('finished');
@@ -110,7 +109,7 @@ export const SecurityStep = () => {
                 dispatch(gotoThunk({ routeName: 'suite-index' }));
             }
         },
-        [dispatch, getResetDeviceParams, goToNextStep, updateAnalytics],
+        [device, dispatch, getResetDeviceParams, goToNextStep, updateAnalytics],
     );
 
     if (status === 'initial') {

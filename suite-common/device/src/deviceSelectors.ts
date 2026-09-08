@@ -581,11 +581,6 @@ export const selectFirmwareChangelog = (state: DeviceRootState) => {
     return device?.firmwareReleaseConfigInfo?.release.changelog;
 };
 
-const selectDeviceUnitPackaging = createMemoizedSelector(
-    [selectDeviceFeatures],
-    features => features?.unit_packaging ?? 0,
-);
-
 const defaultBackupTypeMap: Record<DeviceModelInternal, BackupType> = {
     [DeviceModelInternal.UNKNOWN]: '12-words', // just to have something
     [DeviceModelInternal.T1B1]: '24-words',
@@ -596,16 +591,25 @@ const defaultBackupTypeMap: Record<DeviceModelInternal, BackupType> = {
     [DeviceModelInternal.T3W1]: 'shamir-single',
 };
 
-export const selectDeviceDefaultBackupType = createMemoizedSelector(
-    [selectDeviceModel, selectDeviceUnitPackaging],
-    (deviceModel, deviceUnitPackaging) => {
-        // Original package of Trezor Safe 3 has a card with just 12 words.
-        if (deviceModel === DeviceModelInternal.T2B1 && deviceUnitPackaging === 0) {
-            return '12-words';
-        }
+/**
+ * The backup type a device defaults to, as a function of the device itself — so a caller that
+ * addresses a specific device (onboarding, which follows the device it pinned rather than the
+ * selection) can ask about that one instead of about whichever is selected.
+ */
+export const getDeviceDefaultBackupType = (device: TrezorDevice | undefined): BackupType => {
+    const deviceModel = device?.features?.internal_model;
 
-        return deviceModel ? defaultBackupTypeMap[deviceModel] : 'shamir-single';
-    },
+    // Original package of Trezor Safe 3 has a card with just 12 words.
+    if (deviceModel === DeviceModelInternal.T2B1 && (device?.features?.unit_packaging ?? 0) === 0) {
+        return '12-words';
+    }
+
+    return deviceModel ? defaultBackupTypeMap[deviceModel] : 'shamir-single';
+};
+
+export const selectDeviceDefaultBackupType = createMemoizedSelector(
+    [selectSelectedDevice],
+    getDeviceDefaultBackupType,
 );
 
 export const selectIsSameOrNewDevice = createMemoizedSelector(

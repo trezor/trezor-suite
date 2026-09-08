@@ -5,7 +5,7 @@ import { selectThpStep } from '@suite-common/thp';
 import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
-import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
+import { selectPrerequisiteForDevice } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceDifferentStep } from './DeviceDifferentStep';
 import { DeviceDisconnectedStep } from './DeviceDisconnectedStep';
@@ -20,7 +20,7 @@ type UnexpectedStateProps = {
  */
 export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectOnboardedDevice);
-    const prerequisite = useSelector(selectPrerequisite);
+    const prerequisite = useSelector(state => selectPrerequisiteForDevice(state, device));
     const thpStep = useSelector(selectThpStep);
 
     const { prevDeviceId, activeStep, activeStepId, showPinMatrix } = useOnboarding();
