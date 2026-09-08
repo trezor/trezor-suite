@@ -1,9 +1,10 @@
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 import { BigNumber } from '@trezor/utils';
 
-import { formatAddressWithNewlines, toCompactAmount } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
@@ -57,22 +58,23 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
                 await expect(tradingPage.fees.maxFee).not.toBeEmpty();
                 await expect(tradingPage.sendBalance).toHaveText(/\d/);
 
+                const balance = Number(await tradingPage.sendBalance.innerText());
                 maxFee = Number(await tradingPage.fees.maxFee.innerText());
                 const reservedAmount = await tradingPage.fees.getNetworkReserveAmount();
-
-                // The balance beside the asset name is compact, so it cannot be the basis for
-                // exact arithmetic. Total sent is exact, so the two invariants of Send Max are
-                // checked against that instead: the amount leaves the fee behind, and the amount
-                // plus the fee plus the network reserve reconciles with the balance on screen.
-                sendMaxAmountWithReserve = await tradingPage.sendAmountInput.inputValue();
-                const totalSent = new BigNumber(await walletPage.totalSent.innerText());
-
-                expect(
-                    new BigNumber(sendMaxAmountWithReserve).plus(maxFee).toFixed(SOL_DECIMALS),
-                ).toBe(totalSent.toFixed(SOL_DECIMALS));
-                await expect(tradingPage.sendBalance).toHaveText(
-                    toCompactAmount(totalSent.plus(reservedAmount).toFixed()),
+                sendMaxAmountWithReserve = localizeNumber(
+                    new BigNumber(balance - maxFee - reservedAmount),
+                    'en-US',
+                    0,
+                    SOL_DECIMALS,
                 );
+                await expect(tradingPage.sendAmountInput).toHaveValue(sendMaxAmountWithReserve);
+                const expectedTotalSent = localizeNumber(
+                    new BigNumber(balance - reservedAmount),
+                    'en-US',
+                    0,
+                    SOL_DECIMALS,
+                );
+                await expect(walletPage.totalSent).toHaveText(expectedTotalSent);
                 await expect(tradingPage.sendButton).toBeEnabled();
             });
 
