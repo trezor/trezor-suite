@@ -2,11 +2,9 @@ import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wal
 import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, HStack, Text } from '@suite-native/atoms';
 import {
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
+    CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     TokenToFiatAmountFormatter,
-    asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { YieldBadge } from '@suite-native/module-earn';
@@ -112,8 +110,9 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                         )}
 
                         {token ? (
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(token.balance ?? '0')}
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
+                                value={token.balance ?? '0'}
                                 tokenSymbol={tokenAmountSymbol}
                                 tokenDecimals={token.decimals}
                                 numberOfLines={1}
@@ -122,7 +121,8 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                                 color="contentSecondary"
                             />
                         ) : (
-                            <CompactCryptoAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={balance}
                                 symbol={symbol}
                                 isBalance={true}

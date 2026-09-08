@@ -20,10 +20,7 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -184,7 +181,8 @@ export const StakingManagementStakedCard = ({
                             </PressableOpacity>
                         )}
                     </HStack>
-                    <CompactCryptoAmountFormatter
+                    <CryptoAmountFormatter
+                        formatStyle="compact-balance"
                         value={stakedBalance}
                         symbol={networkSymbol}
                         variant="headline-sm"
@@ -221,7 +219,8 @@ export const StakingManagementStakedCard = ({
                             />
                         )}
                     </HStack>
-                    <CompactCryptoAmountFormatter
+                    <CryptoAmountFormatter
+                        formatStyle="compact-balance"
                         value={totalRewards}
                         symbol={networkSymbol}
                         variant="headline-sm"

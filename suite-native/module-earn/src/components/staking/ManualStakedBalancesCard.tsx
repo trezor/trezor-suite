@@ -1,10 +1,7 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, PressableOpacity, Text, useBottomSheetModal } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -97,7 +94,8 @@ export const ManualStakedBalancesCard = ({
                                     <Translation id="earn.staked" />
                                 </Text>
                             </Box>
-                            <CompactCryptoAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={stakedBalance}
                                 symbol={symbol}
                                 color="contentPrimary"
@@ -121,7 +119,8 @@ export const ManualStakedBalancesCard = ({
                                     {rewardsTitle}
                                 </Text>
                             </Box>
-                            <CompactCryptoAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={rewardsBalance}
                                 symbol={symbol}
                                 color="contentBrand"

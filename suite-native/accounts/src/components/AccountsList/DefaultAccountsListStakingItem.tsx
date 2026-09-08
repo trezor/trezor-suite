@@ -1,9 +1,6 @@
 import { type Account } from '@suite-common/wallet-types';
 import { RoundedIcon } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
@@ -40,7 +37,8 @@ export const DefaultAccountsListStakingItem = ({
             />
         }
         secondaryValue={
-            <CompactCryptoAmountFormatter
+            <CryptoAmountFormatter
+                formatStyle="compact-balance"
                 value={stakingCryptoBalance}
                 symbol={account.symbol}
                 numberOfLines={1}

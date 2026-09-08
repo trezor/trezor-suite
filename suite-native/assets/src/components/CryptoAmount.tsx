@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter } from '@suite-native/formatters';
 
 import { selectAssetCryptoValue } from '../assetsSelectors';
 import { type AssetsRootState } from '../types';
@@ -15,7 +15,8 @@ export const CryptoAmount = memo(({ symbol }: CryptoAmountProps) => {
     );
 
     return (
-        <CompactCryptoAmountFormatter
+        <CryptoAmountFormatter
+            formatStyle="compact-balance"
             value={cryptoValue}
             symbol={symbol}
             testID={`@assets/cryptoAmount/${symbol}`}

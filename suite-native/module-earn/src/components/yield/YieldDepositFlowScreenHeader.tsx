@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
-import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { type CloseActionType, ScreenHeader } from '@suite-native/navigation';
 
@@ -54,7 +54,8 @@ export const YieldDepositFlowScreenHeader = ({
                                     {accountLabel}
                                 </Text>
                             </Box>
-                            <CompactCryptoAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={account.formattedBalance}
                                 symbol={account.symbol}
                                 variant="body-xs"

@@ -4,27 +4,19 @@ React component wrappers around the shared `@suite-common/formatters` primitives
 
 ## Choosing a formatter
 
-Use `CryptoAmountFormatter` when a value can be either a network coin or a token. It renders a token
-amount when `tokenContract` is present; otherwise it renders the network coin amount for `symbol`.
+Use `CryptoAmountFormatter` for network coin and token amounts. It renders a token amount when
+`tokenContract` is present. Token-only calls without a network `symbol` also render through the token
+path when token metadata is provided.
 
-Use the specialized formatters when the call site already knows whether it renders a coin or a token.
-They keep the stricter value types close to the source data.
+| Component               | For        | Symbol prop                               | Value         |
+| ----------------------- | ---------- | ----------------------------------------- | ------------- |
+| `CryptoAmountFormatter` | coin/token | `symbol` or `tokenSymbol`/`tokenContract` | amount string |
 
-| Component                      | For          | Symbol prop                | Value                |
-| ------------------------------ | ------------ | -------------------------- | -------------------- |
-| `CryptoAmountFormatter`        | coin/token   | `symbol: NetworkSymbol`    | amount string        |
-| `CompactCryptoAmountFormatter` | network coin | `symbol: NetworkSymbol`    | amount string        |
-| `ExactCryptoAmountFormatter`   | network coin | `symbol: NetworkSymbol`    | amount string        |
-| `CompactTokenAmountFormatter`  | token        | `tokenSymbol: TokenSymbol` | `DecimalTokenAmount` |
-| `ExactTokenAmountFormatter`    | token        | `tokenSymbol: TokenSymbol` | `DecimalTokenAmount` |
+### Why token metadata still matters
 
-### Why the specialized split remains
-
-- **Type safety.** The crypto formatters accept only a `NetworkSymbol`. Passing a token symbol is a compile error, which forces you to reach for a token formatter instead. This prevents tokens from silently falling through the coin path and losing token-specific formatting (e.g. stablecoin money-like rendering, which needs the token's decimals).
-- **Token decimals.** Only the token formatters carry token decimals. `CompactTokenAmountFormatter` uses `tokenDecimals` to pick money-like rendering for 6-decimal stablecoins (USDC/USDT). Coin formatters have no notion of token decimals.
-- **Decimal-unit invariant.** Token formatters accept only `DecimalTokenAmount` (human-readable units, not base units). Convert at the call site:
-    - `asDecimalTokenAmount(value)` — value is already in decimal units.
-    - `convertTokenValueToDecimal(value, decimals)` — value is in base units (subunits).
+- **Token detection.** `CryptoAmountFormatter` renders token amounts when `tokenContract` is present, or when token metadata (`tokenSymbol` or `tokenDecimals`) is provided without a network `symbol`. Otherwise it renders a network coin amount for `symbol`.
+- **Token decimals.** Pass `tokenDecimals` so compact formatting can render 6-decimal stablecoins (USDC/USDT) money-like.
+- **Decimal-unit invariant.** Token values are expected in human-readable units, not base units. Use `convertTokenValueToDecimal(value, decimals)` when the source value is in base units.
 
 ### Compact vs. exact
 
@@ -33,4 +25,4 @@ They keep the stricter value types close to the source data.
 
 ## Usage
 
-See `@suite-common/formatters` for the underlying `useFormatters()` / `makeFormatter` primitives that these components build on.
+See `@suite-common/formatters` for the underlying `useFormatters()` / `makeFormatter` primitives that this component builds on.

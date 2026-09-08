@@ -4,10 +4,7 @@ import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/w
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Card, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -52,7 +49,8 @@ export const StakingManagementPendingItem = ({
                     </Text>
                     <HStack spacing="sp12" alignItems="center">
                         <VStack style={applyStyle(amountsStyle)} spacing="sp2">
-                            <CompactCryptoAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={amount}
                                 symbol={symbol}
                                 color="contentPrimary"

@@ -1,10 +1,15 @@
+import { type TextProps } from '@suite-native/atoms';
+
 import { AmountText } from './AmountText';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
-import { type CryptoAmountFormatterProps } from './cryptoAmountFormatterTypes';
 
-type FormattedCryptoAmountTextProps = Omit<CryptoAmountFormatterProps, 'value' | 'symbol'> & {
+type FormattedCryptoAmountTextProps = {
     formattedValue: string | null;
-};
+    isDiscreetText?: boolean;
+    isForcedDiscreetMode?: boolean;
+    isLoading?: boolean;
+    sign?: '+' | '-' | null;
+} & TextProps;
 
 export const FormattedCryptoAmountText = ({
     formattedValue,

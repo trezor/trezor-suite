@@ -18,11 +18,7 @@ import {
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
-import {
-    CompactTokenAmountFormatter,
-    TokenToFiatAmountFormatter,
-    asDecimalTokenAmount,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -285,8 +281,9 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.tokenBalance" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
+                                value={yieldToken.balance ?? '0'}
                                 tokenSymbol={yieldToken.symbol}
                                 tokenDecimals={yieldToken.decimals}
                                 color="contentPrimary"
@@ -309,8 +306,9 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.yearlyRewards" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(yearlyRewards.yearlyRewards)}
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
+                                value={yearlyRewards.yearlyRewards}
                                 tokenSymbol={
                                     wrappedNativeSymbol
                                         ? toTokenSymbol(wrappedNativeSymbol)
@@ -338,8 +336,9 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.potentialRewards" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(potentialRewards.potentialRewards)}
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
+                                value={potentialRewards.potentialRewards}
                                 tokenSymbol={
                                     wrappedNativeSymbol
                                         ? toTokenSymbol(wrappedNativeSymbol)

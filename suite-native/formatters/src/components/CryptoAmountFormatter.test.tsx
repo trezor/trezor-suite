@@ -1,4 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenSymbol } from '@suite-common/wallet-types';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { CryptoAmountFormatter } from './CryptoAmountFormatter';
@@ -47,6 +48,45 @@ describe('CryptoAmountFormatter', () => {
         expect(getByTestId('plain-text')).toHaveTextContent('23.91 USDC');
     });
 
+    it('renders network amount when token contract is undefined and network symbol is provided', async () => {
+        const { getByTestId } = await renderWithBasicProvider(
+            <CryptoAmountFormatter
+                value="1.239"
+                symbol={ethSymbol}
+                formatStyle="compact-balance"
+                tokenContract={undefined}
+                tokenDecimals={undefined}
+                tokenSymbol={undefined}
+            />,
+        );
+
+        expect(getByTestId('plain-text')).toHaveTextContent('1.23 ETH');
+    });
+
+    it('renders compact token amount when token symbol is provided', async () => {
+        const { getByTestId } = await renderWithBasicProvider(
+            <CryptoAmountFormatter
+                value="0.000009"
+                formatStyle="compact-balance"
+                tokenSymbol={'USDC' as TokenSymbol}
+            />,
+        );
+
+        expect(getByTestId('plain-text')).toHaveTextContent('<0.00001 USDC');
+    });
+
+    it('renders token amount when token symbol is null and network symbol is not provided', async () => {
+        const { getByTestId } = await renderWithBasicProvider(
+            <CryptoAmountFormatter
+                value="0.000009"
+                formatStyle="compact-balance"
+                tokenSymbol={null}
+            />,
+        );
+
+        expect(getByTestId('plain-text')).toHaveTextContent('<0.00001');
+    });
+
     it('renders exact token amount when token contract is provided', async () => {
         const { getByTestId } = await renderWithBasicProvider(
             <CryptoAmountFormatter
@@ -60,5 +100,18 @@ describe('CryptoAmountFormatter', () => {
         );
 
         expect(getByTestId('plain-text')).toHaveTextContent('0.000000000000000001 USDC');
+    });
+
+    it('renders phishing transaction with empty value as discreet text', async () => {
+        const { getByTestId } = await renderWithBasicProvider(
+            <CryptoAmountFormatter
+                value=""
+                formatStyle="exact"
+                tokenSymbol={'USDC' as TokenSymbol}
+                isPhishingTransaction
+            />,
+        );
+
+        expect(getByTestId('discreet-text')).toHaveTextContent('0 USDC');
     });
 });

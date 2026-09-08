@@ -2,12 +2,7 @@ import { invariant } from '@suite-common/suite-utils';
 import { type TradeableAssetBalance, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
-import {
-    BaseCurrencyAmountFormatter,
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
-    asDecimalTokenAmount,
-} from '@suite-native/formatters';
+import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { TradingAsset } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -44,8 +39,9 @@ export const TradeableAssetListItem = ({
                 numberOfLines={1}
             />
             {contractAddress ? (
-                <CompactTokenAmountFormatter
-                    value={asDecimalTokenAmount(balance.cryptoAmount)}
+                <CryptoAmountFormatter
+                    formatStyle="compact-balance"
+                    value={balance.cryptoAmount}
                     tokenSymbol={symbol as TokenSymbol}
                     tokenDecimals={decimals}
                     variant="body-sm"
@@ -54,7 +50,8 @@ export const TradeableAssetListItem = ({
                     adjustsFontSizeToFit
                 />
             ) : (
-                <CompactCryptoAmountFormatter
+                <CryptoAmountFormatter
+                    formatStyle="compact-balance"
                     value={balance.cryptoAmount}
                     symbol={networkSymbol}
                     variant="body-sm"

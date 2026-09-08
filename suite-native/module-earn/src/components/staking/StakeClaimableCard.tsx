@@ -10,10 +10,7 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { BannerInline, Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -90,7 +87,8 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
                         </Text>
                     </Box>
                     <Box style={applyStyle(valuesContainerStyle)}>
-                        <CompactCryptoAmountFormatter
+                        <CryptoAmountFormatter
+                            formatStyle="compact-balance"
                             value={claimableAmount}
                             symbol={symbol}
                             color="contentPrimary"

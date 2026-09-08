@@ -2,7 +2,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AddressLabel } from '@suite-native/address';
 import { HStack, Text } from '@suite-native/atoms';
-import { AddressFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
+import { AddressFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type AccountAddress, type StaticSessionId } from '@trezor/connect';
@@ -47,7 +47,8 @@ export const ReceiveAddressListItem = ({
             </HStack>
             <HStack spacing="sp12" alignItems="center">
                 {isUsed ? (
-                    <ExactCryptoAmountFormatter
+                    <CryptoAmountFormatter
+                        formatStyle="exact"
                         value={formatNetworkAmount(address.received ?? '0', symbol)}
                         symbol={symbol}
                         variant="body-md"
