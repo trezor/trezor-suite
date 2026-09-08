@@ -2874,6 +2874,12 @@ export const messages = {
                     'Everstake maintains and protects your staked {displaySymbol} with their smart contracts, infrastructure, and technology.',
                 secondItem:
                     "When you stake, the responsibility for your funds' security transitions from your Trezor device to Everstake.",
+                title: 'Delegate to Everstake',
+            },
+            entryPeriodCard: {
+                title: 'Confirm activation period',
+                firstItem: 'Staking activation currently takes up to {entryPeriodInDays} days.',
+                secondItem: "You can't cancel your stake during this period.",
             },
         },
         earnTransactionDataReviewScreen: {
@@ -3004,7 +3010,7 @@ export const messages = {
                 'Due to Solana transaction size restrictions, you can unstake from {limit} accounts at once. In the next transaction you can unstake up to {amount} {symbol}. To unstake more, repeat the process.',
         },
         earnScreen: {
-            otherOpportunities: 'Other opportunities',
+            otherOpportunities: 'Explore earn opportunities',
             depositsCard: {
                 title: 'Earning balance',
                 networkStaking: '{networkName} staking',
@@ -3017,8 +3023,10 @@ export const messages = {
                 incompleteFiatTotal: 'Some fiat rates couldn’t load. Total may be incomplete.',
             },
             activeSheet: {
-                stakingPositionsTitle: 'Your staking positions',
-                yieldPositionsTitle: 'Your DeFi yield positions',
+                stakingPositionsTitle: 'Staking positions',
+                yieldPositionsTitle: 'Yield positions',
+                stakingTitle: 'Your stakes',
+                stablecoinYieldTitle: 'Your yields',
             },
             stablecoinYieldLoadError: {
                 title: 'Unable to load yield opportunities',
@@ -3028,6 +3036,7 @@ export const messages = {
             chooseAccountSheet: {
                 stakingTitle: 'Choose account to stake',
                 yieldTitle: 'Choose account to yield',
+                title: 'Choose account',
             },
             earnItem: {
                 rewards: 'Rewards',
@@ -3063,7 +3072,8 @@ export const messages = {
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
             claimRewards: {
-                title: 'Bonus rewards to claim',
+                title: 'Claim rewards from an account',
+                subtitle: 'Select an account to claim bonus rewards.',
             },
             title: 'Earn',
         },
@@ -3323,6 +3333,7 @@ export const messages = {
                 },
             },
             depositCompleteStepTitle: 'Deposit complete',
+            depositMax: 'Deposit max',
         },
         yieldDepositRevokeScreen: {
             title: 'Revoke {tokenSymbol} spending',
@@ -3362,6 +3373,7 @@ export const messages = {
                 amountIsZero: 'Amount must be greater than 0.',
                 tooManyDecimals: 'Too many decimal places.',
             },
+            withdrawMax: 'Withdraw max',
         },
         yieldClaimFlowScreen: {
             title: 'Claim rewards',
@@ -4223,8 +4235,7 @@ export const messages = {
                 },
                 paymentInterruptionBanner: {
                     title: "Left the provider's website before paying?",
-                    description:
-                        "No worries – you haven't been charged. Just go back and create a new trade.",
+                    description: "You haven't been charged. Go back and create a new trade.",
                 },
                 supportBanner: {
                     title: 'Need help with your trade?',
@@ -4332,6 +4343,49 @@ export const messages = {
                         },
                     },
                 },
+                paid: 'You paid',
+                received: 'You get',
+                toAccount: 'To',
+                fromAccount: 'From',
+                issued: 'Issued',
+                provider: 'Provider',
+                method: 'Via',
+                orderId: 'Order ID:',
+                errorAlert: {
+                    title: 'Transaction failed',
+                    buyDescription:
+                        "Your transaction failed or was rejected. Your payment method hasn't been charged.",
+                    sellDescription:
+                        'The transaction didn’t go through. Your funds are safe in your account.',
+                    swapDescription:
+                        'The transaction didn’t go through. Your funds are safe in your account.',
+                    description:
+                        "Your transaction failed or was rejected. Your payment method hasn't been charged.",
+                },
+                waitingAlert: {
+                    title: 'Waiting for your payment ...',
+                    description: "Click to complete your details on the provider's site.",
+                    button: 'Proceed to pay',
+                },
+                convertingAlert: {
+                    title: 'Converting your crypto...',
+                    description: 'Your swap is being processed. This may take a few minutes.',
+                },
+                kycAlert: {
+                    title: 'KYC is required',
+                    description:
+                        'Complete the identity verification process to continue with your transaction.',
+                    button: 'Go to provider support',
+                },
+                sendingAlert: {
+                    title: 'Sending your crypto...',
+                    description: 'Your transaction is being processed. Wait for confirmation.',
+                },
+                buy: 'Buy',
+                exchange: 'Swap',
+                sell: 'Sell',
+                checkOrderStatus: 'Check your order status on the provider’s website.',
+                providerSupport: 'Go to provider support',
             },
         },
         error: {
