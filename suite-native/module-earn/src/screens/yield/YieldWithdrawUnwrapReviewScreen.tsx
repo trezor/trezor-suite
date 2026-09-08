@@ -16,6 +16,7 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
+import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { WrappedNativeTokenReviewContent } from '../../components/earn/WrappedNativeTokenReviewContent';
 import { useWrappedNativeReviewPreview } from '../../hooks/earn/useWrappedNativeReviewPreview';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
@@ -90,15 +91,17 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
     }
 
     return (
-        <WrappedNativeTokenReviewContent
-            account={account}
-            amount={review.amount}
-            flowContext="in-flow"
-            flowType="unwrap"
-            onBroadcast={handleBroadcast}
-            preview={preview}
-            spentToken={spentToken}
-            unsignedTransaction={review.unsignedTransaction}
-        />
+        <EarnDeviceConnectionGuard>
+            <WrappedNativeTokenReviewContent
+                account={account}
+                amount={review.amount}
+                flowContext="in-flow"
+                flowType="unwrap"
+                onBroadcast={handleBroadcast}
+                preview={preview}
+                spentToken={spentToken}
+                unsignedTransaction={review.unsignedTransaction}
+            />
+        </EarnDeviceConnectionGuard>
     );
 };

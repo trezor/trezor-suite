@@ -70,6 +70,7 @@
         { "path": "../config" },
         { "path": "../confirm-on-trezor" },
         { "path": "../device" },
+        { "path": "../device-authorization" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
         { "path": "../feedback-form" },

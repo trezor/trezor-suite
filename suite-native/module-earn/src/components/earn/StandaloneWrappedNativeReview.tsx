@@ -7,6 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 
+import { EarnDeviceConnectionGuard } from './EarnDeviceConnectionGuard';
 import { WrappedNativeTokenReviewContent } from './WrappedNativeTokenReviewContent';
 import { useWrappedNativeReviewPreview } from '../../hooks/earn/useWrappedNativeReviewPreview';
 
@@ -39,14 +40,16 @@ export const StandaloneWrappedNativeReview = ({
     }
 
     return (
-        <WrappedNativeTokenReviewContent
-            account={account}
-            amount={amount}
-            flowContext="standalone"
-            flowType={flowType}
-            preview={preview}
-            spentToken={spentToken}
-            unsignedTransaction={unsignedTransaction}
-        />
+        <EarnDeviceConnectionGuard>
+            <WrappedNativeTokenReviewContent
+                account={account}
+                amount={amount}
+                flowContext="standalone"
+                flowType={flowType}
+                preview={preview}
+                spentToken={spentToken}
+                unsignedTransaction={unsignedTransaction}
+            />
+        </EarnDeviceConnectionGuard>
     );
 };

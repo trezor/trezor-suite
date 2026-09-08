@@ -20,6 +20,7 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
+import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { YieldWithdrawReviewContent } from '../../components/yield/YieldWithdrawReviewContent';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
@@ -107,12 +108,14 @@ export const YieldWithdrawReviewScreen = () => {
     }
 
     return (
-        <YieldWithdrawReviewContent
-            flowData={flowData}
-            flowKey={flowKey}
-            flowType={flowType}
-            preview={preview}
-            reviewToken={reviewToken}
-        />
+        <EarnDeviceConnectionGuard>
+            <YieldWithdrawReviewContent
+                flowData={flowData}
+                flowKey={flowKey}
+                flowType={flowType}
+                preview={preview}
+                reviewToken={reviewToken}
+            />
+        </EarnDeviceConnectionGuard>
     );
 };
