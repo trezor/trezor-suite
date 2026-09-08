@@ -31,6 +31,7 @@ interface TokenReward {
     symbol: string;
     networkSymbol: NetworkSymbol;
     contractAddress: string;
+    decimals: number;
     crypto: AmountUnit;
     fiat: BaseCurrencyAmount;
 }
@@ -91,10 +92,10 @@ export const useYieldClaimRewardsData = ({
             tokenMap[tokenKey] = { ...entry };
         }
 
-        return Object.values(tokenMap).map(({ decimals, crypto: cryptoSubunits, ...entry }) => {
+        return Object.values(tokenMap).map(({ crypto: cryptoSubunits, ...entry }) => {
             const crypto = subunitsToUnits({
                 value: asAmountSubunit(cryptoSubunits),
-                decimals,
+                decimals: entry.decimals,
             });
 
             const fiat = asBaseCurrencyAmount(entry.fiat);
