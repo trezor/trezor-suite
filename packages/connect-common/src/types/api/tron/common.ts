@@ -53,6 +53,20 @@ const TronVoteWitnessContract = Type.Object({
     }),
 });
 
+const TronDelegateResourceContract = Type.Object({
+    type: Type.Literal('DelegateResourceContract'),
+    parameter: Type.Object({
+        value: PROTO.TronDelegateResourceContract,
+    }),
+});
+
+const TronUnDelegateResourceContract = Type.Object({
+    type: Type.Literal('UnDelegateResourceContract'),
+    parameter: Type.Object({
+        value: PROTO.TronUnDelegateResourceContract,
+    }),
+});
+
 export type TronContracts = Static<typeof TronContracts>;
 export const TronContracts = Type.Union([
     TronTransferContract,
@@ -62,6 +76,8 @@ export const TronContracts = Type.Union([
     TronWithdrawExpireUnfreezeContract,
     TronWithdrawBalanceContract,
     TronVoteWitnessContract,
+    TronDelegateResourceContract,
+    TronUnDelegateResourceContract,
 ]);
 
 export type TronContractsTypes = TronContracts['type'];
@@ -123,6 +139,8 @@ export const TronContractInput = Type.Union([
     TronWithdrawExpireUnfreezeContract,
     TronWithdrawBalanceContract,
     TronVoteWitnessContractInput,
+    TronDelegateResourceContract,
+    TronUnDelegateResourceContract,
 ]);
 
 export type TronSignTransaction = Static<typeof TronSignTransaction>;

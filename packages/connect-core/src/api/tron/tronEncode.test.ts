@@ -136,6 +136,54 @@ const VOTE = {
     },
 } as const;
 
+const DELEGATE_CONTRACT: TronContracts = {
+    type: 'DelegateResourceContract',
+    parameter: {
+        value: {
+            owner_address: OWNER_ADDRESS,
+            receiver_address: TO_ADDRESS,
+            balance: 1000000,
+            resource: 1,
+            lock: true,
+            lock_period: 86400,
+        },
+    },
+};
+
+const DELEGATE = {
+    signature:
+        'a7f8602b02413e9dded0170daa5b4ada9a2679198af276be456f4faea1bc326f5070789bec5e6471de3f726f4fe0c9daced8df183e4a62804db26d5650c59a521c',
+    blockParams: {
+        ref_block_bytes: 'e942',
+        ref_block_hash: '6394747da9fee421',
+        expiration: 1752562632000,
+        timestamp: 1752562572000,
+    },
+} as const;
+
+const UNDELEGATE_CONTRACT: TronContracts = {
+    type: 'UnDelegateResourceContract',
+    parameter: {
+        value: {
+            owner_address: OWNER_ADDRESS,
+            receiver_address: TO_ADDRESS,
+            balance: 1000000,
+            resource: 1,
+        },
+    },
+};
+
+const UNDELEGATE = {
+    signature:
+        'a7f8602b02413e9dded0170daa5b4ada9a2679198af276be456f4faea1bc326f5070789bec5e6471de3f726f4fe0c9daced8df183e4a62804db26d5650c59a521c',
+    blockParams: {
+        ref_block_bytes: 'e942',
+        ref_block_hash: '6394747da9fee421',
+        expiration: 1752562632000,
+        timestamp: 1752562572000,
+    },
+} as const;
+
 beforeAll(async () => {
     await loadProtobufModules();
 });
@@ -225,5 +273,35 @@ describe('tron/encodeBroadcastTransaction', () => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstSignature: (typeof signature)[number] = signature[0];
         expect(bytesToHex(firstSignature)).toBe(VOTE.signature);
+    });
+
+    it('embeds rawData and signature for a delegate', () => {
+        const rawDataHex = bytesToHex(
+            encodeTronContractRawData(DELEGATE_CONTRACT, DELEGATE.blockParams),
+        );
+        const result = encodeBroadcastTransaction(rawDataHex, DELEGATE.signature);
+
+        const decoded = decodeBroadcastTransaction(result);
+        expect(bytesToHex(decoded.rawData)).toBe(rawDataHex);
+        expect(decoded.signature).toHaveLength(1);
+        const { signature } = decoded;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstSignature: (typeof signature)[number] = signature[0];
+        expect(bytesToHex(firstSignature)).toBe(DELEGATE.signature);
+    });
+
+    it('embeds rawData and signature for an undelegate', () => {
+        const rawDataHex = bytesToHex(
+            encodeTronContractRawData(UNDELEGATE_CONTRACT, UNDELEGATE.blockParams),
+        );
+        const result = encodeBroadcastTransaction(rawDataHex, UNDELEGATE.signature);
+
+        const decoded = decodeBroadcastTransaction(result);
+        expect(bytesToHex(decoded.rawData)).toBe(rawDataHex);
+        expect(decoded.signature).toHaveLength(1);
+        const { signature } = decoded;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstSignature: (typeof signature)[number] = signature[0];
+        expect(bytesToHex(firstSignature)).toBe(UNDELEGATE.signature);
     });
 });
