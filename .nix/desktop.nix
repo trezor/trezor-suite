@@ -32,9 +32,6 @@ let
     export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
     export PLAYWRIGHT_BROWSERS_PATH="${playwright.playwright-driver.browsers}"
   ''
-  + pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
-    export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
-  ''
   + pkgs.lib.optionalString pkgs.stdenv.isLinux ''
     export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
   '';

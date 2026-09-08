@@ -11,6 +11,7 @@ let
     config.android_sdk.accept_license = true;
   };
 in
+assert pkgs.stdenv.isLinux;
 # Select Android before evaluating desktop dependencies, as the flake does.
 if builtins.getEnv "USE_ANDROID" == "1" then
   import ./.nix/android.nix {
@@ -59,10 +60,7 @@ in
       ++ lib.optionals stdenv.isLinux [
       nsis openjpeg osslsigncode p7zip squashfsTools gccPkgs.gcc # binaries used by node_module: electron-builder
       udev  # used by node_module: usb
-    ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
-      Cocoa
-      CoreServices
-    ]);
+    ];
 
     # used by patchelf for WabiSabiClientLibrary in dev mode (see webpack nixos-interpreter-plugin)
     NIX_PATCHELF_LIBRARY_PATH = "${openssl.out}/lib:${zlib}/lib:${gcc.cc.lib}/lib";
@@ -73,9 +71,7 @@ in
       export CURDIR="$(pwd)"
       export PATH="$PATH:$CURDIR/node_modules/.bin"
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
-     '' + lib.optionalString stdenv.isDarwin ''
-      export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
-    '' + lib.optionalString stdenv.isLinux ''
+     '' + lib.optionalString stdenv.isLinux ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
       export ELECTRON_DISABLE_SANDBOX=1
       export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source

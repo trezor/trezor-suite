@@ -45,14 +45,7 @@ in
   ]
   ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     pkgs.udev # used by node_module: usb
-  ]
-  ++ pkgs.lib.optionals pkgs.stdenv.isDarwin (
-    with pkgs.darwin.apple_sdk.frameworks;
-    [
-      Cocoa
-      CoreServices
-    ]
-  );
+  ];
 
   NIX_PATCHELF_LIBRARY_PATH = "${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.gcc.cc.lib}/lib";
   NIX_CC = "${pkgs.gcc}";
