@@ -21,6 +21,7 @@ import {
     selectIsTransactionReviewInProgress,
 } from '@suite-native/transaction-management';
 
+import { AddressReviewEnsPreview } from '../components/AddressReviewEnsPreview';
 import { AddressReviewStepList } from '../components/AddressReviewStepList';
 
 export const SendAddressReviewScreen = ({
@@ -69,6 +70,10 @@ export const SendAddressReviewScreen = ({
                     <Text variant="headline-sm">
                         <Translation id="moduleSend.review.address.title" />
                     </Text>
+                    <AddressReviewEnsPreview
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
                     <AddressReviewStepList />
                 </VStack>
             </Box>

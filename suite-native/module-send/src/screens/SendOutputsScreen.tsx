@@ -71,7 +71,14 @@ export const SendOutputsScreen = ({
         return null;
     }
 
-    const { form, handleSubmitSendForm, amount, network, feeLevelsMaxAmount } = sendForm;
+    const {
+        form,
+        handleSubmitSendForm,
+        amount,
+        network,
+        feeLevelsMaxAmount,
+        isResolvingNamedAddress,
+    } = sendForm;
     const {
         formState: { isValid, isSubmitting },
     } = form;
@@ -126,7 +133,8 @@ export const SendOutputsScreen = ({
                     </Animated.View>
                 ) : (
                     isValid &&
-                    isFeeReady && (
+                    isFeeReady &&
+                    !isResolvingNamedAddress && (
                         <SendOutputsScreenFooter
                             isSubmitting={isSubmitting}
                             handleNavigateToReviewScreen={handleSubmitSendForm}

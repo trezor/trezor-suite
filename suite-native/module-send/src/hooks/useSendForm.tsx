@@ -7,7 +7,7 @@ import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
+import { selectAddressValidatorDep, selectGetNamedAddressSupportDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -26,6 +26,7 @@ import {
     selectSendFormDraftByKey,
     sendFormActions,
     updateFeeInfoThunk,
+    useResolveNamedAddress,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -114,7 +115,10 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { addressValidator, getNamedAddressSupport } = useServices(
+        selectAddressValidatorDep,
+        selectGetNamedAddressSupportDep,
+    );
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
@@ -155,6 +159,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     const network = account ? getNetwork(account.symbol) : null;
 
+    const namedAddress = getNamedAddressSupport(account?.symbol);
+
     const networkReserve = account
         ? getNetworkReserve({
               symbol: account.symbol,
@@ -183,6 +189,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             accountNativeAvailableBalance: account?.availableBalance,
             networkReserve,
             rippleReserve,
+            namedAddress,
         },
         defaultValues: getDefaultValues({
             tokenContract,
@@ -194,6 +201,14 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const { handleSubmit, control, getValues, trigger, setError } = form;
     const watchedFormValues = useWatch({ control });
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
+
+    const { mode: namedAddressMode, isResolving } = useResolveNamedAddress(
+        watchedAddress ?? '',
+        account?.symbol,
+    );
+    // Submitting before a name resolves would compose against the name itself. Reverse lookups
+    // run on an already-valid address, so they do not block.
+    const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
 
     const updateFormState = useCallback(async () => {
         if (account && network && networkFeeInfo) {
@@ -516,5 +531,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         network,
         amount,
         feeLevelsMaxAmount,
+        isResolvingNamedAddress,
     };
 };

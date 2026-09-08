@@ -20,8 +20,10 @@ export const constructFormDraft = ({
     feeLevel?: Pick<FeeLevel, 'label' | 'feePerUnit' | 'feeLimit'>;
     selectedUtxos?: Utxo[];
 }): FormState => ({
-    outputs: outputs.map(({ address, amount, label, fiat = '' }) => ({
+    outputs: outputs.map(({ address, resolvedAddress, amount, label, fiat = '' }) => ({
         address,
+        // An empty string is the form's "name did not resolve" marker, never an address.
+        resolvedAddress: resolvedAddress || undefined,
         amount,
         label,
         type: 'payment',
