@@ -244,12 +244,12 @@ export const StakingTransactionDataReviewContent = ({
                     isDiscreetText={false}
                 />
             }
-            amountLabel={<Translation id={pendingTxModalTitleTranslationId[stakeType]} />}
+            amountLabel={<Translation id={pendingTxModalAmountLabelTranslationId[stakeType]} />}
             fee={precomposedTransaction?.fee}
             isExploreDisabled={isExploreDisabled}
             onExplorePress={openInBlockchain}
             submittedAt={submittedAt}
-            title={<Translation id={pendingTxModalAmountLabelTranslationId[stakeType]} />}
+            title={<Translation id={pendingTxModalTitleTranslationId[stakeType]} />}
             txid={pendingTxid}
         />
     );
