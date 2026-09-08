@@ -39,15 +39,12 @@ describe('Trade Exchange [@androidOnly]', () => {
 
     // Skipping due to emulator crash
     describe('with device disconnected [@T3T1]', () => {
-        beforeAll(() => {
+        beforeEach(async () => {
             if (!passphrase) {
                 throw new Error(
                     'TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE environment variable is required',
                 );
             }
-        });
-
-        beforeEach(async () => {
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
@@ -80,15 +77,12 @@ describe('Trade Exchange [@androidOnly]', () => {
 
     // Skipping due to emulator crash
     describe('with device connected [@T3T1]', () => {
-        beforeAll(() => {
+        beforeEach(async () => {
             if (!passphrase) {
                 throw new Error(
                     'TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE environment variable is required',
                 );
             }
-        });
-
-        beforeEach(async () => {
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
