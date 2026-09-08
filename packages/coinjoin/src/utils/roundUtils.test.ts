@@ -9,7 +9,11 @@ import {
     scheduleDelay,
     transformStatus,
 } from './roundUtils';
-import { ROUND_CREATION_EVENT, STATUS_EVENT, STATUS_TRANSFORMED } from '../__fixtures__/round.fixture';
+import {
+    ROUND_CREATION_EVENT,
+    STATUS_EVENT,
+    STATUS_TRANSFORMED,
+} from '../__fixtures__/round.fixture';
 import type { CoinjoinRoundParameters } from '../types/coordinator';
 
 // mock random delay function
@@ -135,17 +139,17 @@ describe('roundUtils', () => {
             // past the coordinator's real signing-phase end (which would ban the input)
             const phaseStartLowerBound = 1_000_000;
             const phaseDeadline = phaseStartLowerBound + SIGNING_TIMEOUT + 15_000; // inflated ~15s
-            expect(getSigningSendDeadline(phaseStartLowerBound, phaseDeadline, roundParameters)).toBe(
-                phaseStartLowerBound + SIGNING_TIMEOUT,
-            );
+            expect(
+                getSigningSendDeadline(phaseStartLowerBound, phaseDeadline, roundParameters),
+            ).toBe(phaseStartLowerBound + SIGNING_TIMEOUT);
         });
 
         it('never exceeds the optimistic phaseDeadline (defensive min)', () => {
             const phaseStartLowerBound = 1_000_000;
             const phaseDeadline = phaseStartLowerBound + 10_000; // shorter than the signing timeout
-            expect(getSigningSendDeadline(phaseStartLowerBound, phaseDeadline, roundParameters)).toBe(
-                phaseDeadline,
-            );
+            expect(
+                getSigningSendDeadline(phaseStartLowerBound, phaseDeadline, roundParameters),
+            ).toBe(phaseDeadline);
         });
 
         it('falls back to phaseDeadline when the phase start is unknown', () => {

@@ -597,7 +597,6 @@ describe('transactionSigning signature delay', () => {
         expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
         expect(response.isSignedSuccessfully()).toBe(true);
     });
-
 });
 
 describe('transactionSigning send window (phaseStartLowerBound)', () => {
@@ -616,9 +615,9 @@ describe('transactionSigning send window (phaseStartLowerBound)', () => {
 
     afterEach(() => {
         jest.mocked(getWeakRandomNumberInRange).mockReturnValue(0);
-        jest
-            .mocked(coordinator.transactionSignature)
-            .mockImplementation(jest.requireActual('../coordinator').transactionSignature);
+        jest.mocked(coordinator.transactionSignature).mockImplementation(
+            jest.requireActual('../coordinator').transactionSignature,
+        );
         jest.restoreAllMocks();
     });
 
