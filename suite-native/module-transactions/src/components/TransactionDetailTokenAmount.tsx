@@ -45,7 +45,7 @@ export const TransactionDetailTokenAmount = ({
 
             <ExactTokenAmountFormatter
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                tokenSymbol={tokenTransfer.symbol}
+                tokenSymbol={tokenTransfer.symbol ?? null}
                 maxDisplayedDecimals={tokenTransfer.decimals}
                 variant="headline-md"
                 color="contentPrimary"
