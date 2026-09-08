@@ -28,8 +28,8 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import {
     NAMED_ADDRESS_RESOLVE_DEBOUNCE_MS,
     getResolveNamedAddressQueryOptions,
+    useResolveNamedAddress,
 } from '@suite-common/wallet-core';
-import { useResolveNamedAddress } from '@suite-common/wallet-core/src/named-address/useResolveNamedAddress';
 import type { Output } from '@suite-common/wallet-types';
 import {
     checkIsAddressNotUsedNotChecksummed,
