@@ -17,9 +17,14 @@ import { getOutputFieldName } from '../../utils';
 
 type UseAddressValidationAlertsArgs = {
     inputIndex: number;
+    /** Onchain address a named input (e.g. ENS) resolved to, if the input was a name. */
+    resolvedAddress?: string;
 };
 
-export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationAlertsArgs) => {
+export const useAddressValidationAlerts = ({
+    inputIndex,
+    resolvedAddress,
+}: UseAddressValidationAlertsArgs) => {
     const { addressValidator } = useServices(selectAddressValidatorDep);
     const {
         params: { tokenContract, accountKey },
@@ -31,17 +36,20 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
 
     const addressFieldName = getOutputFieldName(inputIndex, 'address');
     const addressValue = useWatch({ control, name: addressFieldName });
+    // A name is not something the backend can look up, so every check runs against the address it
+    // resolved to. Without this, a name resolving to a contract would skip the contract warning.
+    const checkedAddress = resolvedAddress ?? addressValue;
 
     const { handleAddressChecksum, wasAddressChecksummed, resetAddressChecksummed } =
         useAddressChecksum(addressFieldName);
 
     const { handleContractAddressCheck, wasContractAlertDisplayed, resetContractAlert } =
-        useContractAddressCheck(addressValue);
+        useContractAddressCheck(checkedAddress);
 
     const { handleTokenAlert, wasTokenAlertDisplayed, resetTokenAlert } = useTokenAlert();
 
     const isFilledValidAddress =
-        !!addressValue && !!symbol && addressValidator.isAddressValid(addressValue, symbol);
+        !!checkedAddress && !!symbol && addressValidator.isAddressValid(checkedAddress, symbol);
 
     const networkType = symbol ? getNetworkType(symbol) : null;
 
@@ -58,7 +66,10 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
 
         const shouldChecksumAddress =
             networkType === 'ethereum' &&
-            !checkAddressChecksum(addressValue ?? '') &&
+            // Resolver output is already canonical, and checksumming rewrites the input field —
+            // which would replace the name the user typed with a hex address.
+            !resolvedAddress &&
+            !checkAddressChecksum(checkedAddress ?? '') &&
             !wasAddressChecksummed;
 
         const shouldCheckContractAddress =
@@ -94,7 +105,8 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
         handleContractAddressCheck,
         handleTokenAlert,
         networkType,
-        addressValue,
+        checkedAddress,
+        resolvedAddress,
         symbol,
         resetContractAlert,
         resetAddressChecksummed,
