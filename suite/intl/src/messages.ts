@@ -1322,11 +1322,6 @@ export const messages = defineMessages({
             "This is Trezor's fee to facilitate your trade (already included in your offer).",
         id: 'TR_TRADING_TREZOR_FEE_TOOLTIP',
     },
-    TR_TRADING_TRADE_HISTORY_COUNTER: {
-        defaultMessage:
-            '{totalBuys, plural, =0 {{totalBuys} buys} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sells} one {{totalSells} sell} other {{totalSells} sells} } • {totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
-        id: 'TR_TRADING_TRADE_HISTORY_COUNTER',
-    },
     TR_TRADING_TRADE_HISTORY_TAB_ALL: {
         defaultMessage: 'All trades',
         id: 'TR_TRADING_TRADE_HISTORY_TAB_ALL',
@@ -1468,14 +1463,6 @@ export const messages = defineMessages({
     TR_TRADING_SWAP_UNAVAILABLE: {
         defaultMessage: 'Swap unavailable',
         id: 'TR_TRADING_SWAP_UNAVAILABLE',
-    },
-    TR_TRADING_TRANS_ID: {
-        defaultMessage: 'Trade ID:',
-        id: 'TR_TRADING_TRANS_ID',
-    },
-    TR_TRADING_VIEW_DETAILS: {
-        defaultMessage: 'View details',
-        id: 'TR_TRADING_VIEW_DETAILS',
     },
     TR_TRADING_OTC_INFO_BUY: {
         defaultMessage:

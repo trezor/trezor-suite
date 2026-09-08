@@ -9,6 +9,22 @@ import { PENDING_TRADE, SEEDED_TRADES } from '../../fixtures/trading/swap/swap-h
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
+const listStatusTranslationKeys = {
+    SUCCESS: 'TR_EXCHANGE_STATUS_SUCCESS',
+    ERROR: 'TR_EXCHANGE_STATUS_ERROR',
+    CONFIRMING: 'TR_EXCHANGE_STATUS_CONFIRMING',
+} as const;
+
+const formatTradeDate = (date: string) =>
+    new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+    }).format(new Date(date));
+
 test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
 
@@ -43,37 +59,17 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
             });
 
             await test.step('Verify trades are ordered by date descending', async () => {
-                const expectedOrderedIds = [...SEEDED_TRADES]
+                const expectedDates = [...SEEDED_TRADES]
                     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                    .map(t => t.orderId);
+                    .map(trade => formatTradeDate(trade.date));
 
-                await expect(tradingPage.transactions.allSwapRows).toHaveCount(
-                    expectedOrderedIds.length,
-                );
-
-                for (const [index, orderId] of expectedOrderedIds.entries()) {
-                    await expect(tradingPage.transactions.swapRowAt(index)).toHaveAttribute(
-                        'data-testid',
-                        `@trading/transactions/list/swap-transaction/${orderId}`,
-                    );
-                }
+                await expect(tradingPage.transactions.rowDates).toHaveText(expectedDates);
             });
 
             await test.step('Verify trade appears in history list', async () => {
-                const statusTranslationKeys = {
-                    SUCCESS: 'TR_EXCHANGE_STATUS_SUCCESS',
-                    ERROR: 'TR_EXCHANGE_STATUS_ERROR',
-                    CONFIRMING: 'TR_EXCHANGE_STATUS_CONFIRMING',
-                } as const;
-
-                await expect(tradingPage.transactions.count).toHaveTranslation(
-                    'TR_TRADING_TRADE_HISTORY_COUNTER',
-                    { values: { totalBuys: 0, totalSells: 0, totalSwaps: SEEDED_TRADES.length } },
-                );
-
                 for (const trade of SEEDED_TRADES) {
-                    type StatusKey = keyof typeof statusTranslationKeys;
-                    const row = tradingPage.transactions.swapTransactionRow(trade.orderId);
+                    type StatusKey = keyof typeof listStatusTranslationKeys;
+                    const row = tradingPage.transactions.transactionRow(trade.orderId);
                     const receiveSymbol = (
                         cryptoIdToNetworkSymbol(
                             trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[0],
@@ -81,17 +77,13 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                     ).toUpperCase();
 
                     await expect(row.root).toBeVisible();
-                    await expect.soft(row.provider).toHaveText(trade.data.exchange, {
-                        ignoreCase: true,
-                    });
-                    await expect
-                        .soft(row.orderId)
-                        .toHaveText(
-                            `${messages['TR_TRADING_TRANS_ID'].defaultMessage} ${trade.orderId}`,
-                        );
                     await expect
                         .soft(row.status)
-                        .toHaveTranslation(statusTranslationKeys[trade.data.status as StatusKey]);
+                        .toHaveAttribute(
+                            'aria-label',
+                            messages[listStatusTranslationKeys[trade.data.status as StatusKey]]
+                                .defaultMessage,
+                        );
                     await expect
                         .soft(row.sendAmount)
                         .toHaveText(
@@ -102,16 +94,20 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                         .toHaveText(
                             `${localizeNumber(trade.data.receiveStringAmount)} ${receiveSymbol}`,
                         );
-                    const expectedDate = new Intl.DateTimeFormat('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        hourCycle: 'h23',
-                    }).format(new Date(trade.date));
-                    await expect.soft(row.date).toHaveText(expectedDate);
                 }
+            });
+
+            await test.step('Filter the history by trade type', async () => {
+                await tradingPage.transactions.tab('sell').click();
+                await expect(tradingPage.transactions.rows).toHaveCount(0);
+                await expect(tradingPage.transactions.typeEmptyState).toContainTranslation(
+                    'TR_TRADING_TRADE_HISTORY_NO_SELLS',
+                );
+                await tradingPage.transactions.showAllTradesButton.click();
+                await expect(tradingPage.transactions.rows).toHaveCount(SEEDED_TRADES.length);
+                await tradingPage.transactions.tab('exchange').click();
+                await expect(tradingPage.transactions.rows).toHaveCount(SEEDED_TRADES.length);
+                await tradingPage.transactions.tab('all').click();
             });
 
             const detailStatusTranslationKeys = {
@@ -128,9 +124,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                 ).toUpperCase();
 
                 await test.step(`Open detail for trade ${trade.orderId}`, async () => {
-                    await tradingPage.transactions
-                        .swapTransactionRow(trade.orderId)
-                        .viewDetailsButton.click();
+                    await tradingPage.transactions.transactionRow(trade.orderId).root.click();
                 });
 
                 await test.step(`Verify detail page for trade ${trade.orderId}`, async () => {
@@ -193,9 +187,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
             });
 
             await test.step('Open detail for the ongoing (CONFIRMING) trade', async () => {
-                await tradingPage.transactions
-                    .swapTransactionRow(PENDING_TRADE.orderId)
-                    .viewDetailsButton.click();
+                await tradingPage.transactions.transactionRow(PENDING_TRADE.orderId).root.click();
                 await expect(tradingPage.transactionDetail).toBeVisible();
             });
 
