@@ -9,7 +9,7 @@ import {
 import { selectDevices } from '@suite-common/device';
 import { selectFirmware } from '@suite-common/firmware';
 import { type Dispatch } from '@suite-common/redux-utils';
-import TrezorConnect, { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
+import TrezorConnect, { type Device, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
@@ -18,10 +18,60 @@ import {
     fromBluetoothDevice,
 } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConnectDeviceThunk';
-import { bluetoothStartScanningThunk } from 'src/actions/bluetooth/bluetoothStartScanningThunk';
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
+import { isBluetoothDeviceReachable } from 'src/actions/bluetooth/isBluetoothDeviceReachable';
+import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type AppState } from 'src/types/suite';
+
+const BACKGROUND_SCAN_INTERVAL = 6_000;
+const BACKGROUND_SCAN_DURATION = 2_000;
+
+const createBackgroundScan = (getState: () => AppState) => {
+    let timerId: ReturnType<typeof setInterval> | null = null;
+
+    const getKnownDevices = () => selectKnownDevices<DesktopBluetoothDevice>(getState());
+
+    const stop = () => {
+        bluetoothIpc.stopScan('background');
+        if (timerId !== null) {
+            clearInterval(timerId);
+            timerId = null;
+        }
+    };
+
+    const runCycle = async () => {
+        if (!selectIsWindowVisible(getState())) {
+            return;
+        }
+
+        const knownDevices = getKnownDevices();
+        const hasDisconnectedKnownDevice = knownDevices.some(d => !isBluetoothDeviceReachable(d));
+        if (hasDisconnectedKnownDevice) {
+            await bluetoothIpc.startScan('background');
+            resolveAfter(BACKGROUND_SCAN_DURATION).then(() => bluetoothIpc.stopScan('background'));
+        } else {
+            stop();
+        }
+    };
+
+    const start = () => {
+        if (timerId !== null) {
+            return;
+        }
+        runCycle();
+        timerId = setInterval(runCycle, BACKGROUND_SCAN_INTERVAL);
+    };
+
+    const restartIfNeeded = () => {
+        const knownDevices = getKnownDevices();
+        if (knownDevices.some(d => !isBluetoothDeviceReachable(d))) {
+            start();
+        }
+    };
+
+    return { start, stop, restartIfNeeded };
+};
 
 const attemptDeviceConnect = async (
     device: DesktopBluetoothDevice,
@@ -91,6 +141,7 @@ const attemptDeviceConnect = async (
 };
 
 const setupAutoReconnect = (getState: () => AppState, dispatch: Dispatch) => {
+    const backgroundScan = createBackgroundScan(getState);
     // Wait for 3 seconds or earlier if a connected device is detected.
     // The delay shouldn't be too perceptible, since other things are also loading at app start.
     // If user connects a device via USB, we don't start the BT connection,
@@ -115,9 +166,25 @@ const setupAutoReconnect = (getState: () => AppState, dispatch: Dispatch) => {
         // and therefore we start looking for it.
         const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
         if (knownDevices.length > 0) {
-            dispatch(bluetoothStartScanningThunk());
+            backgroundScan.start();
         }
+
+        bluetoothIpc.on('device-update', () => {
+            backgroundScan.restartIfNeeded();
+        });
     });
+};
+
+const scanUntilReconnected = (id: string) => {
+    const cleanup = (device: Device) => {
+        if (device.descriptor.id === id) {
+            bluetoothIpc.stopScan('firmware-update');
+            TrezorConnect.off('device-connect', cleanup);
+        }
+    };
+
+    bluetoothIpc.startScan('firmware-update');
+    TrezorConnect.on('device-connect', cleanup);
 };
 
 const bluetoothMiddleware =
@@ -132,7 +199,7 @@ const bluetoothMiddleware =
             const { id } = action.payload.device.descriptor;
             bluetoothIpc
                 .disconnectDevice(id)
-                .then(() => bluetoothIpc.startScan()) // restart scanning
+                .then(() => scanUntilReconnected(id))
                 .catch(() => {});
         }
 
