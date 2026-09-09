@@ -18,6 +18,7 @@
     "dependencies": {
         "@sentry/browser": "10.69.0",
         "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",

@@ -36,6 +36,7 @@ export const createTestCompositionRoot = <
         store,
         services: {
             ...extra.services,
+            store,
             dispatch: store.dispatch,
             getActions,
             clearActions,

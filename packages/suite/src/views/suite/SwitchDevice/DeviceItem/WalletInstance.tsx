@@ -6,8 +6,9 @@ import { Labeling } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible, selectLabelingValueBeingEdited } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
 import {
     getAccountsByDeviceState,
     selectAccounts,
@@ -35,7 +36,6 @@ import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletTh
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
-import { useStore } from 'src/hooks/suite/useStore';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { type AcquiredDevice, type ForegroundAppProps } from 'src/types/suite';
 
@@ -61,8 +61,7 @@ export const WalletInstance = ({
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const editing = useSelector(selectLabelingValueBeingEdited);
-    const dispatch = useDispatch();
-    const store = useStore();
+    const { dispatch, getState } = useServices(selectDispatch, selectGetState);
     const { translationString } = useTranslation();
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { defaultLabel, label } = useWalletLabel({ device: instance });
@@ -89,7 +88,7 @@ export const WalletInstance = ({
 
             // NOTE: to determine which account is the first one, we need to filter out empty accounts
             // that are currently displayed in the UI
-            const unfilteredUIAccountGroups = selectAllAccountsToList(store.getState());
+            const unfilteredUIAccountGroups = selectAllAccountsToList(getState());
             const currentFirstAccount = unfilteredUIAccountGroups[0];
             // NOTE: attempt to determine, if the currently selected account
             // has a corresponding account in the next wallet accounts

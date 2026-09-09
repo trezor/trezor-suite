@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { TrezorBodyIcon } from '@trezor/icons';
@@ -16,12 +16,13 @@ import {
     updateAnalytics,
 } from 'src/actions/onboarding/onboardingActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { useStore } from 'src/hooks/suite/useStore';
 
 export const DeviceInitialize = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const { getState } = useStore();
+    const { analytics, dispatch, getState } = useServices(
+        selectDesktopAnalyticsDep,
+        selectDispatch,
+        selectGetState,
+    );
 
     const handleCtaClick = (e: MouseEvent) => {
         e.stopPropagation();
