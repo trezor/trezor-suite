@@ -84,7 +84,7 @@ import {
     isExchangeProvider,
     testnetToProdCryptoId,
 } from '../utils';
-import { getDisplayNetworkFee } from '../utils/exchange/exchangeUtils';
+import { getDisplayNetworkFee, requiresErc20Approval } from '../utils/exchange/exchangeUtils';
 import {
     getTradingCoinInfoByCryptoId,
     getTradingCoinSymbolByCryptoId,
@@ -793,6 +793,25 @@ export const selectTradingSelectedQuoteByFormValues = <T extends TradingType>(
     formValues: TradingSelectedQuoteFormValues,
 ): TradingTradeMapProps[T] | undefined =>
     selectedQuoteByFormValuesResolvers[type](state, formValues);
+
+export const selectTradingExchangeQuoteToEstimate = (
+    state: TradingRootState,
+    {
+        provider,
+        exchangeType,
+        sendCryptoId,
+    }: {
+        provider?: string;
+        exchangeType?: TradingExchangeFormType;
+        sendCryptoId?: CryptoId;
+    },
+): ExchangeTrade | undefined => {
+    if (requiresErc20Approval(sendCryptoId)) {
+        return selectTradingExchangeSelectedQuote(state);
+    }
+
+    return selectTradingSelectedQuoteByFormValues(state, 'exchange', { provider, exchangeType });
+};
 
 export const selectTradingExchangeFormStep = (state: TradingRootState) =>
     state.wallet.trading.exchange.formStep;

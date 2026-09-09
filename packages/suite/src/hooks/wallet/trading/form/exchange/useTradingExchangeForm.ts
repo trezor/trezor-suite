@@ -153,7 +153,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         },
     });
 
-    const { dexQuotes, isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
+    const { isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
         methods,
         network,
         shouldSendInSats,
@@ -197,8 +197,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         isLoadingQuote,
         exchangeType,
         sendCryptoSelect,
-        selectedQuote,
-        dexQuotes,
         composeRequest,
     });
 
