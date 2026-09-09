@@ -1,27 +1,33 @@
+import { type Store } from '@reduxjs/toolkit';
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
+import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import {
     ExchangeConfirmationInfo,
     type ExchangeConfirmationInfoCardProps,
 } from './ExchangeConfirmationInfo';
-import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 const testQuote = exchangeQuotes[0];
 
 describe('ExchangeConfirmationInfo', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderInfo = async (props: ExchangeConfirmationInfoCardProps) =>
-        await renderWithStoreProvider(<ExchangeConfirmationInfo {...props} />, { store });
+        await renderWithStoreProvider(<ExchangeConfirmationInfo {...props} />, {
+            services: { store },
+        });
 
     beforeEach(() => {
-        store = createTradingLightStore({ tradeType: 'exchange' });
+        store = createTradingTestStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
     });
 

@@ -1,5 +1,7 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type CancelSignSendFormTransactionThunkState } from '@suite-common/wallet-core';
 import {
-    type TestStore,
     createStoreFromPreloadedState,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
@@ -22,14 +24,19 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 
 describe('useShowReviewCancellationAlert', () => {
-    let store: TestStore;
+    let store: Store<CancelSignSendFormTransactionThunkState>;
 
     const renderUseShowReviewCancellationAlert = async () =>
-        await renderHookWithStoreProvider(() => useShowReviewCancellationAlert(), { store });
+        await renderHookWithStoreProvider(() => useShowReviewCancellationAlert(), {
+            services: { store },
+        });
 
     beforeEach(() => {
         mockShowAlert.mockClear();
-        store = createStoreFromPreloadedState();
+        const state: CancelSignSendFormTransactionThunkState = {
+            wallet: { send: { drafts: {} } },
+        };
+        store = createStoreFromPreloadedState(state);
     });
 
     it('should return stable callback', async () => {

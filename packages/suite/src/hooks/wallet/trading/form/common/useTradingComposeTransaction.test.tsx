@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingSellFormProps } from '@suite-common/trading';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -78,8 +78,7 @@ const buildDefaults = (): TradingSellFormProps =>
     }) as unknown as TradingSellFormProps;
 
 const renderComposeTransaction = () => {
-    const store = createTestStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
         preloadedState: {
             wallet: {
                 accounts: [BTC_ACCOUNT, SOL_ACCOUNT],
@@ -109,7 +108,7 @@ const renderComposeTransaction = () => {
 
             return { methods, compose };
         },
-        { store, initialProps: { account: BTC_ACCOUNT } },
+        { root, initialProps: { account: BTC_ACCOUNT } },
     );
 };
 

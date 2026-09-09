@@ -1,26 +1,27 @@
+import { type PropsWithChildren } from 'react';
+
 import { renderHook } from '@testing-library/react';
 
 import { events } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { ServicesProvider } from '@suite-common/dependency-injection';
 
 import { useTradingDetailStatusAnalytics } from './useTradingDetailStatusAnalytics';
 
 const mockReport = jest.fn();
 
-jest.mock('@suite-common/dependency-injection', () => {
-    const analytics = { report: (...args: unknown[]) => mockReport(...args) };
-
-    return { useServices: () => ({ analytics }) };
-});
-
-jest.mock('@suite/analytics', () => ({
-    ...jest.requireActual('@suite/analytics'),
-    selectDesktopAnalyticsDep: () => ({}),
-}));
-
 type Props = Parameters<typeof useTradingDetailStatusAnalytics>[0];
 
-const renderStatusAnalytics = (initialProps: Props) =>
-    renderHook((props: Props) => useTradingDetailStatusAnalytics(props), { initialProps });
+const renderStatusAnalytics = (initialProps: Props) => {
+    const services = { analytics: mockDesktopAnalytics(mockReport) };
+
+    return renderHook((props: Props) => useTradingDetailStatusAnalytics(props), {
+        initialProps,
+        wrapper: ({ children }: PropsWithChildren) => (
+            <ServicesProvider services={services}>{children}</ServicesProvider>
+        ),
+    });
+};
 
 describe('useTradingDetailStatusAnalytics', () => {
     beforeEach(() => {

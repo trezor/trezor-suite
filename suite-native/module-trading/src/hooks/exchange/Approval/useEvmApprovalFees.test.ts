@@ -1,22 +1,24 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { tradingActions } from '@suite-common/trading';
+import { type AccountsRootState, type FeesRootState } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { getTranslation } from '@suite-native/intl';
-import {
-    type TestStore,
-    renderHookWithStoreProvider,
-    waitFor,
-} from '@suite-native/test-utils-store';
+import { renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import { invityDexQuote } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 import { mergeDeepObject } from '@trezor/utils';
 
 import { useEvmApprovalFees } from './useEvmApprovalFees';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
-    createTradingLightStore,
+    createTradingTestStore,
 } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & FeesRootState;
 
 const mockComposeEvmApprovalFeeLevelsThunk = jest.fn();
 
@@ -65,15 +67,18 @@ describe('useEvmApprovalFees', () => {
     };
 
     const createStore = (extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
-        createTradingLightStore({
+        createTradingTestStore({
             tradeType: 'exchange',
             overrides: mergeDeepObject(baseOverrides, extraOverrides),
         });
 
     const renderUseEvmApprovalFees = async (
-        store: TestStore,
+        store: Store<State>,
         params?: Parameters<typeof useEvmApprovalFees>[0],
-    ) => await renderHookWithStoreProvider(() => useEvmApprovalFees(params), { store });
+    ) =>
+        await renderHookWithStoreProvider(() => useEvmApprovalFees(params), {
+            services: { store },
+        });
 
     beforeEach(() => {
         mockComposeEvmApprovalFeeLevelsThunk.mockReset().mockImplementation(() => ({

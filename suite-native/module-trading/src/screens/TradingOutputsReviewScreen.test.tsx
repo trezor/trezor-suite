@@ -1,19 +1,23 @@
 import { type RouteProp } from '@react-navigation/native';
+import { type Store } from '@reduxjs/toolkit';
 
 import { type TokenAddress } from '@suite-common/wallet-types';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import type {
     ExchangeFlowType,
     RootStackParamList,
     RootStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
-import { type TestStore } from '@suite-native/test-utils-store';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import {
     TradingExchangeOutputsReviewScreen,
     TradingSellOutputsReviewScreen,
 } from './TradingOutputsReviewScreen';
-import { createTradingLightStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+import { createTradingTestStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 const mockSignAndSendTransaction = jest.fn();
 const mockSignDataAndConfirm = jest.fn();
@@ -30,15 +34,6 @@ const mockUseSellFlow = {
     isTransactionSendConsentRequested: false,
     resolveTransactionSendConsent: mockResolveTransactionSendConsent,
 };
-
-const mockReportToAnalyticsExchange = jest.fn();
-const mockReportToAnalyticsSell = jest.fn();
-
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useExchangeAnalyticReportCallback: () => mockReportToAnalyticsExchange,
-    useSellAnalyticReportCallback: () => mockReportToAnalyticsSell,
-}));
 
 const mockNavigation = {
     navigate: jest.fn(),
@@ -124,7 +119,7 @@ const createExchangeRoute = (params: ReturnType<typeof createExchangeRouteParams
     }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangeOutputsReview>;
 
 describe('TradingSellOutputsReviewScreen', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let unmount: (() => void) | undefined;
 
     afterEach(async () => {
@@ -143,7 +138,7 @@ describe('TradingSellOutputsReviewScreen', () => {
         ) => {
             const result = await renderWithTradingProvider(
                 <TradingSellOutputsReviewScreen route={route} navigation={mockNavigation} />,
-                { store },
+                { services: { analytics: mockNativeAnalytics(), store } },
             );
 
             ({ unmount } = result);
@@ -153,7 +148,7 @@ describe('TradingSellOutputsReviewScreen', () => {
 
         beforeEach(() => {
             jest.clearAllMocks();
-            store = createTradingLightStore({ tradeType: 'sell' });
+            store = createTradingTestStore({ tradeType: 'sell' });
             mockNavigation.navigate.mockClear();
             mockNavigation.goBack.mockClear();
             mockNavigation.popToTop.mockClear();
@@ -171,7 +166,7 @@ describe('TradingSellOutputsReviewScreen', () => {
                 expect.objectContaining({
                     orderId: TEST_ORDER_ID,
                     accountKey: TEST_ACCOUNT_KEY,
-                    reportToAnalytics: mockReportToAnalyticsSell,
+                    reportToAnalytics: expect.any(Function),
                 }),
             );
         });
@@ -186,7 +181,7 @@ describe('TradingSellOutputsReviewScreen', () => {
         ) => {
             const result = await renderWithTradingProvider(
                 <TradingExchangeOutputsReviewScreen route={route} navigation={mockNavigation} />,
-                { store },
+                { services: { analytics: mockNativeAnalytics(), store } },
             );
 
             ({ unmount } = result);
@@ -196,7 +191,7 @@ describe('TradingSellOutputsReviewScreen', () => {
 
         beforeEach(() => {
             jest.clearAllMocks();
-            store = createTradingLightStore({ tradeType: 'exchange' });
+            store = createTradingTestStore({ tradeType: 'exchange' });
             mockNavigation.navigate.mockClear();
             mockNavigation.goBack.mockClear();
             mockNavigation.popToTop.mockClear();
@@ -214,7 +209,7 @@ describe('TradingSellOutputsReviewScreen', () => {
                 expect.objectContaining({
                     orderId: TEST_ORDER_ID,
                     accountKey: TEST_ACCOUNT_KEY,
-                    reportToAnalytics: mockReportToAnalyticsExchange,
+                    reportToAnalytics: expect.any(Function),
                 }),
             );
         });

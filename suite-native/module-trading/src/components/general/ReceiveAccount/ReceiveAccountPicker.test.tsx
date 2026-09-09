@@ -1,11 +1,21 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { type CombinedLabelingState } from '@suite-native/labeling';
+import {
+    type PreloadedStatePartial,
+    fireEvent,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { ReceiveAccountPicker, type ReceiveAccountPickerProps } from './ReceiveAccountPicker';
 import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
 
-const defaultOverrides = {
+type State = TradingRootState & CombinedLabelingState;
+
+const defaultOverrides: PreloadedStatePartial<State> = {
     device: {
         devices: [],
         selectedDevice: {
@@ -28,11 +38,11 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('ReceiveAccountPicker', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderReceiveAccountPicker = async (
         props: Partial<ReceiveAccountPickerProps>,
-        overrides: Record<string, unknown> = defaultOverrides,
+        overrides: PreloadedStatePartial<State> = defaultOverrides,
     ) => {
         store = createTradingTestStore({ overrides });
 
@@ -46,7 +56,7 @@ describe('ReceiveAccountPicker', () => {
                 }}
                 {...props}
             />,
-            { store },
+            { services: { store } },
         );
     };
 

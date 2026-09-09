@@ -1,3 +1,5 @@
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
@@ -5,13 +7,11 @@ import { SkipButton, type SkipButtonProps } from './SkipButton';
 
 const mockAnalyticsReport = jest.fn();
 
-jest.mock('../hooks/useCountrySelectionAnalyticsReport', () => ({
-    useCountrySelectionAnalyticsReport: () => mockAnalyticsReport,
-}));
-
 describe('SkipButton', () => {
     const renderSkipButton = async (props: Partial<SkipButtonProps>) =>
-        await renderWithBasicProvider(<SkipButton onPress={jest.fn()} {...props} />);
+        await renderWithBasicProvider(<SkipButton onPress={jest.fn()} {...props} />, {
+            services: { analytics: mockNativeAnalytics(mockAnalyticsReport) },
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -35,6 +35,9 @@ describe('SkipButton', () => {
         );
 
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
-        expect(mockAnalyticsReport).toHaveBeenCalledWith('cancel');
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.tradingCountrySelectionEvent.name,
+            payload: expect.objectContaining({ action: 'cancel' }),
+        });
     });
 });

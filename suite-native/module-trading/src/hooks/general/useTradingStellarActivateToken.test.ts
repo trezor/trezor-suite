@@ -85,7 +85,7 @@ const renderUseTradingStellarActivateToken = async (options?: {
                 receiveCryptoId: options?.receiveCryptoId,
                 buttonTestId: options?.buttonTestId,
             }),
-        { store },
+        { services: { store } },
     );
 };
 

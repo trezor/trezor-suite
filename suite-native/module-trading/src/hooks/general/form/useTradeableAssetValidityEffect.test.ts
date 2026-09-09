@@ -1,4 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
@@ -6,19 +6,20 @@ import { tradingActions } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
-import { tradingSlice } from '@suite-native/trading-state';
+import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
 
 import { useTradeableAssetValidityEffect } from './useTradeableAssetValidityEffect';
 
+type State = TradingRootState;
+
 describe('useTradeableAssetValidityEffect', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let setValue: jest.Mock;
 
     const reducer = {
@@ -35,7 +36,7 @@ describe('useTradeableAssetValidityEffect', () => {
     const renderEffect = async (cryptoId: CryptoId | undefined) =>
         await renderHookWithStoreProvider(
             () => useTradeableAssetValidityEffect(setValue, cryptoId),
-            { store },
+            { services: { store } },
         );
 
     beforeEach(() => {
@@ -58,14 +59,14 @@ describe('useTradeableAssetValidityEffect', () => {
 
     it('should clear asset when cryptoId is no longer present in coins', async () => {
         await renderEffect(usdcAsset.cryptoId);
-        setValue.mockClear();
+        expect(setValue).not.toHaveBeenCalled();
 
         await act(() => {
             const { coins, platforms } = store.getState().wallet.trading.info;
             store.dispatch(
                 tradingActions.saveInfo({
                     coins: {
-                        bitcoin: coins!.bitcoin,
+                        bitcoin: coins!.bitcoin!,
                     },
                     platforms: platforms!,
                     config: {},

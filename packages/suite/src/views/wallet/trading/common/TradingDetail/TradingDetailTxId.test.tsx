@@ -50,6 +50,7 @@ describe('TradingDetailTxId', () => {
             extra: { services },
             preloadedState: getInitialState(),
         });
+        const { getActions } = root.services;
 
         const { container } = renderWithProviders(
             root,
@@ -65,7 +66,7 @@ describe('TradingDetailTxId', () => {
 
         await userEvent.click(link);
 
-        expect(root.services.getActions()).toContainEqual(
+        expect(getActions()).toContainEqual(
             openModal({
                 type: 'transaction-detail',
                 txid: payoutTxid,
@@ -83,6 +84,7 @@ describe('TradingDetailTxId', () => {
             extra: { services },
             preloadedState: getInitialState(),
         });
+        const { getActions } = root.services;
 
         const { container } = renderWithProviders(
             root,
@@ -98,7 +100,7 @@ describe('TradingDetailTxId', () => {
 
         await userEvent.click(link);
 
-        expect(root.services.getActions()).toContainEqual(
+        expect(getActions()).toContainEqual(
             openModal({
                 type: 'transaction-detail',
                 txid: 'signedSendTxid',

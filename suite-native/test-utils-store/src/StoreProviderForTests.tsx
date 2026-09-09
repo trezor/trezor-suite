@@ -1,31 +1,20 @@
-import { type ReactNode, useMemo } from 'react';
+import { type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 
-import { type EnhancedStore, type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type Store } from '@reduxjs/toolkit';
 
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { BasicProviderForTests } from '@suite-native/test-utils';
 
-import { createStoreFromPreloadedState } from './createStoreFromPreloadedState';
-
-export type TestStore = Omit<EnhancedStore, 'dispatch'> & {
-    dispatch: ThunkDispatch<any, any, UnknownAction>;
-};
-
-type ReduxProviderProps = {
+type ReduxProviderProps<TServices extends { store: Store }> = {
     children: ReactNode;
-    preloadedState?: Record<string, unknown>;
-    injectedStore?: TestStore;
-    services?: Record<string, unknown>;
+    services: TServices;
 };
 
-const BasicProviderWithFormattingConfig = ({
+const BasicProviderWithFormattingConfig = <TServices extends { store: Store }>({
     children,
     services,
-}: {
-    children: ReactNode;
-    services?: Record<string, unknown>;
-}) => {
+}: ReduxProviderProps<TServices>) => {
     const formattersConfig = useFormattersConfig();
 
     return (
@@ -35,30 +24,13 @@ const BasicProviderWithFormattingConfig = ({
     );
 };
 
-/*
-Simplified synchronous (= no async warming up) version of `StoreProvider.tsx` from `suite-native/state` but without async logic
-for persisted state or Sentry. Allows to specify `preloadedState` of store or even inject precomposed
-store with `injectedStore`.
- */
-export const StoreProviderForTests = ({
+export const StoreProviderForTests = <TServices extends { store: Store }>({
     children,
-    injectedStore,
-    preloadedState,
     services,
-}: ReduxProviderProps) => {
-    const store = useMemo(() => {
-        if (injectedStore) {
-            return injectedStore;
-        }
-
-        return createStoreFromPreloadedState(preloadedState);
-    }, [injectedStore, preloadedState]);
-
-    return (
-        <Provider store={store}>
-            <BasicProviderWithFormattingConfig services={{ ...services, store }}>
-                {children}
-            </BasicProviderWithFormattingConfig>
-        </Provider>
-    );
-};
+}: ReduxProviderProps<TServices>) => (
+    <Provider store={services.store}>
+        <BasicProviderWithFormattingConfig services={services}>
+            {children}
+        </BasicProviderWithFormattingConfig>
+    </Provider>
+);

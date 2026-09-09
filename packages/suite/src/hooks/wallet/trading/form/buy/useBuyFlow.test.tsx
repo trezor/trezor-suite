@@ -1,11 +1,10 @@
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
+import { routerReducer } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { useBuyFlow } from './useBuyFlow';
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
-}));
 
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
@@ -30,8 +29,17 @@ const renderBuyFlow = ({
     quotesRequest = undefined,
     isAmountEmpty = false,
 }: Props = {}) => {
-    const store = createTestStore({
-        extra: undefined,
+    const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
+    const root = createTestCompositionRoot({
+        extra: {
+            services: { suiteRouterHistory },
+        },
+        reducer: {
+            router: routerReducer,
+            locks: locksReducer,
+            modal: modalReducer,
+            wallet: (wallet = { trading: { buy: { quotes: [] } } }) => wallet,
+        },
         preloadedState: {
             wallet: { trading: { buy: { quotes: [] } } },
         },
@@ -44,39 +52,50 @@ const renderBuyFlow = ({
                 quotesRequest: quotesRequest as never,
                 isAmountEmpty,
             }),
-        { store },
+        { root },
     );
 
-    return store;
-};
+    const { getActions } = root.services;
 
-const actionTypes = (store: ReturnType<typeof renderBuyFlow>) =>
-    store.getActions().map(action => action.type);
+    return { getActions, suiteRouterHistory };
+};
 
 describe('useBuyFlow', () => {
     it('dispatches the initial data load once on mount', () => {
-        const store = renderBuyFlow();
+        const { getActions } = renderBuyFlow();
 
         expect(
-            store.getActions().filter(action => action.type === 'trading/loadInitialData'),
+            getActions().filter(action => action.type === 'trading/loadInitialData'),
         ).toHaveLength(1);
     });
 
     it('navigates to the confirm page when both the redirect flag and quotes request are present', () => {
-        const store = renderBuyFlow({ isFromRedirect: true, quotesRequest: { some: 'request' } });
+        const { suiteRouterHistory } = renderBuyFlow({
+            isFromRedirect: true,
+            quotesRequest: { some: 'request' },
+        });
 
-        expect(actionTypes(store)).toContain('@router/goto');
+        expect(suiteRouterHistory.navigate).toHaveBeenCalledWith({
+            pathname: '/accounts/coinmarket/buy/confirm',
+            hash: '',
+        });
     });
 
     it('does not navigate when the redirect flag is not set', () => {
-        const store = renderBuyFlow({ isFromRedirect: false, quotesRequest: { some: 'request' } });
+        const { suiteRouterHistory } = renderBuyFlow({
+            isFromRedirect: false,
+            quotesRequest: { some: 'request' },
+        });
 
-        expect(actionTypes(store)).not.toContain('@router/goto');
+        expect(suiteRouterHistory.navigate).not.toHaveBeenCalled();
     });
 
     it('does not navigate when there is no quotes request', () => {
-        const store = renderBuyFlow({ isFromRedirect: true, quotesRequest: undefined });
+        const { suiteRouterHistory } = renderBuyFlow({
+            isFromRedirect: true,
+            quotesRequest: undefined,
+        });
 
-        expect(actionTypes(store)).not.toContain('@router/goto');
+        expect(suiteRouterHistory.navigate).not.toHaveBeenCalled();
     });
 });

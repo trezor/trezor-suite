@@ -1,17 +1,22 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
+import { fireEvent } from '@suite-native/test-utils-store';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { Header } from './Header';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
-    createTradingLightStore,
+    createTradingTestStore,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 describe('Header', () => {
     const getFFOverrides = (): PreloadedStatePartial<TradingTestPreloadedState> => ({
@@ -41,13 +46,15 @@ describe('Header', () => {
         };
     };
 
-    const createTestStore = () => createTradingLightStore({ overrides: getFFOverrides() });
+    const createTestStore = () => createTradingTestStore({ overrides: getFFOverrides() });
 
-    const renderHeaderWithStore = async (store: TestStore) => {
+    const renderHeaderWithStore = async (store: Store<State>) => {
         const { reportMock, services } = setupReportMock();
 
         return {
-            renderer: await renderWithTradingProvider(<Header />, { services, store }),
+            renderer: await renderWithTradingProvider(<Header />, {
+                services: { ...services, store },
+            }),
             reportMock,
         };
     };
@@ -100,7 +107,7 @@ describe('Header', () => {
     });
 
     describe('analytics', () => {
-        let store: TestStore;
+        let store: Store<State>;
 
         beforeEach(() => {
             store = createTestStore();

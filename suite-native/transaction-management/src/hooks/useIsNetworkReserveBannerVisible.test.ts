@@ -1,10 +1,12 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import {
+    type WalletSettingsRootState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
@@ -12,13 +14,15 @@ import {
 
 import { useIsNetworkReserveBannerVisible } from './useIsNetworkReserveBannerVisible';
 
+type State = WalletSettingsRootState;
+
 const solSymbol = asNetworkSymbol('sol');
 const btcSymbol = asNetworkSymbol('btc');
 const baseSymbol = asNetworkSymbol('base');
 
 // SOL nativeTokenReserve: "0.003"; base: "0.0002"
 describe('useIsNetworkReserveBannerVisible', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     beforeEach(() => {
         store = createLightStore({
@@ -36,7 +40,7 @@ describe('useIsNetworkReserveBannerVisible', () => {
 
     const renderHook = async (params: Parameters<typeof useIsNetworkReserveBannerVisible>[0]) =>
         await renderHookWithStoreProvider(() => useIsNetworkReserveBannerVisible(params), {
-            store,
+            services: { store },
         });
 
     it('returns false for null symbol, null amount, null balance, or no-reserve network', async () => {

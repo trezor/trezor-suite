@@ -6,7 +6,7 @@ import {
 
 export * from './device';
 export * from './firmware';
-export type * from './connectInit';
+export * from './connectInit';
 export type * from './guide';
 export type * from './messageSystem';
 export type * from './modal';

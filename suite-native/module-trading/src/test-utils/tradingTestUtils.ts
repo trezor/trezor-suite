@@ -1,83 +1,134 @@
 import { type ReactElement } from 'react';
 
-import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
-import { geolocationInitialState } from '@suite-common/geolocation';
-import { messageSystemInitialState } from '@suite-common/message-system';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { createTestStore } from '@suite-common/test-utils';
-import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
+import { type DiscreetModeRootState } from '@suite-common/discreet-mode';
+import { type GeolocationRootState, geolocationInitialState } from '@suite-common/geolocation';
 import {
+    type MessageSystemRootState,
+    messageSystemInitialState,
+} from '@suite-common/message-system';
+import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import {
+    type SuiteSyncDataRootState,
+    type WithSuiteSyncState,
+    initialSuiteSyncDataState,
+    initialSuiteSyncState,
+} from '@suite-common/suite-sync';
+import { type NotificationsRootState } from '@suite-common/toast-notifications';
+import {
+    type TokenDefinitionsRootState,
+    tokenDefinitionsInitialState,
+} from '@suite-common/token-definitions';
+import {
+    type TradingRootStateWithDeviceAndAccounts,
+    type TradingType,
+} from '@suite-common/trading';
+import {
+    type FeesRootState,
+    type FiatRatesRootState,
+    type FormDraftRootState,
+    type PhishingRootState,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     formDraftReducer,
     initialWalletSettingsState,
     phishingInitialState,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
-import { bluetoothInitialState } from '@suite-native/bluetooth';
-import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { localeInitialState } from '@suite-native/intl';
-import { appSettingsInitialState } from '@suite-native/settings';
+import { type NativeBluetoothRootState, bluetoothInitialState } from '@suite-native/bluetooth';
+import {
+    type DeviceAuthorizationRootState,
+    deviceAuthorizationInitialState,
+} from '@suite-native/device-authorization';
+import {
+    FeatureFlag,
+    type FeatureFlagsRootState,
+    type FeatureFlagsState,
+    featureFlagsInitialState,
+} from '@suite-native/feature-flags';
+import { type LocaleSliceRootState, localeInitialState } from '@suite-native/intl';
+import { type SettingsSliceRootState, appSettingsInitialState } from '@suite-native/settings';
 import {
     type PreloadedStatePartial,
     type RenderHookOptionsExtended,
-    type RenderHookResult,
     type RenderOptionsExtended,
-    type RenderResult,
     createStaticReducer,
-    createStoreFromPreloadedState,
     mergePreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
-import { tradingSlice } from '@suite-native/trading-state';
+import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
+import {
+    type NativeSendRootState,
+    sendFormInitialState,
+} from '@suite-native/transaction-management';
 
 export type { PreloadedStatePartial } from '@suite-native/test-utils-store';
 
-export type TradingTestTradeType = 'buy' | 'sell' | 'exchange';
+const createBaseTradingPreloadedState = (tradeType: TradingType): TradingTestPreloadedState => {
+    const wallet = getWalletState({ tradeType });
 
-const createBaseTradingPreloadedState = (tradeType: TradingTestTradeType) => ({
-    appSettings: appSettingsInitialState,
-    bluetooth: bluetoothInitialState,
-    device: deviceInitialState,
-    discreetMode: { isActive: false },
-    deviceAuthorization: deviceAuthorizationInitialState,
-    geolocation: geolocationInitialState,
-    featureFlags: featureFlagsInitialState,
-    locale: localeInitialState,
-    messageSystem: messageSystemInitialState,
-    suiteSync: initialSuiteSyncState,
-    suiteSyncData: initialSuiteSyncDataState,
-    notifications: [],
-    tokenDefinitions: tokenDefinitionsInitialState,
-    wallet: {
-        ...getWalletState({ tradeType }),
-        fees: {},
-        formDrafts: {},
-        phishing: phishingInitialState,
-        transactions: transactionsInitialState,
-    },
-});
-
-export type TradingTestPreloadedState = ReturnType<typeof createBaseTradingPreloadedState>;
-
-type TradingLightStoreState = Omit<TradingTestPreloadedState, 'wallet'> & {
-    wallet: Omit<TradingTestPreloadedState['wallet'], 'formDrafts'> & {
-        formDrafts: ReturnType<typeof formDraftReducer>;
-        transactions: typeof transactionsInitialState;
+    return {
+        appSettings: appSettingsInitialState,
+        bluetooth: bluetoothInitialState,
+        device: deviceInitialState,
+        discreetMode: { isActive: false },
+        deviceAuthorization: deviceAuthorizationInitialState,
+        geolocation: geolocationInitialState,
+        featureFlags: featureFlagsInitialState,
+        locale: localeInitialState,
+        messageSystem: messageSystemInitialState,
+        suiteSync: initialSuiteSyncState,
+        suiteSyncData: initialSuiteSyncDataState,
+        notifications: [],
+        tokenDefinitions: tokenDefinitionsInitialState,
+        wallet: {
+            ...wallet,
+            settings: { ...initialWalletSettingsState, ...wallet.settings },
+            selectedAccount: { status: 'none' },
+            send: { ...sendFormInitialState, ...wallet.send },
+            fees: {},
+            formDrafts: {},
+            phishing: phishingInitialState,
+            transactions: transactionsInitialState,
+        },
     };
 };
 
-type TradingLightStore = ReturnType<
-    typeof createTestStore<void, TradingLightStoreState, UnknownAction>
->;
+export type TradingTestPreloadedState = TradingRootState &
+    TradingRootStateWithDeviceAndAccounts &
+    WalletSettingsRootState &
+    FiatRatesRootState &
+    FeesRootState &
+    FormDraftRootState &
+    PhishingRootState &
+    TransactionsRootState &
+    NativeSendRootState &
+    NativeBluetoothRootState &
+    DeviceAuthorizationRootState &
+    SettingsSliceRootState &
+    FeatureFlagsRootState &
+    LocaleSliceRootState &
+    GeolocationRootState &
+    MessageSystemRootState &
+    WithSuiteSyncState &
+    SuiteSyncDataRootState &
+    TokenDefinitionsRootState &
+    DiscreetModeRootState &
+    NotificationsRootState;
+
+type TradingProviderOptions = {
+    overrides?: PreloadedStatePartial<TradingTestPreloadedState>;
+    tradeType?: TradingType;
+};
 
 export const createTradingFeatureFlags = (
-    overrides: Partial<typeof featureFlagsInitialState> = {},
-) => ({
+    overrides: Partial<FeatureFlagsState> = {},
+): FeatureFlagsState => ({
     ...featureFlagsInitialState,
     [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
     ...overrides,
@@ -86,26 +137,12 @@ export const createTradingFeatureFlags = (
 export const createTradingPreloadedState = ({
     overrides = {},
     tradeType = 'buy',
-}: {
-    overrides?: PreloadedStatePartial<TradingTestPreloadedState>;
-    tradeType?: TradingTestTradeType;
-} = {}): TradingTestPreloadedState =>
+}: TradingProviderOptions = {}): TradingTestPreloadedState =>
     mergePreloadedState(createBaseTradingPreloadedState(tradeType), overrides);
 
-export const createTradingTestStore = (args?: {
-    overrides?: PreloadedStatePartial<TradingTestPreloadedState>;
-    tradeType?: TradingTestTradeType;
-}) => createStoreFromPreloadedState(createTradingPreloadedState(args));
-
-/**
- * Creates a store with a real trading reducer (responds to dispatched actions)
- * plus static reducers for all other slices.
- * Use this for tests that dispatch trading actions and assert on state changes.
- */
-export const createTradingLightStore = (args?: {
-    overrides?: PreloadedStatePartial<TradingTestPreloadedState>;
-    tradeType?: TradingTestTradeType;
-}): TradingLightStore => {
+export const createTradingTestStore = (
+    args: TradingProviderOptions = {},
+): ReduxStoreWithThunk<TradingTestPreloadedState, Record<never, never>> => {
     const preloadedState = createTradingPreloadedState(args);
 
     const reducer = {
@@ -123,59 +160,64 @@ export const createTradingLightStore = (args?: {
         suiteSyncData: createStaticReducer(preloadedState.suiteSyncData),
         tokenDefinitions: createStaticReducer(preloadedState.tokenDefinitions),
         wallet: combineReducers({
-            settings: createStaticReducer(
-                preloadedState.wallet.settings ?? initialWalletSettingsState,
-            ),
-            accounts: createStaticReducer(preloadedState.wallet.accounts ?? []),
-            fiat: createStaticReducer(preloadedState.wallet.fiat ?? {}),
-            fees: createStaticReducer(preloadedState.wallet.fees ?? {}),
+            selectedAccount: createStaticReducer(preloadedState.wallet.selectedAccount),
+            settings: createStaticReducer(preloadedState.wallet.settings),
+            accounts: createStaticReducer(preloadedState.wallet.accounts),
+            fiat: createStaticReducer(preloadedState.wallet.fiat),
+            fees: createStaticReducer(preloadedState.wallet.fees),
             formDrafts: formDraftReducer,
             phishing: createStaticReducer(preloadedState.wallet.phishing),
-            send: createStaticReducer(preloadedState.wallet.send ?? {}),
-            transactions: createStaticReducer(transactionsInitialState),
+            send: createStaticReducer(preloadedState.wallet.send),
+            transactions: createStaticReducer(preloadedState.wallet.transactions),
             trading: tradingSlice.prepareReducer({
                 actionTypes: { storageLoad: mockActionType('storageLoad') },
             }),
         }),
     } as const;
 
-    return createTestStore({
-        extra: undefined,
+    return configureStore({
         reducer,
-        preloadedState: {
-            wallet: {
-                trading: preloadedState.wallet.trading,
-                formDrafts: preloadedState.wallet.formDrafts ?? {},
-            },
+        preloadedState,
+        middleware: getDefaultMiddleware =>
+            getDefaultMiddleware({
+                thunk: { extraArgument: {} },
+                serializableCheck: false,
+                immutableCheck: false,
+            }),
+    });
+};
+
+export const renderWithTradingProvider = <TServices extends object>(
+    element: ReactElement,
+    {
+        overrides,
+        tradeType,
+        services,
+        ...options
+    }: TradingProviderOptions & Omit<RenderOptionsExtended<TServices>, 'preloadedState'> = {},
+) =>
+    renderWithStoreProvider(element, {
+        ...options,
+        services: {
+            ...services,
+            store: services?.store ?? createTradingTestStore({ overrides, tradeType }),
         },
     });
-};
 
-type TradingProviderOptions = {
-    overrides?: PreloadedStatePartial<TradingTestPreloadedState>;
-    tradeType?: TradingTestTradeType;
-};
-
-type RenderWithTradingProviderOptions = TradingProviderOptions &
-    Omit<RenderOptionsExtended, 'preloadedState'>;
-
-type RenderHookWithTradingProviderOptions<Props> = TradingProviderOptions &
-    Omit<RenderHookOptionsExtended<Props>, 'preloadedState'>;
-
-export const renderWithTradingProvider = (
-    element: ReactElement,
-    { overrides, tradeType, ...options }: RenderWithTradingProviderOptions = {},
-): Promise<RenderResult> =>
-    renderWithStoreProvider(element, {
-        preloadedState: createTradingPreloadedState({ overrides, tradeType }),
-        ...options,
-    });
-
-export const renderHookWithTradingProvider = <Result, Props>(
+export const renderHookWithTradingProvider = <Result, Props, TServices extends object>(
     callback: (props: Props) => Result,
-    { overrides, tradeType, ...options }: RenderHookWithTradingProviderOptions<Props> = {},
-): Promise<RenderHookResult<Result, Props>> =>
-    renderHookWithStoreProvider<Result, Props>(callback, {
-        preloadedState: createTradingPreloadedState({ overrides, tradeType }),
+    {
+        overrides,
+        tradeType,
+        services,
+        ...options
+    }: TradingProviderOptions &
+        Omit<RenderHookOptionsExtended<Props, TServices>, 'preloadedState'> = {},
+) =>
+    renderHookWithStoreProvider(callback, {
         ...options,
+        services: {
+            ...services,
+            store: services?.store ?? createTradingTestStore({ overrides, tradeType }),
+        },
     });

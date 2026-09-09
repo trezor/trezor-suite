@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { act } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingAssetOption,
     type TradingAssetSellOption,
@@ -106,8 +106,7 @@ const DEFAULTS: TradingExchangeFormProps = {
 const mockComposeRequest = jest.fn();
 
 const renderExchangeFormInputs = () => {
-    const store = createTestStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
         preloadedState: {
             wallet: { accounts: [ACCOUNT] },
         },
@@ -134,10 +133,12 @@ const renderExchangeFormInputs = () => {
 
             return { inputs, methods };
         },
-        { store },
+        { root },
     );
 
-    return { ...utils, store };
+    const { getActions } = root.services;
+
+    return { ...utils, getActions };
 };
 
 describe('useExchangeFormInputs', () => {
@@ -157,7 +158,7 @@ describe('useExchangeFormInputs', () => {
     });
 
     it('setAllAmount marks the max output, triggers a compose and invalidates the selected quote', () => {
-        const { result, store } = renderExchangeFormInputs();
+        const { result, getActions } = renderExchangeFormInputs();
 
         act(() => {
             result.current.inputs.setAllAmount();
@@ -167,7 +168,7 @@ describe('useExchangeFormInputs', () => {
         expect(result.current.methods.getValues('outputs.0.fiat')).toBe('');
         expect(result.current.inputs.fractionButton).toBe(1);
         expect(mockComposeRequest).toHaveBeenCalledWith('outputs.0.amount');
-        expect(store.getActions().map(action => action.type)).toContain(
+        expect(getActions().map(action => action.type)).toContain(
             tradingExchangeActions.saveSelectedQuote.type,
         );
     });

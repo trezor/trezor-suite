@@ -1,11 +1,13 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form, useForm } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
-    type TestStore,
     createStoreFromPreloadedState,
     renderWithStoreProvider,
     userEvent,
@@ -13,6 +15,8 @@ import {
 
 import { FeesFooter } from './FeesFooter';
 import { getWalletState } from '../../__fixtures__/walletState';
+
+type State = WalletSettingsRootState & FiatRatesRootState;
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({
@@ -54,7 +58,7 @@ const mockSelectAccountTokenDecimals =
     jest.requireMock('@suite-native/tokens').selectAccountTokenDecimals;
 
 describe('FeesFooter', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let mockOnSubmit: jest.Mock;
 
     const defaultProps = {
@@ -68,7 +72,7 @@ describe('FeesFooter', () => {
         withSubmitButton: true,
     };
 
-    const getPreloadedState = () => ({
+    const getPreloadedState = (): State => ({
         wallet: getWalletState(),
     });
 
@@ -85,10 +89,7 @@ describe('FeesFooter', () => {
                 */}
                 <FeesFooter {...(finalProps as React.ComponentProps<typeof FeesFooter>)} />
             </TestFormWrapper>,
-            {
-                store,
-                preloadedState: getPreloadedState(),
-            },
+            { services: { store }, preloadedState: getPreloadedState() },
         );
     };
 

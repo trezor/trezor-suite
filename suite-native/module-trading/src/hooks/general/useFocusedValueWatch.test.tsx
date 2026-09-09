@@ -1,28 +1,38 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
-import { deviceInitialState } from '@suite-common/device';
+import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
+    type PreloadedStatePartial,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
-import { selectIsAmountInputActive, tradingSlice } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectIsAmountInputActive,
+    tradingSlice,
+} from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useFocusedValueWatch } from './useFocusedValueWatch';
 import { useBuyForm } from '../buy/useBuyForm';
 
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState & DeviceRootState;
+
 jest.mock('./useFocusedValueWatch', () => jest.requireActual('./useFocusedValueWatch'));
 
 describe('useFocusedValueWatch', () => {
     let form: BuyFormType;
-    let store: TestStore;
+    let store: Store<State>;
 
     const reducer = {
         device: createStaticReducer(deviceInitialState),
@@ -36,7 +46,7 @@ describe('useFocusedValueWatch', () => {
         }),
     } as const;
 
-    const preloadedState = {
+    const preloadedState: PreloadedStatePartial<State> = {
         device: deviceInitialState,
         wallet: {
             trading: getWalletState({ tradeType: 'buy' }).trading,
@@ -51,7 +61,7 @@ describe('useFocusedValueWatch', () => {
     const renderUseFocusedValueWatch = async () =>
         await renderHookWithStoreProvider(({ control }) => useFocusedValueWatch(control), {
             initialProps: { control: form.control },
-            store,
+            services: { store },
         });
 
     beforeEach(async () => {

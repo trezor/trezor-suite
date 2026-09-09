@@ -1,6 +1,6 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -135,12 +135,14 @@ const renderActions = (overrides?: StateOverrides) => {
         cryptoId: ETHEREUM_CRYPTO_ID,
     });
 
-    const store = createTestStore({ extra: undefined, preloadedState: state });
+    const root = createTestCompositionRoot({ preloadedState: state });
     const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
-        store,
+        root,
     });
 
-    return { store, result };
+    const { getActions } = root.services;
+
+    return { getActions, result };
 };
 
 describe('useTradingExchangeTradeActions', () => {
@@ -153,9 +155,9 @@ describe('useTradingExchangeTradeActions', () => {
 
     describe('mount is side-effect free', () => {
         it('does not dispatch anything on mount', () => {
-            const { store } = renderActions();
+            const { getActions } = renderActions();
 
-            expect(store.getActions()).toHaveLength(0);
+            expect(getActions()).toHaveLength(0);
         });
     });
 
@@ -188,12 +190,12 @@ describe('useTradingExchangeTradeActions', () => {
                 type: 'sign-cancelled',
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });
-            const { store, result } = renderActions();
+            const { getActions, result } = renderActions();
 
             const success = await result.current.sendTransaction();
 
             expect(success).toBe(false);
-            expect(toastsOf(store.getActions())).toHaveLength(0);
+            expect(toastsOf(getActions())).toHaveLength(0);
         });
 
         it('reports an error nothing else has reported', async () => {
@@ -201,12 +203,12 @@ describe('useTradingExchangeTradeActions', () => {
                 type: 'sign-tx-error',
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });
-            const { store, result } = renderActions();
+            const { getActions, result } = renderActions();
 
             const success = await result.current.sendTransaction();
 
             expect(success).toBe(false);
-            expect(toastsOf(store.getActions())).toHaveLength(1);
+            expect(toastsOf(getActions())).toHaveLength(1);
         });
 
         it('returns false without dispatching when the account is missing', async () => {

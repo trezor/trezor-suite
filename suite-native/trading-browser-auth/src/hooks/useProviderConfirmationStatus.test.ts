@@ -1,16 +1,20 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { initialWalletSettingsState, sendFormActions } from '@suite-common/wallet-core';
+import {
+    type SendRootState,
+    initialWalletSettingsState,
+    sendFormActions,
+} from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import {
+    type TradingRootState,
     selectTradingProviderConfirmationStatus,
     tradingActions,
     tradingSlice,
@@ -19,12 +23,14 @@ import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { useProviderConfirmationStatus } from './useProviderConfirmationStatus';
 
+type State = TradingRootState & SendRootState;
+
 describe('useProviderConfirmationStatus', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseProviderConfirmationStatus = async () =>
         await renderHookWithStoreProvider(() => useProviderConfirmationStatus(), {
-            store,
+            services: { store },
         });
 
     beforeEach(() => {

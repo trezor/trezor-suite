@@ -1,4 +1,4 @@
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -45,11 +45,10 @@ const renderForSell = (
     sellTradingAccountKey?: string,
     accounts: Account[] = [FIRST_ELIGIBLE_ACCOUNT, TRADE_ACCOUNT],
 ) => {
-    const store = createTestStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
         preloadedState: buildState(accounts, sellTradingAccountKey),
     });
-    const { result } = renderHookWithStoreProvider(() => useTradingFormAccount('sell'), { store });
+    const { result } = renderHookWithStoreProvider(() => useTradingFormAccount('sell'), { root });
 
     return result;
 };

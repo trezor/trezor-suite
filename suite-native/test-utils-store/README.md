@@ -30,10 +30,13 @@ const { result } = renderHookWithStoreProvider(() => useMyHook());
 
 Both helpers accept the standard `@testing-library/react-native` options plus:
 
-- `preloadedState?: Record<string, unknown>` — initial state merged over defaults.
-- `services?: Record<string, unknown>` — overrides injected into the shared `ServicesProvider`; useful for tests that need custom service mocks.
-- `store?: EnhancedStore` — inject a pre-built store (see `createLightStore` below); takes precedence over `preloadedState`.
+- `preloadedState?: object` — initial state merged over defaults.
+- `services` (optional) — services supplied to the test composition, including an optional pre-built `store` that takes precedence over `preloadedState`.
 - `wrapper?: ComponentType` — additional inner wrapper (e.g. a form provider).
+
+Each test declares the state slices and service dependencies its subject needs. The render helpers infer the supplied services through generics, preserving the store state and dispatch types.
+
+The helpers create services once per render call. Both the Redux provider and the services provider use that same store, which is preserved across rerenders.
 
 ## Store factories
 
@@ -48,11 +51,11 @@ Two factories with different trade-offs. Pick by what your test needs to do:
 
 ### `createStoreFromPreloadedState(preloadedState?)`
 
-Called internally by `renderWithStoreProvider` when no `store` is injected. Each top-level slice becomes a static reducer that ignores every action. This is the fast path used by most render tests.
+Called internally by `renderWithStoreProvider` when no `services.store` is supplied. The inferred state is preserved by a static reducer that ignores every action. This is the fast path used by most render tests.
 
 ### `createLightStore({ reducer, preloadedState })`
 
-Thin wrapper over `configureStore` with `serializableCheck` and `immutableCheck` disabled and typed `preloadedState` via `PreloadedStatePartial`. Use this to build a store with selected real reducers, then pass it to `renderWithStoreProvider` via the `store` option.
+Thin wrapper over `configureStore` with `serializableCheck` and `immutableCheck` disabled and typed `preloadedState` via `PreloadedStatePartial`. Use this to build a store with selected real reducers, then pass it to `renderWithStoreProvider` via `services.store`.
 
 ```tsx
 import {
@@ -71,7 +74,7 @@ const store = createLightStore({
     preloadedState: { wallet: { trading: initialTradingState } },
 });
 
-renderWithStoreProvider(<MyComponent />, { store });
+renderWithStoreProvider(<MyComponent />, { services: { store } });
 ```
 
 ### `createStaticReducer(initialState)`
@@ -82,4 +85,3 @@ Helper for building a reducer map for `createLightStore` when you want most slic
 
 - `PreloadedStatePartial<T>` — deep-partial of state that preserves functions and arrays as-is (unlike a naive `DeepPartial`). Used by `createLightStore` and re-exported for test-side preloaded-state typing.
 - `RenderOptionsExtended` / `RenderHookOptionsExtended<Props>` — the option types accepted by the render helpers.
-- `TestStore` — alias for the `EnhancedStore` returned by the factories.

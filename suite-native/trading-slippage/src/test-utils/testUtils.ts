@@ -1,11 +1,11 @@
 import type { ReactElement } from 'react';
 
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { localeInitialState, localeReducer } from '@suite-native/intl';
+import { type LocaleSliceRootState, localeInitialState, localeReducer } from '@suite-native/intl';
 import {
     type RenderHookResult,
     type RenderResult,
@@ -15,10 +15,12 @@ import {
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { getInitializedTradingState, mercuryoDexQuote } from '@suite-native/trading-fixtures';
-import { tradingSlice } from '@suite-native/trading-state';
+import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
+
+type State = TradingRootState & LocaleSliceRootState;
 
 type SlippageTestOptions = {
-    store?: ReturnType<typeof createLightStore>;
+    store?: Store<State>;
     quote?: ExchangeTrade;
 };
 
@@ -34,7 +36,7 @@ const reducer = {
 
 export const getSlippageTestPreloadedState = (
     quote: ExchangeTrade | undefined = mercuryoDexQuote,
-) => {
+): State => {
     const trading = getInitializedTradingState();
     trading.exchange.selectedQuote = quote;
 
@@ -56,7 +58,7 @@ export const renderWithSlippageTestProvider = (
 ): Promise<RenderResult> => {
     const preloadedState = store ? undefined : getSlippageTestPreloadedState(quote);
 
-    return renderWithStoreProvider(element, { preloadedState, store });
+    return renderWithStoreProvider(element, { preloadedState, services: { store } });
 };
 
 export const renderHookWithSlippageTestProvider = <Result>(
@@ -65,5 +67,5 @@ export const renderHookWithSlippageTestProvider = <Result>(
 ): Promise<RenderHookResult<Result, unknown>> => {
     const preloadedState = store ? undefined : getSlippageTestPreloadedState(quote);
 
-    return renderHookWithStoreProvider(callback, { preloadedState, store });
+    return renderHookWithStoreProvider(callback, { preloadedState, services: { store } });
 };

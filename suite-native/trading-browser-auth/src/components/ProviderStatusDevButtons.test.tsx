@@ -1,25 +1,30 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { FeatureFlag, featureFlagsReducer, toggleFeatureFlag } from '@suite-native/feature-flags';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils-store';
-import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectTradingProviderConfirmationStatus,
+    tradingSlice,
+} from '@suite-native/trading-state';
 
 import { ProviderStatusDevButtons } from './ProviderStatusDevButtons';
 
+type State = TradingRootState;
+
 describe('ProviderStatusDevButtons', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderProviderStatusDevButtons = async () =>
-        await renderWithStoreProvider(<ProviderStatusDevButtons />, { store });
+        await renderWithStoreProvider(<ProviderStatusDevButtons />, { services: { store } });
 
     beforeEach(() => {
         store = createLightStore({

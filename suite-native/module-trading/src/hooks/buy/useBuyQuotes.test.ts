@@ -1,9 +1,12 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import {
     TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
     tradingActions,
     tradingBuyActions,
 } from '@suite-common/trading';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     bnbAsset,
     btc1NormalAccount,
@@ -12,11 +15,14 @@ import {
     getInitializedTradingState,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 import { type BuyFormValues } from '@suite-native/trading-types';
 
 import { useBuyForm } from './useBuyForm';
 import { useBuyQuotes } from './useBuyQuotes';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
@@ -42,14 +48,14 @@ describe('useBuyQuotes', () => {
         const tradingState = getInitializedTradingState();
         tradingState.buy.tradingAccountKey = eth1NormalAccount.key;
 
-        return createTradingLightStore({
+        return createTradingTestStore({
             overrides: {
                 wallet: { trading: tradingState, accounts: [eth1NormalAccount] },
             },
         });
     };
 
-    const renderUseBuyQuotes = async (store: TestStore) =>
+    const renderUseBuyQuotes = async (store: Store<State>) =>
         await renderHookWithStoreProvider(
             () => {
                 const form = useBuyForm();
@@ -57,7 +63,7 @@ describe('useBuyQuotes', () => {
 
                 return form;
             },
-            { store },
+            { services: { store } },
         );
 
     afterEach(() => {

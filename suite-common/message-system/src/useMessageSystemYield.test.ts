@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { type MessageSystemState } from './messageSystemTypes';
@@ -58,16 +58,15 @@ const stateWithDisabledFeatures = {
     },
 } as unknown as MessageSystemState;
 
-const createStore = (state: MessageSystemState = stateWithDisabledFeatures) =>
-    createTestStore({
-        extra: undefined,
+const createRoot = (state: MessageSystemState = stateWithDisabledFeatures) =>
+    createTestCompositionRoot({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
     });
 
 const renderHook = (props: Parameters<typeof useMessageSystemYield>[0]) =>
     renderHookWithStoreProvider(() => useMessageSystemYield(props), {
-        store: createStore(),
+        root: createRoot(),
     });
 
 describe('useMessageSystemYield', () => {
@@ -109,10 +108,10 @@ describe('useMessageSystemYield', () => {
     });
 
     it('returns not disabled when no feature messages are configured', () => {
-        const store = createStore(messageSystemInitialState);
+        const root = createRoot(messageSystemInitialState);
         const { result } = renderHookWithStoreProvider(
             () => useMessageSystemYield({ type: 'deposit', locale: 'en' }),
-            { store },
+            { root },
         );
 
         expect(result.current).toMatchObject({

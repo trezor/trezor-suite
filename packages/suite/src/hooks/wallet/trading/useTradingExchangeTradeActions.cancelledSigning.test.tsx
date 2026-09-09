@@ -1,7 +1,7 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -183,14 +183,14 @@ describe('cancelling a swap on the device', () => {
     });
 
     it('reports the cancellation once and nothing else', async () => {
-        const store = createTestStore({ extra: undefined, preloadedState });
+        const root = createTestCompositionRoot({ preloadedState });
         const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
-            store,
+            root,
         });
 
         const success = await result.current.sendTransaction();
 
-        const toasts = store
+        const toasts = root.services
             .getActions()
             .filter(action => action.type === notificationsActions.addToast.type);
 

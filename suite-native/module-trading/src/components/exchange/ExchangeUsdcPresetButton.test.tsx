@@ -1,14 +1,20 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
+import { fireEvent, screen } from '@suite-native/test-utils-store';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { ExchangeUsdcPresetButton } from './ExchangeUsdcPresetButton';
 import {
-    createTradingLightStore,
     createTradingPreloadedState,
+    createTradingTestStore,
     renderWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 const mockSetValue = jest.fn();
 const mockGetValues = jest.fn();
@@ -45,22 +51,22 @@ describe('ExchangeUsdcPresetButton', () => {
     });
 
     it('without a matching account shows an error message', async () => {
-        const store = createTradingLightStore({ tradeType: 'exchange' });
-        await renderWithTradingProvider(<ExchangeUsdcPresetButton />, { store });
+        const store = createTradingTestStore({ tradeType: 'exchange' });
+        await renderWithTradingProvider(<ExchangeUsdcPresetButton />, { services: { store } });
 
         expect(screen.getByText('No account with USDC found.')).toBeOnTheScreen();
     });
 
     describe('with a matching ETH account that has a USDC token', () => {
-        let store: TestStore;
+        let store: Store<State>;
 
         beforeEach(async () => {
-            const preloadedState = createTradingPreloadedState({
+            const preloadedState: State = createTradingPreloadedState({
                 tradeType: 'exchange',
                 overrides: { wallet: { accounts: [ethAccountWithUsdc] } },
             });
-            store = createTradingLightStore({ tradeType: 'exchange', overrides: preloadedState });
-            await renderWithTradingProvider(<ExchangeUsdcPresetButton />, { store });
+            store = createTradingTestStore({ tradeType: 'exchange', overrides: preloadedState });
+            await renderWithTradingProvider(<ExchangeUsdcPresetButton />, { services: { store } });
         });
 
         it('renders the preset button', () => {

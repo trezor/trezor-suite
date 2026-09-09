@@ -1,7 +1,12 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
-import { appSettingsReducer, setIsOnboardingFinished } from '@suite-native/settings';
 import {
-    type TestStore,
+    type SettingsSliceRootState,
+    appSettingsReducer,
+    setIsOnboardingFinished,
+} from '@suite-native/settings';
+import {
     act,
     createLightStore,
     createStaticReducer,
@@ -27,10 +32,10 @@ jest.mock('@suite-native/app-init', () => ({
 }));
 
 describe('useExitOnboardingFlow', () => {
-    let store: TestStore;
+    let store: Store<SettingsSliceRootState>;
 
     const renderUseExitOnboardingFlow = async () =>
-        await renderHookWithStoreProvider(() => useExitOnboardingFlow(), { store });
+        await renderHookWithStoreProvider(() => useExitOnboardingFlow(), { services: { store } });
 
     beforeEach(() => {
         store = createLightStore({

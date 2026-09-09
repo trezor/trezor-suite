@@ -8,7 +8,7 @@ import { type PreloadedStatePartial } from './createLightStore';
  * merged return type narrows back to `T` instead of the loose `TMerged<T[number]>`
  * that the underlying utility produces.
  */
-export const mergePreloadedState = <T extends Record<string, unknown>>(
+export const mergePreloadedState = <T extends object>(
     base: T,
     overrides: PreloadedStatePartial<NoInfer<T>>,
 ): T => mergeDeepObject.withOptions({ mergeArrays: false }, base, overrides) as T;

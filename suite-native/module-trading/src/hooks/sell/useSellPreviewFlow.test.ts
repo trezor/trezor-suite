@@ -4,7 +4,7 @@ import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store
 import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
 
 import { useSellPreviewFlow } from './useSellPreviewFlow';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 
 const mockReplace = jest.fn();
 
@@ -24,7 +24,7 @@ describe('useSellPreviewFlow', () => {
     });
 
     it('reports preview continue and replaces the route', async () => {
-        const store = createTradingLightStore({
+        const store = createTradingTestStore({
             tradeType: 'sell',
             overrides: {
                 wallet: {
@@ -38,8 +38,7 @@ describe('useSellPreviewFlow', () => {
             },
         });
         const { result } = await renderHookWithStoreProvider(() => useSellPreviewFlow(), {
-            store,
-            services,
+            services: { ...services, store },
         });
 
         await act(() => result.current.continueToProvider());

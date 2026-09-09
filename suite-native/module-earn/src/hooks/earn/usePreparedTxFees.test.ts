@@ -123,7 +123,7 @@ const renderPreparedTxFees = async (initialProps: HookProps) => {
     return {
         store,
         ...(await renderHookWithStoreProvider((props: HookProps) => usePreparedTxFees(props), {
-            store,
+            services: { store },
             initialProps,
         })),
     };

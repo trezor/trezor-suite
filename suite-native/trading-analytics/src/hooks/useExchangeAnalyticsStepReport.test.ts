@@ -1,13 +1,11 @@
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { useExchangeAnalyticsStepReport } from './useExchangeAnalyticsStepReport';
 
 const reportToAnalyticsMock = jest.fn();
-
-jest.mock('./useExchangeAnalyticReportCallback', () => ({
-    useExchangeAnalyticReportCallback: jest.fn(() => reportToAnalyticsMock),
-}));
 
 describe('useExchangeAnalyticsStepReport', () => {
     const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
@@ -19,7 +17,7 @@ describe('useExchangeAnalyticsStepReport', () => {
     it('should report correct data on callback execution', async () => {
         const { result } = await renderHookWithStoreProvider(
             () => useExchangeAnalyticsStepReport('exchange-form'),
-            { preloadedState },
+            { preloadedState, services: { analytics: mockNativeAnalytics(reportToAnalyticsMock) } },
         );
 
         result.current('visit');
@@ -27,8 +25,17 @@ describe('useExchangeAnalyticsStepReport', () => {
         result.current('visit');
 
         expect(reportToAnalyticsMock).toHaveBeenCalledTimes(3);
-        expect(reportToAnalyticsMock).toHaveBeenNthCalledWith(1, 'exchange-form', 'visit');
-        expect(reportToAnalyticsMock).toHaveBeenNthCalledWith(2, 'exchange-form', 'retry');
-        expect(reportToAnalyticsMock).toHaveBeenNthCalledWith(3, 'exchange-form', 'visit');
+        expect(reportToAnalyticsMock).toHaveBeenNthCalledWith(1, {
+            type: events.tradingExchangeEvent.name,
+            payload: expect.objectContaining({ step: 'exchange-form', action: 'visit' }),
+        });
+        expect(reportToAnalyticsMock).toHaveBeenNthCalledWith(2, {
+            type: events.tradingExchangeEvent.name,
+            payload: expect.objectContaining({ step: 'exchange-form', action: 'retry' }),
+        });
+        expect(reportToAnalyticsMock).toHaveBeenNthCalledWith(3, {
+            type: events.tradingExchangeEvent.name,
+            payload: expect.objectContaining({ step: 'exchange-form', action: 'visit' }),
+        });
     });
 });

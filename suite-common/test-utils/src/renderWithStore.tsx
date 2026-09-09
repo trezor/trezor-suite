@@ -1,4 +1,3 @@
-import { type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 
 import { type Store } from '@reduxjs/toolkit';
@@ -10,32 +9,19 @@ import { type TestAppRoot } from './createTestCompositionRoot';
 
 export type TestStore = Store;
 
-type RenderHookOptionsExtended<Props> = RenderHookOptions<Props> &
-    ({ root: TestAppRoot; store?: never } | { store: TestStore; root?: never });
+type RenderHookOptionsExtended<Props> = RenderHookOptions<Props> & { root: TestAppRoot };
 
 export const renderHookWithStoreProvider = <Result, Props>(
     callback: (props: Props) => Result,
-    { wrapper: Wrapper, store, root, ...options }: RenderHookOptionsExtended<Props>,
-) => {
-    const reduxStore = root?.store ?? store;
-    if (!reduxStore) {
-        throw new Error('Expected a store or root.');
-    }
-
-    const childrenWithProviders = (children: ReactNode) => {
-        const wrappedChildren = Wrapper ? <Wrapper>{children}</Wrapper> : children;
-
-        return (
-            <ServicesProvider services={{ ...root?.services, store: reduxStore }}>
-                {wrappedChildren}
-            </ServicesProvider>
-        );
-    };
-
-    return renderHook(callback, {
+    { wrapper: Wrapper, root, ...options }: RenderHookOptionsExtended<Props>,
+) =>
+    renderHook(callback, {
         wrapper: ({ children }) => (
-            <Provider store={reduxStore}>{childrenWithProviders(children)}</Provider>
+            <Provider store={root.store}>
+                <ServicesProvider services={root.services}>
+                    {Wrapper ? <Wrapper>{children}</Wrapper> : children}
+                </ServicesProvider>
+            </Provider>
         ),
         ...options,
     });
-};

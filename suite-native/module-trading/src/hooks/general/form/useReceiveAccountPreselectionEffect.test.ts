@@ -1,3 +1,5 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { type AccountKey } from '@suite-common/wallet-types';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -7,6 +9,8 @@ import {
     btcAsset,
 } from '@suite-native/trading-fixtures';
 import {
+    type CombinedSelectorsRootState,
+    type TradingRootState,
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
     tradingActions,
@@ -14,7 +18,9 @@ import {
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { useReceiveAccountPreselectionEffect } from './useReceiveAccountPreselectionEffect';
-import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & CombinedSelectorsRootState;
 
 const btc1AccountKey = btc1NormalAccount.key;
 
@@ -24,7 +30,7 @@ describe('useReceiveAccountPreselectionEffect', () => {
         tradingType = 'buy',
         receiveAsset = btcAsset,
     }: {
-        store: ReturnType<typeof createTradingLightStore>;
+        store: Store<State>;
         tradingType?: 'buy' | 'exchange';
         receiveAsset?: TradeableAsset;
     }) =>
@@ -38,7 +44,7 @@ describe('useReceiveAccountPreselectionEffect', () => {
                             ? selectBuySelectedReceiveAccount
                             : selectExchangeSelectedReceiveAccount,
                 }),
-            { store },
+            { services: { store } },
         );
 
     const createStore = ({
@@ -48,7 +54,7 @@ describe('useReceiveAccountPreselectionEffect', () => {
         selectedReceiveAccountKey?: AccountKey;
         tradeType?: 'buy' | 'exchange';
     } = {}) =>
-        createTradingLightStore({
+        createTradingTestStore({
             tradeType,
             overrides: {
                 device: {
@@ -73,45 +79,51 @@ describe('useReceiveAccountPreselectionEffect', () => {
 
     it('should dispatch buy actions when account is preselected', async () => {
         const store = createStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
 
         await renderUseReceiveAccountPreselectionEffect({ store });
 
-        expect(store.getActions()).toEqual([
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchSpy).toHaveBeenCalledWith(
             tradingActions.setReceiveAccount({
                 tradingType: 'buy',
                 accountKey: btc1AccountKey,
                 address: 'UNUSED1',
             }),
-        ]);
+        );
     });
 
     it('should dispatch exchange actions when account is preselected', async () => {
         const store = createStore({ tradeType: 'exchange' });
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
 
         await renderUseReceiveAccountPreselectionEffect({ store, tradingType: 'exchange' });
 
-        expect(store.getActions()).toEqual([
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchSpy).toHaveBeenCalledWith(
             tradingActions.setReceiveAccount({
                 tradingType: 'exchange',
                 accountKey: btc1AccountKey,
                 address: 'UNUSED1',
             }),
-        ]);
+        );
     });
 
     it('should not dispatch actions when no preselected account can be found', async () => {
         const store = createStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
 
         await renderUseReceiveAccountPreselectionEffect({ store, receiveAsset: adaAsset });
 
-        expect(store.getActions()).toEqual([]);
+        expect(dispatchSpy).not.toHaveBeenCalled();
     });
 
     it('should not dispatch actions when selectedReceiveAccount already has account set', async () => {
         const store = createStore({ selectedReceiveAccountKey: btc1AccountKey });
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
 
         await renderUseReceiveAccountPreselectionEffect({ store });
 
-        expect(store.getActions()).toEqual([]);
+        expect(dispatchSpy).not.toHaveBeenCalled();
     });
 });

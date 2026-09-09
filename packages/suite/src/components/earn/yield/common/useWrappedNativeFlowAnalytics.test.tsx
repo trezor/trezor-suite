@@ -1,19 +1,14 @@
+import { type PropsWithChildren } from 'react';
+
 import { act, renderHook } from '@testing-library/react';
 
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { events } from '@suite-common/analytics';
+import { ServicesProvider } from '@suite-common/dependency-injection';
 
 import { useWrappedNativeFlowAnalytics } from './useWrappedNativeFlowAnalytics';
 
 const mockReport = jest.fn();
-
-// The reference must be stable across renders, or the resolution/leftPending effects re-bind.
-jest.mock('@suite-common/dependency-injection', () => {
-    const analytics = { report: (...args: unknown[]) => mockReport(...args) };
-
-    return { useServices: () => ({ analytics }) };
-});
-
-jest.mock('@suite/analytics', () => ({ selectDesktopAnalyticsDep: () => ({}) }));
 
 type Props = Parameters<typeof useWrappedNativeFlowAnalytics>[0];
 
@@ -24,8 +19,16 @@ const pendingWrap: Props = {
     networkSymbol: 'eth',
 };
 
-const renderFlowAnalytics = (initialProps: Props) =>
-    renderHook((props: Props) => useWrappedNativeFlowAnalytics(props), { initialProps });
+const renderFlowAnalytics = (initialProps: Props) => {
+    const services = { analytics: mockDesktopAnalytics(mockReport) };
+
+    return renderHook((props: Props) => useWrappedNativeFlowAnalytics(props), {
+        initialProps,
+        wrapper: ({ children }: PropsWithChildren) => (
+            <ServicesProvider services={services}>{children}</ServicesProvider>
+        ),
+    });
+};
 
 describe('useWrappedNativeFlowAnalytics', () => {
     beforeEach(() => {

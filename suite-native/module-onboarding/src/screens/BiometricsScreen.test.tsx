@@ -1,9 +1,13 @@
-import { messageSystemInitialState } from '@suite-common/message-system';
-import { featureFlagsReducer } from '@suite-native/feature-flags';
+import { type Store } from '@reduxjs/toolkit';
+
+import {
+    type MessageSystemRootState,
+    messageSystemInitialState,
+} from '@suite-common/message-system';
+import { type FeatureFlagsRootState, featureFlagsReducer } from '@suite-native/feature-flags';
 import { getTranslation } from '@suite-native/intl';
 import { OnboardingStackRoutes } from '@suite-native/navigation';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     renderWithStoreProvider,
@@ -11,6 +15,8 @@ import {
 } from '@suite-native/test-utils-store';
 
 import { BiometricsScreen, type BiometricsScreenProps } from './BiometricsScreen';
+
+type State = FeatureFlagsRootState & MessageSystemRootState;
 
 const mockNavigate = jest.fn();
 const mockNavigationDispatch = jest.fn();
@@ -40,7 +46,7 @@ jest.mock('@suite-native/app-init', () => ({
 }));
 
 describe('BiometricsScreen', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderBiometricsScreen = async () =>
         await renderWithStoreProvider(
@@ -50,7 +56,7 @@ describe('BiometricsScreen', () => {
                 }
                 route={mockRoute}
             />,
-            { store },
+            { services: { store } },
         );
 
     beforeEach(() => {

@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { type Coins, type CryptoId } from 'invity-api';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
@@ -23,11 +24,6 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingTransactionsList } from './TradingTransactionsList';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: (payload: unknown) => ({ type: '@router/goto', payload }),
-}));
 
 const BITCOIN = 'bitcoin' as CryptoId;
 const ETHEREUM = 'ethereum' as CryptoId;
@@ -123,7 +119,12 @@ const buildState = (trades: TradingTransaction[]): AppState => ({
 
 const renderList = (trades: TradingTransaction[]) => {
     const root = createTestCompositionRoot({
-        extra: { services: { analytics: mockDesktopAnalytics() } },
+        extra: {
+            services: {
+                analytics: mockDesktopAnalytics(),
+                suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
+            },
+        },
         preloadedState: buildState(trades),
     });
 

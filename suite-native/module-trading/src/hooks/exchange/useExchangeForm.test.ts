@@ -1,3 +1,4 @@
+import { type Store } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
 import {
@@ -5,14 +6,10 @@ import {
     selectTradingProviderMetadata,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
-import {
-    type TestStore,
-    act,
-    renderHookWithStoreProvider,
-    waitFor,
-} from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import {
     accounts,
     btc1NormalAccount,
@@ -30,11 +27,14 @@ import {
     oneInchFusionQuote,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { clearExchangeFormQuoteData, useExchangeForm } from './useExchangeForm';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
 
 type PrefetchDexQuoteApprovalThunk = typeof exchangeThunks.prefetchDexQuoteApprovalThunk;
 
@@ -81,13 +81,13 @@ const eth1AccountKey = eth1NormalAccount.key;
 const accountDeviceState = btc1NormalAccount.deviceState;
 
 describe('useExchangeForm', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseExchangeForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), { store });
+        await renderHookWithStoreProvider(() => useExchangeForm(), { services: { store } });
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
-        createTradingLightStore({
+        createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 device: {
@@ -571,7 +571,7 @@ describe('useExchangeForm', () => {
                 formattedBalance: '0.0001',
             });
 
-            store = createTradingLightStore({
+            store = createTradingTestStore({
                 tradeType: 'exchange',
                 overrides: {
                     device: {

@@ -1,4 +1,8 @@
-import { type TestStore } from '@suite-native/test-utils-store';
+import { type Store } from '@reduxjs/toolkit';
+
+import { type TradingRootStateWithDeviceAndAccounts } from '@suite-common/trading';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     btc1NormalAccount,
@@ -8,21 +12,19 @@ import {
     getSellTrade,
     sol1normalAccount,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useWatchAllTrades } from './useWatchAllTrades';
 import {
-    createTradingLightStore,
+    createTradingTestStore,
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & TradingRootStateWithDeviceAndAccounts;
 
 // Mock the useAllTradesReloadTimer hook
 jest.mock('./useAllTradesReloadTimer', () => ({
     useAllTradesReloadTimer: jest.fn(),
-}));
-
-// Mock the useTransactionStateChangeAnalyticsReporting hook
-jest.mock('./useTransactionStateChangeAnalyticsReporting', () => ({
-    useTransactionStateChangeAnalyticsReporting: jest.fn(),
 }));
 
 const mockUseAllTradesReloadTimer = require('./useAllTradesReloadTimer').useAllTradesReloadTimer;
@@ -50,7 +52,7 @@ describe('useWatchAllTrades', () => {
     });
 
     const getInitializedStore = ({ trades = [] }: { trades?: any[] } = {}) =>
-        createTradingLightStore({
+        createTradingTestStore({
             overrides: {
                 wallet: {
                     trading: { trades },
@@ -64,8 +66,10 @@ describe('useWatchAllTrades', () => {
             },
         });
 
-    const renderUseWatchAllTrades = async (store: TestStore) =>
-        await renderHookWithTradingProvider(() => useWatchAllTrades(), { store });
+    const renderUseWatchAllTrades = async (store: Store<State>) =>
+        await renderHookWithTradingProvider(() => useWatchAllTrades(), {
+            services: { analytics: mockNativeAnalytics(), store },
+        });
 
     it('should return empty arrays when no trades', async () => {
         const store = getInitializedStore();

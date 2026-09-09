@@ -1,5 +1,6 @@
-import { type TransportName, type TransportsDep } from '@suite-common/connect-init';
+import { type TransportName } from '@suite-common/connect-init';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectTransportsDep } from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
@@ -14,9 +15,7 @@ export const useOpenSuiteDesktop = () => {
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const activeTransports = useSelector(selectActiveTransports);
     const windowFocused = useWindowFocus();
-    const { createTransports } = useServices((services): TransportsDep => ({
-        createTransports: services.createTransports,
-    }));
+    const { createTransports } = useServices(selectTransportsDep);
 
     const handleOpenSuite = () => {
         const iframe = document.createElement('iframe');

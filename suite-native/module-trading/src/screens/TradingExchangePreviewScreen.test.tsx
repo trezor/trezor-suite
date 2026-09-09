@@ -1,17 +1,14 @@
 import { type RouteProp } from '@react-navigation/native';
+import { type Store } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
-import {
-    type TestStore,
-    renderWithStoreProvider,
-    userEvent,
-    waitFor,
-} from '@suite-native/test-utils-store';
+import { renderWithStoreProvider, userEvent, waitFor } from '@suite-native/test-utils-store';
 import {
     createPrecomposedTxFinal,
     exchangeQuotes,
@@ -21,6 +18,7 @@ import {
     mercuryoFixedWorstQuote,
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import {
     TradingExchangePreviewScreen,
@@ -28,7 +26,9 @@ import {
 } from './TradingExchangePreviewScreen';
 import { useDexExchangeTxSimulation } from '../hooks/exchange/useDexExchangeTxSimulation';
 import { useExchangeIssue } from '../hooks/exchange/useExchangeIssue';
-import { createTradingLightStore } from '../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal') });
@@ -113,7 +113,7 @@ const mockPopToTop = jest.fn();
 const mockNavigate = jest.fn();
 
 const createStore = (quote?: ExchangeTrade) =>
-    createTradingLightStore({
+    createTradingTestStore({
         tradeType: 'exchange',
         overrides: {
             wallet: {
@@ -148,13 +148,13 @@ const createRouteProps = (isApproved: boolean = false) =>
     ({ params: { isApproved } }) as TradingExchangePreviewScreenProps['route'];
 
 describe('TradingExchangePreviewScreen', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let consoleErrorSpy: jest.SpyInstance;
     let unmount: (() => void) | undefined;
 
     const renderTradingExchangePreviewScreen = async (
         isApproved: boolean = false,
-        customStore?: TestStore,
+        customStore?: Store<State>,
     ) => {
         const testStore = customStore ?? store;
         const reportMock = jest.fn();
@@ -168,7 +168,7 @@ describe('TradingExchangePreviewScreen', () => {
                 navigation={createNavigationProps()}
                 route={createRouteProps(isApproved)}
             />,
-            { services, store: testStore },
+            { services: { ...services, store: testStore } },
         );
 
         ({ unmount } = result);

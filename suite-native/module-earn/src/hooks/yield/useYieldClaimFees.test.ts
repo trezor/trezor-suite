@@ -103,7 +103,7 @@ const createTestStore = () =>
 
 const renderYieldClaimFees = (initialProps: HookProps) =>
     renderHookWithStoreProvider((props: HookProps) => useYieldClaimFees(props), {
-        store: createTestStore(),
+        services: { store: createTestStore() },
         initialProps,
     });
 

@@ -67,6 +67,7 @@ describe('BuyPaymentMethodPicker', () => {
             typeof defaultPreloadedState
         > = defaultPreloadedState,
     ) => {
+        const extra = { services: { ...services, store } };
         const mergedFormPreloadedState = mergeDeepObject(defaultPreloadedState, formPreloadedState);
         const mergedComponentPreloadedState = mergeDeepObject(
             defaultPreloadedState,
@@ -75,8 +76,7 @@ describe('BuyPaymentMethodPicker', () => {
 
         const { result } = await renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState: mergedFormPreloadedState,
-            services,
-            store,
+            ...extra,
         });
         form = result.current;
 
@@ -84,7 +84,7 @@ describe('BuyPaymentMethodPicker', () => {
             <Form form={form}>
                 <BuyPaymentMethodPicker />
             </Form>,
-            { preloadedState: mergedComponentPreloadedState, services, store },
+            { ...extra, preloadedState: mergedComponentPreloadedState },
         );
     };
 

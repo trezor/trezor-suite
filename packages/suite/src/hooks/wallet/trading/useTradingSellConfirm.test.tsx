@@ -1,17 +1,16 @@
 import type { CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
+import { routerReducer } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { sellInitialState, initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useTradingSellConfirm } from './useTradingSellConfirm';
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
-}));
 
 jest.mock('src/hooks/wallet/trading/useServerEnviroment', () => ({
     useServerEnvironment: jest.fn(),
@@ -86,14 +85,23 @@ const buildState = (overrides: StateOverrides = {}) => {
 const renderConfirm = (overrides?: StateOverrides) => {
     const state = buildState(overrides);
 
-    const store = createTestStore({ extra: undefined, preloadedState: state });
-    const { result } = renderHookWithStoreProvider(() => useTradingSellConfirm(), { store });
+    const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
+    const root = createTestCompositionRoot({
+        extra: {
+            services: { suiteRouterHistory },
+        },
+        preloadedState: state,
+        reducer: {
+            router: routerReducer,
+            locks: locksReducer,
+            modal: modalReducer,
+            wallet: (wallet = state.wallet) => wallet,
+        },
+    });
+    const { result } = renderHookWithStoreProvider(() => useTradingSellConfirm(), { root });
 
-    return { store, result };
+    return { root, result, suiteRouterHistory };
 };
-
-const gotoActions = (store: ReturnType<typeof renderConfirm>['store']) =>
-    store.getActions().filter(action => action.type === '@router/goto');
 
 describe('useTradingSellConfirm', () => {
     beforeEach(() => {
@@ -110,17 +118,18 @@ describe('useTradingSellConfirm', () => {
 
     describe('readiness guard', () => {
         it('does not redirect when the quotes request is present', () => {
-            const { store } = renderConfirm();
+            const { suiteRouterHistory } = renderConfirm();
 
-            expect(gotoActions(store)).toHaveLength(0);
+            expect(suiteRouterHistory.navigate).not.toHaveBeenCalled();
         });
 
         it('redirects to the sell form when the quotes request is missing', () => {
-            const { store } = renderConfirm({ quotesRequest: undefined });
+            const { suiteRouterHistory } = renderConfirm({ quotesRequest: undefined });
 
-            expect(gotoActions(store)).toEqual([
-                { type: '@router/goto', payload: { routeName: 'wallet-trading-sell' } },
-            ]);
+            expect(suiteRouterHistory.navigate).toHaveBeenCalledWith({
+                pathname: '/accounts/coinmarket/sell',
+                hash: '',
+            });
         });
     });
 });

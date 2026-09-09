@@ -1,15 +1,34 @@
-import { formDraftActions } from '@suite-common/wallet-core';
+import { type Store } from '@reduxjs/toolkit';
+
+import { type DeviceRootState } from '@suite-common/device';
+import { type MessageSystemRootState } from '@suite-common/message-system';
+import { type TradingRootStateWithDeviceAndAccounts } from '@suite-common/trading';
+import {
+    type AccountsRootState,
+    type FeesRootState,
+    type FormDraftRootState,
+    formDraftActions,
+} from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { FeatureFlag } from '@suite-native/feature-flags';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
-import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
+import { type TradingRootState, getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 
 import { useComposeTradingTransaction } from './useComposeTradingTransaction';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState &
+    AccountsRootState &
+    DeviceRootState &
+    TradingRootStateWithDeviceAndAccounts &
+    FeesRootState &
+    FormDraftRootState &
+    MessageSystemRootState &
+    FeatureFlagsRootState;
 
 const mockComposeTradingTransactionThunk = jest.fn(
     (payload: unknown) => () =>
@@ -36,12 +55,12 @@ const btcFeeInfo = {
 };
 
 describe('useComposeTradingTransaction', () => {
-    const getInitializedStore = (): TestStore => {
+    const getInitializedStore = (): Store<State> => {
         const tradingState = getInitializedTradingStateWithQuotes();
         tradingState.exchange.tradingAccountKey = btcAccount.key;
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
-        return createTradingLightStore({
+        return createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 featureFlags: { [FeatureFlag.IsTradingSlip24Enabled]: true },
@@ -71,12 +90,10 @@ describe('useComposeTradingTransaction', () => {
         });
     };
 
-    const renderUseComposeTradingTransaction = async (store: TestStore) =>
+    const renderUseComposeTradingTransaction = async (store: Store<State>) =>
         await renderHookWithStoreProvider(
             () => useComposeTradingTransaction({ tradeType: 'exchange' }),
-            {
-                store,
-            },
+            { services: { store } },
         );
 
     beforeEach(() => {

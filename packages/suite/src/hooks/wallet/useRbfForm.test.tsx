@@ -3,6 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { createTestCompositionRoot, initPreloadedState } from '@suite-common/test-utils';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { type ServerInfo } from '@trezor/blockchain-link-types';
@@ -28,11 +29,6 @@ global.ResizeObserver = class MockedResizeObserver {
 
 // do not mock
 jest.unmock('@trezor/connect');
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: () => ({ type: 'mock-redirect' }),
-}));
 
 // !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders
 const translationStringMock = (id: string) => id;
@@ -146,7 +142,12 @@ describe('useRbfForm hook', () => {
         it(`composeAndSign: ${f.description}`, async () => {
             const rootReducer = fixtures.getRootReducer(f.store.selectedAccount, f.store.fees);
             const root = createTestCompositionRoot({
-                extra: { services: { analytics: mockDesktopAnalytics() } },
+                extra: {
+                    services: {
+                        analytics: mockDesktopAnalytics(),
+                        suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
+                    },
+                },
                 reducer: rootReducer,
                 preloadedState: initPreloadedState({
                     rootReducer,

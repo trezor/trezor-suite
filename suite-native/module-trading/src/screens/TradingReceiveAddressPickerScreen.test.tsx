@@ -14,7 +14,7 @@ import { TradingReceiveAddressPickerScreen } from './TradingReceiveAddressPicker
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
-    createTradingLightStore,
+    createTradingTestStore,
 } from '../test-utils/tradingTestUtils';
 
 const navigationPopToTop = jest.fn();
@@ -53,12 +53,12 @@ describe('TradingReceiveAddressPickerScreen', () => {
     };
 
     const renderScreen = async () => {
-        const store = createTradingLightStore({
+        const store = createTradingTestStore({
             tradeType: mockRouteParams.tradingType,
             overrides,
         });
         const result = await renderWithStoreProvider(<TradingReceiveAddressPickerScreen />, {
-            store,
+            services: { store },
         });
 
         return { ...result, store };

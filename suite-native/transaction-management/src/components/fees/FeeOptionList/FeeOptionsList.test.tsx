@@ -1,11 +1,18 @@
-import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type FeesRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
-import { localeReducer } from '@suite-native/intl';
+import { type LocaleSliceRootState, localeReducer } from '@suite-native/intl';
 import {
+    type PreloadedStatePartial,
     act,
     createLightStore,
     createStaticReducer,
@@ -18,6 +25,14 @@ import { FeeOptionsList, type FeeOptionsListProps } from './FeeOptionsList';
 import { createFeeLevel, createFeeLevels } from '../../../__fixtures__/feeLevels';
 import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
 import { useFeesForm } from '../../../hooks/fees/useFeesForm';
+import { type NativeSendRootState, sendFormInitialState } from '../../../sendFormSlice';
+
+type State = AccountsRootState &
+    FeesRootState &
+    WalletSettingsRootState &
+    FiatRatesRootState &
+    LocaleSliceRootState &
+    NativeSendRootState;
 
 // Mock the fee-related selectors
 jest.mock('@suite-common/wallet-core', () => ({
@@ -62,21 +77,19 @@ describe('FeeOptionsList', () => {
             settings: createStaticReducer(initialWalletSettingsState),
             accounts: createStaticReducer(defaultWalletState.accounts),
             fiat: createStaticReducer(defaultWalletState.fiat),
-            send: createStaticReducer(defaultWalletState.send),
+            send: createStaticReducer({ ...sendFormInitialState, ...defaultWalletState.send }),
             fees: createStaticReducer(defaultWalletState.fees),
         }),
     } as const;
 
-    const createFeeOptionsStore = (
-        preloadedState?: Partial<StateFromReducersMapObject<typeof reducer>>,
-    ) =>
+    const createFeeOptionsStore = (preloadedState?: PreloadedStatePartial<State>): Store<State> =>
         createLightStore({
             reducer,
             preloadedState,
         });
 
     const renderUseFeesForm = async (
-        store: ReturnType<typeof createFeeOptionsStore>,
+        store: Store<State>,
         accountKey: AccountKey = ETH_ACCOUNT_KEY,
         defaultFeePerUnit?: string,
     ) => {
@@ -86,9 +99,7 @@ describe('FeeOptionsList', () => {
                     accountKey,
                     defaultFeePerUnit: defaultFeePerUnit || '1',
                 }),
-            {
-                store,
-            },
+            { services: { store } },
         );
 
         return result.current;
@@ -98,7 +109,7 @@ describe('FeeOptionsList', () => {
         preloadedState,
         props,
     }: {
-        preloadedState?: Partial<StateFromReducersMapObject<typeof reducer>>;
+        preloadedState?: PreloadedStatePartial<State>;
         props?: Partial<FeeOptionsListProps>;
     }) => {
         const finalProps = { ...defaultProps, ...props };
@@ -106,7 +117,7 @@ describe('FeeOptionsList', () => {
         const form = await renderUseFeesForm(store);
 
         const view = await renderWithStoreProvider(<FeeOptionsList {...finalProps} />, {
-            store,
+            services: { store },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

@@ -1,22 +1,26 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { type useListDataFilter } from '@suite-common/trading';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     fireEvent,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils-store';
-import { sellActions } from '@suite-native/trading-state';
+import { type TradingRootState, sellActions } from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { SellFiatCurrencyPicker } from './SellFiatCurrencyPicker';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
-import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
 
 let mockUseListDataFilter: typeof useListDataFilter;
 const reportMock = jest.fn();
@@ -32,15 +36,14 @@ jest.mock('@suite-common/trading', () => ({
 
 describe('SellFiatCurrencyPicker', () => {
     let form: SellFormType;
-    let store: TestStore;
+    let store: Store<State>;
 
     beforeEach(async () => {
         mockUseListDataFilter = jest.requireActual('@suite-common/trading').useListDataFilter;
         reportMock.mockClear();
-        store = createTradingLightStore({ tradeType: 'sell' });
+        store = createTradingTestStore({ tradeType: 'sell' });
         const { result } = await renderHookWithStoreProvider(() => useSellForm(), {
-            services,
-            store,
+            services: { ...services, store },
         });
         form = result.current;
     });
@@ -54,10 +57,7 @@ describe('SellFiatCurrencyPicker', () => {
             <Form form={form}>
                 <SellFiatCurrencyPicker />
             </Form>,
-            {
-                services,
-                store,
-            },
+            { services: { ...services, store } },
         );
 
     it('should display selected currency', async () => {

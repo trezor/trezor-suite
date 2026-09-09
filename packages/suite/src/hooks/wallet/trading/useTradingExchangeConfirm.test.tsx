@@ -1,17 +1,17 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
+import { routerReducer } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useTradingExchangeConfirm } from './useTradingExchangeConfirm';
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
-}));
 
 const mockLoadInitialDataThunk = jest.fn((args: unknown) =>
     Object.assign(() => Promise.resolve(), { type: '@trading/loadInitialData', args }),
@@ -101,17 +101,28 @@ const buildState = (overrides: StateOverrides = {}) => {
 const renderConfirm = (overrides?: StateOverrides) => {
     const state = buildState(overrides);
 
-    const store = createTestStore({ extra: undefined, preloadedState: state });
-    const { result } = renderHookWithStoreProvider(() => useTradingExchangeConfirm(), { store });
+    const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
+    const root = createTestCompositionRoot({
+        extra: {
+            services: { suiteRouterHistory },
+        },
+        preloadedState: state,
+        reducer: {
+            router: routerReducer,
+            locks: locksReducer,
+            modal: modalReducer,
+            wallet: (wallet = state.wallet) => wallet,
+        },
+    });
+    const { result } = renderHookWithStoreProvider(() => useTradingExchangeConfirm(), { root });
 
-    return { store, result };
+    const { getActions } = root.services;
+
+    return { getActions, result, suiteRouterHistory };
 };
 
-const gotoActions = (store: ReturnType<typeof renderConfirm>['store']) =>
-    store.getActions().filter(action => action.type === '@router/goto');
-
-const exchangeActions = (store: ReturnType<typeof renderConfirm>['store']) =>
-    store.getActions().filter(action => action.type?.startsWith('@trading-exchange/'));
+const exchangeActions = (actions: UnknownAction[]) =>
+    actions.filter(action => action.type?.startsWith('@trading-exchange/'));
 
 describe('useTradingExchangeConfirm', () => {
     beforeEach(() => {
@@ -128,29 +139,30 @@ describe('useTradingExchangeConfirm', () => {
 
     describe('readiness guard', () => {
         it('does not redirect when the quotes request is present', () => {
-            const { store } = renderConfirm();
+            const { suiteRouterHistory } = renderConfirm();
 
-            expect(gotoActions(store)).toHaveLength(0);
+            expect(suiteRouterHistory.navigate).not.toHaveBeenCalled();
         });
 
         it('redirects to the exchange form when the quotes request is missing', () => {
-            const { store } = renderConfirm({ quotesRequest: undefined });
+            const { suiteRouterHistory } = renderConfirm({ quotesRequest: undefined });
 
-            expect(gotoActions(store)).toEqual([
-                { type: '@router/goto', payload: { routeName: 'wallet-trading-exchange' } },
-            ]);
+            expect(suiteRouterHistory.navigate).toHaveBeenCalledWith({
+                pathname: '/accounts/coinmarket/exchange',
+                hash: '',
+            });
         });
     });
 
     describe('redirect restoration', () => {
         it('restores the quote, step and account and clears the redirect flag on return', () => {
-            const { store } = renderConfirm({
+            const { getActions } = renderConfirm({
                 isFromRedirect: true,
                 transactionId: REDIRECT_ORDER_ID,
                 trades: [REDIRECT_TRADE],
             });
 
-            expect(exchangeActions(store)).toEqual([
+            expect(exchangeActions(getActions())).toEqual([
                 tradingExchangeActions.saveSelectedQuote(REDIRECT_TRADE.data),
                 tradingExchangeActions.setFormStep('SEND_TRANSACTION'),
                 tradingExchangeActions.setTradingAccountKey(REDIRECT_TRADE.sendAccountKey),
@@ -159,20 +171,20 @@ describe('useTradingExchangeConfirm', () => {
         });
 
         it('only clears the redirect flag when no active trade is resolved', () => {
-            const { store } = renderConfirm({ isFromRedirect: true });
+            const { getActions } = renderConfirm({ isFromRedirect: true });
 
-            expect(exchangeActions(store)).toEqual([
+            expect(exchangeActions(getActions())).toEqual([
                 tradingExchangeActions.setIsFromRedirect(false),
             ]);
         });
 
         it('does not dispatch redirect actions when not returning from a redirect', () => {
-            const { store } = renderConfirm({
+            const { getActions } = renderConfirm({
                 transactionId: REDIRECT_ORDER_ID,
                 trades: [REDIRECT_TRADE],
             });
 
-            expect(exchangeActions(store)).toHaveLength(0);
+            expect(exchangeActions(getActions())).toHaveLength(0);
         });
     });
 });

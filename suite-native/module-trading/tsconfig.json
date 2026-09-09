@@ -104,10 +104,16 @@
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
+            "path": "../../suite-common/discreet-mode"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {
             "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/toast-notifications"
         },
         {
             "path": "../../suite-common/tx-simulation"

@@ -1,3 +1,5 @@
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
     eth1NormalAccount,
@@ -16,11 +18,6 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const mockAnalyticsReport = jest.fn();
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useSellAnalyticReportCallback: () => mockAnalyticsReport,
-}));
-
 describe('TradingSellPreviewScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -34,6 +31,7 @@ describe('TradingSellPreviewScreen', () => {
 
         return await renderWithTradingProvider(<TradingSellPreviewScreen />, {
             tradeType: 'sell',
+            services: { analytics: mockNativeAnalytics(mockAnalyticsReport) },
             overrides: { wallet: { trading: tradingState } },
         });
     };
@@ -68,7 +66,10 @@ describe('TradingSellPreviewScreen', () => {
     it('reports a transaction-preview visit', async () => {
         await renderScreen();
 
-        expect(mockAnalyticsReport).toHaveBeenCalledWith('transaction-preview', 'visit');
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.tradingSellEvent.name,
+            payload: expect.objectContaining({ step: 'transaction-preview', action: 'visit' }),
+        });
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
     });
 });

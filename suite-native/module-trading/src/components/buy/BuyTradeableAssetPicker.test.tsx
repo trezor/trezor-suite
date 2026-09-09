@@ -1,12 +1,17 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type DeviceRootState } from '@suite-common/device';
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
-import { type TestStore, fireEvent, screen, waitFor } from '@suite-native/test-utils-store';
+import { fireEvent, screen, waitFor } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     eth1NormalAccount,
@@ -14,17 +19,19 @@ import {
     ethAsset,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { buyActions } from '@suite-native/trading-state';
+import { type TradingRootState, buyActions } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyForm } from '../../hooks/buy/useBuyForm';
 import {
-    createTradingLightStore,
+    createTradingTestStore,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & FeatureFlagsRootState & DeviceRootState;
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
@@ -61,11 +68,11 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('BuyTradeableAssetPicker', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let form: BuyFormType;
 
     const initPreloadedStore = (firmwareType: FirmwareType) =>
-        createTradingLightStore({
+        createTradingTestStore({
             tradeType: 'buy',
             overrides: {
                 device: { selectedDevice: { firmwareType } },
@@ -75,7 +82,7 @@ describe('BuyTradeableAssetPicker', () => {
     // Account preselection needs a device session that the mock accounts belong to,
     // otherwise they are not treated as visible device accounts.
     const initPreloadedStoreWithAccounts = () =>
-        createTradingLightStore({
+        createTradingTestStore({
             tradeType: 'buy',
             overrides: {
                 device: {
@@ -89,8 +96,7 @@ describe('BuyTradeableAssetPicker', () => {
 
     const renderFormHook = async () => {
         const { result } = await renderHookWithTradingProvider(() => useBuyForm(), {
-            services,
-            store,
+            services: { ...services, store },
         });
 
         return result.current;
@@ -101,7 +107,7 @@ describe('BuyTradeableAssetPicker', () => {
             <Form form={form}>
                 <BuyTradeableAssetPicker />
             </Form>,
-            { services, store },
+            { services: { ...services, store } },
         );
         await act(async () => {
             await act(() => Promise.resolve());

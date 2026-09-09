@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react';
 import { type ExchangeTrade } from 'invity-api';
 
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -38,14 +38,16 @@ const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth'), formattedBal
 const TRADE: ExchangeTrade = { exchange: 'provider-1', status: 'CONFIRM' };
 
 const renderExchangeApproval = (receiveAddress?: string) => {
-    const store = createTestStore({ extra: undefined });
+    const root = createTestCompositionRoot({});
 
     const utils = renderHookWithStoreProvider(
         () => useExchangeApproval({ account: ACCOUNT, receiveAddress, extraField: undefined }),
-        { store },
+        { root },
     );
 
-    return { ...utils, store };
+    const { getActions } = root.services;
+
+    return { ...utils, getActions };
 };
 
 describe('useExchangeApproval', () => {
@@ -84,7 +86,7 @@ describe('useExchangeApproval', () => {
     });
 
     it('revokeApproval saves a ZERO-approval quote before confirming', async () => {
-        const { result, store } = renderExchangeApproval('0xreceive');
+        const { result, getActions } = renderExchangeApproval('0xreceive');
 
         let outcome: boolean | undefined;
         await act(async () => {
@@ -92,7 +94,7 @@ describe('useExchangeApproval', () => {
         });
 
         expect(outcome).toBe(true);
-        expect(store.getActions().map(action => action.type)).toContain(
+        expect(getActions().map(action => action.type)).toContain(
             tradingExchangeActions.saveSelectedQuote.type,
         );
         expect(mockConfirmApproval).toHaveBeenCalledWith(

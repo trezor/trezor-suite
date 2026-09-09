@@ -1,16 +1,12 @@
 import { Platform } from 'react-native';
 
-import { type EnhancedStore } from '@reduxjs/toolkit';
+import { type Store } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import {
-    type TestStore,
-    act,
-    renderHookWithStoreProvider,
-    waitFor,
-} from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
     btc2legacyAccount,
@@ -25,12 +21,14 @@ import {
     mercuryoApplePayBuyQuote,
     mercuryoCreditCardBuyQuote,
 } from '@suite-native/trading-fixtures';
-import { selectTradingResidenceCountry } from '@suite-native/trading-state';
+import { type TradingRootState, selectTradingResidenceCountry } from '@suite-native/trading-state';
 import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { clearBuyFormQuoteData, useBuyForm } from './useBuyForm';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
@@ -46,14 +44,14 @@ const btc2AccountKey = btc2legacyAccount.key;
 const accountDeviceState = btc1NormalAccount.deviceState;
 
 describe('useBuyForm', () => {
-    const renderUseTradingBuyForm = async (store: TestStore) =>
-        await renderHookWithStoreProvider(() => useBuyForm(), { store });
+    const renderUseTradingBuyForm = async (store: Store<State>) =>
+        await renderHookWithStoreProvider(() => useBuyForm(), { services: { store } });
 
     const getInitializedStore = (amountInSats = false) => {
         const tradingState = getInitializedTradingState();
         tradingState.buy.tradingAccountKey = btc1AccountKey;
 
-        return createTradingLightStore({
+        return createTradingTestStore({
             overrides: {
                 device: {
                     selectedDevice: {
@@ -80,7 +78,7 @@ describe('useBuyForm', () => {
         });
     };
 
-    const initFormAndQuotes = async (form: BuyFormType, store: EnhancedStore) => {
+    const initFormAndQuotes = async (form: BuyFormType, store: Store<State>) => {
         await act(() => {
             form.setValue('fiatValue', '10');
             form.setValue('asset', btcAsset);
@@ -307,7 +305,7 @@ describe('useBuyForm', () => {
         });
 
         describe('when quote is selected and new quotes are fetched', () => {
-            let store: EnhancedStore;
+            let store: Store<State>;
             let form: BuyFormType;
 
             beforeEach(async () => {

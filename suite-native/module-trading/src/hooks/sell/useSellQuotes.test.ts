@@ -1,10 +1,13 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import {
     TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
     tradingActions,
     tradingSellActions,
 } from '@suite-common/trading';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     banxaCreditCardSellQuote,
     bnbAsset,
@@ -13,11 +16,14 @@ import {
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 import { type SellFormValues } from '@suite-native/trading-types';
 
 import { useSellForm } from './useSellForm';
 import { useSellQuotes } from './useSellQuotes';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
 
 const mockDebounce = (fn: () => unknown) => fn();
 
@@ -45,7 +51,7 @@ jest.mock('@suite-common/trading', () => ({
 
 describe('useSellQuotes', () => {
     const getInitializedStore = () =>
-        createTradingLightStore({
+        createTradingTestStore({
             tradeType: 'sell',
             overrides: {
                 wallet: {
@@ -54,7 +60,7 @@ describe('useSellQuotes', () => {
             },
         });
 
-    const renderUseSellQuotes = async (store: TestStore) =>
+    const renderUseSellQuotes = async (store: Store<State>) =>
         await renderHookWithStoreProvider(
             () => {
                 const form = useSellForm();
@@ -62,7 +68,7 @@ describe('useSellQuotes', () => {
 
                 return form;
             },
-            { store },
+            { services: { store } },
         );
 
     afterEach(() => {

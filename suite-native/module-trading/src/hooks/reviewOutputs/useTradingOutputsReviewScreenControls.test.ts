@@ -1,7 +1,9 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import {
+    type AccountsRootState,
+    type SendRootState,
     type SendState,
     initialWalletSettingsState,
     sendFormActions,
@@ -10,20 +12,24 @@ import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { localeReducer } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { createPrecomposedTxFinal, getWalletState } from '@suite-native/trading-fixtures';
-import { tradingSlice } from '@suite-native/trading-state';
-import { prepareSendFormReducer } from '@suite-native/transaction-management';
+import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
+import {
+    type NativeSendRootState,
+    prepareSendFormReducer,
+} from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 
 import { useTradingOutputsReviewScreenControls } from './useTradingOutputsReviewScreenControls';
 import { type TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
 import { type TradingTransactionSignAndSendProps } from '../general/useTradingTransaction';
+
+type State = TradingRootState & AccountsRootState & SendRootState & NativeSendRootState;
 
 const mockReportToAnalytics = jest.fn();
 const mockResolveTransactionSendConsent = jest.fn();
@@ -105,7 +111,7 @@ jest.mock('@suite-native/alerts', () => ({
 }));
 
 describe('useTradingOutputsReviewScreenControls', () => {
-    let store: TestStore;
+    let store: Store<State>;
     const mockTrezorConnectCancel = TrezorConnect.cancel as jest.Mock;
 
     const reducer = {
@@ -159,9 +165,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                     reportToAnalytics: mockReportToAnalytics,
                     exchangeFlowType,
                 }),
-            {
-                store,
-            },
+            { services: { store } },
         );
 
     beforeEach(() => {

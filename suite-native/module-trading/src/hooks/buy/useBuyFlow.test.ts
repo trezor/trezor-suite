@@ -1,16 +1,22 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
     invityErrorBuyQuote,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyFlow } from './useBuyFlow';
 import { useBuyForm } from './useBuyForm';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 const mockSelectQuoteThunk = jest.fn();
 const services: NativeAnalyticsDep = {
@@ -31,14 +37,14 @@ jest.mock('@suite-common/trading', () => ({
 
 describe('useBuyFlow', () => {
     let buyForm: BuyFormType;
-    let store: TestStore;
+    let store: Store<State>;
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) =>
-        createTradingLightStore({
+        createTradingTestStore({
             tradeType: 'buy',
             overrides: {
                 wallet: {
@@ -51,10 +57,12 @@ describe('useBuyFlow', () => {
         });
 
     const renderBuyForm = async () =>
-        await renderHookWithStoreProvider(() => useBuyForm(), { store, services });
+        await renderHookWithStoreProvider(() => useBuyForm(), { services: { ...services, store } });
 
     const renderUseTradingBuyFlow = async () =>
-        await renderHookWithStoreProvider(() => useBuyFlow(buyForm), { store, services });
+        await renderHookWithStoreProvider(() => useBuyFlow(buyForm), {
+            services: { ...services, store },
+        });
 
     describe('while loading quotes', () => {
         beforeEach(async () => {

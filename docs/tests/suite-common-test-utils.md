@@ -68,10 +68,16 @@ Use `createTestCompositionRoot` when Redux integration is part of what the test 
 creates a test application root containing the Redux store and the injected services used by that
 store.
 
+Omit `extra` when the tested code has no injected dependencies; it defaults to `{ services: {} }`.
+When dependencies are required, pass them explicitly through `extra`.
+
 ```ts
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 
-const root = createTestCompositionRoot({
+const {
+    store: { getState },
+    services: { dispatch, getActions },
+} = createTestCompositionRoot({
     extra: {
         services: {
             analytics: mockAnalytics(),
@@ -85,10 +91,10 @@ const root = createTestCompositionRoot({
     },
 });
 
-root.services.dispatch(incrementCounter());
+dispatch(incrementCounter());
 
-expect(root.store.getState().counter.value).toBe(1);
-expect(root.services.getActions()).toContainEqual(incrementCounter());
+expect(getState().counter.value).toBe(1);
+expect(getActions()).toContainEqual(incrementCounter());
 ```
 
 Declare only the services and state needed by the tested application slice. The composition root

@@ -1,14 +1,18 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { selectTradingProviderMetadata } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
 import { useForm } from '@suite-native/forms';
-import { type TestStore } from '@suite-native/test-utils-store';
 import { buyMercuryo } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useProviderMetadataChangeEffect } from './useProviderMetadataChangeEffect';
 import {
-    createTradingLightStore,
+    createTradingTestStore,
     renderHookWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 type ProviderFormValues = {
     quote: {
@@ -28,7 +32,7 @@ jest.mock('@react-navigation/native', () => {
 });
 
 describe('useProviderMetadataChangeEffect', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseProviderMetadataChangeEffect = async (exchange: string | undefined) =>
         await renderHookWithTradingProvider(
@@ -40,11 +44,11 @@ describe('useProviderMetadataChangeEffect', () => {
 
                 return useProviderMetadataChangeEffect(form.control, 'buy');
             },
-            { store, tradeType: 'buy' },
+            { services: { store }, tradeType: 'buy' },
         );
 
     beforeEach(() => {
-        store = createTradingLightStore({ tradeType: 'buy' });
+        store = createTradingTestStore({ tradeType: 'buy' });
         mockIsFocused = true;
     });
 

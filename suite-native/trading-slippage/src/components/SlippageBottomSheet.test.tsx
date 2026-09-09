@@ -1,11 +1,16 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { selectTradingExchangeSelectedQuoteSwapSlippage } from '@suite-common/trading';
-import { getTranslation } from '@suite-native/intl';
+import { type LocaleSliceRootState, getTranslation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { type TestStore, act, userEvent } from '@suite-native/test-utils-store';
+import { act, userEvent } from '@suite-native/test-utils-store';
+import { type TradingRootState } from '@suite-native/trading-state';
 import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
 
 import { SlippageBottomSheet } from './SlippageBottomSheet';
 import { createSlippageTestStore, renderWithSlippageTestProvider } from '../test-utils/testUtils';
+
+type State = TradingRootState & LocaleSliceRootState;
 
 jest.mock('@suite-native/link', () => ({
     useOpenLink: jest.fn(),
@@ -18,7 +23,7 @@ const mockOnClose = jest.fn();
 const mockOnSlippageConfirmed = jest.fn();
 
 describe('SlippageBottomSheet', () => {
-    const renderSlippageBottomSheet = async (store: TestStore) => {
+    const renderSlippageBottomSheet = async (store: Store<State>) => {
         const result = await renderWithSlippageTestProvider(
             <SlippageBottomSheet
                 isVisible={false}

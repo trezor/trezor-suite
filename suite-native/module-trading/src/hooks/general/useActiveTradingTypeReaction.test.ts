@@ -1,22 +1,24 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type TradingType } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import {
+    type TradingRootState,
     selectActiveTradingType,
     selectEnabledTradingTypes,
     tradingSlice,
 } from '@suite-native/trading-state';
 
 import { useActiveTradingTypeReaction } from './useActiveTradingTypeReaction';
+
+type State = TradingRootState;
 
 let mockUseRouteParams: {
     tradingType?: TradingType;
@@ -46,8 +48,10 @@ describe('useActiveTradingTypeReaction', () => {
         }),
     } as const;
 
-    const renderUseActiveTradingTypeReaction = async (store: TestStore) =>
-        await renderHookWithStoreProvider(() => useActiveTradingTypeReaction(), { store });
+    const renderUseActiveTradingTypeReaction = async (store: Store<State>) =>
+        await renderHookWithStoreProvider(() => useActiveTradingTypeReaction(), {
+            services: { store },
+        });
 
     beforeEach(() => {
         castedSelectEnabledTradingTypes.mockReturnValue(['buy', 'exchange', 'sell']);

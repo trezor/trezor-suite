@@ -60,15 +60,17 @@ describe('AccountLabel', () => {
 
     const renderAccountLabel = async (props: AccountLabelPropsWithAccount) =>
         await renderWithStoreProvider(<AccountLabel {...props} />, {
-            store: createLightStore({
-                reducer,
-                preloadedState: {
-                    wallet: {
-                        settings: initialWalletSettingsState,
-                        accounts,
-                    },
-                } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
-            }),
+            services: {
+                store: createLightStore({
+                    reducer,
+                    preloadedState: {
+                        wallet: {
+                            settings: initialWalletSettingsState,
+                            accounts,
+                        },
+                    } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
+                }),
+            },
         });
 
     it('should render account label when account is provided', async () => {

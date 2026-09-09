@@ -6,6 +6,8 @@ import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SuiteRouterHistoryDep } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type ExchangeIssue,
@@ -27,7 +29,6 @@ import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppSt
 
 const mockSendTransaction = jest.fn(() => Promise.resolve(true));
 const mockSignDataAndConfirm = jest.fn(() => Promise.resolve());
-const mockGoto = jest.fn((payload: unknown) => ({ type: 'test/goto', payload }));
 
 jest.mock('@suite/device', () => ({
     ...jest.requireActual('@suite/device'),
@@ -37,11 +38,6 @@ jest.mock('@suite/device', () => ({
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
     Translation: ({ id }: { id: string }) => <span>{id}</span>,
-}));
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: (payload: unknown) => mockGoto(payload),
 }));
 
 jest.mock('@suite-common/trading', () => ({
@@ -147,11 +143,16 @@ const renderOfferExchange = ({
     mockGetSimulatedReceiveAmount.mockReturnValue(simulatedReceiveAmount);
 
     const report = jest.fn();
-    const services: DesktopAnalyticsDep = { analytics: mockDesktopAnalytics(report) };
+    const navigate = jest.fn();
+    const services: DesktopAnalyticsDep & SuiteRouterHistoryDep = {
+        analytics: mockDesktopAnalytics(report),
+        suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate },
+    };
     const root = createTestCompositionRoot({
         extra: { services },
         preloadedState: {
             ...mockInitialAppState,
+            router: { ...mockInitialAppState.router, hash: '#eth/0/normal' },
             wallet: {
                 ...mockInitialAppState.wallet,
                 trading: {
@@ -163,7 +164,7 @@ const renderOfferExchange = ({
     });
     renderWithProviders(root, <TradingOfferExchange />);
 
-    return { report };
+    return { report, navigate };
 };
 
 describe('TradingOfferExchange', () => {
@@ -226,7 +227,7 @@ describe('TradingOfferExchange', () => {
     });
 
     it('replaces the confirmation button with back to trade form on an issue', async () => {
-        renderOfferExchange({ issue: PRICE_IMPACT_ISSUE });
+        const { navigate } = renderOfferExchange({ issue: PRICE_IMPACT_ISSUE });
 
         expect(
             screen.queryByTestId('@trading/offer/confirm-on-trezor-and-send'),
@@ -234,9 +235,9 @@ describe('TradingOfferExchange', () => {
 
         await userEvent.click(screen.getByTestId('@trading/offer/back-to-trade-form'));
 
-        expect(mockGoto).toHaveBeenCalledWith({
-            routeName: 'wallet-trading-exchange',
-            preserveParams: true,
+        expect(navigate).toHaveBeenCalledWith({
+            pathname: '/accounts/coinmarket/exchange',
+            hash: '#eth/0/normal',
         });
     });
 

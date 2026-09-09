@@ -40,14 +40,18 @@ describe('TradeSideCard', () => {
                 {...props}
             />,
             {
-                store: createLightStore({
-                    reducer,
-                    preloadedState: {
-                        wallet: {
-                            accounts: [btc1NormalAccount],
-                        },
-                    } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
-                }),
+                services: {
+                    store: createLightStore({
+                        reducer,
+                        preloadedState: {
+                            wallet: {
+                                accounts: [btc1NormalAccount],
+                            },
+                        } satisfies PreloadedStatePartial<
+                            StateFromReducersMapObject<typeof reducer>
+                        >,
+                    }),
+                },
             },
         );
 

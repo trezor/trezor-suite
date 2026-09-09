@@ -1,6 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -47,24 +47,22 @@ const buildState = (
 
 describe('useSelectedTradingAsset', () => {
     it('returns undefined when no eligible account is selected', () => {
-        const store = createTestStore({
-            extra: undefined,
+        const root = createTestCompositionRoot({
             preloadedState: buildState([INELIGIBLE_ACCOUNT]),
         });
         const { result } = renderHookWithStoreProvider(() => useSelectedTradingAsset('sell'), {
-            store,
+            root,
         });
 
         expect(result.current).toBeUndefined();
     });
 
     it('returns the native asset view-model when a native account is selected', () => {
-        const store = createTestStore({
-            extra: undefined,
+        const root = createTestCompositionRoot({
             preloadedState: buildState([ELIGIBLE_ACCOUNT], ELIGIBLE_ACCOUNT.key),
         });
         const { result } = renderHookWithStoreProvider(() => useSelectedTradingAsset('sell'), {
-            store,
+            root,
         });
 
         expect(result.current).toEqual({
@@ -79,15 +77,14 @@ describe('useSelectedTradingAsset', () => {
     });
 
     it('flags a prefilled token as a token asset', () => {
-        const store = createTestStore({
-            extra: undefined,
+        const root = createTestCompositionRoot({
             preloadedState: buildState([ELIGIBLE_ACCOUNT], ELIGIBLE_ACCOUNT.key, {
                 key: ELIGIBLE_ACCOUNT.key,
                 cryptoId: TOKEN_CRYPTO_ID,
             }),
         });
         const { result } = renderHookWithStoreProvider(() => useSelectedTradingAsset('buy'), {
-            store,
+            root,
         });
 
         expect(result.current?.cryptoId).toBe(TOKEN_CRYPTO_ID);

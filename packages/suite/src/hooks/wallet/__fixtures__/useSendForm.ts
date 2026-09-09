@@ -2,6 +2,8 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { debugInitialState } from '@suite/debug';
 import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
+import { routerLocationChange, routerReducer } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { torReducer } from '@suite/tor';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
@@ -440,8 +442,8 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             { enabled: false, providers: [], selectedProvider: {} },
             () => ({}),
         ),
-        router: createReducer({}, () => ({})),
-        modal: createReducer({}, () => ({})),
+        router: (state = routerReducer(undefined, { type: 'test-init' })) => state,
+        modal: modalReducer,
         suiteSyncData: createReducer(
             {
                 wallets: {},
@@ -1490,7 +1492,8 @@ export const signAndPush: SignAndPush[] = [
                     payload: { type: 'tx-sent', formattedAmount: '1 ETH' }, // BUG ?
                 },
                 {
-                    type: 'mock-redirect',
+                    type: routerLocationChange.type,
+                    payload: { pathname: '/accounts' },
                 },
             ],
         },
@@ -1545,7 +1548,8 @@ export const signAndPush: SignAndPush[] = [
                     payload: { type: 'tx-sent', formattedAmount: '1 XRP' },
                 },
                 {
-                    type: 'mock-redirect',
+                    type: routerLocationChange.type,
+                    payload: { pathname: '/accounts' },
                 },
             ],
         },
@@ -1702,7 +1706,8 @@ export const signAndPush: SignAndPush[] = [
                     },
                 },
                 {
-                    type: 'mock-redirect',
+                    type: routerLocationChange.type,
+                    payload: { pathname: '/accounts' },
                 },
             ],
         },

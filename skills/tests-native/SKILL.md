@@ -28,7 +28,7 @@ helper or when the testing-library API requires a `wrapper` component rather tha
 
 Extends `@suite-native/test-utils` with Redux support. Provides `renderWithStoreProvider` and
 `renderHookWithStoreProvider` — both accept the same options: `preloadedState?: Record<string, unknown>` or a
-pre-built `store?: TestStore`. Plus store factory helpers:
+pre-built store passed as `services: { store }`. Plus store factory helpers:
 
 - `createStoreFromPreloadedState(preloadedState?)` — static (no-op) reducers; use when the test only reads state.
 - `createLightStore({ reducer, preloadedState })` — real reducers; use when the test dispatches actions that must mutate
