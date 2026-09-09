@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-08-18T12:00:00+00:00",
-    "sequence": 155,
+    "timestamp": "2026-09-09T12:00:00+00:00",
+    "sequence": 156,
     "actions": [
         {
             "conditions": [
@@ -1821,6 +1821,38 @@
                         "pt": "Atualizar Trezor Suite",
                         "uk": "Оновити Trezor Suite"
                     }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "*",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "3c9daa58-a1ab-454d-8902-928866a5fa88",
+                "priority": 98,
+                "dismissible": true,
+                "variant": "critical",
+                "category": ["banner"],
+                "content": {
+                    "en": "Security alert: A fake email is circulating from our official domain. Do not click any links. Never share your wallet backup.",
+                    "es": "Alerta de seguridad: Está circulando un correo electrónico falso desde nuestro dominio oficial. No hagas clic en ningún enlace. Nunca compartas la copia de seguridad de tu wallet.",
+                    "cs": "Bezpečnostní upozornění: Z naší oficiální domény se šíří falešný e-mail. Neklikejte na žádné odkazy. Nikdy nesdílejte zálohu své peněženky.",
+                    "ru": "Предупреждение безопасности: С нашего официального домена рассылается поддельное письмо. Не переходите по ссылкам. Никогда никому не сообщайте резервную копию кошелька.",
+                    "ja": "セキュリティ警告：当社の公式ドメインから偽のメールが出回っています。リンクは一切クリックしないでください。ウォレットのバックアップは絶対に共有しないでください。",
+                    "hu": "Biztonsági figyelmeztetés: Hamis e-mail terjed a hivatalos domainünkről. Ne kattintson semmilyen linkre. Soha ne ossza meg pénztárcája biztonsági mentését.",
+                    "it": "Avviso di sicurezza: Sta circolando un’email falsa proveniente dal nostro dominio ufficiale. Non cliccare su alcun link. Non condividere mai il backup del tuo portafoglio.",
+                    "fr": "Alerte de sécurité : un faux e-mail circule depuis notre domaine officiel. Ne cliquez sur aucun lien. Ne partagez jamais la sauvegarde de votre portefeuille.",
+                    "de": "Sicherheitswarnung: Eine gefälschte E-Mail von unserer offiziellen Domain ist im Umlauf. Klicke auf keine Links. Teile niemals dein Wallet-Backup.",
+                    "tr": "Güvenlik uyarısı: Resmî alan adımızdan gönderilmiş gibi görünen sahte bir e-posta dolaşımda. Hiçbir bağlantıya tıklamayın. Cüzdan yedeğinizi asla kimseyle paylaşmayın.",
+                    "pt": "Alerta de segurança: Um e-mail falso está circulando a partir do nosso domínio oficial. Não clique em nenhum link. Nunca compartilhe o backup da sua carteira.",
+                    "uk": "Попередження безпеки: З нашого офіційного домену розсилається підроблений лист. Не переходьте за жодними посиланнями. Ніколи нікому не повідомляйте резервну копію свого гаманця."
                 }
             }
         }
