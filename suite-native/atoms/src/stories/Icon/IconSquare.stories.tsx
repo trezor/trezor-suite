@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { ICON_SIZES } from '@suite-native/icons';
-import { COLOR_TOKENS, nativeBorders } from '@trezor/theme';
+import { COLOR_TOKENS } from '@trezor/theme';
 
 import { IconSquare as IconSquareComponent, type IconSquareProps } from '../../Icon/IconSquare';
 
@@ -18,7 +18,6 @@ export const IconSquare: IconSquareStory = {
     name: 'IconSquare',
     args: {
         iconNumber: 1,
-        iconBorderRadius: 'r12',
         iconColor: 'contentPrimary',
         iconSize: 'mediumLarge',
     },
@@ -33,10 +32,6 @@ export const IconSquare: IconSquareStory = {
         iconBorderColor: {
             control: { type: 'select' },
             options: COLOR_TOKENS,
-        },
-        iconBorderRadius: {
-            control: { type: 'select' },
-            options: Object.keys(nativeBorders.radii),
         },
         iconColor: {
             control: { type: 'select' },

@@ -2,7 +2,7 @@ import { type RequireExactlyOne } from 'type-fest';
 
 import { Icon, type IconName, type IconSize, getIconSize } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { type Color, type NativeRadius } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { Box } from '../Box';
 import { Text } from '../Text';
@@ -11,14 +11,13 @@ const iconSquareStyle = prepareNativeStyle<{
     iconSize: number;
     backgroundColor: Color;
     borderColor: Color;
-    borderRadius: NativeRadius;
-}>((utils, { iconSize, backgroundColor, borderColor, borderRadius }) => ({
+}>((utils, { iconSize, backgroundColor, borderColor }) => ({
     width: iconSize + 2 * utils.spacings.sp8,
     aspectRatio: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: utils.colors[backgroundColor],
-    borderRadius: utils.borders.radii[borderRadius],
+    borderRadius: utils.borders.radii.r12,
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors[borderColor],
 }));
@@ -31,7 +30,6 @@ export type IconSquareProps = RequireExactlyOne<
         iconColor?: Color;
         iconSize?: IconSize;
         iconBorderColor?: Color;
-        iconBorderRadius?: NativeRadius;
     },
     'iconName' | 'iconNumber'
 >;
@@ -43,7 +41,6 @@ export const IconSquare = ({
     iconSize = 'mediumLarge',
     iconBackgroundColor = 'elementFillNeutralSofter',
     iconBorderColor = 'elementBorderNeutralSofter',
-    iconBorderRadius = 'r12',
 }: IconSquareProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -53,7 +50,6 @@ export const IconSquare = ({
                 iconSize: getIconSize(iconSize),
                 backgroundColor: iconBackgroundColor,
                 borderColor: iconBorderColor,
-                borderRadius: iconBorderRadius,
             })}
         >
             {iconNumber && <Text color={iconColor}>{iconNumber}</Text>}
