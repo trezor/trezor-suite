@@ -1065,7 +1065,7 @@ dependencies = [
 
 [[package]]
 name = "trezor-bluetooth"
-version = "0.4.3"
+version = "0.5.0"
 dependencies = [
  "bluez-async",
  "btleplug",
