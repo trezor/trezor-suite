@@ -34,9 +34,7 @@ void (deviceMessage.payload satisfies typeof deviceButtonRequest);
 
 declare const deviceConnect: Extract<DeviceEvent, { type: typeof DEVICE.CONNECT }>['payload'];
 const deviceMessage2 = createDeviceMessage(DEVICE.CONNECT, deviceConnect);
-// @ts-expect-error TODO
 void (deviceMessage2.type satisfies typeof DEVICE.CONNECT);
-// @ts-expect-error TODO
 void (deviceMessage2.payload satisfies typeof deviceConnect);
 
 // @ts-expect-error Device button payload is not compatible with blockchain error type.
