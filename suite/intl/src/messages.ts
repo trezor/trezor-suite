@@ -5027,6 +5027,14 @@ export const messages = defineMessages({
         id: 'RECEIVE_TITLE',
         defaultMessage: 'Receive {networkDisplaySymbol}',
     },
+    RECEIVE_TITLE_ASSETS: {
+        id: 'RECEIVE_TITLE_ASSETS',
+        defaultMessage: 'Receive assets on {network}',
+    },
+    RECEIVE_ASSETS_TOOLTIP: {
+        id: 'RECEIVE_ASSETS_TOOLTIP',
+        defaultMessage: 'Receive {networkDisplaySymbol} and any {network} token on this address.',
+    },
     RECEIVE_DESC_BITCOIN: {
         id: 'RECEIVE_DESC_BITCOIN',
         defaultMessage:

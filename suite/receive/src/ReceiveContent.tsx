@@ -8,7 +8,8 @@ import {
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { Banner, Column, H2, Text } from '@trezor/components';
+import { Banner, Column, H2, Icon, Row, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { AddressHistory } from './AddressHistory';
 import { NewestAddressCard } from './NewestAddressCard';
@@ -79,19 +80,38 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
                 />
             )}
 
-            <Column gap={4} alignItems="stretch">
+            <Row gap={4} alignItems="flex-start">
                 <H2>
-                    <Translation
-                        id="RECEIVE_TITLE"
-                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
-                    />
+                    {supportsTokens ? (
+                        <Translation
+                            id="RECEIVE_TITLE_ASSETS"
+                            values={{ network: getNetwork(account.symbol).name }}
+                        />
+                    ) : (
+                        <Translation
+                            id="RECEIVE_TITLE"
+                            values={{
+                                networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                            }}
+                        />
+                    )}
                 </H2>
                 {supportsTokens && (
-                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                        <Translation id="TR_INCLUDING_TOKENS" />
-                    </Text>
+                    <Tooltip
+                        content={
+                            <Translation
+                                id="RECEIVE_ASSETS_TOOLTIP"
+                                values={{
+                                    networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                    network: getNetwork(account.symbol).name,
+                                }}
+                            />
+                        }
+                    >
+                        <Icon as={InfoIcon} size={16} intent="neutral" priority="secondary" />
+                    </Tooltip>
                 )}
-            </Column>
+            </Row>
 
             <NewestAddressCard
                 accountKey={account.key}
