@@ -9,7 +9,7 @@ import {
     selectFirmwareDeviceRef,
 } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Device } from '@trezor/connect';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 
 import {
     type AdoptFirmwareUpdatedDeviceThunkState,
@@ -32,7 +32,7 @@ export type HandleTrackedDeviceConnectThunkState = AdoptFirmwareUpdatedDeviceThu
  */
 export const handleTrackedDeviceConnectThunk = createThunk<
     void,
-    Device,
+    AcquiredDevice,
     { state: HandleTrackedDeviceConnectThunkState }
 >(
     `${FIRMWARE_UPGRADE_MODULE_PREFIX}/handleTrackedDeviceConnect`,
@@ -66,6 +66,6 @@ export const handleTrackedDeviceConnectThunk = createThunk<
         // a failed update looks like once the user replugs. During a running update this is a no-op
         // — `@trezor/connect` still owns the device, and it is the update call returning that
         // re-selects it.
-        dispatch(adoptFirmwareUpdatedDeviceThunk());
+        dispatch(adoptFirmwareUpdatedDeviceThunk({ device }));
     },
 );

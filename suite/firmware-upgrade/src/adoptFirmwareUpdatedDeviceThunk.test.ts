@@ -1,8 +1,4 @@
-import {
-    createDeviceRef,
-    deviceInitialState,
-    deviceTrackingInitialState,
-} from '@suite-common/device';
+import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
@@ -28,16 +24,7 @@ const createState = (status: FirmwareStatus | 'error') =>
     ({
         ...deviceInitialState,
         device: { ...deviceInitialState, devices: [deviceBeingUpdated] },
-        firmware: {
-            ...firmwareInitialState,
-            status,
-            deviceTracking: {
-                ...deviceTrackingInitialState,
-                phase: 'tracking',
-                initialRef: createDeviceRef(deviceBeingUpdated),
-                currentRef: createDeviceRef(deviceBeingUpdated),
-            },
-        },
+        firmware: { ...firmwareInitialState, status },
     }) as unknown as AdoptFirmwareUpdatedDeviceThunkState;
 
 const runThunk = async (status: FirmwareStatus | 'error') => {
@@ -48,7 +35,11 @@ const runThunk = async (status: FirmwareStatus | 'error') => {
         extra,
     });
 
-    await adoptFirmwareUpdatedDeviceThunk()(dispatch, getState, extra);
+    await adoptFirmwareUpdatedDeviceThunk({ device: deviceBeingUpdated })(
+        dispatch,
+        getState,
+        extra,
+    );
 
     return actions.map(action => (action as { type: string }).type);
 };
@@ -67,7 +58,7 @@ describe('adoptFirmwareUpdatedDeviceThunk', () => {
     );
 
     it.each(['done', 'error'] as const)(
-        'selects the tracked device once the update is %s',
+        'selects the device the caller names once the update is %s',
         async status => {
             // Failure included: a failed update leaves the device somewhere the user has to act on,
             // and the retry button acts on whatever is selected.

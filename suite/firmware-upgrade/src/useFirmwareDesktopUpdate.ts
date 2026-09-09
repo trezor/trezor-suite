@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { waitForConnectedDeviceThunk } from '@suite-common/device';
 import {
     type FirmwareUpdateProps,
     selectFirmware,
@@ -69,15 +70,35 @@ export const useFirmwareDesktopUpdate = () => {
             return;
         }
 
-        await firmwareUpdate(updateProps);
+        const updateResult = await firmwareUpdate(updateProps);
 
-        // The normal path. `@trezor/connect` only returns once it has seen the device reconnect
-        // and released it, so by now the device is back and the selection has drifted to whatever
-        // was around while it was gone — put it back on the device we updated.
+        // `@trezor/connect` only returns once it has seen the device reconnect and released it, so
+        // the update is over — but the store is filled from the connect event, which travels
+        // separately, so the device may not be an entry here yet. Wait for it rather than race it.
         //
-        // A device that is NOT back at this point (a failed update, an unplugged device) is handled
-        // by `useFirmwareDeviceTrackingListener` instead, when it eventually reconnects.
-        dispatch(adoptFirmwareUpdatedDeviceThunk());
+        // The path connect reports is where it last had the device, which is the answer whenever
+        // the reboot did not re-enumerate it elsewhere; the wait falls back to whichever device is
+        // the only one on that transport when it did.
+        //
+        // A device that never turns up (a failed update, an unplugged device) times out, and is
+        // taken back by `useFirmwareDeviceTrackingListener` instead when it eventually reconnects.
+        const apiType = originalDevice?.descriptor.apiType;
+
+        if (!apiType) {
+            return;
+        }
+
+        const { connectResponse } = updateResult.payload ?? {};
+        // Only a successful call reports where it last had the device.
+        const path = connectResponse?.success ? connectResponse.device?.path : undefined;
+
+        const updatedDevice = await dispatch(
+            waitForConnectedDeviceThunk({ apiType, path }),
+        ).unwrap();
+
+        if (updatedDevice) {
+            dispatch(adoptFirmwareUpdatedDeviceThunk({ device: updatedDevice }));
+        }
     };
 
     // NOTE: Asume that when the device is restarting back to normal mode and is PIN protected, the PIN will be requested and hence display "device modal"

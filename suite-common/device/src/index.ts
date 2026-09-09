@@ -8,6 +8,7 @@ export * from './deviceReducer';
 export * from './deviceSelectors';
 export * from './deviceUtils';
 export * from './selectDeviceThunk';
+export * from './waitForConnectedDeviceThunk';
 export * from './sortDevices';
 export * from './usePinHook';
 export { createDeviceReceiver } from './services/createDeviceReceiver';

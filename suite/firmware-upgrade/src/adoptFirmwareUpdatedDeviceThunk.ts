@@ -1,10 +1,7 @@
 import { type DeviceRootState, acquireDeviceThunk, selectDeviceThunk } from '@suite-common/device';
-import {
-    type FirmwareRootState,
-    selectFirmwareDevice,
-    selectIsFirmwareUpdateFinished,
-} from '@suite-common/firmware';
+import { type FirmwareRootState, selectIsFirmwareUpdateFinished } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
 
 const FIRMWARE_UPGRADE_MODULE_PREFIX = '@suite/firmware-upgrade';
 
@@ -15,35 +12,40 @@ export type AdoptFirmwareUpdatedDeviceThunkState = DeviceRootState & FirmwareRoo
  *
  * The update reboots the device several times and it comes back under a new path (and, after a
  * wipe, a new device id), so by the time it is done the globally selected device may be stale or
- * gone. `selectFirmwareDevice` resolves it through the ref the firmware flow has been tracking.
+ * gone — hence the caller naming the device rather than anything here guessing at it.
  *
- * Must only be dispatched once the update has finished: while it runs, `@trezor/connect` owns the
- * device and acquires each reconnected one itself.
+ * Dispatching it before the update has finished is a no-op: while the update runs, `@trezor/connect`
+ * owns the device and acquires each reconnected one itself.
  *
  * This composes `@suite-common/device` and `@suite-common/wallet-core` pieces for one app flow, so
  * it lives here rather than in the shared device module those flows all import.
  */
+type AdoptFirmwareUpdatedDeviceParams = {
+    /**
+     * The device to take back. Always the caller's, never resolved here: both callers already know
+     * which device they mean — one waited for the update to hand it over, the other was woken by
+     * it connecting — and re-deriving it here could only disagree with them.
+     */
+    device: TrezorDevice;
+};
+
 export const adoptFirmwareUpdatedDeviceThunk = createThunk<
     void,
-    void,
+    AdoptFirmwareUpdatedDeviceParams,
     { state: AdoptFirmwareUpdatedDeviceThunkState }
->(`${FIRMWARE_UPGRADE_MODULE_PREFIX}/adoptFirmwareUpdatedDevice`, (_, { dispatch, getState }) => {
-    // Both conditions have to hold, and the callers cannot check either one on their own: the
-    // update finishing does not mean the device is back, and the device coming back does not mean
-    // the update is over — `@trezor/connect` still owns it until then.
-    if (!selectIsFirmwareUpdateFinished(getState())) {
-        return;
-    }
+>(
+    `${FIRMWARE_UPGRADE_MODULE_PREFIX}/adoptFirmwareUpdatedDevice`,
+    ({ device }, { dispatch, getState }) => {
+        // The device coming back does not mean the update is over — `@trezor/connect` still owns
+        // it until then, and a competing acquire would break the installation.
+        if (!selectIsFirmwareUpdateFinished(getState())) {
+            return;
+        }
 
-    const firmwareUpdateDevice = selectFirmwareDevice(getState());
+        dispatch(selectDeviceThunk({ device }));
 
-    if (!firmwareUpdateDevice) {
-        return;
-    }
-
-    dispatch(selectDeviceThunk({ device: firmwareUpdateDevice }));
-
-    if (firmwareUpdateDevice.status !== 'available') {
-        dispatch(acquireDeviceThunk({ requestedDevice: firmwareUpdateDevice }));
-    }
-});
+        if (device.status !== 'available') {
+            dispatch(acquireDeviceThunk({ requestedDevice: device }));
+        }
+    },
+);
