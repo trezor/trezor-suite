@@ -134,6 +134,18 @@ export abstract class TradingFormActions extends TradingActions {
         return this.setAmountValue(amount, this.getSendCryptoAmountElement.bind(this));
     }
 
+    async select1stCEXProvider() {
+        const providersPicker = this.getElementById('provider-picker');
+        await waitForVisible(providersPicker, { timeout: this.SHORT_TIMEOUT });
+        await providersPicker.tap();
+
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await this.expectSheetHeaderTitle('Providers');
+        await element(by.id(`@trading/provider-sheet/filter-tab/cex`)).tap();
+        await element(by.text('Centralized exchange')).atIndex(0).tap();
+        await waitForVisible(providersPicker);
+    }
+
     async viewProviders() {
         const providersPicker = this.getElementById('provider-picker');
         await waitForVisible(providersPicker, { timeout: this.SHORT_TIMEOUT });

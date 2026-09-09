@@ -100,7 +100,7 @@ describe('Trade Exchange [@androidOnly]', () => {
             await tradingExchangeActions.setSendCryptoAmount('10');
 
             await tradingExchangeActions.viewHowTradingWorks();
-            await tradingExchangeActions.viewProviders();
+            await tradingExchangeActions.select1stCEXProvider();
             await tradingExchangeActions.expectValidExchangeForm();
 
             await tradingExchangeActions.confirmTradingForm();
