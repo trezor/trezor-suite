@@ -5,7 +5,6 @@ import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-util
 
 import { DefiYieldBanner } from './DefiYieldBanner';
 import { ETHVaultBanner } from './ETHVaultBanner';
-import { StablecoinYieldBanner } from './StablecoinYieldBanner';
 import { TS7Banner } from './TS7Banner';
 import { type DashboardBannerType } from './dashboardBannerTypes';
 
@@ -38,11 +37,6 @@ export const DASHBOARD_BANNERS: Record<DashboardBannerType, DashboardBannerDefin
         isEligible: ({ selectedDevice }) =>
             getDeviceInternalModel(selectedDevice) !== DeviceModelInternal.T3W1,
         render: handlers => <TS7Banner {...handlers} />,
-    },
-    'stablecoin-yield': {
-        flag: 'showStablecoinYieldDashboardPromoBanner',
-        isEligible: ({ selectedDevice }) => !hasBitcoinOnlyFirmware(selectedDevice),
-        render: handlers => <StablecoinYieldBanner {...handlers} />,
     },
     'defi-yield': {
         flag: 'showDefiYieldDashboardPromoBanner',

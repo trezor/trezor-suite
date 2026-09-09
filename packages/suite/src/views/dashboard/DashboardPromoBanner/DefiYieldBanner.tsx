@@ -30,7 +30,7 @@ export const DefiYieldBanner = ({ onClose, onCTAClick }: DefiYieldBannerProps) =
             data-testid="@dashboard/promo-banner/defi-yield/button"
             image={
                 <Image
-                    image="DASHBOARD_PROMO_BANNER_STABLECOIN_YIELD"
+                    image="DASHBOARD_PROMO_BANNER_DEFI_YIELD"
                     height="100%"
                     width="100%"
                     objectFit={getBannerResponsiveValue({

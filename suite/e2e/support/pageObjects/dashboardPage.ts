@@ -8,7 +8,7 @@ import { DeviceFixture } from '../device';
 import { expect } from '../testExtends/customMatchers';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
-export type PromoBannerType = 'ts7' | 'stablecoin-yield' | 'defi-yield' | 'eth-vault';
+export type PromoBannerType = 'ts7' | 'defi-yield' | 'eth-vault';
 
 export class DashboardPage {
     readonly suiteLayout: Locator;
