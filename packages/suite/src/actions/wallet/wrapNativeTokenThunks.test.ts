@@ -449,6 +449,16 @@ describe('submitWrapNativeTokenThunk', () => {
         );
     });
 
+    it('aborts without reporting when the simulation modal is torn down', async () => {
+        const report = jest.fn();
+        mockOpenDeferredModal.mockImplementation(() => () => Promise.resolve(undefined));
+
+        await dispatchWrap(report);
+
+        expect(mockSendYieldTransaction).not.toHaveBeenCalled();
+        expect(report).not.toHaveBeenCalled();
+    });
+
     it('reports an error carrying the compose reason when composition fails', async () => {
         const report = jest.fn();
         mockComposeYieldWrapTransactionThunk.mockImplementation(() => () => ({
