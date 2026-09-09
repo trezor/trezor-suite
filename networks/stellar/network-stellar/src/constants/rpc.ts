@@ -39,3 +39,21 @@ export const STELLAR_TRUSTLINE_DISCOVERY: StellarTrustlineDiscovery = 'horizon';
 export type StellarRpcReadFallback = 'horizon' | 'off';
 
 export const STELLAR_RPC_READ_FALLBACK: StellarRpcReadFallback = 'horizon';
+
+/**
+ * Where the ledger head (block height, hash, base reserve) is read from.
+ *
+ * Stellar RPC has no way to ask `getLatestLedger` for less than it wants to send: the node returns
+ * `metadataXdr`, the whole ledger close meta, alongside the 572-byte `headerXdr` that is the only
+ * part Suite reads. Measured against `xlm.trezor.io` that is 2.8-3.7 MB decoded (~330 KB gzipped)
+ * per call, against 774 bytes (~620 gzipped) for the same four fields — and the block subscription
+ * polls it every 15 seconds for the lifetime of the worker.
+ *
+ * Horizon's `GET /ledgers?order=desc&limit=1` serves all four fields directly, base reserve
+ * included, with no XDR to decode. It reports the latest *ingested* ledger, so it can trail RPC by
+ * a ledger or so; at a 15-second poll, and for a reserve that has changed once in the network's
+ * history, that is not a difference Suite can act on.
+ */
+export type StellarLedgerHeadSource = 'horizon' | 'rpc';
+
+export const STELLAR_LEDGER_HEAD_SOURCE: StellarLedgerHeadSource = 'horizon';

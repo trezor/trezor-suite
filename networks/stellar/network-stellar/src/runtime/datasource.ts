@@ -1,6 +1,8 @@
 import {
+    STELLAR_LEDGER_HEAD_SOURCE,
     STELLAR_RPC_READ_FALLBACK,
     STELLAR_TRUSTLINE_DISCOVERY,
+    type StellarLedgerHeadSource,
     type StellarRpcReadFallback,
     type StellarTrustlineDiscovery,
 } from '../constants';
@@ -39,29 +41,30 @@ export interface StellarDataSource {
 }
 
 /**
- * Reads over RPC, degrading to Horizon when RPC fails to answer at all.
+ * Reads from the preferred source, standing in with the other one when the first fails to answer
+ * at all.
  *
- * Only a thrown error triggers the fallback. An RPC read that answers "this account has no ledger
+ * Only a thrown error triggers the stand-in. A read that answers "this account has no ledger
  * entry" is authoritative and returns normally, so a funded-account check is never second-guessed
- * against Horizon, which knows only what it has indexed. When the fallback also fails the RPC
+ * against Horizon, which knows only what it has indexed. When the stand-in fails too the first
  * error is rethrown, since that is the one that explains the outage.
  */
-const withHorizonFallback = async <T>(
-    readOverRpc: () => Promise<T>,
-    readOverHorizon: () => Promise<T>,
-    fallback: StellarRpcReadFallback,
+const readWithFallback = async <T>(
+    read: () => Promise<T>,
+    readFromFallback: () => Promise<T>,
+    isFallbackEnabled: boolean,
 ): Promise<T> => {
     try {
-        return await readOverRpc();
-    } catch (rpcError) {
-        if (fallback !== 'horizon') {
-            throw rpcError;
+        return await read();
+    } catch (error) {
+        if (!isFallbackEnabled) {
+            throw error;
         }
 
         try {
-            return await readOverHorizon();
+            return await readFromFallback();
         } catch {
-            throw rpcError;
+            throw error;
         }
     }
 };
@@ -75,19 +78,29 @@ export const createStellarDataSource = (
     api: StellarAPI,
     trustlineDiscovery: StellarTrustlineDiscovery = STELLAR_TRUSTLINE_DISCOVERY,
     fallback: StellarRpcReadFallback = STELLAR_RPC_READ_FALLBACK,
+    headSource: StellarLedgerHeadSource = STELLAR_LEDGER_HEAD_SOURCE,
 ): StellarDataSource => ({
     readVersion: () =>
-        withHorizonFallback(
+        readWithFallback(
             () => readVersion(api.rpc),
             () => readVersionFromHorizon(api.horizon),
-            fallback,
+            fallback === 'horizon',
         ),
+    // The head is a block height and a base reserve, not authoritative account data, so either
+    // source will do and the other always stands in — see `STELLAR_LEDGER_HEAD_SOURCE` for why
+    // Horizon is asked first.
     readLatestLedger: () =>
-        withHorizonFallback(
-            () => readLatestLedger(api.rpc),
-            () => readLatestLedgerFromHorizon(api.horizon),
-            fallback,
-        ),
+        headSource === 'horizon'
+            ? readWithFallback(
+                  () => readLatestLedgerFromHorizon(api.horizon),
+                  () => readLatestLedger(api.rpc),
+                  true,
+              )
+            : readWithFallback(
+                  () => readLatestLedger(api.rpc),
+                  () => readLatestLedgerFromHorizon(api.horizon),
+                  true,
+              ),
     // Fee estimation only matters when sending, and sending is RPC-only, so there is nothing to
     // degrade to here.
     readInclusionFee: () => readInclusionFee(api.rpc),
@@ -104,7 +117,7 @@ export const createStellarDataSource = (
         const discoveredAssets = record ? readTrustlineAssets(record) : [];
         const assets = trustlineDiscovery === 'rpc' ? knownAssets : discoveredAssets;
 
-        return withHorizonFallback(
+        return readWithFallback(
             () => readAccountState({ server: api.rpc, descriptor, assets }),
             async () => {
                 const known = record ?? (await fetchAccountRecord(api.horizon, descriptor));
@@ -117,7 +130,7 @@ export const createStellarDataSource = (
 
                 return readAccountStateFromHorizon(known);
             },
-            fallback,
+            fallback === 'horizon',
         );
     },
     readAccountHistory: request => readAccountHistory({ ...request, horizon: api.horizon }),

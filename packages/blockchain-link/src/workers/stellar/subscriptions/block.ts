@@ -11,10 +11,15 @@ const BLOCK_SUBSCRIBE_INTERVAL_MS = 1000 * 15;
 export const subscribeBlock = async ({ state, connect, post }: Context) => {
     if (state.getSubscription('block')) return { subscribed: true };
     const api = await connect();
-    const { readLatestLedger } = await stellar();
+    const { createStellarDataSource } = await stellar();
+
+    // Through the data source, so the poll reads the head from whichever backend serves it
+    // cheaply: `getLatestLedger` ships the whole ledger close meta, which at this interval is
+    // megabytes an hour of payload Suite never looks at.
+    const dataSource = createStellarDataSource(api);
 
     const fetchBlock = async () => {
-        const { sequence: blockHeight, hash: blockHash } = await readLatestLedger(api.rpc);
+        const { sequence: blockHeight, hash: blockHash } = await dataSource.readLatestLedger();
         post({
             id: -1,
             type: RESPONSES.NOTIFICATION,

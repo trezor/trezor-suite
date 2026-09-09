@@ -28,16 +28,29 @@ const HORIZON_LEDGER = {
     base_reserve_in_stroops: 5000000,
 };
 
+// `_getLatestLedger` is the raw response: `protocolVersion` is a string, and the node ships the
+// whole ledger close meta in `metadataXdr` — which is exactly why Horizon is asked first.
+const RPC_RAW_HEAD = {
+    id: 'rpc-hash',
+    sequence: 7,
+    protocolVersion: '23',
+    closeTime: '0',
+    headerXdr: '',
+    metadataXdr: '',
+};
+
 const unreachable = () => Promise.reject(new Error('ECONNREFUSED'));
 
 type HorizonStub = {
     accountCalls: number;
+    ledgerCalls: number;
     horizon: StellarHorizonServer;
 };
 
 const createHorizonStub = (): HorizonStub => {
     const stub: HorizonStub = {
         accountCalls: 0,
+        ledgerCalls: 0,
         horizon: {
             accounts: () => ({
                 accountId: () => ({
@@ -50,7 +63,13 @@ const createHorizonStub = (): HorizonStub => {
             }),
             ledgers: () => ({
                 order: () => ({
-                    limit: () => ({ call: () => Promise.resolve({ records: [HORIZON_LEDGER] }) }),
+                    limit: () => ({
+                        call: () => {
+                            stub.ledgerCalls += 1;
+
+                            return Promise.resolve({ records: [HORIZON_LEDGER] });
+                        },
+                    }),
                 }),
             }),
             root: () => Promise.resolve({ core_version: 'core-21.0.0' }),
@@ -121,18 +140,54 @@ describe('createStellarDataSource', () => {
     });
 
     describe('readLatestLedger', () => {
-        it('degrades to the Horizon ledger head, base reserve included', async () => {
+        const HEAD = {
+            sequence: 99,
+            hash: 'ledger-hash',
+            baseReserve: '5000000',
+            protocolVersion: 22,
+        };
+
+        it('reads the head from Horizon without touching RPC', async () => {
+            const stub = createHorizonStub();
+            // `getLatestLedger` would answer too, but it ships the entire ledger close meta.
+            const rpc = { _getLatestLedger: jest.fn(unreachable) };
+            const dataSource = createStellarDataSource(createApi(rpc, stub.horizon));
+
+            await expect(dataSource.readLatestLedger()).resolves.toEqual(HEAD);
+            expect(stub.ledgerCalls).toBe(1);
+            expect(rpc._getLatestLedger).not.toHaveBeenCalled();
+        });
+
+        it('stands in with RPC when Horizon cannot serve the head', async () => {
             const { horizon } = createHorizonStub();
+            const rpcHead = { _getLatestLedger: () => Promise.resolve(RPC_RAW_HEAD) };
             const dataSource = createStellarDataSource(
-                createApi({ _getLatestLedger: unreachable }, horizon),
+                createApi(rpcHead, {
+                    ...horizon,
+                    ledgers: () => ({
+                        order: () => ({ limit: () => ({ call: unreachable }) }),
+                    }),
+                } as unknown as StellarHorizonServer),
             );
 
-            await expect(dataSource.readLatestLedger()).resolves.toEqual({
-                sequence: 99,
-                hash: 'ledger-hash',
-                baseReserve: '5000000',
-                protocolVersion: 22,
-            });
+            const head = await dataSource.readLatestLedger();
+
+            expect(head.sequence).toBe(7);
+            expect(head.hash).toBe('rpc-hash');
+        });
+
+        it('reads the head over RPC when that source is selected', async () => {
+            const stub = createHorizonStub();
+            const rpcHead = { _getLatestLedger: () => Promise.resolve(RPC_RAW_HEAD) };
+            const dataSource = createStellarDataSource(
+                createApi(rpcHead, stub.horizon),
+                'horizon',
+                'horizon',
+                'rpc',
+            );
+
+            await expect(dataSource.readLatestLedger()).resolves.toMatchObject({ sequence: 7 });
+            expect(stub.ledgerCalls).toBe(0);
         });
     });
 

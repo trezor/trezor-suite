@@ -41,9 +41,9 @@ export class StellarWorker extends BaseWorker<StellarAPI> {
     // header the first time an account needs it and kept for the lifetime of the worker.
     private lazyBaseReserve = createLazy(async () => {
         const api = await this.connect();
-        const { readLatestLedger } = await stellar();
+        const { createStellarDataSource } = await stellar();
 
-        return (await readLatestLedger(api.rpc)).baseReserve;
+        return (await createStellarDataSource(api).readLatestLedger()).baseReserve;
     });
     private isTestnet = false;
 
