@@ -107,18 +107,22 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                 }),
             );
 
+            if (userAcceptedTxSimulation === undefined) {
+                return undefined;
+            }
+
             if (!yieldFlow) {
                 extra.services.analytics.report({
                     type: events.yieldUnwrapEvent.name,
                     payload: {
                         type: 'tx-simulation-modal',
-                        action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                        action: userAcceptedTxSimulation.value === false ? 'cancel' : 'continue',
                         networkSymbol: account.symbol,
                     },
                 });
             }
 
-            if (userAcceptedTxSimulation?.value === false) {
+            if (userAcceptedTxSimulation.value === false) {
                 return undefined;
             }
 
@@ -131,10 +135,10 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                 flowType: yieldFlow?.flowType ?? 'withdraw',
                 dispatch,
                 getState,
-                selectedFee: userAcceptedTxSimulation?.selectedFee ?? null,
+                selectedFee: userAcceptedTxSimulation.selectedFee,
             });
 
-            userAcceptedTxSimulation?.resolve();
+            userAcceptedTxSimulation.resolve();
 
             // Unlike the main yield transactions, a cancelled unwrap is reported: the unwrap-step
             // failure values documented on the withdraw event include user rejections.

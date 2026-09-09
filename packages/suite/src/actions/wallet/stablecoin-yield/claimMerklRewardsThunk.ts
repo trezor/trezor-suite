@@ -187,24 +187,28 @@ export const claimMerklRewardsThunk = createThunk<
                 }),
             );
 
+            if (userAcceptedTxSimulation === undefined) {
+                return;
+            }
+
             extra.services.analytics.report({
                 type: events.yieldClaimEvent.name,
                 payload: {
                     type: 'tx-simulation-modal',
-                    action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                    action: userAcceptedTxSimulation.value === false ? 'cancel' : 'continue',
                     networkSymbol: account.symbol,
                     rewardCount: rewards.length,
                 },
             });
 
-            if (userAcceptedTxSimulation?.value === false) {
+            if (userAcceptedTxSimulation.value === false) {
                 return;
             }
 
             const { formState, precomposedTransaction, availableRewards, transactionForSigning } =
                 buildClaimTransactionReview({
                     unsignedTransaction: unsignedClaimTx,
-                    selectedFee: userAcceptedTxSimulation?.selectedFee,
+                    selectedFee: userAcceptedTxSimulation.selectedFee,
                     rewards,
                 });
 
@@ -251,7 +255,7 @@ export const claimMerklRewardsThunk = createThunk<
                     chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
                 });
 
-                userAcceptedTxSimulation?.resolve();
+                userAcceptedTxSimulation.resolve();
 
                 if (!signingResponse.success) {
                     dispatch(closeModal());

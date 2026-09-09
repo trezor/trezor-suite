@@ -115,18 +115,22 @@ export const submitWrapNativeTokenThunk = createThunk<
                 }),
             );
 
+            if (userAcceptedTxSimulation === undefined) {
+                return undefined;
+            }
+
             if (!yieldFlow) {
                 extra.services.analytics.report({
                     type: events.yieldWrapEvent.name,
                     payload: {
                         type: 'tx-simulation-modal',
-                        action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                        action: userAcceptedTxSimulation.value === false ? 'cancel' : 'continue',
                         networkSymbol: account.symbol,
                     },
                 });
             }
 
-            if (userAcceptedTxSimulation?.value === false) {
+            if (userAcceptedTxSimulation.value === false) {
                 return undefined;
             }
 
@@ -146,10 +150,10 @@ export const submitWrapNativeTokenThunk = createThunk<
                 flowType: yieldFlow?.flowType ?? 'deposit',
                 dispatch,
                 getState,
-                selectedFee: userAcceptedTxSimulation?.selectedFee ?? null,
+                selectedFee: userAcceptedTxSimulation.selectedFee,
             });
 
-            userAcceptedTxSimulation?.resolve();
+            userAcceptedTxSimulation.resolve();
 
             // Unlike the main yield transactions, a cancelled wrap is reported: the wrap-step
             // failure values documented on the deposit event include user rejections.
