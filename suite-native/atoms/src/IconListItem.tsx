@@ -66,6 +66,7 @@ export type IconListItemProps = {
     variant?: IconListItemVariant;
     verticalAlign?: FlexAlignType;
     spacing?: NativeSpacing | number;
+    isContentFullWidth?: boolean;
 };
 
 export type IconListTextItemProps = IconListItemProps & {
@@ -80,13 +81,16 @@ export const IconListItem = ({
     variant = 'neutral',
     verticalAlign = 'center',
     spacing = 'sp12',
+    isContentFullWidth = false,
 }: IconListItemProps) => {
     const iconColors = iconColorsMap[variant];
 
     return (
         <HStack spacing={spacing} alignItems={verticalAlign}>
             <IconSquare iconName={icon} iconSize={iconSize} {...iconColors} />
-            <Box flexShrink={1}>{children}</Box>
+            <Box flexShrink={1} flex={isContentFullWidth ? 1 : undefined}>
+                {children}
+            </Box>
         </HStack>
     );
 };

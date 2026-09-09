@@ -49,6 +49,8 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
 
 const linkStyle = prepareNativeStyle(({ spacings }) => ({
     paddingVertical: spacings.sp10,
+    alignSelf: 'stretch',
+    textAlign: 'center',
 }));
 
 const stackStyle = prepareNativeStyle(() => ({

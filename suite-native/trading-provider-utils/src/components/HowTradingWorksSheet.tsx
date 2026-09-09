@@ -6,7 +6,12 @@ import { BottomSheetModal, Button, HStack, IconListItem, Text, VStack } from '@s
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { TREZOR_SUITE_TOS_URL, TREZOR_SUPPORT_UNDERSTANDING_FEES } from '@trezor/urls';
+
+const linkStyle = prepareNativeStyle(() => ({
+    flex: 1,
+}));
 
 type ListItemProps = {
     icon: IconName;
@@ -14,24 +19,29 @@ type ListItemProps = {
     href?: string;
 };
 
-const ListItem = ({ icon, children, href }: ListItemProps) => (
-    <IconListItem icon={icon} variant="brand" iconSize="large">
-        {href ? (
-            <HStack spacing="sp2" alignItems="center">
-                <Link
-                    textColor="contentPrimary"
-                    textVariant="body-md-strong"
-                    href={href}
-                    isUnderlined
-                    label={children}
-                />
-                <Icon name="arrowSquareOut" size="mediumLarge" />
-            </HStack>
-        ) : (
-            <Text variant="body-md-strong">{children}</Text>
-        )}
-    </IconListItem>
-);
+const ListItem = ({ icon, children, href }: ListItemProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <IconListItem icon={icon} variant="brand" iconSize="large" isContentFullWidth>
+            {href ? (
+                <HStack spacing="sp2" alignItems="center">
+                    <Link
+                        textColor="contentPrimary"
+                        textVariant="body-md-strong"
+                        href={href}
+                        isUnderlined
+                        label={children}
+                        style={applyStyle(linkStyle)}
+                    />
+                    <Icon name="arrowSquareOut" size="mediumLarge" />
+                </HStack>
+            ) : (
+                <Text variant="body-md-strong">{children}</Text>
+            )}
+        </IconListItem>
+    );
+};
 
 type HowTradingWorksSheetProps = {
     ref: Ref<BottomSheetModalMethods>;
