@@ -13,7 +13,11 @@ import {
 } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
-import { DynamicScreenHeader } from '@suite-native/navigation';
+import {
+    DynamicScreenHeader,
+    useDisableIOSGesture,
+    useNavigationRemoveActionInterceptor,
+} from '@suite-native/navigation';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -42,7 +46,6 @@ type FirmwareInstallationScreenContentProps = {
     isRetryAllowed?: boolean;
     isTemporaryRememeberAllowed?: boolean;
     navigationLocation: 'settings' | 'onboarding';
-    customHeader?: React.ReactNode;
     onCancelAction?: () => void;
 };
 
@@ -52,7 +55,6 @@ export const FirmwareInstallationScreenContent = ({
     onFirmwareInstallationSuccess,
     onFirmwareInstallationFailure,
     onCancelAction,
-    customHeader,
     isRetryAllowed = true,
     isTemporaryRememeberAllowed = true,
     navigationLocation,
@@ -249,6 +251,9 @@ export const FirmwareInstallationScreenContent = ({
 
     const buttonStyle = applyStyle(bottomButtonsContainerStyle);
 
+    useDisableIOSGesture();
+    useNavigationRemoveActionInterceptor({ isEnabled: !isError });
+
     useEffect(() => {
         if (isSheetOpen && !showConfirmOnDevice) {
             closeSheet();
@@ -259,10 +264,6 @@ export const FirmwareInstallationScreenContent = ({
         if (showConfirmOnDevice) revealConfirmOnTrezorSheet();
     }, [closeSheet, isSheetOpen, showConfirmOnDevice, revealConfirmOnTrezorSheet]);
 
-    const CancelButton = customHeader ?? (
-        <DynamicScreenHeader closeActionType="close" closeAction={handleCancel} />
-    );
-
     const isDontCloseAppAlertDisplayed =
         indicatorStatus === 'inProgress' && !isSheetOpen && !mayBeStuck && !isDone;
 
@@ -272,7 +273,11 @@ export const FirmwareInstallationScreenContent = ({
             controlRef={confirmOnTrezorRef}
             closeAction={onCancelAction ?? handleCancel}
             closeActionType="close"
-            defaultHeader={isError && CancelButton}
+            defaultHeader={
+                isError && (
+                    <DynamicScreenHeader closeActionType="close" closeAction={handleCancel} />
+                )
+            }
             isCloseButtonDisabled
         >
             <Box flex={1}>
