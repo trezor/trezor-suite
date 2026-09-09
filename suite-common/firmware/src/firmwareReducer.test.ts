@@ -1,21 +1,11 @@
-import {
-    type DeviceRootState,
-    DeviceTrackingPhase,
-    type DeviceTrackingState,
-    createDeviceRef,
-    deviceInitialState,
-    deviceTrackingInitialState,
-    deviceTrackingReducer,
-} from '@suite-common/device';
+import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { mockTrezorDevice } from '@suite-common/device/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type Device } from '@trezor/connect';
 
 import {
     type FirmwareRootState,
     firmwareInitialState,
     selectFirmwareDevice,
-    selectFirmwareDeviceRef,
     selectFirmwareOriginalDevice,
     selectIsFirmwareUpdateFinished,
 } from './firmwareReducer';
@@ -23,30 +13,20 @@ import {
 type CreateStateParams = {
     devices: TrezorDevice[];
     selectedDevice: TrezorDevice | undefined;
-    deviceTracking?: DeviceTrackingState;
+    /** The device the flow started on, which is what pins it — see `firmwareActions.cacheDevice`. */
+    cachedDevice?: TrezorDevice;
 };
 
 const createState = ({
     devices,
     selectedDevice,
-    deviceTracking = deviceTrackingInitialState,
+    cachedDevice,
 }: CreateStateParams): FirmwareRootState & DeviceRootState => ({
-    firmware: { ...firmwareInitialState, deviceTracking },
+    firmware: { ...firmwareInitialState, cachedDevice },
     device: { ...deviceInitialState, devices, selectedDevice },
 });
 
 const deviceBeingUpdated = mockTrezorDevice({ path: '1' });
-
-const armedTracking = (device: Device | TrezorDevice): DeviceTrackingState => {
-    const ref = createDeviceRef(device);
-
-    return {
-        ...deviceTrackingInitialState,
-        phase: DeviceTrackingPhase.Tracking,
-        initialRef: ref,
-        currentRef: ref,
-    };
-};
 
 describe('selectFirmwareDevice', () => {
     it('resolves nothing while no device is pinned, whatever is selected', () => {
@@ -73,83 +53,85 @@ describe('selectFirmwareDevice', () => {
         const state = createState({
             devices: [rememberedOtherDevice],
             selectedDevice: rememberedOtherDevice,
-            deviceTracking: armedTracking(deviceBeingUpdated),
+            cachedDevice: deviceBeingUpdated,
         });
 
         expect(selectFirmwareDevice(state)).toBeUndefined();
     });
 
-    it('resolves the tracked device even when another device is selected', () => {
+    it('resolves the device at the pinned path even when another device is selected', () => {
         const otherDevice = mockTrezorDevice({ path: '9', deviceId: 'DEVICE_B' });
 
         const state = createState({
             devices: [otherDevice, deviceBeingUpdated],
             selectedDevice: otherDevice,
-            deviceTracking: armedTracking(deviceBeingUpdated),
+            cachedDevice: deviceBeingUpdated,
         });
 
         expect(selectFirmwareDevice(state)).toBe(deviceBeingUpdated);
     });
-});
 
-describe('selectFirmwareDeviceRef', () => {
-    it('points at the reconnected device once the machine has adopted it', () => {
-        // What `handleFirmwareTrackedDeviceConnectThunk` compares against to answer
-        // "is this the device we were waiting for".
-        const reconnected = mockTrezorDevice({ path: '5' });
-        const tracking = deviceTrackingReducer(
-            deviceTrackingReducer(armedTracking(deviceBeingUpdated), {
-                type: 'device-disconnect',
-                device: deviceBeingUpdated,
-            }),
-            { type: 'device-connect', device: reconnected, isOnlyCandidate: false },
-        );
+    // A reboot can bring the device back somewhere else, and after a wipe it reports a new id, so
+    // the path it was pinned at is gone. It is still the only device we could be updating.
+    it('resolves a device that came back on another path, when it is the only one', () => {
+        const rebootedDevice = mockTrezorDevice({ path: '5', deviceId: undefined });
 
         const state = createState({
-            devices: [reconnected],
+            devices: [rebootedDevice],
             selectedDevice: undefined,
-            deviceTracking: tracking,
+            cachedDevice: deviceBeingUpdated,
         });
 
-        expect(selectFirmwareDeviceRef(state)?.path).toBe('5');
-        expect(selectFirmwareDevice(state)).toBe(reconnected);
+        expect(selectFirmwareDevice(state)).toBe(rebootedDevice);
     });
 
-    it('still points at the original device when an unrelated one connects', () => {
-        const bystander = mockTrezorDevice({ path: '9', deviceId: 'DEVICE_B' });
-        const tracking = deviceTrackingReducer(
-            deviceTrackingReducer(armedTracking(deviceBeingUpdated), {
-                type: 'device-disconnect',
-                device: deviceBeingUpdated,
-            }),
-            { type: 'device-connect', device: bystander, isOnlyCandidate: false },
-        );
-
+    it('resolves nothing when two devices make the answer ambiguous', () => {
         const state = createState({
-            devices: [bystander],
-            selectedDevice: bystander,
-            deviceTracking: tracking,
+            devices: [
+                mockTrezorDevice({ path: '5', deviceId: undefined }),
+                mockTrezorDevice({ path: '9', deviceId: 'DEVICE_B' }),
+            ],
+            selectedDevice: undefined,
+            cachedDevice: deviceBeingUpdated,
         });
 
-        expect(selectFirmwareDeviceRef(state)?.path).toBe('1');
-        // Not resolvable, and deliberately not the selected bystander.
+        expect(selectFirmwareDevice(state)).toBeUndefined();
+    });
+
+    it('ignores a device on another transport', () => {
+        const bluetoothDevice = mockTrezorDevice({
+            path: '5',
+            deviceId: 'DEVICE_B',
+            apiType: 'bluetooth',
+        });
+
+        const state = createState({
+            devices: [bluetoothDevice],
+            selectedDevice: undefined,
+            cachedDevice: deviceBeingUpdated,
+        });
+
         expect(selectFirmwareDevice(state)).toBeUndefined();
     });
 });
 
 describe('selectIsFirmwareUpdateFinished', () => {
-    it.each([
-        ['initial', false],
-        ['started', false],
-        ['check-seed', false],
-        ['thp-pairing', false],
-        ['done', true],
-        ['error', true],
-    ] as const)('is %s -> %s', (status, expected) => {
-        const state = createState({ devices: [], selectedDevice: undefined });
-
+    it.each(['done', 'error'] as const)('is finished at %s', status => {
         expect(
-            selectIsFirmwareUpdateFinished({ ...state, firmware: { ...state.firmware, status } }),
-        ).toBe(expected);
+            selectIsFirmwareUpdateFinished({
+                firmware: { ...firmwareInitialState, status },
+            } as FirmwareRootState),
+        ).toBe(true);
     });
+
+    it.each(['initial', 'started', 'check-seed', 'thp-pairing'] as const)(
+        'is not finished at %s',
+        status => {
+            expect(
+                selectIsFirmwareUpdateFinished({
+                    firmware: { ...firmwareInitialState, status },
+                } as FirmwareRootState),
+            ).toBe(false);
+        },
+    );
 });

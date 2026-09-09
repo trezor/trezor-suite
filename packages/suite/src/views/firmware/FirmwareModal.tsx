@@ -2,7 +2,6 @@ import { type ReactNode, useState } from 'react';
 
 import {
     useFirmwareDesktopUpdate,
-    useFirmwareDeviceTrackingListener,
     useFirmwareInstallationProgressCheck,
 } from '@suite/firmware-upgrade';
 import { closeModal } from '@suite/modal';
@@ -42,8 +41,6 @@ export const FirmwareModal = ({
         useFirmwareDesktopUpdate();
     // The update reboots the device several times under new paths, so the flow addresses it through
     // the firmware device ref rather than the global selection, which may point at a different
-    // device — or at none — by the time the user closes this modal.
-    useFirmwareDeviceTrackingListener();
     const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
 
     const { dispatch } = useServices(selectDispatch);

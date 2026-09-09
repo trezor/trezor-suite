@@ -4,7 +4,6 @@ import {
     Fingerprint,
     getSuiteFirmwareTypeString,
     useFirmwareDesktopUpdate,
-    useFirmwareDeviceTrackingListener,
     useFirmwareInstallationProgressCheck,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
@@ -26,8 +25,6 @@ import { DeviceDisconnectedStep } from '../../UnexpectedState/DeviceDisconnected
 
 export const FirmwareStep = () => {
     // Mounting the listener is what keeps the ref following the device across the reboots the
-    // installation forces.
-    useFirmwareDeviceTrackingListener();
     const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
     const modal = useSelector(selectModal);
     const { goToNextStep, updateAnalytics, onboardedDevice } = useOnboarding();

@@ -1,15 +1,10 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
 import {
-    type DeviceRef,
     type DeviceRootState,
-    DeviceTrackingPhase,
-    type DeviceTrackingState,
-    deviceTrackingInitialState,
-    deviceTrackingReducer,
     getDeviceLabelOrName,
+    getIsDeviceConnectedAndAcquired,
     getIsDeviceConnectedViaBluetoothLowOnBattery,
-    resolveDeviceByRef,
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/device';
@@ -49,7 +44,6 @@ type FirmwareUpdateCommon = {
     uiEvent?: FirmwareUpdateUiEvent;
     firmwareChannel: FirmwareChannel;
     switchFirmwareType: boolean;
-    deviceTracking: DeviceTrackingState;
 };
 
 export type FirmwareUpdateState =
@@ -71,7 +65,6 @@ const initialState: FirmwareUpdateState = {
     uiEvent: undefined,
     firmwareChannel: 'production',
     switchFirmwareType: false, // NOTE: flag that indicates when the user intents to change the type of FW universal -> bitcoin-only
-    deviceTracking: deviceTrackingInitialState,
 };
 export const firmwareInitialState = initialState;
 
@@ -126,25 +119,6 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(
             })
             .addCase(firmwareActions.setFirmwareChannel, (state, { payload }) => {
                 state.firmwareChannel = payload;
-            })
-            .addCase(firmwareActions.armDeviceTracking, (state, { payload }) => {
-                state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
-                    type: 'arm',
-                    device: payload,
-                });
-            })
-            .addCase(firmwareActions.trackedDeviceConnected, (state, { payload }) => {
-                state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
-                    type: 'device-connect',
-                    device: payload.device,
-                    isOnlyCandidate: payload.isOnlyCandidate,
-                });
-            })
-            .addCase(firmwareActions.trackedDeviceDisconnected, (state, { payload }) => {
-                state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
-                    type: 'device-disconnect',
-                    device: payload,
-                });
             })
             .addMatcher<UiRequestConfirmation>(
                 action => action.type === UI_REQUESTS.REQUEST_CONFIRMATION,
@@ -210,29 +184,40 @@ const createFirmwareSelector = createWeakMapSelector.withTypes<
     FirmwareRootState & DeviceRootState
 >();
 
-export const selectFirmwareDeviceTracking = (state: FirmwareRootState) =>
-    state.firmware.deviceTracking;
-
-export const selectFirmwareDeviceRef = (state: FirmwareRootState): DeviceRef | undefined =>
-    state.firmware.deviceTracking.currentRef;
-
-export const selectIsFirmwareDeviceTrackingArmed = (state: FirmwareRootState) =>
-    state.firmware.deviceTracking.phase !== DeviceTrackingPhase.Idle;
-
 /**
- * The physical device this firmware update is pinned to, or `undefined` when nothing is pinned.
+ * The physical device this firmware flow is on, as the device list has it right now, or
+ * `undefined` while it is not reachable — which is most of an update, since the device drops off
+ * the list on every reboot. Callers must handle that.
  *
- * Resolves through the tracking ref and nothing else. It deliberately never falls back to the
- * globally selected device: while the device reboots, its entry is dropped from the device list and
- * the selection moves to whatever else is around (a remembered wallet of the same model, typically)
- * — reporting on that device instead of the one being updated is the whole bug this replaces.
+ * Derived rather than tracked. A firmware update cannot complete with a second device of the same
+ * transport attached — `@trezor/connect` waits for exactly one before it adopts the reconnected
+ * device — so while an update is possible at all, the only usable device on the transport we
+ * started on is ours, whatever path or id the reboots have given it. Where the path did survive,
+ * it is preferred, which keeps the answer exact in the ordinary case.
  *
- * `undefined` therefore means "our device is not reachable right now", which callers must handle.
- * For rendering the device a firmware flow is *about*, use `selectFirmwareOriginalDevice`.
+ * It deliberately never falls back to the globally selected device: while the device reboots the
+ * selection moves to whatever else is around (a remembered wallet of the same model, typically)
+ * and reporting on that device instead of the one being updated is the bug this avoids. For
+ * rendering the device a firmware flow is *about*, use `selectFirmwareOriginalDevice`.
  */
 export const selectFirmwareDevice = createFirmwareSelector(
-    [selectDevices, selectFirmwareDeviceRef],
-    (devices, ref) => resolveDeviceByRef({ devices, ref }),
+    [selectDevices, state => state.firmware.cachedDevice],
+    (devices, cachedDevice) => {
+        if (!cachedDevice) {
+            return undefined;
+        }
+
+        const candidates = devices.filter(
+            device =>
+                getIsDeviceConnectedAndAcquired(device) &&
+                device.descriptor.apiType === cachedDevice.descriptor.apiType,
+        );
+
+        return (
+            candidates.find(device => device.path === cachedDevice.path) ??
+            (candidates.length === 1 ? candidates[0] : undefined)
+        );
+    },
 );
 
 /**

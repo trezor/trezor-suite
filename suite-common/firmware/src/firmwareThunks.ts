@@ -11,12 +11,7 @@ import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
-import {
-    type FirmwareRootState,
-    selectFirmware,
-    selectFirmwareDevice,
-    selectIsFirmwareDeviceTrackingArmed,
-} from './firmwareReducer';
+import { type FirmwareRootState, selectFirmware, selectFirmwareDevice } from './firmwareReducer';
 
 export type FirmwareUpdateProps = {
     /**
@@ -70,17 +65,20 @@ export const firmwareUpdateThunk = createThunk<
             services: { getBinFilesBaseUrl, getLanguage, onboardingService, reportSecurityCheck },
         } = extra;
 
-        // Pin the flow to the device the caller named. Not on a retry, where the device is already
-        // in bootloader mode reporting no id and the ref that has been following it through the
-        // reboots is the only thing that still resolves.
-        if (!selectIsFirmwareDeviceTrackingArmed(getState())) {
-            dispatch(firmwareActions.armDeviceTracking(device));
+        // Pin the flow to the device the caller named — `selectFirmwareDevice` resolves through
+        // this from here on. Not on a retry, where the pinned device is already in bootloader mode
+        // reporting no id, and the caller's entry is the stale one.
+        if (!selectFirmware(getState()).cachedDevice) {
+            dispatch(firmwareActions.cacheDevice(device));
         }
 
+        // The device as the list has it now, which on a retry is the one in bootloader mode rather
+        // than the entry the caller was given before the first attempt. `undefined` here means the
+        // device is not connected, which the guard below reports.
         const firmwareUpdateDevice = selectFirmwareDevice(getState());
         const binFilesBaseUrl = getBinFilesBaseUrl();
         const suiteLanguage = getLanguage();
-        const { useDevkit, cachedDevice, error } = selectFirmware(getState());
+        const { useDevkit, error } = selectFirmware(getState());
 
         if (error) {
             dispatch(firmwareActions.setFirmwareUpdateError(undefined));
@@ -93,12 +91,6 @@ export const firmwareUpdateThunk = createThunk<
             return rejectWithValue({
                 error: 'Device not connected',
             });
-        }
-
-        // Cache device when firmware installation starts so that we can reference the original firmware version and type during the installation process.
-        // This action is dispatched twice in manual update flow and we only want to cache the device during the first dispatch when it is not yet in bootloader mode.
-        if (!cachedDevice) {
-            dispatch(firmwareActions.cacheDevice(firmwareUpdateDevice));
         }
 
         const baseUrl = ignoreBaseUrl

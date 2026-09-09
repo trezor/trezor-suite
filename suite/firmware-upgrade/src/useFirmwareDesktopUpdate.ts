@@ -80,8 +80,9 @@ export const useFirmwareDesktopUpdate = () => {
         // the reboot did not re-enumerate it elsewhere; the wait falls back to whichever device is
         // the only one on that transport when it did.
         //
-        // A device that never turns up (a failed update, an unplugged device) times out, and is
-        // taken back by `useFirmwareDeviceTrackingListener` instead when it eventually reconnects.
+        // A device that never turns up (a failed update, an unplugged device) times out. The
+        // selection is then left where it is: `selectFirmwareDevice` still resolves the device for
+        // the flow's own screens once it reappears, and a retry re-selects it on success.
         const apiType = originalDevice?.descriptor.apiType;
 
         if (!apiType) {

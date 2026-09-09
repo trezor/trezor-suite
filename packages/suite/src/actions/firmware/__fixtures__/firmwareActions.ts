@@ -61,7 +61,6 @@ export const actions = [
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
-                { type: firmwareActions.armDeviceTracking.type, payload: bootloaderDevice },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'done' },
             ],
@@ -92,7 +91,6 @@ export const actions = [
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.BitcoinOnly },
-                { type: firmwareActions.armDeviceTracking.type, payload: bootloaderDevice },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'done' },
             ],
@@ -123,10 +121,6 @@ export const actions = [
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
-                {
-                    type: firmwareActions.armDeviceTracking.type,
-                    payload: bootloaderDeviceNeedsIntermediary,
-                },
                 {
                     type: firmwareActions.cacheDevice.type,
                     payload: bootloaderDeviceNeedsIntermediary,
@@ -160,10 +154,6 @@ export const actions = [
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
-                {
-                    type: firmwareActions.armDeviceTracking.type,
-                    payload: bootloaderDeviceNoIntermediaryT1,
-                },
                 {
                     type: firmwareActions.cacheDevice.type,
                     payload: bootloaderDeviceNoIntermediaryT1,
@@ -213,7 +203,6 @@ export const actions = [
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
-                { type: firmwareActions.armDeviceTracking.type, payload: bootloaderDevice },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'error' },
                 { type: firmwareActions.setFirmwareUpdateError.type, payload: 'foo' },
@@ -252,7 +241,6 @@ export const actions = [
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
-                { type: firmwareActions.armDeviceTracking.type, payload: bootloaderDevice },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'error' },
                 {
