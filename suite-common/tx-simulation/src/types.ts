@@ -80,7 +80,8 @@ export type SolanaAssetDiff = NonNullable<SolanaAccountSummary['account_assets_d
 
 type TxSimulationCommonResult = { needsDisclaimer: boolean };
 
-export type TxSimulationEVMResult = TransactionScanResponse & TxSimulationCommonResult;
+export type TxSimulationEVMResult = TransactionScanResponse &
+    TxSimulationCommonResult & { isChainSupported: boolean };
 export type TxSimulationSolanaResult = SolanaMessageScanResponse & TxSimulationCommonResult;
 export type TxSimulationStellarResult = StellarTxScanResponse & TxSimulationCommonResult;
 

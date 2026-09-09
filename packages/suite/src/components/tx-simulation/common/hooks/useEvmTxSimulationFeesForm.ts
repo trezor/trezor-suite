@@ -32,6 +32,7 @@ interface UseTxFeesFormProps {
      * broadcast with "insufficient funds".
      */
     txValue?: string;
+    isGasLimitFinal?: boolean;
 }
 
 export function useEvmTxSimulationFeesForm({
@@ -40,6 +41,7 @@ export function useEvmTxSimulationFeesForm({
     networkSymbol = 'eth',
     defaultGasLimit = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
     txValue = '0',
+    isGasLimitFinal = false,
 }: UseTxFeesFormProps) {
     const form = useForm<FeesFormValues>({
         defaultValues: {
@@ -102,9 +104,17 @@ export function useEvmTxSimulationFeesForm({
         return undefined;
     }, [accountBalance, composedLevels, networkSymbol, selectedFee, txValue]);
 
-    function handleTxSimulationResult({ simulation, gas_estimation }: TxSimulationEVMResult) {
+    function handleTxSimulationResult({
+        simulation,
+        gas_estimation,
+        isChainSupported,
+    }: TxSimulationEVMResult) {
+        if (isGasLimitFinal) {
+            return;
+        }
+
         const newFeeLimit =
-            gas_estimation?.status === 'Success'
+            isChainSupported && gas_estimation?.status === 'Success'
                 ? Number(gas_estimation.estimate).toString()
                 : null;
 
