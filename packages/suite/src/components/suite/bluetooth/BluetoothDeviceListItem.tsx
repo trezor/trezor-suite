@@ -10,7 +10,7 @@ import {
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, Row } from '@trezor/components';
 import { type BluetoothDeviceId } from '@trezor/connect';
 
@@ -49,7 +49,7 @@ const GhostDeviceActionButton = ({
     isConnectingDevice,
     onPairAgain,
 }: GhostDeviceActionButtonProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleDelete = useCallback(() => {
         dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.id }));

@@ -2,7 +2,8 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type OpenModalDep } from '@suite-common/suite-types';
 import { exchangeThunks, tradingExchangeActions, tradingThunks } from '@suite-common/trading';
 import { type TradingRootState } from '@suite-common/trading';
@@ -39,7 +40,7 @@ export const useExchangeApproval = ({
     receiveAddress,
     extraField,
 }: UseExchangeApprovalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { getTradeRequestParams } = useTradingExchangeTradeRequest(account);
 
     const verifyAddress =

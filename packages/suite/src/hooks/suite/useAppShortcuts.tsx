@@ -5,9 +5,10 @@ import { useToggleDebugMode } from '@suite/debug';
 import { openModal } from '@suite/modal';
 import { SettingsAnchor, closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
@@ -35,7 +36,7 @@ export const useAppShortcuts = () => {
     const allNetworkSymbols = getSupportedNetworks();
 
     const selectedDevice = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const discoveryStatus = useSelector(state =>
         selectDiscoveryOverallStatus(state, allNetworkSymbols),

@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { messageSystemActions, resolveMessageContent } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type BannerProps } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
@@ -22,7 +23,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
 
     const language = useSelector(selectLanguage);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const dismissalConfig = useMemo(() => {
         if (!dismissible) return undefined;

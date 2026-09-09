@@ -5,7 +5,7 @@ import { setConnectionModal } from '@suite/device';
 import { events } from '@suite-common/analytics';
 import { selectKnownDevices } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type BluetoothDeviceId } from '@trezor/connect';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
@@ -31,8 +31,7 @@ export const useBluetoothConnection = ({
     devices,
     onReScanClick,
 }: UseBluetoothConnectionProps): UseBluetoothConnectionReturn => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
 
     const knownDevices = useSelector(selectKnownDevices<DesktopBluetoothDevice>);

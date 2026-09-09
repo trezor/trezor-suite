@@ -2,8 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Card, Modal, Paragraph } from '@trezor/components';
 
 type FirmwareUpgradeNeededModalProps = {
@@ -17,7 +18,7 @@ export const FirmwareUpgradeNeededModal = ({
     featureName,
     onUpdate,
 }: FirmwareUpgradeNeededModalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     const onClick = () => {

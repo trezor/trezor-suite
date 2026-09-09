@@ -14,7 +14,7 @@ import {
     buildUserFeedbackData,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { EmojiRatingSelector } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
@@ -52,8 +52,7 @@ type FeedbackProps = {
 
 export const Feedback = ({ type }: FeedbackProps) => {
     const { device } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const router = useSelector(selectRouter);
     const [description, setDescription] = useState('');
     const [rating, setRating] = useState<Rating | undefined>();

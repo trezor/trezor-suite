@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
@@ -9,7 +10,7 @@ import { selectGraphSelectedRange } from 'src/reducers/wallet/graphReducer';
 import { type GraphRange } from 'src/types/wallet/graph';
 
 export const useGraph = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const selectedRange = useSelector(selectGraphSelectedRange);
 

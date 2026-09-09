@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
@@ -95,7 +96,7 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
     isEnabled,
     symbol,
 }: UsePreparedTxFeesParams<TComposed>) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
     const [baseActionContext, setBaseActionContext] = useState<BaseActionContext<TComposed> | null>(

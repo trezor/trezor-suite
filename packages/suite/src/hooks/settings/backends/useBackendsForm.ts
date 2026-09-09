@@ -5,7 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     type ServerType,
@@ -72,9 +72,8 @@ const getStoredState = (
 });
 
 export const useBackendsForm = (symbol: NetworkSymbol) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const backends = useSelector(state => selectNetworkBlockchainInfo(state, symbol).backends);
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const [currentValues, setCurrentValues] = useState(() =>
         getStoredState(symbol, backends.selected, backends.urls),

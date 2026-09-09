@@ -7,6 +7,7 @@ import {
     translatedFeedbackFeatures,
 } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type FeatureFeedbackRootState,
     type Rating,
@@ -14,7 +15,7 @@ import {
     selectPendingFeedbackFeature,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { SmileyIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
 
@@ -29,7 +30,7 @@ export const selectShouldShowFeedbackSidebarBanner = (state: FeedbackSidebarBann
 export const FeedbackFormManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const { translationString } = useTranslation();
     const pendingFeature = useSelector((state: FeedbackSidebarBannerRootState) =>

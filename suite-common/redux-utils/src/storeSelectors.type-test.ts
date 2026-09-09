@@ -1,8 +1,8 @@
-import { createThunk } from '../createThunk';
-import { useDispatch } from './useDispatch';
+import { createThunk } from './createThunk';
+import { type StoreDep, selectDispatch } from './storeSelectors';
 
-const useDispatchTypeTest = () => {
-    const dispatch = useDispatch();
+const dispatchTypeTest = (services: StoreDep) => {
+    const { dispatch } = selectDispatch(services);
 
     const plainAction = {
         type: 'test/plainAction',
@@ -28,4 +28,4 @@ const useDispatchTypeTest = () => {
     void unwrappedAsyncThunkResult;
 };
 
-void useDispatchTypeTest;
+void dispatchTypeTest;

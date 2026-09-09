@@ -1,5 +1,6 @@
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTransaction,
     type TradingTransactionBuy,
@@ -13,7 +14,7 @@ import {
 import { exhaustive } from '@trezor/type-utils';
 
 export const useTradingTransactionClick = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const openBuy = (trade: TradingTransactionBuy) => {
         dispatch(tradingBuyActions.saveTransactionId(trade.key));

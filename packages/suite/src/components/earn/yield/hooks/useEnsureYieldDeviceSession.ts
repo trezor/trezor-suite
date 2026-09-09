@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type YieldFlowType, yieldActions } from '@suite-common/wallet-core';
 
 import { ensureDeviceSession } from './ensureDeviceSession';
@@ -15,7 +16,7 @@ export const useEnsureYieldDeviceSession = ({
     flowType,
     flowKey,
 }: UseEnsureYieldDeviceSessionParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { device } = useDevice();
 
     return useCallback(async (): Promise<boolean> => {

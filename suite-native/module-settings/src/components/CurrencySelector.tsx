@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
@@ -24,8 +24,7 @@ const fiatCurrencyItems = typedObjectValues(baseCurrencies).map(transformFiatCur
 
 export const CurrencySelector = () => {
     const selectedFiatCurrencyCode = useSelector(selectBaseCurrency);
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const handleSelectCurrency = (baseCurrencyCode: BaseCurrencyCode) => {
         dispatch(setBaseCurrency(baseCurrencyCode));
         analytics.report({

@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 
 import { selectHasSeenDisconnectTooltip } from '@suite/flags';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { useSelector } from 'src/hooks/suite';
@@ -14,7 +15,7 @@ import {
 import { addDeviceIdToSeenDisconnectNotification } from '../../actions/suite/suiteActions';
 
 export const useNotificationForDisconnectedDevice = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const selectedDevice = useSelector(selectSelectedDevice);
     const seenDisconnectNotificationForDeviceIds = useSelector(

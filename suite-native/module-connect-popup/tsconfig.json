@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/connect-popup"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/icons" },
         {

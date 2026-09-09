@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncState,
     getSuiteSyncDefaultRelayUrl,
@@ -24,10 +24,9 @@ export const SuiteSyncRelaySettings = () => {
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const defaultSuiteSyncRelayUrl = getSuiteSyncDefaultRelayUrl({ isTorEnabled: false });
 
-    const { changeRelayUrl } = useServices(selectChangeRelayUrlDep);
+    const { changeRelayUrl, dispatch } = useServices(selectChangeRelayUrlDep, selectDispatch);
 
     const { showToast } = useToast();
-    const dispatch = useDispatch();
 
     const form = useForm<{ suiteSyncRelayUrl: string }>({
         defaultValues: {

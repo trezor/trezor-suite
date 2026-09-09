@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTradeBuySellType,
     cryptoIdToNetworkAndContractAddress,
@@ -25,8 +25,7 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormOfferOTC = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const otcQuery = useFetchOtc();
     const { data: otcData, isSuccess } = otcQuery;
     const context = useTradingFormContext<TradingTradeBuySellType>();

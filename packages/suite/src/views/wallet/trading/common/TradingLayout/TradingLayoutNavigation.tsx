@@ -2,7 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type IconComponent, SubTabs } from '@trezor/components';
 import { HandshakeIcon, MinusIcon, PlusIcon, RepeatIcon } from '@trezor/icons';
 
@@ -40,8 +40,7 @@ const navigationItems: NavigationItem[] = [
 ];
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const goToRoute = (route: Route['name']) => () => {
         dispatch(gotoThunk({ routeName: route }));
 

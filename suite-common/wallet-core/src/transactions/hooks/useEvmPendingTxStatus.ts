@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Account, type EvmTransactionPurpose } from '@suite-common/wallet-types';
 import {
     type EvmPendingTxStatus,
@@ -33,7 +34,7 @@ export const useEvmPendingTxStatus = (
     expectedPurpose: EvmTransactionPurpose,
     persistedNonce?: number,
 ): EvmPendingTxTracking => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const transactions = useSelector((state: TransactionsRootState) =>
         selectAccountTransactions(state, account?.key ?? null),

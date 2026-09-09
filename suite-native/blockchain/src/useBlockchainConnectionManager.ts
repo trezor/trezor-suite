@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
@@ -16,7 +17,7 @@ import { asCoinSymbol } from '@trezor/connect-common';
 const symbol: NetworkSymbol = 'btc';
 
 export const useBlockchainConnectionManager = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const blockchainBackendType = useSelector((state: BlockchainRootState) =>
         selectBlockchainBackendType(state, symbol),

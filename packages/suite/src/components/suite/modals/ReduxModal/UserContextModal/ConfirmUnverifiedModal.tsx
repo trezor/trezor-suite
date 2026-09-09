@@ -6,8 +6,9 @@ import { type ThunkDispatch } from 'redux-thunk';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { ShieldWarningIcon } from '@trezor/icons';
 
@@ -35,7 +36,7 @@ export const ConfirmUnverifiedModal = ({
 }: ConfirmUnverifiedModalProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { device } = useDevice();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();

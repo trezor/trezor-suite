@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, iconSizes } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -32,7 +33,7 @@ type BiometricOverlayProps = {
 export const BiometricOverlay = ({ isBiometricsAuthButtonVisible }: BiometricOverlayProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const triggerManualAuthentication = () => {
         dispatch(authenticateUserThunk());

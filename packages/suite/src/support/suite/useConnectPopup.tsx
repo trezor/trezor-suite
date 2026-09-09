@@ -9,7 +9,8 @@ import {
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     CORE_CALL,
     CORE_CALL_CANCEL,
@@ -74,7 +75,7 @@ export const useConnectPopup = (
     /** Called after the incoming messages slice has been consumed. */
     onMessagesConsumed: () => void,
 ) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const lifecycle = useSelector(selectSuiteLifecycle);
     const popupCall = useSelector(selectConnectPopupCall);
     const manifest = useRef<ManifestPartial | undefined>(undefined);

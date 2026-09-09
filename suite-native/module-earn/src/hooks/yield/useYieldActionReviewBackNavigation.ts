@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { yieldActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
@@ -18,7 +19,7 @@ export const useYieldActionReviewBackNavigation = ({
     onReviewLeave,
     reviewStatus,
 }: UseYieldActionReviewBackNavigationParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowYieldReviewCancellationAlert();
     const isCleanupHandledRef = useRef(false);

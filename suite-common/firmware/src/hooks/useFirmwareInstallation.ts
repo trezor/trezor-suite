@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type ButtonRequest,
     type FirmwareStatus,
@@ -113,7 +114,7 @@ const shouldShowReconnectPrompt = ({
 };
 
 export const useFirmwareInstallation = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const firmware = useSelector(selectFirmware);
     const device = useSelector(selectSelectedDevice);
     const thpStep = useSelector(selectThpStep);

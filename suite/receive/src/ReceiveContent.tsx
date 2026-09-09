@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     getNetwork,
     getNetworkDisplaySymbol,
@@ -25,7 +26,7 @@ export type ReceiveContentProps = {
 };
 
 export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveContentProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { isReceiveDisabled } = useReceiveDisabled();
 
     // Copying an address is the entry point to verification, so the cards report the copied path

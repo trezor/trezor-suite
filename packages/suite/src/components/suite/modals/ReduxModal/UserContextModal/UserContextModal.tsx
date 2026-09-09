@@ -6,7 +6,8 @@ import {
     DisableTorStopCoinjoinModal,
     RequestEnableTorModal,
 } from '@suite/tor-desktop';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -68,7 +69,7 @@ import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {
     const allNetworkSymbols = getSupportedNetworks();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const customBackends = useSelector(state => selectCustomBackends(state, allNetworkSymbols));
 
     const onCancel = () => dispatch(closeModalAction());

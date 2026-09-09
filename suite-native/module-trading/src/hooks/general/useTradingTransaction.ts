@@ -4,8 +4,9 @@ import { useSelector } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingFulfillValue,
     type TradingRootStateWithDeviceAndAccounts,
@@ -83,7 +84,7 @@ export const useTradingTransaction = ({
     processResponseData,
     triggerAnalyticsTradeConfirmation,
 }: UseTradingTransactionProps): UseTradingTransactionReturnProps => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const sendAccountKey = useSelector((state: TradingRootState) =>
         selectTradingAccountKeyByTradeType(state, tradeType),

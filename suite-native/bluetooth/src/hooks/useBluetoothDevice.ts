@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect from '@trezor/connect';
 import { bluetoothManager } from '@trezor/transport-native-bluetooth';
@@ -14,7 +15,7 @@ type UnpairDeviceProps = {
 };
 
 export const useBluetoothDevice = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const connectBluetoothDevice = useCallback(async (device: BluetoothDevice): Promise<void> => {
         await bluetoothManager.connectDevice({

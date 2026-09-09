@@ -5,7 +5,8 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsTorEnabled, selectIsTorEnabling, selectIsTorLoading } from '@suite/tor';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
@@ -23,7 +24,7 @@ export const Tor = ({ onBeforeDisable }: TorProps) => {
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const isTorLoading = useSelector(selectIsTorLoading);
     const isTorEnabling = useSelector(selectIsTorEnabling);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     useEffect(() => {
         if (!hasTorError) {

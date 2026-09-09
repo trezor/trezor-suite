@@ -5,7 +5,8 @@ import { useIntl } from 'react-intl';
 import { Translation, messages } from '@suite/intl';
 import { onReceiveFee } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { sortLevels } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
@@ -95,7 +96,7 @@ const getSelectFeeData = ({ coinInfo, feeLevels }: UiRequestSelectFee['payload']
 };
 
 export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const popupCall = useSelector(selectConnectPopupCall);
 
     const { account, feeInfo, defaultValues } = useMemo(() => getSelectFeeData(data), [data]);

@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type Account,
     type FormState,
@@ -21,7 +22,7 @@ interface SendParams {
 }
 
 export const useAllowanceSend = ({ account, methods }: UseAllowanceSendParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const methodsRef = useCurrentRef(methods);
     const accountRef = useCurrentRef(account);
 

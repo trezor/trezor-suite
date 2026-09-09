@@ -3,7 +3,8 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getStakeFormsDefaultValues,
@@ -52,7 +53,7 @@ type UseWithdrawalFormProps = {
 };
 
 export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): WithdrawalContextValues => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );

@@ -1,5 +1,6 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk, selectDeviceThunk } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
 
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
@@ -8,7 +9,7 @@ import type { NotificationViewProps } from 'src/components/suite/notifications/N
 type ActionRendererProps = NotificationViewProps & NotificationRendererProps;
 
 export const ActionRenderer = ({ render: View, ...props }: ActionRendererProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const { type, seen, device } = props.notification;
 

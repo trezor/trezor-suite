@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
@@ -26,7 +27,7 @@ const AccountSearchContext = createContext<AccountSearchContextType>({
 });
 
 export function useReduxAccountSearchActions() {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     return useMemo(
         () => ({

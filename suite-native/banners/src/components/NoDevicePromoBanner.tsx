@@ -1,6 +1,6 @@
 import { events as commonAnalyticsEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useGetTrezorEshopCta } from '@suite-native/link';
@@ -10,8 +10,7 @@ import { Banner } from './Banner';
 import { TS7_PROMO_BANNER_IMAGE } from '../imageSources';
 
 export const NoDevicePromoBanner = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const handleGetTrezor = useGetTrezorEshopCta('dashboard');
 
     const handleClose = () => {

@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type DeviceCheckBackupStackParamList,
@@ -23,9 +23,8 @@ type NavigationProps = StackNavigationProps<
 const DEFINITIVE_ERRORS: ERRORS.ErrorCode[] = ['Method_Interrupted', 'Failure_ActionCancelled'];
 
 export const useCheckBackupOnMount = () => {
-    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     useEffect(() => {
         const startCheckBackup = async () => {
             const response = await dispatch(checkBackupThunk()).unwrap();

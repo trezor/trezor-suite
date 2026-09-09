@@ -7,7 +7,7 @@ import {
     resolveMessageContent,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
@@ -42,11 +42,10 @@ const buttonsWrapperStyle = prepareNativeStyle(_ => ({
 }));
 
 export const KillswitchMessageScreen = () => {
-    const dispatch = useDispatch();
     const language = useSelector(selectSupportedLanguageLocale);
     const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
-    const { reloadApp } = useServices(selectReloadAppDep);
+    const { reloadApp, dispatch } = useServices(selectReloadAppDep, selectDispatch);
 
     const activeKillswitchMessage = useSelector(selectActiveKillswitchMessage);
 

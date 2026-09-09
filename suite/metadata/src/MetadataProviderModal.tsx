@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import type { Deferred } from '@trezor/utils';
 
 import { MetadataProviderSelectionModal } from './MetadataProviderSelectionModal';
@@ -17,7 +18,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
     // error from authorization popup
     const [error, setError] = useState('');
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const onModalCancel = () => {
         decision.resolve(false);

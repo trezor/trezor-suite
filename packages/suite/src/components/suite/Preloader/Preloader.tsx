@@ -11,12 +11,13 @@ import {
     selectRouterLoaded,
 } from '@suite/router';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     useReportDeviceCompromised,
     useRetryFwAuthenticityChecks,
 } from '@suite-common/firmware-authenticity';
 import { selectActiveKillswitchMessage } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Card } from '@trezor/components';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
@@ -76,7 +77,7 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     useReportDeviceCompromised({ device });
     useDeviceCompromisedNotification();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     useRetryFwAuthenticityChecks();
 
     useEffect(() => {

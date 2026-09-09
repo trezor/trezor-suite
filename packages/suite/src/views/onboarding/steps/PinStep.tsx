@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectModal, selectModalRequestId } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { LockKeyIcon } from '@trezor/icons';
@@ -23,7 +24,7 @@ export const PinStep = () => {
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(selectModal);
     const requestId = useSelector(selectModalRequestId);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
 

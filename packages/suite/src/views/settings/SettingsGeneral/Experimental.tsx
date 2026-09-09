@@ -9,8 +9,8 @@ import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
-import { useImperativeServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useImperativeServices, useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -27,7 +27,7 @@ type FeatureLineProps = {
 };
 
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const services = useImperativeServices(selectSuiteServices);
     const checked = enabledFeatures.includes(feature);
 
@@ -121,7 +121,7 @@ export const Experimental = () => {
     const isExperimentalEnabled = enabledFeatures !== undefined;
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const services = useImperativeServices(selectSuiteServices);
 
     const onSwitchExperimental = () => {

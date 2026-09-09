@@ -1,7 +1,7 @@
 import type { FiatCurrencyCode } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { HStack } from '@suite-native/atoms';
 import { buyActions } from '@suite-native/trading-state';
@@ -15,8 +15,7 @@ import { FiatCurrencyButton } from '../general/FiatCurrencyButton';
 const FIAT_CURRENCY_PICKER_TEST_ID = '@trading/buy/fiat-button';
 
 export const BuyFiatCurrencyPicker = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const form = useBuyFormContext();
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'fiatCurrency');

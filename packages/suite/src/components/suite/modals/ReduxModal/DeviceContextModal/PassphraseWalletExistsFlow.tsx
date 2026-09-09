@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
@@ -27,7 +28,7 @@ export const PassphraseWalletExistsFlow = ({
     onSubmit,
     onBackToInitial,
 }: PassphraseWalletExistsFlowProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const [confirmPassphraseFlowState, setConfirmPassphraseFlowState] = useState<
         'empty-wallet' | 'best-practices' | 'confirm-passphrase'
     >('empty-wallet');

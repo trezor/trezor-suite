@@ -5,7 +5,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldRootState,
     selectYieldSessionByFlowKey,
@@ -38,7 +38,6 @@ type NavigationProps = StackNavigationProps<
 export const YieldDepositCompleteScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const dispatch = useDispatch();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const yieldFlowData = useYieldFlowData(route.params);
@@ -49,7 +48,7 @@ export const YieldDepositCompleteScreen = () => {
     );
 
     const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
 
     const handleExit = useCallback(() => {
         analytics.report({

@@ -1,7 +1,8 @@
 import { memo } from 'react';
 
 import { useDevice } from '@suite/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -25,7 +26,7 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const { device } = useDevice();
     const { activeModal, openModal, closeModal } = useGlobalSendReceiveModal();
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const accounts = useSelector(selectAllAccountsToList);
     const discoveryStatus = useSelector(state =>
         selectDiscoveryOverallStatus(state, allNetworkSymbols),

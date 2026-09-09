@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
@@ -17,7 +18,7 @@ import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/Tradi
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 export const TradingFormOfferBuyActions = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const context = useTradingFormContext<'buy'>();
     const {
         form: { state },

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsNoPhysicalDeviceConnected } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectIsDeviceAutoEjectEnabled, toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -11,8 +11,7 @@ import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
 export const AutoEjectSwitch = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const { showAlert, hideAlert } = useAlert();
 
     const { showToast } = useToast();

@@ -1,7 +1,8 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, ButtonGroup, Tooltip } from '@trezor/components';
 import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
@@ -20,7 +21,7 @@ export const ChangeHomescreenButtons = ({
     isSupportedHomescreen,
     onImageUploadClick,
 }: ChangeHomescreenButtonsParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { device } = useDevice();
     const openGallery = () => dispatch(openModal({ type: 'device-background-gallery' }));
 

@@ -7,7 +7,7 @@ import {
 } from '@suite/settings';
 import { type TransportsDep } from '@suite-common/connect-init';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
@@ -54,12 +54,14 @@ const useTransportItems = (transports: readonly Transport[]): TransportMenuItem[
 };
 
 export const Transport = () => {
-    const dispatch = useDispatch();
     const transports = isDesktop() ? TRANSPORTS_DESKTOP : TRANSPORTS_WEB;
     const items = useTransportItems(transports);
-    const { createTransports } = useServices((services): TransportsDep => ({
-        createTransports: services.createTransports,
-    }));
+    const { createTransports, dispatch } = useServices(
+        (services): TransportsDep => ({
+            createTransports: services.createTransports,
+        }),
+        selectDispatch,
+    );
 
     return (
         <>

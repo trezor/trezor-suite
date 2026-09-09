@@ -12,7 +12,7 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type StaticSessionId } from '@trezor/connect';
@@ -36,8 +36,10 @@ export const LegacyLabelingMigrationModal = ({
     onFinish,
     onSuiteSyncError,
 }: LegacyLabelingMigrationModalProps) => {
-    const dispatch = useDispatch();
-    const { migrateLegacyLabelsToSuiteSync } = useServices(selectMetadataMigrationDep);
+    const { migrateLegacyLabelsToSuiteSync, dispatch } = useServices(
+        selectMetadataMigrationDep,
+        selectDispatch,
+    );
     const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
     const selectedProvider = useSelector(selectSelectedProviderForLabels);
     const selectedDevice = useSelector(selectSelectedDevice);

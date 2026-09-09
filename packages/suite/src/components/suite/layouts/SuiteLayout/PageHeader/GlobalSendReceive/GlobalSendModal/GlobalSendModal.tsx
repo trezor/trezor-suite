@@ -1,7 +1,8 @@
 import { useCallback, useRef } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
@@ -42,7 +43,7 @@ type GlobalSendModalProps = {
 const LIST_HEIGHT = 480;
 
 export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const networkSymbolFilter = useSelector(globalSendReceiveFiltersSelectors.selectNetworkSymbol);
     const searchFilter = useSelector(globalSendReceiveFiltersSelectors.selectSearch);

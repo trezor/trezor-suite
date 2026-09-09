@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 
 import { Route } from 'src/components/suite/Route';
@@ -17,7 +18,7 @@ export const Nfts = () => {
 
     const selectedAccount = useSelector(selectFullSelectedAccount);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     useEffect(() => {
         if (

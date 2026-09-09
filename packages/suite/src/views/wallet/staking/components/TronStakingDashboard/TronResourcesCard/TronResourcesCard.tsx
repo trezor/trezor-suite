@@ -4,7 +4,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { getTronResources } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Icon, Row, Text, Tooltip } from '@trezor/components';
@@ -20,8 +20,7 @@ interface TronResourcesCardProps {
 }
 
 export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const [openResource, setOpenResource] = useState<TronResourceType | null>(null);
     const resources = getTronResources(account);
 

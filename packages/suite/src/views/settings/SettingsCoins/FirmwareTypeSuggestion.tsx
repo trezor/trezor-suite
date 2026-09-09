@@ -2,13 +2,14 @@ import { useDevice } from '@suite/device';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Paragraph } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { CurrencyBtcIcon } from '@trezor/icons';
 
 export const FirmwareTypeSuggestion = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { device } = useDevice();
 
     const translationId = hasBitcoinOnlyFirmware(device)

@@ -5,7 +5,7 @@ import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectHasDeviceSuiteSyncError,
@@ -28,9 +28,10 @@ type SuiteSyncBannerProps = {
 };
 
 export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps) => {
-    const dispatch = useDispatch();
-
-    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
+    const { ensureWalletSuiteSyncOn, dispatch } = useServices(
+        selectEnsureWalletSuiteSyncOnDep,
+        selectDispatch,
+    );
 
     const hasSuiteSyncError = useSelector((state: WithSuiteSyncAndDeviceState) =>
         selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),

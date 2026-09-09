@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 
@@ -64,7 +65,7 @@ export const useLegacyBridgeDetection = () => {
 };
 
 export const BridgeDeprecated = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     return (
         <Banner

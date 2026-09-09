@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { type Dispatch, useDispatch } from '@suite-common/redux-utils';
+import { type Dispatch, selectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { type IconComponent, Tooltip } from '@trezor/components';
@@ -290,8 +290,7 @@ export const useStakingCardContent = ({
     variant,
     data,
 }: UseStakingCardContentProps): EmptyStakingCardContent => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     switch (variant) {
         case 'tron':

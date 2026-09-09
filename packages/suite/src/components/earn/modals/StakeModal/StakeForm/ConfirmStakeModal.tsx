@@ -4,7 +4,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -41,8 +41,7 @@ export const ConfirmStakeModal = ({
     onCancel,
     flow,
 }: ConfirmStakeModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const [hasAgreed, setHasAgreed] = useState(false);
     const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
 

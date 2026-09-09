@@ -2,8 +2,9 @@ import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     selectAccounts,
     selectBlockchainState,
@@ -41,7 +42,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const currentDevice = useSelector(selectSelectedDevice);
     const routeName = useSelector(selectRouteName);
     const routerApp = useSelector(selectRouterApp);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const networkAccounts = findAccountsByNetwork(symbol, accounts);
     const account = findAccountsByDescriptor(descriptor, networkAccounts).at(0);

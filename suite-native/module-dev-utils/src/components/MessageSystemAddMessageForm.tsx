@@ -1,17 +1,18 @@
 import { useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     CATEGORY_OPTIONS,
     messageSystemActions,
     useConditionControls,
     useMessageSystemMessageForm,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Category, type Condition } from '@suite-common/suite-types';
 import { Button, Input, Select, Text, VStack } from '@suite-native/atoms';
 
 export const MessageSystemAddMessageForm = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const [presetCategory, setPresetCategory] = useState<Category>('banner');
 
     const {

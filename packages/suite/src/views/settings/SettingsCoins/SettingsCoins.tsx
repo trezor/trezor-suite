@@ -12,7 +12,7 @@ import { openModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type Network,
     type NetworkSymbol,
@@ -57,8 +57,7 @@ export const SettingsCoins = () => {
     const allNetworkSymbols = getSupportedNetworks();
 
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { firmwareTypeBannerClosed } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const {

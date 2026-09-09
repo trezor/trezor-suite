@@ -4,7 +4,8 @@ import styled from 'styled-components';
 
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
 import {
@@ -31,7 +32,7 @@ const Container = styled.div`
 
 export const ReviewButton = () => {
     const { device, isLocked } = useDevice();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const {
         account: { networkType, symbol },
         control,

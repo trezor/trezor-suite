@@ -1,7 +1,8 @@
 import { isRejected } from '@reduxjs/toolkit';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     composeEthereumCancelTransactionThunk,
     selectConvertedNetworkFeeInfo,
@@ -19,7 +20,7 @@ interface UseEthereumCancelTxComposeParams {
 }
 
 export const useEthereumCancelTxCompose = ({ account, tx }: UseEthereumCancelTxComposeParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
     const ethereumAccount = account.networkType === 'ethereum' ? account : undefined;
 

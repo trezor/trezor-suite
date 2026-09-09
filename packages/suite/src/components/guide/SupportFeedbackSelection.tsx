@@ -3,7 +3,7 @@ import { UpdateState, selectDesktopUpdate } from '@suite/desktop-update';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Box, CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -35,10 +35,9 @@ const StatusText = ({ id }: { id: TranslationKey }) => (
 );
 
 export const SupportFeedbackSelection = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const desktopUpdate = useSelector(selectDesktopUpdate);
     const device = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
 
     const appUpToDate =
         isDesktop() &&

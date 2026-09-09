@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useDevice } from '@suite/device';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -41,7 +41,10 @@ import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAdd
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
     const quotes = useSelector(selectTradingBuyQuotes);
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+    const { networkModuleRepository, dispatch } = useServices(
+        selectNetworkModuleRepositoryDep,
+        selectDispatch,
+    );
 
     const { device } = useDevice();
     const { setAmountLimits, getValues, setValue, clearErrors } = context;
@@ -52,8 +55,6 @@ export const TradingBuyFormInputs = () => {
         amountInCrypto,
         currencySelect,
     } = getValues();
-
-    const dispatch = useDispatch();
 
     // `useTradingBuyForm` has many re-rendering issues, use refs to avoid them
     const setAmountLimitsRef = useCurrentRef(setAmountLimits);

@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type ResolvedYieldFlowData,
     composeYieldDepositTransactionThunk,
@@ -35,7 +36,7 @@ export const useYieldDepositFees = ({
     flowKey,
     isEnabled,
 }: UseYieldDepositFeesParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const formDraftKey = useMemo(
         () => (flowKey ? getYieldDepositFormDraftKey(flowKey) : ''),

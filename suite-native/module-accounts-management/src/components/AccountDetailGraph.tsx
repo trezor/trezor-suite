@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { useAtomValue, useSetAtom } from 'jotai';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -30,7 +31,7 @@ type AccountDetailGraphProps = {
 };
 
 export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailGraphProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const resetGraph = useSetAtom(accountDetailGraphAtoms.resetGraphAtom);
     const graphInstanceId = getAccountGraphInstanceId({ accountKey, tokenContract });
 

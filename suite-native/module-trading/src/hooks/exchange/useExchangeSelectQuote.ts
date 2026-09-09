@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type ApprovalStatus,
     TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
@@ -42,7 +43,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const candidateQuote = useWatch({ name: 'quote', control: form.control });
     const receiveAsset = useWatch({ name: 'receiveAsset', control: form.control });
 

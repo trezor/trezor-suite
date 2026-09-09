@@ -9,7 +9,8 @@ import { useExternalLink } from '@suite/external-links';
 import { getReleaseUrl } from '@suite/github';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, type ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
@@ -32,7 +33,7 @@ const getUpdateStateMessage = (state: UpdateState) => {
 
 const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdateState }) => {
     const appVersion = process.env.VERSION || '';
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const openChangelog = () => dispatch(desktopUpdateActions.setIsVersionInfoModalVisible(true));
     const url = useExternalLink(getReleaseUrl(appVersion));
     const commonButtonProps: Partial<ButtonProps> = {
@@ -98,7 +99,7 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
 
 export const VersionWithUpdate = () => {
     const desktopUpdateState = useSelector(selectDesktopUpdate);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const checkForUpdates = () => desktopApi.checkForUpdates({ isManual: true });
     const maximizeUpdateModal = () => dispatch(desktopUpdateActions.setIsUpdateModalVisible(true));

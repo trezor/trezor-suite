@@ -13,7 +13,7 @@ import {
     type CoinjoinSymbol,
 } from '@suite/coinjoin';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -101,8 +101,7 @@ const CoordinatorServer = ({
 export const CoinjoinApi = () => {
     const debug = useSelector(selectCoinjoinDebug);
     const clients = useSelector(selectCoinjoinClients);
-    const dispatch = useDispatch();
-    const { reloadApp } = useServices(selectReloadAppDep);
+    const { reloadApp, dispatch } = useServices(selectReloadAppDep, selectDispatch);
 
     const coinjoinSymbols = BITCOIN_ONLY_SYMBOLS.filter(symbol =>
         isCoinjoinSupportedSymbol(symbol),

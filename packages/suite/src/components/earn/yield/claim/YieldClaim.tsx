@@ -10,7 +10,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     YIELD_FLOW_AVAILABLE_STEPS,
     isYieldSupported,
@@ -41,8 +41,7 @@ type YieldClaimProps = {
 };
 
 export const YieldClaim = ({ account }: YieldClaimProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { device } = useDevice();
     const { translationString } = useTranslation();
     const flowKey = account.key;

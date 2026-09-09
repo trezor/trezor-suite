@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { blockchainActions, selectGapLimit } from '@suite-common/wallet-core';
 
@@ -9,7 +10,7 @@ import { useSelector } from 'src/hooks/suite';
 const DEFAULT_GAP_LIMIT = 20;
 
 export const useGapLimitForm = (symbol: NetworkSymbol) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const savedGapLimit = useSelector(state => selectGapLimit(state, symbol));
 
     const [value, setValue] = useState(String(savedGapLimit ?? DEFAULT_GAP_LIMIT));

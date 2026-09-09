@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import type { TradingRootState } from '../reducers/tradingCommonReducer';
 import { tradingActions } from '../reducers/tradingCommonReducer';
@@ -16,7 +17,7 @@ export const useProviderMetadataChangeEffect = (
     quoteName?: string,
     areProviderChangesAllowed = true,
 ) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const providerMetadata = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, quoteName, tradingType),

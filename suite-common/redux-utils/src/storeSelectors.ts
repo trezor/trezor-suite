@@ -1,5 +1,5 @@
 import { type ReduxStoreWithThunk } from './createReduxExtra';
-import { type Dispatch } from './hooks/useDispatch';
+import { type Dispatch } from './types';
 
 export type StoreDep = {
     store: ReduxStoreWithThunk<any, any>;

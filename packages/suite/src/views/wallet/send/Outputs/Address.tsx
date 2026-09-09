@@ -21,7 +21,7 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { useQueryClient } from '@suite-common/react-query';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -77,7 +77,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
     const [autocorrectMessage, setAutocorrectMessage] = useState<string | undefined>();
     const autocorrectTimeout = useRef<TimerId>(null);
-    const dispatch = useDispatch();
     const { device } = useDevice();
     const {
         account,
@@ -94,13 +93,19 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-    const { analytics, addressValidator, findNetworkSymbolForProtocol, getNamedAddressSupport } =
-        useServices(
-            selectDesktopAnalyticsDep,
-            selectAddressValidatorDep,
-            selectFindNetworkSymbolForProtocolDep,
-            selectGetNamedAddressSupportDep,
-        );
+    const {
+        analytics,
+        addressValidator,
+        findNetworkSymbolForProtocol,
+        getNamedAddressSupport,
+        dispatch,
+    } = useServices(
+        selectDesktopAnalyticsDep,
+        selectAddressValidatorDep,
+        selectFindNetworkSymbolForProtocolDep,
+        selectGetNamedAddressSupportDep,
+        selectDispatch,
+    );
     const { descriptor, networkType, symbol } = account;
     const namedAddress = getNamedAddressSupport(symbol);
     const inputName = `outputs.${outputId}.address` as const;

@@ -1,6 +1,7 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
@@ -19,7 +20,7 @@ export const ConfirmEvmExplanationModal = ({
     account,
     route,
 }: ConfirmNetworkExplanationModalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const close = () => {
         dispatch(closeModal());
         if (!account?.symbol) {

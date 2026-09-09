@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type YieldRootState,
@@ -28,7 +29,7 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const YieldClaimReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { accountKey } = route.params;
     const device = useSelector(selectSelectedDevice);
     const account = useSelector((state: AccountsRootState) =>

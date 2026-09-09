@@ -3,8 +3,9 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
@@ -52,7 +53,7 @@ const ListItem = ({ children, icon }: { children: ReactNode; icon: IconComponent
 );
 
 export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceId = selectedDevice?.id;
     const recentlyDisconnectedDevice = useSelector(selectRecentlyDisconnectedDevice);

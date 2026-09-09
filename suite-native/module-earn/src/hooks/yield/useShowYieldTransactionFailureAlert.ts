@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type YieldFlowType, yieldActions } from '@suite-common/wallet-core';
 import { type TxKeyPath } from '@suite-native/intl';
 
@@ -35,7 +36,7 @@ export const useShowYieldTransactionFailureAlert = ({
     error,
     isEnabled,
 }: UseShowYieldTransactionFailureAlertParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const showYieldAlert = useShowYieldAlert();
 
     useEffect(() => {

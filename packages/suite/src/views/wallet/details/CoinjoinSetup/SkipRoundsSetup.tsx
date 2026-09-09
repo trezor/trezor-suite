@@ -2,7 +2,8 @@ import styled from 'styled-components';
 
 import { coinjoinAccountToggleSkipRounds, selectCurrentCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { H3, Paragraph, Switch, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -22,7 +23,7 @@ interface SkipRoundsSetupProps {
 export const SkipRoundsSetup = ({ accountKey, skipRounds }: SkipRoundsSetupProps) => {
     const session = useSelector(selectCurrentCoinjoinSession);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const toggleSkipRounds = () => dispatch(coinjoinAccountToggleSkipRounds(accountKey));
 

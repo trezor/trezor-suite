@@ -56,7 +56,7 @@ export const StoreProviderForTests = ({
 
     return (
         <Provider store={store}>
-            <BasicProviderWithFormattingConfig services={services}>
+            <BasicProviderWithFormattingConfig services={{ ...services, store }}>
                 {children}
             </BasicProviderWithFormattingConfig>
         </Provider>

@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_AMOUNT_FIELDS,
@@ -54,7 +54,10 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+    const { networkModuleRepository, dispatch } = useServices(
+        selectNetworkModuleRepositoryDep,
+        selectDispatch,
+    );
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
     const quotes = useSelector(selectTradingExchangeQuotes);
@@ -106,7 +109,6 @@ export const TradingExchangeFormInputs = () => {
               }).toString()
             : output?.amount;
 
-    const dispatch = useDispatch();
     // `useTradingExchangeForm` has some re-rendering issues, use refs to avoid them
     const setAmountLimitsRef = useCurrentRef(setAmountLimits);
     const setValueRef = useCurrentRef(setValue);

@@ -1,7 +1,8 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Text, VStack } from '@suite-native/atoms';
 import { FEEDBACK_FEATURE_CONFIGS } from '@suite-native/experimental-features';
 import { FeatureRatingForm, feedbackDismissed } from '@suite-native/feature-feedback';
@@ -16,7 +17,7 @@ import {
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.FeatureFeedbackModal>;
 
 export const FeatureFeedbackModalScreen = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation();
     const route = useRoute<RouteProps>();
     const { feature } = route.params;

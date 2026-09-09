@@ -4,7 +4,8 @@ import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
 import { usePreferredModal, useSelector } from 'src/hooks/suite';
@@ -12,7 +13,7 @@ import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 
 export const SwitchDeviceLayer = () => {
     const modal = usePreferredModal();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const deviceStaticSessionId = useSelector(selectShowEnableSuiteSyncModal);
 
     if (modal.type !== 'foreground-app' || modal.payload.app !== 'switch-device') return null;

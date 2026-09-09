@@ -7,7 +7,7 @@ import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     getTradingPrefilledFromAccountData,
@@ -44,8 +44,7 @@ export const EarnYieldAccountOpportunity = ({
     opportunity,
     isCardLayout,
 }: EarnYieldAccountOpportunityProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();

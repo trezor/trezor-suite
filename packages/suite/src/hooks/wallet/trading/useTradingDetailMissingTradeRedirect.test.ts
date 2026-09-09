@@ -1,17 +1,13 @@
-import { renderHook } from '@testing-library/react';
 import { type SellFiatTrade } from 'invity-api';
 
+import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
+import { routerReducer } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingTransactionSell, type TradingType } from '@suite-common/trading';
 
 import { useTradingDetailMissingTradeRedirect } from './useTradingDetailMissingTradeRedirect';
-
-const mockDispatch = jest.fn();
-
-jest.mock('@suite-common/redux-utils', () => ({ useDispatch: () => mockDispatch }));
-
-jest.mock('@suite/router', () => ({
-    gotoThunk: (payload: unknown) => ({ type: 'goto', payload }),
-}));
 
 const trade: TradingTransactionSell = {
     tradeType: 'sell',
@@ -22,24 +18,35 @@ const trade: TradingTransactionSell = {
 };
 
 describe('useTradingDetailMissingTradeRedirect', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
     it.each<[TradingType, string]>([
-        ['buy', 'wallet-trading-buy'],
-        ['sell', 'wallet-trading-sell'],
-        ['exchange', 'wallet-trading-exchange'],
-    ])('redirects to the %s form when the trade is missing', (tradeType, routeName) => {
-        renderHook(() => useTradingDetailMissingTradeRedirect(tradeType, undefined));
+        ['buy', '/accounts/coinmarket/buy'],
+        ['sell', '/accounts/coinmarket/sell'],
+        ['exchange', '/accounts/coinmarket/exchange'],
+    ])('redirects to the %s form when the trade is missing', (tradeType, pathname) => {
+        const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
+        const root = createTestCompositionRoot({
+            extra: { services: { suiteRouterHistory } },
+            reducer: { router: routerReducer, locks: locksReducer, modal: modalReducer },
+        });
+        renderHookWithStoreProvider(
+            () => useTradingDetailMissingTradeRedirect(tradeType, undefined),
+            { root },
+        );
 
-        expect(mockDispatch).toHaveBeenCalledTimes(1);
-        expect(mockDispatch).toHaveBeenCalledWith({ type: 'goto', payload: { routeName } });
+        expect(suiteRouterHistory.navigate).toHaveBeenCalledTimes(1);
+        expect(suiteRouterHistory.navigate).toHaveBeenCalledWith({ pathname, hash: '' });
     });
 
     it('stays on the detail when the trade is found', () => {
-        renderHook(() => useTradingDetailMissingTradeRedirect('sell', trade));
+        const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
+        const root = createTestCompositionRoot({
+            extra: { services: { suiteRouterHistory } },
+            reducer: { router: routerReducer, locks: locksReducer, modal: modalReducer },
+        });
+        renderHookWithStoreProvider(() => useTradingDetailMissingTradeRedirect('sell', trade), {
+            root,
+        });
 
-        expect(mockDispatch).not.toHaveBeenCalled();
+        expect(suiteRouterHistory.navigate).not.toHaveBeenCalled();
     });
 });

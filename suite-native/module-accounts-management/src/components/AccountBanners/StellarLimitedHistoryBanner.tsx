@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { BannerFull } from '@suite-native/atoms';
 import {
     selectIsStellarLimitedHistoryBannerClosed,
@@ -13,7 +14,7 @@ export const StellarLimitedHistoryBanner = () => {
 
     const isClosed = useSelector(selectIsStellarLimitedHistoryBannerClosed);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const handleClose = () => {
         dispatch(setIsStellarLimitedHistoryBannerClosed());
     };

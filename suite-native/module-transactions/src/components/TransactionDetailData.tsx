@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type PhishingDetectorId,
     type TokenDefinitionsRootState,
@@ -60,7 +61,7 @@ export const TransactionDetailData = ({
     accountKey,
     tokenTransfer,
 }: TransactionDetailDataProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const { DateFormatter, TimeFormatter } = useFormatters();
     const { translate } = useTranslate();

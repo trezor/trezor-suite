@@ -5,7 +5,7 @@ import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     buyThunks,
     selectTradingAccountKeyByTradeType,
@@ -23,8 +23,7 @@ import { useSelector } from 'src/hooks/suite';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 export const useTradingBuyConfirm = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);
     const receiveAddress = useSelector(selectTradingBuyReceiveAddress);

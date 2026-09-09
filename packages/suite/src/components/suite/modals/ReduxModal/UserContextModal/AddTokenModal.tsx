@@ -5,7 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
 import TrezorConnect, { type TokenInfo } from '@trezor/connect';
@@ -25,11 +25,11 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const [isFetching, setIsFetching] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const account = useSelector(selectSelectedAccount);
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { analytics, addressValidator } = useServices(
+    const { analytics, addressValidator, dispatch } = useServices(
         selectDesktopAnalyticsDep,
         selectAddressValidatorDep,
+        selectDispatch,
     );
 
     const loadTokenInfo = useCallback(

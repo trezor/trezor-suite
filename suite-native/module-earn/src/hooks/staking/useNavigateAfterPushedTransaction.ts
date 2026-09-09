@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -93,7 +94,7 @@ export const useNavigateAfterPushedTransaction = ({
     markReviewNavigationSuccess,
     stakeType,
 }: UseNavigateAfterPushedTransactionParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const [txid, setTxid] = useState('');
     const [submittedAt, setSubmittedAt] = useState<Date | null>(null);

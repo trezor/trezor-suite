@@ -11,7 +11,7 @@ import {
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { getYieldVaultContractAddress, yieldActions } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
@@ -63,10 +63,9 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const YieldDepositScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const dispatch = useDispatch();
     const isFocused = useIsFocused();
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
 
     const {
         bottomSheetRef: simulationBottomSheetRef,

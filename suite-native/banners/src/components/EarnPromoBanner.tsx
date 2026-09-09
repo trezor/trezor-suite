@@ -2,7 +2,8 @@ import { type ReactNode } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { BannerFull, Button, HStack, IconButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -26,7 +27,7 @@ interface EarnPromoBannerProps {
 
 export const EarnPromoBanner = ({ symbol, title, description }: EarnPromoBannerProps) => {
     const navigation = useNavigation<NavigationProp>();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const onExploreClick = () => {
         navigation.popTo(RootStackRoutes.AppTabs, {

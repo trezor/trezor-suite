@@ -4,8 +4,9 @@ import { selectRoundsDurationInHours, selectSessionProgressByAccountKey } from '
 import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouterParams } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie } from '@trezor/components';
@@ -77,7 +78,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
     );
     const roundsDurationInHours = useSelector(selectRoundsDurationInHours);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     if (!relatedAccount) {
         return null;

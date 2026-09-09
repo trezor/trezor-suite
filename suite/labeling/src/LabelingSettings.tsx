@@ -17,7 +17,7 @@ import { SuiteSyncServers, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,
@@ -90,13 +90,13 @@ const LabelingOption = ({
 export const LabelingSettings = () => {
     const { translationString } = useTranslation();
 
-    const { analytics, turnOffSuiteSync, turnOnSuiteSync } = useServices(
+    const { analytics, turnOffSuiteSync, turnOnSuiteSync, dispatch } = useServices(
         selectDesktopAnalyticsDep,
         selectTurnOffSuiteSyncDep,
         selectTurnOnSuiteSyncDep,
+        selectDispatch,
     );
 
-    const dispatch = useDispatch();
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
     const deviceStaticSessionId = device?.state?.staticSessionId;

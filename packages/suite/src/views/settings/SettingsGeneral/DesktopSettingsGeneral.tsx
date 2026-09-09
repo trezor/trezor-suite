@@ -2,7 +2,8 @@ import { selectCoinjoinAccounts } from '@suite/coinjoin';
 import { openDeferredModal } from '@suite/modal';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { TorSettings } from '@suite/tor-desktop';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -11,7 +12,7 @@ import { SettingsGeneral } from './SettingsGeneral';
 export const DesktopSettingsGeneral = () => {
     const coinjoinAccounts = useSelector(selectCoinjoinAccounts);
     const isExternalPortVisible = useSelector(selectHasExperimentalFeature('tor-external'));
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     // Disabling Tor stops any active coinjoin; warn the user before switching Tor off.
     const handleBeforeTorDisable = async () => {

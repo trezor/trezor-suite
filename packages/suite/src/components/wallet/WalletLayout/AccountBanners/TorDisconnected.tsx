@@ -2,7 +2,8 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectIsTorEnabled, selectIsTorLoading } from '@suite/tor';
 import { toggleTorThunk } from '@suite/tor-desktop';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -11,7 +12,7 @@ export const TorDisconnected = () => {
     const account = useSelector(selectSelectedAccount);
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const isTorLoading = useSelector(selectIsTorLoading);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     if (account?.accountType !== 'coinjoin' || isTorEnabled) return null;
 

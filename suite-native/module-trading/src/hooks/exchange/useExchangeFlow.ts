@@ -6,7 +6,7 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingSendRejectedProps,
     exchangeThunks,
@@ -54,8 +54,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
                 | RootStackRoutes.TradingExchangeOutputsReview
             >
         >();
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const device = useSelector(selectSelectedDevice);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);

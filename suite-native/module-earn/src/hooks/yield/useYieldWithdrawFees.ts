@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useStore } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
-import { createThunk, useDispatch } from '@suite-common/redux-utils';
+import { createThunk, selectDispatch } from '@suite-common/redux-utils';
 import {
     type FeesRootState,
     type FormDraftRootState,
@@ -212,7 +213,7 @@ export const useYieldWithdrawFees = ({
     flowKey,
     isEnabled,
 }: UseYieldWithdrawFeesParams): UseYieldWithdrawFeesResult => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const store = useStore<FeesRootState>();
     const debounce = useDebounce();
     const requestIdRef = useRef(0);

@@ -4,7 +4,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     pushSendFormRawTransactionThunk,
     selectIsMevProtectionEnabled,
@@ -36,9 +36,8 @@ export const SendRaw = ({ account }: SendRawProps) => {
             [INPUT_NAME]: '',
         },
     });
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const inputValue = useWatch({ control, name: INPUT_NAME });
     const error = errors[INPUT_NAME];
     const hasError = !!error;

@@ -10,7 +10,8 @@ import {
 
 import Constants from 'expo-constants';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import { updatePermissionStatus } from '../bluetoothSlice';
 import { type BluetoothPermissionStatus } from '../types';
@@ -42,7 +43,7 @@ const queryAndroidPermission = async (
 };
 
 export const useBluetoothPermissions = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const queryBluetoothPermission = useCallback(
         async (permissionMethod: PermissionMethod) => {

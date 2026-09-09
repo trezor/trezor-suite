@@ -1,6 +1,6 @@
-import { useGetter } from '@suite-common/dependency-injection';
+import { useGetter, useServices } from '@suite-common/dependency-injection';
 import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { Column, Text } from '@trezor/components';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
@@ -13,7 +13,7 @@ export const FirmwareUpdateEnvironmentSelect = () => {
     const firmwareChannel = useSelector(state =>
         selectEffectiveFirmwareChannel(state, isAllowPrerelease),
     );
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const options: { label: string; value: FirmwareChannel }[] = [
         { label: 'Production', value: 'production' },

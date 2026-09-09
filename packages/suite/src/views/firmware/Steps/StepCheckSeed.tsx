@@ -2,12 +2,13 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
     selectSelectedDeviceLabelOrName,
 } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
@@ -37,7 +38,7 @@ export const StepCheckSeed = ({
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     if (!device?.connected || !device?.features) {
         return <PrerequisitesGuide />;

@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     isSuiteSyncSupportedByDevice,
@@ -24,7 +25,7 @@ export const SuiteSyncWalletDebug = ({
     device,
     isLegacyLabelingVisible,
 }: SuiteSyncWalletDebugProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);

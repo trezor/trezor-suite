@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -94,7 +94,7 @@ export const StakingCard = ({
     daysToUnstake,
     account,
 }: StakingCardProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { isBelowLaptop } = useLayoutSize();
 
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
@@ -163,8 +163,6 @@ export const StakingCard = ({
         (isStakeConfirming || isTxStatusShown) && !!progressLabelsData.length;
 
     const isCardanoNetworkType = account.networkType === 'cardano';
-
-    const dispatch = useDispatch();
 
     const openStakeModal = () => {
         if (!isStakingDisabled) {

@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
@@ -9,7 +10,7 @@ type SafetyChecksBannerProps = {
 };
 
 export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     return (
         <Banner

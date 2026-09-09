@@ -6,7 +6,7 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     pushStakeTransactionThunk,
@@ -42,7 +42,6 @@ export const useHandleOnEarnTransactionReview = ({
         accountKey,
     );
 
-    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const handleReviewError = useHandleEarnReviewError(stakeType, navigation);
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction(stakeType, accountKey);
@@ -51,7 +50,7 @@ export const useHandleOnEarnTransactionReview = ({
     );
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
 
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
 
     const handleSign = useCallback(async (): Promise<boolean> => {
         if (!precomposedTransaction) return false;

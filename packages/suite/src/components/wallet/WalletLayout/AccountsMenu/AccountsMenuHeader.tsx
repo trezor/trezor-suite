@@ -4,8 +4,9 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Column, Divider, Icon, Row, Skeleton, Tooltip } from '@trezor/components';
 import { FunnelSimpleIcon } from '@trezor/icons';
@@ -45,7 +46,7 @@ export const AccountsMenuHeader = () => {
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isCoinsFilterVisible = useSelector(selectIsCoinsFilterVisible);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const availableNetworksSymbols = useAvailableNetworkSymbols();
 
     const toggleCoinsFilter = () =>

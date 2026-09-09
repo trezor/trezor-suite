@@ -7,8 +7,9 @@ import {
 import { closeModal } from '@suite/modal';
 import { closeModalAppThunk } from '@suite/router';
 import { ThpPairingStep } from '@suite/thp';
+import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk, selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -39,7 +40,7 @@ export const FirmwareModal = ({
         useFirmwareDesktopUpdate();
     const device = useSelector(selectSelectedDevice);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const [isChecked, setIsChecked] = useState(false);
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();

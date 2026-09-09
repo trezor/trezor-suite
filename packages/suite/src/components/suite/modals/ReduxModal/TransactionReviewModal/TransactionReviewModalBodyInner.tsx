@@ -6,7 +6,7 @@ import { closeModal } from '@suite/modal';
 import { selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type SerializedTx,
     selectIsTxOutputInternal,
@@ -109,8 +109,7 @@ export const TransactionReviewModalBodyInner = ({
     setIsSending,
     hasTxReviewExpired,
 }: TransactionReviewModalBodyInnerProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
     const { symbol, networkType } = account;
     const { options } = precomposedForm;

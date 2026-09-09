@@ -2,7 +2,8 @@ import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row } from '@trezor/components';
@@ -45,7 +46,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const graph = useSelector(selectGraph);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const intervalGraphData = getGraphDataForInterval({ account, graph });
     const isGraphDataLoaded = intervalGraphData.length > 0;

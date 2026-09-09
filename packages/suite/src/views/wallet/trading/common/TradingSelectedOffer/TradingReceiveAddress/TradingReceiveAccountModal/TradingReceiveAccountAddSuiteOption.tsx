@@ -1,7 +1,8 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { cryptoIdToNetworkSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { IconCircle, Row } from '@trezor/components';
@@ -17,7 +18,7 @@ export const TradingReceiveAccountAddSuiteOption = () => {
     const { cryptoId } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const device = useSelector(selectSelectedDevice);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingUtils();

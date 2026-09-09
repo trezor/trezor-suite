@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { type TradingRootState } from '../reducers/tradingCommonReducer';
@@ -19,7 +20,7 @@ export const useTradingExchangeWatchApproval = ({
     account,
     isEnabled,
 }: UseTradingExchangeWatchApprovalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const status = useSelector(
         (state: TradingRootState) => selectTradingExchangeSelectedQuote(state)?.status,
     );

@@ -25,10 +25,10 @@ export const renderHookWithStoreProvider = <Result, Props>(
     const childrenWithProviders = (children: ReactNode) => {
         const wrappedChildren = Wrapper ? <Wrapper>{children}</Wrapper> : children;
 
-        return root ? (
-            <ServicesProvider services={root.services}>{wrappedChildren}</ServicesProvider>
-        ) : (
-            wrappedChildren
+        return (
+            <ServicesProvider services={{ ...root?.services, store: reduxStore }}>
+                {wrappedChildren}
+            </ServicesProvider>
         );
     };
 

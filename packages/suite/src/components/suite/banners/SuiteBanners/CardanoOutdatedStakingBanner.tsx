@@ -1,7 +1,8 @@
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
@@ -9,7 +10,7 @@ import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
 
 export const CardanoOutdatedStakingBanner = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: 'ada' }));
 
     const isNewProviderBannerEnabled = useSelector(state =>

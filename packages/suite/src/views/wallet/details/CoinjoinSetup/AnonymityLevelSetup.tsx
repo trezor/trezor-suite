@@ -5,7 +5,8 @@ import styled from 'styled-components';
 
 import { coinjoinAccountUpdateAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Icon, motionEasing } from '@trezor/components';
 import { UserIcon, UsersFourIcon, UsersIcon, UsersThreeIcon } from '@trezor/icons';
 
@@ -63,7 +64,7 @@ interface AnonymityLevelSetupProps {
 export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLevelSetupProps) => {
     const [sliderPosition, setSliderPosition] = useState(getPosition(targetAnonymity));
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const { anonymityStatus } = useAnonymityStatus();
 

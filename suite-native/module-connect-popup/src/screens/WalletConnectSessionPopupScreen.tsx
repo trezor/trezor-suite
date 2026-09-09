@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -46,7 +47,7 @@ export const WalletConnectSessionPopupScreen = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const pendingProposal = useSelector(selectPendingProposal);
     const accounts = useSelector(selectAllAccountsToList);
     const selectableAccounts = useMemo<Account[]>(

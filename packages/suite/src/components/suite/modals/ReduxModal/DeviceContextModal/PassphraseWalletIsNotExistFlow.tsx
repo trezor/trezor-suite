@@ -1,4 +1,5 @@
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
@@ -28,7 +29,7 @@ export const PassphraseWalletIsNotExistFlow = ({
     onSubmit,
     onCancel,
 }: PassphraseWalletIsNotExistFlowProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     if (discovery.status === 'starting') {
         return (

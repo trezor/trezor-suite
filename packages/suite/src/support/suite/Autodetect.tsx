@@ -7,7 +7,8 @@ import {
     selectTheme,
     suiteSettingsActions,
 } from '@suite/settings';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
@@ -21,7 +22,7 @@ const Autodetect = () => {
     const currentTheme = useSelector(selectTheme);
     const currentLanguage = useSelector(selectLanguage);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const setLanguage = useCallback(
         (language: Locale) => {

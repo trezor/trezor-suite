@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     messageSystemActions,
     selectAllManuallyAddedMessageIds,
     selectAllValidMessages,
     selectMessageSystemConfig,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Divider, Text, VStack } from '@suite-native/atoms';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
@@ -22,7 +23,7 @@ export const MessageSystemManagerScreen = () => {
     const config = useSelector(selectMessageSystemConfig);
     const allValidMessages = useSelector(selectAllValidMessages);
     const allManuallyAddedMessageIds = useSelector(selectAllManuallyAddedMessageIds);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const [showActive, setShowActive] = useState<boolean>(true);
     const [selectedCategory, setSelectedCategory] = useState<CategoryFilterOption>('all');

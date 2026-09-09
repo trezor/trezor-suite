@@ -1,6 +1,7 @@
 import { type ConfirmKey, backupActions, selectBackup } from '@suite/backup';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, Grid, Icon, Paragraph, Row } from '@trezor/components';
 import { AnchorIcon, KeyIcon, PencilLineIcon } from '@trezor/icons';
 
@@ -26,7 +27,7 @@ const items = [
 
 export const BackupSeedCards = () => {
     const backup = useSelector(selectBackup);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { isBelowTablet } = useLayoutSize();
 
     const isChecked = (key: ConfirmKey) => backup.userConfirmed.includes(key);

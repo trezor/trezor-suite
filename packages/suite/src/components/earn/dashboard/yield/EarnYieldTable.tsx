@@ -18,7 +18,7 @@ import {
     useAllYieldOpportunities,
 } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button, Card, Column, Table } from '@trezor/components';
@@ -43,8 +43,7 @@ const emptyVaults: YieldDtoV2[] = [];
 export const EarnYieldTable = () => {
     const { isBelowLaptop } = useLayoutSize();
     const isCardLayout = isBelowLaptop;
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
     const claimMessageSystem = useMessageSystemYield('claim');
 

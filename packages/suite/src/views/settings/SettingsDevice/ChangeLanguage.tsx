@@ -3,8 +3,9 @@ import { useMemo } from 'react';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedDeviceLanguages } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -17,7 +18,7 @@ interface ChangeLanguageProps {
 
 export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
     const { device } = useDevice();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const supportedDeviceLanguages = useSelector(selectSupportedDeviceLanguages);
 

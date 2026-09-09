@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceAuthenticityByDeviceId, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 
@@ -29,7 +30,7 @@ export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) =>
         selectDeviceAuthenticityByDeviceId(state, device?.id),
     );
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const { isBelowTablet } = useLayoutSize();

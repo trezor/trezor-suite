@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { selectIsDebugModeActive } from './debugSelectors';
@@ -13,7 +14,7 @@ const DEBUG_MODE_ACTIVATION_CLICK_COUNT = 5;
 // settings title 5×" activator and the keyboard shortcut.
 export const useToggleDebugMode = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     return useCallback(() => {
         const shouldEnableDebugMode = !isDebugModeActive;

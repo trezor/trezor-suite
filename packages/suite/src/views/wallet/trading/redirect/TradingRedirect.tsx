@@ -9,7 +9,8 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectRouter } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type FeeLevel } from '@trezor/connect';
 import { typography } from '@trezor/theme';
@@ -36,7 +37,7 @@ export const TradingRedirect = () => {
     } = useTradingRedirect();
     const router = useSelector(selectRouter);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     useEffect(() => {
         // get rid of parameters appended by some partners to url which we pass to them

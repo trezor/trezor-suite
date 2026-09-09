@@ -5,7 +5,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { Badge, type BadgeProps, commonFocusStyles } from '@trezor/components';
 import { TrendUpIcon } from '@trezor/icons';
@@ -68,8 +68,7 @@ type YieldBadgeProps = {
 };
 
 export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: YieldBadgeProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const { translationId, iconLeft, priority, shouldAnchorAtVaultRow } = variantConfigMap[variant];
 

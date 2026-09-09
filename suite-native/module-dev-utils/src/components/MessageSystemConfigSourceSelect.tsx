@@ -1,13 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type MessageSystemConfigSource,
     initMessageSystemThunk,
     messageSystemActions,
     selectMessageSystemConfigSource,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 
 const options: SelectItemType<MessageSystemConfigSource>[] = [
@@ -16,7 +17,7 @@ const options: SelectItemType<MessageSystemConfigSource>[] = [
 ];
 
 export const MessageSystemConfigSourceSelect = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const messageSystemConfigSource = useSelector(selectMessageSystemConfigSource);
 

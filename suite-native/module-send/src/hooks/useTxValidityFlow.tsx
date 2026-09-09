@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type SendRootState,
@@ -47,7 +48,7 @@ export const useTxValidityFlow = ({
     revealConfirmOnTrezorSheet,
     isSendInProgress,
 }: UseTxValidityFlowProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const handleCommonSignRejection = useHandleCommonSignRejection({ accountKey, tokenContract });
 

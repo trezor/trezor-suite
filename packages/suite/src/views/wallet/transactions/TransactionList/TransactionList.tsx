@@ -4,7 +4,8 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -53,7 +54,7 @@ export const TransactionList = ({
     customPageFetching,
 }: TransactionListProps) => {
     const anchor = useSelector(selectRouterAnchor);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
 
     const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);

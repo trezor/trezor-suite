@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { CommonActions, StackActions, useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     cancelSignSendFormTransactionThunk,
@@ -35,7 +36,7 @@ export const useEarnReviewBackNavigation = (
         selectAccountByKey(state, accountKey),
     );
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
 

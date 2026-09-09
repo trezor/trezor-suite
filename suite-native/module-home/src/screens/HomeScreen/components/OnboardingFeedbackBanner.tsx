@@ -2,7 +2,7 @@ import { ImageBackground, StyleSheet } from 'react-native';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banners';
@@ -29,9 +29,8 @@ const overlayStyle = prepareNativeStyle(() => ({
 
 export const OnboardingFeedbackBanner = () => {
     const { applyStyle } = useNativeStyles();
-    const dispatch = useDispatch();
     const openLink = useOpenLink();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
 
     const reportAnalyticsBannerAction = (action: 'cta' | 'close') => {
         analytics.report({

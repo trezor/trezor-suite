@@ -11,13 +11,14 @@ import {
 } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { getReceiveAddressForFlowEntry, getReceiveAddressToAdd } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type ReceiveRootState,
     receiveActions,
     selectCurrentFreshAddress,
     selectTouchedAddresses,
 } from '@suite-common/receive';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -59,7 +60,7 @@ export const NewestAddressCard = ({
     onCopied,
     onVerify,
 }: NewestAddressCardProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const account = useSelector((state: NewestAddressCardRootState) =>
         selectAccountByKey(state, accountKey),

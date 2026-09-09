@@ -5,7 +5,7 @@ import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DefinitionType,
@@ -49,10 +49,9 @@ type StellarManageTokenModalProps =
       };
 
 export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { mode, symbol, contractAddress, onCancel } = props;
     const tokenBalance = mode === 'deactivate' ? props.tokenBalance : undefined;
-    const dispatch = useDispatch();
     const selectedAccount = useSelector(selectSelectedAccount);
     const account = props.account ?? selectedAccount;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));

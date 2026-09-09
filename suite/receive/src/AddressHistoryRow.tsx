@@ -8,7 +8,7 @@ import { Translation } from '@suite/intl';
 import { type SelectIsLabelActionEnabledState, selectIsLabelActionEnabled } from '@suite/labeling';
 import { useServices } from '@suite-common/dependency-injection';
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { IconButton, Row, Text } from '@trezor/components';
@@ -93,7 +93,6 @@ export const AddressHistoryRow = ({
     onCopied,
     onVerify,
 }: AddressHistoryRowProps) => {
-    const dispatch = useDispatch();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -103,7 +102,7 @@ export const AddressHistoryRow = ({
     const currentFreshAddress = useSelector((state: ReceiveRootState) =>
         selectCurrentFreshAddress(state, accountKey),
     );
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const handleCopy = () => {
         dispatch(copyAddressToClipboard(item.address));

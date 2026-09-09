@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
 import { selectUpdateAddressLabelDep } from '@suite-common/suite-sync-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
@@ -30,10 +30,12 @@ export const AddressLabelEditable = ({
     networkSymbol,
     testID,
 }: AddressLabelEditableProps) => {
-    const dispatch = useDispatch();
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
 
-    const { updateAddressLabel } = useServices(selectUpdateAddressLabelDep);
+    const { updateAddressLabel, dispatch } = useServices(
+        selectUpdateAddressLabelDep,
+        selectDispatch,
+    );
 
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
 

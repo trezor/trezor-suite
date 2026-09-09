@@ -6,8 +6,9 @@ import {
 } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Badge, Column, Modal, Paragraph } from '@trezor/components';
 
 import { PreBackupCheckboxes } from 'src/components/backup';
@@ -29,7 +30,7 @@ export const BackupStep1Initial = ({
 }) => {
     const device = useSelector(selectSelectedDevice);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const params: BackupDeviceParams =
         device?.features?.backup_type === 'Slip39_Basic' ||

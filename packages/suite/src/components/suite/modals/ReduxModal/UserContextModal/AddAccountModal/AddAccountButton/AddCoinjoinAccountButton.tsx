@@ -5,8 +5,9 @@ import { Translation } from '@suite/intl';
 import { openDeferredModal, openModal } from '@suite/modal';
 import { selectIsTorEnabled } from '@suite/tor';
 import { toggleTorThunk } from '@suite/tor-desktop';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
@@ -45,7 +46,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(selectAccounts);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     if (!device) {
         return null;

@@ -5,7 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { FlashList } from '@shopify/flash-list';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountKey,
     type StellarTokenInfo,
@@ -52,7 +53,7 @@ export const InactiveTokensTab = ({ accountKey }: InactiveTokensTabProps) => {
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
     const { applyStyle } = useNativeStyles();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const { inactiveTokens, isLoading } = useInactiveStellarTokens(accountKey);
 

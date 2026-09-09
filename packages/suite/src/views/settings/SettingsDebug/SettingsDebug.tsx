@@ -5,8 +5,9 @@ import {
     MessageSystemDebug,
 } from '@suite/message-system';
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
+import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';
@@ -51,7 +52,7 @@ import { TriggerToast } from './TriggerToast';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
 
     const handleWipeSuiteSyncLabelsError = ({

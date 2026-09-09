@@ -1,4 +1,5 @@
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { residenceActions } from '@suite-native/trading-state';
 
 import { ConfirmLocationButton } from './ConfirmLocationButton';
@@ -9,7 +10,7 @@ export type OnboardingButtonsProps = {
 };
 
 export const OnboardingButtons = ({ afterPress }: OnboardingButtonsProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleOnboardingComplete = () => {
         dispatch(residenceActions.setOnboardingVisited());

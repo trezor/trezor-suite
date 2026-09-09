@@ -1,7 +1,7 @@
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -39,8 +39,7 @@ export const useEarnInANutshell = ({
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
     const unstakingPeriod = getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
 
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const handleAction = () => {
         onCancel();

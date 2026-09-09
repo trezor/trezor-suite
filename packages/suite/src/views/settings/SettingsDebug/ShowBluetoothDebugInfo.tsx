@@ -1,5 +1,6 @@
 import { selectFlags, setFlag } from '@suite/flags';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Checkbox } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -7,7 +8,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export const ShowBluetoothDebugInfo = () => {
     const { showBluetoothDebugInfo } = useSelector(selectFlags);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleOnClick = () => {
         dispatch(setFlag({ key: 'showBluetoothDebugInfo', value: !showBluetoothDebugInfo }));

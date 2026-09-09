@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery, startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -16,7 +17,7 @@ type AccountDiscoveryFailedBannerProps = {
 
 export const AccountDiscoveryFailedBanner = ({ accountKey }: AccountDiscoveryFailedBannerProps) => {
     const { translate } = useTranslate();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const isDiscoveryFailed = useSelector((state: NativeAccountsRootState) =>
         selectIsAccountDiscoveryFailed(state, accountKey),

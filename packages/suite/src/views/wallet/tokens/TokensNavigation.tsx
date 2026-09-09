@@ -6,7 +6,7 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -114,14 +114,13 @@ export const TokensNavigation = ({
 }: TokensNavigationProps) => {
     const { account } = selectedAccount;
     const routeName = useSelector(selectRouteName);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const tokenDefinitions = useSelector(state =>
         isNft
             ? selectNftDefinitions(state, selectedAccount.account.symbol)
             : selectCoinDefinitions(state, selectedAccount.account.symbol),
     );
     const isDebug = useSelector(selectIsDebugModeActive);
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
     const tokens = getTokens({

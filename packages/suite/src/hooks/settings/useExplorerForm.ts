@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectNetworkExplorers, setNetworkExplorerThunk } from '@suite-common/wallet-core';
 import { deepEqual, isUrl } from '@trezor/utils';
@@ -114,7 +115,7 @@ const useExplorerInput = (currentValues: Explorer) => {
 };
 
 export const useExplorerForm = (symbol: NetworkSymbol) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const explorerConfig = useSelector(state => selectNetworkExplorers(state, symbol));
 

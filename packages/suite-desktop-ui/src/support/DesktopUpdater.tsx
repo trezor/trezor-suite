@@ -13,7 +13,7 @@ import {
     selectDesktopUpdate,
 } from '@suite/desktop-update';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isArrayMember } from '@trezor/utils';
 
@@ -36,9 +36,8 @@ const alwaysOpenStates = [
 ] satisfies UpdateState[];
 
 export const DesktopUpdater = () => {
-    const dispatch = useDispatch();
     const desktopUpdate = useSelector(selectDesktopUpdate);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const desktopUpdateState = desktopUpdate.state;
 
     useEffect(() => {

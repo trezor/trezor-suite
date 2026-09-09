@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountKey,
     type FeeLevelLabel,
@@ -62,7 +63,7 @@ export const useFeeSelector = ({
         formDraftKey,
     });
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
     const snapshotRef = useRef<FeesFormValues | undefined>(undefined);
     const confirmedRef = useRef(false);

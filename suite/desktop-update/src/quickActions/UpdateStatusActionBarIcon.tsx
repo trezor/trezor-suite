@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogoIcon } from '@trezor/icons';
@@ -33,7 +34,7 @@ export const UpdateStatusActionBarIcon = ({
             !['up-to-date', 'disconnected'].includes(updateStatusDevice));
 
     const device = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const updateSubIcon = mapUpdateStatusToIcon[updateStatus];
 

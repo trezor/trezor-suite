@@ -1,5 +1,6 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TickerId, type Timestamp } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
@@ -14,7 +15,7 @@ export const useMissingRateTickersQuery = ({
     missingRateTickers,
     baseCurrencyCode,
 }: UseMissingRateTickersQueryProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     return useQuery({
         queryKey: commonQueryKeys.missingRateTickers(missingRateTickers, baseCurrencyCode),

@@ -5,7 +5,7 @@ import { selectFullSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     CARDANO_EVERSTAKE_DREP,
     DEFAULT_VOTING_OPTION,
@@ -39,8 +39,7 @@ export const StakeChangeDelegateModalLoaded = ({
 }: StakeChangeDelegateModalProps) => {
     const { account } = selectedAccount;
 
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const selectedVotingDelegation = useSelector(state =>
         selectVotingDelegationOption(state, account.key),

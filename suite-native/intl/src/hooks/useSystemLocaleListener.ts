@@ -3,13 +3,14 @@ import { AppState, type AppStateStatus } from 'react-native';
 
 import { getLocales } from 'expo-localization';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import { DEFAULT_LOCALE, type LocaleCode } from '../languages';
 import { setSystemLocaleCode } from '../localeSlice';
 
 export const useSystemLocaleListener = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const readSystemLocale = useCallback(() => {
         const systemLocale = (getLocales()[0].languageTag as LocaleCode) ?? DEFAULT_LOCALE;

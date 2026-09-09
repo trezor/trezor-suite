@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -97,8 +97,7 @@ export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(state =>
         selectDiscoveryOverallStatus(state, allNetworkSymbols),

@@ -1,6 +1,7 @@
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type Route, gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
@@ -20,7 +21,7 @@ type TradingPageHeaderProps = {
 };
 
 const TradingPageHeader = ({ title }: TradingPageHeaderProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const currentRouteName = useSelector(selectRouteName);
     const previousRoute = useSelector(selectSettingsBackRoute);
     const activeSection = useSelector(selectTradingActiveSection);

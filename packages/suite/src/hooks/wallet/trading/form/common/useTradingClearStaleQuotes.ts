@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
     selectTradingQuotesByType,
@@ -26,7 +27,7 @@ export const useTradingClearStaleQuotes = ({
     type,
     isAmountEmpty,
 }: UseTradingClearStaleQuotesProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const hasQuotes = useSelector(state => selectTradingQuotesByType(state, type).length > 0);
 
     useEffect(() => {

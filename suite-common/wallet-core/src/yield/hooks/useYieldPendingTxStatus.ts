@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { type EvmPendingTxStatus } from '@suite-common/wallet-utils';
 
@@ -21,7 +22,7 @@ export const useYieldPendingTxStatus = ({
     flowKey,
     pendingTransaction,
 }: UseYieldPendingTxStatusParams): EvmPendingTxStatus | null => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const { status, nonce } = useEvmPendingTxStatus(
         account,

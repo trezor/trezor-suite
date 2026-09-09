@@ -1,6 +1,6 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useGuide } from 'src/hooks/guide';
@@ -9,11 +9,10 @@ import { selectGuideIndexNode } from 'src/selectors/suite/guideSelectors';
 import { getNodeById } from 'src/utils/suite/guide';
 
 export const useGuideOpenNode = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { isGuideOpen, openGuide } = useGuide();
 
     const indexNode = useSelector(selectGuideIndexNode);
-    const dispatch = useDispatch();
 
     const openNodeById = (id: string) => {
         if (!indexNode) {

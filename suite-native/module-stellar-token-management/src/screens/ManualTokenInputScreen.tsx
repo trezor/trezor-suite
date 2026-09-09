@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
@@ -38,7 +39,7 @@ export const ManualTokenInputScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),

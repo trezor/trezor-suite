@@ -16,7 +16,7 @@ import {
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -58,7 +58,7 @@ type NavigationProp = TabNavigationProp<AppTabsParamList, AppTabsRoutes.HomeStac
 export const DeviceManagerContent = () => {
     const { applyStyle, utils } = useNativeStyles();
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isPassphraseEnabledOnDevice = useSelector(selectIsDeviceProtectedByPassphrase);
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
@@ -75,7 +75,6 @@ export const DeviceManagerContent = () => {
 
     const toggleIsChangeDeviceRequested = () =>
         setIsChangeDeviceRequested(!isChangeDeviceRequested);
-    const dispatch = useDispatch();
     const insets = useSafeAreaInsets();
 
     const handleSelectDevice = (selectedDevice: TrezorDevice) => {

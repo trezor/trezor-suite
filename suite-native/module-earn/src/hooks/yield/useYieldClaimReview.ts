@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldRootState,
     isYieldTxReviewForFlow,
@@ -36,7 +37,7 @@ export const useYieldClaimReview = ({
     flowKey,
     onReviewLeave,
 }: UseYieldClaimReviewProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
     const { reportError: reportClaimError, reportCancel: reportClaimCancel } =

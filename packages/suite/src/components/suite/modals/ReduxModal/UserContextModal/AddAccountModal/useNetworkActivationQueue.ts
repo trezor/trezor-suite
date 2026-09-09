@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { preserveModal, removePreserveModal } from '@suite/modal';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -30,7 +31,7 @@ type ActiveNetworkActivation = {
 export const useNetworkActivationQueue = (device: TrezorDevice) => {
     const accounts = useSelector(selectAccounts);
     const { discovery } = useDiscovery();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const [queuedNetworkSymbols, setQueuedNetworkSymbols] = useState<NetworkSymbol[]>([]);
     const [activeActivation, setActiveActivation] = useState<ActiveNetworkActivation>();

@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from 'react';
 
 import { selectURLSearchParams } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
@@ -9,7 +10,7 @@ import * as protocolActions from 'src/actions/suite/protocolActions';
 import { useSelector } from 'src/hooks/suite';
 
 const Protocol = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleProtocolRequestThunk = useCallback(
         (uri: string) => {

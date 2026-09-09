@@ -1,7 +1,8 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsTorEnabled } from '@suite/tor';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { Banner, Column } from '@trezor/components';
 
@@ -34,7 +35,7 @@ export const TradingUtilsTorWarning = ({
     noOffer,
     showButton = false,
 }: TradingUtilsTorWarningProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const isTorEnabled = useSelector(selectIsTorEnabled);
     if (!isTorEnabled) return null;

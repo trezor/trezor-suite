@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     type TokenDefinitionsRootState,
@@ -108,8 +108,7 @@ export const TokenSettingsBottomSheet = forwardRef(
         ref: Ref<BottomSheetModalMethods>,
     ) => {
         const { applyStyle } = useNativeStyles();
-        const dispatch = useDispatch();
-        const { analytics } = useServices(selectNativeAnalyticsDep);
+        const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
         const navigation =
             useNavigation<
                 StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>

@@ -4,7 +4,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { type Route, gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { Button } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
@@ -30,8 +30,7 @@ export const TradeBoxActionButton = ({
     children,
     isDisabled = false,
 }: TradeBoxActionButtonProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const dataTestId =
         type === 'earn' ? '@account/tradebox/earn' : `@trading/menu/wallet-trading-${type}`;
