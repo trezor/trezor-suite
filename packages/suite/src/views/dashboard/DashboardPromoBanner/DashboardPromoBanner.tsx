@@ -5,7 +5,7 @@ import { selectFlags, setFlag } from '@suite/flags';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Feature as MessageFeature } from '@suite-common/suite-types';
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 
@@ -24,8 +24,7 @@ const isCarouselBannerKey = (key: string): key is DashboardBannerType => isDashb
 export const DashboardPromoBanner = () => {
     const allNetworkSymbols = getSupportedNetworks();
 
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const discoveryStatus = useSelector(state =>
         selectDiscoveryOverallStatus(state, allNetworkSymbols),
     );

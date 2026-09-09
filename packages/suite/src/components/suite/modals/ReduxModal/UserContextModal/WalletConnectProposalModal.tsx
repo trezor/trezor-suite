@@ -6,7 +6,8 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -58,7 +59,7 @@ interface WalletConnectProposalModalProps {
 }
 
 export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalModalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const pendingProposal = useSelector(selectPendingProposal);
     const accounts = useSelector(selectAllAccountsToList);
     const selectableAccounts = useMemo<Account[]>(

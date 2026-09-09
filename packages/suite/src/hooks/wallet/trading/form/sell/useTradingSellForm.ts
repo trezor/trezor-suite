@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -38,7 +39,7 @@ import { useTradingFormAccount } from '../useTradingFormAccount';
 
 export const useTradingSellForm = (): TradingSellFormContextProps => {
     const type = 'sell';
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const isLoading = useSelector(selectTradingSellIsLoading);
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
     const isFromRedirect = useSelector(selectTradingSellIsFromRedirect);

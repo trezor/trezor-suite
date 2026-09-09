@@ -3,7 +3,8 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { type ExchangeTrade } from 'invity-api';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_OUTPUT_ADDRESS,
@@ -50,7 +51,7 @@ export const useExchangeDexQuote = ({
     dexQuotes,
     composeRequest,
 }: UseExchangeDexQuoteProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { setValue, control } = methods;
 
     const [transactionData, outputAddress, ethereumAdjustGasLimit] = useWatch({

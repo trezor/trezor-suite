@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
 import { isMacOs } from '@trezor/env-utils';
 import { LockFilledIcon } from '@trezor/icons';
@@ -103,7 +104,7 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
         cancelled,
     } = useBioAuthDesktopApi();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     useEffect(() => {
         if (!isBioAuthEnabled) return;

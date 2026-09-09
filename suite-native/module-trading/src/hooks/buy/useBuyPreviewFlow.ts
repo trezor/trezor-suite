@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { BuyTradeResponse } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     buyThunks,
@@ -35,8 +35,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useBuyPreviewFlow = () => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);

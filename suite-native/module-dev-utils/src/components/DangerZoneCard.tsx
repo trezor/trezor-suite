@@ -1,13 +1,12 @@
 import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Text, VStack } from '@suite-native/atoms';
 import { selectMMKVStorageDep } from '@suite-native/services';
 import { clearStorage } from '@suite-native/storage';
 
 export const DangerZoneCard = () => {
-    const dispatch = useDispatch();
-    const { getMMKVStorage } = useServices(selectMMKVStorageDep);
+    const { getMMKVStorage, dispatch } = useServices(selectMMKVStorageDep, selectDispatch);
 
     return (
         <Card>

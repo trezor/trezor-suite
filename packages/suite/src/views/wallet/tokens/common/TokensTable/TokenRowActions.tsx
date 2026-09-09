@@ -14,7 +14,7 @@ import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     DefinitionType,
@@ -101,8 +101,7 @@ const TokenRowBasicActions = ({
     yieldOpportunities,
     setShowDeactivateModal,
 }: TokenRowBasicActionsProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const device = useSelector(selectSelectedDevice);
     const { isLocked } = useDevice();
     const { isBelowTablet } = useLayoutSize();

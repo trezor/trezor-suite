@@ -1,7 +1,8 @@
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     CardList,
@@ -219,7 +220,7 @@ const ShortcutSectionBlock = ({ titleId, items }: ShortcutSection) => (
 export const GuideShortcuts = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const isPassphraseProtectionEnabled = useSelector(selectIsDeviceProtectedByPassphrase);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
 

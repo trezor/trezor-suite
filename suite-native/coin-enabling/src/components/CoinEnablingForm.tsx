@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
@@ -31,9 +31,8 @@ type CoinEnablingFormProps = {
 export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
     const allNetworkSymbols = getSupportedNetworks();
 
-    const dispatch = useDispatch();
     const navigation = useNavigation();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const enabledNetworkSymbols = useSelector((state: DiscoveryRootState) =>
         selectDeviceEnabledDiscoveryNetworkSymbols(state, allNetworkSymbols),
     );

@@ -1,7 +1,8 @@
 import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
@@ -38,7 +39,7 @@ export const TransactionListActions = ({
 
     const transactionHistoryPrefill = useSelector(selectTransactionHistoryPrefill);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { translationString } = useTranslation();
 
     const onSearch = useCallback(

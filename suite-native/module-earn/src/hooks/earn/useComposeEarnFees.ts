@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { createThunk, useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { createThunk, selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -83,7 +84,7 @@ export const useComposeEarnFees = ({
     formState,
     formDraftPrefix,
 }: UseComposeEarnFeesParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const debounce = useDebounce();
     const isFocused = useIsFocused();
     const {

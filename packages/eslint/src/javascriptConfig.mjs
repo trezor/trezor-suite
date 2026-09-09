@@ -44,7 +44,7 @@ export const noDirectUseSelectorStateSyntax = [
  */
 export const noRestrictedSyntax = [
     {
-        message: 'Import useDispatch from @suite-common/redux-utils instead.',
+        message: 'Use useServices(selectDispatch) to access the injected store dispatch.',
         selector:
             "ImportDeclaration[source.value='react-redux'] > ImportSpecifier[imported.name='useDispatch']",
     },

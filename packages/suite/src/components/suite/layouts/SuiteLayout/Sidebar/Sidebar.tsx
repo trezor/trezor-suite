@@ -5,8 +5,9 @@ import styled from 'styled-components';
 import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks';
 import { TrafficLightOffset } from '@suite/macos';
 import { suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsAnyDeviceSelected, selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, ResizableBox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogoIcon } from '@trezor/icons';
@@ -100,7 +101,7 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         autoCollapseSuppressed,
         setAutoCollapseSuppressed,
     } = useResponsiveContext();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const [maxResizableSidebarWidth, setMaxResizableSidebarWidth] =
         useState<number>(SIDEBAR_MAX_WIDTH);

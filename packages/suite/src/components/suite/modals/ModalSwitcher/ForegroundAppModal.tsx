@@ -2,7 +2,8 @@ import { type FunctionComponent } from 'react';
 
 import { CreateWalletBackupModal } from '@suite/backup';
 import { closeModalAppThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { Backup } from 'src/views/backup/Backup';
@@ -47,7 +48,7 @@ type ForegroundAppModalProps = {
 
 /** Modals (foreground applications) initiated by redux state.router.route */
 export const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const onCancel = () => dispatch(closeModalAppThunk());
 

@@ -1,3 +1,5 @@
+// Keep this file as .ts and use React.createElement instead of JSX: desktop core reaches it
+// through shared package exports, and its webpack config does not resolve or compile .tsx files.
 import React from 'react';
 
 import { type IsAny, type UnionToIntersection } from '@trezor/type-utils';
@@ -43,9 +45,8 @@ type ServicesProviderProps = {
     children: React.ReactNode;
 };
 
-export const ServicesProvider = ({ services, children }: ServicesProviderProps) => (
-    <ServicesContext.Provider value={services}>{children}</ServicesContext.Provider>
-);
+export const ServicesProvider = ({ services, children }: ServicesProviderProps) =>
+    React.createElement(ServicesContext.Provider, { value: services }, children);
 
 ServicesProvider.displayName = 'ServicesProvider';
 

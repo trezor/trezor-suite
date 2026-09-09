@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TimerId } from '@trezor/type-utils';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
@@ -26,7 +27,7 @@ export const useBluetoothScanning = ({
     devices,
     setShowHints,
 }: UseBluetoothScanningProps): UseBluetoothScanningReturn => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const scannerTimerId = useRef<TimerId | null>(null);
 
     const clearScanTimer = useCallback(() => {

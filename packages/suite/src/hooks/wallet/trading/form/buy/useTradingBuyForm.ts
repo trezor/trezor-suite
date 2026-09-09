@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -38,7 +39,7 @@ import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 
 export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     const type = 'buy';
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const buyInfo = useSelector(selectTradingBuyInfo);
     const isFromRedirect = useSelector(selectTradingBuyIsFromRedirect);

@@ -9,14 +9,16 @@ import {
     selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const RouterHandler = () => {
-    const dispatch = useDispatch();
     const routerLoaded = useSelector(selectRouterLoaded);
-    const { suiteRouterHistory } = useServices(selectSuiteRouterHistoryDep);
+    const { suiteRouterHistory, dispatch } = useServices(
+        selectSuiteRouterHistoryDep,
+        selectDispatch,
+    );
     const canGoBack = useSelector(selectCanNavigate);
 
     useEffect(() => {

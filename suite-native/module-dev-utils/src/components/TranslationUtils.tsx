@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { VStack } from '@suite-native/atoms';
 import {
     selectAreDebugTranslationKeysDisplayed,
@@ -10,7 +11,7 @@ import {
 import { DevCheckBoxListItem } from './DevCheckBoxListItem';
 
 export const TranslationUtils = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const areDebugTranslationKeysDisplayed = useSelector(selectAreDebugTranslationKeysDisplayed);
 
     const toggleDebugTranslationKeys = () => {

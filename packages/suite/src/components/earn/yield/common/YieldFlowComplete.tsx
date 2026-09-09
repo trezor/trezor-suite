@@ -10,7 +10,7 @@ import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 import { FeedbackCard } from '@trezor/product-components';
@@ -34,8 +34,7 @@ export const YieldFlowComplete = ({
     vaultId,
     children,
 }: YieldFlowCompleteProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
 

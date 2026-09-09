@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Grid } from '@trezor/components';
 import {
     DeviceModelInternal,
@@ -48,7 +49,7 @@ type HomescreenGalleryProps = {
 };
 
 export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { device, isLocked } = useDevice();
 
     const deviceModelInternal = device?.features?.internal_model;

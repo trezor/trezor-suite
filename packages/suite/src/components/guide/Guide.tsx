@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Box, Column, IconCircle, useMediaQuery } from '@trezor/components';
 import { CommandIcon, LifebuoyIcon } from '@trezor/icons';
 
@@ -24,8 +24,7 @@ import { GuideItem } from './GuideItem';
 export const Guide = () => {
     const [searchActive, setSearchActive] = useState(false);
     const indexNode = useSelector(selectGuideIndexNode);
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const handleFeedbackButtonClick = () => {
         dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
         analytics.report({

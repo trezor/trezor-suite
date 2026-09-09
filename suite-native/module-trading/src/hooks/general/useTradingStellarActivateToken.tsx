@@ -6,7 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { type BuyTrade, type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { cryptoIdToNetworkAndContractAddress } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
 import { AnimatedBox, Button } from '@suite-native/atoms';
@@ -36,7 +37,7 @@ export const useTradingStellarActivateToken = ({
     receiveCryptoId,
     buttonTestId,
 }: UseTradingStellarActivateTokenProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
 

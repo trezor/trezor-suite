@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react';
 
 import { useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     CATEGORY_OPTIONS,
     messageSystemActions,
     useConditionControls,
     useMessageSystemMessageForm,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Column, Modal, Row } from '@trezor/components';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
@@ -16,7 +17,7 @@ import { MessageSystemManagerToolbar } from '../MessageSystemManager/MessageSyst
 export const MessageSystemFormMessage = () => {
     const [showForm, setShowForm] = useState(false);
     const { translationString } = useTranslation();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const formatFieldError = useCallback(
         (message: string) =>

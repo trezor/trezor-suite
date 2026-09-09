@@ -15,7 +15,7 @@ import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { FeedbackCard } from '@trezor/product-components';
 
@@ -40,10 +40,9 @@ export const TradingDetailFeedback = ({
     country,
 }: TradingDetailFeedbackProps) => {
     const { device } = useDevice();
-    const dispatch = useDispatch();
     const geolocation = useSelector(selectCountryCode);
     const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const handleRatingSelect = (rating: Rating) => {
         analytics.report({

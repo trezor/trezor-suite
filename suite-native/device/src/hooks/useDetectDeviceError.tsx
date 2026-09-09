@@ -16,7 +16,7 @@ import {
     selectIsUnacquiredDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -54,8 +54,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useDetectDeviceError = () => {
     const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const { hideAlert, showAlert } = useAlert();
     const openLink = useOpenLink();
     const navigation = useNavigation<NavigationProps>();

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getWrappedNativeToken, isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
@@ -12,7 +13,7 @@ import { useLayout } from 'src/hooks/suite';
 import { EarnLayoutFallback } from '../../EarnLayoutFallback';
 
 export const EarnUnwrap = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { account, routeParams } = useEarnRouteAccount();
     const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
     // Held here rather than in UnwrapNativeToken because useLayout renders the header outside it.

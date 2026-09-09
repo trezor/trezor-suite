@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     TokenManagementAction,
@@ -23,7 +24,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
     const [checked, setChecked] = useState(false);
 
     const account = useSelector(selectSelectedAccount);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     if (!account) return null;
 

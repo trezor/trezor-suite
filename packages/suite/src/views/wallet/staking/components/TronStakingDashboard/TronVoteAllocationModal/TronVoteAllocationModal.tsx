@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     getTronAvailableVotingPower,
     getTronTotalVotingPower,
@@ -35,8 +35,7 @@ interface TronVoteAllocationModalProps {
 }
 
 export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocationModalProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { stats } = useTronStakingStats();
 
     const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);

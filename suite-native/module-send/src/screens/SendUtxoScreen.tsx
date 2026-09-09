@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { useFilteredUtxos } from '@suite-common/transaction-search';
 import {
     type AccountsRootState,
@@ -32,7 +33,7 @@ export const SendUtxoScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendUtxo>) => {
     const { accountKey, amount } = params;
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const { translate } = useTranslate();
     const navigation = useNavigation();

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { type IconComponent } from '@trezor/components';
@@ -49,8 +49,7 @@ type GuideNodeProps = {
 
 export const GuideNode = ({ node, description, itemVariant = 'cardList' }: GuideNodeProps) => {
     const language = useSelector(selectLanguage);
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const navigateToNode = () => {
         dispatch(openNode(node));

@@ -1,8 +1,9 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { AddressFormatter } from '@suite-common/formatters';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { TradingProviderInfo, TradingTradeType } from '@suite-common/trading';
 import { Button, Column, InfoItem, Row, Text } from '@trezor/components';
@@ -27,7 +28,7 @@ export const TradingDetailTradeInfo = ({
     trade,
     children,
 }: TradingDetailTradeInfoProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const copyOrderId = async () => {
         const result = await copyToClipboard(orderId || '');

@@ -5,7 +5,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleExchangeRequestThunkProps,
@@ -94,8 +94,7 @@ const useExchangeQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const asset = useWatch({ control, name: 'sendAsset' });
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>

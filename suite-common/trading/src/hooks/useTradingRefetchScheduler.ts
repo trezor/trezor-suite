@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { clamp } from '@trezor/utils';
 
 import { TRADE_API_RELOAD_QUOTES_AFTER_SECONDS } from '../constants';
@@ -13,7 +14,7 @@ type UseTradingRefetchSchedulerProps = {
 };
 
 export const useTradingRefetchScheduler = ({ onRefetch }: UseTradingRefetchSchedulerProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { lastFetchTimestamp, status } = useSelector(selectTradingQuoteRefetchingState);
     const onRefetchRef = useRef(onRefetch);
     onRefetchRef.current = onRefetch;

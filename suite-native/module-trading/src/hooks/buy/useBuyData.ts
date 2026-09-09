@@ -1,12 +1,13 @@
 import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectTradingBuyLoadingTimestampAndStatus, tradingThunks } from '@suite-common/trading';
 import { selectBuySelectedReceiveAccount } from '@suite-native/trading-state';
 
 export const useBuyData = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
     const descriptor = selectedReceiveAccount?.account?.descriptor;

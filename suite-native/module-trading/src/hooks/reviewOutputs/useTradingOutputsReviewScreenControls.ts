@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
@@ -52,7 +53,7 @@ export const useTradingOutputsReviewScreenControls = ({
     const [isBroadcasting, setIsBroadcasting] = useState(false);
 
     const navigation = useNavigation<TradingOutputsReviewScreenNavigationProp>();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const { confirmOnTrezorRef, closeSheet, revealConfirmOnTrezorSheet } =
         useConfirmOnTrezorController();

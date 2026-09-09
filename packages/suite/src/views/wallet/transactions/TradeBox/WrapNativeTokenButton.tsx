@@ -8,7 +8,7 @@ import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isWrappedNativeFlowSupported } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
@@ -32,9 +32,8 @@ type WrapNativeTokenButtonProps = {
  * without a wrapped-native contract configured.
  */
 export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) => {
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const device = useSelector(selectSelectedDevice);
     const isFirmwareOutdated = !isWrappedNativeFlowSupported(device);

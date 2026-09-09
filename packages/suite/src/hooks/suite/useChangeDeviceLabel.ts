@@ -7,7 +7,7 @@ import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { isAscii } from '@trezor/utils';
 
@@ -43,10 +43,9 @@ export const useChangeDeviceLabel = (): {
     >;
     handleSubmit: (onSuccess?: () => void) => void;
 } => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { translationString } = useTranslation();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const dispatch = useDispatch();
 
     const form = useForm({
         resolver: yupResolver(changeDeviceLabelSchema(translationString)),

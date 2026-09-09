@@ -2,7 +2,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { selectIsAddAccountNetworksBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { GraduationCapIcon } from '@trezor/icons';
 
@@ -10,7 +11,7 @@ import { bannerAnimationConfig } from 'src/components/suite/modals/ReduxModal/Us
 import { useSelector } from 'src/hooks/suite';
 
 const AddAccountBannerAboutNetworksInner = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const closeNetworkInfoBanner = () => {
         dispatch(setFlag({ key: 'addAccountNetworksBannerClosed', value: true }));
     };

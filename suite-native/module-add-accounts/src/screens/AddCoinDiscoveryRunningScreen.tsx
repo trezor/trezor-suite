@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork, getSupportedNetworks } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -38,7 +39,7 @@ export const AddCoinDiscoveryRunningScreen = ({
     const allNetworkSymbols = getSupportedNetworks();
 
     const { networkSymbol, flowType, earnFlowParams } = route.params;
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
     const accounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),

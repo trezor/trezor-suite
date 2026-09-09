@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type AddressType } from '@suite-common/wallet-types';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
@@ -29,7 +30,7 @@ interface CopyAddressModalProps {
 export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddressModalProps) => {
     const [checked, setChecked] = useState(false);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const onCopyAddress = async () => {
         if (checked) {

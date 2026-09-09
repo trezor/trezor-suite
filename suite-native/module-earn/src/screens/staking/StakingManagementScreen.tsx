@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     fetchAllTransactionsForAccountThunk,
@@ -24,7 +25,7 @@ export const StakingManagementScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingManagement>>();
     const { accountKey } = route.params;
     const { networkSymbol } = parseAccountKey(accountKey);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import {
     ConnectAndUnlockDeviceScreenContent,
@@ -31,7 +32,7 @@ export const DeviceDisconnectedScreen = ({
 >) => {
     const { wasDeviceConnectedViaBluetooth } = route.params;
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
 

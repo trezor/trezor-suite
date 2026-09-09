@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectAdapterStatus } from '@suite-common/bluetooth';
 import { type BluetoothAdapterStatus } from '@suite-common/bluetooth/src/types';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Modal, Paragraph } from '@trezor/components';
 
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
@@ -25,7 +26,7 @@ export const BluetoothAdapterStatusModal = ({ onCancel }: BluetoothAdapterStatus
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
 
     const [hasDeeplinkFailed, setHasDeeplinkFailed] = useState(false);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const openBluetoothSettings = async (settingsPage: 'bluetooth' | 'bluetooth-permissions') => {
         const result = await dispatch(openSystemSettingsThunk({ type: settingsPage })).unwrap();

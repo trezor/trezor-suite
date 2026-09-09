@@ -8,7 +8,8 @@ import {
     openBrowserAsync,
 } from 'expo-web-browser';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import { type TradingType, tradingThunks } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
@@ -32,7 +33,7 @@ class BrowserAuthError extends Error {
 }
 
 const useLastErrorMessageDispatcher = (tradingType: TradingType | undefined) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const dispatchLastErrorMessage = useCallback(
         (errorMessage: string) => {

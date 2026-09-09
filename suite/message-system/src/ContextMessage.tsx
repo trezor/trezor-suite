@@ -6,12 +6,13 @@ import { Translation } from '@suite/intl';
 import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type ContextDomain,
     messageSystemActions,
     selectContextMessageContent,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
@@ -28,7 +29,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
     );
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const torOnionLinks = useSelector(selectTorOnionLinks);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const dismissalConfig = useMemo(() => {
         if (!message?.dismissible) return undefined;

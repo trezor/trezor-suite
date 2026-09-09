@@ -5,7 +5,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -31,10 +31,9 @@ interface AutoLockProps {
 }
 
 export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
-    const dispatch = useDispatch();
     const { device } = useDevice();
     const locale = useLocales();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const autoLockDelay = device?.features?.auto_lock_delay_ms;
 
     if (typeof autoLockDelay !== 'number') {

@@ -1,6 +1,7 @@
 import { selectIsSessionAutostopped, toggleAutostopCoinjoinThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Checkbox, Text } from '@trezor/components';
 
@@ -12,7 +13,7 @@ type AutoStopButtonProps = {
 
 export const AutoStopButton = ({ relatedAccountKey }: AutoStopButtonProps) => {
     const isActivated = useSelector(state => selectIsSessionAutostopped(state, relatedAccountKey));
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleClick = () => {
         dispatch(toggleAutostopCoinjoinThunk(relatedAccountKey));

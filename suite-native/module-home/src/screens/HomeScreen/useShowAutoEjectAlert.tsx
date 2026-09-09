@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import {
@@ -25,10 +25,9 @@ import { useToast } from '@suite-native/toasts';
 import { AutoEjectAnimation } from './components/AutoEjectAnimation';
 
 export const useShowAutoEjectAlert = () => {
-    const dispatch = useDispatch();
     const { showAlert, hideAlert } = useAlert();
     const { showToast } = useToast();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
     const isBluetoothDeviceOsUnpairingRequired = useSelector(
         selectIsBluetoothDeviceOsUnpairingRequired,

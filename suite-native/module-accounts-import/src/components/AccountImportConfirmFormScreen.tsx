@@ -6,7 +6,7 @@ import { FlashList } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectFilterKnownTokens,
@@ -52,8 +52,7 @@ export const AccountImportConfirmFormScreen = ({
     symbol,
     accountInfo,
 }: AccountImportConfirmFormScreenProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const navigation = useNavigation<NavigationProp>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const showImportError = useShowImportError(symbol, navigation);

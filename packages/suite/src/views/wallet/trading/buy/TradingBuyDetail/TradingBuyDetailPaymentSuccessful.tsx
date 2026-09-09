@@ -2,7 +2,8 @@ import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, Illustration } from '@trezor/components';
 
 import { TradingDetailTerminalDetails } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';
@@ -17,7 +18,7 @@ export const TradingBuyDetailPaymentSuccessful = ({
     trade,
     provider,
 }: TradingBuyDetailPaymentSuccessfulProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleClick = () => dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
 

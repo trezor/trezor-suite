@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleBuyRequestThunkProps,
@@ -103,8 +103,7 @@ const useBuyQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const asset = useWatch({ control: form.control, name: 'asset' });
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>

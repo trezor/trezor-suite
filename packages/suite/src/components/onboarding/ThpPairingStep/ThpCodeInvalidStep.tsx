@@ -3,13 +3,14 @@ import { useState } from 'react';
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { ThpPairingFailedForFirmwareInstallation, startThpSessionThunk } from '@suite/thp';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Column, Paragraph } from '@trezor/components';
 import { PlugsConnectedIcon } from '@trezor/icons';
 
 // reflection of suite/thp/src/firmware/ThpCodeInvalidStep.tsx
 export const ThpCodeInvalidStep = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleRetry = () => {

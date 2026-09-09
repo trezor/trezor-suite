@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
     handleYieldApproveCancelThunk,
@@ -26,7 +27,7 @@ export const useYieldApprovalReviewNavigation = ({
     shouldConfirmCancellation,
     transactionType,
 }: UseYieldApprovalReviewNavigationParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowYieldReviewCancellationAlert();
     const isCleanupHandledRef = useRef(false);

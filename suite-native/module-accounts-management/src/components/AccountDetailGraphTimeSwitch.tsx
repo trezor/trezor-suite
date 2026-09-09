@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -24,8 +24,7 @@ export const AccountDetailGraphTimeSwitch = ({
     accountKey,
     tokenContract,
 }: AccountDetailGraphTimeSwitchProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const timeframe = useSelector((state: GraphSliceRootState) =>
         selectAccountGraphTimeframe(state, accountKey, tokenContract),
     );

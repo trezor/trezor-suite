@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingSellActiveTrade,
     selectTradingSellIsFromRedirect,
@@ -15,7 +16,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 
 export const useTradingSellConfirm = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     useServerEnvironment();
 

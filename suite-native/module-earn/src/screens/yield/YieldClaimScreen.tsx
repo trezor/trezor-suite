@@ -6,7 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -57,8 +57,7 @@ export const YieldClaimScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const { accountKey, vault } = route.params;
     const isFocused = useIsFocused();
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const {
         bottomSheetRef: simulationBottomSheetRef,
         closeModal: closeSimulationBottomSheet,

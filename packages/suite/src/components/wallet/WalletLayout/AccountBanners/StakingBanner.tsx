@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     calculateRewards,
@@ -34,8 +34,7 @@ type StakingBannerProps = {
 };
 
 export const StakingBanner = ({ account }: StakingBannerProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
     const {
         stakeEthBannerClosed,

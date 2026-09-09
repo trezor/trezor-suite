@@ -8,7 +8,7 @@ import {
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type PassphraseFormValues,
     formInputsMaxLength,
@@ -44,8 +44,7 @@ export const PassphraseForm = ({
     noPassphraseEnabled,
     onAfterSubmit,
 }: PassphraseFormProps) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const formWrapperView = useRef<View>(null);
 
     const [isInputFocused, setIsInputFocused] = useState(false);

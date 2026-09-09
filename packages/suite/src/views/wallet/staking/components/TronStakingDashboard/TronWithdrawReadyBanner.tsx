@@ -2,7 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getTronWithdrawableBalance } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Tooltip } from '@trezor/components';
@@ -16,8 +16,7 @@ interface TronWithdrawReadyBannerProps {
 }
 
 export const TronWithdrawReadyBanner = ({ account }: TronWithdrawReadyBannerProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const withdrawableAmount = getTronWithdrawableBalance(account);
 
     const { isWithdrawingDisabled, withdrawingMessageContent } = useMessageSystemStaking(

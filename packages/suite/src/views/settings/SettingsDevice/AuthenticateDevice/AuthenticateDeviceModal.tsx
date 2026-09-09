@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
 import { selectIsDebugModeActive } from '@suite/debug';
+import { useServices } from '@suite-common/dependency-injection';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
@@ -19,7 +20,7 @@ export const AuthenticateDeviceModal = ({ handleClose }: AuthenticateDeviceModal
     // relied on it, user wouldn't be able to retry the check (would be DeviceCompromised right when you open the modal)
     const [result, setResult] = useState<StoredAuthenticateDeviceResult | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const isCheckFailed = result?.valid === false;
 

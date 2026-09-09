@@ -4,8 +4,9 @@ import Animated, { FadeInDown, FadeOutDown, LinearTransition } from 'react-nativ
 import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions } from '@suite-common/firmware';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -61,7 +62,7 @@ export const FirmwareInstallationScreenContent = ({
 }: FirmwareInstallationScreenContentProps) => {
     useKeepAwake(); // Prevents screen from sleeping while installing firmware (might take few minutes).
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation();
 

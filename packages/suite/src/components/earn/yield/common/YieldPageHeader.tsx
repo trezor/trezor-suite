@@ -8,7 +8,7 @@ import { type EarnParams, gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -106,8 +106,7 @@ export const YieldPageHeader = ({
     vault,
     isInvalid,
 }: YieldPageHeaderProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const vaultName = vault?.metadata.name;

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { QuestionFilledIcon, ShieldWarningIcon, WarningFilledIcon } from '@trezor/icons';
 
@@ -14,7 +15,7 @@ type DeviceAuthenticityOptOutModalProps = {
 
 export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptOutModalProps) => {
     const [isConfirmed, setIsConfirmed] = useState(false);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleTurningOffRevisionCheck = () => {
         dispatch(toggleFirmwareAuthenticityChecks(false));

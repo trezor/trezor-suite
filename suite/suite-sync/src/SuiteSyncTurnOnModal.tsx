@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectTurnOnSuiteSyncDep } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
@@ -24,10 +24,9 @@ export const SuiteSyncTurnOnModal = ({
     onClose,
     onSuccess,
 }: SuiteSyncTurnOnModalProps) => {
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
-    const { turnOnSuiteSync } = useServices(selectTurnOnSuiteSyncDep);
+    const { turnOnSuiteSync, dispatch } = useServices(selectTurnOnSuiteSyncDep, selectDispatch);
 
     const device = useSelector((state: DeviceRootState) =>
         selectDeviceByStaticSessionId(state, deviceStaticSessionId),

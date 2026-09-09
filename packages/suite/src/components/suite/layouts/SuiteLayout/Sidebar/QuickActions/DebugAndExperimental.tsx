@@ -3,7 +3,8 @@ import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsExperimentalEnabled } from '@suite/settings';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Box, Column, Icon } from '@trezor/components';
 import { AtomIcon, CheckIcon, DotOutlineFilledIcon, StarFourIcon } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
@@ -56,7 +57,7 @@ const DebugAndExperimentalTooltip = ({
 );
 
 export const DebugAndExperimental = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const isEapEnabled = useSelector(selectDesktopUpdateAllowPrerelease);
     const isExperimental = useSelector(selectIsExperimentalEnabled);

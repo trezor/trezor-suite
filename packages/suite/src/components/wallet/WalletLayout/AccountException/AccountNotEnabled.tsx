@@ -1,6 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
 import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { PlusIcon, WarningIcon } from '@trezor/icons';
@@ -16,7 +17,7 @@ interface AccountNotEnabledProps {
  * see: @wallet-actions/selectedAccountActions
  */
 export const AccountNotEnabled = ({ network }: AccountNotEnabledProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { isLocked } = useDevice();
 
     const handleClick = () =>

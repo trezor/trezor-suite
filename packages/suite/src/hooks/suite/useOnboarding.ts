@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
 import { selectModal } from '@suite/modal';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
 import { UI_REQUESTS } from '@trezor/connect';
 
@@ -15,7 +16,7 @@ import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboa
 import { parseStepId } from '../../utils/onboarding/steps';
 
 export const useOnboarding = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const onboarding = useSelector(selectOnboarding);
     const modal = useSelector(selectModal);

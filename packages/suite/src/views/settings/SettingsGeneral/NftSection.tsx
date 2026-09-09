@@ -1,13 +1,14 @@
 import { Translation } from '@suite/intl';
 import { selectIsNftSectionEnabled, suiteSettingsActions } from '@suite/settings';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const NftSection = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const isEnabled = useSelector(selectIsNftSectionEnabled);
 
     const handleSwitchChange = () => {

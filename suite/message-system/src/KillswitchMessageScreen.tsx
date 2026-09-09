@@ -11,7 +11,7 @@ import {
     resolveMessageContent,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
@@ -25,7 +25,7 @@ type CtaButtonProps = {
 };
 
 export const CtaButton = ({ ctaLabel, ctaLink, isExternalCta }: CtaButtonProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const externalLink = useExternalLink(ctaLink);
 
     const handleClick = () => {
@@ -44,10 +44,9 @@ export const CtaButton = ({ ctaLabel, ctaLink, isExternalCta }: CtaButtonProps) 
 };
 
 export const KillswitchMessageScreen = () => {
-    const dispatch = useDispatch();
     const language = useSelector(selectLanguage);
     const activeKillswitchMessage = useSelector(selectActiveKillswitchMessage);
-    const { reloadApp } = useServices(selectReloadAppDep);
+    const { reloadApp, dispatch } = useServices(selectReloadAppDep, selectDispatch);
 
     // Destroy Connect instance, to prevent any device or backend interaction on the background
     // Connect won't init if there is an active killswitch (see appInitThunks), but message system can be updated anytime later.

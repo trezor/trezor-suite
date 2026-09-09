@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     selectTradingCoinSymbolByCryptoId,
@@ -39,7 +40,7 @@ const TradingExchangeApprovalScreenContent = ({
     navigation,
 }: TradingExchangeApprovalScreenProps) => {
     const { shouldIncreaseLimit, isRevoked } = params;
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const reportToAnalytics = useExchangeAnalyticsStepReport('approval-preview');
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);

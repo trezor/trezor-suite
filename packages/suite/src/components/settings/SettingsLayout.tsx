@@ -5,7 +5,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Box, Column, motionEasing } from '@trezor/components';
 
 import {
@@ -26,7 +27,7 @@ type SettingsLayoutProps = {
 const SettingsHeader = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const settingsSubpages = useMemo<Array<NavigationItem>>(
         () => [

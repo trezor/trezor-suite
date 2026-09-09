@@ -1,9 +1,10 @@
 import { SettingsAnchor, gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const TriggerHighlight = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     return (
         <SectionItem data-testid="@settings/debug/github">

@@ -2,12 +2,13 @@ import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const CustomFirmware = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { device, isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();

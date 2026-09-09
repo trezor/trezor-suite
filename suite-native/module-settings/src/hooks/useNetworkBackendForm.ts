@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import {
     type BackendType,
@@ -31,9 +31,8 @@ type FormValues = {
 };
 
 export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
-    const dispatch = useDispatch();
     const { translate } = useTranslate();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
 
     const {
         connected,

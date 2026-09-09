@@ -2,8 +2,11 @@ import {
     type AsyncThunk,
     type Reducer,
     type ThunkAction,
+    type ThunkDispatch,
     type UnknownAction,
 } from '@reduxjs/toolkit';
+
+export type Dispatch = ThunkDispatch<any, any, UnknownAction>;
 
 export type WithServices<TServices extends object> = {
     services: TServices;

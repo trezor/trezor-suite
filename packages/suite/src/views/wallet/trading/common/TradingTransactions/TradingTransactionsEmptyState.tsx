@@ -2,14 +2,15 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectTradingActiveSection } from '@suite-common/trading';
 import { Button, Column, H2, Paragraph } from '@trezor/components';
 
 import { getBackRoute } from 'src/views/wallet/trading/common/TradingLayout/tradingPageHeaderUtils';
 
 export const TradingTransactionsEmptyState = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const currentRouteName = useSelector(selectRouteName);
     const previousRoute = useSelector(selectSettingsBackRoute);
     const activeSection = useSelector(selectTradingActiveSection);

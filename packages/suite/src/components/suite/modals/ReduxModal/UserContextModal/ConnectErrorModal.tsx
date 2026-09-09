@@ -4,8 +4,9 @@ import {
     connectPopupCallInnerThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { UI_EVENTS } from '@trezor/connect';
 import { WarningIcon } from '@trezor/icons';
@@ -18,7 +19,7 @@ import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 import { SwitchDeviceContent } from 'src/views/suite/SwitchDevice/SwitchDevice';
 
 export const ConnectSelectDeviceModal = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const popupCall = useSelector(selectConnectPopupCall);
     const devices = useSelector(selectDevices);
     const selectedDevice = useSelector(selectSelectedDevice);
@@ -77,7 +78,7 @@ export const ConnectSelectDeviceModal = () => {
 };
 
 export const ConnectErrorModal = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const popupCall = useSelector(selectConnectPopupCall);
     const prerequisite = useSelector(selectPrerequisite);
     const handleOpenSuite = useOpenSuiteDesktop();

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
@@ -15,8 +15,7 @@ import {
 } from '@suite-native/graph';
 
 const PortfolioGraphTimeSwitchContent = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const timeframe = useSelector(selectPortfolioGraphTimeframe);
 
     const handleSelectPortfolioTimeframe = useCallback(

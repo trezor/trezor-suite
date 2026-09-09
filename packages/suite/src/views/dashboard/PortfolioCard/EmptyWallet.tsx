@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
 import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
@@ -21,8 +21,7 @@ const RoundedBorder = styled.div`
 `;
 
 export const EmptyWallet = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isOnboardingFeedbackBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);

@@ -1,14 +1,15 @@
 import { GoogleClient } from '@suite/metadata';
 import { selectOAuthServerEnvironment, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const OAuthApi = () => {
     const oauthServerEnvironment = useSelector(selectOAuthServerEnvironment);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const options = Object.entries(GoogleClient.servers).map(([environment, server]) => ({
         label: server,

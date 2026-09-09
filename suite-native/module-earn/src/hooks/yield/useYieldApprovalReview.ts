@@ -7,7 +7,7 @@ import { isRejected } from '@reduxjs/toolkit';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldFlowResolvedData,
     type YieldRootState,
@@ -72,9 +72,8 @@ export const useYieldApprovalReview = ({
     onReviewLeave,
     transactionType,
 }: UseYieldApprovalReviewParams): UseYieldApprovalReviewResult => {
-    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const reviewAlertType = transactionType === 'revoke' ? 'yield-revoke' : 'yield-approval';
     const handleReviewError = useHandleEarnReviewError(reviewAlertType, navigation);
     const reportApprovalReviewEvent = useCallback(

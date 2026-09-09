@@ -2,7 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getResourceGain } from '@suite-common/wallet-core';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { getTronResources, getTronStakingInfo, sunToTrx } from '@suite-common/wallet-utils';
@@ -23,8 +23,7 @@ interface TronResourceModalProps {
 }
 
 export const TronResourceModal = ({ account, resourceType, onClose }: TronResourceModalProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const resources = getTronResources(account);
     const stakingInfo = getTronStakingInfo(account);
     const isEnergy = resourceType === 'energy';

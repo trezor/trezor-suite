@@ -5,7 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     getStakingDataForNetwork,
@@ -20,7 +20,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 export const ClaimCard = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const selectedAccount = useSelector(selectSelectedAccount);
     const claimTxs = useSelector(state =>
         selectAccountClaimTransactions(state, selectedAccount?.key || null),
@@ -37,7 +37,6 @@ export const ClaimCard = () => {
 
     // Show success message when claim tx confirmation is complete.
     const prevIsClaimPending = useRef(false);
-    const dispatch = useDispatch();
 
     useEffect(() => {
         // Reset prevIsClaimPending when account changes

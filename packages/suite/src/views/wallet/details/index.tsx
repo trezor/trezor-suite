@@ -7,7 +7,8 @@ import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useReceiveDisabled } from '@suite/receive';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { typography } from '@trezor/theme';
@@ -71,7 +72,7 @@ const Details = () => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     if (
         !device ||

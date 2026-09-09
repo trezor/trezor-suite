@@ -2,7 +2,8 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Column, IconCircle, Text } from '@trezor/components';
 import { CheckIcon } from '@trezor/icons';
@@ -22,7 +23,7 @@ export const TronStakeComplete = ({
     description,
     children,
 }: TronStakeCompleteProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { isBelowMobile } = useLayoutSize();
 
     const handleBackToOverview = () =>

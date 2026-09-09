@@ -10,8 +10,9 @@ import {
 } from '@suite/nfc';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Modal } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
@@ -27,7 +28,7 @@ type Step = 'disclaimer' | 'how-it-works' | 'verify-ownership' | 'backup' | 'don
 
 export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalProps) => {
     const device = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
 
     const backupMethod = isN4w1BackupEnabled ? PROTO.BackupMethod.N1W1 : PROTO.BackupMethod.Display;

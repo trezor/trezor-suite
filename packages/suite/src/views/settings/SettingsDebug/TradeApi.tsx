@@ -1,5 +1,6 @@
 import { selectTradeServerEnvironment, suiteSettingsActions } from '@suite/settings';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TradeServerEnvironment, tradeApi, tradingActions } from '@suite-common/trading';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -7,7 +8,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export const TradeApi = () => {
     const tradeServerEnvironment = useSelector(selectTradeServerEnvironment);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const tradeApiServerOptions = Object.entries(tradeApi.SERVERS).map(([environment, server]) => ({
         label: server,

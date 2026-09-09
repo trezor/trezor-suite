@@ -1,6 +1,6 @@
-import { renderHook } from '@testing-library/react';
-
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { events } from '@suite-common/analytics';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldPendingTransactionState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -9,26 +9,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 
 const mockReport = jest.fn();
-const mockDispatch = jest.fn();
 const mockGetPendingTransaction = jest.fn<YieldPendingTransactionState | null, []>();
 const mockGetPendingTxStatus = jest.fn<string | null, []>();
-
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
-    useDispatch: () => mockDispatch,
-}));
-
-jest.mock('src/hooks/suite', () => ({
-    useSelector: (selector: (state: unknown) => unknown) => selector({}),
-}));
-
-jest.mock('@suite-common/dependency-injection', () => {
-    const analytics = { report: (...args: unknown[]) => mockReport(...args) };
-
-    return { useServices: () => ({ analytics }) };
-});
-
-jest.mock('@suite/analytics', () => ({ selectDesktopAnalyticsDep: () => ({}) }));
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -50,10 +32,18 @@ const pendingDeposit = (): YieldPendingTransactionState => ({
     submittedAt: Date.now() - SUBMITTED_AGO_MS,
 });
 
-const renderTracking = () =>
-    renderHook(() =>
-        useYieldPendingTransactionTracking({ account, flowType: 'deposit', flowKey: 'flow-1' }),
+const renderTracking = () => {
+    const root = createTestCompositionRoot({
+        extra: { services: { analytics: mockDesktopAnalytics(mockReport) } },
+        preloadedState: {},
+    });
+
+    return renderHookWithStoreProvider(
+        () =>
+            useYieldPendingTransactionTracking({ account, flowType: 'deposit', flowKey: 'flow-1' }),
+        { root },
     );
+};
 
 const getReportedDurationMs = (type: string) =>
     mockReport.mock.calls.find(

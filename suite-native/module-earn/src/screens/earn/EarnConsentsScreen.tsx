@@ -1,7 +1,7 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { earnOnboardingActions, getEarnOpportunityKey } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
@@ -24,14 +24,13 @@ const titleStyle = prepareNativeStyle(utils => ({
 
 export const EarnConsentsScreen = () => {
     const { applyStyle } = useNativeStyles();
-    const dispatch = useDispatch();
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.EarnConsents>>();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.EarnConsents>>();
     const { accountKey, amount, account } = route.params;
     const networkSymbol = account.symbol;
 
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingStakeEvent.name,
         payload: {

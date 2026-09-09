@@ -1,11 +1,12 @@
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Translation } from '@suite-native/intl';
 import { setDeviceAuthenticityCheckEnabled } from '@suite-native/settings';
 
 import { TurnOffCheckScreenContent } from '../components/TurnOffCheckScreenContent';
 
 export const TurnOffDeviceAuthenticityCheckScreen = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleConfirm = () => {
         dispatch(setDeviceAuthenticityCheckEnabled(false));

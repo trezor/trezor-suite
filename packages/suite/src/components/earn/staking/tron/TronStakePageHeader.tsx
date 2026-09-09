@@ -4,7 +4,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectTronStakeSession } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
@@ -22,8 +22,7 @@ type TronStakePageHeaderProps = {
 };
 
 export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const previousRoute = useSelector(selectSettingsBackRoute);

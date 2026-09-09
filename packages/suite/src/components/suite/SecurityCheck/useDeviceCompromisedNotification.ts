@@ -2,11 +2,12 @@ import { useEffect } from 'react';
 
 import { useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type RevisionCheckErrorWithNotification,
     getIsRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -21,7 +22,7 @@ const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, Tra
  */
 export const useDeviceCompromisedNotification = () => {
     const { device } = useDevice();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const revCheck = isDeviceAcquired(device) ? device.authenticityChecks?.firmwareRevision : null;
     const isError = revCheck && !revCheck.success;

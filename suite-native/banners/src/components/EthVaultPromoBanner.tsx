@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events as commonAnalyticsEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
@@ -19,8 +19,7 @@ import { Banner } from './Banner';
 type NavigationProps = TabNavigationProp<AppTabsParamList, AppTabsRoutes>;
 
 export const EthVaultPromoBanner = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
     const handlePress = () => {

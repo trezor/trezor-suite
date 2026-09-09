@@ -1,10 +1,11 @@
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 export const UdevDescription = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleClick = () => dispatch(gotoThunk({ routeName: 'suite-udev' }));
 

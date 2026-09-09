@@ -5,7 +5,8 @@ import styled from 'styled-components';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Paragraph, Tooltip } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -39,7 +40,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     const [customHomescreen, setCustomHomescreen] = useState('');
     const [validationError, setValidationError] = useState<ImageValidationError | undefined>();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { device } = useDevice();
     const fileInputElement = useRef<HTMLInputElement>(null);
 

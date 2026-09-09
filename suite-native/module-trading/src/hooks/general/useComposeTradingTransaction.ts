@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 import { useStore } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     selectTradingAccountKeyByTradeType,
@@ -36,7 +37,7 @@ type UseComposeTradingTransactionProps = {
 };
 
 export const useComposeTradingTransaction = ({ tradeType }: UseComposeTradingTransactionProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const store = useStore<TradingTransactionRootState>();
 
     const getNetworkFeeInfo = useCallback(

@@ -2,8 +2,9 @@ import { useCallback } from 'react';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type WrappedNativeFlowType,
     type YieldFlowType,
@@ -55,7 +56,7 @@ export const useYieldWrappedNativeStep = ({
     tokenSymbol,
     vault,
 }: UseYieldWrappedNativeStepParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const isFocused = useIsFocused();
     const navigation = useNavigation();
     const navigateToInitialScreen = useNavigateToInitialScreen();

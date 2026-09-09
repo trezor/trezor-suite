@@ -10799,6 +10799,7 @@ __metadata:
   resolution: "@suite-common/discreet-mode@workspace:suite-common/discreet-mode"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
@@ -10965,6 +10966,7 @@ __metadata:
   resolution: "@suite-common/firmware@workspace:suite-common/firmware"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -11882,6 +11884,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.31"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -12299,6 +12302,7 @@ __metadata:
   resolution: "@suite-native/biometrics@workspace:suite-native/biometrics"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
@@ -12346,6 +12350,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/blockchain@workspace:suite-native/blockchain"
   dependencies:
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -12700,6 +12705,7 @@ __metadata:
   resolution: "@suite-native/feature-feedback@workspace:suite-native/feature-feedback"
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -12717,6 +12723,7 @@ __metadata:
   resolution: "@suite-native/feature-flags@workspace:suite-native/feature-flags"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -12949,6 +12956,7 @@ __metadata:
     "@formatjs/intl-listformat": "npm:^8.2.1"
     "@formatjs/intl-locale": "npm:^5.2.1"
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -13163,6 +13171,7 @@ __metadata:
   resolution: "@suite-native/module-activity-center@workspace:suite-native/module-activity-center"
   dependencies:
     "@react-navigation/native-stack": "npm:7.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -13225,6 +13234,7 @@ __metadata:
   resolution: "@suite-native/module-authenticity-checks@workspace:suite-native/module-authenticity-checks"
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -13326,6 +13336,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
     "@suite-common/connect-popup": "workspace:^"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -13928,6 +13939,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
@@ -14537,6 +14549,7 @@ __metadata:
   resolution: "@suite-native/thp@workspace:suite-native/thp"
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/thp": "workspace:*"
@@ -14646,6 +14659,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -14868,6 +14882,7 @@ __metadata:
   resolution: "@suite-native/trading-slippage@workspace:suite-native/trading-slippage"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/validators": "workspace:*"
@@ -15115,6 +15130,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/address@workspace:suite/address"
   dependencies:
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
@@ -15251,6 +15267,7 @@ __metadata:
   resolution: "@suite/debug@workspace:suite/debug"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite/intl": "workspace:*"
@@ -15269,6 +15286,7 @@ __metadata:
   resolution: "@suite/desktop-update@workspace:suite/desktop-update"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
@@ -15370,6 +15388,7 @@ __metadata:
   resolution: "@suite/feature-feedback@workspace:suite/feature-feedback"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite/experimental": "workspace:*"
@@ -15389,6 +15408,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/firmware-upgrade@workspace:suite/firmware-upgrade"
   dependencies:
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -15588,6 +15608,7 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@scure/base": "npm:^2.0.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
@@ -15901,6 +15922,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/thp@workspace:suite/thp"
   dependencies:
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -15924,6 +15946,7 @@ __metadata:
   resolution: "@suite/tor-desktop@workspace:suite/tor-desktop"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
@@ -15958,6 +15981,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/tor-web@workspace:suite/tor-web"
   dependencies:
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite/tor": "workspace:*"
     "@trezor/env-utils": "workspace:*"

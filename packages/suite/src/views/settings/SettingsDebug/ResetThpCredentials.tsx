@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -10,7 +11,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export const ResetThpCredentials = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const device = useSelector(selectSelectedDevice);
 
     const onClick = async () => {

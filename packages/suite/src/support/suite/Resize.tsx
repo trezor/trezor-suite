@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type BreakpointFlagName,
     type BreakpointFlags,
@@ -14,7 +15,7 @@ import { typedObjectEntries } from '@trezor/utils';
 import { updateBreakpoints } from 'src/actions/suite/windowActions';
 
 const Resize = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     useEffect(() => {
         const queryList: Array<{ mq: MediaQueryList; flag: BreakpointFlagName }> =

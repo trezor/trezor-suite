@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { isPhishingTransaction } from '@suite-common/token-definitions';
 import {
@@ -66,7 +67,7 @@ export const useFetchTransactions = (
     }, [fetchedAll, isLastPage]);
 
     const synchronize = useMemo(getSynchronize, [accountKey]);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const fetchCommon = useCallback(
         (

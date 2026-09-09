@@ -3,7 +3,8 @@ import { Controller } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
@@ -69,7 +70,7 @@ export const BaseCurrencyInput = ({
 
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const baseCurrencyInputName = `outputs.${outputId}.fiat` as const;
     const currencyInputName = `outputs.${outputId}.currency` as const;

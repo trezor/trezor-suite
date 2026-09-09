@@ -5,7 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
     requiresTokenApproval,
@@ -40,8 +40,7 @@ const TextButton = styled.div<{ $disabled: boolean }>`
 
 export const TradingFormApproval = () => {
     const context = useTradingFormContext<TradingExchangeType>();
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const { tx, state: allowanceState } = useAllowanceContext();
 

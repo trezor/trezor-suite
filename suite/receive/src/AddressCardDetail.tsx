@@ -5,7 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
@@ -39,7 +39,6 @@ export const AddressCardDetail = ({
     onCopied,
     onVerify,
 }: AddressCardDetailProps) => {
-    const dispatch = useDispatch();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -47,7 +46,7 @@ export const AddressCardDetail = ({
         selectCurrentFreshAddress(state, accountKey),
     );
     const isBelowTablet = useMediaQuery(belowBreakpoint(breakpoints.tablet));
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const handleCopy = () => {
         dispatch(copyAddressToClipboard(item.address));

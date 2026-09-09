@@ -1,6 +1,7 @@
 import { Address } from '@suite/address';
 import { openModal } from '@suite/modal';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     selectAccountByKey,
     selectTransactionByAccountKeyAndTxid,
@@ -23,7 +24,7 @@ export const TradingDetailTxId = ({
     account,
     receiveAccountKey,
 }: TradingDetailTxIdProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const payoutAccount = useSelector(state =>
         receiveAccountKey && selectTransactionByAccountKeyAndTxid(state, receiveAccountKey, value)

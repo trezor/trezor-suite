@@ -6,7 +6,7 @@ import {
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Account,
@@ -76,8 +76,7 @@ export const TransactionReviewModalBottomContent = ({
     precomposedForm,
     outputs,
 }: TransactionReviewModalBottomContentProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;
 

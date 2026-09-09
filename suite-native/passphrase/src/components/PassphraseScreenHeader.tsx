@@ -5,7 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     cancelDiscoveryThunk,
     selectIsCreatingNewPassphraseWallet,
@@ -37,8 +37,7 @@ export const PassphraseScreenHeader = () => {
     const navigation = useNavigation<NavigationProp>();
     const route = useRoute();
     const device = useSelector(selectSelectedDevice);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
 
     const { showAlert } = useAlert();
 

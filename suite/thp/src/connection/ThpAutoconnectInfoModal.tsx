@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
 import { Card, Modal, Paragraph } from '@trezor/components';
@@ -15,7 +16,7 @@ export const ThpAutoconnectInfoModal = ({ device }: ThpAutoconnectInfoModalParam
     const [isLoading, setIsLoading] = useState(false);
 
     const { isLocked, device: selectedDevice } = useDevice();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const onTurnOn = () => {
         setIsLoading(true);

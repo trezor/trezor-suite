@@ -4,7 +4,8 @@ import { useStore } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type ResolvedYieldFlowData,
     type YieldRootState,
@@ -41,7 +42,7 @@ export const useYieldDepositApprovalSubmit = ({
     flowKey,
     routeParams,
 }: UseYieldDepositApprovalSubmitParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const store = useStore<YieldRootState>();
     const showYieldAlert = useShowYieldAlert();

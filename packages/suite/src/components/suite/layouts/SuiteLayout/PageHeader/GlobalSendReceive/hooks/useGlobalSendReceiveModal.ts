@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { gotoThunk, selectRouterParams } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { type Account, type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
@@ -40,7 +41,7 @@ export const getDashboardParamModal = (param: unknown): GlobalSendReceiveType =>
 };
 
 export function useGlobalSendReceiveModal() {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const goToWithAnalytics = useGoToWithAnalytics();
     const routerParams = useSelector(selectRouterParams);
     const [activeModal, setActiveModal] = useState<GlobalSendReceiveType>(null);

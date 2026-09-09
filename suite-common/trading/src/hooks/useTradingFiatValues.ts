@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
@@ -61,7 +62,7 @@ export const useTradingFiatValues = ({
     shouldSendInSats,
     isErc4626,
 }: TradingFiatRatesProps): TradingFiatRatesReturn | null => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const isNativeToken = cryptoId && isCryptoIdForNativeToken(cryptoId);
 

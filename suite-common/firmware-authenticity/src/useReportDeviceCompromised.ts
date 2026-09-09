@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useGetter } from '@suite-common/dependency-injection';
+import { useGetter, useServices } from '@suite-common/dependency-injection';
 import {
     type DeviceRootState,
     deviceInvariabilityCheck,
@@ -9,7 +9,7 @@ import {
     selectPersistentDeviceDataById,
 } from '@suite-common/device';
 import { type FirmwareRootState, selectIsProductionFirmwareChannel } from '@suite-common/firmware';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice, selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
@@ -44,7 +44,7 @@ const useIsProductionFirmwareChannel = () => {
 };
 
 const useReportRevisionCheck = ({ device }: DeviceProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const commonData = useCommonData({ device });
     const isProductionFirmwareChannel = useIsProductionFirmwareChannel();
 
@@ -76,7 +76,7 @@ const useReportRevisionCheck = ({ device }: DeviceProps) => {
 };
 
 const useReportHashCheck = ({ device }: DeviceProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const commonData = useCommonData({ device });
     const isProductionFirmwareChannel = useIsProductionFirmwareChannel();
 
@@ -129,7 +129,7 @@ const useReportHashCheck = ({ device }: DeviceProps) => {
 
 // Report meta check results (Id check & device invariability checks ) to Sentry
 const useReportDeviceMetaChecks = ({ device }: DeviceProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const commonData = useCommonData({ device });
     const previousData = useSelector((state: DeviceRootState) =>
         selectPersistentDeviceDataById(state, device?.id),

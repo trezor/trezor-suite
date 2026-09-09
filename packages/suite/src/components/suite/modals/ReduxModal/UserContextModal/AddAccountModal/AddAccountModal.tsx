@@ -7,7 +7,7 @@ import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
@@ -72,11 +72,10 @@ export const AddAccountModal = ({
     const isCoinjoinPublic = useSelector(selectIsPublic);
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
     const useTestnetNetworks = useSelector(selectIsTestnetNetworksEnabled);
-    const dispatch = useDispatch();
     const { activateNetwork, activatingNetworkSymbols, activationErrors } =
         useNetworkActivationQueue(device);
 
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 
     const closeModalAndNotifyCompletion = useCallback(() => {

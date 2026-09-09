@@ -4,12 +4,13 @@ import { useSelector } from 'react-redux';
 import { A, pipe } from '@mobily/ts-belt';
 import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type DeviceRootState,
     selectIsDeviceInViewOnlyMode,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
@@ -101,7 +102,7 @@ const LIMIT = 10; // Maximum number of manually added accounts per non-EVM netwo
 export const useAddCoinAccount = (networksSearchQuery?: string) => {
     const allNetworkSymbols = getSupportedNetworks();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { translate } = useTranslate();
     const { name: routeName } = useRoute();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();

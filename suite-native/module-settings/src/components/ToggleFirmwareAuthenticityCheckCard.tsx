@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -16,7 +17,7 @@ import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 export const ToggleFirmwareAuthenticityCheckCard = () => {
     const isFwAuthenticityCheckEnabled = useSelector(selectIsFirmwareAuthenticityCheckEnabled);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigateTo = useSettingsNavigateTo();
     const openLink = useOpenLink();
 

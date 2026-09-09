@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
     selectTradingAccountKeyByTradeType,
@@ -16,7 +17,7 @@ import {
 import { useSelector } from 'src/hooks/suite';
 
 export const useTradingFormAccount = (tradingType: TradingType) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const account = useSelector(state => selectTradingFormAccount(state, tradingType));
     const cryptoId = useSelector(state => selectTradingFormCryptoId(state, tradingType));

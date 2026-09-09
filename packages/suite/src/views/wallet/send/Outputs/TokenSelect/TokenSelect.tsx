@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
     type Explorer,
@@ -40,7 +41,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const { account, setAmount, getValues, getDefaultValue, watch, setValue, setDraftSaveRequest } =
         useSendFormContext();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const sendFormPrefill = useSelector(selectSendFormPrefill);
 

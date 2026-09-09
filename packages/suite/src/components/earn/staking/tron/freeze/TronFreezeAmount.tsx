@@ -3,7 +3,8 @@ import { useFormState } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -29,7 +30,7 @@ import { TronCurrencySwitchButton } from '../TronCurrencySwitchButton';
 import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronFreezeAmount = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
     const { account, form, actions, amountInput } = useTronStakeContext();

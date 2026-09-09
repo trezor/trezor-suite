@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     getSessionNetworks,
     selectSessions,
@@ -18,7 +19,7 @@ import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useSelector } from 'src/hooks/suite';
 
 export const WalletConnectList = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const sessions = useSelector(selectSessions);
 
     if (sessions.length === 0) {

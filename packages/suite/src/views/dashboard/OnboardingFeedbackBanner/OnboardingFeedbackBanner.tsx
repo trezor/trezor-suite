@@ -9,7 +9,7 @@ import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import {
     Box,
@@ -96,8 +96,7 @@ const CTAButton = ({ onClick }: { onClick: () => void }) => {
 export const OnboardingFeedbackBanner = () => {
     const allNetworkSymbols = getSupportedNetworks();
 
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
     const isVerticalLayout = useIsContentBelowBreakpoint();
 

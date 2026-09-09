@@ -4,7 +4,8 @@ import { useSelector, useStore } from 'react-redux';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     hasEip712SignData,
@@ -51,7 +52,7 @@ const TradingExchangePreviewScreenContent = ({
 }: TradingExchangePreviewScreenProps) => {
     const { isApproved } = params;
     const { showAlert } = useAlert();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const debounce = useDebounce();
     const { isInternetReachable } = useNetInfo();
     const quote = useSelector(selectTradingExchangeSelectedQuote);

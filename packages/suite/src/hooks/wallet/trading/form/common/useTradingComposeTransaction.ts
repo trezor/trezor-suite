@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -42,7 +43,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     setShowReserveBanner,
     shouldSuppressComposeErrors,
 }: TradingUseComposeTransactionProps<T>): TradingUseComposeTransactionReturnProps => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
     const addressDisplayType = useSelector(selectAddressDisplayType);

@@ -6,7 +6,8 @@ import { CommonActions, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -107,7 +108,7 @@ export const OutputsReviewFooter = ({
     setIsSendInProgress,
 }: OutputsReviewFooterParams) => {
     const [txid, setTxid] = useState<string>('');
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);

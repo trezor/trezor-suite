@@ -1,12 +1,13 @@
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
 
 export const ClearStorage = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleClick = async () => {
         await dispatch(resetSuiteAppThunk());

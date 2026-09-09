@@ -3,7 +3,7 @@ import type { ExchangeTrade } from 'invity-api';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingExchangeQuotesRequest,
@@ -16,8 +16,7 @@ import { useSelector } from 'src/hooks/suite';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
 export const useTradingExchangeTradeRequest = (account: Account | undefined) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);

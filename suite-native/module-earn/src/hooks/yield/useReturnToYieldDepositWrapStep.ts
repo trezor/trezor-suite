@@ -3,7 +3,8 @@ import { useStore } from 'react-redux';
 
 import { StackActions, useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldRootState,
     selectYieldSessionByFlowKey,
@@ -30,7 +31,7 @@ export const useReturnToYieldDepositWrapStep = ({
     flowKey,
     routeParams,
 }: UseReturnToYieldDepositWrapStepParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const store = useStore<YieldRootState>();
 

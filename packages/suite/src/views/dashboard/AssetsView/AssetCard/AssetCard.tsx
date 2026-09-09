@@ -4,7 +4,7 @@ import { gotoThunk } from '@suite/router';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -88,8 +88,7 @@ export const AssetCard = ({
     isStakeNetwork,
 }: AssetCardProps) => {
     const { symbol } = network;
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     const handleCardClick = () => {

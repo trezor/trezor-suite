@@ -1,7 +1,8 @@
 import { selectSelectedAccount } from '@suite/account';
 import { stopCoinjoinSessionThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
 
@@ -14,7 +15,7 @@ type CancelCoinjoinModalProps = {
 export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
     const account = useSelector(selectSelectedAccount);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     if (!account) {
         return null;

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type ExperimentsItemType,
     getActiveExperimentGroup,
@@ -13,7 +14,7 @@ import {
     selectAllManuallyAddedExperimentIds,
     selectAllValidExperiments,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Experiments } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
@@ -47,7 +48,7 @@ export const MessageSystemExperiments = ({
     const allManuallyAddedExperimentIds = useSelector(selectAllManuallyAddedExperimentIds);
     const allExperimentInclusionOverrides = useSelector(selectAllExperimentInclusionOverrides);
     const instanceId = useSelector(selectAnalyticsInstanceId);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const [showActive, setShowActive] = useState<boolean>(true);
 

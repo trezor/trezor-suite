@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { H3, IconButton, Paragraph } from '@trezor/components';
 import { ArrowLeftIcon, XIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
@@ -37,8 +37,7 @@ interface GuideHeaderProps {
 }
 
 export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const goBack = () => {
         back?.();

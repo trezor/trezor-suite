@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectThpLastCode, thpActions } from '@suite-common/thp';
 import { selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
 import { Column, Modal, Paragraph } from '@trezor/components';
@@ -13,7 +14,7 @@ import { ThpPairingCodeEntry } from './ThpPairingCodeEntry';
 export const ThpPairingFailedModal = () => {
     const [isLoading, setIsLoading] = useState(false);
     const device = useSelector(selectSelectedFirstThpDevice);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const lastThpCode = useSelector(selectThpLastCode);
 
     const handleRetry = () => {

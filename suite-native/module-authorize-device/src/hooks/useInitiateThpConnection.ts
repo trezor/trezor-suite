@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk, selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -14,7 +15,7 @@ type NavigationProp = NativeStackNavigationProp<AuthorizeDeviceStackParamList>;
 
 export const useInitiateThpConnection = () => {
     const navigation = useNavigation<NavigationProp>();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const device = useSelector(selectSelectedDevice);
 

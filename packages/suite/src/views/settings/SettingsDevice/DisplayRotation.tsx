@@ -5,7 +5,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { type DisplayRotation as DisplayRotationType, PROTO } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -59,9 +59,8 @@ interface DisplayRotationProps {
 }
 
 export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
-    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const isSupported =
         device?.features !== undefined &&
         DEVICES_SUPPORTING_ROTATION.includes(device.features.internal_model);

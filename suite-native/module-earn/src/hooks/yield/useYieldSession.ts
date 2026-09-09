@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldFlowType,
     type YieldRootState,
@@ -24,7 +25,7 @@ export const useYieldSession = ({
     isWrappedNativeVault,
     shouldDisposeOnGoBack = false,
 }: UseYieldSessionParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation();
     const session = useSelector((state: YieldRootState) =>
         selectYieldSessionByFlowKey(state, flowType, flowKey),

@@ -1,7 +1,8 @@
 import { type RefObject, useCallback, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
 import { useNativeStyles } from '@trezor/styles-native';
 
@@ -15,7 +16,7 @@ export const useHomeRefreshControl = ({
     portfolioGraphRef: RefObject<PortfolioGraphRef | null>;
 }) => {
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const {
         utils: { colors },
     } = useNativeStyles();

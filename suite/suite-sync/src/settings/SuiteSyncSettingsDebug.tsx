@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     selectIsSuiteSyncDebugEnabled,
     updateSuiteSyncDebugEnabled,
@@ -11,7 +12,7 @@ import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-component
 import { SuiteSyncConnectionStatus } from './SuiteSyncConnectionStatus';
 
 export const SuiteSyncSettingsDebug = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
 
     const handleToggleSuiteSyncDebug = () => {

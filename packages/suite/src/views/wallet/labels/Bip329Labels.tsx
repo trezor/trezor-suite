@@ -8,7 +8,7 @@ import { suiteSyncErrorHandler } from '@suite/suite-sync';
 import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
 import { type Bip329Label, bip329LabelSchema, selectBip329Dep } from '@suite-common/bip329-types';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
@@ -40,8 +40,7 @@ export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
 
-    const dispatch = useDispatch();
-    const { bip329 } = useServices(selectBip329Dep);
+    const { bip329, dispatch } = useServices(selectBip329Dep, selectDispatch);
     const { defaultLabel } = useAccountLabel({ account });
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 

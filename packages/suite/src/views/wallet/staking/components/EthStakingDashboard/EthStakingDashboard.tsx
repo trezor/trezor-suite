@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     fetchAllTransactionsForAccountThunk,
     getDaysToAddToPool,
@@ -48,7 +49,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const stakeTxs = useSelector(state => selectAccountStakeTransactions(state, accountKey));
     const unstakeTxs = useSelector(state => selectAccountUnstakeTransactions(state, accountKey));
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const lastTxBlockTime = stakeTxs[0]?.blockTime;
     const timestamp = hasStakeInPendingDepositedState(account) ? lastTxBlockTime : undefined;

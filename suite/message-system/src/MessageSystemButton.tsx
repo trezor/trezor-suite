@@ -4,8 +4,9 @@ import { getTorUrlIfAvailable } from '@suite/external-links';
 import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
 import { resolveMessageContent } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type ButtonProps } from '@trezor/components';
 
@@ -18,7 +19,7 @@ export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonPr
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const language = useSelector(selectLanguage);
     const torOnionLinks = useSelector(selectTorOnionLinks);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     if (!cta) return null;
 

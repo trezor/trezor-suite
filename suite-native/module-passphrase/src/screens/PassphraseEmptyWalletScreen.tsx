@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
@@ -32,8 +32,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const PassphraseEmptyWalletScreen = () => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
 
     const device = useSelector(selectSelectedDevice);
 

@@ -11,7 +11,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import {
     type DeviceAuthenticityCheckResult,
@@ -35,7 +35,6 @@ type CheckDeviceAuthenticityParams = {
 
 export const useDeviceAuthenticityCheck = () => {
     const navigation = useNavigation();
-    const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { showToast } = useToast();
     const allowDebugKeys = useFeatureFlag(FeatureFlag.IsDebugKeysAllowed);
@@ -48,7 +47,7 @@ export const useDeviceAuthenticityCheck = () => {
     const isMCURemotelyDisabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckMCU),
     );
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const device = useSelector(selectSelectedDevice);
     const isDeviceBootloaderUnlocked = !!device && !device?.features?.bootloader_locked;
     const reportCheckResult = useCallback(

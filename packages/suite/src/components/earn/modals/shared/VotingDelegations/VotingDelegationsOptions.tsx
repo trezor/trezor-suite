@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type VotingDelegationOption,
     selectVotingDelegationOption,
@@ -34,7 +35,7 @@ export const VotingDelegationsOptions = ({
     hasTitle = false,
     hasKeepCurrentOption = false,
 }: VotingDelegationsOptionsProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { translationString } = useTranslation();
     const selectedVotingDelegation = useSelector(state =>
         selectVotingDelegationOption(state, account.key),

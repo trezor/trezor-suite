@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events as commonEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { AnimatedBox } from '@suite-native/atoms';
@@ -38,8 +38,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const CoinEnablingInitScreen = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const navigation = useNavigation<NavigationProps>();
     useInterceptNativeNavigation();
 

@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { useFirmware } from '@suite-native/firmware';
@@ -25,7 +26,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 export const useExitAlert = (handleContinueButtonPress?: () => void) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const navigation = useNavigation<NavigationProps>();
 

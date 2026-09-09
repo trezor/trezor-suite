@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TradeServerEnvironment, tradeApi } from '@suite-common/trading';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import { selectTradingEnvironment, tradingActions } from '@suite-native/trading-state';
@@ -15,7 +16,7 @@ const tradingEnvironmentItems: SelectItemType<TradeServerEnvironment>[] = Object
 
 export const TradingEnvironmentSelect = () => {
     const selectedTradingEnvironment = useSelector(selectTradingEnvironment);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleSelectEnvironment = (environment: TradeServerEnvironment) => {
         dispatch(tradingActions.setTradingEnvironment(environment));

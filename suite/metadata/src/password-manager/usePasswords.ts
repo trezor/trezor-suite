@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type PasswordEntry } from '@suite-common/metadata-types';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import * as metadataPasswordsActions from '../metadataPasswordsActions';
@@ -15,7 +16,7 @@ import {
 } from '../metadataReducer';
 
 export const usePasswords = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const [providerConnecting, setProviderConnecting] = useState(false);
 

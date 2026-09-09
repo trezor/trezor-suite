@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
@@ -22,8 +22,7 @@ export interface ExportActionProps {
 
 export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
     const [isExportRunning, setIsExportRunning] = useState(false);
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { translationString } = useTranslation();
 
     const getAccountTitle = useCallback(() => {

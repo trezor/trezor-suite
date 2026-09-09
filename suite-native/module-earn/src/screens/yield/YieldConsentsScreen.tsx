@@ -2,7 +2,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     earnOnboardingActions,
     getEarnOpportunityKey,
@@ -32,9 +32,8 @@ type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldConsents>
 
 export const YieldConsentsScreen = () => {
     const { applyStyle } = useNativeStyles();
-    const dispatch = useDispatch();
     const route = useRoute<RouteProps>();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
 
     const yieldFlowData = useYieldFlowData(route.params);
 

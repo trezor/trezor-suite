@@ -1,7 +1,8 @@
 import { Translation } from '@suite/intl';
 import { closeModal as closeModalAction } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
@@ -37,7 +38,7 @@ const PassphraseWalletIsEmptyContent = ({
 }: PassphraseWalletIsEmptyContentProps) => {
     const { supportedMainnets } = useNetworkSupport();
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const areAllNetworksEnabled = supportedMainnets.every(network =>
         enabledNetworks.includes(network.symbol),

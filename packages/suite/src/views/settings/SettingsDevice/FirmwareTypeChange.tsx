@@ -2,8 +2,9 @@ import { useDevice } from '@suite/device';
 import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions } from '@suite-common/firmware';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import {
     getFirmwareVersion,
@@ -18,7 +19,7 @@ interface FirmwareTypeProps {
 }
 
 export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { device } = useDevice();
 
     if (!device?.features) {

@@ -2,7 +2,8 @@ import { type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, Illustration } from '@trezor/components';
 
 import { type Account } from 'src/types/wallet';
@@ -20,7 +21,7 @@ export const TradingSellDetailPaymentSuccessful = ({
     account,
     provider,
 }: TradingSellDetailPaymentSuccessfulProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleClick = () => dispatch(gotoThunk({ routeName: 'wallet-trading-sell' }));
 

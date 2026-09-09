@@ -2,7 +2,8 @@ import { type ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import { reportToSentryThunk } from 'src/utils/suite/sentry';
 
@@ -26,7 +27,7 @@ export function TxSimulationErrorBoundary({
     onError,
     resetKey,
 }: TxSimulationErrorBoundaryProps) {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     return (
         <ErrorBoundary

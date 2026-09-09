@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
@@ -9,7 +10,7 @@ type AlertResolveValue = { wasReviewCanceled: boolean };
 
 export const useShowReviewCancellationAlert = () => {
     const { showAlert } = useAlert();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     return useCallback(
         () =>

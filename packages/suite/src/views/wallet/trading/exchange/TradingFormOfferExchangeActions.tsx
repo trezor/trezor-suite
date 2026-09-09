@@ -3,7 +3,8 @@ import { useEffect } from 'react';
 import type { CryptoId } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     requiresTokenApproval,
     selectIsTradingNetworkFeeMissing,
@@ -26,7 +27,7 @@ import { TradingRevokeModal } from 'src/views/wallet/trading/common/TradingForm/
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 export const TradingFormOfferExchangeActions = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const context = useTradingFormContext<'exchange'>();
     const {
         watch,

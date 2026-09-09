@@ -4,7 +4,8 @@ import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
@@ -48,7 +49,7 @@ export const useCompose = <TFieldValues extends FormState>({
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const { translationString } = useTranslation();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     // actions
     const debounce = useDebounce();

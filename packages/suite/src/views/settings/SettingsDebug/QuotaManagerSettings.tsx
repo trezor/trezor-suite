@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
 import { selectIsTorEnabled } from '@suite/tor';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     enforceQuotaManagerUpdated,
     eraseFetchedData,
@@ -21,7 +22,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 export const QuotaManagerSettings = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const quotaManagerCustomUrl = useSelector(selectQuotaManagerCustomUrl);

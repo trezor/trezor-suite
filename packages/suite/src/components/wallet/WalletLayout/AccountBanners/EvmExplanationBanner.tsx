@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 
 import { closeEvmExplanationBanner } from 'src/actions/suite/suiteActions';
@@ -18,7 +19,7 @@ interface EvmExplanationBannerProps {
 export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => {
     const { explanationBannerClosed } = useSelector(selectEvmSettings);
     const routeName = useSelector(selectRouteName);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const isReceiveRoute = routeName === 'wallet-receive';
 

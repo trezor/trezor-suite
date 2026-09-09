@@ -20,7 +20,7 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -49,8 +49,10 @@ export const Labeling = ({
     onSubmit,
     ...rest
 }: LabelingProps) => {
-    const dispatch = useDispatch();
-    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
+    const { ensureWalletSuiteSyncOn, dispatch } = useServices(
+        selectEnsureWalletSuiteSyncOnDep,
+        selectDispatch,
+    );
     const [showEnableSuiteSyncModal, setShowEnableSuiteSyncModal] = useState(false);
     const suiteSyncTurnOnEditResolveRef = useRef<((value: boolean) => void) | null>(null);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);

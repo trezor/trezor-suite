@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     enforceQuotaManagerUpdated,
     eraseFetchedData,
@@ -16,7 +17,7 @@ import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { useToast } from '@suite-native/toasts';
 
 export const SuiteSyncQuotaManager = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { showToast } = useToast();
 
     const quotaManagerCustomUrl = useSelector(selectQuotaManagerCustomUrl);

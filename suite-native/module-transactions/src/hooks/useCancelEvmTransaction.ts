@@ -4,8 +4,9 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useMutation } from '@suite-common/react-query';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -83,7 +84,7 @@ export const useCancelEvmTransaction = ({
     transaction,
     onClose,
 }: UseCancelEvmTransactionParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation<NavigationProp>();
     const { translate } = useTranslate();
     const { showToast } = useToast();

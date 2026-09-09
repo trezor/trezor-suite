@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     notificationsActions,
     selectHasUnseenTransactionNotifications,
@@ -16,7 +17,7 @@ import { ActivityCenterTabContent } from '../components/ActivityCenterTabContent
 type ActivityCenterTab = 'notifications' | 'system' | 'releaseNotes';
 
 export const ActivityCenterScreen = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
     const [activeTab, setActiveTab] = useState<ActivityCenterTab>('notifications');
 

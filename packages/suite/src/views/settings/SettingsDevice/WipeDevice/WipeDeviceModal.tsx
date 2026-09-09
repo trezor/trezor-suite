@@ -7,7 +7,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Button, Column, Modal } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
@@ -19,12 +19,11 @@ type WipeDeviceModalProps = {
 };
 
 export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const [isLoading, setIsLoading] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
 
     const { device, isLocked } = useDevice();
-    const dispatch = useDispatch();
 
     const isBootloaderMode = isDeviceInBootloaderMode(device);
 

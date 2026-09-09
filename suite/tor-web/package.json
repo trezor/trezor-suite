@@ -12,6 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite/tor": "workspace:*",
         "@trezor/env-utils": "workspace:*",

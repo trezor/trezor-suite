@@ -8,14 +8,13 @@ import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { doesSupportMultiShare } from '@suite-common/backup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const device = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
     const isBackupRequired = device?.features?.backup_availability === 'Required';
 

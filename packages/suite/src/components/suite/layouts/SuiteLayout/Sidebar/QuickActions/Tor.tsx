@@ -1,7 +1,8 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { TorStatus, selectIsTorDisabled, selectTorStatus } from '@suite/tor';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Column, Icon, type IconComponent, type UIIntent } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import {
@@ -44,7 +45,7 @@ const torIntentMap: Record<TorStatus, UIIntent> = {
 };
 
 export const Tor = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const torStatus = useSelector(selectTorStatus);
     const isTorDisabled = useSelector(selectIsTorDisabled);

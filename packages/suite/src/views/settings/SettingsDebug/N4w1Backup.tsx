@@ -1,5 +1,6 @@
 import { selectIsN4w1BackupEnabled, suiteSettingsActions } from '@suite/settings';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -7,7 +8,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export const N4w1Backup = () => {
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const toggle = () =>
         dispatch(suiteSettingsActions.setDebugMode({ isN4w1BackupEnabled: !isN4w1BackupEnabled }));

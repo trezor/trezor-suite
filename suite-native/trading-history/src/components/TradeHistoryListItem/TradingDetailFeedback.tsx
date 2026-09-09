@@ -8,7 +8,7 @@ import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { FeedbackCard } from '@suite-native/feedback-form';
@@ -33,11 +33,10 @@ export const TradingDetailFeedback = ({
     receiveCurrency,
     country,
 }: TradingDetailFeedbackProps) => {
-    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const geolocation = useSelector(selectCountryCode);
     const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
 
     const handleRatingSelect = (rating: Rating) => {
         analytics.report({

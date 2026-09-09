@@ -13,6 +13,7 @@
     "dependencies": {
         "@react-navigation/native": "7.1.31",
         "@suite-common/connect-popup": "workspace:^",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",

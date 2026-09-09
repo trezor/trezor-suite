@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     getTronAvailableVotingPower,
     getTronTotalVotingPower,
@@ -37,8 +37,7 @@ interface TronStakedCardProps {
 }
 
 export const TronStakedCard = ({ account }: TronStakedCardProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const [isVoteAllocationOpen, setIsVoteAllocationOpen] = useState(false);
     const { stats, maxApr } = useTronStakingStats();
 

@@ -6,7 +6,8 @@ import {
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { analytics } from '@suite-native/analytics';
 import { Badge, Button, Card, CheckBox, Divider, HStack, Text, VStack } from '@suite-native/atoms';
@@ -27,7 +28,7 @@ export const AnalyticsLogging = () => {
     const customUrl = useSelector(selectCustomAnalyticsUrl);
     const loggerEnabled = useSelector(selectLoggerEnabled);
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { showToast } = useToast();
 
     const form = useForm<FormValues>({

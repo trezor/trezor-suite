@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
@@ -32,8 +32,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const navigation = useNavigation<NavigationProp>();
     const device = useSelector(selectSelectedDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();

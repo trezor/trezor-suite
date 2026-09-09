@@ -8,7 +8,8 @@ import {
 } from 'invity-api';
 
 import { gotoThunk } from '@suite/router';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     parseCryptoId,
     tradingActions,
@@ -100,7 +101,7 @@ const findAccountKey = (
     )?.key;
 
 export const useTradingRedirect = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const accounts = useSelector(selectAccounts);
 
     const prefilledAccountFromRedirect = (

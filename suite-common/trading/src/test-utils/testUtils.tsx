@@ -214,7 +214,7 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
     });
 
     const TradingServicesProvider = ({ children }: PropsWithChildren) => (
-        <ServicesProvider services={{ networkModuleRepository }}>
+        <ServicesProvider services={{ networkModuleRepository, store }}>
             {Wrapper ? <Wrapper>{children}</Wrapper> : children}
         </ServicesProvider>
     );

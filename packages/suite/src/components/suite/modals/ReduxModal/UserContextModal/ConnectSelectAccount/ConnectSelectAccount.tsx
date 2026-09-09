@@ -14,7 +14,8 @@ import {
     connectPopupVerifySelectAccountThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type AccountType } from '@suite-common/wallet-config';
 import { Column, H3, Icon, Modal, Paragraph, Row, SubTabs, Text } from '@trezor/components';
 import { CheckCircleIcon } from '@trezor/icons';
@@ -37,7 +38,7 @@ const ACCOUNT_TYPE_LABELS: Partial<Record<AccountType, TranslationKey>> = {
 };
 
 export const ConnectSelectAccount = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { device } = useDevice();
     const popupCall = useSelector(selectConnectPopupCall);
 

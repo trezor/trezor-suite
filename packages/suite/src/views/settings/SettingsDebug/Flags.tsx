@@ -6,7 +6,8 @@ import {
     setFlag,
     setNewContentIndicatorSeen,
 } from '@suite/flags';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectEntries, typedObjectValues } from '@trezor/utils';
@@ -20,7 +21,7 @@ const isBooleanFlagEntry = (entry: FlagEntry): entry is BooleanFlagEntry =>
     typeof entry[1] === 'boolean';
 
 export const Flags = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const flags = useSelector(selectFlags);
 
     const entries = typedObjectEntries(flags).filter(isBooleanFlagEntry);

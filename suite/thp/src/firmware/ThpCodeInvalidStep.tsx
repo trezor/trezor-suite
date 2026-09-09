@@ -1,7 +1,8 @@
 import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Modal, Text } from '@trezor/components';
 
 import { ThpPairingFailedForFirmwareInstallation } from '../connection/ThpPairingFailedForFirmwareInstallation';
@@ -14,7 +15,7 @@ type ThpCodeInvalidStepProps = {
 // reflection of components/onboarding/ThpPairing/ThpCodeInvalidStep
 export const ThpCodeInvalidStep = ({ modalHeading }: ThpCodeInvalidStepProps) => {
     const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const handleRetry = () => {
         setIsLoading(true);

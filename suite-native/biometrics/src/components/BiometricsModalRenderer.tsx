@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import { BiometricOverlay } from './BiometricOverlay';
 import {
@@ -13,7 +14,7 @@ import {
 import { handleBiometricsAppStateChangeThunk } from '../biometricsThunks';
 
 export const BiometricsModalRenderer = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const biometricsError = useSelector(selectBiometricsError);
     const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);

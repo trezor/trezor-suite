@@ -1,9 +1,10 @@
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const TriggerToast = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     return (
         <SectionItem data-testid="@settings/debug/github">

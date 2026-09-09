@@ -5,7 +5,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type YieldRootState,
@@ -35,7 +35,6 @@ type NavigationProps = StackNavigationProps<
 export const YieldClaimCompleteScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const dispatch = useDispatch();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { accountKey } = route.params;
     const session = useSelector((state: YieldRootState) =>
@@ -44,7 +43,7 @@ export const YieldClaimCompleteScreen = () => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
 
     const handleExit = useCallback(() => {
         analytics.report({

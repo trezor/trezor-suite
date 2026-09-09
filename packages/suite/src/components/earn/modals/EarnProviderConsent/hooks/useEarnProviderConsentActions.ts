@@ -2,7 +2,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -43,8 +43,7 @@ export const useEarnProviderConsentActions = ({
     networkSymbol,
     yieldContext,
 }: UseEarnProviderConsentActionsProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const selectedVotingDelegation = useSelector(state =>
         selectVotingDelegationOption(state, account.key),
     );

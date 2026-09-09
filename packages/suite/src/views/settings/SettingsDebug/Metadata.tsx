@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
 import { exportMetadataToLocalFileThunk } from '@suite/metadata';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const Metadata = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const [exporting, setExporting] = useState(false);
 
     const onClick = () => {

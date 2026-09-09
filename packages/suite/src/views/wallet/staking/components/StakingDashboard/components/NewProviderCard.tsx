@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isCardanoStakedWithFiveBinaries, selectPoolStatsApy } from '@suite-common/wallet-core';
@@ -17,7 +18,7 @@ interface NewProviderCardProps {
 }
 
 export const NewProviderCard = ({ account }: NewProviderCardProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
 
