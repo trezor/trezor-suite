@@ -14,19 +14,35 @@ export interface SolanaStakingAccount {
 }
 
 /**
- * A Soroban contract invocation, decoded from the transaction envelope. Arguments arrive
- * pre-rendered because only the decoder knows the XDR value types; `address` is kept apart from
- * the rest so the UI can link it to the explorer.
+ * A contract argument, pre-rendered by the decoder because only it knows the XDR value types.
+ * An `address` is kept apart from the rest so the UI can link it to the explorer.
+ */
+export interface StellarContractCallArgument {
+    kind: 'address' | 'text';
+    value: string;
+}
+
+/**
+ * One node of the authorization tree, flattened depth-first. For a contract token the nested
+ * `transfer` is the only record of what moved, since Horizon reports balance changes for a
+ * Stellar Asset Contract only — so a swap is legible from these legs and their arguments.
+ */
+export interface StellarAuthorizedCallData {
+    contractId: string;
+    functionName: string;
+    depth: number;
+    args: StellarContractCallArgument[];
+}
+
+/**
+ * A Soroban contract invocation, decoded from the transaction envelope. Arguments stay positional:
+ * their names live in the contract spec, not in the envelope.
  */
 export interface StellarContractCallData {
     contractId: string;
     functionName: string;
-    args: { kind: 'address' | 'text'; value: string }[];
-    /**
-     * The authorization tree flattened depth-first. It names the calls the invocation authorizes —
-     * for a contract token, the `transfer` that moved it, which balance changes never report.
-     */
-    authorizedCalls: { contractId: string; functionName: string; depth: number }[];
+    args: StellarContractCallArgument[];
+    authorizedCalls: StellarAuthorizedCallData[];
 }
 
 export type TokenStandard =

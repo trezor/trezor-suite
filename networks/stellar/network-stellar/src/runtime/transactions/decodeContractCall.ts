@@ -37,11 +37,21 @@ export type StellarAuthorizedCall = StellarContractCall & {
  * transaction — is synchronous and must not pull stellar-sdk in eagerly. Mirrors
  * `StellarContractCallData` in `@trezor/blockchain-link-types`.
  */
+type StellarDisplayArgument = { kind: 'address' | 'text'; value: string };
+
+/** One authorization-tree node, flattened. Mirrors `StellarAuthorizedCallData`. */
+type StellarAuthorizedCallInfo = {
+    contractId: string;
+    functionName: string;
+    depth: number;
+    args: StellarDisplayArgument[];
+};
+
 export type StellarContractCallInfo = {
     contractId: string;
     functionName: string;
-    args: { kind: 'address' | 'text'; value: string }[];
-    authorizedCalls: { contractId: string; functionName: string; depth: number }[];
+    args: StellarDisplayArgument[];
+    authorizedCalls: StellarAuthorizedCallInfo[];
 };
 
 // The signing path rejects a symbol or string that is not valid UTF-8, because re-encoding it would
@@ -161,8 +171,8 @@ const flattenAuthorizedCalls = (
     calls: StellarAuthorizedCall[],
     depth: number,
 ): StellarContractCallInfo['authorizedCalls'] =>
-    calls.flatMap(({ contractId, functionName, subCalls }) => [
-        { contractId, functionName, depth },
+    calls.flatMap(({ contractId, functionName, args, subCalls }) => [
+        { contractId, functionName, depth, args: args.map(toDisplayArgument) },
         ...flattenAuthorizedCalls(subCalls, depth + 1),
     ]);
 

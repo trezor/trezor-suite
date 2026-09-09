@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type StellarAuthorizedCallData } from '@trezor/blockchain-link-types';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;
@@ -30,10 +31,29 @@ type DataProps = {
     tx: WalletAccountTransaction;
 };
 
+// Arguments go on their own lines rather than inline: a `transfer` leg carries two 56-character
+// addresses, which would push the call itself off the end of the row.
+const formatAuthorizedCall = ({
+    contractId,
+    functionName,
+    depth,
+    args,
+}: StellarAuthorizedCallData) => {
+    const indent = '  '.repeat(depth);
+    const header = `${indent}${contractId} :: ${functionName}`;
+    const argLines = args.map(({ value }, index) => `${indent}  [${index}] ${value}`);
+
+    return [header, ...argLines].join('\n');
+};
+
 /**
  * The Soroban equivalent of EVM calldata. XDR is self-describing, so the contract, the function
  * and the argument types are decoded from the envelope without a contract ABI — but the argument
  * *names* are not in there, they come from the contract spec, so arguments stay positional.
+ *
+ * The authorized calls carry their arguments too. That is what makes a swap readable: Horizon
+ * reports balance changes only for a Stellar Asset Contract, so for anything else the nested
+ * `transfer` legs are the only record of which token moved, between whom, and how much.
  */
 const StellarContractCallRows = ({
     contractCall,
@@ -57,12 +77,7 @@ const StellarContractCallRows = ({
             {authorizedCalls.length > 0 && (
                 <DataRow
                     translationId="TR_TX_DATA_AUTHORIZED_CALLS"
-                    content={authorizedCalls
-                        .map(
-                            call =>
-                                `${'  '.repeat(call.depth)}${call.contractId} :: ${call.functionName}`,
-                        )
-                        .join('\n')}
+                    content={authorizedCalls.map(formatAuthorizedCall).join('\n')}
                 />
             )}
         </>

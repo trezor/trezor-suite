@@ -94,7 +94,7 @@ describe('decodeSorobanInvocation', () => {
         });
     });
 
-    it('flattens the authorization tree depth-first, keeping the nesting depth', () => {
+    it("flattens the authorization tree depth-first, keeping the depth and each call's arguments", () => {
         const transfer = invokeContractArgs({
             contract: USDC_SAC,
             functionName: 'transfer',
@@ -105,9 +105,31 @@ describe('decodeSorobanInvocation', () => {
             rootInvocation: authorizedInvocation(swapArgs(), [authorizedInvocation(transfer)]),
         });
 
+        // The `transfer` leg is the only record of what actually moved: Horizon reports balance
+        // changes for a Stellar Asset Contract only, so a contract-token swap has none.
         expect(decodeSorobanInvocation(buildSwapEnvelope([entry]))?.authorizedCalls).toEqual([
-            { contractId: ROUTER, functionName: 'swap_chained', depth: 0 },
-            { contractId: USDC_SAC, functionName: 'transfer', depth: 1 },
+            {
+                contractId: ROUTER,
+                functionName: 'swap_chained',
+                depth: 0,
+                args: [
+                    { kind: 'address', value: SOURCE },
+                    { kind: 'text', value: '[0x24f9c991]' },
+                    { kind: 'address', value: USDC_SAC },
+                    { kind: 'text', value: '20000000' },
+                    { kind: 'text', value: '19777295' },
+                ],
+            },
+            {
+                contractId: USDC_SAC,
+                functionName: 'transfer',
+                depth: 1,
+                args: [
+                    { kind: 'address', value: SOURCE },
+                    { kind: 'address', value: ROUTER },
+                    { kind: 'text', value: '20000000' },
+                ],
+            },
         ]);
     });
 
