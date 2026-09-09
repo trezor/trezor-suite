@@ -1,3 +1,5 @@
+import { Status } from './Status';
+import { coordinatorRequest } from './coordinatorRequest';
 import { createServer } from '../../mocks/server';
 import {
     AFFILIATE_INFO,
@@ -6,8 +8,6 @@ import {
     createCoinjoinRound,
 } from '../__fixtures__/round.fixture';
 import { STATUS_TIMEOUT } from '../constants';
-import { Status } from './Status';
-import { coordinatorRequest } from './coordinatorRequest';
 
 jest.mock('./coordinatorRequest', () => ({
     ...jest.requireActual('./coordinatorRequest'),

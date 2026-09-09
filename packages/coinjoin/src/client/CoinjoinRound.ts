@@ -207,7 +207,6 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             });
             this.phaseDeadline = phaseDeadline;
             this.roundDeadline = roundDeadline;
-            // safe lower bound for when this phase started (see getSigningSendDeadline)
             this.phaseStartLowerBound = phaseStartLowerBound;
         }
 

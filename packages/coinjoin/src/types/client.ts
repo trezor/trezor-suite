@@ -6,8 +6,6 @@ import type { CoinjoinRequestEvent, CoinjoinRoundEvent, SessionPhaseEvent } from
 export interface CoinjoinStatusEvent {
     rounds: Round[];
     changed: Round[];
-    // timestamp (ms) of the previous status poll; a safe lower bound for when a newly observed
-    // phase actually started, used to keep phase deadlines from being inflated by poll latency
     prevStatusTimestamp?: number;
     feeRateMedian: number;
     coordinationFeeRate: {

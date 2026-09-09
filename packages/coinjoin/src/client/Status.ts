@@ -37,12 +37,6 @@ export class Status extends TypedEmitter<StatusEvents> {
     private statusTimeout?: TimerId;
     private identities: string[]; // registered identities
     private runningAffiliateServer = false;
-    // request-sent time (Date.now() captured before the network round-trip) of the previous
-    // committed status poll -- a safe lower bound for when a newly observed phase started (see
-    // getSigningSendDeadline). Advanced only after a poll commits (transformStatus did not throw),
-    // so an uncommitted poll whose snapshot may already show the next phase cannot corrupt it.
-    // Undefined until the first committed poll. Distinct from `this.timestamp`, which setStatusTimeout
-    // also bumps after failed polls.
     private lastStatusRequestTimestamp?: number;
 
     constructor(settings: CoinjoinClientSettings) {
@@ -177,7 +171,7 @@ export class Status extends TypedEmitter<StatusEvents> {
         }, timeout);
     }
 
-    private processStatus(status: coordinator.CoinjoinStatus, requestTimestamp: number) {
+    private processStatus(status: coordinator.CoinjoinStatus, prevStatusTimestamp?: number) {
         const { affiliationId } = this.settings;
         if (affiliationId) {
             // add matching coinjoinRequest to rounds
@@ -196,30 +190,18 @@ export class Status extends TypedEmitter<StatusEvents> {
         }
 
         const changed = this.compareStatus(status.RoundStates);
-        // lower bound for the start of any phase first observed now: the request-sent time of the
-        // previous committed poll (see getSigningSendDeadline). Advanced below only after this poll
-        // commits.
-        const prevStatusTimestamp = this.lastStatusRequestTimestamp;
         if (changed.length > 0) {
             const statusEvent = {
                 changed,
                 prevStatusTimestamp,
-                // transformStatus may throw (e.g. empty CoinJoinFeeRateMedians); if it does, the
-                // anchor below is left unadvanced and this.rounds uncommitted, so this poll -- whose
-                // snapshot may already show the next phase -- does not become the anchor. getStatus
-                // catches and logs the throw.
                 ...transformStatus(status),
             };
 
             this.emit('update', statusEvent);
             this.rounds = status.RoundStates;
-            // advance the anchor only after the poll is fully committed (transformStatus did not throw)
-            this.lastStatusRequestTimestamp = requestTimestamp;
 
             return statusEvent;
         }
-        // a successful poll with no phase change still commits its snapshot -> advance the anchor
-        this.lastStatusRequestTimestamp = requestTimestamp;
     }
 
     isAffiliateServerRunning() {
@@ -241,7 +223,15 @@ export class Status extends TypedEmitter<StatusEvents> {
 
         // for easier debugging explicitly catch and log processStatus errors
         try {
-            return this.processStatus(status, requestTimestamp);
+            // lower bound for the start of any phase first observed now: the request-sent time of the
+            // previous committed poll (see getSigningSendDeadline). Advanced below only after this poll
+            // commits.
+            const prevStatusTimestamp = this.lastStatusRequestTimestamp;
+            const processedStatus = this.processStatus(status, prevStatusTimestamp);
+            // advance the anchor only after the poll is fully committed (processStatus did not throw)
+            this.lastStatusRequestTimestamp = requestTimestamp;
+
+            return processedStatus;
         } catch (error) {
             this.log('error', `Status processing ${error.message}`);
             throw new Error(`Status processing ${error.message}`, { cause: error });

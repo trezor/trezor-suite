@@ -10,7 +10,7 @@ import {
     ROUND_REGISTRATION_END_OFFSET,
 } from '../constants';
 import { RoundPhase } from '../enums';
-import { type CoinjoinTransactionData } from '../types';
+import type { CoinjoinRoundShape, CoinjoinTransactionData } from '../types';
 import {
     type CoinjoinRoundParameters,
     type CoinjoinState,
@@ -79,15 +79,14 @@ export const scheduleDelay = (
     minimumDelay = 0,
     maximumDelay = ROUND_MAXIMUM_REQUEST_DELAY,
 ) => {
-    // reduce deadline to have absolute minimum time to make the actual request (10 seconds),
-    // but it must be at least 1 sec
-    const deadlineOffset = clamp(deadline - ROUND_MAXIMUM_REQUEST_DELAY, 1000);
-    // clamp the given maximum delay so it's at least 1 sec (so there's always room for randomness)
+    // reduce deadline to have absolute minimum time to make the actual request (10 seconds), if possible
+    const deadlineOffset = clamp(deadline - ROUND_MAXIMUM_REQUEST_DELAY, 0);
+    // clamp the given maximum delay so it's at least immediate
     // and at most the calculated offset (so we meet the deadline)
-    const max = clamp(maximumDelay, 1000, deadlineOffset);
+    const max = clamp(maximumDelay, 0, deadlineOffset);
     // clamp the given minimum delay so it's at least immediate (no negative delays)
-    // and at most 1 sec before the calculated max (so there's room for randomness)
-    const min = clamp(minimumDelay, 0, max - 1000);
+    // and at most the calculated max
+    const min = clamp(minimumDelay, 0, max);
 
     return getWeakRandomNumberInRange(min, max);
 };
@@ -154,34 +153,20 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
     }
 };
 
-// Conservative deadline for scheduling the randomized witness send in the signing phase. This is
-// the single source of the poll-lag-safe send-window rationale; other call sites just reference it.
-//
-// `phaseStartLowerBound` is a safe lower bound of when the signing phase actually started (the
-// previous committed status poll's request-sent time). Status is polled every ~20s, so the
-// phase-detection time -- and therefore `phaseDeadline`, which is anchored to it -- can lag the
-// coordinator's real phase start by up to one poll interval. Sizing the randomized privacy spread
-// against that inflated deadline lets a witness be scheduled after the coordinator has already
-// closed the phase -> the input is banned. Anchoring the spread to `phaseStartLowerBound` instead
-// guarantees it is never scheduled past the real phase end.
-//
-// Only the send spread is bounded by this; the request keeps the optimistic `phaseDeadline` as its
-// hard cancellation deadline, so a slowly-signed but still valid witness is not aborted early. When
-// the lower bound is stale the window can collapse to ~0 and the witness is sent immediately (a
-// fail-safe to still make the round, not a way to reclaim signing budget -- so it also overrides the
-// DelayTransactionSigning 50s minimum). Falls back to `phaseDeadline` when the phase start is unknown
-// (round first observed already signing).
-export const getSigningSendDeadline = (
-    phaseStartLowerBound: number | undefined,
-    phaseDeadline: number,
-    roundParameters: CoinjoinRoundParameters,
-) =>
-    phaseStartLowerBound != null
-        ? Math.min(
-              phaseStartLowerBound + readTimeSpan(roundParameters.TransactionSigningTimeout),
-              phaseDeadline,
-          )
-        : phaseDeadline;
+// Get conservative deadline for signing phase: Use either
+// - phaseDeadline received from coordinator, or
+// - phaseStartLowerBound (= the soonest when signing phase could've started,
+//   based on polling mechanism) plus duration of the signing phase,
+// whichever is sooner
+export const getSigningSendDeadline = ({
+    phaseStartLowerBound = Number.MAX_SAFE_INTEGER,
+    phaseDeadline,
+    roundParameters,
+}: Pick<CoinjoinRoundShape, 'phaseStartLowerBound' | 'phaseDeadline' | 'roundParameters'>) =>
+    Math.min(
+        phaseStartLowerBound + readTimeSpan(roundParameters.TransactionSigningTimeout),
+        phaseDeadline,
+    );
 
 // get relevant round data from the most recent round
 const getDataFromRounds = (rounds: Round[]) => {

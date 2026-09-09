@@ -90,43 +90,35 @@ describe('roundUtils', () => {
         const resultInRange = (result: number, min: number, max: number) => {
             expect(result).toBeGreaterThanOrEqual(min);
             expect(result).toBeLessThanOrEqual(max);
+            expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(min, max);
         };
 
         // default (no min, no max) range 0-10 sec.
         resultInRange(scheduleDelay(60000), 0, 10000);
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 10000);
 
-        // range 3-10sec.
+        // min 3 sec., range 3-10 sec.
         resultInRange(scheduleDelay(20000, 3000), 3000, 10000);
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(3000, 10000);
 
-        // deadlineOffset < 0, range 0-1 sec.
-        resultInRange(scheduleDelay(1000, 3000), 0, 1000);
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+        // deadline < ROUND_MAXIMUM_REQUEST_DELAY, immediate
+        resultInRange(scheduleDelay(1000, 3000), 0, 0);
 
-        // deadline < min, range 9-10 sec.
-        resultInRange(scheduleDelay(60000, 61000), 9000, 10000);
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(9000, 10000);
+        // deadline < min, defaults to max delay 10 sec.
+        resultInRange(scheduleDelay(60000, 61000), 10000, 10000);
 
-        // deadline < min && deadline < max, range 49-50 sec.
-        resultInRange(scheduleDelay(60000, 61000, 62000), 49000, 50000);
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(49000, 50000);
+        // deadline < min && deadline < max, max safe delay 50 sec.
+        resultInRange(scheduleDelay(60000, 61000, 62000), 50000, 50000);
 
         // deadline > min && deadline < max, range 3-20 sec.
         resultInRange(scheduleDelay(30000, 3000, 50000), 3000, 20000);
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(3000, 20000);
 
-        // min < 0 && deadline < max && deadlineOffset > 0, range 0-2.5 sec.
+        // min < 0 && deadline < max && deadline > ROUND_MAXIMUM_REQUEST_DELAY, range 0-2.5 sec.
         resultInRange(scheduleDelay(12500, -3000, 50000), 0, 2500);
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 2500);
 
-        // min < 0 && max < 0 && deadlineOffset > 0, range 0-1 sec.
-        resultInRange(scheduleDelay(12500, -10000, -5000), 0, 1000);
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+        // min < 0 && max < 0 && deadline > ROUND_MAXIMUM_REQUEST_DELAY, immediate
+        resultInRange(scheduleDelay(12500, -10000, -5000), 0, 0);
 
-        // min < 0 && max < 0 && deadlineOffset < 0, range 0-1 sec.
-        resultInRange(scheduleDelay(7500, -10000, -5000), 0, 1000);
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+        // min < 0 && max < 0 && deadline < ROUND_MAXIMUM_REQUEST_DELAY, immediate
+        resultInRange(scheduleDelay(7500, -10000, -5000), 0, 0);
     });
 
     describe('getSigningSendDeadline', () => {
@@ -140,7 +132,7 @@ describe('roundUtils', () => {
             const phaseStartLowerBound = 1_000_000;
             const phaseDeadline = phaseStartLowerBound + SIGNING_TIMEOUT + 15_000; // inflated ~15s
             expect(
-                getSigningSendDeadline(phaseStartLowerBound, phaseDeadline, roundParameters),
+                getSigningSendDeadline({ phaseStartLowerBound, phaseDeadline, roundParameters }),
             ).toBe(phaseStartLowerBound + SIGNING_TIMEOUT);
         });
 
@@ -148,15 +140,16 @@ describe('roundUtils', () => {
             const phaseStartLowerBound = 1_000_000;
             const phaseDeadline = phaseStartLowerBound + 10_000; // shorter than the signing timeout
             expect(
-                getSigningSendDeadline(phaseStartLowerBound, phaseDeadline, roundParameters),
+                getSigningSendDeadline({ phaseStartLowerBound, phaseDeadline, roundParameters }),
             ).toBe(phaseDeadline);
         });
 
         it('falls back to phaseDeadline when the phase start is unknown', () => {
+            const phaseStartLowerBound = undefined;
             const phaseDeadline = 1_234_567;
-            expect(getSigningSendDeadline(undefined, phaseDeadline, roundParameters)).toBe(
-                phaseDeadline,
-            );
+            expect(
+                getSigningSendDeadline({ phaseStartLowerBound, phaseDeadline, roundParameters }),
+            ).toBe(phaseDeadline);
         });
     });
 });

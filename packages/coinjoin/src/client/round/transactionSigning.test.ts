@@ -593,8 +593,8 @@ describe('transactionSigning signature delay', () => {
             server?.requestOptions,
         );
 
-        // signature is sent in default range 0-1 sec.
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+        // signature is sent immediately
+        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 0);
         expect(response.isSignedSuccessfully()).toBe(true);
     });
 });
@@ -609,12 +609,11 @@ describe('transactionSigning send window (phaseStartLowerBound)', () => {
 
     beforeEach(() => {
         server?.removeAllListeners('test-request');
-        jest.mocked(getWeakRandomNumberInRange).mockClear().mockReturnValue(900);
+        jest.mocked(getWeakRandomNumberInRange).mockClear();
         jest.mocked(coordinator.transactionSignature).mockClear().mockResolvedValue(undefined);
     });
 
     afterEach(() => {
-        jest.mocked(getWeakRandomNumberInRange).mockReturnValue(0);
         jest.mocked(coordinator.transactionSignature).mockImplementation(
             jest.requireActual('../coordinator').transactionSignature,
         );
@@ -656,6 +655,7 @@ describe('transactionSigning send window (phaseStartLowerBound)', () => {
         });
         round.roundParameters.DelayTransactionSigning = false;
 
+        jest.mocked(getWeakRandomNumberInRange).mockReturnValueOnce(900);
         const response = await transactionSigning(round, [], server?.requestOptions);
 
         // budget = sendDeadline(130s) - now(100s) = 30s; reserve 10s -> deadlineOffset 20s
@@ -669,7 +669,7 @@ describe('transactionSigning send window (phaseStartLowerBound)', () => {
         expect(response.isSignedSuccessfully()).toBe(true);
     });
 
-    it.each([-1000, 0, 500, 1000, 5000, 10000, 10999])(
+    it.each([-1000, 0, 500, 1000, 5000, 10000])(
         'sends immediately with %i ms left before the conservative deadline',
         async remainingTime => {
             jest.spyOn(Date, 'now').mockReturnValue(100000);
@@ -687,7 +687,7 @@ describe('transactionSigning send window (phaseStartLowerBound)', () => {
                 'aa',
                 expect.objectContaining({ delay: 0, deadline: round.phaseDeadline }),
             );
-            expect(getWeakRandomNumberInRange).not.toHaveBeenCalled();
+            expect(getWeakRandomNumberInRange).toHaveBeenCalledWith(0, 0);
             expect(response.isSignedSuccessfully()).toBe(true);
         },
     );
@@ -700,14 +700,15 @@ describe('transactionSigning send window (phaseStartLowerBound)', () => {
         });
         round.roundParameters.DelayTransactionSigning = true;
 
+        jest.mocked(getWeakRandomNumberInRange).mockReturnValueOnce(1000);
         const response = await transactionSigning(round, [], server?.requestOptions);
 
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(1000, 1000);
         expect(coordinator.transactionSignature).toHaveBeenCalledWith(
             round.id,
             0,
             'aa',
-            expect.objectContaining({ delay: 900, deadline: round.phaseDeadline }),
+            expect.objectContaining({ delay: 1000, deadline: round.phaseDeadline }),
         );
         expect(response.isSignedSuccessfully()).toBe(true);
     });

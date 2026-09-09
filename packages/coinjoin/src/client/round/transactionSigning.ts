@@ -1,6 +1,6 @@
 import { arrayShuffle, getWeakRandomInt } from '@trezor/utils';
 
-import { ROUND_MAXIMUM_REQUEST_DELAY, TX_SIGNING_DELAY } from '../../constants';
+import { TX_SIGNING_DELAY } from '../../constants';
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 import { type CoinjoinTransactionData } from '../../types';
 import type { AliceShape } from '../../types/alice';
@@ -149,18 +149,9 @@ const sendTxSignature = async (
     // Size the randomized privacy spread against a poll-lag-safe deadline (see getSigningSendDeadline)
     // so a witness is never delayed past the coordinator's real phase end. The request below keeps
     // the optimistic `phaseDeadline` as its hard cancellation deadline.
-    const sendDeadline = getSigningSendDeadline(
-        round.phaseStartLowerBound,
-        round.phaseDeadline,
-        round.roundParameters,
-    );
+    const sendDeadline = getSigningSendDeadline(round);
     const remainingTime = sendDeadline - Date.now();
-    // The scheduler floors its random window to one second, so skip it when that window
-    // would consume the time reserved for the request.
-    const delay =
-        remainingTime < ROUND_MAXIMUM_REQUEST_DELAY + 1000
-            ? 0
-            : scheduleDelay(remainingTime, minimumDelay, maximumDelay);
+    const delay = scheduleDelay(remainingTime, minimumDelay, maximumDelay);
 
     logger.info(
         `Sending signature of ~~${input.outpoint}~~ with delay ${delay}ms. Round signing delay: ${round.roundParameters.DelayTransactionSigning}`,
