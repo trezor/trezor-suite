@@ -17,7 +17,6 @@ import {
     POPUP,
     type PermissionRequest,
     RESPONSE_EVENT,
-    createPopupMessage,
 } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
@@ -157,8 +156,7 @@ export const useConnectPopup = (
     // Send POPUP.CORE_LOADED when suite lifecycle becomes ready.
     useEffect(() => {
         if (lifecycle.status !== 'ready' || !popupLink) return;
-
-        popupLink.sendMessage(createPopupMessage(POPUP.CORE_LOADED));
+        popupLink.sendMessage({ type: POPUP.CORE_LOADED });
     }, [lifecycle.status, popupLink]);
 
     // Signal to the caller that the popup is done once the call has finished
