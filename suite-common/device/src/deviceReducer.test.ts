@@ -128,3 +128,20 @@ describe('SUITE.REMEMBER_DEVICE', () => {
         });
     });
 });
+
+describe('setDeviceState', () => {
+    fixtures.setDeviceState.forEach(f => {
+        it(f.description, () => {
+            let state: State = f.initialState;
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a);
+            });
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
+                const expected = f.result[i];
+                if (!expected) throw new Error(`Missing result at index ${i}`);
+                expect(device).toMatchObject(expected);
+            });
+        });
+    });
+});
