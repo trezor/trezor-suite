@@ -66,7 +66,7 @@ declare const transportRequestDevice: typeof TRANSPORT.REQUEST_DEVICE;
 createTransportMessage(transportRequestDevice, undefined);
 
 // @ts-expect-error Transport error messages require an error payload.
-createTransportMessage(transportError, undefined);
+createTransportMessage(transportErrorType, undefined);
 
 /* UI EVENT MESSAGES */
 declare const uiEventPayload: Extract<
@@ -82,7 +82,7 @@ const uiEventMessage2 = createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, uiEventP
 void (uiEventMessage2.type satisfies typeof UI_EVENTS.BUNDLE_PROGRESS);
 void (uiEventMessage2.payload satisfies typeof uiEventPayload);
 
-// TODO: ts-expect-error Transport missing UI event does not accept a payload.
+// @ts-expect-error Transport missing UI event does not accept a payload.
 createUiEventMessage(UI_EVENTS.TRANSPORT_MISSING, undefined);
 
 // @ts-expect-error Bundle progress UI event requires a payload.
