@@ -15,22 +15,22 @@ import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 export type SendFormFormContext = {
     addressValidator?: AddressValidator;
     symbol?: NetworkSymbol;
-    availableBalance?: string;
+    availableBalanceBeforeFees?: string;
     networkFeeInfo?: FeeInfo;
     isValueInSats?: boolean;
     isTokenFlow?: boolean;
-    feeLevelsMaxAmount?: FeeLevelsMaxAmount;
+    feeAdjustedMaxSendAmountByLevel?: FeeLevelsMaxAmount;
     decimals?: number;
     accountDescriptor?: string;
-    accountNativeAvailableBalance?: string;
+    nativeCurrencyBalanceAvailableForFees?: string;
     networkReserve?: string;
     rippleReserve?: string;
     /** What the recipient network can do with names, owned by its network module. */
     namedAddress?: NamedAddressSupport;
 };
 
-const isAmountDust = (amount: string, context?: SendFormFormContext) => {
-    if (!amount || !context) {
+const isAmountDust = (enteredAmount: string, context?: SendFormFormContext) => {
+    if (!enteredAmount || !context) {
         return false;
     }
 
@@ -40,7 +40,7 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
         return false;
     }
 
-    const amountBigNumber = new BigNumber(amount);
+    const enteredAmountValue = new BigNumber(enteredAmount);
     const rawDust = networkFeeInfo.dustLimit?.toString();
 
     const dustThreshold =
@@ -50,59 +50,82 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
         return false;
     }
 
-    return amountBigNumber.lt(dustThreshold);
+    return enteredAmountValue.lt(dustThreshold);
 };
 
-const isAmountHigherThanBalance = (
-    amount: string,
-    isSendMaxEnabled: boolean,
-    context?: SendFormFormContext,
-) => {
-    if (!amount || !context) {
-        return false;
-    }
-
-    const { symbol, networkFeeInfo, availableBalance, feeLevelsMaxAmount, isTokenFlow } = context;
-
-    if (!symbol || !networkFeeInfo || !availableBalance) {
-        return false;
-    }
-
-    const amountBigNumber = new BigNumber(amount);
-    if (isTokenFlow) {
-        return amountBigNumber.gt(availableBalance);
-    }
-
-    const normalMaxAmount = feeLevelsMaxAmount?.normal;
-
-    // if send max is enabled, user is allowed submit form even if there is enough balance only for economy fee.
-    if (isSendMaxEnabled) {
-        const lowestLevelMaxAmount = feeLevelsMaxAmount?.economy ?? normalMaxAmount;
-        if (!lowestLevelMaxAmount) return true;
-
-        return amountBigNumber.gt(lowestLevelMaxAmount);
-    }
-
-    return !normalMaxAmount || amountBigNumber.gt(normalMaxAmount);
+type HasSufficientRawBalanceParams = {
+    enteredAmount: string;
+    context?: SendFormFormContext;
 };
 
-const hasEnoughBalanceForFees = (context?: SendFormFormContext) => {
+const hasSufficientRawBalance = ({
+    enteredAmount,
+    context,
+}: HasSufficientRawBalanceParams): boolean => {
+    if (!enteredAmount || !context) {
+        return true;
+    }
+
+    const { symbol, availableBalanceBeforeFees, isTokenFlow, isValueInSats } = context;
+
+    if (!symbol || !availableBalanceBeforeFees) {
+        return true;
+    }
+
+    const enteredAmountValue = new BigNumber(enteredAmount);
+    const availableBalanceBeforeFeesInFormUnits =
+        isTokenFlow || isValueInSats
+            ? availableBalanceBeforeFees
+            : formatNetworkAmount(availableBalanceBeforeFees, symbol);
+
+    return enteredAmountValue.lte(availableBalanceBeforeFeesInFormUnits);
+};
+
+type HasSufficientFeeAdjustedBalanceParams = {
+    enteredAmount: string;
+    isSendMaxSelected: boolean;
+    context?: SendFormFormContext;
+};
+
+const hasSufficientFeeAdjustedBalance = ({
+    enteredAmount,
+    isSendMaxSelected,
+    context,
+}: HasSufficientFeeAdjustedBalanceParams): boolean => {
+    if (!enteredAmount || !context || context.isTokenFlow) {
+        return true;
+    }
+
+    const enteredAmountValue = new BigNumber(enteredAmount);
+    const normalFeeAdjustedMaxSendAmount = context.feeAdjustedMaxSendAmountByLevel?.normal;
+
+    // Send Max may proceed when only the economy fee leaves enough balance.
+    const feeAdjustedMaxSendAmount = isSendMaxSelected
+        ? (context.feeAdjustedMaxSendAmountByLevel?.economy ?? normalFeeAdjustedMaxSendAmount)
+        : normalFeeAdjustedMaxSendAmount;
+
+    if (!feeAdjustedMaxSendAmount) return true;
+
+    return enteredAmountValue.lte(feeAdjustedMaxSendAmount);
+};
+
+const hasSufficientNativeCurrencyForTokenFee = (context?: SendFormFormContext): boolean => {
     if (!context) {
-        return false;
+        return true;
     }
 
-    const { symbol, networkFeeInfo, accountNativeAvailableBalance, isTokenFlow } = context;
+    const { symbol, networkFeeInfo, nativeCurrencyBalanceAvailableForFees, isTokenFlow } = context;
 
     if (!isTokenFlow) {
         return true;
     }
-    if (!symbol || !networkFeeInfo || !accountNativeAvailableBalance) {
-        return false;
+    if (!symbol || !networkFeeInfo?.levels.length || !nativeCurrencyBalanceAvailableForFees) {
+        return true;
     }
 
-    const amountBigNumber = new BigNumber(accountNativeAvailableBalance);
+    const nativeCurrencyBalance = new BigNumber(nativeCurrencyBalanceAvailableForFees);
 
-    return amountBigNumber.gt(networkFeeInfo.minFee);
+    return nativeCurrencyBalance.gt(networkFeeInfo.minFee);
 };
 
 const outputSchema = yup.object({
@@ -189,22 +212,33 @@ const outputSchema = yup.object({
                 !isAmountDust(value, context),
         )
         .test(
+            'is-higher-than-balance',
+            'You don’t have enough balance to send this amount.',
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) =>
+                hasSufficientRawBalance({ enteredAmount: value, context }),
+        )
+        .test(
             'ripple-higher-than-reserve',
             'Amount is above the required unspendable reserve',
             function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const { symbol, availableBalance, feeLevelsMaxAmount, rippleReserve } = context!;
+                const {
+                    symbol,
+                    availableBalanceBeforeFees,
+                    feeAdjustedMaxSendAmountByLevel,
+                    rippleReserve,
+                } = context!;
 
-                if (!availableBalance || !symbol || getNetworkType(symbol) !== 'ripple')
+                if (!availableBalanceBeforeFees || !symbol || getNetworkType(symbol) !== 'ripple')
                     return true;
 
-                const amountBigNumber = new BigNumber(value);
+                const enteredAmountValue = new BigNumber(value);
 
                 if (
-                    feeLevelsMaxAmount?.normal &&
-                    amountBigNumber.gt(
+                    feeAdjustedMaxSendAmountByLevel?.normal &&
+                    enteredAmountValue.gt(
                         formatNetworkAmount(
-                            // availableBalance = balance - reserve
-                            availableBalance,
+                            // The available balance already excludes the Ripple reserve.
+                            availableBalanceBeforeFees,
                             symbol,
                         ),
                     )
@@ -222,9 +256,8 @@ const outputSchema = yup.object({
         .test(
             'has-enough-balance-for-fees',
             `Insufficient balance to cover the transaction fees.`,
-            function (_, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                return hasEnoughBalanceForFees(context);
-            },
+            (_, { options: { context } }: yup.TestContext<SendFormFormContext>) =>
+                hasSufficientNativeCurrencyForTokenFee(context),
         )
         .test(
             'network-reserve',
@@ -234,42 +267,54 @@ const outputSchema = yup.object({
 
                 const {
                     symbol,
-                    availableBalance,
+                    availableBalanceBeforeFees,
                     networkReserve,
                     isTokenFlow,
-                    feeLevelsMaxAmount,
+                    feeAdjustedMaxSendAmountByLevel,
                 } = context;
 
-                if (!symbol || !availableBalance || !networkReserve || isTokenFlow) return true;
+                if (!symbol || !availableBalanceBeforeFees || !networkReserve || isTokenFlow)
+                    return true;
 
-                const formattedBalance = formatNetworkAmount(availableBalance, symbol);
-                if (new BigNumber(value).gt(formattedBalance)) return true;
+                const availableBalanceBeforeFeesInFormUnits = formatNetworkAmount(
+                    availableBalanceBeforeFees,
+                    symbol,
+                );
+                if (new BigNumber(value).gt(availableBalanceBeforeFeesInFormUnits)) return true;
 
-                const isSendMaxEnabled = isNotNullOrUndefined(this.from?.[1]?.value.setMaxOutputId);
-                const feeLevelMaxAmount = isSendMaxEnabled
-                    ? feeLevelsMaxAmount?.economy
-                    : feeLevelsMaxAmount?.normal;
+                const isSendMaxSelected = isNotNullOrUndefined(
+                    this.from?.[1]?.value.setMaxOutputId,
+                );
+                const feeAdjustedMaxSendAmount = isSendMaxSelected
+                    ? feeAdjustedMaxSendAmountByLevel?.economy
+                    : feeAdjustedMaxSendAmountByLevel?.normal;
 
-                if (!feeLevelMaxAmount) return true;
+                if (!feeAdjustedMaxSendAmount) return true;
 
-                const feeWithReserve = new BigNumber(formattedBalance)
-                    .minus(feeLevelMaxAmount)
+                const feeAndReserveAmount = new BigNumber(availableBalanceBeforeFeesInFormUnits)
+                    .minus(feeAdjustedMaxSendAmount)
                     .toString();
 
                 return isAmountWithinNetworkReserve({
-                    reserve: feeWithReserve,
-                    balance: formattedBalance,
+                    reserve: feeAndReserveAmount,
+                    balance: availableBalanceBeforeFeesInFormUnits,
                     amount: value,
                 });
             },
         )
         .test(
-            'is-higher-than-balance',
+            'is-higher-than-fee-adjusted-balance',
             'You don’t have enough balance to send this amount.',
             function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const isSendMaxEnabled = isNotNullOrUndefined(this.from?.[1]?.value.setMaxOutputId);
+                const isSendMaxSelected = isNotNullOrUndefined(
+                    this.from?.[1]?.value.setMaxOutputId,
+                );
 
-                return !isAmountHigherThanBalance(value, isSendMaxEnabled, context);
+                return hasSufficientFeeAdjustedBalance({
+                    enteredAmount: value,
+                    isSendMaxSelected,
+                    context,
+                });
             },
         )
         .test(

@@ -4651,6 +4651,7 @@ export const messages = {
             },
         },
         fees: {
+            unavailable: 'Network fee information is unavailable.',
             levels: {
                 low: 'Low',
                 normal: 'Normal',

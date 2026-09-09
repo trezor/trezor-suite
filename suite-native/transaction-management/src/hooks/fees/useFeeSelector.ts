@@ -1,7 +1,14 @@
 import { useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
+import {
+    type FeesRootState,
+    selectNetworkFeeStatus,
+    selectRawNetworkFeeInfo,
+    updateFeeInfoThunk,
+} from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type FeeLevelLabel,
@@ -11,7 +18,7 @@ import {
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
 
-import { getFeeAvailability } from './feeAvailability';
+import { getFeeAvailability, isNetworkFeeUnavailable } from './feeAvailability';
 import { type CustomFeeParams } from './useFeeSelection';
 import { useFeesManagement } from './useFeesManagement';
 import { type FeesFormValues } from '../../feesFormSchema';
@@ -70,6 +77,16 @@ export const useFeeSelector = ({
 
     const networkType = account?.networkType;
     const isTrc20 = networkType === 'tron' && !!tokenContract;
+    const rawNetworkFeeInfo = useSelector((state: FeesRootState) =>
+        selectRawNetworkFeeInfo(state, symbol),
+    );
+    const networkFeeStatus = useSelector((state: FeesRootState) =>
+        selectNetworkFeeStatus(state, symbol),
+    );
+    const isNetworkFeeFetchUnavailable = isNetworkFeeUnavailable({
+        feeInfo: rawNetworkFeeInfo,
+        feeStatus: networkFeeStatus,
+    });
     const { isFeeUnavailable, feeError } = getFeeAvailability({
         fee,
         feeLevels,
@@ -82,6 +99,12 @@ export const useFeeSelector = ({
     });
     const shouldShowFeeUnavailableAlert =
         formDraft != null && isFeeUnavailable && !!feeUnavailableErrorTitle;
+
+    const handleRetryNetworkFeeFetch = useCallback(() => {
+        if (symbol) {
+            dispatch(updateFeeInfoThunk({ networkSymbol: symbol }));
+        }
+    }, [dispatch, symbol]);
 
     const handleOpen = useCallback(() => {
         confirmedRef.current = false;
@@ -139,6 +162,7 @@ export const useFeeSelector = ({
         networkType,
         isTrc20,
         feeLimitSunOverride,
+        isNetworkFeeFetchUnavailable,
         shouldShowFeeUnavailableAlert,
         feeUnavailableErrorTitle,
         bottomSheetRef,
@@ -147,5 +171,6 @@ export const useFeeSelector = ({
         confirmedRef,
         handleOpen,
         handleConfirm,
+        handleRetryNetworkFeeFetch,
     };
 };

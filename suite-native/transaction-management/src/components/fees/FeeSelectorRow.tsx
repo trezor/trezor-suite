@@ -1,6 +1,7 @@
 import { Pressable } from 'react-native';
 
 import { BannerInline } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
 import { FeeSummaryRow } from './FeeSummaryRow';
 import { FeesBottomSheet } from './FeesBottomSheet';
@@ -23,6 +24,7 @@ export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
         networkType,
         isTrc20,
         feeLimitSunOverride,
+        isNetworkFeeFetchUnavailable,
         shouldShowFeeUnavailableAlert,
         feeUnavailableErrorTitle,
         bottomSheetRef,
@@ -31,6 +33,7 @@ export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
         confirmedRef,
         handleOpen,
         handleConfirm,
+        handleRetryNetworkFeeFetch,
     } = useFeeSelector(props);
 
     const tronBreakdown = useTronFeeBreakdown({
@@ -42,6 +45,17 @@ export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
 
     if (!symbol || !networkType) {
         return null;
+    }
+
+    if (isNetworkFeeFetchUnavailable) {
+        return (
+            <BannerInline
+                intent="critical"
+                title={<Translation id="transactionManagement.fees.unavailable" />}
+                buttonLabel={<Translation id="generic.buttons.retry" />}
+                onButtonPress={handleRetryNetworkFeeFetch}
+            />
+        );
     }
 
     if (shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle) {

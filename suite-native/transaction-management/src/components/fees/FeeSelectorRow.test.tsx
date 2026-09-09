@@ -1,6 +1,7 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { FeeSelectorRow } from './FeeSelectorRow';
@@ -8,6 +9,10 @@ import { BTC_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState'
 
 const noopThunk = jest.fn();
 const btcSymbol = asNetworkSymbol('btc');
+
+jest.mock('../../hooks/fees/useFeesFetching', () => ({
+    useFeesFetching: () => ({ areFeesLoading: false }),
+}));
 
 describe('FeeSelectorRow', () => {
     const getPreloadedState = () => ({
@@ -86,5 +91,33 @@ describe('FeeSelectorRow', () => {
 
         expect(queryByTestId('@transactionManagement/fee-selector-row')).toBeNull();
         expect(getByText(/Insufficient .* to cover the transaction fee/i)).toBeOnTheScreen();
+    });
+
+    it('renders a retryable error when fetching network fees failed without cached data', async () => {
+        const baseWalletState = getWalletState();
+        const preloadedState = {
+            wallet: {
+                ...baseWalletState,
+                fees: {
+                    [btcSymbol]: { status: 'error' as const },
+                },
+            },
+        };
+
+        const { getByText, queryByTestId } = await renderWithStoreProvider(
+            <FeeSelectorRow
+                accountKey={BTC_ACCOUNT_KEY}
+                updateThunk={noopThunk}
+                selectedFee="normal"
+                formDraft={null}
+            />,
+            { preloadedState },
+        );
+
+        expect(queryByTestId('@transactionManagement/fee-selector-row')).toBeNull();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.unavailable')),
+        ).toBeOnTheScreen();
+        expect(getByText(getTranslation('generic.buttons.retry'))).toBeOnTheScreen();
     });
 });

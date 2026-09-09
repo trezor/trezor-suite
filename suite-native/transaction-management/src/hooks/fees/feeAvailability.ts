@@ -1,4 +1,19 @@
-import { type FeeLevelLabel, type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import {
+    type FeeInfo,
+    type FeeLevelLabel,
+    type FeesStatus,
+    type GeneralPrecomposedLevels,
+} from '@suite-common/wallet-types';
+
+type IsNetworkFeeUnavailableParams = {
+    feeInfo: FeeInfo | undefined;
+    feeStatus: FeesStatus | null;
+};
+
+export const isNetworkFeeUnavailable = ({
+    feeInfo,
+    feeStatus,
+}: IsNetworkFeeUnavailableParams): boolean => feeStatus === 'error' && feeInfo === undefined;
 
 export type GetFeeAvailabilityParams = {
     fee: string | null | undefined;

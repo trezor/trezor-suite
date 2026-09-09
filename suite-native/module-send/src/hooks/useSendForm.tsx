@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -122,7 +122,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
-    const [feeLevelsMaxAmount, setFeeLevelsMaxAmount] = useState<FeeLevelsMaxAmount>();
+    const [feeAdjustedMaxSendAmountByLevel, setFeeAdjustedMaxSendAmountByLevel] =
+        useState<FeeLevelsMaxAmount>();
+    const latestMaxSendAmountCalculationId = useRef(0);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -181,12 +183,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             networkFeeInfo,
             accountDescriptor: account?.descriptor,
             symbol: account?.symbol,
-            availableBalance: tokenInfo?.balance ?? account?.availableBalance,
+            availableBalanceBeforeFees: tokenInfo?.balance ?? account?.availableBalance,
             isTokenFlow: !!tokenContract,
             isValueInSats: isAmountInSats,
-            feeLevelsMaxAmount,
+            feeAdjustedMaxSendAmountByLevel,
             decimals: tokenInfo?.decimals ?? network?.decimals,
-            accountNativeAvailableBalance: account?.availableBalance,
+            nativeCurrencyBalanceAvailableForFees: account?.availableBalance,
             networkReserve,
             rippleReserve,
             namedAddress,
@@ -211,7 +213,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
 
     const updateFormState = useCallback(async () => {
-        if (account && network && networkFeeInfo) {
+        if (account && network && networkFeeInfo?.levels.length) {
             const response = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState: constructFormDraft({
@@ -285,7 +287,13 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         trigger,
     ]);
 
-    const calculateNormalFeeMaxAmount = useCallback(async () => {
+    const calculateMaxSendAmountByFeeLevel = useCallback(async () => {
+        const calculationId = latestMaxSendAmountCalculationId.current + 1;
+        latestMaxSendAmountCalculationId.current = calculationId;
+        setFeeAdjustedMaxSendAmountByLevel(undefined);
+
+        if (!networkFeeInfo?.levels.length) return;
+
         const response = await dispatch(
             calculateFeeLevelsMaxAmountThunk({
                 formState: constructFormDraft({ formValues: getValues(), selectedUtxos }),
@@ -293,10 +301,14 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             }),
         );
 
-        if (isFulfilled(response)) {
-            setFeeLevelsMaxAmount(response.payload);
+        if (calculationId === latestMaxSendAmountCalculationId.current && isFulfilled(response)) {
+            setFeeAdjustedMaxSendAmountByLevel(response.payload);
         }
-    }, [getValues, accountKey, dispatch, selectedUtxos]);
+    }, [getValues, accountKey, dispatch, selectedUtxos, networkFeeInfo]);
+
+    useEffect(() => {
+        dispatch(transactionManagementActions.clearFeeLevels());
+    }, [accountKey, dispatch, tokenContract]);
 
     useEffect(() => {
         const prefillValuesFromStoredDraft = async () => {
@@ -311,7 +323,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                 });
 
                 // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
-                if (!tokenContract) await calculateNormalFeeMaxAmount();
+                if (!tokenContract) await calculateMaxSendAmountByFeeLevel();
 
                 // We need to wait for the context to hydrate before validating the form with the draft values.
                 setTimeout(() => {
@@ -332,10 +344,10 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     useEffect(() => {
         // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
-        if (!tokenContract) calculateNormalFeeMaxAmount();
+        if (!tokenContract) calculateMaxSendAmountByFeeLevel();
     }, [
         watchedAddress,
-        calculateNormalFeeMaxAmount,
+        calculateMaxSendAmountByFeeLevel,
         networkFeeInfo,
         tokenContract,
         isNetworkReserveEnabled,
@@ -530,7 +542,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         form,
         network,
         amount,
-        feeLevelsMaxAmount,
+        feeLevelsMaxAmount: feeAdjustedMaxSendAmountByLevel,
         isResolvingNamedAddress,
     };
 };
