@@ -14,30 +14,13 @@ type AddressReviewStepProps = {
 
 const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): IconSquareProps =>
     stepNumber
-        ? {
-              iconNumber: stepNumber,
-              iconBackgroundColor: 'elementFillNeutralSofter',
-              iconBorderColor: 'elementBorderNeutralSofter',
-          }
-        : {
-              iconName: 'flagCheckered',
-              iconBackgroundColor: 'elementFillBrandBold',
-              iconColor: 'contentBrand',
-          };
+        ? { iconNumber: stepNumber, intent: 'neutral' }
+        : { iconName: 'flagCheckered', intent: 'brand' };
 
-const cardStyle = prepareNativeStyle<{ isFinalStep: boolean }>((utils, { isFinalStep }) => ({
+const cardStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors.borderNeutral,
     maxWidth: '100%',
-
-    extend: {
-        condition: isFinalStep,
-        style: {
-            backgroundColor: utils.colors.elementFillBrandSofter,
-            borderColor: utils.colors.elementBorderBrandSofter,
-            ...utils.boxShadows.none,
-        },
-    },
 }));
 
 export const AddressReviewStep = ({
@@ -50,7 +33,7 @@ export const AddressReviewStep = ({
 
     return (
         <View onLayout={onLayout}>
-            <Card style={applyStyle(cardStyle, { isFinalStep: !stepNumber })}>
+            <Card style={applyStyle(cardStyle)}>
                 <HStack spacing="sp12" flexDirection="row" alignItems="center">
                     <IconSquare {...getIconProps(stepNumber)} />
                     <Box flexShrink={1}>

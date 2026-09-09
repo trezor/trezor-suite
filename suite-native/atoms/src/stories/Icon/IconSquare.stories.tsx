@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { ICON_SIZES } from '@suite-native/icons';
-import { COLOR_TOKENS } from '@trezor/theme';
 
-import { IconSquare as IconSquareComponent, type IconSquareProps } from '../../Icon/IconSquare';
+import {
+    ICON_SQUARE_INTENTS,
+    IconSquare as IconSquareComponent,
+    type IconSquareProps,
+} from '../../Icon/IconSquare';
 
 type IconSquareStory = StoryObj<IconSquareProps>;
 
@@ -18,24 +21,16 @@ export const IconSquare: IconSquareStory = {
     name: 'IconSquare',
     args: {
         iconNumber: 1,
-        iconColor: 'contentPrimary',
+        intent: 'neutral',
         iconSize: 'mediumLarge',
     },
     argTypes: {
         iconNumber: {
             control: { type: 'number' },
         },
-        iconBackgroundColor: {
+        intent: {
             control: { type: 'select' },
-            options: COLOR_TOKENS,
-        },
-        iconBorderColor: {
-            control: { type: 'select' },
-            options: COLOR_TOKENS,
-        },
-        iconColor: {
-            control: { type: 'select' },
-            options: COLOR_TOKENS,
+            options: ICON_SQUARE_INTENTS,
         },
         iconSize: {
             control: { type: 'select' },
