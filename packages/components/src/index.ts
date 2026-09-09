@@ -173,3 +173,4 @@ export { RadioCard } from './components/RadioCard/RadioCard';
 export { PinInput } from './components/PinInput/PinInput';
 
 export { type UIIntent, type UIVariant } from './config/types';
+export * from './components/Iframe/Iframe';

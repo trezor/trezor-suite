@@ -7,3 +7,4 @@ export type * from './overloads';
 export * from './result';
 export type * from './timeout';
 export type * from './utils';
+export type * from './url';
