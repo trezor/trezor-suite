@@ -73,7 +73,7 @@ export const DeviceCheckBackupUnsupportedModelScreen = () => {
                     <IconListTextItem
                         textVariant="body-md-strong"
                         iconSize="large"
-                        variant="primary"
+                        variant="brand"
                         icon="checkCircle"
                     >
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.step3" />

@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
@@ -69,23 +69,20 @@ export const EmptyWalletInfoSheet = forwardRef<BottomSheetModalMethods, EmptyWal
                     <BottomSheetListItem
                         iconName="pencilSimpleLine"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup"
+                        intent="neutral"
                         iconSize="medium"
-                        iconBackgroundColor="elementFillNeutralSofter"
-                        iconBorderColor="elementBorderNeutralSofter"
                     />
                     <BottomSheetListItem
                         iconName="copy"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.store"
+                        intent="neutral"
                         iconSize="medium"
-                        iconBackgroundColor="elementFillNeutralSofter"
-                        iconBorderColor="elementBorderNeutralSofter"
                     />
                     <BottomSheetListItem
                         iconName="eyeSlash"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.neverShare"
+                        intent="neutral"
                         iconSize="medium"
-                        iconBackgroundColor="elementFillNeutralSofter"
-                        iconBorderColor="elementBorderNeutralSofter"
                     />
                 </VStack>
                 <VStack style={applyStyle(bottomSheetBottomStyle)}>

@@ -40,13 +40,7 @@ export const HowEarnWorksBenefitsSection = ({ items }: HowEarnWorksBenefitsSecti
         <VStack spacing="sp16">
             {items.map(item => (
                 <HStack key={item.id} spacing="sp12" style={applyStyle(benefitRowStyle)}>
-                    <IconSquare
-                        iconName={item.icon}
-                        iconSize="large"
-                        iconColor="contentBrand"
-                        iconBackgroundColor="elementFillBrandSofter"
-                        iconBorderColor="elementBorderBrandSofter"
-                    />
+                    <IconSquare iconName={item.icon} intent="brand" iconSize="large" />
                     <VStack spacing={0} style={applyStyle(benefitTextContainerStyle)}>
                         <Text variant="body-md-strong" style={applyStyle(benefitTitleStyle)}>
                             {item.title}

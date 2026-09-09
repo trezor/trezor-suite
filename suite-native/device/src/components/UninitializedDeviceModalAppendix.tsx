@@ -11,17 +11,13 @@ export const UninitializedDeviceModalAppendix = () => (
                 iconNumber={1}
                 translationKey="moduleDevice.noSeedModal.appendix.lines.1"
             />
-
             <BottomSheetListItem
                 iconNumber={2}
                 translationKey="moduleDevice.noSeedModal.appendix.lines.2"
             />
-
             <BottomSheetListItem
                 iconName="checkCircle"
-                iconColor="contentBrand"
-                iconBorderColor="elementBorderBrandSofter"
-                iconBackgroundColor="elementFillBrandSofter"
+                intent="brand"
                 translationKey="moduleDevice.noSeedModal.appendix.lines.3"
             />
         </VStack>
