@@ -27,7 +27,6 @@
         "@playwright/browser-webkit": "1.62.1",
         "@playwright/test": "1.62.1",
         "@scure/base": "^2.0.0",
-        "@suite-common/address": "workspace:*",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/e2e-evolu-client": "workspace:*",

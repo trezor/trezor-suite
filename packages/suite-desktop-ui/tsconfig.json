@@ -6,6 +6,7 @@
     },
     "include": [".", "../suite/global.d.ts"],
     "references": [
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/dependency-injection"
         },
@@ -25,6 +26,7 @@
         { "path": "../../suite/sentry" },
         { "path": "../../suite/tor-desktop" },
         { "path": "../components" },
+        { "path": "../connect" },
         { "path": "../connect-electron" },
         { "path": "../icons" },
         { "path": "../suite" },

@@ -3,7 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { fireEvent, screen } from '@testing-library/react';
 
 import { initialMetadataState } from '@suite/metadata';
-import { mockAddressValidator } from '@suite-common/address/mocks';
+import { mockAddressValidator } from '@suite-common/networks/mocks';
 import { createSuiteSyncAddressId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -138,7 +138,7 @@ const buildState = () => ({
 });
 
 const renderModal = () => {
-    const services = { addressValidator: mockAddressValidator() };
+    const services = { networks: { addressValidator: mockAddressValidator() } };
     const root = createTestCompositionRoot({
         extra: { services },
         preloadedState: buildState(),

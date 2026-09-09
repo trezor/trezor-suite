@@ -96,7 +96,7 @@ describe('quotesUtils', () => {
                         id: 'bitcoin' as CryptoId,
                         isNativeToken: true,
                         displaySymbolName: 'Bitcoin',
-                        coingeckoId: 'bitcoin',
+                        coingeckoId: 'bitcoin' as CryptoId,
                         contractAddress: null,
                         name: 'Bitcoin',
                         symbol: 'btc',

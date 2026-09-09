@@ -1,5 +1,5 @@
-import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import type { GetSupportedNetworksDep } from '@suite-common/networks';
+import { mockGetSupportedNetworks } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -37,9 +37,9 @@ jest.mock('../concierge/ConciergeAlert', () => ({
 }));
 
 const reportMock = jest.fn();
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: GetSupportedNetworksDep } = {
     analytics: mockNativeAnalytics(reportMock),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { getSupportedNetworks: mockGetSupportedNetworks() },
 };
 
 describe('SellForm', () => {

@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { blockchainInitialState } from './blockchain/blockchainReducer';
+import { getBlockchainInitialState } from './blockchain/blockchainReducer';
 import {
     type WalletCoreCompoundRootState,
     selectDiscoveryAccountsParam,
@@ -59,7 +59,7 @@ const getState = ({
     wallet: {
         accounts,
         settings: { ...initialWalletSettingsState, enabledNetworks },
-        blockchain: blockchainInitialState,
+        blockchain: getBlockchainInitialState(),
         discovery: discovery ? { [device.path]: discovery } : {},
     },
     device: {

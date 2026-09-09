@@ -11,7 +11,10 @@ import { intermediaryTheme } from '@trezor/components';
 
 import '../styles/globals.css';
 import '@trezor/connect-explorer-theme/style.css';
+import { createConnectExplorerCompositionRoot } from '../createConnectExplorerCompositionRoot';
 import { store } from '../store';
+
+createConnectExplorerCompositionRoot();
 
 const ThemeComponent = ({ Component, pageProps }: AppProps) => {
     const { resolvedTheme } = useTheme();

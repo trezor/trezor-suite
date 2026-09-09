@@ -1,4 +1,5 @@
+export { mockAddressValidator } from './mockAddressValidator';
+export { mockGetNamedAddressSupport } from './mockGetNamedAddressSupport';
+export { mockGetSupportedNetworks } from './mockGetSupportedNetworks';
 export { mockFindNetworkSymbolForProtocol } from './mockFindNetworkSymbolForProtocol';
 export { mockGetNetworkConfig } from './mockGetNetworkConfig';
-export { mockNetworkModule } from './mockNetworkModule';
-export { mockNetworkModuleRepository } from './mockNetworkModuleRepository';

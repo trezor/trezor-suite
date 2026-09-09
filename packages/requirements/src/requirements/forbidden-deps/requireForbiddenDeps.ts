@@ -150,22 +150,44 @@ export const getForbiddenDependencyErrors = ({
     const forbiddenDependencyPrefixes = getForbiddenDependencyPrefixes(
         dependencyRule?.['forbidden-deps'] ?? [],
     );
-
-    return dependencyOccurrences.flatMap(dependencyOccurrence => {
-        const forbiddenDependency =
-            forbiddenDepsMap.get(dependencyOccurrence.name) ??
-            forbiddenDependencyPrefixes.find(({ packageNamePrefix }) =>
-                dependencyOccurrence.name.startsWith(packageNamePrefix),
-            );
-
-        if (forbiddenDependency === undefined) {
+    const errors: string[] = [];
+    const forbiddenDependencyPatterns = (dependencyRule?.['forbidden-deps'] ?? []).flatMap(rule => {
+        if (rule.packageNamePattern === undefined) {
             return [];
         }
 
-        return [
-            `${workspaceName}: ${JSON.stringify(dependencyOccurrence.name)} is forbidden in ${dependencyOccurrence.field}. Reason: ${forbiddenDependency.reason}`,
-        ];
+        try {
+            return [{ pattern: new RegExp(rule.packageNamePattern), reason: rule.reason }];
+        } catch {
+            errors.push(
+                `${workspaceName}: ${JSON.stringify(rule.packageNamePattern)} in "forbidden-deps" is not a valid packageNamePattern regular expression.`,
+            );
+
+            return [];
+        }
     });
+
+    return [
+        ...errors,
+        ...dependencyOccurrences.flatMap(dependencyOccurrence => {
+            const forbiddenDependency =
+                forbiddenDepsMap.get(dependencyOccurrence.name) ??
+                forbiddenDependencyPrefixes.find(({ packageNamePrefix }) =>
+                    dependencyOccurrence.name.startsWith(packageNamePrefix),
+                ) ??
+                forbiddenDependencyPatterns.find(({ pattern }) =>
+                    pattern.test(dependencyOccurrence.name),
+                );
+
+            if (forbiddenDependency === undefined) {
+                return [];
+            }
+
+            return [
+                `${workspaceName}: ${JSON.stringify(dependencyOccurrence.name)} is forbidden in ${dependencyOccurrence.field}. Reason: ${forbiddenDependency.reason}`,
+            ];
+        }),
+    ];
 };
 
 type AllowedOnlyErrorsParams = {

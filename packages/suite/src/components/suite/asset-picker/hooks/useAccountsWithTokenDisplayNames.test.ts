@@ -6,11 +6,7 @@ import {
     type TradingAssetOption,
     type TradingAssetOptionWithContractAddress,
 } from '@suite-common/trading';
-import {
-    type NetworkSymbol,
-    asNetworkSymbol,
-    toNetworkSymbolNonTestnet,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
@@ -29,7 +25,7 @@ jest.mock('@suite-common/trading', () => ({
     }),
 }));
 
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
+const ethSymbol = asNetworkSymbol('eth');
 const polSymbol = asNetworkSymbol('pol');
 
 const createAccount = (symbol: NetworkSymbol): AccountWithSuiteSyncLabel =>
@@ -55,7 +51,7 @@ const createAsset = (
 
     return {
         id,
-        coingeckoId: 'ethereum',
+        coingeckoId: 'ethereum' as CryptoId,
         isNativeToken: false,
         name: 'Asset Name',
         symbol: 'asset',

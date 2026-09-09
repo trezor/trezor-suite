@@ -18,12 +18,7 @@ import type {
 } from 'invity-api';
 
 import { type CountryCode } from '@suite-common/geolocation';
-import {
-    type Network,
-    type NetworkConfig,
-    type NetworkDisplaySymbol,
-    type NetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,
@@ -63,17 +58,17 @@ export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 
 type TradingAssetOptionBase = {
     id: CryptoId;
-    coingeckoId: NonNullable<NetworkConfig['coingeckoId']>;
-    networkName: NetworkConfig['name'];
+    coingeckoId: CryptoId;
+    networkName: string;
     networkSymbol: NetworkSymbol;
     displaySymbolName?: string;
 };
 
 export type TradingAssetOptionNativeToken = TradingAssetOptionBase & {
     isNativeToken: true;
-    name: NetworkConfig['name'];
+    name: string;
     symbol: NetworkSymbol;
-    displaySymbol: NetworkDisplaySymbol;
+    displaySymbol: string;
     contractAddress: null | typeof constants.CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };
 

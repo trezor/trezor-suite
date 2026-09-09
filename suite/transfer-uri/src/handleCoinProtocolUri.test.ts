@@ -26,7 +26,7 @@ const setup = () => {
     const extra: HandleCoinProtocolUriThunkDeps = {
         services: {
             analytics: mockDesktopAnalytics(report),
-            findNetworkSymbolForProtocol,
+            networks: { findNetworkSymbolForProtocol },
         },
     };
 

@@ -16,7 +16,6 @@ import {
 } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
-import { createAddressValidator, createGetNamedAddressSupport } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
     type ConnectInitSettings,
@@ -29,12 +28,7 @@ import { toGetter } from '@suite-common/dependency-injection';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
-import {
-    createFindNetworkSymbolForProtocol,
-    createGetNetworkConfig,
-    createNetworkModuleRepository,
-    createNetworksCompositionRoot,
-} from '@suite-common/networks';
+import type { NetworksServicesDep } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
@@ -79,7 +73,8 @@ export type StoreAPIDep = {
     dispatch: ThunkDispatch<AppState, Record<never, never>, UnknownAction>;
 };
 
-export type SuiteAppDeps = StoreAPIDep &
+export type SuiteAppDeps = NetworksServicesDep &
+    StoreAPIDep &
     HistoryDep &
     PlatformEncryptionDep &
     CreateLoggerDep &
@@ -141,17 +136,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
     });
-    const networkModules = createNetworksCompositionRoot();
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
-    const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
-    const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
-        getNetworkConfig,
-        networkModuleRepository,
-    });
-    const addressValidator = createAddressValidator({
-        networkModuleRepository,
-    });
-    const getNamedAddressSupport = createGetNamedAddressSupport({ networkModuleRepository });
 
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();
@@ -167,11 +151,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     };
 
     return {
-        networkModuleRepository,
-        getNetworkConfig,
-        findNetworkSymbolForProtocol,
-        addressValidator,
-        getNamedAddressSupport,
+        networks: deps.networks,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

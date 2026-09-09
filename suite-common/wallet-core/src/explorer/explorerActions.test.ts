@@ -7,7 +7,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { explorerActions } from './explorerActions';
 import {
     type ExplorerConfig,
-    explorerInitialState,
+    getExplorerInitialState,
     prepareExplorerReducer,
 } from './explorerReducer';
 
@@ -27,7 +27,7 @@ const initStore = (state: Partial<ExplorerConfig> = {}) =>
         },
         preloadedState: {
             wallet: {
-                explorer: { ...explorerInitialState, ...state },
+                explorer: { ...getExplorerInitialState(), ...state },
             },
         },
     });

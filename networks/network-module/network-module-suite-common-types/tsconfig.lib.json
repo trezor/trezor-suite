@@ -6,6 +6,17 @@
     },
     "include": ["./src"],
     "references": [
-        { "path": "../../../packages/type-utils" }
+        {
+            "path": "../../../packages/connect-common"
+        },
+        {
+            "path": "../../../packages/crypto-utils"
+        },
+        {
+            "path": "../../../packages/device-utils"
+        },
+        {
+            "path": "../../../packages/type-utils"
+        }
     ]
 }

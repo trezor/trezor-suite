@@ -1,2 +1,2 @@
-export { createRippleSuiteCommonNetworkModule } from './RippleNetworkSuiteCommonNetworkModule';
-export type { RippleNetworkSuiteCommonNetworkModule } from './RippleNetworkSuiteCommonNetworkModule';
+export { createRippleSuiteCommonNetworkModule } from './createRippleSuiteCommonNetworkModule';
+export type { RippleNetworkSuiteCommonNetworkModule } from './createRippleSuiteCommonNetworkModule';

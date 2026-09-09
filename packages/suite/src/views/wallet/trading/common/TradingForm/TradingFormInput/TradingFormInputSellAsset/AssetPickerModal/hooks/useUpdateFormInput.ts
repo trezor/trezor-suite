@@ -5,7 +5,6 @@ import {
     createAssetNativeTokenOption,
     useTradingAssets,
 } from '@suite-common/trading';
-import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
@@ -21,9 +20,7 @@ export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormI
     const handleAccountClick = useCallback(
         (account: Account) => {
             onAssetSelect({
-                ...createAssetNativeTokenOption(
-                    account.symbol as NetworkConfigWithoutTestnets['symbol'],
-                ),
+                ...createAssetNativeTokenOption(account.symbol),
                 accountKey: account.key,
             });
 

@@ -14,13 +14,8 @@
     "dependencies": {
         "@suite-common/earn-stablecoin-defs": "workspace:*",
         "@suite-common/networks": "workspace:*",
-        "@trezor/crypto-utils": "workspace:*",
-        "@trezor/device-utils": "workspace:*",
-        "@trezor/network-cardano": "workspace:*",
-        "@trezor/network-ripple": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-solana": "workspace:*",
-        "@trezor/network-stellar": "workspace:*",
-        "@trezor/network-tron": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }

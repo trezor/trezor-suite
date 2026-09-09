@@ -1,2 +1,2 @@
-export { createBitcoinSuiteCommonNetworkModule } from './BitcoinNetworkSuiteCommonNetworkModule';
-export type { BitcoinNetworkSuiteCommonNetworkModule } from './BitcoinNetworkSuiteCommonNetworkModule';
+export { createBitcoinSuiteCommonNetworkModule } from './createBitcoinSuiteCommonNetworkModule';
+export type { BitcoinNetworkSuiteCommonNetworkModule } from './createBitcoinSuiteCommonNetworkModule';

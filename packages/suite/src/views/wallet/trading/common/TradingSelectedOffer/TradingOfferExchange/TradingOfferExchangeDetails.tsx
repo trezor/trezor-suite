@@ -11,7 +11,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
     useTradingUtils,
 } from '@suite-common/trading';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -66,7 +66,7 @@ export const TradingOfferExchangeDetails = ({
         cryptoId: exchangeQuote.receive,
     });
 
-    const supportedMevProtectionNetworks = networksCollection
+    const supportedMevProtectionNetworks = getNetworksCollection()
         .filter(network => network.features.includes('mev-protection'))
         .map(network => network.name);
     const sendNetwork = exchangeQuote.send ? cryptoIdToNetwork(exchangeQuote.send) : undefined;

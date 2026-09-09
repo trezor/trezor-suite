@@ -8,7 +8,7 @@ import {
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type Network, getNetwork, getNetworksCollection } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     type TransactionsRootState,
@@ -292,7 +292,7 @@ const processNamespaces = (
                 namespace.chains?.forEach(chain => {
                     const alreadyAdded = networks.some(network => network.namespaceId === chain);
                     if (alreadyAdded) return;
-                    const supported = networksCollection.find(
+                    const supported = getNetworksCollection().find(
                         nc => chain === `eip155:${nc.chainId}`,
                     );
                     const getStatus = () => {

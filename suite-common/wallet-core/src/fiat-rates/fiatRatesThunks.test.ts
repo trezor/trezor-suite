@@ -10,7 +10,7 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { updateTxsFiatRatesThunk } from './fiatRatesThunks';
-import { blockchainInitialState } from '../blockchain/blockchainReducer';
+import { getBlockchainInitialState } from '../blockchain/blockchainReducer';
 
 jest.mock('@suite-common/fiat-services', () => ({
     getFiatRatesForTimestamps: jest.fn(),
@@ -45,7 +45,7 @@ const initStore = () =>
         preloadedState: {
             wallet: {
                 accounts: [ethAccount],
-                blockchain: blockchainInitialState,
+                blockchain: getBlockchainInitialState(),
             },
             tokenDefinitions: {
                 eth: {

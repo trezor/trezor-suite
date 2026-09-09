@@ -4,7 +4,7 @@ import type { ProposalTypes } from '@walletconnect/types';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type Network, getNetwork, getNetworksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
@@ -24,7 +24,7 @@ const methods = ['stellar_signXDR', 'stellar_signAndSubmitXDR'];
 
 const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
     const { chainId } = event.params;
-    const network = networksCollection.find(
+    const network = getNetworksCollection().find(
         nc => nc.networkType === 'stellar' && nc.caipId === chainId,
     );
 
@@ -200,7 +200,7 @@ const processNamespaces = (
                 namespace.chains?.forEach(chain => {
                     const alreadyAdded = networks.some(network => network.namespaceId === chain);
                     if (alreadyAdded) return;
-                    const supported = networksCollection.find(nc => chain === nc.caipId);
+                    const supported = getNetworksCollection().find(nc => chain === nc.caipId);
                     const getStatus = () => {
                         if (!supported) return 'unsupported';
                         const hasAccounts = accounts.some(

@@ -5,7 +5,7 @@ import { screen } from '@testing-library/react';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
-import { explorerInitialState } from '@suite-common/wallet-core';
+import { getExplorerInitialState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenTransfer } from '@trezor/connect';
@@ -36,7 +36,7 @@ const getInitialState = (): AppState => ({
     ...mockInitialAppState,
     wallet: {
         ...mockInitialAppState.wallet,
-        explorer: explorerInitialState,
+        explorer: getExplorerInitialState(),
         selectedAccount: {
             status: 'loaded',
             account: ethereumAccount,
@@ -58,8 +58,8 @@ describe('FormattedNftAmount', () => {
             <FormattedNftAmount transfer={nftTransfer} networkSymbol="pol" isWithLink />,
         );
 
-        const polygonNftUrl = getExplorerUrl(explorerInitialState.pol.default, 'nft');
-        const ethereumNftUrl = getExplorerUrl(explorerInitialState.eth.default, 'nft');
+        const polygonNftUrl = getExplorerUrl(getExplorerInitialState().pol.default, 'nft');
+        const ethereumNftUrl = getExplorerUrl(getExplorerInitialState().eth.default, 'nft');
 
         expect(polygonNftUrl).not.toBe(ethereumNftUrl);
         expect(screen.getByRole('link')).toHaveAttribute(

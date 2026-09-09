@@ -2,7 +2,7 @@ import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { type UserContextPayload } from '@suite-common/suite-types';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworksCollection } from '@suite-common/wallet-config';
 import { parseCSV } from '@suite-common/wallet-utils';
 import { Card, CollapsibleBox, Column, Modal, Tabs, Text, Textarea } from '@trezor/components';
 import { FileCsvIcon } from '@trezor/icons';
@@ -26,7 +26,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
         const parsed = parseCSV(input, ['address', 'amount', 'currency', 'label'], delimiter);
 
         parsed.forEach(item => {
-            const network = networksCollection.find(
+            const network = getNetworksCollection().find(
                 network => network.displaySymbol === item.currency,
             );
 

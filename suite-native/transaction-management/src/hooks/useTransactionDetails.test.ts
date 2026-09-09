@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { explorerInitialState } from '@suite-common/wallet-core';
+import { getExplorerInitialState } from '@suite-common/wallet-core';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act } from '@suite-native/test-utils';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
@@ -51,7 +51,7 @@ const buildPreloadedState = (
             fetchStatusDetail: {},
             phishing: {},
         },
-        explorer: explorerInitialState,
+        explorer: getExplorerInitialState(),
     },
 });
 

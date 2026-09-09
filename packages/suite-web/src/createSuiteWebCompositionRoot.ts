@@ -2,6 +2,8 @@ import { createBrowserHistory } from 'history';
 
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import { asGetter } from '@suite-common/dependency-injection';
+import { createNetworksCompositionRoot, registerNetworkServices } from '@suite-common/networks';
+import TrezorConnect from '@trezor/connect';
 import type { CreateLogger } from '@trezor/connect-common';
 import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
@@ -9,7 +11,7 @@ import { WebUsbTransport } from '@trezor/transport-web';
 
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
-import { rootReducer } from 'src/reducers/store';
+import { createRootReducer } from 'src/reducers/store';
 import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFactory';
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -20,6 +22,13 @@ import { getWebThpHostName } from './support/getWebThpHostName';
 type SuiteWebCompositionRoot = { init: WebInit };
 
 export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
+    // Legacy wallet-config calls during reducer initialization need registered services.
+    // Persistence is loaded later by init, after this synchronous composition completes.
+    const networks = createNetworksCompositionRoot({ getTrezorConnect: () => TrezorConnect });
+    registerNetworkServices(networks);
+
+    const rootReducer = createRootReducer();
+
     const history = createBrowserHistory();
     const platformEncryption = createWebauthnPlatformEncryption();
     const reloadApp = () => window.location.reload();
@@ -49,6 +58,7 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         extraDependencies,
     });
     const suiteServices = createSuiteServicesCompositionRoot({
+        networks,
         dispatch: store.dispatch,
         getState: store.getState,
         history,

@@ -4,7 +4,7 @@ import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getSupportedNetworks, networksCollection } from '@suite-common/wallet-config';
+import { getNetworksCollection, getSupportedNetworks } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
     selectBaseCurrency,
@@ -70,7 +70,7 @@ export const PortfolioCard = memo(() => {
     const passphraseEntryCanceled =
         accounts.length === 0 && discoveryStatus === undefined && discovery?.status === 'cancelled';
 
-    const hasNetworkWithEnabledGraph = networksCollection.some(
+    const hasNetworkWithEnabledGraph = getNetworksCollection().some(
         network =>
             isNetworkWithGraphFeature(network.symbol) && enabledNetworks.includes(network.symbol),
     );

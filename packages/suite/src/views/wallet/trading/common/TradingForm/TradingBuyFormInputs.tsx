@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { selectGetSupportedNetworksDep } from '@suite-common/networks';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_COUNTRY_SELECT,
@@ -41,7 +41,7 @@ import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAdd
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
     const quotes = useSelector(selectTradingBuyQuotes);
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+    const { getSupportedNetworks } = useServices(selectGetSupportedNetworksDep);
 
     const { device } = useDevice();
     const { setAmountLimits, getValues, setValue, clearErrors } = context;
@@ -72,7 +72,7 @@ export const TradingBuyFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef, clearErrorsRef],
     );
 
-    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
+    const supportedNetworks = getSupportedNetworks();
     const buySupportedCryptoIds = useSelector(state =>
         selectTradingBuySupportedCryptoIds(state, supportedNetworks),
     );

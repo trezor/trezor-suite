@@ -9,7 +9,7 @@ import {
 import {
     type NetworkSymbol,
     getNetworkOptional,
-    networksCollection,
+    getNetworksCollection,
 } from '@suite-common/wallet-config';
 import { type Blockchain, type BlockchainNetworks } from '@suite-common/wallet-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
@@ -29,13 +29,11 @@ import {
 
 export type BlockchainState = BlockchainNetworks;
 
-const initialStatePredefined: Partial<BlockchainState> = {};
-
 export type BlockchainRootState = { wallet: { blockchain: BlockchainState } };
 
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
-export const blockchainInitialState: BlockchainNetworks = networksCollection.reduce(
-    (state, network) => {
+export const getBlockchainInitialState = (): BlockchainNetworks =>
+    getNetworksCollection().reduce((state, network) => {
         state[network.symbol] = {
             connected: false,
             blockHash: '0',
@@ -53,9 +51,7 @@ export const blockchainInitialState: BlockchainNetworks = networksCollection.red
         };
 
         return state;
-    },
-    initialStatePredefined as BlockchainState,
-);
+    }, {} as BlockchainState);
 
 const writeIdentityConnection = (
     state: BlockchainState,
@@ -148,7 +144,7 @@ export type BlockchainReducerDeps = ActionTypesDep<'storageLoad'> &
     ReducersDep<'storageLoadBlockchain'>;
 
 export const prepareBlockchainReducer = createReducerWithExtraDeps(
-    blockchainInitialState,
+    getBlockchainInitialState,
     (builder, extra: BlockchainReducerDeps) => {
         builder
             .addCase(blockchainActions.synced, (state, action) => {

@@ -83,30 +83,31 @@ export type WalletState = {
     earnOnboarding: EarnOnboardingState;
 };
 
-export const walletReducers: Reducer<
+export const createWalletReducer = (): Reducer<
     WalletState,
     UnknownAction,
     Partial<Omit<WalletState, 'graph' | 'coinjoin'>>
-> = combineReducers({
-    fiat: fiatRatesReducer,
-    graph: graphReducer,
-    transactions: transactionsReducer,
-    phishing: phishingReducer,
-    discovery: discoveryReducer,
-    accounts: accountsReducer,
-    accountsRefreshTime: accountsRefreshTimeReducer,
-    selectedAccount: selectedAccountReducer,
-    fees: feesReducer,
-    blockchain: blockchainReducer,
-    explorer: explorerReducer,
-    trading: tradingReducer,
-    send: sendFormReducer,
-    accountSearch: accountSearchReducer,
-    formDrafts: formDraftReducer,
-    coinjoin: coinjoinReducer,
-    stake: stakeReducer,
-    settings: walletSettingsReducer,
-    stablecoinYield: yieldReducer,
-    tronStake: tronStakeReducer,
-    earnOnboarding: earnOnboardingReducer,
-});
+> =>
+    combineReducers({
+        fiat: fiatRatesReducer,
+        graph: graphReducer,
+        transactions: transactionsReducer,
+        phishing: phishingReducer,
+        discovery: discoveryReducer,
+        accounts: accountsReducer,
+        accountsRefreshTime: accountsRefreshTimeReducer,
+        selectedAccount: selectedAccountReducer,
+        fees: feesReducer,
+        blockchain: blockchainReducer,
+        explorer: explorerReducer,
+        trading: tradingReducer,
+        send: sendFormReducer,
+        accountSearch: accountSearchReducer,
+        formDrafts: formDraftReducer,
+        coinjoin: coinjoinReducer,
+        stake: stakeReducer,
+        settings: walletSettingsReducer,
+        stablecoinYield: yieldReducer,
+        tronStake: tronStakeReducer,
+        earnOnboarding: earnOnboardingReducer,
+    });

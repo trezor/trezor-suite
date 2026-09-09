@@ -1,4 +1,4 @@
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworksCollection } from '@suite-common/wallet-config';
 
 import {
     type PendingConnectionProposalNetwork,
@@ -10,7 +10,7 @@ export const getSessionNetworks = (session: WalletConnectSession) => {
 
     Object.entries(session.namespaces).forEach(([namespaceId, namespace]) =>
         namespace?.chains?.forEach(chain => {
-            const supported = networksCollection.find(nc => chain === nc.caipId);
+            const supported = getNetworksCollection().find(nc => chain === nc.caipId);
             if (supported) {
                 networks.push({
                     namespaceId,

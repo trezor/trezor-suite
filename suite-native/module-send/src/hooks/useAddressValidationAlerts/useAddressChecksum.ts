@@ -3,12 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import {
-    checkAddressChecksum,
-    selectAddressValidatorDep,
-    toChecksumAddress,
-} from '@suite-common/address';
+import { checkAddressChecksum, toChecksumAddress } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectAddressValidatorDep } from '@suite-common/networks';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useFormContext, useWatch } from '@suite-native/forms';

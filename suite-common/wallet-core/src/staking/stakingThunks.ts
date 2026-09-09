@@ -1,6 +1,6 @@
 import { getStakingBatch } from '@suite-common/earn-staking-api';
 import { createThunk } from '@suite-common/redux-utils';
-import { PROD_STAKING_SYMBOLS } from '@suite-common/wallet-config';
+import { getProdStakingSymbols } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
 
 import { stakeDataActions } from './stakingDataSlice';
@@ -45,12 +45,12 @@ export const initStakeDataThunk = createThunk<void, void, { state: InitStakeData
             dispatch(stakeDataActions.fetchStakeDataRequest(undefined));
 
             const stakingData = await getStakingBatch({
-                params: { networks: PROD_STAKING_SYMBOLS },
+                params: { networks: getProdStakingSymbols() },
             });
 
             // A part of the batch requests failed.
             if (stakingData.errors.length) {
-                const failedNetworkSymbols = PROD_STAKING_SYMBOLS.filter(
+                const failedNetworkSymbols = getProdStakingSymbols().filter(
                     symbol => !stakingData.data.some(item => item.symbol === symbol),
                 );
                 const errorSummary = stakingData.errors

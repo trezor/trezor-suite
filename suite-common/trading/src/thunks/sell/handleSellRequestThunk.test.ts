@@ -3,7 +3,7 @@ import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
-import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
@@ -27,7 +27,7 @@ import { sellThunks } from './index';
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const btcSymbol = asNetworkSymbol('btc');
 
 describe('handleSellRequestThunk', () => {
     afterEach(() => {
@@ -101,7 +101,7 @@ describe('handleSellRequestThunk', () => {
                 id: 'bitcoin' as CryptoId,
                 isNativeToken: true,
                 name: 'Bitcoin',
-                coingeckoId: 'bitcoin',
+                coingeckoId: 'bitcoin' as CryptoId,
                 contractAddress: null,
                 symbol: btcSymbol,
                 displaySymbol: 'BTC',

@@ -4,6 +4,7 @@ const swcConfig = require('./jest.config.swc-transform');
 
 module.exports = {
     rootDir: process.cwd(),
+    setupFiles: [path.resolve(__dirname, 'jest.setup.networks.ts')],
     moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
 
     testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],

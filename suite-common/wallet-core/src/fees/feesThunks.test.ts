@@ -10,7 +10,10 @@ import TrezorConnect from '@trezor/connect';
 import { DEFAULT_FEE_INFO } from './feesConstants';
 import { feesReducer } from './feesReducer';
 import { getOrFetchRawFeeInfoThunk, updateFeeInfoThunk } from './feesThunks';
-import { blockchainInitialState, prepareBlockchainReducer } from '../blockchain/blockchainReducer';
+import {
+    getBlockchainInitialState,
+    prepareBlockchainReducer,
+} from '../blockchain/blockchainReducer';
 
 jest.mock('@trezor/connect', () => {
     const actual = jest.requireActual('@trezor/connect');
@@ -73,7 +76,7 @@ const initStore = (fees: FeesState = {}) =>
             device: deviceInitialState,
             wallet: {
                 fees,
-                blockchain: blockchainInitialState,
+                blockchain: getBlockchainInitialState(),
             },
         },
     });

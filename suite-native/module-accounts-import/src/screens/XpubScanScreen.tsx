@@ -5,8 +5,8 @@ import { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectAddressValidatorDep } from '@suite-common/networks';
 import {
     type XpubFormContext,
     type XpubFormValues,

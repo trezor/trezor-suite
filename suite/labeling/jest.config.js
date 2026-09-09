@@ -4,7 +4,7 @@ module.exports = {
     ...baseConfig,
     testEnvironment: 'jsdom',
     roots: ['<rootDir>/src'],
-    setupFiles: ['jest-canvas-mock'],
+    setupFiles: ['jest-canvas-mock', ...baseConfig.setupFiles],
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     moduleNameMapper: {
         '\\.(svg|webp)$': '<rootDir>/__mocks__/import-svg.js',

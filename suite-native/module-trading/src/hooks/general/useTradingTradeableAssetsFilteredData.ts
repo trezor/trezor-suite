@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { selectGetSupportedNetworksDep } from '@suite-common/networks';
 import { usePreferredCurrencyUsdThreshold } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -18,8 +18,8 @@ type TradeableAssetsSelector = (
 export const useTradingTradeableAssetsFilteredData = (
     selectTradeableAssets: TradeableAssetsSelector,
 ) => {
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
-    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
+    const { getSupportedNetworks } = useServices(selectGetSupportedNetworksDep);
+    const supportedNetworks = getSupportedNetworks();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
         selectTradeableAssets(state, supportedNetworks),
     );

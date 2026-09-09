@@ -5,7 +5,7 @@ import { createTestStore } from '@suite-common/test-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 
-import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
+import { getBlockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
 import { setCustomBackendThunk } from './blockchainThunks';
 import {
     initialWalletSettingsState,
@@ -34,9 +34,9 @@ const initStore = (enabledNetworks: NetworkSymbol[]) =>
         preloadedState: {
             wallet: {
                 blockchain: {
-                    ...blockchainInitialState,
+                    ...getBlockchainInitialState(),
                     btc: {
-                        ...blockchainInitialState.btc,
+                        ...getBlockchainInitialState().btc,
                         backends: {
                             selected: 'electrum' as const,
                             urls: { electrum: [electrumUrl] },

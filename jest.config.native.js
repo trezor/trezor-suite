@@ -5,12 +5,11 @@ const {
     watchPathIgnorePatterns,
     moduleNameMapper,
 } = require('./jest.config.base');
+const swcConfig = require('./jest.config.swc-transform');
 
 const babelConfig = {
     presets: ['babel-preset-expo'],
 };
-
-const swcConfig = require('./jest.config.swc-transform');
 
 module.exports = {
     rootDir: process.cwd(),
@@ -47,6 +46,7 @@ module.exports = {
         '<rootDir>/../../suite-native/test-utils/src/mocks/everstakeJestSetup.js',
         '<rootDir>/../../suite-native/test-utils/src/mocks/TextEncoderMock.js',
         '<rootDir>/../../suite-native/test-utils/src/mocks/randomUUIDMock.js',
+        '<rootDir>/../../jest.setup.networks.ts',
         '<rootDir>/../../node_modules/@shopify/react-native-skia/jestSetup.js',
         '<rootDir>/../../node_modules/@shopify/flash-list/jestSetup.js',
         '<rootDir>/../../node_modules/react-native-gesture-handler/jestSetup.js',

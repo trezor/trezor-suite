@@ -8,7 +8,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { composeYieldEvmTransactionThunk } from './composeYieldEvmTransactionThunk';
 import { accountsInitialState } from '../../accounts/accountsReducer';
-import { blockchainInitialState } from '../../blockchain/blockchainReducer';
+import { getBlockchainInitialState } from '../../blockchain/blockchainReducer';
 import { feesReducer } from '../../fees/feesReducer';
 import { transactionsInitialState } from '../../transactions/transactionsReducer';
 import { estimateYieldFeeLevel } from '../utils/yieldFeeEstimation';
@@ -57,7 +57,7 @@ const initStore = (feeInfo = buildFeeInfo([normalLevel])) =>
             device: () => deviceInitialState,
             wallet: combineReducers({
                 accounts: () => accountsInitialState,
-                blockchain: () => blockchainInitialState,
+                blockchain: () => getBlockchainInitialState(),
                 fees: feesReducer,
                 transactions: () => transactionsInitialState,
             }),
@@ -66,7 +66,7 @@ const initStore = (feeInfo = buildFeeInfo([normalLevel])) =>
             device: deviceInitialState,
             wallet: {
                 accounts: accountsInitialState,
-                blockchain: blockchainInitialState,
+                blockchain: getBlockchainInitialState(),
                 fees: { eth: { status: 'loaded', data: feeInfo } },
                 transactions: transactionsInitialState,
             },

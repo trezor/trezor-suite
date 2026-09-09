@@ -1,3 +1,4 @@
+import { createNetworksCompositionRoot, registerNetworkServices } from '@suite-common/networks';
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { launchArguments } from '@suite-native/config';
 import {
@@ -10,6 +11,7 @@ import {
     prepareRootReducers,
 } from '@suite-native/state';
 import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
+import TrezorConnect from '@trezor/connect';
 
 import { type NativeInit, createNativeInit } from './createNativeInit';
 
@@ -21,6 +23,9 @@ export const createSuiteNativeCompositionRoot = (
     // Detox passes a serialized value, but react-native-launch-arguments parses it into an object.
     preloadedState = launchArguments.preloadedState as PreloadedState,
 ): SuiteNativeCompositionRoot => {
+    const networks = createNetworksCompositionRoot({ getTrezorConnect: () => TrezorConnect });
+    registerNetworkServices(networks);
+
     const ensureEncryptionKey = createEnsureEncryptionKey();
     const mmkvStorage = createMMKVStorage({ ensureEncryptionKey });
     const { store, injectServicesIntoReduxExtra } = createReduxStore({
@@ -34,6 +39,7 @@ export const createSuiteNativeCompositionRoot = (
         preloadedState,
     });
     const nativeServices = createNativeServicesCompositionRoot({
+        networks,
         dispatch: store.dispatch,
         getState: store.getState,
         ensureEncryptionKey,
