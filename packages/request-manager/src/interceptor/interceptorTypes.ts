@@ -1,6 +1,6 @@
 import { type createRequestPool } from '../httpPool';
 import { type TorIdentities } from '../torIdentities';
-import { type InterceptorOptions } from '../types';
+import { type InterceptorOptions, type ValidateRequestCallback } from '../types';
 
 export type InterceptorContext = InterceptorOptions & {
     requestPool: ReturnType<typeof createRequestPool>;
@@ -9,5 +9,5 @@ export type InterceptorContext = InterceptorOptions & {
 
 export type Interceptor = (params: {
     context: InterceptorContext;
-    validateRequest: ({ hostname }: { hostname: string }) => void;
+    validateRequest: ValidateRequestCallback;
 }) => void;

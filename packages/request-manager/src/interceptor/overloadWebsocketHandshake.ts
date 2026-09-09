@@ -2,6 +2,7 @@ import type http from 'http';
 
 import { isWhitelistedHost } from '@trezor/utils';
 
+import { type ValidateRequestCallback } from '../types';
 import { type InterceptorContext } from './interceptorTypes';
 import { overloadHttpRequest } from './overloadHttpRequest';
 
@@ -11,7 +12,7 @@ type OverloadWebsocketHandshakeParams = {
     url: string | URL | http.RequestOptions;
     options?: http.RequestOptions | ((r: http.IncomingMessage) => void);
     callback?: unknown;
-    validateRequest: (params: { hostname: string }) => void;
+    validateRequest: ValidateRequestCallback;
 };
 
 export const overloadWebsocketHandshake = ({

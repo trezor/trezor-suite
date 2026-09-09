@@ -25,19 +25,22 @@ export const interceptFetch: Interceptor = ({ context, validateRequest }) => {
             );
         }
 
+        let fullUrl: string | undefined;
         let hostname = 'unknown';
         if (typeof url === 'object' && 'hostname' in url) {
             // case url type of URL
+            fullUrl = url.toString();
             hostname = url.hostname;
         } else if (typeof url === 'object' && 'url' in url) {
             // case url type of globalThis.Request
-            hostname = url.url;
+            fullUrl = hostname = url.url;
         } else if (typeof url === 'string') {
             // case url type of string
+            fullUrl = url;
             hostname = new URL(url).hostname;
         }
 
-        validateRequest({ hostname });
+        validateRequest({ hostname, fullUrl, interceptType: 'fetch' });
 
         return originalFetch(url, options);
     };
