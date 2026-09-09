@@ -76,12 +76,23 @@ const getNetworkDisplayOrder = (networkSymbol: NetworkSymbol): number => {
     return order === -1 ? Number.MAX_SAFE_INTEGER : order;
 };
 
-export const getSupportedNetworks = (): NetworkSymbol[] =>
-    [...getNetworkServices().getSupportedNetworks()].sort(
+// Selectors use this list as a memoization input. Preserve its reference until the module list changes.
+const orderedNetworkSymbols = new WeakMap<readonly NetworkSymbol[], NetworkSymbol[]>();
+
+export const getSupportedNetworks = (): NetworkSymbol[] => {
+    const symbols = getNetworkServices().getSupportedNetworks();
+    const cachedSymbols = orderedNetworkSymbols.get(symbols);
+    if (cachedSymbols) return cachedSymbols;
+
+    const sortedSymbols = [...symbols].sort(
         (firstNetworkSymbol, secondNetworkSymbol) =>
             getNetworkDisplayOrder(firstNetworkSymbol) -
             getNetworkDisplayOrder(secondNetworkSymbol),
     );
+    orderedNetworkSymbols.set(symbols, sortedSymbols);
+
+    return sortedSymbols;
+};
 
 /**
  * @deprecated Access network configuration through the application composition root: use

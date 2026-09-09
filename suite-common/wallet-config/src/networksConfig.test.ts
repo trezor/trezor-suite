@@ -1,4 +1,4 @@
-import { getNetwork, isTestnet } from './networksConfig';
+import { getNetwork, getSupportedNetworks, isTestnet } from './networksConfig';
 
 import type * as WalletConfig from './index';
 
@@ -15,6 +15,10 @@ it('does not read network services until a compatibility function is called', ()
 describe(isTestnet.name, () => {
     it('preserves network object identity between compatibility calls', () => {
         expect(getNetwork('btc')).toBe(getNetwork('btc'));
+    });
+
+    it('preserves the supported-network list identity used by selectors', () => {
+        expect(getSupportedNetworks()).toBe(getSupportedNetworks());
     });
     it('returns false for a mainnet', () => {
         expect(isTestnet('btc')).toBe(false);

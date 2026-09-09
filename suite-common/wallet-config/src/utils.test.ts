@@ -1,9 +1,9 @@
+import { getNetworks } from './networksConfig';
 import { asNetworkSymbol } from './types';
 import {
     filterNetworksByName,
     getDisplaySymbol,
     getMainnets,
-    getNetworks,
     getNetworksWithMevProtection,
     getNetworksWithNativeTokenReserve,
     getTestnets,

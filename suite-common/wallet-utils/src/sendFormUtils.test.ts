@@ -1,4 +1,4 @@
-import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork, getNetworksCollection } from '@suite-common/wallet-config';
 import {
     mockWalletAccount,
     networkSpecificDefaultRipple,
