@@ -11,8 +11,8 @@ let
     systemImageTypes = [ "google_apis" ];
     abiVersions = [ "x86_64" ];
     includeNDK = true;
-    # 27.1 is RN's default; 27.0 is still requested by expo-sqlite.
-    ndkVersions = [ "27.1.12297006" "27.0.12077973" ];
+    # All Android modules inherit the React Native NDK version.
+    ndkVersions = [ "27.1.12297006" ];
     cmakeVersions = [ "3.22.1" ];
   };
 in

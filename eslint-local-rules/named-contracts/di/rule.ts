@@ -1,6 +1,7 @@
 import type { Rule } from 'eslint';
 import ts from 'typescript';
 
+import { createHasSymbolTag } from '../../hasSymbolTag';
 import { getTypeReferenceName, getVariableFunction, toLowerCamelCase } from '../../utils';
 import { createNamedContractRuleListener } from '../utils';
 
@@ -48,9 +49,12 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
                 createAdjacentDeclarationSwapFix,
                 localTypeAliases,
                 report,
+                sourceFile,
                 statements,
                 validateContractBlockSpacing,
             }) => {
+                const hasSymbolTag = createHasSymbolTag(sourceFile);
+
                 const validateDependencyFactory = (
                     factoryName: string,
                     factoryNameNode: ts.Node,
@@ -100,10 +104,17 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
                     }
 
                     const returnTypeName = getTypeReferenceName(factoryFunction.type);
+                    // Ordinary matching names need no cross-file lookup.
+                    const isSharedContract =
+                        returnTypeName !== undefined &&
+                        returnTypeName !== serviceName &&
+                        hasSymbolTag(returnTypeName, 'serviceContract');
 
+                    // Only explicitly marked abstractions may have differently named factories.
+                    // Their input dependencies still belong to the concrete implementation.
                     if (returnTypeName === undefined) {
                         report(factoryFunction, 'dependencyFactoryReturnType', { factoryName });
-                    } else if (returnTypeName !== serviceName) {
+                    } else if (returnTypeName !== serviceName && !isSharedContract) {
                         report(factoryNameNode, 'contractMustBeNamed', {
                             consumerName: factoryName,
                             contractName: serviceName,
@@ -159,7 +170,7 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
 
                     const depsStatementIndex = statements.indexOf(depsDeclaration);
                     const serviceDeclaration =
-                        returnTypeName === undefined
+                        returnTypeName === undefined || isSharedContract
                             ? undefined
                             : localTypeAliases.get(returnTypeName);
                     const serviceStatementIndex =
