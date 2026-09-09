@@ -25,3 +25,17 @@ export const STELLAR_RPC_SUBMIT_RETRY_DELAY_MS = 1000;
 export type StellarTrustlineDiscovery = 'horizon' | 'rpc';
 
 export const STELLAR_TRUSTLINE_DISCOVERY: StellarTrustlineDiscovery = 'horizon';
+
+/**
+ * Whether a failed Stellar RPC read falls back to Horizon.
+ *
+ * Account state moved onto RPC because Horizon cannot see Soroban contract storage. That made RPC
+ * a single point of failure for the whole account, where Horizon used to serve balances — so a
+ * read that fails to answer degrades to Horizon instead of leaving the account unloadable. The
+ * degraded read reports classic and native holdings only; contract-token balances live in contract
+ * storage and are simply absent. Submission stays RPC-only: the two paths report different result
+ * codes, and doubling that surface for a rare case is not worth it.
+ */
+export type StellarRpcReadFallback = 'horizon' | 'off';
+
+export const STELLAR_RPC_READ_FALLBACK: StellarRpcReadFallback = 'horizon';

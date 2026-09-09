@@ -38,6 +38,8 @@ const mockState: {
     readContractIds?: string[];
     ledgerEntries: { val: xdr.LedgerEntryData }[];
     horizonBalances: unknown[];
+    /** Merged into the Horizon account record, for the RPC-outage fallback. */
+    horizonAccount?: Record<string, unknown>;
 } = { operationRecords: [], sep41Tokens: [], ledgerEntries: [], horizonBalances: [] };
 
 const mockNotFoundError = () => new NotFoundError('Not Found', { status: 404 });
@@ -156,6 +158,7 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
 
                                     return Promise.resolve({
                                         balances: mockState.horizonBalances,
+                                        ...mockState.horizonAccount,
                                     });
                                 },
                             }),
@@ -247,11 +250,37 @@ describe('Stellar worker account history', () => {
         ).rejects.toThrow('Too Many Requests');
     });
 
-    it('account state failure is rethrown', async () => {
+    it('account state failure is rethrown when Horizon cannot stand in either', async () => {
+        // Horizon is mocked with trustline assets only, which is not enough to report a balance,
+        // so the degraded read gives up and the original RPC failure is what surfaces.
         mockState.ledgerEntriesError = new Error('Internal Server Error');
         await expect(
             blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' }),
         ).rejects.toThrow('Internal Server Error');
+    });
+
+    it('degrades to Horizon when the RPC account read is unavailable', async () => {
+        mockState.ledgerEntriesError = new Error('Internal Server Error');
+        mockState.horizonBalances = [
+            { asset_type: 'native', balance: '10.0000000' },
+            {
+                asset_type: 'credit_alphanum4',
+                asset_code: 'USDC',
+                asset_issuer: ASSET_ISSUER,
+                balance: '2.5000000',
+            },
+        ];
+        mockState.horizonAccount = { sequence: '99', subentry_count: 1 };
+
+        const account = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+        });
+
+        // Classic holdings survive the outage; contract-token balances live in contract storage,
+        // which Horizon cannot see, so they are simply absent.
+        expect(account.balance).toBe('100000000');
+        expect(account.tokens?.map(token => token.symbol)).toEqual(['USDC']);
     });
 
     it('reads trustline balances as stroops, without a decimal round-trip', async () => {

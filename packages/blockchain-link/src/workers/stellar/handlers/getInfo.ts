@@ -7,11 +7,16 @@ import type { Request } from '../types';
 
 export const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolean) => {
     const api = await request.connect();
-    const { readLatestLedger, readVersion } = await stellar();
+    const { createStellarDataSource } = await stellar();
+
+    // Read through the data source rather than straight off the RPC client: this is the handshake
+    // every other request waits on, so it is the one that must survive an RPC outage by degrading
+    // to Horizon.
+    const dataSource = createStellarDataSource(api);
 
     const [version, { sequence: blockHeight, hash: blockHash }] = await Promise.all([
-        readVersion(api.rpc),
-        readLatestLedger(api.rpc),
+        dataSource.readVersion(),
+        dataSource.readLatestLedger(),
     ]);
 
     return {
