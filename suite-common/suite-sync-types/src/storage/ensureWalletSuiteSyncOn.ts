@@ -36,6 +36,7 @@ export type EnsureWalletSuiteSyncOnErrors =
     | WriteModeRequiredForAllocationErrType
     | QuotaManagerCommunicationFailedErrType;
 
+/** @serviceContract */
 export type EnsureWalletSuiteSyncOn = (
     params: EnsureWalletSuiteSyncOnParams,
 ) => Promise<Result<SuiteSyncStorage, EnsureWalletSuiteSyncOnErrors>>;
@@ -47,6 +48,8 @@ export type OnStorageEnsuredParams = EnsureWalletSuiteSyncOnParams & {
 /**
  * Invoked after Suite Sync storage is ensured for a wallet (e.g. to run the legacy-labels
  * migration). Defaults to a no-op when a platform does not need it (e.g. native).
+ *
+ * @serviceContract
  */
 export type OnStorageEnsured = (params: OnStorageEnsuredParams) => Promise<void> | void;
 

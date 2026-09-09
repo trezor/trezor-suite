@@ -62,6 +62,22 @@ export const createServiceName =
     };
 ```
 
+### Multiple implementations of a shared contract
+
+Mark shared contracts with `@serviceContract` to allow differently named factories.
+Unmarked contracts must match the factory name.
+
+```ts
+/** @serviceContract */
+export interface PlatformEncryption {
+    encrypt: (value: string) => Promise<string>;
+    decrypt: (value: string) => Promise<string>;
+}
+```
+
+Both `createNativePlatformEncryption` and `createElectronPlatformEncryption` return this contract.
+Their dependencies remain `NativePlatformEncryptionDeps` and `ElectronPlatformEncryptionDeps`.
+
 ## Composition root
 
 This is the place where the tree of dependencies is created and wired together.
