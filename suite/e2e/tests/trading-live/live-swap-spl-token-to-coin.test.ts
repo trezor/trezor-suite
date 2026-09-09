@@ -69,6 +69,7 @@ test.describe(
                     sellAsset: {
                         searchFilter: 'Solana #2',
                         networkSymbol: 'sol',
+                        accountIndex: 1,
                     },
                     buyAsset: {
                         searchFilter: sendTokenSymbol,
