@@ -45,6 +45,7 @@ export type ExportBip329Params = {
     account: Account;
 };
 
+/** @serviceContract */
 export type ExportBip329 = (params: ExportBip329Params) => Bip329ExportResult;
 
 export type ExportBip329Dep = {
@@ -57,6 +58,7 @@ export type ImportBip329Params = {
     bip329Labels: Bip329Label[];
 };
 
+/** @serviceContract */
 export type ImportBip329 = (
     params: ImportBip329Params,
 ) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>>;

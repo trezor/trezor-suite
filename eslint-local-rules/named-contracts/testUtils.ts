@@ -7,9 +7,6 @@ export const namedContractsRuleTester = new RuleTester({
         parser,
         parserOptions: {
             ecmaVersion: 2020,
-            projectService: {
-                allowDefaultProject: ['named-contracts.ts'],
-            },
             sourceType: 'module',
             tsconfigRootDir: path.join(__dirname, '../..'),
         },

@@ -33,6 +33,7 @@ export const selectPlatformEncryptionDep = (services: any): PlatformEncryptionDe
     platformEncryption: services.platformEncryption,
 });
 
+/** @serviceContract */
 export interface PlatformEncryption {
     encrypt: <T extends EncryptableBranded>(params: {
         value: T;
