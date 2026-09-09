@@ -1,24 +1,26 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Text } from '@suite-native/atoms';
 import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils-store';
 import { residenceReducer } from '@suite-native/trading-state';
+import { type TradingResidenceRootState } from '@suite-native/trading-types';
 
 import {
     TradingLocationSettings,
     type TradingLocationSettingsProps,
 } from './TradingLocationSettings';
 
+type State = TradingResidenceRootState;
+
 describe('TradingLocationSettings', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const createStore = (preloadedResidenceState = {}) =>
         createLightStore({
@@ -41,7 +43,9 @@ describe('TradingLocationSettings', () => {
         });
 
     const renderTradingLocationSettings = async (props: TradingLocationSettingsProps) =>
-        await renderWithStoreProvider(<TradingLocationSettings {...props} />, { store });
+        await renderWithStoreProvider(<TradingLocationSettings {...props} />, {
+            services: { store },
+        });
 
     beforeEach(() => {
         store = createStore();

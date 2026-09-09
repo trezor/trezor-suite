@@ -1,7 +1,8 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
+    type AccountsRootState,
     type YieldFlowResolvedData,
     type YieldRootState,
     fetchAllowance,
@@ -14,7 +15,6 @@ import { type Account, type AccountKey, type TokenAddress } from '@suite-common/
 import { asAmountSubunit } from '@suite-common/wallet-utils';
 import { type YieldFlowParams, YieldStackRoutes } from '@suite-native/navigation';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
@@ -23,6 +23,8 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { useStartYieldDepositFlow } from './useStartYieldDepositFlow';
+
+type State = YieldRootState & AccountsRootState;
 
 const mockNavigate = jest.fn();
 const mockReplace = jest.fn();
@@ -149,9 +151,12 @@ const wethHookParams: HookParams = {
 };
 
 const renderUseStartYieldDepositFlow = async (
-    store: TestStore,
+    store: Store<State>,
     hookParams: HookParams = defaultHookParams,
-) => await renderHookWithStoreProvider(() => useStartYieldDepositFlow(hookParams), { store });
+) =>
+    await renderHookWithStoreProvider(() => useStartYieldDepositFlow(hookParams), {
+        services: { store },
+    });
 
 describe('useStartYieldDepositFlow', () => {
     beforeEach(() => {

@@ -1,3 +1,4 @@
+import { type Store } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
 import {
@@ -6,9 +7,10 @@ import {
     tradingActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
     btcAsset,
@@ -18,12 +20,15 @@ import {
     getInitializedTradingState,
     usdtAsset,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 import { type ExchangeFormValues, type ReceiveAccount } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { useExchangeForm } from './useExchangeForm';
 import { useExchangeQuotes } from './useExchangeQuotes';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
 
 const mockReport = jest.fn();
 const services: NativeAnalyticsDep = {
@@ -50,8 +55,8 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('useExchangeQuotes', () => {
-    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): TestStore =>
-        createTradingLightStore({
+    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
+        createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 wallet: {
@@ -64,7 +69,7 @@ describe('useExchangeQuotes', () => {
             },
         });
 
-    const renderUseExchangeQuotes = async (store: TestStore) =>
+    const renderUseExchangeQuotes = async (store: Store<State>) =>
         await renderHookWithStoreProvider(
             () => {
                 const form = useExchangeForm();
@@ -72,7 +77,7 @@ describe('useExchangeQuotes', () => {
 
                 return { form };
             },
-            { services, store },
+            { services: { ...services, store } },
         );
 
     beforeEach(() => {
@@ -292,6 +297,7 @@ describe('useExchangeQuotes', () => {
             await Promise.resolve();
         });
 
+        dispatchSpy.mockClear();
         await act(() => {
             store.dispatch(
                 tradingActions.setRefetchQuotesTimestamp(
@@ -299,17 +305,14 @@ describe('useExchangeQuotes', () => {
                 ),
             );
         });
-        dispatchSpy.mockClear();
 
-        await act(async () => {
-            await new Promise(resolve => setTimeout(resolve, 0));
+        await waitFor(() => {
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'handleRequestThunkMock',
+                }),
+            );
         });
-
-        expect(dispatchSpy).toHaveBeenCalledWith(
-            expect.objectContaining({
-                type: 'handleRequestThunkMock',
-            }),
-        );
     });
 
     it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', async () => {
@@ -322,6 +325,7 @@ describe('useExchangeQuotes', () => {
             form.setValue('sendAsset', btcAsset);
         });
 
+        dispatchSpy.mockClear();
         await act(() => {
             store.dispatch(
                 tradingActions.setRefetchQuotesTimestamp(
@@ -329,7 +333,6 @@ describe('useExchangeQuotes', () => {
                 ),
             );
         });
-        dispatchSpy.mockClear();
 
         await act(async () => {
             await new Promise(resolve => setTimeout(resolve, 0));
@@ -423,7 +426,7 @@ describe('useExchangeQuotes', () => {
     });
 
     describe('analytics', () => {
-        const renderUseExchangeQuotesWithFilledForm = async (store: TestStore) => {
+        const renderUseExchangeQuotesWithFilledForm = async (store: Store<State>) => {
             const { result } = await renderUseExchangeQuotes(store);
             const { form } = result.current;
 

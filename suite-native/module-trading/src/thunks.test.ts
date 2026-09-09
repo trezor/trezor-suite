@@ -1,5 +1,6 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
 import {
     tradingBuyActions,
     tradingExchangeActions,
@@ -7,12 +8,15 @@ import {
 } from '@suite-common/trading';
 import { type Account, type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { type TestStore } from '@suite-native/test-utils-store';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { eth1NormalAccount, invityDexQuote } from '@suite-native/trading-fixtures';
 
-import { createTradingLightStore } from './test-utils/tradingTestUtils';
-import { clearTradingStateThunk, composeEvmApprovalFeeLevelsThunk } from './thunks';
+import { createTradingTestStore } from './test-utils/tradingTestUtils';
+import {
+    type ComposeEvmApprovalFeeLevelsThunkState,
+    clearTradingStateThunk,
+    composeEvmApprovalFeeLevelsThunk,
+} from './thunks';
 
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
@@ -127,7 +131,7 @@ describe('thunks', () => {
     });
 
     describe('composeEvmApprovalFeeLevelsThunk', () => {
-        let store: TestStore;
+        let store: ReduxStoreWithThunk<ComposeEvmApprovalFeeLevelsThunkState, Record<never, never>>;
 
         const dexQuoteWithApprovalData: ExchangeTrade = {
             ...invityDexQuote,
@@ -153,7 +157,7 @@ describe('thunks', () => {
         };
 
         beforeEach(() => {
-            store = createTradingLightStore({
+            store = createTradingTestStore({
                 tradeType: 'exchange',
                 overrides: {
                     wallet: {
@@ -212,7 +216,7 @@ describe('thunks', () => {
         it('should merge composed approval fees into existing exchange form draft without dropping fields', async () => {
             const formDraftKey = getFormDraftKey('trading-exchange', '');
 
-            const localStore = createTradingLightStore({
+            const localStore = createTradingTestStore({
                 tradeType: 'exchange',
                 overrides: {
                     wallet: {
@@ -269,7 +273,7 @@ describe('thunks', () => {
         it('should add default payment output with token when exchange form draft has no outputs', async () => {
             const formDraftKey = getFormDraftKey('trading-exchange', '');
 
-            const localStore = createTradingLightStore({
+            const localStore = createTradingTestStore({
                 tradeType: 'exchange',
                 overrides: {
                     wallet: {

@@ -1,8 +1,10 @@
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
+    type TradingRootState,
     type TradingType,
     tradingBuyActions,
     tradingExchangeActions,
+    initialState as tradingInitialState,
     tradingSellActions,
 } from '@suite-common/trading';
 
@@ -14,28 +16,39 @@ const clearQuotesActionTypeByType = {
     exchange: tradingExchangeActions.clearQuotes.type,
 } satisfies Record<TradingType, string>;
 
-const getState = (type: TradingType, hasQuotes: boolean) => ({
+const getState = (type: TradingType, hasQuotes: boolean): TradingRootState => ({
     wallet: {
         trading: {
-            buy: { quotes: type === 'buy' && hasQuotes ? [{ id: '1' }] : [] },
-            sell: { quotes: type === 'sell' && hasQuotes ? [{ id: '1' }] : [] },
-            exchange: { quotes: type === 'exchange' && hasQuotes ? [{ id: '1' }] : [] },
+            ...tradingInitialState,
+            buy: {
+                ...tradingInitialState.buy,
+                quotes: type === 'buy' && hasQuotes ? [{ quoteId: '1' }] : [],
+            },
+            sell: {
+                ...tradingInitialState.sell,
+                quotes: type === 'sell' && hasQuotes ? [{ quoteId: '1' }] : [],
+            },
+            exchange: {
+                ...tradingInitialState.exchange,
+                quotes: type === 'exchange' && hasQuotes ? [{ quoteId: '1' }] : [],
+            },
         },
     },
 });
 
 const renderClearStaleQuotes = (
-    state: ReturnType<typeof getState>,
+    state: TradingRootState,
     props: { type: TradingType; isAmountEmpty: boolean },
 ) => {
-    const store = createTestStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
         preloadedState: state,
     });
 
-    renderHookWithStoreProvider(() => useTradingClearStaleQuotes(props), { store });
+    renderHookWithStoreProvider(() => useTradingClearStaleQuotes(props), { root });
 
-    return store;
+    const { getActions } = root.services;
+
+    return { getActions };
 };
 
 const tradingTypes: TradingType[] = ['buy', 'sell', 'exchange'];
@@ -44,30 +57,30 @@ describe('useTradingClearStaleQuotes', () => {
     it.each(tradingTypes)(
         'dispatches %s clearQuotes when amount is empty and quotes exist',
         type => {
-            const store = renderClearStaleQuotes(getState(type, true), {
+            const { getActions } = renderClearStaleQuotes(getState(type, true), {
                 type,
                 isAmountEmpty: true,
             });
 
-            expect(store.getActions()).toEqual([{ type: clearQuotesActionTypeByType[type] }]);
+            expect(getActions()).toEqual([{ type: clearQuotesActionTypeByType[type] }]);
         },
     );
 
     it('does not dispatch when amount is not empty', () => {
-        const store = renderClearStaleQuotes(getState('buy', true), {
+        const { getActions } = renderClearStaleQuotes(getState('buy', true), {
             type: 'buy',
             isAmountEmpty: false,
         });
 
-        expect(store.getActions()).toEqual([]);
+        expect(getActions()).toEqual([]);
     });
 
     it('does not dispatch when there are no quotes to clear', () => {
-        const store = renderClearStaleQuotes(getState('buy', false), {
+        const { getActions } = renderClearStaleQuotes(getState('buy', false), {
             type: 'buy',
             isAmountEmpty: true,
         });
 
-        expect(store.getActions()).toEqual([]);
+        expect(getActions()).toEqual([]);
     });
 });

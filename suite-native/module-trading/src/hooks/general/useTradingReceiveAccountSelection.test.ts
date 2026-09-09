@@ -1,26 +1,31 @@
+import { createMockDispatch } from '@suite-common/redux-utils/mocks';
+import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { btc1NormalAccount, btc2legacyAccount } from '@suite-native/trading-fixtures';
 import { selectExchangeSelectedReceiveAccount, tradingActions } from '@suite-native/trading-state';
 
 import { useTradingReceiveAccountSelection } from './useTradingReceiveAccountSelection';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 
 describe('useTradingReceiveAccountSelection', () => {
     it.each(['buy', 'exchange'] as const)(
         'should select the %s receive account with one action',
         async tradingType => {
-            const store = createTradingLightStore({ tradeType: tradingType });
+            const { actions, dispatch } = createMockDispatch({
+                getState: () => undefined,
+                extra: undefined,
+            });
             const address = btc1NormalAccount.addresses?.unused[0];
-            const { result } = await renderHookWithStoreProvider(
+            const { result } = await renderHookWithBasicProvider(
                 () => useTradingReceiveAccountSelection(tradingType),
-                { store },
+                { services: { store: { dispatch } } },
             );
 
             await act(() => {
                 result.current({ account: btc1NormalAccount, address });
             });
 
-            expect(store.getActions()).toEqual([
+            expect(actions).toEqual([
                 tradingActions.setReceiveAccount({
                     tradingType,
                     accountKey: btc1NormalAccount.key,
@@ -31,7 +36,7 @@ describe('useTradingReceiveAccountSelection', () => {
     );
 
     it('should not expose a stale address when switching exchange accounts', async () => {
-        const store = createTradingLightStore({
+        const store = createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 wallet: {
@@ -51,7 +56,7 @@ describe('useTradingReceiveAccountSelection', () => {
         const unsubscribe = store.subscribe(selectReceiveAccount);
         const { result } = await renderHookWithStoreProvider(
             () => useTradingReceiveAccountSelection('exchange'),
-            { store },
+            { services: { store } },
         );
 
         expect(async () => {

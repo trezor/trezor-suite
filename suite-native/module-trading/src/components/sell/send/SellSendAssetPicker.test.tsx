@@ -1,13 +1,14 @@
+import { type Store } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import {
-    type TestStore,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
@@ -18,6 +19,7 @@ import {
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
 import {
+    type TradingRootState,
     selectAccountsWithTokensToSellSectionListByTradingType,
     sellActions,
 } from '@suite-native/trading-state';
@@ -26,7 +28,9 @@ import { BigNumber } from '@trezor/utils';
 
 import { SellSendAssetPicker } from './SellSendAssetPicker';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
-import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),
@@ -59,7 +63,7 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('SellSendAssetPicker', () => {
     let form: SellFormType;
-    let store: TestStore;
+    let store: Store<State>;
 
     const btcAccount = getBtcAccount();
     const ethAccount = getEthAccount();
@@ -89,12 +93,13 @@ describe('SellSendAssetPicker', () => {
     ];
 
     const renderSellForm = async () =>
-        await renderHookWithStoreProvider(() => useSellForm(), { services, store });
+        await renderHookWithStoreProvider(() => useSellForm(), {
+            services: { ...services, store },
+        });
 
     const renderSellSendAssetPicker = async () =>
         await renderWithStoreProvider(<SellSendAssetPicker />, {
-            services,
-            store,
+            services: { ...services, store },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
@@ -103,7 +108,7 @@ describe('SellSendAssetPicker', () => {
         jest.clearAllMocks();
         mockSelectedMyAssetAccountKey = undefined;
         mockSelectedMyAssetCryptoId = undefined;
-        store = createTradingLightStore({
+        store = createTradingTestStore({
             tradeType: 'sell',
             overrides: {
                 wallet: {

@@ -34,6 +34,7 @@ export * from './reducers/tradingReducer';
 export * from './regional';
 export { buyThunks } from './thunks/buy';
 export { tradingThunks } from './thunks/common';
+export type { LoadInitialDataThunkDeps } from './thunks/common/loadInitialDataThunk';
 export { exchangeThunks } from './thunks/exchange';
 export { sellThunks } from './thunks/sell';
 export * from './selectors/tradingSelectors';

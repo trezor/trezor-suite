@@ -1,3 +1,7 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
+import { type AccountsRootState, type FormDraftRootState } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
@@ -6,16 +10,21 @@ import {
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import {
-    type TestStore,
     act,
     createStoreFromPreloadedState,
     renderHookWithStoreProvider,
     waitFor,
 } from '@suite-native/test-utils-store';
+import {
+    type NativeSendRootState,
+    sendFormInitialState,
+} from '@suite-native/transaction-management';
 import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { useStellarFeeScreen } from './useStellarFeeScreen';
+
+type State = AccountsRootState & DeviceRootState & FormDraftRootState & NativeSendRootState;
 
 type UseStellarFeeScreenParams = Parameters<typeof useStellarFeeScreen>[0];
 
@@ -179,7 +188,7 @@ const createDeferred = () => {
 };
 
 describe('useStellarFeeScreen', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const mockThunkAction = jest.fn();
     const mockOnSuccess = jest.fn();
@@ -199,14 +208,22 @@ describe('useStellarFeeScreen', () => {
 
     const renderUseStellarFeeScreen = async (props: UseStellarFeeScreenParams = defaultProps) =>
         await renderHookWithStoreProvider(hookProps => useStellarFeeScreen(hookProps), {
-            store,
+            services: { store },
             initialProps: props,
         });
 
     beforeEach(() => {
         jest.clearAllMocks();
         focusEffectCallback = undefined;
-        store = createStoreFromPreloadedState();
+        const state: State = {
+            device: deviceInitialState,
+            wallet: {
+                accounts: [],
+                formDrafts: {},
+                send: sendFormInitialState,
+            },
+        };
+        store = createStoreFromPreloadedState(state);
 
         mockSelectAccountByKey.mockReturnValue(mockAccount);
         mockSelectDeviceButtonRequestsCodes.mockReturnValue([]);

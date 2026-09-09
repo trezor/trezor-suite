@@ -1,17 +1,22 @@
 import { type NavigationAction, type RouteProp } from '@react-navigation/native';
+import { type Store } from '@reduxjs/toolkit';
 
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
     useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
-import { type TestStore } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { TradingExchangeRevokeScreen } from './TradingExchangeRevokeScreen';
-import { createTradingLightStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+import { createTradingTestStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
@@ -81,18 +86,10 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 const mockAnalyticsReport = jest.fn();
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useExchangeAnalyticsStepReport:
-        (action: unknown) =>
-        (...args: unknown[]) =>
-            mockAnalyticsReport(action, ...args),
-}));
-
 const testQuote = mercuryoFixedWorstQuote;
 
 describe('TradingExchangeRevokeScreen', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let unmount: (() => void) | undefined;
 
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -103,7 +100,10 @@ describe('TradingExchangeRevokeScreen', () => {
                 route={{ params } as any}
                 navigation={{ dispatch: mockNavigationDispatch } as any}
             />,
-            { store, tradeType: 'exchange' },
+            {
+                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
+                tradeType: 'exchange',
+            },
         );
 
         ({ unmount } = result);
@@ -116,7 +116,7 @@ describe('TradingExchangeRevokeScreen', () => {
 
         mockIsDeviceConnected = true;
 
-        store = createTradingLightStore({ tradeType: 'exchange' });
+        store = createTradingTestStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
         store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
     });
@@ -207,7 +207,10 @@ describe('TradingExchangeRevokeScreen', () => {
         it('should report revoke-preview visit ', async () => {
             await renderScreen();
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingExchangeEvent.name,
+                payload: expect.objectContaining({ step: 'revoke-preview', action: 'visit' }),
+            });
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         });
 
@@ -217,7 +220,10 @@ describe('TradingExchangeRevokeScreen', () => {
 
             triggerPreventNavigationRemove({ type: 'GO_BACK' });
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'cancel');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingExchangeEvent.name,
+                payload: expect.objectContaining({ step: 'revoke-preview', action: 'cancel' }),
+            });
         });
     });
 });

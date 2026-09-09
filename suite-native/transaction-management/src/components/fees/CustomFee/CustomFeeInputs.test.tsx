@@ -1,9 +1,11 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type FeesRootState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
-    type TestStore,
     createStoreFromPreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
@@ -13,6 +15,8 @@ import { CustomFeeInputs, type CustomFeeInputsProps } from './CustomFeeInputs';
 import { type FeesFormType } from '../../..';
 import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
 import { useFeesForm } from '../../../hooks';
+
+type State = FeesRootState;
 
 // Mock the selectors
 jest.mock('@suite-common/wallet-core', () => ({
@@ -28,12 +32,12 @@ const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
 
 describe('CustomFeeInputs', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const defaultProps = {
         symbol: btcSymbol,
     };
-    const defaultState = {
+    const defaultState: State = {
         wallet: getWalletState(),
     };
 
@@ -44,10 +48,7 @@ describe('CustomFeeInputs', () => {
                     accountKey,
                     defaultFeePerUnit: '1',
                 }),
-            {
-                store,
-                preloadedState: defaultState,
-            },
+            { services: { store }, preloadedState: defaultState },
         );
 
         return result.current;
@@ -64,7 +65,7 @@ describe('CustomFeeInputs', () => {
 
         return await renderWithStoreProvider(<CustomFeeInputs {...finalProps} />, {
             preloadedState: defaultState,
-            store,
+            services: { store },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

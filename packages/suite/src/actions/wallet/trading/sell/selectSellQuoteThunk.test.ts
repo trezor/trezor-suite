@@ -1,7 +1,9 @@
 import { type CryptoId, type SellFiatTrade, type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
-import { type GotoThunkDeps } from '@suite/router';
+import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
+import { type GotoThunkDeps, routerLocationChange, routerReducer } from '@suite/router';
 import { type WithServices } from '@suite-common/redux-utils';
 import { createTestStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
@@ -12,11 +14,6 @@ import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { selectSellQuoteThunk } from './selectSellQuoteThunk';
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
-}));
 
 const mockRequestSellTradeThunk = jest.fn((args: unknown) =>
     Object.assign(
@@ -76,6 +73,9 @@ const buildStore = (
     createTestStore({
         extra: createExtra(report),
         preloadedState: {
+            locks: locksReducer(undefined, { type: 'test-init' }),
+            modal: modalReducer(undefined, { type: 'test-init' }),
+            router: routerReducer(undefined, { type: 'test-init' }),
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             tokenDefinitions: {},
             wallet: {
@@ -154,14 +154,19 @@ describe('selectSellQuoteThunk', () => {
         expect(mockRequestSellTradeThunk).toHaveBeenCalledTimes(1);
         expect(store.getActions()).toEqual(
             expect.arrayContaining([
-                { type: '@router/goto', payload: { routeName: 'wallet-trading-sell-confirm' } },
+                expect.objectContaining({
+                    type: routerLocationChange.type,
+                    payload: expect.objectContaining({
+                        pathname: '/accounts/coinmarket/sell/confirm',
+                    }),
+                }),
                 { type: '@test/request-sell-trade' },
             ]),
         );
 
         const gotoActionIndex = store
             .getActions()
-            .findIndex(action => action.type === '@router/goto');
+            .findIndex(action => action.type === routerLocationChange.type);
         const requestActionIndex = store
             .getActions()
             .findIndex(action => action.type === '@test/request-sell-trade');

@@ -1,8 +1,10 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type FeesRootState } from '@suite-common/wallet-core';
 import { Form, useForm } from '@suite-native/forms';
 import {
-    type TestStore,
     createStoreFromPreloadedState,
     renderWithStoreProvider,
     userEvent,
@@ -12,6 +14,8 @@ import { FeeOption } from './FeeOption';
 import { createFeeLevel } from '../../../__fixtures__/feeLevels';
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
+
+type State = FeesRootState;
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({
@@ -49,7 +53,7 @@ const mockSelectConvertedNetworkFeeLevelFeePerUnit = jest.requireMock(
 ).selectConvertedNetworkFeeLevelFeePerUnit;
 
 describe('FeeOption', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let mockOnSelectedFeeLevel: jest.Mock;
 
     const defaultProps = {
@@ -67,7 +71,7 @@ describe('FeeOption', () => {
         onSelectedFeeLevel: jest.fn(),
     };
 
-    const getPreloadedState = () => ({
+    const getPreloadedState = (): State => ({
         wallet: getWalletState(),
     });
 
@@ -79,10 +83,7 @@ describe('FeeOption', () => {
             <TestFormWrapper>
                 <FeeOption {...finalProps} />
             </TestFormWrapper>,
-            {
-                store,
-                preloadedState: getPreloadedState(),
-            },
+            { services: { store }, preloadedState: getPreloadedState() },
         );
     };
 

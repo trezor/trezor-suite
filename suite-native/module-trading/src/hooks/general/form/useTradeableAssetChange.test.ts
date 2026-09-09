@@ -1,13 +1,17 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { tradingExchangeActions } from '@suite-common/trading';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { type UseFormReturn } from '@suite-native/forms';
-import { type TestStore, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, getBtcAccount, usdcAsset } from '@suite-native/trading-fixtures';
-import { buyActions, exchangeActions } from '@suite-native/trading-state';
+import { type TradingRootState, buyActions, exchangeActions } from '@suite-native/trading-state';
 
 import { useTradeableAssetChange } from './useTradeableAssetChange';
-import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {
@@ -27,12 +31,12 @@ const createMockForm = (counterpartAsset?: unknown): MockForm => ({
 });
 
 describe('useTradeableAssetChange', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let setSelectedValue: jest.Mock;
 
     beforeEach(() => {
         reportMock.mockClear();
-        store = createTradingLightStore({ tradeType: 'exchange' });
+        store = createTradingTestStore({ tradeType: 'exchange' });
         setSelectedValue = jest.fn();
     });
 
@@ -52,7 +56,7 @@ describe('useTradeableAssetChange', () => {
                     ...config,
                     form: config.form as unknown as UseFormReturn<never>,
                 }),
-            { store, services },
+            { services: { ...services, store } },
         );
 
         return result.current;

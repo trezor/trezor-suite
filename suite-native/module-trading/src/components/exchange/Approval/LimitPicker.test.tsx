@@ -1,18 +1,18 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
-import {
-    type TestStore,
-    renderWithStoreProvider,
-    userEvent,
-    within,
-} from '@suite-native/test-utils-store';
+import { renderWithStoreProvider, userEvent, within } from '@suite-native/test-utils-store';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { LimitPicker } from './LimitPicker';
-import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 describe('LimitPicker', () => {
-    let store: TestStore;
+    let store: Store<State>;
     const mockOnApprovalTypeChange = jest.fn();
 
     const renderLimitPicker = async () =>
@@ -29,7 +29,7 @@ describe('LimitPicker', () => {
                     );
                 }}
             />,
-            { store },
+            { services: { store } },
         );
 
     beforeEach(() => {
@@ -37,7 +37,7 @@ describe('LimitPicker', () => {
 
         const quote = { ...mercuryoFixedWorstQuote, approvalStringAmount: '100' };
 
-        store = createTradingLightStore({
+        store = createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 wallet: {

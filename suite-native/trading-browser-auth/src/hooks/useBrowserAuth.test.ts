@@ -1,4 +1,4 @@
-import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
+import { type StateFromReducersMapObject, type Store, combineReducers } from '@reduxjs/toolkit';
 import { WebBrowserResultType } from 'expo-web-browser';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
@@ -9,7 +9,6 @@ import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     type PreloadedStatePartial,
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
@@ -17,6 +16,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import {
+    type TradingRootState,
     selectTradingProviderConfirmationStatus,
     tradingActions,
     tradingSlice,
@@ -24,6 +24,8 @@ import {
 
 import { TRADING_URL_DEFAULT_BACK } from '../consts';
 import { useBrowserAuth } from './useBrowserAuth';
+
+type State = TradingRootState;
 
 const mockOpenBrowserAsync = jest.fn();
 const mockDismissBrowser = jest.fn();
@@ -60,10 +62,12 @@ jest.mock('./useOnForegroundCallback', () => ({
 }));
 
 describe('useBrowserAuth', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseBrowserAuth = async (tradingType: TradingType = 'sell') =>
-        await renderHookWithStoreProvider(() => useBrowserAuth(tradingType), { services, store });
+        await renderHookWithStoreProvider(() => useBrowserAuth(tradingType), {
+            services: { ...services, store },
+        });
 
     const defaultWalletState = getWalletState();
 
@@ -108,8 +112,7 @@ describe('useBrowserAuth', () => {
             const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
             const { result } = await renderHookWithStoreProvider(() => useBrowserAuth(undefined), {
-                services,
-                store,
+                services: { ...services, store },
             });
 
             await act(async () => {

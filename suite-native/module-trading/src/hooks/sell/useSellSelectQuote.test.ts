@@ -1,16 +1,17 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { tradingSellActions } from '@suite-common/trading';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import {
-    type TestStore,
-    act,
-    renderHookWithStoreProvider,
-    waitFor,
-} from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useSellForm } from './useSellForm';
 import { useSellSelectQuote } from './useSellSelectQuote';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -20,7 +21,7 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('useSellSelectQuote', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseSellSelectQuote = async () =>
         await renderHookWithStoreProvider(
@@ -29,11 +30,11 @@ describe('useSellSelectQuote', () => {
 
                 return { form, ...useSellSelectQuote(form) };
             },
-            { store },
+            { services: { store } },
         );
 
     beforeEach(() => {
-        store = createTradingLightStore({ tradeType: 'sell' });
+        store = createTradingTestStore({ tradeType: 'sell' });
     });
 
     describe('canProceed', () => {

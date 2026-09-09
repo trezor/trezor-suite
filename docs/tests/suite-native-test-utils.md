@@ -113,22 +113,18 @@ For example, you want to check if some action was dispatched or if the state was
 You have also possibility to dispatch an action by yourself.
 
 ```tsx
-import {
-    type TestStore,
-    act,
-    initStore,
-    renderWithStoreProvider,
-    userEvent,
-} from '@suite-native/test-utils';
+import { type Store } from '@reduxjs/toolkit';
+
+import { act, initStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 
 describe('Counter', () => {
-    let store: TestStore;
+    let store: Store<{ counter: { value: number } }>;
 
     beforeEach(() => {
         ({ store } = initStore({ counter: { value: 0 } }));
     });
 
-    const renderCounter = () => renderWithStoreProvider(<Counter />, { store });
+    const renderCounter = () => renderWithStoreProvider(<Counter />, { services: { store } });
 
     it('should react to state changes', () => {
         const { getByLabelText } = renderCounter();
@@ -159,7 +155,7 @@ To inject custom provider, you can use `wrapper` option of either `render`, `ren
 
 ```tsx
 const renderCounterA = () =>
-    renderWithStoreProvider(<Counter />, { store, wrapper: MyCustomProvider });
+    renderWithStoreProvider(<Counter />, { services: { store }, wrapper: MyCustomProvider });
 
 const renderCounterB = () =>
     renderWithBasicProvider(<Counter />, {
@@ -235,8 +231,8 @@ import {
 } from '@suite-native/test-utils';
 
 describe('useCounter', () => {
-    const renderUseCounter = (store: PreloadedState) =>
-        renderHookWithStoreProvider(() => useCounter(), { store });
+    const renderUseCounter = (preloadedState: PreloadedState) =>
+        renderHookWithStoreProvider(() => useCounter(), { preloadedState });
 
     it('should initialize with count from store', () => {
         const { result } = renderUseCounter({
@@ -251,11 +247,13 @@ describe('useCounter', () => {
 #### Usage example with store access
 
 ```ts
+import { type Store } from '@reduxjs/toolkit';
+
 import { act, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
 
 describe('useCounter', () => {
-    const renderUseCounter = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useCounter(), { store });
+    const renderUseCounter = (store: Store<{ counter: { value: number } }>) =>
+        renderHookWithStoreProvider(() => useCounter(), { services: { store } });
 
     it('should increment count and update store', () => {
         const store = initStore({ counter: { value: 0 } });
@@ -279,7 +277,10 @@ To inject custom provider, you can use `wrapper` option of either `renderHook`, 
 
 ```tsx
 const renderUseCounterA = () =>
-    renderHookWithStoreProvider(() => useCounter(), { store, wrapper: MyCustomProvider });
+    renderHookWithStoreProvider(() => useCounter(), {
+        services: { store },
+        wrapper: MyCustomProvider,
+    });
 
 const renderUseCounterB = () =>
     renderHookWithBasicProvider(() => useCounter(), {

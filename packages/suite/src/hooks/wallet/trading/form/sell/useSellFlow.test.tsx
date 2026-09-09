@@ -1,4 +1,6 @@
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { type UnknownAction } from '@reduxjs/toolkit';
+
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingTransactionSell, tradingSellActions } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -39,8 +41,7 @@ const renderSellFlow = ({
     transactionId = undefined,
     isAmountEmpty = false,
 }: Props = {}) => {
-    const store = createTestStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
         preloadedState: {
             wallet: { trading: { sell: { quotes: [] } } },
         },
@@ -48,32 +49,33 @@ const renderSellFlow = ({
 
     renderHookWithStoreProvider(
         () => useSellFlow({ isFromRedirect, trade, transactionId, isAmountEmpty }),
-        { store },
+        { root },
     );
 
-    return store;
+    const { getActions } = root.services;
+
+    return { getActions };
 };
 
-const actionTypes = (store: ReturnType<typeof renderSellFlow>) =>
-    store.getActions().map(action => action.type);
+const actionTypes = (actions: UnknownAction[]) => actions.map(action => action.type);
 
 describe('useSellFlow', () => {
     it('dispatches the initial data load once on mount', () => {
-        const store = renderSellFlow();
+        const { getActions } = renderSellFlow();
 
         expect(
-            store.getActions().filter(action => action.type === 'trading/loadInitialData'),
+            getActions().filter(action => action.type === 'trading/loadInitialData'),
         ).toHaveLength(1);
     });
 
     it('restores the selected quote, form step and send account on redirect', () => {
-        const store = renderSellFlow({
+        const { getActions } = renderSellFlow({
             isFromRedirect: true,
             trade: TRADE,
             transactionId: 'tx-1',
         });
 
-        const types = actionTypes(store);
+        const types = actionTypes(getActions());
 
         expect(types).toContain(tradingSellActions.saveSelectedQuote.type);
         expect(types).toContain(tradingSellActions.setFormStep.type);
@@ -82,9 +84,9 @@ describe('useSellFlow', () => {
     });
 
     it('clears the redirect flag without restoring a trade when the transaction id is missing', () => {
-        const store = renderSellFlow({ isFromRedirect: true, trade: TRADE });
+        const { getActions } = renderSellFlow({ isFromRedirect: true, trade: TRADE });
 
-        const types = actionTypes(store);
+        const types = actionTypes(getActions());
 
         expect(types).not.toContain(tradingSellActions.saveSelectedQuote.type);
         expect(types).not.toContain(tradingSellActions.setFormStep.type);
@@ -92,9 +94,9 @@ describe('useSellFlow', () => {
     });
 
     it('does not restore anything when the redirect flag is not set', () => {
-        const store = renderSellFlow({ trade: TRADE, transactionId: 'tx-1' });
+        const { getActions } = renderSellFlow({ trade: TRADE, transactionId: 'tx-1' });
 
-        const types = actionTypes(store);
+        const types = actionTypes(getActions());
 
         expect(types).not.toContain(tradingSellActions.saveSelectedQuote.type);
         expect(types).not.toContain(tradingSellActions.setIsFromRedirect.type);

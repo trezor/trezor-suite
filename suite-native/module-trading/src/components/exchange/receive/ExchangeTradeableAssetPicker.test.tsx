@@ -1,13 +1,16 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { tradingExchangeActions } from '@suite-common/trading';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { featureFlagsInitialState } from '@suite-native/feature-flags';
+import { type FeatureFlagsRootState, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
-import { type TestStore, fireEvent, screen, waitFor } from '@suite-native/test-utils-store';
+import { fireEvent, screen, waitFor } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     btc1NormalAccount,
@@ -17,17 +20,19 @@ import {
     ethAsset,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { exchangeActions } from '@suite-native/trading-state';
+import { type TradingRootState, exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
 import { ExchangeTradeableAssetPicker } from './ExchangeTradeableAssetPicker';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import {
-    createTradingLightStore,
+    createTradingTestStore,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & FeatureFlagsRootState;
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
@@ -65,11 +70,11 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('ExchangeTradeableAssetPicker', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let form: ExchangeFormType;
 
     const initPreloadedStore = (firmwareType: FirmwareType) =>
-        createTradingLightStore({
+        createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 device: { selectedDevice: { firmwareType } },
@@ -82,7 +87,7 @@ describe('ExchangeTradeableAssetPicker', () => {
     // Account preselection needs a device session that the mock accounts belong to,
     // otherwise they are not treated as visible device accounts.
     const initPreloadedStoreWithAccounts = () =>
-        createTradingLightStore({
+        createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 device: {
@@ -99,8 +104,7 @@ describe('ExchangeTradeableAssetPicker', () => {
 
     const renderFormHook = async () => {
         const { result } = await renderHookWithTradingProvider(() => useExchangeForm(), {
-            services,
-            store,
+            services: { ...services, store },
         });
 
         return result.current;
@@ -108,8 +112,7 @@ describe('ExchangeTradeableAssetPicker', () => {
 
     const renderTradeableAssetPicker = async () =>
         await renderWithTradingProvider(<ExchangeTradeableAssetPicker />, {
-            services,
-            store,
+            services: { ...services, store },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

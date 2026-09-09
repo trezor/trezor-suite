@@ -1,26 +1,32 @@
+import { type Store } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
 import { tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import {
     ExchangeConfirmationHeader,
     type ExchangeConfirmationHeaderProps,
 } from './ExchangeConfirmationHeader';
-import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 const testQuote = exchangeQuotes[0];
 
 describe('ExchangeConfirmationHeader', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderHeader = async (props: ExchangeConfirmationHeaderProps) =>
-        await renderWithStoreProvider(<ExchangeConfirmationHeader {...props} />, { store });
+        await renderWithStoreProvider(<ExchangeConfirmationHeader {...props} />, {
+            services: { store },
+        });
 
     beforeEach(() => {
-        store = createTradingLightStore({ tradeType: 'exchange' });
+        store = createTradingTestStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
     });
 

@@ -41,6 +41,7 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/message-system": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",

@@ -1,12 +1,13 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { useFormContext } from '@suite-native/forms';
 import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     fireEvent,
@@ -18,6 +19,7 @@ import {
     selectTradingResidenceCountry,
     selectTradingResidenceCountrySubdivision,
 } from '@suite-native/trading-state';
+import { type TradingResidenceRootState } from '@suite-native/trading-types';
 
 import { ConfirmLocationButton, type ConfirmLocationButtonProps } from './ConfirmLocationButton';
 import { type TradingLocationFormValues } from '../types/tradingLocationForm';
@@ -25,11 +27,9 @@ import { CountrySubdivisionPicker } from './CountrySheet/CountrySubdivisionPicke
 import { CountrySubdivisionPickerControlsContext } from './CountrySheet/CountrySubdivisionPickerControlsContext';
 import { LocationForm } from './LocationForm';
 
-const mockAnalyticsReport = jest.fn();
+type State = TradingResidenceRootState;
 
-jest.mock('../hooks/useCountrySelectionAnalyticsReport', () => ({
-    useCountrySelectionAnalyticsReport: () => mockAnalyticsReport,
-}));
+const mockAnalyticsReport = jest.fn();
 
 const ConfirmLocationButtonWithChangedCountry = () => {
     const { setValue } = useFormContext<TradingLocationFormValues>();
@@ -101,12 +101,12 @@ const LocationFormWithCountrySubdivisionPickerControls = ({
 };
 
 describe('ConfirmLocationButton', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderConfirmLocationButton = async (props: Partial<ConfirmLocationButtonProps>) =>
         await renderWithStoreProvider(<ConfirmLocationButton afterConfirm={jest.fn} {...props} />, {
             wrapper: LocationForm,
-            store,
+            services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
         });
 
     beforeEach(() => {
@@ -145,7 +145,10 @@ describe('ConfirmLocationButton', () => {
         );
 
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
-        expect(mockAnalyticsReport).toHaveBeenCalledWith('submitDefault');
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.tradingCountrySelectionEvent.name,
+            payload: expect.objectContaining({ action: 'submitDefault' }),
+        });
     });
 
     it('should log submitCustom when selected value does not match the default one', async () => {
@@ -153,7 +156,7 @@ describe('ConfirmLocationButton', () => {
             <ConfirmLocationButtonWithChangedCountry />,
             {
                 wrapper: LocationForm,
-                store,
+                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
             },
         );
 
@@ -162,7 +165,10 @@ describe('ConfirmLocationButton', () => {
         );
 
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
-        expect(mockAnalyticsReport).toHaveBeenCalledWith('submitCustom');
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.tradingCountrySelectionEvent.name,
+            payload: expect.objectContaining({ action: 'submitCustom' }),
+        });
     });
 
     it('should open subdivision picker and not confirm when subdivision is required but missing', async () => {
@@ -171,7 +177,7 @@ describe('ConfirmLocationButton', () => {
             <ConfirmLocationButtonWithUSCountry afterConfirm={afterConfirmMock} />,
             {
                 wrapper: LocationFormWithCountrySubdivisionPickerControls,
-                store,
+                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
             },
         );
 
@@ -205,7 +211,7 @@ describe('ConfirmLocationButton', () => {
             />,
             {
                 wrapper: LocationFormWithCountrySubdivisionPickerControls,
-                store,
+                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
             },
         );
 

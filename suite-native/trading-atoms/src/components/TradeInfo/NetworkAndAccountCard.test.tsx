@@ -33,14 +33,16 @@ describe('NetworkAndAccountCard', () => {
         await renderWithStoreProvider(
             <NetworkAndAccountCard title="TITLE" account={btc1NormalAccount} {...props} />,
             {
-                store: createLightStore({
-                    reducer,
-                    preloadedState: {
-                        wallet: {
-                            accounts: [btc1NormalAccount],
+                services: {
+                    store: createLightStore({
+                        reducer,
+                        preloadedState: {
+                            wallet: {
+                                accounts: [btc1NormalAccount],
+                            },
                         },
-                    },
-                }),
+                    }),
+                },
             },
         );
 

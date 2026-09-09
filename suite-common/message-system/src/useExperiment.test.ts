@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { getIntegerInRangeFromString } from '@trezor/utils';
 
 jest.mock('@trezor/utils', () => ({
@@ -20,7 +20,7 @@ const messageSystemReducer = prepareMessageSystemReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
-const createStore = (
+const createRoot = (
     overrides: {
         messageSystem?: MessageSystemState;
         instanceId?: string | undefined;
@@ -30,8 +30,7 @@ const createStore = (
     // distinguish an explicit `instanceId: undefined` from an absent key
     const instanceId = 'instanceId' in overrides ? overrides.instanceId : 'test-instance-id';
 
-    return createTestStore({
-        extra: undefined,
+    return createTestCompositionRoot({
         reducer: combineReducers({
             messageSystem: messageSystemReducer,
             analytics: (state = { instanceId }) => state,
@@ -40,33 +39,33 @@ const createStore = (
     });
 };
 
-const renderUseExperiment = (store = createStore()) =>
-    renderHookWithStoreProvider(() => useExperiment(ExperimentId.tradingFeedbackForm), { store });
+const renderUseExperiment = (root = createRoot()) =>
+    renderHookWithStoreProvider(() => useExperiment(ExperimentId.tradingFeedbackForm), { root });
 
 describe('useExperiment', () => {
     it('returns undefined experiment and variant when experiment is not valid', () => {
-        const store = createStore({ messageSystem: messageSystemInitialState });
-        const { result } = renderUseExperiment(store);
+        const root = createRoot({ messageSystem: messageSystemInitialState });
+        const { result } = renderUseExperiment(root);
 
         expect(result.current.experiment).toBeUndefined();
         expect(result.current.activeExperimentVariant).toBeUndefined();
     });
 
     it('returns undefined variant when instanceId is missing', () => {
-        const store = createStore({ instanceId: undefined });
-        const { result } = renderUseExperiment(store);
+        const root = createRoot({ instanceId: undefined });
+        const { result } = renderUseExperiment(root);
 
         expect(result.current.experiment).toBeDefined();
         expect(result.current.activeExperimentVariant).toBeUndefined();
     });
 
     it('assigns the only group when it covers 100 %', () => {
-        const store = createStore({
+        const root = createRoot({
             messageSystem: createMessageSystemState({
                 groups: [{ variant: 'A', percentage: 100 }],
             }),
         });
-        const { result } = renderUseExperiment(store);
+        const { result } = renderUseExperiment(root);
 
         expect(result.current.activeExperimentVariant?.variant).toBe('A');
     });
@@ -83,7 +82,7 @@ describe('useExperiment', () => {
         ({ inclusion, expectedVariant }) => {
             jest.mocked(getIntegerInRangeFromString).mockReturnValueOnce(inclusion);
 
-            const store = createStore({
+            const root = createRoot({
                 messageSystem: createMessageSystemState({
                     groups: [
                         { variant: 'A', percentage: 30 },
@@ -92,7 +91,7 @@ describe('useExperiment', () => {
                     ],
                 }),
             });
-            const { result } = renderUseExperiment(store);
+            const { result } = renderUseExperiment(root);
 
             expect(result.current.activeExperimentVariant?.variant).toBe(expectedVariant);
         },
@@ -106,10 +105,10 @@ describe('useExperiment', () => {
     ])(
         'assigns variant $expectedVariant for inclusion override $inclusionOverride',
         ({ inclusionOverride, expectedVariant }) => {
-            const store = createStore({
+            const root = createRoot({
                 messageSystem: createMessageSystemState({ inclusionOverride }),
             });
-            const { result } = renderUseExperiment(store);
+            const { result } = renderUseExperiment(root);
 
             expect(result.current.activeExperimentVariant?.variant).toBe(expectedVariant);
         },

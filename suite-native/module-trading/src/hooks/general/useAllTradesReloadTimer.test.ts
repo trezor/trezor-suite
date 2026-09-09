@@ -1,4 +1,7 @@
-import { type TestStore, act } from '@suite-native/test-utils-store';
+import { type Store } from '@reduxjs/toolkit';
+
+import { type TradingRootStateWithDeviceAndAccounts } from '@suite-common/trading';
+import { act } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     btc1NormalAccount,
@@ -8,12 +11,15 @@ import {
     getSellTrade,
     sol1normalAccount,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useAllTradesReloadTimer } from './useAllTradesReloadTimer';
 import {
-    createTradingLightStore,
+    createTradingTestStore,
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & TradingRootStateWithDeviceAndAccounts;
 
 // Mock the useReloadTimer hook
 jest.mock('./useReloadTimer', () => ({
@@ -42,7 +48,7 @@ describe('useAllTradesReloadTimer', () => {
     });
 
     const getInitializedStore = ({ trades = [] }: { trades?: any[] } = {}) =>
-        createTradingLightStore({
+        createTradingTestStore({
             overrides: {
                 wallet: {
                     trading: { trades },
@@ -56,8 +62,10 @@ describe('useAllTradesReloadTimer', () => {
             },
         });
 
-    const renderUseAllTradesReloadTimer = async (store: TestStore) =>
-        await renderHookWithTradingProvider(() => useAllTradesReloadTimer(), { store });
+    const renderUseAllTradesReloadTimer = async (store: Store<State>) =>
+        await renderHookWithTradingProvider(() => useAllTradesReloadTimer(), {
+            services: { store },
+        });
 
     it('should enable reload timer when there are trades to watch', async () => {
         const mockTrades = [

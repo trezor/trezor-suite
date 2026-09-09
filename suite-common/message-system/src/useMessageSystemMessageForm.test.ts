@@ -2,7 +2,11 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type Action } from '@suite-common/suite-types';
-import { act, createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import {
+    act,
+    createTestCompositionRoot,
+    renderHookWithStoreProvider,
+} from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { type MessageSystemState } from './messageSystemTypes';
@@ -21,9 +25,8 @@ const messageSystemReducer = prepareMessageSystemReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
-const createStore = (actions: Action[] = []) =>
-    createTestStore({
-        extra: undefined,
+const createRoot = (actions: Action[] = []) =>
+    createTestCompositionRoot({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: {
             messageSystem: {
@@ -39,8 +42,8 @@ const createStore = (actions: Action[] = []) =>
         },
     });
 
-const renderForm = (store = createStore()) =>
-    renderHookWithStoreProvider(() => useMessageSystemMessageForm(), { store });
+const renderForm = (root = createRoot()) =>
+    renderHookWithStoreProvider(() => useMessageSystemMessageForm(), { root });
 
 describe('useMessageSystemMessageForm', () => {
     it('initializes with a valid banner preset', () => {
@@ -89,7 +92,7 @@ describe('useMessageSystemMessageForm', () => {
 
     it('rejects a duplicate message id', () => {
         const existing = getDefaultActionByCategory('banner');
-        const { result } = renderForm(createStore([existing]));
+        const { result } = renderForm(createRoot([existing]));
 
         const duplicate = getDefaultActionByCategory('banner');
         duplicate.message.id = existing.message.id;

@@ -1,17 +1,13 @@
 import type { BankAccount, CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useTradingSellTradeActions } from './useTradingSellTradeActions';
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
-}));
 
 const mockLoadInitialDataThunk = jest.fn((args: unknown) =>
     Object.assign(() => Promise.resolve(), { type: '@trading/loadInitialData', args }),
@@ -156,7 +152,10 @@ const renderActions = (overrides?: StateOverrides) => {
         cryptoId: BITCOIN_CRYPTO_ID,
     });
 
-    const services = { analytics: mockDesktopAnalytics() };
+    const services = {
+        analytics: mockDesktopAnalytics(),
+        suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
+    };
     const root = createTestCompositionRoot({
         extra: { services },
         preloadedState: state,
@@ -165,7 +164,9 @@ const renderActions = (overrides?: StateOverrides) => {
         root,
     });
 
-    return { root, result };
+    const { getActions } = root.services;
+
+    return { getActions, result };
 };
 
 describe('useTradingSellTradeActions', () => {
@@ -179,15 +180,15 @@ describe('useTradingSellTradeActions', () => {
 
     describe('mount is side-effect free', () => {
         it('does not dispatch anything on mount', () => {
-            const { root } = renderActions();
+            const { getActions } = renderActions();
 
-            expect(root.services.getActions()).toHaveLength(0);
+            expect(getActions()).toHaveLength(0);
         });
 
         it('does not redirect nor initialize even when the quotes request is missing', () => {
-            const { root } = renderActions({ quotesRequest: undefined });
+            const { getActions } = renderActions({ quotesRequest: undefined });
 
-            expect(root.services.getActions()).toHaveLength(0);
+            expect(getActions()).toHaveLength(0);
         });
     });
 

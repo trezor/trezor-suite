@@ -1,7 +1,13 @@
-import { type SupportedLocaleCode } from '@suite-native/intl';
-import { localeReducer } from '@suite-native/intl';
+import { type Store } from '@reduxjs/toolkit';
+
 import {
-    type TestStore,
+    type WalletSettingsRootState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
+import { type LocaleSliceRootState, type SupportedLocaleCode } from '@suite-native/intl';
+import { localeInitialState, localeReducer } from '@suite-native/intl';
+import {
+    type PreloadedStatePartial,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
@@ -10,16 +16,23 @@ import { AmountUnit } from '@trezor/protobuf/src/definitions';
 
 import { useFormattedGraphHeaderValues } from './useFormattedGraphHeaderValues';
 
-let store: TestStore;
+type State = WalletSettingsRootState & LocaleSliceRootState;
 
-const setNewStoreMockup = (preloadedState: any) => {
+let store: Store<State>;
+
+const setNewStoreMockup = (preloadedState: PreloadedStatePartial<State>) => {
     store = createLightStore({
         reducer: {
             locale: localeReducer,
-            wallet: createStaticReducer(preloadedState.wallet),
+            wallet: createStaticReducer({
+                settings: {
+                    ...initialWalletSettingsState,
+                    ...preloadedState.wallet?.settings,
+                },
+            }),
         },
         preloadedState: {
-            ...preloadedState,
+            locale: { ...localeInitialState, ...preloadedState.locale },
         },
     });
 };
@@ -27,7 +40,7 @@ const setNewStoreMockup = (preloadedState: any) => {
 describe(useFormattedGraphHeaderValues.name, () => {
     const renderUseFormattedGraphHeaderValues = async (value?: string) =>
         await renderHookWithStoreProvider(() => useFormattedGraphHeaderValues(value), {
-            store,
+            services: { store },
         });
 
     beforeEach(() => {

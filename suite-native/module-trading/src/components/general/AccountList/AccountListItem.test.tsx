@@ -1,13 +1,24 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type DeviceRootState } from '@suite-common/device';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    type PreloadedStatePartial,
+    fireEvent,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import { type TradingRootState } from '@suite-native/trading-state';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { AccountListItem } from './AccountListItem';
 import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & DeviceRootState;
 
 const DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 
@@ -19,7 +30,7 @@ const btc10000000Account = mockWalletAccount({
     availableBalance: '10000000',
 });
 
-const defaultOverrides = {
+const defaultOverrides: PreloadedStatePartial<State> = {
     device: {
         devices: [],
         selectedDevice: {
@@ -58,17 +69,17 @@ jest.mock('@suite-common/trading', () => {
 describe('AccountListItem', () => {
     const onPressMock = jest.fn();
 
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderAccountListItem = async (
         receiveAccount: ReceiveAccount,
-        overrides: Record<string, unknown> = defaultOverrides,
+        overrides: PreloadedStatePartial<State> = defaultOverrides,
     ) => {
         store = createTradingTestStore({ overrides });
 
         return await renderWithStoreProvider(
             <AccountListItem onPress={onPressMock} receiveAccount={receiveAccount} />,
-            { store },
+            { services: { store } },
         );
     };
 

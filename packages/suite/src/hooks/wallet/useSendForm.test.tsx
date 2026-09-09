@@ -9,6 +9,8 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { debugInitialState } from '@suite/debug';
 import { closeModal, openModal } from '@suite/modal';
+import { type SuiteRouterHistoryDep } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { type AddressValidatorDep, type GetNamedAddressSupportDep } from '@suite-common/address';
 import { mockAddressValidator, mockGetNamedAddressSupport } from '@suite-common/address/mocks';
@@ -34,11 +36,13 @@ import {
     testMocks,
 } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type SendState } from '@suite-common/wallet-core';
 import { type FormState, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
 import { type PROTO } from '@trezor/connect';
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 
+import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import {
     type UserAction,
     actionSequence,
@@ -70,11 +74,6 @@ jest.mock('cross-fetch', () => ({
     default: () => Promise.resolve({ ok: false }),
 }));
 
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: () => ({ type: 'mock-redirect' }),
-}));
-
 // !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders
 const translationStringMock = (id: string) => id;
 
@@ -86,18 +85,18 @@ jest.mock('@suite/intl', () => ({
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
-type RootReducerState = ReturnType<ReturnType<typeof fixtures.getRootReducer>>;
 interface Args {
-    send?: Partial<RootReducerState['wallet']['send']>;
+    send?: Partial<SendState>;
     fees?: any;
     selectedAccount?: any;
     coinjoin?: any;
     bitcoinAmountUnit?: PROTO.AmountUnit;
-    protocol?: Partial<RootReducerState['protocol']>;
+    protocol?: Partial<ProtocolState>;
 }
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
-type SendFormTestServices = AddressValidatorDep &
+type SendFormTestServices = SuiteRouterHistoryDep &
+    AddressValidatorDep &
     DesktopAnalyticsDep &
     FindNetworkSymbolForProtocolDep &
     GetIsWindowVisibleDep &
@@ -108,6 +107,7 @@ type SendFormTestServices = AddressValidatorDep &
     SuiteSyncDep;
 
 const services: SendFormTestServices = {
+    suiteRouterHistory: mockSuiteRouterHistory(),
     addressValidator: mockAddressValidator({
         isAddressValid: address => address !== '' && address !== 'X' && address !== 'FOO',
     }),
@@ -312,7 +312,7 @@ describe('useSendForm hook', () => {
                     protocol: {
                         sendForm: {
                             shouldFill: true,
-                            scheme: 'bitcoin',
+                            scheme: asProtocol('bitcoin'),
                             address: protocolAddress,
                             amount: protocolAmount,
                             label: protocolLabel,
@@ -462,6 +462,8 @@ describe('useSendForm hook', () => {
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
                 const root = createTestCompositionRoot(buildTestCompositionRootParams(f.store));
+                const { subscribe } = root.store;
+                const { getActions } = root.services;
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     root,
@@ -472,8 +474,8 @@ describe('useSendForm hook', () => {
 
                 // wait for first render
                 await waitForLoader();
-                root.store.subscribe(() => {
-                    const actions = filterThunkActionTypes(root.services.getActions());
+                subscribe(() => {
+                    const actions = filterThunkActionTypes(getActions());
                     const lastAction = actions[actions.length - 1];
                     if (
                         openModal.match(lastAction) &&
@@ -486,7 +488,7 @@ describe('useSendForm hook', () => {
                 });
 
                 await actionSequence([{ type: 'click', element: '@send/review-button' }], () => {
-                    const actions = root.services.getActions();
+                    const actions = getActions();
                     f.result.actions.forEach((action: any) => {
                         expect(actions.find(a => a.type === action.type)).toMatchObject(action);
                     });

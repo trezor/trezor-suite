@@ -1,31 +1,39 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { tradingBuyActions, tradingThunks } from '@suite-common/trading';
+import {
+    type LoadInitialDataThunkDeps,
+    tradingBuyActions,
+    tradingThunks,
+} from '@suite-common/trading';
 import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type AccountsRootState, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
+    type PreloadedStatePartial,
     act,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { tradingSlice } from '@suite-native/trading-state';
+import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
+import { type TradingState } from '@suite-native/trading-types';
 
 import { useBuyData } from './useBuyData';
 import { useExchangeData } from '../exchange/useExchangeData';
 import { useSellData } from '../sell/useSellData';
+
+type State = TradingRootState & AccountsRootState;
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount2') });
 const btc3Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount3') });
 
 describe('useBuyData', () => {
-    const extra = {
+    const extra: LoadInitialDataThunkDeps = {
         services: {
             getSelectedAccount: mockGetSelectedAccount(),
             getTradingEnvironment: mockGetTradingEnvironment(),
@@ -50,19 +58,23 @@ describe('useBuyData', () => {
     } as const;
 
     const getInitializedStore = (tradingAccountKey: AccountKey | undefined) => {
-        const preloadedState = {
+        const tradingState: TradingState = getInitializedTradingState();
+        tradingState.buy.tradingAccountKey = tradingAccountKey;
+
+        const preloadedState: PreloadedStatePartial<State> = {
             wallet: {
-                trading: getInitializedTradingState(),
+                trading: tradingState,
             },
         };
-        preloadedState.wallet.trading.buy.tradingAccountKey = tradingAccountKey;
 
         return createTestCompositionRoot({ extra, reducer, preloadedState }).store;
     };
 
-    const renderUseBuyData = async (store: TestStore) => {
+    const renderUseBuyData = async (
+        store: ReduxStoreWithThunk<State, LoadInitialDataThunkDeps>,
+    ) => {
         const ret = await renderHookWithStoreProvider(useBuyData, {
-            store,
+            services: { store },
         });
 
         await act(() => Promise.resolve()); // Wait for all effects to run
@@ -120,11 +132,11 @@ describe('useBuyData', () => {
             await buy.unmount();
             expect(global.fetch).toHaveBeenCalledTimes(4);
 
-            const tab = await renderHookWithStoreProvider(useData, { store });
+            const tab = await renderHookWithStoreProvider(useData, { services: { store } });
             expect(global.fetch).toHaveBeenCalledTimes(4);
             await tab.unmount();
 
-            const retry = await renderHookWithStoreProvider(useData, { store });
+            const retry = await renderHookWithStoreProvider(useData, { services: { store } });
             expect(global.fetch).toHaveBeenCalledTimes(4);
             await act(async () => {
                 await retry.result.current.refetch();

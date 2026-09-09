@@ -1,13 +1,16 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type FeesStatus } from '@suite-common/wallet-types';
+import { type FeesRootState } from '@suite-common/wallet-core';
 import {
-    type TestStore,
     createStoreFromPreloadedState,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
 import { useFeesFetching } from './useFeesFetching';
 import { getWalletState } from '../../__fixtures__/walletState';
+
+type State = FeesRootState;
 
 // Mock the fee hooks since they have side effects and we want to test the hook's logic
 jest.mock('@suite-common/wallet-core', () => ({
@@ -23,22 +26,15 @@ const mockUseRefetchFees = jest.requireMock('@suite-common/wallet-core').useRefe
 const mockSelectAreFeesLoading = jest.requireMock('@suite-common/wallet-core').selectAreFeesLoading;
 const btcSymbol = asNetworkSymbol('btc');
 
-// Add fees to the wallet state for testing
-const getWalletStateWithFees = () => ({
-    ...getWalletState(),
-    fees: {
-        btc: {
-            status: 'loaded' as FeesStatus,
-        },
-        eth: {
-            status: 'loaded' as FeesStatus,
-        },
-    },
-});
-
 describe('useFeesFetching', () => {
-    const createMockState = (overrides: Record<string, unknown> = {}) => ({
-        wallet: getWalletStateWithFees(),
+    const createMockState = (overrides: Partial<State> = {}): State => ({
+        wallet: {
+            ...getWalletState(),
+            fees: {
+                btc: { status: 'loaded' },
+                eth: { status: 'loaded' },
+            },
+        },
         ...overrides,
     });
 
@@ -47,15 +43,13 @@ describe('useFeesFetching', () => {
         networkSymbol,
         isRefetchDisabled = false,
     }: {
-        store: TestStore;
+        store: Store<State>;
         networkSymbol?: NetworkSymbol;
         isRefetchDisabled?: boolean;
     }) =>
         await renderHookWithStoreProvider(
             () => useFeesFetching({ networkSymbol, isRefetchDisabled }),
-            {
-                store,
-            },
+            { services: { store } },
         );
 
     beforeEach(() => {

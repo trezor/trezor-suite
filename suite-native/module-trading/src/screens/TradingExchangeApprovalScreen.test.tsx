@@ -1,17 +1,23 @@
 import { type NavigationAction, type RouteProp } from '@react-navigation/native';
+import { type Store } from '@reduxjs/toolkit';
 
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
     useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
-import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
+import { fireEvent } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { TradingExchangeApprovalScreen } from './TradingExchangeApprovalScreen';
-import { createTradingLightStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+import { createTradingTestStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
@@ -68,14 +74,6 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const mockAnalyticsReport = jest.fn();
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useExchangeAnalyticsStepReport:
-        (action: unknown) =>
-        (...args: unknown[]) =>
-            mockAnalyticsReport(action, ...args),
-}));
-
 jest.mock('@suite-native/atoms', () => ({
     ...jest.requireActual('@suite-native/atoms'),
     useBottomSheetControls: () => ({
@@ -94,7 +92,7 @@ jest.mock('@suite-common/device', () => ({
 const testQuote = mercuryoFixedWorstQuote;
 
 describe('TradingExchangeApprovalScreen', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let unmount: (() => void) | undefined;
 
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -105,7 +103,10 @@ describe('TradingExchangeApprovalScreen', () => {
                 route={{ params } as any}
                 navigation={{ dispatch: mockNavigationDispatch } as any}
             />,
-            { store, tradeType: 'exchange' },
+            {
+                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
+                tradeType: 'exchange',
+            },
         );
 
         ({ unmount } = result);
@@ -118,7 +119,7 @@ describe('TradingExchangeApprovalScreen', () => {
 
         mockIsDeviceConnected = true;
 
-        store = createTradingLightStore({ tradeType: 'exchange' });
+        store = createTradingTestStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
         store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
     });
@@ -222,7 +223,10 @@ describe('TradingExchangeApprovalScreen', () => {
         it('should report approval-preview visit ', async () => {
             await renderScreen();
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-preview', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingExchangeEvent.name,
+                payload: expect.objectContaining({ step: 'approval-preview', action: 'visit' }),
+            });
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         });
 
@@ -232,7 +236,10 @@ describe('TradingExchangeApprovalScreen', () => {
 
             triggerPreventNavigationRemove({ type: 'GO_BACK' });
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-preview', 'cancel');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingExchangeEvent.name,
+                payload: expect.objectContaining({ step: 'approval-preview', action: 'cancel' }),
+            });
         });
     });
 });

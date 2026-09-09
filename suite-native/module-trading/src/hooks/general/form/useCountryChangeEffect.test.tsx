@@ -1,4 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import {
@@ -12,18 +12,20 @@ import { useForm } from '@suite-native/forms';
 import { localeReducer } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import {
+    type TradingRootState,
     selectTradingResidenceCountry,
     selectTradingResidenceCountrySubdivision,
     tradingSlice,
 } from '@suite-native/trading-state';
 
 import { useCountryChangeEffect } from './useCountryChangeEffect';
+
+type State = TradingRootState;
 
 type CountryFormValues = {
     country: TradingCountryOption | undefined;
@@ -40,7 +42,7 @@ const buildCountryOption = (value: TradingCountryCode): TradingCountryOption => 
 });
 
 describe('useCountryChangeEffect', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const reducer = {
         locale: localeReducer,
@@ -63,7 +65,7 @@ describe('useCountryChangeEffect', () => {
 
                 return form;
             },
-            { store },
+            { services: { store } },
         );
 
     beforeEach(() => {

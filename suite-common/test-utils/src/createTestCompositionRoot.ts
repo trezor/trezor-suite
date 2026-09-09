@@ -19,14 +19,20 @@ export type TestAppRoot<
     services: TestCompositionRootServices<TStore, TServices>;
 };
 
+type CreateTestCompositionRootParams<S, A extends UnknownAction, Extra> = Omit<
+    CreateTestStoreParams<S, A, Extra>,
+    'extra'
+> &
+    ({ services: object } extends Extra ? { extra?: Extra } : { extra: Extra });
+
 export const createTestCompositionRoot = <
-    Extra extends { services: object },
+    Extra extends { services: object } = { services: object },
     S = any,
     A extends UnknownAction = UnknownAction,
 >({
-    extra,
+    extra = { services: {} } as Extra,
     ...storeParams
-}: CreateTestStoreParams<S, A, Extra>) => {
+}: CreateTestCompositionRootParams<S, A, Extra>) => {
     const { getActions, clearActions, ...store } = createTestStore({
         ...storeParams,
         extra,

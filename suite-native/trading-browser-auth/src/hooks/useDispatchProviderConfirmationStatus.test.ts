@@ -1,24 +1,31 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectTradingProviderConfirmationStatus,
+    tradingSlice,
+} from '@suite-native/trading-state';
 
 import { useDispatchProviderConfirmationStatus } from './useDispatchProviderConfirmationStatus';
 
+type State = TradingRootState;
+
 describe('useDispatchProviderConfirmationStatus', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseDispatchProviderConfirmationStatus = async () =>
-        await renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), { store });
+        await renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), {
+            services: { store },
+        });
 
     beforeEach(() => {
         store = createLightStore({

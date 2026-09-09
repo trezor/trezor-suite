@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
@@ -106,7 +106,7 @@ const renderExchangeDexQuote = ({
     isFormLoading?: boolean;
     isLoadingQuote?: boolean;
 }) => {
-    const store = createTestStore({ extra: undefined });
+    const root = createTestCompositionRoot({});
 
     return renderHookWithStoreProvider(
         () => {
@@ -128,7 +128,7 @@ const renderExchangeDexQuote = ({
 
             return { dex, methods };
         },
-        { store },
+        { root },
     );
 };
 

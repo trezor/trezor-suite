@@ -26,17 +26,19 @@ describe('TradingEnvironmentWarning', () => {
         tradingEnvironment: TradingState['tradingEnvironment'],
     ) =>
         await renderWithStoreProvider(<TradingEnvironmentWarning />, {
-            store: createLightStore({
-                reducer,
-                preloadedState: {
-                    wallet: {
-                        trading: {
-                            ...tradingInitialState,
-                            tradingEnvironment,
+            services: {
+                store: createLightStore({
+                    reducer,
+                    preloadedState: {
+                        wallet: {
+                            trading: {
+                                ...tradingInitialState,
+                                tradingEnvironment,
+                            },
                         },
-                    },
-                } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
-            }),
+                    } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
+                }),
+            },
         });
 
     it('should render nothing when tradingEnvironment is [production]', async () => {

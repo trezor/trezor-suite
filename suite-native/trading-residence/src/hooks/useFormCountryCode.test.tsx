@@ -20,17 +20,19 @@ import { type TradingLocationFormType } from '../types/tradingLocationForm';
 describe('useFormCountryCode', () => {
     const renderLocationForm = async () =>
         await renderHookWithStoreProvider(() => useLocationForm(), {
-            store: createLightStore({
-                reducer: {
-                    locale: localeReducer,
-                    wallet: combineReducers({
-                        settings: createStaticReducer(initialWalletSettingsState),
-                        trading: combineReducers({
-                            residence: residenceReducer,
+            services: {
+                store: createLightStore({
+                    reducer: {
+                        locale: localeReducer,
+                        wallet: combineReducers({
+                            settings: createStaticReducer(initialWalletSettingsState),
+                            trading: combineReducers({
+                                residence: residenceReducer,
+                            }),
                         }),
-                    }),
-                },
-            }),
+                    },
+                }),
+            },
         });
 
     const renderUseFormCountryCode = async (locationForm: TradingLocationFormType) =>

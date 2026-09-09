@@ -1,3 +1,6 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
@@ -6,9 +9,12 @@ import {
     getInitializedTradingState,
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useBuyPreviewFlow } from './useBuyPreviewFlow';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 const mockPopToTop = jest.fn();
 
@@ -61,7 +67,7 @@ describe('useBuyPreviewFlow', () => {
     } = {}) => {
         const baseBuyState = getInitializedTradingState().buy;
 
-        return createTradingLightStore({
+        return createTradingTestStore({
             tradeType: 'buy',
             overrides: {
                 wallet: {
@@ -82,8 +88,10 @@ describe('useBuyPreviewFlow', () => {
         });
     };
 
-    const renderHook = async (store: ReturnType<typeof getInitializedStore>) =>
-        await renderHookWithStoreProvider(() => useBuyPreviewFlow(), { store, services });
+    const renderHook = async (store: Store<State>) =>
+        await renderHookWithStoreProvider(() => useBuyPreviewFlow(), {
+            services: { ...services, store },
+        });
 
     const getProcessResponseData = () => {
         const [payload] = mockConfirmTradeThunk.mock.calls[0] as [any];

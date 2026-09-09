@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import {
     act,
-    createTestStore,
+    createTestCompositionRoot,
     renderHookWithStoreProvider,
     testMocks,
 } from '@suite-common/test-utils';
@@ -26,8 +26,7 @@ const createPreloadedState = (transactions: WalletAccountTransaction[] = []) => 
 });
 
 const renderUseAllowanceTxTracking = (preloadedState = createPreloadedState()) => {
-    const store = createTestStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
         reducer: combineReducers({
             wallet: combineReducers({
                 transactions: (state = preloadedState.wallet.transactions) => state,
@@ -39,9 +38,9 @@ const renderUseAllowanceTxTracking = (preloadedState = createPreloadedState()) =
 
     return {
         ...renderHookWithStoreProvider(() => useAllowanceTxTracking({ accountKey: ACCOUNT_KEY }), {
-            store,
+            root,
         }),
-        store,
+        root,
     };
 };
 
@@ -59,7 +58,7 @@ describe('useAllowanceTxTracking', () => {
         });
     });
 
-    describe('when approvalTxid is set but no matching transaction exists in store', () => {
+    describe('when approvalTxid is set but no matching transaction exists in root', () => {
         it('should return idle status', () => {
             const { result } = renderUseAllowanceTxTracking(createPreloadedState([]));
 

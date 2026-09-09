@@ -42,14 +42,16 @@ const renderVotingDelegations = (account: Account) => {
 
     renderWithProviders(root, <VotingDelegations account={account} />);
 
-    return root;
+    const { getActions } = root.services;
+
+    return { getActions };
 };
 
 describe('VotingDelegations', () => {
     it('keeps a custom DRep the account already votes for instead of resetting it to Everstake', () => {
-        const root = renderVotingDelegations(createCardanoAccount(CUSTOM_DREP_ID));
+        const { getActions } = renderVotingDelegations(createCardanoAccount(CUSTOM_DREP_ID));
 
-        expect(root.services.getActions()).toContainEqual(
+        expect(getActions()).toContainEqual(
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: { type: 'current' },
@@ -58,9 +60,11 @@ describe('VotingDelegations', () => {
     });
 
     it('keeps the Everstake DRep without re-delegating to it', () => {
-        const root = renderVotingDelegations(createCardanoAccount(CARDANO_EVERSTAKE_DREP.bech32));
+        const { getActions } = renderVotingDelegations(
+            createCardanoAccount(CARDANO_EVERSTAKE_DREP.bech32),
+        );
 
-        expect(root.services.getActions()).toContainEqual(
+        expect(getActions()).toContainEqual(
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: { type: 'current' },
@@ -69,9 +73,9 @@ describe('VotingDelegations', () => {
     });
 
     it('keeps a predefined DRep, which no vote delegation certificate can express', () => {
-        const root = renderVotingDelegations(createCardanoAccount(PREDEFINED_DREP_ID));
+        const { getActions } = renderVotingDelegations(createCardanoAccount(PREDEFINED_DREP_ID));
 
-        expect(root.services.getActions()).toContainEqual(
+        expect(getActions()).toContainEqual(
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: { type: 'current' },
@@ -80,9 +84,9 @@ describe('VotingDelegations', () => {
     });
 
     it('offers Everstake to an account with no vote delegation', () => {
-        const root = renderVotingDelegations(createCardanoAccount(null));
+        const { getActions } = renderVotingDelegations(createCardanoAccount(null));
 
-        expect(root.services.getActions()).toContainEqual(
+        expect(getActions()).toContainEqual(
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: DEFAULT_VOTING_OPTION,

@@ -1,21 +1,22 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { tradingSlice } from '@suite-native/trading-state';
+import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
 
 import { LastErrorMessage, type LastErrorMessageProps } from './LastErrorMessage';
 
+type State = TradingRootState;
+
 describe('LastErrorMessage', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const reducer = {
         locale: localeReducer,
@@ -28,7 +29,7 @@ describe('LastErrorMessage', () => {
     } as const;
 
     const renderLastErrorMessage = async (props: LastErrorMessageProps) =>
-        await renderWithStoreProvider(<LastErrorMessage {...props} />, { store });
+        await renderWithStoreProvider(<LastErrorMessage {...props} />, { services: { store } });
 
     beforeEach(() => {
         store = createLightStore({ reducer });

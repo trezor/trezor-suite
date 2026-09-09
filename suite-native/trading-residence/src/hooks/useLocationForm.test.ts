@@ -1,24 +1,26 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 import Localization, { type Locale } from 'expo-localization';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { residenceActions, residenceReducer } from '@suite-native/trading-state';
+import { type TradingResidenceRootState } from '@suite-native/trading-types';
 
 import { useLocationForm } from './useLocationForm';
 
+type State = TradingResidenceRootState;
+
 describe('useLocationForm', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseLocationForm = async () =>
-        await renderHookWithStoreProvider(() => useLocationForm(), { store });
+        await renderHookWithStoreProvider(() => useLocationForm(), { services: { store } });
 
     beforeEach(() => {
         store = createLightStore({

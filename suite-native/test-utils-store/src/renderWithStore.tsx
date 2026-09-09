@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react';
 
+import { type Store } from '@reduxjs/toolkit';
 import {
     type RenderHookOptions,
     type RenderHookResult,
@@ -9,56 +10,70 @@ import {
     renderHook,
 } from '@testing-library/react-native';
 
-import { StoreProviderForTests, type TestStore } from './StoreProviderForTests';
+import { StoreProviderForTests } from './StoreProviderForTests';
+import { createStoreFromPreloadedState } from './createStoreFromPreloadedState';
 
-export type RenderOptionsExtended = RenderOptions & {
-    preloadedState?: Record<string, unknown>;
-    services?: Record<string, unknown>;
-    store?: TestStore;
+export type RenderOptionsExtended<TServices extends object = object> = RenderOptions & {
+    preloadedState?: object;
+    services?: TServices & { store?: Store };
 };
 
-export type RenderHookOptionsExtended<Props> = RenderHookOptions<Props> & {
-    preloadedState?: Record<string, unknown>;
-    services?: Record<string, unknown>;
-    store?: TestStore;
+export type RenderHookOptionsExtended<
+    Props,
+    TServices extends object = object,
+> = RenderHookOptions<Props> & {
+    preloadedState?: object;
+    services?: TServices & { store?: Store };
 };
 
-export const renderWithStoreProvider = async (
+export const renderWithStoreProvider = async <TServices extends object>(
     element: ReactElement,
-    { preloadedState, services, wrapper: Wrapper, store, ...options }: RenderOptionsExtended = {},
-): Promise<RenderResult> =>
-    await render(element, {
+    {
+        preloadedState,
+        services,
+        wrapper: Wrapper,
+        ...options
+    }: RenderOptionsExtended<TServices> = {},
+): Promise<RenderResult> => {
+    const resolvedServices = {
+        ...services,
+        store: services?.store ?? createStoreFromPreloadedState(preloadedState),
+    };
+
+    return await render(element, {
         wrapper: ({ children }) => (
-            <StoreProviderForTests
-                preloadedState={preloadedState}
-                injectedStore={store}
-                services={services}
-            >
+            <StoreProviderForTests services={resolvedServices}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </StoreProviderForTests>
         ),
         ...options,
     });
+};
 
-export const renderHookWithStoreProvider = async <Result = unknown, Props = unknown>(
+export const renderHookWithStoreProvider = async <
+    Result = unknown,
+    Props = unknown,
+    TServices extends object = object,
+>(
     callback: (props: Props) => Result,
     {
         preloadedState,
         services,
         wrapper: Wrapper,
-        store,
         ...options
-    }: RenderHookOptionsExtended<Props> = {},
-): Promise<RenderHookResult<Result, Props>> =>
-    await renderHook(callback, {
+    }: RenderHookOptionsExtended<Props, TServices> = {},
+): Promise<RenderHookResult<Result, Props>> => {
+    const resolvedServices = {
+        ...services,
+        store: services?.store ?? createStoreFromPreloadedState(preloadedState),
+    };
+
+    return await renderHook(callback, {
         wrapper: ({ children }) => (
-            <StoreProviderForTests
-                preloadedState={preloadedState}
-                injectedStore={store}
-                services={services}
-            >
+            <StoreProviderForTests services={resolvedServices}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </StoreProviderForTests>
         ),
         ...options,
     });
+};

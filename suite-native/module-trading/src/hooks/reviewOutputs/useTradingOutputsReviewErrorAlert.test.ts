@@ -1,13 +1,20 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type DeviceRootState } from '@suite-common/device';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, act } from '@suite-native/test-utils-store';
+import { act } from '@suite-native/test-utils-store';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import {
-    createTradingLightStore,
+    createTradingTestStore,
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & DeviceRootState;
 
 const mockShowAlert = jest.fn();
 
@@ -18,16 +25,16 @@ jest.mock('@suite-native/alerts', () => ({
 }));
 
 describe('useTradingOutputsReviewErrorAlert', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseTradingOutputsReviewErrorAlert = async (accountKey: AccountKey) =>
         await renderHookWithTradingProvider(() => useTradingOutputsReviewErrorAlert(accountKey), {
-            store,
+            services: { store },
         });
 
     beforeEach(() => {
         jest.clearAllMocks();
-        store = createTradingLightStore({ tradeType: 'exchange' });
+        store = createTradingTestStore({ tradeType: 'exchange' });
     });
 
     it('should show alert', async () => {

@@ -1,17 +1,16 @@
 import type { BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
+import { routerReducer } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useTradingBuyConfirm } from './useTradingBuyConfirm';
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
-}));
 
 const mockConfirmTradeThunk = jest.fn((args: unknown) => {
     const thunk = () => ({ unwrap: () => Promise.resolve({ paymentId: 'payment-1' }) });
@@ -100,20 +99,28 @@ const buildState = (overrides: StateOverrides = {}) => {
 };
 
 const renderConfirm = (overrides?: StateOverrides) => {
-    const services = { analytics: mockDesktopAnalytics() };
+    const state = buildState(overrides);
+    const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
+    const services = {
+        analytics: mockDesktopAnalytics(),
+        suiteRouterHistory,
+    };
     const root = createTestCompositionRoot({
         extra: { services },
-        preloadedState: buildState(overrides),
+        preloadedState: state,
+        reducer: {
+            router: routerReducer,
+            locks: locksReducer,
+            modal: modalReducer,
+            wallet: (wallet = state.wallet) => wallet,
+        },
     });
     const { result } = renderHookWithStoreProvider(() => useTradingBuyConfirm(), {
         root,
     });
 
-    return { root, result };
+    return { root, result, suiteRouterHistory };
 };
-
-const gotoActions = (root: ReturnType<typeof renderConfirm>['root']) =>
-    root.services.getActions().filter(action => action.type === '@router/goto');
 
 describe('useTradingBuyConfirm', () => {
     beforeEach(() => {
@@ -146,17 +153,18 @@ describe('useTradingBuyConfirm', () => {
 
     describe('readiness guard', () => {
         it('does not redirect when every requirement is satisfied', () => {
-            const { root } = renderConfirm();
+            const { suiteRouterHistory } = renderConfirm();
 
-            expect(gotoActions(root)).toHaveLength(0);
+            expect(suiteRouterHistory.navigate).not.toHaveBeenCalled();
         });
 
         it('redirects to the buy form when a requirement is missing', () => {
-            const { root } = renderConfirm({ selectedQuote: undefined });
+            const { suiteRouterHistory } = renderConfirm({ selectedQuote: undefined });
 
-            expect(gotoActions(root)).toEqual([
-                { type: '@router/goto', payload: { routeName: 'wallet-trading-buy' } },
-            ]);
+            expect(suiteRouterHistory.navigate).toHaveBeenCalledWith({
+                pathname: '/accounts/coinmarket/buy',
+                hash: '',
+            });
         });
     });
 

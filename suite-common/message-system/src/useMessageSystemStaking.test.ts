@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
@@ -66,9 +66,8 @@ const stateWithDisabledFeatures = {
     },
 } as unknown as MessageSystemState;
 
-const createStore = (state: MessageSystemState = stateWithDisabledFeatures) =>
-    createTestStore({
-        extra: undefined,
+const createRoot = (state: MessageSystemState = stateWithDisabledFeatures) =>
+    createTestCompositionRoot({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
     });
@@ -78,7 +77,7 @@ const renderHook = (
     locale = 'en',
 ) =>
     renderHookWithStoreProvider(() => useMessageSystemStaking({ networkSymbol, locale }), {
-        store: createStore(),
+        root: createRoot(),
     });
 
 describe('useMessageSystemStaking', () => {
@@ -129,14 +128,14 @@ describe('useMessageSystemStaking', () => {
     );
 
     it('returns not disabled when no feature messages configured', () => {
-        const store = createStore(messageSystemInitialState);
+        const root = createRoot(messageSystemInitialState);
         const { result } = renderHookWithStoreProvider(
             () =>
                 useMessageSystemStaking({
                     networkSymbol: ethSymbol,
                     locale: 'en',
                 }),
-            { store },
+            { root },
         );
 
         expect(result.current).toMatchObject({

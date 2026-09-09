@@ -1,5 +1,7 @@
 import type { BuyTrade, ProviderMetadata } from 'invity-api';
 
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
     buyMercuryo,
@@ -17,14 +19,6 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const mockAnalyticsReport = jest.fn();
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useBuyAnalyticsStepReport:
-        (step: unknown) =>
-        (...args: unknown[]) =>
-            mockAnalyticsReport(step, ...args),
-}));
-
 describe('TradingBuyPreviewScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -43,6 +37,7 @@ describe('TradingBuyPreviewScreen', () => {
 
         return await renderWithTradingProvider(<TradingBuyPreviewScreen />, {
             tradeType: 'buy',
+            services: { analytics: mockNativeAnalytics(mockAnalyticsReport) },
             overrides: { wallet: { trading: tradingState } },
         });
     };
@@ -84,7 +79,10 @@ describe('TradingBuyPreviewScreen', () => {
             providerMetadata: buyMercuryo,
         });
 
-        expect(mockAnalyticsReport).toHaveBeenCalledWith('buy-preview', 'visit');
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.tradingBuyEvent.name,
+            payload: expect.objectContaining({ step: 'buy-preview', action: 'visit' }),
+        });
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
     });
 });

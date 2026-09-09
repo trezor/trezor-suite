@@ -1,13 +1,15 @@
 import React from 'react';
 
+import { type Store } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { tradingExchangeActions } from '@suite-common/trading';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
     getBtcAccount,
@@ -16,11 +18,14 @@ import {
     invityDexQuote,
     mercuryoFixedBestQuote,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from './useExchangeForm';
 import { useExchangeSelectQuote } from './useExchangeSelectQuote';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -65,7 +70,7 @@ const useExchangeSelectQuoteWithReportSpy = (exchangeForm: ExchangeFormType) => 
 
 describe('useExchangeSelectQuote', () => {
     let exchangeForm: ExchangeFormType;
-    let store: TestStore;
+    let store: Store<State>;
 
     const btcAccount = getBtcAccount({ descriptor: asAccountDescriptor('btcAccountKey') });
     const ethAccount = getEthAccount({ descriptor: asAccountDescriptor('ethAccountKey') });
@@ -90,7 +95,7 @@ describe('useExchangeSelectQuote', () => {
         tradingState.exchange.tradingAccountKey = btcAccount.key;
         tradingState.exchange.receiveAccountKey = ethAccount.key;
 
-        return createTradingLightStore({
+        return createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 wallet: {
@@ -102,12 +107,14 @@ describe('useExchangeSelectQuote', () => {
     };
 
     const renderExchangeForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), { store, services });
+        await renderHookWithStoreProvider(() => useExchangeForm(), {
+            services: { ...services, store },
+        });
 
     const renderUseExchangeSelectQuote = async () => {
         const hook = await renderHookWithStoreProvider(
             () => useExchangeSelectQuoteWithReportSpy(exchangeForm),
-            { store, services },
+            { services: { ...services, store } },
         );
 
         const spy = hook.result.current.reportSpy;

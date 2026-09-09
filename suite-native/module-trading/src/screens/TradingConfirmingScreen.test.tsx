@@ -1,21 +1,29 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import type { TransactionStatus } from '@suite-common/trading';
 import {
     selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
     useAllowanceTxTracking,
 } from '@suite-common/trading';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
-import { type TestStore, act, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { act, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 import {
     useNavigationRemoveInterceptorAlert,
     useTransactionDetails,
 } from '@suite-native/transaction-management';
 
 import { TradingConfirmingScreen } from './TradingConfirmingScreen';
-import { createTradingLightStore } from '../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 const mockOpenInBlockchain = jest.fn();
 
@@ -87,18 +95,10 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 const mockAnalyticsReport = jest.fn();
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useExchangeAnalyticsStepReport:
-        (action: unknown) =>
-        (...args: unknown[]) =>
-            mockAnalyticsReport(action, ...args),
-}));
-
 const mockUseAllowanceTxTracking = useAllowanceTxTracking as jest.Mock;
 
 describe('TradingConfirmingScreen', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderScreen = async (
         routeProps: Partial<RootStackParamList[RootStackRoutes.TradingConfirming]> = {},
@@ -110,13 +110,13 @@ describe('TradingConfirmingScreen', () => {
 
         return await renderWithStoreProvider(
             <TradingConfirmingScreen navigation={mockNavigation} route={mockUseRoute()} />,
-            { store },
+            { services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store } },
         );
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
-        store = createTradingLightStore({ tradeType: 'exchange' });
+        store = createTradingTestStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
         mockUseAllowanceTxTracking.mockReturnValue({
             status: mockAllowanceTxStatus,
@@ -324,7 +324,10 @@ describe('TradingConfirmingScreen', () => {
         it('should report approval-confirming visit ', async () => {
             await renderScreen();
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingExchangeEvent.name,
+                payload: expect.objectContaining({ step: 'approval-confirming', action: 'visit' }),
+            });
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         });
 
@@ -345,14 +348,20 @@ describe('TradingConfirmingScreen', () => {
                 onRemoveConfirmed();
             });
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'cancel');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingExchangeEvent.name,
+                payload: expect.objectContaining({ step: 'approval-confirming', action: 'cancel' }),
+            });
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(2);
         });
 
         it('should report revoke-confirming visit for revoke', async () => {
             await renderScreen({ flowType: 'revoke' });
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-confirming', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingExchangeEvent.name,
+                payload: expect.objectContaining({ step: 'revoke-confirming', action: 'visit' }),
+            });
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         });
 
@@ -367,7 +376,13 @@ describe('TradingConfirmingScreen', () => {
                 );
             });
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'continue');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingExchangeEvent.name,
+                payload: expect.objectContaining({
+                    step: 'approval-confirming',
+                    action: 'continue',
+                }),
+            });
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(2);
         });
     });

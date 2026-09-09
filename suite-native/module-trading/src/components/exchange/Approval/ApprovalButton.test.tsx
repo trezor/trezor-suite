@@ -1,11 +1,19 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { tradingExchangeActions } from '@suite-common/trading';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
+import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { ApprovalButton, type ApprovalButtonProps } from './ApprovalButton';
-import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 const mockNavigate = jest.fn();
 
@@ -17,28 +25,20 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const mockAnalyticsReport = jest.fn();
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useExchangeAnalyticsStepReport:
-        (action: unknown) =>
-        (...args: unknown[]) =>
-            mockAnalyticsReport(action, ...args),
-}));
-
 const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' });
 
 describe('ApprovalButton', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderApprovalButton = async (props: Partial<ApprovalButtonProps>) =>
         await renderWithStoreProvider(<ApprovalButton flowType="approve" isReady {...props} />, {
-            store,
+            services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
         });
 
     beforeEach(() => {
         jest.clearAllMocks();
 
-        store = createTradingLightStore({
+        store = createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 wallet: {
@@ -91,7 +91,10 @@ describe('ApprovalButton', () => {
             getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
         );
 
-        expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-preview', 'continue');
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.tradingExchangeEvent.name,
+            payload: expect.objectContaining({ step: 'approval-preview', action: 'continue' }),
+        });
     });
 
     it('should navigate to TradingExchangeOutputsReview on press for flowType revoke', async () => {
@@ -116,7 +119,10 @@ describe('ApprovalButton', () => {
             getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
         );
 
-        expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'continue');
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.tradingExchangeEvent.name,
+            payload: expect.objectContaining({ step: 'revoke-preview', action: 'continue' }),
+        });
     });
 
     it('should render nothing when no selected quote is provided', async () => {

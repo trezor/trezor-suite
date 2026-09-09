@@ -1,21 +1,26 @@
+import { type Store } from '@reduxjs/toolkit';
 import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
 import type { sellThunks } from '@suite-common/trading';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     banxaCreditCardSellQuote,
     getBtcAccount,
     verifiedBankAccount,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useSellFlow } from './useSellFlow';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 
-// Store captured arguments for testing side effects (processResponseData callback)
+type State = TradingRootState & AccountsRootState;
+
+// Store<State> captured arguments for testing side effects (processResponseData callback)
 let capturedHandleTradeArgs: Parameters<typeof sellThunks.handleTradeThunk>[0] | null = null;
 
 jest.mock('@suite-common/trading', () => ({
@@ -72,13 +77,15 @@ const services: NativeAnalyticsDep = {
 };
 
 describe('useSellFlow', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseSellFlow = async () =>
-        await renderHookWithStoreProvider(() => useSellFlow(), { store, services });
+        await renderHookWithStoreProvider(() => useSellFlow(), {
+            services: { ...services, store },
+        });
 
     beforeEach(() => {
-        store = createTradingLightStore({ tradeType: 'sell' });
+        store = createTradingTestStore({ tradeType: 'sell' });
 
         capturedHandleTradeArgs = null;
         jest.clearAllMocks();

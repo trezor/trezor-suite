@@ -1,29 +1,35 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { tradingExchangeActions, tradingThunks } from '@suite-common/trading';
+import {
+    type LoadInitialDataThunkDeps,
+    tradingExchangeActions,
+    tradingThunks,
+} from '@suite-common/trading';
 import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type AccountsRootState, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { tradingSlice } from '@suite-native/trading-state';
+import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
 
 import { useExchangeData } from './useExchangeData';
+
+type State = TradingRootState & AccountsRootState;
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount2') });
 const btc3Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount3') });
 
 describe('useExchangeData', () => {
-    const extra = {
+    const extra: LoadInitialDataThunkDeps = {
         services: {
             getSelectedAccount: mockGetSelectedAccount(),
             getTradingEnvironment: mockGetTradingEnvironment(),
@@ -62,11 +68,13 @@ describe('useExchangeData', () => {
         }).store;
     };
 
-    const renderUseExchangeData = async (store?: TestStore) => {
+    const renderUseExchangeData = async (
+        store?: ReduxStoreWithThunk<State, LoadInitialDataThunkDeps>,
+    ) => {
         const effectiveStore = store ?? createTestCompositionRoot({ extra, reducer }).store;
 
         const ret = await renderHookWithStoreProvider(useExchangeData, {
-            store: effectiveStore,
+            services: { store: effectiveStore },
         });
 
         await act(() => Promise.resolve()); // Wait for all effects to run

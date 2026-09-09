@@ -1,15 +1,11 @@
+import { type Store } from '@reduxjs/toolkit';
 import type { SellFiatTrade } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
-import {
-    type TestStore,
-    act,
-    renderHookWithStoreProvider,
-    screen,
-    waitFor,
-} from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider, screen, waitFor } from '@suite-native/test-utils-store';
 import {
     banxaBankTransferSellQuote,
     banxaCreditCardSellQuote,
@@ -20,24 +16,26 @@ import {
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { selectTradingResidenceCountry } from '@suite-native/trading-state';
+import { type TradingRootState, selectTradingResidenceCountry } from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { useSellForm } from './useSellForm';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal') });
 
 describe('useSellForm', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseSellForm = async () =>
-        await renderHookWithStoreProvider(() => useSellForm(), { store });
+        await renderHookWithStoreProvider(() => useSellForm(), { services: { store } });
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
-        createTradingLightStore({
+        createTradingTestStore({
             tradeType: 'sell',
             overrides: {
                 wallet: { settings: { bitcoinAmountUnit } },
@@ -243,7 +241,7 @@ describe('useSellForm', () => {
                 formattedBalance: '0.0001',
             });
 
-            store = createTradingLightStore({
+            store = createTradingTestStore({
                 tradeType: 'sell',
                 overrides: {
                     wallet: { accounts: [richBtcAccount, poorBtcAccount] },

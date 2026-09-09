@@ -12808,6 +12808,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/formatters@workspace:suite-native/formatters"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -13687,6 +13688,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
+    "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/message-system": "workspace:*"
@@ -13986,6 +13988,7 @@ __metadata:
     "@suite-common/calldata": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
@@ -13996,6 +13999,7 @@ __metadata:
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/tx-simulation": "workspace:*"
@@ -14869,6 +14873,7 @@ __metadata:
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-types": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     expo-localization: "npm:~57.0.1"
     react: "npm:19.2.3"

@@ -39,19 +39,21 @@ jest.mock('@react-navigation/native', () => ({
 describe('TradingLocationSettingsScreen', () => {
     const renderTradingLocationSettingsScreen = async () =>
         await renderWithStoreProvider(<SettingsTradingLocationScreen />, {
-            services,
-            store: createLightStore({
-                reducer: {
-                    locale: localeReducer,
-                    messageSystem: createStaticReducer(messageSystemInitialState),
-                    wallet: combineReducers({
-                        settings: createStaticReducer(initialWalletSettingsState),
-                        trading: combineReducers({
-                            residence: residenceReducer,
+            services: {
+                ...services,
+                store: createLightStore({
+                    reducer: {
+                        locale: localeReducer,
+                        messageSystem: createStaticReducer(messageSystemInitialState),
+                        wallet: combineReducers({
+                            settings: createStaticReducer(initialWalletSettingsState),
+                            trading: combineReducers({
+                                residence: residenceReducer,
+                            }),
                         }),
-                    }),
-                },
-            }),
+                    },
+                }),
+            },
         });
 
     beforeEach(() => {

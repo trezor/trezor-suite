@@ -1,27 +1,32 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { tradingExchangeActions } from '@suite-common/trading';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type AccountsRootState, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
-import { selectExchangeSelectedSendAccount, tradingSlice } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectExchangeSelectedSendAccount,
+    tradingSlice,
+} from '@suite-native/trading-state';
 
 import { useSendAccountChangeEffect } from './useSendAccountChangeEffect';
+
+type State = TradingRootState & AccountsRootState;
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btc2legacy') });
 
 describe('useSendAccountChangeEffect', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let setValue: jest.Mock;
     let onSendAssetCleared: jest.Mock;
 
@@ -45,7 +50,7 @@ describe('useSendAccountChangeEffect', () => {
                     onSendAssetCleared,
                 );
             },
-            { store },
+            { services: { store } },
         );
 
     beforeEach(() => {

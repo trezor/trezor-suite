@@ -1,4 +1,5 @@
 import { PORTFOLIO_TRACKER_DEVICE_ID, PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
+import { type NativeDeviceRootState } from '@suite-native/device';
 import { createStoreFromPreloadedState } from '@suite-native/test-utils-store';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -6,10 +7,8 @@ import { selectHomeScreenState } from './homescreenSelectors';
 
 const TEST_SESSION_ID = 'address@hash:0' as const;
 
-const buildState = (preloadedState: Record<string, unknown>) =>
-    createStoreFromPreloadedState(preloadedState).getState() as Parameters<
-        typeof selectHomeScreenState
-    >[0];
+const buildState = (preloadedState: Record<string, unknown>): NativeDeviceRootState =>
+    createStoreFromPreloadedState(preloadedState as NativeDeviceRootState).getState();
 
 describe('selectHomeScreenState', () => {
     describe('portfolioContent', () => {

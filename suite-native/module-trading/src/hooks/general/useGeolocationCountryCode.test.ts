@@ -1,6 +1,7 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import {
+    type GeolocationRootState,
     geolocationActions,
     geolocationReducer,
     selectCountryCode,
@@ -8,13 +9,14 @@ import {
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
 import { useGeolocationCountryCode } from './useGeolocationCountryCode';
+
+type State = GeolocationRootState;
 
 jest.mock('@suite-common/geolocation', () => {
     const actual = jest.requireActual('@suite-common/geolocation');
@@ -39,8 +41,10 @@ describe('useGeolocationCountryCode', () => {
             },
         });
 
-    const renderUseGeolocationCountryCode = async (store: TestStore) =>
-        await renderHookWithStoreProvider(() => useGeolocationCountryCode(), { store });
+    const renderUseGeolocationCountryCode = async (store: Store<State>) =>
+        await renderHookWithStoreProvider(() => useGeolocationCountryCode(), {
+            services: { store },
+        });
 
     it('should call geolocation thunk on mount', async () => {
         const store = createGeolocationTestStore();

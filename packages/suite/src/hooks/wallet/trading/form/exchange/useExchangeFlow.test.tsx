@@ -1,6 +1,7 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingTransactionExchange, tradingExchangeActions } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -41,8 +42,7 @@ const renderExchangeFlow = ({
     transactionId = undefined,
     isAmountEmpty = false,
 }: Props = {}) => {
-    const store = createTestStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
         preloadedState: {
             wallet: { trading: { exchange: { quotes: [] } } },
         },
@@ -50,32 +50,33 @@ const renderExchangeFlow = ({
 
     renderHookWithStoreProvider(
         () => useExchangeFlow({ isFromRedirect, trade, transactionId, isAmountEmpty }),
-        { store },
+        { root },
     );
 
-    return store;
+    const { getActions } = root.services;
+
+    return { getActions };
 };
 
-const actionTypes = (store: ReturnType<typeof renderExchangeFlow>) =>
-    store.getActions().map(action => action.type);
+const actionTypes = (actions: UnknownAction[]) => actions.map(action => action.type);
 
 describe('useExchangeFlow', () => {
     it('dispatches the initial data load once on mount', () => {
-        const store = renderExchangeFlow();
+        const { getActions } = renderExchangeFlow();
 
         expect(
-            store.getActions().filter(action => action.type === 'trading/loadInitialData'),
+            getActions().filter(action => action.type === 'trading/loadInitialData'),
         ).toHaveLength(1);
     });
 
     it('restores the selected quote, form step and send account on redirect', () => {
-        const store = renderExchangeFlow({
+        const { getActions } = renderExchangeFlow({
             isFromRedirect: true,
             trade: TRADE,
             transactionId: 'tx-1',
         });
 
-        const types = actionTypes(store);
+        const types = actionTypes(getActions());
 
         expect(types).toContain(tradingExchangeActions.saveSelectedQuote.type);
         expect(types).toContain(tradingExchangeActions.setFormStep.type);
@@ -84,9 +85,9 @@ describe('useExchangeFlow', () => {
     });
 
     it('clears the redirect flag without restoring a trade when the transaction id is missing', () => {
-        const store = renderExchangeFlow({ isFromRedirect: true, trade: TRADE });
+        const { getActions } = renderExchangeFlow({ isFromRedirect: true, trade: TRADE });
 
-        const types = actionTypes(store);
+        const types = actionTypes(getActions());
 
         expect(types).not.toContain(tradingExchangeActions.saveSelectedQuote.type);
         expect(types).not.toContain(tradingExchangeActions.setFormStep.type);
@@ -94,9 +95,9 @@ describe('useExchangeFlow', () => {
     });
 
     it('does not restore anything when the redirect flag is not set', () => {
-        const store = renderExchangeFlow({ trade: TRADE, transactionId: 'tx-1' });
+        const { getActions } = renderExchangeFlow({ trade: TRADE, transactionId: 'tx-1' });
 
-        const types = actionTypes(store);
+        const types = actionTypes(getActions());
 
         expect(types).not.toContain(tradingExchangeActions.saveSelectedQuote.type);
         expect(types).not.toContain(tradingExchangeActions.setIsFromRedirect.type);

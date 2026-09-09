@@ -1,18 +1,23 @@
 import React from 'react';
 
+import { type Store } from '@reduxjs/toolkit';
+
 import { useServices } from '@suite-common/dependency-injection';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { type TestStore } from '@suite-native/test-utils-store';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useWatchTrade } from './useWatchTrade';
 import {
-    createTradingLightStore,
+    createTradingTestStore,
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 jest.mock('./useReloadTimer', () => ({
     useReloadTimer: jest.fn(),
@@ -78,7 +83,7 @@ describe('useWatchTrade', () => {
         trades = [],
         accounts = [],
     }: { trades?: any[]; accounts?: any[] } = {}) =>
-        createTradingLightStore({
+        createTradingTestStore({
             overrides: {
                 wallet: {
                     trading: { trades },
@@ -109,7 +114,7 @@ describe('useWatchTrade', () => {
         });
 
     const renderUseWatchTrade = async (
-        store: TestStore,
+        store: Store<State>,
         props: {
             accountKey?: AccountKey;
             orderId?: string;
@@ -119,8 +124,7 @@ describe('useWatchTrade', () => {
         },
     ) =>
         await renderHookWithTradingProvider(() => useWatchTradeWithReportSpy(props), {
-            store,
-            services,
+            services: { ...services, store },
         });
 
     describe('Trade Watching Behavior', () => {
@@ -230,13 +234,16 @@ describe('useWatchTrade', () => {
                         orderId: buyTrade.data.orderId,
                         isEnabled,
                     }),
-                { store, services },
+                { services: { ...services, store } },
             );
 
             expect(mockWatchTradeThunk).toHaveBeenCalledTimes(1);
 
             isEnabled = false;
             await rerender({});
+
+            expect(mockWatchTradeThunk).toHaveBeenCalledTimes(1);
+
             isEnabled = true;
             await rerender({});
 

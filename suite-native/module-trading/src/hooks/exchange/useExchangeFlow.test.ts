@@ -1,16 +1,23 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type DeviceRootState } from '@suite-common/device';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { RootStackRoutes } from '@suite-native/navigation';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { type UseExchangeFlowProps, useExchangeFlow } from './useExchangeFlow';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & DeviceRootState;
 
 const mockNavigate = jest.fn();
 let mockConfirmTradeThunk: jest.Mock;
@@ -78,7 +85,7 @@ describe('useExchangeFlow', () => {
         store,
         flowType,
     }: {
-        store: TestStore;
+        store: Store<State>;
         flowType?: UseExchangeFlowProps['flowType'];
     }) => {
         const reportMock = jest.fn();
@@ -90,8 +97,7 @@ describe('useExchangeFlow', () => {
             reportMock,
             result: (
                 await renderHookWithStoreProvider(() => useExchangeFlow({ flowType }), {
-                    services,
-                    store,
+                    services: { ...services, store },
                 })
             ).result,
         };

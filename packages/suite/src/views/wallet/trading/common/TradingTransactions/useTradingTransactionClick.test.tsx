@@ -1,6 +1,7 @@
 import { type CryptoId } from 'invity-api';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingTransaction,
@@ -20,13 +21,6 @@ import { type AppState } from 'src/reducers/store';
 
 import { useTradingTransactionClick } from './useTradingTransactionClick';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    gotoThunk: (payload: unknown) => ({ type: '@router/goto', payload }),
-}));
-
-const goto = (routeName: string) => ({ type: '@router/goto', payload: { routeName } });
 
 const BITCOIN = 'bitcoin' as CryptoId;
 
@@ -88,54 +82,70 @@ const buildState = (): AppState => ({
 });
 
 const renderClickHandler = () => {
+    const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
     const root = createTestCompositionRoot({
-        extra: { services: { analytics: mockDesktopAnalytics() } },
+        extra: {
+            services: {
+                analytics: mockDesktopAnalytics(),
+                suiteRouterHistory,
+            },
+        },
         preloadedState: buildState(),
     });
     const { result } = renderHookWithStoreProvider(() => useTradingTransactionClick(), { root });
 
     return {
         click: (trade: TradingTransaction) => result.current(trade),
-        getActions: () => root.services.getActions(),
+        getActions: () =>
+            root.services
+                .getActions()
+                .filter(
+                    action =>
+                        !action.type.startsWith('@router/') && !action.type.startsWith('router/'),
+                ),
+        navigate: suiteRouterHistory.navigate,
     };
 };
 
 describe('useTradingTransactionClick', () => {
     it('opens the buy detail', () => {
-        const { click, getActions } = renderClickHandler();
+        const { click, getActions, navigate } = renderClickHandler();
 
         click(buy);
 
-        expect(getActions()).toEqual([
-            tradingBuyActions.saveTransactionId('buy-key'),
-            goto('wallet-trading-buy-detail'),
-        ]);
+        expect(getActions()).toEqual([tradingBuyActions.saveTransactionId('buy-key')]);
+        expect(navigate).toHaveBeenCalledWith({
+            pathname: '/accounts/coinmarket/buy/detail',
+            hash: '',
+        });
     });
 
     it('opens the exchange detail', () => {
-        const { click, getActions } = renderClickHandler();
+        const { click, getActions, navigate } = renderClickHandler();
 
         click(exchange);
 
-        expect(getActions()).toEqual([
-            tradingExchangeActions.saveTransactionId('exchange-key'),
-            goto('wallet-trading-exchange-detail'),
-        ]);
+        expect(getActions()).toEqual([tradingExchangeActions.saveTransactionId('exchange-key')]);
+        expect(navigate).toHaveBeenCalledWith({
+            pathname: '/accounts/coinmarket/exchange/detail',
+            hash: '',
+        });
     });
 
     it('opens the sell detail for a finished sell', () => {
-        const { click, getActions } = renderClickHandler();
+        const { click, getActions, navigate } = renderClickHandler();
 
         click(sell);
 
-        expect(getActions()).toEqual([
-            tradingSellActions.saveTransactionId('sell-key'),
-            goto('wallet-trading-sell-detail'),
-        ]);
+        expect(getActions()).toEqual([tradingSellActions.saveTransactionId('sell-key')]);
+        expect(navigate).toHaveBeenCalledWith({
+            pathname: '/accounts/coinmarket/sell/detail',
+            hash: '',
+        });
     });
 
     it('resumes an interrupted sell with a default fee, not the one left in the slot', () => {
-        const { click, getActions } = renderClickHandler();
+        const { click, getActions, navigate } = renderClickHandler();
 
         click(submittedSell);
 
@@ -151,18 +161,22 @@ describe('useTradingTransactionClick', () => {
                 selectedFee: 'normal',
                 composed: { feePerByte: '', fee: '' },
             }),
-            goto('wallet-trading-sell-confirm'),
         ]);
+        expect(navigate).toHaveBeenCalledWith({
+            pathname: '/accounts/coinmarket/sell/confirm',
+            hash: '',
+        });
     });
 
     it('opens the sell detail when an interrupted sell has no crypto currency', () => {
-        const { click, getActions } = renderClickHandler();
+        const { click, getActions, navigate } = renderClickHandler();
 
         click({ ...submittedSell, data: { ...submittedSell.data, cryptoCurrency: undefined } });
 
-        expect(getActions()).toEqual([
-            tradingSellActions.saveTransactionId('sell-key'),
-            goto('wallet-trading-sell-detail'),
-        ]);
+        expect(getActions()).toEqual([tradingSellActions.saveTransactionId('sell-key')]);
+        expect(navigate).toHaveBeenCalledWith({
+            pathname: '/accounts/coinmarket/sell/detail',
+            hash: '',
+        });
     });
 });

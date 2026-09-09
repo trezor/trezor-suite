@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { type MessageSystemState } from './messageSystemTypes';
@@ -40,16 +40,15 @@ const stateWithDisabledWrap = {
     },
 } as unknown as MessageSystemState;
 
-const createStore = (state: MessageSystemState = stateWithDisabledWrap) =>
-    createTestStore({
-        extra: undefined,
+const createRoot = (state: MessageSystemState = stateWithDisabledWrap) =>
+    createTestCompositionRoot({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
     });
 
 const renderHook = (props: Parameters<typeof useMessageSystemWrappedNative>[0]) =>
     renderHookWithStoreProvider(() => useMessageSystemWrappedNative(props), {
-        store: createStore(),
+        root: createRoot(),
     });
 
 describe('useMessageSystemWrappedNative', () => {
@@ -80,10 +79,10 @@ describe('useMessageSystemWrappedNative', () => {
     });
 
     it('returns not disabled when no feature messages are configured', () => {
-        const store = createStore(messageSystemInitialState);
+        const root = createRoot(messageSystemInitialState);
         const { result } = renderHookWithStoreProvider(
             () => useMessageSystemWrappedNative({ type: 'wrap', locale: 'en' }),
-            { store },
+            { root },
         );
 
         expect(result.current).toMatchObject({

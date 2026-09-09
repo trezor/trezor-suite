@@ -1,16 +1,40 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type DeviceRootState } from '@suite-common/device';
+import { type MessageSystemRootState } from '@suite-common/message-system';
+import { type TradingRootStateWithDeviceAndAccounts } from '@suite-common/trading';
+import {
+    type AccountsRootState,
+    type FormDraftRootState,
+    type WalletSettingsRootState,
+} from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { FeatureFlag } from '@suite-native/feature-flags';
-import { type TestStore, act } from '@suite-native/test-utils-store';
+import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { act } from '@suite-native/test-utils-store';
+import { type TokensRootState } from '@suite-native/tokens';
 import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
+import { type NativeSendRootState } from '@suite-native/transaction-management';
 
 import { useTradingTransaction } from './useTradingTransaction';
 import {
-    createTradingLightStore,
+    createTradingTestStore,
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState &
+    AccountsRootState &
+    DeviceRootState &
+    TradingRootStateWithDeviceAndAccounts &
+    FormDraftRootState &
+    WalletSettingsRootState &
+    TokensRootState &
+    NativeSendRootState &
+    MessageSystemRootState &
+    FeatureFlagsRootState;
 
 const mockComposeTradingTransaction = jest.fn();
 
@@ -73,7 +97,7 @@ describe('useTradingTransaction', () => {
         // Set a selected quote so the hook can access selectedQuote.send
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
-        return createTradingLightStore({
+        return createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 wallet: {
@@ -98,12 +122,10 @@ describe('useTradingTransaction', () => {
         });
     };
 
-    const renderUseTradingTransaction = async ({ store }: { store: TestStore }) =>
+    const renderUseTradingTransaction = async ({ store }: { store: Store<State> }) =>
         await renderHookWithTradingProvider(
             () => useTradingTransaction({ tradeType: 'exchange' }),
-            {
-                store,
-            },
+            { services: { store } },
         );
 
     beforeEach(() => {

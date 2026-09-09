@@ -18,7 +18,7 @@ import { AccountList, type AccountsListProps, keyExtractor } from './AccountList
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
-    createTradingLightStore,
+    createTradingTestStore,
 } from '../../../test-utils/tradingTestUtils';
 
 const navigationNavigate = jest.fn();
@@ -47,7 +47,7 @@ describe('AccountList', () => {
         props: Partial<AccountsListProps> = {},
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) => {
-        const store = createTradingLightStore({ overrides });
+        const store = createTradingTestStore({ overrides });
         const symbol = props.symbol ?? 'btc';
         const receiveAccounts = store
             .getState()
@@ -65,7 +65,7 @@ describe('AccountList', () => {
                 {...props}
                 data={props.data ?? data}
             />,
-            { store },
+            { services: { store } },
         );
 
         return { ...result, store };

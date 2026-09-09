@@ -1,33 +1,35 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type TradingType } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectTradingProviderConfirmationStatus,
+    tradingSlice,
+} from '@suite-native/trading-state';
 
 import { useBrowserStateChangeCallbacks } from './useBrowserStateChangeCallbacks';
 
-const mockReportToAnalytics = jest.fn();
+type State = TradingRootState;
 
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useTradingAnalyticReportCallback: () => mockReportToAnalytics,
-}));
+const mockAnalyticsReport = jest.fn();
 
 describe('useBrowserStateChangeCallbacks', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const renderUseBrowserwStateChangeCallbacks = async (tradingType: TradingType | undefined) =>
         await renderHookWithStoreProvider(() => useBrowserStateChangeCallbacks(tradingType), {
-            store,
+            services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
         });
 
     beforeEach(() => {
@@ -63,7 +65,10 @@ describe('useBrowserStateChangeCallbacks', () => {
                 result.current.handleBrowserOpened();
             });
 
-            expect(mockReportToAnalytics).toHaveBeenCalledWith('webview', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingSellEvent.name,
+                payload: expect.objectContaining({ step: 'webview', action: 'visit' }),
+            });
         });
     });
 
@@ -112,8 +117,14 @@ describe('useBrowserStateChangeCallbacks', () => {
 
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
             expect(dispatchSpy).not.toHaveBeenCalled();
-            // note that analytics event should be still reported
-            expect(mockReportToAnalytics).toHaveBeenCalledWith('webview', 'visit');
+            if (tradingType === 'exchange') {
+                expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                    type: events.tradingExchangeEvent.name,
+                    payload: expect.objectContaining({ step: 'webview', action: 'visit' }),
+                });
+            } else {
+                expect(mockAnalyticsReport).not.toHaveBeenCalled();
+            }
         },
     );
 
@@ -130,6 +141,6 @@ describe('useBrowserStateChangeCallbacks', () => {
 
         expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
         expect(dispatchSpy).not.toHaveBeenCalled();
-        expect(mockReportToAnalytics).not.toHaveBeenCalled();
+        expect(mockAnalyticsReport).not.toHaveBeenCalled();
     });
 });

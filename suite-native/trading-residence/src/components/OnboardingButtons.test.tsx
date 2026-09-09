@@ -1,11 +1,10 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     fireEvent,
@@ -16,19 +15,21 @@ import {
     selectTradingResidenceCountry,
     selectWasTradingResidenceOnboardingVisited,
 } from '@suite-native/trading-state';
+import { type TradingResidenceRootState } from '@suite-native/trading-types';
 
 import { LocationForm } from './LocationForm';
 import { OnboardingButtons, type OnboardingButtonsProps } from './OnboardingButtons';
 
+type State = TradingResidenceRootState;
+
 describe('OnboardingButtons', () => {
-    let store: TestStore;
+    let store: Store<State>;
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
     const renderOnboardingButtons = async (props: OnboardingButtonsProps) =>
         await renderWithStoreProvider(<OnboardingButtons {...props} />, {
             wrapper: LocationForm,
-            services,
-            store,
+            services: { ...services, store },
         });
 
     beforeEach(() => {

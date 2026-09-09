@@ -1,4 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
 import { deviceInitialState } from '@suite-common/device';
@@ -7,7 +7,11 @@ import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -15,7 +19,7 @@ import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
+    type PreloadedStatePartial,
     createLightStore,
     createStaticReducer,
     fireEvent,
@@ -30,6 +34,7 @@ import {
     getWalletState,
 } from '@suite-native/trading-fixtures';
 import {
+    type TradingRootState,
     exchangeActions,
     selectAccountsWithTokensToSellSectionListByTradingType,
     tradingSlice,
@@ -39,6 +44,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
+
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),
@@ -72,7 +79,7 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('ExchangeSendAssetPicker', () => {
     let form: ExchangeFormType;
-    let store: TestStore;
+    let store: Store<State>;
 
     const btcAccount = getBtcAccount();
     const ethAccount = getEthAccount();
@@ -101,14 +108,7 @@ describe('ExchangeSendAssetPicker', () => {
         },
     ];
 
-    const getPreloadedState = () => ({
-        device: deviceInitialState,
-        featureFlags: {
-            ...featureFlagsInitialState,
-        },
-        messageSystem: messageSystemInitialState,
-        suiteSync: initialSuiteSyncState,
-        suiteSyncData: initialSuiteSyncDataState,
+    const getPreloadedState = (): PreloadedStatePartial<State> => ({
         wallet: {
             trading: getInitializedTradingState(),
             accounts: [btcAccount, ethAccount],
@@ -116,12 +116,13 @@ describe('ExchangeSendAssetPicker', () => {
     });
 
     const renderExchangeForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), { services, store });
+        await renderHookWithStoreProvider(() => useExchangeForm(), {
+            services: { ...services, store },
+        });
 
     const renderExchangeSendAssetPicker = async () =>
         await renderWithStoreProvider(<ExchangeSendAssetPicker />, {
-            services,
-            store,
+            services: { ...services, store },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
