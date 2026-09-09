@@ -2,7 +2,7 @@ import { type UseFormReturn } from 'react-hook-form';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
 import {
     TRADING_BUY_RECEIVE_ADDRESS,
     TRADING_FORM_COUNTRY_SELECT,
@@ -19,7 +19,6 @@ import {
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 
-import { useStore } from 'src/hooks/suite/useStore';
 import { isBuyQuotesFetchAllowed } from 'src/utils/wallet/trading/buyQuotesRequestUtils';
 
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';
@@ -41,9 +40,11 @@ const BUY_IMMEDIATE_FIELDS = [
 const BUY_DEBOUNCED_FIELDS = [TRADING_FORM_FIAT_INPUT, TRADING_FORM_CRYPTO_INPUT] as const;
 
 export const useBuyQuotes = ({ methods, network, shouldSendInSats }: UseBuyQuotesProps) => {
-    const dispatch = useDispatch();
-    const store = useStore();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch, getState } = useServices(
+        selectDesktopAnalyticsDep,
+        selectDispatch,
+        selectGetState,
+    );
 
     const { isScheduledQuotesRefresh } = useTradingQuoteRequest({
         methods,
@@ -66,7 +67,7 @@ export const useBuyQuotes = ({ methods, network, shouldSendInSats }: UseBuyQuote
 
             const selectedPaymentMethod = values.paymentMethod?.value;
             const paymentMethodOption = selectTradingSelectedPaymentMethodByType(
-                store.getState(),
+                getState(),
                 'buy',
                 selectedPaymentMethod,
             );

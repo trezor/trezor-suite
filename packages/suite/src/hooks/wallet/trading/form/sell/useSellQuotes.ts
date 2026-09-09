@@ -3,7 +3,7 @@ import { type UseFormReturn } from 'react-hook-form';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
@@ -19,7 +19,6 @@ import {
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 
-import { useStore } from 'src/hooks/suite/useStore';
 import { isSellQuotesFetchAllowed } from 'src/utils/wallet/trading/sellQuotesRequestUtils';
 
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';
@@ -46,9 +45,11 @@ export const useSellQuotes = ({
     shouldSendInSats,
     composeRequestCallback,
 }: UseSellQuotesProps) => {
-    const dispatch = useDispatch();
-    const store = useStore();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch, getState } = useServices(
+        selectDesktopAnalyticsDep,
+        selectDispatch,
+        selectGetState,
+    );
 
     const { isScheduledQuotesRefresh } = useTradingQuoteRequest({
         methods,
@@ -78,7 +79,7 @@ export const useSellQuotes = ({
 
             const selectedPaymentMethod = values.paymentMethod?.value;
             const paymentMethodOption = selectTradingSelectedPaymentMethodByType(
-                store.getState(),
+                getState(),
                 'sell',
                 selectedPaymentMethod,
             );
