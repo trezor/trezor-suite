@@ -30,6 +30,7 @@ import { mockFetchAndSaveMetadata } from '@suite-common/metadata-types/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
+import { type OnboardingServiceDep } from '@suite-common/suite-types';
 import {
     mockGetAllowPrerelease,
     mockGetBinFilesBaseUrl,
@@ -71,7 +72,7 @@ const flagsReducer = prepareFlagsReducer({
 });
 
 type SuiteActionsTestDeps = ConnectInitThunkDeps &
-    WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
+    WithServices<AnalyticsDep & GetTradedAccountKeysDep & OnboardingServiceDep> & {
         thunks: FetchAndSaveMetadataDep;
     };
 
@@ -89,6 +90,10 @@ const extra: SuiteActionsTestDeps = {
         getDebugSettings: mockGetDebugSettings(),
         getThpSettings: mockGetThpSettings(),
         getTradedAccountKeys: mockGetTradedAccountKeys(),
+        onboardingService: {
+            onFirmwareInstallationFinished: jest.fn(),
+            onSelectedDeviceUpdated: jest.fn(),
+        },
     },
     thunks: {
         fetchAndSaveMetadata: mockFetchAndSaveMetadata(),
