@@ -3,6 +3,7 @@
 ### 0.5.0
 
 - feat: connection token authorization
+- update dependencies (btleplug 0.13.0 with required fixes: macos name + macos write without response)
 
 ### 0.4.3
 
