@@ -6,7 +6,11 @@ import {
 import { type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKeyFromTicker, isTestnet } from '@suite-common/wallet-utils';
 
-import { updateFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
+import {
+    pruneHistoricFiatRatesThunk,
+    updateFiatRatesThunk,
+    updateTxsFiatRatesThunk,
+} from './fiatRatesThunks';
 import { type FiatRatesState } from './fiatRatesTypes';
 
 export const fiatRatesInitialState: FiatRatesState = {
@@ -138,6 +142,11 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                         ),
                     };
                 });
+            })
+            .addCase(pruneHistoricFiatRatesThunk.fulfilled, (state, action) => {
+                if (!action.payload) return;
+
+                state.historic = action.payload;
             })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,
