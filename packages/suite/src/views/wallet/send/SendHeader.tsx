@@ -91,6 +91,7 @@ export const SendHeader = () => {
             isHidden: networkType !== 'bitcoin',
         },
         {
+            'data-testid': '@send/header-dropdown/data',
             onClick: () => {
                 toggleOption('transactionData');
                 composeTransaction();
