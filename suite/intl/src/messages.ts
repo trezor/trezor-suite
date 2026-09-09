@@ -10075,18 +10075,6 @@ export const messages = defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_BUTTON',
         defaultMessage: 'Get started',
     },
-    TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE',
-        defaultMessage: 'Earn on your stablecoins',
-    },
-    TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_DESCRIPTION: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_DESCRIPTION',
-        defaultMessage: 'Earn yield on USDC and USDT with Trezor-grade security.',
-    },
-    TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON',
-        defaultMessage: 'Get started',
-    },
     TR_ONBOARDING_FEEDBACK_BANNER_TITLE: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_TITLE',
         defaultMessage: 'Help us improve',
