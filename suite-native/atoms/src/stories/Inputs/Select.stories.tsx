@@ -41,8 +41,11 @@ export const Select: SelectStory = {
     args: {
         title: 'Label',
         value: 'option1',
-        isLabelShown: true,
+        labelType: 'innerLabel',
         isConfirmable: false,
+        hasError: false,
+        errorMessage: 'Something went wrong',
+        isDisabled: false,
         items,
     },
     argTypes: {
@@ -50,13 +53,26 @@ export const Select: SelectStory = {
             control: { type: 'text' },
         },
         value: {
-            options: Object.values(OPTIONS),
+            options: [null, ...Object.values(OPTIONS)],
+            control: {
+                type: 'select',
+                labels: { null: 'Unselected' },
+            },
+        },
+        labelType: {
+            options: ['innerLabel', 'outsideLabel', 'noLabel'],
             control: { type: 'select' },
         },
         isConfirmable: {
             control: { type: 'boolean' },
         },
-        isLabelShown: {
+        hasError: {
+            control: { type: 'boolean' },
+        },
+        errorMessage: {
+            control: { type: 'text' },
+        },
+        isDisabled: {
             control: { type: 'boolean' },
         },
         items: {

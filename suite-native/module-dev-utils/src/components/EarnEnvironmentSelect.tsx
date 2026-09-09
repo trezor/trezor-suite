@@ -32,7 +32,7 @@ export const EarnEnvironmentSelect = () => {
             items={earnWorkerBaseUrlItems}
             value={storedValue ?? defaultEarnYieldWorkerBaseUrl}
             onSelectItem={handleSelectEnvironment}
-            isLabelShown
+            labelType="innerLabel"
         />
     );
 };
