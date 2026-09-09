@@ -26,7 +26,6 @@ export const TransactionCompleteAmountValue = ({
                 <NetworkIcon symbol={accountSymbol} size={20} />
             </Box>
             <CryptoAmountFormatter
-                formatStyle="exact"
                 value={amountInBaseUnits}
                 symbol={accountSymbol}
                 variant="body-md-strong"

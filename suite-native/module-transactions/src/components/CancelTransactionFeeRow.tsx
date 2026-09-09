@@ -14,7 +14,6 @@ export const CancelTransactionFeeRow = ({ title, fee, symbol }: CancelTransactio
     <TransactionDetailRow title={title}>
         <Box alignItems="flex-end">
             <CryptoAmountFormatter
-                formatStyle="exact"
                 value={fee}
                 symbol={symbol}
                 variant="body-sm"

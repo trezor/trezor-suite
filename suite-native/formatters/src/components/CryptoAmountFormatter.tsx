@@ -12,7 +12,7 @@ import { FormattedCryptoAmountText } from './FormattedCryptoAmountText';
 
 type CryptoAmountFormatterCommonProps = {
     value: string | number | null;
-    formatStyle: CryptoAmountFormatterFormatStyle;
+    formatStyle?: CryptoAmountFormatterFormatStyle;
     isBalance?: boolean;
     isDiscreetText?: boolean;
     isForcedDiscreetMode?: boolean;
@@ -43,7 +43,7 @@ export const CryptoAmountFormatter = (props: CryptoAmountFormatterProps) => {
     const {
         value,
         symbol,
-        formatStyle,
+        formatStyle = 'exact',
         isBalance = true,
         isDiscreetText,
         isForcedDiscreetMode,

@@ -20,7 +20,6 @@ export const TronFeeValue = ({
         return (
             <HStack alignItems="center" spacing="sp4">
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     variant="body-sm"
                     color="contentPrimary"
                     value={trxBurned}
@@ -58,7 +57,6 @@ export const TronFeeValue = ({
 
     return (
         <CryptoAmountFormatter
-            formatStyle="exact"
             variant="body-sm"
             color="contentPrimary"
             value={null}

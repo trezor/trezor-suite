@@ -75,7 +75,6 @@ const TokenAmountTooltipFormatter = ({
     if (getNetworkType(symbol) === 'ethereum') {
         return (
             <CryptoAmountFormatter
-                formatStyle="exact"
                 color="contentPrimary"
                 variant="body-xs"
                 value={value}
@@ -103,7 +102,6 @@ const EventTooltipRow = ({
             <SignValueFormatter value={signValue} variant="body-xs" />
             {!tokenAddress ? (
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     color="contentPrimary"
                     variant="body-xs"
                     value={value}

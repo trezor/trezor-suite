@@ -54,7 +54,6 @@ export const SendUtxoScreenFooter = ({
                             <Translation id="moduleSend.coinControl.utxos.selected" />
                         </Text>
                         <CryptoAmountFormatter
-                            formatStyle="exact"
                             isBalance={false}
                             variant={missingToAmount ? 'body-sm' : 'body-md'}
                             color={missingToAmount ? 'contentSecondary' : 'contentPrimary'}
@@ -70,7 +69,6 @@ export const SendUtxoScreenFooter = ({
                                     <Translation id="moduleSend.coinControl.utxos.remaining" />
                                 </Text>
                                 <CryptoAmountFormatter
-                                    formatStyle="exact"
                                     variant="body-md"
                                     value={missingToAmount}
                                     symbol={symbol}

@@ -292,7 +292,6 @@ export const YieldPendingTransactionModal = ({
                         {fee ? (
                             <VStack alignItems="flex-end" spacing="sp2">
                                 <CryptoAmountFormatter
-                                    formatStyle="exact"
                                     value={fee}
                                     symbol={accountSymbol}
                                     color="contentPrimary"

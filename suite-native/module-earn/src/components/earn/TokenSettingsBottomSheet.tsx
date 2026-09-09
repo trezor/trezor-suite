@@ -271,7 +271,6 @@ export const TokenSettingsBottomSheet = forwardRef(
                                     <VStack spacing={0} alignItems="flex-end">
                                         {tokenContract ? (
                                             <CryptoAmountFormatter
-                                                formatStyle="exact"
                                                 value={tokenBalance}
                                                 tokenSymbol={tokenSymbol}
                                                 variant="body-sm"
@@ -281,7 +280,6 @@ export const TokenSettingsBottomSheet = forwardRef(
                                             />
                                         ) : (
                                             <CryptoAmountFormatter
-                                                formatStyle="exact"
                                                 value={account.formattedBalance}
                                                 symbol={account.symbol}
                                                 variant="body-sm"

@@ -219,7 +219,6 @@ export const FeeOption = ({
                                 isDiscreetText={false}
                             />
                             <CryptoAmountFormatter
-                                formatStyle="exact"
                                 variant="body-sm"
                                 color="contentSecondary"
                                 value={fee}

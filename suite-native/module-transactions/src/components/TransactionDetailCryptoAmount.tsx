@@ -48,7 +48,6 @@ export const TransactionDetailCryptoAmount = ({
             )}
 
             <CryptoAmountFormatter
-                formatStyle="exact"
                 value={amount}
                 symbol={transaction.symbol}
                 isBalance={false}

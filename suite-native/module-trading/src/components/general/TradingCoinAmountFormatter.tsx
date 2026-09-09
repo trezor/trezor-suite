@@ -29,7 +29,6 @@ export const TradingCoinAmountFormatter = ({
     if (isNetworkSymbol(coinSymbol)) {
         return (
             <CryptoAmountFormatter
-                formatStyle="exact"
                 value={amount ?? '0'}
                 symbol={coinSymbol}
                 isBalance={false}
@@ -41,7 +40,6 @@ export const TradingCoinAmountFormatter = ({
 
     return (
         <CryptoAmountFormatter
-            formatStyle="exact"
             value={amount ?? '0'}
             tokenSymbol={coinSymbol as TokenSymbol}
             isDiscreetText={false}

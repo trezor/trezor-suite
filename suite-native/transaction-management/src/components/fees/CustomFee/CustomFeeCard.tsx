@@ -54,7 +54,6 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                     isDiscreetText={false}
                                 />
                                 <CryptoAmountFormatter
-                                    formatStyle="exact"
                                     value={customFeeTransaction?.fee}
                                     symbol={symbol}
                                     isBalance={false}
