@@ -76,7 +76,7 @@ export const uploadFirmware = async ({
             const version = getFirmwareVersionArray(device.toMessageObject());
             if (version === null) return;
             if (isWithinRange(version, TIMEOUT_MIN_FW_VERSION, TIMEOUT_MAX_FW_VERSION)) {
-                postMessage(createUiEventMessage(UI_EVENTS.FIRMWARE_PROGRESS_UNEXPECTED_DELAY, {}));
+                postMessage(createUiEventMessage(UI_EVENTS.FIRMWARE_PROGRESS_UNEXPECTED_DELAY));
             }
         }, FIRMWARE_ERASE_TIMEOUT_MILLISECONDS);
         await typedCall('FirmwareErase', 'Success', {});

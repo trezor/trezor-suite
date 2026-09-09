@@ -8,7 +8,6 @@ import type { VersionArray } from '@trezor/utils';
 
 import type { DeviceButtonRequest } from './device';
 import type { Device } from '../types/device';
-import { type MessageFactoryFn } from '../types/utils';
 
 export const UI_EVENT = 'UI_EVENT';
 
@@ -146,29 +145,19 @@ export interface UiEventButtonRequest {
     };
 }
 
-export interface UiEventUnexpectedDeviceMode {
-    type:
-        | typeof UI_EVENTS.DEVICE_IN_BOOTLOADER
-        | typeof UI_EVENTS.DEVICE_NOT_IN_BOOTLOADER
-        | typeof UI_EVENTS.DEVICE_NOT_INITIALIZED
-        | typeof UI_EVENTS.DEVICE_SEEDLESS
-        | typeof UI_EVENTS.DEVICE_NEEDS_BACKUP;
-    payload: {
-        device: Device;
-    };
-}
+export type UiEventUnexpectedDeviceMode =
+    | { type: typeof UI_EVENTS.DEVICE_IN_BOOTLOADER; payload: { device: Device } }
+    | { type: typeof UI_EVENTS.DEVICE_NOT_IN_BOOTLOADER; payload: { device: Device } }
+    | { type: typeof UI_EVENTS.DEVICE_NOT_INITIALIZED; payload: { device: Device } }
+    | { type: typeof UI_EVENTS.DEVICE_SEEDLESS; payload: { device: Device } }
+    | { type: typeof UI_EVENTS.DEVICE_NEEDS_BACKUP; payload: { device: Device } };
 
-export interface UiEventFirmwareException {
-    type:
-        | typeof UI_EVENTS.FIRMWARE_OLD
-        | typeof UI_EVENTS.FIRMWARE_OUTDATED
-        | typeof UI_EVENTS.FIRMWARE_NOT_SUPPORTED
-        | typeof UI_EVENTS.FIRMWARE_NOT_COMPATIBLE
-        | typeof UI_EVENTS.FIRMWARE_NOT_INSTALLED;
-    payload: {
-        device: Device;
-    };
-}
+export type UiEventFirmwareException =
+    | { type: typeof UI_EVENTS.FIRMWARE_OLD; payload: { device: Device } }
+    | { type: typeof UI_EVENTS.FIRMWARE_OUTDATED; payload: { device: Device } }
+    | { type: typeof UI_EVENTS.FIRMWARE_NOT_SUPPORTED; payload: { device: Device } }
+    | { type: typeof UI_EVENTS.FIRMWARE_NOT_COMPATIBLE; payload: { device: Device } }
+    | { type: typeof UI_EVENTS.FIRMWARE_NOT_INSTALLED; payload: { device: Device } };
 
 export interface UiEventBundleProgress<R> {
     type: typeof UI_EVENTS.BUNDLE_PROGRESS;
@@ -191,7 +180,7 @@ export interface UiEventFirmwareProgress {
 
 export interface UiEventFirmwareProgressUnexpectedDelay {
     type: typeof UI_EVENTS.FIRMWARE_PROGRESS_UNEXPECTED_DELAY;
-    payload: Record<string, never>;
+    payload?: never;
 }
 
 export interface UiEventFirmwareTypeChanged {
@@ -258,11 +247,16 @@ export type UiEventMessage = UiEvent & {
 
 export const isUiEventOfType = createTypeGuardByType<UiEvent>();
 
-export const createUiEventMessage = ((
-    type: UiEvent['type'],
-    payload?: UiEvent extends { payload: infer P } ? P : undefined,
-) => ({
-    event: UI_EVENT,
-    type,
-    payload,
-})) as MessageFactoryFn<typeof UI_EVENT, UiEvent>;
+export const createUiEventMessage = <T extends UiEvent['type']>(
+    type: T,
+    ...args: Extract<UiEvent, { type: T }> extends { payload: infer P }
+        ? [undefined] extends [P]
+            ? [payload?: P]
+            : [payload: P]
+        : []
+) =>
+    ({
+        event: UI_EVENT,
+        type,
+        payload: args[0],
+    }) as UiEventMessage;
