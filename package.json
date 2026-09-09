@@ -103,6 +103,7 @@
         "s": "yarn native:start"
     },
     "resolutions": {
+        "usb@npm:^2.17.0": "patch:usb@npm%3A2.17.0#~/.yarn/patches/usb-npm-2.17.0-032235560c.patch",
         "typescript": "npm:@typescript/typescript6@6.0.2",
         "@types/jest": "30.0.0",
         "prettier": "^3.9.6",

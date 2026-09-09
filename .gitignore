@@ -166,3 +166,6 @@ packages/suite-data/files/translations/master.json
 coverage-map/
 
 suite-common/icons/files/cryptoicons
+
+# Patched USB binaries produced by native builds.
+packages/suite-desktop/usb-patch/prebuilds/

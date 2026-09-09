@@ -35,7 +35,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-usb:
+    if: github.repository == 'trezor/trezor-suite-release'
+    uses: ./.github/workflows/build-usb-native.yml
+
   suite-desktop:
+    needs: build-usb
     environment: suite-production
     if: github.repository == 'trezor/trezor-suite-release'
     name: Build suite-desktop-${{ matrix.platform }}
@@ -69,6 +74,12 @@ jobs:
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
+      - name: Download patched USB binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: usb-patched-*
+          path: packages/suite-desktop/usb-patch/prebuilds
+          merge-multiple: true
       - name: Build ${{ matrix.platform }} suite-desktop
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -248,6 +259,12 @@ jobs:
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
+      - name: Download patched USB binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: usb-patched-*
+          path: packages/suite-desktop/usb-patch/prebuilds
+          merge-multiple: true
       - name: Prepare versions for autoupdate
         id: prepare-versions
         run: |

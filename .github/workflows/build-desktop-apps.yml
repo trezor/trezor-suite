@@ -24,6 +24,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-usb:
+    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
+    uses: ./.github/workflows/build-usb-native.yml
+
   # An optimization needed to save RAM on the macOS runner, which is most constrained: build the Webpack Renderer bundle only once in Linux.
   # The Renderer bundle is the heaviest part of the build, and also the only part which can be safely shared (not platform dependent).
   build-and-cache-renderer:
@@ -62,7 +66,7 @@ jobs:
   suite-desktop:
     if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
     name: Build suite-desktop-${{ matrix.platform }}
-    needs: build-and-cache-renderer
+    needs: [build-and-cache-renderer, build-usb]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
@@ -99,6 +103,12 @@ jobs:
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
+      - name: Download patched USB binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: usb-patched-*
+          path: packages/suite-desktop/usb-patch/prebuilds
+          merge-multiple: true
       - name: Build ${{ matrix.platform }} suite-desktop
         env:
           CSC_FOR_PULL_REQUEST: ${{ matrix.platform == 'mac' && 'true' || 'false' }}
@@ -130,6 +140,7 @@ jobs:
   suite-desktop-win:
     if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
     name: Build suite-desktop-win
+    needs: build-usb
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -162,6 +173,12 @@ jobs:
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
+      - name: Download patched USB binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: usb-patched-*
+          path: packages/suite-desktop/usb-patch/prebuilds
+          merge-multiple: true
       - name: Build ${{env.platform}} suite-desktop
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

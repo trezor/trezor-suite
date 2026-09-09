@@ -68,6 +68,10 @@ jobs:
           version: v0.19.1
       - run: yarn install --immutable
       - run: yarn message-system-sign-config
+      - name: Install USB build dependency
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libudev-dev
+      - name: Prepare Electron for unit tests
+        run: yarn workspace @trezor/suite-desktop exec electron --version
       - name: Unit Tests - Suite, Connect, Common
         run: yarn test:unit:all --exclude='@suite-native/*' -- --silent
       - name: Unit Tests - Native

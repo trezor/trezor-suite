@@ -20,6 +20,9 @@ module.exports = {
         output: 'build-electron',
     },
     npmRebuild: false,
+    // The hook stages a verified USB build for each target before ASAR creation and signing.
+    beforePack: './usb-patch/beforePack.cjs',
+    concurrency: { jobs: 1 },
     files: [
         // defaults are https://www.electron.build/configuration#files
         'build/**/*', // Electron renderer process
@@ -28,6 +31,7 @@ module.exports = {
         'build/release-notes.md', // this one is dynamically loaded in runtime
         '!build/static/**/{favicon,icons,bin,browsers}', // copied as extraResources instead, some are platform-specific
         '!node_modules/usb/**/{libusb,libusb_config,src}', // exclude files unnecessary for runtime
+        '!node_modules/usb/prebuilds/**/*', // Upstream prebuilds do not contain our source patch.
         '!node_modules/@trezor/**', // exclude @trezor/suite-desktop, which would recurse. Other @trezor packages are bundled by bundler.
     ],
     extraResources: [

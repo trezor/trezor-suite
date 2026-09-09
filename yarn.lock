@@ -47035,7 +47035,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"usb@npm:^2.17.0":
+"usb@npm:2.17.0":
   version: 2.17.0
   resolution: "usb@npm:2.17.0"
   dependencies:
@@ -47044,6 +47044,18 @@ __metadata:
     node-gyp: "npm:latest"
     node-gyp-build: "npm:^4.5.0"
   checksum: 10/464585012a384fc0a199d0401e1f4966256afb807c1dd09b0f30b829f46516a9529cf0724961193cf4f13f2e9622f349544503e7e830340c8234eb67524a7e21
+  languageName: node
+  linkType: hard
+
+"usb@patch:usb@npm%3A2.17.0#~/.yarn/patches/usb-npm-2.17.0-032235560c.patch":
+  version: 2.17.0
+  resolution: "usb@patch:usb@npm%3A2.17.0#~/.yarn/patches/usb-npm-2.17.0-032235560c.patch::version=2.17.0&hash=80bda4"
+  dependencies:
+    "@types/w3c-web-usb": "npm:^1.0.6"
+    node-addon-api: "npm:^8.0.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.5.0"
+  checksum: 10/769c3412bbceccb5cec94d1acee30da62825bb8d0b52828d7e7074b9c45050ba663d2140cf459207c117c70dbe99d4edd626deed2705fbe25a2712fd307df597
   languageName: node
   linkType: hard
 

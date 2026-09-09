@@ -131,6 +131,12 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
+      - name: Install USB build dependency
+        if: matrix.test-task == 'suite'
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libudev-dev
+      - name: Prepare Electron for unit tests
+        if: matrix.test-task == 'suite'
+        run: yarn workspace @trezor/suite-desktop exec electron --version
       - name: Unit Tests
         run: yarn test:unit:${{ matrix.test-task }} --output-style=stream -- --silent
 

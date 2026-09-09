@@ -1,0 +1,12 @@
+diff --git a/src/hotplug/hotplug.h b/src/hotplug/hotplug.h
+index 99d94c61a8fb67543b1e012e5a17a53acf716785..73b12ce3486b08d928cc44ee51ca51d3414fdf7f 100644
+--- a/src/hotplug/hotplug.h
++++ b/src/hotplug/hotplug.h
+@@ -9,6 +9,7 @@
+ 
+ class HotPlugManager {
+ public:
++    virtual ~HotPlugManager() = default;
+     static std::unique_ptr<HotPlugManager> create();
+ 
+     virtual int supportedHotplugEvents() = 0;

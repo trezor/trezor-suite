@@ -1,0 +1,73 @@
+name: "[Build] Patched USB native binaries"
+
+on:
+  workflow_call:
+  pull_request:
+    paths:
+      - ".github/workflows/build-usb-native.yml"
+      - ".nvmrc"
+      - ".yarn/patches/usb-*.patch"
+      - "packages/suite-desktop/usb-patch/**"
+      - "packages/suite-desktop/electron-builder-config.js"
+      - "packages/suite-desktop/package.json"
+      - "yarn.lock"
+
+jobs:
+  build-usb:
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Keep Linux's libc baseline compatible with Electron's distributed binaries.
+          - os: ubuntu-22.04
+            container: ubuntu:20.04
+            target: linux-x64
+          - os: ubuntu-24.04-arm
+            container: ubuntu:20.04
+            target: linux-arm64
+          - os: macos-15-intel
+            target: darwin-x64
+          - os: macos-14
+            target: darwin-arm64
+          - os: windows-2022
+            target: win32-x64
+    steps:
+      - name: Install Linux build and Electron dependencies
+        if: runner.os == 'Linux'
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+            ca-certificates curl git build-essential g++-10 python3 pkg-config libudev-dev \
+            libnss3 libnspr4 libatk-bridge2.0-0 libcups2 libdrm2 libxcomposite1 \
+            libxdamage1 libxrandr2 libgbm1 libxkbcommon0 libasound2 libgtk-3-0
+          # Node 24's compiler flags require a newer GCC than Focal's default GCC 9.
+          echo 'CC=gcc-10' >> "$GITHUB_ENV"
+          echo 'CXX=g++-10' >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+      - name: Enable Yarn
+        run: corepack enable
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: .yarn/cache
+          key: usb-yarn-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('yarn.lock') }}
+      - name: Verify native runner target
+        run: node -e "if (process.platform + '-' + process.arch !== '${{ matrix.target }}') throw new Error('USB runner target mismatch')"
+      - name: Install dependencies
+        run: yarn --immutable --mode=skip-build
+      - name: Prepare Electron
+        run: yarn workspace @trezor/suite-desktop exec node -e "require('electron')"
+      - name: Build patched USB and test shutdown
+        run: yarn workspace @trezor/suite-desktop test:unit --runInBand --coverage=0
+      - name: Upload patched USB
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: usb-patched-${{ matrix.target }}
+          path: packages/suite-desktop/usb-patch/prebuilds
+          if-no-files-found: error
+          retention-days: 7

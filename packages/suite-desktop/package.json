@@ -7,6 +7,8 @@
     "homepage": "https://trezor.io/",
     "main": "dist/app.js",
     "scripts": {
+        "build:usb": "node usb-patch/buildUsb.cjs",
+        "test:unit": "yarn build:usb && yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "dev": "yarn clean && LAUNCH_ELECTRON=true yarn run dev:local",
         "dev:run": "yarn electron .",
