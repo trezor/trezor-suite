@@ -7,7 +7,6 @@ import type {
 import { createTypeGuardByType } from '@trezor/type-utils';
 
 import type { CoinInfo } from '../types/coinInfo';
-import type { MessageFactoryFn } from '../types/utils';
 
 export const BLOCKCHAIN_EVENT = 'BLOCKCHAIN_EVENT';
 export const BLOCKCHAIN = {
@@ -84,12 +83,12 @@ export const isBlockchainEventOfType = createTypeGuardByType<BlockchainEvent>();
 
 export type BlockchainEventMessage = BlockchainEvent & { event: typeof BLOCKCHAIN_EVENT };
 
-export const createBlockchainMessage: MessageFactoryFn<typeof BLOCKCHAIN_EVENT, BlockchainEvent> = (
-    type,
-    payload,
+export const createBlockchainMessage = <T extends BlockchainEvent['type']>(
+    type: T,
+    payload: Extract<BlockchainEvent, { type: T }>['payload'],
 ) =>
     ({
         event: BLOCKCHAIN_EVENT,
         type,
         payload,
-    }) as any;
+    }) as BlockchainEventMessage;

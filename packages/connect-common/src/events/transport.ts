@@ -6,7 +6,6 @@ import { createTypeGuardByType } from '@trezor/type-utils';
 
 import { serializeError } from '../constants/errors';
 import type { ConnectSettingsTransport } from '../types/settings';
-import type { MessageFactoryFn } from '../types/utils';
 
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
 
@@ -46,12 +45,12 @@ export interface TransportGetInfo {
 
 export type TransportEventMessage = TransportEvent & { event: typeof TRANSPORT_EVENT };
 
-export const createTransportMessage: MessageFactoryFn<typeof TRANSPORT_EVENT, TransportEvent> = (
-    type,
-    payload,
+export const createTransportMessage = <T extends TransportEvent['type']>(
+    type: T,
+    payload: Extract<TransportEvent, { type: T }>['payload'],
 ) =>
     ({
         event: TRANSPORT_EVENT,
         type,
         payload: 'error' in payload ? serializeError(payload) : payload,
-    }) as any;
+    }) as TransportEventMessage;
