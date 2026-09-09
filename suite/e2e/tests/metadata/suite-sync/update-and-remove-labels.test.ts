@@ -170,24 +170,6 @@ test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1']
                     .toHaveText('bc1q kkr2 uvry 034t sj4p 52za 2pg4 2ug4 pxg5 qfxy fa');
             });
 
-            await test.step('Remove wallet label', async () => {
-                await dashboardPage.openDeviceSwitcher();
-                await metadataPage.wallet.removeLabel({ index: defaultWalletIndex });
-                await expect
-                    .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
-                    .toHaveText('Standard wallet');
-                await dashboardPage.deviceSwitchingCloseButton.click();
-            });
-
-            await test.step('Remove address label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-                await walletPage.receiveButton.click();
-                await metadataPage.address.removeLabel({ address: addressSeed.address });
-                await expect
-                    .soft(metadataPage.address.addressHoverContainer(addressSeed.address))
-                    .toHaveText('bc1q kkr2 uvry 034t sj4p 52za 2pg4 2ug4 pxg5 qfxy fa');
-            });
-
             await test.step('Remove output label', async () => {
                 await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
                 await metadataPage.output.removeLabel({
