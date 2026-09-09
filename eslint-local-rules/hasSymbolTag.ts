@@ -1,6 +1,6 @@
 import ts from 'typescript';
 
-const hasServiceContractTag = (declaration: ts.TypeAliasDeclaration | ts.InterfaceDeclaration) => {
+const hasJsDocTag = (declaration: ts.Statement, tag: string) => {
     const { text } = declaration.getSourceFile();
     const comments = ts.getLeadingCommentRanges(text, declaration.getFullStart()) ?? [];
 
@@ -9,16 +9,40 @@ const hasServiceContractTag = (declaration: ts.TypeAliasDeclaration | ts.Interfa
     return comments.some(comment => {
         const value = text.slice(comment.pos, comment.end);
 
-        return (
-            value.startsWith('/**') &&
-            /(?:^|\r?\n)\s*\*?\s*@serviceContract(?:\s|$)/u.test(value.slice(3, -2))
-        );
+        if (!value.startsWith('/**')) {
+            return false;
+        }
+
+        const tags = value.slice(3, -2).matchAll(/(?:^|\r?\n)\s*\*?\s*@(\S+)/gu);
+
+        return Array.from(tags).some(match => match[1] === tag);
     });
 };
 
-/** Reads explicit contract markers without creating a TypeScript program or type checker. */
-export const createIsSharedServiceContract = (sourceFile: ts.SourceFile) => {
-    // Cache only for this linted file so editor runs cannot reuse stale contract markers.
+const declaresSymbol = (statement: ts.Statement, name: string) => {
+    if (ts.isVariableStatement(statement)) {
+        // Variable JSDoc belongs to the whole statement, including each named declaration.
+        return statement.declarationList.declarations.some(
+            declaration => ts.isIdentifier(declaration.name) && declaration.name.text === name,
+        );
+    }
+
+    return (
+        (ts.isFunctionDeclaration(statement) ||
+            ts.isClassDeclaration(statement) ||
+            ts.isInterfaceDeclaration(statement) ||
+            ts.isTypeAliasDeclaration(statement) ||
+            ts.isEnumDeclaration(statement)) &&
+        statement.name?.text === name
+    );
+};
+
+/**
+ * Reads a JSDoc tag (without the leading @) on a named top-level declaration.
+ * Follows named imports/re-exports without creating a TypeScript program or type checker.
+ */
+export const createHasSymbolTag = (sourceFile: ts.SourceFile) => {
+    // Cache only for this linted file so editor runs cannot reuse stale tags.
     const sourceFiles = new Map<string, ts.SourceFile>([[sourceFile.fileName, sourceFile]]);
     const compilerOptions: ts.CompilerOptions = {
         moduleResolution: ts.ModuleResolutionKind.Bundler,
@@ -66,46 +90,50 @@ export const createIsSharedServiceContract = (sourceFile: ts.SourceFile) => {
         return importedFile;
     };
 
-    const hasMarker = (
+    const findDeclaration = (
         file: ts.SourceFile,
         name: string,
         exported: boolean,
         visited: Set<string>,
-    ): boolean => {
+    ): ts.Statement | null => {
         const key = `${file.fileName}:${name}:${exported}`;
 
         if (visited.has(key)) {
-            return false;
+            return null;
         }
 
         visited.add(key);
 
         const followImport = (specifier: ts.Expression, importedName: string) => {
             if (!ts.isStringLiteral(specifier)) {
-                return false;
+                return null;
             }
 
             const importedFile = readImportedFile(specifier.text, file.fileName);
 
-            return (
-                importedFile !== undefined && hasMarker(importedFile, importedName, true, visited)
-            );
+            return importedFile === undefined
+                ? null
+                : findDeclaration(importedFile, importedName, true, visited);
         };
 
         for (const statement of file.statements) {
-            if (
-                (ts.isTypeAliasDeclaration(statement) || ts.isInterfaceDeclaration(statement)) &&
-                statement.name.text === name
-            ) {
-                const isExported = statement.modifiers?.some(
+            if (declaresSymbol(statement, name)) {
+                const modifiers = ts.canHaveModifiers(statement)
+                    ? ts.getModifiers(statement)
+                    : undefined;
+                const isExported = modifiers?.some(
                     modifier => modifier.kind === ts.SyntaxKind.ExportKeyword,
                 );
 
-                if (exported && !isExported) {
+                const isDefault = modifiers?.some(
+                    modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword,
+                );
+
+                if (exported && (!isExported || isDefault)) {
                     continue;
                 }
 
-                return hasServiceContractTag(statement);
+                return statement;
             }
 
             if (!exported && ts.isImportDeclaration(statement)) {
@@ -138,14 +166,18 @@ export const createIsSharedServiceContract = (sourceFile: ts.SourceFile) => {
                         exportSpecifier.propertyName?.text ?? exportSpecifier.name.text;
 
                     return statement.moduleSpecifier === undefined
-                        ? hasMarker(file, originalName, false, visited)
+                        ? findDeclaration(file, originalName, false, visited)
                         : followImport(statement.moduleSpecifier, originalName);
                 }
             }
         }
 
-        return false;
+        return null;
     };
 
-    return (name: string) => hasMarker(sourceFile, name, false, new Set());
+    return (name: string, tag: string) => {
+        const declaration = findDeclaration(sourceFile, name, false, new Set());
+
+        return declaration !== null && hasJsDocTag(declaration, tag);
+    };
 };
