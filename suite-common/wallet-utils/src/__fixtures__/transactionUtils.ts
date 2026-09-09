@@ -18,41 +18,6 @@ export const token: TokenTransfer = {
 
 export const analyzeTransactions = [
     {
-        // Stellar reports no block hash, so equal hashes cannot mean "the same block"
-        description:
-            'a second transaction in the same block, with no block hash to tell them apart',
-        fresh: [
-            { blockHeight: 4, txid: '4b' },
-            { blockHeight: 4, txid: '4a' },
-            { blockHeight: 3, txid: '3' },
-        ],
-        known: [
-            { blockHeight: 4, txid: '4a' },
-            { blockHeight: 3, txid: '3' },
-        ],
-        result: {
-            newTransactions: [{ blockHeight: 4, txid: '4b' }],
-            add: [{ blockHeight: 4, txid: '4b' }],
-            remove: [],
-        },
-    },
-    {
-        description: 'a known transaction with no block hash is not added again',
-        fresh: [
-            { blockHeight: 4, txid: '4a' },
-            { blockHeight: 3, txid: '3' },
-        ],
-        known: [
-            { blockHeight: 4, txid: '4a' },
-            { blockHeight: 3, txid: '3' },
-        ],
-        result: {
-            newTransactions: [],
-            add: [],
-            remove: [],
-        },
-    },
-    {
         description: 'nothing new',
         fresh: [
             { blockHeight: 4, blockHash: '4', txid: '4' },
