@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.5.0
+
+- feat: connection token authorization
+
 ### 0.4.3
 
 - feat: add linux pairing Agent and handle pairing PIN request
