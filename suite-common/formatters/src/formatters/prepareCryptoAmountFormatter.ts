@@ -4,9 +4,9 @@ import { redactNumericalSubstring } from '@suite-common/discreet-mode';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import {
     type NetworkSymbol,
+    getNetwork,
     getNetworkOptional,
     isNetworkSymbol,
-    networks,
 } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import {
@@ -112,7 +112,7 @@ const normalizeCryptoAmountForDisplay = ({
 
     const areAmountUnitsSupported =
         symbol && isNetworkSymbol(symbol)
-            ? networks[symbol]?.features.some(feature => feature === 'amount-unit') === true
+            ? getNetwork(symbol)?.features.some(feature => feature === 'amount-unit') === true
             : false;
 
     if (smallestUnitsOverride === false) {

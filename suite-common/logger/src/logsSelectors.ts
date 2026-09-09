@@ -17,6 +17,7 @@ import {
     selectIsDiscreteModeActive,
 } from '@suite-common/discreet-mode';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
     type WalletSettingsRootState,
@@ -141,7 +142,11 @@ export const selectRedactedApplicationInfo = createApplicationInfoLogsMemoizedSe
         selectRememberedStandardWalletsCount,
         selectRememberedHiddenWalletsCount,
         selectEnabledNetworks,
-        selectEnabledCustomBackends,
+        (
+            state,
+            _shouldHideSensitiveData: boolean | undefined,
+            supportedNetworks: readonly NetworkSymbol[],
+        ) => selectEnabledCustomBackends(state, supportedNetworks),
         selectRedactedDevices,
         selectRedactedWallets,
         (_state, shouldHideSensitiveData?: boolean) => shouldHideSensitiveData,

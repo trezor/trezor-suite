@@ -241,8 +241,11 @@ export const selectGapLimit = (state: BlockchainRootState, symbol: NetworkSymbol
     state.wallet.blockchain[symbol]?.backends.gapLimit;
 
 export const selectCustomBackends = createMemoizedSelector(
-    [selectBlockchainState],
-    blockchainState => getCustomBackends(blockchainState),
+    [
+        selectBlockchainState,
+        (_state, supportedNetworks: readonly NetworkSymbol[]) => supportedNetworks,
+    ],
+    (blockchainState, supportedNetworks) => getCustomBackends(blockchainState, supportedNetworks),
 );
 
 export const selectEnabledCustomBackends = createMemoizedSelector(

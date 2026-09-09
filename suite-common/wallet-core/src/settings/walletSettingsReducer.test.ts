@@ -28,6 +28,26 @@ const walletSettingsReducerDeps: WalletSettingsReducerDeps = {
 const reducer = prepareWalletSettingsReducer(walletSettingsReducerDeps);
 
 describe('settings reducer', () => {
+    it('uses the network order from each action payload', () => {
+        const state = reducer(initialState, {
+            type: walletSettingsActions.changeNetworks.type,
+            payload: {
+                enabledNetworks: [btcSymbol, ethSymbol],
+                supportedNetworks: [ethSymbol, btcSymbol],
+            },
+        });
+        expect(state.enabledNetworks).toEqual([ethSymbol, btcSymbol]);
+
+        const nextState = reducer(state, {
+            type: walletSettingsActions.changeNetworks.type,
+            payload: {
+                enabledNetworks: [ethSymbol, btcSymbol],
+                supportedNetworks: [btcSymbol, ethSymbol],
+            },
+        });
+        expect(nextState.enabledNetworks).toEqual([btcSymbol, ethSymbol]);
+    });
+
     it('test initial state', () => {
         expect(
             reducer(undefined, {
@@ -63,7 +83,7 @@ describe('settings reducer', () => {
         expect(
             reducer(undefined, {
                 type: walletSettingsActions.changeNetworks.type,
-                payload: ['eth'],
+                payload: { enabledNetworks: [ethSymbol], supportedNetworks: [ethSymbol] },
             }),
         ).toEqual({
             ...initialState,

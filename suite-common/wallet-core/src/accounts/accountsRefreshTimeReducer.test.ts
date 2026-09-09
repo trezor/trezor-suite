@@ -41,10 +41,10 @@ describe('accountsRefreshTimeReducer', () => {
     });
 
     it('records the timestamp on createAccount and updateAccount', () => {
-        // createAccount payload is the account; the reducer only reads payload.key
+        // The reducer only reads the account key from the creation payload.
         const createdAccountAction: ReturnType<typeof accountsActions.createAccount> = {
             type: accountsActions.createAccount.type,
-            payload: account,
+            payload: { account, supportedNetworks: [account.symbol] },
         };
 
         const created = accountsRefreshTimeReducer({}, createdAccountAction);

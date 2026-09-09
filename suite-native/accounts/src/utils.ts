@@ -1,13 +1,7 @@
 import { A } from '@mobily/ts-belt';
 
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
-import {
-    type AccountType,
-    type NetworkSymbol,
-    getNetwork,
-    networkSymbolCollection,
-    networks,
-} from '@suite-common/wallet-config';
+import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { orderedAccountTypes, sendDisabledNetworkTypes } from '@suite-native/config';
@@ -39,7 +33,7 @@ export const isFilterValueMatchingAccount = (
 
     if (isMatchingNetworkName) return true;
 
-    const isBitcoinNetworkType = networks[account.symbol].networkType === 'bitcoin';
+    const isBitcoinNetworkType = getNetwork(account.symbol).networkType === 'bitcoin';
     const lowercasedSectionHeader = accountTypeToSectionHeader[account.accountType]?.toLowerCase();
 
     const lowerCasedAccountType = getFormattedAccountType(
@@ -90,10 +84,13 @@ export const filterSendAvailableAccounts = <T extends Account>(accounts: readonl
             Number(account.availableBalance) > 0,
     );
 
-export const sortAccountsByNetworksAndAccountTypes = <T extends Account>(accounts: readonly T[]) =>
+export const sortAccountsByNetworksAndAccountTypes = <T extends Account>(
+    accounts: readonly T[],
+    supportedNetworks: readonly NetworkSymbol[],
+) =>
     A.sort(accounts, (a, b) => {
-        const aOrder = networkSymbolCollection.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
-        const bOrder = networkSymbolCollection.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
+        const aOrder = supportedNetworks.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
+        const bOrder = supportedNetworks.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
 
         if (aOrder === bOrder) {
             const aAccountTypeOrder =

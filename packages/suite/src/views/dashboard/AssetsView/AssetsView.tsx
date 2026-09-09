@@ -11,6 +11,7 @@ import {
     type NetworkSymbol,
     getNetwork,
     getNetworkFeatures,
+    getSupportedNetworks,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
@@ -91,13 +92,17 @@ const useAssetsFiatBalances = (
     }, []);
 
 export const AssetsView = () => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const { dashboardAssetsGridMode } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isDiscoveryRunning } = useDiscovery();
-    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
+    const discoveryStatus = useSelector(state =>
+        selectDiscoveryOverallStatus(state, allNetworkSymbols),
+    );
     const accounts = useSelector(selectAllAccountsToList);
     const { supportedMainnets } = useNetworkSupport();
     const { isBelowTablet } = useLayoutSize();

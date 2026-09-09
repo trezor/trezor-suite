@@ -143,7 +143,10 @@ describe('walletMiddleware', () => {
                 const payload = Array.isArray(action.payload)
                     ? // @ts-expect-error
                       action.payload.map(a => mockWalletAccount(a))
-                    : mockWalletAccount(action.payload);
+                    : {
+                          ...action.payload,
+                          account: mockWalletAccount(action.payload.account),
+                      };
                 store.dispatch({ ...action, payload });
             });
 

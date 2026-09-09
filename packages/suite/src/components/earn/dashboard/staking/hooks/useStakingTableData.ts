@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { type StakingNetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
 import {
     selectDeviceSupportedNetworks,
     selectVisibleDeviceAccounts,
@@ -25,6 +25,8 @@ type UseStakingTableDataResult = {
 };
 
 export const useStakingTableData = (): UseStakingTableDataResult => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const ethCurrentRate = useCryptoCurrentRate('eth');
     const solCurrentRate = useCryptoCurrentRate('sol');
     const adaCurrentRate = useCryptoCurrentRate('ada');
@@ -52,7 +54,9 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
             account.symbol === 'trx',
     );
 
-    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const deviceSupportedNetworkSymbols = useSelector(state =>
+        selectDeviceSupportedNetworks(state, allNetworkSymbols),
+    );
 
     const ethNotActivated =
         deviceSupportedNetworkSymbols.includes('eth') &&

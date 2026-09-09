@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkType, networks } from '@suite-common/wallet-config';
+import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
     type TransactionsRootState,
@@ -99,7 +99,7 @@ export const TransactionDetailParametersSheet = ({
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
 
-    const { networkType } = networks[transaction.symbol];
+    const { networkType } = getNetwork(transaction.symbol);
     const displayedParameters = networkTypeToDisplayedParametersMap[networkType];
     const parametersCardIsDisplayed = displayedParameters.length !== 0;
 

@@ -77,7 +77,8 @@ const resolveIconSource = (network: Network, vault: YieldVault): VaultIconSource
         return { kind: 'bundled', networkSymbol: nativeSymbol };
     }
 
-    const coingeckoId = getNetwork(nativeSymbol).tradeCryptoId;
+    const nativeNetwork: Network = getNetwork(nativeSymbol);
+    const coingeckoId = nativeNetwork.tradeCryptoId;
 
     return coingeckoId ? { kind: 'published', coingeckoId } : undefined;
 };

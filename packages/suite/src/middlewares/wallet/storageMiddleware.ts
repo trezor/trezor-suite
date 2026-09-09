@@ -143,9 +143,10 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             accountsActions.changeAccountVisibility.match,
             accountsActions.updateAccount.match,
         ],
-        getDevice: (action, state) => findAccountDevice(action.payload, selectDevices(state)),
+        getDevice: (action, state) =>
+            findAccountDevice(action.payload.account, selectDevices(state)),
         save: ({ action }, { dispatch, getState }) => {
-            const account = selectAccountByKey(getState(), action.payload.key);
+            const account = selectAccountByKey(getState(), action.payload.account.key);
             if (!account) return;
 
             if (!isAccountSuccessful(account)) {

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useDispatch } from '@suite-common/redux-utils';
 import { type TradingType, getReceiveAccountPreselection } from '@suite-common/trading';
+import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -37,11 +38,16 @@ export const useReceiveAccountPreselectionEffect = ({
     selectSendAccount,
 }: UseReceiveAccountPreselectionEffectProps) => {
     const dispatch = useDispatch();
+    const supportedNetworks = getSupportedNetworks();
 
     const receiveAssetNetworkSymbol = getSymbolFromTradeableAsset(receiveAsset);
 
     const accounts = useSelector((state: CombinedSelectorsRootState) =>
-        selectVisibleDeviceAccountsByNetworkSymbolSorted(state, receiveAssetNetworkSymbol ?? null),
+        selectVisibleDeviceAccountsByNetworkSymbolSorted(
+            state,
+            receiveAssetNetworkSymbol ?? null,
+            supportedNetworks,
+        ),
     );
     const selectedReceiveAccount = useSelector(selectReceiveAccount);
     const selectedSendAccount = useSelector((state: TradingRootState & AccountsRootState) =>

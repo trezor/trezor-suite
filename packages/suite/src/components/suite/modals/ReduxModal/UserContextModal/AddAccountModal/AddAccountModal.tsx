@@ -14,7 +14,6 @@ import {
     type NetworkAccount,
     type NetworkSymbol,
     getNetwork,
-    networks,
 } from '@suite-common/wallet-config';
 import {
     accountsActions,
@@ -122,7 +121,7 @@ export const AddAccountModal = ({
     // Applied when only BTC is enabled on bitcoin-only firmware.
     const bitcoinOnlyDefaultNetworkSelection =
         isBitcoinOnlyFirmware && supportedMainnets.length === 1 && allTestnetNetworksDisabled
-            ? networks.btc
+            ? getNetwork('btc')
             : undefined;
 
     const isCoinjoinVisible = (isCoinjoinPublic || isDebug) && !isCoinjoinDisabled;
@@ -369,7 +368,7 @@ export const AddAccountModal = ({
 
             const createAccountAction = accountsActions.createAccount(newAccount);
             dispatch(createAccountAction);
-            finishEnableAccount(createAccountAction.payload);
+            finishEnableAccount(createAccountAction.payload.account);
         } finally {
             finishAddingAccount();
         }
@@ -416,7 +415,7 @@ export const AddAccountModal = ({
 
             const createAccountAction = accountsActions.createAccount(newAccount);
             dispatch(createAccountAction);
-            const addedAccount = createAccountAction.payload;
+            const addedAccount = createAccountAction.payload.account;
             resetAccountSearch(addedAccount.symbol);
             reportNewAccountAnalytics(addedAccount);
             dispatch(reportWalletBalanceThunk());
@@ -448,7 +447,7 @@ export const AddAccountModal = ({
             return;
         }
 
-        const networkToSelect = networks[networkSymbol];
+        const networkToSelect = getNetwork(networkSymbol);
 
         if (!networkToSelect) {
             return;

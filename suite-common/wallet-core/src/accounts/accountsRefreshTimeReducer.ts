@@ -33,10 +33,10 @@ const accountsRefreshTimeSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(accountsActions.createAccount, (state, action) => {
-                state[action.payload.key] = Date.now();
+                state[action.payload.account.key] = Date.now();
             })
             .addCase(accountsActions.updateAccount, (state, action) => {
-                state[action.payload.key] = Date.now();
+                state[action.payload.account.key] = Date.now();
             })
             .addCase(accountsActions.removeAccount, (state, action) => {
                 action.payload.forEach(account => {

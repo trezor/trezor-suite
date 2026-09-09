@@ -47,7 +47,7 @@ const walletMiddleware =
 
         if (accountsActions.createAccount.match(action)) {
             // gather transactions from account.create action
-            const account = action.payload;
+            const { account } = action.payload;
             api.dispatch(
                 transactionsActions.addTransaction({
                     transactions: account.history.transactions || [],
@@ -59,7 +59,8 @@ const walletMiddleware =
         }
 
         if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
-            api.dispatch(subscribeBlockchainThunk({ symbol: action.payload.symbol }));
+            const { account } = action.payload;
+            api.dispatch(subscribeBlockchainThunk({ symbol: account.symbol }));
         }
 
         if (accountsActions.removeAccount.match(action)) {

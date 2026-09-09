@@ -1,4 +1,4 @@
-import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork, getNetworks } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
@@ -24,7 +24,7 @@ export const getDecimalsForBaseCurrency = ({
         return 0;
     }
 
-    return code in networks ? networks[code as NetworkSymbol].decimals : 2;
+    return code in getNetworks() ? getNetwork(code as NetworkSymbol).decimals : 2;
 };
 
 type AmountToFiatCurrencyWithSatsConversionParams = {

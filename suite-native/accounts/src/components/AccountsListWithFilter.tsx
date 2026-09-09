@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
 import { type AddCoinFlowType, type CloseActionType } from '@suite-native/navigation';
 
 import {
@@ -44,13 +44,15 @@ export const AccountsListWithFilter = ({
     isScrollDividerEnabled,
     children,
 }: AccountsListWithFilterProps) => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const [searchValue, setSearchValue] = useState('');
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [filteredNetworks, setFilteredNetworks] = useState<NetworkSymbol[]>(networksFilter);
     const filterBottomSheetRef = useRef<BottomSheetModalMethods>(null);
 
     const isNetworkFilterVisible = useSelector((state: NativeAccountsRootState) =>
-        selectIsAccountsListNetworkFilterVisible(state, isSendFlow),
+        selectIsAccountsListNetworkFilterVisible(state, allNetworkSymbols, isSendFlow),
     );
 
     useEffect(() => {

@@ -8,7 +8,7 @@ import { gotoThunk } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useDispatch } from '@suite-common/redux-utils';
 import { useDappScan } from '@suite-common/tx-simulation';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
+import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
@@ -47,10 +47,10 @@ const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
 `;
 
 // networks the dapp requests arrive in its own order, the modal follows the coin settings one
-const getNetworkOrder = (symbol?: string) => {
-    const index = networkSymbolCollection.findIndex(networkSymbol => networkSymbol === symbol);
+const getNetworkOrder = (supportedNetworks: readonly string[], symbol?: string) => {
+    const index = supportedNetworks.findIndex(networkSymbol => networkSymbol === symbol);
 
-    return index === -1 ? networkSymbolCollection.length : index;
+    return index === -1 ? supportedNetworks.length : index;
 };
 
 interface WalletConnectProposalModalProps {
@@ -72,13 +72,17 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
             ),
         [accounts, pendingProposal?.networks],
     );
-    const requestedNetworks = useMemo(
-        () =>
-            (pendingProposal?.networks ?? [])
-                .filter(network => network.status !== 'unsupported')
-                .toSorted((a, b) => getNetworkOrder(a.symbol) - getNetworkOrder(b.symbol)),
-        [pendingProposal?.networks],
-    );
+    const requestedNetworks = useMemo(() => {
+        const supportedNetworks = getSupportedNetworks();
+
+        return (pendingProposal?.networks ?? [])
+            .filter(network => network.status !== 'unsupported')
+            .toSorted(
+                (a, b) =>
+                    getNetworkOrder(supportedNetworks, a.symbol) -
+                    getNetworkOrder(supportedNetworks, b.symbol),
+            );
+    }, [pendingProposal?.networks]);
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
         selectableAccounts[0] || null,
     );

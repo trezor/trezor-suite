@@ -1,4 +1,4 @@
-import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
 
 export type EnabledCoins = Partial<Record<NetworkSymbol, boolean>>;
 
@@ -21,4 +21,4 @@ export const getEnabledCoinFieldName = (symbol: NetworkSymbol): EnabledCoinField
     `enabledCoins.${symbol}`;
 
 export const getNetworkSymbolsFromEnabledCoins = (enabledCoins: EnabledCoins): NetworkSymbol[] =>
-    networkSymbolCollection.filter(symbol => enabledCoins[symbol]);
+    getSupportedNetworks().filter(symbol => enabledCoins[symbol]);

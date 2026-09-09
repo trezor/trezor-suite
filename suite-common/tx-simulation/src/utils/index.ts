@@ -1,9 +1,4 @@
-import {
-    type Network,
-    getNetwork,
-    getNetworkByEvmChainId,
-    networks,
-} from '@suite-common/wallet-config';
+import { type Network, getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
 export * from './getSimulationAssetDiffs';
@@ -32,9 +27,9 @@ function resolveChainIdOfEvmNetwork({
         case 'ethereumSignTransaction':
             return payload.transaction.chainId;
         case 'ethereumSignTypedData':
-            return Number(payload.data.domain.chainId ?? networks.eth.chainId);
+            return Number(payload.data.domain.chainId ?? getNetwork('eth').chainId);
         default:
-            return networks.eth.chainId;
+            return getNetwork('eth').chainId;
     }
 }
 

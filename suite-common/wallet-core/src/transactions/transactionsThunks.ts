@@ -637,7 +637,7 @@ export const fetchTransactionsPageThunk = createThunk<
 
         if (result?.success) {
             const updateAction = accountsActions.updateAccount(currentAccount, result.payload);
-            const updatedAccount = updateAction.payload;
+            const updatedAccount = updateAction.payload.account;
             const updatedTransactions = result.payload.history.transactions || [];
 
             dispatch(

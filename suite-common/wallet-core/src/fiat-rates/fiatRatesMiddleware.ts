@@ -113,7 +113,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps<
     if (accountsActions.createAccount.match(action)) {
         const baseCurrencyCode = selectBaseCurrency(getState());
 
-        const { tokens = [], symbol } = action.payload;
+        const { tokens = [], symbol } = action.payload.account;
         const tokenTickers = tokens.map(token => ({
             symbol,
             tokenAddress: token.contract as TokenAddress,

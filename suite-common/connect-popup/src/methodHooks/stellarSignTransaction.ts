@@ -43,8 +43,8 @@ const preCallHook = async <M extends CallMethodKeys>({
         );
         if (!selectedAccount) {
             const createdAccount = await dispatch(createPlaceholderAccount(network, path));
-            temporaryAccounts.push(createdAccount.payload);
-            selectedAccount = createdAccount.payload;
+            temporaryAccounts.push(createdAccount.payload.account);
+            selectedAccount = createdAccount.payload.account;
         }
         if (!selectedAccount) {
             throw new Error('Selected account is missing');

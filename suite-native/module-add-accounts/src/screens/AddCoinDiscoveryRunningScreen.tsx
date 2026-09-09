@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, getSupportedNetworks } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     changeCoinVisibilityThunk,
@@ -19,7 +19,10 @@ import {
     useAddCoinAccount,
 } from '@suite-native/add-coin-account';
 import { Spinner, type SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
-import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import {
+    type DiscoveryRootState,
+    selectDeviceEnabledDiscoveryNetworkSymbols,
+} from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
     type AddCoinAccountStackParamList,
@@ -32,6 +35,8 @@ import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 export const AddCoinDiscoveryRunningScreen = ({
     route,
 }: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.AddCoinDiscoveryRunning>) => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const { networkSymbol, flowType, earnFlowParams } = route.params;
     const dispatch = useDispatch();
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
@@ -41,7 +46,9 @@ export const AddCoinDiscoveryRunningScreen = ({
     const discoveryInfo = useSelector(selectDiscoveryForSelectedDevice);
     const hasPassphraseFailure = isPassphraseDiscoveryFailure(discoveryInfo);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
-    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
+    const enabledNetworkSymbols = useSelector((state: DiscoveryRootState) =>
+        selectDeviceEnabledDiscoveryNetworkSymbols(state, allNetworkSymbols),
+    );
     const { navigateToSuccessorScreen, clearNetworkWithTypeToBeAdded } = useAddCoinAccount();
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 

@@ -1,5 +1,6 @@
 import { type SuiteSyncAccount, createSuiteSyncAccountId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
@@ -10,6 +11,8 @@ import {
     selectFilteredDeviceAccountListRows,
     selectNetworkFilterOptions,
 } from './selectors';
+
+const supportedNetworks = mockGetSupportedNetworks();
 
 const SELECTED_WALLET_DESCRIPTOR = asWalletDescriptor('selectedWallet');
 const SELECTED_DEVICE_STATIC_SESSION_ID: StaticSessionId = 'selectedWallet@deviceId:0';
@@ -171,7 +174,9 @@ const state = createState(stateAccounts);
 
 describe('selectFilteredDeviceAccountListRows', () => {
     it('returns visible account keys in network and account-type order with group boundaries', () => {
-        expect(selectFilteredDeviceAccountListRows(state, '', false, [])).toEqual([
+        expect(
+            selectFilteredDeviceAccountListRows(state, supportedNetworks, '', false, []),
+        ).toEqual([
             { accountKey: btcDefaultAccount.key, isFirst: true, isLast: true },
             { accountKey: btcTaprootAccount.key, isFirst: true, isLast: true },
             { accountKey: ethAccount.key, isFirst: true, isLast: true },
@@ -186,7 +191,13 @@ describe('selectFilteredDeviceAccountListRows', () => {
         ]);
 
         expect(
-            selectFilteredDeviceAccountListRows(stateWithSecondDefaultAccount, '', false, []),
+            selectFilteredDeviceAccountListRows(
+                stateWithSecondDefaultAccount,
+                supportedNetworks,
+                '',
+                false,
+                [],
+            ),
         ).toEqual([
             { accountKey: btcDefaultAccount.key, isFirst: true, isLast: false },
             { accountKey: btcSecondDefaultAccount.key, isFirst: false, isLast: true },
@@ -197,30 +208,36 @@ describe('selectFilteredDeviceAccountListRows', () => {
     });
 
     it('filters using suite sync labels and network names', () => {
-        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, [])).toEqual([
-            { accountKey: btcDefaultAccount.key, isFirst: true, isLast: true },
-        ]);
-        expect(selectFilteredDeviceAccountListRows(state, 'ETHEREUM', false, [])).toEqual([
-            { accountKey: ethAccount.key, isFirst: true, isLast: true },
-        ]);
+        expect(
+            selectFilteredDeviceAccountListRows(state, supportedNetworks, 'daily', false, []),
+        ).toEqual([{ accountKey: btcDefaultAccount.key, isFirst: true, isLast: true }]);
+        expect(
+            selectFilteredDeviceAccountListRows(state, supportedNetworks, 'ETHEREUM', false, []),
+        ).toEqual([{ accountKey: ethAccount.key, isFirst: true, isLast: true }]);
     });
 
     it('keeps only send-available accounts when the send filter is enabled', () => {
-        expect(selectFilteredDeviceAccountListRows(state, '', true, [])).toEqual([
-            { accountKey: btcTaprootAccount.key, isFirst: true, isLast: true },
-            { accountKey: ethAccount.key, isFirst: true, isLast: true },
-        ]);
+        expect(selectFilteredDeviceAccountListRows(state, supportedNetworks, '', true, [])).toEqual(
+            [
+                { accountKey: btcTaprootAccount.key, isFirst: true, isLast: true },
+                { accountKey: ethAccount.key, isFirst: true, isLast: true },
+            ],
+        );
     });
 
     it('combines network symbol filtering with text search', () => {
-        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, ['btc'])).toEqual([
-            { accountKey: btcDefaultAccount.key, isFirst: true, isLast: true },
-        ]);
-        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, ['eth'])).toEqual([]);
+        expect(
+            selectFilteredDeviceAccountListRows(state, supportedNetworks, 'daily', false, ['btc']),
+        ).toEqual([{ accountKey: btcDefaultAccount.key, isFirst: true, isLast: true }]);
+        expect(
+            selectFilteredDeviceAccountListRows(state, supportedNetworks, 'daily', false, ['eth']),
+        ).toEqual([]);
     });
 
     it('excludes hidden accounts and accounts of other devices', () => {
-        expect(selectFilteredDeviceAccountListRows(state, '', false, ['ltc'])).toEqual([]);
+        expect(
+            selectFilteredDeviceAccountListRows(state, supportedNetworks, '', false, ['ltc']),
+        ).toEqual([]);
     });
 
     it('keeps the complete data array stable when account content changes without structural changes', () => {
@@ -230,21 +247,29 @@ describe('selectFilteredDeviceAccountListRows', () => {
             ),
         );
 
-        expect(selectFilteredDeviceAccountListRows(updatedState, '', false, [])).toBe(
-            selectFilteredDeviceAccountListRows(state, '', false, []),
-        );
+        expect(
+            selectFilteredDeviceAccountListRows(updatedState, supportedNetworks, '', false, []),
+        ).toBe(selectFilteredDeviceAccountListRows(state, supportedNetworks, '', false, []));
     });
 
     it('returns a stable empty array', () => {
-        expect(selectFilteredDeviceAccountListRows(state, 'missing', false, [])).toBe(
-            selectFilteredDeviceAccountListRows(state, 'still missing', false, []),
+        expect(
+            selectFilteredDeviceAccountListRows(state, supportedNetworks, 'missing', false, []),
+        ).toBe(
+            selectFilteredDeviceAccountListRows(
+                state,
+                supportedNetworks,
+                'still missing',
+                false,
+                [],
+            ),
         );
     });
 });
 
 describe('selectNetworkFilterOptions', () => {
     it('returns one option per network with the account count', () => {
-        expect(selectNetworkFilterOptions(state, false)).toEqual([
+        expect(selectNetworkFilterOptions(state, supportedNetworks, false)).toEqual([
             { symbol: 'btc', accountCount: 2 },
             { symbol: 'eth', accountCount: 1 },
             { symbol: 'ada', accountCount: 1 },
@@ -252,7 +277,7 @@ describe('selectNetworkFilterOptions', () => {
     });
 
     it('counts only send-available accounts when the send filter is enabled', () => {
-        expect(selectNetworkFilterOptions(state, true)).toEqual([
+        expect(selectNetworkFilterOptions(state, supportedNetworks, true)).toEqual([
             { symbol: 'btc', accountCount: 1 },
             { symbol: 'eth', accountCount: 1 },
         ]);
@@ -261,8 +286,8 @@ describe('selectNetworkFilterOptions', () => {
     it('returns a referentially stable result when unrelated state changes', () => {
         const recreatedState = createState(stateAccounts);
 
-        expect(selectNetworkFilterOptions(recreatedState, false)).toBe(
-            selectNetworkFilterOptions(state, false),
+        expect(selectNetworkFilterOptions(recreatedState, supportedNetworks, false)).toBe(
+            selectNetworkFilterOptions(state, supportedNetworks, false),
         );
     });
 });

@@ -2,7 +2,12 @@ import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
-import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkSymbol,
+    getNetwork,
+    getSupportedNetworks,
+} from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
 import { type DiscoveryRootState, selectDiscoveryNetworkGroups } from '@suite-native/discovery';
 import { useFormContext } from '@suite-native/forms';
@@ -55,9 +60,11 @@ export const DiscoveryCoinsFilter = ({
     searchQuery,
     onDisablingLastCoin,
 }: DiscoveryCoinsFilterProps) => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
         useSelector((state: DiscoveryRootState) =>
-            selectDiscoveryNetworkGroups(state, searchQuery),
+            selectDiscoveryNetworkGroups(state, allNetworkSymbols, searchQuery),
         );
     const isAnyNetworkVisible =
         supportedMainnets.length > 0 ||

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountByKey,
@@ -49,7 +49,7 @@ const AccountDetailSettingsRow = ({ title, children }: AccountDetailSettingsRowP
 
 const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
     <HStack spacing="sp8" flexDirection="row" alignItems="center" justifyContent="flex-end">
-        <Text variant="body-sm">{networks[symbol].name}</Text>
+        <Text variant="body-sm">{getNetwork(symbol).name}</Text>
         <TokenIcon symbol={symbol} size="extraSmall" />
     </HStack>
 );

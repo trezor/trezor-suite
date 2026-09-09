@@ -14,7 +14,8 @@ import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
     type NetworkSymbol,
-    networks,
+    getNetwork,
+    getSupportedNetworks,
 } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -98,20 +99,24 @@ export const accountTypeTranslationKeys: Record<
 const LIMIT = 10; // Maximum number of manually added accounts per non-EVM network type.
 
 export const useAddCoinAccount = (networksSearchQuery?: string) => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { name: routeName } = useRoute();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const supportedNetworkSymbols = useSelector((state: DiscoveryRootState) =>
-        selectDiscoveryNetworkSymbols(state, networksSearchQuery),
+        selectDiscoveryNetworkSymbols(state, allNetworkSymbols, networksSearchQuery),
     );
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccounts(state),
     );
     const device = useSelector(selectSelectedDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
-    const enabledDiscoveryNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
+    const enabledDiscoveryNetworkSymbols = useSelector((state: DiscoveryRootState) =>
+        selectDeviceEnabledDiscoveryNetworkSymbols(state, allNetworkSymbols),
+    );
 
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
 
@@ -363,7 +368,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         );
 
         const nextIndex = lastVisibleAccount ? lastVisibleAccount.index + 1 : 0;
-        const network = networks[symbol];
+        const network = getNetwork(symbol);
         const networkAccount = network.accountTypes[accountType];
         const allAccountTypes = getAvailableAccountTypes(symbol);
 

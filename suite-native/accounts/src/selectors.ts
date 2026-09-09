@@ -129,12 +129,21 @@ export const selectAccountLabel = (
 const selectFilteredDeviceAccounts = createMemoizedSelector(
     [
         selectVisibleAccountsWithSuiteSyncLabel,
-        (_state: NativeAccountsRootState, filterValue: string) => filterValue,
-        (_state: NativeAccountsRootState, _filterValue: string, isSendFlow: boolean = false) =>
-            isSendFlow,
+        (_state, supportedNetworks: readonly NetworkSymbol[]) => supportedNetworks,
+        (
+            _state: NativeAccountsRootState,
+            _supportedNetworks: readonly NetworkSymbol[],
+            filterValue: string,
+        ) => filterValue,
+        (
+            _state: NativeAccountsRootState,
+            _supportedNetworks: readonly NetworkSymbol[],
+            _filterValue: string,
+            isSendFlow: boolean = false,
+        ) => isSendFlow,
     ],
-    (accounts, filterValue, isSendFlow) => {
-        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+    (accounts, supportedNetworks, filterValue, isSendFlow) => {
+        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts, supportedNetworks);
         const sendFilteredAccounts = isSendFlow
             ? filterSendAvailableAccounts(sortedAccounts)
             : sortedAccounts;
@@ -171,6 +180,7 @@ export const selectFilteredDeviceAccountListRows = createMemoizedSelector(
         selectFilteredDeviceAccounts,
         (
             _state: NativeAccountsRootState,
+            _supportedNetworks: readonly NetworkSymbol[],
             _filterValue: string,
             _isSendFlow: boolean = false,
             networkSymbols: NetworkSymbol[],
@@ -208,10 +218,15 @@ const createNetworkFilterOption = weakMapMemoize(
 export const selectNetworkFilterOptions = createMemoizedSelector(
     [
         selectVisibleAccountsWithSuiteSyncLabel,
-        (_state: NativeAccountsRootState, isSendFlow: boolean = false) => isSendFlow,
+        (_state, supportedNetworks: readonly NetworkSymbol[]) => supportedNetworks,
+        (
+            _state: NativeAccountsRootState,
+            _supportedNetworks: readonly NetworkSymbol[],
+            isSendFlow: boolean = false,
+        ) => isSendFlow,
     ],
-    (accounts, isSendFlow) => {
-        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+    (accounts, supportedNetworks, isSendFlow) => {
+        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts, supportedNetworks);
         const filteredAccounts = isSendFlow
             ? filterSendAvailableAccounts(sortedAccounts)
             : sortedAccounts;

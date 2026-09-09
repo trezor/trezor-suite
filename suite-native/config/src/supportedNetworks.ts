@@ -5,7 +5,6 @@ import {
     type Network,
     type NetworkSymbol,
     type NetworkType,
-    networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 
@@ -20,10 +19,13 @@ export const orderedAccountTypes: AccountType[] = [
 
 export const sendDisabledNetworkTypes: NetworkType[] = ['cardano'];
 
-export const sortNetworks = (networksToSort: Network[]) =>
+export const sortNetworks = (
+    networksToSort: Network[],
+    supportedNetworks: readonly NetworkSymbol[],
+) =>
     A.sort(networksToSort, (a, b) => {
-        const aOrder = networkSymbolCollection.indexOf(a.symbol);
-        const bOrder = networkSymbolCollection.indexOf(b.symbol);
+        const aOrder = supportedNetworks.indexOf(a.symbol);
+        const bOrder = supportedNetworks.indexOf(b.symbol);
 
         return aOrder - bOrder;
     });

@@ -2,7 +2,8 @@ import { type StateFromReducersMapObject } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { accountsInitialState, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
@@ -23,14 +24,7 @@ jest.mock('@suite-native/config', () => ({
     isDetoxTestBuild: jest.fn(() => false),
 }));
 
-jest.mock('@suite-common/wallet-config', () => ({
-    ...jest.requireActual('@suite-common/wallet-config'),
-    getNetwork: jest.fn((symbol: string) => ({
-        symbol,
-        isDebugOnlyNetwork: symbol === 'xlm',
-        isHidden: false,
-    })),
-}));
+const supportedNetworkSymbols = mockGetSupportedNetworks();
 
 const reducer = {
     appSettings: createStaticReducer(appSettingsInitialState),
@@ -75,11 +69,32 @@ const createTestStore = (
     });
 
 describe('selectDiscoverySupportedNetworks', () => {
+    it('uses the supplied network symbols as a memoization input', () => {
+        const store = createTestStore();
+        const bitcoinSymbols: NetworkSymbol[] = ['btc'];
+        const ethereumSymbols: NetworkSymbol[] = ['eth'];
+
+        const bitcoinNetworks = selectDiscoverySupportedNetworks(store.getState(), bitcoinSymbols);
+        const ethereumNetworks = selectDiscoverySupportedNetworks(
+            store.getState(),
+            ethereumSymbols,
+        );
+
+        expect(bitcoinNetworks.map(network => network.symbol)).toEqual(bitcoinSymbols);
+        expect(ethereumNetworks.map(network => network.symbol)).toEqual(ethereumSymbols);
+    });
+
     it('should be stable (return same reference for same inputs)', () => {
         const store = createTestStore();
 
-        const firstCall = selectDiscoverySupportedNetworks(store.getState());
-        const secondCall = selectDiscoverySupportedNetworks(store.getState());
+        const firstCall = selectDiscoverySupportedNetworks(
+            store.getState(),
+            supportedNetworkSymbols,
+        );
+        const secondCall = selectDiscoverySupportedNetworks(
+            store.getState(),
+            supportedNetworkSymbols,
+        );
 
         expect(firstCall).toBe(secondCall);
     });
@@ -89,7 +104,7 @@ describe('selectDiscoverySupportedNetworks', () => {
             appSettings: { areTestnetsEnabled: false },
         });
 
-        const result = selectDiscoverySupportedNetworks(store.getState());
+        const result = selectDiscoverySupportedNetworks(store.getState(), supportedNetworkSymbols);
         const networkSymbols = result.map(n => n.symbol);
 
         // Test networks should be filtered out
@@ -109,7 +124,7 @@ describe('selectDiscoverySupportedNetworks', () => {
             appSettings: { areTestnetsEnabled: true },
         });
 
-        const result = selectDiscoverySupportedNetworks(store.getState());
+        const result = selectDiscoverySupportedNetworks(store.getState(), supportedNetworkSymbols);
         const networkSymbols = result.map(n => n.symbol);
 
         // Test networks should be included
@@ -126,14 +141,14 @@ describe('selectDiscoverySupportedNetworks', () => {
 
     it('should filter out debug-only networks when debug networks feature flag is disabled', () => {
         const store = createTestStore({
+            appSettings: { areTestnetsEnabled: true },
             featureFlags: { areDebugOnlyNetworksEnabled: false },
         });
 
-        const result = selectDiscoverySupportedNetworks(store.getState());
+        const result = selectDiscoverySupportedNetworks(store.getState(), supportedNetworkSymbols);
         const networkSymbols = result.map(n => n.symbol);
 
-        // XLM is marked as debug-only in our mock, so it should be filtered out
-        expect(networkSymbols).not.toContain('xlm');
+        expect(networkSymbols).not.toContain('regtest');
         // Other networks should still be included
         expect(networkSymbols).toContain('btc');
         expect(networkSymbols).toContain('eth');
@@ -141,14 +156,14 @@ describe('selectDiscoverySupportedNetworks', () => {
 
     it('should include debug-only networks when debug networks feature flag is enabled', () => {
         const store = createTestStore({
+            appSettings: { areTestnetsEnabled: true },
             featureFlags: { areDebugOnlyNetworksEnabled: true },
         });
 
-        const result = selectDiscoverySupportedNetworks(store.getState());
+        const result = selectDiscoverySupportedNetworks(store.getState(), supportedNetworkSymbols);
         const networkSymbols = result.map(n => n.symbol);
 
-        // XLM should be included when debug networks are enabled
-        expect(networkSymbols).toContain('xlm');
+        expect(networkSymbols).toContain('regtest');
         expect(networkSymbols).toContain('btc');
         expect(networkSymbols).toContain('eth');
     });
@@ -159,9 +174,9 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         const store = createTestStore();
 
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-            selectDiscoveryNetworkGroups(store.getState());
+            selectDiscoveryNetworkGroups(store.getState(), supportedNetworkSymbols);
 
-        expect(supportedMainnets).toContain(networks.btc);
+        expect(supportedMainnets).toContain(getNetwork('btc'));
         expect(supportedTestnets).toEqual([]);
         expect(unsupportedMainnets).toEqual([]);
         expect(unsupportedTestnets).toEqual([]);
@@ -173,11 +188,11 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         });
 
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-            selectDiscoveryNetworkGroups(store.getState());
+            selectDiscoveryNetworkGroups(store.getState(), supportedNetworkSymbols);
 
-        expect(supportedMainnets).toContain(networks.btc);
-        expect(supportedTestnets).toContain(networks.test);
-        expect(supportedTestnets).not.toContain(networks.regtest);
+        expect(supportedMainnets).toContain(getNetwork('btc'));
+        expect(supportedTestnets).toContain(getNetwork('test'));
+        expect(supportedTestnets).not.toContain(getNetwork('regtest'));
         expect(unsupportedMainnets).toEqual([]);
         expect(unsupportedTestnets).toEqual([]);
     });
@@ -189,11 +204,11 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         });
 
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-            selectDiscoveryNetworkGroups(store.getState());
+            selectDiscoveryNetworkGroups(store.getState(), supportedNetworkSymbols);
 
-        expect(supportedMainnets).toContain(networks.btc);
-        expect(supportedTestnets).toContain(networks.test);
-        expect(supportedTestnets).toContain(networks.regtest);
+        expect(supportedMainnets).toContain(getNetwork('btc'));
+        expect(supportedTestnets).toContain(getNetwork('test'));
+        expect(supportedTestnets).toContain(getNetwork('regtest'));
         expect(unsupportedMainnets).toEqual([]);
         expect(unsupportedTestnets).toEqual([]);
     });
@@ -210,12 +225,12 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         });
 
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-            selectDiscoveryNetworkGroups(store.getState());
+            selectDiscoveryNetworkGroups(store.getState(), supportedNetworkSymbols);
 
-        expect(supportedMainnets).toContain(networks.btc);
-        expect(supportedTestnets).toContain(networks.test);
-        expect(unsupportedMainnets).toContain(networks.eth);
-        expect(unsupportedTestnets).toContain(networks.tsep);
+        expect(supportedMainnets).toContain(getNetwork('btc'));
+        expect(supportedTestnets).toContain(getNetwork('test'));
+        expect(unsupportedMainnets).toContain(getNetwork('eth'));
+        expect(unsupportedTestnets).toContain(getNetwork('tsep'));
     });
 
     it('returns both supported and unsupported networks filtered by searchQuery', () => {
@@ -230,11 +245,11 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         });
 
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-            selectDiscoveryNetworkGroups(store.getState(), 'bitcoin');
+            selectDiscoveryNetworkGroups(store.getState(), supportedNetworkSymbols, 'bitcoin');
 
-        expect(supportedMainnets).toContain(networks.btc);
-        expect(supportedTestnets).toContain(networks.test);
-        expect(supportedTestnets).toContain(networks.regtest);
+        expect(supportedMainnets).toContain(getNetwork('btc'));
+        expect(supportedTestnets).toContain(getNetwork('test'));
+        expect(supportedTestnets).toContain(getNetwork('regtest'));
         expect(unsupportedMainnets).toEqual([]);
         expect(unsupportedTestnets).toEqual([]);
     });

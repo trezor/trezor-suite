@@ -1,4 +1,4 @@
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import {
     resolveBlockaidEvmChain,
@@ -8,10 +8,10 @@ import {
 
 describe('resolveBlockaidEvmChain', () => {
     it.each([
-        [networks.eth.chainId, 'ethereum'],
-        [networks.hype.chainId, 'hyperevm'],
-        [networks.rhc.chainId, 'robinhood'],
-        [networks.tsep.chainId, 'ethereum-sepolia'],
+        [getNetwork('eth').chainId, 'ethereum'],
+        [getNetwork('hype').chainId, 'hyperevm'],
+        [getNetwork('rhc').chainId, 'robinhood'],
+        [getNetwork('tsep').chainId, 'ethereum-sepolia'],
     ])('maps chainId %i to %s', (chainId, expected) => {
         expect(resolveBlockaidEvmChain(chainId)).toBe(expected);
     });
@@ -21,8 +21,8 @@ describe('resolveBlockaidEvmChain', () => {
     });
 
     it.each([
-        ['Ethereum Classic', networks.etc.chainId],
-        ['Ethereum Hoodi', networks.thod.chainId],
+        ['Ethereum Classic', getNetwork('etc').chainId],
+        ['Ethereum Hoodi', getNetwork('thod').chainId],
     ])('has no chain for %s', (_name, chainId) => {
         expect(resolveBlockaidEvmChain(chainId)).toBeNull();
     });

@@ -68,7 +68,7 @@ const getAccount = (draft: CoinjoinState, accountKey: string) =>
 
 const createAccount = (
     draft: CoinjoinState,
-    account: ExtractActionPayload<typeof accountsActions.createAccount.type>,
+    account: ExtractActionPayload<typeof accountsActions.createAccount.type>['account'],
 ) => {
     draft.isPreloading = false;
     const coinjoinAccount = {
@@ -464,8 +464,8 @@ export const coinjoinReducer = (
                 break;
 
             case accountsActions.createAccount.type:
-                if (action.payload.accountType === 'coinjoin') {
-                    createAccount(draft, action.payload);
+                if (action.payload.account.accountType === 'coinjoin') {
+                    createAccount(draft, action.payload.account);
                 }
                 break;
             case COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE:

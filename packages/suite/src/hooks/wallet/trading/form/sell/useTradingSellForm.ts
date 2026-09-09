@@ -18,7 +18,7 @@ import {
     selectTradingSendAccount,
     tradingSellActions,
 } from '@suite-common/trading';
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
@@ -57,7 +57,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
 
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
-    const network = account ? networks[account.symbol] : undefined;
+    const network = account ? getNetwork(account.symbol) : undefined;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
 
     const { defaultValues } = useTradingSellFormDefaultValues(

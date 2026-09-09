@@ -10,7 +10,7 @@ import {
     usePreferredCurrencyUsdThreshold,
     useTradingAssets,
 } from '@suite-common/trading';
-import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectTradeableAssetBalances } from 'src/selectors/wallet/tradeableAssetBalancesSelectors';
@@ -75,7 +75,7 @@ export function useBuildTradingAssetOptions({
     const networks = useMemo(() => {
         const networksInList = new Set(includedAssets.map(asset => asset.networkSymbol));
 
-        return networkSymbolCollection.filter(symbol => networksInList.has(symbol));
+        return getSupportedNetworks().filter(symbol => networksInList.has(symbol));
     }, [includedAssets]);
 
     const listItems = useMemo(() => {

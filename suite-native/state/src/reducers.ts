@@ -18,7 +18,7 @@ import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-man
 import { prepareThpReducer } from '@suite-common/thp';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsRefreshTimeReducer,
     feesReducer,
@@ -108,7 +108,9 @@ const receiveReducer = prepareReceiveReducer(extraDependencies);
 const bluetoothReducer = prepareBluetoothReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
-type PrepareRootReducersDeps = MMKVStorageDep;
+type PrepareRootReducersDeps = MMKVStorageDep & {
+    getSupportedNetworks: () => readonly NetworkSymbol[];
+};
 
 export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
     const appSettingsPersistedReducer = preparePersistReducer({
@@ -125,7 +127,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const blockchainPersistedReducer = preparePersistReducer({
         reducer: blockchainReducer,
-        persistedKeys: networkSymbolCollection,
+        // TODO(#32215): BLOCKER FOR DYNAMIC MODULE LOADING: this whitelist is captured at store
+        // initialization. Rework persistence to hydrate newly activated networks before saving
+        // and preserve data for inactive networks before modules can change at runtime.
+        persistedKeys: deps.getSupportedNetworks(),
         key: 'blockchain',
         version: 1,
         transforms: [blockchainPersistTransform],
@@ -134,7 +139,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const explorerPersistedReducer = preparePersistReducer({
         reducer: explorerReducer,
-        persistedKeys: networkSymbolCollection,
+        // TODO(#32215): BLOCKER FOR DYNAMIC MODULE LOADING: this whitelist is captured at store
+        // initialization. Rework persistence to hydrate newly activated networks before saving
+        // and preserve data for inactive networks before modules can change at runtime.
+        persistedKeys: deps.getSupportedNetworks(),
         key: 'explorer',
         version: 1,
         transforms: [explorerPersistTransform],
@@ -314,7 +322,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             4: (oldState: any /* FIXME */) => {
                 if (!oldState?.accounts) return oldState;
 
-                return { ...oldState, accounts: sortAccountsByCoin(oldState.accounts) };
+                return {
+                    ...oldState,
+                    accounts: sortAccountsByCoin(oldState.accounts, deps.getSupportedNetworks()),
+                };
             },
         },
         transforms: [walletStopPersistTransform],
@@ -591,7 +602,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                     ...oldState,
                     wallet: {
                         ...oldState.wallet,
-                        accounts: sortAccountsByCoin(oldState.wallet.accounts),
+                        accounts: sortAccountsByCoin(
+                            oldState.wallet.accounts,
+                            deps.getSupportedNetworks(),
+                        ),
                     },
                 };
             },

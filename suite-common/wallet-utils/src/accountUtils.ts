@@ -8,8 +8,7 @@ import {
     type NetworkType,
     type TrezorConnectBackendType,
     getNetwork,
-    networkSymbolCollection,
-    networks,
+    getSupportedNetworks,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -276,14 +275,18 @@ export const getAccountTypeUrl = (path: string) => {
  * - primary: by network `symbol`
  * - secondary: by `accountType`
  */
-export const compareAccountsByCoin = (a: Account, b: Account) => {
+export const compareAccountsByCoin = (
+    a: Account,
+    b: Account,
+    supportedNetworks: readonly NetworkSymbol[] = getSupportedNetworks(),
+) => {
     // primary sorting: by order of network keys
-    const aSymbolIndex = networkSymbolCollection.indexOf(a.symbol);
-    const bSymbolIndex = networkSymbolCollection.indexOf(b.symbol);
+    const aSymbolIndex = supportedNetworks.indexOf(a.symbol);
+    const bSymbolIndex = supportedNetworks.indexOf(b.symbol);
     if (aSymbolIndex !== bSymbolIndex) return aSymbolIndex - bSymbolIndex;
 
     // when it is sorted by network, sort by order of accountType keys within the same network
-    const network = networks[a.symbol];
+    const network = getNetwork(a.symbol);
     // `network` is a union over all networks (some declare `accountTypes: {}`), which would collapse
     // `keyof` to `never`; widening to the field's declared keyset yields `AccountType[]` soundly.
     const orderedAccountTypes = typedObjectKeys(
@@ -301,8 +304,11 @@ export const compareAccountsByCoin = (a: Account, b: Account) => {
 /**
  * Sort accounts with `compareAccountsByCoin`. Returns a new array, the input is not mutated.
  */
-export const sortByCoin = <T extends Account>(accounts: T[]) =>
-    accounts.toSorted(compareAccountsByCoin);
+export const sortByCoin = <T extends Account>(accounts: T[]) => {
+    const supportedNetworks = getSupportedNetworks();
+
+    return accounts.toSorted((a, b) => compareAccountsByCoin(a, b, supportedNetworks));
+};
 
 export const findAccountsByNetwork = <T extends Account>(symbol: NetworkSymbol, accounts: T[]) =>
     accounts.filter(a => a.symbol === symbol);
@@ -651,7 +657,7 @@ export const getTotalFiatBalance = ({
     return instanceBalance;
 };
 
-export const isTestnet = (symbol: NetworkSymbol) => networks[symbol].testnet;
+export const isTestnet = (symbol: NetworkSymbol) => getNetwork(symbol).testnet;
 
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     if (
@@ -871,7 +877,7 @@ export const accountSearchFn = (
     const searchString = rawSearchString?.trim().toLowerCase();
     if (!searchString) return true; // no search string
 
-    const network = networks[account.symbol];
+    const network = getNetwork(account.symbol);
 
     // helper func for searching in account's addresses
     const matchAddressFn = (u: NonNullable<Account['addresses']>['used'][number]) =>

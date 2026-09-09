@@ -20,7 +20,7 @@ export const preparePersistReducer = <TReducer extends Reducer<any, any>>({
     storage,
 }: {
     reducer: TReducer;
-    persistedKeys: Array<keyof ReducerState<TReducer>>;
+    persistedKeys: ReadonlyArray<keyof ReducerState<TReducer>>;
     key: string;
     version: number;
     migrations?: MigrationsManifest;

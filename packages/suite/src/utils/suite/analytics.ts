@@ -32,6 +32,7 @@ import {
     getCpuArch,
     getOsVersion,
 } from '@suite-common/suite-utils';
+import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { type BlockchainRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
@@ -96,7 +97,7 @@ export const getSuiteReadyPayload = async (
     return {
         language: selectLanguage(state),
         enabledNetworks: state.wallet.settings.enabledNetworks,
-        customBackends: getCustomBackends(state.wallet.blockchain)
+        customBackends: getCustomBackends(state.wallet.blockchain, getSupportedNetworks())
             .map(({ symbol }) => symbol)
             .filter(symbol => state.wallet.settings.enabledNetworks.includes(symbol)),
         localCurrency: state.wallet.settings.localCurrency,
