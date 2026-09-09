@@ -2896,6 +2896,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@emurgo/cardano-serialization-lib-asmjs@npm:13.2.0":
+  version: 13.2.0
+  resolution: "@emurgo/cardano-serialization-lib-asmjs@npm:13.2.0"
+  checksum: 10/28a20ce492e57d5fd820b9603806bd2cddc4ed7f67ff1bc3f4c6ede71055341201ae6913f6473f66b91356ff6ca8efa5cb3a32da8ef9d69f60d22a0dcb608242
+  languageName: node
+  linkType: hard
+
 "@emurgo/cardano-serialization-lib-browser@npm:^13.2.0":
   version: 13.2.0
   resolution: "@emurgo/cardano-serialization-lib-browser@npm:13.2.0"
@@ -12003,6 +12010,7 @@ __metadata:
     "@babel/core": "npm:7.29.7"
     "@config-plugins/detox": "npm:^11.0.0"
     "@currents/cmd": "npm:1.9.7"
+    "@emurgo/cardano-serialization-lib-asmjs": "npm:13.2.0"
     "@evolu/common": "npm:8.0.0-next.5"
     "@evolu/react-native": "npm:15.0.0-next.2"
     "@exodus/patch-broken-hermes-typed-arrays": "npm:^1.0.0-alpha.1"
@@ -17282,6 +17290,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-cardano@workspace:networks/cardano/network-cardano"
   dependencies:
+    "@emurgo/cardano-serialization-lib-asmjs": "npm:13.2.0"
     "@fivebinaries/coin-selection": "npm:3.0.0"
     "@trezor/utils": "workspace:*"
     cbor: "npm:^10.0.12"

@@ -59,8 +59,18 @@ const isModuleFrom = (packageNames, moduleName) =>
  *
  * @type {import('metro-config').MetroConfig}
  */
+// The asm.js build of Cardano Serialization Lib is a single ~37 MB source file. Transforming it
+// exceeds the default V8 heap of a Metro worker (release bundling peaked at ~8.5 GB), so workers
+// run as child processes (instead of worker threads, which cannot get their own heap limit) with
+// a larger heap. The value is a cap, not an allocation; only the worker handling that file uses it.
+const METRO_WORKER_NODE_OPTIONS = '--max-old-space-size=12288';
+process.env.NODE_OPTIONS = [process.env.NODE_OPTIONS, METRO_WORKER_NODE_OPTIONS]
+    .filter(Boolean)
+    .join(' ');
+
 const config = {
     transformer: {
+        unstable_workerThreads: false,
         getTransformOptions: async () => ({
             transform: {
                 experimentalImportSupport: false,
@@ -110,11 +120,15 @@ const config = {
                 type: 'sourceFile',
             });
 
-            if (moduleName.startsWith('@emurgo/cardano')) {
-                // Cardano libs doesn't have main field in package.json which will cause error in metro
-                // Also they use WASM which doesn't work in RN so we polyfill it with empty file to build errors
-                // In future we will need JS implementation of Cardano libs or C++ implementation
-                return getSourceFile('./cardanoPolyfills.js');
+            if (moduleName.startsWith('@emurgo/cardano-serialization-lib')) {
+                // Cardano coin selection (`@fivebinaries/coin-selection`) imports the WASM build of
+                // Cardano Serialization Lib, which Hermes cannot execute. Route every variant
+                // (nodejs/browser) to the pure-JS asm.js build of the same CSL version instead.
+                // The asm.js package has no `main` field, so the entry file is resolved explicitly.
+                // It needs a global `TextDecoder`, which the Expo runtime polyfills.
+                return getSourceFile(
+                    '@emurgo/cardano-serialization-lib-asmjs/cardano_serialization_lib.js',
+                );
             }
 
             if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {
