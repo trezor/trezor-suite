@@ -23,6 +23,7 @@ import {
     selectConvertedNetworkFeeInfo,
     selectIsAmountInSats,
     selectIsNetworkReserveEnabled,
+    selectNetworkFeeStatus,
     selectSendFormDraftByKey,
     sendFormActions,
     updateFeeInfoThunk,
@@ -122,7 +123,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
-    const [feeLevelsMaxAmount, setFeeLevelsMaxAmount] = useState<FeeLevelsMaxAmount>();
+    const [feeAdjustedMaxSendAmountByLevel, setFeeAdjustedMaxSendAmountByLevel] =
+        useState<FeeLevelsMaxAmount>();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -140,6 +142,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     );
     const networkFeeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
+    );
+    const networkFeeStatus = useSelector((state: FeesRootState) =>
+        selectNetworkFeeStatus(state, account?.symbol),
     );
     const sendFormDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
@@ -181,12 +186,13 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             networkFeeInfo,
             accountDescriptor: account?.descriptor,
             symbol: account?.symbol,
-            availableBalance: tokenInfo?.balance ?? account?.availableBalance,
+            availableBalanceBeforeFees: tokenInfo?.balance ?? account?.availableBalance,
             isTokenFlow: !!tokenContract,
             isValueInSats: isAmountInSats,
-            feeLevelsMaxAmount,
+            feeAdjustedMaxSendAmountByLevel,
+            networkFeeStatus: networkFeeStatus ?? undefined,
             decimals: tokenInfo?.decimals ?? network?.decimals,
-            accountNativeAvailableBalance: account?.availableBalance,
+            nativeCurrencyBalanceAvailableForFees: account?.availableBalance,
             networkReserve,
             rippleReserve,
             namedAddress,
@@ -285,7 +291,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         trigger,
     ]);
 
-    const calculateNormalFeeMaxAmount = useCallback(async () => {
+    const calculateMaxSendAmountByFeeLevel = useCallback(async () => {
         const response = await dispatch(
             calculateFeeLevelsMaxAmountThunk({
                 formState: constructFormDraft({ formValues: getValues(), selectedUtxos }),
@@ -294,7 +300,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         );
 
         if (isFulfilled(response)) {
-            setFeeLevelsMaxAmount(response.payload);
+            setFeeAdjustedMaxSendAmountByLevel(response.payload);
         }
     }, [getValues, accountKey, dispatch, selectedUtxos]);
 
@@ -311,7 +317,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                 });
 
                 // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
-                if (!tokenContract) await calculateNormalFeeMaxAmount();
+                if (!tokenContract) await calculateMaxSendAmountByFeeLevel();
 
                 // We need to wait for the context to hydrate before validating the form with the draft values.
                 setTimeout(() => {
@@ -332,10 +338,10 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     useEffect(() => {
         // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
-        if (!tokenContract) calculateNormalFeeMaxAmount();
+        if (!tokenContract) calculateMaxSendAmountByFeeLevel();
     }, [
         watchedAddress,
-        calculateNormalFeeMaxAmount,
+        calculateMaxSendAmountByFeeLevel,
         networkFeeInfo,
         tokenContract,
         isNetworkReserveEnabled,
@@ -530,7 +536,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         form,
         network,
         amount,
-        feeLevelsMaxAmount,
+        feeLevelsMaxAmount: feeAdjustedMaxSendAmountByLevel,
         isResolvingNamedAddress,
     };
 };
