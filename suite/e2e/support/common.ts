@@ -127,6 +127,19 @@ export const toCompactAmount = (value: string) => {
     );
 };
 
+/**
+ * As {@link toCompactAmount}, for a value that arrives with its symbol attached: `"1.2009 SOL"`.
+ */
+export const toCompactAmountWithSymbol = (amountWithSymbol: string) => {
+    const [value, ...symbol] = amountWithSymbol.split(' ');
+
+    if (value === undefined) {
+        throw new Error(`Cannot compact an empty amount: "${amountWithSymbol}"`);
+    }
+
+    return [toCompactAmount(value), ...symbol].join(' ');
+};
+
 export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
     const maxDecimals = getAccountDecimals(params.symbol);
     const exactFraction = BigNumber(params.balance).times(params.percentage).div(100);

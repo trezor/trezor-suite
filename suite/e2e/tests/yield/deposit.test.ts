@@ -270,10 +270,10 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await expect(yieldFlowSection.flowCompleteTransferInputAmount).toHaveText(
                     '10 USDC',
                 );
-                // Output shares render at full token precision via formatCoinBalance (8 fractional
-                // digits + ellipsis), not the rounded simulation preview shown earlier in the flow.
+                // Output shares render at full token precision, not the rounded simulation
+                // preview shown earlier in the flow.
                 await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
-                    '9.94423845… trSHUSDCp',
+                    '9.944238455556494028 trSHUSDCp',
                 );
 
                 await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);

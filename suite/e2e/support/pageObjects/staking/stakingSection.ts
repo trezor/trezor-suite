@@ -4,7 +4,7 @@ import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { RewardsList } from './rewardList';
-import { step } from '../../common';
+import { step, toCompactAmountWithSymbol } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
 export class StakingSection {
@@ -192,7 +192,9 @@ export class StakingSection {
         await expect(toast.messageLocator).toHaveTranslation(toast.translationKey, {
             values: { account },
         });
-        await expect(toast.amountLocator).toHaveText(amount);
+        // The toast shows compact amounts, so the exact values the callers pass are reduced
+        // here rather than in each of them.
+        await expect(toast.amountLocator).toHaveText(toCompactAmountWithSymbol(amount));
     }
 
     @step()
