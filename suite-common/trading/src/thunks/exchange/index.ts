@@ -1,3 +1,4 @@
+import { composeExchangeTradeFeeLevelsThunk } from './composeExchangeTradeFeeLevelsThunk';
 import { confirmApprovalThunk } from './confirmApprovalThunk';
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { handleExchangeRequestThunk } from './handleExchangeRequestThunk';
@@ -16,6 +17,7 @@ type ExchangeThunks = {
     handleRequestThunk: typeof handleExchangeRequestThunk;
     selectQuoteThunk: typeof selectExchangeQuoteThunk;
     confirmTradeThunk: typeof confirmExchangeTradeThunk;
+    composeTradeFeeLevelsThunk: typeof composeExchangeTradeFeeLevelsThunk;
     confirmApprovalThunk: typeof confirmApprovalThunk;
     prefetchDexQuoteApprovalThunk: typeof prefetchDexQuoteApprovalThunk;
     signDataAndConfirmThunk: typeof signDataAndConfirmThunk;
@@ -29,6 +31,7 @@ export const exchangeThunks: ExchangeThunks = {
     handleRequestThunk: handleExchangeRequestThunk,
     selectQuoteThunk: selectExchangeQuoteThunk,
     confirmTradeThunk: confirmExchangeTradeThunk,
+    composeTradeFeeLevelsThunk: composeExchangeTradeFeeLevelsThunk,
     confirmApprovalThunk,
     prefetchDexQuoteApprovalThunk,
     signDataAndConfirmThunk,

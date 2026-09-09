@@ -22,6 +22,7 @@ import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { TRADING_DEX_SOURCE_ORIGIN } from 'src/constants/wallet/trading/txSimulation';
 import { useSelector } from 'src/hooks/suite';
+import { useTradingExchangeConfirmFees } from 'src/hooks/wallet/trading/useTradingExchangeConfirmFees';
 import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
 import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
@@ -48,6 +49,9 @@ export const TradingOfferExchange = () => {
         sendTransaction,
         signDataAndConfirm,
     } = useTradingExchangeTradeActions();
+
+    useTradingExchangeConfirmFees(sendAccount);
+
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const trade = useSelector(selectTradingExchangeActiveTrade);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
