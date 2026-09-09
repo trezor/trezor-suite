@@ -65,8 +65,9 @@ const getDeviceNeedsAttentionMessage = (
 
 const getDeviceStatusWarningIntent = (deviceStatus: ReturnType<typeof getStatus>): BannerIntent => {
     switch (deviceStatus) {
-        case 'bootloader':
         case 'initialize':
+            return 'brand';
+        case 'bootloader':
         case 'was-used-in-other-window':
         case 'used-in-other-window':
         case 'unacquired':
