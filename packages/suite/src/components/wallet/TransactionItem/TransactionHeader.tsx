@@ -1,4 +1,4 @@
-import { Translation, useTranslation } from '@suite/intl';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
@@ -76,6 +76,46 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
         case 'unknown':
         default:
             return 'TR_UNKNOWN_TRANSACTION';
+    }
+};
+
+// Operations whose generic wording would be actively misleading: nothing moved, so a
+// `self` transaction would read as "Sent 0 XLM to self", and a claimable balance offered by a
+// stranger would read as a payment received. A transaction that did move value keeps the
+// amount-based wording, which says more than the operation's name.
+const getStellarOperationMessageId = (
+    transaction: WalletAccountTransaction,
+): TranslationKey | undefined => {
+    const { stellarSpecific } = transaction;
+
+    switch (stellarSpecific?.operationType) {
+        case 'accountMerge':
+            return 'TR_STELLAR_TX_ACCOUNT_MERGE';
+        case 'allowTrust':
+        case 'trustLineFlags':
+            return 'TR_STELLAR_TX_TRUSTLINE_FLAGS';
+        case 'bumpSequence':
+            return 'TR_STELLAR_TX_SEQUENCE_BUMPED';
+        case 'claimClaimableBalance':
+            return 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED';
+        case 'createClaimableBalance':
+            return stellarSpecific.claimableBalanceOffer?.isClaimant
+                ? 'TR_STELLAR_TX_CLAIMABLE_BALANCE_OFFERED'
+                : 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CREATED';
+        case 'footprint':
+            return 'TR_STELLAR_TX_FOOTPRINT';
+        case 'liquidityPool':
+            return 'TR_STELLAR_TX_LIQUIDITY_POOL';
+        case 'manageData':
+            return 'TR_STELLAR_TX_DATA_ENTRY';
+        case 'offer':
+            return 'TR_STELLAR_TX_OFFER';
+        case 'setOptions':
+            return 'TR_STELLAR_TX_SET_OPTIONS';
+        case 'sponsorship':
+            return 'TR_STELLAR_TX_SPONSORSHIP';
+        default:
+            return undefined;
     }
 };
 
@@ -217,6 +257,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
                 )}
             </>
         );
+    }
+
+    const stellarOperationId = getStellarOperationMessageId(transaction);
+    if (stellarOperationId) {
+        return <Translation id={stellarOperationId} />;
     }
 
     // Stellar trustline addition/removal

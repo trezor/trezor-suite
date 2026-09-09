@@ -81,6 +81,45 @@ export const getTransactionName = (
     }
 };
 
+// Operations whose generic wording would be actively misleading: nothing moved, so a `self`
+// transaction reads as "Sent 0 XLM to self", and a claimable balance offered by a stranger reads
+// as a payment received. A transaction that did move value keeps the amount-based wording.
+const getStellarOperationMessageId = (
+    transaction: WalletAccountTransaction,
+): TxKeyPath | undefined => {
+    const { stellarSpecific } = transaction;
+
+    switch (stellarSpecific?.operationType) {
+        case 'accountMerge':
+            return 'transactions.name.stellarAccountMerge';
+        case 'allowTrust':
+        case 'trustLineFlags':
+            return 'transactions.name.stellarTrustlineFlags';
+        case 'bumpSequence':
+            return 'transactions.name.stellarSequenceBumped';
+        case 'claimClaimableBalance':
+            return 'transactions.name.stellarClaimableBalanceClaimed';
+        case 'createClaimableBalance':
+            return stellarSpecific.claimableBalanceOffer?.isClaimant
+                ? 'transactions.name.stellarClaimableBalanceOffered'
+                : 'transactions.name.stellarClaimableBalanceCreated';
+        case 'footprint':
+            return 'transactions.name.stellarFootprint';
+        case 'liquidityPool':
+            return 'transactions.name.stellarLiquidityPool';
+        case 'manageData':
+            return 'transactions.name.stellarDataEntry';
+        case 'offer':
+            return 'transactions.name.stellarOffer';
+        case 'setOptions':
+            return 'transactions.name.stellarSetOptions';
+        case 'sponsorship':
+            return 'transactions.name.stellarSponsorship';
+        default:
+            return undefined;
+    }
+};
+
 const getTronTransactionMessage = (transaction: WalletAccountTransaction) => {
     const contractType = transaction.tronSpecific?.contractType as TronTxContractType;
 
@@ -131,6 +170,15 @@ export const TransactionName = ({ transaction, isPending, ...textProps }: Transa
     const wrapKind = getNativeWrapTxKind(transaction);
     if (wrapKind) {
         return <WrapTransactionName transaction={transaction} kind={wrapKind} {...textProps} />;
+    }
+
+    const stellarOperationId = getStellarOperationMessageId(transaction);
+    if (stellarOperationId) {
+        return (
+            <Text {...textProps}>
+                <Translation id={stellarOperationId} />
+            </Text>
+        );
     }
 
     // Stellar trustline addition/removal (short version without asset code)

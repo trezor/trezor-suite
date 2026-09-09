@@ -38,6 +38,23 @@ export const computeSorobanAssetContractId = (classicAssetContract: string) => {
 };
 
 /**
+ * Splits the canonical `CODE:ISSUER` form Horizon writes an asset in when it is one field rather
+ * than three — a claimable balance's asset, a liquidity pool's reserves. `undefined` is the native
+ * asset, which Horizon spells `native`.
+ */
+export const parseCanonicalAsset = (asset: string): StellarAssetRef | undefined => {
+    const [assetCode, assetIssuer, ...rest] = asset.split(':');
+
+    if (rest.length > 0 || !assetCode || !assetIssuer) {
+        return undefined;
+    }
+
+    return isValidAssetCode(assetCode) && isValidAddress(assetIssuer)
+        ? { assetCode, assetIssuer }
+        : undefined;
+};
+
+/**
  * Splits a classic asset contract in `CODE-ISSUER` form. Returns `undefined` for anything that
  * is not one — a Soroban contract id, or a key from a source Suite does not control.
  */

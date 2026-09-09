@@ -43,6 +43,8 @@ const PHISHING_VALIDATORS: NetworkPhishingValidators = new Map([
     [
         'stellar',
         new PhishingTransactionValidator()
+            // Named first, so the record says which vector it is rather than "could not be decoded"
+            .addDetector(detectors.unsolicitedAssetOffer)
             .addDetector(detectors.unknownTx)
             .addDetector(detectors.fakeToken)
             .addDetector(detectors.dustValue),

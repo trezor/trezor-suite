@@ -1,7 +1,17 @@
-import type { TokenDetailByMint, Transaction } from '@trezor/blockchain-link-types';
+import type {
+    StellarOperationType,
+    TokenDetailByMint,
+    Transaction,
+} from '@trezor/blockchain-link-types';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
-import type { IdentifiedTransaction, TokenTransferInfo } from '@trezor/network-stellar/types';
+import type {
+    IdentifiedTransaction,
+    StellarAssetAmount,
+    StellarBalanceDelta,
+    TokenTransferInfo,
+} from '@trezor/network-stellar/types';
+import { BigNumber } from '@trezor/utils';
 
 /**
  * One host-function operation can move several assets at once, so only the transfers the
@@ -48,6 +58,94 @@ const transformTokenTransfers = (
                 amount,
             };
         }),
+    };
+};
+
+/** A movement of the account's own balance: signed stroops, native when `asset` is absent. */
+type OwnMovement = Pick<StellarBalanceDelta, 'asset' | 'amount'>;
+
+const negated = ({ asset, amount }: StellarAssetAmount): OwnMovement => ({
+    asset,
+    amount: new BigNumber(amount).negated().toString(),
+});
+
+type LabelledParams = {
+    baseTx: Omit<Transaction, 'type'>;
+    operationType?: StellarOperationType;
+};
+
+const labelled = ({ baseTx, operationType }: LabelledParams): Omit<Transaction, 'type'> =>
+    operationType
+        ? { ...baseTx, stellarSpecific: { ...baseTx.stellarSpecific!, operationType } }
+        : baseTx;
+
+type TransformMovementsParams = {
+    baseTx: Omit<Transaction, 'type'>;
+    movements: readonly OwnMovement[];
+    descriptor: string;
+    /** The address on the other side, where the operation or the effects name one. */
+    counterparty?: string;
+    tokenDetailByMint: TokenDetailByMint;
+};
+
+/**
+ * Builds a record from the account's own movements. Value leaving and arriving in the same
+ * transaction is a conversion — a swap, or a transfer to itself — which the transaction type
+ * shared with every other network spells `self`.
+ */
+const transformMovements = ({
+    baseTx,
+    movements,
+    descriptor,
+    counterparty,
+    tokenDetailByMint,
+}: TransformMovementsParams): Transaction => {
+    if (movements.length === 0) {
+        return { ...baseTx, type: 'unknown' };
+    }
+
+    const isSender = movements.some(({ amount }) => new BigNumber(amount).isNegative());
+    const isRecipient = movements.some(({ amount }) => new BigNumber(amount).isPositive());
+
+    let type: 'self' | 'sent' | 'recv' = 'recv';
+    if (isSender) {
+        type = isRecipient ? 'self' : 'sent';
+    }
+
+    const native = movements.find(({ asset }) => !asset);
+    const nativeAmount = native ? new BigNumber(native.amount).abs().toString() : '0';
+
+    return {
+        ...baseTx,
+        type,
+        amount: nativeAmount,
+        tokens: movements.flatMap(({ asset, amount }) => {
+            if (!asset) return [];
+
+            const isOutgoing = new BigNumber(amount).isNegative();
+            const contract = `${asset.assetCode}-${asset.assetIssuer}`;
+            // Effects name no counterparty of their own, so the issuer stands in — the same
+            // convention the balance-change path uses for a mint or a burn.
+            const other = counterparty ?? asset.assetIssuer;
+
+            return [
+                {
+                    type: isOutgoing ? ('sent' as const) : ('recv' as const),
+                    standard: 'STELLAR-CLASSIC' as const,
+                    from: isOutgoing ? descriptor : other,
+                    to: isOutgoing ? other : descriptor,
+                    contract,
+                    name: tokenDetailByMint[contract]?.name || asset.assetCode,
+                    symbol: asset.assetCode,
+                    decimals: STELLAR_DECIMALS,
+                    amount: new BigNumber(amount).abs().toString(),
+                },
+            ];
+        }),
+        targets:
+            native && counterparty
+                ? [{ n: 0, addresses: [counterparty], isAddress: true, amount: nativeAmount }]
+                : [],
     };
 };
 
@@ -119,6 +217,78 @@ export const transformTransaction = (
             return transferTx.type === 'unknown' && invocation
                 ? { ...contractTx, type: 'contract' }
                 : transferTx;
+        }
+        case 'path-payment': {
+            const { fromAddress, toAddress, sent, received, operationType } = parsed;
+            const isSender = descriptor === fromAddress;
+            const isRecipient = descriptor === toAddress;
+
+            if (!isSender && !isRecipient) {
+                return { ...baseTx, type: 'unknown' };
+            }
+
+            return transformMovements({
+                baseTx: labelled({ baseTx, operationType }),
+                // Sent to itself, the two legs are the two sides of a conversion.
+                movements: [
+                    ...(isSender ? [negated(sent)] : []),
+                    ...(isRecipient ? [received] : []),
+                ],
+                descriptor,
+                counterparty: isSender ? toAddress : fromAddress,
+                tokenDetailByMint,
+            });
+        }
+        case 'balance-change': {
+            const { deltas, operationType } = parsed;
+            const [counterparty] = [...new Set(deltas.map(({ holder }) => holder))].filter(
+                holder => holder !== descriptor,
+            );
+
+            return transformMovements({
+                baseTx: labelled({ baseTx, operationType }),
+                movements: deltas.filter(({ holder }) => holder === descriptor),
+                descriptor,
+                counterparty,
+                tokenDetailByMint,
+            });
+        }
+        case 'ledger-change':
+            // The operation changed the ledger without moving value — options set, a data entry
+            // written, an offer placed. The label is the whole story; an amount would be a fiction.
+            return { ...labelled({ baseTx, operationType: parsed.operationType }), type: 'self' };
+        case 'claimable-balance-offer': {
+            const { fromAddress, claimants, asset, offeredAmount, operationType } = parsed;
+            const isCreator = descriptor === fromAddress;
+
+            if (!isCreator && !claimants.includes(descriptor)) {
+                return { ...baseTx, type: 'unknown' };
+            }
+
+            const offer = labelled({ baseTx, operationType });
+            const withOffer: Omit<Transaction, 'type'> = {
+                ...offer,
+                stellarSpecific: {
+                    ...offer.stellarSpecific!,
+                    claimableBalanceOffer: { isClaimant: !isCreator, offeredAmount },
+                },
+            };
+
+            // A claimant has been offered value, not paid it: the balance arrives only if it
+            // claims, and that claim reports the credit. Giving the offer an amount now would
+            // overstate the balance — and this is the shape unsolicited-asset spam takes on
+            // Stellar, so it must not read as a payment received either.
+            if (!isCreator) {
+                return { ...withOffer, type: 'recv' };
+            }
+
+            return transformMovements({
+                baseTx: withOffer,
+                movements: [negated({ asset, amount: offeredAmount })],
+                descriptor,
+                counterparty: claimants[0],
+                tokenDetailByMint,
+            });
         }
         default: {
             if (descriptor !== parsed.fromAddress && descriptor !== parsed.toAddress)

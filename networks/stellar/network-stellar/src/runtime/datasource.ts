@@ -1,7 +1,9 @@
 import {
+    STELLAR_HISTORY_EFFECTS,
     STELLAR_LEDGER_HEAD_SOURCE,
     STELLAR_RPC_READ_FALLBACK,
     STELLAR_TRUSTLINE_DISCOVERY,
+    type StellarHistoryEffects,
     type StellarLedgerHeadSource,
     type StellarRpcReadFallback,
     type StellarTrustlineDiscovery,
@@ -79,6 +81,7 @@ export const createStellarDataSource = (
     trustlineDiscovery: StellarTrustlineDiscovery = STELLAR_TRUSTLINE_DISCOVERY,
     fallback: StellarRpcReadFallback = STELLAR_RPC_READ_FALLBACK,
     headSource: StellarLedgerHeadSource = STELLAR_LEDGER_HEAD_SOURCE,
+    historyEffects: StellarHistoryEffects = STELLAR_HISTORY_EFFECTS,
 ): StellarDataSource => ({
     readVersion: () =>
         readWithFallback(
@@ -133,6 +136,7 @@ export const createStellarDataSource = (
             fallback === 'horizon',
         );
     },
-    readAccountHistory: request => readAccountHistory({ ...request, horizon: api.horizon }),
+    readAccountHistory: request =>
+        readAccountHistory({ ...request, horizon: api.horizon }, historyEffects),
     submitTransaction: transaction => submitTransaction({ server: api.rpc, transaction }),
 });

@@ -239,13 +239,13 @@ export const getAccountInfo = async (
     };
 
     account.history.transactions = await Promise.all(
-        pageGroups.map(async ({ operations }) => {
+        pageGroups.map(async ({ operations, effects }) => {
             try {
                 // Resolved from the joined response, so this does not hit the network.
                 const rawTx = await operations[0].transaction();
 
                 return utils.transformTransaction(
-                    identifyTransaction(operations, rawTx),
+                    identifyTransaction(operations, rawTx, effects),
                     payload.descriptor,
                     tokenMetadata,
                 );

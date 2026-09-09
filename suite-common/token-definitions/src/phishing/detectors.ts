@@ -143,6 +143,19 @@ const isUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) => {
     return createResult(transaction.type === 'unknown', transaction);
 };
 
+/**
+ * A claimable balance naming the account as a claimant, created by someone else.
+ *
+ * Nothing has moved: the value arrives only if the account claims it, and paying the reserve to do
+ * so is the point of the scam. Anyone can name any account, no trustline required, which makes
+ * this the one way to put an arbitrary asset in front of a Stellar user unasked.
+ */
+const isUnsolicitedAssetOfferPhishing: PhishingDetectorFn = ({ transaction }) => {
+    const offer = transaction.stellarSpecific?.claimableBalanceOffer;
+
+    return createResult(!!offer?.isClaimant, transaction);
+};
+
 const isTrc10TransferPhishing: PhishingDetectorFn = ({ transaction }) => {
     const isTrc10Transfer = transaction.tronSpecific?.contractType === 'TransferAssetContract';
 
@@ -169,5 +182,9 @@ export const detectors = {
     trc10: {
         id: 'TRC10_TRANSFER',
         validator: isTrc10TransferPhishing,
+    },
+    unsolicitedAssetOffer: {
+        id: 'UNSOLICITED_ASSET_OFFER',
+        validator: isUnsolicitedAssetOfferPhishing,
     },
 } as const satisfies Record<string, PhishingDetector>;

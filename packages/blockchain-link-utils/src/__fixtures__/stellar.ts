@@ -67,6 +67,44 @@ const invokeHostFunction = (assetBalanceChanges: Overrides[] | null) =>
         asset_balance_changes: assetBalanceChanges,
     });
 
+const pathPayment = (overrides: Overrides = {}) =>
+    operation('path_payment_strict_send', {
+        from: DESCRIPTOR,
+        to: DESCRIPTOR,
+        source_asset_type: 'native',
+        source_amount: '1.0000000',
+        asset_type: 'credit_alphanum4',
+        asset_code: 'USD',
+        asset_issuer: USD_ISSUER,
+        amount: '25.7585344',
+        destination_min: '25.0000000',
+        path: [],
+        ...overrides,
+    });
+
+const createClaimableBalance = (overrides: Overrides = {}) =>
+    operation('create_claimable_balance', {
+        asset: `USD:${USD_ISSUER}`,
+        amount: '0.4347826',
+        claimants: [{ destination: DESCRIPTOR, predicate: { unconditional: true } }],
+        ...overrides,
+    });
+
+// An effect belongs to an operation through the `<operation id>-<index>` of its paging token.
+const effect = (index: number, type: string, overrides: Overrides = {}) => ({
+    id: `${PAGING_TOKEN}-${index}`,
+    paging_token: `${PAGING_TOKEN}-${index}`,
+    account: DESCRIPTOR,
+    type,
+    ...overrides,
+});
+
+const accountCredited = (index: number, overrides: Overrides = {}) =>
+    effect(index, 'account_credited', { asset_type: 'native', amount: '1.0000000', ...overrides });
+
+const accountDebited = (index: number, overrides: Overrides = {}) =>
+    effect(index, 'account_debited', { asset_type: 'native', amount: '1.0000000', ...overrides });
+
 const balanceChange = (overrides: Overrides = {}) => ({
     asset_type: 'credit_alphanum4',
     asset_code: 'USD',
@@ -120,7 +158,19 @@ const token = (overrides: Overrides = {}) => ({
     ...overrides,
 });
 
-export const fixtures = {
+type Fixture = {
+    description: string;
+    input: {
+        descriptor: string;
+        operations: Overrides[];
+        tx: Overrides;
+        /** The account's Horizon effects for the operations, when the transaction has any. */
+        effects?: Overrides[];
+    };
+    expectedOutput: Overrides;
+};
+
+export const fixtures: { transformTransaction: Fixture[] } = {
     transformTransaction: [
         {
             description: 'account takes part in several operations of one transaction',
@@ -141,13 +191,20 @@ export const fixtures = {
             expectedOutput: output({ type: 'failed' }),
         },
         {
-            description: 'unsupported operation type',
+            description: 'an operation that only changes the ledger is named, not flagged',
             input: {
                 descriptor: DESCRIPTOR,
                 operations: [operation('set_options', { home_domain: 'stellar.org' })],
                 tx: transaction(),
             },
-            expectedOutput: output({ type: 'unknown' }),
+            expectedOutput: output({
+                type: 'self',
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    operationType: 'setOptions',
+                },
+            }),
         },
         {
             description: 'native payment sent',
@@ -591,6 +648,205 @@ export const fixtures = {
                     }),
                 ],
             }),
+        },
+        {
+            description: 'a swap of lumens for an asset is reported with both of its legs',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [pathPayment()],
+                tx: transaction(),
+            },
+            expectedOutput: output({
+                type: 'self',
+                amount: '10000000',
+                targets: [{ n: 0, addresses: [DESCRIPTOR], isAddress: true, amount: '10000000' }],
+                tokens: [
+                    token({ type: 'recv', from: DESCRIPTOR, to: DESCRIPTOR, amount: '257585344' }),
+                ],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    operationType: 'pathPayment',
+                },
+            }),
+        },
+        {
+            description: 'a path payment to another account reports only the leg that left',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [pathPayment({ to: COUNTERPARTY })],
+                tx: transaction(),
+            },
+            expectedOutput: output({
+                type: 'sent',
+                amount: '10000000',
+                targets: [{ n: 0, addresses: [COUNTERPARTY], isAddress: true, amount: '10000000' }],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    operationType: 'pathPayment',
+                },
+            }),
+        },
+        {
+            description: 'a path payment from another account reports only the leg that arrived',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [pathPayment({ from: COUNTERPARTY })],
+                tx: transaction({ source_account: COUNTERPARTY, fee_account: COUNTERPARTY }),
+            },
+            expectedOutput: output({
+                type: 'recv',
+                tokens: [token({ from: COUNTERPARTY, amount: '257585344' })],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: COUNTERPARTY,
+                    operationType: 'pathPayment',
+                },
+            }),
+        },
+        {
+            description: "a path payment between other accounts is not the account's business",
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [pathPayment({ from: COUNTERPARTY, to: THIRD_PARTY })],
+                tx: transaction({ source_account: COUNTERPARTY, fee_account: COUNTERPARTY }),
+            },
+            expectedOutput: output({
+                type: 'unknown',
+                stellarSpecific: { memo: undefined, feeSource: COUNTERPARTY },
+            }),
+        },
+        {
+            description: 'a claimable balance offered to the account carries no amount',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [createClaimableBalance({ source_account: COUNTERPARTY })],
+                tx: transaction({ source_account: COUNTERPARTY, fee_account: COUNTERPARTY }),
+            },
+            expectedOutput: output({
+                type: 'recv',
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: COUNTERPARTY,
+                    operationType: 'createClaimableBalance',
+                    claimableBalanceOffer: { isClaimant: true, offeredAmount: '4347826' },
+                },
+            }),
+        },
+        {
+            description: 'a claimable balance the account created is a send',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [
+                    createClaimableBalance({
+                        claimants: [
+                            { destination: COUNTERPARTY, predicate: { unconditional: true } },
+                        ],
+                    }),
+                ],
+                tx: transaction(),
+            },
+            expectedOutput: output({
+                type: 'sent',
+                tokens: [
+                    token({ type: 'sent', from: DESCRIPTOR, to: COUNTERPARTY, amount: '4347826' }),
+                ],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    operationType: 'createClaimableBalance',
+                    claimableBalanceOffer: { isClaimant: false, offeredAmount: '4347826' },
+                },
+            }),
+        },
+        {
+            description: 'an operation nobody enumerated is described by its effects',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [
+                    operation('account_merge', { account: DESCRIPTOR, into: COUNTERPARTY }),
+                ],
+                tx: transaction(),
+                effects: [accountDebited(1, { amount: '5.0000000' })],
+            },
+            expectedOutput: output({
+                type: 'sent',
+                amount: '50000000',
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    operationType: 'accountMerge',
+                },
+            }),
+        },
+        {
+            description:
+                'a crossing offer is read from the trade effect that is all Horizon reports',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [operation('manage_sell_offer', { offer_id: '1' })],
+                tx: transaction(),
+                effects: [
+                    effect(1, 'trade', {
+                        seller: COUNTERPARTY,
+                        offer_id: '1',
+                        sold_asset_type: 'native',
+                        sold_amount: '2.0000000',
+                        bought_asset_type: 'credit_alphanum4',
+                        bought_asset_code: 'USD',
+                        bought_asset_issuer: USD_ISSUER,
+                        bought_amount: '4.0000000',
+                    }),
+                ],
+            },
+            expectedOutput: output({
+                type: 'self',
+                amount: '20000000',
+                targets: [],
+                tokens: [token({ from: USD_ISSUER, amount: '40000000' })],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    operationType: 'offer',
+                },
+            }),
+        },
+        {
+            description: 'claiming a claimable balance is the credit the offer was not',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [
+                    operation('claim_claimable_balance', {
+                        balance_id: '00000000',
+                        claimant: DESCRIPTOR,
+                    }),
+                ],
+                tx: transaction(),
+                effects: [accountCredited(1, { amount: '0.4347826' })],
+            },
+            expectedOutput: output({
+                type: 'recv',
+                amount: '4347826',
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    operationType: 'claimClaimableBalance',
+                },
+            }),
+        },
+        {
+            description: 'several operations of one transaction are netted into one record',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [payment(), payment({ amount: '2.0000000' })],
+                tx: transaction({ operation_count: 2 }),
+                effects: [
+                    accountDebited(1, { amount: '1.0000000' }),
+                    accountDebited(2, { amount: '2.0000000' }),
+                ],
+            },
+            expectedOutput: output({ type: 'sent', amount: '30000000' }),
         },
     ],
 };

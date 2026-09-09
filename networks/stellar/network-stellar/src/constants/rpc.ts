@@ -57,3 +57,28 @@ export const STELLAR_RPC_READ_FALLBACK: StellarRpcReadFallback = 'horizon';
 export type StellarLedgerHeadSource = 'horizon' | 'rpc';
 
 export const STELLAR_LEDGER_HEAD_SOURCE: StellarLedgerHeadSource = 'horizon';
+
+/**
+ * Whether transaction history is enriched with the account's Horizon effects.
+ *
+ * The operations resource says what was *asked* for, not what moved: Horizon pre-decodes the
+ * classic operations, and of the twenty-six types Suite reads four, so a path payment — the shape
+ * every swap aggregator submits — arrives as an unrecognised operation with no amount at all.
+ * Effects are the ledger's own account of what happened to the balance, so one
+ * `GET /accounts/{id}/effects` per operations window gives every operation type, enumerated or
+ * not, a real amount and counterparty.
+ *
+ * It costs one request per window, issued in parallel with the operations request — the effects
+ * cursor is derivable from the operations cursor, so nothing serializes — and small next to the
+ * operations response, which carries the envelope and result meta XDR of every joined transaction.
+ * Effects per operation are unbounded, so a window can out-run the record limit; an operation the
+ * effects read does not reach is described from its operation alone, and so is every operation of
+ * a window whose effects request failed.
+ */
+export type StellarHistoryEffects = 'horizon' | 'off';
+
+export const STELLAR_HISTORY_EFFECTS: StellarHistoryEffects = 'horizon';
+
+// Effects per operation are unbounded, so the widest window Horizon allows is the cheap side of
+// the trade.
+export const STELLAR_HISTORY_EFFECTS_LIMIT = 200;

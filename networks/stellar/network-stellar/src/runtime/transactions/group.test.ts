@@ -2,9 +2,25 @@ import { groupOperationsByTransaction } from './group';
 
 const operation = (transactionHash: string, pagingToken: string) =>
     ({
+        id: pagingToken,
         transaction_hash: transactionHash,
         paging_token: pagingToken,
     }) as Parameters<typeof groupOperationsByTransaction>[0][number];
+
+type EffectRecord =
+    NonNullable<Parameters<typeof groupOperationsByTransaction>[2]> extends ReadonlyMap<
+        string,
+        (infer T)[]
+    >
+        ? T
+        : never;
+
+const effect = (operationId: string, index: number) =>
+    ({
+        id: `${operationId}-${index}`,
+        paging_token: `${operationId}-${index}`,
+        type: 'account_credited',
+    }) as EffectRecord;
 
 describe('groupOperationsByTransaction', () => {
     it('returns nothing for an empty response', () => {
@@ -61,5 +77,27 @@ describe('groupOperationsByTransaction', () => {
         );
 
         expect(groups.map(group => group.transactionHash)).toEqual(['tx1', 'tx2', 'tx1']);
+    });
+
+    it('gives each group the effects of its own operations', () => {
+        const groups = groupOperationsByTransaction(
+            [operation('tx1', '30'), operation('tx2', '20'), operation('tx2', '10')],
+            false,
+            new Map([
+                ['30', [effect('30', 1)]],
+                ['20', [effect('20', 1)]],
+                ['10', [effect('10', 1), effect('10', 2)]],
+            ]),
+        );
+
+        expect(groups[0]?.effects.map(({ id }) => id)).toEqual(['30-1']);
+        // A multi-operation transaction nets the effects of all of them
+        expect(groups[1]?.effects.map(({ id }) => id)).toEqual(['20-1', '10-1', '10-2']);
+    });
+
+    it('leaves the effects empty when none were read', () => {
+        const groups = groupOperationsByTransaction([operation('tx1', '30')], false);
+
+        expect(groups[0]?.effects).toEqual([]);
     });
 });
