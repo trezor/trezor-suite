@@ -96,13 +96,17 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
                     return true;
                 }),
             filterUnavailableNetworks,
-            sortNetworks,
+            networks => sortNetworks(networks, deviceNetworks),
             returnStableArrayIfEmpty,
         ),
 );
 
 export const selectDiscoveryNetworkSymbols = createMemoizedSelector(
-    [selectDiscoverySupportedNetworks, (_state, searchQuery: string = '') => searchQuery],
+    [
+        selectDiscoverySupportedNetworks,
+        (_state, _supportedNetworks: readonly NetworkSymbol[], searchQuery: string = '') =>
+            searchQuery,
+    ],
     (supportedNetworks, searchQuery) =>
         returnStableArrayIfEmpty(
             filterNetworksByName(supportedNetworks, searchQuery).map(n => n.symbol),
@@ -134,7 +138,8 @@ export const selectDiscoveryNetworkGroups = createMemoizedSelector(
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
         selectAreTestnetsEnabled,
-        (_state, searchQuery: string = '') => searchQuery,
+        (_state, _supportedNetworks: readonly NetworkSymbol[], searchQuery: string = '') =>
+            searchQuery,
     ],
     (
         deviceSupportedNetworks,

@@ -5,6 +5,7 @@ import {
     type NetworkSymbol,
     getNetworkByYieldXyzId,
     getNetworkDisplaySymbol,
+    getSupportedNetworks,
 } from '@suite-common/wallet-config';
 import {
     doTokensMatch,
@@ -138,6 +139,8 @@ export const useYieldTableData = ({
     visibleAccounts,
     visibleAccountSymbols,
 }: UseYieldTableDataProps) => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const yieldAccountOpportunities = useMemo<YieldAccountOpportunity[]>(() => {
         const allOpportunities = availableVaults.flatMap(vault => {
             const network = getNetworkByYieldXyzId(vault.network);
@@ -201,7 +204,9 @@ export const useYieldTableData = ({
         ];
     }, [availableVaults, visibleAccounts, visibleAccountSymbols]);
 
-    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const deviceSupportedNetworkSymbols = useSelector(state =>
+        selectDeviceSupportedNetworks(state, allNetworkSymbols),
+    );
     const yieldInactiveVaultOpportunities = useMemo<YieldInactiveVaultOpportunity[]>(() => {
         const opportunities = availableVaults.flatMap(vault => {
             const network = getNetworkByYieldXyzId(vault.network);

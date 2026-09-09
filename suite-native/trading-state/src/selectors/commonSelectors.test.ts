@@ -16,6 +16,7 @@ import {
     type TradingRootStateWithDeviceAndAccounts,
     selectTradingProviderMetadata,
 } from '@suite-common/trading';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
@@ -58,6 +59,8 @@ import {
     selectTradingProviderConfirmationStatus,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
 } from './commonSelectors';
+
+const allNetworkSymbols = mockGetSupportedNetworks();
 
 const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
 
@@ -589,6 +592,7 @@ describe('commonSelectors', () => {
                     stateWithDevice,
                     'exchange',
                     supportedCoins,
+                    allNetworkSymbols,
                 ),
             ).toEqual([]);
         });
@@ -619,6 +623,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBeGreaterThan(0);
@@ -660,6 +665,7 @@ describe('commonSelectors', () => {
                     stateWithDevice,
                     'exchange',
                     supportedCoins,
+                    allNetworkSymbols,
                 ),
             ).toEqual([]);
         });
@@ -725,6 +731,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'sell',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBe(1);
@@ -783,6 +790,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBe(1);
@@ -839,6 +847,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'sell',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result).toEqual([]); // No sections with assets
@@ -883,6 +892,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBe(1);
@@ -918,6 +928,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'buy',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result).toEqual([]);
@@ -951,6 +962,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBe(1);
@@ -980,6 +992,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             const accountAsset = result[3]?.data[0];
@@ -1021,6 +1034,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBe(1);
@@ -1064,6 +1078,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBe(1);
@@ -1104,6 +1119,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBe(2);
@@ -1161,6 +1177,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBe(1);
@@ -1244,6 +1261,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBe(1);
@@ -1307,6 +1325,7 @@ describe('commonSelectors', () => {
                 stateWithDevice,
                 'exchange',
                 supportedCoins,
+                allNetworkSymbols,
             );
 
             expect(result.length).toBe(1);
@@ -1479,6 +1498,7 @@ describe('commonSelectors', () => {
             const result = selectVisibleDeviceAccountsByNetworkSymbolSorted(
                 getStateWithAccounts(),
                 'btc',
+                allNetworkSymbols,
             );
 
             expect(result).toEqual([
@@ -1491,8 +1511,18 @@ describe('commonSelectors', () => {
         it('should be stable', () => {
             const preloadedState = getStateWithAccounts();
 
-            expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
-                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
+            expect(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    'btc',
+                    allNetworkSymbols,
+                ),
+            ).toBe(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    'btc',
+                    allNetworkSymbols,
+                ),
             );
         });
 
@@ -1500,8 +1530,18 @@ describe('commonSelectors', () => {
             const preloadedState = getStateWithAccounts();
             preloadedState.wallet.accounts = [];
 
-            expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
-                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
+            expect(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    'btc',
+                    allNetworkSymbols,
+                ),
+            ).toBe(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    'btc',
+                    allNetworkSymbols,
+                ),
             );
         });
     });

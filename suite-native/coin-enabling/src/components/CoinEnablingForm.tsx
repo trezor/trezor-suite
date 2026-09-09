@@ -5,11 +5,14 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
+import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import {
+    type DiscoveryRootState,
+    selectDeviceEnabledDiscoveryNetworkSymbols,
+} from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
@@ -26,10 +29,14 @@ type CoinEnablingFormProps = {
 };
 
 export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const { analytics } = useServices(selectNativeAnalyticsDep);
-    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
+    const enabledNetworkSymbols = useSelector((state: DiscoveryRootState) =>
+        selectDeviceEnabledDiscoveryNetworkSymbols(state, allNetworkSymbols),
+    );
 
     const { showAlert } = useAlert();
 
@@ -55,7 +62,7 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
 
     const handleSubmit = form.handleSubmit((values: CoinEnablingFormValues) => {
         const enabledCoins = getNetworkSymbolsFromEnabledCoins(values.enabledCoins);
-        const changedCoins = networkSymbolCollection.filter(
+        const changedCoins = getSupportedNetworks().filter(
             symbol => enabledNetworkSymbols.includes(symbol) !== enabledCoins.includes(symbol),
         );
 

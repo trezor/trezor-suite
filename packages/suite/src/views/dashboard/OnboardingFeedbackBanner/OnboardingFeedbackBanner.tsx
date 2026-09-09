@@ -10,6 +10,7 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
+import { getSupportedNetworks } from '@suite-common/wallet-config';
 import {
     Box,
     Button,
@@ -93,12 +94,16 @@ const CTAButton = ({ onClick }: { onClick: () => void }) => {
 };
 
 export const OnboardingFeedbackBanner = () => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
     const isVerticalLayout = useIsContentBelowBreakpoint();
 
-    const isEligible = useSelector(selectShouldShowOnboardingFeedbackBanner);
+    const isEligible = useSelector(state =>
+        selectShouldShowOnboardingFeedbackBanner(state, allNetworkSymbols),
+    );
 
     const clearBanner = () => {
         dispatch(setFlag({ key: 'showOnboardingFeedbackBanner', value: false }));

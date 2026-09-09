@@ -1,4 +1,4 @@
-import { networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type CoinSymbol,
     type EnabledNetwork,
@@ -31,9 +31,9 @@ export const PERMISSION_PREVIEW_LIMIT = 6;
  * recognised only by `@trezor/connect`).
  */
 export const getCoinLabel = (shortcut: string): string => {
-    const key = shortcut.toLowerCase() as keyof typeof networks;
+    const key = shortcut.toLowerCase() as NetworkSymbol;
 
-    return networks[key]?.name ?? shortcut.toUpperCase();
+    return getNetwork(key)?.name ?? shortcut.toUpperCase();
 };
 
 // Icon shown for each permission. These names exist in both the web icon set and

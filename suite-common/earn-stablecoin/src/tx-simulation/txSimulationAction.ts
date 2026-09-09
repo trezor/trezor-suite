@@ -2,18 +2,14 @@ import z from 'zod';
 
 import { UnsignedEvmTransactionForSigningSchema } from '@suite-common/earn-stablecoin-api';
 import { evmHexString } from '@suite-common/schemas/src/evm';
-import {
-    getNetwork,
-    networkSymbolCollection,
-    networksCollection,
-} from '@suite-common/wallet-config';
+import { getNetwork, getSupportedNetworks, networksCollection } from '@suite-common/wallet-config';
 import { type AccountKey, type TxSimulationMethod } from '@suite-common/wallet-types';
 import { type EthereumSignTransaction } from '@trezor/connect-common';
 
 const partialAccount = z.object({
     key: z.string(),
     networkType: z.enum(networksCollection.map(n => n.networkType)),
-    symbol: z.enum(networkSymbolCollection),
+    symbol: z.enum(getSupportedNetworks()),
     descriptor: z.string(),
     path: z.string(),
 });

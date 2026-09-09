@@ -14,7 +14,7 @@ export type TokenDefinitionsMiddlewareDeps = {
     actions: {
         changeNetworks: ActionCreatorWithPreparedPayload<
             [payload: NetworkSymbol[]],
-            NetworkSymbol[]
+            { enabledNetworks: NetworkSymbol[] }
         >;
     };
 };
@@ -27,7 +27,7 @@ export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps<
     next(action);
 
     if (extra.actions.changeNetworks.match(action)) {
-        action.payload.forEach(symbol => {
+        action.payload.enabledNetworks.forEach(symbol => {
             const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
             if (!tokenDefinitions) {

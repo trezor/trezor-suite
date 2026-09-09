@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork, getSupportedNetworks } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountBackendSpecific,
@@ -59,7 +59,12 @@ type CoinjoinAccountStatus = CoinjoinAccount['status'];
 
 const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
-    ({ accountInfo, ...account }: CreateAccountActionProps): { payload: Account } => {
+    ({
+        accountInfo,
+        ...account
+    }: CreateAccountActionProps): {
+        payload: { account: Account; supportedNetworks: readonly NetworkSymbol[] };
+    } => {
         const { symbol, index, deviceState } = account;
         const { descriptor, descriptorChecksum, legacyXpub } = accountInfo;
         const { empty, balance, availableBalance, addresses, history, utxo, tokens } = accountInfo;
@@ -99,7 +104,9 @@ const createAccount = createAction(
                 ...getAccountSpecific(accountInfo, networkType),
             };
 
-            return { payload };
+            return {
+                payload: { account: payload, supportedNetworks: [...getSupportedNetworks()] },
+            };
         } catch (error) {
             console.error('Error creating account payload:', error);
             throw new Error('Failed to create account payload', { cause: error });
@@ -123,33 +130,38 @@ const createAccountFromAccountInfo = createAction(
 
 const updateAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/updateAccount`,
-    (account: Account, accountInfo: AccountInfo | null = null): { payload: Account } => {
+    (
+        account: Account,
+        accountInfo: AccountInfo | null = null,
+    ): { payload: { account: Account } } => {
         if (accountInfo) {
             return {
                 payload: {
-                    ...account,
-                    ...accountInfo,
-                    descriptor: asAccountDescriptor(accountInfo.descriptor),
-                    path: account.path,
-                    empty: accountInfo.empty,
-                    visible: account.visible || !accountInfo.empty,
-                    formattedBalance: formatNetworkAmount(
-                        // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
-                        ['ripple', 'stellar'].includes(account.networkType)
-                            ? accountInfo.balance
-                            : accountInfo.availableBalance,
-                        account.symbol,
-                    ),
-                    utxo: enhanceUtxo(accountInfo.utxo, account.networkType, account.index),
-                    addresses: enhanceAddresses(accountInfo, account),
-                    tokens: enhanceTokens(accountInfo.tokens),
-                    ...getAccountSpecific(accountInfo, account.networkType),
+                    account: {
+                        ...account,
+                        ...accountInfo,
+                        descriptor: asAccountDescriptor(accountInfo.descriptor),
+                        path: account.path,
+                        empty: accountInfo.empty,
+                        visible: account.visible || !accountInfo.empty,
+                        formattedBalance: formatNetworkAmount(
+                            // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
+                            ['ripple', 'stellar'].includes(account.networkType)
+                                ? accountInfo.balance
+                                : accountInfo.availableBalance,
+                            account.symbol,
+                        ),
+                        utxo: enhanceUtxo(accountInfo.utxo, account.networkType, account.index),
+                        addresses: enhanceAddresses(accountInfo, account),
+                        tokens: enhanceTokens(accountInfo.tokens),
+                        ...getAccountSpecific(accountInfo, account.networkType),
+                    },
                 },
             };
         }
 
         return {
-            payload: account,
+            payload: { account },
         };
     },
 );
@@ -192,10 +204,12 @@ const endCoinjoinAccountSync = createAction(
 
 const changeAccountVisibility = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/changeAccountVisibility`,
-    (account: Account, visible = true): { payload: Account } => ({
+    (account: Account, visible = true): { payload: { account: Account } } => ({
         payload: {
-            ...account,
-            visible,
+            account: {
+                ...account,
+                visible,
+            },
         },
     }),
 );

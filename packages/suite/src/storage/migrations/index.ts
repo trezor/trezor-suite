@@ -1,8 +1,8 @@
 import {
     type NetworkSymbol,
     getNetwork,
+    getSupportedNetworks,
     isNetworkSymbol,
-    networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import {
     type AccountKey,
@@ -1074,9 +1074,11 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 49) {
+        const supportedNetworks = getSupportedNetworks();
+
         await updateAll(transaction, 'walletSettings', walletSettings => {
             walletSettings.enabledNetworks.sort(
-                (a, b) => networkSymbolCollection.indexOf(a) - networkSymbolCollection.indexOf(b),
+                (a, b) => supportedNetworks.indexOf(a) - supportedNetworks.indexOf(b),
             );
 
             return walletSettings;

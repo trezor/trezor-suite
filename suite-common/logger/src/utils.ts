@@ -176,7 +176,7 @@ export const redactAction = (action: LogEntry): LogEntry => {
     switch (action.type) {
         case accountsActions.createAccount.type:
         case accountsActions.updateAccount.type:
-            payload = redactAccount(action.payload);
+            payload = redactAccount(action.payload?.account);
             break;
         case DEVICE.CONNECT:
         case DEVICE.DISCONNECT:

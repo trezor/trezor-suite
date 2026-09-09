@@ -2,7 +2,7 @@ import { type CryptoId } from 'invity-api';
 
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { getCryptoId } from '@suite-common/trading';
-import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
 import { type RatesByKey } from '@suite-common/wallet-types';
 import { filterAccountsByNetworkSymbol, isTestnet } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -55,7 +55,7 @@ export const buildSellAssetRows = ({
     });
 
     const networksInList = new Set(validAccounts.map(account => account.symbol));
-    const networks = networkSymbolCollection.filter(symbol => networksInList.has(symbol));
+    const networks = getSupportedNetworks().filter(symbol => networksInList.has(symbol));
 
     const assetRows: AssetRowOption[] = [];
 

@@ -612,13 +612,15 @@ export const createCoinjoinAccountThunk =
             }),
         );
 
-        log(`CoinjoinAccount created: ${getAccountProgressHandle(coinjoinAccount.payload)}`);
+        log(
+            `CoinjoinAccount created: ${getAccountProgressHandle(coinjoinAccount.payload.account)}`,
+        );
 
         // birthdate optimization
         const checkpoint = await api.backend.getAccountCheckpoint(
-            coinjoinAccount.payload.descriptor,
+            coinjoinAccount.payload.account.descriptor,
         );
-        dispatch(coinjoinAccountDiscoveryReset(coinjoinAccount.payload.key, checkpoint));
+        dispatch(coinjoinAccountDiscoveryReset(coinjoinAccount.payload.account.key, checkpoint));
 
         dispatch(coinjoinAccountPreloading(false));
 
@@ -635,7 +637,7 @@ export const createCoinjoinAccountThunk =
         );
 
         // start discovery
-        return dispatch(fetchAndUpdateAccountThunk(coinjoinAccount.payload));
+        return dispatch(fetchAndUpdateAccountThunk(coinjoinAccount.payload.account));
     };
 
 type RescanCoinjoinAccountThunkState = AccountsRootState & CoinjoinRootState;
@@ -671,7 +673,7 @@ export const rescanCoinjoinAccountThunk =
         );
 
         // start discovery
-        return dispatch(fetchAndUpdateAccountThunk(payload));
+        return dispatch(fetchAndUpdateAccountThunk(payload.account));
     };
 
 type AuthorizeCoinjoinThunkState = DeviceRootState;

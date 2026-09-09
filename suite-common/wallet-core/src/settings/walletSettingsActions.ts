@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
 import {
     type AddressDisplayOptions,
     type SuspiciousTransactionsFilter,
@@ -21,7 +21,9 @@ export const setBaseCurrency = createAction(
 
 export const changeNetworks = createAction(
     '@wallet-settings/change-networks',
-    (payload: NetworkSymbol[]) => ({ payload }),
+    (enabledNetworks: NetworkSymbol[]) => ({
+        payload: { enabledNetworks, supportedNetworks: [...getSupportedNetworks()] },
+    }),
 );
 
 export const setMevProtection = createAction(

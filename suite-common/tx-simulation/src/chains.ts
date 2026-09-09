@@ -5,8 +5,8 @@ import { type TransactionScanParams as StellarScanParams } from '@blockaid/clien
 import {
     type Network,
     type NetworkConfig,
+    getNetwork,
     getNetworkByEvmChainId,
-    networks,
 } from '@suite-common/wallet-config';
 import { type SolanaNetworkSymbol } from '@trezor/network-solana/constants';
 import { type StellarNetworkSymbol } from '@trezor/network-stellar/constants';
@@ -16,19 +16,19 @@ type BlockaidSolanaChain = NonNullable<MessageScanParams['chain']>;
 type BlockaidStellarChain = StellarScanParams['chain'];
 
 const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
-    [networks.eth.chainId]: 'ethereum',
-    [networks.op.chainId]: 'optimism',
-    [networks.bsc.chainId]: 'bsc',
-    [networks.pol.chainId]: 'polygon',
-    [networks.base.chainId]: 'base',
-    [networks.arb.chainId]: 'arbitrum',
-    [networks.rhc.chainId]: 'robinhood',
-    [networks.hype.chainId]: 'hyperevm',
-    [networks.avax.chainId]: 'avalanche',
-    [networks.tsep.chainId]: 'ethereum-sepolia',
+    [getNetwork('eth').chainId]: 'ethereum',
+    [getNetwork('op').chainId]: 'optimism',
+    [getNetwork('bsc').chainId]: 'bsc',
+    [getNetwork('pol').chainId]: 'polygon',
+    [getNetwork('base').chainId]: 'base',
+    [getNetwork('arb').chainId]: 'arbitrum',
+    [getNetwork('rhc').chainId]: 'robinhood',
+    [getNetwork('hype').chainId]: 'hyperevm',
+    [getNetwork('avax').chainId]: 'avalanche',
+    [getNetwork('tsep').chainId]: 'ethereum-sepolia',
     // Blockaid has no Ethereum Classic chain; the old 'ethereumClassic' value is rejected.
-    [networks.etc.chainId]: null,
-    [networks.thod.chainId]: null, // Hoodi is not a supported testnet
+    [getNetwork('etc').chainId]: null,
+    [getNetwork('thod').chainId]: null, // Hoodi is not a supported testnet
 } as const satisfies Readonly<Record<EvmChainId, TransactionScanSupportedChain | null>>;
 
 const BLOCKAID_SOLANA_CHAIN_BY_SYMBOL = {
@@ -41,7 +41,7 @@ const BLOCKAID_STELLAR_CHAIN_BY_SYMBOL = {
     txlm: 'testnet',
 } as const satisfies Readonly<Record<StellarNetworkSymbol, BlockaidStellarChain>>;
 
-export const resolveBlockaidEvmChain = (chainId: number | undefined = networks.eth.chainId) =>
+export const resolveBlockaidEvmChain = (chainId: number | undefined = getNetwork('eth').chainId) =>
     BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId as EvmChainId] ?? null;
 
 export const resolveBlockaidSolanaChain = (symbol: SolanaNetworkSymbol) =>

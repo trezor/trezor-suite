@@ -2,7 +2,7 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getStatus } from '@suite-common/suite-utils';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
@@ -30,9 +30,12 @@ export const selectSelectedFirstThpDevice = (state: DeviceRootState) => {
     return state.device.devices.findLast(device => device.thp?.properties !== undefined);
 };
 
-export const selectSupportedNetworkByDevice = (device: TrezorDevice | undefined) => {
+export const selectSupportedNetworkByDevice = (
+    device: TrezorDevice | undefined,
+    supportedNetworks: readonly NetworkSymbol[],
+) => {
     const firmwareVersion = getFirmwareVersion(device);
-    const result = networkSymbolCollection.filter(symbol => {
+    const result = supportedNetworks.filter(symbol => {
         const unavailableCapability = device?.unavailableCapabilities?.[symbol];
         // if device does not have fw, do not show coins which are not supported by device in any case
         if (!firmwareVersion && unavailableCapability === 'no-support') {
@@ -53,6 +56,9 @@ export const selectSupportedNetworkByDevice = (device: TrezorDevice | undefined)
 };
 
 export const selectDeviceSupportedNetworks = createMemoizedSelector(
-    [selectSelectedDevice],
+    [
+        selectSelectedDevice,
+        (_state, supportedNetworks: readonly NetworkSymbol[]) => supportedNetworks,
+    ],
     selectSupportedNetworkByDevice,
 );

@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { type DeviceRootState } from '@suite-common/device';
 import {
     Feature,
     type MessageSystemRootState,
@@ -255,6 +256,12 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             (state: CombinedSelectorsRootState) =>
                 selectIsFeatureFlagEnabled(state, FeatureFlag.IsCardanoSendEnabled),
             (_state, tradingType: TradingType) => tradingType,
+            (
+                _state,
+                _tradingType: TradingType,
+                _supportedCoins: readonly NetworkSymbol[],
+                supportedNetworks: readonly NetworkSymbol[],
+            ) => supportedNetworks,
         ],
         (
             accounts,
@@ -264,6 +271,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             sellCryptoIds,
             isCardanoSendEnabled,
             tradingType,
+            supportedNetworks,
         ) => {
             if (tradingType === 'buy') {
                 return returnStableArrayIfEmpty([]);
@@ -281,7 +289,10 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                 return networkType !== 'cardano' || isCardanoSendEnabled;
             });
 
-            const sortedAccounts = sortAccountsByNetworksAndAccountTypes(filteredAccounts);
+            const sortedAccounts = sortAccountsByNetworksAndAccountTypes(
+                filteredAccounts,
+                supportedNetworks,
+            );
 
             return sortedAccounts
                 .map<SectionListData<MyAsset, Account>[number]>((account: Account) => {
@@ -428,15 +439,20 @@ export const selectTradingAccountKeyByOrderId = (
     return trade.tradeType === 'buy' ? trade.selectedAccountKey : trade.sendAccountKey;
 };
 
-export const selectVisibleDeviceAccountsByNetworkSymbolSorted =
-    createTradingWithDeviceAndAccountsMemoizedSelector(
-        [selectVisibleDeviceAccountsByNetworkSymbol],
-        accounts => {
-            const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+export const selectVisibleDeviceAccountsByNetworkSymbolSorted = createWeakMapSelector.withTypes<
+    AccountsRootState & DeviceRootState
+>()(
+    [
+        selectVisibleDeviceAccountsByNetworkSymbol,
+        (_state, _symbol: NetworkSymbol | null, supportedNetworks: readonly NetworkSymbol[]) =>
+            supportedNetworks,
+    ],
+    (accounts, supportedNetworks) => {
+        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts, supportedNetworks);
 
-            return returnStableArrayIfEmpty(sortedAccounts);
-        },
-    );
+        return returnStableArrayIfEmpty(sortedAccounts);
+    },
+);
 
 export const selectAccountLabelWithNetworkFallback = (
     state: AccountsRootState & CombinedLabelingState,

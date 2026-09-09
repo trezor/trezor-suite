@@ -1,5 +1,6 @@
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type Account,
     type TokenInfoBranded,
@@ -14,6 +15,8 @@ import {
     selectIsAccountDiscoveryFailed,
 } from './selectors';
 import { isFilterValueMatchingAccount, sortAccountsByNetworksAndAccountTypes } from './utils';
+
+const supportedNetworks = mockGetSupportedNetworks();
 
 const btcSymbol = asNetworkSymbol('btc');
 const solSymbol = asNetworkSymbol('sol');
@@ -89,7 +92,7 @@ describe('sortAccountsByNetworksAndAccountTypes', () => {
             { symbol: 'ltc', accountType: 'normal' },
         ] as unknown as Account[];
 
-        const result = sortAccountsByNetworksAndAccountTypes(fixtureAccounts);
+        const result = sortAccountsByNetworksAndAccountTypes(fixtureAccounts, supportedNetworks);
 
         expect(result).toEqual([
             { symbol: 'btc', accountType: 'normal' },

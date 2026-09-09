@@ -8,11 +8,7 @@ import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
-import {
-    type NetworkSymbol,
-    getNetwork,
-    networkSymbolCollection,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     AddressDisplayOptions,
     type SuspiciousTransactionsFilter,
@@ -74,9 +70,10 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
         builder.addCase(
             walletSettingsActions.changeNetworks.type,
             (state, action: ReturnType<typeof walletSettingsActions.changeNetworks>) => {
-                state.enabledNetworks = [...action.payload].sort(
-                    (a, b) =>
-                        networkSymbolCollection.indexOf(a) - networkSymbolCollection.indexOf(b),
+                const { enabledNetworks, supportedNetworks } = action.payload;
+
+                state.enabledNetworks = [...enabledNetworks].sort(
+                    (a, b) => supportedNetworks.indexOf(a) - supportedNetworks.indexOf(b),
                 );
             },
         );

@@ -1,3 +1,4 @@
+import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { launchArguments } from '@suite-native/config';
 import {
     type PreloadedState,
@@ -23,7 +24,7 @@ export const createSuiteNativeCompositionRoot = (
     const ensureEncryptionKey = createEnsureEncryptionKey();
     const mmkvStorage = createMMKVStorage({ ensureEncryptionKey });
     const { store, injectServicesIntoReduxExtra } = createReduxStore({
-        reducer: prepareRootReducers({ mmkvStorage }),
+        reducer: prepareRootReducers({ mmkvStorage, getSupportedNetworks }),
         extraDependencies,
         preloadedState,
     });

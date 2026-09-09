@@ -10,6 +10,7 @@ import {
     selectMessageSystemConfig,
 } from '@suite-common/message-system';
 import { createMiddleware } from '@suite-common/redux-utils';
+import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { changeNetworks } from '@suite-common/wallet-core';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 
@@ -29,9 +30,14 @@ export const messageSystemMiddleware = createMiddleware((action, { next, dispatc
     next(action);
 
     if (isAnyOfMessageSystemAffectingActions(action)) {
+        const allNetworkSymbols = getSupportedNetworks();
+
         const config = selectMessageSystemConfig(getState());
         const device = selectSelectedDevice(getState());
-        const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(getState());
+        const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(
+            getState(),
+            allNetworkSymbols,
+        );
         const countryCode = selectCountryCode(getState());
 
         const validationParams = {

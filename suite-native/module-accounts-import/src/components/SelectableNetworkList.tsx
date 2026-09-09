@@ -1,11 +1,11 @@
 import { type ReactNode, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { HeaderedCard, VStack } from '@suite-native/atoms';
-import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import { type DiscoveryRootState, selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import { selectAreTestnetsEnabled } from '@suite-native/settings';
 import { arrayPartition } from '@trezor/utils';
@@ -33,7 +33,11 @@ const NetworkItemSection = ({
 );
 
 export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => {
-    const symbols = useSelector(selectDiscoveryNetworkSymbols);
+    const allNetworkSymbols = getSupportedNetworks();
+
+    const symbols = useSelector((state: DiscoveryRootState) =>
+        selectDiscoveryNetworkSymbols(state, allNetworkSymbols),
+    );
     const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
     const [testnetSymbols, mainnetSymbols] = useMemo(

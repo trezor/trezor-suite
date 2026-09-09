@@ -143,7 +143,7 @@ describe('submitWrapNativeTokenThunk', () => {
             .getActions()
             .filter(accountsActions.updateAccount.match)
             .filter(action =>
-                action.payload.tokens?.some(
+                action.payload.account.tokens?.some(
                     (accountToken: { contract: string }) =>
                         accountToken.contract.toLowerCase() === token.contractAddress.toLowerCase(),
                 ),

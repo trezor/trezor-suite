@@ -8,8 +8,8 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type Network,
     type NetworkSymbol,
+    getNetwork,
     isSingleAccountType,
-    networks,
     networksCollection,
 } from '@suite-common/wallet-config';
 import {
@@ -59,7 +59,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<WalletCoreCompoun
 const selectEnabledSupportedNetworks = createMemoizedSelector(
     [selectEnabledNetworks, selectSelectedDevice],
     (enabledNetworks, device) => {
-        const deviceNetworks = selectSupportedNetworkByDevice(device);
+        const deviceNetworks = selectSupportedNetworkByDevice(device, enabledNetworks);
         const supportedNetworks = enabledNetworks.filter(n => deviceNetworks.includes(n));
 
         return returnStableArrayIfEmpty(supportedNetworks);
@@ -135,7 +135,7 @@ export const selectDiscoveryAccountsParam = (
     knownOnly?: boolean,
 ): DiscoveryAccountsParam =>
     getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
-        const network = networks[symbol];
+        const network = getNetwork(symbol);
         const { networkType } = network;
         const identity = tryGetAccountIdentity({ networkType, deviceState });
         const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
@@ -208,7 +208,7 @@ export const selectShouldRediscover = (
     return getDeviceAccountsPerEnabledNetwork(state, staticSessionId).some(
         ({ symbol, accounts }) =>
             !accounts ||
-            getAccountChainsPerAccountType(networks[symbol], accounts).some(
+            getAccountChainsPerAccountType(getNetwork(symbol), accounts).some(
                 ({ lastAccount, canDiscoverNextAccount }) =>
                     !lastAccount.failed && canDiscoverNextAccount,
             ),

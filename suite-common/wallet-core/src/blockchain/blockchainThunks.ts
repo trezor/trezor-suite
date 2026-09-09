@@ -6,6 +6,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
     getNetworkOptional,
+    getSupportedNetworks,
     isNetworkSymbol,
     isNetworkUsingExternalBackend,
 } from '@suite-common/wallet-config';
@@ -140,7 +141,7 @@ export const initBlockchainThunk = createThunk<
 
     // Load custom blockbook backend
     const blockchain = selectBlockchainState(getState());
-    const backends = getCustomBackends(blockchain);
+    const backends = getCustomBackends(blockchain, getSupportedNetworks());
     await setBackendsToConnect(backends);
 
     const accounts = selectAccounts(getState());

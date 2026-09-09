@@ -1649,54 +1649,56 @@ export const signAndPush: SignAndPush[] = [
                 {
                     type: accountsActions.updateAccount.type,
                     payload: {
-                        // reduced balance
-                        availableBalance: '97800000000',
-                        formattedBalance: '978',
-                        utxo: [
-                            // new utxos created by this tx
-                            {
-                                address: '1-change',
-                                amount: '100000000',
-                                vout: 4,
-                                txid: 'txid',
-                                blockHeight: 0,
-                                confirmations: 0,
-                                path: "m/44'/0'/0'/1/0",
-                            },
-                            {
-                                address: '2-used',
-                                amount: '100000000',
-                                vout: 3,
-                                txid: 'txid',
-                                blockHeight: 0,
-                                confirmations: 0,
-                                path: "m/44'/0'/0'/0/1",
-                            },
-                            {
-                                address: '1-unused',
-                                amount: '100000000',
-                                vout: 2,
-                                txid: 'txid',
-                                blockHeight: 0,
-                                confirmations: 0,
-                                path: "m/44'/0'/0'/0/2",
-                            },
-                            {
-                                address: '2-change',
-                                amount: '10000000000',
-                                vout: 0,
-                                txid: 'txid',
-                                blockHeight: 0,
-                                confirmations: 0,
-                                path: "m/44'/0'/0'/1/1",
-                            },
-                            // old utxo without used "utxoC"
-                            UTXO['00'],
-                            UTXO.AA,
-                            UTXO.BB,
-                            UTXO.DD,
-                            UTXO.EE,
-                        ],
+                        account: {
+                            // reduced balance
+                            availableBalance: '97800000000',
+                            formattedBalance: '978',
+                            utxo: [
+                                // new utxos created by this tx
+                                {
+                                    address: '1-change',
+                                    amount: '100000000',
+                                    vout: 4,
+                                    txid: 'txid',
+                                    blockHeight: 0,
+                                    confirmations: 0,
+                                    path: "m/44'/0'/0'/1/0",
+                                },
+                                {
+                                    address: '2-used',
+                                    amount: '100000000',
+                                    vout: 3,
+                                    txid: 'txid',
+                                    blockHeight: 0,
+                                    confirmations: 0,
+                                    path: "m/44'/0'/0'/0/1",
+                                },
+                                {
+                                    address: '1-unused',
+                                    amount: '100000000',
+                                    vout: 2,
+                                    txid: 'txid',
+                                    blockHeight: 0,
+                                    confirmations: 0,
+                                    path: "m/44'/0'/0'/0/2",
+                                },
+                                {
+                                    address: '2-change',
+                                    amount: '10000000000',
+                                    vout: 0,
+                                    txid: 'txid',
+                                    blockHeight: 0,
+                                    confirmations: 0,
+                                    path: "m/44'/0'/0'/1/1",
+                                },
+                                // old utxo without used "utxoC"
+                                UTXO['00'],
+                                UTXO.AA,
+                                UTXO.BB,
+                                UTXO.DD,
+                                UTXO.EE,
+                            ],
+                        },
                     },
                 },
                 {

@@ -4,7 +4,7 @@ import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getSupportedNetworks, networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
     selectBaseCurrency,
@@ -43,10 +43,14 @@ import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
 
 export const PortfolioCard = memo(() => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { discovery, isDiscoveryRunning } = useDiscovery();
-    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
+    const discoveryStatus = useSelector(state =>
+        selectDiscoveryOverallStatus(state, allNetworkSymbols),
+    );
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const accounts = useSelector(selectAllAccountsToList);

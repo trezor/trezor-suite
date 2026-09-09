@@ -39,7 +39,10 @@ export const blockchainSubscription: Array<{
         actions: [
             {
                 type: accountsActions.createAccount.type,
-                payload: { descriptor: '1', symbol: 'btc' },
+                payload: {
+                    account: { descriptor: '1', symbol: 'btc' },
+                    supportedNetworks: ['btc'],
+                },
             },
         ],
         result: {

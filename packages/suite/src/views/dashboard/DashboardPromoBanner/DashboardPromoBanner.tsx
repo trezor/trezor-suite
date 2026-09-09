@@ -7,6 +7,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type Feature as MessageFeature } from '@suite-common/suite-types';
+import { getSupportedNetworks } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
@@ -21,13 +22,19 @@ import { bannerAnimationConfig } from '../banner-animations';
 const isCarouselBannerKey = (key: string): key is DashboardBannerType => isDashboardBannerType(key);
 
 export const DashboardPromoBanner = () => {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
+    const discoveryStatus = useSelector(state =>
+        selectDiscoveryOverallStatus(state, allNetworkSymbols),
+    );
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const flags = useSelector(selectFlags);
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isOnboardingFeedbackBannerShown = useSelector(selectShouldShowOnboardingFeedbackBanner);
+    const isOnboardingFeedbackBannerShown = useSelector(state =>
+        selectShouldShowOnboardingFeedbackBanner(state, allNetworkSymbols),
+    );
 
     const allPromoBanners = useSelector(state =>
         selectFeaturesConfig(state, Feature.banners.dashboard.promo),

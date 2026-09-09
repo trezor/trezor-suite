@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { useDevice } from '@suite/device';
 import { useDispatch } from '@suite-common/redux-utils';
+import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -19,12 +20,16 @@ import { useGlobalSendReceiveAnalytics } from './hooks/useGlobalSendReceiveAnaly
 import { useGlobalSendReceiveModal } from './hooks/useGlobalSendReceiveModal';
 
 export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
+    const allNetworkSymbols = getSupportedNetworks();
+
     const { device } = useDevice();
     const { activeModal, openModal, closeModal } = useGlobalSendReceiveModal();
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
     const dispatch = useDispatch();
     const accounts = useSelector(selectAllAccountsToList);
-    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
+    const discoveryStatus = useSelector(state =>
+        selectDiscoveryOverallStatus(state, allNetworkSymbols),
+    );
 
     const isDeviceConnected = !!device?.connected && !!device?.available;
     // The dashboard shows the `EmptyWallet` screen (with its own primary Buy/Receive CTAs)

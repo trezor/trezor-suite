@@ -7,6 +7,7 @@ import { type TorRootState, isOnionUrl, selectTorBootstrap, torActions } from '@
 import { TorStatus } from '@suite/tor-types';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { type BlockchainRootState, selectBlockchainState } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -31,7 +32,10 @@ export const toggleTorThunk =
         const modal = selectModalType(getState());
         const torBootstrap = selectTorBootstrap(getState());
 
-        const backends = getCustomBackends(selectBlockchainState(getState()));
+        const backends = getCustomBackends(
+            selectBlockchainState(getState()),
+            getSupportedNetworks(),
+        );
 
         // Is there any network with only onion custom backends?
         const hasSomeOnionBackends = backends.some(
