@@ -1,9 +1,9 @@
 import type { Rule } from 'eslint';
 import ts from 'typescript';
 
+import { createHasSymbolTag } from '../../hasSymbolTag';
 import { getTypeReferenceName, getVariableFunction, toLowerCamelCase } from '../../utils';
 import { createNamedContractRuleListener } from '../utils';
-import { createIsSharedServiceContract } from './sharedServiceContract';
 
 const getServiceDependencyMembers = (
     declaration: ts.TypeAliasDeclaration | ts.InterfaceDeclaration,
@@ -53,7 +53,7 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
                 statements,
                 validateContractBlockSpacing,
             }) => {
-                const isSharedServiceContract = createIsSharedServiceContract(sourceFile);
+                const hasSymbolTag = createHasSymbolTag(sourceFile);
 
                 const validateDependencyFactory = (
                     factoryName: string,
@@ -108,7 +108,7 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
                     const isSharedContract =
                         returnTypeName !== undefined &&
                         returnTypeName !== serviceName &&
-                        isSharedServiceContract(returnTypeName);
+                        hasSymbolTag(returnTypeName, 'serviceContract');
 
                     // Only explicitly marked abstractions may have differently named factories.
                     // Their input dependencies still belong to the concrete implementation.

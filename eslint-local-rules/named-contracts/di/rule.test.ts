@@ -21,7 +21,7 @@ namedContractsRuleTester.run('enforce-di-factory-contracts', enforceDiFactoryCon
         {
             filename: namedContractsFilename,
             code: `
-                import type { MockStorage } from './eslint-local-rules/named-contracts/di/mocks/mockServiceContracts';
+                import type { MockStorage } from './eslint-local-rules/mocks/mockSymbolTags';
 
                 type ConcreteStorageDeps = { log: () => void };
 
@@ -109,7 +109,7 @@ namedContractsRuleTester.run('enforce-di-factory-contracts', enforceDiFactoryCon
         {
             filename: namedContractsFilename,
             code: `
-                import type { MockResolveNamedAddress as ResolveNamedAddress } from './eslint-local-rules/named-contracts/di/mocks/mockServiceContractExports';
+                import type { MockResolveNamedAddress as ResolveNamedAddress } from './eslint-local-rules/mocks/mockSymbolTagExports';
 
                 type ResolveViaBlockbookDeps = { lookup: (value: string) => Promise<string | null> };
 
@@ -179,7 +179,7 @@ namedContractsRuleTester.run('enforce-di-factory-contracts', enforceDiFactoryCon
         {
             filename: namedContractsFilename,
             code: `
-                import type { MockUnmarkedService } from './eslint-local-rules/named-contracts/di/mocks/mockServiceContractExports';
+                import type { MockUnmarkedService } from './eslint-local-rules/mocks/mockSymbolTagExports';
 
                 type ConcreteSaveDeps = { logger: { log: () => void } };
 
