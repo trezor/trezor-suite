@@ -306,9 +306,12 @@ export const identifyTransaction = (
             } as const;
         }
         case Horizon.HorizonApi.OperationResponseType.changeTrust: {
-            // Only support regular assets, not liquidity pool shares
+            // A liquidity-pool share carries no asset code, so the detailed trustline record
+            // cannot be built for it. The operation is still a trustline change and moves
+            // nothing, so it is named rather than left undecodable — which the spam filter reads
+            // as suspicious.
             if (!isClassicAsset(operation.asset_type) || !operation.asset_code) {
-                return describeByBalance({ common, deltas });
+                return describeByBalance({ common, deltas, operationType });
             }
 
             return {

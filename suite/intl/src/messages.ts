@@ -11669,6 +11669,10 @@ export const messages = defineMessages({
         id: 'TR_STELLAR_TX_OFFER',
         defaultMessage: 'Managed an offer',
     },
+    TR_STELLAR_TX_TRUSTLINE_UPDATED: {
+        id: 'TR_STELLAR_TX_TRUSTLINE_UPDATED',
+        defaultMessage: 'Updated trustline',
+    },
     TR_STELLAR_TX_SEQUENCE_BUMPED: {
         id: 'TR_STELLAR_TX_SEQUENCE_BUMPED',
         defaultMessage: 'Bumped account sequence',

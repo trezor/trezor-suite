@@ -780,6 +780,23 @@ export const isPhishingTransactionFixtures = [
         result: true,
     },
     {
+        // A set-options or a pool trustline moves nothing and is named, not undecodable
+        testName: 'a named stellar operation that moved nothing is not phishing',
+        transaction: {
+            symbol: 'xlm',
+            type: 'self',
+            amount: '0',
+            tokens: [],
+            internalTransfers: [],
+            stellarSpecific: {
+                feeSource: 'GBUV66LXXULKASZ5FSDJEY42HUWIBDF4MWSVDBUJLZKCFYSWT5SDPOQB',
+                operationType: 'setOptions',
+            },
+        } as unknown as TransactionWithFiatAmount,
+        tokenDefinitions: STELLAR_DEFINITIONS,
+        result: false,
+    },
+    {
         testName: 'legit tx with known token',
         transaction: {
             symbol: 'pol',

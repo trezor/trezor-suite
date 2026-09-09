@@ -83,10 +83,21 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
 // `self` transaction would read as "Sent 0 XLM to self", and a claimable balance offered by a
 // stranger would read as a payment received. A transaction that did move value keeps the
 // amount-based wording, which says more than the operation's name.
+// Whether the account's own balance moved at all, which decides between naming the operation and
+// letting the amount speak.
+const hasValueMovement = (transaction: WalletAccountTransaction) =>
+    !new BigNumber(transaction.amount).isZero() ||
+    transaction.tokens.some(({ amount }) => !new BigNumber(amount ?? '0').isZero()) ||
+    transaction.internalTransfers.some(({ amount }) => !new BigNumber(amount).isZero());
+
 const getStellarOperationMessageId = (
     transaction: WalletAccountTransaction,
 ): TranslationKey | undefined => {
     const { stellarSpecific } = transaction;
+
+    if (hasValueMovement(transaction)) {
+        return undefined;
+    }
 
     switch (stellarSpecific?.operationType) {
         case 'accountMerge':
@@ -96,6 +107,10 @@ const getStellarOperationMessageId = (
             return 'TR_STELLAR_TX_TRUSTLINE_FLAGS';
         case 'bumpSequence':
             return 'TR_STELLAR_TX_SEQUENCE_BUMPED';
+        // A liquidity-pool share has no asset code, so the detailed trustline wording below
+        // cannot be built for it and this generic one stands in.
+        case 'changeTrust':
+            return stellarSpecific.changeTrust ? undefined : 'TR_STELLAR_TX_TRUSTLINE_UPDATED';
         case 'claimClaimableBalance':
             return 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED';
         case 'createClaimableBalance':

@@ -2260,6 +2260,7 @@ export const messages = {
             stellarLiquidityPool: 'Liquidity pool operation',
             stellarOffer: 'Managed an offer',
             stellarSequenceBumped: 'Bumped account sequence',
+            stellarTrustlineUpdated: 'Updated trustline',
             stellarSetOptions: 'Changed account settings',
             stellarSponsorship: 'Changed reserve sponsorship',
             stellarTrustlineFlags: 'Changed trustline authorization',

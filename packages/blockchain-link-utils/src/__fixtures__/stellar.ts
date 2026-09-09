@@ -373,7 +373,7 @@ export const fixtures: { transformTransaction: Fixture[] } = {
             }),
         },
         {
-            description: 'liquidity pool trustline is unsupported',
+            description: 'a liquidity pool trustline is named, since it has no asset code to show',
             input: {
                 descriptor: DESCRIPTOR,
                 operations: [
@@ -386,7 +386,14 @@ export const fixtures: { transformTransaction: Fixture[] } = {
                 ],
                 tx: transaction(),
             },
-            expectedOutput: output({ type: 'unknown' }),
+            expectedOutput: output({
+                type: 'self',
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    operationType: 'changeTrust',
+                },
+            }),
         },
         {
             description: 'transaction contains text memo',
@@ -671,6 +678,42 @@ export const fixtures: { transformTransaction: Fixture[] } = {
             }),
         },
         {
+            // The mirror of the case above: the lumens arrive, so they cannot be reported as an
+            // amount with a target, which the shared shape reads as "sent".
+            description: 'a swap of an asset for lumens reports the lumens as arriving',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [
+                    pathPayment({
+                        source_asset_type: 'credit_alphanum4',
+                        source_asset_code: 'USD',
+                        source_asset_issuer: USD_ISSUER,
+                        source_amount: '25.7585344',
+                        asset_type: 'native',
+                        asset_code: undefined,
+                        asset_issuer: undefined,
+                        amount: '1.0000000',
+                    }),
+                ],
+                tx: transaction(),
+            },
+            expectedOutput: output({
+                type: 'self',
+                amount: '0',
+                internalTransfers: [
+                    { type: 'recv', from: DESCRIPTOR, to: DESCRIPTOR, amount: '10000000' },
+                ],
+                tokens: [
+                    token({ type: 'sent', from: DESCRIPTOR, to: DESCRIPTOR, amount: '257585344' }),
+                ],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    operationType: 'pathPayment',
+                },
+            }),
+        },
+        {
             description: 'a path payment to another account reports only the leg that left',
             input: {
                 descriptor: DESCRIPTOR,
@@ -828,6 +871,8 @@ export const fixtures: { transformTransaction: Fixture[] } = {
             expectedOutput: output({
                 type: 'recv',
                 amount: '4347826',
+                // The account is the one that received them, as in a plain payment
+                targets: [{ n: 0, addresses: [DESCRIPTOR], isAddress: true, amount: '4347826' }],
                 stellarSpecific: {
                     memo: undefined,
                     feeSource: DESCRIPTOR,

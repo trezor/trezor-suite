@@ -114,11 +114,32 @@ const transformMovements = ({
 
     const native = movements.find(({ asset }) => !asset);
     const nativeAmount = native ? new BigNumber(native.amount).abs().toString() : '0';
+    const isNativeIncoming = !!native && new BigNumber(native.amount).isPositive();
+    const hasAssetLeg = movements.some(({ asset }) => !!asset);
+    const other = counterparty ?? descriptor;
+
+    // Lumens arriving next to an asset leaving is the receiving side of a conversion, and
+    // `amount` with a target is how the shared transaction shape says "sent": read that way, the
+    // lumens received would render as lumens paid out. An internal transfer carries its own
+    // direction, which is what every other network's swap uses for the same reason.
+    const isNativeSwapLeg = isNativeIncoming && hasAssetLeg;
+
+    // A target names who received the lumens, which is the account itself when they arrived — the
+    // convention the plain payment path follows. Naming the counterparty either way would show a
+    // credit as a payment to someone else.
+    const nativeRecipient = isNativeIncoming ? descriptor : counterparty;
+    const nativeTargets =
+        native && !isNativeSwapLeg && nativeRecipient
+            ? [{ n: 0, addresses: [nativeRecipient], isAddress: true, amount: nativeAmount }]
+            : [];
 
     return {
         ...baseTx,
         type,
-        amount: nativeAmount,
+        amount: isNativeSwapLeg ? '0' : nativeAmount,
+        internalTransfers: isNativeSwapLeg
+            ? [{ type: 'recv' as const, from: other, to: descriptor, amount: nativeAmount }]
+            : [],
         tokens: movements.flatMap(({ asset, amount }) => {
             if (!asset) return [];
 
@@ -126,14 +147,14 @@ const transformMovements = ({
             const contract = `${asset.assetCode}-${asset.assetIssuer}`;
             // Effects name no counterparty of their own, so the issuer stands in — the same
             // convention the balance-change path uses for a mint or a burn.
-            const other = counterparty ?? asset.assetIssuer;
+            const assetOther = counterparty ?? asset.assetIssuer;
 
             return [
                 {
                     type: isOutgoing ? ('sent' as const) : ('recv' as const),
                     standard: 'STELLAR-CLASSIC' as const,
-                    from: isOutgoing ? descriptor : other,
-                    to: isOutgoing ? other : descriptor,
+                    from: isOutgoing ? descriptor : assetOther,
+                    to: isOutgoing ? assetOther : descriptor,
                     contract,
                     name: tokenDetailByMint[contract]?.name || asset.assetCode,
                     symbol: asset.assetCode,
@@ -142,10 +163,7 @@ const transformMovements = ({
                 },
             ];
         }),
-        targets:
-            native && counterparty
-                ? [{ n: 0, addresses: [counterparty], isAddress: true, amount: nativeAmount }]
-                : [],
+        targets: nativeTargets,
     };
 };
 
