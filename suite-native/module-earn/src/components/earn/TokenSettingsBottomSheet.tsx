@@ -270,7 +270,6 @@ export const TokenSettingsBottomSheet = forwardRef(
                                 <Box flex={1} alignItems="flex-end" marginLeft="sp8">
                                     <VStack spacing={0} alignItems="flex-end">
                                         <CryptoAmountFormatter
-                                            formatStyle="exact"
                                             value={balance}
                                             tokenSymbol={toTokenSymbol(
                                                 getDisplaySymbol(

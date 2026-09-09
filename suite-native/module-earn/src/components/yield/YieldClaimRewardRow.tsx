@@ -54,7 +54,6 @@ export const YieldClaimRewardRow = ({
                 />
                 <Box flexShrink={1}>
                     <CryptoAmountFormatter
-                        formatStyle="exact"
                         value={amount}
                         tokenSymbol={toTokenSymbol(tokenSymbol)}
                         maxDisplayedDecimals={tokenDecimals}

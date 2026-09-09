@@ -48,7 +48,6 @@ export const ReceiveAddressListItem = ({
             <HStack spacing="sp12" alignItems="center">
                 {isUsed ? (
                     <CryptoAmountFormatter
-                        formatStyle="exact"
                         value={formatNetworkAmount(address.received ?? '0', symbol)}
                         symbol={symbol}
                         variant="body-md"

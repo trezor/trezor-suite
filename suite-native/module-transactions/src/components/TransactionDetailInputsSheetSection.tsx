@@ -36,7 +36,6 @@ const TransactionAddressAmount = ({
         {amount &&
             (isNetworkSymbol(symbol) ? (
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     value={amount}
                     symbol={symbol}
                     isBalance={false}
@@ -46,7 +45,6 @@ const TransactionAddressAmount = ({
                 />
             ) : (
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     value={convertTokenValueToDecimal(amount, decimals ?? 0)}
                     tokenSymbol={symbol}
                     maxDisplayedDecimals={decimals}

@@ -44,7 +44,6 @@ export const TransactionDetailTokenAmount = ({
             )}
 
             <CryptoAmountFormatter
-                formatStyle="exact"
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
                 tokenSymbol={tokenTransfer.symbol}
                 maxDisplayedDecimals={tokenTransfer.decimals}

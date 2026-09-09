@@ -33,7 +33,6 @@ const ReviewOutputCryptoAmount = ({ symbol, tokenInfo, value }: ReviewOutputCryp
     if (tokenInfo !== null && value !== '') {
         return (
             <CryptoAmountFormatter
-                formatStyle="exact"
                 variant="body-sm"
                 color="contentSecondary"
                 value={convertTokenValueToDecimal(value, tokenInfo.decimals)}
@@ -52,7 +51,6 @@ const ReviewOutputCryptoAmount = ({ symbol, tokenInfo, value }: ReviewOutputCryp
 
     return (
         <CryptoAmountFormatter
-            formatStyle="exact"
             variant="body-sm"
             color="contentSecondary"
             value={value}

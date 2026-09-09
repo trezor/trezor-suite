@@ -38,7 +38,6 @@ export const FeeSummaryRow = ({
         <HStack alignItems="center" spacing="sp8">
             <VStack alignItems="flex-end" spacing="sp2">
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     variant="body-sm"
                     color="contentPrimary"
                     value={fee}

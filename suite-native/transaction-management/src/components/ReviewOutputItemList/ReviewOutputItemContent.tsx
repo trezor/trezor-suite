@@ -175,7 +175,6 @@ export const ReviewOutputItemContent = ({
 
                 return (
                     <CryptoAmountFormatter
-                        formatStyle="exact"
                         variant="body-sm"
                         color="contentPrimary"
                         textAlign="right"

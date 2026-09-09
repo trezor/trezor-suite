@@ -33,7 +33,6 @@ export const YieldWrappedNativeReceivingCard = ({
                     size="extraSmall"
                 />
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     value={amount}
                     tokenSymbol={tokenSymbol}
                     maxDisplayedDecimals={tokenDecimals}

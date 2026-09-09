@@ -34,7 +34,6 @@ export const CustomFeeContent = ({
                     isDiscreetText={false}
                 />
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     value={feeValue}
                     symbol={symbol}
                     variant="body-md"

@@ -27,7 +27,7 @@ describe('CryptoAmountFormatter', () => {
 
     it('renders exact network amount when token contract is not provided', async () => {
         const { getByTestId } = await renderWithBasicProvider(
-            <CryptoAmountFormatter value="1.239" symbol={ethSymbol} formatStyle="exact" />,
+            <CryptoAmountFormatter value="1.239" symbol={ethSymbol} />,
         );
 
         expect(getByTestId('plain-text')).toHaveTextContent('1.239 ETH');
@@ -92,7 +92,6 @@ describe('CryptoAmountFormatter', () => {
             <CryptoAmountFormatter
                 value="0.000000000000000001"
                 symbol={ethSymbol}
-                formatStyle="exact"
                 maxDisplayedDecimals={18}
                 tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
                 tokenSymbol="USDC"
@@ -106,7 +105,6 @@ describe('CryptoAmountFormatter', () => {
         const { getByTestId } = await renderWithBasicProvider(
             <CryptoAmountFormatter
                 value=""
-                formatStyle="exact"
                 tokenSymbol={'USDC' as TokenSymbol}
                 isPhishingTransaction
             />,

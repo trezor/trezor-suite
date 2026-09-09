@@ -241,7 +241,6 @@ export const StakingTransactionDataReviewScreen = ({
             accountSymbol={account.symbol}
             amount={
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     value={pendingAmountInBaseUnits}
                     symbol={account.symbol}
                     color="contentPrimary"

@@ -43,7 +43,6 @@ export const TokenInfoCard = ({
             coinName={name}
             cryptoAmount={
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     value={convertTokenValueToDecimal(balance, decimals ?? 0)}
                     tokenSymbol={tokenSymbol}
                     maxDisplayedDecimals={decimals}

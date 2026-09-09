@@ -114,7 +114,6 @@ export const StakingManagementPendingStakeModal = ({
                 {!!symbol && (
                     <VStack style={applyStyle(amountsStyle)} spacing="sp2">
                         <CryptoAmountFormatter
-                            formatStyle="exact"
                             value={totalStakePending}
                             symbol={symbol}
                             maxDisplayedDecimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}

@@ -114,7 +114,6 @@ export const StakingManagementUnstakingModal = ({
                 {!!symbol && (
                     <VStack style={applyStyle(amountsStyle)} spacing="sp2">
                         <CryptoAmountFormatter
-                            formatStyle="exact"
                             value={unstakingBalance}
                             symbol={symbol}
                             maxDisplayedDecimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}

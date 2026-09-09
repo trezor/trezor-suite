@@ -118,7 +118,6 @@ export const UtxoCard = ({
                         <VStack flex={1}>
                             <HStack alignItems="center">
                                 <CryptoAmountFormatter
-                                    formatStyle="exact"
                                     color="contentPrimary"
                                     variant="body-md-strong"
                                     value={utxo.amount}

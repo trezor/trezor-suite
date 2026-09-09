@@ -40,7 +40,6 @@ export const YieldDepositApprovedAmountCard = ({
                 ) : null}
                 {!isApprovedAmountUnlimited && approvedAmount ? (
                     <CryptoAmountFormatter
-                        formatStyle="exact"
                         value={approvedAmount}
                         tokenSymbol={toTokenSymbol(tokenSymbol)}
                         maxDisplayedDecimals={tokenDecimals}

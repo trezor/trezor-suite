@@ -76,7 +76,6 @@ const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
                 isDiscreetText={false}
             />
             <CryptoAmountFormatter
-                formatStyle="exact"
                 variant="body-sm"
                 color="contentSecondary"
                 value={amount}
@@ -124,7 +123,6 @@ const TokenSummary = ({
             </VStack>
             <VStack spacing="sp4" alignItems="flex-end">
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     variant="body-sm-strong"
                     color="contentPrimary"
                     maxDisplayedDecimals={tokenDecimals ?? undefined}
@@ -133,7 +131,6 @@ const TokenSummary = ({
                     isDiscreetText={false}
                 />
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     variant="body-sm"
                     color="contentSecondary"
                     value={mainnetFee}

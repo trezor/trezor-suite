@@ -43,7 +43,6 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
             coinName={getNetwork(symbol).name}
             cryptoAmount={
                 <CryptoAmountFormatter
-                    formatStyle="exact"
                     value={balance}
                     symbol={symbol}
                     isDiscreetText={false}

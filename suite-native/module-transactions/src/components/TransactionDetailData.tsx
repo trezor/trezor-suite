@@ -161,7 +161,6 @@ export const TransactionDetailData = ({
                     <TransactionDetailRow title={translate('transactions.detail.feeLabel')}>
                         <Box alignItems="flex-end">
                             <CryptoAmountFormatter
-                                formatStyle="exact"
                                 value={transaction.fee}
                                 symbol={transaction.symbol}
                                 variant="body-sm"

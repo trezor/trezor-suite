@@ -21,7 +21,7 @@ path when token metadata is provided.
 ### Compact vs. exact
 
 - **Compact** — use when the amount is shown next to a fiat value (balances, lists). Rounds, applies money-like formatting for stablecoins, abbreviates large amounts (M/B), and shows a dust threshold.
-- **Exact** — use when there is no nearby fiat value or precision matters (send, receive, review, fees, transaction detail). Truncates instead of rounding; precision is capped by `maxDisplayedDecimals`.
+- **Exact** — the default. Use when there is no nearby fiat value or precision matters (send, receive, review, fees, transaction detail). Truncates instead of rounding; precision is capped by `maxDisplayedDecimals`.
 
 ## Usage
 
