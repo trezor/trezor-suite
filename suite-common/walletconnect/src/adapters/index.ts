@@ -22,6 +22,7 @@ import { type TronRequestThunkDeps, type TronRequestThunkState, tronAdapter } fr
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
+    type WalletConnectNamespace,
 } from '../walletConnectTypes';
 
 export type WalletConnectRequestThunkState = BitcoinRequestThunkState &
@@ -49,7 +50,7 @@ export const getAdapterByMethod = (method: string) =>
 export const getAdapterByNetwork = (networkType: string) =>
     adapters.find(adapter => adapter.networkType === networkType);
 
-export const getNamespaces = (accounts: Account[]) => {
+export const getNamespaces = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
     const accountsDeduped: Account[] = [];
     accounts.forEach(account => {
         if (
