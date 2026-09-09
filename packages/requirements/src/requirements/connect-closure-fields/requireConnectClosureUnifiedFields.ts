@@ -96,17 +96,29 @@ type UnifiedField = {
  * share. Each field either shares one value across the closure or is missing on
  * the packages that lag behind; both are treated as drift and aligned on fix.
  *
- * This list is intentionally conservative: it only carries fields that are
- * release-critical and already unified across the closure today. Metadata fields
- * such as `bugs` and `author` are good future additions once the packages that
- * currently lack them are filled in. Fields that legitimately vary per package
- * (`license`, `homepage`, `publishConfig`, `type`, `sideEffects`) are excluded.
+ * A field only belongs here if it (1) is release/publish metadata, (2) has a
+ * single canonical value the whole family should share, and (3) is safe to
+ * rewrite. Deliberately excluded:
+ * - `license` — NOT uniform for a real reason: `@trezor/connect` and several
+ *   others are under the repository's TREZOR REFERENCE SOURCE LICENSE (via
+ *   "SEE LICENSE IN LICENSE.md"), while the utility packages are "MIT". These are
+ *   two different licenses, so unifying to the most common value (MIT) would
+ *   mis-license the restricted packages. License changes need human review.
+ * - `type`, `sideEffects` — build/bundler semantics, not release metadata.
+ * - `homepage`, `main`, `exports`, `publishConfig`, `browser`, `keywords`, … —
+ *   inherently per-package.
+ * - `dependencies` / `devDependencies` versions are covered by
+ *   requireUnifiedDependencyVersions.
  */
 const UNIFIED_FIELDS: ReadonlyArray<UnifiedField> = [
     // Release lockstep — see #30575.
     { name: 'version', pickCanonical: values => pickCanonicalVersion(values.map(String)) },
     // NPM provenance requires a repository field on every published package — see #30591.
     { name: 'repository', pickCanonical: mostCommon },
+    // Issue tracker; every published package should point at the same tracker.
+    { name: 'bugs', pickCanonical: mostCommon },
+    // Package author; uniform across the Trezor-published family.
+    { name: 'author', pickCanonical: mostCommon },
 ];
 
 type FieldDrift = {
