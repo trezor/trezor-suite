@@ -3,11 +3,9 @@ import { useState } from 'react';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { useServices } from '@suite-common/dependency-injection';
-import { selectDeviceAuthenticityByDeviceId } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { type TrezorDevice } from '@suite-common/suite-types';
+import { type StoredAuthenticateDeviceResult, type TrezorDevice } from '@suite-common/suite-types';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 
@@ -33,13 +31,14 @@ type DeviceAuthenticityProps = {
 };
 
 export const DeviceAuthenticityStep = ({ device, goToNext }: DeviceAuthenticityProps) => {
-    const selectedDeviceAuthenticity = useSelector(state =>
-        selectDeviceAuthenticityByDeviceId(state, device?.id),
-    );
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { dispatch } = useServices(selectDispatch);
     const [isLoading, setIsLoading] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    // The outcome of the check this screen ran, as the call itself reported it. The store keeps it
+    // too, but keyed by device id, and reading it back that way only works if the id the check ran
+    // under is the one this screen is showing — which is a question the call's own result does not
+    // raise.
+    const [checkResult, setCheckResult] = useState<StoredAuthenticateDeviceResult | null>(null);
     const { isBelowTablet } = useLayoutSize();
 
     if (!device) return null;
@@ -49,8 +48,8 @@ export const DeviceAuthenticityStep = ({ device, goToNext }: DeviceAuthenticityP
             request.code === 'ButtonRequest_Other' || // Device Authenticity prompt
             request.code === 'ButtonRequest_PinEntry', // Device can be locked, and we can get Pin Request first
     );
-    const isCheckFailed = isSubmitted && selectedDeviceAuthenticity?.valid === false;
-    const isCheckSuccessful = isSubmitted && selectedDeviceAuthenticity?.valid === true;
+    const isCheckFailed = checkResult?.valid === false;
+    const isCheckSuccessful = checkResult?.valid === true;
 
     const getHeadingText = () => {
         if (isCheckSuccessful) {
@@ -79,14 +78,17 @@ export const DeviceAuthenticityStep = ({ device, goToNext }: DeviceAuthenticityP
 
         const authenticateDevice = async () => {
             setIsLoading(true);
-            await dispatch(
+
+            const result = await dispatch(
                 checkDeviceAuthenticityThunk({
+                    device,
                     allowDebugKeys: isDebugModeActive,
                     skipSuccessToast: true,
                 }),
             );
+
             setIsLoading(false);
-            setIsSubmitted(true);
+            setCheckResult(result.payload ?? null);
         };
 
         const handleClick = () => {

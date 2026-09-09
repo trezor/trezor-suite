@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
@@ -56,14 +56,18 @@ export const Onboarding = () => {
         });
     }, [activeStepId, analytics]);
 
-    const StepComponent = useMemo(() => {
+    // Elements rather than component types. A step rendered through a component *type* built here
+    // would be a new type on every render that changes its inputs — the device object changes
+    // throughout a step, as button requests come and go — and React unmounts and remounts on a
+    // changed type, taking the step's own state with it.
+    const renderStep = () => {
         switch (activeStepId) {
             case STEP.ID_FIRMWARE_STEP:
                 // Firmware installation
-                return FirmwareStep;
+                return <FirmwareStep />;
             case STEP.ID_AUTHENTICATE_DEVICE_STEP:
                 // Device authenticity check
-                return () => (
+                return (
                     <DeviceAuthenticityStep
                         device={onboardedDevice}
                         goToNext={() => goToNextStep()}
@@ -71,35 +75,33 @@ export const Onboarding = () => {
                 );
             case STEP.ID_TUTORIAL_STEP:
                 // Device tutorial
-                return DeviceTutorialStep;
+                return <DeviceTutorialStep />;
             case STEP.ID_CREATE_OR_RECOVER:
                 // Selection between a new seed or seed recovery
-                return CreateOrRecoverStep;
+                return <CreateOrRecoverStep />;
             case STEP.ID_BACKUP_TYPE_STEP:
                 // Selecting a backup type
-                return BackupTypeStep;
+                return <BackupTypeStep />;
             case STEP.ID_RECOVERY_STEP:
                 // b) Seed recovery
-                return RecoveryStep;
+                return <RecoveryStep />;
             case STEP.ID_SECURITY_STEP:
                 // Wallet creation + backup (resetDevice with skip_backup: false)
-                return SecurityStep;
+                return <SecurityStep />;
             case STEP.ID_SET_PIN_STEP:
                 // Pin setup
-                return PinStep;
+                return <PinStep />;
             case STEP.ID_FINAL_STEP:
                 // Onboarding success
-                return FinalStep;
+                return <FinalStep />;
             default:
                 return exhaustive(activeStepId);
         }
-    }, [activeStepId, goToNextStep, onboardedDevice]);
+    };
 
     return (
         <OnboardingLayout>
-            <UnexpectedState>
-                <StepComponent />
-            </UnexpectedState>
+            <UnexpectedState>{renderStep()}</UnexpectedState>
         </OnboardingLayout>
     );
 };

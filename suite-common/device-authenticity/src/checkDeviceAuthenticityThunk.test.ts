@@ -73,7 +73,7 @@ const deviceWithLockedBootloader = getDevice(true);
 
 type Fixture = {
     description: string;
-    device: TrezorDevice | undefined;
+    device: TrezorDevice;
     mockedConnectResponse?: Awaited<Response<AuthenticateDeviceResult>>;
     expectedFulfilled: boolean;
     expectedToastType?: ToastPayload['type'];
@@ -95,11 +95,6 @@ const fixtures: Fixture[] = [
         mockedConnectResponse: verificationSuccessResponse,
         expectedFulfilled: true,
         expectedResult: { valid: true, ...verificationSuccessResponse.payload },
-    },
-    {
-        description: 'Exception - missing device',
-        device: undefined,
-        expectedFulfilled: false,
     },
     {
         description: 'No result - aborted on device or some other error',
@@ -142,6 +137,7 @@ describe('Check device authenticity', () => {
             testMocks.setTrezorConnectFixtures(f.mockedConnectResponse);
             await store.dispatch(
                 checkDeviceAuthenticityThunk({
+                    device: f.device,
                     allowDebugKeys: false,
                     skipSuccessToast: !f.expectedToastType,
                 }),

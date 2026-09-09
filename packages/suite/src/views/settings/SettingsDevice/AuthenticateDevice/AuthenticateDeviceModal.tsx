@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
@@ -22,12 +23,18 @@ export const AuthenticateDeviceModal = ({ handleClose }: AuthenticateDeviceModal
     const [isLoading, setIsLoading] = useState(false);
     const { dispatch } = useServices(selectDispatch);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    // The device settings are the selected device's, so that is the device this checks.
+    const device = useSelector(selectSelectedDevice);
     const isCheckFailed = result?.valid === false;
 
     const handleClick = async () => {
+        if (!device) {
+            return;
+        }
+
         setIsLoading(true);
         const result = await dispatch(
-            checkDeviceAuthenticityThunk({ allowDebugKeys: isDebugModeActive }),
+            checkDeviceAuthenticityThunk({ device, allowDebugKeys: isDebugModeActive }),
         );
         if (result.payload?.valid === true) {
             return handleClose();
