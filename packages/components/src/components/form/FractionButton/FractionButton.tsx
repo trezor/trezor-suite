@@ -18,6 +18,7 @@ export const FractionButton = ({
 }: FractionButtonProps) => (
     <Tooltip key={id} content={tooltip} cursor="pointer">
         <Button
+            data-component="FractionButton"
             intent="neutral"
             type="button"
             size="small"

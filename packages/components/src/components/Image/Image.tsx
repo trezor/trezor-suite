@@ -97,5 +97,12 @@ export const Image = ({ image, imageSrc, ...rest }: ImageProps) => {
     const imageHTMLProps = getImageHTMLProps(rest);
     const sourceProps = image ? getSourceProps(image) : { src: imageSrc };
 
-    return <StyledImage {...sourceProps} {...imageHTMLProps} {...frameProps} />;
+    return (
+        <StyledImage
+            {...sourceProps}
+            {...imageHTMLProps}
+            {...frameProps}
+            data-component="Image"
+        />
+    );
 };

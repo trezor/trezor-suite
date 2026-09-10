@@ -89,7 +89,7 @@ export const LoadingContent = ({
     );
 
     return (
-        <LoadingWrapper>
+        <LoadingWrapper data-component="LoadingContent">
             {!isLoadingPositionReversed && <SpinnerContainer />}
             {slideContent ? (
                 <ContentCell $isLoading={isLoading} $size={size}>

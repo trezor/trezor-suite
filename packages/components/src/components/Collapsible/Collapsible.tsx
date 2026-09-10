@@ -38,7 +38,7 @@ export const Collapsible = ({
                 gap,
             }}
         >
-            <Container data-testid={dataTest} aria-expanded={isOpen ?? uncontrolledIsOpen}>
+            <Container data-component="Collapsible" data-testid={dataTest} aria-expanded={isOpen ?? uncontrolledIsOpen}>
                 {children}
             </Container>
         </CollapsibleContext.Provider>

@@ -32,7 +32,7 @@ export const ShortcutBadge = ({ shortcut, isInverse = false }: ShortcutBadgeProp
     const isMac = isMacOs();
 
     return (
-        <Wrapper>
+        <Wrapper data-component="ShortcutBadge">
             <Text as="div" typographyStyle="body-xs" case="uppercase">
                 <Row gap={2}>
                     {shortcut.map((key, index) => {

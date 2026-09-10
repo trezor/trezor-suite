@@ -79,7 +79,7 @@ export const Table = ({
                 <ScrollContainer ref={scrollElementRef}>
                     <ScrollContent>
                         <ScrollSentinels />
-                        <Container {...makePropsTransient({ margin })}>
+                        <Container data-component="Table" {...makePropsTransient({ margin })}>
                             {colWidths && (
                                 <colgroup>
                                     {colWidths.map((widths, index) => (

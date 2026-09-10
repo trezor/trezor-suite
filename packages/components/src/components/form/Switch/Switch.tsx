@@ -120,6 +120,7 @@ export const Switch = ({
             gap={mapSizeToLabelContainerGap(size)}
             isReversed={labelPosition === 'start'}
             margin={margin}
+            data-component="Switch"
             onClick={handleContainerClick}
         >
             <Container

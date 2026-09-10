@@ -69,11 +69,13 @@ export type ButtonProps = CommonButtonProps &
         iconRight?: IconComponent;
         children: React.ReactNode;
         'data-testid'?: string;
+        'data-component'?: string;
         shortcut?: Keys[];
     };
 
 export const Button = ({
     'data-testid': dataTestId,
+    'data-component': dataComponent = 'Button',
     children,
     iconLeft,
     iconRight,
@@ -93,7 +95,7 @@ export const Button = ({
 
     return (
         <Container
-            data-component="Button"
+            data-component={dataComponent}
             data-testid={dataTestId}
             $size={size}
             $priority={priority}

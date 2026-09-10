@@ -69,6 +69,7 @@ export const Dropdown = forwardRef(
             <Popover
                 ref={popoverRef}
                 placement={placement}
+                data-component="Dropdown"
                 content={
                     <Menu
                         ref={menuRef}

@@ -71,7 +71,7 @@ export const Textarea = ({
     }, {} as TextareaHTMLProps);
 
     return (
-        <FormCell {...formCellProps}>
+        <FormCell {...formCellProps} data-component="Textarea">
             <InputWrapper hasError={hasError} isDisabled={isDisabled}>
                 <StyledTextarea
                     $hasLabel={!!label}

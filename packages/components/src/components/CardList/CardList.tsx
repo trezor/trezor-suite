@@ -45,7 +45,7 @@ export type CardListProps = AllowedCardListFrameProps &
     >;
 
 export const CardList = ({ children, typographyStyle = 'body-md', ...rest }: CardListProps) => (
-    <Card paddingType="none" {...rest}>
+    <Card paddingType="none" {...rest} data-component="CardList">
         <Text typographyStyle={typographyStyle} as="div" width="100%">
             <Column gap={0} hasDivider>
                 {children}

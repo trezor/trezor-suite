@@ -155,7 +155,7 @@ export const Select = ({
     );
 
     return (
-        <FormCell {...formCellProps}>
+        <FormCell {...formCellProps} data-component="Select">
             <ReactSelect
                 ref={selectRef}
                 openMenuOnFocus={openMenuOnFocus}

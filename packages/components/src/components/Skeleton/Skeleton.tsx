@@ -90,5 +90,5 @@ export const Skeleton = ({ type = 'rectangle', animate, ...rest }: SkeletonProps
         allowedSkeletonFrameProps,
     );
 
-    return <StyledSkeleton $animate={animate} {...frameProps} />;
+    return <StyledSkeleton data-component="Skeleton" $animate={animate} {...frameProps} />;
 };

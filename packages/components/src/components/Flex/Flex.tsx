@@ -140,6 +140,7 @@ export type FlexProps = AllowedFrameProps &
         hasDivider?: boolean;
         dividerColor?: Color;
         'data-testid'?: string;
+        'data-component'?: string;
         as?: string;
         ref?: React.RefObject<HTMLElement | null>;
     };
@@ -158,6 +159,7 @@ export const Flex = ({
     order,
     isReversed = false,
     'data-testid': dataTestId,
+    'data-component': dataComponent,
     as = 'div',
     hasDivider = false,
     dividerColor,
@@ -172,6 +174,7 @@ export const Flex = ({
     return (
         <Container
             data-testid={dataTestId}
+            data-component={dataComponent}
             {...makePropsTransient({
                 rowGap,
                 columnGap,

@@ -49,7 +49,7 @@ export const IconCircle = ({ icon, size = 40, intent = 'brand', ...rest }: IconC
     const frameProps = pickAndPrepareFrameProps(rest, allowedIconCircleFrameProps);
 
     return (
-        <Circle $size={size} $intent={intent} {...frameProps}>
+        <Circle $size={size} $intent={intent} data-component="IconCircle" {...frameProps}>
             <Icon as={icon} size={mapSizeToIconSize(size)} intent={intent} priority="secondary" />
         </Circle>
     );
