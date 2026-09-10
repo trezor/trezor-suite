@@ -402,16 +402,7 @@ impl AdapterManager {
     // get Peripheral from btleplug Adapter
     pub async fn get_peripheral_or_die(&self, id: &String) -> Result<Peripheral, AdapterError> {
         let adapter = self.get_adapter_or_die().await?;
-        let peripherals = adapter.peripherals().await?;
-        let id_str = id.to_string();
-        let peripheral = peripherals
-            .into_iter()
-            .find(|x| x.id().to_string() == id_str);
-
-        match peripheral {
-            Some(device) => Ok(device),
-            None => Err(AdapterError::PeripheralNotFound),
-        }
+        Ok(adapter.peripheral(id).await?)
     }
 
     // return array of TrezorDevice sorted by discovery_timestamp
