@@ -15,6 +15,8 @@ export const resolveCalldata = ({
     amountInSubunits: string;
     userCallDataHex: string;
 }): CalldataResult => {
+    if (userCallDataHex) return { data: userCallDataHex };
+
     if (token) {
         const result = Calldata.tron.trc20.transfer.encode({
             to: outputAddress,
@@ -24,8 +26,6 @@ export const resolveCalldata = ({
 
         return { data: result.data.slice(2) };
     }
-
-    if (userCallDataHex) return { data: userCallDataHex };
 
     return { data: null };
 };

@@ -117,7 +117,8 @@ export const TransactionReviewModalBodyInner = ({
     const { serializedTx } = txInfoState;
     const routeName = useSelector(selectRouteName);
 
-    const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
+    const isApprovalTx =
+        networkType === 'ethereum' && isEvmApprovalTx(precomposedForm.transactionData);
     // A contract call's single "address" row is the contract, not a payment recipient, so the
     // step-back heuristic below must not treat its ConfirmOutput as a re-confirmed output. A vault
     // deposit otherwise matches every condition and walks the review backwards mid-signing.

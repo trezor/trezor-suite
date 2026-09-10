@@ -72,10 +72,13 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         const amountForEstimation =
             isSendMax || !('amount' in output) || !output.amount ? fallbackAmount : output.amount;
 
+        const userCallDataHex = formState.transactionData
+            ? formState.transactionData.replace(/^0x/, '')
+            : '';
+
         const ownerHex = tronUtils.tronAddressToHex(account.descriptor);
-        const recipientHex = token
-            ? tronUtils.tronAddressToHex(token.contract)
-            : tronUtils.tronAddressToHex(to);
+        const contractRecipient = userCallDataHex || !token ? to : token.contract;
+        const recipientHex = tronUtils.tronAddressToHex(contractRecipient);
 
         if (!ownerHex || !recipientHex) {
             return rejectWithValue({
@@ -88,10 +91,6 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         // to what we'd get with real block data.
         const DUMMY_BLOCK_HASH = '0'.repeat(64);
         const DUMMY_BLOCK_HEIGHT = 0;
-
-        const userCallDataHex = formState.transactionData
-            ? formState.transactionData.replace(/^0x/, '')
-            : '';
 
         const calldata = resolveCalldata({
             token,
@@ -152,7 +151,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                       symbol: account.symbol,
                       identity: getAccountIdentity(account),
                       from: account.descriptor,
-                      to: token ? token.contract : to,
+                      to: contractRecipient,
                       data: calldata.data,
                   })
                 : computeBandwidthFeeLevel({
@@ -253,9 +252,8 @@ export const signTronSendFormTransactionThunk = createThunk<
             (token || userCallDataHex) && feeLimitSource ? Number(feeLimitSource) : undefined;
 
         const ownerHex = tronUtils.tronAddressToHex(selectedAccount.descriptor);
-        const recipientHex = token
-            ? tronUtils.tronAddressToHex(token.contract)
-            : tronUtils.tronAddressToHex(output.address);
+        const contractRecipient = userCallDataHex || !token ? output.address : token.contract;
+        const recipientHex = tronUtils.tronAddressToHex(contractRecipient);
 
         if (!ownerHex || !recipientHex) {
             return rejectWithValue({
