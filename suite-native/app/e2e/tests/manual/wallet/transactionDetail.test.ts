@@ -18,7 +18,6 @@ describe.skip('Manual', () => {
                 'Open the inputs & outputs sheet and verify all addresses and amounts are listed',
                 'Open the parameters sheet and verify txid, fee and other parameters are correct',
                 'Open the compare values and verify crypto and historical fiat values are displayed',
-                'For an EVM transaction with data, verify the transaction data is displayed',
                 'Verify the block explorer link opens the transaction in the explorer',
             ],
             category: TestCategory.Accounts,
