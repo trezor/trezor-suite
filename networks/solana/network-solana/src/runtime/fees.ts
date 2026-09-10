@@ -38,6 +38,7 @@ import type {
     TransactionMessageWithFeePayer,
     V0CompiledTransactionMessage,
 } from '../types';
+import { V1_NOT_SUPPORTED_MESSAGE, isV1Transaction } from './signing';
 
 const DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS = BigInt(300_000); // micro-lamports, value taken from other wallets
 
@@ -184,6 +185,13 @@ export const getFees = async (
     newAccountProgramName: AccountProgramName | undefined,
     api: SolanaAPI,
 ) => {
+    // kit decodes v1 happily, but into a message carrying instructionHeaders/instructionPayloads
+    // rather than instructions, which the fee helpers below read. Without this the caller gets a
+    // TypeError from deep inside them instead of the reason, and never reaches the signing guard.
+    if (isV1Transaction(messageHex)) {
+        throw new Error(V1_NOT_SUPPORTED_MESSAGE);
+    }
+
     const transaction = pipe(messageHex, getBase16Encoder().encode, getTransactionDecoder().decode);
     const message = pipe(
         transaction.messageBytes,
