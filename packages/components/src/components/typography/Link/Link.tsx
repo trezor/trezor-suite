@@ -46,9 +46,10 @@ export const Link = ({
     onClick,
     'data-testid': dataTest,
     children,
+    typographyStyle,
     ...rest
 }: LinkProps) => {
-    const textProps = pickAndPrepareTextProps(rest, allowedTextTextProps);
+    const textProps = pickAndPrepareTextProps({ ...rest, typographyStyle }, allowedTextTextProps);
 
     return (
         <A
@@ -56,6 +57,7 @@ export const Link = ({
             target={target ?? '_blank'}
             rel="noreferrer noopener"
             data-testid={dataTest}
+            data-typography-style={typographyStyle}
             onClick={(e: MouseEvent<HTMLAnchorElement>) => {
                 if (onClick !== undefined) {
                     e.stopPropagation();
