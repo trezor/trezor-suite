@@ -47,15 +47,19 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => 
                         assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
                     },
                 });
-                await tradingPage.fees.switchToCustom();
+            });
+
+            await test.step('Set a custom fee on the review step', async () => {
+                await tradingPage.swapBestOfferButton.click();
+                await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
+                await tradingPage.fees.openNetworkFeeModal();
+                await tradingPage.fees.switchModeButton('custom').click();
                 await tradingPage.fees.customInput.fill(customFee);
                 feeRate = await tradingPage.fees.getBitcoinFeeRate('custom');
-                await tradingPage.fees.waitToBeCalculated();
+                await tradingPage.fees.confirmNetworkFeeModal();
             });
 
             await test.step('Continue Swap flow towards Send section', async () => {
-                await tradingPage.swapBestOfferButton.click();
-                await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
                 await tradingPage.confirmation.openConfirmAndSendModal();
                 await expect(devicePrompt.header.accountLabel).toHaveText('Bitcoin #1');
                 await devicePrompt.waitForPromptAndClick();

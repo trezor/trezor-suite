@@ -100,7 +100,12 @@ export const TradingExchangeNetworkFeeModal = ({
                         >
                             <Translation id="TR_CONFIRM" />
                         </Modal.Button>
-                        <Modal.Button intent="neutral" priority="secondary" onClick={onClose}>
+                        <Modal.Button
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={onClose}
+                            data-testid="@trading/network-fee-modal/cancel"
+                        >
                             <Translation id="TR_CANCEL" />
                         </Modal.Button>
                     </>
