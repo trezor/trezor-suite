@@ -48,6 +48,7 @@ type RuleOptions = {
 };
 
 const defaultTypeNameSuffixes = ['State', 'Deps'];
+const maxTypeComparisonDepth = 32;
 
 const isInsideTypeNode = (node: ts.Node) => {
     let currentNode: ts.Node | undefined = node.parent;
@@ -455,6 +456,12 @@ const areTypesCollectivelyAssignable = (
     checker: ts.TypeChecker,
     visitedTypes = new Set<ts.Type>(),
 ): boolean => {
+    if (visitedTypes.size >= maxTypeComparisonDepth) {
+        // Recursive generics can create a new type at every level, bypassing cycle detection.
+        // Stop before further checker calls and keep the member when this proof is too deep.
+        return false;
+    }
+
     if (
         (targetType.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) !== 0 ||
         sourceTypes.some(sourceType => checker.isTypeAssignableTo(sourceType, targetType))

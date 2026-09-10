@@ -123,6 +123,10 @@ The complete alias is kept when the implementation contains an ambiguous use, in
 Contracts with no observed runtime usages are also ignored. Other tooling is better suited to finding
 entirely unused declarations.
 
+Structural comparisons stop after 32 levels. Recursive generics can produce a different type at every
+level, so detecting repeated types alone does not prevent a stack overflow. When the depth limit is
+reached, the comparison cannot prove that a member is removable and the rule keeps it.
+
 ### Type-aware execution
 
 The rule requires TypeScript parser services and reuses their existing `Program` and `TypeChecker`. It
