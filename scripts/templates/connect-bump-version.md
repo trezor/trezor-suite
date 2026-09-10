@@ -4,10 +4,8 @@ Automatically created Connect release version bump.
 
 ## @trezor/connect bump version
 
-- [x] Bump @trezor/connect and @trezor/connect-web version using `yarn workspace @trezor/connect version:<beta|patch|minor|major>`
-- [x] Bump all connect dependencies that need to be released into npm. If unsure run `yarn tsx check-npm-dependencies.ts <package_name> <semver>`. Please note that this script will report unreleased dependencies even for changes that do not affect runtime (READMEs etc.)
-- [ ] Make sure [CHANGELOG](https://github.com/trezor/trezor-suite/blob/npm-release/connect/packages/connect/CHANGELOG.md) file has been updated @mroz22
-- [ ] Changelogs checked
-- [ ] Confirm that this release does not introduce any breaking changes @mroz22
+- [x] **Done by bot:** Bump @trezor/connect, @trezor/connect-web, @trezor/connect-webextension and @trezor/connect-mobile versions using `yarn workspace @trezor/connect version:<patch|prepatch|minor|preminor|prerelease>`.
+- [x] **Done by bot:** Bump Connect dependencies selected for release (see the package checklist in the PR comments). Packages may be included even for changes that do not affect runtime (READMEs etc.).
+- [ ] Review `packages/connect/CHANGELOG.md` and any updated dependency changelogs, and confirm that any breaking changes are intentional and documented. @szymonlesisz @hannsek @martykan @marekrjpolak @mroz22 @evgenysl
 - [ ] Contact 3rd parties via dedicated Slack channel
 - [ ] Merge this PR into develop
