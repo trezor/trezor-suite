@@ -197,11 +197,3 @@ export const getFirmwareReleaseConfig = async (firmwareChannel?: FirmwareChannel
         isRemote: false,
     };
 };
-
-export const getOnlyLocalFirmwareReleaseConfig = (): {
-    config: FirmwareReleaseConfig;
-    isRemote: false;
-} => ({
-    config: firmwareReleaseConfigAssets,
-    isRemote: false,
-});
