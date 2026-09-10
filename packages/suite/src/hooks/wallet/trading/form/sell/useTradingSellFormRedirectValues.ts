@@ -8,15 +8,15 @@ import {
     type TradingCountryCode,
     type TradingSellFormProps,
     buildTradingBaseCurrencyOptionFromFiat,
+    createAssetOptionFromCryptoId,
     getDefaultCountry,
     getDefaultCountrySubdivision,
     selectTradingComposedTransactionInfo,
-    useTradingAssets,
+    selectTradingInfo,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
-import { useCurrentRef } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
@@ -26,7 +26,7 @@ export const useTradingSellFormRedirectValues = (
     quotesRequest: SellFiatTradeQuoteRequest | undefined,
 ): TradingSellFormProps | null => {
     const { composed, selectedFee } = useSelector(selectTradingComposedTransactionInfo);
-    const { createAssetOptionFromCryptoId } = useTradingAssets();
+    const { coins, platforms } = useSelector(selectTradingInfo);
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const findAccount = useCallback(
         (assetOption: TradingAssetOption) =>
@@ -50,10 +50,13 @@ export const useTradingSellFormRedirectValues = (
             }),
         [accounts],
     );
-    const findAccountRef = useCurrentRef(findAccount);
     const sendCrypto = useMemo(() => {
-        const assetOption = createAssetOptionFromCryptoId(quotesRequest?.cryptoCurrency);
-        const account = findAccountRef.current(assetOption);
+        const assetOption = createAssetOptionFromCryptoId({
+            coins,
+            platforms,
+            cryptoId: quotesRequest?.cryptoCurrency,
+        });
+        const account = findAccount(assetOption);
 
         if (!account) return null;
 
@@ -64,7 +67,7 @@ export const useTradingSellFormRedirectValues = (
                 accountKey: account.key,
             } satisfies TradingAssetSellOption,
         };
-    }, [createAssetOptionFromCryptoId, findAccountRef, quotesRequest?.cryptoCurrency]);
+    }, [coins, findAccount, platforms, quotesRequest?.cryptoCurrency]);
 
     const { address, token } = resolveAddressAndToken(
         sendCrypto?.account,

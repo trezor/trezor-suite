@@ -2,29 +2,27 @@ import { type Coins, type CryptoId } from 'invity-api';
 
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 
-import { useTradingAssets } from './useTradingAssets';
+import { resolveAssetTokenOption } from './tradingAssets';
 import coins from '../__fixtures__/coins.json';
-import { createTradingTestState, renderHookWithTradingStore } from '../test-utils/testUtils';
 
 const AUSDC_CONTRACT = '0x98c23e9d8f34fefb1b7bd6a91b7ff122f4e16f5c';
 const UNKNOWN_TOKEN_CONTRACT = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
 const ethSymbol = toNetworkSymbolNonTestnet('eth');
 
-const renderHook = (preloadedCoins: Coins | null = coins as Coins) =>
-    renderHookWithTradingStore(() => useTradingAssets(), {
-        preloadedState: createTradingTestState({
-            info: {
-                coins: preloadedCoins ?? undefined,
-                platforms: undefined,
-            },
-        }),
+const resolveToken = (
+    token: Parameters<typeof resolveAssetTokenOption>[0]['token'],
+    loadedCoins: Coins | null = coins as Coins,
+) =>
+    resolveAssetTokenOption({
+        coins: loadedCoins ?? undefined,
+        networkSymbol: ethSymbol,
+        platforms: undefined,
+        token,
     });
 
 describe('resolveAssetTokenOption', () => {
     it('uses invity symbol when token is known to invity', () => {
-        const { result } = renderHook();
-
-        const option = result.current.resolveAssetTokenOption(ethSymbol, {
+        const option = resolveToken({
             contract: AUSDC_CONTRACT,
             symbol: 'aEthUSDC',
             name: 'Aave Ethereum USDC',
@@ -40,9 +38,7 @@ describe('resolveAssetTokenOption', () => {
     });
 
     it('falls back to blockbook symbol when token is unknown to invity', () => {
-        const { result } = renderHook();
-
-        const option = result.current.resolveAssetTokenOption(ethSymbol, {
+        const option = resolveToken({
             contract: UNKNOWN_TOKEN_CONTRACT,
             symbol: 'aEthUSDC',
             name: 'Aave Ethereum USDC',
@@ -57,24 +53,23 @@ describe('resolveAssetTokenOption', () => {
     });
 
     it('falls back to blockbook symbol when invity coins are not loaded', () => {
-        const { result } = renderHook(null);
-
-        const option = result.current.resolveAssetTokenOption(ethSymbol, {
-            contract: AUSDC_CONTRACT,
-            symbol: 'aEthUSDC',
-            name: 'Aave Ethereum USDC',
-        });
+        const option = resolveToken(
+            {
+                contract: AUSDC_CONTRACT,
+                symbol: 'aEthUSDC',
+                name: 'Aave Ethereum USDC',
+            },
+            null,
+        );
 
         expect(option.symbol).toBe('aEthUSDC');
         expect(option.contractAddress).toBe(AUSDC_CONTRACT);
     });
 
     it('returns consistent cryptoId regardless of symbol source', () => {
-        const { result } = renderHook();
-
         const cryptoId = `ethereum--${AUSDC_CONTRACT}` as CryptoId;
 
-        const optionWithInvity = result.current.resolveAssetTokenOption(ethSymbol, {
+        const optionWithInvity = resolveToken({
             contract: AUSDC_CONTRACT,
             symbol: 'aEthUSDC',
             name: 'Aave Ethereum USDC',

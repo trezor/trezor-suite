@@ -4,7 +4,11 @@ import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
-import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
+import {
+    createAssetOptionFromCryptoId,
+    cryptoIdToNetworkSymbolAndContractAddress,
+    selectTradingInfo,
+} from '@suite-common/trading';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
@@ -35,8 +39,8 @@ export const TradingInfoItem = ({
     receiveAddress,
 }: TradingInfoItemProps) => {
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
+    const { coins, platforms } = useSelector(selectTradingInfo);
     const { translationString } = useTranslation();
-    const { createAssetOptionFromCryptoId } = useTradingAssets();
     const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
     const accountLabelPrefix = translationString(isReceive ? 'TR_TO' : 'TR_FROM').toLowerCase();
 
@@ -53,7 +57,7 @@ export const TradingInfoItem = ({
         networkName,
         contractAddress,
         symbol,
-    } = createAssetOptionFromCryptoId(currency);
+    } = createAssetOptionFromCryptoId({ coins, platforms, cryptoId: currency });
 
     const displayName = isNativeToken ? getNetworkDisplaySymbolName(networkSymbol) : name;
 

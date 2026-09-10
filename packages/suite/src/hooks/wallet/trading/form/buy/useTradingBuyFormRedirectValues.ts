@@ -4,23 +4,30 @@ import {
     type TradingBuyFormProps,
     type TradingCountryCode,
     buildTradingFiatOption,
+    createAssetOptionFromCryptoId,
     getDefaultCountry,
     getDefaultCountrySubdivision,
     getSupportedFiatCurrencyWithFallback,
-    useTradingAssets,
+    selectTradingInfo,
 } from '@suite-common/trading';
+
+import { useSelector } from 'src/hooks/suite';
 
 export const useTradingBuyFormRedirectValues = (
     isFromRedirect: boolean,
     quotesRequest: BuyTradeQuoteRequest | undefined,
 ): TradingBuyFormProps | null => {
-    const { createAssetOptionFromCryptoId } = useTradingAssets();
+    const { coins, platforms } = useSelector(selectTradingInfo);
 
     if (!isFromRedirect || !quotesRequest) return null;
 
     return {
         amountInCrypto: quotesRequest.wantCrypto,
-        cryptoSelect: createAssetOptionFromCryptoId(quotesRequest.receiveCurrency),
+        cryptoSelect: createAssetOptionFromCryptoId({
+            coins,
+            platforms,
+            cryptoId: quotesRequest.receiveCurrency,
+        }),
         currencySelect: buildTradingFiatOption(
             getSupportedFiatCurrencyWithFallback(quotesRequest.fiatCurrency),
         ),
