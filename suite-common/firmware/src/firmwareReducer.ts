@@ -3,8 +3,8 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 import {
     type DeviceRootState,
     getDeviceLabelOrName,
-    getIsDeviceConnectedAndAcquired,
     getIsDeviceConnectedViaBluetoothLowOnBattery,
+    resolveConnectedDevice,
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/device';
@@ -202,22 +202,12 @@ const createFirmwareSelector = createWeakMapSelector.withTypes<
  */
 export const selectFirmwareDevice = createFirmwareSelector(
     [selectDevices, state => state.firmware.cachedDevice],
-    (devices, cachedDevice) => {
-        if (!cachedDevice) {
-            return undefined;
-        }
-
-        const candidates = devices.filter(
-            device =>
-                getIsDeviceConnectedAndAcquired(device) &&
-                device.descriptor.apiType === cachedDevice.descriptor.apiType,
-        );
-
-        return (
-            candidates.find(device => device.path === cachedDevice.path) ??
-            (candidates.length === 1 ? candidates[0] : undefined)
-        );
-    },
+    (devices, cachedDevice) =>
+        cachedDevice &&
+        resolveConnectedDevice(devices, {
+            apiType: cachedDevice.descriptor.apiType,
+            path: cachedDevice.path,
+        }),
 );
 
 /**

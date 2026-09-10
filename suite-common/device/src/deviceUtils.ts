@@ -93,3 +93,35 @@ export const getIsDeviceConnectedViaBluetoothLowOnBattery = (device: TrezorDevic
 
     return soc < DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD;
 };
+
+type ConnectedDeviceQuery = {
+    /** Which transport the device is expected on. Another transport is not a candidate at all. */
+    apiType: TrezorDevice['descriptor']['apiType'];
+    /** Where it was last seen, when that is known. Taken as the answer when a device is there. */
+    path?: string;
+};
+
+/**
+ * The device a flow means, resolved from the device list as it is right now.
+ *
+ * Addressing a device across a firmware update cannot rely on an identifier: the reboots
+ * re-enumerate it under new paths and a wipe gives it a new id. What holds instead is that such a
+ * flow cannot run with a second device of the same transport attached — `@trezor/connect` waits
+ * for exactly one before it adopts a reconnected device — so the only usable device on that
+ * transport is the one we mean. The path is preferred where it did survive, which keeps the answer
+ * exact in the ordinary case, and ambiguity resolves to nothing rather than to a guess.
+ */
+export const resolveConnectedDevice = (
+    devices: readonly TrezorDevice[],
+    { apiType, path }: ConnectedDeviceQuery,
+): AcquiredDevice | undefined => {
+    const candidates = devices.filter(
+        (device): device is AcquiredDevice =>
+            getIsDeviceConnectedAndAcquired(device) && device.descriptor.apiType === apiType,
+    );
+
+    return (
+        candidates.find(device => device.path === path) ??
+        (candidates.length === 1 ? candidates[0] : undefined)
+    );
+};

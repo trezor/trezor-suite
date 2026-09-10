@@ -9,7 +9,7 @@ import {
 import { DEVICE_MODULE_PREFIX } from './deviceConstants';
 import { type DeviceRootState } from './deviceReducer';
 import { selectDevices } from './deviceSelectors';
-import { getIsDeviceConnectedAndAcquired } from './deviceUtils';
+import { getIsDeviceConnectedAndAcquired, resolveConnectedDevice } from './deviceUtils';
 
 type DeviceApiType = TrezorDevice['descriptor']['apiType'];
 
@@ -33,22 +33,6 @@ type WaitForConnectedDeviceParams = {
      */
     path?: string;
     timeoutMs?: number;
-};
-
-const getCandidates = (devices: readonly TrezorDevice[], apiType: DeviceApiType) =>
-    devices.filter(
-        (device): device is AcquiredDevice =>
-            getIsDeviceConnectedAndAcquired(device) && device.descriptor.apiType === apiType,
-    );
-
-const resolveDevice = (
-    devices: readonly TrezorDevice[],
-    { apiType, path }: Pick<WaitForConnectedDeviceParams, 'apiType' | 'path'>,
-): AcquiredDevice | undefined => {
-    const candidates = getCandidates(devices, apiType);
-    const deviceAtPath = path ? candidates.find(device => device.path === path) : undefined;
-
-    return deviceAtPath ?? (candidates.length === 1 ? candidates[0] : undefined);
 };
 
 /**
@@ -81,7 +65,10 @@ export const waitForConnectedDeviceThunk = createThunk<
     ({ apiType, path, timeoutMs = DEFAULT_TIMEOUT_MS }, { getState, extra, fulfillWithValue }) => {
         const { deviceReceiver } = selectDeviceReceiverDep(extra.services);
 
-        const alreadyConnected = resolveDevice(selectDevices(getState()), { apiType, path });
+        const alreadyConnected = resolveConnectedDevice(selectDevices(getState()), {
+            apiType,
+            path,
+        });
 
         if (alreadyConnected) {
             return fulfillWithValue(alreadyConnected);
@@ -118,11 +105,18 @@ export const waitForConnectedDeviceThunk = createThunk<
                     return;
                 }
 
-                const otherCandidates = getCandidates(selectDevices(getState()), apiType).filter(
-                    other => other.path !== device.path,
+                // The receiver publishes a device only once the store holds it acquired, so what
+                // it hands over is the entry to settle with. The store is consulted for the one
+                // thing the delivered device cannot report: whether something else on this
+                // transport is attached, which would make "the device" a guess.
+                const isAmbiguous = selectDevices(getState()).some(
+                    other =>
+                        other.path !== device.path &&
+                        other.descriptor.apiType === apiType &&
+                        getIsDeviceConnectedAndAcquired(other),
                 );
 
-                if (otherCandidates.length === 0) {
+                if (!isAmbiguous) {
                     settle(device);
                 }
             });

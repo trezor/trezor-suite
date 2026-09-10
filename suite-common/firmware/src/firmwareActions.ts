@@ -61,10 +61,6 @@ const setFirmwareChannel = createAction(
     }),
 );
 
-/**
- * Starts following a specific physical device through the firmware update, so the flow stops
- * depending on whichever device happens to be globally selected. See `firmwareDeviceTracking`.
- */
 export const firmwareActions = {
     setStatus,
     setFirmwareUpdateError,
