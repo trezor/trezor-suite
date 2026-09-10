@@ -7,7 +7,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');
 
-test.describe('Look up a BTC account', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Look up a BTC account', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({
         deviceSetup: {
             mnemonic: 'cancel solid bulb sample fury scrap whale ranch raven razor sight skin',

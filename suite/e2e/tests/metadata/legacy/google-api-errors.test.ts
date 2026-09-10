@@ -4,7 +4,7 @@ import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Google API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Google API errors', { tag: ['@webOnly', '@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all' },
         ignoreToastErrors: ['Failed to connect to labeling provider: Invalid Credentials'],

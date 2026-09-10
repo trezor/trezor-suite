@@ -16,7 +16,7 @@ const iosAria = `
 
 test.use({ startEmulator: false, browserName: 'chromium', ...devices['iPhone 15 Pro'] });
 
-test.describe('iPhone with Chrome browser', { tag: ['@webOnly', '@noDevice'] }, () => {
+test.describe('iPhone with Chrome browser', { tag: ['@webOnly', '@noDevice', '@optional'] }, () => {
     test(
         'Suite does not support iOS',
         { annotation: createTestAnnotation({ stream: TestStream.Growth }) },

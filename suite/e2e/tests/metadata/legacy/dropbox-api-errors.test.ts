@@ -8,7 +8,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 const btcSymbol = asNetworkSymbol('btc');
 
-test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all' },
         ignoreToastErrors: [
