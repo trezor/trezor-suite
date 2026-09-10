@@ -30,6 +30,9 @@ export class FeeSection {
     readonly ethereumMaxPriorityFeePerGas: Locator;
     readonly networkReserveBanner: Locator;
     readonly maximumFeeAmountToBeCalculated: Locator;
+    readonly networkFeeRow: Locator;
+    readonly networkFeeModalConfirmButton: Locator;
+    readonly networkFeeModalCancelButton: Locator;
 
     constructor(private readonly page: Page) {
         this.collapsibleFeesToggle = this.page.getByTestId('@wallet/fees/collapsible-fees-toggle');
@@ -48,6 +51,13 @@ export class FeeSection {
         this.networkReserveBanner = this.page.getByTestId('@send/network-reserve-banner');
         this.maximumFeeAmountToBeCalculated = this.page.getByTestId(
             '@trading/quote/maximum-fee-amount-to-be-calculated',
+        );
+        this.networkFeeRow = this.page.getByTestId('@trading/offer/info/network-fee');
+        this.networkFeeModalConfirmButton = this.page.getByTestId(
+            '@trading/network-fee-modal/confirm',
+        );
+        this.networkFeeModalCancelButton = this.page.getByTestId(
+            '@trading/network-fee-modal/cancel',
         );
     }
 
@@ -179,12 +189,51 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
     }
 
     @step()
+    async openNetworkFeeModal() {
+        await this.networkFeeRow.click();
+        await expect(this.networkFeeModalConfirmButton).toBeVisible();
+    }
+
+    @step()
+    async confirmNetworkFeeModal() {
+        await expect(this.networkFeeModalConfirmButton).toBeEnabled();
+        await this.networkFeeModalConfirmButton.click();
+        await expect(this.networkFeeModalConfirmButton).toBeHidden();
+    }
+
+    @step()
+    async closeNetworkFeeModal() {
+        await this.networkFeeModalCancelButton.click();
+        await expect(this.networkFeeModalConfirmButton).toBeHidden();
+    }
+
+    @step()
     async setEthereumCustomFees(input: {
         gasLimit: string;
         maxFeePerGas: string;
         maxPriorityFeePerGas: string;
     }) {
         await this.switchToCustom();
+        await this.fillEthereumCustomFees(input);
+    }
+
+    @step()
+    async setEthereumCustomFeesInNetworkFeeModal(input: {
+        gasLimit: string;
+        maxFeePerGas: string;
+        maxPriorityFeePerGas: string;
+    }) {
+        await this.openNetworkFeeModal();
+        await this.switchModeButton('custom').click();
+        await this.fillEthereumCustomFees(input);
+        await this.confirmNetworkFeeModal();
+    }
+
+    private async fillEthereumCustomFees(input: {
+        gasLimit: string;
+        maxFeePerGas: string;
+        maxPriorityFeePerGas: string;
+    }) {
         await this.ethereumFeeLimit.fill(input.gasLimit);
         await this.ethereumMaxFeePerGas.fill(input.maxFeePerGas);
         await this.ethereumMaxPriorityFeePerGas.fill(input.maxPriorityFeePerGas);
@@ -206,6 +255,24 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
     @step()
     async getStandardFeeWorkaround() {
         await this.switchToCustom();
+        const fees = await this.readEthereumCustomFees();
+        await this.switchToStandard();
+
+        return fees;
+    }
+
+    @step()
+    async getStandardFeeWorkaroundInNetworkFeeModal() {
+        await this.openNetworkFeeModal();
+        await this.switchModeButton('custom').click();
+        const fees = await this.readEthereumCustomFees();
+        await this.switchModeButton('standard').click();
+        await this.closeNetworkFeeModal();
+
+        return fees;
+    }
+
+    private async readEthereumCustomFees() {
         const gasLimit = (await this.ethereumFeeLimit.inputValue()).replace(/,/g, '');
         const maxFeePerGas = await this.ethereumMaxFeePerGas.inputValue();
         const maxFeePerGasRounded = new BigNumber(maxFeePerGas)
@@ -215,7 +282,6 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
         const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas)
             .decimalPlaces(4, BigNumber.ROUND_UP)
             .toFixed(4);
-        await this.switchToStandard();
 
         return {
             gasLimit,

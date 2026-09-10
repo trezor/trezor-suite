@@ -53,17 +53,19 @@ test.describe('Trading - Swap fees', { tag: ['@T3W1', '@T3T1'] }, () => {
                         assetCryptoId: getCryptoId(asNetworkSymbol('btc')),
                     },
                 });
-                await tradingPage.fees.setEthereumCustomFees({
+            });
+
+            await test.step('Set custom fees on the review step', async () => {
+                await tradingPage.swapBestOfferButton.click();
+                await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
+                await tradingPage.fees.setEthereumCustomFeesInNetworkFeeModal({
                     gasLimit,
                     maxFeePerGas,
                     maxPriorityFeePerGas,
                 });
-                await tradingPage.fees.waitToBeCalculated();
             });
 
             await test.step('Continue Swap flow towards Send section', async () => {
-                await tradingPage.swapBestOfferButton.click();
-                await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
                 await tradingPage.confirmation.openConfirmAndSendModal();
                 await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
                 await devicePrompt.waitForPromptAndClick();
