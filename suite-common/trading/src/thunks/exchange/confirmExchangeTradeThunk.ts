@@ -77,10 +77,11 @@ export const confirmExchangeTradeThunk = createThunk<
         if (trade.isDex) {
             trade = { ...trade, receiveAddress };
 
-            if (selectedQuoteRequestData?.fromAddress) {
-                trade = { ...trade, fromAddress: selectedQuoteRequestData.fromAddress };
-            } else if (!trade.fromAddress) {
-                trade = { ...trade, fromAddress: refundAddress };
+            if (!trade.fromAddress) {
+                trade = {
+                    ...trade,
+                    fromAddress: selectedQuoteRequestData?.fromAddress ?? refundAddress,
+                };
             }
         }
 
