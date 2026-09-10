@@ -38,7 +38,6 @@ import {
     useResolveNamedAddress,
 } from '@suite-common/wallet-core';
 import {
-    type Account,
     type AccountKey,
     type FeeLevelLabel,
     type GeneralPrecomposedTransactionFinal,
@@ -77,6 +76,7 @@ import { TRANSPORT_ERROR } from '@trezor/transport-common';
 import {
     selectDestinationTagFromDraft,
     selectSendFormAccountAnonymitySet,
+    selectSendFormAccountRippleReserve,
     selectSendFormAccountUtxos,
 } from '../selectors';
 import {
@@ -108,15 +108,10 @@ const getDefaultValues = ({
     }) as const;
 
 const getRippleReserve = (
-    account: Account,
+    reserve: string | undefined,
     networkType: NetworkType,
     accountSymbol: NetworkSymbol,
 ) => {
-    const reserve =
-        account.misc && 'reserve' in account.misc && account.misc.reserve
-            ? account.misc.reserve
-            : undefined;
-
     if (networkType !== 'ripple' || !reserve) return undefined;
 
     return formatNetworkAmount(reserve, accountSymbol);
@@ -159,6 +154,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     );
     const accountAnonymitySet = useSelector((state: AccountsRootState) =>
         selectSendFormAccountAnonymitySet(state, accountKey),
+    );
+    const accountRippleReserve = useSelector((state: AccountsRootState) =>
+        selectSendFormAccountRippleReserve(state, accountKey),
     );
 
     const tokenInfo = useSelector((state: TokensRootState) =>
@@ -206,8 +204,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         : undefined;
 
     const rippleReserve =
-        account && network && accountSymbol
-            ? getRippleReserve(account, network.networkType, accountSymbol)
+        network && accountSymbol
+            ? getRippleReserve(accountRippleReserve, network.networkType, accountSymbol)
             : undefined;
 
     const form = useForm<SendOutputsFormValues>({

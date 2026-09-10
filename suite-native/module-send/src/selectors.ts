@@ -20,3 +20,16 @@ export const selectSendFormAccountAnonymitySet = (
     state: AccountsRootState,
     accountKey: AccountKey,
 ) => selectAccountByKey(state, accountKey)?.addresses?.anonymitySet;
+
+export const selectSendFormAccountRippleReserve = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const reserve =
+        account?.misc && 'reserve' in account.misc && account.misc.reserve
+            ? account.misc.reserve
+            : undefined;
+
+    return account?.networkType === 'ripple' ? reserve : undefined;
+};
