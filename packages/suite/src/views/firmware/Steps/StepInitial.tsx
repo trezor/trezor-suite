@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
+import { useFirmwareSessionDevice } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { selectConnectedDevices } from '@suite-common/device';
-import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { type FirmwareStatus } from '@suite-common/suite-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { unique } from '@trezor/utils';
@@ -28,7 +28,7 @@ export const StepInitial = ({
     isCustomFirmwareUploaded,
     modalHeading,
 }: StepInitialProps) => {
-    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
 
     const connectedDevices = useSelector(selectConnectedDevices);
     const multipleDevicesConnected = unique(connectedDevices.map(d => d.path)).length > 1;

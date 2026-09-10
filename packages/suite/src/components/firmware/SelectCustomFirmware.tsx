@@ -1,20 +1,17 @@
 import { type Dispatch, type ReactNode, type SetStateAction } from 'react';
 
-import { validateFirmware } from '@suite/firmware-upgrade';
+import { useFirmwareSessionDevice, validateFirmware } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
-import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { Button, Row, StepList } from '@trezor/components';
 import { DropZone } from '@trezor/product-components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
-
-import { useSelector } from 'src/hooks/suite';
 
 type SelectCustomFirmwareProps = {
     setFirmwareBinary: Dispatch<SetStateAction<ArrayBuffer | undefined>>;
 };
 
 export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmwareProps) => {
-    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
 
     const deviceModel = firmwareUpdateDevice?.features?.internal_model;
     const githubUrl = deviceModel

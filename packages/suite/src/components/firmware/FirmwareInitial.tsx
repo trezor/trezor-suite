@@ -2,9 +2,9 @@ import {
     FirmwareWarningsList,
     FirmwareWipeWarning,
     useFirmwareDesktopUpdate,
+    useFirmwareSessionDevice,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
-import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Banner, Card, Column } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
@@ -12,7 +12,6 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { InfoIcon } from '@trezor/icons';
 
 import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
-import { useSelector } from 'src/hooks/suite';
 
 type GetDescriptionProps = {
     required: boolean;
@@ -47,7 +46,7 @@ const getDescription = ({
 };
 
 export const FirmwareInitial = () => {
-    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
     const { deviceWillBeWiped, switchFirmwareType, targetFirmwareType } =
         useFirmwareDesktopUpdate();
 

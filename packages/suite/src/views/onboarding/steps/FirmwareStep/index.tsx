@@ -2,14 +2,15 @@ import { useCallback } from 'react';
 
 import {
     Fingerprint,
+    FirmwareUpdateSession,
     getSuiteFirmwareTypeString,
     useFirmwareDesktopUpdate,
     useFirmwareInstallationProgressCheck,
+    useFirmwareSessionDevice,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE, selectModal } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { CircuitryIcon } from '@trezor/icons';
@@ -23,9 +24,9 @@ import { FirmwareInitialStep } from './FirmwareInitialStep';
 import { FirmwareInstallationStep } from './FirmwareInstallationStep';
 import { DeviceDisconnectedStep } from '../../UnexpectedState/DeviceDisconnectedStep';
 
-export const FirmwareStep = () => {
+const FirmwareStepContent = () => {
     // Mounting the listener is what keeps the ref following the device across the reboots the
-    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
     const modal = useSelector(selectModal);
     const { goToNextStep, updateAnalytics, onboardedDevice } = useOnboarding();
     const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
@@ -175,4 +176,24 @@ export const FirmwareStep = () => {
         default:
             return exhaustive(status);
     }
+};
+
+/**
+ * The firmware step of onboarding, scoped to the device onboarding is pinned to.
+ *
+ * The update takes that device through several reboots, so what the screens inside are about is
+ * settled here, once, rather than re-derived per screen while the device comes and goes.
+ */
+export const FirmwareStep = () => {
+    const { onboardedDevice } = useOnboarding();
+
+    if (!onboardedDevice) {
+        return <DeviceDisconnectedStep />;
+    }
+
+    return (
+        <FirmwareUpdateSession device={onboardedDevice}>
+            <FirmwareStepContent />
+        </FirmwareUpdateSession>
+    );
 };

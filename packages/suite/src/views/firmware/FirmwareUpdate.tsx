@@ -1,15 +1,24 @@
-import { adoptFirmwareUpdatedDeviceThunk, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
+import {
+    FirmwareUpdateSession,
+    adoptFirmwareUpdatedDeviceThunk,
+    useFirmwareDesktopUpdate,
+} from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { FirmwareType } from '@trezor/connect';
 
 import { FirmwareInitial } from 'src/components/firmware/FirmwareInitial';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
+import { useSelector } from 'src/hooks/suite';
 
 import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareUpdate = () => {
     const dispatch = useDispatch();
+    // The flow opens on the selected device, and stays on it from here: the session holds it while
+    // the update reboots it out of the device list and the selection moves on.
+    const device = useSelector(selectSelectedDevice);
     const {
         firmwareUpdate,
         originalDevice,
@@ -59,9 +68,15 @@ export const FirmwareUpdate = () => {
         return <FirmwareLowBatteryModal onClose={toggleLowBatteryModal} />;
     }
 
+    if (!device) {
+        return null;
+    }
+
     return (
-        <FirmwareModal heading={heading} install={installTargetFirmware}>
-            <FirmwareInitial />
-        </FirmwareModal>
+        <FirmwareUpdateSession device={device}>
+            <FirmwareModal heading={heading} install={installTargetFirmware}>
+                <FirmwareInitial />
+            </FirmwareModal>
+        </FirmwareUpdateSession>
     );
 };

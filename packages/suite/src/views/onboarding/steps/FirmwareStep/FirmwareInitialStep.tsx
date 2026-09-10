@@ -5,11 +5,11 @@ import {
     FirmwareWarningsList,
     FirmwareWipeWarning,
     useFirmwareDesktopUpdate,
+    useFirmwareSessionDevice,
 } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectConnectedDevices } from '@suite-common/device';
-import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
@@ -89,7 +89,7 @@ type FirmwareInitialStepProps = {
 };
 
 export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
-    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
     const {
         deviceWillBeWiped,
         firmwareUpdate,

@@ -1,8 +1,8 @@
 import * as semver from 'semver';
 
-import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
+import { useFirmwareDesktopUpdate, useFirmwareSessionLiveDevice } from '@suite/firmware-upgrade';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { selectFirmwareDevice, selectFirmwareDeviceLabelOrName } from '@suite-common/firmware';
+import { selectFirmwareDeviceLabelOrName } from '@suite-common/firmware';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph, Row, StepList } from '@trezor/components';
 import { type Device } from '@trezor/connect';
@@ -97,7 +97,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     // our device is rebooting and absent from the device list, so the selection has moved on — and
     // a connected bystander in normal mode would make `getRebootPhase` report 'waiting-for-reboot'
     // as if the user had cancelled the reboot.
-    const firmwareUpdateDevice = useSelector(selectFirmwareDevice);
+    const firmwareUpdateDevice = useFirmwareSessionLiveDevice();
 
     const eventDevice = usePreviousDefined(buttonEvent?.device || firmwareUpdateDevice);
 

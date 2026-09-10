@@ -1,13 +1,11 @@
 import { type ReactNode } from 'react';
 
+import { useFirmwareSessionDevice } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceBackedUp } from '@suite-common/device';
-import {
-    selectFirmwareDeviceLabelOrName,
-    selectFirmwareOriginalDevice,
-} from '@suite-common/firmware';
+import { selectFirmwareDeviceLabelOrName } from '@suite-common/firmware';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
@@ -34,7 +32,7 @@ export const StepCheckSeed = ({
     install,
     modalHeading,
 }: StepCheckSeedProps) => {
-    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
     const deviceLabel = useSelector(selectFirmwareDeviceLabelOrName);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
 

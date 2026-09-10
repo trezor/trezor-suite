@@ -3,20 +3,19 @@ import { type ReactNode, useState } from 'react';
 import {
     useFirmwareDesktopUpdate,
     useFirmwareInstallationProgressCheck,
+    useFirmwareSessionDevice,
 } from '@suite/firmware-upgrade';
 import { closeModal } from '@suite/modal';
 import { closeModalAppThunk } from '@suite/router';
 import { ThpPairingStep } from '@suite/thp';
 import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk } from '@suite-common/device';
-import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
 import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
-import { useSelector } from 'src/hooks/suite';
 
 import { StepCheckSeed } from './Steps/StepCheckSeed';
 import { StepDone } from './Steps/StepDone';
@@ -41,7 +40,7 @@ export const FirmwareModal = ({
         useFirmwareDesktopUpdate();
     // The update reboots the device several times under new paths, so the flow addresses it through
     // the firmware device ref rather than the global selection, which may point at a different
-    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
 
     const { dispatch } = useServices(selectDispatch);
     const [isChecked, setIsChecked] = useState(false);
