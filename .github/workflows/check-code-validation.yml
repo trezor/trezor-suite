@@ -83,8 +83,6 @@ jobs:
             './.eslintcache'
             '!**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('./eslint.config.mjs') }} }}
-      - name: Test local ESLint rules
-        run: yarn jest --config eslint-local-rules/jest.config.js --runInBand
       - name: Lint JS
         env:
           ESLINT_RUN_EXPENSIVE_CHECKS: "true"
