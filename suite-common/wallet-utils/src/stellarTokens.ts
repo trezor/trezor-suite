@@ -9,27 +9,52 @@ export const lazyStellarTokenMetadata = createLazy(getTokenMetadata);
 
 // Deriving a Stellar Asset Contract id from an asset is a one-way hash, so the only way back
 // is to derive the id of every asset we know of and match. Keyed on the metadata object so
-// the work happens once per definitions payload.
-const contractIndexes = new WeakMap<TokenDetailByMint, Map<string, string>>();
+// the work happens once per definitions payload; the in-flight promise is cached rather than
+// the map, so two lookups racing the first build share it instead of both hashing.
+const contractIndexes = new WeakMap<TokenDetailByMint, Promise<Map<string, string>>>();
 
-const getSacContractIndex = async (tokenMetadata: TokenDetailByMint) => {
+// Hashing the whole definitions list is hundreds of assets of uninterrupted work, and the first
+// lookup lands on a paste into the token input. Yielding between chunks keeps that paste from
+// dropping frames.
+const SAC_INDEX_CHUNK_SIZE = 100;
+
+const buildSacContractIndex = async (tokenMetadata: TokenDetailByMint) => {
+    const { computeSorobanAssetContractId } = await stellar();
+    const index = new Map<string, string>();
+    const contracts = Object.keys(tokenMetadata);
+
+    for (let offset = 0; offset < contracts.length; offset += SAC_INDEX_CHUNK_SIZE) {
+        if (offset > 0) {
+            await new Promise(resolve => {
+                setTimeout(resolve, 0);
+            });
+        }
+
+        contracts.slice(offset, offset + SAC_INDEX_CHUNK_SIZE).forEach(contract => {
+            try {
+                index.set(computeSorobanAssetContractId(contract).sorobanAssetContractId, contract);
+            } catch {
+                // The definitions can hold entries that are not classic `CODE-ISSUER` assets
+            }
+        });
+    }
+
+    return index;
+};
+
+const getSacContractIndex = (tokenMetadata: TokenDetailByMint) => {
     const cached = contractIndexes.get(tokenMetadata);
     if (cached) return cached;
 
-    const { computeSorobanAssetContractId } = await stellar();
-    const index = new Map<string, string>();
-
-    Object.keys(tokenMetadata).forEach(contract => {
-        try {
-            index.set(computeSorobanAssetContractId(contract).sorobanAssetContractId, contract);
-        } catch {
-            // The definitions can hold entries that are not classic `CODE-ISSUER` assets
-        }
+    const pending = buildSacContractIndex(tokenMetadata).catch(error => {
+        // A failed build says nothing about the definitions, so it must not be cached
+        contractIndexes.delete(tokenMetadata);
+        throw error;
     });
 
-    contractIndexes.set(tokenMetadata, index);
+    contractIndexes.set(tokenMetadata, pending);
 
-    return index;
+    return pending;
 };
 
 /**

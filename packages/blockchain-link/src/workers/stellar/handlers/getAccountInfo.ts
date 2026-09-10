@@ -158,18 +158,26 @@ export const getAccountInfo = async (
                     // account actually holds. A contract the user added stays visible at a zero
                     // balance, the way an opted-in trustline does.
                     .filter(token => token.balance !== '0' || watched.has(token.contract))
-                    .map(token => {
+                    .flatMap((token): TokenInfo[] => {
                         // Prefer on-chain SEP-41 metadata; fall back to the curated entry.
                         const fallback = fallbackByContract.get(token.contract);
+                        const decimals = token.decimals ?? fallback?.decimals;
 
-                        return {
-                            standard: 'STELLAR-CONTRACT',
-                            contract: token.contract,
-                            balance: token.balance,
-                            name: token.name ?? fallback?.name,
-                            symbol: (token.symbol ?? fallback?.symbol ?? '').toUpperCase(),
-                            decimals: token.decimals ?? fallback?.decimals ?? STELLAR_DECIMALS,
-                        };
+                        // Without decimals the balance cannot be scaled, and defaulting to the
+                        // classic 7 would render an 18-decimal holding 10^11 times too large.
+                        // A token that cannot describe itself is left out until it can.
+                        if (decimals == null) return [];
+
+                        return [
+                            {
+                                standard: 'STELLAR-CONTRACT',
+                                contract: token.contract,
+                                balance: token.balance,
+                                name: token.name ?? fallback?.name,
+                                symbol: (token.symbol ?? fallback?.symbol ?? '').toUpperCase(),
+                                decimals,
+                            },
+                        ];
                     })
             );
         } catch (error) {
@@ -265,7 +273,24 @@ export const getAccountInfo = async (
 
     const pageGroups = groups.slice(0, pageSize);
 
-    const pageTransactions = await Promise.all(
+    // Everything `transformTransaction` needs for an `unknown` transaction, read off the
+    // operation alone — the transaction record is exactly what is unavailable here.
+    const describeUnparseableOperation = (
+        operation: (typeof pageGroups)[number]['operations'][number],
+    ) => ({
+        type: 'unknown' as const,
+        hash: operation.transaction_hash,
+        // The fee is charged per transaction and only the transaction record reports it.
+        fee: '0',
+        feeSource: '',
+        // Horizon operation ids are TOIDs, whose high 32 bits are the ledger sequence:
+        // https://github.com/stellar/go/blob/master/services/horizon/internal/docs/reference/toid.md
+        ledgerAttr: Number(BigInt(operation.id) >> 32n),
+        createdAt: Math.floor(Date.parse(operation.created_at) / 1000),
+        memo: undefined,
+    });
+
+    account.history.transactions = await Promise.all(
         pageGroups.map(async ({ operations }) => {
             try {
                 // Resolved from the joined response, so this does not hit the network.
@@ -277,15 +302,20 @@ export const getAccountInfo = async (
                     tokenMetadata,
                 );
             } catch (error) {
-                // A single unparseable record must not fail the whole account history.
+                // A single unparseable record must not fail the whole account history, and must
+                // not shorten the page either: a short page reads as the end of the history, and
+                // the empty slot it leaves keeps the page from ever counting as fetched. So the
+                // record keeps its slot as an `unknown` transaction, the same shape an
+                // unrecognised operation already produces.
                 console.warn('Stellar: failed to parse a transaction record', error);
 
-                return undefined;
+                return utils.transformTransaction(
+                    describeUnparseableOperation(operations[0]),
+                    payload.descriptor,
+                    tokenMetadata,
+                );
             }
         }),
-    );
-    account.history.transactions = pageTransactions.filter(
-        (transaction): transaction is NonNullable<typeof transaction> => transaction != null,
     );
 
     await mergeContractTokens();

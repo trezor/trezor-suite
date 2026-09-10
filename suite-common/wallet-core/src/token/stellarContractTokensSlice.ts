@@ -4,6 +4,7 @@ import {
     type ActionTypesDep,
     type ReducersDep,
     createSliceWithExtraDeps,
+    returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
@@ -68,10 +69,12 @@ const stellarContractTokensSlice = createSliceWithExtraDeps({
     },
 });
 
+// Read straight from a component, so an account with no watched contracts must not hand back a
+// fresh array on every call — that never reference-matches and re-renders every token row.
 export const selectStellarContractTokens = (
     { wallet }: StellarContractTokensRootState,
     accountKey: AccountKey,
-): string[] => wallet.stellarContractTokens[accountKey] ?? [];
+): string[] => returnStableArrayIfEmpty(wallet.stellarContractTokens[accountKey]);
 
 export const stellarContractTokensActions = stellarContractTokensSlice.actions;
 export const prepareStellarContractTokensReducer = stellarContractTokensSlice.prepareReducer;

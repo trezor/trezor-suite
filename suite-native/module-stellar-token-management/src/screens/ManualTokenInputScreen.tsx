@@ -56,13 +56,15 @@ export const ManualTokenInputScreen = () => {
 
     // Validation
     const [isAssetCodeValid, setIsAssetCodeValid] = useState(false);
+    const [isContractId, setIsContractId] = useState(false);
     const [isIssuerAddressValid, setIsIssuerAddressValid] = useState(false);
     const [isContractIdUnknown, setIsContractIdUnknown] = useState(false);
 
     useEffect(() => {
-        stellar()
-            .then(({ isValidAssetCode }) => isValidAssetCode(assetCode))
-            .then(setIsAssetCodeValid);
+        stellar().then(({ isValidAssetCode, isValidContractId }) => {
+            setIsAssetCodeValid(isValidAssetCode(assetCode));
+            setIsContractId(isValidContractId(assetCode));
+        });
     }, [assetCode]);
 
     // A pasted Stellar Asset Contract id is swapped for the classic asset it wraps, so the rest
@@ -105,11 +107,10 @@ export const ManualTokenInputScreen = () => {
             .then(setIsIssuerAddressValid);
     }, [issuerAddress]);
 
-    // Anything longer than the 12 character asset code limit can only be a contract id, so the
-    // asset code error would be misleading there
-    const isContractIdCandidate = assetCode.length > 12;
-    const hasAssetCodeError =
-        assetCodeTouched && !!assetCode && !isContractIdCandidate && !isAssetCodeValid;
+    // A contract id is not an asset code, so the asset code error would be misleading there — the
+    // contract path reports its own outcome through `isContractIdUnknown`. Anything that is
+    // neither, however long, is a mistyped asset code and has to say so.
+    const hasAssetCodeError = assetCodeTouched && !!assetCode && !isContractId && !isAssetCodeValid;
     const hasIssuerAddressError = issuerAddressTouched && !!issuerAddress && !isIssuerAddressValid;
 
     const isFormValid = assetCode && issuerAddress && isAssetCodeValid && isIssuerAddressValid;
