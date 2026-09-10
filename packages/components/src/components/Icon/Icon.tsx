@@ -24,6 +24,16 @@ export { iconIntents, iconPriorities };
 export type { IconIntent, IconPriority, IconSize };
 export type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
+export const getIconComponentName = (icon: IconComponent) => {
+    const name = icon.displayName ?? icon.name;
+
+    if (!name || name === 'ReactComponent') {
+        return undefined;
+    }
+
+    return name.startsWith('Svg') ? name.slice(3) : name;
+};
+
 export const allowedIconFrameProps = [
     'margin',
     'pointerEvents',
@@ -134,6 +144,7 @@ export const Icon = ({
             $isDisabled={isDisabled}
             $color={color}
             data-component="Icon"
+            data-icon={getIconComponentName(IconComponent)}
             data-testid={dataTest}
             onClick={onClick && !isDisabled ? handleClick : undefined}
             {...frameProps}

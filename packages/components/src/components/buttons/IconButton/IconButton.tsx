@@ -8,7 +8,7 @@ import {
 } from '../../../utils/frameProps';
 import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
-import { Icon, type IconComponent } from '../../Icon/Icon';
+import { Icon, type IconComponent, getIconComponentName } from '../../Icon/Icon';
 import { Tooltip, type UnmanagedTooltipProps } from '../../Tooltip/Tooltip';
 import { TOOLTIP_DELAY_NORMAL } from '../../Tooltip/TooltipDelay';
 import { Spinner } from '../../loaders/Spinner/Spinner';
@@ -88,6 +88,7 @@ export const IconButton = ({
     return (
         <Container
             data-component="IconButton"
+            data-icon={getIconComponentName(icon)}
             data-testid={dataTestId}
             aria-label={ariaLabel}
             $size={size}
