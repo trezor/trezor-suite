@@ -3,7 +3,7 @@ import type { TokenDetailByMint } from '@trezor/blockchain-link-types';
 import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 import { STELLAR_DECIMALS, STELLAR_MEMO_TEXT_MAX_BYTES } from '@trezor/network-stellar/constants';
 import stellar from '@trezor/network-stellar/runtime';
-import { createLazy } from '@trezor/utils';
+import { createLazy, scheduleAction } from '@trezor/utils';
 
 export const lazyStellarTokenMetadata = createLazy(getTokenMetadata);
 
@@ -106,13 +106,20 @@ export const getStellarTrustlineMemoFromMetadata = (
     return memo || undefined;
 };
 
-/** As `getStellarTrustlineMemoFromMetadata`, reading the definitions through the shared holder. */
+// The definitions are fetched over the network, and this runs on the way to a device prompt.
+const TRUSTLINE_MEMO_TIMEOUT_MS = 3000;
+
+/**
+ * As `getStellarTrustlineMemoFromMetadata`, reading the definitions through the shared holder.
+ * Bounded in time: the memo is a nicety and must not keep the user waiting to confirm.
+ */
 export const getStellarTrustlineMemo = async (contract: string) => {
     try {
-        return getStellarTrustlineMemoFromMetadata(
-            contract,
-            await lazyStellarTokenMetadata.getOrInit(),
-        );
+        const tokenMetadata = await scheduleAction(() => lazyStellarTokenMetadata.getOrInit(), {
+            timeout: TRUSTLINE_MEMO_TIMEOUT_MS,
+        });
+
+        return getStellarTrustlineMemoFromMetadata(contract, tokenMetadata);
     } catch {
         // The definitions are only a nicety here, a trustline signs and settles without a memo
         return undefined;

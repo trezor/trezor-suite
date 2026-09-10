@@ -15,7 +15,7 @@ export type StellarScValue =
     | { type: 'bytes'; value: string }
     | { type: 'string'; value: string }
     | { type: 'symbol'; value: string }
-    | { type: 'address'; value: string }
+    | { type: 'address'; value: string; isContract: boolean }
     | { type: 'vec'; items: StellarScValue[] }
     | { type: 'map'; entries: { key: StellarScValue; value: StellarScValue }[] }
     | { type: 'unsupported'; name: string };
@@ -36,8 +36,11 @@ export type StellarAuthorizedCall = StellarContractCall & {
  * only this module knows the XDR value types, and `blockchain-link-utils` — which assembles the
  * transaction — is synchronous and must not pull stellar-sdk in eagerly. Mirrors
  * `StellarContractCallData` in `@trezor/blockchain-link-types`.
+ *
+ * An account and a contract live under different explorer paths, so the two are told apart here
+ * rather than by the UI re-deriving it from the strkey prefix.
  */
-type StellarDisplayArgument = { kind: 'address' | 'text'; value: string };
+type StellarDisplayArgument = { kind: 'account' | 'contract' | 'text'; value: string };
 
 /** One authorization-tree node, flattened. Mirrors `StellarAuthorizedCallData`. */
 type StellarAuthorizedCallInfo = {
@@ -56,17 +59,20 @@ export type StellarContractCallInfo = {
 
 // The signing path rejects a symbol or string that is not valid UTF-8, because re-encoding it would
 // change the transaction. Display has no such constraint and must not fail, so it falls back to hex.
-const readText = (value: string | Buffer): string => {
-    if (typeof value === 'string') return value;
+// `XdrString.toString()` is not an option: it substitutes U+FFFD for the bytes it cannot decode.
+const readText = (value: xdr.XdrString): string => {
+    const decoded = value.asStringOrBytes();
 
-    const text = value.toString('utf8');
-
-    return Buffer.from(text, 'utf8').equals(value) ? text : value.toString('hex');
+    return typeof decoded === 'string' ? decoded : Buffer.from(decoded).toString('hex');
 };
 
 const decodeAddress = (address: xdr.ScAddress): StellarScValue => {
     try {
-        return { type: 'address', value: Address.fromScAddress(address).toString() };
+        return {
+            type: 'address',
+            value: Address.fromScAddress(address).toString(),
+            isContract: address.type === 'scAddressTypeContract',
+        };
     } catch {
         // Claimable-balance and liquidity-pool addresses have no string form in stellar-sdk 17.
         return { type: 'unsupported', name: address.type };
@@ -94,9 +100,9 @@ const decodeScValue = (scVal: xdr.ScVal): StellarScValue => {
         case 'scvBytes':
             return { type: 'bytes', value: Buffer.from(scVal.bytes.value).toString('hex') };
         case 'scvString':
-            return { type: 'string', value: readText(Buffer.from(scVal.str.bytes)) };
+            return { type: 'string', value: readText(scVal.str) };
         case 'scvSymbol':
-            return { type: 'symbol', value: readText(scVal.sym.toString()) };
+            return { type: 'symbol', value: readText(scVal.sym) };
         case 'scvAddress':
             return decodeAddress(scVal.address);
         case 'scvVec':
@@ -141,7 +147,7 @@ const formatScValue = (value: StellarScValue): string => {
 
 const decodeInvokeContractArgs = (args: xdr.InvokeContractArgs): StellarContractCall => ({
     contractId: Address.fromScAddress(args.contractAddress).toString(),
-    functionName: readText(args.functionName.toString()),
+    functionName: readText(args.functionName),
     args: args.args.map(decodeScValue),
 });
 
@@ -164,7 +170,7 @@ const decodeAuthorizedCall = (
 
 const toDisplayArgument = (value: StellarScValue): StellarContractCallInfo['args'][number] =>
     value.type === 'address'
-        ? { kind: 'address', value: value.value }
+        ? { kind: value.isContract ? 'contract' : 'account', value: value.value }
         : { kind: 'text', value: formatScValue(value) };
 
 const flattenAuthorizedCalls = (

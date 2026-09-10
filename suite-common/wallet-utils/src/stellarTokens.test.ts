@@ -5,6 +5,7 @@ import stellar from '@trezor/network-stellar/runtime';
 
 import {
     getStellarInactiveTokens,
+    getStellarTrustlineMemo,
     getStellarTrustlineMemoFromMetadata,
     resolveStellarAssetFromContractId,
 } from './stellarTokens';
@@ -190,5 +191,19 @@ describe(getStellarTrustlineMemoFromMetadata.name, () => {
 
     it('returns nothing for a blank name', () => {
         expect(getStellarTrustlineMemoFromMetadata(USDC, metadataOf('   '))).toBeUndefined();
+    });
+});
+
+describe(getStellarTrustlineMemo.name, () => {
+    it('gives up on definitions that never arrive, rather than holding up the device prompt', async () => {
+        jest.useFakeTimers();
+        mockedGetTokenMetadata.mockReturnValue(new Promise(() => {}));
+
+        const memo = getStellarTrustlineMemo(USDC);
+        await jest.advanceTimersByTimeAsync(10_000);
+
+        await expect(memo).resolves.toBeUndefined();
+
+        jest.useRealTimers();
     });
 });

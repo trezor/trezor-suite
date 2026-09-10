@@ -15,6 +15,14 @@ const TOKEN_CONTRACT = 'CDWFVPEN2TZ4KL6QJBKMSI6PUF5IBJCH5VAZHIPQIL7VOF7ZBH6IXL75
 const CONTRACT_TOKEN_SWAP_ENVELOPE =
     'AAAAAgAAAAB9voIijl1f4z1QtBigJYncIKek313/H3WgGJf+g53KcwAABEwAAAAAAAAAAgAAAAEAAAAAAAAAAAAAAABqmWxYAAAAAAAAAAEAAAAAAAAAGAAAAAAAAAABJbKv015UMxpIkMNjGfee2xjweJ5H/Dh7OzDvLmmlTRoAAAAMc3dhcF9jaGFpbmVkAAAABAAAABIAAAAAAAAAAH2+giKOXV/jPVC0GKAlidwgp6TfXf8fdaAYl/6DncpzAAAAEgAAAAHsWryN1PPFL9BIVMkjz6F6gKRH7UGTofBC/1cX+Qn8iwAAAAkAAAAAAAAAAAAAAAABMS0AAAAACQAAAAAAAAAAAAAAAAEtxw8AAAABAAAAAAAAAAAAAAABJbKv015UMxpIkMNjGfee2xjweJ5H/Dh7OzDvLmmlTRoAAAAMc3dhcF9jaGFpbmVkAAAABAAAABIAAAAAAAAAAH2+giKOXV/jPVC0GKAlidwgp6TfXf8fdaAYl/6DncpzAAAAEgAAAAHsWryN1PPFL9BIVMkjz6F6gKRH7UGTofBC/1cX+Qn8iwAAAAkAAAAAAAAAAAAAAAABMS0AAAAACQAAAAAAAAAAAAAAAAEtxw8AAAABAAAAAAAAAAHsWryN1PPFL9BIVMkjz6F6gKRH7UGTofBC/1cX+Qn8iwAAAAh0cmFuc2ZlcgAAAAMAAAASAAAAAAAAAAB9voIijl1f4z1QtBigJYncIKek313/H3WgGJf+g53KcwAAABIAAAABJbKv015UMxpIkMNjGfee2xjweJ5H/Dh7OzDvLmmlTRoAAAAJAAAAAAAAAAAAAAAAATEtAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+gAAAAA';
 
+// The root of the authorization tree repeats the invoked call, so both carry these arguments.
+const SWAP_ARGS = [
+    { kind: 'account', value: DESCRIPTOR },
+    { kind: 'contract', value: TOKEN_CONTRACT },
+    { kind: 'text', value: '20000000' },
+    { kind: 'text', value: '19777295' },
+] as const;
+
 const TX_HASH = '0d9ebb6dc26097e5024994477dcbfdea2df7ba41caa204e885a85b51f10e30ef';
 const LEDGER = 56802294;
 const CREATED_AT = '2025-04-27T02:25:26Z';
@@ -501,15 +509,24 @@ export const fixtures = {
                     contractCall: {
                         contractId: ROUTER_CONTRACT,
                         functionName: 'swap_chained',
-                        args: [
-                            { kind: 'address', value: DESCRIPTOR },
-                            { kind: 'address', value: TOKEN_CONTRACT },
-                            { kind: 'text', value: '20000000' },
-                            { kind: 'text', value: '19777295' },
-                        ],
+                        args: SWAP_ARGS,
                         authorizedCalls: [
-                            { contractId: ROUTER_CONTRACT, functionName: 'swap_chained', depth: 0 },
-                            { contractId: TOKEN_CONTRACT, functionName: 'transfer', depth: 1 },
+                            {
+                                contractId: ROUTER_CONTRACT,
+                                functionName: 'swap_chained',
+                                depth: 0,
+                                args: SWAP_ARGS,
+                            },
+                            {
+                                contractId: TOKEN_CONTRACT,
+                                functionName: 'transfer',
+                                depth: 1,
+                                args: [
+                                    { kind: 'account', value: DESCRIPTOR },
+                                    { kind: 'contract', value: ROUTER_CONTRACT },
+                                    { kind: 'text', value: '20000000' },
+                                ],
+                            },
                         ],
                     },
                 },

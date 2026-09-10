@@ -15,10 +15,11 @@ export interface SolanaStakingAccount {
 
 /**
  * A contract argument, pre-rendered by the decoder because only it knows the XDR value types.
- * An `address` is kept apart from the rest so the UI can link it to the explorer.
+ * An address is kept apart from the rest so the UI can link it to the explorer, and an account
+ * apart from a contract because the two live under different explorer paths.
  */
 export interface StellarContractCallArgument {
-    kind: 'address' | 'text';
+    kind: 'account' | 'contract' | 'text';
     value: string;
 }
 

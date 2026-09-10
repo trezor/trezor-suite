@@ -1,9 +1,20 @@
+import { Fragment, type ReactNode } from 'react';
+
 import styled from 'styled-components';
 
+import { useExternalLink } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
+import { selectExplorer } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { type StellarAuthorizedCallData } from '@trezor/blockchain-link-types';
-import { Column, InfoItem, Paragraph } from '@trezor/components';
+import {
+    type StellarAuthorizedCallData,
+    type StellarContractCallArgument,
+} from '@trezor/blockchain-link-types';
+import { Column, InfoItem, Link, Paragraph } from '@trezor/components';
+
+import { useSelector } from 'src/hooks/suite';
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;
     overflow-wrap: anywhere;
@@ -11,7 +22,7 @@ const ParagraphWrapper = styled.div`
 
 type DataRowProps = {
     translationId: TranslationKey;
-    content: string;
+    content: ReactNode;
 };
 
 const DataRow = ({ translationId, content }: DataRowProps) => (
@@ -31,19 +42,58 @@ type DataProps = {
     tx: WalletAccountTransaction;
 };
 
+type ExplorerAddressProps = {
+    value: string;
+    kind: 'account' | 'contract';
+    symbol: NetworkSymbol;
+};
+
+const ExplorerAddress = ({ value, kind, symbol }: ExplorerAddressProps) => {
+    const explorer = useSelector(state => selectExplorer(state, symbol));
+    const explorerUrl = getExplorerUrl(explorer, kind === 'contract' ? 'contract' : 'address');
+    const href = useExternalLink(`${explorerUrl}${value}${explorer?.queryString ?? ''}`);
+
+    return <Link href={href}>{value}</Link>;
+};
+
+// The rows hold several lines each, and `white-space: pre-wrap` turns the newlines between them
+// into line breaks — which keeps the address links inline, unlike block elements would.
+const joinLines = (lines: ReactNode[]) =>
+    lines.map((line, index) => (
+        <Fragment key={index}>
+            {index > 0 && '\n'}
+            {line}
+        </Fragment>
+    ));
+
+const argumentLine = (
+    { kind, value }: StellarContractCallArgument,
+    index: number,
+    symbol: NetworkSymbol,
+    indent: string,
+) => (
+    <>
+        {`${indent}[${index}] `}
+        {kind === 'text' ? value : <ExplorerAddress value={value} kind={kind} symbol={symbol} />}
+    </>
+);
+
 // Arguments go on their own lines rather than inline: a `transfer` leg carries two 56-character
 // addresses, which would push the call itself off the end of the row.
-const formatAuthorizedCall = ({
-    contractId,
-    functionName,
-    depth,
-    args,
-}: StellarAuthorizedCallData) => {
+const authorizedCallLines = (
+    { contractId, functionName, depth, args }: StellarAuthorizedCallData,
+    symbol: NetworkSymbol,
+) => {
     const indent = '  '.repeat(depth);
-    const header = `${indent}${contractId} :: ${functionName}`;
-    const argLines = args.map(({ value }, index) => `${indent}  [${index}] ${value}`);
 
-    return [header, ...argLines].join('\n');
+    return [
+        <>
+            {indent}
+            <ExplorerAddress value={contractId} kind="contract" symbol={symbol} />
+            {` :: ${functionName}`}
+        </>,
+        ...args.map((argument, index) => argumentLine(argument, index, symbol, `${indent}  `)),
+    ];
 };
 
 /**
@@ -57,8 +107,10 @@ const formatAuthorizedCall = ({
  */
 const StellarContractCallRows = ({
     contractCall,
+    symbol,
 }: {
     contractCall: NonNullable<WalletAccountTransaction['stellarSpecific']>['contractCall'];
+    symbol: NetworkSymbol;
 }) => {
     if (!contractCall) return null;
 
@@ -66,18 +118,25 @@ const StellarContractCallRows = ({
 
     return (
         <>
-            <DataRow translationId="TR_TX_DATA_CONTRACT" content={contractId} />
+            <DataRow
+                translationId="TR_TX_DATA_CONTRACT"
+                content={<ExplorerAddress value={contractId} kind="contract" symbol={symbol} />}
+            />
             <DataRow translationId="TR_TX_DATA_FUNCTION" content={functionName} />
             {args.length > 0 && (
                 <DataRow
                     translationId="TR_TX_DATA_PARAMS"
-                    content={args.map(({ value }, index) => `[${index}] ${value}`).join('\n')}
+                    content={joinLines(
+                        args.map((argument, index) => argumentLine(argument, index, symbol, '')),
+                    )}
                 />
             )}
             {authorizedCalls.length > 0 && (
                 <DataRow
                     translationId="TR_TX_DATA_AUTHORIZED_CALLS"
-                    content={authorizedCalls.map(formatAuthorizedCall).join('\n')}
+                    content={joinLines(
+                        authorizedCalls.flatMap(call => authorizedCallLines(call, symbol)),
+                    )}
                 />
             )}
         </>
@@ -102,7 +161,10 @@ export const Data = ({ tx }: DataProps) => {
                 />
             )}
             {data && <DataRow translationId="TR_TX_DATA_INPUT_DATA" content={data} />}
-            <StellarContractCallRows contractCall={tx.stellarSpecific?.contractCall} />
+            <StellarContractCallRows
+                contractCall={tx.stellarSpecific?.contractCall}
+                symbol={tx.symbol}
+            />
         </Column>
     );
 };

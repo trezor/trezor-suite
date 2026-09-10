@@ -26,7 +26,7 @@ const invokeContractArgs = ({
     args = [],
 }: {
     contract: string;
-    functionName: string;
+    functionName: string | Buffer;
     args?: xdr.ScVal[];
 }) =>
     new xdr.InvokeContractArgs({
@@ -84,9 +84,9 @@ describe('decodeSorobanInvocation', () => {
             contractId: ROUTER,
             functionName: 'swap_chained',
             args: [
-                { kind: 'address', value: SOURCE },
+                { kind: 'account', value: SOURCE },
                 { kind: 'text', value: '[0x24f9c991]' },
-                { kind: 'address', value: USDC_SAC },
+                { kind: 'contract', value: USDC_SAC },
                 { kind: 'text', value: '20000000' },
                 { kind: 'text', value: '19777295' },
             ],
@@ -113,9 +113,9 @@ describe('decodeSorobanInvocation', () => {
                 functionName: 'swap_chained',
                 depth: 0,
                 args: [
-                    { kind: 'address', value: SOURCE },
+                    { kind: 'account', value: SOURCE },
                     { kind: 'text', value: '[0x24f9c991]' },
-                    { kind: 'address', value: USDC_SAC },
+                    { kind: 'contract', value: USDC_SAC },
                     { kind: 'text', value: '20000000' },
                     { kind: 'text', value: '19777295' },
                 ],
@@ -125,12 +125,33 @@ describe('decodeSorobanInvocation', () => {
                 functionName: 'transfer',
                 depth: 1,
                 args: [
-                    { kind: 'address', value: SOURCE },
-                    { kind: 'address', value: ROUTER },
+                    { kind: 'account', value: SOURCE },
+                    { kind: 'contract', value: ROUTER },
                     { kind: 'text', value: '20000000' },
                 ],
             },
         ]);
+    });
+
+    it('renders a symbol and a function name that are not valid UTF-8 as hex', () => {
+        const invalidUtf8 = Buffer.from('61ff62', 'hex');
+        const envelope = buildEnvelope(
+            Operation.invokeHostFunction({
+                func: xdr.HostFunction.hostFunctionTypeInvokeContract(
+                    invokeContractArgs({
+                        contract: ROUTER,
+                        functionName: invalidUtf8,
+                        args: [xdr.ScVal.scvSymbol(invalidUtf8)],
+                    }),
+                ),
+                auth: [],
+            }),
+        );
+
+        expect(decodeSorobanInvocation(envelope)).toMatchObject({
+            functionName: '61ff62',
+            args: [{ kind: 'text', value: '61ff62' }],
+        });
     });
 
     it('reads the invocation out of a fee-bumped envelope', () => {
