@@ -85,43 +85,39 @@ const updateConnectChangelogFile = async (
     stableVersion: string,
     canaryVersion: string,
 ) => {
-    try {
-        const stable = stableVersion;
-        const canary = canaryVersion;
+    const stable = stableVersion;
+    const canary = canaryVersion;
 
-        const changelogContent = await readFile(connectChangelogPath, 'utf-8');
+    const changelogContent = await readFile(connectChangelogPath, 'utf-8');
 
-        const npmTable = [
-            { package: 'npm @trezor/connect', stable, canary },
-            { package: 'npm @trezor/connect-web', stable, canary },
-            {
-                package: 'npm @trezor/connect-webextension',
-                stable,
-                canary,
-            },
-            {
-                package: 'npm @trezor/connect-mobile',
-                stable,
-                canary,
-            },
-        ];
+    const npmTable = [
+        { package: 'npm @trezor/connect', stable, canary },
+        { package: 'npm @trezor/connect-web', stable, canary },
+        {
+            package: 'npm @trezor/connect-webextension',
+            stable,
+            canary,
+        },
+        {
+            package: 'npm @trezor/connect-mobile',
+            stable,
+            canary,
+        },
+    ];
 
-        const connectExplorerTable = [{ package: 'connect.trezor.io/', stable, canary }];
+    const connectExplorerTable = [{ package: 'connect.trezor.io/', stable, canary }];
 
-        const markdownNpmTable = tableToMarkdown(npmTable, 'Package');
-        const markdownConnectExplorerTable = tableToMarkdown(connectExplorerTable, 'Deployment');
+    const markdownNpmTable = tableToMarkdown(npmTable, 'Package');
+    const markdownConnectExplorerTable = tableToMarkdown(connectExplorerTable, 'Deployment');
 
-        const updatedContent = updateConnectChangelog({
-            changelog: changelogContent,
-            versionTable: markdownNpmTable,
-            deploymentTable: markdownConnectExplorerTable,
-            version: canaryVersion === '-' ? stableVersion : canaryVersion,
-        });
+    const updatedContent = updateConnectChangelog({
+        changelog: changelogContent,
+        versionTable: markdownNpmTable,
+        deploymentTable: markdownConnectExplorerTable,
+        version: canaryVersion === '-' ? stableVersion : canaryVersion,
+    });
 
-        await writeFile(connectChangelogPath, updatedContent, 'utf-8');
-    } catch (error) {
-        console.error('Error updating CHANGELOG.md:', error);
-    }
+    await writeFile(connectChangelogPath, updatedContent, 'utf-8');
 };
 
 const getUnreservedNpmPackages = async (packageNames: string[]) => {
