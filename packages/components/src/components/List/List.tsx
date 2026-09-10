@@ -84,7 +84,13 @@ export const List = ({
         <ListContext.Provider
             value={{ bulletGap, bulletAlignment, bulletComponent, listStyleType }}
         >
-            <Text as="div" intent={intent} priority={priority} isDisabled={isDisabled} data-component="List">
+            <Text
+                as="div"
+                intent={intent}
+                priority={priority}
+                isDisabled={isDisabled}
+                data-component="List"
+            >
                 <Container
                     {...makePropsTransient({ gap, listStyleType })}
                     {...frameProps}

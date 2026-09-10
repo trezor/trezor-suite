@@ -74,7 +74,12 @@ export const StepList = ({
                 direction,
             }}
         >
-            <Container data-component="StepList" data-testid={dataTestId} {...frameProps} $direction={direction}>
+            <Container
+                data-component="StepList"
+                data-testid={dataTestId}
+                {...frameProps}
+                $direction={direction}
+            >
                 {children}
             </Container>
         </StepListContext.Provider>

@@ -43,7 +43,12 @@ export const ComponentWithSubIcon = ({
     const hasSubIcon = icon !== undefined || subContent !== undefined;
 
     return (
-        <Box width="fit-content" position={{ type: 'relative' }} data-component="ComponentWithSubIcon" {...frameProps}>
+        <Box
+            width="fit-content"
+            position={{ type: 'relative' }}
+            data-component="ComponentWithSubIcon"
+            {...frameProps}
+        >
             {children}
             {hasSubIcon && (
                 <Box

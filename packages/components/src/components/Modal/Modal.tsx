@@ -93,7 +93,13 @@ const ModalBase = ({
 
     return (
         <ModalContext.Provider value={{ intent }}>
-            <Box maxWidth="95%" maxHeight={maxHeight} width={width} height={height} data-component="Modal">
+            <Box
+                maxWidth="95%"
+                maxHeight={maxHeight}
+                width={width}
+                height={height}
+                data-component="Modal"
+            >
                 <Container data-testid={dataTest}>
                     <Column height="100%">
                         {hasHeader && (
