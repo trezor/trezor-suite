@@ -62,7 +62,7 @@ const result: { [K in keyof Schema]: () => void } = {
 
 ## Prefer the non-mutating array methods to copy-then-mutate
 
-`[...items].sort()` and `items.slice().sort()` are workarounds for `sort` mutating in place, and they only work if you remember the copy. `toSorted`, `toReversed`, `toSpliced` and [`with`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/with) return a new array, so forgetting is not an option — and forgetting matters here, because the arrays in play are usually a selector result or Redux state that something else is still holding. Nothing will catch it either: `immutableCheck` is `false` in both stores ([suite](../../packages/suite/src/reducers/store.ts), [native](../../suite-native/state/src/store.ts)), so a mutated slice surfaces later as a stale render or a wrong total, far from the `.sort()` that caused it.
+`[...items].sort()` and `items.slice().sort()` are workarounds for `sort` mutating in place, and they only work if you remember the copy. `toSorted`, `toReversed`, `toSpliced` and [`with`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/with) return a new array, so forgetting is not an option — and forgetting matters here, because the arrays in play are usually a selector result or Redux state that something else is still holding. Nothing will catch it either: `immutableCheck` is `false` in both stores ([suite](../../packages/suite/src/reducers/store.ts), [native](../../suite-native/state/src/createReduxStore.ts)), so a mutated slice surfaces later as a stale render or a wrong total, far from the `.sort()` that caused it.
 
 ```ts
 // bad - two steps to say "sorted copy", and `.sort()` mutates whatever it is handed

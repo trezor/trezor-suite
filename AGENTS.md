@@ -13,10 +13,10 @@ alone do not create an approval gate; explicit user instructions take precedence
 
 ## Instruction scope and skills
 
-Check instruction files along the path to files you will edit, including nested directories when
-starting Codex at the repository root. `AGENTS.override.md` replaces `AGENTS.md` in the same directory;
-more specific directory instructions govern that subtree. Read applicable skills once before making
-changes, using the task and their descriptions to select them; unrelated skills need not be loaded.
+Check `AGENTS.md` files along the path to files you will edit, including nested directories when
+starting at the repository root. More specific directory instructions govern that subtree.
+Read applicable skills once before making changes, using the task and their descriptions to select
+them; unrelated skills need not be loaded.
 Nested mandatory skills still apply within their stated scope.
 
 - TypeScript changes: [Syntax](skills/basic-syntax/SKILL.md), [TypeScript](skills/typescript/SKILL.md),
@@ -68,7 +68,7 @@ This is a Yarn workspaces monorepo orchestrated by Nx. `package.json` also inclu
   `@suite-common/*`; this is not permission to introduce app dependencies into reusable libraries.
 
 Keep dependencies acyclic. Web/desktop Redux assembly is in `packages/suite/src/reducers/store.ts`;
-native assembly is in `suite-native/state/src/store.ts`. Shared slices live in
+native assembly is in `suite-native/state/src/createReduxStore.ts`. Shared slices live in
 `suite-common/wallet-core`; follow the Redux skill's state and dependency contracts.
 IndexedDB storage and migrations live in `packages/suite/src/storage`.
 Project gates are in `.github/workflows/check-code-validation.yml`; target prerequisites are in `nx.json`.

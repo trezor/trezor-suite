@@ -166,7 +166,7 @@ jobs:
       - name: Collect Markdown link inputs
         # Start with repository instructions and skills; exclude dependencies and generated files.
         run: |
-          git ls-files -- 'AGENTS.md' 'AGENTS.override.md' '**/AGENTS.md' '**/AGENTS.override.md' 'skills/*.md' '**/skills/*.md' > "$RUNNER_TEMP/markdown-link-inputs.txt"
+          git ls-files -- 'AGENTS.md' '**/AGENTS.md' 'skills/*.md' '**/skills/*.md' > "$RUNNER_TEMP/markdown-link-inputs.txt"
       - name: Lint Markdown links
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
