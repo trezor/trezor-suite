@@ -277,22 +277,37 @@ export const getAccountInfo = async (
 
     const pageGroups = groups.slice(0, pageSize);
 
+    // Horizon operation ids are TOIDs, whose high 32 bits are the ledger sequence:
+    // https://github.com/stellar/go/blob/master/services/horizon/internal/docs/reference/toid.md
+    const toLedgerSequence = (operationId: string) => {
+        try {
+            return Number(BigInt(operationId) >> 32n);
+        } catch {
+            return 0;
+        }
+    };
+
     // Everything `transformTransaction` needs for an `unknown` transaction, read off the
-    // operation alone — the transaction record is exactly what is unavailable here.
+    // operation alone — the transaction record is exactly what is unavailable here. This is the
+    // fallback of a parse that already failed, so every field it reads is one a degraded record
+    // may not carry: it has to produce a row for anything at all rather than throw in turn,
+    // which would take down the whole page it exists to keep intact.
     const describeUnparseableOperation = (
         operation: (typeof pageGroups)[number]['operations'][number],
-    ) => ({
-        type: 'unknown' as const,
-        hash: operation.transaction_hash,
-        // The fee is charged per transaction and only the transaction record reports it.
-        fee: '0',
-        feeSource: '',
-        // Horizon operation ids are TOIDs, whose high 32 bits are the ledger sequence:
-        // https://github.com/stellar/go/blob/master/services/horizon/internal/docs/reference/toid.md
-        ledgerAttr: Number(BigInt(operation.id) >> 32n),
-        createdAt: Math.floor(Date.parse(operation.created_at) / 1000),
-        memo: undefined,
-    });
+    ) => {
+        const createdAt = Date.parse(operation.created_at);
+
+        return {
+            type: 'unknown' as const,
+            hash: operation.transaction_hash,
+            // The fee is charged per transaction and only the transaction record reports it.
+            fee: '0',
+            feeSource: '',
+            ledgerAttr: toLedgerSequence(operation.id),
+            createdAt: Number.isFinite(createdAt) ? Math.floor(createdAt / 1000) : 0,
+            memo: undefined,
+        };
+    };
 
     account.history.transactions = await Promise.all(
         pageGroups.map(async ({ operations }) => {

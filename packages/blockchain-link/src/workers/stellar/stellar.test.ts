@@ -367,6 +367,24 @@ describe('Stellar worker account history', () => {
         ]);
     });
 
+    it('still fills the slot when the record has no id or timestamp to describe it by', async () => {
+        const broken = {
+            ...sacOperation([mint('0.1447280')]),
+            id: undefined,
+            created_at: undefined,
+            transaction: () => Promise.reject(new Error('malformed record')),
+        };
+        mockState.operationRecords = [broken];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        // The fallback of a failed parse must not fail in turn - that would take down the whole
+        // page it exists to keep intact.
+        expect(result.history.transactions).toEqual([
+            expect.objectContaining({ type: 'unknown', txid: TX_HASH }),
+        ]);
+    });
+
     it('ignores balance changes between other participants of the same call', async () => {
         mockState.operationRecords = [
             sacOperation([{ ...mint('0.5000000'), to: OTHER_ACCOUNT }, mint('0.1447280')]),
