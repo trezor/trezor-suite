@@ -1,7 +1,12 @@
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import { ETH_MOCKED_ACCOUNT } from '../../support/mocks/eth-endpoints';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+type AccountInfoRequest = {
+    params: { descriptor: string };
+};
 
 const ensName = 'vitalik.eth';
 const resolvedAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
@@ -50,6 +55,56 @@ test.describe('ENS in the send form', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect(tradingPage.sendAddressHint).toHaveTranslation('TR_ENS_WALLET_ADDRESS', {
                 values: { address: resolvedAddress },
             });
+        },
+    );
+
+    test(
+        'User can resolve an ENS name through Blockbook when the Universal Resolver fails',
+        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        async ({ tradingPage, blockbookMock }) => {
+            const requestedNames: string[] = [];
+            blockbookMock.mockServer.setFixtures(
+                blockbookMock.mockServer.getFixtures().map(fixture => {
+                    if (fixture.method === 'rpcCall') {
+                        return {
+                            ...fixture,
+                            response: { error: { message: 'Backend not connected' } },
+                        };
+                    }
+
+                    if (
+                        fixture.method === 'getAccountInfo' &&
+                        typeof fixture.response === 'function'
+                    ) {
+                        const originalResponse = fixture.response;
+
+                        return {
+                            ...fixture,
+                            response: (request: AccountInfoRequest) => {
+                                if (request.params.descriptor === ensName) {
+                                    requestedNames.push(request.params.descriptor);
+
+                                    return Promise.resolve({
+                                        data: { ...ETH_MOCKED_ACCOUNT, address: resolvedAddress },
+                                    });
+                                }
+
+                                // Preserve ordinary account discovery and synchronization responses.
+                                return originalResponse(request);
+                            },
+                        };
+                    }
+
+                    return fixture;
+                }),
+            );
+
+            await tradingPage.sendAddressInput.fill(ensName);
+
+            await expect(tradingPage.sendAddressHint).toHaveTranslation('TR_ENS_WALLET_ADDRESS', {
+                values: { address: resolvedAddress },
+            });
+            expect(requestedNames).toContain(ensName);
         },
     );
 
