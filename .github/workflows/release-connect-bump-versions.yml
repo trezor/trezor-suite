@@ -49,10 +49,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      # The script connect-bump-versions.ts needs to build packages so dependencies are required.
-      - name: Build dependencies
-        run: yarn build:libs
-
       - name: Setup Git config
         run: |
           git config --global user.name "trezor-ci"
