@@ -24,6 +24,7 @@ import {
     type SendRootState,
     type WalletSettingsRootState,
     composeSendFormTransactionFeeLevelsThunk,
+    selectAccountAvailableBalance,
     selectAccountByKey,
     selectAccountDescriptor,
     selectAccountNetworkSymbol,
@@ -146,6 +147,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const accountDescriptor = useSelector((state: AccountsRootState) =>
         selectAccountDescriptor(state, accountKey),
     );
+    const accountAvailableBalance = useSelector((state: AccountsRootState) =>
+        selectAccountAvailableBalance(state, accountKey),
+    );
 
     const tokenInfo = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
@@ -205,13 +209,13 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             networkFeeInfo,
             accountDescriptor: accountDescriptor ?? undefined,
             symbol: accountSymbol ?? undefined,
-            availableBalanceBeforeFees: tokenInfo?.balance ?? account?.availableBalance,
+            availableBalanceBeforeFees: tokenInfo?.balance ?? accountAvailableBalance,
             isTokenFlow: !!tokenContract,
             isValueInSats: isAmountInSats,
             feeAdjustedMaxSendAmountByLevel,
             networkFeeStatus: networkFeeStatus ?? undefined,
             decimals: tokenInfo?.decimals ?? network?.decimals,
-            nativeCurrencyBalanceAvailableForFees: account?.availableBalance,
+            nativeCurrencyBalanceAvailableForFees: accountAvailableBalance,
             networkReserve,
             rippleReserve,
             namedAddress,
