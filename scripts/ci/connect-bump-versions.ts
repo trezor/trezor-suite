@@ -12,6 +12,7 @@ import {
     gettingNpmDistributionTags,
 } from './helpers';
 import { isPackageOnNpmRegistry } from './npm-registry.js';
+import { updateConnectChangelog } from './update-connect-changelog';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -89,9 +90,6 @@ const updateConnectChangelog = async (
         const canary = canaryVersion;
 
         const changelogContent = await readFile(connectChangelogPath, 'utf-8');
-        const lines = changelogContent.split('\n');
-
-        const oldContent = lines.slice(10).join('\n');
 
         const npmTable = [
             { package: 'npm @trezor/connect', stable, canary },
@@ -113,8 +111,12 @@ const updateConnectChangelog = async (
         const markdownNpmTable = tableToMarkdown(npmTable, 'Package');
         const markdownConnectExplorerTable = tableToMarkdown(connectExplorerTable, 'Deployment');
 
-        const updatedContent =
-            markdownNpmTable + '\n' + markdownConnectExplorerTable + '\n' + oldContent;
+        const updatedContent = updateConnectChangelog({
+            changelog: changelogContent,
+            versionTable: markdownNpmTable,
+            deploymentTable: markdownConnectExplorerTable,
+            version: canaryVersion === '-' ? stableVersion : canaryVersion,
+        });
 
         await writeFile(connectChangelogPath, updatedContent, 'utf-8');
     } catch (error) {
