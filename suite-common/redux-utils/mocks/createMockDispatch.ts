@@ -2,7 +2,7 @@ import { type Action, type ThunkDispatch, type UnknownAction } from '@reduxjs/to
 
 type CreateMockDispatchParams<TState, TExtra> = {
     getState: () => TState;
-    extra: TExtra;
+    extra?: TExtra;
 };
 
 /**

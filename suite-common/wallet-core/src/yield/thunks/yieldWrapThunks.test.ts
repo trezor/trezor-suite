@@ -46,7 +46,7 @@ const runThunk = async (
         accountKey: ethereumAccount.key,
     },
 ) => {
-    const { actions, dispatch } = createMockDispatch({ getState, extra: {} });
+    const { actions, dispatch } = createMockDispatch({ getState });
     const balance = await trackWrappedNativeTokenThunk(payload)(dispatch, getState, {}).unwrap();
     const addTokensActions = actions.filter(action =>
         accountsActions.addAccountTokens.match(action),
