@@ -33,6 +33,7 @@ const mockState: {
     joinedApplied?: boolean;
     sep41Tokens: Sep41TokenMock[];
     readContractIds?: string[];
+    readRpcUrl?: string;
 } = { operationRecords: [], sep41Tokens: [] };
 
 const mockNotFoundError = () => new NotFoundError('Not Found', { status: 404 });
@@ -83,14 +84,16 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
         return Promise.resolve({
             ...actual,
             // keeps the Soroban contract-token read off the network
-            readSep41Tokens: (_rpcUrl: string, _holder: string, contractIds: string[]) => {
+            readSep41Tokens: (rpcUrl: string, _holder: string, contractIds: string[]) => {
                 mockState.readContractIds = contractIds;
+                mockState.readRpcUrl = rpcUrl;
 
                 return Promise.resolve(mockState.sep41Tokens);
             },
-            getStellarConnection: () =>
+            getStellarConnection: (url: string) =>
                 Promise.resolve({
                     api: {
+                        serverURL: new URL(url),
                         accounts: () => ({
                             accountId: () => ({
                                 call: () => {
@@ -142,6 +145,7 @@ describe('Stellar worker account history', () => {
         mockState.joinedApplied = false;
         mockState.sep41Tokens = [];
         mockState.readContractIds = undefined;
+        mockState.readRpcUrl = undefined;
         blockchain = new BlockchainLink({
             name: 'Stellar',
             worker: StellarWorker,
@@ -315,6 +319,18 @@ describe('Stellar worker account history', () => {
                 decimals: curated.decimals,
             },
         ]);
+    });
+
+    it('reads contract storage from the backend the account is on', async () => {
+        await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        // The backend serves JSON-RPC on the same origin as Horizon, so there is no second
+        // endpoint to configure - and a custom backend is not bypassed.
+        expect(mockState.readRpcUrl).toBe('https://mocked/');
     });
 
     it('drops a contract token whose decimals no source can supply', async () => {

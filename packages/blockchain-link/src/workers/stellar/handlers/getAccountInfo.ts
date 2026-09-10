@@ -4,7 +4,6 @@ import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import {
     STELLAR_CONTRACT_TOKENS,
     STELLAR_DECIMALS,
-    STELLAR_SOROBAN_RPC_URL,
     toStroops,
 } from '@trezor/network-stellar/constants';
 import stellar from '@trezor/network-stellar/runtime';
@@ -143,7 +142,12 @@ export const getAccountInfo = async (
 
         try {
             const sep41Tokens = await readSep41Tokens(
-                STELLAR_SOROBAN_RPC_URL,
+                // The Stellar backend serves stellar-rpc JSON-RPC on `POST /` from the same
+                // origin as Horizon's REST paths, so contract storage is read from whichever
+                // backend the account is already on rather than a second, fixed endpoint the
+                // user never chose. A backend that does not proxy JSON-RPC reports no contract
+                // tokens, which is the honest answer for it.
+                api.serverURL.toString(),
                 payload.descriptor,
                 contractsToRead,
             );
