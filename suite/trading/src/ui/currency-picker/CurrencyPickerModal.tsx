@@ -23,8 +23,6 @@ type CurrencyPickerModalProps = ModalProps & {
     options: CurrencyPickerOption[];
 };
 
-type FiatCurrencyFlagInput = Parameters<typeof getFiatCurrencyFlag>[0];
-
 export const CurrencyPickerModal = ({
     onCurrencySelect,
     options,
@@ -59,7 +57,7 @@ export const CurrencyPickerModal = ({
                 {filteredData.length > 0 && (
                     <CardList>
                         {filteredData.map(option => {
-                            const flag = getFiatCurrencyFlag(option.value as FiatCurrencyFlagInput);
+                            const flag = getFiatCurrencyFlag(option.value);
 
                             return (
                                 <CardList.Item
