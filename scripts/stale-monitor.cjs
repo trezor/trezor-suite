@@ -5,6 +5,7 @@
 module.exports = async ({ github, context, core }) => {
     const {
         STALE_DAYS: staleDaysEnv = '2',
+        SLACK_WEBHOOK_URL,
         SLACK_WEBHOOK_STALE_REMINDER,
         TARGET_OWNER,
         TARGET_REPO,
@@ -13,10 +14,11 @@ module.exports = async ({ github, context, core }) => {
     const STALE_DAYS = parseInt(staleDaysEnv, 10);
     const owner = TARGET_OWNER || contextOwner;
     const repo = TARGET_REPO || contextRepo;
+    const slackWebhookUrl = SLACK_WEBHOOK_STALE_REMINDER || SLACK_WEBHOOK_URL;
     const now = new Date();
 
-    if (!SLACK_WEBHOOK_STALE_REMINDER) {
-        core.setFailed('SLACK_WEBHOOK_STALE_REMINDER secret is not set.');
+    if (!slackWebhookUrl) {
+        core.setFailed('Slack webhook secret is not set.');
 
         return;
     }
@@ -243,7 +245,7 @@ module.exports = async ({ github, context, core }) => {
 
     let response;
     try {
-        response = await fetch(SLACK_WEBHOOK_STALE_REMINDER, {
+        response = await fetch(slackWebhookUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
