@@ -1,18 +1,18 @@
 > **Upgrading from Connect 9?**
 >
-> - [Migration guide: Connect 9 → 10](https://connect.trezor.io/10.0.0-beta.1/guides/migrating-to-connect-10) — what you need to change in your code, as a checklist.
-> - [New Connect flow in Trezor Suite](https://connect.trezor.io/10.0.0-beta.1/guides/new-connect-flow-in-trezor-suite) — how the Suite-hosted flow works and why.
+> - [Migration guide: Connect 9 → 10](https://connect.trezor.io/10.0.0-beta.2/guides/migrating-to-connect-10) — what you need to change in your code, as a checklist.
+> - [New Connect flow in Trezor Suite](https://connect.trezor.io/10.0.0-beta.2/guides/new-connect-flow-in-trezor-suite) — how the Suite-hosted flow works and why.
 
 |             Package              | Stable |    Canary     |
 | :------------------------------: | :----: | :-----------: |
-|       npm @trezor/connect        |   -    | 10.0.0-beta.1 |
-|     npm @trezor/connect-web      |   -    | 10.0.0-beta.1 |
-| npm @trezor/connect-webextension |   -    | 10.0.0-beta.1 |
-|    npm @trezor/connect-mobile    |   -    | 10.0.0-beta.1 |
+|       npm @trezor/connect        | 9.7.3  | 10.0.0-beta.2 |
+|     npm @trezor/connect-web      | 9.7.3  | 10.0.0-beta.2 |
+| npm @trezor/connect-webextension | 9.7.3  | 10.0.0-beta.2 |
+|    npm @trezor/connect-mobile    | 9.7.3  | 10.0.0-beta.2 |
 
 |     Deployment     | Stable |    Canary     |
 | :----------------: | :----: | :-----------: |
-| connect.trezor.io/ |   -    | 10.0.0-beta.1 |
+| connect.trezor.io/ | 9.7.3  | 10.0.0-beta.2 |
 
 Connect 10 has no stable release yet — use [connect.trezor.io/10.0.0-beta.1](https://connect.trezor.io/10.0.0-beta.1/) to access the beta version of Connect Explorer. Once Connect 10 is released, the persistent link [connect.trezor.io/10](https://connect.trezor.io/10/) will point to the latest stable version.
 
