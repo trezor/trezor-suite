@@ -1,8 +1,8 @@
 diff --git a/dist/src/local-first/Shared.worker.js b/dist/src/local-first/Shared.worker.js
-index f88d8b614e728f37a45831b9888805c51c3dbe4f..38ff92199176ca16ad44dd86bff046e89e2683ed 100644
+index c8379086720d9978b412502b32956a7291615b74..8f13ceae74f34e052114085dd83d1b73b5ef7fb7 100644
 --- a/dist/src/local-first/Shared.worker.js
 +++ b/dist/src/local-first/Shared.worker.js
-@@ -57,10 +57,52 @@ import { createWebSocket, ok } from "@evolu/common";
+@@ -57,9 +57,51 @@ import { createWebSocket, ok, waitForAbort } from "@evolu/common";
  import { initSharedWorker } from "@evolu/common/local-first";
  import { createRun } from "../Task.js";
  import { createOneTabSharedWorkerSelfPolyfill, createSharedWorkerSelf, createWorkerDeps, } from "../Worker.js";
@@ -48,7 +48,6 @@ index f88d8b614e728f37a45831b9888805c51c3dbe4f..38ff92199176ca16ad44dd86bff046e8
 +        });
 +    };
 +};
- // No disposal (`await using`) is needed — a SharedWorker lives forever.
  const run = createRun({
 -    ...createWorkerDeps(),
 -    createWebSocket,
@@ -58,26 +57,27 @@ index f88d8b614e728f37a45831b9888805c51c3dbe4f..38ff92199176ca16ad44dd86bff046e8
  });
  void run(async (run) => {
 diff --git a/src/local-first/Shared.worker.ts b/src/local-first/Shared.worker.ts
-index cfd09d13b785162b5dc8e2c072125f81b89ba7d0..c1090e23b6ba67969bc80ddee599a7e93fe114bd 100644
+index 7adf14a4c47632a76193b5b669ac4c299403dd88..a669c346da6d35ffa7057316357c0d37fa991f10 100644
 --- a/src/local-first/Shared.worker.ts
 +++ b/src/local-first/Shared.worker.ts
-@@ -4,7 +4,12 @@ declare const self: DedicatedWorkerGlobalScope | SharedWorkerGlobalScope;
+@@ -4,7 +4,13 @@ declare const self: DedicatedWorkerGlobalScope | SharedWorkerGlobalScope;
  import { installPolyfills } from "@evolu/common/polyfills";
  installPolyfills();
  
--import { createWebSocket, ok } from "@evolu/common";
+-import { createWebSocket, ok, waitForAbort } from "@evolu/common";
 +import {
 +  createWebSocket,
 +  ok,
++  waitForAbort,
 +  type CreateWebSocket,
 +  type WebSocketError,
 +} from "@evolu/common";
  import type {
    SharedWorkerInput,
    SharedWorkerOutput,
-@@ -18,10 +23,60 @@ import {
+@@ -18,9 +24,59 @@ import {
    createWorkerDeps,
- } from "../Worker.js";
+ } from "../Worker.ts";
  
 +const workerDeps = createWorkerDeps();
 +
@@ -129,7 +129,6 @@ index cfd09d13b785162b5dc8e2c072125f81b89ba7d0..c1090e23b6ba67969bc80ddee599a7e9
 +  };
 +};
 +
- // No disposal (`await using`) is needed — a SharedWorker lives forever.
  const run = createRun({
 -  ...createWorkerDeps(),
 -  createWebSocket,

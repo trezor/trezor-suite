@@ -34,7 +34,7 @@ export const createEvoluInstanceFactory =
             throw owner.error;
         }
 
-        const appName = AppName.from(`trezor-suite-v${VERSION}`);
+        const appName = AppName.fromUnknown(`trezor-suite-v${VERSION}`);
 
         if (!appName.ok) {
             console.error(appName.error);

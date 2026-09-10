@@ -1,7 +1,8 @@
 import {
     type Evolu,
     type InferRow,
-    NonEmptyString1000,
+    NonEmptyTrimmedString1000,
+    type ObjectType,
     type QueryRows,
     createIdFromString,
     createQueryBuilder,
@@ -24,20 +25,21 @@ import { err, ok } from '@trezor/type-utils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const AddressEvoluId = id('AddressEvoluId');
-export type AddressEvoluId = typeof AddressEvoluId.Type;
+export type AddressEvoluId = typeof AddressEvoluId.Output;
 
 export const createAddressEvoluId = (address: string, networkSymbol: NetworkSymbol) =>
     AddressEvoluId.from(createIdFromString(createSuiteSyncAddressId(address, networkSymbol)));
 
 const addressTableColumns = {
     id: AddressEvoluId,
-    label: nullOr(NonEmptyString1000),
-    address: NonEmptyString1000,
-    accountDescriptor: NonEmptyString1000,
-    networkSymbol: NonEmptyString1000,
+    label: nullOr(NonEmptyTrimmedString1000),
+    address: NonEmptyTrimmedString1000,
+    accountDescriptor: NonEmptyTrimmedString1000,
+    networkSymbol: NonEmptyTrimmedString1000,
 };
 
-export const AddressEvoluSchema = object(addressTableColumns);
+export const AddressEvoluSchema: ObjectType<typeof addressTableColumns> =
+    object(addressTableColumns);
 
 /**
  * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
@@ -59,7 +61,7 @@ export class AddressEvoluTable implements AddressTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const validated = AddressEvoluSchema.from({
+        const validated = AddressEvoluSchema.fromUnknown({
             id: idResult.value,
             address,
             label: normalizeLabel(label),

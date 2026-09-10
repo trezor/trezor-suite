@@ -13,19 +13,23 @@ import {
 } from '@evolu/common';
 
 const createOwnerFromTrezorNode = (secret: OwnerSecret) => {
-    const ownerIdBytes = OwnerIdBytes.from(createSlip21(secret, ['OwnerIdBytes']).slice(0, 16));
+    const ownerIdBytes = OwnerIdBytes.fromUnknown(
+        createSlip21(secret, ['OwnerIdBytes']).slice(0, 16),
+    );
     if (!ownerIdBytes.ok) {
         return ownerIdBytes;
     }
 
-    const ownerEncryptionKey = OwnerEncryptionKey.from(
+    const ownerEncryptionKey = OwnerEncryptionKey.fromUnknown(
         createSlip21(secret, ['OwnerEncryptionKey']),
     );
     if (!ownerEncryptionKey.ok) {
         return ownerEncryptionKey;
     }
 
-    const ownerWriteKey = OwnerWriteKey.from(createSlip21(secret, ['OwnerWriteKey']).slice(0, 16));
+    const ownerWriteKey = OwnerWriteKey.fromUnknown(
+        createSlip21(secret, ['OwnerWriteKey']).slice(0, 16),
+    );
     if (!ownerWriteKey.ok) {
         return ownerWriteKey;
     }
@@ -66,7 +70,7 @@ type CreateEvoluOwnerFromTrezorDataParam = {
 export const createEvoluAppOwnerFromTrezorData = ({
     data,
 }: CreateEvoluOwnerFromTrezorDataParam) => {
-    const ownerResult = OwnerSecret.from(
+    const ownerResult = OwnerSecret.fromUnknown(
         hexToBytes(data)
             // Get only [0, 32] Slip21 Node Data (Node Key [32, 64] is irrelevant for Evolu)
             .slice(0, 32),
