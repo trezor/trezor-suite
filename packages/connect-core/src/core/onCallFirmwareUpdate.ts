@@ -456,30 +456,12 @@ export const onCallFirmwareUpdate = async ({
 
     // Sometimes we use `intermediary` FW that will be uploaded before the `final`,
     // where `final` is the one that will stay in the device and will be used.
-    let intermediaryBinaryInfo: BinaryInfo | undefined;
-    let finalBinaryInfo: BinaryInfo;
-    const fwFetchPromises = [];
-
-    // Initiate the download for the intermediary firmware if required.
-    if (intermediary) {
-        fwFetchPromises.push(
-            getBinaryHelper({ device, params, firmwareType, isIntermediary: true, log }),
-        );
-    }
-
-    // Always initiate the download for the final firmware.
-    fwFetchPromises.push(
+    const [finalBinaryInfo, intermediaryBinaryInfo] = await Promise.all([
         getBinaryHelper({ device, params, firmwareType, isIntermediary: false, log }),
-    );
-
-    // Fetch required FWs.
-    const [firstResult, finalResult] = await Promise.all(fwFetchPromises);
-    if (intermediary) {
-        intermediaryBinaryInfo = firstResult;
-        finalBinaryInfo = finalResult as BinaryInfo;
-    } else {
-        finalBinaryInfo = firstResult as BinaryInfo;
-    }
+        intermediary
+            ? getBinaryHelper({ device, params, firmwareType, isIntermediary: true, log })
+            : undefined,
+    ]);
 
     // If we have `intermediary` we upload it first and after final, otherwise final will be first and last one.
     const firstBinaryInfo = intermediary ? intermediaryBinaryInfo : finalBinaryInfo;
