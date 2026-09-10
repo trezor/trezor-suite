@@ -282,6 +282,13 @@ impl AdapterManager {
         state.known_peripherals = value;
     }
 
+    pub async fn clear_serviceless_devices(&self) {
+        self.serviceless_peripherals.clear();
+
+        let mut timestamp = self.serviceless_peripherals_prune_ts.lock().await;
+        *timestamp = 0;
+    }
+
     async fn is_known_peripheral(&self, id: &str) -> bool {
         let state = self.manager_state.lock().await;
 

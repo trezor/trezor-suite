@@ -12,11 +12,18 @@ pub async fn stop_scan(manager: AdapterManager, broadcast: ConnectionBroadcast) 
     broadcast.send(ChannelMessage::Abort(AbortProcess::Scan));
 
     let adapter = manager.get_powered_adapter_or_die().await?;
-    if let Err(err) = adapter.stop_scan().await {
-        info!("stop_scan/adapter.stop_scan error: {err}");
+    let success = match adapter.stop_scan().await {
+        Ok(_) => true,
+        Err(err) => {
+            info!("stop_scan/adapter.stop_scan error: {err}");
+            false
+        }
+    };
 
-        return Ok(WsResponsePayload::Success { success: false });
+    if let Err(err) = adapter.clear_peripherals().await {
+        info!("stop_scan/adapter.clear_peripherals error: {err}");
     }
+    manager.clear_serviceless_devices().await;
 
-    Ok(WsResponsePayload::Success { success: true })
+    Ok(WsResponsePayload::Success { success })
 }

@@ -14,9 +14,9 @@ use crate::server::{
     ConnectionBroadcast,
 };
 
-async fn start_scanning(adapter: &Adapter) -> Result<(), AdapterError> {
+async fn start_scanning(adapter: &Adapter, manager: &AdapterManager) -> Result<(), AdapterError> {
     // stop previous process just to be sure
-    stop_scanning(adapter).await;
+    stop_scanning(adapter, manager).await;
 
     if let Err(err) = adapter.start_scan(ScanFilter::default()).await {
         info!("Start scan error {err}");
@@ -26,10 +26,16 @@ async fn start_scanning(adapter: &Adapter) -> Result<(), AdapterError> {
     Ok(())
 }
 
-async fn stop_scanning(adapter: &Adapter) {
+async fn stop_scanning(adapter: &Adapter, manager: &AdapterManager) {
     if let Err(err) = adapter.stop_scan().await {
         info!("start_scan/adapter.stop_scan: {err}");
     }
+
+    if let Err(err) = adapter.clear_peripherals().await {
+        info!("start_scan/adapter.clear_peripherals: {err}");
+    }
+
+    manager.clear_serviceless_devices().await;
 }
 
 pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast) -> MethodResult {
@@ -48,7 +54,9 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
     // restart (stop/start) ensures that the event stream is really running in
     // workaround for https://github.com/deviceplug/btleplug/issues/255
     // windows: calling adapter.stop_scan breaks current broadcast.subscribe stream
-    if let Err(err) = start_scanning(&adapter).await {
+    if let Err(err) = start_scanning(&adapter, &manager).await {
+        stop_scanning(&adapter, &manager).await;
+        manager.set_scanning(false).await;
         return Err(err.into());
     }
 
@@ -59,7 +67,7 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
         while let Ok(event) = receiver.recv().await {
             match event {
                 ChannelMessage::Abort(AbortProcess::Scan) => {
-                    stop_scanning(&adapter).await;
+                    stop_scanning(&adapter, &manager_ref).await;
                     manager_ref.set_scanning(false).await;
                     info!("Abort start_scan loop");
                     break;
@@ -67,7 +75,7 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
                 ChannelMessage::Abort(AbortProcess::ClientDisconnected(_client)) => {
                     if manager_ref.is_listeners_empty().await {
                         info!("All clients disconnected, stopping scanning");
-                        stop_scanning(&adapter).await;
+                        stop_scanning(&adapter, &manager_ref).await;
                         manager_ref.set_scanning(false).await;
                     }
                     break;
@@ -81,7 +89,7 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
                             }
                         }
                         _ => {
-                            stop_scanning(&adapter).await;
+                            stop_scanning(&adapter, &manager_ref).await;
                             manager_ref.set_scanning(false).await;
                         }
                     }
