@@ -69,7 +69,6 @@ const baseUnwrapParams: Parameters<typeof getYieldUnwrapDefaultAmount>[0] = {
         contractAddress: VAULT_ADDRESS,
     },
     pricePerShareState,
-    fallbackAmount: '5',
 };
 
 describe('yieldFlowUtils', () => {
@@ -181,27 +180,61 @@ describe('yieldFlowUtils', () => {
             ).toBe('0.02');
         });
 
-        it('falls back to the balance when the withdrawn amount is zero', () => {
-            expect(
-                getYieldUnwrapDefaultAmount({
-                    ...baseUnwrapParams,
-                    flowType: 'withdraw',
-                    withdrawnAmount: '0',
-                    fallbackAmount: '5',
-                }),
-            ).toBe('5');
-        });
-
-        it('falls back to the balance when shares cannot be converted without a price', () => {
+        it('falls back to the amount persisted at submit when shares cannot be converted', () => {
             expect(
                 getYieldUnwrapDefaultAmount({
                     ...baseUnwrapParams,
                     flowType: 'redeem',
                     withdrawnAmount: '1',
                     pricePerShareState: undefined,
-                    fallbackAmount: '5',
+                    persistedAssetAmount: '0.019',
                 }),
-            ).toBe('5');
+            ).toBe('0.019');
+        });
+
+        it('prefers the live conversion over the persisted amount', () => {
+            expect(
+                getYieldUnwrapDefaultAmount({
+                    ...baseUnwrapParams,
+                    flowType: 'redeem',
+                    withdrawnAmount: '1',
+                    persistedAssetAmount: '0.019',
+                }),
+            ).toBe('0.02');
+        });
+
+        it('ignores a non-positive persisted amount', () => {
+            expect(
+                getYieldUnwrapDefaultAmount({
+                    ...baseUnwrapParams,
+                    flowType: 'redeem',
+                    withdrawnAmount: '1',
+                    pricePerShareState: undefined,
+                    // The reducer's initial `completedReceiptAmount` is '0'.
+                    persistedAssetAmount: '0',
+                }),
+            ).toBe('');
+        });
+
+        it('stays empty when neither the price nor a persisted amount is available', () => {
+            expect(
+                getYieldUnwrapDefaultAmount({
+                    ...baseUnwrapParams,
+                    flowType: 'redeem',
+                    withdrawnAmount: '1',
+                    pricePerShareState: undefined,
+                }),
+            ).toBe('');
+        });
+
+        it('stays empty when the withdrawn amount is zero', () => {
+            expect(
+                getYieldUnwrapDefaultAmount({
+                    ...baseUnwrapParams,
+                    flowType: 'withdraw',
+                    withdrawnAmount: '0',
+                }),
+            ).toBe('');
         });
     });
 
