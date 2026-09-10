@@ -1,10 +1,13 @@
 import { useForm } from 'react-hook-form';
 
+import { combineReducers } from '@reduxjs/toolkit';
 import { act, waitFor } from '@testing-library/react';
 
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingSellFormProps } from '@suite-common/trading';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { prepareWalletSettingsReducer, setNetworkReserve } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -49,6 +52,11 @@ const mockGetComposeAddressPlaceholder = getComposeAddressPlaceholder as jest.Mo
 const BTC_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc'), formattedBalance: '2' });
 const SOL_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('sol'), formattedBalance: '0.4' });
 
+const walletSettingsReducer = prepareWalletSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadWalletSettings: mockReducer() },
+});
+
 const feeData = (blockTime: number) => ({
     blockHeight: 0,
     blockTime,
@@ -80,9 +88,35 @@ const buildDefaults = (): TradingSellFormProps =>
         destinationTag: '',
     }) as unknown as TradingSellFormProps;
 
-const renderComposeTransaction = () => {
+type RenderComposeTransactionProps = {
+    account?: Account;
+    isTradingDex?: boolean;
+    shouldSendInSats?: boolean;
+    isNetworkReserveEnabled?: boolean;
+};
+
+type ComposeTransactionHookProps = {
+    account: Account;
+    isTradingDex?: boolean;
+    shouldSendInSats?: boolean;
+};
+
+const renderComposeTransaction = ({
+    account = BTC_ACCOUNT,
+    isTradingDex,
+    shouldSendInSats,
+    isNetworkReserveEnabled = true,
+}: RenderComposeTransactionProps = {}) => {
     const store = createTestStore({
         extra: undefined,
+        reducer: {
+            wallet: combineReducers({
+                settings: walletSettingsReducer,
+                accounts: (state = [BTC_ACCOUNT, SOL_ACCOUNT]) => state,
+                fees: (state = {}) => state,
+            }),
+            device: (state = {}) => state,
+        },
         preloadedState: {
             wallet: {
                 accounts: [BTC_ACCOUNT, SOL_ACCOUNT],
@@ -90,14 +124,18 @@ const renderComposeTransaction = () => {
                     btc: { status: 'preloaded', data: feeData(600) },
                     sol: { status: 'preloaded', data: feeData(-1) },
                 },
-                settings: { addressDisplayType: 'original' },
+                settings: {
+                    addressDisplayType: 'original',
+                    networkReserve: isNetworkReserveEnabled,
+                },
             },
             device: { devices: [], selectedDevice: undefined },
         } as any,
     });
 
-    return renderHookWithStoreProvider(
-        ({ account }: { account: Account }) => {
+    const initialProps: ComposeTransactionHookProps = { account, isTradingDex, shouldSendInSats };
+    const rendered = renderHookWithStoreProvider(
+        ({ account, isTradingDex, shouldSendInSats }: ComposeTransactionHookProps) => {
             const methods = useForm<TradingSellFormProps>({
                 mode: 'onChange',
                 defaultValues: buildDefaults(),
@@ -117,13 +155,29 @@ const renderComposeTransaction = () => {
                 network: getNetwork(account.symbol),
                 methods,
                 setShowReserveBanner: jest.fn(),
+                isTradingDex,
+                shouldSendInSats,
             });
 
             return { methods, compose };
         },
-        { store, initialProps: { account: BTC_ACCOUNT } },
+        { store, initialProps },
     );
+
+    return { ...rendered, store };
 };
+
+const mockMaxComposition = (max: string): PrecomposedLevels => ({
+    normal: {
+        type: 'nonfinal',
+        max,
+        fee: '10000',
+        feePerByte: '1',
+        bytes: 100,
+        totalSpent: '200000000',
+        inputs: [],
+    },
+});
 
 describe('useTradingComposeTransaction', () => {
     beforeEach(() => {
@@ -135,6 +189,70 @@ describe('useTradingComposeTransaction', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+    });
+
+    it.each([
+        { max: '1.9999', expected: '1.99988' },
+        { max: '199990000', shouldSendInSats: true, expected: '199988000' },
+        { max: '0.00001', expected: '0' },
+        { max: '1.9999', isTradingDex: false, expected: '1.9999' },
+        { max: '1.9999', isNetworkReserveEnabled: false, expected: '1.9999' },
+        { max: '0.39', account: SOL_ACCOUNT, expected: '0.39' },
+    ])('fills Max with the DEX reserve: %j', async ({ max, expected, ...overrides }) => {
+        const props = { account: BTC_ACCOUNT, isTradingDex: true, ...overrides };
+        const { result, rerender } = renderComposeTransaction(props);
+
+        act(() => result.current.methods.setValue('setMaxOutputId', 0));
+        mockComposedLevels = mockMaxComposition(max);
+        rerender(props);
+
+        await waitFor(() =>
+            expect(result.current.methods.getValues('outputs.0.amount')).toBe(expected),
+        );
+
+        mockComposedLevels = mockMaxComposition(max);
+        rerender(props);
+
+        await waitFor(() =>
+            expect(result.current.methods.getValues('outputs.0.amount')).toBe(expected),
+        );
+    });
+
+    it('updates active Max when DEX status, the reserve setting, or the composed fee changes', async () => {
+        const props = { account: BTC_ACCOUNT, isTradingDex: true };
+        const { result, rerender, store } = renderComposeTransaction(props);
+
+        act(() => result.current.methods.setValue('setMaxOutputId', 0));
+        mockComposedLevels = mockMaxComposition('1.9999');
+        rerender(props);
+        await waitFor(() =>
+            expect(result.current.methods.getValues('outputs.0.amount')).toBe('1.99988'),
+        );
+
+        act(() => {
+            store.dispatch(setNetworkReserve(false));
+        });
+        await waitFor(() =>
+            expect(result.current.methods.getValues('outputs.0.amount')).toBe('1.9999'),
+        );
+
+        act(() => {
+            store.dispatch(setNetworkReserve(true));
+        });
+        await waitFor(() =>
+            expect(result.current.methods.getValues('outputs.0.amount')).toBe('1.99988'),
+        );
+
+        rerender({ ...props, isTradingDex: false });
+        await waitFor(() =>
+            expect(result.current.methods.getValues('outputs.0.amount')).toBe('1.9999'),
+        );
+
+        mockComposedLevels = mockMaxComposition('1.9998');
+        rerender(props);
+        await waitFor(() =>
+            expect(result.current.methods.getValues('outputs.0.amount')).toBe('1.99978'),
+        );
     });
 
     it.each(['1.9999', '1.9998'])(

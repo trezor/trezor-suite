@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -11,18 +12,24 @@ import {
     type TradingSellFormProps,
     tradingActions,
 } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
+    type FeesRootState,
     deriveTronColdRecipient,
     selectAccounts,
     selectAddressDisplayType,
+    selectIsNetworkReserveEnabled,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import {
+    asAmountUnit,
+    getConvertedOrDefaultFeeInfo,
+    unitsToSubunits,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import {
@@ -33,6 +40,28 @@ import {
 } from 'src/types/trading/tradingForm';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
 
+type GetMaxAmountWithReserveParams = {
+    maxAmount: BigNumber;
+    reserve: string | undefined;
+    symbol: NetworkSymbol | undefined;
+    shouldSendInSats: boolean | undefined;
+};
+
+const getMaxAmountWithReserve = ({
+    maxAmount,
+    reserve,
+    symbol,
+    shouldSendInSats,
+}: GetMaxAmountWithReserveParams) => {
+    const reserveInUnits = asAmountUnit(new BigNumber(reserve ?? '0'));
+    const reserveInSelectedUnit =
+        shouldSendInSats && symbol
+            ? unitsToSubunits({ value: reserveInUnits, symbol })
+            : reserveInUnits;
+
+    return BigNumber.max(0, maxAmount.minus(reserveInSelectedUnit));
+};
+
 // shareable sub-hook used in useTradingSellForm & useTradingExchangeForm
 export const useTradingComposeTransaction = <T extends TradingSellExchangeFormProps>({
     type,
@@ -41,11 +70,14 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     methods,
     setShowReserveBanner,
     shouldSuppressComposeErrors,
+    isTradingDex,
+    shouldSendInSats,
 }: TradingUseComposeTransactionProps<T>): TradingUseComposeTransactionReturnProps => {
     const dispatch = useDispatch();
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
     const addressDisplayType = useSelector(selectAddressDisplayType);
+    const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const { translationString } = useTranslation();
 
     const { getValues, setValue, setError, clearErrors, trigger, control } =
@@ -53,7 +85,9 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
     const symbol = account?.symbol;
     const networkType = account?.networkType;
-    const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));
+    const rawFeeInfo = useSelector((state: FeesRootState) =>
+        selectRawNetworkFeeInfo(state, symbol),
+    );
     const feeInfo = useMemo(
         () =>
             getConvertedOrDefaultFeeInfo({
@@ -254,10 +288,23 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             if (typeof setMaxOutputId === 'number' && composed.max) {
                 const currentBN = new BigNumber(currentOutputAmount || '0');
                 const composedMaxBN = new BigNumber(composed.max);
+                const tradingDexReserve =
+                    isTradingDex && isNetworkReserveEnabled
+                        ? network?.tradingDexReserve
+                        : undefined;
 
-                if (!currentBN.isEqualTo(composedMaxBN)) {
+                const maxAmountWithReserve = getMaxAmountWithReserve({
+                    maxAmount: composedMaxBN,
+                    reserve: tradingDexReserve,
+                    symbol: network?.symbol,
+                    shouldSendInSats,
+                });
+
+                console.log(maxAmountWithReserve.toString(), 'maxAmountWithReserve');
+
+                if (!currentOutputAmount || !currentBN.isEqualTo(maxAmountWithReserve)) {
                     setShowReserveBanner(true);
-                    setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
+                    setValue(TRADING_FORM_OUTPUT_AMOUNT, maxAmountWithReserve.toString(), {
                         shouldDirty: true,
                     });
                 }
@@ -286,6 +333,10 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         translationString,
         shouldSuppressComposeErrors,
         trigger,
+        network,
+        isTradingDex,
+        isNetworkReserveEnabled,
+        shouldSendInSats,
     ]);
 
     return {
