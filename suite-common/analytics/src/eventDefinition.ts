@@ -23,8 +23,8 @@ type Domain = string;
 type EventName = `${Domain}/${string}` | `${string}`;
 
 // An event can describe its data in two ways:
-// 1. List every field separately in `attributes`, for example `amount: AttributeDef<number>`.
-// 2. Describe the whole payload with one type in `payloadType`.
+// 1. List every field separately in `attributes` with a prescribed structure, e.g. `amount: AttributeDef<number>` (real example: `createBackupEvent`).
+// 2. Arbitrary object payload with no per-field documentation, via `payloadType` (real example: `accountsNonZeroBalanceEvent`).
 // `HasKeys` checks whether the attributes list is empty. `IsAttributeMap` tells these two kinds of
 // event apart.
 type HasKeys<T> = keyof T extends never ? false : true;
@@ -52,7 +52,6 @@ type AttributeEventInstance<A, N> =
         : {
               type: N;
           };
-
 type PayloadEventInstance<A, N> = {
     type: N;
     payload: A;
@@ -64,8 +63,10 @@ export type EventDef<A, N extends EventName = EventName> =
               name: N;
               attributes: A;
           }
-        : AnalyticsBaseEvent & {
+        : // This is effectively a fallback for events that don't conform to Attribute Map (events with more arbitrary data that are assignable to this).
+          AnalyticsBaseEvent & {
               name: N;
+              // Never used at runtime, it's only to give `EventInstance` something to `infer A` from, so it can recover the payload type below.
               payloadType?: A;
           };
 
