@@ -1,4 +1,5 @@
 import type { FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
+import { firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type {
     ConditionalRelease,
     DeviceModelInternal,
@@ -8,10 +9,7 @@ import type {
     ReleasesConfig,
 } from '@trezor/device-utils';
 
-import {
-    getFirmwareReleaseConfig,
-    getOnlyLocalFirmwareReleaseConfig,
-} from '../utils/firmwareReleaseConfigUtils';
+import { getFirmwareReleaseConfig } from '../utils/firmwareReleaseConfigUtils';
 
 export type InitializeFirmwareConfig = (
     config: FirmwareReleaseConfig,
@@ -21,7 +19,6 @@ export type InitializeFirmwareConfig = (
     intermediaries: Record<DeviceModelInternal, IntermediaryReleaseConfig[]>;
 }>;
 
-const local: FirmwareReleaseConfig = getOnlyLocalFirmwareReleaseConfig().config;
 let releases:
     | Partial<Record<keyof typeof DeviceModelInternal, Record<FirmwareType, ConditionalRelease>>>
     | undefined;
@@ -33,7 +30,7 @@ export const init = async (
     initializeFirmwareConfig: InitializeFirmwareConfig,
 ): Promise<void> => {
     const firmwareReleaseConfig = onlyLocal
-        ? { config: local, isRemote: false as const }
+        ? { config: firmwareReleaseConfigAssets, isRemote: false as const }
         : await getFirmwareReleaseConfig(firmwareChannel);
 
     const result = await initializeFirmwareConfig(
@@ -44,6 +41,5 @@ export const init = async (
     intermediary = result.intermediaries;
 };
 
-export const getLocal = (): FirmwareReleaseConfig => local;
 export const getReleases = () => releases;
 export const getIntermediary = () => intermediary;
