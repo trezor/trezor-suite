@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { ProviderMetadata } from 'invity-api';
 
 import { selectTradingProviderMetadata } from '@suite-common/trading';
-import { AnimatedBox, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { AnimatedBox, Box, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
@@ -28,7 +28,7 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
     const { companyName, termsUrl } = provider;
 
     return (
-        <VStack alignItems="center" spacing={0}>
+        <Box alignItems="center">
             <Text variant="body-sm" color="contentSecondary" textAlign="center">
                 <Translation
                     id="moduleTrading.tradingScreen.footer.providerDisclaimer"
@@ -43,12 +43,13 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
                 label={<Translation id="moduleTrading.tradingScreen.footer.termsApply" />}
                 isUnderlined
             />
-        </VStack>
+        </Box>
     );
 };
 
 const linkStyle = prepareNativeStyle(({ spacings }) => ({
     paddingVertical: spacings.sp10,
+    textAlign: 'center',
 }));
 
 const stackStyle = prepareNativeStyle(() => ({
@@ -69,7 +70,7 @@ export const Footer = () => {
     return (
         <VStack style={applyStyle(stackStyle)}>
             <AnimatedBox entering={FadeInDown}>
-                <VStack alignItems="center" paddingBottom="sp12">
+                <VStack paddingBottom="sp12">
                     <FooterProviderContent provider={providerInfo} />
                     <Link
                         label={
