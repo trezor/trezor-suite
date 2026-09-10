@@ -280,6 +280,8 @@ const bumpConnect = async () => {
             `${commitMessage}`,
             '--body-file',
             'scripts/templates/connect-bump-version.md',
+            '--label',
+            'no-project',
             '--base',
             'develop',
             '--head',
