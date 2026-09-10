@@ -12,7 +12,12 @@ import { selectIsDeviceRemembered } from '@suite-common/device';
 import { selectAddressValidatorDep, selectGetNamedAddressSupportDep } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
-import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    type NetworkType,
+    getDisplaySymbol,
+    getNetwork,
+} from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -20,6 +25,7 @@ import {
     type WalletSettingsRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
+    selectAccountNetworkSymbol,
     selectConvertedNetworkFeeInfo,
     selectIsAmountInSats,
     selectIsNetworkReserveEnabled,
@@ -95,7 +101,11 @@ const getDefaultValues = ({
         ],
     }) as const;
 
-const getRippleReserve = (account: Account, networkType: NetworkType) => {
+const getRippleReserve = (
+    account: Account,
+    networkType: NetworkType,
+    accountSymbol: NetworkSymbol,
+) => {
     const reserve =
         account.misc && 'reserve' in account.misc && account.misc.reserve
             ? account.misc.reserve
@@ -103,7 +113,7 @@ const getRippleReserve = (account: Account, networkType: NetworkType) => {
 
     if (networkType !== 'ripple' || !reserve) return undefined;
 
-    return formatNetworkAmount(reserve, account.symbol);
+    return formatNetworkAmount(reserve, accountSymbol);
 };
 
 type SendFormNavigationProp = StackToStackCompositeNavigationProps<
@@ -129,22 +139,25 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const accountSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
 
     const tokenInfo = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 
     const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
-        selectIsAmountInSats(state, account?.symbol),
+        selectIsAmountInSats(state, accountSymbol ?? undefined),
     );
     const isNetworkReserveEnabled = useSelector((state: WalletSettingsRootState) =>
         selectIsNetworkReserveEnabled(state),
     );
     const networkFeeInfo = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeInfo(state, account?.symbol),
+        selectConvertedNetworkFeeInfo(state, accountSymbol ?? undefined),
     );
     const networkFeeStatus = useSelector((state: FeesRootState) =>
-        selectNetworkFeeStatus(state, account?.symbol),
+        selectNetworkFeeStatus(state, accountSymbol ?? undefined),
     );
     const sendFormDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
@@ -162,20 +175,22 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     useSubscribeForSolanaBlockUpdates(account);
 
-    const network = account ? getNetwork(account.symbol) : null;
+    const network = accountSymbol ? getNetwork(accountSymbol) : null;
 
-    const namedAddress = getNamedAddressSupport(account?.symbol);
+    const namedAddress = getNamedAddressSupport(accountSymbol ?? undefined);
 
-    const networkReserve = account
+    const networkReserve = accountSymbol
         ? getNetworkReserve({
-              symbol: account.symbol,
+              symbol: accountSymbol,
               contractAddress: tokenContract,
               isEnabled: isNetworkReserveEnabled,
           })
         : undefined;
 
     const rippleReserve =
-        account && network ? getRippleReserve(account, network.networkType) : undefined;
+        account && network && accountSymbol
+            ? getRippleReserve(account, network.networkType, accountSymbol)
+            : undefined;
 
     const form = useForm<SendOutputsFormValues>({
         validation: sendOutputsFormValidationSchema,
@@ -185,7 +200,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             addressValidator,
             networkFeeInfo,
             accountDescriptor: account?.descriptor,
-            symbol: account?.symbol,
+            symbol: accountSymbol ?? undefined,
             availableBalanceBeforeFees: tokenInfo?.balance ?? account?.availableBalance,
             isTokenFlow: !!tokenContract,
             isValueInSats: isAmountInSats,
@@ -210,14 +225,14 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     const { mode: namedAddressMode, isResolving } = useResolveNamedAddress(
         watchedAddress ?? '',
-        account?.symbol,
+        accountSymbol ?? undefined,
     );
     // Submitting before a name resolves would compose against the name itself. Reverse lookups
     // run on an already-valid address, so they do not block.
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
 
     const updateFormState = useCallback(async () => {
-        if (account && network && networkFeeInfo) {
+        if (account && accountSymbol && network && networkFeeInfo) {
             const response = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState: constructFormDraft({
@@ -247,7 +262,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
                 if (isReserveError) {
                     setError('outputs.0.amount', {
-                        message: `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(account.symbol)} to activate.`,
+                        message: `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(accountSymbol)} to activate.`,
                     });
                 }
 
@@ -283,6 +298,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         getValues,
         tokenContract,
         account,
+        accountSymbol,
         network,
         networkFeeInfo,
         setError,
@@ -349,8 +365,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     // TODO: Fetch periodically. So if the user stays on the screen for a long time, the fee info is updated in the background.
     useEffect(() => {
-        if (account) dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol }));
-    }, [account, dispatch]);
+        if (accountSymbol) dispatch(updateFeeInfoThunk({ networkSymbol: accountSymbol }));
+    }, [accountSymbol, dispatch]);
 
     const destinationTag = useSelector((state: NativeSendRootState) =>
         selectDestinationTagFromDraft(state, accountKey, tokenContract),
