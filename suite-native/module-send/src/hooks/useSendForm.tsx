@@ -74,7 +74,11 @@ import {
 import { useDebounce } from '@trezor/react-utils';
 import { TRANSPORT_ERROR } from '@trezor/transport-common';
 
-import { selectDestinationTagFromDraft } from '../selectors';
+import {
+    selectDestinationTagFromDraft,
+    selectSendFormAccountAnonymitySet,
+    selectSendFormAccountUtxos,
+} from '../selectors';
 import {
     type SendOutputsFormValues,
     sendOutputsFormValidationSchema,
@@ -150,6 +154,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const accountAvailableBalance = useSelector((state: AccountsRootState) =>
         selectAccountAvailableBalance(state, accountKey),
     );
+    const accountUtxos = useSelector((state: AccountsRootState) =>
+        selectSendFormAccountUtxos(state, accountKey),
+    );
+    const accountAnonymitySet = useSelector((state: AccountsRootState) =>
+        selectSendFormAccountAnonymitySet(state, accountKey),
+    );
 
     const tokenInfo = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
@@ -174,11 +184,11 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const excludedUtxos = useMemo(
         () =>
             getExcludedUtxos({
-                utxos: account?.utxo ?? [],
-                anonymitySet: account?.addresses?.anonymitySet,
+                utxos: accountUtxos ?? [],
+                anonymitySet: accountAnonymitySet,
                 dustLimit: networkFeeInfo?.dustLimit,
             }),
-        [account?.utxo, account?.addresses?.anonymitySet, networkFeeInfo?.dustLimit],
+        [accountUtxos, accountAnonymitySet, networkFeeInfo?.dustLimit],
     );
 
     useSubscribeForSolanaBlockUpdates(account);
