@@ -96,23 +96,15 @@ export const exposeConnectWs = ({
     });
 
     wss.on('connection', (ws, req) => {
+        ws.on('error', err => {
+            logger.error(LOG_PREFIX, err.message);
+        });
+
         const connectionPendingMessages = new Set<string>();
         const ip = req.socket.remoteAddress;
         const port = req.socket.remotePort;
-        if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
-            logger.error(LOG_PREFIX, `invalid connection attempt from ${ip}:${port}`);
-            req.socket.destroy();
-
-            return;
-        }
-
-        // Enforce connection limit to prevent resource exhaustion
-        if (activeConnections + 1 > MAX_CONCURRENT_CONNECTIONS) {
-            logger.warn(
-                LOG_PREFIX,
-                `connection rejected: limit (${MAX_CONCURRENT_CONNECTIONS}) exceeded`,
-            );
-            req.socket.destroy();
+        if (!port) {
+            ws.terminate();
 
             return;
         }
@@ -140,10 +132,6 @@ export const exposeConnectWs = ({
         }, HANDSHAKE_TIMEOUT_MS);
 
         logger.info(LOG_PREFIX, `origin: ${origin}`);
-
-        ws.on('error', err => {
-            logger.error(LOG_PREFIX, err.message);
-        });
 
         ws.on('message', async data => {
             const dataString = data.toString();
@@ -338,6 +326,25 @@ export const exposeConnectWs = ({
 
     httpReceiver.server.on('upgrade', (request, socket, head) => {
         if (!request?.url) {
+            socket.destroy();
+
+            return;
+        }
+
+        const ip = request.socket.remoteAddress;
+        const port = request.socket.remotePort;
+        if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
+            logger.error(LOG_PREFIX, `invalid connection attempt from ${ip}:${port}`);
+            socket.destroy();
+
+            return;
+        }
+
+        if (activeConnections >= MAX_CONCURRENT_CONNECTIONS) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit (${MAX_CONCURRENT_CONNECTIONS}) exceeded`,
+            );
             socket.destroy();
 
             return;
