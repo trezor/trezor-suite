@@ -189,9 +189,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         [accountUtxos, accountAnonymitySet, networkFeeInfo?.dustLimit],
     );
 
-    useSubscribeForSolanaBlockUpdates(account);
-
     const network = accountSymbol ? getNetwork(accountSymbol) : null;
+
+    useSubscribeForSolanaBlockUpdates({
+        symbol: accountSymbol,
+        networkType: network?.networkType ?? null,
+    });
 
     const namedAddress = getNamedAddressSupport(accountSymbol ?? undefined);
 
