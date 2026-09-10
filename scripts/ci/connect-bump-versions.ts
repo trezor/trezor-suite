@@ -114,7 +114,8 @@ const updateConnectChangelogFile = async (
         changelog: changelogContent,
         versionTable: markdownNpmTable,
         deploymentTable: markdownConnectExplorerTable,
-        version: canaryVersion === '-' ? stableVersion : canaryVersion,
+        stableVersion,
+        canaryVersion,
     });
 
     await writeFile(connectChangelogPath, updatedContent, 'utf-8');
