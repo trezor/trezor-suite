@@ -1,4 +1,4 @@
-import { type deviceActions } from '@suite-common/device';
+import { deviceActions } from '@suite-common/device';
 import {
     Feature,
     type MessageSystemRootState,
