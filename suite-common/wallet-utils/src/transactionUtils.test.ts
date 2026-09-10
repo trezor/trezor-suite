@@ -16,6 +16,7 @@ import {
     findChainedTransactions,
     generateTransactionMonthKey,
     getAccountTransactions,
+    getCardanoStakingAmount,
     getDecreaseOutputId,
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
@@ -34,6 +35,7 @@ import {
     isTransactionCancellable,
     parseTransactionDateKey,
     parseTransactionMonthKey,
+    sumTransactions,
 } from './transactionUtils';
 
 const ethSymbol = asNetworkSymbol('eth');
@@ -551,6 +553,22 @@ describe('transaction utils', () => {
                 newTransactions: [{ blockHeight: 4, blockHash: '1', txid: '1' }],
                 add: [{ blockHeight: 4, blockHash: '1', txid: '1' }],
                 remove: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 5 }],
+            });
+        });
+    });
+
+    describe('sumTransactions (cardano staking)', () => {
+        fixtures.sumTransactionsCardanoStaking.forEach(f => {
+            it(f.description, () => {
+                expect(sumTransactions(f.transactions).toString()).toEqual(f.result);
+            });
+        });
+    });
+
+    describe('getCardanoStakingAmount', () => {
+        fixtures.getCardanoStakingAmount.forEach(f => {
+            it(f.description, () => {
+                expect(getCardanoStakingAmount(f.cardanoSpecific)).toEqual(f.result);
             });
         });
     });

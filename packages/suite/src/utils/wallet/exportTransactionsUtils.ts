@@ -17,6 +17,7 @@ import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
     fromWei,
+    getCardanoStakingAmount,
     getEffectiveGasPrice,
     getFiatRateKey,
     getNftTokenId,
@@ -266,20 +267,9 @@ const prepareContent = (
             }
 
             if (t.cardanoSpecific?.subtype) {
-                const { subtype, withdrawal = '0', deposit = '0' } = t.cardanoSpecific;
+                const { subtype } = t.cardanoSpecific;
 
-                const amount = (() => {
-                    switch (subtype) {
-                        case 'withdrawal':
-                            return withdrawal;
-                        case 'stake_registration':
-                        case 'stake_deregistration':
-                        case 'stake_delegation':
-                            return deposit;
-                        default:
-                            return '0';
-                    }
-                })();
+                const amount = getCardanoStakingAmount(t.cardanoSpecific);
 
                 const stakeTypeLabel = (() => {
                     switch (subtypeToStakeTypeMap[subtype]) {
