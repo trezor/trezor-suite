@@ -16,13 +16,12 @@ import { type MetadataState } from '@suite-common/metadata-types';
 import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { receiveInitialState } from '@suite-common/receive';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { type AppState } from 'src/reducers/store';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
-import { type WalletState } from 'src/reducers/wallet';
+import { walletReducers } from 'src/reducers/wallet';
 
 export const mockInitialAppState: AppState = {
     networks: null,
@@ -76,14 +75,7 @@ export const mockInitialAppState: AppState = {
     notifications: [],
     receive: receiveInitialState,
     persistentDeviceData: persistentDeviceDataInitialState,
-    wallet: {
-        discovery: {},
-        accountSearch: {},
-        settings: {
-            enabledNetworks: [] as NetworkSymbol[],
-        },
-        blockchain: {},
-    } as WalletState, // Todo: maybe one day, fix types
+    wallet: walletReducers(undefined, { type: '@@INIT' }),
     desktopUpdate: desktopUpdateInitialState,
     router: {
         loaded: true,
