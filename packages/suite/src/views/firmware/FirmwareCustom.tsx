@@ -17,7 +17,8 @@ import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareCustom = () => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
-    // See `FirmwareUpdate`: the flow is about the device it opened on, not about the selection.
+    // See `FirmwareUpdate`: the session latches this, so the flow stays about the device it opened
+    // on rather than about the selection.
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
     const { firmwareUpdate, originalDevice, showLowBatteryModal, toggleLowBatteryModal } =
@@ -34,10 +35,6 @@ export const FirmwareCustom = () => {
 
     if (showLowBatteryModal) {
         return <FirmwareLowBatteryModal onClose={toggleLowBatteryModal} />;
-    }
-
-    if (!device) {
-        return null;
     }
 
     return (

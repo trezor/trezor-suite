@@ -1,4 +1,4 @@
-import { type ReactNode, createContext, useContext, useMemo, useState } from 'react';
+import { type ReactNode, createContext, useContext, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type DeviceRootState, resolveConnectedDevice, selectDevices } from '@suite-common/device';
@@ -18,8 +18,12 @@ const FirmwareUpdateSessionContext = createContext<FirmwareUpdateSessionValue | 
 );
 
 type FirmwareUpdateSessionProps = {
-    /** The device the caller means: the selected one in the standalone flows, the pinned one in onboarding. */
-    device: TrezorDevice;
+    /**
+     * The device the caller means: the selected one in the standalone flows, the pinned one in
+     * onboarding. Read from wherever the caller reads it, changing as that source changes — the
+     * first one it offers is the device this session keeps.
+     */
+    device: TrezorDevice | undefined;
     children: ReactNode;
 };
 
@@ -33,9 +37,21 @@ type FirmwareUpdateSessionProps = {
  * and two flows cannot disagree about it.
  */
 export const FirmwareUpdateSession = ({ device, children }: FirmwareUpdateSessionProps) => {
-    // Captured once. Later renders may bring a different selection, and this session is not about
-    // whatever that is.
-    const [session] = useState<FirmwareUpdateSessionValue>(() => ({ device }));
+    // Latched, not tracked: the first device this session is offered is the device it is about for
+    // as long as it lives. An update takes that device out of the device list on every reboot and
+    // the selection moves on while it is gone, so a session that followed its input would end up
+    // about a bystander — or would be torn down and re-made around one.
+    const latched = useRef(device);
+
+    if (!latched.current && device) {
+        latched.current = device;
+    }
+
+    const session = useMemo(
+        () => (latched.current ? { device: latched.current } : undefined),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [latched.current],
+    );
 
     return (
         <FirmwareUpdateSessionContext.Provider value={session}>

@@ -16,8 +16,8 @@ import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareUpdate = () => {
     const dispatch = useDispatch();
-    // The flow opens on the selected device, and stays on it from here: the session holds it while
-    // the update reboots it out of the device list and the selection moves on.
+    // The device the flow opens on. The session latches it, so it survives the update taking the
+    // device out of the list and the selection moving on.
     const device = useSelector(selectSelectedDevice);
     const {
         firmwareUpdate,
@@ -66,10 +66,6 @@ export const FirmwareUpdate = () => {
 
     if (showLowBatteryModal) {
         return <FirmwareLowBatteryModal onClose={toggleLowBatteryModal} />;
-    }
-
-    if (!device) {
-        return null;
     }
 
     return (
