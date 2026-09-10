@@ -37,8 +37,12 @@ export const TransactionNotification = ({
     renderAmount,
     'data-testid': dataTestId,
 }: TransactionNotificationProps) => (
-    <Column gap={4}>
-        <Text typographyStyle="body-md-strong" data-testid={dataTestId && `${dataTestId}/message`}>
+    <Column gap={4} overflow="hidden" maxWidth="100%">
+        <Text
+            ellipsisLineCount={1}
+            maxWidth="100%"
+            data-testid={dataTestId && `${dataTestId}/message`}
+        >
             {message}
         </Text>
         {amount && (
