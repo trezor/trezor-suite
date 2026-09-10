@@ -147,6 +147,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             symbol={selectedToken?.symbol ?? account.symbol}
                                             contractAddress={selectedToken?.contract}
                                             tokenDecimals={selectedToken?.decimals}
+                                            isCompact
                                             data-testid={tokenInputName}
                                         />
                                     </HiddenPlaceholder>{' '}
