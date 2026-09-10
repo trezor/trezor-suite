@@ -105,6 +105,7 @@ export const TableRow = ({
             onClick={onClick}
             onMouseEnter={() => onHover?.(true)}
             onMouseLeave={() => onHover?.(false)}
+            data-component="TableRow"
             data-testid={dataTestId}
         >
             {children}

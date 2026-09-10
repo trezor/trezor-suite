@@ -90,7 +90,13 @@ export const LottieAnimation = ({
     );
 
     return (
-        <AnimationWrapper $height={size} $width={size} shape={shape} {...props}>
+        <AnimationWrapper
+            $height={size}
+            $width={size}
+            shape={shape}
+            {...props}
+            data-component="LottieAnimation"
+        >
             <>
                 {animationData && (
                     <StyledLottie

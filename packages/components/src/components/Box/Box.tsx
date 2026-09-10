@@ -123,7 +123,7 @@ export const Box = ({
     borderColor,
     shadow,
     'data-testid': dataTestId,
-    'data-component': dataComponent,
+    'data-component': dataComponent = 'Box',
     'aria-hidden': ariaHidden,
     as = 'div',
     onClick,

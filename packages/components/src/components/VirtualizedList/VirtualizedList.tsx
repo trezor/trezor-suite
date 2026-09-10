@@ -221,6 +221,7 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     return (
         <Container
             ref={containerRef}
+            data-component="VirtualizedList"
             $height={listHeight}
             $minHeight={listMinHeight}
             {...frameProps}

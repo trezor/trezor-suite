@@ -64,11 +64,13 @@ export type IconButtonProps = CommonButtonProps &
         icon: IconComponent;
         tooltip: IconButtonTooltipProps;
         'data-testid'?: string;
+        'data-component'?: string;
         'aria-label'?: string;
     };
 
 export const IconButton = ({
     'data-testid': dataTestId,
+    'data-component': dataComponent = 'IconButton',
     'aria-label': ariaLabel,
     icon,
     size = 'medium',
@@ -87,7 +89,7 @@ export const IconButton = ({
 
     return (
         <Container
-            data-component="IconButton"
+            data-component={dataComponent}
             data-icon={getIconComponentName(icon)}
             data-testid={dataTestId}
             aria-label={ariaLabel}

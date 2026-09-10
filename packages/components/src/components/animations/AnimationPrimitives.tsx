@@ -18,7 +18,9 @@ export type AllowedAnimationPrimitiveFrameProps = Pick<
 export const shapes = ['CIRCLE', 'ROUNDED', 'ROUNDED-SMALL'] as const;
 export type Shape = (typeof shapes)[number];
 
-export const AnimationWrapper = styled.div<
+export const AnimationWrapper = styled.div.attrs<{ 'data-component'?: string }>(props => ({
+    'data-component': props['data-component'] ?? 'AnimationWrapper',
+}))<
     TransientProps<AllowedAnimationPrimitiveFrameProps> & {
         shape?: Shape;
     }
