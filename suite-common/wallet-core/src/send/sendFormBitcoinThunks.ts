@@ -142,7 +142,6 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         if (formState.transactionData) {
             const psbtResponse = await TrezorConnect.composePsbt({
                 account: {
-                    path: account.path,
                     addresses: {
                         ...account.addresses,
                         change: changeAddresses,
