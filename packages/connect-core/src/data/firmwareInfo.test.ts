@@ -1,5 +1,5 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
-import { firmwareAssets } from '@trezor/connect-data';
+import { firmwareAssets, firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/protobuf/src/definitions';
@@ -94,7 +94,7 @@ describe('data/firmwareInfo', () => {
         // The bundled binaries are only used when their version matches the requested one.
         const getBundledFirmwareVersion = () => {
             const releasePath =
-                firmwareReleaseStore.getLocal().releases[deviceModel]?.[firmwareType]?.releasePath;
+                firmwareReleaseConfigAssets.releases[deviceModel]?.[firmwareType]?.releasePath;
             const version = releasePath?.match(/(\d+)\.(\d+)\.(\d+)/);
             if (!version) throw new Error('No bundled release for the tested device model.');
 

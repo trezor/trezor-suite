@@ -5,6 +5,7 @@ import type {
     CurrentVersion,
     FirmwareReleaseConfigInfo,
 } from '@trezor/connect-common/src/types/firmware';
+import { firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type {
     ConditionalRelease,
     FirmwareRelease,
@@ -47,8 +48,7 @@ const getBundledFirmwareVersion = (
     deviceModel: DeviceModelInternal,
     firmwareType: FirmwareType,
 ): string | undefined => {
-    const localFirmwareReleaseConfig = firmwareReleaseStore.getLocal();
-    const modelReleases = localFirmwareReleaseConfig.releases[deviceModel];
+    const modelReleases = firmwareReleaseConfigAssets.releases[deviceModel];
     const bundledRelease = modelReleases?.[firmwareType];
     if (!bundledRelease) {
         // Probably this is a new device model.
@@ -299,12 +299,11 @@ export const initializeFirmwareConfig = async (
     }
 
     // We had some issue getting remote so we use local data.
-    const localFirmwareReleaseConfig = firmwareReleaseStore.getLocal();
-    const localReleases = createLocalFirmwareConfig(localFirmwareReleaseConfig);
+    const localReleases = createLocalFirmwareConfig(firmwareReleaseConfigAssets);
 
     return {
         releases: localReleases,
-        intermediaries: localFirmwareReleaseConfig.intermediaries,
+        intermediaries: firmwareReleaseConfigAssets.intermediaries,
     };
 };
 
