@@ -84,7 +84,7 @@ export const useSendFormCompose = ({
                 composeSendFormTransactionFeeLevelsThunk({
                     formState,
                     composeContext: {
-                        account,
+                        accountKey: account.key,
                         network: state.network,
                         feeInfo,
                         excludedUtxos,
@@ -135,7 +135,7 @@ export const useSendFormCompose = ({
                     composeSendFormTransactionFeeLevelsThunk({
                         formState,
                         composeContext: {
-                            account,
+                            accountKey: account.key,
                             network: state.network,
                             feeInfo,
                             excludedUtxos,

@@ -113,7 +113,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         }
 
         return {
-            account: state.account,
+            accountKey: state.account.key,
             network: state.network,
             feeInfo: state.feeInfo,
             feeEstimationRecipient,

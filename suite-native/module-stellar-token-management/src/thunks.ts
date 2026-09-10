@@ -162,7 +162,7 @@ export const composeStellarTrustlineFeesThunk = createThunk<
             composeSendFormTransactionFeeLevelsThunk({
                 formState,
                 composeContext: {
-                    account,
+                    accountKey,
                     network,
                     feeInfo,
                 },

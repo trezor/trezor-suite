@@ -25,7 +25,6 @@ import {
     type WalletSettingsRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountAvailableBalance,
-    selectAccountByKey,
     selectAccountDescriptor,
     selectAccountNetworkSymbol,
     selectConvertedNetworkFeeInfo,
@@ -137,9 +136,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const [feeAdjustedMaxSendAmountByLevel, setFeeAdjustedMaxSendAmountByLevel] =
         useState<FeeLevelsMaxAmount>();
 
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -251,7 +247,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
 
     const updateFormState = useCallback(async () => {
-        if (account && accountSymbol && network && networkFeeInfo) {
+        if (accountSymbol && network && networkFeeInfo) {
             const response = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState: constructFormDraft({
@@ -260,7 +256,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                         selectedUtxos,
                     }),
                     composeContext: {
-                        account,
+                        accountKey,
                         network,
                         feeInfo: networkFeeInfo,
                         excludedUtxos,
@@ -316,7 +312,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         dispatch,
         getValues,
         tokenContract,
-        account,
         accountSymbol,
         network,
         networkFeeInfo,
@@ -507,7 +502,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         ],
     );
 
-    if (!account || !networkFeeInfo) return null;
+    if (!accountSymbol || !networkFeeInfo) return null;
 
     const handleSubmitSendForm = handleSubmit(() => {
         Keyboard.dismiss();

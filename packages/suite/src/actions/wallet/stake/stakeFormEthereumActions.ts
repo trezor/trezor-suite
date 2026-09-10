@@ -26,7 +26,7 @@ import {
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
     AddressDisplayOptions,
-    type ComposeActionContext,
+    type ComposeActionContextWithAccount,
     type ExternalOutput,
     type PrecomposedTransaction,
     type PrecomposedTransactionFinal,
@@ -70,7 +70,7 @@ const calculateStakingTransaction = (
 };
 
 export const composeTransaction =
-    (formValues: StakeFormState, formState: ComposeActionContext) => async () => {
+    (formValues: StakeFormState, formState: ComposeActionContextWithAccount) => async () => {
         const { account, feeInfo } = formState;
         if (!account || !feeInfo) return;
 

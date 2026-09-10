@@ -1,6 +1,6 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    type ComposeActionContext,
+    type ComposeActionContextWithAccount,
     type ExternalOutput,
     type PrecomposedLevels,
     type PrecomposedTransaction,
@@ -119,7 +119,7 @@ export const calculateStakeFormTransaction = (
 
 export const composeStakingTransaction = (
     formValues: StakeFormState,
-    formState: ComposeActionContext,
+    formState: ComposeActionContextWithAccount,
     predefinedLevels: FeeLevel[],
     calculateTransaction: (
         availableBalance: string,

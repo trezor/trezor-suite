@@ -64,12 +64,12 @@ export const useChangeDelegateForm = ({
 
     const state = useMemo(
         () => ({
-            account,
+            accountKey: account.key,
             network,
             feeInfo,
             formValues: defaultValues,
         }),
-        [account, network, feeInfo, defaultValues],
+        [account.key, network, feeInfo, defaultValues],
     );
 
     const methods = useForm<ChangeDelegateFormState>({

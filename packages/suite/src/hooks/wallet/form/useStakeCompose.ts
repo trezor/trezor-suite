@@ -15,7 +15,7 @@ import { findComposeErrors } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
-import { composeTransaction } from 'src/actions/wallet/stakeActions';
+import { composeTransactionThunk } from 'src/actions/wallet/stakeActions';
 import { type StakeContextValues } from 'src/components/earn/forms/StakeFormContext';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
@@ -78,7 +78,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 
                 const values = getValues();
 
-                return dispatch(composeTransaction(values, state));
+                return dispatch(composeTransactionThunk(values, state));
             }).catch(error => {
                 // The compose thunk reaches TrezorConnect, whose rejection messages may embed the
                 // composed account payload. `composeRequest` is fired without a `.catch` from the

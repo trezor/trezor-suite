@@ -17,6 +17,7 @@ import { type WithServices } from '@suite-common/redux-utils';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    type AccountsRootState,
     type BlockchainRootState,
     type EthereumGetCurrentNonceThunkState,
     type ReplaceTransactionThunkState,
@@ -29,6 +30,7 @@ import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     replaceTransactionThunk,
+    selectAccountByKey,
     selectIsMevProtectionEnabled,
     selectStake,
     stakeActions,
@@ -37,6 +39,7 @@ import {
 import {
     type Account,
     type ComposeActionContext,
+    type ComposeActionContextWithAccount,
     type PrecomposedTransactionFinal,
     type StakeFormState,
     type StakeType,
@@ -58,23 +61,44 @@ import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 
-type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState & StakeRootState;
+type ComposeTransactionThunkState = AccountsRootState &
+    BlockchainRootState &
+    SelectedAccountRootState &
+    StakeRootState;
 
-export const composeTransaction =
+export const composeTransactionThunk =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
-    (dispatch: ThunkDispatch<ComposeTransactionThunkState, unknown, UnknownAction>) => {
-        const { account } = formState;
+    (
+        dispatch: ThunkDispatch<ComposeTransactionThunkState, unknown, UnknownAction>,
+        getState: () => ComposeTransactionThunkState,
+    ) => {
+        const account = selectAccountByKey(getState(), formState.accountKey);
+        if (!account) {
+            return Promise.resolve(undefined);
+        }
+
+        const { accountKey, ...contextWithoutAccount } = formState;
+        const composeContext: ComposeActionContextWithAccount = {
+            ...contextWithoutAccount,
+            account,
+        };
 
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormEthereumActions.composeTransaction(formValues, formState));
+            return dispatch(
+                stakeFormEthereumActions.composeTransaction(formValues, composeContext),
+            );
         }
 
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormSolanaActions.composeTransactionThunk(formValues, formState));
+            return dispatch(
+                stakeFormSolanaActions.composeTransactionThunk(formValues, composeContext),
+            );
         }
 
         if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormCardanoActions.composeTransactionThunk(formValues, formState));
+            return dispatch(
+                stakeFormCardanoActions.composeTransactionThunk(formValues, composeContext),
+            );
         }
 
         return Promise.resolve(undefined);
