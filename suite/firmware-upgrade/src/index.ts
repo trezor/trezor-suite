@@ -2,8 +2,7 @@ export { adoptFirmwareUpdatedDeviceThunk } from './adoptFirmwareUpdatedDeviceThu
 export {
     FirmwareUpdateSession,
     useFirmwareSessionDevice,
-    useFirmwareSessionLiveDevice,
-    useLatchedDevice,
+    useFirmwareSessionDeviceRef,
 } from './FirmwareUpdateSession';
 export { Fingerprint } from './Fingerprint';
 export { FirmwareProgressBar } from './FirmwareProgressBar';

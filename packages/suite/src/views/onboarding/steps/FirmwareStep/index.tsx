@@ -7,7 +7,6 @@ import {
     useFirmwareDesktopUpdate,
     useFirmwareInstallationProgressCheck,
     useFirmwareSessionDevice,
-    useFirmwareSessionLiveDevice,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE, selectModal } from '@suite/modal';
@@ -26,11 +25,9 @@ import { FirmwareInstallationStep } from './FirmwareInstallationStep';
 import { DeviceDisconnectedStep } from '../../UnexpectedState/DeviceDisconnectedStep';
 
 const FirmwareStepContent = () => {
-    // Mounting the listener is what keeps the ref following the device across the reboots the
+    // This session's device as the device list has it right now: `undefined` while it is rebooting,
+    // which is what the disconnected check below is about.
     const firmwareUpdateDevice = useFirmwareSessionDevice();
-    // Where the device is right now, as opposed to what it was when the flow opened: the check
-    // below is about it having gone away.
-    const liveDevice = useFirmwareSessionLiveDevice();
     const modal = useSelector(selectModal);
     const { goToNextStep, updateAnalytics, onboardedDevice } = useOnboarding();
     const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
@@ -137,7 +134,10 @@ const FirmwareStepContent = () => {
         );
     }
 
-    if (['initial', 'done'].includes(status) && (!liveDevice?.connected || !liveDevice?.features)) {
+    if (
+        ['initial', 'done'].includes(status) &&
+        (!firmwareUpdateDevice?.connected || !firmwareUpdateDevice?.features)
+    ) {
         // Most users won't see this as they should come here with a connected device.
         // This is just for people who want to shoot themselves in the foot and disconnect the device before proceeding with fw update flow
         return <DeviceDisconnectedStep />;

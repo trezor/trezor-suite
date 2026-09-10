@@ -2,7 +2,6 @@ import {
     FirmwareUpdateSession,
     adoptFirmwareUpdatedDeviceThunk,
     useFirmwareDesktopUpdate,
-    useLatchedDevice,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -17,9 +16,9 @@ import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareUpdate = () => {
     const dispatch = useDispatch();
-    // Latched here, so the device this flow installs onto and the device it hands to the session
-    // are the same one — the update takes it out of the device list and the selection moves on.
-    const device = useLatchedDevice(useSelector(selectSelectedDevice));
+    // What the update is started on. `FirmwareUpdateSession` keeps it for the rest of the flow:
+    // the update takes the device out of the device list while the selection moves on.
+    const device = useSelector(selectSelectedDevice);
     const {
         firmwareUpdate,
         switchFirmwareType,

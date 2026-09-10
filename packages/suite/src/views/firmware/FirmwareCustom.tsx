@@ -4,7 +4,6 @@ import {
     FirmwareUpdateSession,
     adoptFirmwareUpdatedDeviceThunk,
     useFirmwareDesktopUpdate,
-    useLatchedDevice,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -18,8 +17,8 @@ import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareCustom = () => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
-    // See `FirmwareUpdate`: latched, so the install target and the session's device are the same.
-    const device = useLatchedDevice(useSelector(selectSelectedDevice));
+    // What the update is started on; `FirmwareUpdateSession` keeps it for the rest of the flow.
+    const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
     const { firmwareUpdate, showLowBatteryModal, toggleLowBatteryModal } = useFirmwareDesktopUpdate(
         {
