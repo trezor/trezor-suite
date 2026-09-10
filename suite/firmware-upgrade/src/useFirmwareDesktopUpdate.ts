@@ -9,15 +9,27 @@ import {
     useFirmwareInstallation,
 } from '@suite-common/firmware';
 import { useDispatch } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { UI_EVENTS } from '@trezor/connect';
-
-import { adoptFirmwareUpdatedDeviceThunk } from './adoptFirmwareUpdatedDeviceThunk';
 
 const INTERVAL_CHECK_SLOW_INSTALLATION_MS = 1_000;
 const TIME_THRESHOLD_SLOW_INSTALLATION_MS = 30_000;
 const PERCENTAGE_THRESHOLD_SLOW_INSTALLATION = 20;
 
-export const useFirmwareDesktopUpdate = () => {
+type UseFirmwareDesktopUpdateParams = {
+    /**
+     * The update finished and this is the device it left us with, re-enumerated and released.
+     *
+     * Only a caller that owns the device beyond the update has something to do here — the
+     * standalone flows, which hand the device back to Suite by selecting it. Onboarding passes
+     * nothing: it addresses its own device throughout and selects it when it hands over.
+     */
+    onUpdateFinished?: (device: TrezorDevice) => void;
+};
+
+export const useFirmwareDesktopUpdate = ({
+    onUpdateFinished,
+}: UseFirmwareDesktopUpdateParams = {}) => {
     const dispatch = useDispatch();
     const [showLowBatteryModal, setShowLowBatteryModal] = useState(false);
     const firmware = useSelector(selectFirmware);
@@ -98,7 +110,7 @@ export const useFirmwareDesktopUpdate = () => {
         ).unwrap();
 
         if (updatedDevice) {
-            dispatch(adoptFirmwareUpdatedDeviceThunk({ device: updatedDevice }));
+            onUpdateFinished?.(updatedDevice);
         }
     };
 

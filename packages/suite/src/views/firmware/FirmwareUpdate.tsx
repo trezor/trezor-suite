@@ -1,5 +1,6 @@
-import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
+import { adoptFirmwareUpdatedDeviceThunk, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { FirmwareType } from '@trezor/connect';
 
 import { FirmwareInitial } from 'src/components/firmware/FirmwareInitial';
@@ -8,6 +9,7 @@ import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatt
 import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareUpdate = () => {
+    const dispatch = useDispatch();
     const {
         firmwareUpdate,
         originalDevice,
@@ -15,7 +17,10 @@ export const FirmwareUpdate = () => {
         targetFirmwareType,
         showLowBatteryModal,
         toggleLowBatteryModal,
-    } = useFirmwareDesktopUpdate();
+    } = useFirmwareDesktopUpdate({
+        // Standalone: the device is Suite's again once the update is done, so hand it back.
+        onUpdateFinished: device => dispatch(adoptFirmwareUpdatedDeviceThunk({ device })),
+    });
 
     // `originalDevice` is the device as it was before the update: the live one on the first
     // attempt, the cached pre-update one on a retry, where the device is already in bootloader

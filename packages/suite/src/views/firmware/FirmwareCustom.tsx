@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
-import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
+import { adoptFirmwareUpdatedDeviceThunk, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SelectCustomFirmware } from 'src/components/firmware/SelectCustomFirmware';
@@ -10,8 +11,12 @@ import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareCustom = () => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
+    const dispatch = useDispatch();
     const { firmwareUpdate, originalDevice, showLowBatteryModal, toggleLowBatteryModal } =
-        useFirmwareDesktopUpdate();
+        useFirmwareDesktopUpdate({
+            // Standalone: the device is Suite's again once the update is done, so hand it back.
+            onUpdateFinished: device => dispatch(adoptFirmwareUpdatedDeviceThunk({ device })),
+        });
 
     const installCustomFirmware = () => {
         if (firmwareBinary && originalDevice) {
