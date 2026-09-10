@@ -295,8 +295,8 @@ impl AdapterManager {
         }
         drop(state);
 
+        let peripheral = self.get_peripheral_by_id(id).await?;
         let id = id.to_string();
-        let peripheral = self.get_peripheral_or_die(&id).await?;
         let is_known = self.is_known_peripheral(&id).await;
         let device = match TrezorDevice::new(peripheral, is_known).await {
             Ok(device) => device,
@@ -402,6 +402,15 @@ impl AdapterManager {
     // get Peripheral from btleplug Adapter
     pub async fn get_peripheral_or_die(&self, id: &String) -> Result<Peripheral, AdapterError> {
         let adapter = self.get_adapter_or_die().await?;
+        let peripherals = adapter.peripherals().await?;
+        peripherals
+            .into_iter()
+            .find(|peripheral| peripheral.id().to_string() == *id)
+            .ok_or(AdapterError::PeripheralNotFound)
+    }
+
+    async fn get_peripheral_by_id(&self, id: &PeripheralId) -> Result<Peripheral, AdapterError> {
+        let adapter = self.get_adapter_or_die().await?;
         Ok(adapter.peripheral(id).await?)
     }
 
@@ -426,7 +435,7 @@ impl AdapterManager {
         id: &PeripheralId,
         update_count: u128,
     ) -> Result<(), AdapterError> {
-        let peripheral = self.get_peripheral_or_die(&id.to_string()).await?;
+        let peripheral = self.get_peripheral_by_id(id).await?;
         if let Ok(Some(props)) = peripheral.properties().await {
             if let Some(_name) = props.local_name {
                 let device = ServicelessDevice {
@@ -455,7 +464,7 @@ impl AdapterManager {
             return Ok(());
         }
 
-        let peripheral = self.get_peripheral_or_die(&id).await?;
+        let peripheral = self.get_peripheral_by_id(&peripheral_id).await?;
 
         let adapter = self.get_adapter_or_die().await?;
         if let Some(_device) = utils::scan_filter(&adapter, &peripheral_id).await {
@@ -524,7 +533,7 @@ impl AdapterManager {
                         if let Some(mut device) = self_ref.get_device(&id).await {
                             let mut emit_update = false;
                             if let Ok(peripheral) =
-                                self_ref.get_peripheral_or_die(&id.to_string()).await
+                                self_ref.get_peripheral_by_id(&id).await
                             {
                                 if let Ok(updated) = device.update_properties(peripheral).await {
                                     emit_update = updated;
@@ -557,7 +566,7 @@ impl AdapterManager {
 
                             let mut emit_event = false;
                             if let Ok(peripheral) =
-                                self_ref.get_peripheral_or_die(&id.to_string()).await
+                                self_ref.get_peripheral_by_id(&id).await
                             {
                                 if let Ok(updated) = device.update_properties(peripheral).await {
                                     emit_event = updated;
