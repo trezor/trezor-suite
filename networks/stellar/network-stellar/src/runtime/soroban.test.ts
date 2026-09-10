@@ -1,6 +1,11 @@
-import { type Transaction, xdr } from '@stellar/stellar-sdk';
+import { Address, type Transaction, nativeToScVal, rpc, xdr } from '@stellar/stellar-sdk';
 
-import { type SorobanServer, getContractTokenMetadata, getSep41Token } from './soroban';
+import {
+    type SorobanServer,
+    getContractTokenMetadata,
+    getSep41Token,
+    readSep41Tokens,
+} from './soroban';
 
 const CONTRACT = 'CAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRVEAM';
 const OTHER_CONTRACT = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRV';
@@ -19,18 +24,22 @@ const mockServer = (retval: xdr.ScVal | undefined) => {
     };
 };
 
+const invokedFunction = (transaction: Transaction) => {
+    const [operation] = transaction.operations;
+    const invocation =
+        operation?.type === 'invokeHostFunction'
+            ? (operation.func.value as unknown as xdr.InvokeContractArgs)
+            : undefined;
+
+    return String(invocation?.functionName);
+};
+
 // Answers each SEP-41 read by the function the simulated call invokes, so a single read can be
 // made to fail without disturbing the others.
 const mockTokenServer = (retvals: Record<string, xdr.ScVal | undefined>) => {
-    const simulateTransaction = jest.fn((transaction: Transaction) => {
-        const [operation] = transaction.operations;
-        const invocation =
-            operation?.type === 'invokeHostFunction'
-                ? (operation.func.value as unknown as xdr.InvokeContractArgs)
-                : undefined;
-
-        return Promise.resolve({ result: { retval: retvals[String(invocation?.functionName)] } });
-    });
+    const simulateTransaction = jest.fn((transaction: Transaction) =>
+        Promise.resolve({ result: { retval: retvals[invokedFunction(transaction)] } }),
+    );
 
     return { server: { simulateTransaction } as unknown as SorobanServer, simulateTransaction };
 };
@@ -101,5 +110,255 @@ describe('getSep41Token', () => {
         const { server } = mockTokenServer({ ...metadata, balance: undefined });
 
         await expect(getSep41Token(server, NO_BALANCE_CONTRACT, HOLDER)).resolves.toBeUndefined();
+    });
+});
+
+describe('readSep41Tokens', () => {
+    // Each test uses its own contracts: `getContractTokenMetadata` caches per contract for the
+    // lifetime of the module, and the batch seeds that same cache.
+    const BATCHED_A = 'CAFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQX4KO';
+    const BATCHED_B = 'CALBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBNOTY';
+    const NO_BALANCE_ENTRY = 'CAQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSDFYJ';
+    const NO_METADATA_ENTRY = 'CAWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLAU';
+    const BATCH_FAILS = 'CA3TONZXG43TONZXG43TONZXG43TONZXG43TONZXG43TONZXG43TPZJN';
+    const WARM_CACHE = 'CBBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEE5XW';
+    const BATCH_TIMES_OUT = 'CBGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU3M7O';
+
+    const RPC_URL = 'https://mocked';
+
+    const metadataScVal = (decimal: number, symbol: string, name: string) =>
+        nativeToScVal(
+            { decimal, name, symbol },
+            {
+                type: {
+                    decimal: ['symbol', 'u32'],
+                    name: ['symbol', 'string'],
+                    symbol: ['symbol', 'string'],
+                },
+            },
+        );
+
+    const contractDataEntry = (contract: string, key: xdr.ScVal, val: xdr.ScVal) =>
+        ({
+            key: xdr.LedgerKey.contractData(
+                new xdr.LedgerKeyContractData({
+                    contract: Address.fromString(contract).toScAddress(),
+                    durability: xdr.ContractDataDurability.persistent,
+                    key,
+                }),
+            ),
+            val: xdr.LedgerEntryData.contractData(
+                new xdr.ContractDataEntry({
+                    ext: xdr.ExtensionPoint.v0(),
+                    contract: Address.fromString(contract).toScAddress(),
+                    key,
+                    durability: xdr.ContractDataDurability.persistent,
+                    val,
+                }),
+            ),
+        }) as rpc.Api.LedgerEntryResult;
+
+    const instanceEntry = (contract: string, metadata?: xdr.ScVal) =>
+        contractDataEntry(
+            contract,
+            xdr.ScVal.scvLedgerKeyContractInstance(),
+            xdr.ScVal.scvContractInstance(
+                new xdr.ScContractInstance({
+                    executable: xdr.ContractExecutable.contractExecutableWasm(Buffer.alloc(32, 1)),
+                    storage: metadata
+                        ? [
+                              new xdr.ScMapEntry({
+                                  key: xdr.ScVal.scvSymbol('METADATA'),
+                                  val: metadata,
+                              }),
+                          ]
+                        : [],
+                }),
+            ),
+        );
+
+    const balanceEntry = (contract: string, val: xdr.ScVal) =>
+        contractDataEntry(
+            contract,
+            nativeToScVal(['Balance', HOLDER], { type: ['symbol', 'address'] }),
+            val,
+        );
+
+    const bareBalance = (amount: bigint) => nativeToScVal(amount, { type: 'i128' });
+
+    // What a Stellar Asset Contract stores instead of a bare amount
+    const sacBalance = (amount: bigint) =>
+        nativeToScVal(
+            { amount, authorized: true, clawback: false },
+            {
+                type: {
+                    amount: ['symbol', 'i128'],
+                    authorized: ['symbol', 'bool'],
+                    clawback: ['symbol', 'bool'],
+                },
+            },
+        );
+
+    let getLedgerEntries: jest.SpyInstance;
+    let simulateTransaction: jest.SpyInstance;
+
+    beforeEach(() => {
+        getLedgerEntries = jest
+            .spyOn(rpc.Server.prototype, 'getLedgerEntries')
+            .mockResolvedValue({ entries: [], latestLedger: 1 });
+        simulateTransaction = jest
+            .spyOn(rpc.Server.prototype, 'simulateTransaction')
+            .mockResolvedValue({ result: { retval: undefined } } as never);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    const respondToSimulations = (retvals: Record<string, xdr.ScVal | undefined>) => {
+        simulateTransaction.mockImplementation((transaction: Transaction) =>
+            Promise.resolve({ result: { retval: retvals[invokedFunction(transaction)] } }),
+        );
+    };
+
+    it('describes every contract from a single ledger read', async () => {
+        getLedgerEntries.mockResolvedValue({
+            latestLedger: 1,
+            entries: [
+                instanceEntry(BATCHED_A, metadataScVal(18, 'deJTRSY', 'Janus Henderson')),
+                balanceEntry(BATCHED_A, bareBalance(4200000n)),
+                instanceEntry(BATCHED_B, metadataScVal(7, 'CPAL', 'Blend LP')),
+                balanceEntry(BATCHED_B, sacBalance(15n)),
+            ],
+        });
+
+        const tokens = await readSep41Tokens(RPC_URL, HOLDER, [BATCHED_A, BATCHED_B]);
+
+        expect(getLedgerEntries).toHaveBeenCalledTimes(1);
+        expect(simulateTransaction).not.toHaveBeenCalled();
+        expect(tokens).toEqual([
+            {
+                contract: BATCHED_A,
+                balance: '4200000',
+                decimals: 18,
+                symbol: 'deJTRSY',
+                name: 'Janus Henderson',
+            },
+            { contract: BATCHED_B, balance: '15', decimals: 7, symbol: 'CPAL', name: 'Blend LP' },
+        ]);
+    });
+
+    it('asks the contract itself when no balance entry came back, rather than reporting zero', async () => {
+        // A contract that keys its balances differently is indistinguishable from an empty one
+        getLedgerEntries.mockResolvedValue({
+            latestLedger: 1,
+            entries: [instanceEntry(NO_BALANCE_ENTRY, metadataScVal(18, 'DEJ', 'deJTRSY'))],
+        });
+        respondToSimulations({ balance: bareBalance(99n) });
+
+        const tokens = await readSep41Tokens(RPC_URL, HOLDER, [NO_BALANCE_ENTRY]);
+
+        expect(tokens).toEqual([
+            {
+                contract: NO_BALANCE_ENTRY,
+                balance: '99',
+                decimals: 18,
+                symbol: 'DEJ',
+                name: 'deJTRSY',
+            },
+        ]);
+        // The batch already described it, so only the balance had to be simulated
+        expect(simulateTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('never falls back to the classic seven decimals when the instance carries no metadata', async () => {
+        getLedgerEntries.mockResolvedValue({
+            latestLedger: 1,
+            entries: [
+                instanceEntry(NO_METADATA_ENTRY),
+                balanceEntry(NO_METADATA_ENTRY, bareBalance(5n)),
+            ],
+        });
+        // The contract does not answer `decimals` either
+        respondToSimulations({ balance: bareBalance(5n) });
+
+        const tokens = await readSep41Tokens(RPC_URL, HOLDER, [NO_METADATA_ENTRY]);
+
+        expect(tokens).toEqual([
+            {
+                contract: NO_METADATA_ENTRY,
+                balance: '5',
+                decimals: undefined,
+                symbol: undefined,
+                name: undefined,
+            },
+        ]);
+    });
+
+    it('falls back for every contract when the batch fails', async () => {
+        getLedgerEntries.mockRejectedValue(new Error('rpc is down'));
+        respondToSimulations({
+            balance: bareBalance(1n),
+            decimals: xdr.ScVal.scvU32(6),
+            symbol: xdr.ScVal.scvString('BATCH'),
+            name: xdr.ScVal.scvString('Batch Fails'),
+        });
+
+        const tokens = await readSep41Tokens(RPC_URL, HOLDER, [BATCH_FAILS]);
+
+        expect(tokens).toEqual([
+            {
+                contract: BATCH_FAILS,
+                balance: '1',
+                decimals: 6,
+                symbol: 'BATCH',
+                name: 'Batch Fails',
+            },
+        ]);
+    });
+
+    it('gives up on a batch that outruns its budget and asks the contracts directly', async () => {
+        jest.useFakeTimers();
+        getLedgerEntries.mockReturnValue(new Promise(() => {}));
+        respondToSimulations({
+            balance: bareBalance(2n),
+            decimals: xdr.ScVal.scvU32(4),
+            symbol: xdr.ScVal.scvString('SLOW'),
+            name: xdr.ScVal.scvString('Slow Batch'),
+        });
+
+        const pending = readSep41Tokens(RPC_URL, HOLDER, [BATCH_TIMES_OUT]);
+        // the batch's slice of SEP41_READ_TIMEOUT_MS
+        await jest.advanceTimersByTimeAsync(4_000);
+        const tokens = await pending;
+        jest.useRealTimers();
+
+        expect(tokens).toEqual([
+            {
+                contract: BATCH_TIMES_OUT,
+                balance: '2',
+                decimals: 4,
+                symbol: 'SLOW',
+                name: 'Slow Batch',
+            },
+        ]);
+    });
+
+    it('stops asking for the instance once a contract has described itself', async () => {
+        getLedgerEntries.mockResolvedValue({
+            latestLedger: 1,
+            entries: [
+                instanceEntry(WARM_CACHE, metadataScVal(9, 'WARM', 'Warm Cache')),
+                balanceEntry(WARM_CACHE, bareBalance(3n)),
+            ],
+        });
+
+        await readSep41Tokens(RPC_URL, HOLDER, [WARM_CACHE]);
+        await readSep41Tokens(RPC_URL, HOLDER, [WARM_CACHE]);
+
+        // instance + balance on the cold read, balance alone on the warm one
+        expect(getLedgerEntries.mock.calls[0]).toHaveLength(2);
+        expect(getLedgerEntries.mock.calls[1]).toHaveLength(1);
+        expect(simulateTransaction).not.toHaveBeenCalled();
     });
 });
