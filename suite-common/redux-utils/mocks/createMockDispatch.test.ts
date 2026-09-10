@@ -4,16 +4,14 @@ import { createMockDispatch, failOnUnobservedSubscriptions } from './createMockD
 
 type State = { value: number };
 type Extra = { value: string };
-type TestThunk = ThunkAction<Promise<void>, State, Extra, UnknownAction>;
+type TestThunk<TExtra = unknown> = ThunkAction<Promise<void>, State, TExtra, UnknownAction>;
 
-const createTestMockDispatch = () =>
-    createMockDispatch({ getState: () => ({ value: 1 }), extra: { value: 'extra' } });
+const createTestMockDispatch = () => createMockDispatch({ getState: () => ({ value: 1 }) });
 
 describe(createMockDispatch.name, () => {
     it('stores plain actions', () => {
         const { actions, dispatch } = createMockDispatch({
             getState: () => ({ value: 1 }),
-            extra: { value: 'extra' },
         });
         const action = { type: 'test/action', payload: 42 };
 
@@ -30,11 +28,11 @@ describe(createMockDispatch.name, () => {
             getState: () => state,
             extra,
         });
-        const childThunk: TestThunk = async (childDispatch, getState, injectedExtra) => {
+        const childThunk: TestThunk<Extra> = async (childDispatch, getState, injectedExtra) => {
             await Promise.resolve();
             childDispatch({ type: 'test/child', payload: { state: getState(), injectedExtra } });
         };
-        const parentThunk: TestThunk = async parentDispatch => {
+        const parentThunk: TestThunk<Extra> = async parentDispatch => {
             await Promise.resolve();
             parentDispatch(childThunk);
             parentDispatch({ type: 'test/parent' });
