@@ -40,6 +40,7 @@ import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
     AddressFormatter,
     CoinToFiatAmountFormatter,
+    ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
@@ -147,7 +148,8 @@ export const TokenSettingsBottomSheet = forwardRef(
 
         const displaySymbol = getDisplaySymbol(account.symbol);
 
-        const balance = token?.balance ?? account.balance;
+        const tokenBalance = token?.balance ?? '0';
+        const tokenSymbol = token?.symbol ? toTokenSymbol(getDisplaySymbol(token.symbol)) : null;
         const networkName = getNetwork(symbol).name;
 
         const isHidden = hiddenTokens.some(
@@ -270,25 +272,32 @@ export const TokenSettingsBottomSheet = forwardRef(
                             >
                                 <Box flex={1} alignItems="flex-end" marginLeft="sp8">
                                     <VStack spacing={0} alignItems="flex-end">
-                                        <ExactTokenAmountFormatter
-                                            value={asDecimalTokenAmount(balance)}
-                                            tokenSymbol={toTokenSymbol(
-                                                getDisplaySymbol(
-                                                    token?.symbol ?? toTokenSymbol(account.symbol),
-                                                ),
-                                            )}
-                                            variant="body-sm"
-                                            color="contentPrimary"
-                                            numberOfLines={1}
-                                            ellipsizeMode="tail"
-                                        />
+                                        {tokenContract ? (
+                                            <ExactTokenAmountFormatter
+                                                value={asDecimalTokenAmount(tokenBalance)}
+                                                tokenSymbol={tokenSymbol}
+                                                variant="body-sm"
+                                                color="contentPrimary"
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                            />
+                                        ) : (
+                                            <ExactCryptoAmountFormatter
+                                                value={account.formattedBalance}
+                                                symbol={account.symbol}
+                                                variant="body-sm"
+                                                color="contentPrimary"
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                            />
+                                        )}
 
                                         {!isUnrecognized && (
                                             <>
                                                 {tokenContract ? (
                                                     <TokenToFiatAmountFormatter
                                                         symbol={symbol}
-                                                        value={balance}
+                                                        value={tokenBalance}
                                                         contract={tokenContract}
                                                         variant="body-sm"
                                                         color="contentSecondary"
@@ -296,7 +305,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                                                 ) : (
                                                     <CoinToFiatAmountFormatter
                                                         accountKey={accountKey}
-                                                        value={balance}
+                                                        value={account.balance}
                                                         variant="body-sm"
                                                         color="contentSecondary"
                                                     />
