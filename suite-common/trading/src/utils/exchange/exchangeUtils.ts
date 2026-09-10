@@ -379,6 +379,11 @@ export const deriveBitcoinSwapFromAddresses = async ({
                 .filter((address): address is string => !!address),
         ),
     );
+
+    if (inputAddresses.length === 0) {
+        return undefined;
+    }
+
     const firstOutputAmount =
         'outputs' in tx && tx.outputs[0]?.amount ? tx.outputs[0].amount.toString() : undefined;
 

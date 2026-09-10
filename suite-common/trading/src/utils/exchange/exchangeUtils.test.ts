@@ -608,4 +608,27 @@ describe('deriveBitcoinSwapFromAddresses', () => {
             }),
         );
     });
+
+    it('should return undefined when no input address can be derived', async () => {
+        (TrezorConnect.composeTransaction as jest.Mock).mockResolvedValue({
+            success: true,
+            payload: [
+                {
+                    type: 'final',
+                    inputs: [{ prev_hash: 'unknown', prev_index: 99 }],
+                    outputs: [{ amount: '5000' }],
+                },
+            ],
+        });
+
+        const result = await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '0.0001',
+            decimals: 8,
+            btcSwapComposeTemplate: btcSwapComposeTemplateWithPercent(2),
+        });
+
+        expect(result).toBeUndefined();
+    });
 });

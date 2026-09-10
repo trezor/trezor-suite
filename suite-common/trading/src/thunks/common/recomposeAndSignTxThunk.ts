@@ -148,8 +148,8 @@ export const recomposeAndSignTxThunk = createThunk<
                     : [
                           {
                               ...DEFAULT_PAYMENT,
-                              address: address ?? '',
-                              amount: amount ?? '',
+                              address,
+                              amount,
                               currency: DEFAULT_PAYMENT.currency,
                               token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
                           },
