@@ -11,6 +11,7 @@ import {
 } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Card } from '../Card/Card';
+import { type CardType } from '../Card/types';
 import { Icon } from '../Icon/Icon';
 
 export const allowedRadioCardFrameProps = [
@@ -22,6 +23,7 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedRadioCardFrameProps)[nu
 
 export type RadioCardProps = {
     isSelected: boolean;
+    type?: CardType;
     isDisabled?: boolean;
     children: ReactNode;
     onClick?: () => void;
@@ -41,6 +43,7 @@ const Wrapper = styled.div<{ $isDisabled: boolean }>`
 
 export const RadioCard = ({
     isSelected,
+    type = 'contrast',
     isDisabled = false,
     onClick,
     children,
@@ -56,7 +59,7 @@ export const RadioCard = ({
                 isSelected={isSelected}
                 data-component="RadioCard"
                 data-testid={dataTestId}
-                type="contrast"
+                type={type}
                 {...frameProps}
             >
                 {children}
