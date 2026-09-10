@@ -6,7 +6,7 @@ import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-c
 import { type RatesByKey } from '@suite-common/wallet-types';
 import {
     filterAccountsByNetworkSymbol,
-    isReadOnlyToken,
+    isStellarContractToken,
     isTestnet,
 } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -43,7 +43,8 @@ export const buildSellAssetRows = ({
     const getTokensWithBalance = (account: AccountWithOptionalLabel) => {
         const { shownWithBalance, hiddenWithBalance } = getTokens({
             // Read-only tokens cannot be spent, so they are not offered as a sell source.
-            tokens: (account.tokens ?? []).filter(token => !isReadOnlyToken(token)),
+            // No trading provider quotes Soroban contract tokens, whatever Suite can sign
+            tokens: (account.tokens ?? []).filter(token => !isStellarContractToken(token)),
             symbol: account.symbol,
             tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
         });

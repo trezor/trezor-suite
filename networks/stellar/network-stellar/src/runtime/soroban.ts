@@ -5,6 +5,7 @@ import {
     Contract,
     Networks,
     StrKey,
+    type Transaction,
     TransactionBuilder,
     nativeToScVal,
     rpc,
@@ -127,6 +128,43 @@ export const getContractTokenBalance = async (
     return typeof balance === 'bigint' || typeof balance === 'number'
         ? balance.toString()
         : undefined;
+};
+
+/**
+ * Raised when the network says a contract call would fail. Carries the contract's own
+ * diagnostic, which is the only account of *why* — an insufficient balance, a missing
+ * authorization, a contract that has no `transfer` at all.
+ */
+export class SorobanSimulationError extends Error {
+    constructor(public readonly diagnostic: string) {
+        super(`Soroban simulation failed: ${diagnostic}`);
+        this.name = 'SorobanSimulationError';
+    }
+}
+
+/**
+ * Fills in what a Soroban transaction cannot know about itself: the ledger entries the call will
+ * touch and the resource fee for touching them. Both come out of simulating it, and the network
+ * rejects a host-function transaction carrying neither.
+ *
+ * Simulating is also the only way to learn the call would fail *before* asking the user to
+ * approve it on their device.
+ *
+ * The returned transaction costs more than the one passed in — the resource fee is added on top
+ * of the inclusion fee — and it is tied to the ledger it was simulated against, so it should be
+ * signed and submitted promptly rather than held.
+ */
+export const prepareContractTransaction = async (
+    server: SorobanServer,
+    transaction: Transaction,
+): Promise<Transaction> => {
+    const simulation = await server.simulateTransaction(transaction);
+
+    if (rpc.Api.isSimulationError(simulation)) {
+        throw new SorobanSimulationError(simulation.error);
+    }
+
+    return rpc.assembleTransaction(transaction, simulation).build();
 };
 
 /** SEP-41 descriptive metadata, read from the token contract itself. */

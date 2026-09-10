@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { type TokenDefinitions, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isReadOnlyToken } from '@suite-common/wallet-utils';
 
 import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
 import {
@@ -76,7 +75,6 @@ export function useBuildTokenOptions({
 
         const sortedTokensWithRates = tokensWithRates
             // Read-only tokens cannot be spent, so they are not offered as a send source.
-            .filter(token => !isReadOnlyToken(token))
             .toSorted(sortTokensWithRates);
 
         return buildTokenOptions(
