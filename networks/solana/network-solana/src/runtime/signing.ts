@@ -109,6 +109,13 @@ export type DecompiledMessage = {
     instructions: ReturnType<typeof parseInstruction>[];
 };
 
+// SIMD-0385 moves the message ahead of the signatures and drops the signature-array length
+// prefix, so a serialized v1 transaction starts with the same version byte as a bare v1 message.
+const V1_VERSION_BYTE = 0x81;
+
+export const isV1Transaction = (serializedTx: string) =>
+    getBase16Encoder().encode(serializedTx.slice(0, 2))[0] === V1_VERSION_BYTE;
+
 export const getDecompiledMessage = (
     serializedTx: string,
     serialize: boolean,

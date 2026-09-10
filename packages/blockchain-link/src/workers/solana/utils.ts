@@ -106,10 +106,15 @@ export const getSignaturesForAddresses = async (
     );
 };
 
+const isRejected = <T>(result: PromiseSettledResult<T>): result is PromiseRejectedResult =>
+    result.status === 'rejected';
+
 export const fetchTransactionPage = async (
     api: SolanaAPI,
     signatures: Signature[],
 ): Promise<ParsedTransactionWithMeta[]> => {
+    const { isUnsupportedTransactionVersionError } = await solana();
+
     // allSettled, not all: a single transaction the RPC refuses to return must drop only itself
     // instead of failing the whole account sync.
     const results = await Promise.allSettled(
@@ -124,11 +129,21 @@ export const fetchTransactionPage = async (
         ),
     );
 
-    const rejected = results.length - results.filter(r => r.status === 'fulfilled').length;
-    if (rejected > 0) {
+    const rejected = results.filter(isRejected);
+    // The caller deletes the stored transactions missing from the page, so a page shortened by a
+    // transport, timeout or rate-limit failure would erase history that is only unreachable.
+    const unexpected = rejected.find(
+        result => !isUnsupportedTransactionVersionError(result.reason),
+    );
+
+    if (unexpected) {
+        throw unexpected.reason;
+    }
+
+    if (rejected.length > 0) {
         console.warn(
             // do not log the rejection reason: it may carry the signature, which is confidential
-            `Solana: dropped ${rejected}/${results.length} transactions the RPC did not return`,
+            `Solana: dropped ${rejected.length}/${results.length} transactions of an unsupported version`,
         );
     }
 

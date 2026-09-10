@@ -9,3 +9,11 @@ export const v0WithLookupTablesTx =
 // of 1_000_000 lamports.
 export const v0WithoutLookupTablesTx =
     '8001000103e7f64154f14373a327aa566574e7250d23f68cb1025f3f4fa7fbc23ea0cc7b0fefebc5a5c00a736483b0273c00926e64a17121016b248b05c73f7468bd2138ac0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001020200010c0200000040420f000000000000';
+
+// Only the leading version byte (SIMD-0385) is load-bearing for isV1Transaction, so the body is
+// the v0 fixture's and is deliberately not a valid v1 encoding.
+export const v1PrefixedMessage = `81${v0WithoutLookupTablesTx.slice(2)}`;
+
+// A whole serialized legacy transaction: compact-u16 signature count, one 64-byte signature,
+// then the message. Legacy and v0 keep signatures first, so this must not read as v1.
+export const serializedLegacyTx = `01${'00'.repeat(64)}${legacyCreateStakeAccountTx}`;

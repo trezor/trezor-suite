@@ -24,6 +24,12 @@ const mockApi = (responses: (TransactionResponse | Error)[]) => {
     } as unknown as SolanaAPI;
 };
 
+// @solana/kit is not a dependency here, and its isSolanaError only reads the name and the code,
+// so the -32015 a node answers with for a transaction above the requested
+// maxSupportedTransactionVersion is reproduced by hand.
+const unsupportedVersionError = (message = 'Transaction version (2) is not supported') =>
+    Object.assign(new Error(message), { name: 'SolanaError', context: { __code: -32015 } });
+
 const tx = (txid: string) =>
     ({ transaction: { signatures: [txid] } }) as unknown as ParsedTransactionWithMeta;
 
@@ -50,16 +56,43 @@ describe('fetchTransactionPage', () => {
 
     // The v1 regression: getTransaction rejects for a transaction version above the ceiling we
     // ask for, and that must not take down the sync of the whole account.
-    it('drops only the rejected transaction and keeps the rest of the page', async () => {
-        const api = mockApi([tx('a'), new Error('unsupported transaction version'), tx('c')]);
+    it('drops only the transaction of an unsupported version and keeps the rest of the page', async () => {
+        const api = mockApi([tx('a'), unsupportedVersionError(), tx('c')]);
 
         await expect(fetchTransactionPage(api, signatures)).resolves.toEqual([tx('a'), tx('c')]);
     });
 
-    it('returns an empty page when every transaction is rejected', async () => {
-        const api = mockApi([new Error('boom'), new Error('boom'), new Error('boom')]);
+    it('returns an empty page when every transaction is of an unsupported version', async () => {
+        const api = mockApi([
+            unsupportedVersionError(),
+            unsupportedVersionError(),
+            unsupportedVersionError(),
+        ]);
 
         await expect(fetchTransactionPage(api, signatures)).resolves.toEqual([]);
+    });
+
+    // A short page is indistinguishable from an account that lost those transactions, and the
+    // caller deletes the stored history missing from it.
+    it('rejects when a transaction fails for any other reason', async () => {
+        const api = mockApi([tx('a'), new Error('429 Too Many Requests'), tx('c')]);
+
+        await expect(fetchTransactionPage(api, signatures)).rejects.toThrow(
+            '429 Too Many Requests',
+        );
+    });
+
+    // Nodes older than Agave 4.2 refuse the parameter itself, on every request of the page.
+    it('rejects when the node refuses the requested maxSupportedTransactionVersion', async () => {
+        const invalidParams = Object.assign(
+            new Error('Invalid param: unsupported transaction version'),
+            { name: 'SolanaError', context: { __code: -32602 } },
+        );
+        const api = mockApi([invalidParams, invalidParams, invalidParams]);
+
+        await expect(fetchTransactionPage(api, signatures)).rejects.toThrow(
+            'Invalid param: unsupported transaction version',
+        );
     });
 
     it('filters out transactions the RPC returns as null', async () => {
@@ -82,7 +115,11 @@ describe('fetchTransactionPage', () => {
 
     it('does not log the rejection reason, which may carry the confidential signature', async () => {
         const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const api = mockApi([tx('a'), new Error('failed for signature deadbeef'), tx('c')]);
+        const api = mockApi([
+            tx('a'),
+            unsupportedVersionError('failed for signature deadbeef'),
+            tx('c'),
+        ]);
 
         await fetchTransactionPage(api, signatures);
 
