@@ -133,27 +133,28 @@ async fn handle_http_request(
     manager: AdapterManager,
     ws_token: Arc<Option<String>>,
 ) -> Result<HyperResponse<Full<Bytes>>, ServerError> {
+    let is_token_valid = match ws_token.as_deref() {
+        Some(expected_token) => req
+            .headers()
+            .get("authorization")
+            .and_then(|value| value.to_str().ok())
+            .and_then(|value| value.strip_prefix("Bearer "))
+            .is_some_and(|token| token == expected_token),
+        None => true,
+    };
+
+    if !is_token_valid {
+        info!("Missing or invalid Authorization token");
+        info!("- Peer: {peer}");
+
+        // Stealth rejection: return error to close the connection without sending a response
+        return Err(ServerError::Io(std::io::Error::new(
+            std::io::ErrorKind::ConnectionReset,
+            "",
+        )));
+    }
+
     if hyper_tungstenite::is_upgrade_request(&req) {
-        if let Some(ref expected_token) = *ws_token {
-            let is_token_valid = req
-                .headers()
-                .get("authorization")
-                .and_then(|value| value.to_str().ok())
-                .and_then(|value| value.strip_prefix("Bearer "))
-                .is_some_and(|token| token == expected_token);
-
-            if !is_token_valid {
-                info!("Missing or invalid websocket Authorization token");
-                info!("- Peer: {peer}");
-
-                // Stealth rejection: return error to close connection without sending response
-                return Err(ServerError::Io(std::io::Error::new(
-                    std::io::ErrorKind::ConnectionReset,
-                    "",
-                )));
-            }
-        }
-
         let (response, websocket) = match hyper_tungstenite::upgrade(req, None) {
             Ok(r) => r,
             Err(e) => {
