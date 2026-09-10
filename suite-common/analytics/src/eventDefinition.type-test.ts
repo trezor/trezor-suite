@@ -12,6 +12,12 @@ type EmptyAttributeEventDefinition = EventDef<Record<never, never>, 'test/empty-
 
 type PayloadEventDefinition = EventDef<boolean, 'test/payload-event'>;
 
+// Arbitrary payload with dynamic keys that are not listed as individual attributes.
+type ArbitraryRecordPayloadEventDefinition = EventDef<
+    Record<string, number>,
+    'test/record-payload-event'
+>;
+
 const attributeEvent: EventInstance<AttributeEventDefinition> = {
     type: 'test/attribute-event',
     payload: { requiredAttribute: 'value' },
@@ -53,6 +59,27 @@ const payloadEventWithoutPayload: EventInstance<PayloadEventDefinition> = {
     type: 'test/payload-event',
 };
 
+const recordPayloadEvent: EventInstance<ArbitraryRecordPayloadEventDefinition> = {
+    type: 'test/record-payload-event',
+    payload: { btc_normal: 3, eth_normal: 1 },
+};
+
+// @ts-expect-error Record payload events require their direct payload type.
+const recordPayloadEventWithoutPayload: EventInstance<ArbitraryRecordPayloadEventDefinition> = {
+    type: 'test/record-payload-event',
+};
+
+const recordPayloadEventWithEmptyPayload: EventInstance<ArbitraryRecordPayloadEventDefinition> = {
+    type: 'test/record-payload-event',
+    payload: {},
+};
+
+const recordPayloadEventWithWrongValueType: EventInstance<ArbitraryRecordPayloadEventDefinition> = {
+    type: 'test/record-payload-event',
+    // @ts-expect-error Record payload values must match the declared value type.
+    payload: { btc_normal: 'not-a-number' },
+};
+
 type EventDefinitionUnion =
     AttributeEventDefinition | EmptyAttributeEventDefinition | PayloadEventDefinition;
 
@@ -75,5 +102,9 @@ void emptyAttributeEvent;
 void emptyAttributeEventWithPayload;
 void payloadEvent;
 void payloadEventWithoutPayload;
+void recordPayloadEvent;
+void recordPayloadEventWithoutPayload;
+void recordPayloadEventWithEmptyPayload;
+void recordPayloadEventWithWrongValueType;
 void eventFromDefinitionUnion;
 void mismatchedEventFromDefinitionUnion;
