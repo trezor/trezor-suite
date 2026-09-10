@@ -90,14 +90,10 @@ export const WalletBackupTutorialStep3 = ({
                             descriptionColor="contentBrand"
                             image={<TrezorDeviceSvg />}
                         />
-                        <IconListTextItem
-                            spacing="sp16"
-                            icon="arrowsLeftRight"
-                            iconSize="mediumLarge"
-                        >
+                        <IconListTextItem spacing="sp16" icon="arrowsLeftRight" iconSize={36}>
                             <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section1.bullet1" />
                         </IconListTextItem>
-                        <IconListTextItem spacing="sp16" icon="lock" iconSize="mediumLarge">
+                        <IconListTextItem spacing="sp16" icon="lock" iconSize={36}>
                             <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section1.bullet2" />
                         </IconListTextItem>
                         <Divider style={applyStyle(dividerStyle)} />
@@ -109,11 +105,7 @@ export const WalletBackupTutorialStep3 = ({
                             descriptionColor="contentWarning"
                             image={<RecoveryCardSvg width={IMAGE_WIDTH} height={IMAGE_HEIGHT} />}
                         />
-                        <IconListTextItem
-                            spacing="sp16"
-                            icon="arrowCounterClockwise"
-                            iconSize="mediumLarge"
-                        >
+                        <IconListTextItem spacing="sp16" icon="arrowCounterClockwise" iconSize={36}>
                             <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section2.bullet1" />
                         </IconListTextItem>
                     </VStack>

@@ -24,7 +24,7 @@ export const EarnConsentsItem = ({
 
     return (
         <HStack spacing="sp12" alignItems="center">
-            <IconSquare iconName={iconName} intent="info" iconSize="large" />
+            <IconSquare iconName={iconName} intent="info" />
             <Text variant="body-sm-strong" color={color} style={applyStyle(textStyle)}>
                 {children}
             </Text>

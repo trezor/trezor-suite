@@ -9,7 +9,7 @@ type InfoItemProps = {
 };
 
 const InfoItem = ({ icon, titleId, descriptionId }: InfoItemProps) => (
-    <IconListItem icon={icon} variant="brand" iconSize="large" verticalAlign="flex-start">
+    <IconListItem icon={icon} variant="brand" verticalAlign="flex-start">
         <VStack spacing="sp4">
             <Text variant="body-sm-strong">
                 <Translation id={titleId} />
