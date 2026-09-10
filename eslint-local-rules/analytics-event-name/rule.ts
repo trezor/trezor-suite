@@ -55,7 +55,6 @@ export const analyticsEventNameRule: Rule.RuleModule = {
         docs: {
             description:
                 'Enforces analytics EventType enum values to use format Domain/event with allowed domains and kebab-case for the event part.',
-            category: 'Best Practices',
             recommended: false,
         },
         messages: {

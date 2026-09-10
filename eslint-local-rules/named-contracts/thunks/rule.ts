@@ -64,7 +64,6 @@ export const enforceThunkContractsRule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'Enforces explicit, named State and Deps contracts for thunks.',
-            category: 'Best Practices',
             recommended: false,
         },
         fixable: 'code',

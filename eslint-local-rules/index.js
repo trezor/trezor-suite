@@ -2,7 +2,7 @@ const path = require('path');
 
 require('ts-node').register({
     transpileOnly: true,
-    project: path.join(__dirname, 'tsconfig.json'),
+    project: path.join(__dirname, 'tsconfig.runtime.json'),
 });
 
 const { analyticsEventNameRule } = require('./analytics-event-name/rule');

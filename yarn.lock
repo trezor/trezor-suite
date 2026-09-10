@@ -17211,6 +17211,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/eslint-local-rules@workspace:eslint-local-rules":
+  version: 0.0.0-use.local
+  resolution: "@trezor/eslint-local-rules@workspace:eslint-local-rules"
+  dependencies:
+    eslint: "npm:^10.8.1"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:@typescript/typescript6@6.0.2"
+    typescript-eslint: "npm:^8.67.0"
+  peerDependencies:
+    eslint: ^10.8.1
+  languageName: unknown
+  linkType: soft
+
 "@trezor/eslint@workspace:*, @trezor/eslint@workspace:^, @trezor/eslint@workspace:packages/eslint":
   version: 0.0.0-use.local
   resolution: "@trezor/eslint@workspace:packages/eslint"
