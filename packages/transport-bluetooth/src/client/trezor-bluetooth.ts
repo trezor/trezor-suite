@@ -41,6 +41,7 @@ type CloseDeviceParams = {
 type WriteParams = {
     id: string;
     data: number[];
+    withResponse?: boolean;
 };
 
 type ReadParams = {
