@@ -71,7 +71,7 @@ export const FormCell = ({
     hasError,
     isDisabled,
     'data-testid': dataTestId,
-    'data-component': dataComponent,
+    'data-component': dataComponent = 'FormCell',
     ...rest
 }: FormCellProps) => {
     const [isHovered, setIsHovered] = useState(false);

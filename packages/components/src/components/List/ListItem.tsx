@@ -67,6 +67,7 @@ export const ListItem = ({
             $bulletAlignment={bulletAlignment}
             $hasListStyleType={!!listStyleType}
             $hasBulletComponent={!!bulletComponent}
+            data-component="ListItem"
             data-testid={dataTestId}
         >
             <BulletWrapper>{bulletComponent ?? listBulletComponent}</BulletWrapper>

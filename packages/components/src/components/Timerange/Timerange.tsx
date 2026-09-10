@@ -625,7 +625,7 @@ const Timerange = (props: TimerangeProps) => {
     };
 
     return (
-        <StyledTimerange>
+        <StyledTimerange data-component="Timerange">
             <Calendar>
                 <DateRange
                     editableDateInputs

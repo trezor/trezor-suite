@@ -123,7 +123,7 @@ type PopoverTriggerProps = {
 export const PopoverTrigger = ({
     children,
     'data-testid': dataTestId,
-    'data-component': dataComponent,
+    'data-component': dataComponent = 'PopoverTrigger',
 }: PopoverTriggerProps) => {
     const context = usePopoverContext();
     const ref = useMergeRefs([context.refs.setReference]);
@@ -133,8 +133,8 @@ export const PopoverTrigger = ({
             ref={ref}
             data-state={context.open ? 'open' : 'closed'}
             data-testid={dataTestId}
-            data-component={dataComponent}
             {...context.getReferenceProps()}
+            data-component={dataComponent}
             style={{
                 display: 'flex',
             }}
@@ -178,6 +178,7 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>((p
                     aria-labelledby={context.labelId}
                     aria-describedby={context.descriptionId}
                     {...context.getFloatingProps()}
+                    data-component="PopoverContent"
                 >
                     {children}
                 </div>

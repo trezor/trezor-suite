@@ -34,7 +34,7 @@ export const CollapsibleToggleIcon = ({
     const { isOpen } = useCollapsible();
 
     return (
-        <IconWrapper $isCollapsed={!isOpen}>
+        <IconWrapper $isCollapsed={!isOpen} data-component="CollapsibleToggleIcon">
             <Icon
                 as={icon}
                 size={size}

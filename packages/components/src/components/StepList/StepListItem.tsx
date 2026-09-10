@@ -276,7 +276,7 @@ export const StepListItem = ({
     };
 
     return (
-        <Item $direction={direction} data-testid={dataTestId}>
+        <Item $direction={direction} data-component="StepListItem" data-testid={dataTestId}>
             <ItemLayout
                 $bulletGap={bulletGap}
                 $titleGap={titleGap}

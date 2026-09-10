@@ -4,5 +4,12 @@ import { IconButton, type IconButtonProps } from '../buttons/IconButton/IconButt
 export const BannerIconButton = ({ intent, size = 'small', ...rest }: IconButtonProps) => {
     const { intent: bannerIntent } = useBannerContext();
 
-    return <IconButton intent={intent ?? bannerIntent} size={size} {...rest} />;
+    return (
+        <IconButton
+            intent={intent ?? bannerIntent}
+            size={size}
+            {...rest}
+            data-component="BannerIconButton"
+        />
+    );
 };

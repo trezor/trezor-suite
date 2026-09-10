@@ -4,7 +4,7 @@ import styled, { ThemeProvider } from 'styled-components';
 
 import { intermediaryTheme } from '../config/colors';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div.attrs({ 'data-component': 'StoryWrapper' })`
     padding: 20px;
     display: flex;
     height: 100%;
@@ -35,7 +35,7 @@ interface StoryColumnProps {
     minWidth?: number;
 }
 
-const Col = styled.div<StoryColumnProps>`
+const Col = styled.div.attrs({ 'data-component': 'StoryColumn' })<StoryColumnProps>`
     padding: 10px;
     flex: 1;
     border-radius: 10px;

@@ -44,7 +44,7 @@ export const TruncateWithTooltip = ({ children, delayShow, ...rest }: TruncateWi
     }, [children]);
 
     return (
-        <EllipsisContainer ref={containerRef}>
+        <EllipsisContainer ref={containerRef} data-component="TruncateWithTooltip">
             <Tooltip
                 isActive={Boolean(children) && isEllipsisActive}
                 delayShow={delayShow}
