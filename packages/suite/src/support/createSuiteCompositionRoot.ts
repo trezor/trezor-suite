@@ -141,7 +141,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
     });
-    const networkModules = createNetworksCompositionRoot();
+    const networkModules = createNetworksCompositionRoot({ getTrezorConnect: () => TrezorConnect });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
     const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({

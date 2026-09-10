@@ -70,6 +70,9 @@
         { "path": "../../packages/e2e-utils" },
         { "path": "../../packages/eslint" },
         {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        },
+        {
             "path": "../../networks/solana/network-solana"
         },
         { "path": "../../packages/perf-e2e" },

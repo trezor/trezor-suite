@@ -11566,6 +11566,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -17295,7 +17296,7 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@suite-common/calldata": "workspace:*"
-    "@trezor/connect": "workspace:*"
+    "@suite-common/dependency-injection": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -17316,6 +17317,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-module-suite-common-types@workspace:networks/network-module/network-module-suite-common-types"
   dependencies:
+    "@trezor/connect-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -17859,6 +17861,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/perf-e2e": "workspace:*"
     "@trezor/protobuf": "workspace:*"

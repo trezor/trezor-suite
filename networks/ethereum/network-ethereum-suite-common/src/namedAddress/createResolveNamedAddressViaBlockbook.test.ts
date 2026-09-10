@@ -1,13 +1,10 @@
-import { resolveViaBlockbook } from './resolveNamedAddressBB';
+import { createResolveNamedAddressViaBlockbook } from './createResolveNamedAddressViaBlockbook';
 
 const mockGetAccountInfo = jest.fn();
 
-jest.mock('@trezor/connect', () => ({
-    __esModule: true,
-    default: {
-        getAccountInfo: (...args: unknown[]) => mockGetAccountInfo(...args),
-    },
-}));
+const resolveViaBlockbook = createResolveNamedAddressViaBlockbook({
+    getTrezorConnect: () => ({ getAccountInfo: mockGetAccountInfo }),
+});
 
 const VITALIK_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 

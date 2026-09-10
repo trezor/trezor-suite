@@ -1,5 +1,8 @@
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 
+/** One RPC round trip's share of the resolution budget `resolveNamedAddress` enforces. */
+export const ONCHAIN_CALL_TIMEOUT_MS = 10_000;
+
 /**
  * Networks whose names can be resolved, mapped to the chain id that selects the ENSIP-11 reverse
  * namespace. ENS runs on mainnet and Sepolia only, so every other EVM symbol is left out.

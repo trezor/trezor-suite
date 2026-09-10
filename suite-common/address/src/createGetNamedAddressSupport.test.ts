@@ -3,11 +3,14 @@ import {
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
 
 import { createGetNamedAddressSupport } from './createGetNamedAddressSupport';
 
 describe('createGetNamedAddressSupport', () => {
-    const networkModules = createNetworksCompositionRoot();
+    const networkModules = createNetworksCompositionRoot({
+        getTrezorConnect: mockGetTrezorConnect,
+    });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const getNamedAddressSupport = createGetNamedAddressSupport({ networkModuleRepository });
 

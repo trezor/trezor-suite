@@ -3,6 +3,7 @@ import {
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
 
 import { createAddressValidator } from './AddressValidator';
 import { isTaprootAddress } from './isTaprootAddress';
@@ -10,7 +11,9 @@ import { isTaprootAddress } from './isTaprootAddress';
 const btcSymbol = asNetworkSymbol('btc');
 
 describe('isTaprootAddress', () => {
-    const networkModules = createNetworksCompositionRoot();
+    const networkModules = createNetworksCompositionRoot({
+        getTrezorConnect: mockGetTrezorConnect,
+    });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const addressValidator = createAddressValidator({
         networkModuleRepository,

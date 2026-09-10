@@ -1,19 +1,15 @@
+import { mock } from '@suite-common/dependency-injection';
 import { SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE } from '@trezor/utils';
 
-import { resolveNamedAddress } from './resolveNamedAddress';
-import { resolveViaBlockbook } from './resolveNamedAddressBB';
-import { resolveNamedAddressOnchain } from './universalResolver';
+import { type ResolveNamedAddress } from './ResolveNamedAddress';
+import { createResolveNamedAddress } from './createResolveNamedAddress';
 
-jest.mock('./universalResolver', () => ({
-    resolveNamedAddressOnchain: jest.fn(),
-}));
-
-jest.mock('./resolveNamedAddressBB', () => ({
-    resolveViaBlockbook: jest.fn(),
-}));
-
-const mockResolveOnchain = jest.mocked(resolveNamedAddressOnchain);
-const mockResolveViaBlockbook = jest.mocked(resolveViaBlockbook);
+const mockResolveOnchain = mock<ResolveNamedAddress>();
+const mockResolveViaBlockbook = mock<ResolveNamedAddress>();
+const resolveNamedAddress = createResolveNamedAddress({
+    resolveNamedAddressOnchain: mockResolveOnchain,
+    resolveViaBlockbook: mockResolveViaBlockbook,
+});
 
 const VITALIK_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 

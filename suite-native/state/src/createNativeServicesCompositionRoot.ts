@@ -88,7 +88,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
-    const networkModules = createNetworksCompositionRoot();
+    const networkModules = createNetworksCompositionRoot({ getTrezorConnect: () => TrezorConnect });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
     const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
