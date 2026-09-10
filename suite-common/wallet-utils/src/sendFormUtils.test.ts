@@ -1,4 +1,9 @@
-import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    getNetwork,
+    networksCollection,
+} from '@suite-common/wallet-config';
 import {
     mockWalletAccount,
     networkSpecificDefaultRipple,
@@ -19,6 +24,7 @@ import {
     getCryptoMaxAmountWithReserve,
     getExternalComposeOutput,
     getLowestFeeFromLevels,
+    getNetworkReserve,
     isAmountWithinNetworkReserve,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
@@ -28,6 +34,47 @@ const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
 
 describe('sendForm utils', () => {
+    describe('getNetworkReserve', () => {
+        it.each<{
+            symbol: NetworkSymbol;
+            isTradingDex?: boolean;
+            isEnabled?: boolean;
+            contractAddress?: string | null;
+            expected?: string;
+        }>([
+            { symbol: 'btc', isTradingDex: true, isEnabled: true, expected: '0.00002' },
+            { symbol: 'btc', isTradingDex: true, isEnabled: false },
+            { symbol: 'btc', isTradingDex: true },
+            { symbol: 'btc', isTradingDex: false, isEnabled: true },
+            { symbol: 'btc', isEnabled: true },
+            { symbol: 'eth', isTradingDex: true, isEnabled: true },
+            { symbol: 'sol', isTradingDex: true, isEnabled: true, expected: '0.003' },
+            { symbol: 'sol', isEnabled: true, expected: '0.003' },
+            { symbol: 'sol', isTradingDex: true, isEnabled: false },
+            { symbol: 'btc', isTradingDex: true, isEnabled: true, contractAddress: 'token' },
+            { symbol: 'sol', isTradingDex: true, isEnabled: true, contractAddress: 'token' },
+            {
+                symbol: 'btc',
+                isTradingDex: true,
+                isEnabled: true,
+                contractAddress: null,
+                expected: '0.00002',
+            },
+            {
+                symbol: 'base',
+                isTradingDex: true,
+                isEnabled: true,
+                contractAddress: '0x0000000000000000000000000000000000000000',
+                expected: '0.0002',
+            },
+        ])(
+            'returns $expected for $symbol with DEX=$isTradingDex and enabled=$isEnabled',
+            ({ expected, ...params }) => {
+                expect(getNetworkReserve({ contractAddress: undefined, ...params })).toBe(expected);
+            },
+        );
+    });
+
     fixtures.prepareEthereumTransaction.forEach(f => {
         it(`prepareEthereumTransaction: ${f.description}`, () => {
             expect(prepareEthereumTransaction(f.txInfo)).toEqual(f.result);

@@ -11,6 +11,7 @@ import {
     fiatAmountInputValidationSchema,
     sendCryptoAmountValidationSchema,
 } from './validationSchemes';
+import { exchangeFormValidationSchema } from '../exchange/exchangeFormValidationSchema';
 
 let formatters: ReturnType<typeof useFormatters>;
 
@@ -267,6 +268,69 @@ describe('validationSchemes', () => {
         });
 
         describe('balance', () => {
+            it.each([
+                { amount: 0.00998, isDex: true, isEnabled: true, valid: true },
+                { amount: 0.00998001, isDex: true, isEnabled: true, valid: false },
+                { amount: 0.01, isDex: true, isEnabled: false, valid: true },
+                { amount: 0.01, isDex: false, isEnabled: true, valid: true },
+                { amount: 0.01, isDex: undefined, isEnabled: true, valid: true },
+                { amount: 0.00000001, isDex: true, isEnabled: true, max: '0.00001', valid: false },
+                { amount: 0, isDex: true, isEnabled: true, max: '0.00001', valid: true },
+            ])(
+                'validates BTC DEX reserve: %j',
+                async ({ amount, isDex, isEnabled, max = '0.01', valid }) => {
+                    const context = createContext({
+                        balance: '1',
+                        maxSpendableAmount: max,
+                        isNetworkReserveEnabled: isEnabled,
+                    });
+                    const values = {
+                        sendCryptoAmount: amount,
+                        quote: isDex === undefined ? undefined : { isDex },
+                    };
+
+                    if (valid) {
+                        await expect(
+                            exchangeFormValidationSchema.validate(values, { context }),
+                        ).resolves.toEqual(values);
+                    } else {
+                        await expect(
+                            exchangeFormValidationSchema.validate(values, { context }),
+                        ).rejects.toThrow(
+                            getTranslation('moduleTrading.validators.networkReserve', {
+                                displaySymbol: 'BTC',
+                            }),
+                        );
+                    }
+                },
+            );
+
+            it.each<NetworkSymbol>(['base', 'sol'])(
+                'does not deduct the native reserve twice for %s DEX',
+                async symbol => {
+                    const context = createContext({
+                        sendNetworkSymbol: symbol,
+                        balance: '1',
+                        maxSpendableAmount: '0.5',
+                        isNetworkReserveEnabled: true,
+                    });
+                    const values = { sendCryptoAmount: 0.5, quote: { isDex: true } };
+
+                    await expect(
+                        exchangeFormValidationSchema.validate(values, { context }),
+                    ).resolves.toEqual(values);
+                },
+            );
+
+            it('preserves an unavailable maximum for BTC DEX', async () => {
+                const context = createContext({ balance: '1', isNetworkReserveEnabled: true });
+                const values = { sendCryptoAmount: 1, quote: { isDex: true } };
+
+                await expect(
+                    exchangeFormValidationSchema.validate(values, { context }),
+                ).resolves.toEqual(values);
+            });
+
             it('passes when balance is undefined', async () => {
                 await expect(
                     validate(

@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import type { ExchangeTrade } from 'invity-api';
 
 import {
@@ -5,6 +7,7 @@ import {
     selectTradingProviderMetadata,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { selectAreSatsAmountUnit, setNetworkReserve } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -31,6 +34,7 @@ import {
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
+import { useMaxSpendableAmount } from '@suite-native/transaction-management';
 import { PROTO } from '@trezor/connect';
 
 import { clearExchangeFormQuoteData, useExchangeForm } from './useExchangeForm';
@@ -41,6 +45,8 @@ type PrefetchDexQuoteApprovalThunk = typeof exchangeThunks.prefetchDexQuoteAppro
 jest.mock('@suite-native/transaction-management', () => ({
     ...jest.requireActual('@suite-native/transaction-management'),
     useMaxSpendableAmount: jest.fn(({ accountKey, symbol, tokenContract }) => {
+        const areSatsAmountUnit = useSelector(selectAreSatsAmountUnit);
+
         if (!accountKey || !symbol) {
             return { maxSpendableAmount: undefined };
         }
@@ -55,7 +61,7 @@ jest.mock('@suite-native/transaction-management', () => ({
         }
 
         if (symbol === 'btc') {
-            return { maxSpendableAmount: '0.01' };
+            return { maxSpendableAmount: areSatsAmountUnit ? '1000000' : '0.01' };
         }
 
         return { maxSpendableAmount: undefined };
@@ -79,6 +85,7 @@ const createPrefetchDexQuoteApprovalThunkMock = (
 const btc1AccountKey = btc1NormalAccount.key;
 const eth1AccountKey = eth1NormalAccount.key;
 const accountDeviceState = btc1NormalAccount.deviceState;
+const defaultMaxSpendableAmountMock = jest.mocked(useMaxSpendableAmount).getMockImplementation();
 
 describe('useExchangeForm', () => {
     let store: TestStore;
@@ -101,6 +108,7 @@ describe('useExchangeForm', () => {
                     accounts,
                     settings: {
                         bitcoinAmountUnit,
+                        networkReserve: true,
                     },
                 },
             },
@@ -109,6 +117,9 @@ describe('useExchangeForm', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
         jest.clearAllMocks();
+        if (defaultMaxSpendableAmountMock) {
+            jest.mocked(useMaxSpendableAmount).mockImplementation(defaultMaxSpendableAmountMock);
+        }
         store = getInitializedStore();
 
         jest.spyOn(exchangeThunks, 'prefetchDexQuoteApprovalThunk').mockImplementation(
@@ -435,6 +446,98 @@ describe('useExchangeForm', () => {
     });
 
     describe('validations', () => {
+        it.each([PROTO.AmountUnit.BITCOIN, PROTO.AmountUnit.SATOSHI])(
+            'revalidates the DEX reserve when the quote or setting changes in unit %s',
+            async bitcoinAmountUnit => {
+                store = getInitializedStore(bitcoinAmountUnit);
+                const { result } = await renderUseExchangeForm();
+                const amount =
+                    bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI ? '998001' : '0.00998001';
+                const dexQuote: ExchangeTrade = {
+                    ...invityDexQuote,
+                    send: btcAsset.cryptoId,
+                    dexTx: undefined,
+                };
+
+                await act(() => {
+                    store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
+                    result.current.setValue('sendAsset', btcAsset);
+                    result.current.setValue('sendCryptoAmount', amount);
+                });
+                await act(() => result.current.trigger('sendCryptoAmount'));
+                expect(result.current.getFieldState('sendCryptoAmount').invalid).toBe(false);
+
+                await act(() => result.current.setValue('quote', dexQuote));
+                await waitFor(() =>
+                    expect(result.current.getFieldState('sendCryptoAmount').error?.type).toBe(
+                        'network-reserve',
+                    ),
+                );
+
+                await act(() => result.current.setValue('quote', { ...dexQuote, isDex: false }));
+                await waitFor(() =>
+                    expect(result.current.getFieldState('sendCryptoAmount').invalid).toBe(false),
+                );
+
+                await act(() => result.current.setValue('quote', dexQuote));
+                await waitFor(() =>
+                    expect(result.current.getFieldState('sendCryptoAmount').invalid).toBe(true),
+                );
+
+                const initialState = store.getState();
+                store.replaceReducer((state = initialState, action) => {
+                    if (!setNetworkReserve.match(action)) return state;
+
+                    return {
+                        ...state,
+                        wallet: {
+                            ...state.wallet,
+                            settings: { ...state.wallet.settings, networkReserve: action.payload },
+                        },
+                    };
+                });
+
+                await act(() => store.dispatch(setNetworkReserve(false)));
+                await waitFor(() =>
+                    expect(result.current.getFieldState('sendCryptoAmount').invalid).toBe(false),
+                );
+
+                await act(() => store.dispatch(setNetworkReserve(true)));
+                await waitFor(() =>
+                    expect(result.current.getFieldState('sendCryptoAmount').error?.type).toBe(
+                        'network-reserve',
+                    ),
+                );
+            },
+        );
+
+        it('revalidates when the maximum becomes available', async () => {
+            jest.mocked(useMaxSpendableAmount).mockReturnValue({ maxSpendableAmount: undefined });
+            const { result, rerender } = await renderUseExchangeForm();
+
+            await act(() => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
+                result.current.setValue('sendAsset', btcAsset);
+                result.current.setValue('sendCryptoAmount', '0.00999');
+                result.current.setValue('quote', {
+                    ...invityDexQuote,
+                    send: btcAsset.cryptoId,
+                    dexTx: undefined,
+                });
+            });
+            await act(() => result.current.trigger('sendCryptoAmount'));
+            expect(result.current.getFieldState('sendCryptoAmount').invalid).toBe(false);
+
+            jest.mocked(useMaxSpendableAmount).mockReturnValue({ maxSpendableAmount: '0.01' });
+            await rerender({});
+
+            await waitFor(() =>
+                expect(result.current.getFieldState('sendCryptoAmount').error?.type).toBe(
+                    'network-reserve',
+                ),
+            );
+        });
+
         it.each([
             ['0.00001', 'Minimum is 0.0001 BTC'],
             ['100', 'Maximum is 50 BTC'],

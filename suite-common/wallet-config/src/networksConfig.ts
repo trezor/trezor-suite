@@ -11,6 +11,7 @@ import { type NetworkFeature, type Networks } from './types';
 export const networks = {
     btc: {
         symbol: 'btc',
+        tradingDexReserve: '0.00002',
         displaySymbol: 'BTC',
         name: 'Bitcoin',
         networkType: 'bitcoin',

@@ -1,6 +1,8 @@
 import { type TradingAmountLimitProps } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { act } from '@suite-native/test-utils-store';
+import { useMaxSpendableAmount } from '@suite-native/transaction-management';
+import { PROTO } from '@trezor/connect';
 
 import { useContextForTradingForm } from './useContextForTradingForm';
 import {
@@ -9,7 +11,15 @@ import {
     renderHookWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
 
+jest.mock('@suite-native/transaction-management', () => ({
+    useMaxSpendableAmount: jest.fn(() => ({ maxSpendableAmount: undefined })),
+}));
+
 describe('useContextForTradingForm', () => {
+    beforeEach(() => {
+        jest.mocked(useMaxSpendableAmount).mockReturnValue({ maxSpendableAmount: undefined });
+    });
+
     const renderUseContextForTradingForm = async (
         limits: TradingAmountLimitProps | undefined,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
@@ -19,14 +29,45 @@ describe('useContextForTradingForm', () => {
         });
 
     it('should return base context without limits and balance on initial render', async () => {
-        const { result } = await renderUseContextForTradingForm(undefined);
+        const { result } = await renderUseContextForTradingForm(undefined, {
+            wallet: { settings: { networkReserve: true } },
+        });
 
         expect(result.current.context).toEqual({
             translate: expect.any(Function),
             FiatAmountFormatter: expect.any(Function),
             CryptoAmountFormatter: expect.any(Function),
             convertNumberToBaseUnit: expect.any(Function),
+            isNetworkReserveEnabled: true,
         });
+    });
+
+    it.each([
+        [PROTO.AmountUnit.BITCOIN, '0.01'],
+        [PROTO.AmountUnit.SATOSHI, '1000000'],
+    ])(
+        'normalizes the BTC maximum with amount unit %s',
+        async (bitcoinAmountUnit, maxSpendableAmount) => {
+            jest.mocked(useMaxSpendableAmount).mockReturnValue({ maxSpendableAmount });
+            const { result } = await renderUseContextForTradingForm(undefined, {
+                wallet: { settings: { bitcoinAmountUnit } },
+            });
+
+            await act(() => result.current.setSendNetworkSymbol('btc'));
+
+            expect(result.current.context.maxSpendableAmount).toBe('0.01');
+        },
+    );
+
+    it('exposes a disabled reserve setting and preserves an unavailable maximum', async () => {
+        const { result } = await renderUseContextForTradingForm(undefined, {
+            wallet: { settings: { networkReserve: false } },
+        });
+
+        await act(() => result.current.setSendNetworkSymbol('btc'));
+
+        expect(result.current.context.isNetworkReserveEnabled).toBe(false);
+        expect(result.current.context.maxSpendableAmount).toBeUndefined();
     });
 
     it('should append limits to context when specified', async () => {

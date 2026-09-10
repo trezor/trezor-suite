@@ -674,6 +674,7 @@ interface GetNetworkReserveProps {
     symbol: NetworkSymbol;
     contractAddress: string | undefined | null;
     isEnabled?: boolean;
+    isTradingDex?: boolean;
 }
 
 /**
@@ -683,6 +684,7 @@ export const getNetworkReserve = ({
     symbol,
     contractAddress,
     isEnabled,
+    isTradingDex,
 }: GetNetworkReserveProps) => {
     if (
         (!!contractAddress && contractAddress !== '0x0000000000000000000000000000000000000000') ||
@@ -691,7 +693,9 @@ export const getNetworkReserve = ({
         return undefined;
     const network = getNetwork(symbol);
 
-    return network.nativeTokenReserve;
+    return isTradingDex
+        ? (network.tradingDexReserve ?? network.nativeTokenReserve)
+        : network.nativeTokenReserve;
 };
 
 interface GetCryptoAmountWithReserveProps {
