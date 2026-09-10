@@ -317,6 +317,40 @@ describe('Stellar worker account history', () => {
         ]);
     });
 
+    it('drops a contract token whose decimals no source can supply', async () => {
+        // Not curated, so nothing can stand in for a `decimals` read that failed
+        mockState.sep41Tokens = [{ contract: WATCHED_CONTRACT, balance: '42', symbol: 'dejtrsy' }];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(result.tokens).toEqual([]);
+    });
+
+    it('keeps the page length when a record cannot be described', async () => {
+        const broken = {
+            ...sacOperation([mint('0.1447280')]),
+            transaction: () => Promise.reject(new Error('malformed record')),
+        };
+        mockState.operationRecords = [broken];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        // A dropped record would shorten the page, which reads as the end of the history and
+        // leaves a slot the page can never fill.
+        expect(result.history.transactions).toEqual([
+            expect.objectContaining({
+                type: 'unknown',
+                txid: TX_HASH,
+                // the ledger sequence encoded in the operation's TOID
+                blockHeight: 64100363,
+            }),
+        ]);
+    });
+
     it('ignores balance changes between other participants of the same call', async () => {
         mockState.operationRecords = [
             sacOperation([{ ...mint('0.5000000'), to: OTHER_ACCOUNT }, mint('0.1447280')]),

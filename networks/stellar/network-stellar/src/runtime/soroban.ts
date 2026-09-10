@@ -166,8 +166,10 @@ export interface Sep41Token extends Sep41Metadata {
 
 /**
  * Reads a contract's full SEP-41 data (balance + metadata) for `holder`.
- * Returns `undefined` when the contract does not behave like a SEP-41 token
- * (neither a balance nor `decimals` could be read).
+ * Returns `undefined` when the balance could not be read — either the contract does not behave
+ * like a SEP-41 token, or the read failed. An unread balance is not a zero balance, and
+ * reporting it as one is indistinguishable from a holding the user really spent, so no token is
+ * reported at all rather than a fabricated amount.
  */
 export const getSep41Token = async (
     server: SorobanServer,
@@ -180,11 +182,11 @@ export const getSep41Token = async (
         getContractTokenMetadata(server, contractId, networkPassphrase),
     ]);
 
-    if (balance == null && metadata.decimals == null) {
+    if (balance == null) {
         return undefined;
     }
 
-    return { contract: contractId, balance: balance ?? '0', ...metadata };
+    return { contract: contractId, balance, ...metadata };
 };
 
 /**

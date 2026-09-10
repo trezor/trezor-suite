@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
@@ -43,9 +43,16 @@ const validateAssetIssuer =
         return isValidAddress(value) || translate('TR_ISSUER_ADDRESS_INVALID');
     };
 
+/**
+ * A pasted contract id is a Soroban contract token unless the definitions resolve it to the
+ * classic asset it wraps, and that answer only arrives asynchronously.
+ */
+type ContractIdState = 'none' | 'resolving' | 'contract-token';
+
 export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInputModalProps) => {
     const { translationString } = useTranslation();
-    const [isContractToken, setIsContractToken] = useState(false);
+    const [contractIdState, setContractIdState] = useState<ContractIdState>('none');
+    const isContractToken = contractIdState !== 'none';
 
     const {
         register,
@@ -88,19 +95,25 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
         const classifyContractId = async () => {
             const { isValidContractId } = await stellar();
             if (!isValidContractId(assetCode)) {
-                if (!isStale) setIsContractToken(false);
+                if (!isStale) setContractIdState('none');
 
                 return;
             }
 
             // Every valid contract id is a contract token until resolved otherwise, so a slow or
             // failed definitions fetch cannot leave a contract id classified as a classic asset.
-            if (!isStale) setIsContractToken(true);
+            if (!isStale) setContractIdState('resolving');
 
             const resolved = await resolveStellarContractId(assetCode).catch(() => undefined);
-            if (isStale || !resolved) return;
+            if (isStale) return;
 
-            setIsContractToken(false);
+            if (!resolved) {
+                setContractIdState('contract-token');
+
+                return;
+            }
+
+            setContractIdState('none');
             setValue('assetCode', resolved.assetCode, { shouldValidate: true });
             setValue('assetIssuer', resolved.assetIssuer, { shouldValidate: true });
         };
@@ -113,8 +126,17 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
     }, [assetCode, setValue]);
 
     // The issuer stops being required the moment the input turns into a contract id, so the
-    // already-computed validity has to be recomputed against the new rule.
+    // already-computed validity has to be recomputed against the new rule. Not on mount though:
+    // an empty issuer is invalid, and validating it before the user has typed anything paints the
+    // pristine field red with nothing to explain it.
+    const hasClassifiedContractId = useRef(false);
     useEffect(() => {
+        if (!hasClassifiedContractId.current) {
+            hasClassifiedContractId.current = true;
+
+            return;
+        }
+
         trigger('assetIssuer');
     }, [isContractToken, trigger]);
 
@@ -139,7 +161,15 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
             heading={<Translation id="TR_ACTIVATE_TOKEN_MANUALLY" />}
             bottomContent={
                 <Row gap={8}>
-                    <Button onClick={handleContinue} isDisabled={!isValid} intent="brand">
+                    <Button
+                        onClick={handleContinue}
+                        // A contract id makes the issuer optional, so the form turns valid before
+                        // it is known whether the id is a Soroban token or the Stellar Asset
+                        // Contract of a classic asset. Submitting in that window would file the
+                        // asset as a contract token.
+                        isDisabled={!isValid || contractIdState === 'resolving'}
+                        intent="brand"
+                    >
                         <Translation id="TR_CONTINUE" />
                     </Button>
                     <Button onClick={onCancel} intent="neutral" priority="secondary">
