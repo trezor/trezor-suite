@@ -1,3 +1,4 @@
+import { type Duplex } from 'stream';
 import { WebSocketServer } from 'ws';
 
 import {
@@ -23,9 +24,24 @@ import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
 const HANDSHAKE_TIMEOUT_MS = 10000;
-const MAX_CONCURRENT_CONNECTIONS = 50;
-const MAX_CONNECTIONS_PER_ORIGIN = 5;
+export const MAX_CONCURRENT_CONNECTIONS = 50;
+export const MAX_CONNECTIONS_PER_ORIGIN = 5;
 const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+
+/**
+ * Rejects an upgrade with a minimal HTTP response instead of a bare close.
+ *
+ * Used only for the capacity limits, where the peer is already on loopback and already knows the
+ * endpoint exists, so the status leaks nothing it could not learn anyway - but it does surface the
+ * reason in the caller's devtools console, which an opaque close does not. Still no `101` and no
+ * WebSocket parser, so the socket never becomes a WebSocket. `end()` (not `write()` + `destroy()`)
+ * so the response is flushed before the socket is closed.
+ */
+const rejectWithStatus = (socket: Duplex, status: string) => {
+    socket.end(`HTTP/1.1 ${status}\r\nConnection: close\r\nContent-Length: 0\r\n\r\n`, () =>
+        socket.destroy(),
+    );
+};
 
 // Per-connection id used to namespace the process-global response store. Each client numbers
 // its requests on its own, so two connections can have a call with the same id in flight.
@@ -76,7 +92,7 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
     return false;
 };
 
-type ExposeConnectWsParams = {
+export type ExposeConnectWsParams = {
     mainThreadEmitter: Dependencies['mainThreadEmitter'];
     mainWindowProxy: Dependencies['mainWindowProxy'];
     httpReceiver: ReturnType<typeof createHttpReceiver>;
@@ -105,6 +121,10 @@ export const exposeConnectWs = ({
     });
 
     wss.on('connection', (ws, req) => {
+        ws.on('error', err => {
+            logger.error(LOG_PREFIX, err.message);
+        });
+
         const connectionId = `ws-${++connectionCounter}`;
         // Namespaces a caller-supplied request id to this connection. Internal to the main
         // process; the original id is still echoed back to the client on the wire.
@@ -113,9 +133,10 @@ export const exposeConnectWs = ({
         const connectionPendingMessages = new Set<string>();
         const ip = req.socket.remoteAddress;
         const port = req.socket.remotePort;
-        if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
-            logger.error(LOG_PREFIX, `invalid connection attempt from ${ip}:${port}`);
-            req.socket.destroy();
+        if (!port) {
+            // Unreachable: the upgrade handler already rejected sockets without a remote port.
+            logger.error(LOG_PREFIX, `connection without remote port from ${ip}`);
+            ws.terminate();
 
             return;
         }
@@ -123,29 +144,8 @@ export const exposeConnectWs = ({
         const { origin } = req.headers;
         const originKey = origin || 'unknown';
 
-        // Enforce per-origin connection limit to prevent single client monopolization
         const originConnections = connectionsByOrigin.get(originKey) ?? 0;
-        if (originConnections + 1 > MAX_CONNECTIONS_PER_ORIGIN) {
-            logger.warn(
-                LOG_PREFIX,
-                `connection rejected: limit per origin (${MAX_CONNECTIONS_PER_ORIGIN}) exceeded for ${originKey}`,
-            );
-            req.socket.destroy();
-
-            return;
-        }
-
         const activeConnections = getActiveConnections();
-        // Enforce global connection limit to prevent resource exhaustion
-        if (activeConnections + 1 > MAX_CONCURRENT_CONNECTIONS) {
-            logger.warn(
-                LOG_PREFIX,
-                `connection rejected: limit (${MAX_CONCURRENT_CONNECTIONS}) exceeded`,
-            );
-            req.socket.destroy();
-
-            return;
-        }
         connectionsByOrigin.set(originKey, originConnections + 1);
 
         logger.info(
@@ -169,10 +169,6 @@ export const exposeConnectWs = ({
         }, HANDSHAKE_TIMEOUT_MS);
 
         logger.info(LOG_PREFIX, `origin: ${origin}`);
-
-        ws.on('error', err => {
-            logger.error(LOG_PREFIX, err.message);
-        });
 
         ws.on('message', async data => {
             const dataString = data.toString();
@@ -398,13 +394,47 @@ export const exposeConnectWs = ({
             return;
         }
 
+        // The http server is shared, so match the route before applying connect-ws policy to it.
         const { pathname } = new URL(request.url, 'http://localhost');
-        if (pathname === '/connect-ws') {
-            wss.handleUpgrade(request, socket, head, ws => {
-                wss.emit('connection', ws, request);
-            });
-        } else {
+        if (pathname !== '/connect-ws') {
             socket.destroy();
+
+            return;
         }
+
+        const ip = request.socket.remoteAddress;
+        const port = request.socket.remotePort;
+        if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
+            logger.error(LOG_PREFIX, `invalid connection attempt from ${ip}:${port}`);
+            socket.destroy();
+
+            return;
+        }
+
+        if (getActiveConnections() >= MAX_CONCURRENT_CONNECTIONS) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit (${MAX_CONCURRENT_CONNECTIONS}) exceeded`,
+            );
+            rejectWithStatus(socket, '503 Service Unavailable');
+
+            return;
+        }
+
+        // Enforce per-origin connection limit to prevent single client monopolization
+        const originKey = request.headers.origin || 'unknown';
+        if ((connectionsByOrigin.get(originKey) ?? 0) >= MAX_CONNECTIONS_PER_ORIGIN) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit per origin (${MAX_CONNECTIONS_PER_ORIGIN}) exceeded for ${originKey}`,
+            );
+            rejectWithStatus(socket, '503 Service Unavailable');
+
+            return;
+        }
+
+        wss.handleUpgrade(request, socket, head, ws => {
+            wss.emit('connection', ws, request);
+        });
     });
 };
