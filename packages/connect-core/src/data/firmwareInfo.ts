@@ -136,23 +136,8 @@ export const getOnlineReleaseByVersion = async (
 export const getReleaseConfig = (
     features: Features,
     firmwareType: FirmwareType,
-): ConditionalRelease | undefined => {
-    const { internal_model } = features;
-    if (internal_model === DeviceModelInternal.UNKNOWN) {
-        return undefined;
-    }
-    const firmwareReleaseConfig = firmwareReleaseStore.getReleases();
-
-    if (!firmwareReleaseConfig) {
-        throw new Error('Firmware release config not loaded.');
-    }
-    const deviceMessageRelease = firmwareReleaseConfig[internal_model];
-    if (!deviceMessageRelease) {
-        return;
-    }
-
-    return deviceMessageRelease[firmwareType];
-};
+): ConditionalRelease | undefined =>
+    firmwareReleaseStore.getReleases(features.internal_model, firmwareType);
 
 // Gets a specific firmware release by version.
 // First it will check if the required released is part of the firmware release config, if so then use that.
@@ -329,12 +314,9 @@ const getCurrentVersion = (features: Features): CurrentVersion => {
 };
 
 const getIntermediaryMessageRelease = (features: Features) => {
-    const config = firmwareReleaseStore.getIntermediary();
-    if (!config) {
-        throw new Error('Firmware release config not loaded.');
-    }
-
-    const deviceIntermediaryReleases = config[features.internal_model];
+    const deviceIntermediaryReleases = firmwareReleaseStore.getIntermediary(
+        features.internal_model,
+    );
     if (!deviceIntermediaryReleases || deviceIntermediaryReleases.length === 0) {
         // No intermediary releases are defined for this model.
         return;
@@ -357,21 +339,8 @@ const getIntermediaryMessageRelease = (features: Features) => {
     );
 };
 
-const getIsBitcoinOnlyAvailable = (features: Features) => {
-    const { internal_model } = features;
-    if (internal_model === DeviceModelInternal.UNKNOWN) {
-        return false;
-    }
-
-    const firmwareReleaseConfig = firmwareReleaseStore.getReleases();
-
-    if (!firmwareReleaseConfig) {
-        throw new Error('Firmware release config not loaded.');
-    }
-    const deviceMessageRelease = firmwareReleaseConfig[internal_model];
-
-    return !!deviceMessageRelease && !!deviceMessageRelease[FirmwareType.BitcoinOnly];
-};
+const getIsBitcoinOnlyAvailable = (features: Features) =>
+    !!firmwareReleaseStore.getReleases(features.internal_model, FirmwareType.BitcoinOnly);
 
 const isValidConditionalRelease = (release: FirmwareRelease): boolean =>
     !!(release.version && release.min_firmware_version && release.min_bootloader_version);
