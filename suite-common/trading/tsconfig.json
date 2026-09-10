@@ -35,7 +35,10 @@
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        }
     ],
     "include": [".", "**/*.json"]
 }

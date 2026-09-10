@@ -57,6 +57,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/perf-e2e": "workspace:*",
         "@trezor/protobuf": "workspace:*",

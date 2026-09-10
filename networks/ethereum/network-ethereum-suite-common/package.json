@@ -14,10 +14,12 @@
     "dependencies": {
         "@noble/hashes": "^2.0.1",
         "@suite-common/calldata": "workspace:*",
-        "@trezor/connect": "workspace:*",
         "@trezor/network-ethereum": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/utils": "workspace:*",
         "viem": "^2.54.1"
+    },
+    "devDependencies": {
+        "@suite-common/dependency-injection": "workspace:*"
     }
 }

@@ -17,6 +17,7 @@ import {
     type WalletSettingsState,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
+import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
 
 import {
     type TradingState,
@@ -49,7 +50,7 @@ type RenderHookWithTradingStoreOptions<Props> = RenderHookOptions<Props> & {
     preloadedState?: Partial<TradingTestStateWithWalletSettings> | Partial<TradingTestState>;
 };
 
-const networkModules = createNetworksCompositionRoot();
+const networkModules = createNetworksCompositionRoot({ getTrezorConnect: mockGetTrezorConnect });
 const networkModuleRepository = createNetworkModuleRepository({ networkModules });
 
 /**
