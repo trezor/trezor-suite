@@ -77,6 +77,15 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
     }
 
     async initAsync(): Promise<void> {
+        const { V1_NOT_SUPPORTED_MESSAGE, isV1Transaction } = await solana();
+
+        // Firmware cannot parse the v1 envelope yet. Rejecting from initAsync matters: core runs
+        // it before payloadToPrecomposed and before the device is acquired, so the caller gets an
+        // error instead of the user confirming a transaction the device would then refuse.
+        if (isV1Transaction(this.params.proto.serialized_tx)) {
+            throw ERRORS.TypedError('Method_InvalidParameter', V1_NOT_SUPPORTED_MESSAGE);
+        }
+
         const token = this.params.proto.additional_info?.token_accounts_infos?.[0];
 
         if (token) {
@@ -97,10 +106,14 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
     async payloadToPrecomposed() {
         try {
             const { getDecompiledMessage } = await solana();
-            const { message, baseFee, instructions } = getDecompiledMessage(
+            const decompiledMessage = getDecompiledMessage(
                 this.params.proto.serialized_tx,
                 this.params.serialize,
             );
+
+            if (!decompiledMessage) return;
+
+            const { message, baseFee, instructions } = decompiledMessage;
             const outputs = [];
             let feePerUnit = new BigNumber(0);
             let feeLimit = new BigNumber(0);
