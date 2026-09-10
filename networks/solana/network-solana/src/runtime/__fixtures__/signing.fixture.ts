@@ -9,3 +9,20 @@ export const v0WithLookupTablesTx =
 // of 1_000_000 lamports.
 export const v0WithoutLookupTablesTx =
     '8001000103e7f64154f14373a327aa566574e7250d23f68cb1025f3f4fa7fbc23ea0cc7b0fefebc5a5c00a736483b0273c00926e64a17121016b248b05c73f7468bd2138ac0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001020200010c0200000040420f000000000000';
+
+// The v1 (SIMD-0385) encoding of the same transfer as v0WithoutLookupTablesTx, so the two differ
+// only in version. Generated with @solana/kit; createTransactionMessage still refuses v1, so the
+// message is built directly and compiled:
+//   compileTransactionMessage({ version: 1, feePayer, instructions, lifetimeConstraint })
+//   -> getCompiledTransactionMessageEncoder().encode
+export const v1Message =
+    '810100010000000000000000000000000000000000000000000000000000000000000000000000000103e7f64154f14373a327aa566574e7250d23f68cb1025f3f4fa7fbc23ea0cc7b0fefebc5a5c00a736483b0273c00926e64a17121016b248b05c73f7468bd2138ac000000000000000000000000000000000000000000000000000000000000000002020c0000010200000040420f0000000000';
+
+// The same message as a whole transaction. v1 moves the message ahead of the signatures and drops
+// the signature-array length prefix, so this starts with the version byte, not with a count.
+export const serializedV1Tx = `${v1Message}${'00'.repeat(64)}`;
+
+// A whole serialized legacy transaction: compact-u16 signature count, the two 64-byte signatures
+// its message header calls for, then the message. Legacy and v0 keep signatures first, so this
+// must not read as v1.
+export const serializedLegacyTx = `02${'00'.repeat(128)}${legacyCreateStakeAccountTx}`;

@@ -7,6 +7,7 @@ import {
     getBase16Encoder,
     getCompiledTransactionMessageDecoder,
     getTransactionDecoder,
+    getTransactionVersionDecoder,
     pipe,
 } from '@solana/kit';
 import {
@@ -107,6 +108,21 @@ export type DecompiledMessage = {
     message: TransactionMessage & TransactionMessageWithFeePayer & TransactionMessageWithLifetime;
     baseFee: BigNumber;
     instructions: ReturnType<typeof parseInstruction>[];
+};
+
+// Shared by the fee estimate and the signing call, which a caller reaches in that order.
+export const V1_NOT_SUPPORTED_MESSAGE = 'Solana transaction version 1 is not supported by firmware';
+
+// SIMD-0385 moves the message ahead of the signatures and drops the signature-array length
+// prefix, so a serialized v1 transaction starts with the same version byte as a bare v1 message
+// and the leading byte settles both shapes.
+export const isV1Transaction = (serializedTx: string) => {
+    const [version] = getTransactionVersionDecoder().read(
+        getBase16Encoder().encode(serializedTx.slice(0, 2)),
+        0,
+    );
+
+    return version === 1;
 };
 
 export const getDecompiledMessage = (
