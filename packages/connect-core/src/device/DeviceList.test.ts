@@ -1,9 +1,8 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
-import { firmwareReleaseConfigAssets } from '@trezor/connect-data';
 
 import { DeviceList } from './DeviceList';
-import { initializeFirmwareConfig } from '../data/firmwareInfo';
+import { getLocalFirmwareConfig } from '../data/firmwareInfo';
 import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
 import { loadProtobufModules } from '../data/protobufLoader';
 import * as settingsStore from '../data/settingsStore';
@@ -30,8 +29,7 @@ describe('DeviceList', () => {
         // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
         const settings = { ...parseConnectSettings({}) };
         settingsStore.set(settings);
-        const config = await initializeFirmwareConfig(firmwareReleaseConfigAssets, false);
-        firmwareReleaseStore.init(config);
+        firmwareReleaseStore.init(getLocalFirmwareConfig());
         await loadProtobufModules();
     });
 
