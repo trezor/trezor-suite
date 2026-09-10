@@ -59,20 +59,11 @@ type OnlineFirmwareBaseUrl = RemoteBaseInfo & { firmwareChannel: FirmwareChannel
  *   { BASE_URL: 'http://localhost:3000', MIDDLE_PATH: 'firmware/unsigned', firmwareChannel: 'localhost-unsigned' }
  */
 export const getOnlineFirmwareBaseUrl = (
-    firmwareChannel?: FirmwareChannel,
-): OnlineFirmwareBaseUrl => {
-    if (!firmwareChannel) {
-        return {
-            ...FIRMWARE_REMOTE_BASE_URLS['production'],
-            firmwareChannel: 'production',
-        };
-    }
-
-    return {
-        ...FIRMWARE_REMOTE_BASE_URLS[firmwareChannel],
-        firmwareChannel,
-    };
-};
+    firmwareChannel: FirmwareChannel = 'production',
+): OnlineFirmwareBaseUrl => ({
+    ...FIRMWARE_REMOTE_BASE_URLS[firmwareChannel],
+    firmwareChannel,
+});
 
 const JWS_CONFIG = {
     SIGN_ALGORITHM: 'ES256',
