@@ -34,7 +34,7 @@ export const AssetsListEmpty = ({
     const device = useSelector(selectSelectedDevice);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const protocolSymbol = protocolScheme ? findNetworkSymbolForProtocol(protocolScheme) : null;
+    const protocolSymbol = findNetworkSymbolForProtocol(protocolScheme);
     const network = protocolSymbol ? getNetworkDisplaySymbolName(protocolSymbol) : undefined;
 
     const openActivateNetworkModal = () => {

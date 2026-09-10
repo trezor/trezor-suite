@@ -4,7 +4,7 @@ import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { NetworkSymbol } from './NetworkModules';
 import type { GetNetworkConfigDep } from './createGetNetworkConfig';
 
-export type FindNetworkSymbolForProtocol = (protocol: Protocol) => NetworkSymbol | null;
+export type FindNetworkSymbolForProtocol = (protocol?: Protocol) => NetworkSymbol | null;
 
 export type FindNetworkSymbolForProtocolDeps = GetNetworkConfigDep & NetworkModuleRepositoryDep;
 
@@ -20,9 +20,14 @@ export const selectFindNetworkSymbolForProtocolDep = (
 
 export const createFindNetworkSymbolForProtocol =
     (deps: FindNetworkSymbolForProtocolDeps): FindNetworkSymbolForProtocol =>
-    protocol =>
-        deps.networkModuleRepository
-            .getSupportedNetworks()
-            .find(networkSymbol =>
-                deps.getNetworkConfig(networkSymbol).protocols.includes(protocol),
-            ) ?? null;
+    protocol => {
+        if (!protocol) return null;
+
+        return (
+            deps.networkModuleRepository
+                .getSupportedNetworks()
+                .find(networkSymbol =>
+                    deps.getNetworkConfig(networkSymbol).protocols.includes(protocol),
+                ) ?? null
+        );
+    };

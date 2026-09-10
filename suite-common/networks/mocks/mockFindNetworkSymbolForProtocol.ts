@@ -7,4 +7,4 @@ export const mockFindNetworkSymbolForProtocol =
         symbolsByProtocol: Partial<Record<Protocol, NetworkSymbol>> = {},
     ): FindNetworkSymbolForProtocol =>
     protocol =>
-        symbolsByProtocol[protocol] ?? null;
+        protocol ? (symbolsByProtocol[protocol] ?? null) : null;
