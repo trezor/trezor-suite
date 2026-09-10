@@ -52,6 +52,7 @@ export const ProviderSheet = <
             isVisible={isVisible}
             onClose={onClose}
             scrollResetKey={selectedFilter}
+            testID="@trading/provider-sheet"
             renderItem={(item, _config, { closeSheet }) => (
                 <ProviderListItem
                     onPress={quote => {
