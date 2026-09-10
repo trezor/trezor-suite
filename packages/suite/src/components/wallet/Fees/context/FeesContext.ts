@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react';
 
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import {
+    type Account,
     type FeeInfo,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
@@ -10,9 +11,12 @@ import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 import { type FeeLevel } from '@trezor/connect';
 import { throwError } from '@trezor/utils';
 
+export type FeesAccount = Pick<Account, 'symbol' | 'networkType' | 'misc'>;
+
 export type FeesContextType = {
     networkSymbol: NetworkSymbol;
     networkType: NetworkType;
+    selectedFee: FeeLevel['label'];
     selectedFeeLevel?: FeeLevel;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano | null;
     feeInfo: FeeInfo;

@@ -1,10 +1,15 @@
 import { BitcoinFeeCards } from './BitcoinFeeCards';
 import { EthereumFeeCards } from './EthereumFeeCards';
+import { type FeeCardAppearance } from './FeeCard';
 import { MiscFeeCards } from './MiscFeeCards';
 import { useNetworkFeeOptions } from './hooks/useNetworkFeeOptions';
 import { useFeesContext } from '../../context/FeesContext';
 
-export const StandardFee = () => {
+export type StandardFeeProps = {
+    feeCardAppearance?: FeeCardAppearance;
+};
+
+export const StandardFee = ({ feeCardAppearance }: StandardFeeProps) => {
     const { feeInfo, networkType, networkSymbol, selectedFeeLevel, composedLevels } =
         useFeesContext();
 
@@ -21,15 +26,19 @@ export const StandardFee = () => {
 
     switch (networkType) {
         case 'bitcoin':
-            return <BitcoinFeeCards feeOptions={feeOptions} />;
+            return (
+                <BitcoinFeeCards feeOptions={feeOptions} feeCardAppearance={feeCardAppearance} />
+            );
 
         case 'ethereum':
-            return <EthereumFeeCards feeOptions={feeOptions} />;
+            return (
+                <EthereumFeeCards feeOptions={feeOptions} feeCardAppearance={feeCardAppearance} />
+            );
 
         case 'tron':
             return null;
 
         default:
-            return <MiscFeeCards feeOptions={feeOptions} />;
+            return <MiscFeeCards feeOptions={feeOptions} feeCardAppearance={feeCardAppearance} />;
     }
 };
