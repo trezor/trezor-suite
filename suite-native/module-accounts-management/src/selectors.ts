@@ -13,7 +13,7 @@ import {
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
     isPositiveBalance,
-    isReadOnlyToken,
+    isStellarContractToken,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import {
@@ -87,7 +87,9 @@ export const selectHasAccountOrTokenSpendableBalance = (
         const token = selectAccountTokenInfo(state, accountKey, tokenContract);
 
         // A read-only token cannot be spent, so its balance must not enable the send flow.
-        if (!token || isReadOnlyToken(token)) return false;
+        // Sending Soroban contract tokens is desktop-only for now: native has no way to add
+        // one, and no compose path for a host-function transfer.
+        if (!token || isStellarContractToken(token)) return false;
 
         return isPositiveBalance(token.balance ?? '0');
     }

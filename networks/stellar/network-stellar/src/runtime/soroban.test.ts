@@ -2,10 +2,13 @@ import { Address, type Transaction, nativeToScVal, rpc, xdr } from '@stellar/ste
 
 import {
     type SorobanServer,
+    SorobanSimulationError,
     getContractTokenMetadata,
     getSep41Token,
+    prepareContractTransaction,
     readSep41Tokens,
 } from './soroban';
+import { buildContractTokenTransferTransaction } from './transactions/build';
 
 const CONTRACT = 'CAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRVEAM';
 const OTHER_CONTRACT = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRV';
@@ -360,5 +363,36 @@ describe('readSep41Tokens', () => {
         expect(getLedgerEntries.mock.calls[0]).toHaveLength(2);
         expect(getLedgerEntries.mock.calls[1]).toHaveLength(1);
         expect(simulateTransaction).not.toHaveBeenCalled();
+    });
+});
+
+describe('prepareContractTransaction', () => {
+    const TRANSFER_TOKEN = 'CC2LJNFUWS2LJNFUWS2LJNFUWS2LJNFUWS2LJNFUWS2LJNFUWS2LJBLF';
+    const RECIPIENT = 'GC23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LKW6';
+
+    const transfer = () =>
+        buildContractTokenTransferTransaction({
+            descriptor: HOLDER,
+            sequence: '1',
+            fee: '200',
+            contract: TRANSFER_TOKEN,
+            destination: RECIPIENT,
+            amount: '10',
+        });
+
+    it('reports why the network says the call would fail', async () => {
+        const simulateTransaction = jest
+            .fn()
+            .mockResolvedValue({ error: 'HostError: Error(Contract, #1)' });
+        const server = { simulateTransaction } as unknown as SorobanServer;
+
+        // Learning this before the device prompt is the point: the user is never asked to
+        // approve a transfer that cannot succeed.
+        await expect(prepareContractTransaction(server, transfer())).rejects.toBeInstanceOf(
+            SorobanSimulationError,
+        );
+        await expect(prepareContractTransaction(server, transfer())).rejects.toMatchObject({
+            diagnostic: 'HostError: Error(Contract, #1)',
+        });
     });
 });

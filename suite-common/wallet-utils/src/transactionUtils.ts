@@ -835,10 +835,13 @@ export const isNftToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
     NFT_TOKEN_STANDARDS.has(token.standard);
 
 /**
- * Soroban contract tokens are read-only in Suite — the device cannot sign the
- * `invokeHostFunction` operation their transfers need, so they cannot be spent.
+ * A Soroban (SEP-41) contract token, as against a classic Stellar asset.
+ *
+ * A statement of fact, not of policy: the two are held, transferred and discovered by entirely
+ * different mechanisms, so several flows have to tell them apart — each for its own reason,
+ * stated where it does so.
  */
-export const isReadOnlyToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
+export const isStellarContractToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
     token.standard === 'STELLAR-CONTRACT';
 
 export const isNftTokenTransfer = <T extends Pick<TokenTransfer, 'standard'>>(transfer: T) =>

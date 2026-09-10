@@ -43,7 +43,7 @@ import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     isErc4626,
-    isReadOnlyToken,
+    isStellarContractToken,
 } from '@suite-common/wallet-utils';
 import {
     Button,
@@ -130,7 +130,7 @@ const TokenRowBasicActions = ({
         !!tokenTradingOptions && tokenTradingOptions.exchange && token.balance !== '0';
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
     const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
-    const isReadOnly = isReadOnlyToken(token);
+    const isContractToken = isStellarContractToken(token);
 
     const availableVault = useMemo(
         () =>
@@ -464,7 +464,7 @@ const TokenRowBasicActions = ({
                         'data-testid': '@trading/tokens/send-button',
                         icon: ArrowUpIcon,
                         onClick: onSendButtonClick,
-                        isDisabled: token.balance === '0' || isReadOnly,
+                        isDisabled: token.balance === '0',
                         isHidden:
                             type !== 'defi' &&
                             (tokenStatusType === TokenManagementAction.HIDE
@@ -524,14 +524,14 @@ const TokenRowBasicActions = ({
                         // worker would resurface them — so they only offer the hide action.
                         label: (
                             <Translation
-                                id={isReadOnly ? 'TR_REMOVE_TOKEN' : 'TR_DEACTIVATE_TOKEN'}
+                                id={isContractToken ? 'TR_REMOVE_TOKEN' : 'TR_DEACTIVATE_TOKEN'}
                             />
                         ),
                         icon: XIcon,
                         onClick: onDeactivateToken,
                         isHidden:
                             network.networkType !== 'stellar' ||
-                            (isReadOnly && !isRemovableContractToken),
+                            (isContractToken && !isRemovableContractToken),
                     },
                 ]}
             />
@@ -636,7 +636,7 @@ const TokenRowBasicActions = ({
                                 />
 
                                 <IconButton
-                                    isDisabled={token.balance === '0' || isReadOnly}
+                                    isDisabled={token.balance === '0'}
                                     key="token-send"
                                     icon={ArrowUpIcon}
                                     onClick={onSendButtonClick}
