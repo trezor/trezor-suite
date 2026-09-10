@@ -13,7 +13,7 @@ import { FeeRate } from '@trezor/product-components';
 import { BaseCurrencyValue } from 'src/components/suite';
 import { useLocales, useSelector } from 'src/hooks/suite';
 
-import { FeeCard } from './FeeCard';
+import { FeeCard, type FeeCardAppearance } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';
 import { feeLevelTranslationMap } from './constants';
 import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
@@ -21,9 +21,10 @@ import { useFeesContext } from '../../context/FeesContext';
 
 type EthereumFeeCardsProps = {
     feeOptions: FeeOptionType[];
+    feeCardAppearance?: FeeCardAppearance;
 };
 
-export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
+export const EthereumFeeCards = ({ feeOptions, feeCardAppearance }: EthereumFeeCardsProps) => {
     const { isDirty } = useFormState<FormState>();
     const {
         feeInfo,
@@ -67,6 +68,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
             <FeeCardsWrapper data-testid="@wallet/fee-details">
                 {feeOptions.map(fee => (
                     <FeeCard
+                        {...feeCardAppearance}
                         data-testid={`@fee-card/${fee.value}-card`}
                         value={fee.value}
                         key={fee.value}

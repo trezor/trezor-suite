@@ -7,7 +7,7 @@ import { FeeRate } from '@trezor/product-components';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useLocales, useSelector } from 'src/hooks/suite';
 
-import { FeeCard } from './FeeCard';
+import { FeeCard, type FeeCardAppearance } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';
 import { feeLevelTranslationMap } from './constants';
 import { DustPreventionNotice } from '../../DustPreventionNotice';
@@ -16,9 +16,10 @@ import { useFeesContext } from '../../context/FeesContext';
 
 type BitcoinFeeCardsProps = {
     feeOptions: FeeOptionType[];
+    feeCardAppearance?: FeeCardAppearance;
 };
 
-export const BitcoinFeeCards = ({ feeOptions }: BitcoinFeeCardsProps) => {
+export const BitcoinFeeCards = ({ feeOptions, feeCardAppearance }: BitcoinFeeCardsProps) => {
     const {
         feeInfo,
         networkType,
@@ -49,6 +50,7 @@ export const BitcoinFeeCards = ({ feeOptions }: BitcoinFeeCardsProps) => {
             <FeeCardsWrapper data-testid="@wallet/fee-details">
                 {feeOptions.map(fee => (
                     <FeeCard
+                        {...feeCardAppearance}
                         data-testid={`@fee-card/${fee.value}-card`}
                         key={fee.value}
                         value={fee.value}
