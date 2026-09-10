@@ -32,7 +32,7 @@ export const DemoAccountQuestionnaireLink = ({
                     spacing="sp12"
                 >
                     <HStack spacing="sp12" alignItems="center" flex={1}>
-                        {!!iconName && <IconSquare iconName={iconName} iconSize="large" />}
+                        {!!iconName && <IconSquare iconName={iconName} />}
                         <Text
                             variant="body-md"
                             color="contentPrimary"

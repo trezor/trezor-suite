@@ -34,23 +34,16 @@ export const ConnectAndUnlockDeviceScreen = () => {
                     <VStack spacing="sp12">
                         <IconListTextItem
                             icon="trezorPassword"
-                            iconSize="large"
                             variant="info"
                             textVariant="body-md"
                         >
                             <Translation id="moduleConnectDevice.helpModal.connect.hint1" />
                         </IconListTextItem>
-                        <IconListTextItem
-                            icon="cableUsbC"
-                            iconSize="large"
-                            variant="info"
-                            textVariant="body-md"
-                        >
+                        <IconListTextItem icon="cableUsbC" variant="info" textVariant="body-md">
                             <Translation id="moduleConnectDevice.helpModal.connect.hint2" />
                         </IconListTextItem>
                         <IconListTextItem
                             icon="arrowsClockwise"
-                            iconSize="large"
                             variant="info"
                             textVariant="body-md"
                         >

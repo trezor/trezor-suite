@@ -26,28 +26,16 @@ export const WalletEntropyLearnMoreLink = ({ label }: WalletEntropyLearnMoreLink
             >
                 <VStack spacing="sp24">
                     <VStack spacing="sp16">
-                        <IconListTextItem
-                            icon="encryptionKey"
-                            iconSize="large"
-                            verticalAlign="flex-start"
-                        >
+                        <IconListTextItem icon="encryptionKey" verticalAlign="flex-start">
                             <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.walletEntropyInfo.bullet1" />
                         </IconListTextItem>
-                        <IconListTextItem
-                            icon="dualCpu"
-                            iconSize="large"
-                            verticalAlign="flex-start"
-                        >
+                        <IconListTextItem icon="dualCpu" verticalAlign="flex-start">
                             <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.walletEntropyInfo.bullet2" />
                         </IconListTextItem>
-                        <IconListTextItem
-                            icon="eggCrack"
-                            iconSize="large"
-                            verticalAlign="flex-start"
-                        >
+                        <IconListTextItem icon="eggCrack" verticalAlign="flex-start">
                             <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.walletEntropyInfo.bullet3" />
                         </IconListTextItem>
-                        <IconListTextItem icon="wallet" iconSize="large" verticalAlign="flex-start">
+                        <IconListTextItem icon="wallet" verticalAlign="flex-start">
                             <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.walletEntropyInfo.bullet4" />
                         </IconListTextItem>
                     </VStack>

@@ -10,7 +10,7 @@ type AnalyticsInfoRowProps = {
 };
 
 export const AnalyticsInfoRow = ({ iconName, title, description }: AnalyticsInfoRowProps) => (
-    <IconListItem icon={iconName} iconSize="mediumLarge">
+    <IconListItem icon={iconName} iconSize={36}>
         <VStack spacing="sp4" flex={1}>
             <Text variant="body-md-strong">{title}</Text>
             <Text variant="body-sm" color="contentSecondary">

@@ -60,19 +60,14 @@ export const DeviceCheckBackupUnsupportedModelScreen = () => {
             </Box>
             <VStack justifyContent="space-between" flex={1}>
                 <VStack spacing="sp16" marginTop="sp32">
-                    <IconListTextItem textVariant="body-md-strong" iconSize="large" icon="browsers">
+                    <IconListTextItem textVariant="body-md-strong" icon="browsers">
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.step1" />
                     </IconListTextItem>
-                    <IconListTextItem
-                        textVariant="body-md-strong"
-                        iconSize="large"
-                        icon="trezorBackup"
-                    >
+                    <IconListTextItem textVariant="body-md-strong" icon="trezorBackup">
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.step2" />
                     </IconListTextItem>
                     <IconListTextItem
                         textVariant="body-md-strong"
-                        iconSize="large"
                         variant="brand"
                         icon="checkCircle"
                     >
