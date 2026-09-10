@@ -80,7 +80,7 @@ const tableToMarkdown = (table: ConnectVersionMatrix[], type: 'Package' | 'Deplo
     return markdown;
 };
 
-const updateConnectChangelog = async (
+const updateConnectChangelogFile = async (
     connectChangelogPath: string,
     stableVersion: string,
     canaryVersion: string,
@@ -240,13 +240,13 @@ const bumpConnect = async () => {
         const { version } = packageJSON;
 
         if (deploymentType === 'stable') {
-            await updateConnectChangelog(CONNECT_CHANGELOG_PATH, version, '-');
+            await updateConnectChangelogFile(CONNECT_CHANGELOG_PATH, version, '-');
         } else {
             const distributionTags = await gettingNpmDistributionTags('@trezor/connect');
             if (!distributionTags?.latest) {
                 throw new Error('Could not resolve the latest @trezor/connect version from NPM');
             }
-            await updateConnectChangelog(CONNECT_CHANGELOG_PATH, distributionTags.latest, version);
+            await updateConnectChangelogFile(CONNECT_CHANGELOG_PATH, distributionTags.latest, version);
         }
 
         await exec('yarn', ['prettier', '--write', CONNECT_CHANGELOG_PATH]);
