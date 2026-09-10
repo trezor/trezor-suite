@@ -36,21 +36,29 @@ type FirmwareUpdateSessionProps = {
  * nothing has to be dispatched to say which device we mean, nothing has to be reset afterwards,
  * and two flows cannot disagree about it.
  */
-export const FirmwareUpdateSession = ({ device, children }: FirmwareUpdateSessionProps) => {
-    // Latched, not tracked: the first device this session is offered is the device it is about for
-    // as long as it lives. An update takes that device out of the device list on every reboot and
-    // the selection moves on while it is gone, so a session that followed its input would end up
-    // about a bystander — or would be torn down and re-made around one.
+/**
+ * The first device offered, kept for as long as the caller lives.
+ *
+ * A firmware update takes its device out of the device list on every reboot, and the selection
+ * moves on while it is gone — so anything that reads the device from a live source and needs to
+ * stay about the same physical device has to stop reading at some point. This is that point.
+ */
+export const useLatchedDevice = (device: TrezorDevice | undefined): TrezorDevice | undefined => {
     const latched = useRef(device);
 
     if (!latched.current && device) {
         latched.current = device;
     }
 
+    return latched.current;
+};
+
+export const FirmwareUpdateSession = ({ device, children }: FirmwareUpdateSessionProps) => {
+    const latchedDevice = useLatchedDevice(device);
+
     const session = useMemo(
-        () => (latched.current ? { device: latched.current } : undefined),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [latched.current],
+        () => (latchedDevice ? { device: latchedDevice } : undefined),
+        [latchedDevice],
     );
 
     return (

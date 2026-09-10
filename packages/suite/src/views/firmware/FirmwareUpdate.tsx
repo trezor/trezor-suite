@@ -2,6 +2,7 @@ import {
     FirmwareUpdateSession,
     adoptFirmwareUpdatedDeviceThunk,
     useFirmwareDesktopUpdate,
+    useLatchedDevice,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -16,12 +17,11 @@ import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareUpdate = () => {
     const dispatch = useDispatch();
-    // The device the flow opens on. The session latches it, so it survives the update taking the
-    // device out of the list and the selection moving on.
-    const device = useSelector(selectSelectedDevice);
+    // Latched here, so the device this flow installs onto and the device it hands to the session
+    // are the same one — the update takes it out of the device list and the selection moves on.
+    const device = useLatchedDevice(useSelector(selectSelectedDevice));
     const {
         firmwareUpdate,
-        originalDevice,
         switchFirmwareType,
         targetFirmwareType,
         showLowBatteryModal,
@@ -31,18 +31,12 @@ export const FirmwareUpdate = () => {
         onUpdateFinished: device => dispatch(adoptFirmwareUpdatedDeviceThunk({ device })),
     });
 
-    // `originalDevice` is the device as it was before the update: the live one on the first
-    // attempt, the cached pre-update one on a retry, where the device is already in bootloader
-    // mode and no longer reports its id.
     const installTargetFirmware = () => {
-        if (!originalDevice) {
+        if (!device) {
             return;
         }
 
-        firmwareUpdate({
-            device: originalDevice,
-            firmwareType: targetFirmwareType,
-        });
+        firmwareUpdate({ device, firmwareType: targetFirmwareType });
     };
 
     const heading = switchFirmwareType ? (

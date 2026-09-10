@@ -3,6 +3,7 @@ export {
     FirmwareUpdateSession,
     useFirmwareSessionDevice,
     useFirmwareSessionLiveDevice,
+    useLatchedDevice,
 } from './FirmwareUpdateSession';
 export { Fingerprint } from './Fingerprint';
 export { FirmwareProgressBar } from './FirmwareProgressBar';

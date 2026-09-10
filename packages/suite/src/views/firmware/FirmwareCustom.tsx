@@ -4,6 +4,7 @@ import {
     FirmwareUpdateSession,
     adoptFirmwareUpdatedDeviceThunk,
     useFirmwareDesktopUpdate,
+    useLatchedDevice,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -17,19 +18,19 @@ import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareCustom = () => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
-    // See `FirmwareUpdate`: the session latches this, so the flow stays about the device it opened
-    // on rather than about the selection.
-    const device = useSelector(selectSelectedDevice);
+    // See `FirmwareUpdate`: latched, so the install target and the session's device are the same.
+    const device = useLatchedDevice(useSelector(selectSelectedDevice));
     const dispatch = useDispatch();
-    const { firmwareUpdate, originalDevice, showLowBatteryModal, toggleLowBatteryModal } =
-        useFirmwareDesktopUpdate({
+    const { firmwareUpdate, showLowBatteryModal, toggleLowBatteryModal } = useFirmwareDesktopUpdate(
+        {
             // Standalone: the device is Suite's again once the update is done, so hand it back.
             onUpdateFinished: device => dispatch(adoptFirmwareUpdatedDeviceThunk({ device })),
-        });
+        },
+    );
 
     const installCustomFirmware = () => {
-        if (firmwareBinary && originalDevice) {
-            firmwareUpdate({ device: originalDevice, binary: firmwareBinary });
+        if (firmwareBinary && device) {
+            firmwareUpdate({ device, binary: firmwareBinary });
         }
     };
 
