@@ -1,7 +1,6 @@
 import { UI_EVENTS } from '@trezor/connect-common';
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
-import { firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 import { v1 as protocolV1 } from '@trezor/protocol';
 import { buildMessage } from '@trezor/transport-common';
@@ -9,7 +8,7 @@ import { Log, bufferUtils } from '@trezor/utils';
 
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { calculateFirmwareHash } from '../api/firmware/calculateFirmwareHash';
-import { getBundledRelease, initializeFirmwareConfig } from '../data/firmwareInfo';
+import { getBundledRelease, getLocalFirmwareConfig } from '../data/firmwareInfo';
 import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
 import { loadProtobufModules } from '../data/protobufLoader';
 import * as settingsStore from '../data/settingsStore';
@@ -258,8 +257,7 @@ describe('onCallFirmwareUpdate', () => {
         await loadProtobufModules();
         const settings = parseConnectSettings({});
         settingsStore.set(settings);
-        const config = await initializeFirmwareConfig(firmwareReleaseConfigAssets, false);
-        firmwareReleaseStore.init(config);
+        firmwareReleaseStore.init(getLocalFirmwareConfig());
     });
     beforeEach(() => {
         if (!ASSETS_BASE_URL) {

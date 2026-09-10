@@ -9,7 +9,7 @@ import {
     getFirmwareLocation,
     getFirmwareReleaseConfigInfo,
     getFirmwareStatus,
-    initializeFirmwareConfig,
+    getLocalFirmwareConfig,
 } from './firmwareInfo';
 import * as firmwareReleaseStore from './firmwareReleaseStore';
 import * as settingsStore from './settingsStore';
@@ -36,11 +36,10 @@ describe('data/firmwareInfo', () => {
         });
     });
     describe('getFirmwareReleaseConfigInfo', () => {
-        beforeAll(async () => {
+        beforeAll(() => {
             const settings = parseConnectSettings({});
             settingsStore.set(settings);
-            const config = await initializeFirmwareConfig(firmwareReleaseConfigAssets, false);
-            firmwareReleaseStore.init(config);
+            firmwareReleaseStore.init(getLocalFirmwareConfig());
         });
         it('should offer latest compatible relase when latest one is not compatible', () => {
             const features = getDeviceFeatures({
@@ -106,11 +105,10 @@ describe('data/firmwareInfo', () => {
                 firmwareType,
             });
 
-        beforeAll(async () => {
+        beforeAll(() => {
             const settings = parseConnectSettings({});
             settingsStore.set(settings);
-            const config = await initializeFirmwareConfig(firmwareReleaseConfigAssets, false);
-            firmwareReleaseStore.init(config);
+            firmwareReleaseStore.init(getLocalFirmwareConfig());
         });
 
         it('uses the bundled location for a local base url', () => {

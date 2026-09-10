@@ -3,14 +3,15 @@
 import type { Features, StrictFeatures } from '@trezor/connect-common/src/types/device';
 import type {
     CurrentVersion,
+    FirmwareChannel,
     FirmwareReleaseConfigInfo,
 } from '@trezor/connect-common/src/types/firmware';
 import { firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type {
     ConditionalRelease,
     FirmwareRelease,
-    FirmwareReleaseConfig,
     IntermediaryReleaseConfig,
+    ReleasesConfig,
 } from '@trezor/device-utils';
 import {
     DeviceModelInternal,
@@ -32,7 +33,10 @@ import * as localFirmwareStore from './localFirmwareStore';
 import * as settingsStore from './settingsStore';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
-import { getOnlineFirmwareBaseUrl } from '../utils/firmwareReleaseConfigUtils';
+import {
+    fetchFirmwareReleaseConfig,
+    getOnlineFirmwareBaseUrl,
+} from '../utils/firmwareReleaseConfigUtils';
 import {
     buildIntermediaryFirmwareFileName,
     buildLocalFirmwareFileName,
@@ -203,61 +207,58 @@ export const getReleaseByVersion = async (
 
 // We can build the local firmware release config only using local bundled releases JSON, and we will need to use it
 // it is not possible to build the remote one.
-export const createLocalFirmwareConfig = (baseConfig: FirmwareReleaseConfig) => {
-    const releaseEntries = Object.entries(baseConfig.releases)
+const createLocalFirmwareConfig = (releases: ReleasesConfig) => {
+    const releaseEntries = Object.entries(releases)
         .map(([deviceModel, modelReleases]) => {
             const modelKey = deviceModel as DeviceModelInternal;
 
             if (modelKey === DeviceModelInternal.UNKNOWN) return null;
 
-            const { 'bitcoin-only': bitcoinOnlyConfig, universal: universalConfig } =
-                modelReleases ?? {};
-            if (!bitcoinOnlyConfig?.releasePath || !universalConfig?.releasePath) return null;
+            const { 'bitcoin-only': btcOnly, universal } = modelReleases ?? {};
+
+            if (!btcOnly?.releasePath || !universal?.releasePath) return null;
 
             const btcOnlyRelease = getBundledRelease(modelKey, FirmwareType.BitcoinOnly);
             const universalRelease = getBundledRelease(modelKey, FirmwareType.Universal);
 
             if (!btcOnlyRelease || !universalRelease) return null;
 
-            const releases = {
-                [FirmwareType.BitcoinOnly]: { ...bitcoinOnlyConfig, release: btcOnlyRelease },
-                [FirmwareType.Universal]: { ...universalConfig, release: universalRelease },
+            const newReleases = {
+                [FirmwareType.BitcoinOnly]: { ...btcOnly, release: btcOnlyRelease },
+                [FirmwareType.Universal]: { ...universal, release: universalRelease },
             };
 
-            return [modelKey, releases];
+            return [modelKey, newReleases];
         })
         .filter(isNotNull);
 
     return Object.fromEntries(releaseEntries);
 };
 
-export const createRemoteFirmwareConfig = async (config: FirmwareReleaseConfig) => {
-    const releaseEntryPromises = Object.entries(config.releases).map(
+const createRemoteFirmwareConfig = async (releases: ReleasesConfig) => {
+    const releaseEntryPromises = Object.entries(releases).map(
         async ([deviceModel, modelReleases]) => {
             const modelKey = deviceModel as DeviceModelInternal;
 
             if (modelKey === DeviceModelInternal.UNKNOWN) return null;
 
-            const { 'bitcoin-only': bitcoinOnlyConfig, universal: universalConfig } =
-                modelReleases ?? {};
-            if (!bitcoinOnlyConfig?.releasePath || !universalConfig?.releasePath) return null;
+            const { 'bitcoin-only': btcOnly, universal } = modelReleases ?? {};
+
+            if (!btcOnly?.releasePath || !universal?.releasePath) return null;
 
             const [bitcoinOnlyRelease, universalRelease] = await Promise.all([
-                getOnlineReleaseByPath(bitcoinOnlyConfig.releasePath),
-                getOnlineReleaseByPath(universalConfig.releasePath),
+                getOnlineReleaseByPath(btcOnly.releasePath),
+                getOnlineReleaseByPath(universal.releasePath),
             ]);
 
             if (!universalRelease || !bitcoinOnlyRelease) return null;
 
-            const releases = {
-                [FirmwareType.BitcoinOnly]: {
-                    ...bitcoinOnlyConfig,
-                    release: bitcoinOnlyRelease,
-                },
-                [FirmwareType.Universal]: { ...universalConfig, release: universalRelease },
+            const newReleases = {
+                [FirmwareType.BitcoinOnly]: { ...btcOnly, release: bitcoinOnlyRelease },
+                [FirmwareType.Universal]: { ...universal, release: universalRelease },
             };
 
-            return [modelKey, releases];
+            return [modelKey, newReleases];
         },
     );
 
@@ -266,31 +267,27 @@ export const createRemoteFirmwareConfig = async (config: FirmwareReleaseConfig) 
     return Object.fromEntries(validEntries);
 };
 
-export const initializeFirmwareConfig = async (
-    config: FirmwareReleaseConfig,
-    isRemote: boolean,
-) => {
-    if (isRemote) {
+export const getRemoteFirmwareConfig = async (firmwareChannel?: FirmwareChannel) => {
+    const remoteConfig = await fetchFirmwareReleaseConfig(firmwareChannel);
+
+    if (remoteConfig && remoteConfig.sequence > firmwareReleaseConfigAssets.sequence) {
         try {
-            const remoteReleases = await createRemoteFirmwareConfig(config);
+            const remoteReleases = await createRemoteFirmwareConfig(remoteConfig.releases);
 
             return {
                 releases: remoteReleases,
-                intermediaries: config.intermediaries,
+                intermediaries: remoteConfig.intermediaries,
             };
         } catch {
             // There was an error fetching the remote data for config, we ignore it and use local config.
         }
     }
-
-    // We had some issue getting remote so we use local data.
-    const localReleases = createLocalFirmwareConfig(firmwareReleaseConfigAssets);
-
-    return {
-        releases: localReleases,
-        intermediaries: firmwareReleaseConfigAssets.intermediaries,
-    };
 };
+
+export const getLocalFirmwareConfig = () => ({
+    releases: createLocalFirmwareConfig(firmwareReleaseConfigAssets.releases),
+    intermediaries: firmwareReleaseConfigAssets.intermediaries,
+});
 
 export const getLanguage = (languageBinPath: string) => {
     const baseUrl = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
