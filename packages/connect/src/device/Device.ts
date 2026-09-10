@@ -810,14 +810,13 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         const newVersion = getFirmwareOrBootloaderVersionArray(feat);
         this.deviceVersionCheck(feat);
 
+        const firmwareType = getFirmwareType(feat);
+
         // check if FW version or capabilities did change
         if (!version || !versionUtils.isEqual(version, newVersion)) {
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this._firmwareStatus = getFirmwareStatus(feat, getFirmwareType(feat));
-            this._firmwareReleaseConfigInfo = getFirmwareReleaseConfigInfo(
-                feat,
-                getFirmwareType(feat),
-            );
+            this._firmwareReleaseConfigInfo = getFirmwareReleaseConfigInfo(feat, firmwareType);
+            this._firmwareStatus = getFirmwareStatus(feat, this._firmwareReleaseConfigInfo);
             // Bundled release JSONs are production assets, so only seed `currentRelease`
             // from them on production-like channels. On other channels the
             // channel-appropriate release is fetched from remote immediately after,
@@ -826,15 +825,14 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                 this._currentRelease = getReleaseAsset(
                     feat.internal_model,
                     newVersion,
-                    getFirmwareType(feat),
+                    firmwareType,
                 );
                 this.updateAvailableTranslations();
             }
         }
 
         this._features = feat;
-
-        this._firmwareType = getFirmwareType(feat);
+        this._firmwareType = firmwareType;
 
         this.updateNameAndColor();
 
