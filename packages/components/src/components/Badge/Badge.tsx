@@ -118,7 +118,13 @@ export const Badge = ({
     };
 
     return (
-        <Container data-testid={dataTest} $intent={intent} $isAnimated={isAnimated} {...frameProps}>
+        <Container
+            data-component="Badge"
+            data-testid={dataTest}
+            $intent={intent}
+            $isAnimated={isAnimated}
+            {...frameProps}
+        >
             <Row gap={4} padding={mapSizeToPadding(size)}>
                 {iconLeft && <Icon as={iconLeft} {...iconProps} />}
                 <Text

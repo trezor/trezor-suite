@@ -99,6 +99,7 @@ export const Card = ({
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            data-component="Card"
             data-testid={dataTest}
             {...frameProps}
             {...withAccessibilityProps({

@@ -57,6 +57,7 @@ export type FormCellProps = AllowedFrameProps & {
     isDisabled?: boolean;
     children: ReactNode;
     'data-testid'?: string;
+    'data-component'?: string;
 };
 
 export const FormCell = ({
@@ -70,6 +71,7 @@ export const FormCell = ({
     hasError,
     isDisabled,
     'data-testid': dataTestId,
+    'data-component': dataComponent,
     ...rest
 }: FormCellProps) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -78,6 +80,7 @@ export const FormCell = ({
     return (
         <Wrapper
             {...frameProps}
+            data-component={dataComponent}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
