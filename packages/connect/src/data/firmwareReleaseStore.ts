@@ -1,45 +1,23 @@
-import type { FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
-import { firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type {
-    ConditionalRelease,
     DeviceModelInternal,
-    FirmwareReleaseConfig,
-    FirmwareType,
     IntermediaryReleaseConfig,
     ReleasesConfig,
 } from '@trezor/device-utils';
+import { throwError } from '@trezor/utils';
 
-import { getFirmwareReleaseConfig } from '../utils/firmwareReleaseConfigUtils';
-
-export type InitializeFirmwareConfig = (
-    config: FirmwareReleaseConfig,
-    isRemote: boolean,
-) => Promise<{
-    releases: ReleasesConfig;
-    intermediaries: Record<DeviceModelInternal, IntermediaryReleaseConfig[]>;
-}>;
-
-let releases:
-    | Partial<Record<keyof typeof DeviceModelInternal, Record<FirmwareType, ConditionalRelease>>>
-    | undefined;
-let intermediary: Record<keyof typeof DeviceModelInternal, IntermediaryReleaseConfig[]> | undefined;
-
-export const init = async (
-    firmwareChannel: FirmwareChannel | undefined,
-    onlyLocal: boolean,
-    initializeFirmwareConfig: InitializeFirmwareConfig,
-): Promise<void> => {
-    const firmwareReleaseConfig = onlyLocal
-        ? { config: firmwareReleaseConfigAssets, isRemote: false as const }
-        : await getFirmwareReleaseConfig(firmwareChannel);
-
-    const result = await initializeFirmwareConfig(
-        firmwareReleaseConfig.config,
-        firmwareReleaseConfig.isRemote,
-    );
-    releases = result.releases;
-    intermediary = result.intermediaries;
+type FirmwareReleaseState = {
+    releases: Partial<ReleasesConfig>;
+    intermediaries: Partial<Record<DeviceModelInternal, IntermediaryReleaseConfig[]>>;
 };
 
-export const getReleases = () => releases;
-export const getIntermediary = () => intermediary;
+let _state: FirmwareReleaseState | undefined;
+
+export const init = (config: FirmwareReleaseState) => {
+    _state = config;
+};
+
+const state = () => _state ?? throwError('Firmware release config not loaded.');
+
+export const getReleases = () => state().releases;
+
+export const getIntermediary = () => state().intermediaries;

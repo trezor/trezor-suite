@@ -1,5 +1,5 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
-import { firmwareAssets } from '@trezor/connect-data';
+import { firmwareAssets, firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/protobuf/src/definitions';
@@ -38,11 +38,8 @@ describe('data/firmwareInfo', () => {
         beforeAll(async () => {
             const settings = parseConnectSettings({});
             settingsStore.set(settings);
-            await firmwareReleaseStore.init(
-                settings.firmwareChannel,
-                true,
-                initializeFirmwareConfig,
-            );
+            const config = await initializeFirmwareConfig(firmwareReleaseConfigAssets, false);
+            firmwareReleaseStore.init(config);
         });
         it('should offer latest compatible relase when latest one is not compatible', () => {
             const features = getDeviceFeatures({
