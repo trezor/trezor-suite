@@ -257,9 +257,7 @@ const contractLedgerKeys = (contractId: string, holder: string, withInstance: bo
  */
 const readLedgerBalance = (value: unknown): string | undefined => {
     const amount =
-        value !== null && typeof value === 'object' && 'amount' in value
-            ? (value as { amount: unknown }).amount
-            : value;
+        value !== null && typeof value === 'object' && 'amount' in value ? value.amount : value;
 
     return typeof amount === 'bigint' || typeof amount === 'number' ? amount.toString() : undefined;
 };
@@ -419,11 +417,10 @@ export const readSep41Tokens = async (
         ),
     );
 
-    const tokens = new Map(
-        [...batched, ...simulated]
-            .filter(isNotNullOrUndefined)
-            .map(token => [token.contract, token] as const),
-    );
+    const tokens = new Map<string, Sep41Token>();
+    [...batched, ...simulated].forEach(token => {
+        if (token) tokens.set(token.contract, token);
+    });
 
     // Reported in the order they were asked for, whichever tier answered.
     return contractIds.map(contract => tokens.get(contract)).filter(isNotNullOrUndefined);
