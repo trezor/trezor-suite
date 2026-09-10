@@ -222,7 +222,7 @@ export const transformTransaction = (
         case 'token-transfer':
             return transformTokenTransfers(baseTx, parsed.transfers, descriptor, tokenDetailByMint);
         case 'contract-call': {
-            const { invocation, transfers } = parsed;
+            const { invocation, transfers, deltas } = parsed;
             const contractTx: Omit<Transaction, 'type'> = invocation
                 ? {
                       ...baseTx,
@@ -237,12 +237,32 @@ export const transformTransaction = (
                 tokenDetailByMint,
             );
 
+            if (transferTx.type !== 'unknown') {
+                return transferTx;
+            }
+
+            // The balance changes are classic assets only, so a call that moved lumens - which is
+            // every swap priced in XLM - has nothing to show there. The effects do know, and they
+            // name the real holder, so the account's own legs are the ones that moved.
+            const movements = deltas.filter(({ holder }) => holder === descriptor);
+            const [counterparty] = [...new Set(deltas.map(({ holder }) => holder))].filter(
+                holder => holder !== descriptor,
+            );
+
+            if (movements.length > 0) {
+                return transformMovements({
+                    baseTx: contractTx,
+                    movements,
+                    descriptor,
+                    counterparty,
+                    tokenDetailByMint,
+                });
+            }
+
             // Only a Stellar Asset Contract reports its transfers as balance changes, so a call
             // moving contract tokens has none to show. The decoded call still says what ran, which
             // beats presenting the transaction as unknown.
-            return transferTx.type === 'unknown' && invocation
-                ? { ...contractTx, type: 'contract' }
-                : transferTx;
+            return invocation ? { ...contractTx, type: 'contract' } : transferTx;
         }
         case 'path-payment': {
             const { fromAddress, toAddress, sent, received, operationType } = parsed;

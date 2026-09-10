@@ -332,7 +332,9 @@ export const identifyTransaction = (
                 return describeByBalance({ common, deltas });
             }
 
-            return { type: 'contract-call', ...common, transfers, invocation } as const;
+            // The balance changes cover classic assets only — a call that moved lumens reports
+            // none of them — so the effects come along as what actually moved.
+            return { type: 'contract-call', ...common, transfers, invocation, deltas } as const;
         }
         // Both path payments carry the whole conversion: who sent it, who received it, and the
         // asset and amount on each side. This is the shape every swap aggregator submits.

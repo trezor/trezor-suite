@@ -158,6 +158,31 @@ const token = (overrides: Overrides = {}) => ({
     ...overrides,
 });
 
+// What `CONTRACT_TOKEN_SWAP_ENVELOPE` decodes to.
+const CONTRACT_TOKEN_SWAP_CALL = {
+    contractId: ROUTER_CONTRACT,
+    functionName: 'swap_chained',
+    args: SWAP_ARGS,
+    authorizedCalls: [
+        {
+            contractId: ROUTER_CONTRACT,
+            functionName: 'swap_chained',
+            depth: 0,
+            args: SWAP_ARGS,
+        },
+        {
+            contractId: TOKEN_CONTRACT,
+            functionName: 'transfer',
+            depth: 1,
+            args: [
+                { kind: 'account', value: DESCRIPTOR },
+                { kind: 'contract', value: ROUTER_CONTRACT },
+                { kind: 'text', value: '20000000' },
+            ],
+        },
+    ],
+};
+
 type Fixture = {
     description: string;
     input: {
@@ -570,29 +595,7 @@ export const fixtures: { transformTransaction: Fixture[] } = {
                 stellarSpecific: {
                     memo: undefined,
                     feeSource: DESCRIPTOR,
-                    contractCall: {
-                        contractId: ROUTER_CONTRACT,
-                        functionName: 'swap_chained',
-                        args: SWAP_ARGS,
-                        authorizedCalls: [
-                            {
-                                contractId: ROUTER_CONTRACT,
-                                functionName: 'swap_chained',
-                                depth: 0,
-                                args: SWAP_ARGS,
-                            },
-                            {
-                                contractId: TOKEN_CONTRACT,
-                                functionName: 'transfer',
-                                depth: 1,
-                                args: [
-                                    { kind: 'account', value: DESCRIPTOR },
-                                    { kind: 'contract', value: ROUTER_CONTRACT },
-                                    { kind: 'text', value: '20000000' },
-                                ],
-                            },
-                        ],
-                    },
+                    contractCall: CONTRACT_TOKEN_SWAP_CALL,
                 },
             }),
         },
@@ -623,6 +626,25 @@ export const fixtures: { transformTransaction: Fixture[] } = {
                 tx: transaction(),
             },
             expectedOutput: output({ type: 'unknown' }),
+        },
+        {
+            description:
+                'a contract call that moved only lumens reports the amount, not just the call',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [invokeHostFunction([])],
+                tx: transaction({ envelope_xdr: CONTRACT_TOKEN_SWAP_ENVELOPE }),
+                effects: [accountDebited(0, { amount: '2.0000000' })],
+            },
+            expectedOutput: output({
+                type: 'sent',
+                amount: '20000000',
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    contractCall: CONTRACT_TOKEN_SWAP_CALL,
+                },
+            }),
         },
         {
             description: 'swapping one asset for another is reported as a self transfer',
