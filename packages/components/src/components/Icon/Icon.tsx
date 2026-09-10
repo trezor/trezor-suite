@@ -133,6 +133,7 @@ export const Icon = ({
             $isInverse={isInverse}
             $isDisabled={isDisabled}
             $color={color}
+            data-component="Icon"
             data-testid={dataTest}
             onClick={onClick && !isDisabled ? handleClick : undefined}
             {...frameProps}

@@ -93,6 +93,7 @@ export const Button = ({
 
     return (
         <Container
+            data-component="Button"
             data-testid={dataTestId}
             $size={size}
             $priority={priority}

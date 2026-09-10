@@ -102,6 +102,7 @@ export const Banner = ({
             borderWidth={1}
             borderOffset={-1}
             borderRadius={8}
+            data-component="Banner"
             data-testid={dataTest}
             overflow="hidden"
             padding={{ vertical: 12, horizontal: 16 }}

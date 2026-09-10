@@ -87,6 +87,7 @@ export const IconButton = ({
 
     return (
         <Container
+            data-component="IconButton"
             data-testid={dataTestId}
             aria-label={ariaLabel}
             $size={size}

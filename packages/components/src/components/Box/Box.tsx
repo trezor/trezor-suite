@@ -108,6 +108,7 @@ export type BoxProps = Pick<
         borderColor?: Color;
         shadow?: BoxShadow;
         'data-testid'?: string;
+        'data-component'?: string;
         'aria-hidden'?: boolean;
         as?: React.ElementType;
         ref?: React.RefObject<HTMLElement | null>;
@@ -122,6 +123,7 @@ export const Box = ({
     borderColor,
     shadow,
     'data-testid': dataTestId,
+    'data-component': dataComponent,
     'aria-hidden': ariaHidden,
     as = 'div',
     onClick,
@@ -137,6 +139,7 @@ export const Box = ({
         <Container
             as={as}
             data-testid={dataTestId}
+            data-component={dataComponent}
             aria-hidden={ariaHidden}
             $borderWidth={borderWidth}
             $borderOffset={borderOffset}
