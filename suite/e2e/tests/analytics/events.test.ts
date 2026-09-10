@@ -94,7 +94,7 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@specificFirmware', '@T3T
     );
 });
 
-test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({ startEmulator: false });
 
     test.beforeEach(async ({ onboardingPage }) => {

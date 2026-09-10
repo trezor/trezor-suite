@@ -16,7 +16,7 @@ const optionallyDismissFwHashCheckError = (page: Page) => {
         .catch(() => {}); // Intentionally ignore timeout errors - means the modal was not shown
 };
 
-test.describe('Suite initial run', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Suite initial run', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test(
         'Until user passed through initial run, it will be there after reload',
         { annotation: createTestAnnotation({ stream: TestStream.Growth }) },

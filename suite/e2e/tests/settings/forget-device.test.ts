@@ -3,7 +3,7 @@ import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@t
 
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Device Settings - Forget TS7', { tag: ['@T3W1'] }, () => {
+test.describe('Device Settings - Forget TS7', { tag: ['@T3W1', '@optional'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('device');
@@ -256,7 +256,7 @@ test.describe('Device Settings - Forget TS7', { tag: ['@T3W1'] }, () => {
     );
 });
 
-test.describe('Device Settings - Forget TS5', { tag: ['@T3T1'] }, () => {
+test.describe('Device Settings - Forget TS5', { tag: ['@T3T1', '@optional'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('device');

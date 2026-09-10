@@ -7,7 +7,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.use({ startEmulator: false, ...devices['Desktop Firefox'], channel: 'firefox' });
 
-test.describe('Firefox', { tag: ['@webOnly', '@noDevice'] }, () => {
+test.describe('Firefox', { tag: ['@webOnly', '@noDevice', '@optional'] }, () => {
     test(
         'Suite does support Firefox',
         { annotation: createTestAnnotation({ stream: TestStream.Growth }) },

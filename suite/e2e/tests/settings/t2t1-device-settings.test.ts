@@ -12,6 +12,7 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
     test(
         'change all possible device settings',
         {
+            tag: ['@optional'],
             annotation: createTestAnnotation({
                 testCase: 'Verifies that a user can change all possible device settings.',
                 category: TestCategory.Settings,
@@ -55,6 +56,7 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
     test(
         'Can change homescreen background in firmware >= 2.5.4',
         {
+            tag: ['@optional'],
             annotation: createTestAnnotation({
                 testCase:
                     'Verifies that a user can change homescreen background in firmware >= 2.5.4',

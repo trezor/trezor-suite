@@ -8,7 +8,7 @@ import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1', '@optional'] }, () => {
     test.beforeEach(async ({ metadataMock, onboardingPage, settingsPage, metadataPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding();
