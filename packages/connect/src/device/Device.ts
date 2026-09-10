@@ -54,11 +54,11 @@ import { getAllNetworks } from '../data/coinInfo';
 import {
     getFirmwareReleaseConfigInfo,
     getFirmwareStatus,
+    getReleaseAsset,
     getReleaseByVersion,
 } from '../data/firmwareInfo';
 import * as settingsStore from '../data/settingsStore';
 import type { DeviceEvents, DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
-import { getReleaseAsset } from '../utils/assetUtils';
 import {
     ensureInternalModelFeature,
     getUnavailableCapabilities,

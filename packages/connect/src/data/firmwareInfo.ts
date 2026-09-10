@@ -6,7 +6,7 @@ import type {
     FirmwareChannel,
     FirmwareReleaseConfigInfo,
 } from '@trezor/connect-common/src/types/firmware';
-import { firmwareReleaseConfigAssets } from '@trezor/connect-data';
+import { firmwareAssets, firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type {
     ConditionalRelease,
     FirmwareRelease,
@@ -31,7 +31,6 @@ import type { VersionArray } from '@trezor/utils/src/versionUtils';
 import * as firmwareReleaseStore from './firmwareReleaseStore';
 import * as localFirmwareStore from './localFirmwareStore';
 import * as settingsStore from './settingsStore';
-import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
 import {
     fetchFirmwareReleaseConfig,
@@ -66,6 +65,36 @@ const getBundledFirmwareVersion = (
     }
 
     return bundledVersion[0];
+};
+
+const getReleasesAssetByDeviceModelAndFirmwareType = (
+    deviceModel: DeviceModelInternal,
+    firmwareType: FirmwareType,
+): FirmwareRelease[] => {
+    const firmwareTypeInFileName =
+        firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
+
+    const availableReleasesRecord =
+        firmwareAssets?.[deviceModel.toLowerCase()]?.[firmwareTypeInFileName] ?? {};
+
+    return Object.values(availableReleasesRecord).sort((a, b) =>
+        versionUtils.isNewer(b.version, a.version) ? 1 : -1,
+    );
+};
+
+export const getReleaseAsset = (
+    deviceModel: DeviceModelInternal,
+    version: VersionArray,
+    firmwareType: FirmwareType,
+) => {
+    const firmwareTypeInFileName =
+        firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
+    const fileName = `${deviceModel.toLowerCase()}-${version.join('.')}-${firmwareTypeInFileName}`;
+    const deviceModelLower = deviceModel.toLowerCase();
+
+    const asset = firmwareAssets?.[deviceModelLower]?.[firmwareTypeInFileName]?.[fileName];
+
+    return asset as FirmwareRelease;
 };
 
 export const getBundledRelease = (
