@@ -372,7 +372,7 @@ const getBinaryHelper = async ({
     // We want to get the path url to the release from the specific release we want, in `firmwareReleaseConfigInfo`
     // we have only information about latest release of current FirmwareType but if we want to change from
     // Universal to BitcoinOnly then using url from `firmwareReleaseConfigInfo` would not work.
-    const release = await getReleaseByVersion(device.features, version, firmwareType);
+    const release = await getReleaseByVersion(deviceModel, version, firmwareType);
     if (!release) {
         throw new Error('Missing Firmware release for device');
     }

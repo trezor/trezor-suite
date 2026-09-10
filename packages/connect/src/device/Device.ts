@@ -762,6 +762,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     private async _updateCurrentRelease(feat: Features) {
         const firmwareVersion = getFirmwareVersionArray({ features: feat });
         const newFirmwareType = getFirmwareType(feat);
+        const model = feat.internal_model;
 
         // We need firmwareVersion to lookup the release.
         if (!firmwareVersion) {
@@ -778,7 +779,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             return;
         }
 
-        this._currentRelease = await getReleaseByVersion(feat, firmwareVersion, newFirmwareType);
+        this._currentRelease = await getReleaseByVersion(model, firmwareVersion, newFirmwareType);
         this.updateAvailableTranslations();
     }
 

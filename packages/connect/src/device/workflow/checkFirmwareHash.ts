@@ -33,8 +33,9 @@ export const checkFirmwareHash = async ({
         return null;
     }
 
+    const deviceModel = device.features.internal_model;
     const firmwareType = getFirmwareType(device.features);
-    const release = await getReleaseByVersion(device.features, firmwareVersion, firmwareType);
+    const release = await getReleaseByVersion(deviceModel, firmwareVersion, firmwareType);
 
     // if version is expected to support hash check, but the release is unknown, then firmware is considered unofficial
     if (!release) return createFailResult('unknown-release');
@@ -42,7 +43,7 @@ export const checkFirmwareHash = async ({
     const firmwareLocation = getFirmwareLocation({
         firmwareVersion,
         remotePath: release.url,
-        deviceModel: device.features.internal_model,
+        deviceModel,
         firmwareType: getFirmwareType(device.features),
     });
     const { baseUrl, path } = firmwareLocation;

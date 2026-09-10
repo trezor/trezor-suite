@@ -149,24 +149,13 @@ export const getReleaseConfig = (
 // If not then it will attempt to find a matching version in the bundled releases to avoid a network request.
 // If no matching bundled release is found, it will fall back to fetching the release from the online source.
 export const getReleaseByVersion = async (
-    features: Features,
+    deviceModel: DeviceModelInternal,
     firmwareVersion: VersionArray,
     firmwareType: FirmwareType,
 ): Promise<FirmwareRelease | undefined> => {
-    const deviceModel = features.internal_model;
     const firmwareChannel = settingsStore.get('firmwareChannel');
 
-    const tryGetRelease = async (
-        getter: () => Promise<FirmwareRelease | undefined> | FirmwareRelease | undefined,
-    ): Promise<FirmwareRelease | undefined> => {
-        try {
-            return await getter();
-        } catch {
-            return;
-        }
-    };
-
-    const releaseFromConfig = getReleaseConfig(features, firmwareType)?.release;
+    const releaseFromConfig = firmwareReleaseStore.getReleases(deviceModel, firmwareType)?.release;
     if (releaseFromConfig && versionUtils.isEqual(firmwareVersion, releaseFromConfig.version)) {
         return releaseFromConfig;
     }
@@ -190,11 +179,9 @@ export const getReleaseByVersion = async (
 
     const release =
         // Order is important!
-        (useBundledRelease
-            ? await tryGetRelease(() => getReleaseAsset(deviceModel, firmwareVersion, firmwareType))
-            : undefined) ||
-        (await tryGetRelease(() =>
-            getOnlineReleaseByVersion(deviceModel, firmwareVersion, firmwareType),
+        (useBundledRelease && getReleaseAsset(deviceModel, firmwareVersion, firmwareType)) ||
+        (await getOnlineReleaseByVersion(deviceModel, firmwareVersion, firmwareType).catch(
+            () => undefined,
         ));
 
     // Sanity check to make sure we provide the required release.
