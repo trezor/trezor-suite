@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { Box, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { Box, Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
@@ -107,23 +107,25 @@ export const AccountItem = memo(
                     />
                 </ExpandedSidebarOnly>
                 <CollapsedSidebarOnly>
-                    <Tooltip
-                        delayShow={TOOLTIP_DELAY_NORMAL}
-                        cursor="pointer"
-                        content={
-                            <Box padding={4}>
-                                <AccountItemContent {...commonProps} showAccountTypeBadge />
-                            </Box>
-                        }
-                        placement="right"
-                    >
-                        <AccountRow
-                            {...commonProps}
-                            isSelected={isSelected}
-                            handleHeaderClick={handleHeaderClick}
-                            isCollapsed
-                        />
-                    </Tooltip>
+                    <Column alignItems="center" width="100%">
+                        <Tooltip
+                            delayShow={TOOLTIP_DELAY_NORMAL}
+                            cursor="pointer"
+                            content={
+                                <Box padding={4}>
+                                    <AccountItemContent {...commonProps} showAccountTypeBadge />
+                                </Box>
+                            }
+                            placement="right"
+                        >
+                            <AccountRow
+                                {...commonProps}
+                                isSelected={isSelected}
+                                handleHeaderClick={handleHeaderClick}
+                                isCollapsed
+                            />
+                        </Tooltip>
+                    </Column>
                 </CollapsedSidebarOnly>
             </>
         );
