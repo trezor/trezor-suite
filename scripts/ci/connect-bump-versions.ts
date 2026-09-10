@@ -246,7 +246,11 @@ const bumpConnect = async () => {
             if (!distributionTags?.latest) {
                 throw new Error('Could not resolve the latest @trezor/connect version from NPM');
             }
-            await updateConnectChangelogFile(CONNECT_CHANGELOG_PATH, distributionTags.latest, version);
+            await updateConnectChangelogFile(
+                CONNECT_CHANGELOG_PATH,
+                distributionTags.latest,
+                version,
+            );
         }
 
         await exec('yarn', ['prettier', '--write', CONNECT_CHANGELOG_PATH]);
