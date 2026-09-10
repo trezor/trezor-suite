@@ -23,6 +23,7 @@ import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
 const HANDSHAKE_TIMEOUT_MS = 10000;
+const IDLE_CONNECTION_TIMEOUT_MS = 60000;
 const MAX_CONCURRENT_CONNECTIONS = 50;
 const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
 
@@ -130,6 +131,15 @@ export const exposeConnectWs = ({
         let version: string | undefined;
         let requestedPermissions: PermissionRequest[] | undefined;
         let isHandshakeDone = false;
+        let idleTimeout: ReturnType<typeof setTimeout> | undefined;
+
+        const startIdleTimeout = () => {
+            clearTimeout(idleTimeout);
+            idleTimeout = setTimeout(() => {
+                logger.info(LOG_PREFIX, `connection closed: idle timeout from ${ip}:${port}`);
+                req.socket.destroy();
+            }, IDLE_CONNECTION_TIMEOUT_MS);
+        };
 
         // Close connection if handshake is not received within timeout
         const handshakeTimeout = setTimeout(() => {
@@ -169,17 +179,33 @@ export const exposeConnectWs = ({
                 return;
             }
             if (message.type === POPUP.HANDSHAKE) {
+                const parsedManifest = parseManifest(message.payload.settings.manifest);
+                if (!parsedManifest?.appName) {
+                    logger.warn(LOG_PREFIX, 'connection closed: invalid handshake manifest');
+                    req.socket.destroy();
+
+                    return;
+                }
+
                 const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
                 processOnPort = await findProcessFromIncomingPort(port, filterSelf).catch(() => {
                     logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
 
                     return undefined;
                 });
-                manifest = parseManifest(message.payload.settings.manifest);
+                if (req.socket.destroyed) {
+                    return;
+                }
+
+                manifest = parsedManifest;
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
-                isHandshakeDone = true;
-                clearTimeout(handshakeTimeout);
+                if (!isHandshakeDone) {
+                    isHandshakeDone = true;
+                    clearTimeout(handshakeTimeout);
+                    // Pings and repeated handshakes must not retain idle connection slots.
+                    startIdleTimeout();
+                }
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === POPUP.CLOSED) {
                 if (!isHandshakeDone) {
@@ -237,6 +263,8 @@ export const exposeConnectWs = ({
 
                 const deferred = addMessage(message.id);
                 connectionPendingMessages.add(message.id);
+                // Do not disconnect a caller while it is waiting for device confirmation.
+                clearTimeout(idleTimeout);
 
                 try {
                     // check window exists, if not wait for it to be created
@@ -309,11 +337,15 @@ export const exposeConnectWs = ({
                     logger.error(LOG_PREFIX, 'error handling call: ' + e);
                 } finally {
                     connectionPendingMessages.delete(message.id);
+                    if (connectionPendingMessages.size === 0 && !req.socket.destroyed) {
+                        startIdleTimeout();
+                    }
                 }
             }
         });
         ws.on('close', () => {
             clearTimeout(handshakeTimeout);
+            clearTimeout(idleTimeout);
             activeConnections = Math.max(0, activeConnections - 1);
             logger.info(
                 LOG_PREFIX,
