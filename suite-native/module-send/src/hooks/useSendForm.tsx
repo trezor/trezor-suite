@@ -25,6 +25,7 @@ import {
     type WalletSettingsRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
+    selectAccountDescriptor,
     selectAccountNetworkSymbol,
     selectConvertedNetworkFeeInfo,
     selectIsAmountInSats,
@@ -142,6 +143,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+    const accountDescriptor = useSelector((state: AccountsRootState) =>
+        selectAccountDescriptor(state, accountKey),
+    );
 
     const tokenInfo = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
@@ -199,7 +203,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         context: {
             addressValidator,
             networkFeeInfo,
-            accountDescriptor: account?.descriptor,
+            accountDescriptor: accountDescriptor ?? undefined,
             symbol: accountSymbol ?? undefined,
             availableBalanceBeforeFees: tokenInfo?.balance ?? account?.availableBalance,
             isTokenFlow: !!tokenContract,
