@@ -6,7 +6,6 @@ import type { ExchangeTrade } from 'invity-api';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     type ApprovalStatus,
-    TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
     type TradingRootState,
     exchangeThunks,
     getApprovalStatus,
@@ -93,20 +92,12 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             return;
         }
 
-        const selectedQuote =
-            candidateQuote.isDex && !candidateQuote.swapSlippage
-                ? {
-                      ...candidateQuote,
-                      swapSlippage: TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
-                  }
-                : candidateQuote;
-
         await dispatch(
             exchangeThunks.selectQuoteThunk({
-                quote: selectedQuote,
+                quote: candidateQuote,
                 nextStep: () => {
                     clearExchangeFormQuoteData(form);
-                    nextStep(getApprovalStatus(selectedQuote), selectedQuote);
+                    nextStep(getApprovalStatus(candidateQuote), candidateQuote);
                 },
             }),
         );
