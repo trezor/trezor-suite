@@ -50,6 +50,7 @@ export class BluetoothProcess extends BaseProcess {
             const resp = await fetch(this.getUrl(), {
                 method: 'GET',
                 headers: {
+                    Authorization: `Bearer ${this.token}`,
                     Origin: 'https://electron.trezor.io',
                 },
             });
