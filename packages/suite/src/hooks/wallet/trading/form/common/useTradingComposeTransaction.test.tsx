@@ -5,12 +5,15 @@ import { act, waitFor } from '@testing-library/react';
 import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingSellFormProps } from '@suite-common/trading';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
+import { validateNetworkReserve } from 'src/utils/suite/validation';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingComposeTransaction } from './useTradingComposeTransaction';
+
+let mockComposedLevels: PrecomposedLevels | undefined;
 
 const STALE_ADDRESS = 'stale-btc-placeholder';
 const BTC_PLACEHOLDER = 'btc-placeholder-address';
@@ -26,7 +29,7 @@ jest.mock('src/hooks/wallet/form/useCompose', () => ({
     useCompose: () => ({
         isLoading: false,
         composeRequest: jest.fn(),
-        composedLevels: undefined,
+        composedLevels: mockComposedLevels,
         onFeeLevelChange: jest.fn(),
         setComposedLevels: jest.fn(),
     }),
@@ -99,6 +102,15 @@ const renderComposeTransaction = () => {
                 mode: 'onChange',
                 defaultValues: buildDefaults(),
             });
+            methods.register('outputs.0.amount', {
+                validate: {
+                    networkReserve: validateNetworkReserve(id => id, {
+                        balance: '2',
+                        reserve: '0.00002',
+                        fee: '0.0001',
+                    }),
+                },
+            });
             const compose = useTradingComposeTransaction({
                 type: 'sell',
                 account,
@@ -115,6 +127,7 @@ const renderComposeTransaction = () => {
 
 describe('useTradingComposeTransaction', () => {
     beforeEach(() => {
+        mockComposedLevels = undefined;
         mockGetComposeAddressPlaceholder.mockImplementation((account: Account) =>
             Promise.resolve(account.symbol === 'sol' ? SOL_PLACEHOLDER : BTC_PLACEHOLDER),
         );
@@ -123,6 +136,37 @@ describe('useTradingComposeTransaction', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
+
+    it.each(['1.9999', '1.9998'])(
+        'validates Max after composition when the amount is unchanged: %s',
+        async amount => {
+            const { result, rerender } = renderComposeTransaction();
+            await act(async () => {
+                result.current.methods.setValue('outputs.0.amount', amount);
+                result.current.methods.setValue('setMaxOutputId', 0);
+                await result.current.methods.trigger('outputs.0.amount');
+            });
+            mockComposedLevels = {
+                normal: {
+                    type: 'nonfinal',
+                    max: amount,
+                    fee: '10000',
+                    feePerByte: '1',
+                    bytes: 100,
+                    totalSpent: '200000000',
+                    inputs: [],
+                },
+            };
+
+            rerender({ account: BTC_ACCOUNT });
+
+            await waitFor(() =>
+                expect(result.current.methods.getFieldState('outputs.0.amount').error?.type).toBe(
+                    amount === '1.9999' ? 'networkReserve' : undefined,
+                ),
+            );
+        },
+    );
 
     it('refreshes the compose address placeholder when the send account changes', async () => {
         const { result, rerender } = renderComposeTransaction();

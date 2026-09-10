@@ -5,10 +5,12 @@ import { type Formatter } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type RatesByKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
+    asAmountSubunit,
     buildCurrencyShortOption,
     getDecimalsForBaseCurrency,
     getFiatRateKey,
     getNetworkReserve,
+    subunitsToUnits,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -156,6 +158,7 @@ export const getFiatInputRules = ({
 
 type CryptoInputRulesProps = {
     isBuyContext: boolean;
+    isTradingDex: boolean;
     translationString: TranslationFunction;
     shouldSendInSats: boolean | undefined;
     decimals: number;
@@ -170,6 +173,7 @@ type CryptoInputRulesProps = {
 
 export const getCryptoInputRules = ({
     isBuyContext,
+    isTradingDex,
     translationString,
     shouldSendInSats,
     decimals,
@@ -180,35 +184,51 @@ export const getCryptoInputRules = ({
     isNetworkReserveEnabled,
     contractAddress,
     feeInUnits,
-}: CryptoInputRulesProps): UseControllerProps['rules'] => ({
-    validate: {
-        min: validateMin(translationString),
-        integer: validateInteger(translationString, { except: !shouldSendInSats }),
-        decimals: validateDecimals(translationString, { decimals }),
-        limits: validateCryptoLimits(translationString, {
-            amountLimits,
-            areSatsUsed: !!shouldSendInSats,
-            formatter,
-        }),
-        ...(!isBuyContext
-            ? {
-                  reserveOrBalance: validateReserveOrBalance(translationString, {
-                      account: validationAccount,
-                      areSatsUsed: !!shouldSendInSats,
-                      contractAddress: outputToken ?? undefined,
-                  }),
-                  networkReserve: isNetworkReserveEnabled
-                      ? validateNetworkReserve(translationString, {
-                            reserve: getNetworkReserve({
-                                symbol: validationAccount.symbol,
-                                contractAddress,
-                                isEnabled: isNetworkReserveEnabled,
-                            }),
-                            balance: validationAccount.formattedBalance,
-                            fee: feeInUnits,
-                        })
-                      : () => undefined,
-              }
-            : {}),
-    },
-});
+}: CryptoInputRulesProps): UseControllerProps['rules'] => {
+    const networkReserve = getNetworkReserve({
+        symbol: validationAccount.symbol,
+        contractAddress,
+        isEnabled: isNetworkReserveEnabled,
+        isTradingDex,
+    });
+    const validateAmountNetworkReserve = validateNetworkReserve(translationString, {
+        reserve: networkReserve,
+        balance: validationAccount.formattedBalance,
+        fee: feeInUnits,
+    });
+
+    return {
+        validate: {
+            min: validateMin(translationString),
+            integer: validateInteger(translationString, { except: !shouldSendInSats }),
+            decimals: validateDecimals(translationString, { decimals }),
+            limits: validateCryptoLimits(translationString, {
+                amountLimits,
+                areSatsUsed: !!shouldSendInSats,
+                formatter,
+            }),
+            ...(!isBuyContext
+                ? {
+                      reserveOrBalance: validateReserveOrBalance(translationString, {
+                          account: validationAccount,
+                          areSatsUsed: !!shouldSendInSats,
+                          contractAddress: outputToken ?? undefined,
+                      }),
+                      networkReserve: isNetworkReserveEnabled
+                          ? (value: string) => {
+                                const amountInUnits =
+                                    value && shouldSendInSats && !contractAddress
+                                        ? subunitsToUnits({
+                                              value: asAmountSubunit(new BigNumber(value)),
+                                              symbol: validationAccount.symbol,
+                                          }).toString()
+                                        : value;
+
+                                return validateAmountNetworkReserve(amountInUnits);
+                            }
+                          : () => undefined,
+                  }
+                : {}),
+        },
+    };
+};

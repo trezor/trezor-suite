@@ -43,6 +43,7 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
+import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';
@@ -65,6 +66,8 @@ const TradingFormInputFiatContent = ({
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
     const context = useTradingFormContext();
+    const exchangeQuote = useTradingSelectedQuote('exchange');
+    const isTradingDex = context.type === 'exchange' && exchangeQuote?.isDex === true;
     const { amountLimits } = context;
     const {
         control,
@@ -99,6 +102,7 @@ const TradingFormInputFiatContent = ({
         symbol: asset.symbol,
         contractAddress: tokenAddress,
         isEnabled: isNetworkReserveEnabled,
+        isTradingDex,
     });
     const feeInUnits = isExchangeOrSellContext
         ? getFeeInUnits({
@@ -201,6 +205,13 @@ const TradingFormInputFiatContent = ({
             trigger(fiatInputName);
         }
     }, [amountLimits, fiatInputName, trigger]);
+
+    const reserveInFiat = networkReserveFiatAmount?.toString();
+    const feeInFiat = feeFiatAmount?.toString();
+
+    useDidUpdate(() => {
+        trigger(fiatInputName);
+    }, [reserveInFiat, feeInFiat, fiatInputName, trigger]);
 
     return (
         <NumberInput

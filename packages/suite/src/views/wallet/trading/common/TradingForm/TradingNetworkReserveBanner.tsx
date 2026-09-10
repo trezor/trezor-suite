@@ -11,11 +11,13 @@ import { useSelector } from 'src/hooks/suite';
 interface TradingNetworkReserveBannerProps {
     symbol: NetworkSymbol;
     contractAddress?: string;
+    isTradingDex?: boolean;
 }
 
 export const TradingNetworkReserveBanner = ({
     symbol,
     contractAddress,
+    isTradingDex,
 }: TradingNetworkReserveBannerProps) => {
     const dispatch = useDispatch();
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
@@ -36,6 +38,7 @@ export const TradingNetworkReserveBanner = ({
         symbol,
         contractAddress,
         isEnabled: isNetworkReserveEnabled,
+        isTradingDex,
     });
     if (!networkReserve) return null;
 

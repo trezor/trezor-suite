@@ -48,7 +48,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const addressDisplayType = useSelector(selectAddressDisplayType);
     const { translationString } = useTranslation();
 
-    const { getValues, setValue, setError, clearErrors, control } =
+    const { getValues, setValue, setError, clearErrors, trigger, control } =
         methods as unknown as UseFormReturn<TradingSellFormProps | TradingExchangeFormProps>;
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
     const symbol = account?.symbol;
@@ -258,11 +258,10 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
                 if (!currentBN.isEqualTo(composedMaxBN)) {
                     setShowReserveBanner(true);
                     setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
-                        shouldValidate: true,
                         shouldDirty: true,
                     });
                 }
-                clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
+                trigger(TRADING_FORM_OUTPUT_AMOUNT);
             }
 
             dispatch(
@@ -286,6 +285,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         setValue,
         translationString,
         shouldSuppressComposeErrors,
+        trigger,
     ]);
 
     return {
