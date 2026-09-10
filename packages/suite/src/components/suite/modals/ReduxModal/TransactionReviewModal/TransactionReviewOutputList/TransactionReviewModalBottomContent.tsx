@@ -81,7 +81,7 @@ export const TransactionReviewModalBottomContent = ({
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;
 
-    const { symbol, networkType } = account;
+    const { symbol } = account;
     const { options, selectedFee } = precomposedForm;
 
     const isBroadcastEnabled = options.includes('broadcast');
@@ -118,11 +118,11 @@ export const TransactionReviewModalBottomContent = ({
         });
 
     const handleSend = () => {
-        if (networkType === 'solana' || networkType === 'stellar' || networkType === 'tron') {
-            onSend(true);
-        }
-
         if (decision) {
+            // On every network, not just the ones with a slow signing step: a push can take tens of
+            // seconds, and an idle-looking modal lets the user dismiss or re-send a broadcast that
+            // is already in flight. TransactionReviewModalBody resets this when the push fails.
+            onSend(true);
             decision.resolve(true);
             reportTransactionCreatedEvent(
                 isRbfTransaction(precomposedTx!)

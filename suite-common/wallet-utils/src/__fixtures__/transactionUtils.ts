@@ -787,7 +787,14 @@ export const findChainedTransactions = [
     },
 ];
 
-export const getRbfParams = [
+type GetRbfParamsFixture = {
+    description: string;
+    account: unknown;
+    tx: unknown;
+    result: unknown;
+};
+
+export const getRbfParams: GetRbfParamsFixture[] = [
     {
         description: 'invalid account',
         account: { networkType: 'ethereum' },
@@ -863,6 +870,141 @@ export const getRbfParams = [
             maxFeePerGas: '',
             maxPriorityFeePerGas: '',
         },
+    },
+    {
+        // A contract creation has no recipient (vout addresses null); indexing into it used to throw.
+        description: 'ethereum contract creation (no recipient) is not replaceable',
+        account: {
+            networkType: 'ethereum',
+            symbol: 'eth',
+            descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
+        },
+        tx: {
+            type: 'sent',
+            txid: '0xc0de',
+            rbf: true,
+            blockHeight: -1,
+            ethereumSpecific: {
+                nonce: 46,
+                gasLimit: 210000,
+                gasPrice: '1000000000',
+                data: '0x60806040',
+            },
+            details: {
+                vin: [{ addresses: ['0x37567e60ab231b7d7f26b5b34fdd719098e4ee1b'] }],
+                vout: [{ isAddress: false, addresses: null, value: '0' }],
+            },
+        },
+        result: undefined,
+    },
+    {
+        // A pending vout can arrive without a value; formatting it used to throw.
+        description: 'ethereum transaction without a vout value is not replaceable',
+        account: {
+            networkType: 'ethereum',
+            symbol: 'eth',
+            descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
+        },
+        tx: {
+            type: 'sent',
+            txid: '0xbeee',
+            rbf: true,
+            blockHeight: -1,
+            ethereumSpecific: { nonce: 48, gasLimit: 21000, gasPrice: '1000000000' },
+            details: {
+                vin: [{ addresses: ['0x37567e60ab231b7d7f26b5b34fdd719098e4ee1b'] }],
+                vout: [
+                    { isAddress: true, addresses: ['0xfAEEEB8Fd7D41a6a8223DD36D347DBe56c13fe61'] },
+                ],
+            },
+        },
+        result: undefined,
+    },
+    {
+        // The `transfer` output comes from `tokens`, so a vout without a recipient must not stop it.
+        description: 'ethereum transfer without vout addresses is still replaceable',
+        account: {
+            networkType: 'ethereum',
+            symbol: 'eth',
+            descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
+        },
+        tx: {
+            type: 'sent',
+            txid: '0xf00d',
+            rbf: true,
+            blockHeight: -1,
+            tokens: [
+                {
+                    type: 'sent',
+                    standard: 'ERC20',
+                    contract: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                    to: '0xfAEEEB8Fd7D41a6a8223DD36D347DBe56c13fe61',
+                    amount: '1000000',
+                    decimals: 6,
+                },
+            ],
+            ethereumSpecific: {
+                nonce: 49,
+                gasLimit: 65000,
+                gasPrice: '1000000000',
+                data: '0xa9059cbb000000000000000000000000faeeeb8fd7d41a6a8223dd36d347dbe56c13fe6100000000000000000000000000000000000000000000000000000000000f4240',
+            },
+            details: {
+                vin: [{ addresses: ['0x37567e60ab231b7d7f26b5b34fdd719098e4ee1b'] }],
+                vout: [{ isAddress: true, addresses: [], value: '0' }],
+            },
+        },
+        result: {
+            type: 'ethereum',
+            txid: '0xf00d',
+            outputs: [
+                {
+                    type: 'payment',
+                    address: '0xfAEEEB8Fd7D41a6a8223DD36D347DBe56c13fe61',
+                    token: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                    amount: '1000000',
+                    formattedAmount: '1',
+                },
+            ],
+            ethereumNonce: 49,
+            transactionData: '',
+            gasPrice: '1',
+            maxFeePerGas: '',
+            maxPriorityFeePerGas: '',
+        },
+    },
+    {
+        // A decoded `transfer` with an empty `tokens` array; indexing tokens[0] used to throw.
+        description: 'ethereum transfer with undecoded token transfer is not replaceable',
+        account: {
+            networkType: 'ethereum',
+            symbol: 'eth',
+            descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
+        },
+        tx: {
+            type: 'sent',
+            txid: '0xfeed',
+            rbf: true,
+            blockHeight: -1,
+            tokens: [],
+            ethereumSpecific: {
+                nonce: 47,
+                gasLimit: 65000,
+                gasPrice: '1000000000',
+                data: '0xa9059cbb000000000000000000000000faeeeb8fd7d41a6a8223dd36d347dbe56c13fe610000000000000000000000000000000000000000000000000000000000000001',
+            },
+            details: {
+                vin: [{ addresses: ['0x37567e60ab231b7d7f26b5b34fdd719098e4ee1b'] }],
+                vout: [
+                    {
+                        isAddress: true,
+                        addresses: ['0xdAC17F958D2ee523a2206206994597C13D831ec7'],
+                        value: '0',
+                    },
+                ],
+            },
+        },
+        result: undefined,
     },
     {
         description: 'invalid tx (rbf false)',

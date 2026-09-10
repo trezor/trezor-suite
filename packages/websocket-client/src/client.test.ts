@@ -181,6 +181,32 @@ describe('WebsocketClient', () => {
         cli.dispose();
     });
 
+    it('keeps a longer-deadline message alive when another one times out', async () => {
+        const cli = new Client({ url: server.getUrl() });
+        await cli.connect();
+
+        const sendSpy = jest.spyOn(server, 'sendResponse').mockImplementation((wsCli, data) => {
+            const request = JSON.parse(data);
+            if (request.method !== 'init') {
+                setTimeout(() => {
+                    wsCli.send(JSON.stringify({ id: request.id, success: true }));
+                }, 300);
+            }
+        });
+
+        // A transaction push asks for a deadline of its own; a shorter request expiring next to it
+        // must not tear down the socket and report the push as failed.
+        const pushPromise = cli.sendMessage({ method: 'push' }, { timeout: 1000 });
+        const initPromise = cli.sendMessage({ method: 'init' }, { timeout: 100 });
+
+        await expect(() => initPromise).rejects.toThrow('websocket_timeout');
+        await expect(pushPromise).resolves.toMatchObject({ success: true });
+        expect(cli.isConnected()).toEqual(true);
+
+        sendSpy.mockRestore();
+        cli.dispose();
+    });
+
     it('throws timeout error on sendMessage', async () => {
         const cli = new ClientWithCustomTimeout({ url: server.getUrl() });
         await cli.connect();

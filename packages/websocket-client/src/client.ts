@@ -100,9 +100,18 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         return this.ping();
     }
 
-    onMessageTimeout(_promiseId: number) {
+    onMessageTimeout(promiseId: number) {
         const { ws } = this;
         if (!ws) return;
+
+        // A request that asked for a longer deadline (a transaction push) is still within it, and
+        // rejecting it here would report a broadcast that may already be on the wire as failed.
+        if (this.messages.lastDeadline() > Date.now()) {
+            this.messages.reject(promiseId, new WebsocketError('websocket_timeout'));
+
+            return;
+        }
+
         this.messages.rejectAll(new WebsocketError('websocket_timeout'));
         ws.close();
     }
