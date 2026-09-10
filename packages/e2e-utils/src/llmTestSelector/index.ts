@@ -51,10 +51,12 @@ interface OpenRouterCompletion {
     id?: string;
     choices?: {
         finish_reason?: string;
+        native_finish_reason?: string;
         message?: {
             tool_calls?: { function?: { name?: string; arguments?: string } }[];
         };
     }[];
+    usage?: { completion_tokens?: number };
 }
 
 // ---------------------------------------------------------------------------
@@ -71,7 +73,7 @@ const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENROUTER_MODEL = 'moonshotai/kimi-k2.7-code';
 // Pinned to the cheaper (int4) tag of the model author's own endpoint — the only provider this account's OpenRouter privacy settings currently allow for this model.
 const OPENROUTER_PROVIDER_ORDER = ['moonshotai/int4'];
-const OPENROUTER_MAX_TOKENS = 32768;
+const OPENROUTER_MAX_TOKENS = 49152;
 
 const ALLOWED_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.css', '.json']);
 
@@ -675,7 +677,12 @@ const selectTestsViaApi = async (
 
     const choice = completion.choices?.[0];
 
-    if (choice?.finish_reason === 'length') {
+    const isTruncated =
+        choice?.finish_reason === 'length' ||
+        choice?.native_finish_reason === 'length' ||
+        (completion.usage?.completion_tokens ?? 0) >= OPENROUTER_MAX_TOKENS;
+
+    if (isTruncated) {
         throw new Error(
             `OpenRouter response was truncated at max_tokens (${OPENROUTER_MAX_TOKENS}) — the recommendation set was too large to fit. Increase OPENROUTER_MAX_TOKENS or narrow the candidate tests.`,
         );
