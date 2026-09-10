@@ -172,10 +172,11 @@ export const Text = ({
     isHighlighted,
     role,
     isTabular,
+    typographyStyle,
     ...rest
 }: TextProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedTextFrameProps);
-    const textProps = pickAndPrepareTextProps(rest, allowedTextTextProps);
+    const textProps = pickAndPrepareTextProps({ ...rest, typographyStyle }, allowedTextTextProps);
 
     return (
         <StyledText
@@ -188,6 +189,7 @@ export const Text = ({
             onClick={onClick}
             onCopy={onCopy}
             data-testid={dataTest}
+            data-typography-style={typographyStyle}
             $isMonospaced={isMonospaced}
             $isHighlighted={isHighlighted}
             $isTabular={isTabular}
