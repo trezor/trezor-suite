@@ -3,10 +3,7 @@ import React from 'react';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
-    tradingExchangeActions,
-} from '@suite-common/trading';
+import { tradingExchangeActions } from '@suite-common/trading';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -281,7 +278,7 @@ describe('useExchangeSelectQuote', () => {
             );
         });
 
-        it('should apply default slippage when selecting a DEX quote without slippage', async () => {
+        it('should keep slippage unset when selecting a DEX quote without slippage', async () => {
             const quote = { ...invityDexQuote, swapSlippage: undefined };
             await act(() => {
                 exchangeForm.setValue('quote', quote);
@@ -300,19 +297,14 @@ describe('useExchangeSelectQuote', () => {
                 payload: { nextStep: () => void; quote: ExchangeTrade };
             };
 
-            expect(selectQuoteAction.payload.quote.swapSlippage).toBe(
-                TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
-            );
+            expect(selectQuoteAction.payload.quote.swapSlippage).toBeUndefined();
 
             await act(() => {
                 selectQuoteAction.payload.nextStep();
             });
 
             expect(dispatchSpy).toHaveBeenCalledWith(
-                tradingExchangeActions.saveSelectedQuote({
-                    ...quote,
-                    swapSlippage: TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
-                }),
+                tradingExchangeActions.saveSelectedQuote(quote),
             );
         });
 
@@ -529,13 +521,9 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeApproval', {});
-            // The hook persists the normalized quote before navigating to the approval screen.
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
-                payload: {
-                    ...quote,
-                    swapSlippage: TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
-                },
+                payload: quote,
             });
             const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) => (action as any)?.type);
             expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
@@ -575,10 +563,7 @@ describe('useExchangeSelectQuote', () => {
             });
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
-                payload: {
-                    ...quote,
-                    swapSlippage: TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
-                },
+                payload: quote,
             });
             const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) => (action as any)?.type);
             expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
@@ -620,10 +605,7 @@ describe('useExchangeSelectQuote', () => {
             });
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
-                payload: {
-                    ...quote,
-                    swapSlippage: TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
-                },
+                payload: quote,
             });
         });
 
@@ -660,10 +642,7 @@ describe('useExchangeSelectQuote', () => {
             });
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
-                payload: {
-                    ...quote,
-                    swapSlippage: TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
-                },
+                payload: quote,
             });
             const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) => (action as any)?.type);
             expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
