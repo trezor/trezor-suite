@@ -39,11 +39,8 @@ describe('data/firmwareInfo', () => {
         beforeAll(async () => {
             const settings = parseConnectSettings({});
             settingsStore.set(settings);
-            await firmwareReleaseStore.init(
-                settings.firmwareChannel,
-                true,
-                initializeFirmwareConfig,
-            );
+            const config = await initializeFirmwareConfig(firmwareReleaseConfigAssets, false);
+            firmwareReleaseStore.init(config);
         });
         it('should offer latest compatible relase when latest one is not compatible', () => {
             const features = getDeviceFeatures({
@@ -112,11 +109,8 @@ describe('data/firmwareInfo', () => {
         beforeAll(async () => {
             const settings = parseConnectSettings({});
             settingsStore.set(settings);
-            await firmwareReleaseStore.init(
-                settings.firmwareChannel,
-                true,
-                initializeFirmwareConfig,
-            );
+            const config = await initializeFirmwareConfig(firmwareReleaseConfigAssets, false);
+            firmwareReleaseStore.init(config);
         });
 
         it('uses the bundled location for a local base url', () => {
