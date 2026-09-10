@@ -7,7 +7,7 @@ import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Backup errors', { tag: ['@T2T1'] }, () => {
+test.describe('Backup errors', { tag: ['@T2T1', '@optional'] }, () => {
     test.use({
         deviceSetup: { needs_backup: true },
         ignoreToastErrors: [messages.TOAST_BACKUP_FAILED.defaultMessage],

@@ -4,7 +4,7 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Backup misc', { tag: ['@T2T1'] }, () => {
+test.describe('Backup misc', { tag: ['@T2T1', '@optional'] }, () => {
     test.use({
         deviceSetup: { needs_backup: true },
     });

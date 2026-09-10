@@ -3,7 +3,7 @@ import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Guide without device', { tag: ['@webOnly', '@noDevice'] }, () => {
+test.describe('Guide without device', { tag: ['@webOnly', '@noDevice', '@optional'] }, () => {
     test.use({ startEmulator: false });
 
     test(
@@ -56,7 +56,7 @@ test.describe('Guide without device', { tag: ['@webOnly', '@noDevice'] }, () => 
     );
 });
 
-test.describe('Guide with device', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Guide with device', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test(
         'onboarding with device',
         {

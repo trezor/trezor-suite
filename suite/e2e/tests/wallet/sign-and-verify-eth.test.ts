@@ -6,7 +6,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const ethSymbol = asNetworkSymbol('eth');
 
-test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {

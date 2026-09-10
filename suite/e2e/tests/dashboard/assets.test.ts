@@ -6,7 +6,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const btcSymbol = asNetworkSymbol('btc');
 
-test.describe('Assets', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Assets', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });

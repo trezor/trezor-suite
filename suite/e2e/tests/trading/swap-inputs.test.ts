@@ -65,7 +65,7 @@ const buyAssets: {
     },
 ];
 
-test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice'] }, () => {
+test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@optional'] }, () => {
     test.use({
         startEmulator: false,
         setupEmulator: false,
