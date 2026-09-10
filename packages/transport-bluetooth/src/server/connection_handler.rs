@@ -186,16 +186,7 @@ async fn handle_http_request(
         });
         Ok(response)
     } else {
-        // In debug builds serve the UI
-        // Stealth rejection in release builds to avoid fingerprinting the service
-        if cfg!(debug_assertions) {
-            Ok(HyperResponse::new(Full::<Bytes>::from(INDEX_HTML)))
-        } else {
-            Err(ServerError::Io(std::io::Error::new(
-                std::io::ErrorKind::ConnectionReset,
-                "",
-            )))
-        }
+        Ok(HyperResponse::new(Full::<Bytes>::from(INDEX_HTML)))
     }
 }
 
