@@ -75,7 +75,7 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
     test(
         'Go to account and try to export all possible variants (pdf, csv, json) - ada',
         {
-            tag: ['@nightlyOnly'],
+            tag: ['@optional'],
             annotation: createTestAnnotation({
                 testCase: 'Verify that a user can successfully export transactions in all formats.',
                 category: TestCategory.Wallets,

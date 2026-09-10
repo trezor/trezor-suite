@@ -23,6 +23,7 @@
 
 ### Execution Context Tags
 
-- `@nightlyOnly` — runs only in nightly config; excluded from PR. **Required for slow/resource-intensive tests or tests with live currencies**. Combine with single platform (`@webOnly` or `@desktopOnly`) to conserve resources.
+- `@nightlyOnly` — never runs on a PR, not even when the LLM test selector or an edited test file targets it. **Required for tests that break or mislead outside nightly**: nonce collisions when two runs overlap, old app versions that only the nightly setup provides. Runs in nightly, canary, and release.
+- `@optional` — excluded from the full PR run; runs nightly, and on a PR only when the LLM test selector or an edited test file targets it. **Use for tests that are low priority and slow or cost real funds.** When the reason is not obvious from the test itself, state it in a one-line comment above the `describe`. Combine with a single platform (`@webOnly` or `@desktopOnly`) to conserve resources.
 - `@specificFirmware` — **required when using `test.use({ firmwareVersion: '2.10' })`**. Excluded from canary FW projects to prevent mismatched firmware runs.
 - `@group=manual` — excluded from all automated runs, reserved for manual test definitions

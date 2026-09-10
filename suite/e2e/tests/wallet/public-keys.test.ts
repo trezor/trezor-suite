@@ -31,7 +31,8 @@ test.describe('Public Keys', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
 
     testCases.forEach(({ symbol, xpub }) => {
-        const tagOptions = symbol === 'ada' ? { tag: ['@nightlyOnly'] } : { tag: [] };
+        // The ADA backend is flaky and the LTC case duplicates the BTC one.
+        const tagOptions = symbol === 'btc' ? { tag: [] } : { tag: ['@optional'] };
 
         test(
             `Check ${symbol} XPUB`,

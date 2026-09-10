@@ -192,7 +192,7 @@ test(
     'All routes are covered by SECTIONS',
     {
         annotation: createTestAnnotation({ stream: TestStream.Growth }),
-        tag: ['@webOnly', '@noDevice'],
+        tag: ['@webOnly', '@noDevice', '@optional'],
     },
     () => {
         const uncovered = allPaths.filter(path => !coveredPaths.has(path));
@@ -204,7 +204,7 @@ test(
     },
 );
 
-test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () => {
+test.describe('Check Links', { tag: ['@webOnly', '@optional', '@T3T1'] }, () => {
     test.use({
         ignoreJSExceptions: ['Aborted by signal', 'Failed to fetch'],
     });

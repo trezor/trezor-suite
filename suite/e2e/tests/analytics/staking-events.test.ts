@@ -4,7 +4,7 @@ import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@t
 
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@nightlyOnly'] }, () => {
+test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@optional'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
