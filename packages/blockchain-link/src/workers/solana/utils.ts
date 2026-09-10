@@ -1,4 +1,5 @@
 import type { MessageTypes } from '@trezor/blockchain-link-types';
+import { RPC_MAX_SUPPORTED_TRANSACTION_VERSION } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import type {
     ParsedTransactionWithMeta,
@@ -108,20 +109,33 @@ export const getSignaturesForAddresses = async (
 export const fetchTransactionPage = async (
     api: SolanaAPI,
     signatures: Signature[],
-): Promise<ParsedTransactionWithMeta[]> =>
-    (
-        await Promise.all(
-            signatures.map(signature =>
-                api.rpc
-                    .getTransaction(signature, {
-                        encoding: 'jsonParsed',
-                        maxSupportedTransactionVersion: 0,
-                        commitment: 'confirmed',
-                    })
-                    .send(),
-            ),
-        )
-    ).filter(isNotNullOrUndefined);
+): Promise<ParsedTransactionWithMeta[]> => {
+    // allSettled, not all: a single transaction the RPC refuses to return must drop only itself
+    // instead of failing the whole account sync.
+    const results = await Promise.allSettled(
+        signatures.map(signature =>
+            api.rpc
+                .getTransaction(signature, {
+                    encoding: 'jsonParsed',
+                    maxSupportedTransactionVersion: RPC_MAX_SUPPORTED_TRANSACTION_VERSION,
+                    commitment: 'confirmed',
+                })
+                .send(),
+        ),
+    );
+
+    const rejected = results.length - results.filter(r => r.status === 'fulfilled').length;
+    if (rejected > 0) {
+        console.warn(
+            // do not log the rejection reason: it may carry the signature, which is confidential
+            `Solana: dropped ${rejected}/${results.length} transactions the RPC did not return`,
+        );
+    }
+
+    return results
+        .map(result => (result.status === 'fulfilled' ? result.value : null))
+        .filter(isNotNullOrUndefined);
+};
 
 export const isValidTransaction = (
     tx: ParsedTransactionWithMeta,
