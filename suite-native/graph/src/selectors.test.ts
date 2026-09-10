@@ -165,4 +165,33 @@ describe('selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning', () => {
             },
         ]);
     });
+
+    it('should exclude accounts whose discovery failed', () => {
+        const account = mockWalletAccount({
+            symbol: asNetworkSymbol('btc'),
+            descriptor: asAccountDescriptor('descriptor1'),
+        });
+        const failedAccount = mockWalletAccount(
+            {
+                symbol: asNetworkSymbol('btc'),
+                descriptor: asAccountDescriptor('failed:16:btc:normal'),
+            },
+            undefined,
+            { failed: true, error: 'Discovery failed' },
+        );
+
+        mockSelectDeviceMainnetAccounts.mockReturnValue([account, failedAccount]);
+
+        const result = selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning(mockState);
+
+        expect(result).toEqual([
+            {
+                symbol: 'btc',
+                descriptor: 'descriptor1',
+                identity: undefined,
+                accountKey: account.key,
+                tokensFilter: [],
+            },
+        ]);
+    });
 });
