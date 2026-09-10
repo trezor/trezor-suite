@@ -169,7 +169,7 @@ export { commonFocusStyles } from './utils/utils';
 export { intermediaryTheme } from './config/colors';
 export type { SuiteThemeColors } from './config/colors';
 
-export { RadioCard } from './components/RadioCard/RadioCard';
+export { RadioCard, type RadioCardProps } from './components/RadioCard/RadioCard';
 export { PinInput } from './components/PinInput/PinInput';
 
 export { type UIIntent, type UIVariant } from './config/types';
