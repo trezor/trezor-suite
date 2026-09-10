@@ -23,6 +23,23 @@ const typeAwareTestFilename = path.join(__dirname, '../..', 'unused-intersection
 typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMembersRule, {
     valid: [
         {
+            name: 'preserves members when recursive generic arguments keep growing',
+            filename: typeAwareTestFilename,
+            code: `
+                    type Left<T> = { left: T; next: Left<T[]> };
+                    type Right<T> = { right: T; next: Right<T[]> };
+                    type Both<T> = { left: T; right: T; next: Both<T[]> };
+                    type LeftDep = { root: Left<number> };
+                    type RightDep = { root: Right<number> };
+                    type UnusedDep = { unused: boolean };
+                    type RunDeps = LeftDep & RightDep & UnusedDep;
+
+                    declare function consume(value: Both<number>): void;
+
+                    const run = (deps: RunDeps) => consume(deps.root);
+                `,
+        },
+        {
             name: 'accepts when every direct intersection member is used',
             filename: typeAwareTestFilename,
             code: `
@@ -345,6 +362,50 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
         },
     ],
     invalid: [
+        {
+            name: 'reports unused members alongside recursive types with stable arguments',
+            filename: typeAwareTestFilename,
+            code: `
+                    type Left<T> = { left: T; next: Left<T> };
+                    type Right<T> = { right: T; next: Right<T> };
+                    type Both<T> = { left: T; right: T; next: Both<T> };
+                    type LeftDep = { root: Left<number> };
+                    type RightDep = { root: Right<number> };
+                    type UnusedDep = { unused: boolean };
+                    type RunDeps = LeftDep & RightDep & UnusedDep;
+
+                    declare function consume(value: Both<number>): void;
+
+                    const run = (deps: RunDeps) => consume(deps.root);
+                `,
+            errors: [
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'UnusedDep', typeName: 'RunDeps' },
+                },
+            ],
+        },
+        {
+            name: 'reports unused members when finite nested requirements are split across members',
+            filename: typeAwareTestFilename,
+            code: `
+                    type Branch<T> = { next: { next: T } };
+                    type LeftDep = { root: Branch<{ left: number }> };
+                    type RightDep = { root: Branch<{ right: number }> };
+                    type UnusedDep = { unused: boolean };
+                    type RunDeps = LeftDep & RightDep & UnusedDep;
+
+                    declare function consume(value: Branch<{ left: number; right: number }>): void;
+
+                    const run = (deps: RunDeps) => consume(deps.root);
+                `,
+            errors: [
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'UnusedDep', typeName: 'RunDeps' },
+                },
+            ],
+        },
         {
             name: 'reports an unused direct intersection member',
             filename: typeAwareTestFilename,
