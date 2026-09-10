@@ -43,6 +43,9 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
         [account.symbol],
     );
 
+    const networkName = getNetwork(account.symbol).name;
+    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+
     const handleVerifyAddress = async (path: string) => {
         if (verifyingAddressPath !== undefined) {
             return;
@@ -68,13 +71,13 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
                     title={
                         <Translation
                             id="TR_EVM_EXPLANATION_TITLE"
-                            values={{ network: getNetwork(account.symbol).name }}
+                            values={{ network: networkName }}
                         />
                     }
                     description={
                         <Translation
                             id="TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION"
-                            values={{ network: getNetwork(account.symbol).name }}
+                            values={{ network: networkName }}
                         />
                     }
                 />
@@ -83,17 +86,9 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
             <Row gap={4} alignItems="flex-start">
                 <H2>
                     {supportsTokens ? (
-                        <Translation
-                            id="RECEIVE_TITLE_ASSETS"
-                            values={{ network: getNetwork(account.symbol).name }}
-                        />
+                        <Translation id="RECEIVE_TITLE_ASSETS" values={{ network: networkName }} />
                     ) : (
-                        <Translation
-                            id="RECEIVE_TITLE"
-                            values={{
-                                networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
-                            }}
-                        />
+                        <Translation id="RECEIVE_TITLE" values={{ networkDisplaySymbol }} />
                     )}
                 </H2>
                 {supportsTokens && (
@@ -102,8 +97,8 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
                             <Translation
                                 id="RECEIVE_ASSETS_TOOLTIP"
                                 values={{
-                                    networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
-                                    network: getNetwork(account.symbol).name,
+                                    networkDisplaySymbol,
+                                    network: networkName,
                                 }}
                             />
                         }
