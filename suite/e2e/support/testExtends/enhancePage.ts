@@ -1,6 +1,6 @@
 import { Locator, Page, expect, test } from '@playwright/test';
 import { writeFileSync } from 'fs';
-import { get, isMatch, set } from 'lodash';
+import { isMatch, set } from 'lodash';
 import { join } from 'path';
 
 import {
@@ -108,15 +108,21 @@ export const enhancePage = (page: Page): Page => {
         }).toPass({ timeout: 5000 });
     };
 
-    page.getReduxObject = async (objectPath?: string) => {
-        const state = await page.evaluate(() => window.store.getState());
+    // Resolving the path inside the page keeps the payload to the requested slice; serialising the
+    // whole store costs seconds on slower runners and eats the polling budget of the callers below.
+    page.getReduxObject = async (objectPath?: string) =>
+        page.evaluate((path?: string) => {
+            const state = window.store.getState();
 
-        if (!objectPath) {
-            return state;
-        }
+            if (!path) {
+                return state;
+            }
 
-        return get(state, objectPath);
-    };
+            return path
+                .replace(/\[(\w+)\]/g, '.$1')
+                .split('.')
+                .reduce((value: any, key: string) => (value == null ? value : value[key]), state);
+        }, objectPath);
 
     page.expectReduxObjectNotToBeEmpty = async function (
         objectPath: string,
