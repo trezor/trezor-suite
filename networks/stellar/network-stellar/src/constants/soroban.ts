@@ -1,15 +1,13 @@
 /**
  * Soroban (contract / type-C token) configuration.
  *
- * The Trezor-hosted Stellar proxy serves `stellar-rpc` JSON-RPC on `POST /` from the same
- * origin that serves Horizon's REST endpoints, so contract reads stay inside Trezor's trust
- * boundary. It is kept as its own constant rather than derived from the account's backend URL
- * because a custom Horizon backend is not required to proxy JSON-RPC too.
+ * There is no RPC endpoint here: the Stellar backend serves `stellar-rpc` JSON-RPC on `POST /`
+ * from the same origin as Horizon's REST paths, so contract reads go to whichever backend the
+ * account is on.
  *
  * The token allow-list below is still local; it moves to the hosted definitions pipeline once
  * that carries contract tokens.
  */
-export const STELLAR_SOROBAN_RPC_URL = 'https://xlm.trezor.io';
 
 export interface StellarContractToken {
     contract: string;

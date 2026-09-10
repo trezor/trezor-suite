@@ -12,7 +12,7 @@ import { BlockchainLink } from '../../index';
 
 import StellarWorker from './index';
 
-const HORIZON_URL = 'https://horizon.stellar.org';
+const STELLAR_URL = 'https://xlm.trezor.io';
 
 describe('Stellar', () => {
     let blockchain: BlockchainLink;
@@ -22,10 +22,10 @@ describe('Stellar', () => {
         blockchain = new BlockchainLink({
             name: 'Stellar',
             worker: StellarWorker,
-            server: [HORIZON_URL],
+            server: [STELLAR_URL],
             debug: false,
         });
-        const { api } = await getStellarConnection(HORIZON_URL);
+        const { api } = await getStellarConnection(STELLAR_URL);
         horizonServer = api;
     });
 
