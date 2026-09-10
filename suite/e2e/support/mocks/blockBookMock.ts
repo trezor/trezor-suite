@@ -180,4 +180,12 @@ export class BlockbookMock {
 
         this.mockServer.setFixtures(updatedFixtures);
     }
+
+    @step()
+    setRpcCallResponse(data: string) {
+        this.mockServer.setFixtures([
+            { method: 'rpcCall', default: true, response: { data: { data } } },
+            ...this.mockServer.getFixtures().filter(fixture => fixture.method !== 'rpcCall'),
+        ]);
+    }
 }
