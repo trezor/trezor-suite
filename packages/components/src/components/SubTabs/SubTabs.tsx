@@ -32,7 +32,7 @@ const SubTabs = ({ activeItemId, size = 'medium', children, ...rest }: SubTabsPr
 
     return (
         <SubTabsContext.Provider value={{ activeItemId, size }}>
-            <Container {...frameProps}>
+            <Container data-component="SubTabs" {...frameProps}>
                 <Row alignItems="stretch" gap={4}>
                     {children}
                 </Row>

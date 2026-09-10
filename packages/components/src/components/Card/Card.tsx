@@ -69,6 +69,7 @@ export type CardProps = AccessibilityProps &
         children?: ReactNode;
         isSelected?: boolean;
         'data-testid'?: string;
+        'data-component'?: string;
     };
 
 export const Card = ({
@@ -83,6 +84,7 @@ export const Card = ({
     children,
     isSelected = false,
     'data-testid': dataTest,
+    'data-component': dataComponent = 'Card',
     ...rest
 }: CardProps) => {
     const frameProps = pickAndPrepareFrameProps(
@@ -99,7 +101,7 @@ export const Card = ({
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            data-component="Card"
+            data-component={dataComponent}
             data-testid={dataTest}
             {...frameProps}
             {...withAccessibilityProps({

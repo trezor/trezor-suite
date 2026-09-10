@@ -39,6 +39,7 @@ type GhostContainerProps = AllowedGhostContainerFrameProps &
         backgroundColorOnInteraction?: Color;
         as?: React.ElementType;
         'data-testid'?: string;
+        'data-component'?: string;
     };
 
 export const GhostContainer = ({
@@ -48,6 +49,7 @@ export const GhostContainer = ({
     onClick,
     children,
     'data-testid': dataTestId,
+    'data-component': dataComponent = 'GhostContainer',
     tabIndex,
     as = 'button',
     borderRadius = 10,
@@ -65,6 +67,7 @@ export const GhostContainer = ({
             }
             as={as}
             data-testid={dataTestId}
+            data-component={dataComponent}
             tabIndex={tabIndex}
             {...frameProps}
             borderRadius={borderRadius}

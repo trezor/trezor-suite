@@ -106,7 +106,7 @@ export const ButtonGroup = ({
     });
 
     return (
-        <Container $size={size} {...frameProps}>
+        <Container data-component="ButtonGroup" $size={size} {...frameProps}>
             {childrenWithProps}
         </Container>
     );

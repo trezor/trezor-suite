@@ -107,6 +107,7 @@ export const Divider = ({
 
     const line = (
         <Line
+            data-component={children === undefined ? 'Divider' : undefined}
             $color={color}
             $strokeWidth={strokeWidth}
             $orientation={orientation}
@@ -125,7 +126,7 @@ export const Divider = ({
     );
 
     return orientation === 'horizontal' ? (
-        <Row gap={gap} width="100%" alignItems="center" {...frameProps}>
+        <Row gap={gap} width="100%" alignItems="center" data-component="Divider" {...frameProps}>
             {content}
         </Row>
     ) : (
@@ -134,6 +135,7 @@ export const Divider = ({
             height="100%"
             alignItems="center"
             justifyContent="space-evenly"
+            data-component="Divider"
             {...frameProps}
         >
             {content}

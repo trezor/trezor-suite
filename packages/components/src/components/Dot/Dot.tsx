@@ -80,6 +80,7 @@ export const Dot = ({
         $intent={intent}
         $isAnimated={isAnimated}
         className={className}
+        data-component="Dot"
         data-testid={dataTestId}
     />
 );

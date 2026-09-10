@@ -54,6 +54,7 @@ export const RadioCard = ({
             <Card
                 onClick={!isDisabled ? onClick : undefined}
                 isSelected={isSelected}
+                data-component="RadioCard"
                 data-testid={dataTestId}
                 type="contrast"
                 {...frameProps}

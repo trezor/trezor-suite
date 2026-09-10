@@ -37,7 +37,7 @@ const FlagImage = styled.img<{ $size: FlagSize }>`
 `;
 
 export const Flag = ({ size = 24, country }: FlagProps) => (
-    <Wrapper $size={size}>
+    <Wrapper $size={size} data-component="Flag">
         <FlagImage $size={size} src={getFlagSource(country)} alt={`flag-${country}`} />
     </Wrapper>
 );

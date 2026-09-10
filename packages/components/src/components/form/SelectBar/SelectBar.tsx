@@ -172,6 +172,7 @@ export const SelectBar = <V extends ValueTypes>({
 
     return (
         <Flex
+            data-component="SelectBar"
             data-testid={dataTest}
             direction={isVertical ? 'column' : 'row'}
             margin={margin}

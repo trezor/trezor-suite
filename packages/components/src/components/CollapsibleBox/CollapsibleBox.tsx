@@ -193,6 +193,7 @@ export const CollapsibleBox = ({
             {...frameProps}
             $paddingType={paddingType}
             $fillType={fillType}
+            data-component="CollapsibleBox"
             data-testid={dataTest}
         >
             <Collapsible isOpen={isOpen}>

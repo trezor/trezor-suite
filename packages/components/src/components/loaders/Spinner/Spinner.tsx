@@ -120,6 +120,7 @@ export const Spinner = ({
         <StyledLottie
             key={animationKey}
             size={size}
+            data-component="Spinner"
             data-testid={dataTest ?? '@spinner'}
             {...lottieProps}
             {...frameProps}

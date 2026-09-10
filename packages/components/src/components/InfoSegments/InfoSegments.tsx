@@ -45,6 +45,7 @@ export const InfoSegments = ({
 
     return (
         <Text
+            data-component="InfoSegments"
             data-testid={dataTestId}
             as="div"
             typographyStyle={typographyStyle}

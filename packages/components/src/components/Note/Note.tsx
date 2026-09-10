@@ -35,7 +35,7 @@ export const Note = ({
     isInverse = false,
     'data-testid': dataTestId,
 }: NoteProps) => (
-    <Row gap={gap} margin={margin} minWidth={minWidth}>
+    <Row gap={gap} margin={margin} minWidth={minWidth} data-component="Note">
         <Icon
             as={icon}
             size={16}

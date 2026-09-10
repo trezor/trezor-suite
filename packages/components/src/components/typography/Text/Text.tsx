@@ -152,6 +152,7 @@ export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
     isTabular?: boolean;
     as?: string;
     'data-testid'?: string;
+    'data-component'?: string;
     role?: string;
 } & ExclusiveColorOrIntent &
     AllowedFrameProps &
@@ -166,6 +167,7 @@ export const Text = ({
     children,
     as = 'span',
     'data-testid': dataTest,
+    'data-component': dataComponent = 'Text',
     onClick,
     onCopy,
     isMonospaced,
@@ -189,6 +191,7 @@ export const Text = ({
             onClick={onClick}
             onCopy={onCopy}
             data-testid={dataTest}
+            data-component={dataComponent}
             data-typography-style={typographyStyle}
             $isMonospaced={isMonospaced}
             $isHighlighted={isHighlighted}

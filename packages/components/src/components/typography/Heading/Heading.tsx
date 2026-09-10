@@ -5,7 +5,12 @@ import { Text, type TextProps } from '../Text/Text';
 const createHeading =
     (as: 'h1' | 'h2' | 'h3' | 'h4', defaultTypographyStyle: TypographyStyle) =>
     ({ children, ...rest }: TextProps) => (
-        <Text as={as} typographyStyle={defaultTypographyStyle} {...rest}>
+        <Text
+            as={as}
+            typographyStyle={defaultTypographyStyle}
+            {...rest}
+            data-component={as.toUpperCase()}
+        >
             {children}
         </Text>
     );

@@ -57,6 +57,7 @@ export const Link = ({
             target={target ?? '_blank'}
             rel="noreferrer noopener"
             data-testid={dataTest}
+            data-component="Link"
             data-typography-style={typographyStyle}
             onClick={(e: MouseEvent<HTMLAnchorElement>) => {
                 if (onClick !== undefined) {

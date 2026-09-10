@@ -108,6 +108,7 @@ const Tabs = ({
         <TabsContext.Provider value={{ activeItemId, isDisabled, size, setTabRef }}>
             <Container
                 ref={containerRef}
+                data-component="Tabs"
                 $hasBorder={hasBorder}
                 $indicatorWidth={indicatorWidth}
                 $indicatorPosition={indicatorPosition}

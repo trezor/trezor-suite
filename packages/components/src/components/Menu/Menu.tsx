@@ -197,6 +197,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
 
         return (
             <Container
+                data-component="Menu"
                 tabIndex={content ? 0 : 1} // do not affect tab order when there is no content
                 onClick={e => e.stopPropagation()} // prevent closing the menu when clicking on the menu itself or within the menu
                 {...frameProps}
