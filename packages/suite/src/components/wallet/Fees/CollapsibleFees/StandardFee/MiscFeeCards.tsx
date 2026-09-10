@@ -6,7 +6,7 @@ import { Text } from '@trezor/components';
 import { BaseCurrencyValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
-import { FeeCard } from './FeeCard';
+import { FeeCard, type FeeCardAppearance } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';
 import { feeLevelTranslationMap } from './constants';
 import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
@@ -14,10 +14,11 @@ import { useFeesContext } from '../../context/FeesContext';
 
 type MiscFeeCardsProps = {
     feeOptions: FeeOptionType[];
+    feeCardAppearance?: FeeCardAppearance;
 };
 
 // Solana, Ripple, Cardano and other networks with only one option
-export const MiscFeeCards = ({ feeOptions }: MiscFeeCardsProps) => {
+export const MiscFeeCards = ({ feeOptions, feeCardAppearance }: MiscFeeCardsProps) => {
     const { networkType, networkSymbol, changeFeeLevel } = useFeesContext();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
 
@@ -32,6 +33,7 @@ export const MiscFeeCards = ({ feeOptions }: MiscFeeCardsProps) => {
     return (
         <FeeCardsWrapper data-testid="@wallet/fee-details">
             <FeeCard
+                {...feeCardAppearance}
                 value={fee.value}
                 isSelected={true}
                 changeFeeLevel={changeFeeLevel}
