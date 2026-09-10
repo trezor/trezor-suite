@@ -56,6 +56,7 @@ import type { Device, DeviceEvents } from '../device/Device';
 import type { IDeviceList } from '../device/DeviceList';
 import { DeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import { validateState } from '../device/workflow/validateState';
+import { getFirmwareReleaseConfig } from '../utils/firmwareReleaseConfigUtils';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
 
 type CoreContext = ReturnType<Core['getCoreContext']>;
@@ -992,11 +993,9 @@ export class Core extends EventEmitter {
             // settingsStore so no reader picks up a stale, unsanitized snapshot.
             settingsStore.set({ ...settings, enabledNetworks: undefined });
             enabledNetworksStore.set(settings.enabledNetworks ?? []);
-            await firmwareReleaseStore.init(
-                settings.firmwareChannel,
-                false,
-                initializeFirmwareConfig,
-            );
+            const fwConfig = await getFirmwareReleaseConfig(settings.firmwareChannel);
+            const config = await initializeFirmwareConfig(fwConfig.config, fwConfig.isRemote);
+            firmwareReleaseStore.init(config);
             const localFirmwares =
                 settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
             if (localFirmwares) {
