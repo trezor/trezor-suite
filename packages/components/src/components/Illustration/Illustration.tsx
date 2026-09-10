@@ -74,7 +74,12 @@ export const Illustration = ({
     const frameProps = pickAndPrepareFrameProps(rest, allowedIllustrationFrameProps);
 
     return (
-        <Container $intent={intent} data-component="Illustration" data-testid={dataTest} {...frameProps}>
+        <Container
+            $intent={intent}
+            data-component="Illustration"
+            data-testid={dataTest}
+            {...frameProps}
+        >
             <SVG src={illustrations[name]} />
         </Container>
     );
