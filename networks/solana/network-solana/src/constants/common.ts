@@ -23,6 +23,21 @@ export const SOLANA_DECIMALS = 9;
 // genesisHash is a reliable identifier of the network.
 export const SOLANA_MAINNET_GENESIS_HASH = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
 
+// Ceiling passed to getTransaction as `maxSupportedTransactionVersion`. A transaction at or below
+// it comes back parsed; anything above it comes back as JSON-RPC error -32015, not as null. That
+// error is why this was raised from 0: a single v1 transaction anywhere in an account's history
+// failed the whole page (#32345).
+//
+// Raising it further is not free. The ceiling is a promise that we can present what the node hands
+// back, so it must stay at the highest version `solanaUtils.transformTransaction` understands, not
+// at the highest version that exists. Set it above that and the failure moves from a page that does
+// not load to transactions that render wrongly, which is worse and much quieter.
+//
+// Kept apart from kit's MAX_SUPPORTED_TRANSACTION_VERSION even though both are 1 today: that one is
+// what kit's own codecs can decode, this one is what we ask the node for. v1 is valid here because
+// kit's rpc-types accepts it as a `maxSupportedTransactionVersion`.
+export const RPC_MAX_SUPPORTED_TRANSACTION_VERSION = 1;
+
 export const MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT = 16;
 export const MAX_CLAIM_ACCOUNTS = 16;
 
