@@ -14,7 +14,7 @@ describe.skip('Manual', () => {
                 'Enter a valid address and an amount; verify crypto/fiat values and switching between fields',
                 'Send to a fresh (not yet activated) address and verify the account activation info is shown',
                 'Continue to Review and sign; approve steps and verify prompt to continue on device',
-                'Approve address, amount and total including fee on the device',
+                'Approve address and amount on the device',
                 'Click Send transaction and verify the transaction detail shows Pending',
             ],
             category: TestCategory.Device,
