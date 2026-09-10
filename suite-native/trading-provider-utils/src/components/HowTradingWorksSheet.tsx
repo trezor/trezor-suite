@@ -25,7 +25,7 @@ const ListItem = ({ icon, children, href }: ListItemProps) => {
     const openLink = useOpenLink();
 
     return (
-        <IconListItem icon={icon} variant="brand" iconSize="large">
+        <IconListItem icon={icon} variant="brand">
             {href ? (
                 <TextButton iconRight="arrowSquareOut" isUnderlined onPress={() => openLink(href)}>
                     {children}

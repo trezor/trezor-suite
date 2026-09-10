@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { ICON_SIZES } from '@suite-native/icons';
-
 import {
     ICON_SQUARE_INTENTS,
+    ICON_SQUARE_SIZES,
     IconSquare as IconSquareComponent,
     type IconSquareProps,
 } from '../../Icon/IconSquare';
@@ -22,7 +21,7 @@ export const IconSquare: IconSquareStory = {
     args: {
         iconNumber: 1,
         intent: 'neutral',
-        iconSize: 'mediumLarge',
+        size: 40,
     },
     argTypes: {
         iconNumber: {
@@ -32,9 +31,9 @@ export const IconSquare: IconSquareStory = {
             control: { type: 'select' },
             options: ICON_SQUARE_INTENTS,
         },
-        iconSize: {
+        size: {
             control: { type: 'select' },
-            options: Object.values(ICON_SIZES),
+            options: Object.values(ICON_SQUARE_SIZES),
         },
     },
 };
