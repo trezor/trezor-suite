@@ -33,8 +33,8 @@ pub struct AdapterManager {
     adapter: Arc<Mutex<Option<Adapter>>>,
     adapter_state: Arc<Mutex<AdapterState>>,
     manager_state: Arc<Mutex<ManagerState>>,
-    discovered_id: DashSet<String>,
-    serviceless_peripherals: DashMap<String, ServicelessDevice>,
+    discovered_id: Arc<DashSet<String>>,
+    serviceless_peripherals: Arc<DashMap<String, ServicelessDevice>>,
     serviceless_peripherals_prune_ts: Arc<Mutex<u128>>,
 }
 
@@ -97,8 +97,8 @@ impl AdapterManager {
             adapter,
             adapter_state,
             manager_state,
-            discovered_id: DashSet::new(),
-            serviceless_peripherals: DashMap::new(),
+            discovered_id: Arc::new(DashSet::new()),
+            serviceless_peripherals: Arc::new(DashMap::new()),
             serviceless_peripherals_prune_ts: Arc::new(Mutex::new(0)),
         })
     }
@@ -280,6 +280,13 @@ impl AdapterManager {
     pub async fn set_known_peripherals(&self, value: Vec<KnownDevice>) {
         let mut state = self.manager_state.lock().await;
         state.known_peripherals = value;
+    }
+
+    pub async fn clear_serviceless_devices(&self) {
+        self.serviceless_peripherals.clear();
+
+        let mut timestamp = self.serviceless_peripherals_prune_ts.lock().await;
+        *timestamp = 0;
     }
 
     async fn is_known_peripheral(&self, id: &str) -> bool {
