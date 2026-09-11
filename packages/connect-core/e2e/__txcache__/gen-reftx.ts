@@ -6,7 +6,7 @@ import type { RefTransaction } from '../../src';
 
 // Referenced transaction generator script.
 // Transform bitcoin-like transaction data in to format required by tests of signTransaction method.
-// Data are stored in packages/connect/e2e/__txcache__/[network]
+// Data are stored in packages/connect-core/e2e/__txcache__/[network]
 
 // Step 1.
 // Go to blockchain explorer and find referenced tx by input.prev_hash and locate tx HEX

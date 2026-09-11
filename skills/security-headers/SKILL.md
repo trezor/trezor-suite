@@ -34,7 +34,7 @@ yarn suite:build:web:preview
 ### Permissions-Policy Rationale (Enabled Directives)
 
 - `usb=(self)`:
-    - `packages/connect/src/index-browser.ts` (`window.navigator.usb.requestDevice(...)`)
+    - `packages/connect/src/index.browser.ts` (`window.navigator.usb.requestDevice(...)`)
     - `packages/transport/src/transports/webusb.browser.ts`
 - `camera=(self)`:
     - `packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/QrScannerModal/CameraQRReader.tsx` (`react-zxing` camera scanner used for QR input)
