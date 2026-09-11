@@ -56,8 +56,9 @@ export type EntityIndexDefinition<TState, TSource, TEntity, TId extends EntityId
 export type EntityIndex<TState, TEntity, TId extends EntityId> = {
     readonly name: string;
     /**
-     * Keeps the index's build alive until the returned function is called. Reads work without it —
-     * they just build every time, which is the honest cost of reading something nobody is holding.
+     * Keeps the index's build alive until the returned function is called. Reads work without a
+     * subscription — what a subscription adds is that the build survives being unused, rather than
+     * being dropped the moment the last consumer goes away.
      *
      * @returns unsubscribe
      */
@@ -80,8 +81,8 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
     // different sources still hands back the same snapshot and consumers see no change.
     const emptySnapshot: EntityIndexSnapshot<TEntity, TId> = { ids: [], byId: new Map() };
     let subscriberCount = 0;
-    // The build and the source it was built from, kept together so they cannot disagree. Held only
-    // while someone is subscribed; `undefined` means the next read builds.
+    // The build and the source it was built from, kept together so they cannot disagree.
+    // `undefined` means the next read builds.
     let cached: { source: TSource; snapshot: EntityIndexSnapshot<TEntity, TId> } | undefined;
 
     const build = (source: TSource): EntityIndexSnapshot<TEntity, TId> => {
@@ -113,12 +114,11 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
         }
 
         const snapshot = build(source);
-
-        // Nobody is holding this index, so the build is this caller's alone: hand it over without
-        // keeping it, rather than retaining entities for a reader that may never come back.
-        if (subscriberCount > 0) {
-            cached = { source, snapshot };
-        }
+        // Kept whether or not anyone is subscribed. A list of a hundred rows reads the index a
+        // hundred times on its first render, before a single subscription effect has run, and
+        // those have to be one build. Subscribers decide when the build is *released*, not when
+        // it is made.
+        cached = { source, snapshot };
 
         return snapshot;
     };

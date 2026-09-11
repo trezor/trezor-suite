@@ -113,14 +113,16 @@ describe('createEntityIndex', () => {
             expect(index.selectById(createState([a]), 'a')).toBe(a);
         });
 
-        it('holds on to nothing, so it rebuilds on the next read', () => {
+        it('still builds once for repeated reads of an unchanged source', () => {
+            // A list of a hundred rows reads the index a hundred times on its first render,
+            // before a single subscription effect has run. Those are one build.
             const { index, getEntities } = createIndex();
             const state = createState([a, b]);
 
             index.read(state);
             index.read(state);
 
-            expect(getEntities).toHaveBeenCalledTimes(2);
+            expect(getEntities).toHaveBeenCalledTimes(1);
         });
 
         it('drops what it held once the last subscriber leaves', () => {
