@@ -8,7 +8,7 @@ import { versionUtils } from '@trezor/utils';
 import {
     getFirmwareReleaseConfigInfo,
     getFirmwareStatus,
-    initializeFirmwareConfig,
+    getLocalFirmwareConfig,
 } from './firmwareInfo';
 import * as firmwareReleaseStore from './firmwareReleaseStore';
 import * as settingsStore from './settingsStore';
@@ -35,14 +35,10 @@ describe('data/firmwareInfo', () => {
         });
     });
     describe('getFirmwareReleaseConfigInfo', () => {
-        beforeAll(async () => {
+        beforeAll(() => {
             const settings = parseConnectSettings({});
             settingsStore.set(settings);
-            await firmwareReleaseStore.init(
-                settings.firmwareChannel,
-                true,
-                initializeFirmwareConfig,
-            );
+            firmwareReleaseStore.init(getLocalFirmwareConfig());
         });
         it('should offer latest compatible relase when latest one is not compatible', () => {
             const features = getDeviceFeatures({

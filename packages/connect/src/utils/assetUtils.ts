@@ -1,15 +1,5 @@
-import { firmwareAssets } from '@trezor/connect-data';
 import connectDataCoinsEth from '@trezor/connect-data/files/coins-eth.json';
 import connectDataCoins from '@trezor/connect-data/files/coins.json';
-import firmwareReleaseConfigAssetsJson from '@trezor/connect-data/files/firmware/release/releases.v1.json';
-import type {
-    DeviceModelInternal,
-    FirmwareRelease,
-    FirmwareReleaseConfig,
-} from '@trezor/device-utils';
-import { FirmwareType } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import type { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
 
@@ -22,38 +12,6 @@ export class HttpRequestError extends Error {
         this.response = response;
     }
 }
-
-export const getReleasesAssetByDeviceModelAndFirmwareType = (
-    deviceModel: DeviceModelInternal,
-    firmwareType: FirmwareType,
-): FirmwareRelease[] => {
-    const firmwareTypeInFileName =
-        firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
-
-    const availableReleasesRecord =
-        firmwareAssets?.[deviceModel.toLowerCase()]?.[firmwareTypeInFileName] ?? {};
-
-    return Object.values(availableReleasesRecord).sort((a, b) =>
-        versionUtils.isNewer(b.version, a.version) ? 1 : -1,
-    );
-};
-
-export const getReleaseAsset = (
-    deviceModel: DeviceModelInternal,
-    version: VersionArray,
-    firmwareType: FirmwareType,
-) => {
-    const firmwareTypeInFileName =
-        firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
-    const fileName = `${deviceModel.toLowerCase()}-${version.join('.')}-${firmwareTypeInFileName}`;
-    const deviceModelLower = deviceModel.toLowerCase();
-
-    const asset = firmwareAssets?.[deviceModelLower]?.[firmwareTypeInFileName]?.[fileName];
-
-    return asset as FirmwareRelease;
-};
-
-export const firmwareReleaseConfigAssets = firmwareReleaseConfigAssetsJson as FirmwareReleaseConfig;
 
 export const tryLocalAssetRequire = (url: string): unknown => {
     const fileUrl = url.split('?')[0];
