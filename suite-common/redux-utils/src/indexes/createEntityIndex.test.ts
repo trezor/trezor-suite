@@ -34,19 +34,19 @@ describe('createEntityIndex', () => {
         const { index } = createIndex();
         const state = createState([a, b]);
 
-        expect(index.selectById(state, 'b')).toBe(b);
+        expect(index.getById(state, 'b')).toBe(b);
     });
 
     it('answers with nothing for an id it does not hold', () => {
         const { index } = createIndex();
 
-        expect(index.selectById(createState([a]), 'b')).toBeUndefined();
+        expect(index.getById(createState([a]), 'b')).toBeUndefined();
     });
 
     it('lists ids in the order the source yields them', () => {
         const { index } = createIndex();
 
-        expect(index.selectIds(createState([b, a]))).toEqual(['b', 'a']);
+        expect(index.getIds(createState([b, a]))).toEqual(['b', 'a']);
     });
 
     describe('while subscribed', () => {
@@ -88,8 +88,8 @@ describe('createEntityIndex', () => {
             index.subscribe();
             const updated = { ...b, value: 'changed' };
 
-            expect(index.selectById(createState([a, b]), 'b')).toBe(b);
-            expect(index.selectById(createState([a, updated]), 'b')).toBe(updated);
+            expect(index.getById(createState([a, b]), 'b')).toBe(b);
+            expect(index.getById(createState([a, updated]), 'b')).toBe(updated);
         });
 
         it('does not rebuild for a state object that kept the same source', () => {
@@ -110,7 +110,7 @@ describe('createEntityIndex', () => {
         it('still answers correctly', () => {
             const { index } = createIndex();
 
-            expect(index.selectById(createState([a]), 'a')).toBe(a);
+            expect(index.getById(createState([a]), 'a')).toBe(a);
         });
 
         it('still builds once for repeated reads of an unchanged source', () => {
@@ -173,13 +173,13 @@ describe('createEntityIndex', () => {
         it('resolves to the last entity with that id', () => {
             const { index } = createIndex();
 
-            expect(index.selectById(createState([a, duplicate]), 'a')).toBe(duplicate);
+            expect(index.getById(createState([a, duplicate]), 'a')).toBe(duplicate);
         });
 
         it('lists the id once', () => {
             const { index } = createIndex();
 
-            expect(index.selectIds(createState([a, duplicate]))).toEqual(['a']);
+            expect(index.getIds(createState([a, duplicate]))).toEqual(['a']);
         });
     });
 
@@ -233,8 +233,8 @@ describe('an index over a source that is written in parts', () => {
         index.read({ byGroup: { left: [a], right: untouched } });
         const state = { byGroup: { left: [a, b], right: untouched } };
 
-        expect(index.selectById(state, 'c')).toBe(c);
-        expect(index.selectById(state, 'b')).toBe(b);
+        expect(index.getById(state, 'c')).toBe(c);
+        expect(index.getById(state, 'b')).toBe(b);
     });
 
     it('walks a part it has not seen before', () => {
@@ -257,7 +257,7 @@ describe('an index over a source that is written in parts', () => {
 
         index.read({ byGroup: { left: untouched, right: [c] } });
 
-        expect(index.selectById({ byGroup: { left: untouched } }, 'c')).toBeUndefined();
+        expect(index.getById({ byGroup: { left: untouched } }, 'c')).toBeUndefined();
     });
 });
 
@@ -333,5 +333,106 @@ describe('what a rebuild changed', () => {
             removed: [],
             updated: [],
         });
+    });
+});
+
+type Grouped = { id: string; group: string; tags: string[] };
+
+const createGroupedIndex = () => {
+    const byGroup = jest.fn((entity: Grouped) => entity.group);
+
+    const index = createEntityIndex({
+        name: 'grouped',
+        selectSource: (state: { entities: Grouped[] }) => state.entities,
+        getEntities: (entities: Grouped[]) => entities,
+        getId: (entity: Grouped) => entity.id,
+        groupBy: {
+            byGroup,
+            byTag: (entity: Grouped) => entity.tags,
+        },
+    });
+
+    return { index, byGroup };
+};
+
+const one = { id: '1', group: 'left', tags: ['red', 'blue'] };
+const two = { id: '2', group: 'left', tags: ['red'] };
+const three = { id: '3', group: 'right', tags: [] };
+
+describe('looking an entity up by something other than its id', () => {
+    it('gives the ids in a group', () => {
+        const { index } = createGroupedIndex();
+
+        expect(index.getIdsBy({ entities: [one, two, three] }, 'byGroup', 'left')).toEqual([
+            '1',
+            '2',
+        ]);
+    });
+
+    it('gives nothing for a key the group does not hold', () => {
+        const { index } = createGroupedIndex();
+
+        expect(index.getIdsBy({ entities: [one] }, 'byGroup', 'nowhere')).toEqual([]);
+    });
+
+    it('puts an entity in every key it names', () => {
+        // A transaction belongs to each of its target addresses, not to one of them.
+        const { index } = createGroupedIndex();
+        const state = { entities: [one, two] };
+
+        expect(index.getIdsBy(state, 'byTag', 'red')).toEqual(['1', '2']);
+        expect(index.getIdsBy(state, 'byTag', 'blue')).toEqual(['1']);
+    });
+
+    it('leaves out an entity that names no key', () => {
+        const { index } = createGroupedIndex();
+
+        expect(index.getIdsBy({ entities: [three] }, 'byTag', 'red')).toEqual([]);
+    });
+
+    it('hands back the same array for a group whose members did not change', () => {
+        // What keeps a component watching one account from re-rendering when another receives a
+        // transaction.
+        const { index } = createGroupedIndex();
+        index.subscribe();
+        const left = index.getIdsBy({ entities: [one, two, three] }, 'byGroup', 'left');
+
+        const afterRightChanged = index.getIdsBy(
+            { entities: [one, two, { ...three, tags: ['new'] }] },
+            'byGroup',
+            'left',
+        );
+
+        expect(afterRightChanged).toBe(left);
+    });
+
+    it('hands back a new array for a group that gained a member', () => {
+        const { index } = createGroupedIndex();
+        index.subscribe();
+        const left = index.getIdsBy({ entities: [one] }, 'byGroup', 'left');
+
+        expect(index.getIdsBy({ entities: [one, two] }, 'byGroup', 'left')).not.toBe(left);
+    });
+
+    it('does not ask an untouched part for its keys again', () => {
+        const { byGroup } = createGroupedIndex();
+        const untouched = [one];
+        const partitioned = createEntityIndex({
+            name: 'groupedParts',
+            selectSource: (state: { byGroup: Record<string, Grouped[]> }) => state.byGroup,
+            getParts: (groups: Record<string, Grouped[]>) => Object.entries(groups),
+            getEntities: (entities: Grouped[]) => entities,
+            getId: (entity: Grouped) => entity.id,
+            groupBy: { byGroup },
+        });
+        partitioned.subscribe();
+
+        partitioned.read({ byGroup: { a: untouched, b: [two] } });
+        byGroup.mockClear();
+        partitioned.read({ byGroup: { a: untouched, b: [two, three] } });
+
+        // Only the rebuilt part's entities were asked which group they belong to.
+        expect(byGroup).toHaveBeenCalledTimes(2);
+        expect(byGroup).not.toHaveBeenCalledWith(one);
     });
 });

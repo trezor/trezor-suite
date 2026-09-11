@@ -27,17 +27,16 @@ export const getTransactionId = (accountKey: AccountKey, txid: string): Transact
  * knowing which account the reducer filed it under. It reconstructs the reducer's own key, so the
  * two ways of naming a transaction cannot drift apart.
  */
+export const getTransactionAccountKey = (transaction: WalletAccountTransaction): AccountKey =>
+    createAccountKey({
+        accountDescriptor: transaction.descriptor,
+        networkSymbol: transaction.symbol,
+        deviceStaticSessionId: transaction.deviceState,
+    });
+
 export const getTransactionIdFromTransaction = (
     transaction: WalletAccountTransaction,
-): TransactionId =>
-    getTransactionId(
-        createAccountKey({
-            accountDescriptor: transaction.descriptor,
-            networkSymbol: transaction.symbol,
-            deviceStaticSessionId: transaction.deviceState,
-        }),
-        transaction.txid,
-    );
+): TransactionId => getTransactionId(getTransactionAccountKey(transaction), transaction.txid);
 
 /**
  * Every transaction in the store, by id.
@@ -66,10 +65,30 @@ export const transactionsIndex = createEntityIndex({
         }
     },
     getId: getTransactionIdFromTransaction,
+    groupBy: {
+        /** An account's transactions, without going through its array. */
+        byAccountKey: (transaction: WalletAccountTransaction) =>
+            getTransactionAccountKey(transaction),
+        /**
+         * Every account that filed a transaction with this `txid` — the question
+         * `findTransactions` answers by scanning every account in the store.
+         */
+        byTxid: (transaction: WalletAccountTransaction) => transaction.txid,
+    },
 });
 
+/** The transactions of one account, newest-first order not guaranteed — source order. */
+export const selectTransactionIdsByAccountKey = (
+    state: TransactionsRootState,
+    accountKey: AccountKey,
+) => transactionsIndex.getIdsBy(state, 'byAccountKey', accountKey);
+
+/** Both sides of a transfer between the user's own accounts, and nothing else. */
+export const selectTransactionIdsByTxid = (state: TransactionsRootState, txid: string) =>
+    transactionsIndex.getIdsBy(state, 'byTxid', txid);
+
 export const selectTransactionById = (state: TransactionsRootState, id: TransactionId) =>
-    transactionsIndex.selectById(state, id);
+    transactionsIndex.getById(state, id);
 
 /**
  * The transaction an account filed under this `txid`, if it has one.
@@ -81,4 +100,4 @@ export const selectTransactionByAccountKeyAndTxidFromIndex = (
     state: TransactionsRootState,
     accountKey: AccountKey,
     txid: string,
-) => transactionsIndex.selectById(state, getTransactionId(accountKey, txid));
+) => transactionsIndex.getById(state, getTransactionId(accountKey, txid));
