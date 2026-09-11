@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
-import { advancedSearchTransactions } from '../advancedSearchTransactions';
-import { type SearchAccountLabels } from '../searchLabels';
 import { advancedSearchTransactions as advancedSearchBefore } from './advancedSearchTransactions.before';
+import { advancedSearchTransactions } from '../src/advancedSearchTransactions';
+import { type SearchAccountLabels } from '../src/searchLabels';
 
 const TRANSACTION_COUNT = Number(process.argv[2] ?? 5_000);
 const KEYSTROKES = 10;
