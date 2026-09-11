@@ -1,4 +1,4 @@
-name: "[Test] Nightly Suite Fix Agent"
+name: "[Test] Nightly Suite LLM Test Fixer"
 
 on:
   schedule:
@@ -54,21 +54,21 @@ jobs:
 
       - name: Download known-failures ledger from S3
         run: |
-          aws s3 cp "s3://dev.suite.sldev.cz/e2e/fix-agent/ledger.json" \
+          aws s3 cp "s3://dev.suite.sldev.cz/e2e/llm-test-fixer/ledger.json" \
             "${{ github.workspace }}/ledger.json" || echo "No existing ledger — starting fresh."
 
       - name: Run analysis agent
         env:
           ANTHROPIC_API_KEY: ${{ secrets.E2E_FIX_ANALYSIS_CLAUDE_API_KEY }}
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
-        run: yarn workspace @trezor/e2e-utils fix-bot:analyze
+        run: yarn workspace @trezor/e2e-utils llm-test-fixer:analyze
 
       - name: Upload report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: fix-agent-report
-          path: packages/e2e-utils/src/fixBot/reports/
+          name: llm-test-fixer-report
+          path: packages/e2e-utils/src/llmTestFixer/reports/
           if-no-files-found: error
 
       - name: Upload analyze cost artifact
@@ -90,7 +90,7 @@ jobs:
       - name: Download report
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          name: fix-agent-report
+          name: llm-test-fixer-report
           path: report-download/
 
       - name: Validate report
@@ -191,7 +191,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: node_modules
-          key: node_modules-fix-agent-${{ hashFiles('yarn.lock') }}
+          key: node_modules-llm-test-fixer-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
         # Union of test deps and web and desktop build toolchains
@@ -242,7 +242,7 @@ jobs:
       - name: Download report
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          name: fix-agent-report
+          name: llm-test-fixer-report
           path: report-download/
 
       - name: Pull Docker images
@@ -254,8 +254,8 @@ jobs:
         # This needs to be discussed with Tali
       - name: Configure git identity
         run: |
-          git config --global user.email "nightly-fix-agent@trezor.io"
-          git config --global user.name "Nightly Fix Agent"
+          git config --global user.email "nightly-llm-test-fixer@trezor.io"
+          git config --global user.name "Nightly LLM Test Fixer"
 
       - name: Checkout fix branch
         env:
@@ -272,8 +272,8 @@ jobs:
         timeout-minutes: 2
         run: curl -sf --retry 30 --retry-delay 2 --retry-connrefused --max-time 5 http://localhost:8000 -o /dev/null
 
-      - name: Run fix agent
-        id: run-fix-agent
+      - name: Run LLM test fixer
+        id: run-llm-test-fixer
         env:
           ANTHROPIC_API_KEY: ${{ secrets.E2E_FIX_EXECUTION_CLAUDE_API_KEY }}
           PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
@@ -281,7 +281,7 @@ jobs:
           AGENT_GITHUB_ACTION: true
           REPORT_PATH: ${{ github.workspace }}/report-download/report.json
           ELECTRON_DISABLE_SANDBOX: 1
-        run: yarn workspace @trezor/e2e-utils fix-bot:fix
+        run: yarn workspace @trezor/e2e-utils llm-test-fixer:fix
 
       - name: Generate GitHub App token
         id: trezor-bot-token
@@ -291,14 +291,14 @@ jobs:
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Publish PR
-        if: ${{ !cancelled() && steps.run-fix-agent.outcome != 'skipped' }}
+        if: ${{ !cancelled() && steps.run-llm-test-fixer.outcome != 'skipped' }}
         env:
           GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
           TASK_ID: ${{ matrix.task-id }}
-        run: yarn workspace @trezor/e2e-utils fix-bot:publish
+        run: yarn workspace @trezor/e2e-utils llm-test-fixer:publish
 
       - name: Upload Slack fix summary artifact
-        if: ${{ !cancelled() && steps.run-fix-agent.outcome != 'skipped' }}
+        if: ${{ !cancelled() && steps.run-llm-test-fixer.outcome != 'skipped' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: slack-fix-summary-${{ matrix.task-id }}
@@ -310,7 +310,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: fix-errors-${{ matrix.task-id }}
-          path: fixbot-errors-${{ matrix.task-id }}.txt
+          path: llm-test-fixer-errors-${{ matrix.task-id }}.txt
           if-no-files-found: ignore
 
       - name: Docker Compose Down
@@ -346,7 +346,7 @@ jobs:
       - name: Download report artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          name: fix-agent-report
+          name: llm-test-fixer-report
           path: report-download/
         continue-on-error: true
 
@@ -380,7 +380,7 @@ jobs:
           FIX_ERRORS_DIR: ${{ github.workspace }}/fix-errors
           ANALYZE_COST_FILE: ${{ github.workspace }}/analyze-cost-download/llm-token-usage.json
           SLACK_FIX_AGENT_WEBHOOK: ${{ secrets.SLACK_FIX_AGENT_WEBHOOK }}
-        run: yarn workspace @trezor/e2e-utils fix-bot:notify
+        run: yarn workspace @trezor/e2e-utils llm-test-fixer:notify
 
   update-ledger:
     needs: [analyze, fix]
@@ -420,7 +420,7 @@ jobs:
       - name: Download report artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          name: fix-agent-report
+          name: llm-test-fixer-report
           path: report-download/
 
       - name: Download Slack fix summary artifacts
@@ -435,13 +435,13 @@ jobs:
         env:
           REPORT_PATH: ${{ github.workspace }}/report-download/report.json
           SUMMARIES_DIR: ${{ github.workspace }}/summaries
-        run: yarn workspace @trezor/e2e-utils fix-bot:update-ledger
+        run: yarn workspace @trezor/e2e-utils llm-test-fixer:update-ledger
 
       - name: Upload updated ledger to S3
         run: |
           aws s3api put-object \
             --bucket dev.suite.sldev.cz \
-            --key "e2e/fix-agent/ledger.json" \
+            --key "e2e/llm-test-fixer/ledger.json" \
             --body "${{ github.workspace }}/ledger.json" \
             --content-type application/json \
             --cache-control "no-cache, max-age=0"

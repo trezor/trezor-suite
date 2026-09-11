@@ -10,7 +10,7 @@ A fully automated system that runs after nightly tests, analyzes failures, imple
 
 ## Overall Architecture
 
-Source code in `packages/e2e-utils/src/fixBot`. A single GitHub Actions workflow, `.github/workflows/test-suite-nightly-fix-agent.yml`, is the orchestrator:
+Source code in `packages/e2e-utils/src/llmTestFixer`. A single GitHub Actions workflow, `.github/workflows/test-suite-nightly-llm-test-fixer.yml`, is the orchestrator:
 
 ```
 analyze        → downloads ledger.json (S3), harness writes report.json + report.md
@@ -174,7 +174,7 @@ Tests under `suite/e2e/tests/trading-live/` are excluded from analysis — omitt
 ## Cross-run state — known-failures ledger
 
 Runs share memory through a single `ledger.json` in S3
-(`s3://dev.suite.sldev.cz/coverage/e2e/fix-agent/ledger.json`), recording only _negative knowledge_
+(`s3://dev.suite.sldev.cz/e2e/llm-test-fixer/ledger.json`), recording only _negative knowledge_
 about recurring root causes. A root cause that stops failing drops out of the nightly results and
 its entry is pruned — **a passing test is the only signal of resolution**; merged/closed PR state is
 never read.
@@ -212,7 +212,7 @@ downloads carry `continue-on-error: true`: the Slack message goes out even on a 
 failed or zero fix jobs completed.
 
 Per-task results travel in `slack-fix-summary-<task-id>.json`, harness problems in the separate
-`fixbot-errors-<task-id>.txt` artifact (see `errors.ts`):
+`llm-test-fixer-errors-<task-id>.txt` artifact (see `errors.ts`):
 
 - **Agent completed, publish succeeded** — the summary carries the result and `prUrl`.
 - **Agent completed, publish failed** (push, `gh pr create`, or project assignment) — `publish.ts`
