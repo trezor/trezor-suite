@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": ["jest", "node", "w3c-web-usb"]
+    },
+    "references": [
+        { "path": "../connect-common" },
+        { "path": "../connect-core" },
+        { "path": "../transport" },
+        { "path": "../transport-common" },
+        { "path": "../transport-web" },
+        { "path": "../eslint" },
+        { "path": "../requirements" }
+    ]
+}

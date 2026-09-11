@@ -1,0 +1,85 @@
+{
+    "name": "@trezor/connect",
+    "version": "10.0.0-beta.1",
+    "type": "module",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect",
+    "description": "High-level javascript interface for Trezor hardware wallet.",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "trezor-connect",
+        "javascript"
+    ],
+    "sideEffects": false,
+    "main": "src/index.ts",
+    "browser": {
+        "./src/index": "./src/index.browser.ts",
+        "./src/index.ts": "./src/index.browser.ts"
+    },
+    "react-native": {
+        "./src/index": "./src/index.native.ts",
+        "./src/index.ts": "./src/index.native.ts"
+    },
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
+            },
+            "./lib/*": "./lib/*"
+        },
+        "browser": {
+            "./lib/index.js": "./lib/index.browser.js",
+            "./lib/exports.js": "./lib/exports.js"
+        },
+        "react-native": {
+            "./lib/index.js": "./lib/index.native.js",
+            "./lib/exports.js": "./lib/exports.js"
+        }
+    },
+    "files": [
+        "lib/",
+        "CHANGELOG.md"
+    ],
+    "scripts": {
+        "test:unit": "yarn g:jest",
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "version:prerelease": "yarn g:tsx scripts/bump-version.ts prerelease",
+        "version:patch": "yarn g:tsx scripts/bump-version.ts patch",
+        "version:prepatch": "yarn g:tsx scripts/bump-version.ts prepatch",
+        "version:minor": "yarn g:tsx scripts/bump-version.ts minor",
+        "version:preminor": "yarn g:tsx scripts/bump-version.ts preminor",
+        "version:major": "yarn g:tsx scripts/bump-version.ts major",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@trezor/connect-common": "workspace:*",
+        "@trezor/connect-core": "workspace:*",
+        "@trezor/transport": "workspace:*",
+        "@trezor/transport-common": "workspace:*",
+        "@trezor/transport-web": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/eslint": "workspace:*",
+        "@trezor/requirements": "workspace:*",
+        "@types/jest": "30.0.0",
+        "@types/node": "22.13.10",
+        "@types/w3c-web-usb": "^1.0.14",
+        "tsx": "^4.21.0"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
+    }
+}

@@ -119,6 +119,7 @@
         },
         { "path": "../storybook" },
         { "path": "../test-utils-store" },
+        { "path": "../../packages/connect-core" },
         {
             "path": "../../packages/connect-mobile"
         },

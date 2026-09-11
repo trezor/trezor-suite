@@ -3,14 +3,16 @@ import {
     type UpdateConnectSettings,
     factoryPrivileged,
 } from '@trezor/connect-common';
-import { type AbstractTransportParams, BridgeTransport } from '@trezor/transport-common';
 
 import { updateProxy } from './backend/BlockchainLink';
 import { CoreInModule } from './impl/core-in-module';
 
-class CoreInModuleNode extends CoreInModule {
-    protected defaultTransports(params: AbstractTransportParams) {
-        return [new BridgeTransport(params)];
+// Platform-neutral composition root. Core never selects concrete transports; a host consuming
+// core directly injects its own through `init({ transports })`. The public entry points
+// (@trezor/connect and the thin clients) own the per-environment defaults.
+class CoreInModuleLocal extends CoreInModule {
+    protected defaultTransports() {
+        return [];
     }
 
     protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
@@ -18,7 +20,7 @@ class CoreInModuleNode extends CoreInModule {
     }
 }
 
-const TrezorConnect: TrezorConnectPrivilegedAPI = factoryPrivileged(new CoreInModuleNode());
+const TrezorConnect: TrezorConnectPrivilegedAPI = factoryPrivileged(new CoreInModuleLocal());
 
 export default TrezorConnect;
 
