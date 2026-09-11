@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+    EMPTY_ENTITIES,
     EMPTY_ENTITY_IDS,
     type EntityGroupKey,
     type EntityGroupKeySelectors,
@@ -110,7 +111,36 @@ export const useEntityIdsBy = <
     useEntityIndexSelector(
         index,
         useCallback(
-            snapshot => snapshot.groups[groupName].get(key) ?? (EMPTY_ENTITY_IDS as readonly TId[]),
+            snapshot =>
+                snapshot.groups[groupName].get(key)?.ids ?? (EMPTY_ENTITY_IDS as readonly TId[]),
+            [groupName, key],
+        ),
+    );
+
+/**
+ * The entities in one group — an account's transactions, say, rather than all of them.
+ *
+ * Re-renders when that group's members change and at no other time. Prefer `useEntityIdsBy` for a
+ * long list, where a row watching its own entity is cheaper than the whole list re-rendering
+ * because one member changed.
+ */
+export const useEntitiesBy = <
+    TState,
+    TEntity,
+    TId extends EntityId,
+    TGroups extends EntityGroupKeySelectors<TEntity>,
+    TName extends keyof TGroups,
+>(
+    index: EntityIndex<TState, TEntity, TId, TGroups>,
+    groupName: TName,
+    key: EntityGroupKey<TGroups[TName]>,
+): readonly TEntity[] =>
+    useEntityIndexSelector(
+        index,
+        useCallback(
+            snapshot =>
+                snapshot.groups[groupName].get(key)?.entities ??
+                (EMPTY_ENTITIES as readonly TEntity[]),
             [groupName, key],
         ),
     );

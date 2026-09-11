@@ -54,6 +54,18 @@ export type EntityGroupKeySelectors<TEntity> = Record<string, EntityGroupKeySele
 export type EntityGroupKey<TSelector> =
     TSelector extends EntityGroupKeySelector<never, infer TKey> ? TKey : never;
 
+/**
+ * What a group holds under one key: the ids for a list that wants each row to watch its own
+ * entity, and the entities for everything else.
+ *
+ * Both arrays are the same objects they were while the group's members are unchanged, so either
+ * can go straight into a `useSelector` or a memoized child.
+ */
+export type EntityGroup<TEntity, TId extends EntityId> = {
+    readonly ids: readonly TId[];
+    readonly entities: readonly TEntity[];
+};
+
 export type EntityIndexSnapshot<
     TEntity,
     TId extends EntityId,
@@ -62,11 +74,11 @@ export type EntityIndexSnapshot<
     /** Every id in the order the source yielded it. */
     readonly ids: readonly TId[];
     readonly byId: ReadonlyMap<TId, TEntity>;
-    /** The ids in each group, by group name and then by key. */
+    /** What each group holds, by group name and then by key. */
     readonly groups: {
         readonly [TName in keyof TGroups]: ReadonlyMap<
             EntityGroupKey<TGroups[TName]>,
-            readonly TId[]
+            EntityGroup<TEntity, TId>
         >;
     };
     readonly changes: EntityIndexChanges<TId>;
@@ -151,11 +163,18 @@ export type EntityIndex<
     getById: (state: TState, id: TId) => TEntity | undefined;
     getIds: (state: TState) => readonly TId[];
     /**
-     * The ids in one group, in source order. Empty when the group holds nothing for that key.
+     * The entities in one group, in source order. Empty when the group holds nothing for that key.
      *
      * The array is stable while its members are unchanged, so a consumer watching one group is
-     * not woken by writes to another.
+     * not woken by writes to another. This is what most callers want; `getIdsBy` is for a list
+     * that would rather each row watched its own entity.
      */
+    getBy: <TName extends keyof TGroups>(
+        state: TState,
+        groupName: TName,
+        key: EntityGroupKey<TGroups[TName]>,
+    ) => readonly TEntity[];
+    /** The same group as `getBy`, as ids. Stable on the same terms. */
     getIdsBy: <TName extends keyof TGroups>(
         state: TState,
         groupName: TName,
@@ -167,6 +186,9 @@ const NO_CHANGES: EntityIndexChanges<never> = { added: [], removed: [], updated:
 
 /** Shared so that "this group holds nothing" is the same array every time, and re-renders nothing. */
 export const EMPTY_ENTITY_IDS: readonly never[] = [];
+
+/** The same, for a group with no entities under a key. */
+export const EMPTY_ENTITIES: readonly never[] = [];
 
 const WHOLE_SOURCE_KEY = '';
 
@@ -189,8 +211,8 @@ const toKeyList = (keys: EntityId | readonly EntityId[] | undefined): readonly E
     return Array.isArray(keys) ? keys : [keys as EntityId];
 };
 
-const areSameIds = <TId extends EntityId>(left: readonly TId[], right: readonly TId[]) =>
-    left.length === right.length && left.every((id, index) => id === right[index]);
+const areSame = <TItem>(left: readonly TItem[], right: readonly TItem[]) =>
+    left.length === right.length && left.every((item, index) => item === right[index]);
 
 export const createEntityIndex = <
     TState,
@@ -267,22 +289,25 @@ export const createEntityIndex = <
      * otherwise do on every write.
      */
     const settleGroups = (
-        built: Map<string, Map<EntityId, TId[]>>,
+        built: Map<string, Map<EntityId, EntityGroup<TEntity, TId>>>,
     ): EntityIndexSnapshot<TEntity, TId, TGroups>['groups'] =>
         Object.fromEntries(
             groupNames.map(groupName => {
                 const previousGroup = cached?.snapshot.groups[groupName] as
-                    ReadonlyMap<EntityId, readonly TId[]> | undefined;
-                const nextGroup = new Map<EntityId, readonly TId[]>();
+                    ReadonlyMap<EntityId, EntityGroup<TEntity, TId>> | undefined;
+                const nextGroup = new Map<EntityId, EntityGroup<TEntity, TId>>();
                 let isUnchanged = previousGroup?.size === built.get(groupName)?.size;
 
-                built.get(groupName)?.forEach((ids, key) => {
-                    const previousIds = previousGroup?.get(key);
+                built.get(groupName)?.forEach((group, key) => {
+                    const previousEntities = previousGroup?.get(key);
 
-                    if (previousIds && areSameIds(previousIds, ids)) {
-                        nextGroup.set(key, previousIds);
+                    // The entities decide it: same entities means same ids, since an id is derived
+                    // from its entity. Keeping the previous group whole is what lets a consumer
+                    // watching it compare by reference.
+                    if (previousEntities && areSame(previousEntities.entities, group.entities)) {
+                        nextGroup.set(key, previousEntities);
                     } else {
-                        nextGroup.set(key, ids);
+                        nextGroup.set(key, group);
                         isUnchanged = false;
                     }
                 });
@@ -296,7 +321,7 @@ export const createEntityIndex = <
         const parts = new Map<string, BuiltPart<TEntity, TId>>();
         const byId = new Map<TId, TEntity>();
         const ids: TId[] = [];
-        const builtGroups = new Map<string, Map<EntityId, TId[]>>(
+        const builtGroups = new Map<string, Map<EntityId, { ids: TId[]; entities: TEntity[] }>>(
             groupNames.map(groupName => [groupName, new Map()]),
         );
 
@@ -333,12 +358,13 @@ export const createEntityIndex = <
 
                     for (const key of builtPart.groupKeys[groupName]?.[position] ??
                         EMPTY_ENTITY_IDS) {
-                        const groupIds = group?.get(key);
+                        const members = group?.get(key);
 
-                        if (groupIds) {
-                            groupIds.push(id);
+                        if (members) {
+                            members.ids.push(id);
+                            members.entities.push(entity);
                         } else {
-                            group?.set(key, [id]);
+                            group?.set(key, { ids: [id], entities: [entity] });
                         }
                     }
                 }
@@ -430,7 +456,11 @@ export const createEntityIndex = <
 
         getIds: state => read(state).ids,
 
+        getBy: (state, groupName, key) =>
+            read(state).groups[groupName].get(key)?.entities ??
+            (EMPTY_ENTITIES as readonly TEntity[]),
+
         getIdsBy: (state, groupName, key) =>
-            read(state).groups[groupName].get(key) ?? (EMPTY_ENTITY_IDS as readonly TId[]),
+            read(state).groups[groupName].get(key)?.ids ?? (EMPTY_ENTITY_IDS as readonly TId[]),
     };
 };

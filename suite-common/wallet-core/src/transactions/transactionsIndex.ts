@@ -77,13 +77,30 @@ export const transactionsIndex = createEntityIndex({
     },
 });
 
-/** The transactions of one account, newest-first order not guaranteed — source order. */
-export const selectTransactionIdsByAccountKey = (
+/**
+ * The transactions of one account, in the order the reducer holds them.
+ *
+ * Replaces reading the account's array out of the store, and is stable in a way that read is not:
+ * the same array until this account's transactions themselves change.
+ */
+export const selectAccountTransactionsFromIndex = (
+    state: TransactionsRootState,
+    accountKey: AccountKey,
+) => transactionsIndex.getBy(state, 'byAccountKey', accountKey);
+
+/** The same, as ids, for a list that would rather each row watched its own transaction. */
+export const selectAccountTransactionIdsFromIndex = (
     state: TransactionsRootState,
     accountKey: AccountKey,
 ) => transactionsIndex.getIdsBy(state, 'byAccountKey', accountKey);
 
-/** Both sides of a transfer between the user's own accounts, and nothing else. */
+/**
+ * Every account's copy of one transaction — both sides of a transfer between the user's own
+ * accounts, and nothing else. This is what `findTransactions` walks the whole store to answer.
+ */
+export const selectTransactionsByTxid = (state: TransactionsRootState, txid: string) =>
+    transactionsIndex.getBy(state, 'byTxid', txid);
+
 export const selectTransactionIdsByTxid = (state: TransactionsRootState, txid: string) =>
     transactionsIndex.getIdsBy(state, 'byTxid', txid);
 
