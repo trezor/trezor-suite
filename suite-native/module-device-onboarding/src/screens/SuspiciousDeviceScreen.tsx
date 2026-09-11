@@ -80,7 +80,6 @@ export const SuspiciousDeviceScreen = ({
                     />
                     <VStack spacing="sp24">
                         <IconListTextItem
-                            iconSize="large"
                             variant="warning"
                             textVariant="body-md-strong"
                             icon="plugs"
@@ -88,7 +87,6 @@ export const SuspiciousDeviceScreen = ({
                             <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet1" />
                         </IconListTextItem>
                         <IconListTextItem
-                            iconSize="large"
                             variant="warning"
                             textVariant="body-md-strong"
                             icon="handPalm"
@@ -96,7 +94,6 @@ export const SuspiciousDeviceScreen = ({
                             <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet2" />
                         </IconListTextItem>
                         <IconListTextItem
-                            iconSize="large"
                             variant="warning"
                             textVariant="body-md-strong"
                             icon="chatCircle"

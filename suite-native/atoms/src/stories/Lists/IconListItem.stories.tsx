@@ -23,7 +23,7 @@ export const IconListTextItem: IconListTextItemStory = {
     args: {
         children: 'Text value',
         icon: 'discover',
-        iconSize: 'medium',
+        iconSize: 40,
         variant: 'neutral',
         verticalAlign: 'center',
         spacing: 'sp12',

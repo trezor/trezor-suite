@@ -18,16 +18,16 @@ export const FirmwareInfoScreenContent = () => {
 
     return (
         <VStack spacing="sp24">
-            <IconListTextItem icon="clock" textVariant="body-md" iconSize="large">
+            <IconListTextItem icon="clock" textVariant="body-md">
                 <Translation id={item1TranslationId} />
             </IconListTextItem>
-            <IconListTextItem icon="prohibit" textVariant="body-md" iconSize="large">
+            <IconListTextItem icon="prohibit" textVariant="body-md">
                 <Translation
                     id="firmware.firmwareInfoScreen.list.item2"
                     values={{ b: chunks => <Text variant="body-md-strong">{chunks}</Text> }}
                 />
             </IconListTextItem>
-            <IconListTextItem icon="check" textVariant="body-md" iconSize="large">
+            <IconListTextItem icon="check" textVariant="body-md">
                 <Translation
                     id={item3TranslationId}
                     values={{ b: chunks => <Text variant="body-md-strong">{chunks}</Text> }}

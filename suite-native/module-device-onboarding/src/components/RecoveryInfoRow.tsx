@@ -10,7 +10,7 @@ type RecoveryInfoRowProps = {
 };
 
 export const RecoveryInfoRow = ({ iconName, title, description }: RecoveryInfoRowProps) => (
-    <IconListItem icon={iconName} iconSize="large">
+    <IconListItem icon={iconName}>
         <VStack spacing="sp4" flex={1}>
             <Text variant="body-md-strong">{title}</Text>
             <Text variant="body-sm" color="contentSecondary">

@@ -15,7 +15,7 @@ type ListItemProps = {
 };
 
 const ListItem = ({ icon, children, href }: ListItemProps) => (
-    <IconListItem icon={icon} variant="brand" iconSize="large">
+    <IconListItem icon={icon} variant="brand">
         {href ? (
             <HStack spacing="sp2" alignItems="center">
                 <Link
