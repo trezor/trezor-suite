@@ -1,3 +1,4 @@
+import { getMaxAmountWithReserve, getTradingDexReserve } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
 import {
     type NetworkSymbol,
@@ -5,7 +6,7 @@ import {
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { type TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { type TradingFormContext } from '@suite-native/trading-types';
+import { type ExchangeFormValues, type TradingFormContext } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 export const getAmountLimitContext = ({
@@ -166,6 +167,8 @@ export const sendCryptoAmountValidationSchema = yup
             sendAssetSymbol,
             sendNetworkSymbol,
             maxSpendableAmount,
+            contractAddress,
+            isNetworkReserveEnabled,
         } = getAmountLimitContext(testContext);
 
         if (sendAssetSymbol === undefined || sendNetworkSymbol === undefined) {
@@ -191,7 +194,21 @@ export const sendCryptoAmountValidationSchema = yup
             return true;
         }
 
-        if (convertedValue > parseFloat(maxSpendableAmount)) {
+        const formValues = testContext.parent as Partial<ExchangeFormValues> | undefined;
+
+        const isTradingDex = !!formValues?.quote?.isDex;
+        const dexReserve = getTradingDexReserve({
+            symbol: sendNetworkSymbol,
+            contractAddress,
+            isDex: isTradingDex,
+            isNetworkReserveEnabled: isNetworkReserveEnabled === true,
+        });
+        const maxAmountWithReserve = getMaxAmountWithReserve({
+            maxAmount: maxSpendableAmount,
+            reserve: dexReserve,
+        });
+
+        if (maxAmountWithReserve.lt(convertedValue)) {
             return testContext.createError({
                 type: 'network-reserve',
                 message: translate('moduleTrading.validators.networkReserve', {

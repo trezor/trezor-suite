@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -9,20 +10,27 @@ import {
     TRADING_FORM_OUTPUT_AMOUNT,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
+    getMaxAmountWithReserve,
+    getTradingDexReserve,
     tradingActions,
 } from '@suite-common/trading';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
+    type FeesRootState,
     deriveTronColdRecipient,
     selectAccounts,
     selectAddressDisplayType,
+    selectIsNetworkReserveEnabled,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import {
+    asAmountUnit,
+    getConvertedOrDefaultFeeInfo,
+    unitsToSubunits,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import {
@@ -41,19 +49,24 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     methods,
     setShowReserveBanner,
     shouldSuppressComposeErrors,
+    isTradingDex,
+    shouldSendInSats,
 }: TradingUseComposeTransactionProps<T>): TradingUseComposeTransactionReturnProps => {
     const dispatch = useDispatch();
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
     const addressDisplayType = useSelector(selectAddressDisplayType);
+    const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const { translationString } = useTranslation();
 
-    const { getValues, setValue, setError, clearErrors, control } =
+    const { getValues, setValue, setError, clearErrors, trigger, control } =
         methods as unknown as UseFormReturn<TradingSellFormProps | TradingExchangeFormProps>;
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
     const symbol = account?.symbol;
     const networkType = account?.networkType;
-    const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));
+    const rawFeeInfo = useSelector((state: FeesRootState) =>
+        selectRawNetworkFeeInfo(state, symbol),
+    );
     const feeInfo = useMemo(
         () =>
             getConvertedOrDefaultFeeInfo({
@@ -254,15 +267,29 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             if (typeof setMaxOutputId === 'number' && composed.max) {
                 const currentBN = new BigNumber(currentOutputAmount || '0');
                 const composedMaxBN = new BigNumber(composed.max);
+                const dexReserve = getTradingDexReserve({
+                    symbol: network?.symbol,
+                    isDex: !!isTradingDex,
+                    isNetworkReserveEnabled,
+                });
+                const reserveInUnits = asAmountUnit(new BigNumber(dexReserve ?? '0'));
+                const reserveInSelectedUnit =
+                    shouldSendInSats && network?.symbol
+                        ? unitsToSubunits({ value: reserveInUnits, symbol: network.symbol })
+                        : reserveInUnits;
 
-                if (!currentBN.isEqualTo(composedMaxBN)) {
+                const maxAmountWithReserve = getMaxAmountWithReserve({
+                    maxAmount: composedMaxBN,
+                    reserve: reserveInSelectedUnit,
+                });
+
+                if (!currentOutputAmount || !currentBN.isEqualTo(maxAmountWithReserve)) {
                     setShowReserveBanner(true);
-                    setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
-                        shouldValidate: true,
+                    setValue(TRADING_FORM_OUTPUT_AMOUNT, maxAmountWithReserve.toString(), {
                         shouldDirty: true,
                     });
                 }
-                clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
+                trigger(TRADING_FORM_OUTPUT_AMOUNT);
             }
 
             dispatch(
@@ -274,7 +301,6 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit, { shouldDirty: true });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         account?.symbol,
         composedLevels,
@@ -285,7 +311,13 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         setError,
         setValue,
         translationString,
+        setShowReserveBanner,
         shouldSuppressComposeErrors,
+        trigger,
+        network?.symbol,
+        isTradingDex,
+        isNetworkReserveEnabled,
+        shouldSendInSats,
     ]);
 
     return {

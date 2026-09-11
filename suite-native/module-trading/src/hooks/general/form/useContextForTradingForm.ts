@@ -9,7 +9,6 @@ import {
     selectIsNetworkReserveEnabled,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { type TradingFormContext } from '@suite-native/trading-types';
 import { useMaxSpendableAmount } from '@suite-native/transaction-management';
@@ -20,7 +19,7 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
     const { translate } = useTranslate();
 
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
-    const { convertNumberToBaseUnit } = useConvertFormValueToBaseUnit();
+    const { convertNumberToBaseUnit, convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
 
     const isNetworkReserveEnabled = useSelector((state: WalletSettingsRootState) =>
         selectIsNetworkReserveEnabled(state),
@@ -34,19 +33,16 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
     const [contractAddress, setContractAddress] = useState<TokenAddress | undefined>(undefined);
     const [accountKey, setAccountKey] = useState<AccountKey | undefined>(undefined);
 
-    const { maxSpendableAmount } = useMaxSpendableAmount({
+    const { maxSpendableAmount: maxSpendableAmountInSelectedUnit } = useMaxSpendableAmount({
         accountKey,
         tokenContract: contractAddress,
         symbol: sendNetworkSymbol,
     });
 
-    const networkReserve = sendNetworkSymbol
-        ? getNetworkReserve({
-              symbol: sendNetworkSymbol,
-              contractAddress,
-              isEnabled: isNetworkReserveEnabled,
-          })
-        : undefined;
+    const maxSpendableAmount =
+        sendNetworkSymbol && !contractAddress
+            ? convertStrToBaseUnit(maxSpendableAmountInSelectedUnit, sendNetworkSymbol)
+            : maxSpendableAmountInSelectedUnit;
 
     const context = useMemo<TradingFormContext>(
         () => ({
@@ -59,7 +55,7 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
             FiatAmountFormatter: BaseCurrencyAmountFormatter,
             CryptoAmountFormatter,
             convertNumberToBaseUnit,
-            networkReserve,
+            isNetworkReserveEnabled,
             maxSpendableAmount,
         }),
         [
@@ -72,7 +68,7 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
             BaseCurrencyAmountFormatter,
             CryptoAmountFormatter,
             convertNumberToBaseUnit,
-            networkReserve,
+            isNetworkReserveEnabled,
             maxSpendableAmount,
         ],
     );

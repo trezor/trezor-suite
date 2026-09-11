@@ -43,6 +43,7 @@ export type * from './types';
 export * from './utils';
 export * from './utils/apiKeyUtils';
 export * from './utils/tradingAccountUtils';
+export * from './utils/tradingNetworkReserveUtils';
 export * from './utils/buy/buyUtils';
 export * from './utils/receiveAccountUtils';
 export * from './utils/tradeableAssetBalanceUtils';

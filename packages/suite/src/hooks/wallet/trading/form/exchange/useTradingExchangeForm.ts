@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { useDispatch } from '@suite-common/redux-utils';
 import {
@@ -7,10 +8,13 @@ import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_PROVIDER_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
+    type TradingFormAccountRootState,
+    type TradingRootState,
     hasEip712SignDataType,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeActiveTrade,
@@ -20,6 +24,7 @@ import {
     selectTradingExchangeIsLoading,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeTransactionId,
+    selectTradingSelectedQuoteByFormValues,
     selectTradingSendAccount,
     selectTradingVerifiedAddress,
     tradingExchangeActions,
@@ -27,7 +32,6 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
@@ -61,7 +65,9 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
     const trade = useSelector(selectTradingExchangeActiveTrade);
-    const account = useSelector(state => selectTradingSendAccount(state, type));
+    const account = useSelector((state: TradingFormAccountRootState) =>
+        selectTradingSendAccount(state, type),
+    );
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
     const [isApproval, setIsApproval] = useState<boolean>(false);
@@ -96,6 +102,11 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
                 TRADING_EXCHANGE_FORM,
             ],
         });
+
+    const provider = useWatch({ control, name: TRADING_FORM_PROVIDER_SELECT });
+    const formQuote = useSelector((state: TradingRootState) =>
+        selectTradingSelectedQuoteByFormValues(state, 'exchange', { provider, exchangeType }),
+    );
 
     const tradingReceiveAddress = useTradingReceiveAddress({
         type: 'exchange',
@@ -139,6 +150,8 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         methods,
         setShowReserveBanner,
         shouldSuppressComposeErrors: hasEip712SignDataType(selectedQuote),
+        isTradingDex: formQuote?.isDex === true,
+        shouldSendInSats,
     });
 
     const isFormLoadingBase = isInitialDataLoading || formState.isSubmitting || isLoading;

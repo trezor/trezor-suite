@@ -12,16 +12,13 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingBuyFormProps,
     getNetworkDecimalsWithFallback,
+    getTradingNetworkReserve,
     selectTradingComposedTransactionInfo,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { selectCurrentFiatRates, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import {
-    convertAmountSubunitsToUnits,
-    findToken,
-    getNetworkReserve,
-} from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, findToken } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode, isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
@@ -43,6 +40,7 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
+import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';
@@ -65,6 +63,8 @@ const TradingFormInputFiatContent = ({
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
     const context = useTradingFormContext();
+    const exchangeQuote = useTradingSelectedQuote('exchange');
+    const isTradingDex = context.type === 'exchange' && exchangeQuote?.isDex === true;
     const { amountLimits } = context;
     const {
         control,
@@ -95,10 +95,11 @@ const TradingFormInputFiatContent = ({
     const balance = tokenAddress
         ? findToken(asset.tokens, tokenAddress)?.balance
         : asset.formattedBalance;
-    const networkReserve = getNetworkReserve({
+    const networkReserve = getTradingNetworkReserve({
         symbol: asset.symbol,
         contractAddress: tokenAddress,
-        isEnabled: isNetworkReserveEnabled,
+        isDex: isTradingDex,
+        isNetworkReserveEnabled,
     });
     const feeInUnits = isExchangeOrSellContext
         ? getFeeInUnits({
@@ -201,6 +202,13 @@ const TradingFormInputFiatContent = ({
             trigger(fiatInputName);
         }
     }, [amountLimits, fiatInputName, trigger]);
+
+    const reserveInFiat = networkReserveFiatAmount?.toString();
+    const feeInFiat = feeFiatAmount?.toString();
+
+    useDidUpdate(() => {
+        trigger(fiatInputName);
+    }, [reserveInFiat, feeInFiat, fiatInputName, trigger]);
 
     return (
         <NumberInput

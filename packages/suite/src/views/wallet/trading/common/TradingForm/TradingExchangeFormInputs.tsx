@@ -34,6 +34,7 @@ import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/us
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
+import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormFees } from './TradingFormFees';
@@ -59,6 +60,7 @@ export const TradingExchangeFormInputs = () => {
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
     const quotes = useSelector(selectTradingExchangeQuotes);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
+    const formQuote = useTradingSelectedQuote('exchange');
 
     const {
         type,
@@ -188,6 +190,7 @@ export const TradingExchangeFormInputs = () => {
                         <TradingNetworkReserveBanner
                             symbol={asset.symbol}
                             contractAddress={tokenAddress}
+                            isTradingDex={!!formQuote?.isDex}
                         />
                     )}
 

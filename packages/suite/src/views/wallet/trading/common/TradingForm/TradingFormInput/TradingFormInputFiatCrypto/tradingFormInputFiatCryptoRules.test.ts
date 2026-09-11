@@ -1,10 +1,14 @@
 import { type TranslationFunction } from '@suite/intl';
+import { type Formatter } from '@suite-common/formatters';
+import { getTradingNetworkReserve } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type RatesByKey, asCryptoBaseCurrencyCode } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';
+import { getCryptoInputRules, getFiatInputRules } from './tradingFormInputFiatCryptoRules';
 
 const t = ((key: string, values?: Record<string, unknown>) =>
     values ? `${key}:${JSON.stringify(values)}` : key) as TranslationFunction;
@@ -75,6 +79,39 @@ describe('getFiatInputRules — exchange context', () => {
     });
 
     describe('networkReserve', () => {
+        it.each([
+            { isTradingDex: true, isEnabled: true, amount: '494', expected: undefined },
+            {
+                isTradingDex: true,
+                isEnabled: true,
+                amount: '494.01',
+                expected: 'AMOUNT_EXCEEDS_NETWORK_RESERVE',
+            },
+            { isTradingDex: false, isEnabled: true, amount: '495', expected: undefined },
+            { isTradingDex: true, isEnabled: false, amount: '495', expected: undefined },
+        ])(
+            'validates the BTC reserve converted to fiat: %j',
+            ({ isTradingDex, isEnabled, amount, expected }) => {
+                const reserve = getTradingNetworkReserve({
+                    symbol: 'btc',
+                    contractAddress: undefined,
+                    isDex: isTradingDex,
+                    isNetworkReserveEnabled: isEnabled,
+                });
+                const { networkReserve } = getValidators({
+                    ...exchangeProps,
+                    isNetworkReserveEnabled: isEnabled,
+                    fiatAmount: new BigNumber('500'),
+                    feeFiatAmount: new BigNumber('5'),
+                    networkReserveFiatAmount: reserve
+                        ? toFiatCurrency({ amount: reserve, rate: 50000 })
+                        : undefined,
+                });
+
+                expect(networkReserve(amount)).toBe(expected);
+            },
+        );
+
         it('returns undefined (noop) when isNetworkReserveEnabled is false', () => {
             const { networkReserve } = getValidators({
                 ...exchangeProps,
@@ -248,5 +285,72 @@ describe('getFiatInputRules — non-exchange context', () => {
                 'TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT:{"maximum":"1000.00","currency":"USD"}',
             );
         });
+    });
+});
+
+describe('getCryptoInputRules — DEX reserve', () => {
+    const formatter: Formatter<string, string> = Object.assign(jest.fn(), {
+        format: (value: string) => value,
+    });
+    const cryptoProps: Parameters<typeof getCryptoInputRules>[0] = {
+        isBuyContext: false,
+        isTradingDex: true,
+        translationString: t,
+        shouldSendInSats: false,
+        decimals: 8,
+        amountLimits: undefined,
+        formatter,
+        validationAccount: mockWalletAccount({ symbol: 'btc', formattedBalance: '0.01' }),
+        outputToken: undefined,
+        isNetworkReserveEnabled: true,
+        contractAddress: undefined,
+        feeInUnits: '0.0001',
+    };
+
+    it.each([
+        { amount: '0.00988', shouldSendInSats: false, expected: undefined },
+        {
+            amount: '0.00988001',
+            shouldSendInSats: false,
+            expected: 'AMOUNT_EXCEEDS_NETWORK_RESERVE',
+        },
+        { amount: '988000', shouldSendInSats: true, expected: undefined },
+        { amount: '988001', shouldSendInSats: true, expected: 'AMOUNT_EXCEEDS_NETWORK_RESERVE' },
+    ])(
+        'validates $amount with sats=$shouldSendInSats',
+        ({ amount, shouldSendInSats, expected }) => {
+            const rules = getCryptoInputRules({ ...cryptoProps, shouldSendInSats });
+            const validate = rules?.validate as Record<string, Validator>;
+
+            expect(validate.networkReserve!(amount)).toBe(expected);
+        },
+    );
+
+    it.each([
+        { isTradingDex: false },
+        { isNetworkReserveEnabled: false },
+        { contractAddress: 'token', outputToken: 'token' },
+    ])('does not apply the BTC DEX reserve with %j', overrides => {
+        const rules = getCryptoInputRules({ ...cryptoProps, ...overrides });
+        const validate = rules?.validate as Record<string, Validator>;
+
+        expect(validate.networkReserve!('0.0099')).toBeUndefined();
+    });
+
+    it('preserves the native reserve fallback for other DEX networks', () => {
+        const rules = getCryptoInputRules({
+            ...cryptoProps,
+            validationAccount: mockWalletAccount({ symbol: 'base', formattedBalance: '0.01' }),
+        });
+        const validate = rules?.validate as Record<string, Validator>;
+
+        expect(validate.networkReserve!('0.0097')).toBeUndefined();
+        expect(validate.networkReserve!('0.00970001')).toBe('AMOUNT_EXCEEDS_NETWORK_RESERVE');
+    });
+
+    it('does not validate the reserve for buy', () => {
+        expect(
+            getCryptoInputRules({ ...cryptoProps, isBuyContext: true })?.validate,
+        ).not.toHaveProperty('networkReserve');
     });
 });

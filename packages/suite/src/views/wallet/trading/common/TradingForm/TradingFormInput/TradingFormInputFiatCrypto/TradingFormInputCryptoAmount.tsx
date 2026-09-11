@@ -35,6 +35,7 @@ import {
     isTradingExchangeOrSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { getFeeInUnits, tradingGetAccountLabel } from 'src/utils/wallet/trading/tradingUtils';
+import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getCryptoInputRules } from './tradingFormInputFiatCryptoRules';
@@ -60,6 +61,8 @@ const TradingFormInputCryptoAmountContent = ({
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
     const context = useTradingFormContext();
+    const exchangeQuote = useTradingSelectedQuote('exchange');
+    const isTradingDex = context.type === 'exchange' && exchangeQuote?.isDex === true;
     const { amountLimits, network } = context;
     const {
         control,
@@ -110,6 +113,7 @@ const TradingFormInputCryptoAmountContent = ({
         () =>
             getCryptoInputRules({
                 isBuyContext,
+                isTradingDex,
                 translationString,
                 shouldSendInSats,
                 decimals,
@@ -123,6 +127,7 @@ const TradingFormInputCryptoAmountContent = ({
             }),
         [
             isBuyContext,
+            isTradingDex,
             translationString,
             shouldSendInSats,
             decimals,
@@ -149,14 +154,17 @@ const TradingFormInputCryptoAmountContent = ({
     }, [isNetworkReserveError, setShowReserveBanner]);
 
     useDidUpdate(() => {
-        if (amountLimits) {
-            trigger([cryptoInputName]);
-        }
-    }, [amountLimits, trigger]);
-
-    useDidUpdate(() => {
-        trigger([cryptoInputName]);
-    }, [cryptoInputName, trigger, validationAccount.key]);
+        trigger(cryptoInputName);
+    }, [
+        amountLimits,
+        validationAccount.key,
+        isTradingDex,
+        isNetworkReserveEnabled,
+        shouldSendInSats,
+        feeInUnits,
+        cryptoInputName,
+        trigger,
+    ]);
 
     return (
         <NumberInput

@@ -25,7 +25,11 @@ import {
     selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
 } from '@suite-native/trading-state';
-import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
+import type {
+    ExchangeFormType,
+    ExchangeFormValues,
+    TradingFormContext,
+} from '@suite-native/trading-types';
 
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
@@ -189,16 +193,14 @@ const useDexQuoteApprovalInfoChangeEffect = ({
 type UseValidationsParams = {
     form: ExchangeFormType;
     limits: TradingExchangeAmountLimitProps | undefined;
-    balance: string | undefined;
-    maxSpendableAmount: string | undefined;
+    context: TradingFormContext;
 };
 
-const useValidations = ({
-    form: { trigger, setValue },
-    limits,
-    balance,
-    maxSpendableAmount,
-}: UseValidationsParams) => {
+const useValidations = ({ form, limits, context }: UseValidationsParams) => {
+    const { trigger, setValue, control } = form;
+    const { isNetworkReserveEnabled, maxSpendableAmount, balance } = context;
+    const quote = useWatch({ control, name: 'quote' });
+    const isTradingDex = quote?.isDex === true;
     const { translate } = useTranslate();
     const quotes = useSelector(selectExchangeQuotes);
     const quoteRequest = useSelector(selectTradingExchangeQuotesRequest);
@@ -210,7 +212,7 @@ const useValidations = ({
 
     useEffect(() => {
         trigger(['sendCryptoAmount']);
-    }, [limits, balance, maxSpendableAmount, trigger]);
+    }, [limits, trigger, isTradingDex, isNetworkReserveEnabled, maxSpendableAmount, balance]);
 
     useEffect(() => {
         setValue('generalAlert', generalAlertMsg);
@@ -260,12 +262,7 @@ export const useExchangeForm = () => {
         setContractAddress,
         setAccountKey,
     });
-    useValidations({
-        form,
-        limits,
-        balance: context.balance,
-        maxSpendableAmount: context.maxSpendableAmount,
-    });
+    useValidations({ form, limits, context });
     useProviderMetadataChangeEffect(control, 'exchange');
 
     return form;

@@ -1,4 +1,9 @@
-import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    getNetwork,
+    networksCollection,
+} from '@suite-common/wallet-config';
 import {
     mockWalletAccount,
     networkSpecificDefaultRipple,
@@ -19,6 +24,7 @@ import {
     getCryptoMaxAmountWithReserve,
     getExternalComposeOutput,
     getLowestFeeFromLevels,
+    getNetworkReserve,
     isAmountWithinNetworkReserve,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
@@ -28,6 +34,35 @@ const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
 
 describe('sendForm utils', () => {
+    describe('getNetworkReserve', () => {
+        it.each<{
+            symbol: NetworkSymbol;
+            isEnabled?: boolean;
+            contractAddress?: string | null;
+            expected?: string;
+        }>([
+            { symbol: 'btc', isEnabled: true },
+            { symbol: 'eth', isEnabled: true },
+            { symbol: 'sol', isEnabled: true, expected: '0.003' },
+            { symbol: 'sol', isEnabled: false },
+            { symbol: 'btc', isEnabled: true, contractAddress: 'token' },
+            { symbol: 'sol', isEnabled: true, contractAddress: 'token' },
+            {
+                symbol: 'btc',
+                isEnabled: true,
+                contractAddress: null,
+            },
+            {
+                symbol: 'base',
+                isEnabled: true,
+                contractAddress: '0x0000000000000000000000000000000000000000',
+                expected: '0.0002',
+            },
+        ])('returns $expected for $symbol with enabled=$isEnabled', ({ expected, ...params }) => {
+            expect(getNetworkReserve({ contractAddress: undefined, ...params })).toBe(expected);
+        });
+    });
+
     fixtures.prepareEthereumTransaction.forEach(f => {
         it(`prepareEthereumTransaction: ${f.description}`, () => {
             expect(prepareEthereumTransaction(f.txInfo)).toEqual(f.result);

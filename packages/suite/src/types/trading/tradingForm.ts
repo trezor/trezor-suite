@@ -269,6 +269,8 @@ export interface TradingUseComposeTransactionProps<T extends TradingSellExchange
     methods: UseFormReturn<T>;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
     shouldSuppressComposeErrors?: boolean;
+    isTradingDex?: boolean;
+    shouldSendInSats?: boolean;
 }
 
 export interface TradingUseComposeTransactionStateProps {
