@@ -2,6 +2,7 @@ import { createBrowserHistory } from 'history';
 
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import { asGetter } from '@suite-common/dependency-injection';
+import TrezorConnect from '@trezor/connect';
 import type { CreateLogger } from '@trezor/connect-common';
 import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
@@ -58,6 +59,7 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         reloadApp,
         thpHostName: getWebThpHostName(),
         getTransportsFactories,
+        getTrezorConnect: () => TrezorConnect,
     });
     const hydrateReduxStore = createHydrateReduxStore({ store, reducer: rootReducer });
     const services = { ...suiteServices, store, hydrateReduxStore };

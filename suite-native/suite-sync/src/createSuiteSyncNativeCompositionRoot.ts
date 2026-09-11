@@ -17,13 +17,13 @@ import {
 } from '@suite-common/suite-sync-evolu';
 import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSync } from '@suite-common/suite-sync-types';
-import { type TrezorConnectPrivilegedAPI } from '@trezor/connect';
+import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 
 type SuiteSyncNativeCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
-    trezorConnect: TrezorConnectPrivilegedAPI;
-} & SuiteSyncAnalyticsDep &
+} & GetTrezorConnectPrivilegedDep &
+    SuiteSyncAnalyticsDep &
     PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &
     FetchDep;

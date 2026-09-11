@@ -47,7 +47,7 @@ import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/sui
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
-import TrezorConnect, { type CreateLoggerDep } from '@trezor/connect';
+import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
@@ -86,7 +86,8 @@ export type SuiteAppDeps = StoreAPIDep &
     GetBinFilesBaseUrlDep &
     ReloadAppDep &
     ThpHostNameDep &
-    GetTransportsFactoriesDep;
+    GetTransportsFactoriesDep &
+    GetTrezorConnectPrivilegedDep;
 
 export const selectSuiteServices = (services: any): SuiteServices => services;
 
@@ -95,7 +96,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
         platformEncryption: deps.platformEncryption,
-        trezorConnect: TrezorConnect,
+        getTrezorConnect: deps.getTrezorConnect,
     });
 
     const analytics = createAnalytics();
@@ -122,7 +123,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
         platformEncryption: deps.platformEncryption,
-        trezorConnect: TrezorConnect,
+        getTrezorConnect: deps.getTrezorConnect,
         ensureDelegatedIdentityKey,
         analytics,
         fetch: globalThis.fetch.bind(globalThis),
@@ -141,7 +142,9 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
     });
-    const networkModules = createNetworksCompositionRoot({ getTrezorConnect: () => TrezorConnect });
+    const networkModules = createNetworksCompositionRoot({
+        getTrezorConnect: deps.getTrezorConnect,
+    });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
     const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({

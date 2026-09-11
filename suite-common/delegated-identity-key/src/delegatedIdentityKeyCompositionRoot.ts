@@ -15,8 +15,8 @@ import { createSaveDelegatedIdentityKey } from './saveDelegatedIdentityKey';
 type DelegatedIdentityKeyCompositionRootDeps = {
     dispatch: Dispatch;
     getState: () => DeviceRootState;
-    trezorConnect: RetrieveDelegatedIdentityKeyFromDeviceDeps['trezorConnect'];
-} & PlatformEncryptionDep;
+} & PlatformEncryptionDep &
+    RetrieveDelegatedIdentityKeyFromDeviceDeps;
 
 export const delegatedIdentityKeyCompositionRoot = (
     deps: DelegatedIdentityKeyCompositionRootDeps,
@@ -31,7 +31,7 @@ export const delegatedIdentityKeyCompositionRoot = (
             ),
         }),
         retrieveDelegatedIdentityKeyFromDevice: createRetrieveDelegatedIdentityKeyFromDevice({
-            trezorConnect: deps.trezorConnect,
+            getTrezorConnect: deps.getTrezorConnect,
         }),
         saveDelegatedIdentityKey: createSaveDelegatedIdentityKey({
             dispatch: deps.dispatch,

@@ -1,4 +1,4 @@
-import type { TrezorConnectCallable } from '@trezor/connect-common';
+import type { TrezorConnectCallable, TrezorConnectPrivilegedAPI } from './api';
 
 /**
  * Reads Connect at call time because legacy initialization replaces its methods.
@@ -11,4 +11,10 @@ export type GetTrezorConnect<TMethod extends keyof TrezorConnectCallable> = () =
 
 export type GetTrezorConnectDep<TMethod extends keyof TrezorConnectCallable> = {
     getTrezorConnect: GetTrezorConnect<TMethod>;
+};
+
+export type GetTrezorConnectPrivileged = () => TrezorConnectPrivilegedAPI;
+
+export type GetTrezorConnectPrivilegedDep = {
+    getTrezorConnect: GetTrezorConnectPrivileged;
 };

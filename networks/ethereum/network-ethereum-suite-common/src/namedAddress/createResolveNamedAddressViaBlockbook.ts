@@ -1,4 +1,4 @@
-import type { GetTrezorConnectDep } from '@trezor/network-module-suite-common-types';
+import type { GetTrezorConnectDep } from '@trezor/connect-common';
 
 import type { ResolveNamedAddress } from './ResolveNamedAddress';
 import { isAddressLike } from './namedAddressUtils';

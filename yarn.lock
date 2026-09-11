@@ -10739,6 +10739,7 @@ __metadata:
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -11394,6 +11395,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -17321,6 +17323,7 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/utils": "workspace:*"

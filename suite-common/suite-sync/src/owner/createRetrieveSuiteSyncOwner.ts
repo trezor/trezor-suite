@@ -12,7 +12,7 @@ import {
     type DeviceNotConnectedErrorType,
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import type TrezorConnect from '@trezor/connect';
+import { type GetTrezorConnectDep } from '@trezor/connect-common';
 import { type Result, err } from '@trezor/type-utils';
 
 const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
@@ -27,8 +27,7 @@ export type RetrieveSuiteSyncOwnerParams = {
 
 export type RetrieveSuiteSyncOwnerDeps = {
     createSuiteSyncOwner: CreateSuiteSyncOwner;
-    trezorConnect: Pick<typeof TrezorConnect, 'evoluGetNode'>;
-};
+} & GetTrezorConnectDep<'evoluGetNode'>;
 
 export type RetrieveSuiteSyncOwner = (
     params: RetrieveSuiteSyncOwnerParams,
@@ -66,7 +65,7 @@ export const createRetrieveSuiteSyncOwner =
             return proofOfDelegatedIdentity;
         }
 
-        const result = await deps.trezorConnect.evoluGetNode({
+        const result = await deps.getTrezorConnect().evoluGetNode({
             device: {
                 path: device.path,
                 state: device.state,
