@@ -5,7 +5,7 @@ import { diff } from 'jest-diff';
 import { isEqualWith } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
-import { createAddressValidator } from '@suite-common/address';
+import { createAddressValidator, toChecksumAddress } from '@suite-common/address';
 import {
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
@@ -114,7 +114,12 @@ export const transformAddress = (address: string, lineFormat: LineFormats = 'fou
     }
 
     if (lineFormat === 'evmTetragrams') {
-        return addNewlinesToAddress(formatEvmAddress(address), fourTetragramsOfAddress, ' \n');
+        // The device always renders EVM addresses EIP-55 checksummed, whatever casing it was given.
+        return addNewlinesToAddress(
+            formatEvmAddress(toChecksumAddress(address)),
+            fourTetragramsOfAddress,
+            ' \n',
+        );
     }
 
     if (lineFormat === 'cardanoTetragrams') {
