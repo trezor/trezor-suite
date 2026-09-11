@@ -1,10 +1,25 @@
 import { Model } from '@trezor/trezor-user-env-link';
 
+const TESTS_DIR = 'suite/e2e/tests/';
+
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 /**
- * Tags that keep a test out of the full PR run. `@nightlyOnly` never runs on a PR; `@optional`
- * runs on a PR only when a spec list (LLM test selector or an edited test file) targets it.
+ * Tags that keep a test out of the full PR run. `@skipOnPR` never runs on a PR. `@optional`
+ * runs on a PR only when the PR edits the test's file (E2E_EDITED_SPECS, set by CI) or an LLM
+ * test selector targets it.
  */
-export const excludedFromFullPrRun = /@nightlyOnly|@optional/;
+export const excludedFromFullPrRun = (): RegExp[] => {
+    const editedSpecs = (process.env.E2E_EDITED_SPECS ?? '')
+        .split(',')
+        .filter(Boolean)
+        .map(spec => escapeRegExp(spec.replace(TESTS_DIR, '')));
+    const notEditedOptionalSpecs = editedSpecs.length
+        ? new RegExp(`^(?!.*(?:${editedSpecs.join('|')})).*@optional`)
+        : /@optional/;
+
+    return [/@skipOnPR/, notEditedOptionalSpecs];
+};
 
 /**
  * Returns a regex fragment of negative lookaheads for every device model except T3T1.

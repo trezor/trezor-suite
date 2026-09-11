@@ -11,7 +11,7 @@ export type PlaywrightProjectDefinition = RequireAtLeastOne<
         model?: Model;
         nameSuffix?: string;
         grep?: RegExp;
-        additionalGrepInvert?: RegExp;
+        additionalGrepInvert?: RegExp | RegExp[];
         currentsTags?: string[];
         firmware?: string;
     },
@@ -87,11 +87,12 @@ export class PlaywrightProjectBuilder {
         this.project.grep = pattern;
     }
 
-    addGrepInvert(pattern: RegExp) {
+    addGrepInvert(pattern: RegExp | RegExp[]) {
         const current = this.project.grepInvert;
+        const patterns = Array.isArray(pattern) ? pattern : [pattern];
         this.project.grepInvert = Array.isArray(current)
-            ? [...current, pattern]
-            : [current as RegExp, pattern];
+            ? [...current, ...patterns]
+            : [current as RegExp, ...patterns];
     }
 
     setCurrentsTags(tags: string[]) {

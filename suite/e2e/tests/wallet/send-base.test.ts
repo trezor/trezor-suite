@@ -22,7 +22,7 @@ const feeWrapFormat = {
 // To avoid this, we tag this way to unsure it runs only once per night
 test.describe(
     'Send Base',
-    { tag: ['@desktopOnly', '@nightlyOnly', '@T3W1', '@specificFirmware'] },
+    { tag: ['@desktopOnly', '@skipOnPR', '@T3W1', '@specificFirmware'] },
     () => {
         test.use({
             deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
