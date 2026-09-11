@@ -21,7 +21,6 @@ import type {
 import { type RequestOptions, resetIdentityCircuit } from '../utils/http';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
-    timeout?: number;
     logger?: Logger;
 };
 

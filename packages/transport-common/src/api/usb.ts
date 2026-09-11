@@ -30,7 +30,6 @@ interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
 }
 
 interface TransportInterfaceDevice {
-    session?: null | string;
     path: string;
     device: UsbDeviceLike;
 }
