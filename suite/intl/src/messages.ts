@@ -10286,6 +10286,14 @@ export const messages = defineMessages({
         id: 'TR_TX_DATA_INPUT_DATA',
         defaultMessage: 'Input data',
     },
+    TR_TX_DATA_CONTRACT: {
+        id: 'TR_TX_DATA_CONTRACT',
+        defaultMessage: 'Contract',
+    },
+    TR_TX_DATA_AUTHORIZED_CALLS: {
+        id: 'TR_TX_DATA_AUTHORIZED_CALLS',
+        defaultMessage: 'Authorized calls',
+    },
     TR_FROM: {
         id: 'TR_FROM',
         defaultMessage: 'From',

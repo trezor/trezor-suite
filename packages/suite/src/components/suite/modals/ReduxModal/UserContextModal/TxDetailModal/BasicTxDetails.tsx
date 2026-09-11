@@ -322,7 +322,7 @@ export const BasicTxDetails = ({
                 )}
 
                 {tx.stellarSpecific?.memo && (
-                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} icon={TagIcon}>
+                    <Item label={<Translation id="MEMO" />} icon={TagIcon}>
                         <BlurUrls text={tx.stellarSpecific.memo} />
                     </Item>
                 )}

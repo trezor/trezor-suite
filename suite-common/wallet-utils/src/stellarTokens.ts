@@ -1,9 +1,9 @@
 import type { Account, StellarTokenInfo } from '@suite-common/wallet-types';
 import type { TokenDetailByMint } from '@trezor/blockchain-link-types';
 import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
-import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import { STELLAR_DECIMALS, STELLAR_MEMO_TEXT_MAX_BYTES } from '@trezor/network-stellar/constants';
 import stellar from '@trezor/network-stellar/runtime';
-import { createLazy } from '@trezor/utils';
+import { createLazy, scheduleAction } from '@trezor/utils';
 
 export const lazyStellarTokenMetadata = createLazy(getTokenMetadata);
 
@@ -82,6 +82,49 @@ export const resolveStellarAssetFromContractId = async (
 /** As `resolveStellarAssetFromContractId`, reading the token definitions through the shared holder. */
 export const resolveStellarContractId = async (contractId: string) =>
     resolveStellarAssetFromContractId(contractId, await lazyStellarTokenMetadata.getOrInit());
+
+const fitMemoText = (text: string) => {
+    const characters = Array.from(text.trim());
+
+    while (Buffer.byteLength(characters.join(''), 'utf8') > STELLAR_MEMO_TEXT_MAX_BYTES) {
+        characters.pop();
+    }
+
+    return characters.join('').trimEnd();
+};
+
+/**
+ * Memo for a trustline change. The asset code and issuer are already spelled out by the
+ * operation itself, so the only thing worth writing is the token name from the definitions.
+ */
+export const getStellarTrustlineMemoFromMetadata = (
+    contract: string,
+    tokenMetadata: TokenDetailByMint,
+): string | undefined => {
+    const memo = fitMemoText(tokenMetadata[contract]?.name ?? '');
+
+    return memo || undefined;
+};
+
+// The definitions are fetched over the network, and this runs on the way to a device prompt.
+const TRUSTLINE_MEMO_TIMEOUT_MS = 3000;
+
+/**
+ * As `getStellarTrustlineMemoFromMetadata`, reading the definitions through the shared holder.
+ * Bounded in time: the memo is a nicety and must not keep the user waiting to confirm.
+ */
+export const getStellarTrustlineMemo = async (contract: string) => {
+    try {
+        const tokenMetadata = await scheduleAction(() => lazyStellarTokenMetadata.getOrInit(), {
+            timeout: TRUSTLINE_MEMO_TIMEOUT_MS,
+        });
+
+        return getStellarTrustlineMemoFromMetadata(contract, tokenMetadata);
+    } catch {
+        // The definitions are only a nicety here, a trustline signs and settles without a memo
+        return undefined;
+    }
+};
 
 /** Get the list of inactive Stellar tokens for the user account */
 export const getStellarInactiveTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
