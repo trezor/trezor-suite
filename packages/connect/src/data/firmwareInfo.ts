@@ -11,7 +11,6 @@ import {
     DeviceModelInternal,
     FirmwareType,
     getBootloaderVersionArray,
-    getFirmwareOrBootloaderVersionArray,
     getFirmwareVersionArray,
 } from '@trezor/device-utils';
 import {
@@ -343,6 +342,7 @@ export const getFirmwareReleaseConfigInfo = (
 
     let intermediary, isNewer;
     let release = latestRelease;
+    let isRequired;
 
     if (versionUtils.isVersionArray(firmwareVersion)) {
         const supportsMinFw = (current: VersionArray, r: { min_firmware_version: VersionArray }) =>
@@ -362,6 +362,9 @@ export const getFirmwareReleaseConfigInfo = (
             }
         }
         isNewer = !!intermediary || versionUtils.isNewer(release.version, firmwareVersion);
+        isRequired = sortedReleases.some(
+            r => versionUtils.isNewer(r.version, firmwareVersion) && r.required,
+        );
     } else if (features.bootloader_mode && versionUtils.isVersionArray(bootloaderVersion)) {
         const supportsMinBl = (
             current: VersionArray,
@@ -385,6 +388,7 @@ export const getFirmwareReleaseConfigInfo = (
             !!intermediary ||
             (!!release.bootloader_version &&
                 versionUtils.isNewer(release.bootloader_version, bootloaderVersion));
+        isRequired = !features.firmware_present && sortedReleases.some(item => item.required);
     } else {
         throw new Error('Firmware version is not version array.');
     }
@@ -392,43 +396,6 @@ export const getFirmwareReleaseConfigInfo = (
     if (!isValidConditionalRelease(release)) {
         throw new Error(`Release object in unexpected shape.`);
     }
-
-    // releases are already filtered, so they can be considered "safe".
-    // so lets build changelog! It should include only those firmwares, that are
-    // newer than currently installed firmware.
-
-    let changelog;
-    if (features.bootloader_mode) {
-        // the problem with bootloader is that we see only bootloader and not firmware version
-        // and multiple releases may share same bootloader version. we really can not tell that
-        // the versions that are installable are newer. so...
-        if (features.firmware_present && features.major_version === 1) {
-            // return null signaling that we don't really know, but only if some firmware
-            // is already installed!
-            changelog = null;
-        } else if (features.firmware_present && features.major_version === 2) {
-            // little different situation is with model 2, where in bootloader (and with some fw installed)
-            // we actually know the firmware version
-            changelog = sortedReleases.filter(r =>
-                versionUtils.isNewer(r.version, [
-                    features.fw_major,
-                    features.fw_minor,
-                    features.fw_patch,
-                ]),
-            );
-        } else {
-            // for fresh devices, we can assume that all releases are actually "new"
-            changelog = sortedReleases;
-        }
-    } else {
-        // otherwise we are in firmware mode and because each release in releases list has
-        // version higher than the previous one, we can filter out the version that is already
-        // installed and show only what's new!
-        changelog = sortedReleases.filter(r =>
-            versionUtils.isNewer(r.version, getFirmwareOrBootloaderVersionArray(features)),
-        );
-    }
-    const isRequired = changelog?.length ? changelog.some(item => item.required) : null;
 
     const { conditions } = deviceMessageRelease;
     const { rollout_probability } = conditions;
