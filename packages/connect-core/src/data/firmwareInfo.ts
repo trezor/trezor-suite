@@ -413,29 +413,16 @@ export const getFirmwareReleaseConfigInfo = (
 
     let isNewer: boolean;
     let requiresIntermediary: boolean;
-    if (features.bootloader_mode && release.bootloader_version) {
-        // Some old version of T1B1 do not report FW version in bootloader mode and some other devices do not
-        // report FW version in bootloader mode when factory reset.
-
-        if (versionUtils.isVersionArray(firmwareVersion)) {
-            // We first try to use firmwareVesion if it is available even in bootloader mode.
-            isNewer = versionUtils.isNewer(release.version, firmwareVersion);
-            requiresIntermediary = versionUtils.isNewer(min_firmware_version, firmwareVersion);
-        } else if (versionUtils.isVersionArray(bootloaderVersion)) {
-            // If we do not have firmwareVersion in bootloader mode then we use bootloader version
-            // and compare with that from the new release info.
-            isNewer = versionUtils.isNewer(release.bootloader_version, bootloaderVersion);
-            requiresIntermediary = versionUtils.isNewer(min_bootloader_version, bootloaderVersion);
-        } else {
-            throw new Error('Version is not version array.');
-        }
-    } else {
-        if (!versionUtils.isVersionArray(firmwareVersion)) {
-            throw new Error('Firmware version is not version array.');
-        }
-
+    if (versionUtils.isVersionArray(firmwareVersion)) {
         isNewer = versionUtils.isNewer(release.version, firmwareVersion);
         requiresIntermediary = versionUtils.isNewer(min_firmware_version, firmwareVersion);
+    } else if (features.bootloader_mode && versionUtils.isVersionArray(bootloaderVersion)) {
+        isNewer =
+            !!release.bootloader_version &&
+            versionUtils.isNewer(release.bootloader_version, bootloaderVersion);
+        requiresIntermediary = versionUtils.isNewer(min_bootloader_version, bootloaderVersion);
+    } else {
+        throw new Error('Firmware version is not version array.');
     }
 
     const { conditions } = deviceMessageRelease;
