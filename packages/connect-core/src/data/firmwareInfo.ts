@@ -341,33 +341,38 @@ export const getFirmwareReleaseConfigInfo = (
         versionUtils.isNewer(b.version, a.version) ? 1 : -1,
     );
 
-    const deviceIntermediaryReleases = firmwareReleaseStore.getIntermediary(model);
-
     let intermediary;
-    let alternativeRelease;
-    if (features.bootloader_mode && bootloaderVersion) {
-        if (!versionUtils.isNewerOrEqual(bootloaderVersion, latestRelease.min_bootloader_version)) {
+    let compatible;
+
+    if (versionUtils.isVersionArray(firmwareVersion)) {
+        const supportsMinFw = (current: VersionArray, r: { min_firmware_version: VersionArray }) =>
+            versionUtils.isNewerOrEqual(current, r.min_firmware_version);
+
+        if (!supportsMinFw(firmwareVersion, latestRelease)) {
             // If the target isn't compatible, search for the best alternative.
-            alternativeRelease = sortedReleases.find(fw =>
-                versionUtils.isNewerOrEqual(bootloaderVersion, fw.min_bootloader_version),
-            );
+            // If an alternative is found, use it. Otherwise, we proceed with the original.
+            compatible = sortedReleases.find(r => supportsMinFw(firmwareVersion, r));
         }
-        intermediary = deviceIntermediaryReleases?.find(r =>
-            versionUtils.isNewer(r.min_bootloader_version, bootloaderVersion),
-        );
-    } else if (firmwareVersion) {
-        if (!versionUtils.isNewerOrEqual(firmwareVersion, latestRelease.min_firmware_version)) {
+        intermediary = firmwareReleaseStore
+            .getIntermediary(model)
+            ?.find(r => !supportsMinFw(firmwareVersion, r));
+    } else if (features.bootloader_mode && versionUtils.isVersionArray(bootloaderVersion)) {
+        const supportsMinBl = (
+            current: VersionArray,
+            r: { min_bootloader_version: VersionArray },
+        ) => versionUtils.isNewerOrEqual(current, r.min_bootloader_version);
+
+        if (!supportsMinBl(bootloaderVersion, latestRelease)) {
             // If the target isn't compatible, search for the best alternative.
-            alternativeRelease = sortedReleases.find(fw =>
-                versionUtils.isNewerOrEqual(firmwareVersion, fw.min_firmware_version),
-            );
+            // If an alternative is found, use it. Otherwise, we proceed with the original.
+            compatible = sortedReleases.find(r => supportsMinBl(bootloaderVersion, r));
         }
-        intermediary = deviceIntermediaryReleases?.find(r =>
-            versionUtils.isNewer(r.min_firmware_version, firmwareVersion),
-        );
+        intermediary = firmwareReleaseStore
+            .getIntermediary(model)
+            ?.find(r => !supportsMinBl(bootloaderVersion, r));
     }
 
-    const release = (!intermediary && alternativeRelease) || latestRelease;
+    const release = (!intermediary && compatible) || latestRelease;
 
     if (!isValidConditionalRelease(release)) {
         throw new Error(`Release object in unexpected shape.`);
