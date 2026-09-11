@@ -103,13 +103,25 @@ export const getAssetLogoContractAddresses = (
     return [getContractAddressForNetworkSymbol(symbol, contract)];
 };
 
+const getTokenExplorerSuffix = (
+    networkType: NetworkType,
+    token: Pick<TokenInfo, 'standard'>,
+): keyof Explorer => {
+    // A Soroban contract token is identified by its `C…` contract id, which lives under the
+    // explorer's contract path rather than the classic CODE-ISSUER asset path.
+    if (networkType === 'stellar') {
+        return token.standard === 'STELLAR-CONTRACT' ? 'contract' : 'token';
+    }
+
+    return networkType === 'cardano' ? 'token' : 'address';
+};
+
 export const getTokenExplorerUrl = (
     explorer: Explorer,
     networkType: NetworkType,
-    token: Pick<TokenInfo, 'contract' | 'fingerprint'>,
+    token: Pick<TokenInfo, 'contract' | 'fingerprint' | 'standard'>,
 ) => {
-    const suffix = networkType === 'cardano' || networkType === 'stellar' ? 'token' : 'address';
-    const explorerUrl = getExplorerUrl(explorer, suffix);
+    const explorerUrl = getExplorerUrl(explorer, getTokenExplorerSuffix(networkType, token));
     const contractAddress = networkType === 'cardano' ? token.fingerprint : token.contract;
     const queryString = explorer.queryString ?? '';
 

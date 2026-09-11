@@ -1,13 +1,18 @@
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { getStellarConnection, identifyTransaction, toStroops } from '@trezor/network-stellar';
+import {
+    getStellarConnection,
+    groupOperationsByTransaction,
+    identifyTransaction,
+    toStroops,
+} from '@trezor/network-stellar';
 import type { StellarAPI } from '@trezor/network-stellar/types';
 
 import { BlockchainLink } from '../../index';
 
 import StellarWorker from './index';
 
-const HORIZON_URL = 'https://horizon.stellar.org';
+const STELLAR_URL = 'https://xlm.trezor.io';
 
 describe('Stellar', () => {
     let blockchain: BlockchainLink;
@@ -17,10 +22,10 @@ describe('Stellar', () => {
         blockchain = new BlockchainLink({
             name: 'Stellar',
             worker: StellarWorker,
-            server: [HORIZON_URL],
+            server: [STELLAR_URL],
             debug: false,
         });
-        const { api } = await getStellarConnection(HORIZON_URL);
+        const { api } = await getStellarConnection(STELLAR_URL);
         horizonServer = api;
     });
 
@@ -139,22 +144,32 @@ describe('Stellar', () => {
         const accountRawResp = await horizonServer.loadAccount(descriptor);
 
         const pageSize = 25;
+        const limit = pageSize * 2;
 
-        const txRawResp = await horizonServer
-            .transactions()
-            .limit(pageSize)
+        const opsRawResp = await horizonServer
+            .operations()
             .forAccount(descriptor)
-            .order('desc')
             .includeFailed(true)
+            .join('transactions')
+            .limit(limit)
+            .order('desc')
             .call();
 
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const lastRecord: (typeof txRawResp.records)[number] =
-            txRawResp.records[txRawResp.records.length - 1];
-        const expectedCursor = lastRecord.paging_token;
-        const expectedTxs = txRawResp.records
-            .map(identifyTransaction)
-            .map(record => utils.transformTransaction(record, descriptor, {}));
+        const groups = groupOperationsByTransaction(
+            opsRawResp.records,
+            opsRawResp.records.length === limit,
+        ).slice(0, pageSize);
+
+        const expectedCursor = groups[groups.length - 1]?.cursor;
+        const expectedTxs = await Promise.all(
+            groups.map(async ({ operations }) =>
+                utils.transformTransaction(
+                    identifyTransaction(operations, await operations[0].transaction()),
+                    descriptor,
+                    {},
+                ),
+            ),
+        );
 
         const result = await blockchain.getAccountInfo({
             descriptor,
@@ -194,6 +209,61 @@ describe('Stellar', () => {
                 },
             ],
         });
+    });
+
+    it('Horizon decodes Stellar Asset Contract transfers', async () => {
+        // The account history depends on Horizon pre-decoding SAC transfers into
+        // asset_balance_changes; the amounts are not recoverable from the envelope. Most host
+        // function calls move no balances at all, and Horizon reports those as `null` rather
+        // than an empty array, so keep paging until one that actually carries changes shows up.
+        const maxPages = 10;
+        const balanceChangesOf = (record: unknown) =>
+            (record as { asset_balance_changes?: unknown[] | null }).asset_balance_changes;
+        const decodesTransfers = (record: unknown) => {
+            const changes = balanceChangesOf(record);
+
+            return Array.isArray(changes) && changes.length > 0;
+        };
+
+        let page = await horizonServer.operations().order('desc').limit(200).call();
+        let hostFunctionOp = page.records.find(decodesTransfers);
+        for (let i = 1; !hostFunctionOp && i < maxPages; i++) {
+            page = await page.next();
+            if (!page.records.length) break;
+            hostFunctionOp = page.records.find(decodesTransfers);
+        }
+        if (!hostFunctionOp) {
+            throw new Error(
+                `No host function operation carrying asset_balance_changes found in the last ${maxPages} pages`,
+            );
+        }
+
+        // Every change has to carry the fields `identifyBalanceChanges` reads off it.
+        (balanceChangesOf(hostFunctionOp) as unknown[]).forEach(change =>
+            expect(change).toMatchObject({
+                type: expect.any(String),
+                asset_type: expect.any(String),
+                amount: expect.any(String),
+            }),
+        );
+        // Paging the global operations feed needs more than the 5s default.
+    }, 30_000);
+
+    it('joins the transaction into the operations response', async () => {
+        const descriptor = 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET';
+        const { records } = await horizonServer
+            .operations()
+            .forAccount(descriptor)
+            .join('transactions')
+            .limit(1)
+            .order('desc')
+            .call();
+
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const operation: (typeof records)[number] = records[0];
+        const joinedTx = await operation.transaction();
+
+        expect(joinedTx.hash).toBe(operation.transaction_hash);
     });
 
     afterAll(() => {

@@ -30,6 +30,8 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { type BlockchainRootState } from '../blockchain/blockchainReducer';
+import { selectBlockchainUrl } from '../blockchain/blockchainSelectors';
 import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
@@ -41,8 +43,12 @@ const calculate = (
     feeLevel: FeeLevel,
     requiredAmount?: BigNumber,
     token?: TokenInfo, // Only when sending non-native tokens.
+    // Soroban only: what the network will charge for the ledger entries the contract touches,
+    // on top of the inclusion fee. `feePerByte` stays the inclusion fee, because that is what
+    // the transaction is built with before preparing adds this back on.
+    resourceFee?: string,
 ): PrecomposedTransaction => {
-    const feeInSatoshi = feeLevel.feePerUnit;
+    const feeInSatoshi = new BigNumber(feeLevel.feePerUnit).plus(resourceFee ?? 0).toFixed();
 
     let amount: string;
     let max: string | undefined;
@@ -112,7 +118,7 @@ const calculate = (
     return payloadData;
 };
 
-type ComposeRippleStellarTransactionFeeLevelsThunkState = void;
+type ComposeRippleStellarTransactionFeeLevelsThunkState = BlockchainRootState;
 
 export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
@@ -123,7 +129,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     }
 >(
     `${SEND_MODULE_PREFIX}/composeRippleStellarTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { rejectWithValue }) => {
+    async ({ formState, composeContext }, { getState, rejectWithValue }) => {
         const { account, network, feeInfo } = composeContext;
         const composeOutputs = getExternalComposeOutput(formState, account, network);
         if (!composeOutputs)
@@ -158,6 +164,64 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             });
         }
 
+        // A Soroban transfer is priced in two parts: the inclusion fee, which the fee levels
+        // already carry, and a resource fee for the ledger entries the contract touches, which
+        // only simulating the call can tell us. Without it every number on the form is short.
+        let resourceFee: string | undefined;
+        if (account.networkType === 'stellar' && tokenInfo?.standard === 'STELLAR-CONTRACT') {
+            const amountToSend =
+                output.type === 'send-max' || output.type === 'send-max-noaddress'
+                    ? unitsToSubunits({
+                          value: asAmountUnit(new BigNumber(tokenInfo.balance ?? '0')),
+                          decimals: tokenInfo.decimals,
+                      }).toFixed()
+                    : unitsToSubunits({
+                          value: asAmountUnit(new BigNumber(output.amount)),
+                          decimals: tokenInfo.decimals,
+                      }).toFixed();
+
+            const backendUrl = selectBlockchainUrl(getState(), account.symbol);
+
+            // Simulating needs a real recipient. Until the form has one it cannot be submitted
+            // anyway, so the levels stand on the inclusion fee alone and correct themselves as
+            // soon as an address is entered.
+            if (address && backendUrl && new BigNumber(amountToSend).isGreaterThan(0)) {
+                const {
+                    buildContractTokenTransferTransaction,
+                    getSorobanServer,
+                    prepareContractTransaction,
+                } = await stellar();
+
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const inclusionFee: string = predefinedLevels[0].feePerUnit;
+
+                try {
+                    const prepared = await prepareContractTransaction(
+                        getSorobanServer(backendUrl),
+                        buildContractTokenTransferTransaction({
+                            descriptor: account.descriptor,
+                            sequence: account.misc.stellarSequence,
+                            fee: inclusionFee,
+                            contract: tokenInfo.contract,
+                            destination: address,
+                            amount: amountToSend,
+                            isTestnet: isTestnet(account.symbol),
+                        }),
+                    );
+
+                    // Preparing returns the inclusion fee with the resource fee added on.
+                    resourceFee = new BigNumber(prepared.fee).minus(inclusionFee).toFixed();
+                } catch (error) {
+                    // The contract itself has said the transfer cannot succeed - too little of
+                    // the token, or a contract that does not implement SEP-41 transfer at all.
+                    return rejectWithValue({
+                        error: 'fee-levels-compose-failed',
+                        message: error instanceof Error ? error.message : 'Simulation failed.',
+                    });
+                }
+            }
+        }
+
         let requiredAmount: BigNumber | undefined;
         // additional check if recipient address is empty
         // it will set requiredAmount to recipient account reserve value
@@ -176,7 +240,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const resultLevels: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
-            calculate(availableBalance, output, level, requiredAmount, tokenInfo),
+            calculate(availableBalance, output, level, requiredAmount, tokenInfo, resourceFee),
         );
         response.forEach((tx, index) => {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -202,7 +266,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             }
 
             const customLevelsResponse = customLevels.map(level =>
-                calculate(availableBalance, output, level, requiredAmount, tokenInfo),
+                calculate(availableBalance, output, level, requiredAmount, tokenInfo, resourceFee),
             );
 
             const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
@@ -249,7 +313,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-type SignRippleStellarSendFormTransactionThunkState = WalletSettingsRootState;
+type SignRippleStellarSendFormTransactionThunkState = WalletSettingsRootState & BlockchainRootState;
 
 export const signRippleStellarSendFormTransactionThunk = createThunk<
     { serializedTx: string },
@@ -303,6 +367,84 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 return { serializedTx: response.payload.serializedTx };
             }
         } else if (selectedAccount.networkType === 'stellar') {
+            const { token: sentToken } = precomposedTransaction;
+
+            if (sentToken?.standard === 'STELLAR-CONTRACT') {
+                const backendUrl = selectBlockchainUrl(getState(), selectedAccount.symbol);
+                if (!backendUrl) {
+                    return rejectWithValue({
+                        error: 'sign-transaction-failed',
+                        message: 'Not connected to a Stellar backend.',
+                    });
+                }
+
+                const {
+                    buildContractTokenTransferTransaction,
+                    getSorobanServer,
+                    prepareContractTransaction,
+                } = await stellar();
+
+                const testnet = isTestnet(selectedAccount.symbol);
+                const transfer = buildContractTokenTransferTransaction({
+                    descriptor: selectedAccount.descriptor,
+                    sequence: selectedAccount.misc.stellarSequence,
+                    // The inclusion fee only. Preparing adds the resource fee on top, which is
+                    // what `precomposedTransaction.fee` already showed the user.
+                    fee: precomposedTransaction.feePerByte,
+                    contract: sentToken.contract,
+                    destination: firstSignOutput.address,
+                    amount: unitsToSubunits({
+                        value: asAmountUnit(new BigNumber(firstSignOutput.amount)),
+                        decimals: sentToken.decimals,
+                    }).toFixed(),
+                    isTestnet: testnet,
+                });
+
+                let prepared;
+                try {
+                    prepared = await prepareContractTransaction(
+                        getSorobanServer(backendUrl),
+                        transfer,
+                    );
+                } catch (error) {
+                    // The network has told us the transfer cannot succeed, so there is nothing
+                    // worth putting in front of the user to approve.
+                    return rejectWithValue({
+                        error: 'sign-transaction-failed',
+                        message: error instanceof Error ? error.message : 'Simulation failed.',
+                    });
+                }
+
+                const contractResponse = await TrezorConnect.stellarSignTransaction({
+                    device: {
+                        path: device.path,
+                        instance: device.instance,
+                        state: device.state,
+                        useEmptyPassphrase: device.useEmptyPassphrase,
+                    },
+                    payment_req: paymentRequests?.[0],
+                    path: selectedAccount.path,
+                    xdrBase64: prepared.toXdr(),
+                    testnet,
+                });
+
+                if (contractResponse.success) {
+                    const signature = Buffer.from(
+                        contractResponse.payload.signature,
+                        'hex',
+                    ).toString('base64');
+                    prepared.addSignature(selectedAccount.descriptor, signature);
+
+                    return { serializedTx: prepared.toEnvelope().toXdr('hex') };
+                }
+
+                return rejectWithValue({
+                    error: 'sign-transaction-failed',
+                    errorCode: contractResponse.error.code,
+                    message: contractResponse.error.message,
+                });
+            }
+
             const destinationAccount = await TrezorConnect.getAccountInfo({
                 descriptor: firstSignOutput.address,
                 coin: asCoinSymbol(selectedAccount.symbol),

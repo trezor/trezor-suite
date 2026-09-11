@@ -13,6 +13,7 @@ import {
     type PhishingState,
     type SendState,
     type StakeState,
+    type StellarContractTokensState,
     type TransactionsState,
     type TronStakeReducerState,
     type YieldState,
@@ -27,6 +28,7 @@ import {
     preparePhishingReducer,
     prepareSendFormReducer,
     prepareStakeReducer,
+    prepareStellarContractTokensReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     tronStakeReducer,
@@ -47,6 +49,7 @@ import formDraftReducer from './formDraftReducer';
 import graphReducer, { type GraphState } from './graphReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
+export const stellarContractTokensReducer = prepareStellarContractTokensReducer(extraDependencies);
 export const phishingReducer = preparePhishingReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);
@@ -79,6 +82,7 @@ export type WalletState = {
     stake: StakeState;
     settings: WalletSettings;
     stablecoinYield: YieldState;
+    stellarContractTokens: StellarContractTokensState;
     tronStake: TronStakeReducerState;
     earnOnboarding: EarnOnboardingState;
 };
@@ -107,6 +111,7 @@ export const walletReducers: Reducer<
     stake: stakeReducer,
     settings: walletSettingsReducer,
     stablecoinYield: yieldReducer,
+    stellarContractTokens: stellarContractTokensReducer,
     tronStake: tronStakeReducer,
     earnOnboarding: earnOnboardingReducer,
 });

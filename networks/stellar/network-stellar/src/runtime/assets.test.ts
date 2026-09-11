@@ -1,4 +1,4 @@
-import { computeSorobanAssetContractId } from './assets';
+import { computeSorobanAssetContractId, isValidContractId } from './assets';
 
 describe('assets', () => {
     describe('computeSorobanAssetContractId', () => {
@@ -24,6 +24,34 @@ describe('assets', () => {
             expect(() => computeSorobanAssetContractId('not-stellar')).toThrow(
                 'Invalid Stellar asset contract format.',
             );
+        });
+    });
+
+    describe('isValidContractId', () => {
+        it.each([
+            [
+                'a native SEP-41 contract address',
+                'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRV',
+                true,
+            ],
+            [
+                'a Stellar Asset Contract address',
+                'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75',
+                true,
+            ],
+            [
+                'a classic CODE-ISSUER asset',
+                'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+                false,
+            ],
+            [
+                'an ed25519 account address',
+                'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+                false,
+            ],
+            ['an empty string', '', false],
+        ])('%s', (_description, address, expected) => {
+            expect(isValidContractId(address)).toBe(expected);
         });
     });
 });

@@ -4844,6 +4844,10 @@ export const messages = defineMessages({
         id: 'TR_DEACTIVATE_TOKEN',
         defaultMessage: 'Deactivate token',
     },
+    TR_REMOVE_TOKEN: {
+        id: 'TR_REMOVE_TOKEN',
+        defaultMessage: 'Remove token',
+    },
     TR_DEACTIVATE_TOKEN_HEADING: {
         id: 'TR_DEACTIVATE_TOKEN_HEADING',
         defaultMessage: 'Deactivate {token}',
@@ -4866,13 +4870,18 @@ export const messages = defineMessages({
         defaultMessage:
             'Insufficient funds. You need {required} to cover the reserve and network fee, but only {available} is available.',
     },
-    TR_ASSET_CODE: {
-        id: 'TR_ASSET_CODE',
-        defaultMessage: 'Asset code',
-    },
     TR_ASSET_CODE_INVALID: {
         id: 'TR_ASSET_CODE_INVALID',
         defaultMessage: 'Invalid asset code. Enter a valid asset code.',
+    },
+    TR_ASSET_CODE_OR_CONTRACT_ID: {
+        id: 'TR_ASSET_CODE_OR_CONTRACT_ID',
+        defaultMessage: 'Asset code or contract ID',
+    },
+    TR_STELLAR_CONTRACT_TOKEN_DETECTED: {
+        id: 'TR_STELLAR_CONTRACT_TOKEN_DETECTED',
+        defaultMessage:
+            'Soroban contract token. It has no issuer and needs no trustline — its balance is read from the contract.',
     },
     TR_INACTIVE_TOKENS_EMPTY: {
         id: 'TR_INACTIVE_TOKENS_EMPTY',
@@ -7701,6 +7710,10 @@ export const messages = defineMessages({
     TR_EXPLORER_TOKEN: {
         id: 'TR_EXPLORER_TOKEN',
         defaultMessage: 'Token',
+    },
+    TR_EXPLORER_CONTRACT: {
+        id: 'TR_EXPLORER_CONTRACT',
+        defaultMessage: 'Contract',
     },
     TR_EXPLORER_SET_DEFAULT: {
         id: 'TR_EXPLORER_SET_DEFAULT',

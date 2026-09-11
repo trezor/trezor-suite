@@ -73,7 +73,9 @@ export function useBuildTokenOptions({
             fiatRates,
         );
 
-        const sortedTokensWithRates = tokensWithRates.sort(sortTokensWithRates);
+        const sortedTokensWithRates = tokensWithRates
+            // Read-only tokens cannot be spent, so they are not offered as a send source.
+            .toSorted(sortTokensWithRates);
 
         return buildTokenOptions(
             account,

@@ -226,6 +226,68 @@ describe('Account Reducer', () => {
             ]);
         });
 
+        const CONTRACT_ID = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRV';
+
+        const stellarAccount = mockWalletAccount({
+            symbol: asNetworkSymbol('xlm'),
+            deviceState: '1stTestnetAddress@device_id:0',
+        });
+
+        const contractToken = mockAccountToken({
+            standard: 'STELLAR-CONTRACT',
+            contract: CONTRACT_ID,
+            symbol: 'DEJTRSY',
+            balance: '42',
+        });
+
+        const stellarAccountInfo: AccountInfo = {
+            descriptor: stellarAccount.descriptor,
+            balance: '1000',
+            availableBalance: '1000',
+            empty: false,
+            history: { total: 1, unconfirmed: 0, transactions: [] },
+            tokens: [],
+        };
+
+        const initStoreWithContractToken = () =>
+            initStore({
+                preloadedState: {
+                    wallet: { accounts: [{ ...stellarAccount, tokens: [contractToken] }] },
+                },
+            });
+
+        it('keeps a watched contract token when discovery reports the account without it', () => {
+            const store = initStoreWithContractToken();
+
+            // Discovery is never handed the watch list, so its report cannot be read as the
+            // token no longer being held.
+            store.dispatch(
+                accountsActions.createAccount({
+                    deviceState: stellarAccount.deviceState,
+                    index: stellarAccount.index,
+                    path: stellarAccount.path as Bip43Path,
+                    accountType: stellarAccount.accountType,
+                    symbol: stellarAccount.symbol,
+                    accountInfo: { ...stellarAccountInfo, path: stellarAccount.path },
+                    visible: true,
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: CONTRACT_ID }),
+            ]);
+        });
+
+        it('drops a contract token a targeted account fetch no longer reports', () => {
+            const store = initStoreWithContractToken();
+
+            // Removing a contract token takes it off the watch list and refetches, so this
+            // answer is authoritative — preserving the token would make removal a no-op.
+            store.dispatch(accountsActions.updateAccount(stellarAccount, stellarAccountInfo));
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([]);
+        });
+
         it('adds tokens to the account via addAccountTokens', () => {
             const store = initStore({
                 preloadedState: { wallet: { accounts: [ethereumAccount] } },
