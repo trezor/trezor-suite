@@ -29,7 +29,7 @@ async function main(): Promise<void> {
     const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
         encoding: 'utf-8',
     }).trim();
-    const fixAgentDir = join(root, 'packages/e2e-utils/src/fixBot');
+    const fixAgentDir = join(root, 'packages/e2e-utils/src/llmTestFixer');
 
     const report = AnalysisReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
     const task = report.fixTasks.find(t => t.id === taskId);

@@ -36,7 +36,7 @@ async function main(): Promise<void> {
         process.exit(1);
     }
 
-    const botDir = join(root, 'packages/e2e-utils/src/fixBot');
+    const botDir = join(root, 'packages/e2e-utils/src/llmTestFixer');
     const reportDir = join(botDir, 'reports');
     const ledgerPath = join(root, 'ledger.json');
     const analysisPromptPath = join(botDir, 'ANALYSIS_AGENT.md');

@@ -4,10 +4,10 @@ import { dirname, join } from 'node:path';
 
 import { createLogger } from '../logger';
 
-const logger = createLogger('fixBot');
+const logger = createLogger('llm-test-fixer');
 
-export const ANALYZE_ERRORS_FILE = 'packages/e2e-utils/src/fixBot/reports/errors.txt';
-export const fixErrorsFile = (taskId: string) => `fixbot-errors-${taskId}.txt`;
+export const ANALYZE_ERRORS_FILE = 'packages/e2e-utils/src/llmTestFixer/reports/errors.txt';
+export const fixErrorsFile = (taskId: string) => `llm-test-fixer-errors-${taskId}.txt`;
 
 /** A fix job identifies itself by TASK_ID; the analyze job writes into its report dir. */
 function errorsFilePath(): string {
@@ -48,14 +48,14 @@ export function readErrors(path: string | undefined): string[] {
     }
 }
 
-/** Per-task errors from a directory of downloaded `fixbot-errors-<taskId>.txt` files. */
+/** Per-task errors from a directory of downloaded `llm-test-fixer-errors-<taskId>.txt` files. */
 export function readTaskErrors(dir: string | undefined): Record<string, string[]> {
     if (!dir || !existsSync(dir)) return {};
 
     const byTaskId: Record<string, string[]> = {};
 
     for (const filename of readdirSync(dir)) {
-        const taskId = /^fixbot-errors-(.+)\.txt$/.exec(filename)?.[1];
+        const taskId = /^llm-test-fixer-errors-(.+)\.txt$/.exec(filename)?.[1];
         if (!taskId) continue;
 
         const errors = readErrors(join(dir, filename));

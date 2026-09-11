@@ -10,9 +10,9 @@ export default [
                     // CI-only bots and scripts, never reachable from src/index, so they may use devDependencies.
                     devDependencies: [
                         ...globalNoExtraneousDependenciesDevDependencies,
-                        '**/fixBot/**',
                         '**/llmExploratoryTester/**',
                         '**/llmTestAnalyzer/**',
+                        '**/llmTestFixer/**',
                         '**/llmTestSelector/**',
                         '**/quarantineBot/**',
                         '**/githubReporter/scriptCreateProject.ts',

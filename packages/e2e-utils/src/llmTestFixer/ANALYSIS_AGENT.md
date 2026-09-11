@@ -114,7 +114,7 @@ instance. Read the full file and any page objects, fixtures, or helpers it uses.
 
 ## Step 6 — Produce the diagnosis report
 
-Write the report to `packages/e2e-utils/src/fixBot/reports/report.md`.
+Write the report to `packages/e2e-utils/src/llmTestFixer/reports/report.md`.
 
 Open with:
 

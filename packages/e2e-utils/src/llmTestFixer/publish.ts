@@ -170,7 +170,7 @@ function publishPR(): void {
     if (shouldPublish(fixResult.result)) {
         runPublish(branch, root, fixResult, summary);
     } else {
-        log('Fix bot failed to apply fix or issue was not duplicated → No branch pushed.');
+        log('LLM test fixer failed to apply fix or issue was not duplicated → No branch pushed.');
     }
 
     writeSummary(root, summary);
