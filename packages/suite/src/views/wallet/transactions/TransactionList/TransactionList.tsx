@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -39,6 +40,9 @@ interface TransactionListProps {
     onPageRequested?: (page: number) => void;
 }
 
+// Inlined by the bundler: `true` only in a build made by `yarn suite:dev` or `suite:dev:desktop`.
+const isDevBuild = process.env.IS_DEV_BUILD === 'true';
+
 export const TransactionList = ({
     allTransactions,
     areAllTransactionsLoaded,
@@ -56,6 +60,7 @@ export const TransactionList = ({
     const anchor = useSelector(selectRouterAnchor);
     const { dispatch } = useServices(selectDispatch);
     const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);
 
@@ -67,11 +72,22 @@ export const TransactionList = ({
 
     useDebounce(
         () => {
+            const startedAt = performance.now();
             const results = advancedSearchTransactions(transactions, searchLabels, searchQuery);
+
+            // On in a developer's build without asking for it, and reachable in a real build by
+            // turning on debug mode (CMD/CTRL + ALT + SHIFT + D).
+            if (isDevBuild || isDebugModeActive) {
+                // eslint-disable-next-line no-console
+                console.log(
+                    `[transaction search] "${searchQuery}" took ${(performance.now() - startedAt).toFixed(1)}ms over ${transactions.length} transactions, ${results.length} matched`,
+                );
+            }
+
             setSearchedTransactions(results);
         },
         200,
-        [transactions, searchQuery, searchLabels],
+        [transactions, searchQuery, searchLabels, isDebugModeActive],
     );
 
     useEffect(() => {
