@@ -33,7 +33,7 @@ export const composeExchangeTradeFeeLevelsThunk = createThunk<
     { state: ComposeExchangeTradeFeeLevelsThunkState }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/composeTradeFeeLevels`,
-    async ({ account, decimals, shouldSendInSats }, { dispatch, getState }) => {
+    async ({ account, decimals, shouldSendInSats }, { dispatch, getState, signal }) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
         const activeTrade = selectTradingExchangeActiveTrade(getState());
         const selectedTrade = activeTrade?.data ?? selectedQuote;
@@ -72,6 +72,10 @@ export const composeExchangeTradeFeeLevelsThunk = createThunk<
         );
 
         if (isRejected(composeTradingTransactionThunk)(composeResult)) {
+            return;
+        }
+
+        if (signal.aborted) {
             return;
         }
 

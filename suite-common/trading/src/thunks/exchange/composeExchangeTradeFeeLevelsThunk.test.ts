@@ -197,6 +197,27 @@ describe('composeExchangeTradeFeeLevelsThunk', () => {
         });
     });
 
+    it('does not store the result of a compose that was aborted while in flight', async () => {
+        const store = getStore(getExchangeState(getCexQuote()));
+        mockComposedLevels({ normal: { type: 'final', fee: '42000', feeLimit: '21000' } });
+
+        const request = store.dispatch(
+            exchangeThunks.composeTradeFeeLevelsThunk({
+                account,
+                decimals: 18,
+                shouldSendInSats: undefined,
+            }),
+        );
+        request.abort();
+        await request;
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        expect(composeMock).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.composedTransactionInfo).toEqual(
+            composedTransactionInfo,
+        );
+    });
+
     it('composes a DEX trade from the transaction data with the adjusted gas limit', async () => {
         const store = getStore(getExchangeState(getDexQuote()));
         const composed = { type: 'final', fee: '84000', feeLimit: '42000' };
