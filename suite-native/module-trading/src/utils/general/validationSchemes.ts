@@ -1,43 +1,13 @@
+import { getMaxAmountWithReserve, getTradingDexReserve } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
 import {
     type NetworkSymbol,
-    getNetwork,
     getNetworkDisplaySymbol,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { type TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { type ExchangeFormValues, type TradingFormContext } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
-
-type GetMaxAmountWithTradingDexReserveParams = Pick<
-    TradingFormContext,
-    'contractAddress' | 'isNetworkReserveEnabled'
-> & {
-    sendNetworkSymbol: NetworkSymbol;
-    maxSpendableAmount: string;
-    isTradingDex: boolean;
-};
-
-const getMaxAmountWithTradingDexReserve = ({
-    sendNetworkSymbol,
-    contractAddress,
-    isNetworkReserveEnabled,
-    isTradingDex,
-    maxSpendableAmount,
-}: GetMaxAmountWithTradingDexReserveParams): BigNumber => {
-    const tradingDexReserve =
-        isTradingDex && getNetwork(sendNetworkSymbol).tradingDexReserve !== undefined
-            ? getNetworkReserve({
-                  symbol: sendNetworkSymbol,
-                  contractAddress,
-                  isEnabled: isNetworkReserveEnabled,
-                  isTradingDex,
-              })
-            : undefined;
-
-    return BigNumber.max(0, new BigNumber(maxSpendableAmount).minus(tradingDexReserve ?? '0'));
-};
 
 export const getAmountLimitContext = ({
     options,
@@ -227,12 +197,15 @@ export const sendCryptoAmountValidationSchema = yup
         const formValues = testContext.parent as Partial<ExchangeFormValues> | undefined;
 
         const isTradingDex = !!formValues?.quote?.isDex;
-        const maxAmountWithReserve = getMaxAmountWithTradingDexReserve({
-            sendNetworkSymbol,
+        const dexReserve = getTradingDexReserve({
+            symbol: sendNetworkSymbol,
             contractAddress,
-            isNetworkReserveEnabled,
-            isTradingDex,
-            maxSpendableAmount,
+            isDex: isTradingDex,
+            isNetworkReserveEnabled: isNetworkReserveEnabled === true,
+        });
+        const maxAmountWithReserve = getMaxAmountWithReserve({
+            maxAmount: maxSpendableAmount,
+            reserve: dexReserve,
         });
 
         if (maxAmountWithReserve.lt(convertedValue)) {

@@ -154,18 +154,10 @@ const TradingFormInputCryptoAmountContent = ({
     }, [isNetworkReserveError, setShowReserveBanner]);
 
     useDidUpdate(() => {
-        if (amountLimits) {
-            trigger([cryptoInputName]);
-        }
-    }, [amountLimits, trigger]);
-
-    useDidUpdate(() => {
-        trigger([cryptoInputName]);
-    }, [cryptoInputName, trigger, validationAccount.key]);
-
-    useDidUpdate(() => {
         trigger(cryptoInputName);
     }, [
+        amountLimits,
+        validationAccount.key,
         isTradingDex,
         isNetworkReserveEnabled,
         shouldSendInSats,

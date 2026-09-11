@@ -12,16 +12,13 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingBuyFormProps,
     getNetworkDecimalsWithFallback,
+    getTradingNetworkReserve,
     selectTradingComposedTransactionInfo,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { selectCurrentFiatRates, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import {
-    convertAmountSubunitsToUnits,
-    findToken,
-    getNetworkReserve,
-} from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, findToken } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode, isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
@@ -98,11 +95,11 @@ const TradingFormInputFiatContent = ({
     const balance = tokenAddress
         ? findToken(asset.tokens, tokenAddress)?.balance
         : asset.formattedBalance;
-    const networkReserve = getNetworkReserve({
+    const networkReserve = getTradingNetworkReserve({
         symbol: asset.symbol,
         contractAddress: tokenAddress,
-        isEnabled: isNetworkReserveEnabled,
-        isTradingDex,
+        isDex: isTradingDex,
+        isNetworkReserveEnabled,
     });
     const feeInUnits = isExchangeOrSellContext
         ? getFeeInUnits({

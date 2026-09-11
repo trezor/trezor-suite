@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
+import { getTradingNetworkReserve } from '@suite-common/trading';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -34,11 +34,11 @@ export const TradingNetworkReserveBanner = ({
 
     if (!isNetworkReserveEnabled) return null;
 
-    const networkReserve = getNetworkReserve({
+    const networkReserve = getTradingNetworkReserve({
         symbol,
         contractAddress,
-        isEnabled: isNetworkReserveEnabled,
-        isTradingDex,
+        isDex: !!isTradingDex,
+        isNetworkReserveEnabled,
     });
     if (!networkReserve) return null;
 

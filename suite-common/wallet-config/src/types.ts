@@ -105,7 +105,6 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     tradeCryptoId?: string;
     caipId?: string; // CAIP-2 chain id, used by WalletConnect
     nativeTokenReserve?: string;
-    tradingDexReserve?: string;
     /**
      * Network ID used by Yield.xyz
      * @url https://yield.xyz

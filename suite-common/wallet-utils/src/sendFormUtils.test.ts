@@ -37,42 +37,30 @@ describe('sendForm utils', () => {
     describe('getNetworkReserve', () => {
         it.each<{
             symbol: NetworkSymbol;
-            isTradingDex?: boolean;
             isEnabled?: boolean;
             contractAddress?: string | null;
             expected?: string;
         }>([
-            { symbol: 'btc', isTradingDex: true, isEnabled: true, expected: '0.00002' },
-            { symbol: 'btc', isTradingDex: true, isEnabled: false },
-            { symbol: 'btc', isTradingDex: true },
-            { symbol: 'btc', isTradingDex: false, isEnabled: true },
             { symbol: 'btc', isEnabled: true },
-            { symbol: 'eth', isTradingDex: true, isEnabled: true },
-            { symbol: 'sol', isTradingDex: true, isEnabled: true, expected: '0.003' },
+            { symbol: 'eth', isEnabled: true },
             { symbol: 'sol', isEnabled: true, expected: '0.003' },
-            { symbol: 'sol', isTradingDex: true, isEnabled: false },
-            { symbol: 'btc', isTradingDex: true, isEnabled: true, contractAddress: 'token' },
-            { symbol: 'sol', isTradingDex: true, isEnabled: true, contractAddress: 'token' },
+            { symbol: 'sol', isEnabled: false },
+            { symbol: 'btc', isEnabled: true, contractAddress: 'token' },
+            { symbol: 'sol', isEnabled: true, contractAddress: 'token' },
             {
                 symbol: 'btc',
-                isTradingDex: true,
                 isEnabled: true,
                 contractAddress: null,
-                expected: '0.00002',
             },
             {
                 symbol: 'base',
-                isTradingDex: true,
                 isEnabled: true,
                 contractAddress: '0x0000000000000000000000000000000000000000',
                 expected: '0.0002',
             },
-        ])(
-            'returns $expected for $symbol with DEX=$isTradingDex and enabled=$isEnabled',
-            ({ expected, ...params }) => {
-                expect(getNetworkReserve({ contractAddress: undefined, ...params })).toBe(expected);
-            },
-        );
+        ])('returns $expected for $symbol with enabled=$isEnabled', ({ expected, ...params }) => {
+            expect(getNetworkReserve({ contractAddress: undefined, ...params })).toBe(expected);
+        });
     });
 
     fixtures.prepareEthereumTransaction.forEach(f => {

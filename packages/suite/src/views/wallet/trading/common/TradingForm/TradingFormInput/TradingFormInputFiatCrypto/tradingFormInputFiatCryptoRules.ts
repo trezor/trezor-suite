@@ -2,6 +2,7 @@ import { type UseControllerProps } from 'react-hook-form';
 
 import { type TranslationFunction } from '@suite/intl';
 import { type Formatter } from '@suite-common/formatters';
+import { getTradingNetworkReserve } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type RatesByKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -9,7 +10,6 @@ import {
     buildCurrencyShortOption,
     getDecimalsForBaseCurrency,
     getFiatRateKey,
-    getNetworkReserve,
     subunitsToUnits,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -185,11 +185,11 @@ export const getCryptoInputRules = ({
     contractAddress,
     feeInUnits,
 }: CryptoInputRulesProps): UseControllerProps['rules'] => {
-    const networkReserve = getNetworkReserve({
+    const networkReserve = getTradingNetworkReserve({
         symbol: validationAccount.symbol,
         contractAddress,
-        isEnabled: isNetworkReserveEnabled,
-        isTradingDex,
+        isDex: isTradingDex,
+        isNetworkReserveEnabled,
     });
     const validateAmountNetworkReserve = validateNetworkReserve(translationString, {
         reserve: networkReserve,

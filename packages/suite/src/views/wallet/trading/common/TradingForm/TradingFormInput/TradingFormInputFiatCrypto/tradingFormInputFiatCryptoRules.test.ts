@@ -1,9 +1,10 @@
 import { type TranslationFunction } from '@suite/intl';
 import { type Formatter } from '@suite-common/formatters';
+import { getTradingNetworkReserve } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type RatesByKey, asCryptoBaseCurrencyCode } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { getNetworkReserve, toFiatCurrency } from '@suite-common/wallet-utils';
+import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -91,11 +92,11 @@ describe('getFiatInputRules — exchange context', () => {
         ])(
             'validates the BTC reserve converted to fiat: %j',
             ({ isTradingDex, isEnabled, amount, expected }) => {
-                const reserve = getNetworkReserve({
+                const reserve = getTradingNetworkReserve({
                     symbol: 'btc',
                     contractAddress: undefined,
-                    isEnabled,
-                    isTradingDex,
+                    isDex: isTradingDex,
+                    isNetworkReserveEnabled: isEnabled,
                 });
                 const { networkReserve } = getValidators({
                     ...exchangeProps,
