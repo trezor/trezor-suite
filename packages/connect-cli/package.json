@@ -22,6 +22,7 @@
         "@trezor/transport-common": "workspace:*"
     },
     "devDependencies": {
+        "@trezor/requirements": "workspace:*",
         "tsx": "^4.21.0"
     }
 }

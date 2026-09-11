@@ -16856,6 +16856,7 @@ __metadata:
   resolution: "@trezor/connect-cli@workspace:packages/connect-cli"
   dependencies:
     "@trezor/connect": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
     "@trezor/transport-common": "workspace:*"
@@ -16892,6 +16893,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-data@workspace:packages/connect-data"
   dependencies:
+    "@trezor/requirements": "workspace:*"
     "@types/chrome": "npm:^0.2.2"
     "@types/jest": "npm:30.0.0"
     "@types/node": "npm:22.13.10"
@@ -16908,6 +16910,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -16920,6 +16923,7 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/product-components": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -16972,6 +16976,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/protobuf": "workspace:^"
+    "@trezor/requirements": "workspace:*"
     "@trezor/schema-utils": "workspace:^"
     "@trezor/theme": "workspace:^"
     "@trezor/urls": "workspace:^"
@@ -17019,6 +17024,7 @@ __metadata:
   resolution: "@trezor/connect-mobile@workspace:packages/connect-mobile"
   dependencies:
     "@trezor/connect-common": "workspace:^"
+    "@trezor/requirements": "workspace:*"
     "@trezor/utils": "workspace:^"
   peerDependencies:
     tslib: ^2.6.2
@@ -17028,6 +17034,8 @@ __metadata:
 "@trezor/connect-plugin-ethereum@workspace:packages/connect-plugin-ethereum":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-plugin-ethereum@workspace:packages/connect-plugin-ethereum"
+  dependencies:
+    "@trezor/requirements": "workspace:*"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -17036,6 +17044,8 @@ __metadata:
 "@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar"
+  dependencies:
+    "@trezor/requirements": "workspace:*"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -17048,6 +17058,7 @@ __metadata:
     "@playwright/test": "npm:1.62.1"
     "@trezor/connect-common": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/websocket-client": "workspace:*"
@@ -17069,6 +17080,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-web": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@types/chrome": "npm:^0.2.2"
     "@types/w3c-web-usb": "npm:^1.0.14"
     babel-loader: "npm:^10.1.1"
@@ -17102,6 +17114,7 @@ __metadata:
     "@trezor/network-tron": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/transport-web": "workspace:*"

@@ -35,5 +35,8 @@
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
     }
 }

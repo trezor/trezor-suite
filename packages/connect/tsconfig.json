@@ -38,6 +38,7 @@
         { "path": "../utils" },
         { "path": "../utxo-lib" },
         { "path": "../eslint" },
+        { "path": "../requirements" },
         { "path": "../trezor-user-env-link" }
     ]
 }
