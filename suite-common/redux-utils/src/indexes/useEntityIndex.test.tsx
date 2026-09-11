@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { type ReactNode } from 'react';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 import { act, render, renderHook, screen } from '@testing-library/react';
@@ -351,5 +351,95 @@ describe('useEntityIdsBy', () => {
         });
 
         expect(result.current).toEqual(['a', 'c']);
+    });
+});
+
+describe('reading an index through a plain useSelector', () => {
+    // Nothing about the index needs the hooks: `getById` is `(state) => value`, and the memo is
+    // the index itself rather than anything held per call site. So it drops into existing
+    // selectors and existing components unchanged.
+    it('reads an entity', () => {
+        const { index } = createIndex();
+        const store = createTestStore([a, b]);
+
+        const { result } = renderHook(
+            () => useSelector((state: State) => index.getById(state, 'b')),
+            { wrapper: createWrapper(store) },
+        );
+
+        expect(result.current).toBe(b);
+    });
+
+    it('builds once for a whole list, the same as through the hooks', () => {
+        const { index, getEntities } = createIndex();
+        const store = createTestStore([a, b]);
+
+        const Row = ({ id }: { id: string }) => (
+            <span>{useSelector((state: State) => index.getById(state, id))?.value}</span>
+        );
+
+        render(
+            <Provider store={store}>
+                <Row id="a" />
+                <Row id="b" />
+            </Provider>,
+        );
+
+        expect(getEntities).toHaveBeenCalledTimes(1);
+    });
+
+    it('re-renders only when the entity it read changes', () => {
+        const { index } = createIndex();
+        const store = createTestStore([a, b]);
+        const renders = jest.fn();
+
+        renderHook(
+            () => {
+                renders();
+
+                return useSelector((state: State) => index.getById(state, 'b'));
+            },
+            { wrapper: createWrapper(store) },
+        );
+        renders.mockClear();
+
+        act(() => {
+            store.dispatch(setThings([{ ...a, value: 'changed' }, b]));
+        });
+
+        expect(renders).not.toHaveBeenCalled();
+    });
+
+    it('keeps its build with no subscriber anywhere', () => {
+        // Nobody ever subscribes, so nothing ever releases: the memo lasts as long as the source.
+        const { index, getEntities } = createIndex();
+        const store = createTestStore([a, b]);
+        const wrapper = createWrapper(store);
+
+        renderHook(() => useSelector((state: State) => index.getById(state, 'a')), {
+            wrapper,
+        }).unmount();
+        getEntities.mockClear();
+        renderHook(() => useSelector((state: State) => index.getById(state, 'a')), { wrapper });
+
+        expect(getEntities).not.toHaveBeenCalled();
+    });
+
+    it('loses its build when a component that did subscribe unmounts', () => {
+        // The one thing to know about mixing the two: the ref count only sees the hooks, so the
+        // last of them leaving releases the build even though a plain reader is still around. It
+        // costs that reader one rebuild, never a wrong answer.
+        const { index, getEntities } = createIndex();
+        const store = createTestStore([a, b]);
+        const wrapper = createWrapper(store);
+
+        const subscribed = renderHook(() => useEntityById(index, 'a'), { wrapper });
+        renderHook(() => useSelector((state: State) => index.getById(state, 'a')), { wrapper });
+        getEntities.mockClear();
+
+        subscribed.unmount();
+        renderHook(() => useSelector((state: State) => index.getById(state, 'a')), { wrapper });
+
+        expect(getEntities).toHaveBeenCalledTimes(1);
     });
 });
