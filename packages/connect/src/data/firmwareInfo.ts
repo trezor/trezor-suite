@@ -337,23 +337,11 @@ export const getFirmwareReleaseConfigInfo = (
 
     const { release: latestRelease, firmware_type: firmwareType } = deviceMessageRelease;
 
-    const versionContext =
-        features.bootloader_mode && !!bootloaderVersion
-            ? {
-                  version: bootloaderVersion,
-                  minVersionKey: 'min_bootloader_version' as const,
-              }
-            : {
-                  version: firmwareVersion,
-                  minVersionKey: 'min_firmware_version' as const,
-              };
-
     const isCompatible =
-        versionContext.version &&
-        versionUtils.isNewerOrEqual(
-            versionContext.version,
-            latestRelease[versionContext.minVersionKey],
-        );
+        features.bootloader_mode && !!bootloaderVersion
+            ? versionUtils.isNewerOrEqual(bootloaderVersion, latestRelease.min_bootloader_version)
+            : !!firmwareVersion &&
+              versionUtils.isNewerOrEqual(firmwareVersion, latestRelease.min_firmware_version);
 
     const sortedReleases = Object.values(getReleaseAssets(model, type)).sort((a, b) =>
         versionUtils.isNewer(b.version, a.version) ? 1 : -1,
@@ -368,33 +356,31 @@ export const getFirmwareReleaseConfigInfo = (
         if (!sortedReleases || sortedReleases.length === 0) {
             alternativeRelease = undefined;
         } else {
-            let versionToCompare = firmwareVersion;
+            if (features.bootloader_mode && bootloaderVersion) {
+                if (bootloaderVersion) {
+                    alternativeRelease = sortedReleases.find(fw =>
+                        versionUtils.isNewerOrEqual(bootloaderVersion, fw.min_bootloader_version),
+                    );
+                } else if (firmwareVersion) {
+                    // If we do not get current bootloader version from Device but ww have current FW version,
+                    // we can use the current FW version to get the bootloader version based on releases information.
+                    const currentRelease = sortedReleases.find(fw =>
+                        versionUtils.isEqual(firmwareVersion, fw.version),
+                    );
 
-            if (versionContext.minVersionKey === 'min_bootloader_version' && bootloaderVersion) {
-                versionToCompare = bootloaderVersion;
-            } else if (
-                versionContext.minVersionKey === 'min_bootloader_version' &&
-                firmwareVersion
-            ) {
-                // If we do not get current bootloader version from Device but ww have current FW version,
-                // we can use the current FW version to get the bootloader version based on releases information.
-                const currentRelease = sortedReleases.find(fw =>
-                    versionUtils.isEqual(firmwareVersion, fw.version),
-                );
-
-                if (!currentRelease?.bootloader_version) {
-                    // Not found bootloader version for this release, or no release was found.
-                    versionToCompare = null;
+                    if (currentRelease?.bootloader_version) {
+                        alternativeRelease = sortedReleases.find(fw =>
+                            versionUtils.isNewerOrEqual(firmwareVersion, fw.min_firmware_version),
+                        );
+                    }
                 }
-            }
-
-            if (!versionToCompare) {
+            } else if (firmwareVersion) {
+                alternativeRelease = sortedReleases.find(fw =>
+                    versionUtils.isNewerOrEqual(firmwareVersion, fw.min_firmware_version),
+                );
+            } else {
                 // There is no version to compare.
                 alternativeRelease = undefined;
-            } else {
-                alternativeRelease = sortedReleases.find(fw =>
-                    versionUtils.isNewerOrEqual(versionToCompare, fw[versionContext.minVersionKey]),
-                );
             }
         }
 
