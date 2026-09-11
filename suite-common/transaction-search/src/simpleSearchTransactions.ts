@@ -15,6 +15,15 @@ import { getTransactionSearchIndex } from './transactionSearchIndex';
 
 const searchDateRegex = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
 
+/**
+ * Whether the query is a number, and so worth comparing against amounts.
+ *
+ * `Number.isNaN(search)` does not answer this: it does not coerce, so for a string it is always
+ * false — which made the amount comparison below run for every query ever typed, and made the
+ * `return []` for a non-numeric amount search unreachable.
+ */
+const getIsNumericSearch = (search: string) => search !== '' && !Number.isNaN(Number(search));
+
 export const simpleSearchTransactions = (
     transactions: WalletAccountTransaction[],
     accountLabels: SearchAccountLabels,
@@ -68,7 +77,7 @@ export const simpleSearchTransactions = (
         }
 
         // Is number?
-        if (!Number.isNaN(search)) {
+        if (getIsNumericSearch(search)) {
             const amount = new BigNumber(search);
 
             return transactions.filter(t => numberSearchFilter(t, amount, searchOperator));
@@ -87,7 +96,7 @@ export const simpleSearchTransactions = (
     );
 
     // Searching for an amount (without operator)
-    if (!Number.isNaN(search)) {
+    if (getIsNumericSearch(search)) {
         const foundTxsForNumber = transactions.flatMap(transaction => {
             const targetAmounts = getTargetAmounts(transaction);
             if (targetAmounts.filter(targetAmount => targetAmount.includes(search)).length === 0) {
