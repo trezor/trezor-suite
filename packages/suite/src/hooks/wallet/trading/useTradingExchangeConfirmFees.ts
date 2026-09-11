@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -59,16 +59,19 @@ export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
 
     const composeRequestRef = useRef<{ abort: () => void } | null>(null);
 
-    const compose = (composeAccount: Account) => {
-        composeRequestRef.current?.abort();
-        composeRequestRef.current = dispatch(
-            exchangeThunks.composeTradeFeeLevelsThunk({
-                account: composeAccount,
-                decimals,
-                shouldSendInSats,
-            }),
-        );
-    };
+    const compose = useCallback(
+        (composeAccount: Account) => {
+            composeRequestRef.current?.abort();
+            composeRequestRef.current = dispatch(
+                exchangeThunks.composeTradeFeeLevelsThunk({
+                    account: composeAccount,
+                    decimals,
+                    shouldSendInSats,
+                }),
+            );
+        },
+        [dispatch, decimals, shouldSendInSats],
+    );
 
     useEffect(() => {
         if (!account) {
@@ -78,17 +81,7 @@ export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
         compose(account);
 
         return () => composeRequestRef.current?.abort();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-        dispatch,
-        account?.key,
-        account?.descriptor,
-        decimals,
-        shouldSendInSats,
-        feeInfo?.blockHeight,
-        sendAddress,
-        dexTransactionData,
-    ]);
+    }, [account, compose, feeInfo?.blockHeight, sendAddress, dexTransactionData]);
 
     const composeFormState = useMemo(() => {
         if (!account || !composed || !selectedTrade || hasEip712SignDataType(selectedTrade)) {
