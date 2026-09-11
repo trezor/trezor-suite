@@ -34,7 +34,6 @@ const createDevice = (overrides: Partial<TrezorDevice> = {}): TrezorDevice =>
 describe(createSuiteSyncInternalErrorHandler.name, () => {
     it('propagates a device error when no selected device is available', async () => {
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
-            getRelayUrl: null,
             suiteSyncStorageRepository: { get: null, set: null, delete: null },
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: null,
@@ -56,15 +55,14 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
 
     it('resumes syncing after allocating additional owner quota for RelayQuotaExceeded', async () => {
         const device = createDevice();
-        const updateRelayUrl = jest.fn(() => Promise.resolve());
-        const storage = mockSuiteSyncStorage({ updateRelayUrl });
+        const forceResync = jest.fn(() => Promise.resolve());
+        const storage = mockSuiteSyncStorage({ forceResync });
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: () => Promise.resolve(ok()),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
             suiteSyncUncontrolledErrorHandler: () => undefined,
             getSelectedDevice: () => device,
-            getRelayUrl: () => 'https://relay.example.com',
             suiteSyncStorageRepository: {
                 get: () => storage,
                 set: null,
@@ -86,31 +84,31 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         });
         expect(deps.suiteSyncUncontrolledErrorHandler).not.toHaveBeenCalled();
         expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith(walletDescriptor);
-        expect(updateRelayUrl).toHaveBeenCalledWith('https://relay.example.com');
+        expect(forceResync).toHaveBeenCalledTimes(1);
     });
 
-    it('does not reconnect when wallet storage was removed during the top-up', async () => {
+    it('does not resync when wallet storage was removed during the top-up', async () => {
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: () => Promise.resolve(ok()),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
             suiteSyncUncontrolledErrorHandler: null,
             getSelectedDevice: () => createDevice(),
-            getRelayUrl: null,
             suiteSyncStorageRepository: { get: () => null, set: null, delete: null },
         });
 
         await createSuiteSyncInternalErrorHandler(deps)({ type: 'RelayQuotaExceeded', ownerId });
 
-        expect(deps.getRelayUrl).not.toHaveBeenCalled();
+        expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith(walletDescriptor);
     });
 
-    it('propagates delegated key retrieval failures', async () => {
+    it('propagates delegated key retrieval failures without resyncing', async () => {
         const device = createDevice();
         const deviceError: DeviceErrorType = DeviceError('Delegated key failed');
+        const forceResync = jest.fn(() => Promise.resolve());
+        const storage = mockSuiteSyncStorage({ forceResync });
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
-            getRelayUrl: null,
-            suiteSyncStorageRepository: { get: null, set: null, delete: null },
+            suiteSyncStorageRepository: { get: () => storage, set: null, delete: null },
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: () => Promise.resolve(err(deviceError)),
             suiteSyncUncontrolledErrorHandler: () => undefined,
@@ -126,18 +124,21 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
             error: deviceError,
             device,
         });
+        // Without a key there was no top-up, so the relay would reject the writes all over again.
+        expect(forceResync).not.toHaveBeenCalled();
     });
 
-    it('propagates allocation failures', async () => {
+    it('propagates allocation failures without resyncing', async () => {
         const device = createDevice();
         const allocationError: AllocateOwnerQuotaErr = {
             type: 'QuotaManagerCommunicationFailed',
             caused: new Error('quota manager failed'),
         };
+        const forceResync = jest.fn(() => Promise.resolve());
+        const storage = mockSuiteSyncStorage({ forceResync });
 
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
-            getRelayUrl: null,
-            suiteSyncStorageRepository: { get: null, set: null, delete: null },
+            suiteSyncStorageRepository: { get: () => storage, set: null, delete: null },
             allocateOwnerQuota: () => Promise.resolve(err(allocationError)),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
@@ -153,6 +154,9 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
             error: allocationError,
             device,
         });
+        // The quota is still exhausted, so resyncing would only replay writes into the same
+        // rejection instead of leaving the error to be surfaced.
+        expect(forceResync).not.toHaveBeenCalled();
     });
 
     it('forwards RelayOther errors to the async error handler', async () => {
@@ -160,7 +164,6 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         const relayError = { type: 'RelayOther', message: 'relay failed' } as const;
 
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
-            getRelayUrl: null,
             suiteSyncStorageRepository: { get: null, set: null, delete: null },
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: null,

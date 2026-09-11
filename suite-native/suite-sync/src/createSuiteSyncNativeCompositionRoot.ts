@@ -1,4 +1,8 @@
-import { createConsole, createConsoleFormatter } from '@evolu/common';
+import {
+    createConsole,
+    createConsoleFormatter,
+    createOwnerWebSocketTransport,
+} from '@evolu/common';
 import { createRun } from '@evolu/react-native';
 import { createEvoluDeps } from '@evolu/react-native/expo-sqlite';
 import { type Dispatch } from '@reduxjs/toolkit';
@@ -43,6 +47,7 @@ export const createSuiteSyncNativeCompositionRoot = (
         ...deps,
         createSuiteStorage: createEvoluStorageFactory({
             evoluInstanceFactory: createEvoluInstanceFactory({ run }),
+            createOwnerWebSocketTransport,
         }),
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
         getIsTorEnabled: () => false,

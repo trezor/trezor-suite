@@ -1,3 +1,4 @@
+import { createOwnerWebSocketTransport } from '@evolu/common';
 import { createRun, createEvoluDeps as createWebEvoluDeps } from '@evolu/web';
 import { type Dispatch } from '@reduxjs/toolkit';
 
@@ -36,6 +37,7 @@ export const createEvoluDeps = (deps: EvoluDepsFactoryDeps): EvoluDeps => {
     const run = createRun(evoluDeps);
     const createSuiteStorage = createEvoluStorageFactory({
         evoluInstanceFactory: createEvoluInstanceFactory({ run }),
+        createOwnerWebSocketTransport,
     });
     const subscribeError: SubscribeSuiteSyncInternalErrorHandler =
         suiteSyncInternalErrorHandler => {
