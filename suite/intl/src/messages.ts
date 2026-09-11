@@ -9922,6 +9922,11 @@ export const messages = defineMessages({
         id: 'TR_PHISHING_TOOLTIP_TRC10_TRANSFER',
         defaultMessage: 'This TRC10 token transfer may be a scam. <a>Learn more</a>',
     },
+    TR_PHISHING_TOOLTIP_UNSOLICITED_ASSET_OFFER: {
+        id: 'TR_PHISHING_TOOLTIP_UNSOLICITED_ASSET_OFFER',
+        defaultMessage:
+            'Someone offered this balance to your account. Nothing has been received, and claiming it costs a reserve. <a>Learn more</a>',
+    },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
         defaultMessage:
@@ -9951,6 +9956,11 @@ export const messages = defineMessages({
         id: 'TR_PHISHING_BANNER_TRC10_TRANSFER',
         defaultMessage:
             'Proceed with caution. This transaction is a TRC10 transfer and may be suspicious. <a>Learn more</a>',
+    },
+    TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER: {
+        id: 'TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER',
+        defaultMessage:
+            'Proceed with caution. Someone offered this balance to your account without being asked. Nothing has been received unless you claim it, and claiming locks up a reserve. <a>Learn more</a>',
     },
     TR_HIDE_TRANSACTION: {
         id: 'TR_HIDE_TRANSACTION',
@@ -11634,6 +11644,58 @@ export const messages = defineMessages({
     TR_STELLAR_TRUSTLINE_REMOVED: {
         id: 'TR_STELLAR_TRUSTLINE_REMOVED',
         defaultMessage: 'Removed trustline to {assetCode}',
+    },
+    TR_STELLAR_TX_ACCOUNT_MERGE: {
+        id: 'TR_STELLAR_TX_ACCOUNT_MERGE',
+        defaultMessage: 'Merged account',
+    },
+    TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED: {
+        id: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED',
+        defaultMessage: 'Claimed balance',
+    },
+    TR_STELLAR_TX_CLAIMABLE_BALANCE_OFFERED: {
+        id: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_OFFERED',
+        defaultMessage: 'Balance offered to claim',
+    },
+    TR_STELLAR_TX_CLAIMABLE_BALANCE_CREATED: {
+        id: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CREATED',
+        defaultMessage: 'Offered balance to claim',
+    },
+    TR_STELLAR_TX_DATA_ENTRY: {
+        id: 'TR_STELLAR_TX_DATA_ENTRY',
+        defaultMessage: 'Updated account data',
+    },
+    TR_STELLAR_TX_FOOTPRINT: {
+        id: 'TR_STELLAR_TX_FOOTPRINT',
+        defaultMessage: 'Extended contract data rent',
+    },
+    TR_STELLAR_TX_LIQUIDITY_POOL: {
+        id: 'TR_STELLAR_TX_LIQUIDITY_POOL',
+        defaultMessage: 'Liquidity pool operation',
+    },
+    TR_STELLAR_TX_OFFER: {
+        id: 'TR_STELLAR_TX_OFFER',
+        defaultMessage: 'Managed an offer',
+    },
+    TR_STELLAR_TX_TRUSTLINE_UPDATED: {
+        id: 'TR_STELLAR_TX_TRUSTLINE_UPDATED',
+        defaultMessage: 'Updated trustline',
+    },
+    TR_STELLAR_TX_SEQUENCE_BUMPED: {
+        id: 'TR_STELLAR_TX_SEQUENCE_BUMPED',
+        defaultMessage: 'Bumped account sequence',
+    },
+    TR_STELLAR_TX_SET_OPTIONS: {
+        id: 'TR_STELLAR_TX_SET_OPTIONS',
+        defaultMessage: 'Changed account settings',
+    },
+    TR_STELLAR_TX_SPONSORSHIP: {
+        id: 'TR_STELLAR_TX_SPONSORSHIP',
+        defaultMessage: 'Changed reserve sponsorship',
+    },
+    TR_STELLAR_TX_TRUSTLINE_FLAGS: {
+        id: 'TR_STELLAR_TX_TRUSTLINE_FLAGS',
+        defaultMessage: 'Changed trustline authorization',
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',

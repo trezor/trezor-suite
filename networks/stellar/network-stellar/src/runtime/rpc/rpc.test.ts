@@ -5,6 +5,7 @@ import {
     STELLAR_RPC_MAX_LEDGER_KEYS,
     STELLAR_RPC_SUBMIT_POLL_INTERVAL_MS,
     STELLAR_RPC_SUBMIT_POLL_TIMEOUT_MS,
+    STELLAR_RPC_SUBMIT_RETRY_ATTEMPTS,
     STELLAR_RPC_SUBMIT_RETRY_DELAY_MS,
 } from '../../constants';
 import * as fixtures from './__fixtures__/rpc.fixture';
@@ -314,6 +315,48 @@ describe('rpc/submit', () => {
 
         await expect(submitted).resolves.toBe(HASH);
         expect(sendTransaction).toHaveBeenCalledTimes(2);
+        jest.useRealTimers();
+    });
+
+    it('reports a send a congested node never queued, rather than the hash', async () => {
+        jest.useFakeTimers();
+        const getTransaction = jest.fn().mockResolvedValue(got('NOT_FOUND'));
+        const server = asServer({
+            sendTransaction: () => Promise.resolve(sent('TRY_AGAIN_LATER')),
+            getTransaction,
+        });
+
+        // Advancing the timers is part of the awaited expression, so the rejection it triggers is
+        // never left unhandled
+        await expect(
+            Promise.all([
+                submitTransaction({ server, transaction }),
+                jest.advanceTimersByTimeAsync(
+                    STELLAR_RPC_SUBMIT_RETRY_DELAY_MS * STELLAR_RPC_SUBMIT_RETRY_ATTEMPTS * 2,
+                ),
+            ]),
+        ).rejects.toThrow('Stellar RPC did not accept the transaction: TRY_AGAIN_LATER');
+        // Nothing was queued, so there was nothing to poll for
+        expect(getTransaction).not.toHaveBeenCalled();
+        jest.useRealTimers();
+    });
+
+    it('keeps polling through a failing poll, which says nothing about the transaction', async () => {
+        jest.useFakeTimers();
+        const getTransaction = jest
+            .fn()
+            .mockRejectedValueOnce(new Error('ECONNRESET'))
+            .mockResolvedValueOnce(got('SUCCESS'));
+        const server = asServer({
+            sendTransaction: () => Promise.resolve(sent('PENDING')),
+            getTransaction,
+        });
+
+        const submitted = submitTransaction({ server, transaction });
+        await jest.advanceTimersByTimeAsync(STELLAR_RPC_SUBMIT_POLL_INTERVAL_MS);
+
+        await expect(submitted).resolves.toBe(HASH);
+        expect(getTransaction).toHaveBeenCalledTimes(2);
         jest.useRealTimers();
     });
 

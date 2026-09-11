@@ -1,3 +1,4 @@
+export * from './balances';
 export * from './build';
 export * from './decodeContractCall';
 export * from './group';

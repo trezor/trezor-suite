@@ -1,7 +1,11 @@
 import type { AccountInfo, MessageTypes, TokenInfo } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
-import { STELLAR_CONTRACT_TOKENS, STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import {
+    STELLAR_BASE_RESERVE,
+    STELLAR_CONTRACT_TOKENS,
+    STELLAR_DECIMALS,
+} from '@trezor/network-stellar/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import { BigNumber } from '@trezor/utils';
 
@@ -14,7 +18,12 @@ export const getAccountInfo = async (
     isTestnet: boolean,
 ) => {
     const { payload } = request;
-    const baseReserve = new BigNumber(await request.getBaseReserve());
+    // The reserve has changed once in the network's history, so a ledger-head read that fails
+    // must not make the account unloadable — the protocol default holds until it changes again.
+    // The worker's own read stays strict, so a later request still picks up the real value.
+    const baseReserve = new BigNumber(
+        await request.getBaseReserve().catch(() => STELLAR_BASE_RESERVE),
+    );
 
     // initial state (basic)
     const account: AccountInfo = {
@@ -239,13 +248,13 @@ export const getAccountInfo = async (
     };
 
     account.history.transactions = await Promise.all(
-        pageGroups.map(async ({ operations }) => {
+        pageGroups.map(async ({ operations, effects }) => {
             try {
                 // Resolved from the joined response, so this does not hit the network.
                 const rawTx = await operations[0].transaction();
 
                 return utils.transformTransaction(
-                    identifyTransaction(operations, rawTx),
+                    identifyTransaction(operations, rawTx, effects),
                     payload.descriptor,
                     tokenMetadata,
                 );

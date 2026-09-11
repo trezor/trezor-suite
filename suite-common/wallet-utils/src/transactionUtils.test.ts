@@ -520,6 +520,39 @@ describe('transaction utils', () => {
             });
         });
 
+        // Kept out of the shared `analyzeTransactions` fixtures: packages/suite derives its
+        // `onBlock` cases from that array by index, so adding an entry there shifts every
+        // expectation after it.
+        describe('a block with no hash to identify it', () => {
+            const tx = (blockHeight: number, txid: string) => ({ blockHeight, txid }) as any;
+
+            it('adds a second transaction that landed in the same block', () => {
+                const result = analyzeTransactions(
+                    [tx(4, '4b'), tx(4, '4a'), tx(3, '3')],
+                    [tx(4, '4a'), tx(3, '3')],
+                    { blockHeight: 0 },
+                );
+
+                expect(result).toEqual({
+                    newTransactions: [tx(4, '4b')],
+                    add: [tx(4, '4b')],
+                    remove: [],
+                });
+            });
+
+            it('does not add a transaction it already knows', () => {
+                const result = analyzeTransactions(
+                    [tx(4, '4a'), tx(3, '3')],
+                    [tx(4, '4a'), tx(3, '3')],
+                    {
+                        blockHeight: 0,
+                    },
+                );
+
+                expect(result).toEqual({ newTransactions: [], add: [], remove: [] });
+            });
+        });
+
         fixtures.analyzeTransactionsPrepending.forEach(f => {
             it(`analyzeTransactions: ${f.description}`, () => {
                 expect(

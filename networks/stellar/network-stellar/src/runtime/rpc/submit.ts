@@ -81,13 +81,16 @@ const pollForApplyResult = async (server: StellarRpcServer, hash: string) => {
     const deadline = Date.now() + STELLAR_RPC_SUBMIT_POLL_TIMEOUT_MS;
 
     for (;;) {
-        const result = await server.getTransaction(hash);
+        // A poll that fails says nothing about the transaction: the node accepted it, so a proxy
+        // hiccup one second later must not be reported as a failed send. Only a `FAILED` result
+        // is a failure; anything else keeps polling until the budget runs out.
+        const result = await server.getTransaction(hash).catch(() => undefined);
 
-        if (result.status === rpc.Api.GetTransactionStatus.FAILED) {
+        if (result?.status === rpc.Api.GetTransactionStatus.FAILED) {
             throw toSubmitError(result.resultXdr);
         }
 
-        if (result.status === rpc.Api.GetTransactionStatus.SUCCESS || Date.now() >= deadline) {
+        if (result?.status === rpc.Api.GetTransactionStatus.SUCCESS || Date.now() >= deadline) {
             return hash;
         }
 
@@ -109,6 +112,17 @@ export const submitTransaction = async ({
 
     if (response.status === 'ERROR') {
         throw toSubmitError(response.errorResult, response);
+    }
+
+    // `PENDING` and `DUPLICATE` are the two statuses that mean the node holds the transaction and
+    // there is something to poll for. A congested node that never queued it after every retry has
+    // nothing — polling would spend the whole budget on `NOT_FOUND` and then hand back the hash,
+    // reporting a send that never happened.
+    if (response.status !== 'PENDING' && response.status !== 'DUPLICATE') {
+        throw Object.assign(
+            new Error(`Stellar RPC did not accept the transaction: ${response.status}`),
+            { cause: response },
+        );
     }
 
     return pollForApplyResult(server, response.hash);

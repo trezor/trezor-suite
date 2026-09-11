@@ -733,7 +733,69 @@ export const isUnknownTxPhishingFixtures = [
     },
 ];
 
+const STELLAR_DEFINITIONS = {
+    coin: { error: false, isLoading: false, data: [] as string[] },
+    nft: { error: false, isLoading: false, data: [] as string[] },
+} as TokenDefinitions;
+
 export const isPhishingTransactionFixtures = [
+    {
+        // The swap that used to arrive as an amount-less `unknown` and be flagged UNKNOWN_TX
+        testName: 'a stellar swap of lumens for an uncurated asset is not phishing',
+        transaction: {
+            symbol: 'xlm',
+            type: 'self',
+            amount: '10000000',
+            amountInFiat: '1.5',
+            tokens: [
+                {
+                    type: 'recv',
+                    amount: '2575853446',
+                    standard: 'STELLAR-CLASSIC',
+                    contract: 'ACT-GAHHULDPDVGB5WS5PH7BCGLJ7ZHECDBIIMKB62UPVDUOCHNFL7HX3FS7',
+                },
+            ],
+            internalTransfers: [],
+        } as unknown as TransactionWithFiatAmount,
+        tokenDefinitions: STELLAR_DEFINITIONS,
+        result: false,
+    },
+    {
+        // A stranger naming the account as a claimant moves nothing, which is what
+        // unsolicited-asset spam looks like on Stellar. It must stay flagged.
+        testName: 'a stellar claimable balance offered by a stranger stays flagged',
+        transaction: {
+            symbol: 'xlm',
+            type: 'recv',
+            amount: '0',
+            tokens: [],
+            internalTransfers: [],
+            stellarSpecific: {
+                feeSource: 'GBUV66LXXULKASZ5FSDJEY42HUWIBDF4MWSVDBUJLZKCFYSWT5SDPOQB',
+                operationType: 'createClaimableBalance',
+                claimableBalanceOffer: { isClaimant: true, offeredAmount: '4347826' },
+            },
+        } as unknown as TransactionWithFiatAmount,
+        tokenDefinitions: STELLAR_DEFINITIONS,
+        result: true,
+    },
+    {
+        // A set-options or a pool trustline moves nothing and is named, not undecodable
+        testName: 'a named stellar operation that moved nothing is not phishing',
+        transaction: {
+            symbol: 'xlm',
+            type: 'self',
+            amount: '0',
+            tokens: [],
+            internalTransfers: [],
+            stellarSpecific: {
+                feeSource: 'GBUV66LXXULKASZ5FSDJEY42HUWIBDF4MWSVDBUJLZKCFYSWT5SDPOQB',
+                operationType: 'setOptions',
+            },
+        } as unknown as TransactionWithFiatAmount,
+        tokenDefinitions: STELLAR_DEFINITIONS,
+        result: false,
+    },
     {
         testName: 'legit tx with known token',
         transaction: {

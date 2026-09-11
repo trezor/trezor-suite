@@ -747,6 +747,7 @@ export const analyzeTransactions = (
 
     // make sure the known transactions are sorted properly
     const knownSorted = [...knownRest].sort(sortByBlockHeight);
+    const knownTxids = new Set(knownSorted.map(({ txid }) => txid));
     // run thru all fresh txs
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;
@@ -779,6 +780,22 @@ export const analyzeTransactions = (
                 }
                 // known tx is on the same height
                 if (kTx.blockHeight === height) {
+                    // Stellar reports no block hash, so an equal one cannot mean "the same
+                    // block" — it only means neither side said. A five-second ledger close is
+                    // long enough for two of the account's transactions, and the txid is then
+                    // the only thing that tells a rollback from a second arrival. This one is an
+                    // addition: the known transaction it shares the block with stays, and stays
+                    // available to match the next fresh transaction.
+                    if (
+                        kTx.blockHash === undefined &&
+                        tx.blockHash === undefined &&
+                        !knownTxids.has(tx.txid)
+                    ) {
+                        addTxs.push(tx);
+                        newTxs.push(tx);
+                        break;
+                    }
+
                     firstKnownIndex = index + 1;
                     // known tx changed (rollback)
                     if (kTx.blockHash !== tx.blockHash) {

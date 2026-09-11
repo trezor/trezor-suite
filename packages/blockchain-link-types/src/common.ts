@@ -46,6 +46,32 @@ export interface StellarContractCallData {
     authorizedCalls: StellarAuthorizedCallData[];
 }
 
+/**
+ * What a Stellar transaction did, for a record whose amounts were read from its effects rather
+ * than from an operation Suite decodes field by field. Kinds that read the same to a holder share
+ * one label — the three offer types, the sponsorship pair, the two footprint operations.
+ */
+export type StellarOperationType =
+    | 'accountMerge'
+    | 'allowTrust'
+    | 'bumpSequence'
+    | 'changeTrust'
+    | 'claimClaimableBalance'
+    | 'clawback'
+    | 'createAccount'
+    | 'createClaimableBalance'
+    | 'footprint'
+    | 'inflation'
+    | 'invokeHostFunction'
+    | 'liquidityPool'
+    | 'manageData'
+    | 'offer'
+    | 'pathPayment'
+    | 'payment'
+    | 'setOptions'
+    | 'sponsorship'
+    | 'trustLineFlags';
+
 export type TokenStandard =
     | 'TRC10'
     | 'ERC20'
@@ -294,10 +320,17 @@ export interface Transaction {
     stellarSpecific?: {
         memo?: string;
         feeSource: string; // who paid the fee for the transaction
-        operationType?: 'changeTrust';
+        // Mirrors `StellarOperationType` in @trezor/network-stellar, which this package cannot
+        // import — the same arrangement as `StellarContractCallData`.
+        operationType?: StellarOperationType;
         changeTrust?: {
             assetCode: string;
             isRemoval: boolean;
+        };
+        claimableBalanceOffer?: {
+            /** The account is only a claimant: the value arrives when it claims, not now. */
+            isClaimant: boolean;
+            offeredAmount: string;
         };
         contractCall?: StellarContractCallData;
     };

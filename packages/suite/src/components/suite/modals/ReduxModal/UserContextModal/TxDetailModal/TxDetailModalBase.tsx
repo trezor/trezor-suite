@@ -37,6 +37,8 @@ const getPhishingBannerTranslationId = (detectorId?: PhishingDetectorId) => {
             return 'TR_PHISHING_BANNER_ZERO_AMOUNT';
         case 'TRC10_TRANSFER':
             return 'TR_PHISHING_BANNER_TRC10_TRANSFER';
+        case 'UNSOLICITED_ASSET_OFFER':
+            return 'TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER';
         default:
             return 'TR_ZERO_PHISHING_BANNER';
     }

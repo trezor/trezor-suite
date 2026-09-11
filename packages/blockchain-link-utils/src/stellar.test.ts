@@ -10,7 +10,7 @@ describe('stellar/utils', () => {
             it(description, () => {
                 const result = transformTransaction(
                     // @ts-expect-error Fixtures don't fully implement the Horizon interfaces.
-                    identifyTransaction(input.operations, input.tx),
+                    identifyTransaction(input.operations, input.tx, input.effects ?? []),
                     input.descriptor,
                     {},
                 );

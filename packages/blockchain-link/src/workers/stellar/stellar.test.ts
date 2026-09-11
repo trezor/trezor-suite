@@ -33,6 +33,10 @@ const mockState: {
     ledgerEntriesError?: unknown;
     operationsError?: unknown;
     operationRecords: unknown[];
+    effectsError?: unknown;
+    ledgerHeadError?: unknown;
+    effectRecords: unknown[];
+    effectsCursor?: string;
     joinedApplied?: boolean;
     sep41Tokens: Sep41TokenMock[];
     readContractIds?: string[];
@@ -40,7 +44,13 @@ const mockState: {
     horizonBalances: unknown[];
     /** Merged into the Horizon account record, for the RPC-outage fallback. */
     horizonAccount?: Record<string, unknown>;
-} = { operationRecords: [], sep41Tokens: [], ledgerEntries: [], horizonBalances: [] };
+} = {
+    operationRecords: [],
+    effectRecords: [],
+    sep41Tokens: [],
+    ledgerEntries: [],
+    horizonBalances: [],
+};
 
 const mockNotFoundError = () => new NotFoundError('Not Found', { status: 404 });
 
@@ -102,6 +112,46 @@ const sacOperation = (assetBalanceChanges: unknown[]) => ({
     transaction: () => Promise.resolve(mockTransaction),
 });
 
+// Horizon reports a path payment as an operation carrying both legs of the conversion.
+const pathPaymentOperation = () => ({
+    id: '275308962747973633',
+    paging_token: '275308962747973633',
+    type: 'path_payment_strict_send',
+    transaction_hash: TX_HASH,
+    source_account: DESCRIPTOR,
+    from: DESCRIPTOR,
+    to: DESCRIPTOR,
+    source_asset_type: 'native',
+    source_amount: '1.0000000',
+    asset_type: 'credit_alphanum4',
+    asset_code: 'KALE',
+    asset_issuer: ASSET_ISSUER,
+    amount: '257.5853446',
+    destination_min: '255.0000000',
+    path: [],
+    transaction: () => Promise.resolve(mockTransaction),
+});
+
+const accountMergeOperation = () => ({
+    id: '275308962747973633',
+    paging_token: '275308962747973633',
+    type: 'account_merge',
+    transaction_hash: TX_HASH,
+    source_account: DESCRIPTOR,
+    account: DESCRIPTOR,
+    into: OTHER_ACCOUNT,
+    transaction: () => Promise.resolve(mockTransaction),
+});
+
+const accountDebitedEffect = (amount: string) => ({
+    id: '275308962747973633-1',
+    paging_token: '275308962747973633-1',
+    account: DESCRIPTOR,
+    type: 'account_debited',
+    asset_type: 'native',
+    amount,
+});
+
 const mint = (amount: string) => ({
     asset_type: 'credit_alphanum4',
     asset_code: 'KALE',
@@ -132,15 +182,18 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
                     rpc: {
                         // No header means the protocol base reserve is used, which is what
                         // Horizon reported for these fixtures.
-                        _getLatestLedger: () =>
-                            Promise.resolve({
+                        _getLatestLedger: () => {
+                            if (mockState.ledgerHeadError) throw mockState.ledgerHeadError;
+
+                            return Promise.resolve({
                                 id: 'ledgerhash',
                                 sequence: 56802294,
                                 protocolVersion: '23',
                                 closeTime: '1756900000',
                                 headerXdr: '',
                                 metadataXdr: '',
-                            }),
+                            });
+                        },
                         getLedgerEntries: () => {
                             if (mockState.ledgerEntriesError) throw mockState.ledgerEntriesError;
 
@@ -188,6 +241,27 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
 
                             return builder;
                         },
+                        effects: () => {
+                            const builder = {
+                                forAccount: () => builder,
+                                limit: () => builder,
+                                order: () => builder,
+                                cursor: (cursor: string) => {
+                                    mockState.effectsCursor = cursor;
+
+                                    return builder;
+                                },
+                                call: () => {
+                                    if (mockState.effectsError) {
+                                        throw mockState.effectsError;
+                                    }
+
+                                    return Promise.resolve({ records: mockState.effectRecords });
+                                },
+                            };
+
+                            return builder;
+                        },
                     },
                 }),
         });
@@ -201,6 +275,10 @@ describe('Stellar worker account history', () => {
         mockState.accountError = undefined;
         mockState.ledgerEntriesError = undefined;
         mockState.operationsError = undefined;
+        mockState.effectsError = undefined;
+        mockState.ledgerHeadError = undefined;
+        mockState.effectRecords = [];
+        mockState.effectsCursor = undefined;
         mockState.ledgerEntries = [{ val: accountEntry() }];
         mockState.horizonBalances = [];
         mockState.operationRecords = [];
@@ -311,6 +389,68 @@ describe('Stellar worker account history', () => {
         await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
         // Without the join, reading operation.transaction() costs one request per operation
         expect(mockState.joinedApplied).toBe(true);
+    });
+
+    it('loads the account with the protocol reserve when the ledger head is unreadable', async () => {
+        mockState.ledgerHeadError = new Error('both sources are down');
+        mockState.operationRecords = [];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        // 0.5 XLM, the value the reserve has held for all but the network's first months
+        expect(result.misc?.baseReserve).toBe('5000000');
+    });
+
+    it('reads the account effects alongside the operations', async () => {
+        mockState.operationRecords = [accountMergeOperation()];
+        mockState.effectRecords = [accountDebitedEffect('5.0000000')];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        // An operation type Suite does not decode is still described by what it moved
+        const [transaction] = result.history.transactions!;
+        expect(transaction!.type).toBe('sent');
+        expect(transaction!.amount).toBe('50000000');
+        expect(transaction!.stellarSpecific?.operationType).toBe('accountMerge');
+    });
+
+    it('reports a path payment with both legs of the conversion', async () => {
+        mockState.operationRecords = [pathPaymentOperation()];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        const [transaction] = result.history.transactions!;
+        expect(transaction!.type).toBe('self');
+        expect(transaction!.amount).toBe('10000000');
+        expect(transaction!.tokens).toEqual([
+            expect.objectContaining({ type: 'recv', amount: '2575853446' }),
+        ]);
+        expect(transaction!.stellarSpecific?.operationType).toBe('pathPayment');
+    });
+
+    it('keeps the history when the effects request fails', async () => {
+        mockState.operationRecords = [pathPaymentOperation()];
+        mockState.effectsError = new Error('Horizon is having a moment');
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        // The operation says enough on its own; effects only enrich it
+        expect(result.history.transactions).toHaveLength(1);
+        expect(result.history.transactions![0]!.type).toBe('self');
+    });
+
+    it('asks for the effects below the operation the page starts from', async () => {
+        mockState.operationRecords = [pathPaymentOperation()];
+
+        await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            page: 2,
+            pageCursor: '275308962747973699',
+        });
+
+        // Effect paging tokens are `<operation id>-<index>`, indexed from one
+        expect(mockState.effectsCursor).toBe('275308962747973699-0');
     });
 
     it('maps every balance change of a Stellar Asset Contract transfer', async () => {
