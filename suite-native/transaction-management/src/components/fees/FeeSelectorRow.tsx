@@ -65,6 +65,7 @@ export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
                         trxBurned={tronBreakdown.trxBurned}
                         areFeesLoading={tronBreakdown.areFeesLoading}
                         resourceLabel={tronBreakdown.resourceLabel}
+                        isAccountActivation={tronBreakdown.isAccountActivation}
                     />
                 ) : (
                     <FeeSummaryRow
