@@ -1072,6 +1072,7 @@ describe('recomposeAndSignTxThunk', () => {
                             type: 'final',
                             outputs: [
                                 {
+                                    address: 'address',
                                     amount: '10000000',
                                 },
                             ],
@@ -1106,11 +1107,13 @@ describe('recomposeAndSignTxThunk', () => {
             composedLevels: {
                 outputs: [
                     {
+                        address: 'address',
                         amount: '10000000',
                     },
                 ],
                 type: 'final',
             },
+            destinationTag: undefined,
             formattedMaxAmount: '0.1',
             type: 'exchange',
         });
@@ -1121,6 +1124,99 @@ describe('recomposeAndSignTxThunk', () => {
             paymentRequests: mockPaymentRequests,
         });
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('should use the payment output amount as formattedMaxAmount when send-max has extra outputs', async () => {
+        const { store, account, tradingFormState } = getMocks(
+            {
+                composedTransactionInfo: {
+                    ...mockComposedTransactionInfo,
+                },
+            },
+            {
+                minor_version: 12,
+                patch_version: 1,
+            },
+        );
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: {
+                txid: 'txid-with-payment-requests',
+            },
+        });
+
+        jest.mocked(tradingThunks.createPaymentRequestsThunk).mockImplementationOnce(
+            createThunk(
+                tradingThunks.createPaymentRequestsThunk.typePrefix,
+                (_, { fulfillWithValue }) => fulfillWithValue([]),
+            ),
+        );
+
+        const paymentAddress = 'address';
+        const composedOutputs = [
+            {
+                amount: '0',
+                script_type: 'PAYTOOPRETURN' as const,
+                op_return_data: 'deadbeef',
+            },
+            {
+                amount: '20000000',
+                address: paymentAddress,
+            },
+            {
+                amount: '1000',
+                address_n: [44, 0, 0, 1, 0],
+            },
+        ];
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            outputs: composedOutputs,
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account: {
+                    ...account,
+                    networkType: 'bitcoin' as const,
+                } as Account,
+                address: paymentAddress,
+                amount: '0.1',
+                setMaxOutputId: 0,
+                isSlip24Active: true,
+                tradingFormState: {
+                    ...tradingFormState,
+                    send: {
+                        amount: '0.1',
+                        symbol: account.symbol,
+                        cryptoId: undefined,
+                        accountKey: undefined,
+                    },
+                },
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(tradingThunks.createPaymentRequestsThunk).toHaveBeenCalledWith({
+            account,
+            composedLevels: {
+                outputs: composedOutputs,
+                type: 'final',
+            },
+            destinationTag: undefined,
+            formattedMaxAmount: '0.2',
+            type: 'exchange',
+        });
     });
 
     it('should not create payment requests when SLIP24 is not active', async () => {
