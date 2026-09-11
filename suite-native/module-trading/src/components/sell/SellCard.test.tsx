@@ -79,9 +79,6 @@ describe('SellCard', () => {
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
         ).toHaveTextContent(/USDC/);
-        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
-            'Ethereum',
-        );
         expect(
             getByLabelText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
         ).toHaveDisplayValue('100');

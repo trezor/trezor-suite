@@ -42,7 +42,6 @@ export const ExchangeSendAssetPicker = () => {
         selectedValue,
         setSelectedValue,
         analyticsParameter: 'cryptoFrom',
-        amountField: 'sendCryptoAmount',
         getAssetChangedAction: exchangeActions.sendAssetChanged,
         getSetTradingAccountKeyAction: tradingExchangeActions.setTradingAccountKey,
         collision: SEND_ASSET_COLLISION,
@@ -76,14 +75,13 @@ export const ExchangeSendAssetPicker = () => {
 
     return (
         <HStack justifyContent="space-between" alignItems="center">
+            <ExchangeSendAmountInput ref={inputRef} onSelectAsset={showAssetsScreenAndFocusInput} />
             <SelectTradeableAssetButton
                 onPress={openAssetPicker}
                 selectedAsset={selectedValue}
-                buttonColorProps={{ intent: 'neutral', priority: 'secondary' }}
                 caret
                 testID={ASSET_PICKER_TEST_ID}
             />
-            <ExchangeSendAmountInput ref={inputRef} onSelectAsset={showAssetsScreenAndFocusInput} />
         </HStack>
     );
 };

@@ -85,9 +85,6 @@ describe('ExchangeCard', () => {
             ),
         ).toHaveTextContent(/USDC/);
         expect(
-            within(sendSection).getByLabelText(getTranslation('moduleTrading.networkName')),
-        ).toHaveTextContent('Ethereum');
-        expect(
             within(sendSection).getByLabelText(
                 getTranslation('moduleTrading.selectCoinToSell.amountLabel'),
             ),
@@ -101,9 +98,6 @@ describe('ExchangeCard', () => {
                 getTranslation('moduleTrading.selectCoin.buttonTitle'),
             ),
         ).toHaveTextContent(/ETH/);
-        expect(
-            within(receiveSection).getByLabelText(getTranslation('moduleTrading.networkName')),
-        ).toHaveTextContent('Base');
         expect(
             within(receiveSection).getByLabelText(
                 getTranslation('moduleTrading.selectCoin.amountLabel'),

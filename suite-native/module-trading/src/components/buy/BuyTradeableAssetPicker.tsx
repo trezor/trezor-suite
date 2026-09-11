@@ -48,7 +48,6 @@ export const BuyTradeableAssetPicker = () => {
         selectedValue,
         setSelectedValue,
         analyticsParameter: 'cryptoTo',
-        amountField: 'cryptoValue',
         getAssetChangedAction: buyActions.assetChanged,
         getAssetTokenChangedAction: buyActions.assetTokenChanged,
     });
@@ -87,21 +86,21 @@ export const BuyTradeableAssetPicker = () => {
     if (hasBitcoinOnlyFirmware) {
         return (
             <HStack justifyContent="space-between" alignItems="center">
-                <SelectTradeableAssetButton onPress={noop} selectedAsset={btcAsset} />
                 <BuyCryptoAmountInput showAssetsSheet={noop} />
+                <SelectTradeableAssetButton onPress={noop} selectedAsset={btcAsset} />
             </HStack>
         );
     }
 
     return (
         <HStack justifyContent="space-between" alignItems="center">
+            <BuyCryptoAmountInput ref={inputRef} showAssetsSheet={showAssetsScreenAndFocusInput} />
             <SelectTradeableAssetButton
                 onPress={showAssetsScreen}
                 selectedAsset={selectedValue}
                 caret
                 testID={ASSET_PICKER_TEST_ID}
             />
-            <BuyCryptoAmountInput ref={inputRef} showAssetsSheet={showAssetsScreenAndFocusInput} />
         </HStack>
     );
 };

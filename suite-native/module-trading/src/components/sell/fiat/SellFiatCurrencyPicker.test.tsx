@@ -95,7 +95,7 @@ describe('SellFiatCurrencyPicker', () => {
         await fireEvent.press(getByText('PLN'));
         await act(() => Promise.resolve());
 
-        expect(form.getValues('fiatStringAmount')).toBeUndefined();
+        expect(form.getValues('fiatStringAmount')).toBe('100');
         expect(dispatchSpy).toHaveBeenCalledWith(sellActions.fiatCurrencyChanged());
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingParameterChangedEvent.name,

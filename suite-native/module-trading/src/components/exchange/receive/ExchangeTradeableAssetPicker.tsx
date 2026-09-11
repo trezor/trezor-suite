@@ -62,14 +62,13 @@ export const ExchangeTradeableAssetPicker = () => {
 
     return (
         <HStack justifyContent="space-between" alignItems="center">
+            <ExchangeReceiveAmountInput showAssetsSheet={showAssetsScreen} />
             <SelectTradeableAssetButton
                 onPress={showAssetsScreen}
                 selectedAsset={selectedValue}
-                buttonColorProps={{ intent: 'neutral', priority: 'secondary' }}
                 caret
                 testID={ASSET_PICKER_TEST_ID}
             />
-            <ExchangeReceiveAmountInput showAssetsSheet={showAssetsScreen} />
         </HStack>
     );
 };

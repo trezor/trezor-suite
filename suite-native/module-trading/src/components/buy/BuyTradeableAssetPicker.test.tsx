@@ -151,7 +151,7 @@ describe('BuyTradeableAssetPicker', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             await renderTradeableAssetPicker();
 
-            expect(form.getValues('cryptoValue')).toBeUndefined();
+            expect(form.getValues('cryptoValue')).toBe('0.1');
             expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetChanged());
             expect(mockSetParams).toHaveBeenCalledWith({
                 selectedTradeableAssetCryptoId: undefined,
@@ -181,7 +181,7 @@ describe('BuyTradeableAssetPicker', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             await renderTradeableAssetPicker();
 
-            expect(form.getValues('cryptoValue')).toBeUndefined();
+            expect(form.getValues('cryptoValue')).toBe('0.1');
             expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetTokenChanged());
             expect(dispatchSpy).not.toHaveBeenCalledWith(buyActions.assetChanged());
             expect(reportMock).toHaveBeenCalledWith({

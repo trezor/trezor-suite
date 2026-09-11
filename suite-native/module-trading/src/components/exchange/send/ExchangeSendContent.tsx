@@ -12,8 +12,8 @@ import {
 
 import { ExchangeSendAccountCryptoBalance } from './ExchangeSendAccountCryptoBalance';
 import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';
+import { ExchangeSendFiatAmountBadge } from './ExchangeSendFiatAmountBadge';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
-import { TradeableAssetNetworkInfo } from '../../general/TradeableAssetNetworkInfo';
 
 type ExchangeNetworkReserveBannerProps = {
     symbol: NetworkSymbol;
@@ -58,7 +58,7 @@ export const ExchangeSendContent = () => {
         <>
             <ExchangeSendAssetPicker />
             <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
-                <TradeableAssetNetworkInfo asset={asset} />
+                <ExchangeSendFiatAmountBadge />
                 <ExchangeSendAccountCryptoBalance />
             </HStack>
             {!!symbol && (

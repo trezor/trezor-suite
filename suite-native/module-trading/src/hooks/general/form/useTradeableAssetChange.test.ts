@@ -88,13 +88,12 @@ describe('useTradeableAssetChange', () => {
         expect(setSelectedValue).not.toHaveBeenCalled();
     });
 
-    it('should clear the amount and dispatch the base action on a cross-network change', async () => {
+    it('should keep the amount and dispatch the base action on a cross-network change', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const form = createMockForm();
         const changeAsset = await renderChangeAsset({
             form,
             selectedValue: btcAsset,
-            amountField: 'sendCryptoAmount',
             getAssetChangedAction: exchangeActions.sendAssetChanged,
             getAssetTokenChangedAction: exchangeActions.receiveTokenChanged,
         });
@@ -102,9 +101,7 @@ describe('useTradeableAssetChange', () => {
         changeAsset(usdcAsset);
 
         expect(setSelectedValue).toHaveBeenCalledWith(usdcAsset);
-        expect(form.setValue).toHaveBeenCalledWith('sendCryptoAmount', undefined, {
-            shouldValidate: true,
-        });
+        expect(form.setValue).not.toHaveBeenCalled();
         expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.sendAssetChanged());
         expect(dispatchSpy).not.toHaveBeenCalledWith(exchangeActions.receiveTokenChanged());
     });

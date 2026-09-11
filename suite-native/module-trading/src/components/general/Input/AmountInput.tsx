@@ -27,7 +27,6 @@ export const AMOUNT_INPUT_TEST_ID = '@trading/amountInput/wrapper';
 
 const boxStyle = prepareNativeStyle(() => ({
     flex: 1,
-    alignItems: 'flex-end',
     paddingLeft: 0,
     marginLeft: 0,
     overflow: 'visible',
@@ -37,7 +36,6 @@ const inputStyle = prepareNativeStyle<{ hasError: boolean; fontSize: number }>(
     ({ colors, typography }, { hasError, fontSize }) => ({
         ...typography['body-md'],
         color: hasError ? colors.contentCritical : colors.contentPrimary,
-        textAlign: 'right',
         fontSize,
         lineHeight: Math.floor(fontSize * FONT_TO_LINE_HEIGHT_RATIO),
         minWidth: MIN_INPUT_WIDTH,

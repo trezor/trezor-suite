@@ -182,7 +182,7 @@ describe('SellSendAssetPicker', () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         await renderSellSendAssetPicker();
 
-        expect(form.getValues('cryptoStringAmount')).toBeUndefined();
+        expect(form.getValues('cryptoStringAmount')).toBe('1');
         expect(dispatchSpy).toHaveBeenCalledWith(sellActions.sendAssetChanged());
         expect(mockSetParams).toHaveBeenCalledWith({
             selectedMyAssetAccountKey: undefined,

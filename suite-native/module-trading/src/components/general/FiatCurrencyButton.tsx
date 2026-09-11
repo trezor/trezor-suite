@@ -14,15 +14,13 @@ export type FiatCurrencyButtonProps = {
     testID?: string;
 };
 
-const buttonStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
+const buttonStyle = prepareNativeStyle(({ colors, spacings }) => ({
     ...buttonSizeToDimensionsMap.medium,
     gap: spacings.sp8,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.elementFillNeutralSofter,
-    borderColor: colors.elementBorderNeutralSofter,
-    borderWidth: borders.widths.small,
+    backgroundColor: colors.elementFillNeutralSoft,
 }));
 
 export const FiatCurrencyButton = ({ currency, onPress, testID }: FiatCurrencyButtonProps) => {

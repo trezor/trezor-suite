@@ -25,7 +25,6 @@ type UseTradeableAssetChangeConfig<TFieldValues extends FieldValues> = {
     selectedValue: TradeableAsset | undefined;
     setSelectedValue: (asset: TradeableAsset) => void;
     analyticsParameter: TradingParameter;
-    amountField?: string;
     getAssetChangedAction: () => UnknownAction;
     getAssetTokenChangedAction?: () => UnknownAction;
     getSetTradingAccountKeyAction?: (accountKey: AccountKey) => UnknownAction;
@@ -42,7 +41,6 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
     selectedValue,
     setSelectedValue,
     analyticsParameter,
-    amountField,
     getAssetChangedAction,
     getAssetTokenChangedAction,
     getSetTradingAccountKeyAction,
@@ -91,10 +89,6 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
 
             setSelectedValue(asset);
 
-            if (amountField) {
-                clearField(amountField, true);
-            }
-
             const counterpartAsset = collision
                 ? (getValues(collision.counterpartAssetField as Path<TFieldValues>) as
                       TradeableAsset | undefined)
@@ -127,7 +121,6 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
             setSelectedValue,
             getValues,
             clearField,
-            amountField,
             collision,
             analyticsParameter,
             getAssetChangedAction,

@@ -48,9 +48,12 @@ describe('TradeableAssetButton', () => {
     });
 
     it('should render ETH icon for ETH on BASE asset', async () => {
-        const { getByText, getByLabelText } = await renderButton({ asset: ethOnBaseAsset });
+        const { getByText, getByLabelText, getByHintText } = await renderButton({
+            asset: ethOnBaseAsset,
+        });
 
         expect(getByText('ETH')).toBeTruthy();
         expect(getByLabelText('ETH')).toBeTruthy();
+        expect(getByHintText('Network Icon')).toBeTruthy();
     });
 });

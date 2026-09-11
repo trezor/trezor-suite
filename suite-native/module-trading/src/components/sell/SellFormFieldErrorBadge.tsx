@@ -1,9 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { invariant } from '@suite-common/suite-utils';
 import { selectTradingSellIsLoading } from '@suite-common/trading';
-import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import { useField, useWatch } from '@suite-native/forms';
@@ -11,21 +9,14 @@ import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
-import { type TradingRootState, selectAmountInBaseFiatCurrency } from '@suite-native/trading-state';
-import { type SellFormValues, type TradeableAsset } from '@suite-native/trading-types';
+import { type SellFormValues } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
-import { FiatAmountBadge } from '../general/FiatAmountBadge';
 
 export type SellFormFieldErrorBadgeProps = {
     fieldName: keyof SellFormValues;
-};
-
-type SellSendFiatAmountBadgeProps = {
-    amount: string;
-    asset: TradeableAsset;
 };
 
 const asNonEmptyStringValue = (value: unknown): string => (value as string) ?? '0';
@@ -90,46 +81,22 @@ const useMismatchedAmountMessage = (fieldName: keyof SellFormValues) => {
     return undefined;
 };
 
-const SellSendFiatAmountBadge = ({ amount, asset }: SellSendFiatAmountBadgeProps) => {
-    const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
-    const symbol = getSymbolFromTradeableAsset(asset);
-    invariant(symbol, 'Asset symbol is undefined');
-
-    const convertedAmount = convertStrToBaseUnit(amount, symbol);
-    invariant(convertedAmount, 'Amount could not be converted to base unit');
-
-    const fiatAmount = useSelector(
-        (state: FiatRatesRootState & WalletSettingsRootState & TradingRootState) =>
-            selectAmountInBaseFiatCurrency(state, asset, convertedAmount),
-    );
-
-    return <FiatAmountBadge amount={fiatAmount} />;
-};
-
 export const SellFormFieldErrorBadge = ({ fieldName }: SellFormFieldErrorBadgeProps) => {
     const isLoading = useSelector(selectTradingSellIsLoading);
-    const { control } = useSellFormContext();
-    const asset = useWatch({ control, name: 'sendAsset' });
 
-    const { errorMessage, hasError, value } = useField({ name: fieldName });
+    const { errorMessage, hasError } = useField({ name: fieldName });
     const mismatchedAmountMessage = useMismatchedAmountMessage(fieldName);
 
-    if (!isLoading) {
-        if (hasError) {
-            return <Badge label={errorMessage} intent="critical" size="small" />;
-        }
-
-        if (mismatchedAmountMessage) {
-            return <Badge label={mismatchedAmountMessage} intent="neutral" size="small" />;
-        }
+    if (isLoading) {
+        return null;
     }
 
-    if (fieldName === 'cryptoStringAmount') {
-        if (!value || !asset) {
-            return null;
-        }
+    if (hasError) {
+        return <Badge label={errorMessage} intent="critical" size="small" />;
+    }
 
-        return <SellSendFiatAmountBadge amount={value} asset={asset} />;
+    if (mismatchedAmountMessage) {
+        return <Badge label={mismatchedAmountMessage} intent="neutral" size="small" />;
     }
 
     return null;

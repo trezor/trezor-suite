@@ -202,7 +202,7 @@ describe('ExchangeSendAssetPicker', () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         await renderExchangeSendAssetPicker();
 
-        expect(form.getValues('sendCryptoAmount')).toBeUndefined();
+        expect(form.getValues('sendCryptoAmount')).toBe('1');
         expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.sendAssetChanged());
         expect(mockSetParams).toHaveBeenCalledWith({
             selectedMyAssetAccountKey: undefined,

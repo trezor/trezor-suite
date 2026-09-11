@@ -1,6 +1,5 @@
 import type { CryptoId } from 'invity-api';
 
-import { Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
@@ -51,15 +50,6 @@ describe('BuyFormFieldErrorBadge', () => {
         );
 
         expect(toJSON()).toBeNull();
-    });
-
-    it('should render children when there is no error in form', async () => {
-        const { getByText } = await renderBuyFormFieldErrorBadge(
-            { fieldName: 'fiatValue', children: <Text>CHILDREN</Text> },
-            tradingForm,
-        );
-
-        expect(getByText('CHILDREN')).toBeOnTheScreen();
     });
 
     it('should render error when field has error', async () => {

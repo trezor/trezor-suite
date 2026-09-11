@@ -27,8 +27,6 @@ export const BuyFiatCurrencyPicker = () => {
         }
 
         setSelectedValue(fiatCurrency);
-        form.setValue('fiatValue', undefined, { shouldValidate: true });
-        form.setValue('cryptoValue', undefined, { shouldValidate: true });
         dispatch(buyActions.fiatCurrencyChanged());
         analytics.report({
             type: events.tradingParameterChangedEvent.name,
@@ -42,12 +40,12 @@ export const BuyFiatCurrencyPicker = () => {
     return (
         <>
             <HStack justifyContent="space-between" alignItems="center">
+                <BuyFiatAmountInput />
                 <FiatCurrencyButton
                     currency={selectedValue}
                     onPress={showSheet}
                     testID={FIAT_CURRENCY_PICKER_TEST_ID}
                 />
-                <BuyFiatAmountInput />
             </HStack>
             <BuyFiatCurrencySheet
                 isVisible={isSheetVisible}

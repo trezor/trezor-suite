@@ -5,7 +5,7 @@ import { btcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
-import { ExchangeSendAmountBadge } from './ExchangeSendAmountBadge';
+import { ExchangeSendFiatAmountBadge } from './ExchangeSendFiatAmountBadge';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import {
     type PreloadedStatePartial,
@@ -14,7 +14,7 @@ import {
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
 
-describe('ExchangeSendAmountBadge', () => {
+describe('ExchangeSendFiatAmountBadge', () => {
     let form: ExchangeFormType;
 
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
@@ -23,10 +23,10 @@ describe('ExchangeSendAmountBadge', () => {
         },
     };
 
-    const renderExchangeSendAmountBadge = async (
+    const renderExchangeSendFiatAmountBadge = async (
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(<ExchangeSendAmountBadge />, {
+        await renderWithTradingProvider(<ExchangeSendFiatAmountBadge />, {
             tradeType: 'exchange',
             overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
@@ -41,7 +41,7 @@ describe('ExchangeSendAmountBadge', () => {
     });
 
     it('should display nothing when asset is not selected', async () => {
-        const { toJSON } = await renderExchangeSendAmountBadge();
+        const { toJSON } = await renderExchangeSendFiatAmountBadge();
 
         expect(toJSON()).toBeNull();
     });
@@ -54,7 +54,7 @@ describe('ExchangeSendAmountBadge', () => {
         });
 
         it('should display nothing when amount is not set', async () => {
-            const { toJSON } = await renderExchangeSendAmountBadge();
+            const { toJSON } = await renderExchangeSendFiatAmountBadge();
 
             expect(toJSON()).toBeNull();
         });
@@ -64,7 +64,7 @@ describe('ExchangeSendAmountBadge', () => {
                 form.setValue('sendCryptoAmount', '0');
             });
 
-            const { getByText } = await renderExchangeSendAmountBadge();
+            const { getByText } = await renderExchangeSendFiatAmountBadge();
 
             expect(getByText('$0.00')).toBeOnTheScreen();
         });
@@ -74,12 +74,12 @@ describe('ExchangeSendAmountBadge', () => {
                 form.setValue('sendCryptoAmount', '1234567');
             });
 
-            const { getByText } = await renderExchangeSendAmountBadge();
+            const { getByText } = await renderExchangeSendFiatAmountBadge();
 
             expect(getByText('$1,234.57')).toBeOnTheScreen();
         });
 
-        it('should display error message when field has error', async () => {
+        it('should display formatted fiat value even when field has error', async () => {
             await act(() => {
                 form.setError('sendCryptoAmount', {
                     type: 'manual',
@@ -88,24 +88,7 @@ describe('ExchangeSendAmountBadge', () => {
                 form.setValue('sendCryptoAmount', '1000');
             });
 
-            const { getByText, queryByText } = await renderExchangeSendAmountBadge();
-
-            expect(queryByText('$1.00')).toBeNull();
-            expect(getByText('VALIDATION_ERROR')).toBeOnTheScreen();
-        });
-
-        it('should display formatted fiat value when field has error, but quotes are loading', async () => {
-            await act(() => {
-                form.setError('sendCryptoAmount', {
-                    type: 'manual',
-                    message: 'VALIDATION_ERROR',
-                });
-                form.setValue('sendCryptoAmount', '1000');
-            });
-
-            const { getByText, queryByText } = await renderExchangeSendAmountBadge({
-                wallet: { trading: { exchange: { isLoading: true } } },
-            });
+            const { getByText, queryByText } = await renderExchangeSendFiatAmountBadge();
 
             expect(queryByText('VALIDATION_ERROR')).toBeNull();
             expect(getByText('$1.00')).toBeOnTheScreen();
@@ -116,7 +99,7 @@ describe('ExchangeSendAmountBadge', () => {
                 form.setValue('sendCryptoAmount', '1234567123456');
             });
 
-            const { getByText } = await renderExchangeSendAmountBadge({
+            const { getByText } = await renderExchangeSendFiatAmountBadge({
                 wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
             });
 
