@@ -119,6 +119,7 @@ export * from './transactions/hooks/useEvmPendingTxStatus';
 export * from './transactions/target/createTargets';
 export type * from './transactions/target/Target';
 export * from './transactions/transactionsActions';
+export * from './transactions/transactionsIndex';
 export * from './transactions/transactionsReducer';
 export type * from './transactions/transactionsReducerTypes';
 export * from './transactions/transactionsSelectors';
