@@ -26,9 +26,8 @@ import TrezorConnect, {
     type SignTransaction,
     type SignedTransaction,
 } from '@trezor/connect';
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- temporary diagnostic
-import { __btcUnknownTxDebug__ } from '@trezor/connect/src/utils/pathUtils';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { __btcUnknownTxDebug__ } from '@trezor/connect-core/src/utils/pathUtils';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';

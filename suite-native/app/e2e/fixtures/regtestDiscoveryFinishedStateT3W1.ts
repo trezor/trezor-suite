@@ -1,6 +1,6 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { PreloadedState } from '@suite-native/state';
-import { THP_CREDENTIALS } from '@trezor/connect/e2e/common-thp-credentials';
+import { THP_CREDENTIALS } from '@trezor/connect-core/e2e/common-thp-credentials';
 
 /**
  *  reflects state after REGTEST discovery of connected T3W1 device with `mnemonic_immune` seed from @packages/trezor-user-env-link constants.
