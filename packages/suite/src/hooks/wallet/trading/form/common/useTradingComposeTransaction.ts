@@ -26,8 +26,9 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountDescriptor, AddressDisplayOptions } from '@suite-common/wallet-types';
 import {
-    convertAmountSubunitsToUnits,
+    asAmountSubunit,
     getConvertedOrDefaultFeeInfo,
+    subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -89,7 +90,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const tradingInfo = useSelector(selectTradingInfo);
     const btcSwapComposeTemplate = tradingInfo?.config?.btcSwapComposeTemplate;
     const { translationString } = useTranslation();
-    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
 
     const { getValues, setValue, setError, clearErrors, control } =
         methods as unknown as UseFormReturn<TradingSellFormProps | TradingExchangeFormProps>;
@@ -407,7 +408,10 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             if (typeof setMaxOutputId === 'number' && result?.amount) {
                 const swapAmount = shouldSendInSats
                     ? result.amount
-                    : convertAmountSubunitsToUnits(result.amount, network.decimals);
+                    : subunitsToUnits({
+                          value: asAmountSubunit(new BigNumber(result.amount)),
+                          symbol: account.symbol,
+                      }).toString();
 
                 // Pre-update the ref to the inputKey that will result from the new amount,
                 // preventing the effect from re-running when setValue triggers a values change.
