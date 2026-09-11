@@ -1,12 +1,10 @@
 import { type CryptoId } from 'invity-api';
 
-import { type PrecomposedLevels } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 
 import {
     getApprovalStatus,
     getDexEstimationData,
-    getDisplayComposedLevels,
     getDisplayNetworkFee,
     hasEip712SignDataType,
     requiresErc20Approval,
@@ -418,57 +416,5 @@ describe('getDisplayNetworkFee', () => {
             },
         };
         expect(getDisplayNetworkFee(quote, '12345')).toBe('0');
-    });
-});
-
-describe('getDisplayComposedLevels', () => {
-    const gaslessQuote = {
-        orderId: 'test-order',
-        exchange: '1inchfusion',
-        isDex: true,
-        signData: {
-            type: 'eip712-typed-data' as const,
-            data: { primaryType: 'Order' },
-        },
-    };
-
-    const composedLevels = {
-        normal: { type: 'final', fee: '12345' },
-        high: { type: 'nonfinal', fee: '67890' },
-        custom: { type: 'error', error: 'NOT_ENOUGH_FUNDS' },
-    } as unknown as PrecomposedLevels;
-
-    it('should return undefined when composedLevels is undefined', () => {
-        expect(getDisplayComposedLevels(gaslessQuote, undefined)).toBe(undefined);
-    });
-
-    it('should return undefined when both quote and composedLevels are undefined', () => {
-        expect(getDisplayComposedLevels(undefined, undefined)).toBe(undefined);
-    });
-
-    it('should return the original levels when quote is undefined', () => {
-        expect(getDisplayComposedLevels(undefined, composedLevels)).toBe(composedLevels);
-    });
-
-    it('should return the original levels for a non-gasless quote', () => {
-        const quote = { orderId: 'test-order', isDex: false };
-        expect(getDisplayComposedLevels(quote, composedLevels)).toBe(composedLevels);
-    });
-
-    it('should return the original levels for a non-gasless DEX quote', () => {
-        const quote = {
-            orderId: 'test-order',
-            isDex: true,
-            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
-        };
-        expect(getDisplayComposedLevels(quote, composedLevels)).toBe(composedLevels);
-    });
-
-    it('should zero the fee on all levels, replacing error levels with a zero-fee nonfinal level', () => {
-        expect(getDisplayComposedLevels(gaslessQuote, composedLevels)).toEqual({
-            normal: { type: 'final', fee: '0' },
-            high: { type: 'nonfinal', fee: '0' },
-            custom: { type: 'nonfinal', fee: '0' },
-        });
     });
 });

@@ -22,9 +22,11 @@ import {
     type FeesRootState,
     selectConvertedNetworkFeeInfo,
     useFetchFeesOnce,
+    useRefetchFees,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
+import { selectIsFeeRefetchBlockedByModal } from 'src/components/wallet/Fees/feeSelectors';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
@@ -47,7 +49,10 @@ export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
     const selectedTrade = trade?.data ?? selectedQuote;
     const decimals = getAssetDecimals({ accountKey: account?.key, cryptoId: selectedTrade?.send });
 
+    const isRefetchDisabled = useSelector(selectIsFeeRefetchBlockedByModal);
+
     useFetchFeesOnce({ networkSymbol: account?.symbol });
+    useRefetchFees({ networkSymbol: account?.symbol, isDisabled: isRefetchDisabled });
 
     const { sendAddress } = selectedTrade ?? {};
     const dexTransactionData = selectedQuote?.dexTx?.data;

@@ -1,7 +1,6 @@
 import type { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import {
     buildApprovalTransactionData,
     getErc20ApproveSpender,
@@ -132,22 +131,6 @@ export const getDisplayNetworkFee = (
     fee: string | undefined,
 ): string | undefined => (hasEip712SignDataType(quote) ? '0' : fee);
 
-export const getDisplayComposedLevels = <T extends GeneralPrecomposedLevels>(
-    quote: ExchangeTrade | undefined,
-    composedLevels: T | undefined,
-): T | undefined => {
-    if (composedLevels && hasEip712SignDataType(quote)) {
-        return Object.fromEntries(
-            Object.entries(composedLevels).map(([label, level]) => [
-                label,
-                level.type === 'error' ? { type: 'nonfinal', fee: '0' } : { ...level, fee: '0' },
-            ]),
-        ) as T;
-    }
-
-    return composedLevels;
-};
-
 export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatus => {
     if (!candidateQuote) {
         return null;
@@ -209,5 +192,4 @@ export const exchangeUtils = {
     getApprovalStatus,
     getDexEstimationData,
     getDisplayNetworkFee,
-    getDisplayComposedLevels,
 };
