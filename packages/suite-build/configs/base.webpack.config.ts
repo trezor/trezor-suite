@@ -200,10 +200,6 @@ const config: webpack.Configuration = {
             'process.env.COMMITHASH': JSON.stringify(gitRevision),
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
             'process.env.IS_CODESIGN_BUILD': `"${isCodesignBuild}"`, // to keep it as string "true"/"false" and not boolean
-            // `mode` is always 'production' here, so the bundle's own `process.env.NODE_ENV` says
-            // nothing about whether this is a developer's build. Overriding NODE_ENV instead would
-            // swap React for its development build, which is not what a flag like this is for.
-            'process.env.IS_DEV_BUILD': `"${isDev}"`, // string "true"/"false", like the one above
             'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
             'process.env.TANSTACK_REACT_QUERY_DEV_TOOLS': JSON.stringify(
                 isTanstackReactQueryDevTools,
