@@ -4,8 +4,9 @@ import {
     useFirmwareDesktopUpdate,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { FirmwareType } from '@trezor/connect';
 
 import { FirmwareInitial } from 'src/components/firmware/FirmwareInitial';
@@ -15,7 +16,7 @@ import { useSelector } from 'src/hooks/suite';
 import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareUpdate = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     // What the update is started on. `FirmwareUpdateSession` keeps it for the rest of the flow:
     // the update takes the device out of the device list while the selection moves on.
     const device = useSelector(selectSelectedDevice);

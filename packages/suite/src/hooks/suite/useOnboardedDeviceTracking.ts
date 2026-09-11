@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { selectDeviceReceiverDep } from '@suite-common/suite-types';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
@@ -20,8 +20,7 @@ import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
  * device through the same reboots.
  */
 export const useOnboardedDeviceTracking = () => {
-    const dispatch = useDispatch();
-    const { deviceReceiver } = useServices(selectDeviceReceiverDep);
+    const { deviceReceiver, dispatch } = useServices(selectDeviceReceiverDep, selectDispatch);
 
     useEffect(() => {
         const unsubscribeFromConnect = deviceReceiver.onDeviceConnected(device => {

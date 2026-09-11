@@ -6,8 +6,9 @@ import {
     useFirmwareDesktopUpdate,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SelectCustomFirmware } from 'src/components/firmware/SelectCustomFirmware';
@@ -19,7 +20,7 @@ export const FirmwareCustom = () => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
     // What the update is started on; `FirmwareUpdateSession` keeps it for the rest of the flow.
     const device = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { firmwareUpdate, showLowBatteryModal, toggleLowBatteryModal } = useFirmwareDesktopUpdate(
         {
             // Standalone: the device is Suite's again once the update is done, so hand it back.

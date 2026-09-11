@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { waitForConnectedDeviceThunk } from '@suite-common/device';
 import {
     type FirmwareUpdateProps,
@@ -9,7 +10,7 @@ import {
     selectIsFirmwareDeviceLowOnBattery,
     useFirmwareInstallation,
 } from '@suite-common/firmware';
-import { useDispatch } from '@suite-common/redux-utils';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { UI_EVENTS } from '@trezor/connect';
 
@@ -31,7 +32,7 @@ type UseFirmwareDesktopUpdateParams = {
 export const useFirmwareDesktopUpdate = ({
     onUpdateFinished,
 }: UseFirmwareDesktopUpdateParams = {}) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const [showLowBatteryModal, setShowLowBatteryModal] = useState(false);
     const firmware = useSelector(selectFirmware);
     const isDeviceConnectedViaBluetoothLowOnBattery = useSelector(

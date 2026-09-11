@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { useServices } from '@suite-common/dependency-injection';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult, type TrezorDevice } from '@suite-common/suite-types';
