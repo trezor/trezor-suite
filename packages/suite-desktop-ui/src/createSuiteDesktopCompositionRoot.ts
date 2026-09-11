@@ -10,9 +10,9 @@ import { rootReducer } from 'src/reducers/store';
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { type DesktopInit, createDesktopInit } from './createDesktopInit';
+import { type DesktopApp, createDesktopApp } from './createDesktopApp';
 
-type SuiteDesktopCompositionRoot = { init: DesktopInit };
+type SuiteDesktopCompositionRoot = { app: DesktopApp };
 
 export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot => {
     const history = createMemoryHistory();
@@ -47,8 +47,8 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     const hydrateReduxStore = createHydrateReduxStore({ store, reducer: rootReducer });
     const services = { ...suiteServices, store, hydrateReduxStore };
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
-    // Inject them after construction to break the cycle, before init can dispatch any actions.
+    // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
 
-    return { init: createDesktopInit({ services }) };
+    return { app: createDesktopApp({ services }) };
 };

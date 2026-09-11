@@ -21,16 +21,16 @@ import { MainDesktop } from './MainDesktop';
 import { initSentry } from './sentry';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 
-type DesktopInitDeps = {
+type DesktopAppDeps = {
     services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep;
 };
 
-export type DesktopInit = (container: HTMLElement) => Promise<void>;
+export type DesktopApp = (container: HTMLElement) => Promise<void>;
 
-export type DesktopInitDep = { desktopInit: DesktopInit };
+export type DesktopAppDep = { desktopApp: DesktopApp };
 
-export const createDesktopInit =
-    (deps: DesktopInitDeps): DesktopInit =>
+export const createDesktopApp =
+    (deps: DesktopAppDeps): DesktopApp =>
     async container => {
         initSentry();
 

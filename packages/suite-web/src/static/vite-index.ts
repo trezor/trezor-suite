@@ -9,9 +9,9 @@ const observer = new MutationObserver(() => {
 
         import('../createSuiteWebCompositionRoot')
             .then(({ createSuiteWebCompositionRoot }) => {
-                const { init } = createSuiteWebCompositionRoot();
+                const { app } = createSuiteWebCompositionRoot();
 
-                return init(appElement);
+                return app(appElement);
             })
             .catch(err => console.error(err)); // Fatal error
     }
