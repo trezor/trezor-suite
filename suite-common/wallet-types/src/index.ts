@@ -11,6 +11,7 @@ export * from './settings';
 export type * from './selectedAccount';
 export * from './transaction';
 export type * from './transactionReviewOutput';
+export type * from './transactionReview';
 export * from './ethereumStaking';
 export type * from './ethereumUnits';
 export type * from './stakeForm';

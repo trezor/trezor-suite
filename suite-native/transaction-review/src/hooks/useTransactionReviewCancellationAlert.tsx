@@ -1,0 +1,37 @@
+import { useCallback } from 'react';
+
+import { useDispatch } from '@suite-common/redux-utils';
+import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
+import { Translation } from '@suite-native/intl';
+
+type AlertResolveValue = { wasReviewCanceled: boolean };
+
+export const useTransactionReviewCancellationAlert = () => {
+    const { showAlert } = useAlert();
+    const dispatch = useDispatch();
+
+    const show = useCallback(
+        () =>
+            new Promise<AlertResolveValue>(resolve =>
+                showAlert({
+                    title: <Translation id="transactionManagement.review.cancelAlert.title" />,
+                    primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                    primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+                    secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
+                    secondaryButtonTitle: (
+                        <Translation id="transactionManagement.review.cancelAlert.continueButton" />
+                    ),
+                    onPressPrimaryButton: () => {
+                        dispatch(cancelSignSendFormTransactionThunk());
+
+                        return resolve({ wasReviewCanceled: true });
+                    },
+                    onPressSecondaryButton: () => resolve({ wasReviewCanceled: false }),
+                }),
+            ),
+        [dispatch, showAlert],
+    );
+
+    return { show };
+};

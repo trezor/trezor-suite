@@ -1,0 +1,43 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../alerts" },
+        { "path": "../atoms" },
+        { "path": "../clipboard" },
+        { "path": "../confirm-on-trezor" },
+        { "path": "../formatters" },
+        { "path": "../icons" },
+        { "path": "../intl" },
+        { "path": "../navigation" },
+        { "path": "../scrollview" },
+        { "path": "../send" },
+        { "path": "../tokens" },
+        { "path": "../transaction-management" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        {
+            "path": "../../packages/transport-common"
+        },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
+    ]
+}
