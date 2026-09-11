@@ -1,5 +1,9 @@
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import {
+    formatCompactNotificationNetworkAmount,
+    formatCompactNotificationTokenAmount,
+} from '@suite-common/formatters';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -15,8 +19,6 @@ import {
     findAccountDevice,
     findAccountsByDescriptor,
     findAccountsByNetwork,
-    formatNetworkAmount,
-    formatTokenAmount,
     getAccountIdentity,
     getAreSatoshisUsed,
     getBackendFromSettings,
@@ -436,8 +438,8 @@ export const onBlockchainNotificationThunk = createThunk<
         const areSatoshisUsed = getAreSatoshisUsed(selectBitcoinAmountUnit(getState()), account);
 
         const formattedAmount = token
-            ? formatTokenAmount(token)
-            : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+            ? formatCompactNotificationTokenAmount(token)
+            : formatCompactNotificationNetworkAmount(tx.amount, account.symbol, areSatoshisUsed);
 
         dispatch(
             notificationsActions.addEvent({

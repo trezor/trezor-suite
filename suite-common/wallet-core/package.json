@@ -26,6 +26,7 @@
         "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/firmware": "workspace:*",
+        "@suite-common/formatters": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/react-query": "workspace:*",

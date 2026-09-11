@@ -30,7 +30,7 @@ export type CryptoAmountFormatterFormatStyle = 'exact' | 'compact-balance';
 
 // Tokens with this many decimals (e.g. stablecoins like USDC/USDT) are rendered money-like
 // (two decimals) in the compact format.
-const MONEY_LIKE_TOKEN_DECIMALS = 6;
+export const MONEY_LIKE_TOKEN_DECIMALS = 6;
 
 export type CryptoAmountFormatterDataContext = {
     symbol: NetworkSymbol | TokenSymbol;
