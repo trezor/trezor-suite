@@ -1,11 +1,19 @@
 import { useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
+import { type BtcSwapComposeTemplate } from 'invity-api';
 
 import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
-import { type TradingSellFormProps } from '@suite-common/trading';
+import {
+    TRADING_EXCHANGE_FROM_ADDRESS,
+    TRADING_FORM_OUTPUT_AMOUNT,
+    type TradingExchangeFormProps,
+    type TradingSellFormProps,
+    type TradingTradeSellExchangeType,
+    deriveBitcoinSwapFromAddresses,
+} from '@suite-common/trading';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
@@ -41,9 +49,20 @@ jest.mock('src/utils/wallet/trading/tradingUtils', () => ({
     getComposeAddressPlaceholder: jest.fn(),
 }));
 
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
+    deriveBitcoinSwapFromAddresses: jest.fn(),
+}));
+
 const mockGetComposeAddressPlaceholder = getComposeAddressPlaceholder as jest.Mock;
+const mockDeriveBitcoinSwapFromAddresses = deriveBitcoinSwapFromAddresses as jest.Mock;
 
 const BTC_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc'), formattedBalance: '2' });
+const BTC_ACCOUNT_B = mockWalletAccount({
+    symbol: asNetworkSymbol('btc'),
+    descriptor: asAccountDescriptor('otherBtcAccount'),
+    formattedBalance: '2',
+});
 const SOL_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('sol'), formattedBalance: '0.4' });
 
 const feeData = (blockTime: number) => ({
@@ -77,17 +96,34 @@ const buildDefaults = (): TradingSellFormProps =>
         destinationTag: '',
     }) as unknown as TradingSellFormProps;
 
-const renderComposeTransaction = () => {
+type RenderComposeTransactionParams = {
+    type?: TradingTradeSellExchangeType;
+    btcSwapComposeTemplate?: BtcSwapComposeTemplate;
+    defaultValues?: Partial<TradingSellFormProps>;
+};
+
+const BTC_SWAP_COMPOSE_TEMPLATE: BtcSwapComposeTemplate = {
+    extraOutputs: [{ type: 'opreturn', dataHex: 'aa' }],
+};
+
+const renderComposeTransaction = ({
+    type = 'sell',
+    btcSwapComposeTemplate,
+    defaultValues,
+}: RenderComposeTransactionParams = {}) => {
     const store = createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: {
-                accounts: [BTC_ACCOUNT, SOL_ACCOUNT],
+                accounts: [BTC_ACCOUNT, BTC_ACCOUNT_B, SOL_ACCOUNT],
                 fees: {
                     btc: { status: 'preloaded', data: feeData(600) },
                     sol: { status: 'preloaded', data: feeData(-1) },
                 },
                 settings: { addressDisplayType: 'original' },
+                trading: btcSwapComposeTemplate
+                    ? { info: { config: { btcSwapComposeTemplate } } }
+                    : undefined,
             },
             device: { devices: [], selectedDevice: undefined },
         } as any,
@@ -95,12 +131,12 @@ const renderComposeTransaction = () => {
 
     return renderHookWithStoreProvider(
         ({ account }: { account: Account }) => {
-            const methods = useForm<TradingSellFormProps>({
+            const methods = useForm<TradingSellFormProps | TradingExchangeFormProps>({
                 mode: 'onChange',
-                defaultValues: buildDefaults(),
+                defaultValues: { ...buildDefaults(), ...defaultValues },
             });
             const compose = useTradingComposeTransaction({
-                type: 'sell',
+                type,
                 account,
                 network: getNetwork(account.symbol),
                 methods,
@@ -157,5 +193,103 @@ describe('useTradingComposeTransaction', () => {
         });
 
         expect(result.current.methods.getValues('outputs.0.address')).toBe(EXTERNAL_ADDRESS);
+    });
+
+    it('does not derive bitcoin swap fromAddress before the compose template is loaded', async () => {
+        mockDeriveBitcoinSwapFromAddresses.mockResolvedValue({
+            addresses: ['from-addr'],
+            amount: '1000',
+        });
+
+        renderComposeTransaction({
+            type: 'exchange',
+            defaultValues: { setMaxOutputId: 0 },
+        });
+
+        await act(() => Promise.resolve());
+
+        expect(mockDeriveBitcoinSwapFromAddresses).not.toHaveBeenCalled();
+    });
+
+    it('derives bitcoin swap fromAddress once the compose template is available', async () => {
+        mockDeriveBitcoinSwapFromAddresses.mockResolvedValue({
+            addresses: ['from-addr'],
+            amount: '1000',
+        });
+
+        const { result } = renderComposeTransaction({
+            type: 'exchange',
+            btcSwapComposeTemplate: BTC_SWAP_COMPOSE_TEMPLATE,
+            defaultValues: { setMaxOutputId: 0 },
+        });
+
+        await waitFor(() => expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenCalledTimes(1));
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_EXCHANGE_FROM_ADDRESS)).toBe(
+                'from-addr',
+            ),
+        );
+        expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenCalledWith(
+            expect.objectContaining({
+                btcSwapComposeTemplate: BTC_SWAP_COMPOSE_TEMPLATE,
+            }),
+        );
+    });
+
+    it('re-derives bitcoin swap fromAddress when the bitcoin account changes', async () => {
+        mockDeriveBitcoinSwapFromAddresses
+            .mockResolvedValueOnce({ addresses: ['from-addr-1'], amount: '1000' })
+            .mockResolvedValueOnce({ addresses: ['from-addr-2'], amount: '1000' });
+
+        const { result, rerender } = renderComposeTransaction({
+            type: 'exchange',
+            btcSwapComposeTemplate: BTC_SWAP_COMPOSE_TEMPLATE,
+            defaultValues: { setMaxOutputId: 0 },
+        });
+
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_EXCHANGE_FROM_ADDRESS)).toBe(
+                'from-addr-1',
+            ),
+        );
+
+        rerender({ account: BTC_ACCOUNT_B });
+
+        await waitFor(() => expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenCalledTimes(2));
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_EXCHANGE_FROM_ADDRESS)).toBe(
+                'from-addr-2',
+            ),
+        );
+        expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenLastCalledWith(
+            expect.objectContaining({ account: BTC_ACCOUNT_B }),
+        );
+    });
+
+    it('clears bitcoin swap fromAddress when derivation fails', async () => {
+        mockDeriveBitcoinSwapFromAddresses
+            .mockResolvedValueOnce({ addresses: ['from-addr'], amount: '1000' })
+            .mockResolvedValueOnce(undefined);
+
+        const { result } = renderComposeTransaction({
+            type: 'exchange',
+            btcSwapComposeTemplate: BTC_SWAP_COMPOSE_TEMPLATE,
+            defaultValues: { setMaxOutputId: 0 },
+        });
+
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_EXCHANGE_FROM_ADDRESS)).toBe(
+                'from-addr',
+            ),
+        );
+
+        act(() => {
+            result.current.methods.setValue(TRADING_FORM_OUTPUT_AMOUNT, '0.2');
+        });
+
+        await waitFor(() => expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenCalledTimes(2));
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_EXCHANGE_FROM_ADDRESS)).toBeUndefined(),
+        );
     });
 });
