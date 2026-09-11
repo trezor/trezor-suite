@@ -166,7 +166,8 @@ const test = suiteBaseTest.extend<Fixtures>({
     tradingMock: async ({ page }, use) => {
         await use(new TradingMock(page));
     },
-    tradingMockNew: async ({ page }, use) => {
+    // tradingResponses import ensures early start of listeners, so we don't miss any responses in beforeEach
+    tradingMockNew: async ({ page, tradingResponses: _tradingResponses }, use) => {
         const tradingMockNew = new TradingMockNew(page);
         await use(tradingMockNew);
         await tradingMockNew.stop();
