@@ -17,6 +17,8 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 
+const SELL_PROVIDER_CONFIRMATION_POLLING_INTERVAL_SECONDS = 10;
+
 export const TradingSelectedOfferSellTransaction = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { handleClick, disabled } = useAsyncClickHandler();
@@ -31,6 +33,7 @@ export const TradingSelectedOfferSellTransaction = () => {
     useTradingWatchTrade({
         account,
         trade,
+        refreshIntervalSeconds: SELL_PROVIDER_CONFIRMATION_POLLING_INTERVAL_SECONDS,
     });
     const sellTrade = trade?.data || selectedQuote;
 
