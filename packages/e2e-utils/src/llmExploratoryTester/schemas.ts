@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 // Strip the top-level `$schema` which breaks Agent's attempt of JSON output.
-const toCliJsonSchema = (schema: z.ZodType) => {
+const toJsonSchema = (schema: z.ZodType) => {
     const jsonSchema = z.toJSONSchema(schema);
     delete jsonSchema.$schema;
 
@@ -64,4 +64,5 @@ export type DeviceModel = z.infer<typeof DeviceModelSchema>;
 export type PrContext = z.infer<typeof PrContextSchema>;
 export type Issue = z.infer<typeof IssueSchema>;
 export type TestResult = z.infer<typeof TestResultSchema>;
-export const TestResultJsonSchema = toCliJsonSchema(TestResultSchema);
+
+export const TestResultJsonSchema = toJsonSchema(TestResultSchema);

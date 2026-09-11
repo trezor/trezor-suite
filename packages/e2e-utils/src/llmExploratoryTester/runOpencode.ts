@@ -1,11 +1,11 @@
 import { type Event, type Message, type OpencodeClient } from '@opencode-ai/sdk';
+import { mkdirSync } from 'node:fs';
 
 import { log } from '../logger';
 import { MODEL, OPENCODE_CONFIG, REASONING_EFFORT } from './opencodeConfig';
-import { REPO_ROOT } from './paths';
+import { OPENCODE_CONFIG_DIR, REPO_ROOT } from './paths';
 import { type TestResult, TestResultJsonSchema, TestResultSchema } from './schemas';
 
-const SERVER_PORT = 4096;
 const SERVER_START_TIMEOUT_MS = 30_000;
 // Continuations when the verdict reports unfinished coverage; the $ budget
 // cap bounds the total across all of them.
@@ -28,13 +28,23 @@ function unwrap<T>(label: string, result: { data?: T; error?: unknown }): T {
     return result.data;
 }
 
+// Reads are the only permission the agent can legitimately need; everything
+// else is denied by config or the sandbox gate, so reject it loudly.
+const APPROVED_PERMISSION_TYPES = new Set(['read']);
+
 function handleEvent(client: OpencodeClient, event: Event): void {
     if (event.type === 'permission.updated') {
+        const approved = APPROVED_PERMISSION_TYPES.has(event.properties.type);
         void client.postSessionIdPermissionsPermissionId({
             path: { id: event.properties.sessionID, permissionID: event.properties.id },
-            body: { response: 'once' },
+            body: { response: approved ? 'once' : 'reject' },
         });
-        log(`[permission] ${event.properties.title}`);
+        log(
+            `[permission] ${approved ? 'approved' : 'REJECTED'} ${event.properties.type}: ${event.properties.title}`,
+        );
+        if (!approved) {
+            log(`[permission] rejected detail: ${JSON.stringify(event.properties)}`);
+        }
 
         return;
     }
@@ -85,6 +95,9 @@ type WatchRunParams = {
     sessionId: string;
     events: AsyncIterable<Event>;
     maxBudgetUsd: number;
+    timeoutMs: number;
+    // Abort means the kill timer fired — used only to word the final error.
+    signal: AbortSignal;
     // Shared across continuations so the budget cap sees the cumulative cost.
     messages: Map<string, Message>;
 };
@@ -100,6 +113,8 @@ async function watchRun({
     sessionId,
     events,
     maxBudgetUsd,
+    timeoutMs,
+    signal,
     messages,
 }: WatchRunParams): Promise<void> {
     for await (const event of events) {
@@ -125,6 +140,10 @@ async function watchRun({
         }
     }
 
+    if (signal.aborted) {
+        throw new Error(`OpenCode timed out after ${timeoutMs / 60_000} min`);
+    }
+
     throw new Error('OpenCode event stream ended before session.idle');
 }
 
@@ -141,19 +160,30 @@ export async function runOpencode({
     // The SDK spawns the server without a cwd option, and the MCP output dir
     // in OPENCODE_CONFIG is repo-relative.
     process.chdir(REPO_ROOT);
+    // Isolate the server from the developer's global OpenCode config — it
+    // inherits our env, and a global opencode.json would silently widen the
+    // sandbox with extra MCP servers, plugins, or instructions.
+    mkdirSync(OPENCODE_CONFIG_DIR, { recursive: true });
+    process.env.XDG_CONFIG_HOME = OPENCODE_CONFIG_DIR;
 
     // ESM-only package; this file is loaded as CJS by tsx.
     const { createOpencode } = await import('@opencode-ai/sdk');
 
     const abort = new AbortController();
     const killTimer = setTimeout(() => abort.abort(), timeoutMs);
+    let server: { url: string; close(): void } | undefined;
     try {
-        const { client } = await createOpencode({
-            port: SERVER_PORT,
+        // Port 0: the OS assigns a free one, so a developer's own OpenCode on
+        // the default port is never hijacked (and we never EADDRINUSE).
+        const created = await createOpencode({
+            port: 0,
             signal: abort.signal,
             timeout: SERVER_START_TIMEOUT_MS,
             config: OPENCODE_CONFIG,
         });
+        server = created.server;
+        const { client } = created;
+        log(`OpenCode server: ${server.url}`);
 
         const session = unwrap(
             'session.create',
@@ -179,10 +209,17 @@ export async function runOpencode({
         };
 
         const messages = new Map<string, Message>();
+        const totalCostUsd = () =>
+            [...messages.values()].reduce(
+                (sum, m) => sum + (m.role === 'assistant' ? m.cost : 0),
+                0,
+            );
+
         // Returning from watchRun's for-await at session.idle finalizes the SSE
         // generator and kills the connection, so every round subscribes afresh
         // — before prompting, so no event of the round is missed.
-        const runOnce = async (text: string): Promise<void> => {
+        const runOnce = async (text: string): Promise<TestResult> => {
+            const from = messages.size;
             const roundEvents = await client.event.subscribe();
             await promptSession(text);
             await watchRun({
@@ -190,12 +227,21 @@ export async function runOpencode({
                 sessionId: session.id,
                 events: roundEvents.stream,
                 maxBudgetUsd,
+                timeoutMs,
+                signal: abort.signal,
                 messages,
             });
+
+            return parseStructuredOutput([...messages.values()].slice(from));
         };
 
-        await runOnce(prompt);
-        let result = parseStructuredOutput([...messages.values()]);
+        let result = await runOnce(prompt);
+
+        // A zero total means OpenRouter pricing for the model was not
+        // resolved — the budget cap would never trip, so fail loudly.
+        if (totalCostUsd() === 0) {
+            throw new Error('OpenCode reported zero cost; the budget cap cannot be enforced');
+        }
 
         // The agent tends to stop early on long checklists; resume the session
         // until it accounts for every area or the continuation budget is out.
@@ -203,7 +249,7 @@ export async function runOpencode({
             log(
                 `Agent unfinished (${result.unfinished.join('; ')}) — resuming (${n + 1}/${MAX_CONTINUATIONS})`,
             );
-            await runOnce(
+            result = await runOnce(
                 [
                     `You reported unfinished coverage: ${result.unfinished.join('; ')}.`,
                     'Continue what remains actionable. Items blocked by the sandbox itself',
@@ -212,18 +258,14 @@ export async function runOpencode({
                     'output again.',
                 ].join(' '),
             );
-            result = parseStructuredOutput([...messages.values()]);
         }
 
-        const costUsd = [...messages.values()].reduce(
-            (sum, m) => sum + (m.role === 'assistant' ? m.cost : 0),
-            0,
-        );
-        log(`Agent cost: $${costUsd.toFixed(4)}`);
+        log(`Agent cost: $${totalCostUsd().toFixed(4)}`);
 
         return result;
     } finally {
         clearTimeout(killTimer);
         abort.abort();
+        server?.close();
     }
 }

@@ -16,7 +16,7 @@ import {
 import { runOpencode } from './runOpencode';
 import { type PrContext, PrContextSchema } from './schemas';
 
-const DEFAULT_BUDGET_USD = '10';
+const DEFAULT_BUDGET_USD = 10;
 const DEFAULT_TIMEOUT_MIN = 120;
 
 function buildAgentPrompt(context: PrContext): string {
@@ -45,6 +45,11 @@ async function main(): Promise<void> {
         );
         const timeoutMs =
             Number(process.env.LLM_EXPLORATORY_TESTER_TIMEOUT_MIN ?? DEFAULT_TIMEOUT_MIN) * 60_000;
+        if (!Number.isFinite(budgetUsd) || !Number.isFinite(timeoutMs)) {
+            throw new Error(
+                'LLM_EXPLORATORY_TESTER_BUDGET_USD and TIMEOUT_MIN must be finite numbers',
+            );
+        }
 
         const context = PrContextSchema.parse(readJson(CONTEXT_FILE));
         mkdirSync(BROWSER_DIR, { recursive: true });
@@ -65,13 +70,26 @@ async function main(): Promise<void> {
         log(`Result: ${testResult.result} — ${testResult.summary}`);
         log('Agent done.');
 
-        process.exitCode = 0;
+        // The verdict is the CI signal: a fail must turn the workflow red,
+        // not just the downloaded artifact.
+        if (testResult.result === 'fail') {
+            process.exitCode = 1;
+        }
     } finally {
         await killHarnessBrowser();
     }
 }
 
 main().catch(e => {
-    error(`run failed: ${e instanceof Error ? e.message : e}`);
+    const message = e instanceof Error ? e.message : String(e);
+    error(`run failed: ${message}`);
+    // Leave a result file even when the run broke, so the artifact upload and
+    // the summary step always have a verdict to show.
+    writeJson(TEST_RESULT_FILE, {
+        result: 'blocked',
+        summary: `Harness error: ${message}`,
+        issues: [],
+        unfinished: [],
+    });
     process.exitCode = 1;
 });

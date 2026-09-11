@@ -33,7 +33,7 @@ concurrency:
 jobs:
   agentic-e2e:
     runs-on: ubuntu-24.04
-    timeout-minutes: 180
+    timeout-minutes: 240
     if: github.repository == 'trezor/trezor-suite'
     env:
       COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
@@ -82,6 +82,24 @@ jobs:
         env:
           OPENROUTER_API_KEY: ${{ secrets.E2E_SELECTOR_API_KEY }}
         run: yarn workspace @trezor/e2e-utils llm-exploratory-tester:run
+
+      # Surface the verdict on the job page; the run step's exit code already
+      # fails the job on a fail verdict, this makes the reason visible.
+      - name: Verdict summary
+        if: ${{ always() }}
+        run: |
+          RESULT=packages/e2e-utils/src/llmExploratoryTester/reports/test-result.json
+          if [ -f "$RESULT" ]; then
+            {
+              echo "## LLM Exploratory Tester: $(jq -r .result "$RESULT")"
+              echo
+              jq -r .summary "$RESULT"
+              echo
+              jq -r '.issues[] | "- **\(.id)** [\(.severity)] \(.title)"' "$RESULT"
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## LLM Exploratory Tester: no result file" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}

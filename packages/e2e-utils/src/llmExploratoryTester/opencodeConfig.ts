@@ -3,7 +3,11 @@ import { join } from 'node:path';
 
 import { BOT_DIR } from './paths';
 
-export const MODEL = { providerID: 'openrouter', modelID: 'openai/gpt-5.6-luna' };
+export const MODEL = {
+    providerID: 'openrouter',
+    // Overridable for A/B testing, like REASONING_EFFORT below.
+    modelID: process.env.LLM_EXPLORATORY_TESTER_MODEL ?? 'openai/gpt-5.6-luna',
+};
 
 // Reasoning effort, applied per request as the opencode variant (see
 // runOpencode.ts) — the only path that reaches the model. The provider
@@ -26,6 +30,9 @@ export const OPENCODE_CONFIG: Config = {
     },
     share: 'disabled',
     autoupdate: false,
+    // No external instruction files (AGENTS.md etc.) — the prompt is the only
+    // brief, so local and CI runs see the same instructions.
+    instructions: [],
     lsp: false,
     formatter: false,
     plugin: [join(BOT_DIR, 'hooks/sandboxGate.mjs')],
@@ -38,7 +45,7 @@ export const OPENCODE_CONFIG: Config = {
                 'mcp',
                 '--cdp-endpoint=http://127.0.0.1:9222',
                 '--output-dir=packages/e2e-utils/src/llmExploratoryTester/reports/browser',
-                '--timeout-action=2000',
+                '--timeout-action=12000',
             ],
         },
         'trezor-emulator': {
