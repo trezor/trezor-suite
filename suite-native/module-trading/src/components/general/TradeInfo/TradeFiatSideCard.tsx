@@ -40,7 +40,7 @@ export const TradeFiatSideCard = ({
         />
         <TradeInfoRow>
             <HStack alignItems="center">
-                <FiatCurrencyIcon size="extraSmall" value={fiatCurrency} />
+                <FiatCurrencyIcon size="tiny" value={fiatCurrency} />
                 <VStack spacing="sp2">{amount}</VStack>
             </HStack>
         </TradeInfoRow>

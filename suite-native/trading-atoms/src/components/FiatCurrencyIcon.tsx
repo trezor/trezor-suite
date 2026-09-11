@@ -5,12 +5,13 @@ import { Flag, type IconCircleSize } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 
 export type FiatCurrencyIconProps = {
-    size: 'extraSmall' | 'small' | 'medium';
+    size: 'tiny' | 'extraSmall' | 'small' | 'medium';
     value?: FiatCurrencyCode;
 };
 
 const fiatIconSizes: Record<FiatCurrencyIconProps['size'], IconCircleSize> = {
-    extraSmall: 20,
+    tiny: 20,
+    extraSmall: 24,
     small: 32,
     medium: 40,
 };

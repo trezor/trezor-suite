@@ -298,19 +298,21 @@ describe('constructTransactionReviewOutputs', () => {
     const account = buildEthereumAccount();
     const device = buildUpdatedDevice();
 
-    it('renders provider and fiat receive amount for a SLIP-24 sell', () => {
-        const trading = buildSellTrading();
-        const outputs = constructTransactionReviewOutputs({
-            account,
-            device,
-            decreaseOutputId: undefined,
-            precomposedForm: buildFormState({ trading }),
-            precomposedTx: buildPrecomposedTransaction({ to: '0x1234' }),
-        });
+    it.each(['btc', 'eth'] as const)(
+        'renders traded assets before provider for a SLIP-24 sell on %s',
+        symbol => {
+            const sellAccount = mockWalletAccount({ symbol: asNetworkSymbol(symbol) });
+            const trading = buildSellTrading();
+            trading.send.symbol = sellAccount.symbol;
+            const outputs = constructTransactionReviewOutputs({
+                account: sellAccount,
+                device,
+                decreaseOutputId: undefined,
+                precomposedForm: buildFormState({ trading }),
+                precomposedTx: buildPrecomposedTransaction({ to: '0x1234' }),
+            });
 
-        expect(outputs).toEqual(
-            expect.arrayContaining([
-                { type: 'recipient_name', value: 'Banxa' },
+            expect(outputs).toEqual([
                 {
                     type: 'traded_assets',
                     value: '',
@@ -319,8 +321,23 @@ describe('constructTransactionReviewOutputs', () => {
                     receive: trading.receive,
                     receiveAddress: undefined,
                 },
-            ]),
-        );
+                { type: 'recipient_name', value: 'Banxa' },
+            ]);
+        },
+    );
+
+    it('keeps provider before traded assets for a SLIP-24 exchange', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                trading: buildTrading({ isSlip24Active: true }),
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: '0x1234' }),
+        });
+
+        expect(outputs.map(output => output.type)).toEqual(['recipient_name', 'traded_assets']);
     });
 
     it('renders regular transaction outputs for a sell without SLIP-24', () => {
