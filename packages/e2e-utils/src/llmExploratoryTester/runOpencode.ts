@@ -28,7 +28,27 @@ function unwrap<T>(label: string, result: { data?: T; error?: unknown }): T {
     return result.data;
 }
 
-function handleEvent(event: Event): void {
+// Reads are the only permission the agent can legitimately need; everything
+// else is denied by config or the sandbox gate, so reject it loudly.
+const APPROVED_PERMISSION_TYPES = new Set(['read']);
+
+function handleEvent(client: OpencodeClient, event: Event): void {
+    if (event.type === 'permission.updated') {
+        const approved = APPROVED_PERMISSION_TYPES.has(event.properties.type);
+        void client.postSessionIdPermissionsPermissionId({
+            path: { id: event.properties.sessionID, permissionID: event.properties.id },
+            body: { response: approved ? 'once' : 'reject' },
+        });
+        log(
+            `[permission] ${approved ? 'approved' : 'REJECTED'} ${event.properties.type}: ${event.properties.title}`,
+        );
+        if (!approved) {
+            log(`[permission] rejected detail: ${JSON.stringify(event.properties)}`);
+        }
+
+        return;
+    }
+
     if (event.type === 'session.error') {
         log(`[session.error] ${JSON.stringify(event.properties)}`);
 
@@ -98,7 +118,7 @@ async function watchRun({
     messages,
 }: WatchRunParams): Promise<void> {
     for await (const event of events) {
-        handleEvent(event);
+        handleEvent(client, event);
         if (event.type === 'message.updated') {
             const { info } = event.properties;
             if (info.sessionID !== sessionId) continue;

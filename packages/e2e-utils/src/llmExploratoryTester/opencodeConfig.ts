@@ -16,9 +16,8 @@ export const MODEL = {
 // LLM_EXPLORATORY_TESTER_EFFORT; low/high are the safe variant names.
 export const REASONING_EFFORT = process.env.LLM_EXPLORATORY_TESTER_EFFORT ?? 'high';
 
-// The server runs with an isolated XDG_CONFIG_HOME (see runOpencode.ts), so
-// no global opencode.json is merged in; enabled_providers is set anyway so a
-// stray allowlist can never disable OpenRouter.
+// Merged over the user's global opencode.json; enabled_providers must be set
+// here or a global allowlist silently disables OpenRouter.
 export const OPENCODE_CONFIG: Config = {
     model: `${MODEL.providerID}/${MODEL.modelID}`,
     enabled_providers: [MODEL.providerID],
@@ -55,16 +54,14 @@ export const OPENCODE_CONFIG: Config = {
             oauth: false,
         },
     },
-    // Wildcard deny means no action ever prompts, so runOpencode.ts needs no
-    // permission handler — unlisted actions are blocked before execution.
-    // MCP tools are not gated by this map in OpenCode 1.18 (denied MCP tools
-    // stay callable); hooks/sandboxGate.mjs enforces those.
     permission: {
-        // @ts-expect-error OpenCode supports the '*' default; the v1 SDK types omit it.
-        '*': 'deny',
-        read: 'allow',
-        todowrite: 'allow',
+        bash: 'deny',
+        edit: 'deny',
+        webfetch: 'deny',
+        external_directory: 'deny',
     },
+    // MCP tool denies live in hooks/sandboxGate.mjs — this map does not gate
+    // MCP tools in OpenCode 1.18 (denied MCP tools stay callable).
     tools: {
         bash: false,
         edit: false,
