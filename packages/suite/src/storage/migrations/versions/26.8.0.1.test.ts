@@ -1,7 +1,7 @@
-import '@suite-common/test-utils/globalOverrides';
-import { type IDBPDatabase, deleteDB, openDB } from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
 
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -29,8 +29,8 @@ const runMigration = () =>
     });
 
 describe('migration 26.8.0.1', () => {
-    beforeEach(async () => {
-        await deleteDB(DB_NAME);
+    beforeEach(() => {
+        installFakeIndexedDb();
     });
 
     test('removes receive data not belonging to a remembered device', async () => {

@@ -1,6 +1,6 @@
-import '@suite-common/test-utils/globalOverrides';
-import { type IDBPDatabase, deleteDB, openDB } from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
 
+import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -26,8 +26,8 @@ const accountsPk = (account: Account): [string, string, string] => [
 ];
 
 describe('migration 26.6.0.1', () => {
-    beforeEach(async () => {
-        await deleteDB(DB_NAME);
+    beforeEach(() => {
+        installFakeIndexedDb();
     });
 
     test('delete sepolia and keep mainnet', async () => {

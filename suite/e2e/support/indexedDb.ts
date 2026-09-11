@@ -41,6 +41,49 @@ const stringifyForError = (value: unknown) => {
 export class IndexedDbFixture {
     constructor(private readonly page: Page) {}
 
+    async holdOldDatabaseConnection() {
+        return await this.page.evaluateHandle(
+            () =>
+                new Promise<IDBDatabase>((resolve, reject) => {
+                    // An empty version 1 database exercises Suite's real schema migration on startup.
+                    const request = indexedDB.open('trezor-suite', 1);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                }),
+        );
+    }
+
+    async requestAbortedUpgrade() {
+        await this.page.evaluate(async () => {
+            const version = await new Promise<number>((resolve, reject) => {
+                const request = indexedDB.open('trezor-suite');
+                request.onsuccess = () => {
+                    const db = request.result;
+                    db.close();
+                    resolve(db.version);
+                };
+                request.onerror = () => reject(request.error);
+            });
+
+            await new Promise<void>((resolve, reject) => {
+                const request = indexedDB.open('trezor-suite', version + 1);
+                // Trigger a real versionchange, but preserve Suite's schema and persisted data.
+                request.onupgradeneeded = () => request.transaction?.abort();
+                request.onerror = () => {
+                    if (request.error?.name === 'AbortError') {
+                        resolve();
+                    } else {
+                        reject(request.error);
+                    }
+                };
+                request.onsuccess = () => {
+                    request.result.close();
+                    reject(new Error('The test upgrade should have been aborted.'));
+                };
+            });
+        });
+    }
+
     async reset(): Promise<void> {
         await this.page.evaluate(
             () =>

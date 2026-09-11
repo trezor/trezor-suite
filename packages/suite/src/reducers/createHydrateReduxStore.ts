@@ -1,20 +1,21 @@
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
-import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
+import {
+    type PreloadStoreAction,
+    type PreloadStoreDep,
+} from 'src/support/suite/createPreloadStore';
 
 import { type SuiteReduxStore } from './createReduxStore';
 import { type AppState, type SuiteRootReducer } from './store';
 
-type HydrateReduxStoreDeps = {
+export type HydrateReduxStoreDeps = PreloadStoreDep & {
     store: Pick<SuiteReduxStore, 'replaceReducer'>;
     reducer: SuiteRootReducer;
+    getStatePatch: () => Promise<Record<string, unknown> | undefined>;
 };
 
-export type HydrateReduxStore = (
-    preloadStoreAction: PreloadStoreAction,
-    statePatch?: Record<string, unknown>,
-) => void;
+export type HydrateReduxStore = () => Promise<PreloadStoreAction>;
 
 export type HydrateReduxStoreDep = { hydrateReduxStore: HydrateReduxStore };
 
@@ -27,7 +28,11 @@ const patchConfirm = (statePatch: unknown) =>
 
 export const createHydrateReduxStore =
     (deps: HydrateReduxStoreDeps): HydrateReduxStore =>
-    (preloadStoreAction, statePatch) => {
+    async () => {
+        const preloadStoreAction = await deps.preloadStore();
+        // Desktop's handshake stops the startup hang timer, so it must follow the storage read.
+        const statePatch = await deps.getStatePatch();
+
         if (!preloadStoreAction) {
             return;
         }
@@ -61,4 +66,6 @@ export const createHydrateReduxStore =
 
             return deps.reducer(state, action);
         });
+
+        return preloadStoreAction;
     };

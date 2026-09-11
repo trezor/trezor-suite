@@ -16,6 +16,7 @@ export const globalNoExtraneousDependenciesDevDependencies = [
     // Only shared stuff (like tests.*.ts(x) or fixtures shall be here)
     // ----------------------------------------------------------------
     '**/*fixtures*/**',
+    '**/mocks/**',
     '**/*.test.{tsx,ts,js}',
     '**/eslint.config.mjs', // for CJS packages, those files should eventually be renamed to .js and this line deleted
     '**/eslint.config.js',

@@ -1,5 +1,6 @@
-import '@suite-common/test-utils/globalOverrides';
-import { type IDBPDatabase, deleteDB, openDB } from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
+
+import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
 
@@ -16,8 +17,8 @@ const runMigration = () =>
     });
 
 describe('migration 25.10.0', () => {
-    beforeEach(async () => {
-        await deleteDB(DB_NAME);
+    beforeEach(() => {
+        installFakeIndexedDb();
     });
 
     test('migrates devices with errored entropy check to persistentDeviceData', async () => {

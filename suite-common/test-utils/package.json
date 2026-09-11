@@ -4,7 +4,8 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": [
-        "globalOverrides/index.ts"
+        "globalOverrides/index.ts",
+        "fakeIndexedDb/index.ts"
     ],
     "main": "src/index",
     "exports": {
@@ -15,6 +16,10 @@
         "./globalOverrides": {
             "types": "./libDev/globalOverrides/index.d.ts",
             "default": "./globalOverrides/index.ts"
+        },
+        "./fakeIndexedDb": {
+            "types": "./libDev/fakeIndexedDb/index.d.ts",
+            "default": "./fakeIndexedDb/index.ts"
         }
     },
     "scripts": {
