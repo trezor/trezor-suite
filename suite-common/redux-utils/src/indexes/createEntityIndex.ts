@@ -21,7 +21,7 @@
  * only visits that part. See `getParts`.
  */
 
-/** Ids are strings so a `Map` can hold them without an identity or ordering question. */
+/** Ids and keys are strings so a `Map` can hold them without an identity or ordering question. */
 export type EntityId = string;
 
 /**
@@ -29,7 +29,6 @@ export type EntityId = string;
  * them — maintaining something derived, or noticing arrivals.
  *
  * Computed from the parts that were rebuilt, so asking for it costs no more than the rebuild did.
- * On the first build everything counts as added.
  */
 export type EntityIndexChanges<TId extends EntityId> = {
     readonly added: readonly TId[];
@@ -38,10 +37,38 @@ export type EntityIndexChanges<TId extends EntityId> = {
     readonly updated: readonly TId[];
 };
 
-export type EntityIndexSnapshot<TEntity, TId extends EntityId> = {
+/**
+ * Picks which group an entity belongs in, for a lookup other than by primary key.
+ *
+ * Return nothing to leave the entity out of this index — a "pending transactions" index is a
+ * grouping that most transactions have no key for. Return several keys to put it in several
+ * groups, the way a transaction belongs to each of its target addresses.
+ */
+export type EntityGroupKeySelector<TEntity, TKey extends EntityId = EntityId> = (
+    entity: TEntity,
+) => TKey | readonly TKey[] | undefined;
+
+export type EntityGroupKeySelectors<TEntity> = Record<string, EntityGroupKeySelector<TEntity>>;
+
+/** The key type a group selector groups by, with the "several" and "none" cases unwrapped. */
+export type EntityGroupKey<TSelector> =
+    TSelector extends EntityGroupKeySelector<never, infer TKey> ? TKey : never;
+
+export type EntityIndexSnapshot<
+    TEntity,
+    TId extends EntityId,
+    TGroups extends EntityGroupKeySelectors<TEntity>,
+> = {
     /** Every id in the order the source yielded it. */
     readonly ids: readonly TId[];
     readonly byId: ReadonlyMap<TId, TEntity>;
+    /** The ids in each group, by group name and then by key. */
+    readonly groups: {
+        readonly [TName in keyof TGroups]: ReadonlyMap<
+            EntityGroupKey<TGroups[TName]>,
+            readonly TId[]
+        >;
+    };
     readonly changes: EntityIndexChanges<TId>;
 };
 
@@ -51,7 +78,14 @@ export type EntityIndexSnapshot<TEntity, TId extends EntityId> = {
  */
 export type EntityIndexPart<TPart> = readonly [key: string, part: TPart];
 
-export type EntityIndexDefinition<TState, TSource, TPart, TEntity, TId extends EntityId> = {
+export type EntityIndexDefinition<
+    TState,
+    TSource,
+    TPart,
+    TEntity,
+    TId extends EntityId,
+    TGroups extends EntityGroupKeySelectors<TEntity>,
+> = {
     /** Used in errors and in dev tooling. Not an identity — the object itself is the instance. */
     name: string;
     /**
@@ -67,9 +101,9 @@ export type EntityIndexDefinition<TState, TSource, TPart, TEntity, TId extends E
      *
      * This is what makes a rebuild proportional to the write rather than to the store: Immer
      * leaves every piece the reducer did not touch referentially identical, so a part that is the
-     * same object as last time is carried over — not walked, and its ids not recomputed. For
-     * transactions the parts are the per-account arrays, so one account receiving a transaction
-     * costs one account's worth of work however many accounts the user has.
+     * same object as last time is carried over — not walked, and neither its ids nor its group
+     * keys recomputed. For transactions the parts are the per-account arrays, so one account
+     * receiving a transaction costs one account's worth of work however many accounts the user has.
      *
      * Optional. Without it the whole source is one part, which is correct but rebuilds everything
      * on every write.
@@ -88,9 +122,19 @@ export type EntityIndexDefinition<TState, TSource, TPart, TEntity, TId extends E
      * its place in the index without knowing where the reducer keeps it.
      */
     getId: (entity: TEntity) => TId;
+    /**
+     * Lookups by something other than the primary key, each named. Optional: an index is useful
+     * with none of them, and each one costs a pass over the entities of the parts that changed.
+     */
+    groupBy?: TGroups;
 };
 
-export type EntityIndex<TState, TEntity, TId extends EntityId> = {
+export type EntityIndex<
+    TState,
+    TEntity,
+    TId extends EntityId,
+    TGroups extends EntityGroupKeySelectors<TEntity> = Record<string, never>,
+> = {
     readonly name: string;
     /**
      * Keeps the index's build alive until the returned function is called. Reads work without a
@@ -103,37 +147,84 @@ export type EntityIndex<TState, TEntity, TId extends EntityId> = {
     /** How many subscribers are holding the build. Exposed for tests and dev tooling. */
     getSubscriberCount: () => number;
     /** The index as of this state. Same object for as long as the source is unchanged. */
-    read: (state: TState) => EntityIndexSnapshot<TEntity, TId>;
-    selectById: (state: TState, id: TId) => TEntity | undefined;
-    selectIds: (state: TState) => readonly TId[];
+    read: (state: TState) => EntityIndexSnapshot<TEntity, TId, TGroups>;
+    getById: (state: TState, id: TId) => TEntity | undefined;
+    getIds: (state: TState) => readonly TId[];
+    /**
+     * The ids in one group, in source order. Empty when the group holds nothing for that key.
+     *
+     * The array is stable while its members are unchanged, so a consumer watching one group is
+     * not woken by writes to another.
+     */
+    getIdsBy: <TName extends keyof TGroups>(
+        state: TState,
+        groupName: TName,
+        key: EntityGroupKey<TGroups[TName]>,
+    ) => readonly TId[];
 };
 
 const NO_CHANGES: EntityIndexChanges<never> = { added: [], removed: [], updated: [] };
 
+/** Shared so that "this group holds nothing" is the same array every time, and re-renders nothing. */
+export const EMPTY_ENTITY_IDS: readonly never[] = [];
+
 const WHOLE_SOURCE_KEY = '';
 
-/** What a part contributed last time, so an untouched part can contribute it again unchanged. */
+/**
+ * What a part contributed last time, so an untouched part can contribute it again without being
+ * walked: its entities under their ids, and the group keys each of them was filed under.
+ */
 type BuiltPart<TEntity, TId extends EntityId> = {
     part: unknown;
     entries: readonly (readonly [TId, TEntity])[];
+    /** Per group name, the keys of each entry — aligned with `entries` by position. */
+    groupKeys: Record<string, readonly (readonly EntityId[])[]>;
 };
 
-export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId, TPart = TSource>({
+const toKeyList = (keys: EntityId | readonly EntityId[] | undefined): readonly EntityId[] => {
+    if (keys === undefined) {
+        return EMPTY_ENTITY_IDS;
+    }
+
+    return Array.isArray(keys) ? keys : [keys as EntityId];
+};
+
+const areSameIds = <TId extends EntityId>(left: readonly TId[], right: readonly TId[]) =>
+    left.length === right.length && left.every((id, index) => id === right[index]);
+
+export const createEntityIndex = <
+    TState,
+    TSource,
+    TEntity,
+    TId extends EntityId,
+    TGroups extends EntityGroupKeySelectors<TEntity> = Record<string, never>,
+    TPart = TSource,
+>({
     name,
     selectSource,
     getParts,
     getEntities,
     getId,
-}: EntityIndexDefinition<TState, TSource, TPart, TEntity, TId>): EntityIndex<
+    groupBy,
+}: EntityIndexDefinition<TState, TSource, TPart, TEntity, TId, TGroups>): EntityIndex<
     TState,
     TEntity,
-    TId
+    TId,
+    TGroups
 > => {
+    const groupNames = Object.keys(groupBy ?? {});
+
+    const emptyGroups = () =>
+        Object.fromEntries(
+            groupNames.map(groupName => [groupName, new Map()]),
+        ) as unknown as EntityIndexSnapshot<TEntity, TId, TGroups>['groups'];
+
     // One per index rather than one per build, so that an index which is empty across several
     // different sources still hands back the same snapshot and consumers see no change.
-    const emptySnapshot: EntityIndexSnapshot<TEntity, TId> = {
+    const emptySnapshot: EntityIndexSnapshot<TEntity, TId, TGroups> = {
         ids: [],
         byId: new Map(),
+        groups: emptyGroups(),
         changes: NO_CHANGES,
     };
 
@@ -147,26 +238,67 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
     let cached:
         | {
               source: TSource;
-              snapshot: EntityIndexSnapshot<TEntity, TId>;
+              snapshot: EntityIndexSnapshot<TEntity, TId, TGroups>;
               parts: ReadonlyMap<string, BuiltPart<TEntity, TId>>;
           }
         | undefined;
 
-    const buildPart = (part: TPart): readonly (readonly [TId, TEntity])[] => {
+    const buildPart = (part: TPart): BuiltPart<TEntity, TId> => {
         const entries: (readonly [TId, TEntity])[] = [];
+        const groupKeys: Record<string, (readonly EntityId[])[]> = Object.fromEntries(
+            groupNames.map(groupName => [groupName, []]),
+        );
 
         for (const entity of getEntities(part)) {
             entries.push([getId(entity), entity]);
+
+            for (const groupName of groupNames) {
+                groupKeys[groupName]?.push(toKeyList(groupBy?.[groupName]?.(entity)));
+            }
         }
 
-        return entries;
+        return { part, entries, groupKeys };
     };
 
-    const build = (source: TSource): EntityIndexSnapshot<TEntity, TId> => {
+    /**
+     * Reuses the previous array for every group whose members are unchanged, so that a consumer
+     * watching one group is not re-rendered by a write to another. The comparison is by identity
+     * over ids the rebuild has already produced, which is cheaper than what the consumer would
+     * otherwise do on every write.
+     */
+    const settleGroups = (
+        built: Map<string, Map<EntityId, TId[]>>,
+    ): EntityIndexSnapshot<TEntity, TId, TGroups>['groups'] =>
+        Object.fromEntries(
+            groupNames.map(groupName => {
+                const previousGroup = cached?.snapshot.groups[groupName] as
+                    ReadonlyMap<EntityId, readonly TId[]> | undefined;
+                const nextGroup = new Map<EntityId, readonly TId[]>();
+                let isUnchanged = previousGroup?.size === built.get(groupName)?.size;
+
+                built.get(groupName)?.forEach((ids, key) => {
+                    const previousIds = previousGroup?.get(key);
+
+                    if (previousIds && areSameIds(previousIds, ids)) {
+                        nextGroup.set(key, previousIds);
+                    } else {
+                        nextGroup.set(key, ids);
+                        isUnchanged = false;
+                    }
+                });
+
+                return [groupName, isUnchanged && previousGroup ? previousGroup : nextGroup];
+            }),
+        ) as unknown as EntityIndexSnapshot<TEntity, TId, TGroups>['groups'];
+
+    const build = (source: TSource): EntityIndexSnapshot<TEntity, TId, TGroups> => {
         const previous = cached;
         const parts = new Map<string, BuiltPart<TEntity, TId>>();
         const byId = new Map<TId, TEntity>();
         const ids: TId[] = [];
+        const builtGroups = new Map<string, Map<EntityId, TId[]>>(
+            groupNames.map(groupName => [groupName, new Map()]),
+        );
 
         const added: TId[] = [];
         const updated: TId[] = [];
@@ -175,12 +307,12 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
         // between parts.
         const possiblyRemoved: TId[] = [];
 
-        for (const [key, part] of toParts(source)) {
-            const previousPart = previous?.parts.get(key);
+        for (const [partKey, part] of toParts(source)) {
+            const previousPart = previous?.parts.get(partKey);
             const isUntouched = previousPart !== undefined && previousPart.part === part;
-            const entries = isUntouched ? previousPart.entries : buildPart(part);
+            const builtPart = isUntouched ? previousPart : buildPart(part);
 
-            parts.set(key, { part, entries });
+            parts.set(partKey, builtPart);
 
             if (!isUntouched && previousPart) {
                 for (const [id] of previousPart.entries) {
@@ -188,9 +320,7 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
                 }
             }
 
-            for (const entry of entries) {
-                const [id, entity] = entry;
-
+            builtPart.entries.forEach(([id, entity], position) => {
                 // A repeated id means `getId` does not identify these entities. The last one wins,
                 // the way a write to the same key would, and the id keeps its first position.
                 if (!byId.has(id)) {
@@ -198,8 +328,23 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
                 }
                 byId.set(id, entity);
 
+                for (const groupName of groupNames) {
+                    const group = builtGroups.get(groupName);
+
+                    for (const key of builtPart.groupKeys[groupName]?.[position] ??
+                        EMPTY_ENTITY_IDS) {
+                        const groupIds = group?.get(key);
+
+                        if (groupIds) {
+                            groupIds.push(id);
+                        } else {
+                            group?.set(key, [id]);
+                        }
+                    }
+                }
+
                 if (isUntouched) {
-                    continue;
+                    return;
                 }
 
                 const previousEntity = previous?.snapshot.byId.get(id);
@@ -208,12 +353,12 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
                 } else if (previousEntity !== entity) {
                     updated.push(id);
                 }
-            }
+            });
         }
 
         // Parts the source no longer has at all.
-        previous?.parts.forEach((previousPart, key) => {
-            if (!parts.has(key)) {
+        previous?.parts.forEach((previousPart, partKey) => {
+            if (!parts.has(partKey)) {
                 for (const [id] of previousPart.entries) {
                     possiblyRemoved.push(id);
                 }
@@ -221,6 +366,7 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
         });
 
         const removed = possiblyRemoved.filter(id => !byId.has(id));
+        const groups = settleGroups(builtGroups);
 
         // The very first build is not a change anyone can have missed, and saying so would mean
         // listing every entity in the store.
@@ -232,13 +378,15 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
             source,
             parts,
             snapshot:
-                ids.length === 0 && removed.length === 0 ? emptySnapshot : { ids, byId, changes },
+                ids.length === 0 && removed.length === 0
+                    ? emptySnapshot
+                    : { ids, byId, groups, changes },
         };
 
         return cached.snapshot;
     };
 
-    const read = (state: TState): EntityIndexSnapshot<TEntity, TId> => {
+    const read = (state: TState): EntityIndexSnapshot<TEntity, TId, TGroups> => {
         const source = selectSource(state);
 
         if (cached?.source === source) {
@@ -278,8 +426,11 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
 
         read,
 
-        selectById: (state, id) => read(state).byId.get(id),
+        getById: (state, id) => read(state).byId.get(id),
 
-        selectIds: state => read(state).ids,
+        getIds: state => read(state).ids,
+
+        getIdsBy: (state, groupName, key) =>
+            read(state).groups[groupName].get(key) ?? (EMPTY_ENTITY_IDS as readonly TId[]),
     };
 };

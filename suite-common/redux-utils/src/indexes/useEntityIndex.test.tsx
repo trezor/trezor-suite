@@ -8,7 +8,12 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 import { act, render, renderHook, screen } from '@testing-library/react';
 
 import { createEntityIndex } from './createEntityIndex';
-import { useEntityById, useEntityIds, useEntityIndexSubscription } from './useEntityIndex';
+import {
+    useEntityById,
+    useEntityIds,
+    useEntityIdsBy,
+    useEntityIndexSubscription,
+} from './useEntityIndex';
 
 type Thing = { id: string; value: string };
 
@@ -269,5 +274,82 @@ describe('useEntityIndexSubscription', () => {
         unmount();
 
         expect(index.getSubscriberCount()).toBe(0);
+    });
+});
+
+const createGroupedIndex = () =>
+    createEntityIndex({
+        name: 'groupedThings',
+        selectSource: (state: State) => state.things,
+        getEntities: (things: Thing[]) => things,
+        getId: (thing: Thing) => thing.id,
+        // `value` stands in for whatever a real index groups by — the account a transaction
+        // belongs to, say.
+        groupBy: { byValue: (thing: Thing) => thing.value },
+    });
+
+describe('useEntityIdsBy', () => {
+    const left = { id: 'a', value: 'left' };
+    const right = { id: 'b', value: 'right' };
+
+    it('reads the ids in one group', () => {
+        const index = createGroupedIndex();
+        const store = createTestStore([left, right]);
+
+        const { result } = renderHook(() => useEntityIdsBy(index, 'byValue', 'left'), {
+            wrapper: createWrapper(store),
+        });
+
+        expect(result.current).toEqual(['a']);
+    });
+
+    it('reads nothing for a key the group does not hold', () => {
+        const index = createGroupedIndex();
+        const store = createTestStore([left]);
+
+        const { result } = renderHook(() => useEntityIdsBy(index, 'byValue', 'nowhere'), {
+            wrapper: createWrapper(store),
+        });
+
+        expect(result.current).toEqual([]);
+    });
+
+    it('does not re-render when another group changes', () => {
+        // The point of grouping: a screen showing one account's history is not woken because
+        // another account received a transaction.
+        const index = createGroupedIndex();
+        const store = createTestStore([left, right]);
+        const renders = jest.fn();
+
+        renderHook(
+            () => {
+                renders();
+
+                return useEntityIdsBy(index, 'byValue', 'left');
+            },
+            { wrapper: createWrapper(store) },
+        );
+        renders.mockClear();
+
+        act(() => {
+            store.dispatch(setThings([left, right, { id: 'c', value: 'right' }]));
+        });
+
+        expect(renders).not.toHaveBeenCalled();
+    });
+
+    it('re-renders when its own group changes', () => {
+        const index = createGroupedIndex();
+        const store = createTestStore([left, right]);
+
+        const { result } = renderHook(() => useEntityIdsBy(index, 'byValue', 'left'), {
+            wrapper: createWrapper(store),
+        });
+
+        act(() => {
+            store.dispatch(setThings([left, right, { id: 'c', value: 'left' }]));
+        });
+
+        expect(result.current).toEqual(['a', 'c']);
     });
 });
