@@ -1,6 +1,6 @@
 import { Locator, Page, expect, test } from '@playwright/test';
 import { writeFileSync } from 'fs';
-import { get, isMatch, set } from 'lodash';
+import { isMatch, set, toPath } from 'lodash';
 import { join } from 'path';
 
 import {
@@ -108,14 +108,15 @@ export const enhancePage = (page: Page): Page => {
         }).toPass({ timeout: 5000 });
     };
 
-    page.getReduxObject = async (objectPath?: string) => {
-        const state = await page.evaluate(() => window.store.getState());
-
+    page.getReduxObject = (objectPath?: string) => {
         if (!objectPath) {
-            return state;
+            return page.evaluate(() => window.store.getState());
         }
 
-        return get(state, objectPath);
+        return page.evaluate(
+            keys => keys.reduce((node, key) => node?.[key], window.store.getState()),
+            toPath(objectPath),
+        );
     };
 
     page.expectReduxObjectNotToBeEmpty = async function (
