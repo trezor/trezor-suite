@@ -9,8 +9,24 @@ import { type Address, type SearchAccountLabels, type TxId } from './searchLabel
 export type TransactionSearchIndex = {
     /** Every transaction that paid to or from an address — inputs, outputs and targets. */
     txidsByAddress: Record<Address, Set<TxId>>;
+    /**
+     * Where a transaction sits in the array, so a search that ends up holding txids can get back
+     * to the transactions without walking all of them — and can put them back in the array's own
+     * order, which is the order the list paginates and renders.
+     */
+    positionByTxid: Map<TxId, number>;
     txidsByOutputLabel: Record<string, TxId[]>;
     addressesByLabel: Record<string, Address[]>;
+};
+
+const buildPositionByTxid = (transactions: WalletAccountTransaction[]) => {
+    const positionByTxid = new Map<TxId, number>();
+
+    // `forEach` skips the holes a not-yet-fetched page leaves, which is what keeps them out of
+    // every search result.
+    transactions.forEach((transaction, position) => positionByTxid.set(transaction.txid, position));
+
+    return positionByTxid;
 };
 
 const buildTxidsByAddress = (transactions: WalletAccountTransaction[]) => {
@@ -89,6 +105,7 @@ export const getTransactionSearchIndex = (
 
     const index: TransactionSearchIndex = {
         txidsByAddress: buildTxidsByAddress(transactions),
+        positionByTxid: buildPositionByTxid(transactions),
         txidsByOutputLabel: buildTxidsByOutputLabel(accountLabels),
         addressesByLabel: buildAddressesByLabel(accountLabels),
     };
