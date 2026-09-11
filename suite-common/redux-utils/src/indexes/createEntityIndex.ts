@@ -9,25 +9,49 @@
  *
  * Three properties make it usable from React:
  *
- * - **Lazy.** Nothing is built until someone reads it, and nothing is retained until someone
- *   subscribes. An index that no screen is using costs nothing but the definition.
+ * - **Lazy.** Nothing is built until someone reads it. An index that no screen is using costs
+ *   nothing but the definition, and the last consumer leaving releases what was built.
  * - **Shared.** The index is one object, so every consumer of it reads the same build. Ten
  *   components asking for a transaction by id in the same render pass build the map once.
  * - **Stable.** A read against an unchanged source returns the very same snapshot object, so
  *   consumers can compare by reference and a re-render that changed nothing else recomputes
  *   nothing here.
+ *
+ * And one that makes it cheap to keep up to date: a write touches part of the source, so a rebuild
+ * only visits that part. See `getParts`.
  */
 
 /** Ids are strings so a `Map` can hold them without an identity or ordering question. */
 export type EntityId = string;
 
+/**
+ * What a rebuild did to the index, for consumers that need to react to entities rather than read
+ * them — maintaining something derived, or noticing arrivals.
+ *
+ * Computed from the parts that were rebuilt, so asking for it costs no more than the rebuild did.
+ * On the first build everything counts as added.
+ */
+export type EntityIndexChanges<TId extends EntityId> = {
+    readonly added: readonly TId[];
+    readonly removed: readonly TId[];
+    /** Present before and after, but a different entity object than it was. */
+    readonly updated: readonly TId[];
+};
+
 export type EntityIndexSnapshot<TEntity, TId extends EntityId> = {
     /** Every id in the order the source yielded it. */
     readonly ids: readonly TId[];
     readonly byId: ReadonlyMap<TId, TEntity>;
+    readonly changes: EntityIndexChanges<TId>;
 };
 
-export type EntityIndexDefinition<TState, TSource, TEntity, TId extends EntityId> = {
+/**
+ * A slice of the source whose identity is worth comparing: if the reducer did not touch it, it is
+ * the same object it was, and the index can carry its entities over untouched.
+ */
+export type EntityIndexPart<TPart> = readonly [key: string, part: TPart];
+
+export type EntityIndexDefinition<TState, TSource, TPart, TEntity, TId extends EntityId> = {
     /** Used in errors and in dev tooling. Not an identity — the object itself is the instance. */
     name: string;
     /**
@@ -39,10 +63,23 @@ export type EntityIndexDefinition<TState, TSource, TEntity, TId extends EntityId
      */
     selectSource: (state: TState) => TSource;
     /**
-     * Every entity currently in the source. Called only when the source changed, so it is free to
-     * walk whatever shape the reducer keeps.
+     * Splits the source into the pieces the reducer writes to, each under a stable key.
+     *
+     * This is what makes a rebuild proportional to the write rather than to the store: Immer
+     * leaves every piece the reducer did not touch referentially identical, so a part that is the
+     * same object as last time is carried over — not walked, and its ids not recomputed. For
+     * transactions the parts are the per-account arrays, so one account receiving a transaction
+     * costs one account's worth of work however many accounts the user has.
+     *
+     * Optional. Without it the whole source is one part, which is correct but rebuilds everything
+     * on every write.
      */
-    getEntities: (source: TSource) => Iterable<TEntity>;
+    getParts?: (source: TSource) => Iterable<EntityIndexPart<TPart>>;
+    /**
+     * Every entity in a part. Called only for parts that changed, so it is free to walk whatever
+     * shape the reducer keeps.
+     */
+    getEntities: (part: TPart) => Iterable<TEntity>;
     /**
      * The entity's primary key. Mandatory: an index with no identity for its entities cannot
      * answer the only question every index has to answer.
@@ -71,39 +108,134 @@ export type EntityIndex<TState, TEntity, TId extends EntityId> = {
     selectIds: (state: TState) => readonly TId[];
 };
 
-export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId>({
+const NO_CHANGES: EntityIndexChanges<never> = { added: [], removed: [], updated: [] };
+
+const WHOLE_SOURCE_KEY = '';
+
+/** What a part contributed last time, so an untouched part can contribute it again unchanged. */
+type BuiltPart<TEntity, TId extends EntityId> = {
+    part: unknown;
+    entries: readonly (readonly [TId, TEntity])[];
+};
+
+export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId, TPart = TSource>({
     name,
     selectSource,
+    getParts,
     getEntities,
     getId,
-}: EntityIndexDefinition<TState, TSource, TEntity, TId>): EntityIndex<TState, TEntity, TId> => {
+}: EntityIndexDefinition<TState, TSource, TPart, TEntity, TId>): EntityIndex<
+    TState,
+    TEntity,
+    TId
+> => {
     // One per index rather than one per build, so that an index which is empty across several
     // different sources still hands back the same snapshot and consumers see no change.
-    const emptySnapshot: EntityIndexSnapshot<TEntity, TId> = { ids: [], byId: new Map() };
+    const emptySnapshot: EntityIndexSnapshot<TEntity, TId> = {
+        ids: [],
+        byId: new Map(),
+        changes: NO_CHANGES,
+    };
+
+    const toParts =
+        getParts ??
+        ((source: TSource) => [[WHOLE_SOURCE_KEY, source as unknown as TPart]] as const);
+
     let subscriberCount = 0;
-    // The build and the source it was built from, kept together so they cannot disagree.
-    // `undefined` means the next read builds.
-    let cached: { source: TSource; snapshot: EntityIndexSnapshot<TEntity, TId> } | undefined;
+    // The build, the source it was built from and the parts it was assembled from, kept together
+    // so they cannot disagree. `undefined` means the next read builds from nothing.
+    let cached:
+        | {
+              source: TSource;
+              snapshot: EntityIndexSnapshot<TEntity, TId>;
+              parts: ReadonlyMap<string, BuiltPart<TEntity, TId>>;
+          }
+        | undefined;
+
+    const buildPart = (part: TPart): readonly (readonly [TId, TEntity])[] => {
+        const entries: (readonly [TId, TEntity])[] = [];
+
+        for (const entity of getEntities(part)) {
+            entries.push([getId(entity), entity]);
+        }
+
+        return entries;
+    };
 
     const build = (source: TSource): EntityIndexSnapshot<TEntity, TId> => {
+        const previous = cached;
+        const parts = new Map<string, BuiltPart<TEntity, TId>>();
         const byId = new Map<TId, TEntity>();
         const ids: TId[] = [];
 
-        for (const entity of getEntities(source)) {
-            const id = getId(entity);
-            // A repeated id means `getId` does not identify these entities. The last one wins, the
-            // way a write to the same key would, and the id keeps its first position.
-            if (!byId.has(id)) {
-                ids.push(id);
+        const added: TId[] = [];
+        const updated: TId[] = [];
+        // Only ids the rebuilt or vanished parts used to hold can have gone; everything else was
+        // carried over untouched. Checked against the finished index below, because an id can move
+        // between parts.
+        const possiblyRemoved: TId[] = [];
+
+        for (const [key, part] of toParts(source)) {
+            const previousPart = previous?.parts.get(key);
+            const isUntouched = previousPart !== undefined && previousPart.part === part;
+            const entries = isUntouched ? previousPart.entries : buildPart(part);
+
+            parts.set(key, { part, entries });
+
+            if (!isUntouched && previousPart) {
+                for (const [id] of previousPart.entries) {
+                    possiblyRemoved.push(id);
+                }
             }
-            byId.set(id, entity);
+
+            for (const entry of entries) {
+                const [id, entity] = entry;
+
+                // A repeated id means `getId` does not identify these entities. The last one wins,
+                // the way a write to the same key would, and the id keeps its first position.
+                if (!byId.has(id)) {
+                    ids.push(id);
+                }
+                byId.set(id, entity);
+
+                if (isUntouched) {
+                    continue;
+                }
+
+                const previousEntity = previous?.snapshot.byId.get(id);
+                if (previousEntity === undefined) {
+                    added.push(id);
+                } else if (previousEntity !== entity) {
+                    updated.push(id);
+                }
+            }
         }
 
-        if (ids.length === 0) {
-            return emptySnapshot;
-        }
+        // Parts the source no longer has at all.
+        previous?.parts.forEach((previousPart, key) => {
+            if (!parts.has(key)) {
+                for (const [id] of previousPart.entries) {
+                    possiblyRemoved.push(id);
+                }
+            }
+        });
 
-        return { ids, byId };
+        const removed = possiblyRemoved.filter(id => !byId.has(id));
+
+        // The very first build is not a change anyone can have missed, and saying so would mean
+        // listing every entity in the store.
+        const changes: EntityIndexChanges<TId> = previous
+            ? { added, removed, updated }
+            : (NO_CHANGES as EntityIndexChanges<TId>);
+
+        cached = {
+            source,
+            parts,
+            snapshot:
+                ids.length === 0 && removed.length === 0 ? emptySnapshot : { ids, byId, changes },
+        };
+
+        return cached.snapshot;
     };
 
     const read = (state: TState): EntityIndexSnapshot<TEntity, TId> => {
@@ -113,14 +245,11 @@ export const createEntityIndex = <TState, TSource, TEntity, TId extends EntityId
             return cached.snapshot;
         }
 
-        const snapshot = build(source);
-        // Kept whether or not anyone is subscribed. A list of a hundred rows reads the index a
+        // Built whether or not anyone is subscribed. A list of a hundred rows reads the index a
         // hundred times on its first render, before a single subscription effect has run, and
         // those have to be one build. Subscribers decide when the build is *released*, not when
         // it is made.
-        cached = { source, snapshot };
-
-        return snapshot;
+        return build(source);
     };
 
     return {

@@ -189,3 +189,149 @@ describe('createEntityIndex', () => {
         expect(index.read(createState([]))).toBe(index.read(createState([])));
     });
 });
+
+type PartitionedState = { byGroup: Record<string, Thing[]> };
+
+const createPartitionedIndex = () => {
+    const getEntities = jest.fn((things: Thing[]) => things);
+
+    const index = createEntityIndex({
+        name: 'partitionedThings',
+        selectSource: (state: PartitionedState) => state.byGroup,
+        getParts: (byGroup: Record<string, Thing[]>) => Object.entries(byGroup),
+        getEntities,
+        getId: (thing: Thing) => thing.id,
+    });
+
+    return { index, getEntities };
+};
+
+describe('an index over a source that is written in parts', () => {
+    const c = { id: 'c', value: 'third' };
+
+    it('walks only the part that changed', () => {
+        // The whole point: one account receiving a transaction costs one account's worth of work,
+        // however many accounts the user has. Immer leaves the untouched parts identical, so they
+        // are carried over rather than walked.
+        const { index, getEntities } = createPartitionedIndex();
+        const untouched = [c];
+        index.subscribe();
+
+        index.read({ byGroup: { left: [a], right: untouched } });
+        getEntities.mockClear();
+        index.read({ byGroup: { left: [a, b], right: untouched } });
+
+        expect(getEntities).toHaveBeenCalledTimes(1);
+        expect(getEntities).toHaveBeenCalledWith([a, b]);
+    });
+
+    it('still holds the entities of the parts it did not walk', () => {
+        const { index } = createPartitionedIndex();
+        const untouched = [c];
+        index.subscribe();
+
+        index.read({ byGroup: { left: [a], right: untouched } });
+        const state = { byGroup: { left: [a, b], right: untouched } };
+
+        expect(index.selectById(state, 'c')).toBe(c);
+        expect(index.selectById(state, 'b')).toBe(b);
+    });
+
+    it('walks a part it has not seen before', () => {
+        const { index, getEntities } = createPartitionedIndex();
+        const untouched = [a];
+        index.subscribe();
+
+        index.read({ byGroup: { left: untouched } });
+        getEntities.mockClear();
+        index.read({ byGroup: { left: untouched, right: [c] } });
+
+        expect(getEntities).toHaveBeenCalledTimes(1);
+        expect(getEntities).toHaveBeenCalledWith([c]);
+    });
+
+    it('drops the entities of a part the source no longer has', () => {
+        const { index } = createPartitionedIndex();
+        const untouched = [a];
+        index.subscribe();
+
+        index.read({ byGroup: { left: untouched, right: [c] } });
+
+        expect(index.selectById({ byGroup: { left: untouched } }, 'c')).toBeUndefined();
+    });
+});
+
+describe('what a rebuild changed', () => {
+    const readChanges = (index: ReturnType<typeof createIndex>['index'], state: State) =>
+        index.read(state).changes;
+
+    it('is nothing on the first build, which nobody can have missed', () => {
+        const { index } = createIndex();
+        index.subscribe();
+
+        expect(readChanges(index, createState([a, b]))).toEqual({
+            added: [],
+            removed: [],
+            updated: [],
+        });
+    });
+
+    it('reports an entity that arrived', () => {
+        const { index } = createIndex();
+        index.subscribe();
+        index.read(createState([a]));
+
+        expect(readChanges(index, createState([a, b]))).toEqual({
+            added: ['b'],
+            removed: [],
+            updated: [],
+        });
+    });
+
+    it('reports an entity that went away', () => {
+        const { index } = createIndex();
+        index.subscribe();
+        index.read(createState([a, b]));
+
+        expect(readChanges(index, createState([a]))).toEqual({
+            added: [],
+            removed: ['b'],
+            updated: [],
+        });
+    });
+
+    it('reports an entity that is a different object than it was', () => {
+        const { index } = createIndex();
+        index.subscribe();
+        index.read(createState([a, b]));
+
+        expect(readChanges(index, createState([a, { ...b, value: 'changed' }]))).toEqual({
+            added: [],
+            removed: [],
+            updated: ['b'],
+        });
+    });
+
+    it('says nothing about an entity that is the same object as before', () => {
+        const { index } = createIndex();
+        index.subscribe();
+        index.read(createState([a, b]));
+
+        // `a` is carried across untouched, so it is in none of the three lists.
+        expect(readChanges(index, createState([a, { ...b, value: 'changed' }])).updated).toEqual([
+            'b',
+        ]);
+    });
+
+    it('does not report an entity that only moved between parts as gone', () => {
+        const { index } = createPartitionedIndex();
+        index.subscribe();
+        index.read({ byGroup: { left: [a], right: [] } });
+
+        expect(index.read({ byGroup: { left: [], right: [a] } }).changes).toEqual({
+            added: [],
+            removed: [],
+            updated: [],
+        });
+    });
+});
