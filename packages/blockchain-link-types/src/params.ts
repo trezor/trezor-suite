@@ -27,6 +27,11 @@ export interface PrivatePendingParams {
     txids?: string[]; // EVM: their tx hashes; blockbook fetch-backs each to cache+serve the body
 }
 
+export type SolanaTokenMetadata = {
+    baseAddress: string;
+    mint: string;
+};
+
 export interface EstimateFeeParams {
     blocks?: number[];
     specific?: {
@@ -37,6 +42,7 @@ export interface EstimateFeeParams {
         data?: string; // eth tx data, sol tx message
         value?: string; // eth tx amount
         newAccountProgramName?: 'staking' | 'spl-token' | 'spl-token-2022'; // program name of the Solana account that is being created, default: 'spl-token'
+        solanaToken?: SolanaTokenMetadata;
         privatePending?: PrivatePendingParams; // blockbook only (EVM), wallet's in-flight (locally pending) txs
     };
 }

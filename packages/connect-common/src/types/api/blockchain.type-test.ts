@@ -67,6 +67,27 @@ export const blockchainEstimateFee = async (api: TrezorConnect) => {
             feeLevels: 'preloaded',
         },
     });
+
+    const solana = await api.blockchainEstimateFee({
+        coin: 'sol',
+        request: {
+            specific: {
+                data: 'serialized-transaction',
+                solanaToken: {
+                    baseAddress: 'recipient',
+                    mint: 'token-mint',
+                },
+            },
+        },
+    });
+    if (solana.success) {
+        solana.payload.levels[0]?.solanaTokenAccountInfos?.forEach(tokenAccountInfo => {
+            tokenAccountInfo.baseAddress.toLowerCase();
+            tokenAccountInfo.tokenAccount.toLowerCase();
+            tokenAccountInfo.tokenMint.toLowerCase();
+            tokenAccountInfo.tokenProgram.toLowerCase();
+        });
+    }
 };
 
 export const blockchainGetTransactions = async (api: TrezorConnect) => {

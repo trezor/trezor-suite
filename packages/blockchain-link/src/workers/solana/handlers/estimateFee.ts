@@ -1,15 +1,17 @@
-import type { MessageTypes } from '@trezor/blockchain-link-types';
+import type { MessageTypes, ResponseTypes } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
 import solana from '@trezor/network-solana/runtime';
 import { BigNumber } from '@trezor/utils';
 
 import type { Request } from '../types';
 
-export const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
+export const estimateFee = async (
+    request: Request<MessageTypes.EstimateFee>,
+): Promise<ResponseTypes.EstimateFee> => {
     const api = await request.connect();
-    const { getFees } = await solana();
+    const { getFees, getSolanaTokenAccountInfos } = await solana();
 
-    const { data: messageHex, newAccountProgramName } = request.payload.specific ?? {};
+    const { data: messageHex, newAccountProgramName, solanaToken } = request.payload.specific ?? {};
 
     if (messageHex == null) {
         throw new Error('Could not estimate fee for transaction.');
@@ -17,6 +19,15 @@ export const estimateFee = async (request: Request<MessageTypes.EstimateFee>) =>
 
     const { baseFee, priorityFee, accountCreationFee, decompiledTransactionMessage } =
         await getFees(messageHex, newAccountProgramName, api);
+    const resolvedTokenAccountInfos = solanaToken
+        ? await getSolanaTokenAccountInfos({
+              baseAddress: solanaToken.baseAddress,
+              instructions: decompiledTransactionMessage.instructions,
+              tokenMint: solanaToken.mint,
+          })
+        : [];
+    const solanaTokenAccountInfos =
+        resolvedTokenAccountInfos.length > 0 ? resolvedTokenAccountInfos : undefined;
 
     const payload = [
         {
@@ -27,6 +38,7 @@ export const estimateFee = async (request: Request<MessageTypes.EstimateFee>) =>
             feePerUnit: priorityFee.computeUnitPrice,
             feeLimit: priorityFee.computeUnitLimit,
             feePayer: decompiledTransactionMessage.feePayer.address,
+            solanaTokenAccountInfos,
         },
     ];
 

@@ -23,14 +23,10 @@ import {
     parseCreateAccountInstruction,
     parseTransferSolInstruction,
 } from '@solana-program/system';
-import {
-    TOKEN_PROGRAM_ADDRESS,
-    TokenInstruction,
-    identifyTokenInstruction,
-    parseTransferCheckedInstruction,
-} from '@solana-program/token';
 
 import { BigNumber } from '@trezor/utils';
+
+import { parseTokenTransferInstruction } from './transactionInfo';
 
 const parseInstruction = (instruction: Instruction) => {
     // Fee decoding
@@ -80,22 +76,13 @@ const parseInstruction = (instruction: Instruction) => {
     }
 
     // Tokens
-    if (
-        instruction.programAddress === TOKEN_PROGRAM_ADDRESS &&
-        instruction.data &&
-        instruction.accounts
-    ) {
-        const instructionSafe = {
-            ...instruction,
-            data: instruction.data as Uint8Array,
-            accounts: instruction.accounts,
-        };
-        const type = identifyTokenInstruction(instructionSafe);
-        if (type === TokenInstruction.TransferChecked) {
-            const parsed = parseTransferCheckedInstruction(instructionSafe);
-
-            return { type: 'transfer-checked', parsed } as const;
-        }
+    const tokenTransferInstruction = parseTokenTransferInstruction(instruction);
+    if (tokenTransferInstruction) {
+        return {
+            type: 'transfer-checked',
+            parsed: tokenTransferInstruction.parsed,
+            tokenProgramName: tokenTransferInstruction.tokenProgramName,
+        } as const;
     }
 
     return { type: 'other' } as const;

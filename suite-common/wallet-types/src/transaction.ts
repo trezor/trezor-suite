@@ -13,6 +13,7 @@ import type {
     PrecomposeResultError as PrecomposedTransactionConnectResponseError,
     PrecomposeResultFinal as PrecomposedTransactionConnectResponseFinal,
     PrecomposeResultNonFinal as PrecomposedTransactionConnectResponseNonFinal,
+    SolanaTxTokenAccountInfo,
     StaticSessionId,
     TokenInfo,
 } from '@trezor/connect';
@@ -159,6 +160,7 @@ type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFi
     accountActivationFee?: string;
     memoFee?: string;
     solanaTxMeta?: SolanaTxMeta;
+    solanaTokenAccountInfos?: SolanaTxTokenAccountInfo[];
     isDeviceReviewOnly?: boolean;
 };
 
@@ -179,6 +181,7 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
     solanaTxMeta?: SolanaTxMeta;
+    solanaTokenAccountInfos?: SolanaTxTokenAccountInfo[];
     isDeviceReviewOnly?: boolean;
 };
 

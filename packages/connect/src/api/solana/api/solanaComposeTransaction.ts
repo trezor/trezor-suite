@@ -1,12 +1,12 @@
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } from '@trezor/network-solana/constants';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import { Assert } from '@trezor/schema-utils';
 
 import { assertBackendSupported, initBlockchain } from '../../../backend/BlockchainLink';
-import type { MethodContext, MethodMessage } from '../../../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../../../data/coinInfo';
 
@@ -43,7 +43,9 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         return 'Compose Solana transaction';
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
+    async run({
+        sendCoreMessage,
+    }: MethodContext): Promise<MethodReturnType<'solanaComposeTransaction'>> {
         const backend = await initBlockchain(
             this.params.coinInfo,
             sendCoreMessage,
@@ -54,45 +56,28 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         // firmware can resolve known SPL tokens instead of displaying a raw address.
         if (this.params.serializedTx) {
             const { token, toAddress } = this.params;
-            let newAccountProgramName;
             let tokenAccountInfo;
 
             if (token && toAddress) {
-                newAccountProgramName = token.program;
-                const fallbackTokenAccountInfo = {
-                    baseAddress: toAddress,
-                    tokenProgram: tokenProgramsInfo[token.program].publicKey,
-                    tokenMint: token.mint,
-                    tokenAccount: toAddress,
-                };
-
                 try {
-                    const { getDecompiledMessage } = await solana();
+                    const { getDecompiledMessage, getSolanaTokenAccountInfos } = await solana();
                     const decompiledMessage = getDecompiledMessage(this.params.serializedTx, true);
-                    const tokenTransferInstruction = decompiledMessage?.instructions.find(
-                        instruction => instruction.type === 'transfer-checked',
-                    );
 
-                    tokenAccountInfo = tokenTransferInstruction
-                        ? {
-                              baseAddress: toAddress,
-                              tokenProgram: tokenProgramsInfo[token.program].publicKey,
-                              tokenMint: tokenTransferInstruction.parsed.accounts.mint.address,
-                              tokenAccount:
-                                  tokenTransferInstruction.parsed.accounts.destination.address,
-                          }
-                        : fallbackTokenAccountInfo;
+                    if (decompiledMessage) {
+                        [tokenAccountInfo] = await getSolanaTokenAccountInfos({
+                            baseAddress: toAddress,
+                            instructions: decompiledMessage.message.instructions,
+                            tokenMint: token.mint,
+                        });
+                    }
                 } catch {
-                    tokenAccountInfo = fallbackTokenAccountInfo;
+                    // Transaction metadata is optional and may require address lookup tables.
                 }
             }
 
             return {
                 serializedTx: this.params.serializedTx,
-                additionalInfo: {
-                    newAccountProgramName,
-                    tokenAccountInfo,
-                },
+                additionalInfo: tokenAccountInfo ? { tokenAccountInfo } : {},
             };
         }
 

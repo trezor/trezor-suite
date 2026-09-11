@@ -226,6 +226,76 @@ describe('sendDexTransactionThunk', () => {
         expect(confirmTradeThunkArgs.nextStep).toBe(nextStep);
     });
 
+    it.each([undefined, '', '   '])(
+        'should reject Solana dex transaction when dexTx.data is %p',
+        async data => {
+            const quote = getQuote();
+            const { store, returnUrl } = getMocks({
+                selectedQuote: {
+                    ...quote,
+                    dexTx: { ...quote.dexTx, data },
+                } as TradingExchangeState['selectedQuote'],
+            });
+            const solanaAccount = { ...accountBtc, networkType: 'solana' } as Account;
+
+            const result = await store.dispatch(
+                exchangeThunks.sendDexTransactionThunk({
+                    account: solanaAccount,
+                    returnUrl,
+                    nextStep: jest.fn(),
+                    triggerAnalyticsTradeConfirmation: jest.fn(),
+                    processResponseData: jest.fn(),
+                    signAndPushSendFormTransaction: jest.fn(),
+                }),
+            );
+
+            expect(result.meta.requestStatus).toEqual('rejected');
+            expect(result.payload).toEqual({
+                type: 'error',
+                error: { id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA' },
+            });
+            expect(tradingThunks.recomposeAndSignTxThunk).not.toHaveBeenCalled();
+        },
+    );
+
+    it('allows an EVM DEX transaction without calldata', async () => {
+        const quote = getQuote();
+        const { store, returnUrl } = getMocks({
+            selectedQuote: {
+                ...quote,
+                dexTx: { ...quote.dexTx, data: '' },
+            } as TradingExchangeState['selectedQuote'],
+        });
+        const ethereumAccount = { ...accountBtc, networkType: 'ethereum' } as Account;
+        (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
+            .fn()
+            .mockImplementation(
+                createThunk('@trading/thunk/recomposeAndSignTx', (_, { fulfillWithValue }) =>
+                    fulfillWithValue({ success: true, payload: { txid: 'txid' } }),
+                ),
+            );
+        (confirmExchangeTradeThunk as unknown as jest.Mock).mockImplementation(
+            createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
+        );
+
+        const result = await store.dispatch(
+            exchangeThunks.sendDexTransactionThunk({
+                account: ethereumAccount,
+                returnUrl,
+                nextStep: jest.fn(),
+                triggerAnalyticsTradeConfirmation: jest.fn(),
+                processResponseData: jest.fn(),
+                signAndPushSendFormTransaction: jest.fn(),
+            }),
+        );
+
+        expect(result.meta.requestStatus).toEqual('fulfilled');
+        expect(
+            (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock).mock.calls[0][0]
+                .transactionData,
+        ).toBeUndefined();
+    });
+
     it('should base64→hex convert dexTx.data when account.networkType is solana', async () => {
         const base64Data = Buffer.from('hello', 'utf8').toString('base64');
         const expectedHex = Buffer.from(base64Data, 'base64').toString('hex');

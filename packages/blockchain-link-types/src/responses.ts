@@ -93,6 +93,13 @@ export interface GetFiatRatesTickersList {
     };
 }
 
+type SolanaTokenAccountInfo = {
+    baseAddress: string;
+    tokenProgram: string;
+    tokenMint: string;
+    tokenAccount: string;
+};
+
 export interface EstimateFee {
     type: typeof RESPONSES.ESTIMATE_FEE;
     payload: {
@@ -101,6 +108,7 @@ export interface EstimateFee {
         feePayer?: string;
         feeLimit?: string;
         eip1559?: Eip1559Fees;
+        solanaTokenAccountInfos?: SolanaTokenAccountInfo[];
     }[];
 }
 

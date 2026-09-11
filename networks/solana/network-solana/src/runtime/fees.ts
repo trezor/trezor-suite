@@ -1,4 +1,5 @@
 import {
+    type Instruction,
     decompileTransactionMessageFetchingLookupTables,
     getBase16Encoder,
     getBase64Decoder,
@@ -8,6 +9,7 @@ import {
     getTransactionEncoder,
     isWritableRole,
     pipe,
+    address as solanaAddress,
 } from '@solana/kit';
 import {
     MAX_COMPUTE_UNIT_LIMIT,
@@ -38,6 +40,7 @@ import type {
     TransactionMessageWithFeePayer,
     V0CompiledTransactionMessage,
 } from '../types';
+import { getCreatedTokenAccounts } from './transactionInfo';
 
 const DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS = BigInt(300_000); // micro-lamports, value taken from other wallets
 
@@ -179,6 +182,77 @@ const getAccountProgramSize = (programName: AccountProgramName) =>
         'spl-token-2022': _getToken2022Size(),
     })[programName];
 
+type GetAccountCreationFeeParams = {
+    api: SolanaAPI;
+    feePayer: string;
+    instructions: readonly Instruction[];
+    newAccountProgramName: AccountProgramName | undefined;
+};
+
+export const getAccountCreationFee = async ({
+    api,
+    feePayer,
+    instructions,
+    newAccountProgramName,
+}: GetAccountCreationFeeParams): Promise<bigint> => {
+    const createdTokenAccounts = Array.from(
+        new Map(
+            getCreatedTokenAccounts(instructions)
+                .filter(accountInfo => accountInfo.payer === feePayer)
+                .map(accountInfo => [accountInfo.address, accountInfo]),
+        ).values(),
+    );
+    const idempotentTokenAccounts = createdTokenAccounts.filter(account => account.isIdempotent);
+    const { value: existingIdempotentAccounts } =
+        idempotentTokenAccounts.length > 0
+            ? await api.rpc
+                  .getMultipleAccounts(
+                      idempotentTokenAccounts.map(accountInfo =>
+                          solanaAddress(accountInfo.address),
+                      ),
+                      { encoding: 'base64' },
+                  )
+                  .send()
+            : { value: [] };
+    const existingIdempotentAccountAddresses = new Set(
+        idempotentTokenAccounts.flatMap((accountInfo, index) =>
+            existingIdempotentAccounts[index] ? [accountInfo.address] : [],
+        ),
+    );
+    const tokenAccountProgramsToCreate = createdTokenAccounts.flatMap(accountInfo =>
+        accountInfo.isIdempotent && existingIdempotentAccountAddresses.has(accountInfo.address)
+            ? []
+            : [accountInfo.tokenProgramName],
+    );
+    const detectedTokenAccountPrograms = new Set(
+        createdTokenAccounts.map(accountInfo => accountInfo.tokenProgramName),
+    );
+    const accountProgramsToCreate: AccountProgramName[] = [
+        ...tokenAccountProgramsToCreate,
+        ...(newAccountProgramName &&
+        (newAccountProgramName === 'staking' ||
+            !detectedTokenAccountPrograms.has(newAccountProgramName))
+            ? [newAccountProgramName]
+            : []),
+    ];
+    const accountProgramCounts = accountProgramsToCreate.reduce(
+        (counts, programName) =>
+            counts.set(programName, (counts.get(programName) ?? BigInt(0)) + BigInt(1)),
+        new Map<AccountProgramName, bigint>(),
+    );
+    const rents = await Promise.all(
+        Array.from(accountProgramCounts, async ([programName, count]) => {
+            const rent = await api.rpc
+                .getMinimumBalanceForRentExemption(BigInt(getAccountProgramSize(programName)))
+                .send();
+
+            return rent * count;
+        }),
+    );
+
+    return rents.reduce((total, rent) => total + rent, BigInt(0));
+};
+
 export const getFees = async (
     messageHex: string,
     newAccountProgramName: AccountProgramName | undefined,
@@ -204,13 +278,12 @@ export const getFees = async (
 
     const baseFee = await getBaseFee(api.rpc, message);
 
-    const accountCreationFee = newAccountProgramName
-        ? await api.rpc
-              .getMinimumBalanceForRentExemption(
-                  BigInt(getAccountProgramSize(newAccountProgramName)),
-              )
-              .send()
-        : BigInt(0);
+    const accountCreationFee = await getAccountCreationFee({
+        api,
+        feePayer: decompiledTransactionMessage.feePayer.address,
+        instructions: decompiledTransactionMessage.instructions,
+        newAccountProgramName,
+    });
 
     return { baseFee, priorityFee, accountCreationFee, decompiledTransactionMessage };
 };

@@ -23,7 +23,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
-import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import TrezorConnect, { type FeeLevel, type SolanaTxTokenAccountInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { SOL_COMPUTE_UNIT_LIMIT } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
@@ -259,6 +259,12 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 specific: {
                     data: transaction.payload.serializedTx,
                     newAccountProgramName: transaction.payload.additionalInfo.newAccountProgramName,
+                    solanaToken: tokenInfo
+                        ? {
+                              baseAddress: firstOutput.address,
+                              mint: tokenInfo.contract,
+                          }
+                        : undefined,
                 },
             },
         });
@@ -266,6 +272,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         let fetchedFee: string | undefined;
         let fetchedFeePerUnit: string | undefined;
         let fetchedFeeLimit: string | undefined;
+        let solanaTokenAccountInfos: SolanaTxTokenAccountInfo[] | undefined;
         if (estimatedFee.success) {
             // We access the array directly like this because the fee response from the solana worker always returns an array of size 1
             const { levels: estimatedFeeLevels } = estimatedFee.payload;
@@ -274,6 +281,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             fetchedFee = feeLevel.feePerTx;
             fetchedFeePerUnit = feeLevel.feePerUnit;
             fetchedFeeLimit = feeLevel.feeLimit;
+            solanaTokenAccountInfos = feeLevel.solanaTokenAccountInfos;
         } else {
             // Error fetching fee, fall back on default values defined in `/packages/connect/src/data/defaultFeeLevels.ts`
             console.warn('Error fetching fee, using default values.', estimatedFee.error.message);
@@ -293,8 +301,8 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
 
         const resultLevels: PrecomposedLevels = {};
 
-        const response = predefinedLevels.map(level =>
-            calculate(
+        const response = predefinedLevels.map(level => {
+            const calculatedTransaction = calculate(
                 account.availableBalance,
                 output,
                 level,
@@ -303,8 +311,12 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 tokenInfo,
                 composeContext,
                 isNetworkReserveEnabled,
-            ),
-        );
+            );
+
+            return calculatedTransaction.type === 'error'
+                ? calculatedTransaction
+                : { ...calculatedTransaction, solanaTokenAccountInfos };
+        });
         response.forEach((tx, index) => {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
@@ -415,6 +427,11 @@ export const signSolanaSendFormTransactionThunk = createThunk<
         }
 
         const payment_req = paymentRequests?.[0];
+        const tokenAccountInfos =
+            precomposedTransaction.solanaTokenAccountInfos ??
+            (transaction.payload.additionalInfo.tokenAccountInfo
+                ? [transaction.payload.additionalInfo.tokenAccountInfo]
+                : undefined);
 
         const response = await TrezorConnect.solanaSignTransaction({
             device: {
@@ -427,9 +444,9 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             serializedTx: transaction.payload.serializedTx,
             payment_req,
             serialize: true,
-            additionalInfo: transaction.payload.additionalInfo.tokenAccountInfo
+            additionalInfo: tokenAccountInfos?.length
                 ? {
-                      tokenAccountsInfos: [transaction.payload.additionalInfo.tokenAccountInfo],
+                      tokenAccountsInfos: tokenAccountInfos,
                   }
                 : undefined,
             chunkify: selectAddressDisplayType(getState()) === AddressDisplayOptions.CHUNKED,

@@ -74,6 +74,15 @@ export const sendDexTransactionThunk = createThunk<
             });
         }
 
+        if (account.networkType === 'solana' && !selectedQuote.dexTx.data?.trim()) {
+            console.error('Failed to send Solana DEX transaction - missing serialized data');
+
+            return rejectWithValue({
+                type: 'error',
+                error: { id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA' },
+            });
+        }
+
         const tradingFormState = getTradingFormState({
             activeSection: 'exchange',
             providers,

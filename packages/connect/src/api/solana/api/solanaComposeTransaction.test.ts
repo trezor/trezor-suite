@@ -34,7 +34,7 @@ const VALID_PAYLOAD = {
     serializedTx: '00aa',
     toAddress: 'recipient-base-address',
     token: {
-        mint: 'fallback-token-mint',
+        mint: 'payload-token-mint',
         program: 'spl-token',
         decimals: 6,
         accounts: [
@@ -60,59 +60,50 @@ describe('solanaComposeTransaction', () => {
         jest.clearAllMocks();
     });
 
-    it('uses transfer-checked instruction data when serializedTx can be decompiled', async () => {
+    it('uses verified token-account data when serializedTx can be decompiled', async () => {
+        const instructions = [{ programAddress: 'token-program' }];
+        const tokenAccountInfo = {
+            baseAddress: 'recipient-base-address',
+            tokenProgram: tokenProgramsInfo['spl-token'].publicKey,
+            tokenMint: 'payload-token-mint',
+            tokenAccount: 'matching-destination-account',
+        };
+        const getSolanaTokenAccountInfos = jest.fn().mockResolvedValue([tokenAccountInfo]);
         jest.mocked(solana).mockResolvedValue({
             getDecompiledMessage: jest.fn().mockReturnValue({
-                instructions: [
-                    {
-                        type: 'transfer-checked',
-                        parsed: {
-                            accounts: {
-                                mint: { address: 'instruction-token-mint' },
-                                destination: { address: 'instruction-destination-account' },
-                            },
-                        },
-                    },
-                ],
+                message: { instructions },
             }),
+            getSolanaTokenAccountInfos,
         } as any);
 
         expect(await createMethod().run({ sendCoreMessage: undefined } as any)).toEqual({
             serializedTx: VALID_PAYLOAD.serializedTx,
             additionalInfo: {
-                newAccountProgramName: 'spl-token',
-                tokenAccountInfo: {
-                    baseAddress: 'recipient-base-address',
-                    tokenProgram: tokenProgramsInfo['spl-token'].publicKey,
-                    tokenMint: 'instruction-token-mint',
-                    tokenAccount: 'instruction-destination-account',
-                },
+                tokenAccountInfo,
             },
+        });
+        expect(getSolanaTokenAccountInfos).toHaveBeenCalledWith({
+            baseAddress: 'recipient-base-address',
+            instructions,
+            tokenMint: 'payload-token-mint',
         });
     });
 
-    it('falls back to payload token data when transfer-checked instruction is missing', async () => {
+    it('omits token metadata when no verified token account is found', async () => {
         jest.mocked(solana).mockResolvedValue({
             getDecompiledMessage: jest.fn().mockReturnValue({
-                instructions: [{ type: 'memo' }],
+                message: { instructions: [{ programAddress: 'memo-program' }] },
             }),
+            getSolanaTokenAccountInfos: jest.fn().mockResolvedValue([]),
         } as any);
 
         expect(await createMethod().run({ sendCoreMessage: undefined } as any)).toEqual({
             serializedTx: VALID_PAYLOAD.serializedTx,
-            additionalInfo: {
-                newAccountProgramName: 'spl-token',
-                tokenAccountInfo: {
-                    baseAddress: 'recipient-base-address',
-                    tokenProgram: tokenProgramsInfo['spl-token'].publicKey,
-                    tokenMint: 'fallback-token-mint',
-                    tokenAccount: 'recipient-base-address',
-                },
-            },
+            additionalInfo: {},
         });
     });
 
-    it('falls back to payload token data when decompilation throws', async () => {
+    it('omits token metadata when decompilation throws', async () => {
         jest.mocked(solana).mockResolvedValue({
             getDecompiledMessage: jest.fn(() => {
                 throw new Error('decode failed');
@@ -121,15 +112,7 @@ describe('solanaComposeTransaction', () => {
 
         expect(await createMethod().run({ sendCoreMessage: undefined } as any)).toEqual({
             serializedTx: VALID_PAYLOAD.serializedTx,
-            additionalInfo: {
-                newAccountProgramName: 'spl-token',
-                tokenAccountInfo: {
-                    baseAddress: 'recipient-base-address',
-                    tokenProgram: tokenProgramsInfo['spl-token'].publicKey,
-                    tokenMint: 'fallback-token-mint',
-                    tokenAccount: 'recipient-base-address',
-                },
-            },
+            additionalInfo: {},
         });
     });
 });

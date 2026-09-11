@@ -4,4 +4,5 @@ export * from './fees';
 export * from './signing';
 export * from './staking';
 export * from './shim';
+export * from './transactionInfo';
 export * from './utils';
