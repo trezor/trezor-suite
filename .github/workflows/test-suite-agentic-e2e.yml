@@ -1,0 +1,99 @@
+name: "[Test] LLM Exploratory Tester"
+
+# Run from the Actions tab. Locally, put OPENROUTER_API_KEY=... into
+# packages/e2e-utils/.env (gitignored) and run:
+# TARGET=<pr-url> DEVICE_MODEL=T3T1 yarn workspace @trezor/e2e-utils llm-exploratory-tester
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "PR or issue URL (https://github.com/trezor/trezor-suite/pull/…)"
+        required: true
+        type: string
+      device_model:
+        description: "Trezor emulator model"
+        required: false
+        default: T3W1
+        type: choice
+        options:
+          - T1B1
+          - T2T1
+          - T3B1
+          - T3T1
+          - T3W1
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agentic-e2e-${{ inputs.target }}
+  cancel-in-progress: true
+
+jobs:
+  agentic-e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    if: github.repository == 'trezor/trezor-suite'
+    env:
+      COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+      TARGET: ${{ inputs.target }}
+      DEVICE_MODEL: ${{ inputs.device_model }}
+
+    steps:
+      # Manual dispatch picks the branch. Do not run this workflow from an
+      # untrusted PR branch — it would execute that branch's harness code.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/e2e-utils @trezor/suite-e2e
+
+      - name: Install Playwright Chromium
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
+
+      # trezor-user-env also serves the trezor-emulator MCP on :9003
+      # (started by src/main.py in the pinned image, host networking).
+      - name: Start trezor-user-env
+        run: |
+          docker compose pull --quiet trezor-user-env-unix
+          docker compose up -d trezor-user-env-unix
+
+      - name: Resolve PR context
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester:context
+
+      - name: Wallet setup and Suite onboarding
+        env:
+          HEADLESS: "true"
+          LLM_EXPLORATORY_TESTER_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester:setup
+
+      - name: Run LLM Exploratory Tester
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.E2E_SELECTOR_API_KEY }}
+        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester:run
+
+      - name: Upload test artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: llm-exploratory-tester-report
+          path: |
+            packages/e2e-utils/src/llmExploratoryTester/reports/context.json
+            packages/e2e-utils/src/llmExploratoryTester/reports/test-result.json
+            packages/e2e-utils/src/llmExploratoryTester/reports/browser
+          if-no-files-found: warn
+
+      - name: Docker Compose Down
+        if: always()
+        run: docker compose down

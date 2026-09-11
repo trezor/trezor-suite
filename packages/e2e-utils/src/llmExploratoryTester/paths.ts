@@ -6,7 +6,7 @@ export const REPO_ROOT = execFileSync('git', ['rev-parse', '--show-toplevel'], {
     encoding: 'utf-8',
 }).trim();
 
-// Matches the literals in mcp.json, sandboxGate.mjs and AGENT.md.
+// Matches the literals in runOpencode.ts, hooks/sandboxGate.mjs and AGENT.md.
 export const BOT_DIR = join(REPO_ROOT, 'packages/e2e-utils/src/llmExploratoryTester');
 const REPORTS_DIR = join(BOT_DIR, 'reports');
 
