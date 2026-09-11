@@ -357,23 +357,9 @@ export const getFirmwareReleaseConfigInfo = (
             alternativeRelease = undefined;
         } else {
             if (features.bootloader_mode && bootloaderVersion) {
-                if (bootloaderVersion) {
-                    alternativeRelease = sortedReleases.find(fw =>
-                        versionUtils.isNewerOrEqual(bootloaderVersion, fw.min_bootloader_version),
-                    );
-                } else if (firmwareVersion) {
-                    // If we do not get current bootloader version from Device but ww have current FW version,
-                    // we can use the current FW version to get the bootloader version based on releases information.
-                    const currentRelease = sortedReleases.find(fw =>
-                        versionUtils.isEqual(firmwareVersion, fw.version),
-                    );
-
-                    if (currentRelease?.bootloader_version) {
-                        alternativeRelease = sortedReleases.find(fw =>
-                            versionUtils.isNewerOrEqual(firmwareVersion, fw.min_firmware_version),
-                        );
-                    }
-                }
+                alternativeRelease = sortedReleases.find(fw =>
+                    versionUtils.isNewerOrEqual(bootloaderVersion, fw.min_bootloader_version),
+                );
             } else if (firmwareVersion) {
                 alternativeRelease = sortedReleases.find(fw =>
                     versionUtils.isNewerOrEqual(firmwareVersion, fw.min_firmware_version),
