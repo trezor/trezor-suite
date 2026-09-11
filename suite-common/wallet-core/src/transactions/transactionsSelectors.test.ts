@@ -12,7 +12,9 @@ import {
     type AccountKey,
     type TokenAddress,
     type WalletAccountTransaction,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { type TransactionsRootState } from './transactionsReducerTypes';
@@ -20,6 +22,7 @@ import {
     selectEvmPrivatePendingHint,
     selectHasUnseenNonPhishingTransactionNotifications,
     selectNonPhishingTransactionNotifications,
+    selectTransactionByAccountKeyAndTxid,
     selectTransactionsWithMissingRates,
 } from './transactionsSelectors';
 import { type AccountsRootState } from '../accounts/accountsReducer';
@@ -227,5 +230,62 @@ describe('selectNonPhishingTransactionNotifications', () => {
 
         expect(selectNonPhishingTransactionNotifications(state)).toEqual([receivedNotification]);
         expect(selectHasUnseenNonPhishingTransactionNotifications(state)).toBe(true);
+    });
+});
+
+describe('selectTransactionByAccountKeyAndTxid', () => {
+    // Twelve call sites across desktop, mobile and suite-common read this. It is index-backed now,
+    // so what it promises them is worth stating: the transaction, or `null` — never `undefined`.
+    const INDEXED_ACCOUNT_KEY = mockAccountKey({ descriptor: asAccountDescriptor('indexed') });
+
+    const indexedTransaction = {
+        descriptor: asAccountDescriptor('indexed'),
+        symbol: 'btc',
+        deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
+        txid: 'txIndexed',
+    } as unknown as WalletAccountTransaction;
+
+    const stateWithTransaction = {
+        wallet: { transactions: { transactions: { [INDEXED_ACCOUNT_KEY]: [indexedTransaction] } } },
+    } as unknown as TransactionsRootState;
+
+    it('finds the transaction the account filed under that txid', () => {
+        expect(
+            selectTransactionByAccountKeyAndTxid(
+                stateWithTransaction,
+                INDEXED_ACCOUNT_KEY,
+                'txIndexed',
+            ),
+        ).toBe(indexedTransaction);
+    });
+
+    it('answers null for a txid the account does not have', () => {
+        expect(
+            selectTransactionByAccountKeyAndTxid(
+                stateWithTransaction,
+                INDEXED_ACCOUNT_KEY,
+                'txNope',
+            ),
+        ).toBeNull();
+    });
+
+    it('answers null without an account', () => {
+        expect(
+            selectTransactionByAccountKeyAndTxid(stateWithTransaction, null, 'txIndexed'),
+        ).toBeNull();
+    });
+
+    it('skips the holes pagination leaves in the account', () => {
+        const state = {
+            wallet: {
+                transactions: {
+                    transactions: { [INDEXED_ACCOUNT_KEY]: [undefined, indexedTransaction] },
+                },
+            },
+        } as unknown as TransactionsRootState;
+
+        expect(selectTransactionByAccountKeyAndTxid(state, INDEXED_ACCOUNT_KEY, 'txIndexed')).toBe(
+            indexedTransaction,
+        );
     });
 });

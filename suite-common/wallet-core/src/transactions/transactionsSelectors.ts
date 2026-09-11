@@ -39,6 +39,7 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { isNotNullOrUndefined, typedObjectKeys, typedObjectValues } from '@trezor/utils';
 
+import { getTransactionId, transactionsIndex } from './transactionsIndex';
 import type { TransactionsByAccount, TransactionsRootState } from './transactionsReducerTypes';
 import type { AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../accounts/accountsSelectors';
@@ -146,14 +147,21 @@ export const selectNetworksWithPendingTxs = createMemoizedSelector(
     },
 );
 
-export const selectTransactionByAccountKeyAndTxid = createMemoizedSelector(
-    [selectAccountTransactions, (_state, _accountKey: AccountKey | null, txid: string) => txid],
-    (transactions, txid) => {
-        const transaction = transactions.find(tx => tx?.txid === txid);
-
-        return transaction ?? null;
-    },
-);
+/**
+ * One transaction, by the account it is filed under and its txid.
+ *
+ * Reads the index rather than scanning the account's array. The twelve call sites of this selector
+ * did that scan independently; they now share one map, which is rebuilt only for the account a
+ * write touched. See `transactionsIndex`.
+ */
+export const selectTransactionByAccountKeyAndTxid = (
+    state: TransactionsRootState,
+    accountKey: AccountKey | null,
+    txid: string,
+): WalletAccountTransaction | null =>
+    (accountKey !== null
+        ? transactionsIndex.getById(state, getTransactionId(accountKey, txid))
+        : undefined) ?? null;
 
 export const selectTransactionBlockTimeById = createMemoizedSelector(
     [selectTransactionByAccountKeyAndTxid],
