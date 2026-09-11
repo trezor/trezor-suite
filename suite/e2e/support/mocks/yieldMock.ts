@@ -22,6 +22,16 @@ export const YIELD_VAULTS = {
         yearlyReward: '0 USDT',
         potentialReward: '64.00 USDT',
     },
+    wethPrime: {
+        id: 'steakweth-prime-eth',
+        name: 'Trezor Steakhouse ETH Prime',
+        apy: '~3.1%',
+        apyBreakdown: {
+            apyPercent: '3.1',
+            symbols: ['WETH', 'MORPHO'],
+            rates: ['+2.6% APY', '+0.5% APR'],
+        },
+    },
 } as const;
 
 const YIELD_API_PATTERN = /\/yieldxyz\/v2\/yields/;
@@ -34,6 +44,34 @@ const USDC_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 // Trezor Steakhouse USDC Prime Vault
 const YIELD_USDC_VAULT_ADDRESS = '0xde6c23E561F3e55846207EC45A91b777e0F7C889';
 const USDC_VAULT = YIELD_USDC_VAULT_ADDRESS.toLowerCase();
+
+const WETH_CONTRACT = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+
+const YIELD_WETH_VAULT_ADDRESS = '0x704cFb08969048a8DFf298B214F959791d8Da509';
+const WETH_VAULT = YIELD_WETH_VAULT_ADDRESS.toLowerCase();
+
+export const YIELD_WETH_VAULT_SHARE_TOKEN = {
+    type: 'ERC20',
+    standard: 'ERC20',
+    name: YIELD_VAULTS.wethPrime.name,
+    contract: WETH_VAULT,
+    symbol: 'trSHWETHp',
+    decimals: 18,
+    // 10 WETH deposited at pricePerShare 1.25 mints exactly 8 shares.
+    balance: '8000000000000000000',
+    transfers: 1,
+} as const;
+
+export const YIELD_WETH_TOKEN = {
+    type: 'ERC20',
+    standard: 'ERC20',
+    name: 'Wrapped Ether',
+    contract: WETH_CONTRACT,
+    symbol: 'WETH',
+    decimals: 18,
+    balance: '10000000000000000000',
+    transfers: 1,
+} as const;
 
 export const YIELD_USDC_VAULT_SHARE_TOKEN = {
     type: 'ERC20',
@@ -104,8 +142,43 @@ const MORPHO_ASSET = {
     symbol: 'MORPHO',
 };
 
+const ETH_NATIVE_ASSET = {
+    type: 'NATIVE',
+    chain_family: 'ethereum',
+    chain_id: 1,
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+};
+
+const WETH_ASSET = {
+    type: 'ERC20',
+    address: WETH_CONTRACT,
+    decimals: 18,
+    name: 'Wrapped Ether',
+    symbol: 'WETH',
+};
+
+const WETH_VAULT_SHARE_ASSET = {
+    type: 'ERC20',
+    address: WETH_VAULT,
+    decimals: 18,
+    name: YIELD_VAULTS.wethPrime.name,
+    symbol: 'trSHWETHp',
+};
+
+type BlockaidAsset = {
+    type: string;
+    decimals: number;
+    name: string;
+    symbol: string;
+    address?: string;
+    chain_family?: string;
+    chain_id?: number;
+};
+
 type BlockaidTransfer = {
-    asset: typeof USDC_ASSET;
+    asset: BlockaidAsset;
     rawValue: string;
     value: string;
     usdPrice: string;
@@ -139,7 +212,7 @@ const createBlockaidBenignResponse = ({
                 ...(sent
                     ? [
                           {
-                              asset_type: 'ERC20',
+                              asset_type: sent.asset.type,
                               asset: sent.asset,
                               in: [],
                               out: [
@@ -154,7 +227,7 @@ const createBlockaidBenignResponse = ({
                       ]
                     : []),
                 {
-                    asset_type: 'ERC20',
+                    asset_type: received.asset.type,
                     asset: received.asset,
                     in: [
                         {
@@ -231,6 +304,42 @@ const BLOCKAID_REDEEM_RESPONSE = createBlockaidBenignResponse({
         value: '3.016822',
         usdPrice: '3.015781224726041',
         summary: 'Receiving 3.016822 USDC',
+    },
+});
+
+// Wrapping calls WETH deposit() with the amount as native value: 10 ETH out, 10 WETH in.
+const BLOCKAID_WRAP_RESPONSE = createBlockaidBenignResponse({
+    sent: {
+        asset: ETH_NATIVE_ASSET,
+        rawValue: '0x8ac7230489e80000',
+        value: '10.0',
+        usdPrice: '25000',
+        summary: 'Sending 10 ETH',
+    },
+    received: {
+        asset: WETH_ASSET,
+        rawValue: '0x8ac7230489e80000',
+        value: '10.0',
+        usdPrice: '25000',
+        summary: 'Receiving 10 WETH',
+    },
+});
+
+// Depositing 10 WETH at pricePerShare 1.25 mints exactly 8 vault shares.
+const BLOCKAID_WETH_DEPOSIT_RESPONSE = createBlockaidBenignResponse({
+    sent: {
+        asset: WETH_ASSET,
+        rawValue: '0x8ac7230489e80000',
+        value: '10.0',
+        usdPrice: '25000',
+        summary: 'Sending 10 WETH',
+    },
+    received: {
+        asset: WETH_VAULT_SHARE_ASSET,
+        rawValue: '0x6f05b59d3b200000',
+        value: '8.0',
+        usdPrice: '25000',
+        summary: 'Receiving 8 trSHWETHp',
     },
 });
 
@@ -401,8 +510,96 @@ const YIELD_VAULTS_RESPONSE = {
                 deprecated: false,
             },
         },
+        {
+            id: YIELD_VAULTS.wethPrime.id,
+            providerId: 'morpho',
+            network: 'ethereum',
+            chainId: 1,
+            token: {
+                symbol: 'WETH',
+                name: 'Wrapped Ether',
+                decimals: 18,
+                network: 'ethereum',
+                address: WETH_CONTRACT,
+            },
+            outputToken: {
+                symbol: 'trSHWETHp',
+                name: YIELD_VAULTS.wethPrime.name,
+                decimals: 18,
+                network: 'ethereum',
+                address: WETH_VAULT,
+            },
+            inputTokens: [
+                {
+                    symbol: 'WETH',
+                    name: 'Wrapped Ether',
+                    decimals: 18,
+                    network: 'ethereum',
+                    address: WETH_CONTRACT,
+                },
+            ],
+            rewardRate: {
+                total: 0.031,
+                rateType: 'APY',
+                components: [
+                    {
+                        rate: 0.026,
+                        rateType: 'APY',
+                        yieldSource: 'lending',
+                        token: {
+                            symbol: 'WETH',
+                            name: 'Wrapped Ether',
+                            decimals: 18,
+                            network: 'ethereum',
+                            address: WETH_CONTRACT,
+                        },
+                    },
+                    {
+                        rate: 0.005,
+                        rateType: 'APY',
+                        yieldSource: 'protocol_incentive',
+                        token: {
+                            symbol: 'MORPHO',
+                            name: 'Morpho Token',
+                            decimals: 18,
+                            network: 'ethereum',
+                            address: '0x9994e35db50125e0df82e4c2dde62496ce330999',
+                        },
+                    },
+                ],
+            },
+            status: {
+                enter: true,
+                exit: true,
+            },
+            state: {
+                pricePerShareState: {
+                    price: '1.25',
+                    shareToken: {
+                        symbol: 'trSHWETHp',
+                        name: YIELD_VAULTS.wethPrime.name,
+                        decimals: 18,
+                        network: 'ethereum',
+                        address: WETH_VAULT,
+                    },
+                    quoteToken: {
+                        symbol: 'WETH',
+                        name: 'Wrapped Ether',
+                        decimals: 18,
+                        network: 'ethereum',
+                        address: WETH_CONTRACT,
+                    },
+                },
+            },
+            metadata: {
+                name: YIELD_VAULTS.wethPrime.name,
+                description: 'Earn yield on WETH via Morpho.',
+                underMaintenance: false,
+                deprecated: false,
+            },
+        },
     ],
-    total: 2,
+    total: 3,
     offset: 0,
     limit: 100,
 };
@@ -412,9 +609,20 @@ export class YieldMock {
 
     @step()
     async start() {
-        await this.page.route(YIELD_API_PATTERN, route =>
-            route.fulfill({ json: YIELD_VAULTS_RESPONSE }),
-        );
+        // The vault detail pages look a vault up via `getYields` with an `outputTokens` query
+        // filter and take the first item, so the filter must be honored — always answering with
+        // the full list would resolve every vault to the first one (USDC).
+        await this.page.route(YIELD_API_PATTERN, route => {
+            const url = route.request().url().toLowerCase();
+            const filteredItems = YIELD_VAULTS_RESPONSE.items.filter(item =>
+                url.includes(item.outputToken.address.toLowerCase()),
+            );
+            const items = filteredItems.length > 0 ? filteredItems : YIELD_VAULTS_RESPONSE.items;
+
+            return route.fulfill({
+                json: { ...YIELD_VAULTS_RESPONSE, items, total: items.length },
+            });
+        });
         // Registered after the list route so it wins for `/yields/:vaultId` URLs, which the list
         // pattern would otherwise match too.
         await this.page.route(YIELD_DETAIL_API_PATTERN, route => {
@@ -426,16 +634,37 @@ export class YieldMock {
             return vault ? route.fulfill({ json: vault }) : route.continue();
         });
         await this.page.route(MERKL_API_PATTERN, route => route.fulfill({ json: [] }));
-        // Vault address lookup (getYieldVault) used when composing withdraw/redeem transactions.
-        await this.page.route(VAULT_ADDRESS_API_PATTERN, route =>
-            route.fulfill({ json: { address: YIELD_USDC_VAULT_ADDRESS } }),
-        );
+        // Vault address lookup (getYieldVault, `/vaults/v1/:networkSymbol/:vaultId`) used when
+        // composing transactions targeting the vault contract.
+        await this.page.route(VAULT_ADDRESS_API_PATTERN, route => {
+            const isWethVault = route.request().url().includes(YIELD_VAULTS.wethPrime.id);
+
+            return route.fulfill({
+                json: {
+                    address: isWethVault ? YIELD_WETH_VAULT_ADDRESS : YIELD_USDC_VAULT_ADDRESS,
+                },
+            });
+        });
     }
 
     @step()
     async mockUsdcDeposit() {
         await this.page.route(BLOCKAID_API_PATTERN, route =>
             route.fulfill({ json: BLOCKAID_DEPOSIT_RESPONSE }),
+        );
+    }
+
+    @step()
+    async mockEthWrap() {
+        await this.page.route(BLOCKAID_API_PATTERN, route =>
+            route.fulfill({ json: BLOCKAID_WRAP_RESPONSE }),
+        );
+    }
+
+    @step()
+    async mockWethDeposit() {
+        await this.page.route(BLOCKAID_API_PATTERN, route =>
+            route.fulfill({ json: BLOCKAID_WETH_DEPOSIT_RESPONSE }),
         );
     }
 

@@ -16,6 +16,10 @@ export class ToastSection {
     readonly txSentMessage: Locator;
     readonly txSentAmount: Locator;
     readonly yieldDeposit: Locator;
+    readonly yieldDepositMessage: Locator;
+    readonly wrappedMessage: Locator;
+    readonly wrappedSendAmount: Locator;
+    readonly wrappedReceiveAmount: Locator;
     readonly toast = (preset: ActivityPreset): Locator => this.page.getByTestId(`@toast/${preset}`);
     readonly toastCloseButton = (preset: ToastActivityPreset): Locator =>
         this.page.getByTestId(`@toast/${preset}/close`);
@@ -26,6 +30,10 @@ export class ToastSection {
         this.txSentMessage = this.page.getByTestId('@toast/tx-sent/message');
         this.txSentAmount = this.page.getByTestId('@toast/tx-sent/amount');
         this.yieldDeposit = this.page.getByTestId('@toast/tx-yield-deposit');
+        this.yieldDepositMessage = this.page.getByTestId('@toast/tx-yield-deposit/message');
+        this.wrappedMessage = this.page.getByTestId('@toast/tx-wrap/message');
+        this.wrappedSendAmount = this.page.getByTestId('@toast/tx-wrap/send-amount');
+        this.wrappedReceiveAmount = this.page.getByTestId('@toast/tx-wrap/receive-amount');
     }
 
     @step()
