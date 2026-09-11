@@ -1,6 +1,6 @@
 import { type FC, type PropsWithChildren, memo, useEffect } from 'react';
 
-import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
+import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { KillswitchMessageScreen } from '@suite/message-system';
 import {
@@ -65,9 +65,7 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     const isForegroundApp = useSelector(selectIsForegroundApp);
     const hasRoute = useSelector(selectHasRoute);
     const prerequisite = useSelector(selectPrerequisite);
-    const shouldDisplayDeviceCompromisedOnRoute = useSelector(
-        selectShouldDisplayDeviceCompromisedOnRoute,
-    );
+    const shouldDisplayDeviceCompromisedOnRoute = useSelector(selectShouldDisplayDeviceCompromised);
     const killswitch = useSelector(selectActiveKillswitchMessage);
 
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);

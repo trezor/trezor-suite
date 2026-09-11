@@ -83,13 +83,6 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AuthenticityChecksR
     return hashCheckError;
 };
 
-export function selectIsDeviceCompromised(state: AuthenticityChecksRootState): boolean {
-    const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
-    const hashError = selectFirmwareHashCheckErrorIfEnabled(state);
-
-    return revisionError !== null || hashError !== null;
-}
-
 /**
  * Determine hard failure of either of firmware authenticity checks to block access to device.
  */
@@ -142,9 +135,7 @@ export const selectIsDeviceInvariabilityEnabledAndFailed = (state: AuthenticityC
     );
 };
 
-export const selectShouldDisplayDeviceCompromised = (
-    state: AuthenticityChecksRootState,
-): boolean => {
+export const selectIsDeviceCompromised = (state: AuthenticityChecksRootState): boolean => {
     // Entropy check won't be performed if disabled but we must also check it here to avoid showing the UI when the failed state is stored in database.
     const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(state);
     // Entropy check is not dismissible.
@@ -171,8 +162,5 @@ export const selectShouldDisplayDeviceCompromised = (
 export const selectShouldRouterAppSkipAuthenticityCheck = (state: RouterRootState): boolean =>
     SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS[selectRouterApp(state)];
 
-export const selectShouldDisplayDeviceCompromisedOnRoute = (
-    state: AuthenticityChecksRootState,
-): boolean =>
-    !selectShouldRouterAppSkipAuthenticityCheck(state) &&
-    selectShouldDisplayDeviceCompromised(state);
+export const selectShouldDisplayDeviceCompromised = (state: AuthenticityChecksRootState): boolean =>
+    !selectShouldRouterAppSkipAuthenticityCheck(state) && selectIsDeviceCompromised(state);
