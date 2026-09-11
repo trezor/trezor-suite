@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -8,9 +9,8 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
-import { type AccountItemType } from 'src/types/wallet';
+import { type AppState } from 'src/types/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { GlobalReceiveModal } from './GlobalReceiveModal/GlobalReceiveModal';
@@ -27,7 +27,7 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
     const dispatch = useDispatch();
     const accounts = useSelector(selectAllAccountsToList);
-    const discoveryStatus = useSelector(state =>
+    const discoveryStatus = useSelector((state: AppState) =>
         selectDiscoveryOverallStatus(state, allNetworkSymbols),
     );
 
@@ -47,13 +47,9 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
         closeModal('wallet-send', account);
     };
 
-    const handleReceiveSubmit = (
-        account: Account,
-        type: AccountItemType,
-        filledSearch: boolean,
-    ) => {
+    const handleReceiveSubmit = (account: Account, filledSearch: boolean) => {
         receiveAnalytics.account(filledSearch);
-        closeModal(type === 'tokens' ? 'wallet-tokens' : 'wallet-receive', account);
+        closeModal('wallet-receive', account);
     };
 
     const handleSendCancel = (filledSearch: boolean) => {
@@ -73,6 +69,7 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
         <AppNavigationTooltip>
             <GlobalSendReceiveButtons
                 setActiveModal={modal => {
+                    dispatch(globalSendReceiveFiltersActions.resetFilters());
                     openModal(modal);
                 }}
                 intent={buttonIntent}

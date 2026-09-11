@@ -2162,7 +2162,6 @@
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING": "Adresse auf dem Trezor überprüfen",
   "TR_RECEIVE_ADDRESS_FAILED_BACKUP": "Wallet-Backup fehlgeschlagen. Es ist nicht sicher, Funds an dieses Wallet zu senden.",
   "TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED": "Dein Gerät wurde möglicherweise kompromittiert. Sende kein Guthaben an dieses Gerät.",
-  "TR_RECEIVE_DESCRIPTION": "Erfahre, wie du <a>das richtige Netzwerk auswählst</a>, um deine Tokens zu empfangen",
   "TR_RECEIVE_NETWORK": "Erhalte {networkDisplaySymbol}",
   "TR_RECEIVE_SEARCH": "Konto durchsuchen",
   "TR_RECEIVING_SYMBOL": "{multiple, select, true {Mehrere Tokens} false {{symbol}} other {{symbol}}} werden empfangen",

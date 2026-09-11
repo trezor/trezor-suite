@@ -2162,7 +2162,6 @@
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING": "Vérifiez l'adresse sur votre Trezor",
   "TR_RECEIVE_ADDRESS_FAILED_BACKUP": "La sauvegarde du portefeuille a échoué. L'envoi de fonds à ce portefeuille n'est pas sûr ou sécurisé.",
   "TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED": "Votre appareil est peut-être compromis. N’y envoyez pas vos fonds.",
-  "TR_RECEIVE_DESCRIPTION": "Apprenez à <a>choisir le bon réseau</a> pour recevoir vos jetons",
   "TR_RECEIVE_NETWORK": "Recevoir {networkDisplaySymbol}",
   "TR_RECEIVE_SEARCH": "Chercher un compte",
   "TR_RECEIVING_SYMBOL": "Réception de {multiple, select, true {plusieurs jetons} false {{symbol}} other {{symbol}}}",

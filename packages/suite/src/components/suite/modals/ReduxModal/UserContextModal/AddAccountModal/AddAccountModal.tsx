@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsPublic } from '@suite/coinjoin';
@@ -31,7 +32,7 @@ import { NetworkSettingsSearchInput } from 'src/components/suite/NetworkList/Net
 import { AddAccountBannerAboutNetworks } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useAccountSearch, useSelector } from 'src/hooks/suite';
+import { useAccountSearch } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import { NoNetworkSearchResults } from 'src/views/settings/SettingsCoins/NoNetworkSearchResults';
@@ -54,6 +55,7 @@ type AddAccountProps = {
     symbol?: NetworkSymbol;
     isCoinjoinDisabled?: boolean;
     isBackClickDisabled?: boolean;
+    onBack?: () => void;
     // Callback when the flow produced a specific single usable account (not when enabling a pinned network).
     onAddAccount?: (account: Account) => void;
 };
@@ -64,6 +66,7 @@ export const AddAccountModal = ({
     onConfirm,
     symbol,
     onAddAccount,
+    onBack,
     isCoinjoinDisabled,
     isBackClickDisabled,
 }: AddAccountProps) => {
@@ -560,6 +563,7 @@ export const AddAccountModal = ({
               }
             : {
                   heading: <Translation id="TR_ADD_ACCOUNT" />,
+                  onBackClick: isBackClickDisabled ? undefined : onBack,
                   children: networkPinned ? (
                       <Column gap={24}>
                           <SelectNetwork

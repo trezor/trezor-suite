@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { createCoinjoinAccountThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
@@ -14,7 +15,6 @@ import { selectAccounts } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';

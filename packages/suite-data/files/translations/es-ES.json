@@ -2162,7 +2162,6 @@
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING": "Verificar la dirección en Trezor",
   "TR_RECEIVE_ADDRESS_FAILED_BACKUP": "La respaldo de billetera ha fallado. No es seguro enviar fondos a esta billetera.",
   "TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED": "Es posible que tu dispositivo haya sido comprometido. No le envíes fondos.",
-  "TR_RECEIVE_DESCRIPTION": "Aprende cómo <a>escoger la red correcta</a> para recibir tus tokens",
   "TR_RECEIVE_NETWORK": "Recibir {networkDisplaySymbol}",
   "TR_RECEIVE_SEARCH": "Buscar cuenta",
   "TR_RECEIVING_SYMBOL": "Recibiendo {multiple, select, true {varios tokens} false {{symbol}} other {{symbol}}}",
