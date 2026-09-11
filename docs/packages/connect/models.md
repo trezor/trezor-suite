@@ -2,7 +2,7 @@
 
 ## The pipeline
 
-Do not change `@trezor/connect/src/data/models.ts` manually.
+Do not change `@trezor/connect-core/src/data/models.ts` manually.
 
 The one and only source of truth is `models.json` definition declared and maintained in the [firmware repository](https://github.com/trezor/trezor-firmware/tree/main/common).
 
@@ -18,7 +18,7 @@ These are exported to a read-only [trezor-common](https://github.com/trezor/trez
  yarn update-submodules
 ```
 
-2. Copy `models.json` to `trezor/connect/src/data/models.ts`:
+2. Copy `models.json` to `trezor/connect-core/src/data/models.ts`:
 
 ```
 yarn update-models

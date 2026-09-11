@@ -8,6 +8,8 @@ Trezor Connect is a platform for easy integration of Trezor into 3rd party servi
 
 This package is intended to be used in node.js environment. If you wan't to build a web application please refer to [@trezor/connect-web package](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-web/README.md).
 
+It runs Connect in-process: it composes the execution engine from [@trezor/connect-core](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-core/README.md) and supplies the node transports, Trezor Bridge first and direct USB (from [@trezor/transport](https://www.npmjs.com/package/@trezor/transport)) as the fallback. No extra package or transport wiring is needed; `init({ manifest })` is enough. Passing a non-empty `transports` list replaces the defaults.
+
 > **Building a web app?** Use [@trezor/connect-web](https://www.npmjs.com/package/@trezor/connect-web) instead — it adds browser transport handling and popup-based UI.
 >
 > **Building a browser extension?** Use [@trezor/connect-webextension](https://www.npmjs.com/package/@trezor/connect-webextension) instead — it handles Manifest V3 and service worker constraints.
@@ -52,4 +54,4 @@ A collection of examples on how to implement @trezor/connect in various environm
 
 ## Tests
 
-For integration testing against trezord and emulator refer to [this document](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/e2e/README.md).
+For integration testing against trezord and emulator refer to [this document](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-core/e2e/README.md).
