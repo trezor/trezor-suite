@@ -11,68 +11,9 @@ import { getTargetAmounts } from './getTargetAmounts';
 import { numberSearchFilter } from './numberSearchFilter';
 import { type SearchAccountLabels } from './searchLabels';
 import { searchOperators } from './searchOperations';
+import { getTransactionSearchIndex } from './transactionSearchIndex';
 
 const searchDateRegex = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
-
-const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) => {
-    const addresses: Record<string, Set<string>> = {};
-    const addAddress = (txid: string, addrs: string[] | undefined) => {
-        if (!addrs) {
-            return;
-        }
-
-        addrs.forEach(address => {
-            if (!addresses[address]) {
-                addresses[address] = new Set();
-            }
-
-            addresses[address].add(txid);
-        });
-    };
-
-    transactions.forEach(t => {
-        // Inputs
-        t.details.vin.forEach(vin => addAddress(t.txid, vin.addresses));
-        // Outputs
-        t.details.vout.forEach(vout => addAddress(t.txid, vout.addresses));
-        // Targets
-        t.targets.forEach(target => addAddress(t.txid, target.addresses));
-    });
-
-    return addresses;
-};
-
-const groupTransactionsByLabel = (accountLabels: SearchAccountLabels) => {
-    const labels: Record<string, string[]> = {};
-    const { outputLabels } = accountLabels;
-
-    outputLabels.forEach((accountOutputLabels, txid) => {
-        accountOutputLabels.forEach(label => {
-            if (!labels[label]) {
-                labels[label] = [];
-            }
-
-            labels[label].push(txid);
-        });
-    });
-
-    return labels;
-};
-
-const groupAddressesByLabel = (accountLabels: SearchAccountLabels) => {
-    const labels: Record<string, string[]> = {};
-    const { addressLabels } = accountLabels;
-
-    addressLabels.forEach((label, address) => {
-        if (!labels[label]) {
-            labels[label] = [];
-        }
-
-        labels[label].push(address);
-    });
-
-    return labels;
-};
 
 export const simpleSearchTransactions = (
     transactions: WalletAccountTransaction[],
@@ -138,6 +79,12 @@ export const simpleSearchTransactions = (
 
     const lowerCaseSearch = search.toLowerCase();
     const txsToSearch: string[] = [];
+    // Built once for as long as the transactions and the labels are the same objects, rather than
+    // once per keystroke and once per term of an advanced query.
+    const { txidsByAddress, txidsByOutputLabel, addressesByLabel } = getTransactionSearchIndex(
+        transactions,
+        accountLabels,
+    );
 
     // Searching for an amount (without operator)
     if (!Number.isNaN(search)) {
@@ -153,10 +100,9 @@ export const simpleSearchTransactions = (
     }
 
     // Find by output label
-    const txsForOutputLabels = groupTransactionsByLabel(accountLabels);
-    const foundTxsForOutputLabel = typedObjectKeys(txsForOutputLabels).flatMap(label => {
+    const foundTxsForOutputLabel = typedObjectKeys(txidsByOutputLabel).flatMap(label => {
         if (label.toLowerCase().includes(lowerCaseSearch)) {
-            return txsForOutputLabels[label] ?? [];
+            return txidsByOutputLabel[label] ?? [];
         }
 
         return [];
@@ -164,11 +110,10 @@ export const simpleSearchTransactions = (
     txsToSearch.push(...foundTxsForOutputLabel);
 
     // Find by address label
-    const addressesForLabel = groupAddressesByLabel(accountLabels);
     const foundAddressesForLabel = new Set(
-        typedObjectKeys(addressesForLabel).flatMap(label => {
+        typedObjectKeys(addressesByLabel).flatMap(label => {
             if (label.toLowerCase().includes(lowerCaseSearch)) {
-                return addressesForLabel[label] ?? [];
+                return addressesByLabel[label] ?? [];
             }
 
             return [];
@@ -176,13 +121,12 @@ export const simpleSearchTransactions = (
     );
 
     // Find by address
-    const txsForAddresses = groupTransactionIdsByAddress(transactions);
-    const foundTxsForAddress = typedObjectKeys(txsForAddresses).flatMap(address => {
+    const foundTxsForAddress = typedObjectKeys(txidsByAddress).flatMap(address => {
         if (
             address.toLowerCase().includes(lowerCaseSearch) ||
             foundAddressesForLabel.has(address)
         ) {
-            return [...(txsForAddresses[address] ?? [])];
+            return [...(txidsByAddress[address] ?? [])];
         }
 
         return [];
