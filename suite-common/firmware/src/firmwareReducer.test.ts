@@ -116,15 +116,17 @@ describe('selectFirmwareDevice', () => {
 });
 
 describe('selectIsFirmwareUpdateFinished', () => {
-    it.each(['done', 'error'] as const)('is finished at %s', status => {
+    it('is finished at done', () => {
         expect(
             selectIsFirmwareUpdateFinished({
-                firmware: { ...firmwareInitialState, status },
+                firmware: { ...firmwareInitialState, status: 'done' },
             } as FirmwareRootState),
         ).toBe(true);
     });
 
-    it.each(['initial', 'started', 'check-seed', 'thp-pairing'] as const)(
+    it.each(['initial', 'started', 'check-seed', 'thp-pairing', 'error'] as const)(
+        // 'error' included: it is what the reconnect prompt shows for "reboot it by hand", so the
+        // device turning up then is the user following instructions, not the update ending.
         'is not finished at %s',
         status => {
             expect(

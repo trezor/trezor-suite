@@ -155,14 +155,15 @@ export const selectIsFirmwareInstallationRunning = (state: FirmwareRootState) =>
     state.firmware.status === 'started';
 
 /**
- * Whether the update has run to an end — installed, or failed and not going to retry itself.
+ * Whether an installation has run to the end.
  *
- * This is the only trustworthy "the update is over" signal. A `firmwareUpdate` call returning is
- * not: the manual reboot flow dispatches it twice, once to get the device into the bootloader and
- * once to install, so the first call resolves while the user is still at the reconnect prompt.
+ * Deliberately not true for `'error'`. A failed call is not the end of the flow: the reconnect
+ * prompt treats `'error'` as "the device could not reboot itself, ask the user to do it", so the
+ * device coming back there is the user following instructions with the flow still running. Anything
+ * that takes the device back — selecting it, acquiring it — has to wait for this.
  */
 export const selectIsFirmwareUpdateFinished = (state: FirmwareRootState) =>
-    state.firmware.status === 'done' || state.firmware.status === 'error';
+    state.firmware.status === 'done';
 
 // When a user is in the Early Access Program, the firmware channel is forced to
 // `production-early-access`. `allowPrerelease` is passed in as a parameter because it is a

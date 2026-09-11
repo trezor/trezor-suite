@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { waitForConnectedDeviceThunk } from '@suite-common/device';
 import {
     type FirmwareUpdateProps,
+    firmwareUpdateThunk,
     selectFirmware,
     selectIsFirmwareDeviceLowOnBattery,
     useFirmwareInstallation,
@@ -84,25 +85,33 @@ export const useFirmwareDesktopUpdate = ({
 
         const updateResult = await firmwareUpdate(updateProps);
 
+        // Only an installation that ran to the end hands the device back. A rejected call is not
+        // the end of the flow: it is either a failure the user is now looking at, or a reboot the
+        // device could not do by itself and the user is being asked to perform — and in that second
+        // case the device reconnecting is the user following instructions, not the update
+        // finishing. Selecting and acquiring it there would cut across a flow still in progress.
+        if (!firmwareUpdateThunk.fulfilled.match(updateResult)) {
+            return;
+        }
+
         // `@trezor/connect` only returns once it has seen the device reconnect and released it, so
         // the update is over — but the store is filled from the connect event, which travels
         // separately, so the device may not be an entry here yet. Wait for it rather than race it.
         //
-        // The path connect reports is where it last had the device, which is the answer whenever
-        // the reboot did not re-enumerate it elsewhere; the wait falls back to whichever device is
-        // the only one on that transport when it did.
-        //
-        // A device that never turns up (a failed update, an unplugged device) times out. The
-        // selection is then left where it is: `selectFirmwareDevice` still resolves the device for
-        // the flow's own screens once it reappears, and a retry re-selects it on success.
+        // A device that never turns up (an unplugged one, say) times out, and the selection is
+        // then left where it is; `selectFirmwareDevice` still resolves the device for the flow's
+        // own screens once it reappears.
         const apiType = originalDevice?.descriptor.apiType;
 
         if (!apiType) {
             return;
         }
 
-        const { connectResponse } = updateResult.payload ?? {};
-        // Only a successful call reports where it last had the device.
+        // Where the call started, not where it ended: the response carries the path of the device
+        // the method was dispatched on (`core` reads it before the run), so a reboot that
+        // re-enumerated the device makes this stale. Kept because it is exact whenever the path did
+        // survive; when it did not, the wait falls back to the only device on the transport.
+        const { connectResponse } = updateResult.payload;
         const path = connectResponse?.success ? connectResponse.device?.path : undefined;
 
         const updatedDevice = await dispatch(

@@ -47,22 +47,20 @@ const runThunk = async (status: FirmwareStatus | 'error') => {
 const SELECT_DEVICE_ACTION = '@suite/device/selectDevice';
 
 describe('adoptFirmwareUpdatedDeviceThunk', () => {
-    it.each(['initial', 'started', 'check-seed', 'thp-pairing'] as const)(
+    it.each(['initial', 'started', 'check-seed', 'thp-pairing', 'error'] as const)(
         'does not touch the selection while the update is at %s',
         async status => {
             // The device reconnects several times mid-update — into the bootloader to start, and
             // back to normal to finish. `@trezor/connect` owns it throughout, so those reconnects
-            // must not make us select or acquire it.
+            // must not make us select or acquire it. 'error' is one of them: it is what the
+            // reconnect prompt shows while asking the user to reboot the device by hand, so the
+            // device coming back there is not the update ending. A retry does not need the
+            // selection either — `firmwareUpdateThunk` resolves its own device from `cachedDevice`.
             expect(await runThunk(status)).not.toContain(SELECT_DEVICE_ACTION);
         },
     );
 
-    it.each(['done', 'error'] as const)(
-        'selects the device the caller names once the update is %s',
-        async status => {
-            // Failure included: a failed update leaves the device somewhere the user has to act on,
-            // and the retry button acts on whatever is selected.
-            expect(await runThunk(status)).toContain(SELECT_DEVICE_ACTION);
-        },
-    );
+    it('selects the device the caller names once the update is done', async () => {
+        expect(await runThunk('done')).toContain(SELECT_DEVICE_ACTION);
+    });
 });
