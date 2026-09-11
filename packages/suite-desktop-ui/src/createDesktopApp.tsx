@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect-electron';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApi } from '@trezor/suite-desktop-api';
 
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
@@ -22,6 +22,7 @@ import { initSentry } from './sentry';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 
 type DesktopAppDeps = {
+    desktopApi: DesktopApi;
     services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep;
 };
 
@@ -39,7 +40,7 @@ export const createDesktopApp =
         root.render(<LoadingScreen />);
 
         const preloadAction = await preloadStore();
-        const { statePatch } = await desktopApi.handshake();
+        const { statePatch } = await deps.desktopApi.handshake();
 
         deps.services.hydrateReduxStore(preloadAction, statePatch);
 
@@ -50,14 +51,14 @@ export const createDesktopApp =
 
         // start logging to file if Debug menu is active
         if (preloadAction?.type === STORAGE.LOAD && preloadAction.payload.debug?.showDebugMenu) {
-            desktopApi.configLogger({
+            deps.desktopApi.configLogger({
                 level: 'debug',
                 writeToDisk: true,
             });
         }
 
         // Loading Tor as separate module, before the rest of the modules.
-        const { shouldRunTor } = await desktopApi.loadTorModule();
+        const { shouldRunTor } = await deps.desktopApi.loadTorModule();
 
         // When we run this first time `shouldRunTor` will tell if Tor should run according to previous settings,
         // when it runs because of renderer (e.g. Ctrl+R) it will always be false.
@@ -72,11 +73,11 @@ export const createDesktopApp =
                         </ReduxProvider>
                     </ServicesProvider>,
                 );
-                desktopApi.toggleTor(true);
+                deps.desktopApi.toggleTor(true);
             });
         }
 
-        const loadModules = await desktopApi.loadModules({
+        const loadModules = await deps.desktopApi.loadModules({
             legacyBioAuthEnabled: deps.services.store.getState()?.bioAuth?.bioAuthEnabled,
         });
         if (!loadModules.success) {
