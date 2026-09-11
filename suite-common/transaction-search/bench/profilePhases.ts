@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
-import { getTargetAmounts } from '../getTargetAmounts';
-import { getTransactionSearchLookups } from '../transactionSearchIndex';
+import { getTargetAmounts } from '../src/getTargetAmounts';
+import { getTransactionSearchLookups } from '../src/transactionSearchIndex';
 
 const COUNT = 5_000;
 const address = (i: number) => `bc1q${i.toString(36).padStart(8, '0')}`;

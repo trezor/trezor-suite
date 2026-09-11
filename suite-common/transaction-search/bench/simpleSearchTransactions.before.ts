@@ -12,10 +12,10 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
-import { getTargetAmounts } from '../getTargetAmounts';
-import { numberSearchFilter } from '../numberSearchFilter';
-import { type SearchAccountLabels } from '../searchLabels';
-import { searchOperators } from '../searchOperations';
+import { getTargetAmounts } from '../src/getTargetAmounts';
+import { numberSearchFilter } from '../src/numberSearchFilter';
+import { type SearchAccountLabels } from '../src/searchLabels';
+import { searchOperators } from '../src/searchOperations';
 
 const searchDateRegex = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
 
