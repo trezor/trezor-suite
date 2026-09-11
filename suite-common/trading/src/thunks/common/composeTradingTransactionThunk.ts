@@ -104,14 +104,32 @@ export const composeTradingTransactionThunk = createThunk<
                     formState: { ...formState, selectedFee: 'normal' },
                     composeContext,
                 }),
-            ).unwrap();
+            );
 
-            if (normalLevels?.normal?.type !== 'final' || !normalLevels.normal.feeLimit) {
-                const error: TradingSendRejectedProps['error'] =
-                    normalLevels?.normal?.type === 'error' && normalLevels?.normal?.errorMessage
+            if (isRejected(composeSendFormTransactionFeeLevelsThunk)(normalLevels)) {
+                const composeError = normalLevels.payload;
+
+                return rejectWithValue({
+                    type: 'sign-tx-error',
+                    error: composeError?.message
                         ? {
-                              id: normalLevels.normal.errorMessage.id,
-                              values: normalLevels.normal.errorMessage.values,
+                              id: 'TR_TRADING_COMPOSE_FAILED',
+                              values: { error: composeError.message },
+                          }
+                        : {
+                              id: 'TR_TRADING_MISSING_FEE_LEVEL',
+                          },
+                });
+            }
+
+            const normalLevel = normalLevels.payload?.normal;
+
+            if (normalLevel?.type !== 'final' || !normalLevel.feeLimit) {
+                const error: TradingSendRejectedProps['error'] =
+                    normalLevel?.type === 'error' && normalLevel?.errorMessage
+                        ? {
+                              id: normalLevel.errorMessage.id,
+                              values: normalLevel.errorMessage.values,
                           }
                         : {
                               id: 'TR_TRADING_MISSING_FEE_LEVEL',
@@ -125,7 +143,7 @@ export const composeTradingTransactionThunk = createThunk<
 
             formState.feeLimit = BigNumber.max(
                 formState.feeLimit || '0',
-                normalLevels.normal.feeLimit,
+                normalLevel.feeLimit,
             ).toString();
         }
 
