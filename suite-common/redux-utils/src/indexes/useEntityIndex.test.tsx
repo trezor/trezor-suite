@@ -12,7 +12,7 @@ import {
     useEntityById,
     useEntityIds,
     useEntityIdsBy,
-    useEntityIndexSubscription,
+    useEntityIndexRetention,
 } from './useEntityIndex';
 
 type Thing = { id: string; value: string };
@@ -254,12 +254,12 @@ describe('the index a component is reading', () => {
     });
 });
 
-describe('useEntityIndexSubscription', () => {
+describe('useEntityIndexRetention', () => {
     it('holds the build for a screen that reads the index some other way', () => {
         const { index, getEntities } = createIndex();
         const store = createTestStore([a]);
 
-        const { unmount } = renderHook(() => useEntityIndexSubscription(index), {
+        const { unmount } = renderHook(() => useEntityIndexRetention(index), {
             wrapper: createWrapper(store),
         });
 

@@ -141,6 +141,12 @@ export type EntityIndexDefinition<
     groupBy?: TGroups;
 };
 
+export type EntityIndexListener<
+    TEntity,
+    TId extends EntityId,
+    TGroups extends EntityGroupKeySelectors<TEntity>,
+> = (snapshot: EntityIndexSnapshot<TEntity, TId, TGroups>) => void;
+
 export type EntityIndex<
     TState,
     TEntity,
@@ -149,14 +155,32 @@ export type EntityIndex<
 > = {
     readonly name: string;
     /**
-     * Keeps the index's build alive until the returned function is called. Reads work without a
-     * subscription — what a subscription adds is that the build survives being unused, rather than
-     * being dropped the moment the last consumer goes away.
+     * Keeps the index's build alive until the returned function is called, without asking to be
+     * told anything. For a consumer that reads the index itself — through `useSelector`, or a
+     * thunk — and only wants its work not thrown away between reads.
+     *
+     * Retaining builds nothing on its own: the index stays lazy until something reads it.
+     *
+     * @returns release
+     */
+    retain: () => () => void;
+    /**
+     * Calls `listener` with the new snapshot whenever a read finds the index changed, so a
+     * consumer can react to entities without reading them itself — `snapshot.changes` says what
+     * happened.
+     *
+     * A read is what discovers the change, because that is the only moment the index looks at the
+     * source. In an app that means any component or selector reading this index drives everyone
+     * subscribed to it; an index nothing reads notifies nothing, which is the same laziness the
+     * rest of this has.
+     *
+     * Listeners are called from inside that read, so they must not dispatch synchronously — the
+     * read may be happening in the middle of React deciding what to render. Defer if you need to.
      *
      * @returns unsubscribe
      */
-    subscribe: () => () => void;
-    /** How many subscribers are holding the build. Exposed for tests and dev tooling. */
+    subscribe: (listener: EntityIndexListener<TEntity, TId, TGroups>) => () => void;
+    /** How many consumers are holding the build. Exposed for tests and dev tooling. */
     getSubscriberCount: () => number;
     /** The index as of this state. Same object for as long as the source is unchanged. */
     read: (state: TState) => EntityIndexSnapshot<TEntity, TId, TGroups>;
@@ -254,7 +278,9 @@ export const createEntityIndex = <
         getParts ??
         ((source: TSource) => [[WHOLE_SOURCE_KEY, source as unknown as TPart]] as const);
 
-    let subscriberCount = 0;
+    let holderCount = 0;
+    const listeners = new Set<EntityIndexListener<TEntity, TId, TGroups>>();
+    let notifiedSnapshot: EntityIndexSnapshot<TEntity, TId, TGroups> | undefined;
     // The build, the source it was built from and the parts it was assembled from, kept together
     // so they cannot disagree. `undefined` means the next read builds from nothing.
     let cached:
@@ -412,6 +438,23 @@ export const createEntityIndex = <
         return cached.snapshot;
     };
 
+    const notify = (snapshot: EntityIndexSnapshot<TEntity, TId, TGroups>) => {
+        if (listeners.size === 0 || snapshot === notifiedSnapshot) {
+            return;
+        }
+        notifiedSnapshot = snapshot;
+
+        listeners.forEach(listener => {
+            // One listener failing must not break the read for the consumer that made it, nor for
+            // the other listeners.
+            try {
+                listener(snapshot);
+            } catch (error) {
+                console.error(`entity index "${name}" listener failed`, error);
+            }
+        });
+    };
+
     const read = (state: TState): EntityIndexSnapshot<TEntity, TId, TGroups> => {
         const source = selectSource(state);
 
@@ -419,36 +462,55 @@ export const createEntityIndex = <
             return cached.snapshot;
         }
 
-        // Built whether or not anyone is subscribed. A list of a hundred rows reads the index a
-        // hundred times on its first render, before a single subscription effect has run, and
-        // those have to be one build. Subscribers decide when the build is *released*, not when
-        // it is made.
-        return build(source);
+        // Built whether or not anyone is holding it. A list of a hundred rows reads the index a
+        // hundred times on its first render, before a single effect has run, and those have to be
+        // one build. Holders decide when the build is *released*, not when it is made.
+        const snapshot = build(source);
+        notify(snapshot);
+
+        return snapshot;
+    };
+
+    const retain = () => {
+        holderCount += 1;
+        let isHeld = true;
+
+        return () => {
+            // Guard against a consumer releasing twice, which would throw away the build while
+            // someone else is still holding it.
+            if (!isHeld) {
+                return;
+            }
+            isHeld = false;
+            holderCount -= 1;
+
+            if (holderCount === 0) {
+                cached = undefined;
+                notifiedSnapshot = undefined;
+            }
+        };
     };
 
     return {
         name,
 
-        subscribe: () => {
-            subscriberCount += 1;
-            let isSubscribed = true;
+        retain,
+
+        subscribe: listener => {
+            // Holding the build too: a listener that was told the index changed will be read
+            // sooner or later, and rebuilding it in between would be work nobody asked for.
+            const release = retain();
+            listeners.add(listener);
 
             return () => {
-                // Guard against a consumer unsubscribing twice, which would release the build
-                // while someone else is still holding it.
-                if (!isSubscribed) {
+                if (!listeners.delete(listener)) {
                     return;
                 }
-                isSubscribed = false;
-                subscriberCount -= 1;
-
-                if (subscriberCount === 0) {
-                    cached = undefined;
-                }
+                release();
             };
         },
 
-        getSubscriberCount: () => subscriberCount,
+        getSubscriberCount: () => holderCount,
 
         read,
 
