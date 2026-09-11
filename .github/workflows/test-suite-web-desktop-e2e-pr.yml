@@ -39,6 +39,7 @@ jobs:
     outputs:
       strategy: ${{ steps.determine.outputs.strategy }}
       spec-list: ${{ steps.determine.outputs.spec-list }}
+      edited-specs: ${{ steps.determine.outputs.edited-specs }}
     steps:
       - name: Checkout PR head
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -98,6 +99,7 @@ jobs:
       needs.build-app.result == 'success' &&
       needs.resolve-spec-list.result == 'success'
     needs:
+      - determine-strategy
       - build-app
       - resolve-spec-list
     strategy:
@@ -114,6 +116,7 @@ jobs:
       currents-project-id: "4ytF0E"
       download-artifact-name: "desktop-app-build-e2e"
       spec-list: ${{ needs.resolve-spec-list.outputs.spec-list }}
+      edited-specs: ${{ needs.determine-strategy.outputs.edited-specs }}
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
@@ -216,17 +219,20 @@ jobs:
       - name: Resolve final spec list
         id: resolve
         shell: bash
+        env:
+          STRATEGY: ${{ needs.determine-strategy.outputs.strategy }}
+          DIRECT_SPEC: ${{ needs.determine-strategy.outputs.spec-list }}
+          EDITED_SPECS: ${{ needs.determine-strategy.outputs.edited-specs }}
+          LLM_SPEC: ${{ needs.run-llm-analysis.outputs.spec-list }}
         run: |
-          STRATEGY="${{ needs.determine-strategy.outputs.strategy }}"
-          DIRECT_SPEC="${{ needs.determine-strategy.outputs.spec-list }}"
-          LLM_SPEC="${{ needs.run-llm-analysis.outputs.spec-list }}"
-
           if [[ "$STRATEGY" == "specific-tests" ]]; then
             echo "Using direct spec list from strategy determination: $DIRECT_SPEC"
             echo "spec-list=$DIRECT_SPEC" >> "$GITHUB_OUTPUT"
           elif [[ "$STRATEGY" == "analyze" ]] && [[ -n "$LLM_SPEC" ]]; then
-            echo "Using LLM-recommended spec list: $LLM_SPEC"
-            echo "spec-list=$LLM_SPEC" >> "$GITHUB_OUTPUT"
+            # Test files the PR edited always run, even when the selector did not pick them.
+            SPEC_LIST=$(echo "$LLM_SPEC,$EDITED_SPECS" | tr ',' '\n' | grep . | sort -u | paste -sd,)
+            echo "Using LLM-recommended spec list plus edited test files: $SPEC_LIST"
+            echo "spec-list=$SPEC_LIST" >> "$GITHUB_OUTPUT"
           else
             echo "Running all tests (strategy=$STRATEGY, LLM spec empty or PR too large)."
             echo "spec-list=" >> "$GITHUB_OUTPUT"
@@ -305,6 +311,7 @@ jobs:
       needs.build-connect.result == 'success' &&
       needs.resolve-spec-list.result == 'success'
     needs:
+      - determine-strategy
       - build-web
       - build-connect
       - resolve-spec-list
@@ -322,6 +329,7 @@ jobs:
       currents-project-id: "Og0NOQ"
       download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
       spec-list: ${{ needs.resolve-spec-list.outputs.spec-list }}
+      edited-specs: ${{ needs.determine-strategy.outputs.edited-specs }}
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

@@ -115,7 +115,7 @@ Tests that must never run on a PR, not even when the LLM test selector or an edi
 
 #### @optional
 
-Tests that are excluded from the full PR run but may run on a PR when a spec list targets them, i.e. when the LLM test selector recommends them or the PR edits the test file itself. Use it for low-priority slow tests, tests that cost real funds, or tests that depend on a flaky backend, and, when the reason is not obvious from the test itself, state it in a one-line comment above the `describe`. Only the full-run PR configs filter this tag out; nightly, canary, release and spec-list runs include it.
+Tests that are excluded from the full PR run but run on a PR when the LLM test selector recommends them or the PR edits the test file itself. Use it for low-priority slow tests, tests that cost real funds, or tests that depend on a flaky backend, and, when the reason is not obvious from the test itself, state it in a one-line comment above the `describe`. Only the full-run PR configs filter this tag out; nightly, canary, release and spec-list runs include it.
 
 #### @specificFirmware
 

@@ -4,6 +4,7 @@ description: >
   run-everything (e2e framework changed, mixed framework+production, or CI-only changes),
   analyze (production code changed → LLM analysis needed),
   or specific-tests (only e2e test files changed).
+  Always outputs the e2e test files the PR edited, which every strategy runs.
 outputs:
   strategy:
     description: "specific-tests | run-everything | analyze"
@@ -11,6 +12,9 @@ outputs:
   spec-list:
     description: "Comma-separated list of test file paths (only set when strategy=specific-tests)"
     value: ${{ steps.classify.outputs.spec-list }}
+  edited-specs:
+    description: "Comma-separated list of e2e test files the PR added, modified or renamed (deleted files excluded)"
+    value: ${{ steps.classify.outputs.edited-specs }}
 runs:
   using: "composite"
   steps:
@@ -31,6 +35,12 @@ runs:
         CHANGED=$(git diff "$BASE_SHA"...HEAD --name-only)
         echo "Changed files:"
         echo "$CHANGED"
+
+        # Edited test files always run on the PR, whatever strategy is picked below. Deleted files
+        # are dropped (--diff-filter=d); a rename is listed under its new name.
+        EDITED_SPECS=$(git diff "$BASE_SHA"...HEAD --name-only --diff-filter=d | grep '^suite/e2e/tests/' | tr '\n' ',' | sed 's/,$//' || true)
+        echo "Edited test files: $EDITED_SPECS"
+        echo "edited-specs=$EDITED_SPECS" >> "$GITHUB_OUTPUT"
 
         if [[ -z "$CHANGED" ]]; then
           echo "No changed files detected. Running everything."
@@ -69,7 +79,6 @@ runs:
         fi
 
         # All changed files are under suite/e2e/tests/ — run only those
-        TEST_FILES=$(echo "$NON_CI" | grep '^suite/e2e/tests/' | tr '\n' ',' | sed 's/,$//')
-        echo "Only test files changed. Running: $TEST_FILES"
+        echo "Only test files changed. Running: $EDITED_SPECS"
         echo "strategy=specific-tests" >> "$GITHUB_OUTPUT"
-        echo "spec-list=$TEST_FILES" >> "$GITHUB_OUTPUT"
+        echo "spec-list=$EDITED_SPECS" >> "$GITHUB_OUTPUT"
