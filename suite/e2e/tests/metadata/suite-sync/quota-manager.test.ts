@@ -105,7 +105,6 @@ test.describe('Suite Sync - Quota Manager out of quota', { tag: ['@T3W1', '@T3T1
     );
 });
 
-// Regression coverage for https://github.com/trezor/trezor-suite/issues/32162.
 test.describe('Suite Sync - Quota Manager top-up', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
@@ -188,7 +187,6 @@ test.describe('Suite Sync - Quota Manager top-up', { tag: ['@T3W1', '@T3T1'] }, 
                     });
             });
 
-            // The rejected edit must arrive without another edit, app reload, or relay URL change.
             await test.step('Rejected label is synced to the relay after the top-up', async () => {
                 await evoluClient.expectInTable('wallet', [expectedWallet], { timeout: 30_000 });
                 await evoluClient.expectInTable('account', [expectedAccount], { timeout: 30_000 });
