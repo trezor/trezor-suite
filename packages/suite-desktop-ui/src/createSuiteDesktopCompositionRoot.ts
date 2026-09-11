@@ -50,5 +50,5 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
 
-    return { app: createDesktopApp({ services }) };
+    return { app: createDesktopApp({ desktopApi, services }) };
 };
