@@ -114,7 +114,7 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     process.env.VITEST_PROJECT = mode === 'web' ? 'browser' : 'node';
 
     // eslint-disable-next-line no-console
-    console.log(`Running @trezor/connect e2e tests in ${mode} mode...`);
+    console.log(`Running @trezor/connect-core e2e tests in ${mode} mode...`);
     // eslint-disable-next-line no-console
     console.log('FW:', process.env.TESTS_FIRMWARE);
     // eslint-disable-next-line no-console

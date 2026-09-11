@@ -2,7 +2,7 @@
     "ignore-patterns": ["libDev", "lib"],
     "ignores": [
         "@babel/preset-typescript",
-        "@trezor/connect",
+        "@trezor/connect-core",
         "@vitest/browser",
         "crypto-browserify",
         "process",
