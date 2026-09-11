@@ -341,21 +341,27 @@ export const getFirmwareReleaseConfigInfo = (
         versionUtils.isNewer(b.version, a.version) ? 1 : -1,
     );
 
-    let intermediary;
-    let compatible;
+    let intermediary, isNewer;
+    let release = latestRelease;
 
     if (versionUtils.isVersionArray(firmwareVersion)) {
         const supportsMinFw = (current: VersionArray, r: { min_firmware_version: VersionArray }) =>
             versionUtils.isNewerOrEqual(current, r.min_firmware_version);
 
         if (!supportsMinFw(firmwareVersion, latestRelease)) {
-            // If the target isn't compatible, search for the best alternative.
-            // If an alternative is found, use it. Otherwise, we proceed with the original.
-            compatible = sortedReleases.find(r => supportsMinFw(firmwareVersion, r));
+            // Find the first intermediary release that requires a newer version than the current one.
+            intermediary = firmwareReleaseStore
+                .getIntermediary(model)
+                ?.find(r => !supportsMinFw(firmwareVersion, r));
+
+            if (!intermediary) {
+                // If the target isn't compatible, search for the best alternative.
+                // If an alternative is found, use it. Otherwise, we proceed with the original.
+                const compatible = sortedReleases.find(r => supportsMinFw(firmwareVersion, r));
+                release = compatible ?? latestRelease;
+            }
         }
-        intermediary = firmwareReleaseStore
-            .getIntermediary(model)
-            ?.find(r => !supportsMinFw(firmwareVersion, r));
+        isNewer = !!intermediary || versionUtils.isNewer(release.version, firmwareVersion);
     } else if (features.bootloader_mode && versionUtils.isVersionArray(bootloaderVersion)) {
         const supportsMinBl = (
             current: VersionArray,
@@ -363,21 +369,29 @@ export const getFirmwareReleaseConfigInfo = (
         ) => versionUtils.isNewerOrEqual(current, r.min_bootloader_version);
 
         if (!supportsMinBl(bootloaderVersion, latestRelease)) {
-            // If the target isn't compatible, search for the best alternative.
-            // If an alternative is found, use it. Otherwise, we proceed with the original.
-            compatible = sortedReleases.find(r => supportsMinBl(bootloaderVersion, r));
-        }
-        intermediary = firmwareReleaseStore
-            .getIntermediary(model)
-            ?.find(r => !supportsMinBl(bootloaderVersion, r));
-    }
+            // Find the first intermediary release that requires a newer version than the current one.
+            intermediary = firmwareReleaseStore
+                .getIntermediary(model)
+                ?.find(r => !supportsMinBl(bootloaderVersion, r));
 
-    const release = (!intermediary && compatible) || latestRelease;
+            if (!intermediary) {
+                // If the target isn't compatible, search for the best alternative.
+                // If an alternative is found, use it. Otherwise, we proceed with the original.
+                const compatible = sortedReleases.find(r => supportsMinBl(bootloaderVersion, r));
+                release = compatible ?? latestRelease;
+            }
+        }
+        isNewer =
+            !!intermediary ||
+            (!!release.bootloader_version &&
+                versionUtils.isNewer(release.bootloader_version, bootloaderVersion));
+    } else {
+        throw new Error('Firmware version is not version array.');
+    }
 
     if (!isValidConditionalRelease(release)) {
         throw new Error(`Release object in unexpected shape.`);
     }
-    const { min_firmware_version, min_bootloader_version } = release;
 
     // releases are already filtered, so they can be considered "safe".
     // so lets build changelog! It should include only those firmwares, that are
@@ -416,34 +430,16 @@ export const getFirmwareReleaseConfigInfo = (
     }
     const isRequired = changelog?.length ? changelog.some(item => item.required) : null;
 
-    let isNewer: boolean;
-    let requiresIntermediary: boolean;
-    if (versionUtils.isVersionArray(firmwareVersion)) {
-        isNewer = versionUtils.isNewer(release.version, firmwareVersion);
-        requiresIntermediary = versionUtils.isNewer(min_firmware_version, firmwareVersion);
-    } else if (features.bootloader_mode && versionUtils.isVersionArray(bootloaderVersion)) {
-        isNewer =
-            !!release.bootloader_version &&
-            versionUtils.isNewer(release.bootloader_version, bootloaderVersion);
-        requiresIntermediary = versionUtils.isNewer(min_bootloader_version, bootloaderVersion);
-    } else {
-        throw new Error('Firmware version is not version array.');
-    }
-
     const { conditions } = deviceMessageRelease;
     const { rollout_probability } = conditions;
     const shouldBeOffered = calculateShouldOfferRelease(rollout_probability, features.device_id);
-
-    if (requiresIntermediary && intermediary) {
-        isNewer = true;
-    }
 
     return {
         firmwareType,
         isBitcoinOnlyAvailable,
         releaseConditions: { ...conditions, shouldBeOffered },
         release,
-        intermediary: requiresIntermediary ? intermediary : undefined,
+        intermediary,
         isRequired,
         isNewer,
         translations: release.translations,
