@@ -62,7 +62,7 @@
         "build:libs:verify": "yarn nx affected --target=build:lib",
         "validate": "yarn verify-project-references && yarn lint:js:fix && yarn lint:styles && yarn build:libs:verify && yarn type-check && yarn check-workspace-resolutions && yarn depcheck",
         "_______ Global Scripts _______": "Generic script definitions to be run in individual workspaces.",
-        "g:eslint": "cd $INIT_CWD && eslint --cache --cache-strategy content --max-warnings 0",
+        "g:eslint": "cd \"$INIT_CWD\" && NODE_OPTIONS=\"--max-old-space-size=8192 ${NODE_OPTIONS:-}\" eslint --cache --cache-strategy content --max-warnings 0",
         "g:jest": "cd $INIT_CWD && jest",
         "g:jest:native": "cd $INIT_CWD && jest --runInBand",
         "g:prettier": "cd $INIT_CWD && prettier",
