@@ -3,8 +3,9 @@ import { type LayoutChangeEvent, View } from 'react-native';
 
 import {
     type AccountKey,
-    type ReviewOutputType,
     type TokenAddress,
+    type TransactionReviewOutputType,
+    type TransactionReviewStatefulOutput,
 } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
@@ -15,11 +16,10 @@ import {
     ReviewOutputItemContent,
     type ReviewOutputItemContentProps,
 } from './ReviewOutputItemContent';
-import { type StatefulReviewOutput } from '../../types';
 
 export type ReviewOutputItemProps = {
     accountKey: AccountKey;
-    reviewOutput: StatefulReviewOutput;
+    reviewOutput: TransactionReviewStatefulOutput;
     onLayout: (event: LayoutChangeEvent) => void;
     tokenContract?: TokenAddress;
     flowType?: ExchangeFlowType;
@@ -30,7 +30,7 @@ const OutputLabel = ({
     type,
     flowType,
 }: {
-    type: ReviewOutputType;
+    type: TransactionReviewOutputType;
     flowType?: ExchangeFlowType;
 }): ReactNode => {
     switch (type) {

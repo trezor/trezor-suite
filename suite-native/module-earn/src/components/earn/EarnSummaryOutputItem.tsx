@@ -7,7 +7,7 @@ import {
     isSupportedSolStakingNetworkSymbol,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type ReviewOutputState } from '@suite-common/wallet-types';
+import { type AccountKey, type TransactionReviewOutputState } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { ReviewOutputCard, ReviewOutputItemValues } from '@suite-native/transaction-management';
@@ -19,7 +19,7 @@ type EarnSummaryOutputItemProps = {
     stakeType: EarnFormDraftPrefix;
     amount: string;
     fee: string;
-    outputState: ReviewOutputState;
+    outputState: TransactionReviewOutputState;
     onLayout: (event: LayoutChangeEvent) => void;
 };
 

@@ -1,11 +1,8 @@
 import { type LayoutChangeEvent, View } from 'react-native';
 
-import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    ReviewOutputCard,
-    ReviewOutputItem,
-    type StatefulReviewOutput,
-} from '@suite-native/transaction-management';
+import { type AccountKey, type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
+import { ReviewOutputItem } from '@suite-native/transaction-management';
+import { TransactionReviewOutputCard } from '@suite-native/transaction-review';
 
 import {
     YieldTransactionReviewOutputContent,
@@ -21,7 +18,7 @@ type YieldTransactionReviewOutputItemProps = {
     accountKey: AccountKey;
     evmTransactionPurpose: YieldReviewPreview['evmTransactionPurpose'];
     onLayout: (event: LayoutChangeEvent) => void;
-    reviewOutput: StatefulReviewOutput;
+    reviewOutput: TransactionReviewStatefulOutput;
 };
 
 export const YieldTransactionReviewOutputItem = ({
@@ -45,7 +42,7 @@ export const YieldTransactionReviewOutputItem = ({
 
     return (
         <View onLayout={onLayout}>
-            <ReviewOutputCard
+            <TransactionReviewOutputCard
                 title={getYieldTransactionReviewOutputTitle({
                     evmTransactionPurpose,
                     reviewOutput: yieldReviewOutput,
@@ -57,7 +54,7 @@ export const YieldTransactionReviewOutputItem = ({
                     evmTransactionPurpose={evmTransactionPurpose}
                     reviewOutput={yieldReviewOutput}
                 />
-            </ReviewOutputCard>
+            </TransactionReviewOutputCard>
         </View>
     );
 };

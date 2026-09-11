@@ -63,7 +63,7 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
             return;
         }
         reportToAnalytics('continue');
-        navigation.navigate(RootStackRoutes.TradingExchangeOutputsReview, {
+        navigation.navigate(RootStackRoutes.TradingExchangeTransactionReview, {
             accountKey: fromAccount.key,
             tokenContract,
             orderId: quote.orderId ?? '',

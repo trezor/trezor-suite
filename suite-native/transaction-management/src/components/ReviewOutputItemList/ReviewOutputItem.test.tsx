@@ -1,3 +1,4 @@
+import { type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { within } from '@suite-native/test-utils';
@@ -5,7 +6,6 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { ReviewOutputItem, type ReviewOutputItemProps } from './ReviewOutputItem';
 import { ETH_ACCOUNT_KEY } from '../../__fixtures__/walletState';
-import { type StatefulReviewOutput } from '../../types';
 
 jest.mock('./ReviewOutputItemValues', () => ({
     ReviewOutputItemValues: ({
@@ -36,7 +36,7 @@ describe('ReviewOutputItem', () => {
             />,
         );
 
-    it.each<[StatefulReviewOutput['type'], string]>([
+    it.each<[TransactionReviewStatefulOutput['type'], string]>([
         ['opreturn', 'opreturn'],
         ['data', getTranslation('transactionManagement.review.outputs.transactionDataLabel')],
         ['locktime', 'locktime'],
@@ -73,7 +73,7 @@ describe('ReviewOutputItem', () => {
                 type,
                 value: 'mockvalue',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/title')).toHaveTextContent(expectedTitle);
@@ -85,7 +85,7 @@ describe('ReviewOutputItem', () => {
                 type: 'amount',
                 value: 'mockvalue',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         // note that this test mocks the ReviewOutputItemValues component
@@ -100,7 +100,7 @@ describe('ReviewOutputItem', () => {
                 type: 'rewards',
                 rewards: [],
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(queryByTestId('review-output-card/title')).toBeNull();
@@ -112,7 +112,7 @@ describe('ReviewOutputItem', () => {
                 type: 'destination-tag',
                 value: 'mockvalue',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent('mockvalue');
@@ -124,7 +124,7 @@ describe('ReviewOutputItem', () => {
                 type: 'destination-tag',
                 value: '',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent(
@@ -132,7 +132,7 @@ describe('ReviewOutputItem', () => {
         );
     });
 
-    it.each<StatefulReviewOutput['type']>([
+    it.each<TransactionReviewStatefulOutput['type']>([
         'address',
         'regular_legacy',
         'contract',
@@ -143,7 +143,7 @@ describe('ReviewOutputItem', () => {
                 type,
                 value: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent(
@@ -157,7 +157,7 @@ describe('ReviewOutputItem', () => {
                 type: 'timebounds',
                 value: '',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent(
@@ -171,7 +171,7 @@ describe('ReviewOutputItem', () => {
                 type: 'network',
                 value: '',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent(
@@ -185,7 +185,7 @@ describe('ReviewOutputItem', () => {
                 type: 'data',
                 value: '0xabcd',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent('0xabcd');
@@ -199,7 +199,7 @@ describe('ReviewOutputItem', () => {
                 type: 'data',
                 value: longHex,
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         const content = getByTestId('review-output-card/content');
@@ -217,7 +217,7 @@ describe('ReviewOutputItem', () => {
                 type: 'data',
                 value: '',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent(
@@ -231,7 +231,7 @@ describe('ReviewOutputItem', () => {
                 type: 'recipient_name',
                 value: 'mockvalue',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent('mockvalue');
@@ -256,7 +256,7 @@ describe('ReviewOutputItem', () => {
                     symbol: 'btc',
                     amount: '0.01',
                 },
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         const content = getByTestId('review-output-card/content');
@@ -279,7 +279,7 @@ describe('ReviewOutputItem', () => {
                     symbol: 'eth',
                     amount: '0.5',
                 },
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         const content = getByTestId('review-output-card/content');
@@ -309,7 +309,7 @@ describe('ReviewOutputItem', () => {
                     amount: '2500',
                     fiatCurrency: 'USD',
                 },
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         const content = getByTestId('review-output-card/content');
@@ -326,7 +326,7 @@ describe('ReviewOutputItem', () => {
                 value: '',
                 value2: '',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent('');
@@ -337,7 +337,7 @@ describe('ReviewOutputItem', () => {
             reviewOutput: {
                 type: 'swap_intent',
                 value: 'swap',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent(
@@ -345,7 +345,7 @@ describe('ReviewOutputItem', () => {
         );
     });
 
-    it.each<StatefulReviewOutput['type']>([
+    it.each<TransactionReviewStatefulOutput['type']>([
         'opreturn',
         'locktime',
         'fee',
@@ -359,7 +359,7 @@ describe('ReviewOutputItem', () => {
                 type,
                 value: 'mockvalue',
                 state: 'active',
-            } as StatefulReviewOutput,
+            } as TransactionReviewStatefulOutput,
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent('');
@@ -775,7 +775,7 @@ describe('ReviewOutputItem', () => {
                     state: undefined,
                     type: 'approve_data',
                     value: '100',
-                } as StatefulReviewOutput,
+                } as TransactionReviewStatefulOutput,
                 flowType: 'swap',
             });
 
@@ -791,7 +791,7 @@ describe('ReviewOutputItem', () => {
                     state: undefined,
                     type: 'approve_data',
                     value: '123456789',
-                } as StatefulReviewOutput,
+                } as TransactionReviewStatefulOutput,
                 flowType: 'approve',
             });
 

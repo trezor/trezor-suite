@@ -11,10 +11,7 @@ import type {
 } from '@suite-native/navigation';
 import { type TradingRootState } from '@suite-native/trading-state';
 
-import {
-    TradingExchangeOutputsReviewScreen,
-    TradingSellOutputsReviewScreen,
-} from './TradingOutputsReviewScreen';
+import { TradingExchangeTransactionReviewScreen } from './TradingExchangeTransactionReviewScreen';
 import { createTradingTestStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
 
 type State = TradingRootState;
@@ -25,12 +22,6 @@ const mockResolveTransactionSendConsent = jest.fn();
 const mockUseExchangeFlow = {
     signAndSendTransaction: mockSignAndSendTransaction,
     signDataAndConfirm: mockSignDataAndConfirm,
-    isTransactionSendConsentRequested: false,
-    resolveTransactionSendConsent: mockResolveTransactionSendConsent,
-};
-
-const mockUseSellFlow = {
-    signAndSendTransaction: mockSignAndSendTransaction,
     isTransactionSendConsentRequested: false,
     resolveTransactionSendConsent: mockResolveTransactionSendConsent,
 };
@@ -46,6 +37,7 @@ jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => mockNavigation,
     useRoute: () => ({ name: 'TEST_ROUTE_NAME' }),
+    usePreventRemove: jest.fn(),
 }));
 
 jest.mock('@suite-native/confirm-on-trezor', () => ({
@@ -58,14 +50,9 @@ jest.mock('@suite-native/confirm-on-trezor', () => ({
 }));
 
 const mockUseExchangeFlowFn = jest.fn(() => mockUseExchangeFlow);
-const mockUseSellFlowFn = jest.fn(() => mockUseSellFlow);
 
 jest.mock('../hooks/exchange/useExchangeFlow', () => ({
     useExchangeFlow: () => mockUseExchangeFlowFn(),
-}));
-
-jest.mock('../hooks/sell/useSellFlow', () => ({
-    useSellFlow: () => mockUseSellFlowFn(),
 }));
 
 const mockUseTradingOutputsReviewScreenControls = jest.fn((_: any) => ({
@@ -73,6 +60,15 @@ const mockUseTradingOutputsReviewScreenControls = jest.fn((_: any) => ({
     isConsentRequested: false,
     resolveConsent: jest.fn(),
     confirmOnTrezorRef: { current: null },
+    closeSheet: jest.fn(),
+    revealConfirmOnTrezorSheet: jest.fn(),
+    showTimer: false,
+    secondsLeft: 0,
+    isPastDeadline: false,
+    isBroadcasting: false,
+    onRetry: jest.fn(),
+    isRetryDisabled: false,
+    handleSendTransaction: jest.fn(),
 }));
 
 jest.mock('../hooks/reviewOutputs/useTradingOutputsReviewScreenControls', () => ({
@@ -88,13 +84,6 @@ jest.mock('../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () => 
 const TEST_ACCOUNT_KEY = 'btc-account-1';
 const TEST_ORDER_ID = 'test-order-id';
 
-// Helper function to create route params for sell
-const createSellRouteParams = (tokenContract?: TokenAddress) => ({
-    accountKey: TEST_ACCOUNT_KEY,
-    tokenContract,
-    orderId: TEST_ORDER_ID,
-});
-
 // Helper function to create route params for exchange
 const createExchangeRouteParams = (
     tokenContract?: TokenAddress,
@@ -106,19 +95,13 @@ const createExchangeRouteParams = (
     flowType,
 });
 
-// Helper function to create route for sell
-const createSellRoute = (params: ReturnType<typeof createSellRouteParams>) =>
-    ({
-        params,
-    }) as RouteProp<RootStackParamList, RootStackRoutes.TradingSellOutputsReview>;
-
 // Helper function to create route for exchange
 const createExchangeRoute = (params: ReturnType<typeof createExchangeRouteParams>) =>
     ({
         params,
-    }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangeOutputsReview>;
+    }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangeTransactionReview>;
 
-describe('TradingSellOutputsReviewScreen', () => {
+describe('TradingExchangeTransactionReviewScreenTest', () => {
     let store: Store<State>;
     let unmount: (() => void) | undefined;
 
@@ -129,58 +112,18 @@ describe('TradingSellOutputsReviewScreen', () => {
         }
     });
 
-    describe('TradingSellOutputsReviewScreen', () => {
+    describe('TradingExchangeTransactionReviewScreen', () => {
         const renderScreen = async (
             route: StackProps<
                 RootStackParamList,
-                RootStackRoutes.TradingSellOutputsReview
+                RootStackRoutes.TradingExchangeTransactionReview
             >['route'],
         ) => {
             const result = await renderWithTradingProvider(
-                <TradingSellOutputsReviewScreen route={route} navigation={mockNavigation} />,
-                { services: { analytics: mockNativeAnalytics(), store } },
-            );
-
-            ({ unmount } = result);
-
-            return result;
-        };
-
-        beforeEach(() => {
-            jest.clearAllMocks();
-            store = createTradingTestStore({ tradeType: 'sell' });
-            mockNavigation.navigate.mockClear();
-            mockNavigation.goBack.mockClear();
-            mockNavigation.popToTop.mockClear();
-        });
-
-        it('should render TradingSellOutputsReviewScreen', async () => {
-            const params = createSellRouteParams();
-            const route = createSellRoute(params);
-
-            const { toJSON } = await renderScreen(route);
-
-            expect(toJSON()).not.toBeNull();
-            expect(mockUseSellFlowFn).toHaveBeenCalled();
-            expect(mockUseTradingOutputsReviewScreenControls).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    orderId: TEST_ORDER_ID,
-                    accountKey: TEST_ACCOUNT_KEY,
-                    reportToAnalytics: expect.any(Function),
-                }),
-            );
-        });
-    });
-
-    describe('TradingExchangeOutputsReviewScreen', () => {
-        const renderScreen = async (
-            route: StackProps<
-                RootStackParamList,
-                RootStackRoutes.TradingExchangeOutputsReview
-            >['route'],
-        ) => {
-            const result = await renderWithTradingProvider(
-                <TradingExchangeOutputsReviewScreen route={route} navigation={mockNavigation} />,
+                <TradingExchangeTransactionReviewScreen
+                    route={route}
+                    navigation={mockNavigation}
+                />,
                 { services: { analytics: mockNativeAnalytics(), store } },
             );
 
@@ -197,7 +140,7 @@ describe('TradingSellOutputsReviewScreen', () => {
             mockNavigation.popToTop.mockClear();
         });
 
-        it('should render TradingExchangeOutputsReviewScreen', async () => {
+        it('should render TradingExchangeTransactionReviewScreen', async () => {
             const params = createExchangeRouteParams();
             const route = createExchangeRoute(params);
 

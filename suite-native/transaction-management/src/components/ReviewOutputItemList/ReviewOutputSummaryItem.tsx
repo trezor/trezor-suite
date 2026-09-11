@@ -6,6 +6,7 @@ import {
     type AccountKey,
     type FormDraftWithSendKeyPrefix,
     type TokenAddress,
+    type TransactionReviewSummaryOutput,
 } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
@@ -19,14 +20,13 @@ import {
     type TransactionReviewOutputsState,
     selectIsClearSignedTradingSwap,
 } from '../../selectors';
-import { type ReviewSummaryOutput } from '../../types';
 
 export type ReviewOutputSummaryItemProps = {
     accountKey: AccountKey;
     symbol: NetworkSymbol;
     onLayout: (event: LayoutChangeEvent) => void;
     tokenContract?: TokenAddress;
-    summaryOutput?: ReviewSummaryOutput;
+    summaryOutput?: TransactionReviewSummaryOutput;
     flowType?: ExchangeFlowType;
     prefix: FormDraftWithSendKeyPrefix;
 };

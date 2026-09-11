@@ -3,25 +3,28 @@ import {
     type RootStackRoutes,
     type StackProps,
 } from '@suite-native/navigation';
-import {
-    useExchangeAnalyticReportCallback,
-    useSellAnalyticReportCallback,
-} from '@suite-native/trading-analytics';
+import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
 
 import { ReviewOutputsContent } from '../components/reviewOutputs/ReviewOutputsContent';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
-import { useSellFlow } from '../hooks/sell/useSellFlow';
 
-export const TradingExchangeOutputsReviewScreen = ({
+type TradingExchangeTransactionReviewScreenProps = StackProps<
+    RootStackParamList,
+    RootStackRoutes.TradingExchangeTransactionReview
+>;
+
+export const TradingExchangeTransactionReviewScreen = ({
     route,
-}: StackProps<RootStackParamList, RootStackRoutes.TradingExchangeOutputsReview>) => {
+}: TradingExchangeTransactionReviewScreenProps) => {
     const { accountKey, tokenContract, orderId, flowType } = route.params;
+
     const {
         signAndSendTransaction,
         signDataAndConfirm,
         isTransactionSendConsentRequested,
         resolveTransactionSendConsent,
     } = useExchangeFlow({ flowType });
+
     const analyticsReportCallback = useExchangeAnalyticReportCallback();
 
     const actionFn = flowType === 'sign-data' ? signDataAndConfirm : signAndSendTransaction;
@@ -37,31 +40,6 @@ export const TradingExchangeOutputsReviewScreen = ({
             resolveTransactionSendConsent={resolveTransactionSendConsent}
             reportToAnalytics={analyticsReportCallback}
             exchangeFlowType={flowType}
-        />
-    );
-};
-
-export const TradingSellOutputsReviewScreen = ({
-    route,
-}: StackProps<RootStackParamList, RootStackRoutes.TradingSellOutputsReview>) => {
-    const { accountKey, tokenContract, orderId } = route.params;
-    const {
-        signAndSendTransaction,
-        isTransactionSendConsentRequested,
-        resolveTransactionSendConsent,
-    } = useSellFlow();
-    const analyticsReportCallback = useSellAnalyticReportCallback();
-
-    return (
-        <ReviewOutputsContent
-            accountKey={accountKey}
-            tokenContract={tokenContract}
-            orderId={orderId}
-            tradingType="sell"
-            signAndSendTransaction={signAndSendTransaction}
-            isTransactionSendConsentRequested={isTransactionSendConsentRequested}
-            resolveTransactionSendConsent={resolveTransactionSendConsent}
-            reportToAnalytics={analyticsReportCallback}
         />
     );
 };

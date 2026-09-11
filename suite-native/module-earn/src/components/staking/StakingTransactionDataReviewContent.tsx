@@ -8,24 +8,24 @@ import {
     selectAccountByKey,
     selectClaimableAmountByAccountKey,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
 import { isDeviceReviewOnlyTransaction } from '@suite-common/wallet-utils';
-import { Button, Text, VStack } from '@suite-native/atoms';
-import {
-    ConfirmOnTrezorWrapper,
-    useConfirmOnTrezorController,
-} from '@suite-native/confirm-on-trezor';
+import { Button, VStack } from '@suite-native/atoms';
+import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import { FollowDeviceScreenContent } from '@suite-native/device';
 import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { ScrollToEndOnMount } from '@suite-native/scrollview';
 import {
+    type TransactionReviewOutputsState,
     TxValidityTimer,
     selectIsTransactionAlreadySigned,
+    selectReviewSummaryOutput,
 } from '@suite-native/transaction-management';
+import { TransactionReviewScreen } from '@suite-native/transaction-review';
 
-import { StakingTransactionDataReviewStepList } from './StakingTransactionDataReviewStepList';
+import { StakingTransactionDataReviewOutputItem } from './StakingTransactionDataReviewOutputItem';
 import { useEarnAccountLabel } from '../../hooks/earn/useEarnAccountLabel';
 import { useEarnPendingTransactionSheet } from '../../hooks/earn/useEarnPendingTransactionSheet';
 import { useEarnReviewAutoStart } from '../../hooks/earn/useEarnReviewAutoStart';
@@ -36,6 +36,7 @@ import { useNavigateAfterPushedTransaction } from '../../hooks/staking/useNaviga
 import { type EarnFormDraftPrefix } from '../../types';
 import { getEarnPendingAmountInBaseUnits } from '../../utils/earn/getEarnPendingAmountInBaseUnits';
 import { getAmountInBaseUnits } from '../../utils/staking/getAmountInBaseUnits';
+import { EarnSummaryOutputItem } from '../earn/EarnSummaryOutputItem';
 import { YieldPendingTransactionModal } from '../yield/YieldPendingTransactionModal';
 
 const screenHeaderTranslationId: Record<EarnFormDraftPrefix, TxKeyPath> = {
@@ -89,6 +90,10 @@ export const StakingTransactionDataReviewContent = ({
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction(stakeType, accountKey);
+
+    const summaryOutput = useSelector((state: TransactionReviewOutputsState) =>
+        selectReviewSummaryOutput(state, stakeType, accountKey),
+    );
 
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
@@ -150,13 +155,12 @@ export const StakingTransactionDataReviewContent = ({
     const { pendingBottomSheetRef, isExploreDisabled, openInBlockchain } =
         useEarnPendingTransactionSheet({ accountKey, isPending, pendingTxid });
 
-    const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
-        useEarnTxValidityFlow({
-            accountKey,
-            stakeType,
-            revealConfirmOnTrezorSheet,
-            isPushing,
-        });
+    const txValidityFlow = useEarnTxValidityFlow({
+        accountKey,
+        stakeType,
+        revealConfirmOnTrezorSheet,
+        isPushing,
+    });
 
     useEarnReviewAutoStart({
         handleSign,
@@ -171,7 +175,7 @@ export const StakingTransactionDataReviewContent = ({
         closeSheet();
     }, [closeSheet, isTransactionAlreadySigned]);
 
-    const onButtonPress = useCallback(async () => {
+    const onSendTransaction = useCallback(async () => {
         setIsPushing(true);
 
         if (stakeType === 'claim') {
@@ -183,50 +187,31 @@ export const StakingTransactionDataReviewContent = ({
         if (pushedTxid) {
             trackPushedTransaction(pushedTxid);
 
-            return;
+            return pushedTxid;
         }
 
         setIsPushing(false);
+
+        return undefined;
     }, [stakeType, claimableAmount, handlePush, trackPushedTransaction]);
 
     const isFollowDeviceReview =
         stakeType === 'unstake' && isDeviceReviewOnlyTransaction(precomposedTransaction);
 
-    const timer = showTimer && (
-        <TxValidityTimer
-            secondsLeft={secondsLeft}
-            isPastDeadline={isPastDeadline}
-            isBroadcasting={isBroadcasting}
-            onRetry={onRetry}
-            isRetryDisabled={isRetryDisabled}
-            retryTestID={isFollowDeviceReview ? '@earn/follow-device-retry' : undefined}
-        />
-    );
+    // The Trezor reveals the staking step first, then the summary. The summary
+    // card only unlocks once every device output has been confirmed, which is
+    // exactly when selectReviewSummaryOutput exposes a state.
+    const isSummaryActive = !!summaryOutput?.state;
 
-    const header = (
-        <ScreenHeader
-            customContent={
-                <Text variant="body-md-strong">
-                    <Translation id={screenHeaderTranslationId[stakeType]} />
-                </Text>
-            }
-            closeActionType="close"
-            closeAction={closeReview}
-        />
-    );
-
-    const button = isReadyToContinue && (
-        <ScrollToEndOnMount>
-            <Button
-                isLoading={isPushing}
-                isDisabled={isSolanaAccount && isPastDeadline}
-                onPress={onButtonPress}
-                testID={actionButtonDataTestId[stakeType]}
-            >
-                <Translation id={actionButtonTranslationId[stakeType]} />
-            </Button>
-        </ScrollToEndOnMount>
-    );
+    // The whole staking intent is confirmed as one step; the card describes the
+    // transaction data the device is displaying.
+    const reviewOutputs: TransactionReviewStatefulOutput[] = [
+        {
+            type: 'data',
+            value: stakeType,
+            state: isTransactionAlreadySigned || isSummaryActive ? 'success' : 'active',
+        },
+    ];
 
     const pendingTxModal = isPending && !!pendingTxid && !!submittedAt && !!account && (
         <YieldPendingTransactionModal
@@ -253,6 +238,17 @@ export const StakingTransactionDataReviewContent = ({
     );
 
     if (isFollowDeviceReview) {
+        const timer = txValidityFlow.showTimer && (
+            <TxValidityTimer
+                secondsLeft={txValidityFlow.secondsLeft}
+                isPastDeadline={txValidityFlow.isPastDeadline}
+                isBroadcasting={txValidityFlow.isBroadcasting}
+                onRetry={txValidityFlow.onRetry}
+                isRetryDisabled={txValidityFlow.isRetryDisabled}
+                retryTestID="@earn/follow-device-retry"
+            />
+        );
+
         return (
             <>
                 <Screen
@@ -271,7 +267,18 @@ export const StakingTransactionDataReviewContent = ({
                             isTxSigned={isTransactionAlreadySigned}
                         />
 
-                        {button}
+                        {isReadyToContinue && (
+                            <ScrollToEndOnMount>
+                                <Button
+                                    isLoading={isPushing}
+                                    isDisabled={isSolanaAccount && txValidityFlow.isPastDeadline}
+                                    onPress={onSendTransaction}
+                                    testID={actionButtonDataTestId[stakeType]}
+                                >
+                                    <Translation id={actionButtonTranslationId[stakeType]} />
+                                </Button>
+                            </ScrollToEndOnMount>
+                        )}
                     </VStack>
                 </Screen>
 
@@ -280,31 +287,48 @@ export const StakingTransactionDataReviewContent = ({
         );
     }
 
+    const sheetController = { closeSheet, confirmOnTrezorRef, revealConfirmOnTrezorSheet };
+
     return (
-        <ConfirmOnTrezorWrapper
-            isManualControlEnabled
-            controlRef={confirmOnTrezorRef}
+        <TransactionReviewScreen
+            accountKey={accountKey}
+            reviewOutputs={reviewOutputs}
+            titleTranslationId={screenHeaderTranslationId[stakeType]}
+            summaryTranslationId="transactionManagement.review.outputs.summary.label"
+            sendButtonTranslationId={actionButtonTranslationId[stakeType]}
+            sendButtonTestId={actionButtonDataTestId[stakeType]}
+            isSendButtonDisabled={isSolanaAccount && txValidityFlow.isPastDeadline}
+            isTransactionAlreadySigned={isTransactionAlreadySigned}
+            onSendTransaction={onSendTransaction}
+            renderOutputItem={({ output, onLayout }) =>
+                !!account && (
+                    <StakingTransactionDataReviewOutputItem
+                        stakeType={stakeType}
+                        symbol={account.symbol}
+                        outputState={output.state}
+                        onLayout={onLayout}
+                    />
+                )
+            }
+            renderSummaryItem={({ onLayout }) => (
+                <EarnSummaryOutputItem
+                    accountKey={accountKey}
+                    stakeType={stakeType}
+                    amount={pendingAmountInBaseUnits}
+                    fee={summaryOutput?.fee ?? precomposedTransaction?.fee ?? '0'}
+                    outputState={summaryOutput?.state}
+                    onLayout={onLayout}
+                />
+            )}
+            isSlidingOverlayEnabled
+            txValidityFlow={txValidityFlow}
+            sheetController={sheetController}
+            isManualSheetControlEnabled
+            isBackInterceptorEnabled={false}
             closeActionType="close"
             closeAction={closeReview}
-            defaultHeader={header}
         >
-            <VStack flex={1} justifyContent="space-between">
-                <VStack justifyContent="center" spacing="sp24">
-                    {timer}
-
-                    {!isFollowDeviceReview && account && (
-                        <StakingTransactionDataReviewStepList
-                            account={account}
-                            stakeType={stakeType}
-                            amountInBaseUnits={pendingAmountInBaseUnits}
-                        />
-                    )}
-                </VStack>
-
-                {button}
-            </VStack>
-
             {pendingTxModal}
-        </ConfirmOnTrezorWrapper>
+        </TransactionReviewScreen>
     );
 };

@@ -1,0 +1,71 @@
+import { useNavigation } from '@react-navigation/native';
+
+import { useAlert } from '@suite-native/alerts';
+import { Translation } from '@suite-native/intl';
+import {
+    AppTabsRoutes,
+    AuthorizeDeviceStackRoutes,
+    HomeStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    type SendStackParamList,
+    type SendStackRoutes,
+    type StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+
+type NavigationProps = StackToStackCompositeNavigationProps<
+    SendStackParamList,
+    SendStackRoutes.SendOutputsReview,
+    RootStackParamList
+>;
+
+export const useShowDeviceDisconnectedAlert = () => {
+    const { showAlert } = useAlert();
+    const navigation = useNavigation<NavigationProps>();
+
+    const handleReconnect = () => {
+        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
+            params: {
+                // If user cancels the re-connecting process, redirect him to the Home screen.
+                onCancelNavigationTarget: {
+                    name: RootStackRoutes.AppTabs,
+                    params: {
+                        screen: AppTabsRoutes.HomeStack,
+                        params: { screen: HomeStackRoutes.Home },
+                    },
+                },
+            },
+        });
+    };
+
+    const handleCancel = () => {
+        navigation.popTo(RootStackRoutes.AppTabs, {
+            screen: AppTabsRoutes.HomeStack,
+            params: { screen: HomeStackRoutes.Home },
+        });
+    };
+
+    const showReviewCancellationAlert = () =>
+        setTimeout(
+            // Timeout is needed to prevent the alert from being shown before the redirect from @suite-native/device - deviceConnectionMiddleware happens.
+            () =>
+                showAlert({
+                    title: <Translation id="moduleSend.review.deviceDisconnectedAlert.title" />,
+                    description: (
+                        <Translation id="moduleSend.review.deviceDisconnectedAlert.description" />
+                    ),
+                    primaryButtonTitle: (
+                        <Translation id="moduleSend.review.deviceDisconnectedAlert.primaryButton" />
+                    ),
+                    primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+                    secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
+                    secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                    onPressPrimaryButton: handleReconnect,
+                    onPressSecondaryButton: handleCancel,
+                }),
+            1000,
+        );
+
+    return showReviewCancellationAlert;
+};

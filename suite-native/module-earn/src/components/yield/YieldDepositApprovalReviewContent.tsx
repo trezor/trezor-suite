@@ -1,14 +1,10 @@
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback, useMemo } from 'react';
 
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type YieldFlowResolvedData } from '@suite-common/wallet-core';
-import { Button } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
+import { type TransactionReviewSummaryOutput } from '@suite-common/wallet-types';
+import { TransactionReviewScreen } from '@suite-native/transaction-review';
 
-import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
-import { YieldTransactionReviewOutputList } from './YieldTransactionReviewOutputList';
 import { useYieldApprovalReview } from '../../hooks/yield/useYieldApprovalReview';
 import { useYieldApprovalReviewTransaction } from '../../hooks/yield/useYieldApprovalReviewTransaction';
 import { useYieldReviewActiveStep } from '../../hooks/yield/useYieldReviewActiveStep';
@@ -20,7 +16,11 @@ import {
     type YieldAllowanceFormDraftTransactionType,
     type YieldApprovalLimitType,
 } from '../../types';
-import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
+import {
+    buildYieldReviewPreview,
+    getYieldReviewSummaryState,
+    getYieldStatefulReviewOutputs,
+} from '../../utils/yield/yieldReviewOutputUtils';
 
 type YieldDepositApprovalReviewContentProps = {
     approvalLimitType?: YieldApprovalLimitType;
@@ -49,30 +49,25 @@ export const YieldDepositApprovalReviewContent = ({
     const reviewTransaction = useYieldApprovalReviewTransaction({
         accountKey: flowData.account.key,
     });
-    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const activeStep = useYieldReviewActiveStep(flowData.account.symbol);
     const isRevokeReview = transactionType === 'revoke';
+
     const submitButtonTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.submitButton'
         : 'earn.yieldDepositApprovalReviewScreen.submitButton';
+
     const titleTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.title'
         : 'earn.yieldDepositApprovalReviewScreen.title';
-    const {
-        handleApprovalSubmitted,
-        isApprovalSigned,
-        isApprovalReviewReady,
-        isSendingApproval,
-        isSigningApproval,
-        leaveReviewFromDeviceCancel,
-        startApprovalReview,
-    } = useYieldApprovalReview({
+
+    const review = useYieldApprovalReview({
         approvalLimitType,
         flowData,
         flowKey,
         onReviewLeave: markReviewLeave,
         transactionType,
     });
+
     const preview = useMemo(() => {
         if (!reviewTransaction) {
             return null;
@@ -91,33 +86,61 @@ export const YieldDepositApprovalReviewContent = ({
     useYieldReviewSheetAutoStart({
         closeSheet,
         hasLeftReview,
-        isSigned: isApprovalSigned,
-        leaveReviewFromDeviceCancel,
+        isSigned: review.isApprovalSigned,
+        leaveReviewFromDeviceCancel: review.leaveReviewFromDeviceCancel,
         revealConfirmOnTrezorSheet,
-        shouldAutoStartReview: isApprovalReviewReady && !isSigningApproval,
-        startReview: startApprovalReview,
+        shouldAutoStartReview: review.isApprovalReviewReady && !review.isSigningApproval,
+        startReview: review.startApprovalReview,
     });
 
+    const reviewOutputs = preview
+        ? getYieldStatefulReviewOutputs({
+              activeStep,
+              isSigned: review.isApprovalSigned,
+              outputs: preview.outputs,
+          })
+        : undefined;
+
+    const summaryOutput: TransactionReviewSummaryOutput | undefined =
+        preview && reviewTransaction
+            ? {
+                  state: getYieldReviewSummaryState({
+                      activeStep,
+                      isSigned: review.isApprovalSigned,
+                      outputsCount: preview.outputs.length,
+                  }),
+                  totalSpent: reviewTransaction.precomposedTransaction.totalSpent,
+                  fee: preview.summary.fee,
+              }
+            : undefined;
+
+    const sheetController = { closeSheet, confirmOnTrezorRef, revealConfirmOnTrezorSheet };
+
+    const onSendTransaction = useCallback(() => review.submitApproval(), [review]);
+
+    const onSendTransactionSuccess = useCallback(
+        (txid: string) => {
+            review.finalizeApprovalSubmit(txid);
+        },
+        [review],
+    );
+
     return (
-        <YieldReviewScreenLayout
-            confirmOnTrezorRef={confirmOnTrezorRef}
+        <TransactionReviewScreen
+            accountKey={flowData.account.key}
+            reviewOutputs={reviewOutputs}
+            summaryOutput={summaryOutput}
+            flowType={transactionType}
             titleTranslationId={titleTranslationId}
-            submitButton={
-                isApprovalSigned ? (
-                    <Button isLoading={isSendingApproval} onPress={handleApprovalSubmitted}>
-                        <Translation id={submitButtonTranslationId} />
-                    </Button>
-                ) : undefined
-            }
-        >
-            {preview && (
-                <YieldTransactionReviewOutputList
-                    accountKey={flowData.account.key}
-                    activeStep={activeStep}
-                    isSigned={isTransactionAlreadySigned}
-                    preview={preview}
-                />
-            )}
-        </YieldReviewScreenLayout>
+            summaryTranslationId="transactionManagement.review.outputs.summary.label"
+            sendButtonTranslationId={submitButtonTranslationId}
+            isTransactionAlreadySigned={review.isApprovalSigned}
+            onSendTransaction={onSendTransaction}
+            onSendTransactionSuccess={onSendTransactionSuccess}
+            sheetController={sheetController}
+            isManualSheetControlEnabled
+            isBackInterceptorEnabled={false}
+            closeActionType="back"
+        />
     );
 };

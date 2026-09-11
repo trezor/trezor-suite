@@ -4,9 +4,9 @@ import {
     type AccountKey,
     type FormStateTradingCryptoCurrency,
     type FormStateTradingFiatCurrency,
-    type ReviewOutputType,
     type TokenAddress,
     type TokenSymbol,
+    type TransactionReviewOutputType,
 } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
@@ -25,7 +25,7 @@ import { ReviewOutputItemValues } from './ReviewOutputItemValues';
 
 export type ReviewOutputItemContentDataProps = {
     accountKey: AccountKey;
-    outputType: ReviewOutputType;
+    outputType: TransactionReviewOutputType;
     value: string;
     value2?: string;
     token?: TokenInfo;

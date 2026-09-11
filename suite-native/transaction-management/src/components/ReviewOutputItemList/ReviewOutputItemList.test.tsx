@@ -1,15 +1,19 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type TransactionReviewStatefulOutput,
+    type TransactionReviewSummaryOutput,
+} from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { ReviewOutputItemList, type ReviewOutputItemListProps } from './ReviewOutputItemList';
 import { ETH_ACCOUNT_KEY, SOL_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
-import { type ReviewSummaryOutput, type StatefulReviewOutput } from '../../types';
 
 const btcSymbol = asNetworkSymbol('btc');
 
-let mockSelectTransactionReviewOutputsFromDraftReturnValue: StatefulReviewOutput[] | null;
+let mockSelectTransactionReviewOutputsFromDraftReturnValue:
+    TransactionReviewStatefulOutput[] | null;
 let mockSelectIsTransactionAlreadySignedValue: boolean;
 
 jest.mock('../../selectors', () => {
@@ -17,7 +21,7 @@ jest.mock('../../selectors', () => {
         state: 'active',
         totalSpent: '1200000000000000000', // 1.2 ETH in wei
         fee: '3000000000000000', // 0.003 ETH in wei
-    } as ReviewSummaryOutput;
+    } as TransactionReviewSummaryOutput;
 
     return {
         selectIsTransactionAlreadySigned: () => mockSelectIsTransactionAlreadySignedValue,
@@ -48,7 +52,7 @@ describe('ReviewOutputItemList', () => {
                 value: 'should not matter',
                 state: 'active',
             },
-        ] as StatefulReviewOutput[];
+        ] as TransactionReviewStatefulOutput[];
 
         mockSelectIsTransactionAlreadySignedValue = false;
     });

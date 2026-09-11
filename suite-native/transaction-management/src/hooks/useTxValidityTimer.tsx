@@ -12,6 +12,7 @@ type UseTxValidityTimerParams = {
     createdTimestamp: number;
     isBroadcasting: boolean;
     isTransactionAlreadySigned: boolean;
+    isEnabled?: boolean;
     onRetry: () => void | Promise<void>;
     onCancel: () => void;
 };
@@ -21,6 +22,7 @@ export const useTxValidityTimer = ({
     createdTimestamp,
     isBroadcasting,
     isTransactionAlreadySigned,
+    isEnabled = true,
     onRetry,
     onCancel,
 }: UseTxValidityTimerParams) => {
@@ -30,7 +32,7 @@ export const useTxValidityTimer = ({
     const deadline = createdTimestamp + validityTimeoutMs;
 
     const isValidityTimerRelevant =
-        networkType === 'solana' && createdTimestamp > 0 && validityTimeoutMs > 0;
+        isEnabled && networkType === 'solana' && createdTimestamp > 0 && validityTimeoutMs > 0;
 
     const { duration, isPastDeadline } = useCountdownTimer(deadline, {
         pastDeadlineLeadMs: 0,

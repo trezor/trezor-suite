@@ -6,13 +6,13 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { type ReviewOutputState } from '@suite-common/wallet-types';
+import { type TransactionReviewOutputState } from '@suite-common/wallet-types';
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type ReviewOutputStatusBadgeProps = {
-    status: ReviewOutputState;
+    status: TransactionReviewOutputState;
 };
 
 const BADGE_SIZE = 14;
