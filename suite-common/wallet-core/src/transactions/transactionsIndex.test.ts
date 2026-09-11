@@ -158,3 +158,72 @@ describe('getTransactionId', () => {
         expect(getTransactionId('someKey' as AccountKey, 'txA')).toBe('someKey:txA');
     });
 });
+
+describe('a write to one account', () => {
+    it('leaves the other accounts’ transactions untouched', () => {
+        // The reducer writes one account's array at a time, so Immer keeps the rest identical and
+        // the index carries them over instead of walking them again — the transactions of every
+        // other account are in none of the three lists.
+        withSubscription(() => {
+            const aliceTransaction = mockTransaction(ALICE, 'txA');
+            const bobTransactions = [mockTransaction(BOB, 'txB')];
+            const arrived = mockTransaction(ALICE, 'txA2');
+
+            transactionsIndex.read(
+                createState({ [aliceKey]: [aliceTransaction], [bobKey]: bobTransactions }),
+            );
+
+            expect(
+                transactionsIndex.read(
+                    createState({
+                        [aliceKey]: [aliceTransaction, arrived],
+                        [bobKey]: bobTransactions,
+                    }),
+                ).changes,
+            ).toEqual({
+                added: [getTransactionId(aliceKey, 'txA2')],
+                removed: [],
+                updated: [],
+            });
+        });
+    });
+
+    it('reports a replaced transaction as updated', () => {
+        // What `replaceTransaction` does when a pending transaction confirms.
+        withSubscription(() => {
+            const pending = mockTransaction(ALICE, 'txA', '1');
+            const confirmed = mockTransaction(ALICE, 'txA', '2');
+
+            transactionsIndex.read(createState({ [aliceKey]: [pending] }));
+
+            expect(
+                transactionsIndex.read(createState({ [aliceKey]: [confirmed] })).changes,
+            ).toEqual({
+                added: [],
+                removed: [],
+                updated: [getTransactionId(aliceKey, 'txA')],
+            });
+        });
+    });
+
+    it('reports the transactions of a forgotten account as removed', () => {
+        withSubscription(() => {
+            const aliceTransactions = [mockTransaction(ALICE, 'txA')];
+
+            transactionsIndex.read(
+                createState({
+                    [aliceKey]: aliceTransactions,
+                    [bobKey]: [mockTransaction(BOB, 'txB')],
+                }),
+            );
+
+            expect(
+                transactionsIndex.read(createState({ [aliceKey]: aliceTransactions })).changes,
+            ).toEqual({
+                added: [],
+                removed: [getTransactionId(bobKey, 'txB')],
+                updated: [],
+            });
+        });
+    });
+});

@@ -53,13 +53,15 @@ export const transactionsIndex = createEntityIndex({
     // The reducer replaces this object on every transaction write and keeps it otherwise, so its
     // identity is the whole "did anything change?" question.
     selectSource: (state: TransactionsRootState) => state.wallet.transactions.transactions,
-    *getEntities(transactionsByAccount) {
-        for (const transactions of Object.values(transactionsByAccount)) {
-            for (const transaction of transactions) {
-                // Pagination leaves holes for pages that have not been fetched.
-                if (transaction) {
-                    yield transaction;
-                }
+    // One part per account, which is exactly what the reducer writes to: it replaces or mutates
+    // one account's array at a time, so Immer leaves every other account's array identical and a
+    // rebuild costs one account rather than the whole store.
+    getParts: transactionsByAccount => Object.entries(transactionsByAccount),
+    *getEntities(transactions) {
+        for (const transaction of transactions) {
+            // Pagination leaves holes for pages that have not been fetched.
+            if (transaction) {
+                yield transaction;
             }
         }
     },
