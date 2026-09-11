@@ -21,6 +21,7 @@ export const YieldActionStepWarning = ({
         return (
             <Banner
                 intent="info"
+                data-testid="@yield/warning/reserve-recommendation"
                 description={
                     <Text>
                         <Translation
@@ -40,6 +41,7 @@ export const YieldActionStepWarning = ({
         return (
             <Banner
                 intent="info"
+                data-testid="@yield/warning/approve-over-balance"
                 description={
                     <Text>
                         <Translation id="TR_APPROVE_OVER_BALANCE" />
@@ -53,13 +55,19 @@ export const YieldActionStepWarning = ({
         return (
             <Banner
                 intent="warning"
+                data-testid="@yield/warning/approval-too-low"
                 description={
                     <Column gap={12}>
                         <Text>
                             <Translation id="TR_EARN_YIELD_APPROVAL_TOO_LOW" />
                         </Text>
                         {onModifyApproval && (
-                            <Button size="small" intent="warning" onClick={onModifyApproval}>
+                            <Button
+                                size="small"
+                                intent="warning"
+                                onClick={onModifyApproval}
+                                data-testid="@yield/warning/modify-approval-button"
+                            >
                                 <Translation id="TR_EARN_YIELD_MODIFY_APPROVAL" />
                             </Button>
                         )}
@@ -73,6 +81,7 @@ export const YieldActionStepWarning = ({
         return (
             <Banner
                 intent="warning"
+                data-testid="@yield/warning/insufficient-funds"
                 description={
                     <Text>
                         <Translation id="AMOUNT_IS_NOT_ENOUGH" />
