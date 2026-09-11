@@ -7,7 +7,7 @@ import { type ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { useDispatchProviderConfirmationStatus } from './useDispatchProviderConfirmationStatus';
 
-const FAIL_CONFIRMATION_TIMEOUT_MS = 30_000;
+const FAIL_CONFIRMATION_TIMEOUT_MS = 85_000;
 
 const STATUSES_TRIGGERING_TIMEOUT: ProviderConfirmationStatus[] = [
     'window_closed_with_success',

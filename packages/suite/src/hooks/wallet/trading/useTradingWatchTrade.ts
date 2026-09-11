@@ -4,6 +4,7 @@ import { useTimeoutFn, useUnmount } from 'react-use';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
+    TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
     type TradingTransaction,
     type TradingType,
     isFinalStatus,
@@ -18,8 +19,8 @@ const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
 export const useTradingWatchTrade = <T extends TradingType>({
     account,
     trade,
+    refreshIntervalSeconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
 }: TradingUseWatchTradeProps<T>) => {
-    const REFRESH_SECONDS = 30;
     const { dispatch } = useServices(selectDispatch);
     const [refreshCount, setRefreshCount] = useState(0);
     const invokeRefresh = () => {
@@ -27,7 +28,10 @@ export const useTradingWatchTrade = <T extends TradingType>({
             setRefreshCount(prevValue => prevValue + 1);
         }
     };
-    const [, cancelRefresh, resetRefresh] = useTimeoutFn(invokeRefresh, REFRESH_SECONDS * 1000);
+    const [, cancelRefresh, resetRefresh] = useTimeoutFn(
+        invokeRefresh,
+        refreshIntervalSeconds * 1000,
+    );
 
     useUnmount(() => {
         cancelRefresh();
