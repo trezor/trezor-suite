@@ -11,6 +11,7 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
+    calculateTronFeeBreakdown,
     enhanceTransaction,
     ensureHexPrefix,
     findAccountsByAddress,
@@ -19,6 +20,7 @@ import {
     getEvmTransactionTextSignature,
     getPendingAccount,
     getRbfParams,
+    getTronResources,
     isEip1559,
     isEvmYieldTxByTextSignature,
     isRbfBumpFeeTransaction,
@@ -506,6 +508,7 @@ interface AddFakePendingTronTxThunkParams {
     fee: string;
     type: WalletAccountTransaction['type'];
     target?: { addresses: string[]; amount: string };
+    tokens?: WalletAccountTransaction['tokens'];
     tronSpecific?: WalletAccountTransaction['tronSpecific'];
 }
 
@@ -517,7 +520,10 @@ export const addFakePendingTronTxThunk = createThunk<
     { state: AddFakePendingTronTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ txid, account, amount, fee, type, target, tronSpecific }, { dispatch, getState }) => {
+    (
+        { txid, account, amount, fee, type, target, tokens, tronSpecific },
+        { dispatch, getState },
+    ) => {
         if (account.networkType !== 'tron') return;
 
         const blockTime = selectRawNetworkFeeInfo(getState(), account.symbol)?.blockTime ?? 0;
@@ -535,21 +541,19 @@ export const addFakePendingTronTxThunk = createThunk<
             targets: target
                 ? [{ n: 0, addresses: target.addresses, isAddress: true, amount: target.amount }]
                 : [],
-            tokens: [],
+            tokens: tokens ?? [],
             internalTransfers: [],
             tronSpecific,
             details: {
-                vin: target
-                    ? [
-                          {
-                              n: 0,
-                              addresses: target.addresses,
-                              isAddress: true,
-                              isOwn: true,
-                              isAccountOwned: true,
-                          },
-                      ]
-                    : [],
+                vin: [
+                    {
+                        n: 0,
+                        addresses: [account.descriptor],
+                        isAddress: true,
+                        isOwn: true,
+                        isAccountOwned: true,
+                    },
+                ],
                 vout: target
                     ? [{ value: target.amount, n: 0, addresses: target.addresses, isAddress: true }]
                     : [],
@@ -560,6 +564,69 @@ export const addFakePendingTronTxThunk = createThunk<
             deadline,
         };
         dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+    },
+);
+
+interface AddFakePendingTronSendTxThunkParams {
+    precomposedTransaction: PrecomposedTransactionFinal;
+    txid: string;
+    account: Account;
+}
+
+type AddFakePendingTronSendTxThunkState = AddFakePendingTronTxThunkState;
+
+export const addFakePendingTronSendTxThunk = createThunk<
+    void,
+    AddFakePendingTronSendTxThunkParams,
+    { state: AddFakePendingTronSendTxThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    ({ precomposedTransaction, txid, account }, { dispatch }) => {
+        const [output] = precomposedTransaction.outputs;
+        const { token } = precomposedTransaction;
+        const recipient = output?.address;
+        const outputAmount = output?.amount?.toString() ?? '0';
+        const feeBreakdown = calculateTronFeeBreakdown(
+            precomposedTransaction,
+            getTronResources(account),
+            account.symbol,
+        );
+
+        const tokenTransfer: TokenTransfer | undefined =
+            token && recipient
+                ? {
+                      type: 'sent',
+                      standard: token.standard,
+                      amount: outputAmount,
+                      from: account.descriptor,
+                      to: recipient,
+                      contract: token.contract,
+                      name: token.name,
+                      symbol: token.symbol,
+                      decimals: token.decimals,
+                  }
+                : undefined;
+
+        dispatch(
+            addFakePendingTronTxThunk({
+                account,
+                txid,
+                amount: token ? '0' : outputAmount,
+                fee: precomposedTransaction.fee,
+                type: 'sent',
+                target:
+                    recipient && !token
+                        ? { addresses: [recipient], amount: outputAmount }
+                        : undefined,
+                tokens: tokenTransfer ? [tokenTransfer] : [],
+                tronSpecific: {
+                    contractType: token ? 'TriggerSmartContract' : 'TransferContract',
+                    bandwidthUsage: feeBreakdown
+                        ? feeBreakdown.coveredBandwidth.toString()
+                        : undefined,
+                },
+            }),
+        );
     },
 );
 

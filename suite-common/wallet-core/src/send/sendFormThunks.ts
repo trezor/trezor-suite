@@ -110,6 +110,7 @@ import { type TransactionsRootState } from '../transactions/transactionsReducerT
 import {
     addFakePendingCardanoTxThunk,
     addFakePendingEvmTxThunk,
+    addFakePendingTronSendTxThunk,
     addFakePendingTxThunk,
 } from '../transactions/transactionsThunks';
 import {
@@ -348,57 +349,83 @@ export const synchronizeSentTransactionThunk = createThunk<
                 );
                 dispatch(accountsActions.updateAccount(pendingAccount));
             }
-        } else if (selectedAccount.networkType === 'bitcoin') {
-            dispatch(
-                addFakePendingTxThunk({
-                    precomposedTransaction,
-                    account: selectedAccount,
-                }),
-            );
-        } else if (selectedAccount.networkType === 'ethereum') {
-            // manually add fake pending tx as we don't have the data about mempool txs
-            dispatch(
-                addFakePendingEvmTxThunk({
-                    precomposedTransaction,
-                    precomposedForm,
-                    txid,
-                    account: selectedAccount,
-                    ethereumNonce,
-                }),
-            );
-            dispatch(accountsActions.updateAccount(selectedAccount));
 
-            // EVM cancel/bump: when the precomposed tx replaces a prior pending tx (identified by
-            // prevTxid), evict the old tx from the store immediately. The backend notification is
-            // delayed, and keeping the replaced tx visible would show the user a stale pending entry.
-            // blockchainGetTransactions is called to confirm the old tx is truly gone from the
-            // mempool before the local removal takes effect; its response is not awaited because we
-            // dispatch removeTransaction optimistically and the backend will correct any discrepancy
-            // on the next account sync.
-            if ('prevTxid' in precomposedTransaction && precomposedTransaction.prevTxid) {
-                const { prevTxid } = precomposedTransaction;
-                void TrezorConnect.blockchainGetTransactions({
-                    txs: [prevTxid],
-                    coin: asCoinSymbol(selectedAccount.symbol),
-                });
+            return;
+        }
+
+        const { networkType } = selectedAccount;
+
+        switch (networkType) {
+            case 'bitcoin':
                 dispatch(
-                    transactionsActions.removeTransaction({
+                    addFakePendingTxThunk({
+                        precomposedTransaction,
                         account: selectedAccount,
-                        txs: [{ txid: prevTxid }],
                     }),
                 );
-            }
+                break;
+            case 'ethereum':
+                // manually add fake pending tx as we don't have the data about mempool txs
+                dispatch(
+                    addFakePendingEvmTxThunk({
+                        precomposedTransaction,
+                        precomposedForm,
+                        txid,
+                        account: selectedAccount,
+                        ethereumNonce,
+                    }),
+                );
+                dispatch(accountsActions.updateAccount(selectedAccount));
 
-            // Kick the periodic sync chain: external-backend EVM networks get no block-driven
-            // syncs and the confirmation notification can be missed, so the self-re-arming
-            // per-symbol sync is the guaranteed path from pending to confirmed — make sure it
-            // is running now that a pending tx exists. The fake pending tx added above carries
-            // a deadline, so the immediate fetch keeps it until the backend picks up the real tx.
-            dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
-        } else {
-            // there is no point in fetching account data right after tx submit
-            //  as the account will update only after the tx is confirmed
-            dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
+                // EVM cancel/bump: when the precomposed tx replaces a prior pending tx (identified by
+                // prevTxid), evict the old tx from the store immediately. The backend notification is
+                // delayed, and keeping the replaced tx visible would show the user a stale pending entry.
+                // blockchainGetTransactions is called to confirm the old tx is truly gone from the
+                // mempool before the local removal takes effect; its response is not awaited because we
+                // dispatch removeTransaction optimistically and the backend will correct any discrepancy
+                // on the next account sync.
+                if ('prevTxid' in precomposedTransaction && precomposedTransaction.prevTxid) {
+                    const { prevTxid } = precomposedTransaction;
+                    void TrezorConnect.blockchainGetTransactions({
+                        txs: [prevTxid],
+                        coin: asCoinSymbol(selectedAccount.symbol),
+                    });
+                    dispatch(
+                        transactionsActions.removeTransaction({
+                            account: selectedAccount,
+                            txs: [{ txid: prevTxid }],
+                        }),
+                    );
+                }
+
+                // Kick the periodic sync chain: external-backend EVM networks get no block-driven
+                // syncs and the confirmation notification can be missed, so the self-re-arming
+                // per-symbol sync is the guaranteed path from pending to confirmed — make sure it
+                // is running now that a pending tx exists. The fake pending tx added above carries
+                // a deadline, so the immediate fetch keeps it until the backend picks up the real tx.
+                dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
+                break;
+            case 'tron':
+                dispatch(
+                    addFakePendingTronSendTxThunk({
+                        precomposedTransaction,
+                        txid,
+                        account: selectedAccount,
+                    }),
+                );
+
+                dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
+                break;
+            case 'cardano':
+            case 'ripple':
+            case 'solana':
+            case 'stellar':
+                // there is no point in fetching account data right after tx submit
+                //  as the account will update only after the tx is confirmed
+                dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
+                break;
+            default:
+                exhaustive(networkType);
         }
     },
 );
