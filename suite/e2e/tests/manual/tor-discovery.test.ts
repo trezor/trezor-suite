@@ -10,13 +10,17 @@ test.describe.skip('Tor discovery', { tag: ['@group=manual'] }, () => {
             annotation: createTestAnnotation({
                 testCase:
                     'Verifies that a user can enable Tor and check that discovery works correctly.',
-                prerequisites: ['BTC only firmware on Trezor device', 'Connected Trezor Suite'],
+                prerequisites: [
+                    'Seeded Trezor device',
+                    'Trezor Suite desktop app - the Tor quick action is not available on web',
+                ],
                 steps: [
                     'Connect seeded device and let discovery run through',
-                    'Click on the "Tor" button at the top right corner to enable "Tor"',
-                    'You should be transferred to "Settings/Application"',
+                    'Click on the "Tor" quick action button in the bottom part of the left sidebar',
+                    'You should be transferred to "Settings/Application" with the "Tor" section highlighted',
                     'Click on "Tor" switch input',
                     'A green tick appears next to Tor switch after loading icon',
+                    'The Tor quick action in the sidebar shows the enabled state in its tooltip',
                     'Navigate to "Accounts"',
                     'Discovery should start and finish correctly',
                     'Check "Transaction history"',
@@ -29,12 +33,7 @@ test.describe.skip('Tor discovery', { tag: ['@group=manual'] }, () => {
                 category: TestCategory.Settings,
                 priority: TestPriority.Critical,
                 stream: TestStream.Connect,
-                osMatrix: [
-                    TestOsMatrix.Linux,
-                    TestOsMatrix.Windows,
-                    TestOsMatrix.MacOSArm,
-                    TestOsMatrix.MacOSIntel,
-                ],
+                osMatrix: [TestOsMatrix.Linux, TestOsMatrix.Windows, TestOsMatrix.MacOSArm],
             }),
         },
         async () => {},

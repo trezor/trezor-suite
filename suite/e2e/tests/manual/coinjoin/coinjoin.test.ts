@@ -5,53 +5,26 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe.skip('Coinjoin', { tag: ['@group=manual'] }, () => {
     test(
-        'Add an existing CJ account',
-        {
-            annotation: createTestAnnotation({
-                testCase: 'Verifies that a user can add an existing Coinjoin account to the Suite.',
-                prerequisites: [
-                    'Seeded Trezor device with transactions (eg. with "all" seed)',
-                    'Connected Trezor Suite',
-                    '"btc" network enabled',
-                ],
-                steps: [
-                    'navigate to "Accounts"',
-                    'in left sidebar, click on "+" sign next to "My accounts" header',
-                    '"New account" modal should appear',
-                    'select "Bitcoin" from coin selection',
-                    'select "Coinjoin" account type from account selection',
-                    'click on "Add account"',
-                    'discovery of the new account finishes correctly',
-                ],
-                category: TestCategory.CoinJoin,
-                priority: TestPriority.Low,
-                stream: TestStream.Connect,
-            }),
-        },
-        async () => {},
-    );
-
-    test(
-        'CJ custom setup page',
+        'Discovery of a coinjoin account',
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies that a user can adjust the privacy level of a Coinjoin account.',
+                    'Verifies that discovery finishes correctly for a Coinjoin account added in the Suite.',
                 prerequisites: [
                     'Seeded Trezor device with transactions (eg. with "all" seed)',
                     'Connected Trezor Suite',
                     '"btc" network enabled',
-                    'A CJ account added',
+                    'Coinjoin available - either enabled remotely or Suite running in debug mode',
                 ],
                 steps: [
                     'Navigate to "Accounts"',
-                    'Click on "Details"',
-                    'Click on "Custom" input option',
-                    'The default "privacy level" is set to "5"',
-                    'In the privacy input, change the number to "8"',
-                    'Slider correctly adjusts',
-                    'Adjust the slider to "4"',
-                    'Input correctly adjusts',
+                    'In the left sidebar, click on the "+" sign next to the "My accounts" header',
+                    '"New account" modal should appear',
+                    'Select "Bitcoin" from coin selection',
+                    'Select "Coinjoin" account type from account selection',
+                    'Click on "Add account"',
+                    'Discovery of the coinjoin account finishes without an error',
+                    'The coinjoin account appears in the accounts sidebar with its balance loaded',
                 ],
                 category: TestCategory.CoinJoin,
                 priority: TestPriority.Low,
