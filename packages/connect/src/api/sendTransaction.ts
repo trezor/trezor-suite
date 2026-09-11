@@ -160,46 +160,35 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
             composed.transactions.set(level.label, tx);
         }
 
-        const uiPromise = context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice());
+        let requestFeeLevels = composed.levels;
         if (!composed.levels.length) {
             const feePerUnit = String(coinInfo.minFee);
             const minFeeTx = compose(feePerUnit);
 
-            if (minFeeTx.type === 'final') {
-                context.sendCoreMessage(
-                    createUiRequestMessage(
-                        UI_REQUESTS.REQUEST_FEE,
-                        {
-                            feeLevels: [{ label: 'custom', blocks: -1, feePerUnit }],
-                            coinInfo: this.params.coinInfo,
-                        },
-                        { requestId: uiPromise.requestId },
-                    ),
-                );
-            } else {
+            if (minFeeTx.type !== 'final') {
                 // show error view
                 context.sendCoreMessage(createUiEventMessage(UI_EVENTS.ACCOUNT_INSUFFICIENT_FUNDS));
-                uiPromise.reject(new Error(UI_EVENTS.ACCOUNT_INSUFFICIENT_FUNDS));
                 // wait few seconds...
                 await resolveAfter(2000);
 
                 // and go back to discovery
                 return this.interactiveFlow(context);
             }
-        } else {
-            // set select account view
-            // this view will be updated from discovery events
-            context.sendCoreMessage(
-                createUiRequestMessage(
-                    UI_REQUESTS.REQUEST_FEE,
-                    {
-                        feeLevels: composed.levels,
-                        coinInfo: this.params.coinInfo,
-                    },
-                    { requestId: uiPromise.requestId },
-                ),
-            );
+
+            requestFeeLevels = [{ label: 'custom', blocks: -1, feePerUnit }];
         }
+
+        const uiPromise = context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice());
+        context.sendCoreMessage(
+            createUiRequestMessage(
+                UI_REQUESTS.REQUEST_FEE,
+                {
+                    feeLevels: requestFeeLevels,
+                    coinInfo: this.params.coinInfo,
+                },
+                { requestId: uiPromise.requestId },
+            ),
+        );
 
         // wait for fee selection
         const resp = await uiPromise.promise;
