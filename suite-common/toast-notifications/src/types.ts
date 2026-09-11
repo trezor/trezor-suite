@@ -162,6 +162,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
               | 'backup-failed'
               | 'sign-message-success'
               | 'verify-message-success'
+              | 'verify-message-cancelled'
               | 'device-authenticity-success'
               | 'clear-storage'
               | 'add-token-success'
