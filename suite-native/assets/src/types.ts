@@ -1,4 +1,5 @@
 import { type DeviceRootState } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -27,4 +28,5 @@ export type AssetsRootState = AccountsRootState &
     TokenDefinitionsRootState &
     StakeRootState &
     DeviceRootState &
-    DiscoveryRootState;
+    DiscoveryRootState &
+    NetworksRootState;

@@ -12,6 +12,7 @@ import {
 } from '@suite-common/device';
 import { selectDeviceThunk } from '@suite-common/device';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
+import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type SuiteCompatibleThunk,
     type WithServices,
@@ -58,7 +59,9 @@ import {
 const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
 const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
 
-type DiscoveryReportingThunkState = TokenDefinitionsRootState & WalletCoreCompoundRootState;
+type DiscoveryReportingThunkState = TokenDefinitionsRootState &
+    WalletCoreCompoundRootState &
+    NetworksRootState;
 type DiscoveryReportingDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 type ProgressEvent = UiEventBundleProgress<DiscoverAccountsProgress>['payload'];
@@ -474,11 +477,21 @@ export const runDiscoveryThunk = createThunk<
                         }
 
                         accountQueue.forEach(account =>
-                            dispatch(accountsActions.createAccount(account)),
+                            dispatch(
+                                accountsActions.createAccount(
+                                    account,
+                                    selectSupportedNetworkSymbols(getState()),
+                                ),
+                            ),
                         );
                         accountQueue.splice(0, accountQueue.length);
                     }
-                    dispatch(accountsActions.createAccount(accountPayload));
+                    dispatch(
+                        accountsActions.createAccount(
+                            accountPayload,
+                            selectSupportedNetworkSymbols(getState()),
+                        ),
+                    );
                 }
 
                 dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
@@ -751,7 +764,12 @@ export const runAdditionalDiscoveryThunk = createThunk<
                 discovery,
             );
 
-            dispatch(accountsActions.createAccount(accountPayload));
+            dispatch(
+                accountsActions.createAccount(
+                    accountPayload,
+                    selectSupportedNetworkSymbols(getState()),
+                ),
+            );
             dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
         };
 

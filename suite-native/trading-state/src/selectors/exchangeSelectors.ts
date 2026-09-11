@@ -1,4 +1,3 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE,
     type GroupedExchangeQuotesByRateType,
@@ -59,8 +58,7 @@ export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAc
 
 export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
     [
-        (state: TradingRootState, supportedCoins: readonly NetworkSymbol[]) =>
-            selectTradingExchangeBuyCryptoIds(state, supportedCoins),
+        selectTradingExchangeBuyCryptoIds,
         ({ wallet }) => wallet.trading.info.coins,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),

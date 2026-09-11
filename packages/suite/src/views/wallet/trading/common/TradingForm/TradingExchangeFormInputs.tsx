@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -54,10 +53,7 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
-    const { networkModuleRepository, dispatch } = useServices(
-        selectNetworkModuleRepositoryDep,
-        selectDispatch,
-    );
+    const { dispatch } = useServices(selectDispatch);
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
     const quotes = useSelector(selectTradingExchangeQuotes);
@@ -136,14 +132,8 @@ export const TradingExchangeFormInputs = () => {
         },
         [dispatch, setAmountLimitsRef, setValueRef, clearErrorsRef],
     );
-
-    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
-    const exchangeBuySupportedCryptoIds = useSelector(state =>
-        selectTradingExchangeBuyCryptoIds(state, supportedNetworks),
-    );
-    const exchangeSellSupportedCryptoIds = useSelector(state =>
-        selectTradingExchangeSellCryptoIds(state, supportedNetworks),
-    );
+    const exchangeBuySupportedCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
+    const exchangeSellSupportedCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
 
     return (
         <Column gap={20}>

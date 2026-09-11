@@ -1,7 +1,9 @@
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { deviceInitialState } from '@suite-common/device';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type TradingAssetOption } from '@suite-common/trading';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
@@ -21,6 +23,7 @@ describe('quotesUtils', () => {
     const renderUseTradingBuyForm = async () =>
         await renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState: {
+                networks: mockNetworksState(mockGetSupportedNetworks()),
                 device: deviceInitialState,
                 wallet: { trading: getInitializedTradingState() },
             },

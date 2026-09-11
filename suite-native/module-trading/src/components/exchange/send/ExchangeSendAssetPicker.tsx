@@ -1,18 +1,22 @@
 import { useCallback, useRef, useState } from 'react';
 import { type TextInput } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { tradingExchangeActions } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { HStack } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
-import { exchangeActions } from '@suite-native/trading-state';
+import {
+    type CombinedSelectorsRootState,
+    exchangeActions,
+    selectAccountsWithTokensToSellSectionListByTradingType,
+} from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { ExchangeSendAmountInput } from './ExchangeSendAmountInput';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { useTradeableAssetChange } from '../../../hooks/general/form/useTradeableAssetChange';
 import { useMyAssetPickerNavigation } from '../../../hooks/general/useMyAssetPickerNavigation';
-import { useTradingMyAssets } from '../../../hooks/general/useTradingMyAssets';
 import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/exchange/asset-send-button';
@@ -29,7 +33,9 @@ export const ExchangeSendAssetPicker = () => {
     const inputRef = useRef<TextInput>(null);
     const form = useExchangeFormContext();
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
-    const myAssets = useTradingMyAssets('exchange');
+    const myAssets = useSelector((state: CombinedSelectorsRootState) =>
+        selectAccountsWithTokensToSellSectionListByTradingType(state, 'exchange'),
+    );
     const selectedValue = useWatch({ control: form.control, name: 'sendAsset' });
     const setSelectedValue = useCallback(
         (asset: TradeableAsset) => form.setValue('sendAsset', asset),

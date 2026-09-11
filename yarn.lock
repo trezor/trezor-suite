@@ -10697,6 +10697,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -11085,6 +11086,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/legacy-network-config@workspace:*, @suite-common/legacy-network-config@workspace:suite-common/legacy-network-config":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/legacy-network-config@workspace:suite-common/legacy-network-config"
+  dependencies:
+    "@suite-common/earn-stablecoin-defs": "workspace:*"
+    "@trezor/crypto-utils": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/network-cardano": "workspace:*"
+    "@trezor/network-ripple": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
+    "@trezor/network-tron": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/logger@workspace:*, @suite-common/logger@workspace:suite-common/logger":
   version: 0.0.0-use.local
   resolution: "@suite-common/logger@workspace:suite-common/logger"
@@ -11094,6 +11109,7 @@ __metadata:
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -11168,6 +11184,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/networks@workspace:suite-common/networks"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/legacy-network-config": "workspace:*"
     "@trezor/network-bitcoin-suite-common": "workspace:*"
     "@trezor/network-cardano-suite-common": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
@@ -11570,7 +11588,6 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -11647,13 +11664,7 @@ __metadata:
   dependencies:
     "@suite-common/earn-stablecoin-defs": "workspace:*"
     "@suite-common/networks": "workspace:*"
-    "@trezor/crypto-utils": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
-    "@trezor/network-cardano": "workspace:*"
-    "@trezor/network-ripple": "workspace:*"
     "@trezor/network-solana": "workspace:*"
-    "@trezor/network-stellar": "workspace:*"
-    "@trezor/network-tron": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -11794,6 +11805,7 @@ __metadata:
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/mev": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -11829,6 +11841,7 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
@@ -11888,6 +11901,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.31"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -12198,7 +12212,6 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
     "@suite-common/assets": "workspace:*"
-    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/networks": "workspace:*"
@@ -12416,6 +12429,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -12667,6 +12681,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/device": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -13035,7 +13050,6 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/discovery": "workspace:*"
@@ -13065,6 +13079,7 @@ __metadata:
     "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/validators": "workspace:*"
@@ -13268,7 +13283,6 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/thp": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
@@ -15237,6 +15251,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/device": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -15954,12 +15969,12 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/external-links": "workspace:*"
     "@suite/intl": "workspace:*"
@@ -16039,7 +16054,6 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/transfer-uri": "workspace:*"
-    "@suite-common/wallet-config": "workspace:^"
     "@suite/analytics": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
   languageName: unknown

@@ -1,5 +1,6 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkFeature, asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type Account,
     type WalletAccountTransaction,
@@ -33,6 +34,8 @@ import {
     networkAmountToSmallestUnit,
 } from './amountUtils';
 
+const supportedNetworks = mockGetSupportedNetworks();
+
 const btcSymbol = asNetworkSymbol('btc');
 const xrpSymbol = asNetworkSymbol('xrp');
 const ethSymbol = asNetworkSymbol('eth');
@@ -50,7 +53,7 @@ describe('account utils', () => {
         it('accountUtils.sortByCoin', () => {
             const input = [...(f.accounts as Account[])];
 
-            expect(sortByCoin(input)).toEqual(f.result);
+            expect(sortByCoin(input, supportedNetworks)).toEqual(f.result);
             // The input array is not mutated.
             expect(input).toEqual(f.accounts);
         });

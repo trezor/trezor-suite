@@ -47,7 +47,6 @@
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@testing-library/react": "^16.3.2",
-        "@trezor/network-module-suite-common-types": "workspace:*",
         "@types/invity-api": "^1.1.20",
         "react-intl": "^8.1.3"
     }

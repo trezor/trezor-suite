@@ -1,6 +1,7 @@
 import { type StateFromReducersMapObject } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
@@ -27,6 +28,7 @@ jest.mock('@suite-native/config', () => ({
 const supportedNetworkSymbols = mockGetSupportedNetworks();
 
 const reducer = {
+    networks: createStaticReducer(mockNetworksState(supportedNetworkSymbols)),
     appSettings: createStaticReducer(appSettingsInitialState),
     device: createStaticReducer(deviceInitialState),
     featureFlags: createStaticReducer(featureFlagsInitialState),
@@ -39,6 +41,7 @@ const reducer = {
 const createMockState = (
     overrides: PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>> = {},
 ): StateFromReducersMapObject<typeof reducer> => ({
+    networks: mockNetworksState(supportedNetworkSymbols),
     appSettings: {
         ...appSettingsInitialState,
         ...overrides.appSettings,
@@ -69,32 +72,32 @@ const createTestStore = (
     });
 
 describe('selectDiscoverySupportedNetworks', () => {
-    it('uses the supplied network symbols as a memoization input', () => {
+    it('uses the loaded network symbols as a memoization input', () => {
         const store = createTestStore();
         const bitcoinSymbols: NetworkSymbol[] = ['btc'];
         const ethereumSymbols: NetworkSymbol[] = ['eth'];
 
-        const bitcoinNetworks = selectDiscoverySupportedNetworks(store.getState(), bitcoinSymbols);
-        const ethereumNetworks = selectDiscoverySupportedNetworks(
-            store.getState(),
-            ethereumSymbols,
-        );
+        const bitcoinNetworks = selectDiscoverySupportedNetworks({
+            ...store.getState(),
+            networks: mockNetworksState(bitcoinSymbols),
+        });
+        const ethereumNetworks = selectDiscoverySupportedNetworks({
+            ...store.getState(),
+            networks: mockNetworksState(ethereumSymbols),
+        });
 
         expect(bitcoinNetworks.map(network => network.symbol)).toEqual(bitcoinSymbols);
         expect(ethereumNetworks.map(network => network.symbol)).toEqual(ethereumSymbols);
+        expect(selectDiscoverySupportedNetworks({ ...store.getState(), networks: null })).toEqual(
+            [],
+        );
     });
 
     it('should be stable (return same reference for same inputs)', () => {
         const store = createTestStore();
 
-        const firstCall = selectDiscoverySupportedNetworks(
-            store.getState(),
-            supportedNetworkSymbols,
-        );
-        const secondCall = selectDiscoverySupportedNetworks(
-            store.getState(),
-            supportedNetworkSymbols,
-        );
+        const firstCall = selectDiscoverySupportedNetworks(store.getState());
+        const secondCall = selectDiscoverySupportedNetworks(store.getState());
 
         expect(firstCall).toBe(secondCall);
     });
@@ -104,7 +107,7 @@ describe('selectDiscoverySupportedNetworks', () => {
             appSettings: { areTestnetsEnabled: false },
         });
 
-        const result = selectDiscoverySupportedNetworks(store.getState(), supportedNetworkSymbols);
+        const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
 
         // Test networks should be filtered out
@@ -124,7 +127,7 @@ describe('selectDiscoverySupportedNetworks', () => {
             appSettings: { areTestnetsEnabled: true },
         });
 
-        const result = selectDiscoverySupportedNetworks(store.getState(), supportedNetworkSymbols);
+        const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
 
         // Test networks should be included
@@ -145,7 +148,7 @@ describe('selectDiscoverySupportedNetworks', () => {
             featureFlags: { areDebugOnlyNetworksEnabled: false },
         });
 
-        const result = selectDiscoverySupportedNetworks(store.getState(), supportedNetworkSymbols);
+        const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
 
         expect(networkSymbols).not.toContain('regtest');
@@ -160,7 +163,7 @@ describe('selectDiscoverySupportedNetworks', () => {
             featureFlags: { areDebugOnlyNetworksEnabled: true },
         });
 
-        const result = selectDiscoverySupportedNetworks(store.getState(), supportedNetworkSymbols);
+        const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
 
         expect(networkSymbols).toContain('regtest');
@@ -174,7 +177,7 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         const store = createTestStore();
 
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-            selectDiscoveryNetworkGroups(store.getState(), supportedNetworkSymbols);
+            selectDiscoveryNetworkGroups(store.getState());
 
         expect(supportedMainnets).toContain(getNetwork('btc'));
         expect(supportedTestnets).toEqual([]);
@@ -188,7 +191,7 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         });
 
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-            selectDiscoveryNetworkGroups(store.getState(), supportedNetworkSymbols);
+            selectDiscoveryNetworkGroups(store.getState());
 
         expect(supportedMainnets).toContain(getNetwork('btc'));
         expect(supportedTestnets).toContain(getNetwork('test'));
@@ -204,7 +207,7 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         });
 
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-            selectDiscoveryNetworkGroups(store.getState(), supportedNetworkSymbols);
+            selectDiscoveryNetworkGroups(store.getState());
 
         expect(supportedMainnets).toContain(getNetwork('btc'));
         expect(supportedTestnets).toContain(getNetwork('test'));
@@ -225,7 +228,7 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         });
 
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-            selectDiscoveryNetworkGroups(store.getState(), supportedNetworkSymbols);
+            selectDiscoveryNetworkGroups(store.getState());
 
         expect(supportedMainnets).toContain(getNetwork('btc'));
         expect(supportedTestnets).toContain(getNetwork('test'));
@@ -245,7 +248,7 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         });
 
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-            selectDiscoveryNetworkGroups(store.getState(), supportedNetworkSymbols, 'bitcoin');
+            selectDiscoveryNetworkGroups(store.getState(), 'bitcoin');
 
         expect(supportedMainnets).toContain(getNetwork('btc'));
         expect(supportedTestnets).toContain(getNetwork('test'));

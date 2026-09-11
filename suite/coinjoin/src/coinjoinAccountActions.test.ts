@@ -3,6 +3,7 @@ import { type UnknownAction, combineReducers, createReducer } from '@reduxjs/too
 import { selectedAccountReducer } from '@suite/account';
 import { locksReducer } from '@suite/locks';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
@@ -26,7 +27,10 @@ const DEVICE = mockSuiteDevice({
     connected: true,
 });
 
+const networks = mockNetworksState(['btc', 'test', 'regtest']);
+
 const rootReducer = combineReducers({
+    networks: () => networks,
     suite: createReducer(
         {
             settings: {

@@ -1,4 +1,5 @@
 import { type ReactNode, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { normalizeForSearch } from '@suite-common/suite-utils';
 import {
@@ -8,9 +9,11 @@ import {
 } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import {
+    type CombinedSelectorsRootState,
+    selectAccountsWithTokensToSellSectionListByTradingType,
+} from '@suite-native/trading-state';
 import { type MyAsset } from '@suite-native/trading-types';
-
-import { useTradingMyAssets } from './useTradingMyAssets';
 
 export type MyAssetsSection = {
     assets: MyAsset[];
@@ -43,7 +46,9 @@ const getSortWeight = (asset: MyAsset, normalizedFilterValue: string): number =>
 };
 
 export const useMyAssetsFilteredData = (tradingType: TradingType) => {
-    const sections = useTradingMyAssets(tradingType);
+    const sections = useSelector((state: CombinedSelectorsRootState) =>
+        selectAccountsWithTokensToSellSectionListByTradingType(state, tradingType),
+    );
     const preferredCurrencyUsdThreshold = usePreferredCurrencyUsdThreshold();
     const [filterSymbol, setFilterSymbol] = useState<NetworkSymbol | undefined>(undefined);
     const [filterValue, setFilterValue] = useState('');

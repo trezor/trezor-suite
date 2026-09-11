@@ -13,6 +13,7 @@ import { initialMetadataState, metadataReducer } from '@suite/metadata';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { prepareReceiveReducer } from '@suite-common/receive';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
@@ -135,6 +136,7 @@ type PartialState = Pick<
     | 'suiteSyncQuotaManager'
     | 'flags'
     | 'metadata'
+    | 'networks'
     | 'receive'
 > & {
     wallet: Partial<
@@ -154,6 +156,7 @@ type PartialState = Pick<
 };
 
 const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
+    networks: prevState?.networks ?? mockNetworksState(['btc', 'ltc']),
     suite: suiteReducer(
         prevState ? prevState.suite : undefined,
         action || ({ type: 'foo' } as any),

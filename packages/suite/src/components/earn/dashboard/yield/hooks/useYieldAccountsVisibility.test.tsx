@@ -1,10 +1,15 @@
-import { renderHook } from '@testing-library/react';
-
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useYieldAccountsVisibility } from './useYieldAccountsVisibility';
 import { type YieldAccountOpportunity } from '../types';
+
+const createRoot = () =>
+    createTestCompositionRoot({
+        preloadedState: { networks: mockNetworksState(['eth', 'base']) },
+    });
 
 const ethSymbol = asNetworkSymbol('eth');
 const baseSymbol = asNetworkSymbol('base');
@@ -64,8 +69,9 @@ describe('useYieldAccountsVisibility', () => {
                 createMockOpportunity(eth0, 'vault-a'),
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { root: createRoot() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -92,8 +98,9 @@ describe('useYieldAccountsVisibility', () => {
                 createMockOpportunity(eth0, 'vault-b'),
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { root: createRoot() },
             );
 
             const fallbackKeys = result.current.displayedYieldAccountOpportunities.map(
@@ -133,8 +140,9 @@ describe('useYieldAccountsVisibility', () => {
                 },
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { root: createRoot() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -171,8 +179,9 @@ describe('useYieldAccountsVisibility', () => {
                 },
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { root: createRoot() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -202,8 +211,9 @@ describe('useYieldAccountsVisibility', () => {
                 createMockOpportunity(baseNormal5, 'vault-a'),
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { root: createRoot() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -227,8 +237,9 @@ describe('useYieldAccountsVisibility', () => {
                 createMockOpportunity(eth0, 'vault-a'),
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { root: createRoot() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);

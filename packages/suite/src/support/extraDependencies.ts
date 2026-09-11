@@ -131,6 +131,7 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
                 payload.accounts.map(acc =>
                     acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
                 ),
+                payload.supportedNetworks,
             ),
         setDeviceMetadataReducer: (
             state: DeviceReducerState,

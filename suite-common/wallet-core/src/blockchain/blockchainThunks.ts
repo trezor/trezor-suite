@@ -1,12 +1,12 @@
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
     getNetworkOptional,
-    getSupportedNetworks,
     isNetworkSymbol,
     isNetworkUsingExternalBackend,
 } from '@suite-common/wallet-config';
@@ -20,7 +20,6 @@ import {
     getAccountIdentity,
     getAreSatoshisUsed,
     getBackendFromSettings,
-    getCustomBackends,
     isTrezorConnectBackendType,
     shouldSubscribeBlocks,
     shouldUseIdentities,
@@ -38,6 +37,7 @@ import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions
 import {
     type BlockchainRootState,
     selectBlockchainState,
+    selectCustomBackends,
     selectIsCustomBackendConfigured,
     selectNetworkBlockchainInfo,
 } from './blockchainReducer';
@@ -128,7 +128,8 @@ export const setCustomBackendThunk = createThunk<
 
 export type InitBlockchainThunkState = AccountsRootState &
     BlockchainRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 export type InitBlockchainThunkDeps = WithServices<AnalyticsDep>;
 
@@ -140,8 +141,7 @@ export const initBlockchainThunk = createThunk<
     await dispatch(preloadFeeInfoThunk());
 
     // Load custom blockbook backend
-    const blockchain = selectBlockchainState(getState());
-    const backends = getCustomBackends(blockchain, getSupportedNetworks());
+    const backends = selectCustomBackends(getState());
     await setBackendsToConnect(backends);
 
     const accounts = selectAccounts(getState());

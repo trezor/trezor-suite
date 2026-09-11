@@ -34,3 +34,5 @@ type NetworkModuleSymbol<TNetworkModule> =
     TNetworkModule extends SuiteCommonNetworkModule<infer TSymbol> ? TSymbol : never;
 
 export type NetworkSymbol = NetworkModuleSymbol<NetworkModules[keyof NetworkModules]>;
+
+export const asNetworkSymbol = (symbol: string): NetworkSymbol => symbol as NetworkSymbol;

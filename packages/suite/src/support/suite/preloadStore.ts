@@ -1,3 +1,5 @@
+import { getSupportedNetworks } from '@suite-common/wallet-config';
+
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 import { db } from 'src/storage';
 
@@ -103,6 +105,9 @@ export const preloadStore = async () => {
         return {
             type: STORAGE.LOAD,
             payload: {
+                // Hydration runs before network metadata is loaded into Redux.
+                // TODO(#30572): Supply migration ordering without the legacy registry.
+                supportedNetworks: getSupportedNetworks(),
                 suiteSettings,
                 walletSettings,
                 devices,

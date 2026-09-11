@@ -19,9 +19,6 @@
             "path": "../../suite-common/suite-types"
         },
         {
-            "path": "../../suite-common/wallet-config"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },

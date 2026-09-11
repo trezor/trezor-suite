@@ -3,6 +3,7 @@ import { useThrottle } from 'react-use';
 
 import { type CryptoId } from 'invity-api';
 
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectVisibleDeviceAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -27,6 +28,7 @@ export function useSellAssetRows({
     networks: NetworkSymbol[];
 } {
     const accounts = useSelector(selectVisibleDeviceAccountsWithSuiteSyncLabel);
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const tokenDefinitions = useSelector(selectTokenDefinitions);
@@ -45,6 +47,7 @@ export function useSellAssetRows({
         }
 
         return buildSellAssetRows({
+            supportedNetworks,
             accounts: throttledAccounts,
             networkSymbolFilter,
             excludedCryptoIds,
@@ -60,5 +63,6 @@ export function useSellAssetRows({
         excludedCryptoIds,
         tokenDefinitions,
         baseCurrencyCode,
+        supportedNetworks,
     ]);
 }

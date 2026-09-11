@@ -11,7 +11,8 @@ import {
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
-import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { selectGetState } from '@suite-common/redux-utils';
 import { parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -65,19 +66,19 @@ type AddressInputProps = {
     accountKey: AccountKey;
     onQrNetworkMismatch?: (qrNetworkSymbol: NetworkSymbol | null) => void;
 };
+
 export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
     const amountFieldName = getOutputFieldName(index, 'amount');
     const tokenFieldName = getOutputFieldName(index, 'token');
     const { setValue, control } = useFormContext<SendOutputsFormValues>();
-    const { analytics, addressValidator, findNetworkSymbolForProtocol, getNamedAddressSupport } =
-        useServices(
-            selectNativeAnalyticsDep,
-            selectAddressValidatorDep,
-            selectFindNetworkSymbolForProtocolDep,
-            selectGetNamedAddressSupportDep,
-        );
+    const { getState, analytics, addressValidator, getNamedAddressSupport } = useServices(
+        selectGetState,
+        selectNativeAnalyticsDep,
+        selectAddressValidatorDep,
+        selectGetNamedAddressSupportDep,
+    );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -142,7 +143,9 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     };
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
-        const parsed = parseTransferUri(qrCodeData, findNetworkSymbolForProtocol);
+        const parsed = parseTransferUri(qrCodeData, protocol =>
+            selectNetworkSymbolForProtocol(getState(), protocol),
+        );
 
         // ERC-681 (Ethereum) — may switch to a matching account on another EVM network.
         const erc681 =
@@ -205,7 +208,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
         if (
             parsed.success &&
             parsed.payload.format === 'bip321' &&
-            findNetworkSymbolForProtocol(parsed.payload.scheme) === symbol
+            selectNetworkSymbolForProtocol(getState(), parsed.payload.scheme) === symbol
         ) {
             const bip321 = parsed.payload;
             onQrNetworkMismatch?.(null);

@@ -34,9 +34,9 @@ type RootReducerShape = ReturnType<typeof prepareRootReducers>;
 
 export type FullPersistedAppState = ReducerState<RootReducerShape>;
 
-type ExcludePersist<T> = Omit<T, '_persist'>;
+type ExcludePersist<T> = T extends object ? Omit<T, '_persist'> : T;
 type ExcludeChildPersists<T> = {
-    [K in keyof T]: Omit<T[K], '_persist'>;
+    [K in keyof T]: ExcludePersist<T[K]>;
 };
 
 // Typescript hack: wallet is a nested combined reducer, so it has to be treated separately.

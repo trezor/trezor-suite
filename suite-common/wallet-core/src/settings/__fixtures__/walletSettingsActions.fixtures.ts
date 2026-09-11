@@ -29,7 +29,7 @@ export const walletSettingsFixtures = [
     {
         description: 'Change networks',
         initialState: { enabledNetworks: [] },
-        action: () => walletSettingsActions.changeNetworks(['ltc', 'eth']),
+        action: () => walletSettingsActions.changeNetworks(['ltc', 'eth'], ['btc', 'eth', 'ltc']),
         result: {
             enabledNetworks: ['eth', 'ltc'],
         },

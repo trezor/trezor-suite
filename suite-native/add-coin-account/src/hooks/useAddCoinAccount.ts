@@ -10,13 +10,13 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
     type NetworkSymbol,
     getNetwork,
-    getSupportedNetworks,
 } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -100,7 +100,7 @@ export const accountTypeTranslationKeys: Record<
 const LIMIT = 10; // Maximum number of manually added accounts per non-EVM network type.
 
 export const useAddCoinAccount = (networksSearchQuery?: string) => {
-    const allNetworkSymbols = getSupportedNetworks();
+    const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
     const { dispatch } = useServices(selectDispatch);
     const { translate } = useTranslate();
@@ -108,16 +108,14 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const supportedNetworkSymbols = useSelector((state: DiscoveryRootState) =>
-        selectDiscoveryNetworkSymbols(state, allNetworkSymbols, networksSearchQuery),
+        selectDiscoveryNetworkSymbols(state, networksSearchQuery),
     );
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccounts(state),
     );
     const device = useSelector(selectSelectedDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
-    const enabledDiscoveryNetworkSymbols = useSelector((state: DiscoveryRootState) =>
-        selectDeviceEnabledDiscoveryNetworkSymbols(state, allNetworkSymbols),
-    );
+    const enabledDiscoveryNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
 
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
 
@@ -392,7 +390,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             return;
         }
 
-        dispatch(accountsActions.createAccount(newAccountPayload));
+        dispatch(accountsActions.createAccount(newAccountPayload, allNetworkSymbols));
         dispatch(reportWalletBalanceThunk());
         navigateToSuccessorScreen({
             flowType,

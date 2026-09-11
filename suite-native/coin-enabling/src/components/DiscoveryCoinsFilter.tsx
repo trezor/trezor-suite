@@ -2,12 +2,8 @@ import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
-import {
-    type Network,
-    type NetworkSymbol,
-    getNetwork,
-    getSupportedNetworks,
-} from '@suite-common/wallet-config';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
 import { type DiscoveryRootState, selectDiscoveryNetworkGroups } from '@suite-native/discovery';
 import { useFormContext } from '@suite-native/forms';
@@ -60,11 +56,11 @@ export const DiscoveryCoinsFilter = ({
     searchQuery,
     onDisablingLastCoin,
 }: DiscoveryCoinsFilterProps) => {
-    const allNetworkSymbols = getSupportedNetworks();
+    const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
     const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
         useSelector((state: DiscoveryRootState) =>
-            selectDiscoveryNetworkGroups(state, allNetworkSymbols, searchQuery),
+            selectDiscoveryNetworkGroups(state, searchQuery),
         );
     const isAnyNetworkVisible =
         supportedMainnets.length > 0 ||
@@ -89,7 +85,10 @@ export const DiscoveryCoinsFilter = ({
                 return;
             }
 
-            const enabledSymbols = getNetworkSymbolsFromEnabledCoins(enabledCoins);
+            const enabledSymbols = getNetworkSymbolsFromEnabledCoins(
+                enabledCoins,
+                allNetworkSymbols,
+            );
 
             if (
                 !nextIsEnabled &&
@@ -117,7 +116,7 @@ export const DiscoveryCoinsFilter = ({
 
             setValue(getEnabledCoinFieldName(symbol), nextIsEnabled);
         },
-        [getValues, isDeviceConnected, onDisablingLastCoin, setValue, showToast],
+        [allNetworkSymbols, getValues, isDeviceConnected, onDisablingLastCoin, setValue, showToast],
     );
 
     if (!isAnyNetworkVisible) {

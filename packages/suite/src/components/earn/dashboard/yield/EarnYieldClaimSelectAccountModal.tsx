@@ -12,7 +12,7 @@ import {
     type YieldAccountsRewards,
 } from '@suite-common/earn-stablecoin-api';
 import { getCompactAmount, useFormatters } from '@suite-common/formatters';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { toTokenSymbol } from '@suite-common/wallet-types';
 import {
@@ -138,7 +138,7 @@ export const EarnYieldClaimSelectAccountModal = ({
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const baseCurrency = useSelector(selectBaseCurrency);
 
-    const supportedNetworks = getSupportedNetworks();
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const sortedAccountsRewards = [...accountsRewards].sort((a, b) =>
         compareAccountsByCoin(a.account, b.account, supportedNetworks),
     );

@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
     type CoinInfo,
@@ -8,8 +9,7 @@ import {
     type PlatformsInfo,
 } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type Network,
     type NetworkConfigWithoutTestnets,
@@ -237,10 +237,10 @@ export function createAssetTokenOption<
  */
 export function useTradingAssets() {
     const getCoinsAndPlatforms = useCoinsAndPlatforms();
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const supportedAddressValidatorSymbols = useMemo(
-        () => new Set(networkModuleRepository.getSupportedNetworks()),
-        [networkModuleRepository],
+        () => new Set(supportedNetworks),
+        [supportedNetworks],
     );
 
     const buildAssetOptions = useCallback(

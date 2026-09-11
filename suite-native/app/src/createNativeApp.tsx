@@ -28,6 +28,7 @@ export const createNativeApp = (deps: NativeAppDeps): NativeApp => {
 
     const initialize = async () => {
         await deps.services.hydrateReduxStore();
+        deps.services.loadNetworkModules();
         await deps.services.store.dispatch(applicationInitThunk());
     };
 

@@ -1,17 +1,9 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
-import type { NetworkSymbol } from '@suite-common/networks';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
-export type { NetworkSymbol };
-
-export const asNetworkSymbol = (symbol: string): NetworkSymbol => symbol as NetworkSymbol;
-
-/**
- * Used for some edge cases where extension of NetworkSymbol is necessary.
- * Autocomplete is working as expected but can be passed any string.
- */
-export type NetworkSymbolExtended = NetworkSymbol | (string & {});
+// The legacy registry deliberately has no dependency on the modularized symbol type.
+export type NetworkSymbol = string;
 
 export type NetworkType =
     'bitcoin' | 'ethereum' | 'ripple' | 'cardano' | 'solana' | 'stellar' | 'tron';
@@ -82,8 +74,8 @@ type NetworkAccountTypes = Partial<{
 
 type NetworkDeviceSupport = Partial<Record<DeviceModelInternal, string>>;
 
-type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
-    symbol: TKey;
+export type Network = {
+    symbol: NetworkSymbol;
     settlementLayer?: NetworkSymbol;
     displaySymbol: string;
     displaySymbolName?: string;
@@ -111,8 +103,4 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
      */
     yieldXyzId: TokenDtoV2['network'] | null;
 };
-export type Network = NetworkWithSpecificKey<NetworkSymbol>;
-
-export type Networks = {
-    [key in NetworkSymbol]: NetworkWithSpecificKey<key>;
-};
+export type Networks = Record<NetworkSymbol, Network>;

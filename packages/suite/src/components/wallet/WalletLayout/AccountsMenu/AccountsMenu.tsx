@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { Column, useScrollShadow } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -15,12 +14,8 @@ import { AccountsMenuHeader } from './AccountsMenuHeader';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 
 export const AccountsMenu = () => {
-    const allNetworkSymbols = getSupportedNetworks();
-
     const device = useSelector(selectSelectedDevice);
-    const discoveryStatus = useSelector(state =>
-        selectDiscoveryOverallStatus(state, allNetworkSymbols),
-    );
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const { scrollElementRef, ScrollSentinels, ShadowTop, ShadowBottom, ShadowContainer } =
         useScrollShadow({
             backgroundColor: 'surfaceFillSunken',

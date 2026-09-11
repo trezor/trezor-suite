@@ -1,5 +1,6 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -240,15 +241,17 @@ export const selectIsCustomBackendConfigured = createMemoizedSelector(
 export const selectGapLimit = (state: BlockchainRootState, symbol: NetworkSymbol) =>
     state.wallet.blockchain[symbol]?.backends.gapLimit;
 
-export const selectCustomBackends = createMemoizedSelector(
-    [
-        selectBlockchainState,
-        (_state, supportedNetworks: readonly NetworkSymbol[]) => supportedNetworks,
-    ],
-    (blockchainState, supportedNetworks) => getCustomBackends(blockchainState, supportedNetworks),
+const createNetworkMemoizedSelector = createWeakMapSelector.withTypes<
+    BlockchainRootState & WalletSettingsRootState & NetworksRootState
+>();
+
+export const selectCustomBackends = createWeakMapSelector.withTypes<
+    BlockchainRootState & NetworksRootState
+>()([selectBlockchainState, selectSupportedNetworkSymbols], (blockchainState, supportedNetworks) =>
+    getCustomBackends(blockchainState, supportedNetworks),
 );
 
-export const selectEnabledCustomBackends = createMemoizedSelector(
+export const selectEnabledCustomBackends = createNetworkMemoizedSelector(
     [selectCustomBackends, selectEnabledNetworks],
     (customBackends, enabledNetworks) =>
         customBackends

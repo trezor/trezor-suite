@@ -30,8 +30,9 @@ import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
-    createFindNetworkSymbolForProtocol,
     createGetNetworkConfig,
+    createGetNetworkConfigs,
+    createLoadNetworkModules,
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
@@ -147,10 +148,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
-    const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
-        getNetworkConfig,
-        networkModuleRepository,
-    });
     const addressValidator = createAddressValidator({
         networkModuleRepository,
     });
@@ -171,8 +168,10 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     return {
         networkModuleRepository,
-        getNetworkConfig,
-        findNetworkSymbolForProtocol,
+        loadNetworkModules: createLoadNetworkModules({
+            dispatch: deps.dispatch,
+            getNetworkConfigs: createGetNetworkConfigs({ getNetworkConfig }),
+        }),
         addressValidator,
         getNamedAddressSupport,
         suiteSync,

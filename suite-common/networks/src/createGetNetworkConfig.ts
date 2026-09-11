@@ -3,17 +3,13 @@ import type { SuiteCommonNetworkConfig } from '@trezor/network-module-suite-comm
 import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { NetworkSymbol } from './NetworkModules';
 
-export type GetNetworkConfig = (symbol: NetworkSymbol) => SuiteCommonNetworkConfig;
-
 export type GetNetworkConfigDeps = NetworkModuleRepositoryDep;
+
+export type GetNetworkConfig = (symbol: NetworkSymbol) => SuiteCommonNetworkConfig;
 
 export type GetNetworkConfigDep = {
     getNetworkConfig: GetNetworkConfig;
 };
-
-export const selectGetNetworkConfigDep = (services: any): GetNetworkConfigDep => ({
-    getNetworkConfig: services.getNetworkConfig,
-});
 
 export const createGetNetworkConfig =
     (deps: GetNetworkConfigDeps): GetNetworkConfig =>

@@ -4,7 +4,6 @@ import { preserveModal, removePreserveModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { prettifyLog, useCommonApplicationLogs } from '@suite-common/logger';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -13,12 +12,10 @@ import {
 } from 'src/selectors/suite/logsSelectors';
 
 export const useApplicationLogs = ({ hideSensitiveInfo }: { hideSensitiveInfo: boolean }) => {
-    const supportedNetworks = getSupportedNetworks();
-
     const { dispatch } = useServices(selectDispatch);
     const commonAppLogs = useCommonApplicationLogs(hideSensitiveInfo);
     const desktopApplicationInfo = useSelector((state: SuiteLogsApplicationInfoRootState) =>
-        selectRedactedDesktopApplicationInfo(state, hideSensitiveInfo, supportedNetworks),
+        selectRedactedDesktopApplicationInfo(state, hideSensitiveInfo),
     );
 
     useEffect(() => {

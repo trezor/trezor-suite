@@ -1,4 +1,6 @@
 import { deviceInitialState } from '@suite-common/device';
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { Form } from '@suite-native/forms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
@@ -11,6 +13,7 @@ import { useBuyForm } from '../../hooks/buy/useBuyForm';
 describe('BuyAlert', () => {
     let form: BuyFormType;
     const preloadedState = {
+        networks: mockNetworksState(mockGetSupportedNetworks()),
         device: deviceInitialState,
         wallet: getWalletState({ tradeType: 'buy' }),
     };

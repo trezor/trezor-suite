@@ -7,7 +7,10 @@ import {
     type MessageSystemRootState,
     messageSystemInitialState,
 } from '@suite-common/message-system';
+import { type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type SuiteSyncDataRootState, initialSuiteSyncDataState } from '@suite-common/suite-sync';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -29,6 +32,7 @@ import { type TradingRootState } from '@suite-native/trading-state';
 export type { PreloadedStatePartial } from '@suite-native/test-utils-store';
 
 const createBaseTradingPreloadedState = (): TradingTestPreloadedState => ({
+    networks: mockNetworksState(mockGetSupportedNetworks()),
     analytics: analyticsInitialState,
     device: deviceInitialState,
     featureFlags: featureFlagsInitialState,
@@ -41,7 +45,8 @@ const createBaseTradingPreloadedState = (): TradingTestPreloadedState => ({
     },
 });
 
-export type TradingTestPreloadedState = AnalyticsRootState &
+export type TradingTestPreloadedState = NetworksRootState &
+    AnalyticsRootState &
     DeviceRootState &
     FeatureFlagsRootState &
     GeolocationRootState &

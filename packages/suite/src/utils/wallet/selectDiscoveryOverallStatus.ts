@@ -88,12 +88,9 @@ const getDiscoveryStatus = ({
 };
 
 // TODO move this selector somewhere more sensible
-export const selectDiscoveryOverallStatus = (
-    state: AppState,
-    supportedNetworks: readonly NetworkSymbol[],
-) => {
+export const selectDiscoveryOverallStatus = (state: AppState) => {
     const device = selectSelectedDevice(state);
-    const deviceSupportedNetworks = selectDeviceSupportedNetworks(state, supportedNetworks);
+    const deviceSupportedNetworks = selectDeviceSupportedNetworks(state);
     const accounts = device?.state && selectAccountsByDeviceState(state, device.state);
     const discovery = selectDiscoveryByDevicePath(state, device?.path);
     const walletSettings = state.wallet.settings;
