@@ -27,6 +27,7 @@ export const BitcoinFeeCards = ({ feeOptions, feeCardAppearance }: BitcoinFeeCar
         changeFeeLevel,
         composedLevels,
         selectedFeeLevel,
+        isComposing,
     } = useFeesContext();
     const locale = useLocales();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
@@ -56,7 +57,7 @@ export const BitcoinFeeCards = ({ feeOptions, feeCardAppearance }: BitcoinFeeCar
                         value={fee.value}
                         isSelected={selectedFeeLevel.label === fee.value}
                         changeFeeLevel={changeFeeLevel}
-                        isLoading={areFeesLoading}
+                        isLoading={areFeesLoading || isComposing}
                         topLeftChild={
                             <span data-testid={`@fee-card/${fee.value}`}>
                                 <Translation id={feeLevelTranslationMap[fee.value]} />
