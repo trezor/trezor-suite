@@ -1,8 +1,9 @@
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState } from '@suite-common/device';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type GetBinFilesBaseUrlDep,
     type GetLanguageDep,
+    type OnboardingServiceDep,
     type ReportSecurityCheckDep,
     type TrezorDevice,
 } from '@suite-common/suite-types';
@@ -10,9 +11,15 @@ import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
-import { type FirmwareRootState, selectFirmware } from './firmwareReducer';
+import { type FirmwareRootState, selectFirmware, selectFirmwareDevice } from './firmwareReducer';
 
 export type FirmwareUpdateProps = {
+    /**
+     * The physical device to update. Required, because an update that is not pinned to one device
+     * has nothing to follow across the reboots it causes, and would fall back to reading whatever
+     * is selected at each moment — which is what this whole mechanism exists to stop.
+     */
+    device: TrezorDevice;
     firmwareType?: FirmwareType;
     binary?: ArrayBuffer;
     // used on mobile, we don't have any FWs locally
@@ -30,7 +37,7 @@ export type FirmwareUpdateResult = {
 export type FirmwareUpdateThunkState = DeviceRootState & FirmwareRootState;
 
 export type FirmwareUpdateThunkDeps = WithServices<
-    GetBinFilesBaseUrlDep & GetLanguageDep & ReportSecurityCheckDep
+    GetBinFilesBaseUrlDep & GetLanguageDep & OnboardingServiceDep & ReportSecurityCheckDep
 >;
 
 export const firmwareUpdateThunk = createThunk<
@@ -44,7 +51,7 @@ export const firmwareUpdateThunk = createThunk<
 >(
     `${FIRMWARE_MODULE_PREFIX}/firmwareUpdate`,
     async (
-        { firmwareType, binary, ignoreBaseUrl = false },
+        { device, firmwareType, binary, ignoreBaseUrl = false },
         { dispatch, getState, extra, fulfillWithValue, rejectWithValue },
     ) => {
         dispatch(firmwareActions.setStatus('started'));
@@ -55,31 +62,35 @@ export const firmwareUpdateThunk = createThunk<
         }
 
         const {
-            services: { getBinFilesBaseUrl, getLanguage, reportSecurityCheck },
+            services: { getBinFilesBaseUrl, getLanguage, onboardingService, reportSecurityCheck },
         } = extra;
 
-        const device = selectSelectedDevice(getState());
+        // Pin the flow to the device the caller named — `selectFirmwareDevice` resolves through
+        // this from here on. Not on a retry, where the pinned device is already in bootloader mode
+        // reporting no id, and the caller's entry is the stale one.
+        if (!selectFirmware(getState()).cachedDevice) {
+            dispatch(firmwareActions.cacheDevice(device));
+        }
+
+        // The device as the list has it now, which on a retry is the one in bootloader mode rather
+        // than the entry the caller was given before the first attempt. `undefined` here means the
+        // device is not connected, which the guard below reports.
+        const firmwareUpdateDevice = selectFirmwareDevice(getState());
         const binFilesBaseUrl = getBinFilesBaseUrl();
         const suiteLanguage = getLanguage();
-        const { useDevkit, cachedDevice, error } = selectFirmware(getState());
+        const { useDevkit, error } = selectFirmware(getState());
 
         if (error) {
             dispatch(firmwareActions.setFirmwareUpdateError(undefined));
         }
 
-        if (!device) {
+        if (!firmwareUpdateDevice) {
             dispatch(firmwareActions.setStatus('error'));
             dispatch(firmwareActions.setFirmwareUpdateError('Device not connected'));
 
             return rejectWithValue({
                 error: 'Device not connected',
             });
-        }
-
-        // Cache device when firmware installation starts so that we can reference the original firmware version and type during the installation process.
-        // This action is dispatched twice in manual update flow and we only want to cache the device during the first dispatch when it is not yet in bootloader mode.
-        if (!cachedDevice) {
-            dispatch(firmwareActions.cacheDevice(device));
         }
 
         const baseUrl = ignoreBaseUrl
@@ -93,7 +104,8 @@ export const firmwareUpdateThunk = createThunk<
                 return firmwareType;
             }
 
-            return hasBitcoinOnlyFirmware(device) || isBitcoinOnlyDevice(device)
+            return hasBitcoinOnlyFirmware(firmwareUpdateDevice) ||
+                isBitcoinOnlyDevice(firmwareUpdateDevice)
                 ? FirmwareType.BitcoinOnly
                 : FirmwareType.Universal;
         };
@@ -101,18 +113,18 @@ export const firmwareUpdateThunk = createThunk<
         const targetFirmwareType = getTargetFirmwareType();
         const toBitcoinOnlyFirmware = targetFirmwareType === FirmwareType.BitcoinOnly;
         const targetTranslationLanguage = Object.keys(
-            device.firmwareReleaseConfigInfo?.translations ?? [],
+            firmwareUpdateDevice.firmwareReleaseConfigInfo?.translations ?? [],
         ).find(language => language.startsWith(suiteLanguage));
 
         const firmwareUpdateResponse = await TrezorConnect.firmwareUpdate({
-            device,
+            device: firmwareUpdateDevice,
             btcOnly: toBitcoinOnlyFirmware,
             binary,
             baseUrl,
         });
 
         // Firmware language should only be set during the initial firmware installation.
-        if (device.firmware === 'none' && targetTranslationLanguage) {
+        if (firmwareUpdateDevice.firmware === 'none' && targetTranslationLanguage) {
             await TrezorConnect.changeLanguage({
                 language: targetTranslationLanguage,
             });
@@ -121,7 +133,8 @@ export const firmwareUpdateThunk = createThunk<
         const targetProperties = binary
             ? {}
             : {
-                  toFwVersion: device?.firmwareReleaseConfigInfo?.release.version.join('.'),
+                  toFwVersion:
+                      firmwareUpdateDevice?.firmwareReleaseConfigInfo?.release.version.join('.'),
                   toBtcOnly: toBitcoinOnlyFirmware,
               };
 
@@ -130,7 +143,7 @@ export const firmwareUpdateThunk = createThunk<
             dispatch(firmwareActions.setFirmwareUpdateError(firmwareUpdateResponse.error.message));
 
             return rejectWithValue({
-                device,
+                device: firmwareUpdateDevice,
                 ...targetProperties,
                 error: firmwareUpdateResponse.error.message,
                 connectResponse: firmwareUpdateResponse,
@@ -144,7 +157,13 @@ export const firmwareUpdateThunk = createThunk<
                 releaseVersion,
             } = firmwareUpdateResponse.payload;
 
+            // Read before the status moves off it: onboarding presents a THP-paired install as
+            // pairing rather than as an install, so it has to be able to tell the two apart.
+            const wasThpPairing = selectFirmware(getState()).status === 'thp-pairing';
+
             dispatch(firmwareActions.setStatus('done'));
+
+            onboardingService.onFirmwareInstallationFinished({ wasThpPairing });
 
             // TODO: Add to the if-else block above and add handle in UI.
             if (!binary && !versionCheck) {
@@ -152,9 +171,9 @@ export const firmwareUpdateThunk = createThunk<
                     level: 'error',
                     checkType: 'Firmware version',
                     contextData: {
-                        model: device.features?.internal_model,
-                        revision: device.features?.revision,
-                        vendor: device.features?.fw_vendor,
+                        model: firmwareUpdateDevice.features?.internal_model,
+                        revision: firmwareUpdateDevice.features?.revision,
+                        vendor: firmwareUpdateDevice.features?.fw_vendor,
                         bootloaderVersion,
                         binaryVersion,
                         installedVersion,
@@ -165,7 +184,7 @@ export const firmwareUpdateThunk = createThunk<
             }
 
             return fulfillWithValue({
-                device,
+                device: firmwareUpdateDevice,
                 ...targetProperties,
                 connectResponse: firmwareUpdateResponse,
             });

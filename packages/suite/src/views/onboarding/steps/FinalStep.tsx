@@ -1,13 +1,12 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectDeviceName } from '@suite-common/device';
 import { CheckIcon } from '@trezor/icons';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 export const FinalStep = () => {
-    const { goToSuite } = useOnboarding();
-    const deviceName = useSelector(selectDeviceName);
+    const { goToSuite, onboardedDevice } = useOnboarding();
+    const deviceName = onboardedDevice?.name;
 
     return (
         <OnboardingCard

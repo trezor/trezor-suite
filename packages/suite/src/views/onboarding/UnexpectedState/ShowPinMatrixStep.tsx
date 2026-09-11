@@ -3,16 +3,16 @@ import { useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectSelectedDevice } from '@suite-common/device';
 import { Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 import { PinMatrix } from 'src/components/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 export const ShowPinMatrixStep = () => {
     const [pin, setPin] = useState('');
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(selectOnboardedDevice);
     const requestId = useSelector(selectModalRequestId);
     const { activeStepId, showPinMatrix } = useOnboarding();
     const handlePinSubmit = () => {

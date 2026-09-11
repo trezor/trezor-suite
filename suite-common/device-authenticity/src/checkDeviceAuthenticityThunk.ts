@@ -1,11 +1,11 @@
-import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { deviceActions } from '@suite-common/device';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
+import { type StoredAuthenticateDeviceResult, type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
@@ -14,11 +14,17 @@ import { isDeviceAuthenticityValid } from './utils';
 const ACTION_PREFIX = '@device-authenticity';
 
 type CheckDeviceAuthenticityThunkParams = {
+    /**
+     * The device to check. Named by the caller rather than taken from the selection: the result is
+     * stored under this device's id and read back by it, so a caller showing one device while the
+     * check ran on another would look up a result that was never filed.
+     */
+    device: TrezorDevice;
     allowDebugKeys: boolean;
     skipSuccessToast?: boolean;
 };
 
-type CheckDeviceAuthenticityThunkState = DeviceRootState & MessageSystemRootState;
+type CheckDeviceAuthenticityThunkState = MessageSystemRootState;
 
 export const checkDeviceAuthenticityThunk = createThunk<
     StoredAuthenticateDeviceResult,
@@ -30,14 +36,9 @@ export const checkDeviceAuthenticityThunk = createThunk<
 >(
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
     async (
-        { allowDebugKeys, skipSuccessToast },
+        { device, allowDebugKeys, skipSuccessToast },
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) {
-            throw new Error('device is not connected');
-        }
-
         const result = await TrezorConnect.authenticateDevice({
             device: { path: device.path },
             allowDebugKeys,

@@ -1,10 +1,9 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSelectedDevice } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { selectThpStep } from '@suite-common/thp';
 import { exhaustive } from '@trezor/type-utils';
@@ -12,7 +11,8 @@ import { exhaustive } from '@trezor/type-utils';
 import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
 import { getOnboardingStepIndex } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboardedDeviceTracking, useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
 import { BackupTypeStep } from 'src/views/onboarding/steps/BackupTypeStep';
 import { CreateOrRecoverStep } from 'src/views/onboarding/steps/CreateOrRecoverStep';
@@ -25,10 +25,13 @@ import { RecoveryStep } from 'src/views/onboarding/steps/RecoveryStep';
 import { SecurityStep } from 'src/views/onboarding/steps/SecurityStep';
 
 export const Onboarding = () => {
+    // Mounted for the whole flow rather than per step: the device reboots between steps, and the
+    // ref has to keep up across those boundaries. See `useOnboardedDeviceTracking`.
+    useOnboardedDeviceTracking();
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
-    const { activeStepId, goToNextStep } = useOnboarding();
-    const device = useSelector(selectSelectedDevice);
+    const { activeStepId, goToNextStep, onboardedDevice } = useOnboarding();
+    const device = useSelector(selectOnboardedDevice);
     const thpStep = useSelector(selectThpStep);
 
     // This is a temporary hack until we refactor onboarding.
@@ -53,45 +56,52 @@ export const Onboarding = () => {
         });
     }, [activeStepId, analytics]);
 
-    const StepComponent = useMemo(() => {
+    // Elements rather than component types. A step rendered through a component *type* built here
+    // would be a new type on every render that changes its inputs — the device object changes
+    // throughout a step, as button requests come and go — and React unmounts and remounts on a
+    // changed type, taking the step's own state with it.
+    const renderStep = () => {
         switch (activeStepId) {
             case STEP.ID_FIRMWARE_STEP:
                 // Firmware installation
-                return FirmwareStep;
+                return <FirmwareStep />;
             case STEP.ID_AUTHENTICATE_DEVICE_STEP:
                 // Device authenticity check
-                return () => <DeviceAuthenticityStep goToNext={() => goToNextStep()} />;
+                return (
+                    <DeviceAuthenticityStep
+                        device={onboardedDevice}
+                        goToNext={() => goToNextStep()}
+                    />
+                );
             case STEP.ID_TUTORIAL_STEP:
                 // Device tutorial
-                return DeviceTutorialStep;
+                return <DeviceTutorialStep />;
             case STEP.ID_CREATE_OR_RECOVER:
                 // Selection between a new seed or seed recovery
-                return CreateOrRecoverStep;
+                return <CreateOrRecoverStep />;
             case STEP.ID_BACKUP_TYPE_STEP:
                 // Selecting a backup type
-                return BackupTypeStep;
+                return <BackupTypeStep />;
             case STEP.ID_RECOVERY_STEP:
                 // b) Seed recovery
-                return RecoveryStep;
+                return <RecoveryStep />;
             case STEP.ID_SECURITY_STEP:
                 // Wallet creation + backup (resetDevice with skip_backup: false)
-                return SecurityStep;
+                return <SecurityStep />;
             case STEP.ID_SET_PIN_STEP:
                 // Pin setup
-                return PinStep;
+                return <PinStep />;
             case STEP.ID_FINAL_STEP:
                 // Onboarding success
-                return FinalStep;
+                return <FinalStep />;
             default:
                 return exhaustive(activeStepId);
         }
-    }, [activeStepId, goToNextStep]);
+    };
 
     return (
         <OnboardingLayout>
-            <UnexpectedState>
-                <StepComponent />
-            </UnexpectedState>
+            <UnexpectedState>{renderStep()}</UnexpectedState>
         </OnboardingLayout>
     );
 };

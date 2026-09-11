@@ -1,4 +1,3 @@
-import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { OnboardingCard, type OnboardingCardProps } from '@suite/onboarding-components';
 import { recoveryActions, selectRecoveryError, selectRecoveryStatus } from '@suite/recovery';
@@ -9,13 +8,14 @@ import { TrezorBackupIcon } from '@trezor/icons';
 
 import { goToPreviousStepThunk } from 'src/actions/onboarding/onboardingActions';
 import { useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 const RecoveryStepBox = (props: OnboardingCardProps) => {
     const recoveryStatus = useSelector(selectRecoveryStatus);
     const recoveryError = useSelector(selectRecoveryError);
     const { dispatch } = useServices(selectDispatch);
 
-    const { device } = useDevice();
+    const device = useSelector(selectOnboardedDevice);
 
     const deviceModelInternal = device?.features?.internal_model;
 
@@ -36,7 +36,7 @@ const RecoveryStepBox = (props: OnboardingCardProps) => {
             return dispatch(recoveryActions.setStatus('initial'));
         }
 
-        return dispatch(goToPreviousStepThunk());
+        return dispatch(goToPreviousStepThunk(device));
     };
 
     const isBackButtonVisible = () => {

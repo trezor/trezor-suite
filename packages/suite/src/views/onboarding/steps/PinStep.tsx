@@ -4,16 +4,16 @@ import { Translation } from '@suite/intl';
 import { selectModal, selectModalRequestId } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSelectedDevice } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { LockKeyIcon } from '@trezor/icons';
 
-import { changePinThunk } from 'src/actions/settings/deviceSettingsActions';
+import { changePinForDeviceThunk } from 'src/actions/settings/deviceSettingsActions';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PinMatrix } from 'src/components/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 export const PinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
@@ -21,14 +21,14 @@ export const PinStep = () => {
         'initial',
     );
     const [pin, setPin] = useState('');
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(selectOnboardedDevice);
     const modal = useSelector(selectModal);
     const requestId = useSelector(selectModalRequestId);
     const { dispatch } = useServices(selectDispatch);
 
     const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
 
-    const setPinAndSkipSuccessToast = () => dispatch(changePinThunk({}, true));
+    const setPinAndSkipSuccessToast = () => dispatch(changePinForDeviceThunk(device, {}, true));
     const onTryAgain = () => {
         setStatus('initial');
         setPinAndSkipSuccessToast();

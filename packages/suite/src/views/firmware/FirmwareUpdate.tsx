@@ -1,25 +1,43 @@
-import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
+import {
+    FirmwareUpdateSession,
+    adoptFirmwareUpdatedDeviceThunk,
+    useFirmwareDesktopUpdate,
+} from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { FirmwareType } from '@trezor/connect';
 
 import { FirmwareInitial } from 'src/components/firmware/FirmwareInitial';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
+import { useSelector } from 'src/hooks/suite';
 
 import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareUpdate = () => {
+    const { dispatch } = useServices(selectDispatch);
+    // What the update is started on. `FirmwareUpdateSession` keeps it for the rest of the flow:
+    // the update takes the device out of the device list while the selection moves on.
+    const device = useSelector(selectSelectedDevice);
     const {
         firmwareUpdate,
         switchFirmwareType,
         targetFirmwareType,
         showLowBatteryModal,
         toggleLowBatteryModal,
-    } = useFirmwareDesktopUpdate();
+    } = useFirmwareDesktopUpdate({
+        // Standalone: the device is Suite's again once the update is done, so hand it back.
+        onUpdateFinished: device => dispatch(adoptFirmwareUpdatedDeviceThunk({ device })),
+    });
 
-    const installTargetFirmware = () =>
-        firmwareUpdate({
-            firmwareType: targetFirmwareType,
-        });
+    const installTargetFirmware = () => {
+        if (!device) {
+            return;
+        }
+
+        firmwareUpdate({ device, firmwareType: targetFirmwareType });
+    };
 
     const heading = switchFirmwareType ? (
         <Translation
@@ -45,8 +63,10 @@ export const FirmwareUpdate = () => {
     }
 
     return (
-        <FirmwareModal heading={heading} install={installTargetFirmware}>
-            <FirmwareInitial />
-        </FirmwareModal>
+        <FirmwareUpdateSession device={device}>
+            <FirmwareModal heading={heading} install={installTargetFirmware}>
+                <FirmwareInitial />
+            </FirmwareModal>
+        </FirmwareUpdateSession>
     );
 };

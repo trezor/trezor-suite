@@ -10,7 +10,10 @@ import { UI_REQUESTS } from '@trezor/connect';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { type GoToSuiteOptions } from 'src/actions/onboarding/onboardingActions';
 import { useSelector } from 'src/hooks/suite';
-import { selectOnboarding } from 'src/selectors/onboarding/onboardingSelectors';
+import {
+    selectOnboardedDevice,
+    selectOnboarding,
+} from 'src/selectors/onboarding/onboardingSelectors';
 import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboarding';
 
 import { parseStepId } from '../../utils/onboarding/steps';
@@ -19,6 +22,10 @@ export const useOnboarding = () => {
     const { dispatch } = useServices(selectDispatch);
 
     const onboarding = useSelector(selectOnboarding);
+    // The device onboarding is pinned to. Passed into every step decision so none of them has to
+    // ask which device happens to be selected — onboarding wipes and re-initialises the device, so
+    // the selection drifts while it reboots.
+    const onboardedDevice = useSelector(selectOnboardedDevice);
     const modal = useSelector(selectModal);
 
     const showPinMatrix =
@@ -26,13 +33,11 @@ export const useOnboarding = () => {
 
     const actions = useMemo(
         () => ({
-            goToStep: (stepId: AnyStepId) => dispatch(onboardingActions.goToStep(stepId)),
             goToNextStep: (stepId?: AnyStepId) =>
-                dispatch(onboardingActions.goToNextStepThunk(stepId)),
-            goToPreviousStep: () => dispatch(onboardingActions.goToPreviousStepThunk()),
+                dispatch(onboardingActions.goToNextStepThunk(onboardedDevice, stepId)),
+            goToPreviousStep: () =>
+                dispatch(onboardingActions.goToPreviousStepThunk(onboardedDevice)),
             resetOnboarding: () => dispatch(onboardingActions.resetOnboarding()),
-            enableOnboardingReducer: (enabled: boolean) =>
-                dispatch(onboardingActions.enableOnboardingReducer(enabled)),
             rerun: () => dispatch(onboardingActions.rerunRecoveryThunk()),
             updateAnalytics: (payload: Partial<OnboardingAnalytics>) =>
                 dispatch(onboardingActions.updateAnalytics(payload)),
@@ -42,11 +47,16 @@ export const useOnboarding = () => {
             updateBackupMedium: (payload: BackupMedium) =>
                 dispatch(onboardingActions.updateBackupMedium(payload)),
             goToSuite: (options?: GoToSuiteOptions) =>
-                dispatch(onboardingActions.goToSuiteThunk(options)),
+                dispatch(onboardingActions.goToSuiteThunk(onboardedDevice, options)),
             resolveNextAfterSkipped: (requestedStepId: AnyStepId) =>
-                dispatch(onboardingActions.resolveNextAfterSkippedThunk(requestedStepId)),
+                dispatch(
+                    onboardingActions.resolveNextAfterSkippedThunk(
+                        onboardedDevice,
+                        requestedStepId,
+                    ),
+                ),
         }),
-        [dispatch],
+        [dispatch, onboardedDevice],
     );
 
     const { activeStepId } = onboarding;
@@ -58,6 +68,7 @@ export const useOnboarding = () => {
     return {
         ...onboarding,
         ...actions,
+        onboardedDevice,
         activeStep,
         activeStepCategory,
         showPinMatrix,

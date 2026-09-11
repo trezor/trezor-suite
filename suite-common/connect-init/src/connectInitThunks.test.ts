@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { asGetter } from '@suite-common/dependency-injection';
-import { deviceInitialState } from '@suite-common/device';
+import { createDeviceReceiver, deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MockDispatch, createMockDispatch } from '@suite-common/redux-utils/mocks';
@@ -55,6 +55,7 @@ const createThunkDeps = (
         },
         services: {
             analytics: { report: jest.fn() },
+            deviceReceiver: createDeviceReceiver(),
             connectInitHooks: { deviceEvent: {}, uiEvent: {} },
             connectInitSettings: {
                 manifest: {

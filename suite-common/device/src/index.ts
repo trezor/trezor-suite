@@ -1,13 +1,17 @@
 export * from './acquireDeviceThunk';
 export * from './deviceActions';
+export * from './deviceRef/deviceRef';
+export * from './deviceRef/deviceTracking';
 export * from './deviceConstants';
 export type * from './deviceDeps';
 export * from './deviceReducer';
 export * from './deviceSelectors';
 export * from './deviceUtils';
 export * from './selectDeviceThunk';
+export * from './waitForConnectedDeviceThunk';
 export * from './sortDevices';
 export * from './usePinHook';
+export { createDeviceReceiver } from './services/createDeviceReceiver';
 export { getIsIgnoredEntropyCheckError } from './services/getIsIgnoredEntropyCheckError';
 export { getIsDeviceIdValid } from './services/getIsDeviceIdValid';
 export { deviceInvariabilityCheck } from './services/deviceInvariabilityCheck';

@@ -55,7 +55,7 @@ describe('goToSuiteThunk', () => {
     it('reports device-setup-completed by default', () => {
         const { store, report } = setup();
 
-        store.dispatch(goToSuiteThunk());
+        store.dispatch(goToSuiteThunk(mockSuiteDevice()));
 
         expect(report).toHaveBeenCalledTimes(1);
         expect(report.mock.calls[0][0].type).toBe('device-setup-completed');
@@ -64,7 +64,7 @@ describe('goToSuiteThunk', () => {
     it('does not report device-setup-completed when the event is skipped', () => {
         const { store, report } = setup();
 
-        store.dispatch(goToSuiteThunk({ skipDeviceSetupCompletedEvent: true }));
+        store.dispatch(goToSuiteThunk(mockSuiteDevice(), { skipDeviceSetupCompletedEvent: true }));
 
         expect(report).not.toHaveBeenCalled();
     });

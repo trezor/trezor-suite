@@ -1,3 +1,9 @@
+export { adoptFirmwareUpdatedDeviceThunk } from './adoptFirmwareUpdatedDeviceThunk';
+export {
+    FirmwareUpdateSession,
+    useFirmwareSessionDevice,
+    useFirmwareSessionDeviceRef,
+} from './FirmwareUpdateSession';
 export { Fingerprint } from './Fingerprint';
 export { FirmwareProgressBar } from './FirmwareProgressBar';
 export { FirmwareUpgradeNeededModal } from './FirmwareUpgradeNeededModal';

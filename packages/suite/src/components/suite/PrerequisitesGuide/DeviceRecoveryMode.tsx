@@ -15,7 +15,6 @@ import { useSelector } from 'src/hooks/suite';
 export const DeviceRecoveryMode = () => {
     const recoveryStatus = useSelector(selectRecoveryStatus);
     const { dispatch } = useServices(selectDispatch);
-
     const { isLocked } = useDevice();
 
     if (recoveryStatus === 'in-progress') {

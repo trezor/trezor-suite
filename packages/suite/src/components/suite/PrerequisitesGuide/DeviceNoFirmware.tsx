@@ -10,6 +10,7 @@ import { Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { CpuIcon } from '@trezor/icons';
 
+import { armOnboardedDeviceTracking } from 'src/actions/onboarding/onboardingActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 
 export const DeviceNoFirmware = () => {
@@ -22,6 +23,13 @@ export const DeviceNoFirmware = () => {
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
         const device = selectSelectedDevice(getState());
+
+        // Onboarding begins here, and this is the last moment the selection is guaranteed to be
+        // the device the user meant: from now on it installs firmware and wipes the device, so it
+        // disconnects and the selection drifts. Pin the flow to it. See `selectOnboardedDevice`.
+        if (device?.connected) {
+            dispatch(armOnboardedDeviceTracking(device));
+        }
 
         analytics.report(
             {

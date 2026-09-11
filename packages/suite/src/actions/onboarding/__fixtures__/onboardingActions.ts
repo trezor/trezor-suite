@@ -4,13 +4,16 @@ import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as STEP from 'src/constants/onboarding/steps';
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
 
+// `initialState.device` below is a bare device object rather than the device reducer's shape, so
+// `selectSelectedDevice` resolved to undefined here before the device became an explicit argument.
+// These cases pass undefined to keep asserting the same behaviour.
 export default [
     {
         description: 'goToNextStepThunk (without param)',
         initialState: {
             device: mockSuiteDevice(),
         },
-        action: () => onboardingActions.goToNextStepThunk(),
+        action: () => onboardingActions.goToNextStepThunk(undefined),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_AUTHENTICATE_DEVICE_STEP },
         },
@@ -20,7 +23,7 @@ export default [
         initialState: {
             device: mockSuiteDevice(),
         },
-        action: () => onboardingActions.goToNextStepThunk('firmware'),
+        action: () => onboardingActions.goToNextStepThunk(undefined, 'firmware'),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_FIRMWARE_STEP },
         },
@@ -32,7 +35,7 @@ export default [
                 activeStepId: STEP.ID_RECOVERY_STEP,
             },
         },
-        action: () => onboardingActions.goToPreviousStepThunk(),
+        action: () => onboardingActions.goToPreviousStepThunk(undefined),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_BACKUP_TYPE_STEP },
         },

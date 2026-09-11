@@ -1,14 +1,19 @@
-import { type UnknownAction } from '@reduxjs/toolkit';
-import { produce } from 'immer';
+import { createReducer } from '@reduxjs/toolkit';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
-import { deviceActions } from '@suite-common/device';
+import {
+    type DeviceTrackingState,
+    deviceTrackingInitialState,
+    deviceTrackingReducer,
+} from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 
 import {
     addPath,
-    enableOnboardingReducer,
+    armOnboardedDeviceTracking,
     goToStep,
+    onboardedDeviceConnected,
+    onboardedDeviceDisconnected,
     removePath,
     resetOnboarding,
     updateAnalytics,
@@ -25,73 +30,68 @@ export interface OnboardingRootState {
 export interface OnboardingState {
     backupType: BackupType;
     backupMedium: BackupMedium | null;
-    isActive: boolean;
-    prevDeviceId: string | null;
     activeStepId: AnyStepId;
     path: AnyPath[];
     onboardingAnalytics: Partial<OnboardingAnalytics>;
+    /**
+     * Which physical device is being onboarded. Onboarding wipes and initialises the device, so
+     * its identity changes underneath us; the ref follows it across those reconnects the same way
+     * the firmware update does. See `@suite-common/device` `deviceTracking`.
+     */
+    deviceTracking: DeviceTrackingState;
 }
 
 const initialState: OnboardingState = {
-    isActive: false,
-    // todo: prevDevice is now used to solve two different things and it cant work
-    // would be better to implement field "isMatchingPrevDevice" along with prevDevice
-    // prevDevice is used only in firmwareUpdate so maybe move it to firmwareUpdate
-    // and here leave only isMatchingPrevDevice ?
-
-    prevDeviceId: null,
     activeStepId: STEP.ID_FIRMWARE_STEP,
     path: [],
     onboardingAnalytics: {},
+    deviceTracking: deviceTrackingInitialState,
     backupType: 'shamir-single',
     backupMedium: null,
 };
 
-const addPathToState = (path: AnyPath, state: OnboardingState) => {
-    if (!state.path.includes(path)) {
-        return [...state.path, path];
-    }
+const onboardingReducer = createReducer(initialState, builder =>
+    builder
+        .addCase(goToStep, (state: OnboardingState, { payload }) => {
+            state.activeStepId = payload;
+        })
+        .addCase(addPath, (state: OnboardingState, { payload }) => {
+            if (!state.path.includes(payload)) {
+                state.path.push(payload);
+            }
+        })
+        .addCase(removePath, (state: OnboardingState, { payload }) => {
+            state.path = state.path.filter(path => !payload.includes(path));
+        })
+        .addCase(armOnboardedDeviceTracking, (state: OnboardingState, { payload }) => {
+            state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
+                type: 'arm',
+                device: payload,
+            });
+        })
+        .addCase(onboardedDeviceConnected, (state: OnboardingState, { payload }) => {
+            state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
+                type: 'device-connect',
+                device: payload.device,
+                isOnlyCandidate: payload.isOnlyCandidate,
+            });
+        })
+        .addCase(onboardedDeviceDisconnected, (state: OnboardingState, { payload }) => {
+            state.deviceTracking = deviceTrackingReducer(state.deviceTracking, {
+                type: 'device-disconnect',
+                device: payload,
+            });
+        })
+        .addCase(updateAnalytics, (state: OnboardingState, { payload }) => {
+            state.onboardingAnalytics = { ...state.onboardingAnalytics, ...payload };
+        })
+        .addCase(updateBackupType, (state: OnboardingState, { payload }) => {
+            state.backupType = payload;
+        })
+        .addCase(updateBackupMedium, (state: OnboardingState, { payload }) => {
+            state.backupMedium = payload;
+        })
+        .addCase(resetOnboarding, () => initialState),
+);
 
-    return [...state.path];
-};
-
-const removePathsFromState = (paths: AnyPath[], state: OnboardingState) =>
-    state.path.filter(p => !paths.includes(p));
-
-const ALLOWED_ACTION_TYPES = new Set<UnknownAction['type']>([
-    resetOnboarding.type,
-    enableOnboardingReducer.type,
-    updateAnalytics.type,
-]);
-
-const onboarding = (state: OnboardingState = initialState, action: UnknownAction) => {
-    if (!state.isActive && !ALLOWED_ACTION_TYPES.has(action.type)) {
-        return state;
-    }
-
-    return produce(state, draft => {
-        if (enableOnboardingReducer.match(action)) {
-            draft.isActive = action.payload;
-        } else if (goToStep.match(action)) {
-            draft.activeStepId = action.payload;
-        } else if (addPath.match(action)) {
-            draft.path = addPathToState(action.payload, state);
-        } else if (removePath.match(action)) {
-            draft.path = removePathsFromState(action.payload, state);
-        } else if (deviceActions.deviceDisconnect.match(action)) {
-            draft.prevDeviceId = action.payload.id ?? null;
-        } else if (updateAnalytics.match(action)) {
-            draft.onboardingAnalytics = { ...state.onboardingAnalytics, ...action.payload };
-        } else if (updateBackupType.match(action)) {
-            draft.backupType = action.payload;
-        } else if (updateBackupMedium.match(action)) {
-            draft.backupMedium = action.payload;
-        } else if (resetOnboarding.match(action)) {
-            return initialState;
-        }
-    });
-};
-
-export const selectIsOnboardingActive = (state: OnboardingRootState) => state.onboarding.isActive;
-
-export default onboarding;
+export default onboardingReducer;

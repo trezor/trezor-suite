@@ -1,13 +1,11 @@
 import { type ReactNode } from 'react';
 
+import { useFirmwareSessionDevice } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    selectIsDeviceBackedUp,
-    selectSelectedDevice,
-    selectSelectedDeviceLabelOrName,
-} from '@suite-common/device';
+import { selectIsDeviceBackedUp } from '@suite-common/device';
+import { selectFirmwareDeviceLabelOrName } from '@suite-common/firmware';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
@@ -34,13 +32,13 @@ export const StepCheckSeed = ({
     install,
     modalHeading,
 }: StepCheckSeedProps) => {
-    const device = useSelector(selectSelectedDevice);
-    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
+    const deviceLabel = useSelector(selectFirmwareDeviceLabelOrName);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
 
     const { dispatch } = useServices(selectDispatch);
 
-    if (!device?.connected || !device?.features) {
+    if (!firmwareUpdateDevice?.connected || !firmwareUpdateDevice?.features) {
         return <PrerequisitesGuide />;
     }
 
@@ -113,7 +111,7 @@ export const StepCheckSeed = ({
                     <Modal.Button
                         onClick={install}
                         data-testid="@firmware/confirm-seed-button"
-                        isDisabled={!device?.connected || !isChecked}
+                        isDisabled={!firmwareUpdateDevice?.connected || !isChecked}
                         intent={deviceWillBeWiped ? 'critical' : 'brand'}
                     >
                         <Translation

@@ -12,7 +12,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
