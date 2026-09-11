@@ -22,6 +22,9 @@ import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
+const HANDSHAKE_TIMEOUT_MS = 10000;
+const MAX_CONCURRENT_CONNECTIONS = 50;
+const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
 
 /**
  * allowed message from connect-in-suite-desktop implementation
@@ -81,8 +84,11 @@ export const exposeConnectWs = ({
 }) => {
     const { logger } = global;
 
+    let activeConnections = 0;
+
     const wss = new WebSocketServer({
         noServer: true,
+        maxPayload: MAX_MESSAGE_SIZE,
     });
 
     wss.on('listening', () => {
@@ -95,11 +101,27 @@ export const exposeConnectWs = ({
         const port = req.socket.remotePort;
         if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
             logger.error(LOG_PREFIX, `invalid connection attempt from ${ip}:${port}`);
-            ws.close();
+            req.socket.destroy();
 
             return;
         }
-        logger.info(LOG_PREFIX, `new connection from ${ip}:${port}`);
+
+        // Enforce connection limit to prevent resource exhaustion
+        if (activeConnections + 1 > MAX_CONCURRENT_CONNECTIONS) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit (${MAX_CONCURRENT_CONNECTIONS}) exceeded`,
+            );
+            req.socket.destroy();
+
+            return;
+        }
+        activeConnections += 1;
+
+        logger.info(
+            LOG_PREFIX,
+            `new connection from ${ip}:${port} (${activeConnections}/${MAX_CONCURRENT_CONNECTIONS})`,
+        );
 
         let processOnPort: ProcessInfo | undefined;
         const { origin } = req.headers;
@@ -107,6 +129,15 @@ export const exposeConnectWs = ({
         let manifest: Manifest | undefined;
         let version: string | undefined;
         let requestedPermissions: PermissionRequest[] | undefined;
+        let isHandshakeDone = false;
+
+        // Close connection if handshake is not received within timeout
+        const handshakeTimeout = setTimeout(() => {
+            if (!isHandshakeDone) {
+                logger.warn(LOG_PREFIX, `connection closed: handshake timeout from ${ip}:${port}`);
+                req.socket.destroy();
+            }
+        }, HANDSHAKE_TIMEOUT_MS);
 
         logger.info(LOG_PREFIX, `origin: ${origin}`);
 
@@ -147,18 +178,35 @@ export const exposeConnectWs = ({
                 manifest = parseManifest(message.payload.settings.manifest);
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
+                isHandshakeDone = true;
+                clearTimeout(handshakeTimeout);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === POPUP.CLOSED) {
+                if (!isHandshakeDone) {
+                    logger.warn(LOG_PREFIX, `${message.type} rejected: handshake not completed`);
+
+                    return;
+                }
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.error,
                     callId: message.payload?.callId,
                 });
             } else if (message.type === CORE_CALL_CANCEL) {
+                if (!isHandshakeDone) {
+                    logger.warn(LOG_PREFIX, `${message.type} rejected: handshake not completed`);
+
+                    return;
+                }
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.reason,
                     callId: message.payload?.callId,
                 });
             } else if (message.type === CORE_CALL) {
+                if (!isHandshakeDone) {
+                    logger.warn(LOG_PREFIX, `${message.type} rejected: handshake not completed`);
+
+                    return;
+                }
                 if (!processOnPort) {
                     // ts check, should be set
                     logger.error(LOG_PREFIX, 'processOnPort result not found');
@@ -265,7 +313,12 @@ export const exposeConnectWs = ({
             }
         });
         ws.on('close', () => {
-            logger.info(LOG_PREFIX, 'Connection closed');
+            clearTimeout(handshakeTimeout);
+            activeConnections = Math.max(0, activeConnections - 1);
+            logger.info(
+                LOG_PREFIX,
+                `Connection closed (${activeConnections}/${MAX_CONCURRENT_CONNECTIONS})`,
+            );
 
             if (connectionPendingMessages.size > 0) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
@@ -284,12 +337,19 @@ export const exposeConnectWs = ({
     });
 
     httpReceiver.server.on('upgrade', (request, socket, head) => {
-        if (!request?.url) return;
+        if (!request?.url) {
+            socket.destroy();
+
+            return;
+        }
+
         const { pathname } = new URL(request.url, 'http://localhost');
         if (pathname === '/connect-ws') {
             wss.handleUpgrade(request, socket, head, ws => {
                 wss.emit('connection', ws, request);
             });
+        } else {
+            socket.destroy();
         }
     });
 };
