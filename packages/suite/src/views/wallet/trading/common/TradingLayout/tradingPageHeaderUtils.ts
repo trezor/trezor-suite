@@ -43,6 +43,9 @@ const isDetailRoute = (route?: TradingRoute): boolean =>
 export const isTradingTopLevelRoute = (route?: TradingRoute): route is TradingRoute =>
     route !== undefined && topLevelRoutes.includes(route);
 
+export const isTradingTransactionsRoute = (route?: TradingRoute): boolean =>
+    route === TRANSACTIONS_ROUTE;
+
 const getSectionFormRoute = (route?: TradingRoute): TradingRoute =>
     sections.find(s => s.detail === route || s.confirm === route)?.form ?? 'suite-index';
 

@@ -1366,6 +1366,70 @@ export const messages = defineMessages({
         defaultMessage: 'Show all trades',
         id: 'TR_TRADING_TRADE_HISTORY_SHOW_ALL',
     },
+    TR_TRADING_TRADE_HISTORY_EXPORT_BUTTON: {
+        defaultMessage: 'Export trades',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_BUTTON',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_TOOLTIP: {
+        defaultMessage: 'Downloads a CSV file with all your trades',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_TOOLTIP',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_ORDER_ID: {
+        defaultMessage: 'Trade ID',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_ORDER_ID',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_DATE: {
+        defaultMessage: 'Date and time',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_DATE',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_TYPE: {
+        defaultMessage: 'Type',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_TYPE',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPENT_AMOUNT: {
+        defaultMessage: 'Spent amount',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPENT_AMOUNT',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_TICKER: {
+        defaultMessage: 'Spend ticker',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_TICKER',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_NETWORK: {
+        defaultMessage: 'Spend network',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_NETWORK',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_TRANSACTION_ID: {
+        defaultMessage: 'Spend transaction ID',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_TRANSACTION_ID',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_AMOUNT: {
+        defaultMessage: 'Receive amount',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_AMOUNT',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_TICKER: {
+        defaultMessage: 'Receive ticker',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_TICKER',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_NETWORK: {
+        defaultMessage: 'Receive network',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_NETWORK',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_PROVIDER: {
+        defaultMessage: 'Provider',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_PROVIDER',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_STATUS: {
+        defaultMessage: 'Status',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_STATUS',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_TRANSACTION_ID: {
+        defaultMessage: 'Receive transaction ID',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_TRANSACTION_ID',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_PAYMENT_ID: {
+        defaultMessage: 'Payment ID',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_PAYMENT_ID',
+    },
     TR_TRADING_ENTER_AMOUNT_IN: {
         defaultMessage: 'Enter in {currency}',
         id: 'TR_TRADING_ENTER_AMOUNT_IN',
