@@ -10,6 +10,7 @@ import {
     type PrepareAnalyticsMiddlewareDeps,
     prepareAnalyticsMiddleware,
 } from './analyticsMiddleware';
+import bluetoothMiddleware from './bluetoothMiddleware';
 import buttonRequest from './buttonRequestMiddleware';
 import events from './eventsMiddleware';
 import log from './logsMiddleware';
@@ -30,6 +31,7 @@ export const getSuiteMiddleware = (
     prepareSuiteMiddleware(getExtra),
     prepareAnalyticsMiddleware(getExtra),
     buttonRequest,
+    bluetoothMiddleware,
     events,
     preparePushNotificationMiddleware(getExtra),
     metadataMiddleware,
