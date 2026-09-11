@@ -90,6 +90,7 @@ export const EnumStellarSorobanAuthorizedFunctionType = Type.Enum(
 export enum StellarSorobanCredentialsType {
     SOROBAN_CREDENTIALS_SOURCE_ACCOUNT = 0,
     SOROBAN_CREDENTIALS_ADDRESS_V2 = 2,
+    SOROBAN_CREDENTIALS_ADDRESS_WITH_DELEGATES = 3,
 }
 
 export type EnumStellarSorobanCredentialsType = Static<typeof EnumStellarSorobanCredentialsType>;
@@ -307,11 +308,34 @@ export const StellarSorobanAddressCredentials = Type.Object(
     { $id: 'StellarSorobanAddressCredentials' },
 );
 
+export type StellarSorobanDelegateSignature = Static<typeof StellarSorobanDelegateSignature>;
+export const StellarSorobanDelegateSignature = Type.Recursive(
+    This =>
+        Type.Object({
+            address: Type.String(),
+            signature: StellarSCVal,
+            nested_delegates: Type.Array(This),
+        }),
+    { $id: 'StellarSorobanDelegateSignature' },
+);
+
+export type StellarSorobanAddressCredentialsWithDelegates = Static<
+    typeof StellarSorobanAddressCredentialsWithDelegates
+>;
+export const StellarSorobanAddressCredentialsWithDelegates = Type.Object(
+    {
+        address_credentials: StellarSorobanAddressCredentials,
+        delegates: Type.Array(StellarSorobanDelegateSignature),
+    },
+    { $id: 'StellarSorobanAddressCredentialsWithDelegates' },
+);
+
 export type StellarSorobanCredentials = Static<typeof StellarSorobanCredentials>;
 export const StellarSorobanCredentials = Type.Object(
     {
         type: EnumStellarSorobanCredentialsType,
         address_v2: Type.Optional(StellarSorobanAddressCredentials),
+        address_with_delegates: Type.Optional(StellarSorobanAddressCredentialsWithDelegates),
     },
     { $id: 'StellarSorobanCredentials' },
 );
