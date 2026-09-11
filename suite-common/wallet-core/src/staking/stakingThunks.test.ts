@@ -177,6 +177,24 @@ describe('initStakeDataThunk', () => {
         expect(getStakingBatchMock).not.toHaveBeenCalled();
     });
 
+    it('refetches after a failed refetch even though the last success is still recent', async () => {
+        getStakingBatchMock.mockResolvedValueOnce({ data: [ethSection], errors: [] });
+        const store = initStore({
+            stake: {
+                ...stakeInitialState,
+                data: {
+                    ...stakeDataInitialState,
+                    lastSuccessAt: Date.now(),
+                    error: 'Network down',
+                },
+            },
+        });
+
+        await store.dispatch(initStakeDataThunk());
+
+        expect(getStakingBatchMock).toHaveBeenCalled();
+    });
+
     it('skips fetching when bitcoin is the only enabled network', async () => {
         const store = initStore({ enabledNetworks: [asNetworkSymbol('btc')] });
 

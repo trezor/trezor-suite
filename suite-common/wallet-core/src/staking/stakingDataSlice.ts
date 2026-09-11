@@ -5,6 +5,10 @@ import { type StakingBatch, type StakingBatchDataItem } from '@suite-common/earn
 export type StakeDataState = {
     error: null | string;
     isLoading: boolean;
+    /**
+     * When `data` was last verified fresh. It tracks `data`, so an in-flight or failed refetch
+     * leaves it untouched — they keep showing the previously fetched `data`.
+     */
     lastSuccessAt: null | number;
 
     data: {
@@ -32,7 +36,6 @@ const stakeDataSlice = createSlice({
         fetchStakeDataRequest: state => {
             state.error = null;
             state.isLoading = true;
-            state.lastSuccessAt = null;
         },
         fetchStakeDataSuccess: (state, action: PayloadAction<StakingBatch['data']>) => {
             state.error = null;
@@ -54,7 +57,6 @@ const stakeDataSlice = createSlice({
         fetchStakeDataFailure: (state, action: PayloadAction<string>) => {
             state.error = action.payload;
             state.isLoading = false;
-            state.lastSuccessAt = null;
         },
         fetchStakeDataReset: state => {
             state.error = null;
