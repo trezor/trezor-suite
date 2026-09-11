@@ -11,6 +11,8 @@ import {
     getTransactionId,
     getTransactionIdFromTransaction,
     selectTransactionByAccountKeyAndTxidFromIndex,
+    selectTransactionIdsByAccountKey,
+    selectTransactionIdsByTxid,
     transactionsIndex,
 } from './transactionsIndex';
 import { type TransactionsRootState } from './transactionsReducerTypes';
@@ -95,7 +97,7 @@ describe('transactionsIndex', () => {
         const transaction = mockTransaction(ALICE, 'txA');
         const state = createState({ [aliceKey]: [undefined, transaction, null] });
 
-        expect(transactionsIndex.selectIds(state)).toEqual([getTransactionId(aliceKey, 'txA')]);
+        expect(transactionsIndex.getIds(state)).toEqual([getTransactionId(aliceKey, 'txA')]);
     });
 
     it('holds transactions from every account', () => {
@@ -104,14 +106,14 @@ describe('transactionsIndex', () => {
             [bobKey]: [mockTransaction(BOB, 'txB')],
         });
 
-        expect(transactionsIndex.selectIds(state)).toEqual([
+        expect(transactionsIndex.getIds(state)).toEqual([
             getTransactionId(aliceKey, 'txA'),
             getTransactionId(bobKey, 'txB'),
         ]);
     });
 
     it('is empty for a store with no transactions', () => {
-        expect(transactionsIndex.selectIds(createState({}))).toEqual([]);
+        expect(transactionsIndex.getIds(createState({}))).toEqual([]);
     });
 
     it('derives the same id from a transaction as from its account and txid', () => {
@@ -224,6 +226,65 @@ describe('a write to one account', () => {
                 removed: [getTransactionId(bobKey, 'txB')],
                 updated: [],
             });
+        });
+    });
+});
+
+describe('looking transactions up by something other than their id', () => {
+    it('gives an account its own transactions', () => {
+        const state = createState({
+            [aliceKey]: [mockTransaction(ALICE, 'txA'), mockTransaction(ALICE, 'txA2')],
+            [bobKey]: [mockTransaction(BOB, 'txB')],
+        });
+
+        expect(selectTransactionIdsByAccountKey(state, aliceKey)).toEqual([
+            getTransactionId(aliceKey, 'txA'),
+            getTransactionId(aliceKey, 'txA2'),
+        ]);
+    });
+
+    it('gives an account with no transactions nothing', () => {
+        expect(selectTransactionIdsByAccountKey(createState({}), aliceKey)).toEqual([]);
+    });
+
+    it('finds both sides of a transfer between the user’s own accounts', () => {
+        // What `findTransactions` answers by scanning every account in the store.
+        const state = createState({
+            [aliceKey]: [mockTransaction(ALICE, 'txShared', '-1')],
+            [bobKey]: [mockTransaction(BOB, 'txShared', '1'), mockTransaction(BOB, 'txB')],
+        });
+
+        expect(selectTransactionIdsByTxid(state, 'txShared')).toEqual([
+            getTransactionId(aliceKey, 'txShared'),
+            getTransactionId(bobKey, 'txShared'),
+        ]);
+    });
+
+    it('gives an unknown txid nothing', () => {
+        const state = createState({ [aliceKey]: [mockTransaction(ALICE, 'txA')] });
+
+        expect(selectTransactionIdsByTxid(state, 'txNope')).toEqual([]);
+    });
+
+    it('leaves one account’s list identical when another account receives a transaction', () => {
+        // A screen showing Alice's history is not re-rendered because Bob got paid.
+        withSubscription(() => {
+            const aliceTransactions = [mockTransaction(ALICE, 'txA')];
+            const bobTransaction = mockTransaction(BOB, 'txB');
+
+            const before = selectTransactionIdsByAccountKey(
+                createState({ [aliceKey]: aliceTransactions, [bobKey]: [bobTransaction] }),
+                aliceKey,
+            );
+            const after = selectTransactionIdsByAccountKey(
+                createState({
+                    [aliceKey]: aliceTransactions,
+                    [bobKey]: [bobTransaction, mockTransaction(BOB, 'txB2')],
+                }),
+                aliceKey,
+            );
+
+            expect(after).toBe(before);
         });
     });
 });
