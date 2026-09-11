@@ -50,15 +50,13 @@ const getBundledFirmwareVersion = (
     deviceModel: DeviceModelInternal,
     firmwareType: FirmwareType,
 ): string | undefined => {
-    const modelReleases = firmwareReleaseConfigAssets.releases[deviceModel];
-    const bundledRelease = modelReleases?.[firmwareType];
+    const bundledRelease = firmwareReleaseConfigAssets.releases[deviceModel]?.[firmwareType];
     if (!bundledRelease) {
         // Probably this is a new device model.
         return;
     }
     // Extracts the version from the filename, 't2b1-2.6.3-bitcoinonly.json' -> '2.6.3'.
     const bundledVersion = bundledRelease.releasePath.match(/(\d+\.\d+\.\d+)/);
-
     if (!bundledVersion) {
         throw new Error('Fimrware bundled version was not found.');
     }
@@ -66,35 +64,46 @@ const getBundledFirmwareVersion = (
     return bundledVersion[0];
 };
 
-const getReleasesAssetByDeviceModelAndFirmwareType = (
-    deviceModel: DeviceModelInternal,
-    firmwareType: FirmwareType,
-): FirmwareRelease[] => {
-    const firmwareTypeInFileName =
-        firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
+const getReleaseFilename = (
+    model: DeviceModelInternal,
+    type: FirmwareType,
+    version: VersionArray,
+) => {
+    const fwModel = model.toLowerCase();
+    const fwVersion = version.join('.');
+    const fwType = type === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
 
-    const availableReleasesRecord =
-        firmwareAssets?.[deviceModel.toLowerCase()]?.[firmwareTypeInFileName] ?? {};
+    return `${fwModel}-${fwVersion}-${fwType}`;
+};
 
-    return Object.values(availableReleasesRecord).sort((a, b) =>
-        versionUtils.isNewer(b.version, a.version) ? 1 : -1,
-    );
+const getReleaseAssets = (model: DeviceModelInternal, type: FirmwareType) => {
+    const fwModel = model.toLowerCase();
+    const fwType = type === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
+
+    return firmwareAssets?.[fwModel]?.[fwType] ?? {};
+};
+
+/**
+ * Returns only the path where to find firmware release (at a base URL), based on the current settings.
+ * Example: 'firmware/t3t1/universal/t3t1-2.8.10-universal.json'
+ */
+const getOnlineReleasePath = (
+    model: DeviceModelInternal,
+    type: FirmwareType,
+    version: VersionArray,
+): string => {
+    const { MIDDLE_PATH } = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
+    const fwModel = model.toLowerCase();
+    const fwType = type === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
+
+    return `${MIDDLE_PATH}/${fwModel}/${fwType}/${getReleaseFilename(model, type, version)}.json`;
 };
 
 export const getReleaseAsset = (
-    deviceModel: DeviceModelInternal,
+    model: DeviceModelInternal,
     version: VersionArray,
-    firmwareType: FirmwareType,
-) => {
-    const firmwareTypeInFileName =
-        firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
-    const fileName = `${deviceModel.toLowerCase()}-${version.join('.')}-${firmwareTypeInFileName}`;
-    const deviceModelLower = deviceModel.toLowerCase();
-
-    const asset = firmwareAssets?.[deviceModelLower]?.[firmwareTypeInFileName]?.[fileName];
-
-    return asset as FirmwareRelease;
-};
+    type: FirmwareType,
+) => getReleaseAssets(model, type)[getReleaseFilename(model, type, version)];
 
 export const getBundledRelease = (
     deviceModel: DeviceModelInternal,
@@ -132,31 +141,12 @@ const getOnlineReleaseByPath = async (releasePath: string) => {
     return response as FirmwareRelease;
 };
 
-/**
- * Returns only the path where to find firmware release (at a base URL), based on the current settings.
- * Example: 'firmware/t3t1/universal/t3t1-2.8.10-universal.json'
- */
-const getOnlineReleasePath = (
-    deviceModel: DeviceModelInternal,
-    firmwareVersion: VersionArray,
-    firmwareType: FirmwareType,
-): string => {
-    const onlineFirmwareBaseUrl = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
-    const firmwareTypeFileString =
-        firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
-    const relaseJsonFilename = `${deviceModel.toLowerCase()}-${firmwareVersion.join('.')}-${firmwareTypeFileString}.json`;
-    const origin = `${onlineFirmwareBaseUrl.MIDDLE_PATH}/${deviceModel.toLowerCase()}/${firmwareTypeFileString}`;
-    const releasePath = `${origin}/${relaseJsonFilename}`;
-
-    return releasePath;
-};
-
 export const getOnlineReleaseByVersion = async (
     deviceModel: DeviceModelInternal,
     firmwareVersion: VersionArray,
     firmwareType: FirmwareType,
 ): Promise<FirmwareRelease | undefined> => {
-    const releasePath = getOnlineReleasePath(deviceModel, firmwareVersion, firmwareType);
+    const releasePath = getOnlineReleasePath(deviceModel, firmwareType, firmwareVersion);
     const onlineRelease = await getOnlineReleaseByPath(releasePath);
     if (!onlineRelease || !versionUtils.isEqual(onlineRelease.version, firmwareVersion)) {
         return;
@@ -578,16 +568,15 @@ export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: F
         versionContext.version &&
         versionUtils.isNewerOrEqual(versionContext.version, release[versionContext.minVersionKey]);
 
-    const releasesOfDevice = getReleasesAssetByDeviceModelAndFirmwareType(
-        features.internal_model,
-        firmwareType,
-    );
+    const sortedReleases = Object.values(
+        getReleaseAssets(features.internal_model, firmwareType),
+    ).sort((a, b) => (versionUtils.isNewer(b.version, a.version) ? 1 : -1));
 
     let suitableRelease = release;
     if (!isCompatible) {
         // If the target isn't compatible, search for the best alternative.
         const alternativeRelease = findBestCompatibleRelease(
-            releasesOfDevice,
+            sortedReleases,
             currentVersion,
             versionContext.minVersionKey,
         );
@@ -607,7 +596,7 @@ export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: F
         conditions,
         intermediary,
         firmwareType: firmware_type,
-        releasesOfDevice,
+        releasesOfDevice: sortedReleases,
     });
 };
 
