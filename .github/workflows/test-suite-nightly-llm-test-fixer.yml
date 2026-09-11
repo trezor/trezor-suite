@@ -47,7 +47,7 @@ jobs:
         run: npx playwright install chromium-headless-shell
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6
         with:
           role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
           aws-region: "eu-central-1"
@@ -198,7 +198,7 @@ jobs:
         run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @trezor/suite-web @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-desktop-ui @trezor/suite @trezor/suite-data @trezor/suite-build @trezor/transport-bridge @suite-common/message-system
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6
         with:
           role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
           aws-region: "eu-central-1"
@@ -412,7 +412,7 @@ jobs:
         run: yarn workspaces focus @trezor/e2e-utils
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6
         with:
           role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
           aws-region: "eu-central-1"
