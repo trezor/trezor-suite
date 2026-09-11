@@ -5,6 +5,7 @@ import { ExperimentId, ExperimentWrapper } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     cryptoIdToNetwork,
+    selectTradingComposedTransactionInfo,
     selectTradingDisplayComposedFee,
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
@@ -57,6 +58,7 @@ export const TradingOfferExchangeDetails = ({
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const networkFee = useSelector(state => selectTradingDisplayComposedFee(state, exchangeQuote));
+    const { composed } = useSelector(selectTradingComposedTransactionInfo);
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     const { symbol } = account;
@@ -127,7 +129,10 @@ export const TradingOfferExchangeDetails = ({
                 <TradingNetworkFeeInfoItem
                     amount={formattedNetworkFee}
                     symbol={symbol}
-                    tooltipTextId={getFeeTooltipTextId({ networkType: account.networkType })}
+                    tooltipTextId={getFeeTooltipTextId({
+                        networkType: account.networkType,
+                        isTronAccountActivation: !!composed?.accountActivationFee,
+                    })}
                     edit={networkFeeEdit}
                 />
 
