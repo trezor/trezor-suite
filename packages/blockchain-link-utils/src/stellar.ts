@@ -69,6 +69,16 @@ const negated = ({ asset, amount }: StellarAssetAmount): OwnMovement => ({
     amount: new BigNumber(amount).negated().toString(),
 });
 
+/**
+ * The account's own legs of what moved, and the nearest holder on the other side. Effects name
+ * the real holder rather than the account Horizon stamps on every one, so the other legs of a
+ * swap belong to the router and the pool it routed through.
+ */
+const selectOwnMovements = (deltas: readonly StellarBalanceDelta[], descriptor: string) => ({
+    movements: deltas.filter(({ holder }) => holder === descriptor),
+    counterparty: deltas.find(({ holder }) => holder !== descriptor)?.holder,
+});
+
 type LabelledParams = {
     baseTx: Omit<Transaction, 'type'>;
     operationType?: StellarOperationType;
@@ -244,10 +254,7 @@ export const transformTransaction = (
             // The balance changes are classic assets only, so a call that moved lumens - which is
             // every swap priced in XLM - has nothing to show there. The effects do know, and they
             // name the real holder, so the account's own legs are the ones that moved.
-            const movements = deltas.filter(({ holder }) => holder === descriptor);
-            const [counterparty] = [...new Set(deltas.map(({ holder }) => holder))].filter(
-                holder => holder !== descriptor,
-            );
+            const { movements, counterparty } = selectOwnMovements(deltas, descriptor);
 
             if (movements.length > 0) {
                 return transformMovements({
@@ -287,13 +294,11 @@ export const transformTransaction = (
         }
         case 'balance-change': {
             const { deltas, operationType } = parsed;
-            const [counterparty] = [...new Set(deltas.map(({ holder }) => holder))].filter(
-                holder => holder !== descriptor,
-            );
+            const { movements, counterparty } = selectOwnMovements(deltas, descriptor);
 
             return transformMovements({
                 baseTx: labelled({ baseTx, operationType }),
-                movements: deltas.filter(({ holder }) => holder === descriptor),
+                movements,
                 descriptor,
                 counterparty,
                 tokenDetailByMint,
