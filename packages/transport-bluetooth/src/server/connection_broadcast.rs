@@ -25,6 +25,10 @@ impl ConnectionBroadcast {
         self.sender.clone()
     }
 
+    pub fn get_peer(&self) -> &str {
+        &self.peer
+    }
+
     pub fn subscribe(&self) -> Receiver<ChannelMessage> {
         self.sender.subscribe()
     }

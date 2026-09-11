@@ -8,7 +8,10 @@ use hyper_tungstenite::{tungstenite::Message, HyperWebsocket};
 use hyper_util::rt::TokioIo;
 use log::info;
 use std::sync::Arc;
-use tokio::{net::TcpListener, sync::Mutex};
+use tokio::{
+    net::TcpListener,
+    sync::{broadcast::error::RecvError, Mutex},
+};
 
 use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
@@ -57,7 +60,18 @@ async fn handle_ws_connection(
     let ws_write_event = ws_write.clone();
     let ws_write_peer = peer.clone();
     let channel_message_listener = tokio::spawn(async move {
-        while let Ok(event) = receiver.recv().await {
+        loop {
+            let event = match receiver.recv().await {
+                Ok(event) => event,
+                Err(RecvError::Lagged(skipped)) => {
+                    // Keep the loop alive, exiting here would silently stop
+                    // event delivery while the websocket stays open.
+                    info!("ChannelMessage listener lagged, {skipped} events skipped");
+                    continue;
+                }
+                Err(RecvError::Closed) => break,
+            };
+
             match event {
                 ChannelMessage::Notification(event) => {
                     info!("Sending notification to peer {ws_write_peer}");
@@ -65,7 +79,7 @@ async fn handle_ws_connection(
                         Ok(json) => json,
                         Err(err) => {
                             info!("Error serialize notification {err:?}");
-                            return;
+                            continue;
                         }
                     };
 

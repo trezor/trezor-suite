@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.4.4
+
+- fix: macos scan filters on the Trezor service UUID instead of retaining every nearby BLE advertiser (memory growth)
+- fix: notification stream tasks are owned by a central registry and aborted when their websocket client disconnects, BLE subscriptions are released with the last stream
+- fix: scanning stops when the last websocket client disconnects, regardless of which client started it
+- fix: stop_scan resets the scanning flag even when called by another client or when the adapter call fails
+- fix: broadcast listeners survive lagged channels instead of exiting silently
+
 ### 0.4.3
 
 - feat: add linux pairing Agent and handle pairing PIN request
