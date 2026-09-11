@@ -1,11 +1,15 @@
 import { type TranslationKey } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
-import { isTronAccountActivation } from '@suite-common/wallet-utils';
 
 type FeeNetworkParams = {
     networkType: NetworkType;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano | null;
+};
+
+type FeeTooltipParams = {
+    networkType: NetworkType;
+    isTronAccountActivation?: boolean;
 };
 
 type GetSupportsAdjustableFeesParams = {
@@ -28,8 +32,8 @@ export const getSupportsAdjustableFees = ({
 
 export const getFeeTooltipTextId = ({
     networkType,
-    composedLevels,
-}: FeeNetworkParams): TranslationKey => {
+    isTronAccountActivation,
+}: FeeTooltipParams): TranslationKey => {
     switch (networkType) {
         case 'ethereum':
             return 'TR_EVM_MAX_FEE_DESC';
@@ -40,9 +44,7 @@ export const getFeeTooltipTextId = ({
         case 'ripple':
             return 'TR_XRP_FEE_DESC';
         case 'tron':
-            return isTronAccountActivation(composedLevels?.normal)
-                ? 'TR_TRON_FEE_ACTIVATION_DESC'
-                : 'TR_TRON_FEE_DESC';
+            return isTronAccountActivation ? 'TR_TRON_FEE_ACTIVATION_DESC' : 'TR_TRON_FEE_DESC';
         default:
             return 'TR_TRANSACTION_FEE_DESC';
     }
