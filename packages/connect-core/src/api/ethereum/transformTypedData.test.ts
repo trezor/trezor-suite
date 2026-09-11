@@ -23,7 +23,7 @@ function messageToHex(string: string) {
     return string.startsWith('0x') ? string : `0x${string}`;
 }
 
-// Same skips as packages/connect/e2e/__fixtures__/ethereumSignTypedData.ts —
+// Same skips as packages/connect-core/e2e/__fixtures__/ethereumSignTypedData.ts —
 // pending firmware support, tracked at trezor/trezor-suite#5181.
 const SKIP_FIXTURES = new Set(['array_of_structs', 'injective_testcase']);
 
