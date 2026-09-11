@@ -124,7 +124,7 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
 
                 return Promise.resolve(mockState.sep41Tokens);
             },
-            getStellarConnection: (url: string) =>
+            getStellarConnection: () =>
                 Promise.resolve({
                     url: 'https://stellar.mock',
                     passphrase: 'Public Global Stellar Network ; September 2015',

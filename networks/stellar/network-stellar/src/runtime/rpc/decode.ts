@@ -62,9 +62,14 @@ export const decodeAccountEntry = (data: xdr.LedgerEntryData): DecodedAccountEnt
     };
 };
 
-// Asset codes are fixed-width and zero-padded on the wire.
-const decodeAssetCode = (assetCode: string | Buffer) =>
-    (typeof assetCode === 'string' ? assetCode : assetCode.toString('utf8')).replace(/\0+$/, '');
+// Asset codes are fixed-width and zero-padded on the wire. Cut at the first NUL rather than
+// trimming with `/\0+$/`, which backtracks over the padding and so scans the code quadratically.
+const decodeAssetCode = (assetCode: string | Buffer) => {
+    const code = typeof assetCode === 'string' ? assetCode : assetCode.toString('utf8');
+    const padding = code.indexOf('\0');
+
+    return padding === -1 ? code : code.slice(0, padding);
+};
 
 export const decodeTrustlineEntry = (data: xdr.LedgerEntryData): StellarTrustline | undefined => {
     // The union arm is spelled `trustline` while its accessor is `trustLine`; mismatching the
