@@ -1,4 +1,3 @@
-import type { PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -16,9 +15,9 @@ import { BigNumber } from '@trezor/utils';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
 
-export type BuyFormFieldErrorBadgeProps = PropsWithChildren<{
+export type BuyFormFieldErrorBadgeProps = {
     fieldName: keyof BuyFormValues;
-}>;
+};
 
 const asNonEmptyStringValue = (value: unknown): string => (value as string) ?? '0';
 
@@ -77,21 +76,23 @@ const useMismatchedAmountMessage = (fieldName: keyof BuyFormValues) => {
     return undefined;
 };
 
-export const BuyFormFieldErrorBadge = ({ fieldName, children }: BuyFormFieldErrorBadgeProps) => {
+export const BuyFormFieldErrorBadge = ({ fieldName }: BuyFormFieldErrorBadgeProps) => {
     const isLoading = useSelector(selectTradingBuyIsLoading);
 
     const { errorMessage, hasError } = useField({ name: fieldName });
     const mismatchedAmountMessage = useMismatchedAmountMessage(fieldName);
 
-    if (!isLoading) {
-        if (hasError) {
-            return <Badge label={errorMessage} intent="critical" size="small" />;
-        }
-
-        if (mismatchedAmountMessage) {
-            return <Badge label={mismatchedAmountMessage} intent="neutral" size="small" />;
-        }
+    if (isLoading) {
+        return null;
     }
 
-    return children;
+    if (hasError) {
+        return <Badge label={errorMessage} intent="critical" size="small" />;
+    }
+
+    if (mismatchedAmountMessage) {
+        return <Badge label={mismatchedAmountMessage} intent="neutral" size="small" />;
+    }
+
+    return null;
 };

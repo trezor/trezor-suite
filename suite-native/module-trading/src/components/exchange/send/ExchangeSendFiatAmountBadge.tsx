@@ -1,10 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
-import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
-import { Badge } from '@suite-native/atoms';
-import { useField, useWatch } from '@suite-native/forms';
+import { useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { type TradingRootState, selectAmountInBaseFiatCurrency } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -13,12 +11,15 @@ import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormC
 import { useConvertFormValueToBaseUnit } from '../../../hooks/general/useConvertFormValueToBaseUnit';
 import { FiatAmountBadge } from '../../general/FiatAmountBadge';
 
-type ExchangeSendFiatAmountBadgeProps = {
+type ExchangeSendFiatAmountBadgeContentProps = {
     amount: string;
     asset: TradeableAsset;
 };
 
-const ExchangeSendFiatAmountBadge = ({ amount, asset }: ExchangeSendFiatAmountBadgeProps) => {
+const ExchangeSendFiatAmountBadgeContent = ({
+    amount,
+    asset,
+}: ExchangeSendFiatAmountBadgeContentProps) => {
     const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
     const symbol = getSymbolFromTradeableAsset(asset);
     invariant(symbol, 'Asset symbol is undefined');
@@ -34,19 +35,16 @@ const ExchangeSendFiatAmountBadge = ({ amount, asset }: ExchangeSendFiatAmountBa
     return <FiatAmountBadge amount={fiatAmount} />;
 };
 
-export const ExchangeSendAmountBadge = () => {
-    const isLoading = useSelector(selectTradingExchangeIsLoading);
+export const ExchangeSendFiatAmountBadge = () => {
     const { control } = useExchangeFormContext();
-    const asset = useWatch({ control, name: 'sendAsset' });
+    const [asset, amount] = useWatch({
+        control,
+        name: ['sendAsset', 'sendCryptoAmount'],
+    });
 
-    const { errorMessage, hasError, value } = useField({ name: 'sendCryptoAmount' });
-    if (!isLoading && hasError) {
-        return <Badge label={errorMessage} intent="critical" size="small" />;
-    }
-
-    if (!value || !asset) {
+    if (!amount || !asset) {
         return null;
     }
 
-    return <ExchangeSendFiatAmountBadge amount={value} asset={asset} />;
+    return <ExchangeSendFiatAmountBadgeContent amount={amount} asset={asset} />;
 };

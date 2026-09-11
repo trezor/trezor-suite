@@ -16,15 +16,13 @@ export type TradeableAssetButtonProps = {
     testID?: string;
 };
 
-const buttonStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
+const buttonStyle = prepareNativeStyle(({ colors, spacings }) => ({
     ...buttonSizeToDimensionsMap.medium,
     gap: spacings.sp8,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.elementFillNeutralSofter,
-    borderColor: colors.elementBorderNeutralSofter,
-    borderWidth: borders.widths.small,
+    backgroundColor: colors.elementFillNeutralSoft,
 }));
 
 export const TradeableAssetButton = ({
@@ -47,7 +45,7 @@ export const TradeableAssetButton = ({
             accessibilityLabel={accessibilityLabel}
             testID={testID}
         >
-            <IconByCryptoId cryptoId={cryptoId} size="tiny" />
+            <IconByCryptoId cryptoId={cryptoId} size="extraSmall" withNetwork />
             <NetworkSymbolExtendedFormatter
                 symbol={symbol}
                 variant="body-sm-strong"

@@ -96,8 +96,8 @@ describe('BuyFiatCurrencyPicker', () => {
         await fireEvent.press(getByText('USD'));
         await act(() => Promise.resolve());
 
-        expect(form.getValues('fiatValue')).toBeUndefined();
-        expect(form.getValues('cryptoValue')).toBeUndefined();
+        expect(form.getValues('fiatValue')).toBe('100');
+        expect(form.getValues('cryptoValue')).toBe('0.1');
         expect(dispatchSpy).toHaveBeenCalledWith(buyActions.fiatCurrencyChanged());
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingParameterChangedEvent.name,
