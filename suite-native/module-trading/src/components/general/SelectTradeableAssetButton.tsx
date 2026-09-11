@@ -17,8 +17,8 @@ export const SelectTradeableAssetButton = ({
     selectedAsset,
     caret,
     buttonColorProps = {
-        intent: 'brand',
-        priority: 'primary',
+        intent: 'neutral',
+        priority: 'secondary',
     },
     testID,
 }: SelectTradeableAssetButtonProps) => {

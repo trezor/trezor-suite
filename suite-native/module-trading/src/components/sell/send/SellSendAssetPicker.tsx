@@ -41,7 +41,6 @@ export const SellSendAssetPicker = () => {
         selectedValue,
         setSelectedValue,
         analyticsParameter: 'cryptoFrom',
-        amountField: 'cryptoStringAmount',
         getAssetChangedAction: sellActions.sendAssetChanged,
         getSetTradingAccountKeyAction: tradingSellActions.setTradingAccountKey,
     });
@@ -74,14 +73,13 @@ export const SellSendAssetPicker = () => {
 
     return (
         <HStack justifyContent="space-between" alignItems="center">
+            <SellSendAmountInput ref={inputRef} showAssetsScreen={showAssetsScreenAndFocusInput} />
             <SelectTradeableAssetButton
                 onPress={showAssetsScreen}
                 selectedAsset={selectedValue}
-                buttonColorProps={{ intent: 'brand', priority: 'primary' }}
                 testID={ASSET_PICKER_TEST_ID}
                 caret
             />
-            <SellSendAmountInput ref={inputRef} showAssetsScreen={showAssetsScreenAndFocusInput} />
         </HStack>
     );
 };

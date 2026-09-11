@@ -10,7 +10,7 @@ import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
-import { fireEvent, screen, waitFor } from '@suite-native/test-utils-store';
+import { fireEvent, screen, userEvent, waitFor } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     eth1NormalAccount,
@@ -151,13 +151,32 @@ describe('BuyTradeableAssetPicker', () => {
         });
 
         it('should apply buy asset change effects for an asset selected on the screen', async () => {
-            form.setValue('cryptoValue', '0.1');
-            mockSelectedTradeableAssetCryptoId = 'bitcoin';
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            await renderTradeableAssetPicker();
 
-            expect(form.getValues('cryptoValue')).toBeUndefined();
-            expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetChanged());
+            await act(() => {
+                form.setValue('asset', ethAsset);
+            });
+
+            const { getByLabelText, rerender } = await renderTradeableAssetPicker();
+
+            await userEvent.type(
+                getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+                '0.1',
+            );
+
+            mockSelectedTradeableAssetCryptoId = 'bitcoin';
+
+            await rerender(
+                <Form form={form}>
+                    <BuyTradeableAssetPicker />
+                </Form>,
+            );
+
+            await waitFor(() => {
+                expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetChanged());
+            });
+
+            expect(form.getValues('cryptoValue')).toBe('0.1');
             expect(mockSetParams).toHaveBeenCalledWith({
                 selectedTradeableAssetCryptoId: undefined,
             });
@@ -180,14 +199,32 @@ describe('BuyTradeableAssetPicker', () => {
         });
 
         it('should dispatch assetTokenChanged when switching between assets on the same network', async () => {
-            form.setValue('asset', ethAsset);
-            form.setValue('cryptoValue', '0.1');
-            mockSelectedTradeableAssetCryptoId = usdcAsset.cryptoId;
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            await renderTradeableAssetPicker();
 
-            expect(form.getValues('cryptoValue')).toBeUndefined();
-            expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetTokenChanged());
+            await act(() => {
+                form.setValue('asset', ethAsset);
+            });
+
+            const { getByLabelText, rerender } = await renderTradeableAssetPicker();
+
+            await userEvent.type(
+                getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+                '0.1',
+            );
+
+            mockSelectedTradeableAssetCryptoId = usdcAsset.cryptoId;
+
+            await rerender(
+                <Form form={form}>
+                    <BuyTradeableAssetPicker />
+                </Form>,
+            );
+
+            await waitFor(() => {
+                expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetTokenChanged());
+            });
+
+            expect(form.getValues('cryptoValue')).toBe('0.1');
             expect(dispatchSpy).not.toHaveBeenCalledWith(buyActions.assetChanged());
             expect(reportMock).toHaveBeenCalledWith({
                 type: events.tradingParameterChangedEvent.name,
