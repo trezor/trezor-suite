@@ -23,6 +23,10 @@ import type {
 import { getUSBDescriptorModel } from '../utils/descriptor';
 import { error, success } from '../utils/result';
 
+// usb 3.x cancels transfers after a 1s default timeout, breaking slow flows (PIN, passphrase, THP).
+// Pass an effectively-infinite timeout; cancellation stays with our own AbortSignal. Ignored by navigator.usb.
+const TRANSFER_TIMEOUT_MS = 0x7fffffff;
+
 interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
     usbInterface: UsbInterfaceApi;
     forceReadSerialOnConnect?: boolean;
@@ -216,7 +220,11 @@ export class UsbApi extends AbstractApi {
         let pending = this.devicePendingTransferIn.get(device);
         if (!pending) {
             pending = device
-                .transferIn(this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID, this.chunkSize)
+                .transferIn(
+                    this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
+                    this.chunkSize,
+                    TRANSFER_TIMEOUT_MS,
+                )
                 .finally(() => this.devicePendingTransferIn.delete(device));
             this.devicePendingTransferIn.set(device, pending);
         }
@@ -283,6 +291,7 @@ export class UsbApi extends AbstractApi {
                     device.transferOut(
                         this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
                         newArray,
+                        TRANSFER_TIMEOUT_MS,
                     ),
                 { signal: options?.signal, onAbort: () => this.resetDevice(path) },
             );
@@ -512,15 +521,11 @@ export class UsbApi extends AbstractApi {
         try {
             this.logger?.debug(`usb: loadSerialNumber`);
 
+            // usb 3.x (node-usb-rs) exposes serialNumber as a standard WebUSB getter, so
+            // opening the device is enough to make it readable on drivers that withhold it
+            // until the device is opened. The former low-level getStringDescriptor read
+            // (device.device.deviceDescriptor.iSerialNumber) no longer exists in the WebUSB API.
             await this.abortableMethod(() => device.open(), { signal });
-            // load serial number.
-            await this.abortableMethod(
-                () =>
-                    device
-                        // @ts-expect-error:  this is not part of common types between webusb and usb.
-                        .getStringDescriptor(device.device.deviceDescriptor.iSerialNumber),
-                { signal },
-            );
             this.logger?.debug(`usb: loadSerialNumber done, serialNumber: ${device.serialNumber}`);
             await this.abortableMethod(() => device.close(), { signal });
         } catch (err) {
@@ -579,12 +584,10 @@ export class UsbApi extends AbstractApi {
     private handleReadWriteError(err: Error) {
         if (
             [
-                // node usb
-                'LIBUSB_TRANSFER_ERROR',
-                'LIBUSB_ERROR_PIPE',
-                'LIBUSB_ERROR_IO',
-                'LIBUSB_ERROR_NO_DEVICE',
-                'LIBUSB_ERROR_OTHER',
+                // node usb (usb 3.x is nusb-based; these are its TransferError / io error
+                // messages, e.g. "transferOut error: device disconnected")
+                'device disconnected',
+                'not connected',
                 // web usb
                 ERRORS.INTERFACE_DATA_TRANSFER,
                 'The device was disconnected.',
