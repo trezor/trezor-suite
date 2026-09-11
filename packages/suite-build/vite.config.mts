@@ -479,6 +479,7 @@ export default defineConfig({
         'process.env.COMMITHASH': JSON.stringify(commitId),
         'process.env.SUITE_TYPE': JSON.stringify(project ?? 'web'),
         'process.env.NODE_ENV': JSON.stringify('development'),
+        'process.env.IS_DEV_BUILD': JSON.stringify('true'),
         'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
         'process.env.TANSTACK_REACT_QUERY_DEV_TOOLS': JSON.stringify(isTanstackReactQueryDevTools),
         'process.env.TRANSPORT_BROWSER_PING': JSON.stringify(transportBrowserPing),

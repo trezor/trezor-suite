@@ -40,6 +40,9 @@ interface TransactionListProps {
     onPageRequested?: (page: number) => void;
 }
 
+// Inlined by the bundler: `true` only in a build made by `yarn suite:dev` or `suite:dev:desktop`.
+const isDevBuild = process.env.IS_DEV_BUILD === 'true';
+
 export const TransactionList = ({
     allTransactions,
     areAllTransactionsLoaded,
@@ -72,9 +75,9 @@ export const TransactionList = ({
             const startedAt = performance.now();
             const results = advancedSearchTransactions(transactions, searchLabels, searchQuery);
 
-            if (isDebugModeActive) {
-                // The bundle is always built in production mode, so there is no build-time way to
-                // tell a developer's app apart — debug mode is the switch that can.
+            // On in a developer's build without asking for it, and reachable in a real build by
+            // turning on debug mode.
+            if (isDevBuild || isDebugModeActive) {
                 // eslint-disable-next-line no-console
                 console.log(
                     `[transaction search] "${searchQuery}" took ${(performance.now() - startedAt).toFixed(1)}ms over ${transactions.length} transactions, ${results.length} matched`,
