@@ -39,10 +39,11 @@ type UseWrappedNativeTokenReviewParams = {
 };
 
 type UseWrappedNativeTokenReviewResult = {
-    handleSubmitted: () => Promise<void>;
+    finalizeWrappedNativeTokenSubmit: (txid: string) => void;
     leaveReviewFromDeviceCancel: () => void;
     startReview: () => Promise<YieldReviewSigningResult>;
     status: YieldReviewStatus;
+    submitWrappedNativeToken: () => Promise<string | undefined>;
 };
 
 type NavigationProps = StackNavigationProps<
@@ -113,23 +114,36 @@ export const useWrappedNativeTokenReview = ({
         [account, amount, flowType, navigation, onBroadcast, reportSent, signedTransaction],
     );
 
-    const review = useEarnTransactionReview({
-        formType: flowType === 'wrap' ? 'wrap-native' : 'unwrap-native',
-        isSigned: !!signedTransaction,
-        navigation,
-        onPushSuccess,
-        onReviewLeave,
-        onSignSuccess: setSignedTransaction,
-        reportCancel: isStandaloneFlow ? reportSubmitFailed : undefined,
-        reportError: isStandaloneFlow ? reportError : undefined,
-        signAction,
-        pushAction,
-    });
+    const { finalizeSubmit, leaveReviewFromDeviceCancel, startReview, status, submitReview } =
+        useEarnTransactionReview({
+            formType: flowType === 'wrap' ? 'wrap-native' : 'unwrap-native',
+            isSigned: !!signedTransaction,
+            navigation,
+            onPushSuccess,
+            onReviewLeave,
+            onSignSuccess: setSignedTransaction,
+            reportCancel: isStandaloneFlow ? reportSubmitFailed : undefined,
+            reportError: isStandaloneFlow ? reportError : undefined,
+            signAction,
+            pushAction,
+        });
+
+    const submitWrappedNativeToken = useCallback(async () => {
+        const pushedPayload = await submitReview();
+
+        return pushedPayload?.txid;
+    }, [submitReview]);
+
+    const finalizeWrappedNativeTokenSubmit = useCallback(
+        (txid: string) => finalizeSubmit({ txid }),
+        [finalizeSubmit],
+    );
 
     return {
-        handleSubmitted: review.handleSubmitted,
-        leaveReviewFromDeviceCancel: review.leaveReviewFromDeviceCancel,
-        startReview: review.startReview,
-        status: review.status,
+        finalizeWrappedNativeTokenSubmit,
+        leaveReviewFromDeviceCancel,
+        startReview,
+        status,
+        submitWrappedNativeToken,
     };
 };

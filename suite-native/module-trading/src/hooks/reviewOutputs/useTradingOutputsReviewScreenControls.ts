@@ -176,6 +176,8 @@ export const useTradingOutputsReviewScreenControls = ({
     return {
         isTransactionAlreadySigned,
         confirmOnTrezorRef,
+        closeSheet,
+        revealConfirmOnTrezorSheet,
         handleSendTransaction,
         showTimer,
         secondsLeft,

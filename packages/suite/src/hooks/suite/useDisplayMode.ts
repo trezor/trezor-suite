@@ -3,15 +3,15 @@ import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import {
     AddressDisplayOptions,
-    type ReviewOutput,
     type StakeType,
+    type TransactionReviewOutput,
 } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { DisplayMode } from 'src/types/suite';
 
 type UseDisplayModeProps = {
-    type: ReviewOutput['type'];
+    type: TransactionReviewOutput['type'];
     stakeType?: StakeType;
 };
 

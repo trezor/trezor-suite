@@ -10,9 +10,9 @@ import { selectAccounts, selectSendFormReviewLastButtonCode } from '@suite-commo
 import type {
     FormState,
     GeneralPrecomposedTransactionFinal,
-    ReviewOutput,
     StakeFormState,
     StakeType,
+    TransactionReviewOutput as TransactionReviewOutputType,
 } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
@@ -35,7 +35,7 @@ export type TransactionReviewOutputListProps = {
     precomposedTx: GeneralPrecomposedTransactionFinal;
     precomposedForm: FormState | StakeFormState;
     signedTx?: { tx: string };
-    outputs: ReviewOutput[];
+    outputs: TransactionReviewOutputType[];
     buttonRequestsCount: number;
     isRbfAction: boolean;
     reviewStep: number;
@@ -49,7 +49,13 @@ const Wrapper = styled.div`
     scroll-margin-top: 48px;
 `;
 
-const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number }) => (
+const SectionHeading = ({
+    output,
+    index,
+}: {
+    output: TransactionReviewOutputType;
+    index: number;
+}) => (
     <H4 margin={{ top: index === 0 ? 0 : 8 }}>
         {output.type === 'address' ? (
             <Translation

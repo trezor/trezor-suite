@@ -65,7 +65,7 @@ export const useExchangeSignTransaction = ({
             ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
             : undefined;
 
-        navigation.navigate(RootStackRoutes.TradingExchangeOutputsReview, {
+        navigation.navigate(RootStackRoutes.TradingExchangeTransactionReview, {
             accountKey: fromAccount.key,
             tokenContract,
             orderId: quote.orderId ?? '',

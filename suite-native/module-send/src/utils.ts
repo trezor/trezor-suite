@@ -1,4 +1,11 @@
-import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import { CommonActions } from '@react-navigation/native';
+
+import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    AppTabsRoutes,
+    RootStackRoutes,
+    TransactionDetailStackRoutes,
+} from '@suite-native/navigation';
 import { type Utxo } from '@trezor/blockchain-link-types';
 import { type FeeLevel } from '@trezor/connect';
 
@@ -57,3 +64,53 @@ export const constructFormDraft = ({
 
 export const isSameUtxo = (utxo1: Utxo, utxo2: Utxo): boolean =>
     utxo1.txid === utxo2.txid && utxo1.vout === utxo2.vout;
+
+interface NavigateOutOfSendFlowActionProps {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+    txid?: string;
+}
+
+export const navigateOutOfSendFlowAction = ({
+    accountKey,
+    tokenContract,
+    txid,
+}: NavigateOutOfSendFlowActionProps) => {
+    const routes: any[] = [
+        {
+            name: RootStackRoutes.AppTabs,
+            params: {
+                screen: AppTabsRoutes.HomeStack,
+            },
+        },
+        {
+            name: RootStackRoutes.AccountDetail,
+            params: {
+                accountKey,
+                tokenContract,
+            },
+        },
+    ];
+
+    if (txid) {
+        routes.push({
+            name: RootStackRoutes.TransactionDetailStack,
+            params: {
+                screen: TransactionDetailStackRoutes.TransactionDetail,
+                params: {
+                    accountKey,
+                    tokenContract,
+                    txid,
+                    closeActionType: 'close',
+                    source: 'send',
+                },
+            },
+        });
+    }
+
+    // Reset navigation stack to the transaction detail screen with HomeStack as a previous step, so the user can navigate back there.
+    return CommonActions.reset({
+        index: 1,
+        routes,
+    });
+};

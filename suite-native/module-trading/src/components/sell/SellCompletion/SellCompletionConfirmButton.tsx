@@ -54,7 +54,7 @@ export const SellCompletionConfirmButton = ({ quote }: SellCompletionConfirmButt
             ? (parseCryptoId(quote.cryptoCurrency)?.contractAddress as TokenAddress)
             : undefined;
 
-        navigation.navigate(RootStackRoutes.TradingSellOutputsReview, {
+        navigation.navigate(RootStackRoutes.TradingSellTransactionReview, {
             accountKey: fromAccount.key,
             tokenContract,
             orderId: quote.orderId ?? '',

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { StackActions, useNavigation } from '@react-navigation/native';
@@ -50,13 +50,13 @@ type UseYieldApprovalReviewParams = {
 };
 
 type UseYieldApprovalReviewResult = {
-    handleApprovalSubmitted: () => Promise<void>;
+    finalizeApprovalSubmit: (txid: string) => Promise<void>;
     isApprovalSigned: boolean;
     isApprovalReviewReady: boolean;
-    isSendingApproval: boolean;
     isSigningApproval: boolean;
     leaveReviewFromDeviceCancel: () => void;
     startApprovalReview: () => Promise<YieldReviewSigningResult>;
+    submitApproval: () => Promise<string | undefined>;
 };
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -212,9 +212,9 @@ export const useYieldApprovalReview = ({
         wasReviewCancelledByUser,
     ]);
 
-    const handleApprovalSubmitted = useCallback(async () => {
+    const submitApproval = useCallback(async (): Promise<string | undefined> => {
         if (!isApprovalSigned || isSendingApproval) {
-            return;
+            return undefined;
         }
 
         setIsSendingApproval(true);
@@ -231,54 +231,70 @@ export const useYieldApprovalReview = ({
             reportApprovalReviewEvent({ errorMessage: 'push-failed' });
             handleReviewError(pushResponse.payload);
 
-            return;
+            return undefined;
         }
 
-        const { txid } = pushResponse.payload.payload;
-
-        const submittedAt = Date.now();
-
-        await dispatch(
-            handleYieldApproveSuccessTxidThunk({
-                flowType: 'deposit',
-                flowKey,
-                txid,
-                fee: reviewTransaction?.precomposedTransaction.fee,
-                submittedAt,
-                isAmountUnlimited:
-                    transactionType === 'approve' && approvalLimitType === 'unlimited',
-            }),
-        );
-        dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
-        dispatch(sendFormActions.discardTransaction());
-        setIsSendingApproval(false);
-        markReviewNavigationSuccess();
-        navigation.dispatch(StackActions.pop(1));
+        return pushResponse.payload.payload.txid;
     }, [
-        approvalLimitType,
         dispatch,
         flowData.account,
-        flowKey,
-        formDraftKey,
         handleReviewError,
         isApprovalSigned,
         isMevProtectionEnabled,
         isMevProtectionFeatureEnabled,
         isSendingApproval,
-        markReviewNavigationSuccess,
-        navigation,
         reportApprovalReviewEvent,
-        reviewTransaction?.precomposedTransaction.fee,
-        transactionType,
     ]);
 
+    // Fired when the pushed transaction appears in the transactions store; the
+    // store keeps returning it afterwards, so guard against repeated finalization
+    // (pop(1) dispatched twice would leave the whole flow).
+    const hasFinalizedSubmitRef = useRef(false);
+
+    const finalizeApprovalSubmit = useCallback(
+        async (txid: string) => {
+            if (hasFinalizedSubmitRef.current) {
+                return;
+            }
+
+            hasFinalizedSubmitRef.current = true;
+
+            await dispatch(
+                handleYieldApproveSuccessTxidThunk({
+                    flowType: 'deposit',
+                    flowKey,
+                    txid,
+                    fee: reviewTransaction?.precomposedTransaction.fee,
+                    submittedAt: Date.now(),
+                    isAmountUnlimited:
+                        transactionType === 'approve' && approvalLimitType === 'unlimited',
+                }),
+            );
+            dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
+            dispatch(sendFormActions.discardTransaction());
+            setIsSendingApproval(false);
+            markReviewNavigationSuccess();
+            navigation.dispatch(StackActions.pop(1));
+        },
+        [
+            approvalLimitType,
+            dispatch,
+            flowKey,
+            formDraftKey,
+            markReviewNavigationSuccess,
+            navigation,
+            reviewTransaction?.precomposedTransaction.fee,
+            transactionType,
+        ],
+    );
+
     return {
-        handleApprovalSubmitted,
+        finalizeApprovalSubmit,
         isApprovalSigned,
         isApprovalReviewReady,
-        isSendingApproval,
         isSigningApproval,
         leaveReviewFromDeviceCancel,
         startApprovalReview,
+        submitApproval,
     };
 };

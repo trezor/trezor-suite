@@ -174,7 +174,7 @@ describe('ExchangePreviewContinueButton', () => {
         expect(mockOnSignTransactionNavigation).not.toHaveBeenCalled();
     });
 
-    it('should navigate to TradingExchangeOutputsReview on continue press', async () => {
+    it('should navigate to TradingExchangeTransactionReview on continue press', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         const mockOnSignTransactionNavigation = jest.fn();
         const { getByText } = await renderExchangePreviewContinueButton({
@@ -184,7 +184,7 @@ describe('ExchangePreviewContinueButton', () => {
         await userEvent.press(getByText(getTranslation('generic.buttons.continue')));
 
         expect(consoleWarnSpy).not.toHaveBeenCalled();
-        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
+        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeTransactionReview', {
             accountKey: btcAccountKey,
             orderId: mercuryoFixedWorstQuote.orderId,
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -210,7 +210,7 @@ describe('ExchangePreviewContinueButton', () => {
 
         await userEvent.press(getByText(getTranslation('generic.buttons.continue')));
 
-        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
+        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeTransactionReview', {
             accountKey: btcAccountKey,
             orderId: mercuryoFixedWorstQuote.orderId,
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
