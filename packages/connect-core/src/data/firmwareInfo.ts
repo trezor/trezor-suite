@@ -337,43 +337,31 @@ export const getFirmwareReleaseConfigInfo = (
 
     const { release: latestRelease, firmware_type: firmwareType } = deviceMessageRelease;
 
-    const isCompatible =
-        features.bootloader_mode && !!bootloaderVersion
-            ? versionUtils.isNewerOrEqual(bootloaderVersion, latestRelease.min_bootloader_version)
-            : !!firmwareVersion &&
-              versionUtils.isNewerOrEqual(firmwareVersion, latestRelease.min_firmware_version);
-
     const sortedReleases = Object.values(getReleaseAssets(model, type)).sort((a, b) =>
         versionUtils.isNewer(b.version, a.version) ? 1 : -1,
     );
 
     let suitableRelease = latestRelease;
-    if (!isCompatible) {
-        // If the target isn't compatible, search for the best alternative.
-
-        let alternativeRelease;
-
-        if (!sortedReleases || sortedReleases.length === 0) {
-            alternativeRelease = undefined;
-        } else {
-            if (features.bootloader_mode && bootloaderVersion) {
-                alternativeRelease = sortedReleases.find(fw =>
-                    versionUtils.isNewerOrEqual(bootloaderVersion, fw.min_bootloader_version),
-                );
-            } else if (firmwareVersion) {
-                alternativeRelease = sortedReleases.find(fw =>
-                    versionUtils.isNewerOrEqual(firmwareVersion, fw.min_firmware_version),
-                );
-            } else {
-                // There is no version to compare.
-                alternativeRelease = undefined;
-            }
+    let alternativeRelease;
+    if (features.bootloader_mode && bootloaderVersion) {
+        if (!versionUtils.isNewerOrEqual(bootloaderVersion, latestRelease.min_bootloader_version)) {
+            // If the target isn't compatible, search for the best alternative.
+            alternativeRelease = sortedReleases.find(fw =>
+                versionUtils.isNewerOrEqual(bootloaderVersion, fw.min_bootloader_version),
+            );
         }
-
-        // If an alternative is found, use it. Otherwise, we proceed with the original.
-        if (alternativeRelease) {
-            suitableRelease = alternativeRelease;
+    } else if (firmwareVersion) {
+        if (!versionUtils.isNewerOrEqual(firmwareVersion, latestRelease.min_firmware_version)) {
+            // If the target isn't compatible, search for the best alternative.
+            alternativeRelease = sortedReleases.find(fw =>
+                versionUtils.isNewerOrEqual(firmwareVersion, fw.min_firmware_version),
+            );
         }
+    }
+
+    // If an alternative is found, use it. Otherwise, we proceed with the original.
+    if (alternativeRelease) {
+        suitableRelease = alternativeRelease;
     }
 
     let intermediary;
