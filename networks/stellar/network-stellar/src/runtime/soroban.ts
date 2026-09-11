@@ -375,12 +375,21 @@ const readContractLedgerEntries = async (
         chunks.push(keys.slice(offset, offset + MAX_LEDGER_KEYS_PER_REQUEST));
     }
 
-    const responses = await withTimeout(
-        Promise.all(chunks.map(chunk => server.getLedgerEntries(...chunk))).catch(() => undefined),
-        SEP41_BATCH_TIMEOUT_MS,
-    );
+    try {
+        const responses = await withTimeout(
+            Promise.all(chunks.map(chunk => server.getLedgerEntries(...chunk))),
+            SEP41_BATCH_TIMEOUT_MS,
+        );
 
-    return parseLedgerEntries(responses?.flatMap(response => response.entries) ?? []);
+        return parseLedgerEntries(responses?.flatMap(response => response.entries) ?? []);
+    } catch {
+        // A rejected request is not the only way the batch can fail to answer: an entry that
+        // will not decode throws out of `parseLedgerEntries`, and an rpc client that does not
+        // serve `getLedgerEntries` at all throws before there is a promise to reject. Either way
+        // this is the best-effort tier, so nothing may escape it — one unreadable entry would
+        // otherwise take the whole account read down with it.
+        return new Map();
+    }
 };
 
 /**
