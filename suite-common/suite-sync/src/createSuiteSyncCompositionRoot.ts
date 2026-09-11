@@ -144,7 +144,6 @@ export const createSuiteSyncCompositionRoot = (
 
     const suiteSyncInternalErrorHandler = createSuiteSyncInternalErrorHandler({
         getSelectedDevice: toGetter(deps.getState, selectSelectedDevice),
-        getRelayUrl,
         suiteSyncStorageRepository,
         allocateOwnerQuota,
         ensureDelegatedIdentityKey: deps.ensureDelegatedIdentityKey,

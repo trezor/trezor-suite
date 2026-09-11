@@ -34,7 +34,6 @@ const createDevice = (overrides: Partial<TrezorDevice> = {}): TrezorDevice =>
 describe(createSuiteSyncInternalErrorHandler.name, () => {
     it('propagates a device error when no selected device is available', async () => {
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
-            getRelayUrl: null,
             suiteSyncStorageRepository: { get: null, set: null, delete: null },
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: null,
@@ -56,15 +55,14 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
 
     it('resumes syncing after allocating additional owner quota for RelayQuotaExceeded', async () => {
         const device = createDevice();
-        const updateRelayUrl = jest.fn(() => Promise.resolve());
-        const storage = mockSuiteSyncStorage({ updateRelayUrl });
+        const forceResync = jest.fn(() => Promise.resolve());
+        const storage = mockSuiteSyncStorage({ forceResync });
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: () => Promise.resolve(ok()),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
             suiteSyncUncontrolledErrorHandler: () => undefined,
             getSelectedDevice: () => device,
-            getRelayUrl: () => 'https://relay.example.com',
             suiteSyncStorageRepository: {
                 get: () => storage,
                 set: null,
@@ -86,30 +84,28 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         });
         expect(deps.suiteSyncUncontrolledErrorHandler).not.toHaveBeenCalled();
         expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith(walletDescriptor);
-        expect(updateRelayUrl).toHaveBeenCalledWith('https://relay.example.com');
+        expect(forceResync).toHaveBeenCalledTimes(1);
     });
 
-    it('does not reconnect when wallet storage was removed during the top-up', async () => {
+    it('does not resync when wallet storage was removed during the top-up', async () => {
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: () => Promise.resolve(ok()),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
             suiteSyncUncontrolledErrorHandler: null,
             getSelectedDevice: () => createDevice(),
-            getRelayUrl: null,
             suiteSyncStorageRepository: { get: () => null, set: null, delete: null },
         });
 
         await createSuiteSyncInternalErrorHandler(deps)({ type: 'RelayQuotaExceeded', ownerId });
 
-        expect(deps.getRelayUrl).not.toHaveBeenCalled();
+        expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith(walletDescriptor);
     });
 
     it('propagates delegated key retrieval failures', async () => {
         const device = createDevice();
         const deviceError: DeviceErrorType = DeviceError('Delegated key failed');
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
-            getRelayUrl: null,
             suiteSyncStorageRepository: { get: null, set: null, delete: null },
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: () => Promise.resolve(err(deviceError)),
@@ -136,7 +132,6 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         };
 
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
-            getRelayUrl: null,
             suiteSyncStorageRepository: { get: null, set: null, delete: null },
             allocateOwnerQuota: () => Promise.resolve(err(allocationError)),
             ensureDelegatedIdentityKey: () =>
@@ -160,7 +155,6 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         const relayError = { type: 'RelayOther', message: 'relay failed' } as const;
 
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
-            getRelayUrl: null,
             suiteSyncStorageRepository: { get: null, set: null, delete: null },
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: null,
