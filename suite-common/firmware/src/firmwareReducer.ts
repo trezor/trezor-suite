@@ -2,6 +2,7 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 
 import {
     type DeviceRootState,
+    getDeviceLabelOrName,
     getIsDeviceConnectedViaBluetoothLowOnBattery,
     resolveConnectedDevice,
     selectDevices,
@@ -222,6 +223,11 @@ export const selectFirmwareOriginalDevice = createFirmwareSelector(
     [state => state.firmware.cachedDevice, selectFirmwareDevice, selectSelectedDevice],
     (cachedDevice, firmwareUpdateDevice, selectedDevice) =>
         cachedDevice ?? firmwareUpdateDevice ?? selectedDevice,
+);
+
+export const selectFirmwareDeviceLabelOrName = createFirmwareSelector(
+    [selectFirmwareOriginalDevice],
+    getDeviceLabelOrName,
 );
 
 /**

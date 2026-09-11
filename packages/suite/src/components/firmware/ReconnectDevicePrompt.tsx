@@ -1,8 +1,8 @@
 import * as semver from 'semver';
 
-import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
+import { useFirmwareDesktopUpdate, useFirmwareSessionDevice } from '@suite/firmware-upgrade';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { getDeviceLabelOrName } from '@suite-common/device';
+import { selectFirmwareDeviceLabelOrName } from '@suite-common/firmware';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph, Row, StepList } from '@trezor/components';
 import { type Device } from '@trezor/connect';
@@ -78,22 +78,12 @@ const RebootDeviceGraphics = ({
 };
 
 interface ReconnectDevicePromptProps {
-    /**
-     * The device this update is on, as the device list has it right now — `undefined` while it is
-     * rebooting, which is most of the time this prompt is up. Passed in rather than resolved here:
-     * the whole prompt reports on one device, and reading a second source for the label is how it
-     * ended up naming a different one.
-     */
-    device: TrezorDevice | undefined;
     onClose?: () => void;
     onSuccess: () => void;
 }
 
-export const ReconnectDevicePrompt = ({
-    device,
-    onClose,
-    onSuccess,
-}: ReconnectDevicePromptProps) => {
+export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
+    const deviceLabel = useSelector(selectFirmwareDeviceLabelOrName);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const {
         showManualReconnectPrompt,
@@ -103,11 +93,13 @@ export const ReconnectDevicePrompt = ({
         deviceIsWaitingForConfirmationToInitiateConnection,
         pinRequested,
     } = useFirmwareDesktopUpdate();
-    // The last device either the flow or a button request named. Once the reboot takes the device
-    // off the list there is nothing left to render from, and the graphics and instructions are
-    // about the device that just went away anyway.
-    const eventDevice = usePreviousDefined(buttonEvent?.device || device);
-    const deviceLabel = getDeviceLabelOrName(device);
+    // Must be the tracked device, not the selection. This prompt is on screen precisely while
+    // our device is rebooting and absent from the device list, so the selection has moved on — and
+    // a connected bystander in normal mode would make `getRebootPhase` report 'waiting-for-reboot'
+    // as if the user had cancelled the reboot.
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
+
+    const eventDevice = usePreviousDefined(buttonEvent?.device || firmwareUpdateDevice);
 
     const isManualRebootRequired =
         // Automatic reboot isn't supported:
@@ -116,13 +108,12 @@ export const ReconnectDevicePrompt = ({
         status === 'error';
 
     const getRebootPhase = () => {
-        if (device?.mode === 'bootloader' && buttonEvent && isManualRebootRequired) {
+        if (firmwareUpdateDevice?.mode === 'bootloader' && buttonEvent && isManualRebootRequired) {
             return 'done';
         }
         const rebootToBootloaderNotSupported = reconnectEvent && !reconnectEvent.disconnected;
-        // Must be this update's device, not the selection: a connected bystander in normal mode
-        // would report 'waiting-for-reboot' as if the user had cancelled the reboot.
-        const rebootToBootloaderCancelled = device?.connected && device?.mode !== 'bootloader';
+        const rebootToBootloaderCancelled =
+            firmwareUpdateDevice?.connected && firmwareUpdateDevice?.mode !== 'bootloader';
 
         return rebootToBootloaderNotSupported || rebootToBootloaderCancelled
             ? 'waiting-for-reboot'

@@ -5,11 +5,12 @@ import {
     FirmwareWarningsList,
     FirmwareWipeWarning,
     useFirmwareDesktopUpdate,
+    useFirmwareSessionDevice,
 } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectConnectedDevices } from '@suite-common/device';
-import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -82,17 +83,13 @@ const getNoFirmwareInstalledSubheading = (device: AcquiredDevice) => {
 };
 
 type FirmwareInitialStepProps = {
-    /** The device this update is on, and the one it installs onto. */
-    device: TrezorDevice | undefined;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     onClose?: () => void;
 };
 
-export const FirmwareInitialStep = ({
-    device: firmwareUpdateDevice,
-    onClose,
-}: FirmwareInitialStepProps) => {
+export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
     const {
         deviceWillBeWiped,
         firmwareUpdate,

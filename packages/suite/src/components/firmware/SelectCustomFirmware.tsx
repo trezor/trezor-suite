@@ -1,22 +1,18 @@
 import { type Dispatch, type ReactNode, type SetStateAction } from 'react';
 
-import { validateFirmware } from '@suite/firmware-upgrade';
+import { useFirmwareSessionDevice, validateFirmware } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
-import { type TrezorDevice } from '@suite-common/suite-types';
 import { Button, Row, StepList } from '@trezor/components';
 import { DropZone } from '@trezor/product-components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 
 type SelectCustomFirmwareProps = {
-    /** The device the binary is validated against. */
-    device: TrezorDevice | undefined;
     setFirmwareBinary: Dispatch<SetStateAction<ArrayBuffer | undefined>>;
 };
 
-export const SelectCustomFirmware = ({
-    device: firmwareUpdateDevice,
-    setFirmwareBinary,
-}: SelectCustomFirmwareProps) => {
+export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmwareProps) => {
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
+
     const deviceModel = firmwareUpdateDevice?.features?.internal_model;
     const githubUrl = deviceModel
         ? `${GITHUB_FW_BINARIES_URL}/${deviceModel.toLowerCase()}`

@@ -1,8 +1,9 @@
 import { type ReactNode } from 'react';
 
+import { useFirmwareSessionDevice } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { selectConnectedDevices } from '@suite-common/device';
-import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
+import { type FirmwareStatus } from '@suite-common/suite-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { unique } from '@trezor/utils';
 
@@ -11,8 +12,6 @@ import { PrerequisitesGuide } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
 type StepInitialProps = {
-    /** The device this update is on. */
-    device: TrezorDevice | undefined;
     onClose: () => void;
     children: ReactNode;
     setStatus: (status: FirmwareStatus | 'error') => void;
@@ -22,7 +21,6 @@ type StepInitialProps = {
 };
 
 export const StepInitial = ({
-    device,
     onClose,
     children,
     setStatus,
@@ -30,11 +28,13 @@ export const StepInitial = ({
     isCustomFirmwareUploaded,
     modalHeading,
 }: StepInitialProps) => {
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
+
     const connectedDevices = useSelector(selectConnectedDevices);
     const multipleDevicesConnected = unique(connectedDevices.map(d => d.path)).length > 1;
-    const shouldCheckSeed = device?.mode !== 'initialize';
+    const shouldCheckSeed = firmwareUpdateDevice?.mode !== 'initialize';
 
-    if (!device?.connected || !device?.features) {
+    if (!firmwareUpdateDevice?.connected || !firmwareUpdateDevice?.features) {
         return <PrerequisitesGuide />;
     }
 

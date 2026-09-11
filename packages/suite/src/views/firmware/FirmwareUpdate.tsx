@@ -64,7 +64,7 @@ export const FirmwareUpdate = () => {
     return (
         <FirmwareUpdateSession device={device}>
             <FirmwareModal heading={heading} install={installTargetFirmware}>
-                <FirmwareInitial device={device} />
+                <FirmwareInitial />
             </FirmwareModal>
         </FirmwareUpdateSession>
     );
