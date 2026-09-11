@@ -15,6 +15,8 @@ import {
 
 import { isNotNullOrUndefined, resolveAfter } from '@trezor/utils';
 
+import type { StellarRpcServer } from '../types/rpc';
+
 /**
  * Soroban (Stellar) JSON-RPC helpers for reading SEP-41 contract-token balances.
  *
@@ -71,13 +73,15 @@ const withTimeout = async <T>(read: Promise<T>, timeoutMs: number): Promise<T | 
     }
 };
 
-export type SorobanServer = rpc.Server;
-
-export const getSorobanServer = (url: string): SorobanServer =>
-    new rpc.Server(url, { allowHttp: url.startsWith('http://') });
+// A contract the batch could not describe still costs a `simulateTransaction` of its own, and the
+// allow-list is meant to grow — the hosted definitions are to start carrying contract tokens — so
+// the fallback reads through a pool rather than all at once. A browser caps requests per host at
+// around six anyway, so a wider fan-out only queues them in the network stack while each read's
+// timeout runs.
+const SEP41_READ_CONCURRENCY = 6;
 
 const simulateContractRead = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     method: string,
     args: xdr.ScVal[],
@@ -110,7 +114,7 @@ const simulateContractRead = async (
  * read (not a token / no balance entry / RPC failure).
  */
 export const getContractTokenBalance = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     holder: string,
     networkPassphrase: string = Networks.PUBLIC,
@@ -155,7 +159,7 @@ export class SorobanSimulationError extends Error {
  * signed and submitted promptly rather than held.
  */
 export const prepareContractTransaction = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     transaction: Transaction,
 ): Promise<Transaction> => {
     const simulation = await server.simulateTransaction(transaction);
@@ -185,7 +189,7 @@ const metadataCacheKey = (contractId: string, networkPassphrase: string) =>
     `${networkPassphrase}:${contractId}`;
 
 const readContractTokenMetadata = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     networkPassphrase: string,
 ): Promise<Sep41Metadata> => {
@@ -210,7 +214,7 @@ const readContractTokenMetadata = async (
  * Makes tokens self-describing, so callers need only supply contract addresses.
  */
 export const getContractTokenMetadata = (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     networkPassphrase: string = Networks.PUBLIC,
 ): Promise<Sep41Metadata> => {
@@ -252,7 +256,7 @@ export interface Sep41Token extends Sep41Metadata {
  * reported at all rather than a fabricated amount.
  */
 export const getSep41Token = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     contractId: string,
     holder: string,
     networkPassphrase: string = Networks.PUBLIC,
@@ -354,7 +358,7 @@ const parseLedgerEntries = (entries: rpc.Api.LedgerEntryResult[]) => {
  * treats that the same as a contract the batch could not describe.
  */
 const readContractLedgerEntries = async (
-    server: SorobanServer,
+    server: StellarRpcServer,
     holder: string,
     contractIds: string[],
     contractsWithKnownMetadata: Set<string>,
@@ -402,12 +406,11 @@ const readContractLedgerEntries = async (
  * dropped rather than reported as an empty holding.
  */
 export const readSep41Tokens = async (
-    rpcUrl: string,
+    server: StellarRpcServer,
     holder: string,
     contractIds: string[],
     networkPassphrase: string = Networks.PUBLIC,
 ): Promise<Sep41Token[]> => {
-    const server = getSorobanServer(rpcUrl);
     const startedAt = Date.now();
 
     // Metadata cannot change, so a contract that has already been described keeps its instance
@@ -436,7 +439,9 @@ export const readSep41Tokens = async (
         }
     });
 
-    const batched = await Promise.all(
+    // Indexed rather than appended, so the tokens keep the order they were asked for however the
+    // reads interleave.
+    const tokens: (Sep41Token | undefined)[] = await Promise.all(
         contractIds.map(async (contract): Promise<Sep41Token | undefined> => {
             const result = ledgerEntries.get(contract);
             const metadata = result?.metadata ?? (await knownMetadata.get(contract));
@@ -449,26 +454,35 @@ export const readSep41Tokens = async (
         }),
     );
 
-    const unresolved = contractIds.filter((_, index) => !batched[index]);
+    // Whatever the batch could not describe is asked of the contract itself. A slow or
+    // unreachable RPC must never stall account loading, so each read is capped and falls back to
+    // no token; capping per token keeps one slow contract from discarding the ones that did
+    // resolve. A contract the budget did not reach reports no token, which is what a read that
+    // timed out does too.
+    const remainingBudget = () => Math.max(0, SEP41_READ_TIMEOUT_MS - (Date.now() - startedAt));
 
-    // A slow or unreachable RPC must never stall account loading, so what the batch left over is
-    // capped at the rest of the budget and falls back to no token. Capping per token keeps one
-    // slow contract from discarding the tokens that did resolve in time.
-    const remainingBudget = Math.max(0, SEP41_READ_TIMEOUT_MS - (Date.now() - startedAt));
-    const simulated = await Promise.all(
-        unresolved.map(contract =>
-            withTimeout(
-                getSep41Token(server, contract, holder, networkPassphrase).catch(() => undefined),
-                remainingBudget,
-            ),
-        ),
+    const readOne = (contract: string) =>
+        withTimeout(
+            getSep41Token(server, contract, holder, networkPassphrase).catch(() => undefined),
+            remainingBudget(),
+        );
+
+    const queue = contractIds
+        .map((contract, index) => ({ contract, index }))
+        .filter(({ index }) => !tokens[index]);
+
+    const readQueued = async () => {
+        let next = queue.shift();
+        while (next && remainingBudget() > 0) {
+            tokens[next.index] = await readOne(next.contract);
+            next = queue.shift();
+        }
+    };
+
+    await Promise.all(
+        Array.from({ length: Math.min(SEP41_READ_CONCURRENCY, queue.length) }, readQueued),
     );
 
-    const tokens = new Map<string, Sep41Token>();
-    [...batched, ...simulated].forEach(token => {
-        if (token) tokens.set(token.contract, token);
-    });
-
     // Reported in the order they were asked for, whichever tier answered.
-    return contractIds.map(contract => tokens.get(contract)).filter(isNotNullOrUndefined);
+    return tokens.filter(isNotNullOrUndefined);
 };

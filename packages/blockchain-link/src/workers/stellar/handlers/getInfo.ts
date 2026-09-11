@@ -1,37 +1,36 @@
 import type { MessageTypes } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
-import { BigNumber } from '@trezor/utils';
+import stellar from '@trezor/network-stellar/runtime';
 
-import { RESERVE } from '../reserve';
 import type { Request } from '../types';
-import { fetchLatestLedger } from '../utils';
 
 export const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolean) => {
     const api = await request.connect();
-    const horizonServerInfo = await api.root();
-    const {
-        sequence: blockHeight,
-        hash: blockHash,
-        base_reserve_in_stroops: baseReserveInStroops,
-    } = await fetchLatestLedger(api);
+    const { createStellarDataSource } = await stellar();
 
-    RESERVE.BASE = new BigNumber(baseReserveInStroops);
+    // Read through the data source rather than straight off the RPC client: this is the handshake
+    // every other request waits on, so it is the one that must survive an RPC outage by degrading
+    // to Horizon.
+    const dataSource = createStellarDataSource(api);
 
-    const serverInfo = {
-        url: api.serverURL.toString(),
-        name: 'Stellar',
-        shortcut: isTestnet ? 'txlm' : 'xlm',
-        network: isTestnet ? 'txlm' : 'xlm',
-        testnet: isTestnet,
-        version: horizonServerInfo.horizon_version,
-        decimals: STELLAR_DECIMALS,
-        blockHeight,
-        blockHash,
-    };
+    const [version, { sequence: blockHeight, hash: blockHash }] = await Promise.all([
+        dataSource.readVersion(),
+        dataSource.readLatestLedger(),
+    ]);
 
     return {
         type: RESPONSES.GET_INFO,
-        payload: { ...serverInfo },
+        payload: {
+            url: api.url,
+            name: 'Stellar',
+            shortcut: isTestnet ? 'txlm' : 'xlm',
+            network: isTestnet ? 'txlm' : 'xlm',
+            testnet: isTestnet,
+            version,
+            decimals: STELLAR_DECIMALS,
+            blockHeight,
+            blockHash,
+        },
     } as const;
 };

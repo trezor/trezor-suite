@@ -188,7 +188,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             if (address && backendUrl && new BigNumber(amountToSend).isGreaterThan(0)) {
                 const {
                     buildContractTokenTransferTransaction,
-                    getSorobanServer,
+                    getStellarRpcServer,
                     prepareContractTransaction,
                 } = await stellar();
 
@@ -197,7 +197,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
 
                 try {
                     const prepared = await prepareContractTransaction(
-                        getSorobanServer(backendUrl),
+                        getStellarRpcServer(backendUrl),
                         buildContractTokenTransferTransaction({
                             descriptor: account.descriptor,
                             sequence: account.misc.stellarSequence,
@@ -380,7 +380,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
 
                 const {
                     buildContractTokenTransferTransaction,
-                    getSorobanServer,
+                    getStellarRpcServer,
                     prepareContractTransaction,
                 } = await stellar();
 
@@ -403,7 +403,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 let prepared;
                 try {
                     prepared = await prepareContractTransaction(
-                        getSorobanServer(backendUrl),
+                        getStellarRpcServer(backendUrl),
                         transfer,
                     );
                 } catch (error) {

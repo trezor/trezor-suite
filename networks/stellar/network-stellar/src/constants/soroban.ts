@@ -17,12 +17,13 @@ export interface StellarContractToken {
 }
 
 /**
- * Curated allow-list of Soroban contract (SEP-41 / type-C) tokens to look up.
+ * Fallback allow-list of Soroban contract (SEP-41 / type-C) tokens to look up.
  *
- * There is no on-chain registry of an account's contract-token holdings, so
- * discovery is an explicit allow-list rather than auto-discovery. Every entry
- * has been verified as a native contract token (its address is NOT the Stellar
- * Asset Contract of any classic asset).
+ * There is no on-chain registry of an account's contract-token holdings, so discovery is an
+ * explicit allow-list. The hosted definitions pipeline is the primary source; these entries
+ * stay until it carries contract tokens, and can be deleted once it does. Every entry has been
+ * verified as a native contract token (its address is NOT the Stellar Asset Contract of any
+ * classic asset).
  */
 export const STELLAR_CONTRACT_TOKENS: StellarContractToken[] = [
     {

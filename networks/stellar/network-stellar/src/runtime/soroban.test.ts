@@ -1,7 +1,13 @@
-import { Address, type Transaction, nativeToScVal, rpc, xdr } from '@stellar/stellar-sdk';
+import {
+    Address,
+    StrKey,
+    type Transaction,
+    nativeToScVal,
+    type rpc,
+    xdr,
+} from '@stellar/stellar-sdk';
 
 import {
-    type SorobanServer,
     SorobanSimulationError,
     getContractTokenMetadata,
     getSep41Token,
@@ -9,6 +15,7 @@ import {
     readSep41Tokens,
 } from './soroban';
 import { buildContractTokenTransferTransaction } from './transactions/build';
+import type { StellarRpcServer } from '../types/rpc';
 
 const CONTRACT = 'CAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRVEAM';
 const OTHER_CONTRACT = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRV';
@@ -16,13 +23,13 @@ const THIRD_CONTRACT = 'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75
 const READABLE_CONTRACT = 'CDEMRSGIZDEMRSGIZDEMRSGIZDEMRSGIZDEMRSGIZDEMRSGIZDEMQUNJ';
 const NO_BALANCE_CONTRACT = 'CDE4TSOJZHE4TSOJZHE4TSOJZHE4TSOJZHE4TSOJZHE4TSOJZHE4T3VL';
 
-const HOLDER = 'GADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOZPI';
+const HOLDER = 'GBUV66LXXULKASZ5FSDJEY42HUWIBDF4MWSVDBUJLZKCFYSWT5SDPOQB';
 
 const mockServer = (retval: xdr.ScVal | undefined) => {
     const simulateTransaction = jest.fn(() => Promise.resolve({ result: { retval } }));
 
     return {
-        server: { simulateTransaction } as unknown as SorobanServer,
+        server: { simulateTransaction } as unknown as StellarRpcServer,
         simulateTransaction,
     };
 };
@@ -44,7 +51,7 @@ const mockTokenServer = (retvals: Record<string, xdr.ScVal | undefined>) => {
         Promise.resolve({ result: { retval: retvals[invokedFunction(transaction)] } }),
     );
 
-    return { server: { simulateTransaction } as unknown as SorobanServer, simulateTransaction };
+    return { server: { simulateTransaction } as unknown as StellarRpcServer, simulateTransaction };
 };
 
 describe('getContractTokenMetadata', () => {
@@ -117,17 +124,17 @@ describe('getSep41Token', () => {
 });
 
 describe('readSep41Tokens', () => {
-    // Each test uses its own contracts: `getContractTokenMetadata` caches per contract for the
-    // lifetime of the module, and the batch seeds that same cache.
-    const BATCHED_A = 'CAFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQX4KO';
-    const BATCHED_B = 'CALBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBNOTY';
-    const NO_BALANCE_ENTRY = 'CAQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSDFYJ';
-    const NO_METADATA_ENTRY = 'CAWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLBMFQWCYLAU';
-    const BATCH_FAILS = 'CA3TONZXG43TONZXG43TONZXG43TONZXG43TONZXG43TONZXG43TPZJN';
-    const WARM_CACHE = 'CBBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEE5XW';
+    // Each test uses its own contracts, and none may collide with the ones `contractList` below
+    // generates: `getContractTokenMetadata` caches per contract for the lifetime of the module,
+    // and the batch seeds that same cache, so a shared contract would make another test's
+    // simulation count come up short.
+    const BATCHED_A = 'CCLJNFUWS2LJNFUWS2LJNFUWS2LJNFUWS2LJNFUWS2LJNFUWS2LJMGZX';
+    const BATCHED_B = 'CCLZPF4XS6LZPF4XS6LZPF4XS6LZPF4XS6LZPF4XS6LZPF4XS6LZPJBV';
+    const NO_BALANCE_ENTRY = 'CCMJRGEYTCMJRGEYTCMJRGEYTCMJRGEYTCMJRGEYTCMJRGEYTCMJQYJN';
+    const NO_METADATA_ENTRY = 'CCMZTGMZTGMZTGMZTGMZTGMZTGMZTGMZTGMZTGMZTGMZTGMZTGMZTXRP';
+    const BATCH_FAILS = 'CCNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJUHZI';
+    const WARM_CACHE = 'CCNZXG43TONZXG43TONZXG43TONZXG43TONZXG43TONZXG43TONZXIBK';
     const BATCH_TIMES_OUT = 'CBGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU3M7O';
-
-    const RPC_URL = 'https://mocked';
 
     const metadataScVal = (decimal: number, symbol: string, name: string) =>
         nativeToScVal(
@@ -202,20 +209,14 @@ describe('readSep41Tokens', () => {
             },
         );
 
-    let getLedgerEntries: jest.SpyInstance;
-    let simulateTransaction: jest.SpyInstance;
+    let getLedgerEntries: jest.Mock;
+    let simulateTransaction: jest.Mock;
+    let server: StellarRpcServer;
 
     beforeEach(() => {
-        getLedgerEntries = jest
-            .spyOn(rpc.Server.prototype, 'getLedgerEntries')
-            .mockResolvedValue({ entries: [], latestLedger: 1 });
-        simulateTransaction = jest
-            .spyOn(rpc.Server.prototype, 'simulateTransaction')
-            .mockResolvedValue({ result: { retval: undefined } } as never);
-    });
-
-    afterEach(() => {
-        jest.restoreAllMocks();
+        getLedgerEntries = jest.fn().mockResolvedValue({ entries: [], latestLedger: 1 });
+        simulateTransaction = jest.fn().mockResolvedValue({ result: { retval: undefined } });
+        server = { getLedgerEntries, simulateTransaction } as unknown as StellarRpcServer;
     });
 
     const respondToSimulations = (retvals: Record<string, xdr.ScVal | undefined>) => {
@@ -235,7 +236,7 @@ describe('readSep41Tokens', () => {
             ],
         });
 
-        const tokens = await readSep41Tokens(RPC_URL, HOLDER, [BATCHED_A, BATCHED_B]);
+        const tokens = await readSep41Tokens(server, HOLDER, [BATCHED_A, BATCHED_B]);
 
         expect(getLedgerEntries).toHaveBeenCalledTimes(1);
         expect(simulateTransaction).not.toHaveBeenCalled();
@@ -259,7 +260,7 @@ describe('readSep41Tokens', () => {
         });
         respondToSimulations({ balance: bareBalance(99n) });
 
-        const tokens = await readSep41Tokens(RPC_URL, HOLDER, [NO_BALANCE_ENTRY]);
+        const tokens = await readSep41Tokens(server, HOLDER, [NO_BALANCE_ENTRY]);
 
         expect(tokens).toEqual([
             {
@@ -285,7 +286,7 @@ describe('readSep41Tokens', () => {
         // The contract does not answer `decimals` either
         respondToSimulations({ balance: bareBalance(5n) });
 
-        const tokens = await readSep41Tokens(RPC_URL, HOLDER, [NO_METADATA_ENTRY]);
+        const tokens = await readSep41Tokens(server, HOLDER, [NO_METADATA_ENTRY]);
 
         expect(tokens).toEqual([
             {
@@ -307,7 +308,7 @@ describe('readSep41Tokens', () => {
             name: xdr.ScVal.scvString('Batch Fails'),
         });
 
-        const tokens = await readSep41Tokens(RPC_URL, HOLDER, [BATCH_FAILS]);
+        const tokens = await readSep41Tokens(server, HOLDER, [BATCH_FAILS]);
 
         expect(tokens).toEqual([
             {
@@ -330,7 +331,7 @@ describe('readSep41Tokens', () => {
             name: xdr.ScVal.scvString('Slow Batch'),
         });
 
-        const pending = readSep41Tokens(RPC_URL, HOLDER, [BATCH_TIMES_OUT]);
+        const pending = readSep41Tokens(server, HOLDER, [BATCH_TIMES_OUT]);
         // the batch's slice of SEP41_READ_TIMEOUT_MS
         await jest.advanceTimersByTimeAsync(4_000);
         const tokens = await pending;
@@ -356,8 +357,8 @@ describe('readSep41Tokens', () => {
             ],
         });
 
-        await readSep41Tokens(RPC_URL, HOLDER, [WARM_CACHE]);
-        await readSep41Tokens(RPC_URL, HOLDER, [WARM_CACHE]);
+        await readSep41Tokens(server, HOLDER, [WARM_CACHE]);
+        await readSep41Tokens(server, HOLDER, [WARM_CACHE]);
 
         // instance + balance on the cold read, balance alone on the warm one
         expect(getLedgerEntries.mock.calls[0]).toHaveLength(2);
@@ -384,7 +385,7 @@ describe('prepareContractTransaction', () => {
         const simulateTransaction = jest
             .fn()
             .mockResolvedValue({ error: 'HostError: Error(Contract, #1)' });
-        const server = { simulateTransaction } as unknown as SorobanServer;
+        const server = { simulateTransaction } as unknown as StellarRpcServer;
 
         // Learning this before the device prompt is the point: the user is never asked to
         // approve a transfer that cannot succeed.
@@ -394,5 +395,77 @@ describe('prepareContractTransaction', () => {
         await expect(prepareContractTransaction(server, transfer())).rejects.toMatchObject({
             diagnostic: 'HostError: Error(Contract, #1)',
         });
+    });
+});
+
+describe('readSep41Tokens fallback pool', () => {
+    // The budget test drives the clock, and a read that loses its race must not keep a real
+    // timer alive past the test.
+    beforeEach(() => jest.useFakeTimers());
+    afterEach(() => {
+        jest.useRealTimers();
+        jest.restoreAllMocks();
+    });
+
+    // Unique per test, since metadata is cached for the lifetime of the module.
+    const contractList = (count: number, seed: number) =>
+        Array.from({ length: count }, (_, index) =>
+            StrKey.encodeContract(Buffer.alloc(32, seed + index)),
+        );
+
+    const countingServer = (onCall?: (calls: number) => void) => {
+        let inFlight = 0;
+        let peak = 0;
+        const simulateTransaction = jest.fn(() => {
+            inFlight += 1;
+            peak = Math.max(peak, inFlight);
+            onCall?.(simulateTransaction.mock.calls.length);
+
+            return Promise.resolve().then(() => {
+                inFlight -= 1;
+
+                return { result: { retval: xdr.ScVal.scvU32(7) } };
+            });
+        });
+
+        return {
+            // The ledger read answers nothing, so every contract falls through to a simulation —
+            // which is the tier this pool bounds.
+            server: {
+                simulateTransaction,
+                getLedgerEntries: () => Promise.resolve({ entries: [], latestLedger: 1 }),
+            } as unknown as StellarRpcServer,
+            simulateTransaction,
+            getPeak: () => peak,
+        };
+    };
+
+    it('reads a wide allow-list through a pool instead of all at once', async () => {
+        const contracts = contractList(30, 1);
+        const { server, simulateTransaction, getPeak } = countingServer();
+
+        const tokens = await readSep41Tokens(server, HOLDER, contracts);
+
+        // Four simulations a token — balance, decimals, symbol, name — so a pool of six holds at
+        // most twenty-four open at a time. Unpooled, all thirty tokens are in flight at once.
+        expect(getPeak()).toBeLessThanOrEqual(24);
+        expect(simulateTransaction).toHaveBeenCalledTimes(contracts.length * 4);
+        expect(tokens.map(({ contract }) => contract)).toEqual(contracts);
+    });
+
+    it('stops reading when the budget for the whole list runs out', async () => {
+        const contracts = contractList(30, 64);
+        let now = 0;
+        jest.spyOn(Date, 'now').mockImplementation(() => now);
+
+        // Time passes once the first round of reads is in flight, so the pool finds the budget
+        // spent when it comes back for more.
+        const { server } = countingServer(calls => {
+            if (calls >= 24) now = 20_000;
+        });
+
+        const tokens = await readSep41Tokens(server, HOLDER, contracts);
+
+        expect(tokens.map(({ contract }) => contract)).toEqual(contracts.slice(0, 6));
     });
 });
