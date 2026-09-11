@@ -386,12 +386,20 @@ export const createEntityIndex = <
                         EMPTY_ENTITY_IDS) {
                         const members = group?.get(key);
 
-                        if (members) {
-                            members.ids.push(id);
-                            members.entities.push(entity);
-                        } else {
+                        if (!members) {
                             group?.set(key, { ids: [id], entities: [entity] });
+                            continue;
                         }
+
+                        // An entity that names the same key twice — a transaction paying an
+                        // address from an input and to a target, say — belongs to the group once.
+                        // Its keys are handled together, so a repeat is always the last one in.
+                        if (members.ids[members.ids.length - 1] === id) {
+                            continue;
+                        }
+
+                        members.ids.push(id);
+                        members.entities.push(entity);
                     }
                 }
 

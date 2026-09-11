@@ -2,7 +2,7 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { type SearchAccountLabels } from './searchLabels';
 import { simpleSearchTransactions } from './simpleSearchTransactions';
-import { getTransactionSearchIndex } from './transactionSearchIndex';
+import { getTransactionSearchLookups } from './transactionSearchIndex';
 
 export const advancedSearchTransactions = (
     transactions: WalletAccountTransaction[],
@@ -58,11 +58,10 @@ export const advancedSearchTransactions = (
     // Sorted by position because that is the array's own order, and the list paginates by index
     // and renders by date: handing back the order the search terms happened to match in would
     // shuffle the pages.
-    const { positionByTxid } = getTransactionSearchIndex(transactions, accountLabels);
+    const { positionByTxid, transactionsByTxid } = getTransactionSearchLookups(transactions);
 
     return [...filteredTxIDs]
-        .map(txid => positionByTxid.get(txid))
-        .filter(position => position !== undefined)
-        .sort((left, right) => left - right)
-        .map(position => transactions[position] as WalletAccountTransaction);
+        .filter(txid => positionByTxid.has(txid))
+        .sort((left, right) => (positionByTxid.get(left) ?? 0) - (positionByTxid.get(right) ?? 0))
+        .map(txid => transactionsByTxid.get(txid) as WalletAccountTransaction);
 };

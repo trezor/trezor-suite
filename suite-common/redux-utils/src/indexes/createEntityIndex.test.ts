@@ -647,3 +647,23 @@ describe('a group keeping up with what happened to its entities', () => {
         expect(index.getBy(state, 'byGroup', 'left')).not.toBe(previousEntities);
     });
 });
+
+describe('an entity that names the same group key more than once', () => {
+    it('is in that group once', () => {
+        // A transaction paying an address both from an input and to a target names it twice, and
+        // belongs to the address once.
+        const { index } = createGroupedIndex();
+        const twice = { id: '1', group: 'left', tags: ['red', 'red'] };
+
+        expect(index.getIdsBy({ entities: [twice] }, 'byTag', 'red')).toEqual(['1']);
+        expect(index.getBy({ entities: [twice] }, 'byTag', 'red')).toEqual([twice]);
+    });
+
+    it('does not swallow a different entity that names the same key', () => {
+        const { index } = createGroupedIndex();
+        const first = { id: '1', group: 'left', tags: ['red', 'red'] };
+        const second = { id: '2', group: 'left', tags: ['red'] };
+
+        expect(index.getIdsBy({ entities: [first, second] }, 'byTag', 'red')).toEqual(['1', '2']);
+    });
+});
