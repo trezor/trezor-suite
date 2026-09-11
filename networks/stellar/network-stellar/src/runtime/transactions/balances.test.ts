@@ -1,11 +1,6 @@
 import type { Horizon } from '@stellar/stellar-sdk';
 
-import {
-    groupEffectsByOperation,
-    readBalanceDeltas,
-    selectCounterparties,
-    selectOwnDeltas,
-} from './balances';
+import { groupEffectsByOperation, readBalanceDeltas } from './balances';
 
 type EffectRecord = Horizon.ServerApi.EffectRecord;
 
@@ -120,7 +115,7 @@ describe('readBalanceDeltas', () => {
             }),
         ]);
 
-        expect(selectOwnDeltas(deltas, ACCOUNT)).toEqual([
+        expect(deltas.filter(({ holder }) => holder === ACCOUNT)).toEqual([
             {
                 holder: ACCOUNT,
                 asset: { assetCode: 'USDC', assetIssuer: USDC_ISSUER },
@@ -275,18 +270,5 @@ describe('groupEffectsByOperation', () => {
         expect([...grouped.keys()]).toEqual(['10', '20']);
         expect(grouped.get('10')).toHaveLength(2);
         expect(grouped.get('20')).toHaveLength(1);
-    });
-});
-
-describe('selectCounterparties', () => {
-    it('names every holder but the account, without repeating one', () => {
-        const deltas = [
-            { holder: ACCOUNT, amount: '-1' },
-            { holder: ROUTER, amount: '1' },
-            { holder: ROUTER, amount: '-1' },
-            { holder: POOL, amount: '1' },
-        ];
-
-        expect(selectCounterparties(deltas, ACCOUNT)).toEqual([ROUTER, POOL]);
     });
 });

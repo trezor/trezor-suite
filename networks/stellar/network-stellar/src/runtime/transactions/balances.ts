@@ -186,14 +186,3 @@ export const readBalanceDeltas = (effects: readonly EffectRecord[]): StellarBala
 
     return [...totals.values()].filter(({ amount }) => !new BigNumber(amount).isZero());
 };
-
-/** The account's own movements, as against the other holders a swap routed through. */
-export const selectOwnDeltas = (deltas: readonly StellarBalanceDelta[], descriptor: string) =>
-    deltas.filter(({ holder }) => holder === descriptor);
-
-/** Holders on the other side of the movement, nearest counterparty first. */
-export const selectCounterparties = (
-    deltas: readonly StellarBalanceDelta[],
-    descriptor: string,
-): string[] =>
-    [...new Set(deltas.map(({ holder }) => holder))].filter(holder => holder !== descriptor);

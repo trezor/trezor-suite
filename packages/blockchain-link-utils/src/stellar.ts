@@ -112,9 +112,17 @@ const transformMovements = ({
         type = isRecipient ? 'self' : 'sent';
     }
 
-    const native = movements.find(({ asset }) => !asset);
-    const nativeAmount = native ? new BigNumber(native.amount).abs().toString() : '0';
-    const isNativeIncoming = !!native && new BigNumber(native.amount).isPositive();
+    // A path payment can both leave and arrive in lumens — a round trip through the order books —
+    // and the account moved only the difference. Reading the first native leg alone would drop the
+    // other side. Balance-change deltas arrive netted per asset already, so this is a no-op there.
+    const nativeMovements = movements.filter(({ asset }) => !asset);
+    const nativeTotal = nativeMovements.reduce(
+        (total, { amount }) => total.plus(amount),
+        new BigNumber(0),
+    );
+    const hasNative = nativeMovements.length > 0;
+    const nativeAmount = nativeTotal.abs().toString();
+    const isNativeIncoming = hasNative && nativeTotal.isGreaterThan(0);
     const hasAssetLeg = movements.some(({ asset }) => !!asset);
     const other = counterparty ?? descriptor;
 
@@ -129,7 +137,7 @@ const transformMovements = ({
     // credit as a payment to someone else.
     const nativeRecipient = isNativeIncoming ? descriptor : counterparty;
     const nativeTargets =
-        native && !isNativeSwapLeg && nativeRecipient
+        hasNative && !isNativeSwapLeg && nativeRecipient
             ? [{ n: 0, addresses: [nativeRecipient], isAddress: true, amount: nativeAmount }]
             : [];
 

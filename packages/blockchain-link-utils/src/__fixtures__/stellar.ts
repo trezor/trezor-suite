@@ -714,6 +714,34 @@ export const fixtures: { transformTransaction: Fixture[] } = {
             }),
         },
         {
+            // Both legs are lumens, so the account only moved their difference — reading one leg
+            // alone would report the whole amount sent and drop the credit that came back.
+            description: 'a round trip through the order books reports what the account netted',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [
+                    pathPayment({
+                        source_amount: '1.0000000',
+                        asset_type: 'native',
+                        asset_code: undefined,
+                        asset_issuer: undefined,
+                        amount: '1.0100000',
+                    }),
+                ],
+                tx: transaction(),
+            },
+            expectedOutput: output({
+                type: 'self',
+                amount: '100000',
+                targets: [{ n: 0, addresses: [DESCRIPTOR], isAddress: true, amount: '100000' }],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: DESCRIPTOR,
+                    operationType: 'pathPayment',
+                },
+            }),
+        },
+        {
             description: 'a path payment to another account reports only the leg that left',
             input: {
                 descriptor: DESCRIPTOR,
