@@ -66,7 +66,7 @@ declare const transportRequestDevice: typeof TRANSPORT.REQUEST_DEVICE;
 createTransportMessage(transportRequestDevice, undefined);
 
 // @ts-expect-error Transport error messages require an error payload.
-createTransportMessage(transportError, undefined);
+createTransportMessage(transportErrorType, undefined);
 
 /* UI EVENT MESSAGES */
 declare const uiEventPayload: Extract<
