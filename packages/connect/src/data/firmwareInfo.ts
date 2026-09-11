@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
-import type { Features, StrictFeatures } from '@trezor/connect-common/src/types/device';
+import type { Features } from '@trezor/connect-common/src/types/device';
 import type {
     CurrentVersion,
     FirmwareChannel,
@@ -154,12 +154,6 @@ export const getOnlineReleaseByVersion = async (
 
     return onlineRelease;
 };
-
-export const getReleaseConfig = (
-    features: Features,
-    firmwareType: FirmwareType,
-): ConditionalRelease | undefined =>
-    firmwareReleaseStore.getReleases(features.internal_model, firmwareType);
 
 // Gets a specific firmware release by version.
 // First it will check if the required released is part of the firmware release config, if so then use that.
@@ -315,35 +309,6 @@ const getCurrentVersion = (features: Features): CurrentVersion => {
     return { bootloaderVersion, firmwareVersion };
 };
 
-const getIntermediaryMessageRelease = (features: Features) => {
-    const deviceIntermediaryReleases = firmwareReleaseStore.getIntermediary(
-        features.internal_model,
-    );
-    if (!deviceIntermediaryReleases || deviceIntermediaryReleases.length === 0) {
-        // No intermediary releases are defined for this model.
-        return;
-    }
-
-    const { bootloaderVersion, firmwareVersion } = getCurrentVersion(features);
-
-    const currentVersion = features.bootloader_mode ? bootloaderVersion : firmwareVersion;
-    const minVersionKey = features.bootloader_mode
-        ? 'min_bootloader_version'
-        : 'min_firmware_version';
-
-    if (!currentVersion) {
-        return undefined;
-    }
-
-    // Find the first intermediary release that requires a newer version than the current one.
-    return deviceIntermediaryReleases.find(release =>
-        versionUtils.isNewer(release[minVersionKey], currentVersion),
-    );
-};
-
-const getIsBitcoinOnlyAvailable = (features: Features) =>
-    !!firmwareReleaseStore.getReleases(features.internal_model, FirmwareType.BitcoinOnly);
-
 const isValidConditionalRelease = (release: FirmwareRelease): boolean =>
     !!(release.version && release.min_firmware_version && release.min_bootloader_version);
 
@@ -355,65 +320,15 @@ const calculateShouldOfferRelease = (
         throw new Error('Probability must be between 0 and 100.');
     }
 
-    if (deviceId === null) {
-        // When deviceId is null, it means device is fresh so we always want to install latest FW,
-        // unless rolloutProbability is 0, in that case we should never offer it.
-        return rolloutProbability > 0;
-    } else {
-        // If deviceId is provided, use the deterministic approach. `rolloutProbability` is a
-        // 0..100 percentage compared with `<`, so the bucket count must be 100 (values 0..99) -
-        // passing 101 here would bucket one extra value (100) that can never satisfy `< 100`,
-        // permanently excluding ~1% of devices from being offered a release at ANY rollout
-        // percentage including 100. See the sibling usage in
-        // suite-common/message-system/src/experimentUtils.ts for the same pattern done right.
-        const deterministicValueToCompare = getIntegerInRangeFromString(deviceId, 100);
+    // If deviceId is provided, use the deterministic approach. `rolloutProbability` is a
+    // 0..100 percentage compared with `<`, so the bucket count must be 100 (values 0..99) -
+    // passing 101 here would bucket one extra value (100) that can never satisfy `< 100`,
+    // permanently excluding ~1% of devices from being offered a release at ANY rollout
+    // percentage including 100. See the sibling usage in
+    // suite-common/message-system/src/experimentUtils.ts for the same pattern done right.
+    const value = deviceId === null ? 0 : getIntegerInRangeFromString(deviceId, 100);
 
-        return deterministicValueToCompare < rolloutProbability;
-    }
-};
-
-const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => {
-    // releases are already filtered, so they can be considered "safe".
-    // so lets build changelog! It should include only those firmwares, that are
-    // newer than currently installed firmware.
-
-    if (features.bootloader_mode) {
-        // the problem with bootloader is that we see only bootloader and not firmware version
-        // and multiple releases may share same bootloader version. we really can not tell that
-        // the versions that are installable are newer. so...
-        if (features.firmware_present && features.major_version === 1) {
-            // return null signaling that we don't really know, but only if some firmware
-            // is already installed!
-            return null;
-        }
-        if (features.firmware_present && features.major_version === 2) {
-            // little different situation is with model 2, where in bootloader (and with some fw installed)
-            // we actually know the firmware version
-            return releases.filter(r =>
-                versionUtils.isNewer(r.version, [
-                    features.fw_major,
-                    features.fw_minor,
-                    features.fw_patch,
-                ]),
-            );
-        }
-
-        // for fresh devices, we can assume that all releases are actually "new"
-        return releases;
-    }
-
-    // otherwise we are in firmware mode and because each release in releases list has
-    // version higher than the previous one, we can filter out the version that is already
-    // installed and show only what's new!
-    return releases.filter(r =>
-        versionUtils.isNewer(r.version, getFirmwareOrBootloaderVersionArray(features)),
-    );
-};
-
-const isRequired = (changelog: ReturnType<typeof getChangelog>) => {
-    if (!changelog?.length) return null;
-
-    return changelog.some(item => item.required);
+    return value < rolloutProbability;
 };
 
 interface GetReleaseInfoParams {
@@ -443,7 +358,42 @@ export const getReleaseInfo = ({
     }
     const { min_firmware_version, min_bootloader_version } = release;
 
-    const changelog = getChangelog(releasesOfDevice, features);
+    // releases are already filtered, so they can be considered "safe".
+    // so lets build changelog! It should include only those firmwares, that are
+    // newer than currently installed firmware.
+
+    let changelog;
+    if (features.bootloader_mode) {
+        // the problem with bootloader is that we see only bootloader and not firmware version
+        // and multiple releases may share same bootloader version. we really can not tell that
+        // the versions that are installable are newer. so...
+        if (features.firmware_present && features.major_version === 1) {
+            // return null signaling that we don't really know, but only if some firmware
+            // is already installed!
+            changelog = null;
+        } else if (features.firmware_present && features.major_version === 2) {
+            // little different situation is with model 2, where in bootloader (and with some fw installed)
+            // we actually know the firmware version
+            changelog = releasesOfDevice.filter(r =>
+                versionUtils.isNewer(r.version, [
+                    features.fw_major,
+                    features.fw_minor,
+                    features.fw_patch,
+                ]),
+            );
+        } else {
+            // for fresh devices, we can assume that all releases are actually "new"
+            changelog = releasesOfDevice;
+        }
+    } else {
+        // otherwise we are in firmware mode and because each release in releases list has
+        // version higher than the previous one, we can filter out the version that is already
+        // installed and show only what's new!
+        changelog = releasesOfDevice.filter(r =>
+            versionUtils.isNewer(r.version, getFirmwareOrBootloaderVersionArray(features)),
+        );
+    }
+    const isRequired = changelog?.length ? changelog.some(item => item.required) : null;
 
     let isNewer: boolean;
     let requiresIntermediary: boolean;
@@ -490,7 +440,7 @@ export const getReleaseInfo = ({
         },
         release,
         intermediary: requiresIntermediary ? intermediary : undefined,
-        isRequired: isRequired(changelog),
+        isRequired,
         isNewer,
         translations: release.translations,
     };
@@ -545,22 +495,31 @@ export const findBestCompatibleRelease = (
 };
 
 export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: FirmwareType) => {
-    const deviceMessageRelease = getReleaseConfig(features, firmwareType);
+    const deviceMessageRelease = firmwareReleaseStore.getReleases(
+        features.internal_model,
+        firmwareType,
+    );
     if (!deviceMessageRelease?.release) {
         return;
     }
+
+    const isBitcoinOnlyAvailable = !!firmwareReleaseStore.getReleases(
+        features.internal_model,
+        FirmwareType.BitcoinOnly,
+    );
+
     const { release, conditions, firmware_type } = deviceMessageRelease;
 
-    const currentVersion = getCurrentVersion(features);
-    const inBootloaderMode = features.bootloader_mode && !!currentVersion.bootloaderVersion;
+    const { bootloaderVersion, firmwareVersion } = getCurrentVersion(features);
+    const inBootloaderMode = features.bootloader_mode && !!bootloaderVersion;
 
     const versionContext = inBootloaderMode
         ? {
-              version: currentVersion.bootloaderVersion!,
+              version: bootloaderVersion!,
               minVersionKey: 'min_bootloader_version' as const,
           }
         : {
-              version: currentVersion.firmwareVersion,
+              version: firmwareVersion,
               minVersionKey: 'min_firmware_version' as const,
           };
 
@@ -577,7 +536,7 @@ export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: F
         // If the target isn't compatible, search for the best alternative.
         const alternativeRelease = findBestCompatibleRelease(
             sortedReleases,
-            currentVersion,
+            { bootloaderVersion, firmwareVersion },
             versionContext.minVersionKey,
         );
         // If an alternative is found, use it. Otherwise, we proceed with the original.
@@ -586,11 +545,31 @@ export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: F
         }
     }
 
-    const intermediary = getIntermediaryMessageRelease(features);
+    let intermediary;
+    const deviceIntermediaryReleases = firmwareReleaseStore.getIntermediary(
+        features.internal_model,
+    );
+    if (!deviceIntermediaryReleases || deviceIntermediaryReleases.length === 0) {
+        // No intermediary releases are defined for this model.
+        intermediary = undefined;
+    } else {
+        const currentVersion = features.bootloader_mode ? bootloaderVersion : firmwareVersion;
+        const minVersionKey = features.bootloader_mode
+            ? 'min_bootloader_version'
+            : 'min_firmware_version';
+
+        // Find the first intermediary release that requires a newer version than the current one.
+        intermediary = currentVersion
+            ? deviceIntermediaryReleases.find(r =>
+                  versionUtils.isNewer(r[minVersionKey], currentVersion),
+              )
+            : undefined;
+    }
+
     const finalTargetRelease = intermediary ? release : suitableRelease;
 
     return getReleaseInfo({
-        isBitcoinOnlyAvailable: getIsBitcoinOnlyAvailable(features),
+        isBitcoinOnlyAvailable,
         features,
         release: finalTargetRelease,
         conditions,
