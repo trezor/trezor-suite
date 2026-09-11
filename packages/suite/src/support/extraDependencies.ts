@@ -31,7 +31,7 @@ import { createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { type StorageLoadAction } from 'src/actions/suite/storageActions';
+import { type StorageLoadAction } from 'src/actions/suite/storageLifecycleActions';
 
 import { type SuiteServices } from './createSuiteCompositionRoot';
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';

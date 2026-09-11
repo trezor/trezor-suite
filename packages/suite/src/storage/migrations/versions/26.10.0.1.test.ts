@@ -1,5 +1,6 @@
-import '@suite-common/test-utils/globalOverrides';
-import { type IDBPDatabase, deleteDB, openDB } from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
+
+import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
 
@@ -31,8 +32,8 @@ const createDBWithSuiteSettings = async (suiteSettings?: Record<string, unknown>
 };
 
 describe('migration 26.10.0.1', () => {
-    beforeEach(async () => {
-        await deleteDB(DB_NAME);
+    beforeEach(() => {
+        installFakeIndexedDb();
     });
 
     test('drops the removed banner flag and keeps the rest', async () => {

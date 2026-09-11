@@ -1,5 +1,6 @@
-import '@suite-common/test-utils/globalOverrides';
-import { type IDBPDatabase, deleteDB, openDB } from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
+
+import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
 
@@ -31,8 +32,8 @@ const createDBWithWalletSettings = async (walletSettings?: Record<string, unknow
 };
 
 describe('migration 26.9.0', () => {
-    beforeEach(async () => {
-        await deleteDB(DB_NAME);
+    beforeEach(() => {
+        installFakeIndexedDb();
     });
 
     test('converts the boolean record to a filter record, keeping only hiding networks', async () => {

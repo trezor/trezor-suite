@@ -1,5 +1,6 @@
-import '@suite-common/test-utils/globalOverrides';
-import { type IDBPDatabase, deleteDB, openDB } from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
+
+import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
 
@@ -16,8 +17,8 @@ const runMigration = () =>
     });
 
 describe('migration 26.4.0.1', () => {
-    beforeEach(async () => {
-        await deleteDB(DB_NAME);
+    beforeEach(() => {
+        installFakeIndexedDb();
     });
 
     test('adds descriptor with apiType "usb" when descriptor is missing', async () => {

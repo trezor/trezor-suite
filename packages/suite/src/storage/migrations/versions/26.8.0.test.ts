@@ -1,6 +1,6 @@
-import '@suite-common/test-utils/globalOverrides';
-import { type IDBPDatabase, deleteDB, openDB } from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
 
+import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
@@ -46,8 +46,8 @@ const createSeedDb = async () => {
 };
 
 describe('migration 26.8.0', () => {
-    beforeEach(async () => {
-        await deleteDB(DB_NAME);
+    beforeEach(() => {
+        installFakeIndexedDb();
     });
 
     test('removes historic rates of ERC4626 tokens and keeps the rest', async () => {
