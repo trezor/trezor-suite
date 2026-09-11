@@ -620,6 +620,22 @@ type FirmwareLocationPathParams = {
 };
 
 /**
+ * Is this base URL the remote firmware host rather than a bundled or local location?
+ *
+ * Compares the parsed hostname: a substring match would also accept an unrelated host that merely
+ * contains the remote one (`https://example.com/data.trezor.io`, `https://data.trezor.io.example.com`).
+ * Bundled locations are a desktop filesystem directory or a web static path, neither of which is a
+ * parseable absolute URL, so they are never the remote.
+ */
+const isRemoteFirmwareBaseUrl = (baseUrl: string) => {
+    try {
+        return new URL(baseUrl).hostname === new URL(getOnlineFirmwareBaseUrl().BASE_URL).hostname;
+    } catch {
+        return false;
+    }
+};
+
+/**
  * Get firmware location parameters (baseUrl and path) where the firmware binary can be downloaded.
  * The function checks multiple locations in the following order:
  * 1. Bundled firmware location (if the firmware version matches the bundled version).
@@ -642,7 +658,7 @@ export const getFirmwareLocation = ({
     const bundledBaseUrl = removeTrailingSlashes(settingsStore.get('binFilesBaseUrl'));
     // Here we care just to know if the binaries are bundled, in order to use them locally instead of fetching them
     // if they are in default remote we ignore it.
-    const isRealBundled = !bundledBaseUrl.includes('data.trezor.io');
+    const isRealBundled = !isRemoteFirmwareBaseUrl(bundledBaseUrl);
     const bundledVersion = getBundledFirmwareVersion(deviceModel, firmwareType);
 
     const isIntermediary = bundledBaseUrl && intermediaryVersion;

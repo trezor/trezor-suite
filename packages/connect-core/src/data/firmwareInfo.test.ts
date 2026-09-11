@@ -6,6 +6,7 @@ import { DeviceModelInternal } from '@trezor/protobuf/src/definitions';
 import { versionUtils } from '@trezor/utils';
 
 import {
+    getFirmwareLocation,
     getFirmwareReleaseConfigInfo,
     getFirmwareStatus,
     initializeFirmwareConfig,
@@ -80,6 +81,63 @@ describe('data/firmwareInfo', () => {
             );
             expect(firmwareReleaseConfigInfo?.intermediary).toBeTruthy();
             expect(firmwareReleaseConfigInfo?.release.version).toEqual(latestRelase.version);
+        });
+    });
+
+    describe('getFirmwareLocation', () => {
+        const deviceModel = DeviceModelInternal.T2T1;
+        const firmwareType = FirmwareType.Universal;
+
+        const setBinFilesBaseUrl = (binFilesBaseUrl: string) =>
+            settingsStore.set(parseConnectSettings({ binFilesBaseUrl }));
+
+        // The bundled binaries are only used when their version matches the requested one.
+        const getBundledFirmwareVersion = () => {
+            const releasePath =
+                firmwareReleaseStore.getLocal().releases[deviceModel]?.[firmwareType]?.releasePath;
+            const version = releasePath?.match(/(\d+)\.(\d+)\.(\d+)/);
+            if (!version) throw new Error('No bundled release for the tested device model.');
+
+            return [Number(version[1]), Number(version[2]), Number(version[3])] as const;
+        };
+
+        const locate = () =>
+            getFirmwareLocation({
+                firmwareVersion: [...getBundledFirmwareVersion()],
+                remotePath: 'firmware/t2t1/universal/remote.bin',
+                deviceModel,
+                firmwareType,
+            });
+
+        beforeAll(async () => {
+            const settings = parseConnectSettings({});
+            settingsStore.set(settings);
+            await firmwareReleaseStore.init(
+                settings.firmwareChannel,
+                true,
+                initializeFirmwareConfig,
+            );
+        });
+
+        it('uses the bundled location for a local base url', () => {
+            setBinFilesBaseUrl('/static/connect/data');
+
+            expect(locate().baseUrl).toBe('/static/connect/data');
+        });
+
+        it('ignores a base url pointing at the remote firmware host', () => {
+            setBinFilesBaseUrl('https://data.trezor.io/firmware');
+
+            expect(locate()).toEqual({
+                baseUrl: 'https://data.trezor.io',
+                path: 'firmware/t2t1/universal/remote.bin',
+            });
+        });
+
+        it('treats a host that merely contains the remote one as bundled', () => {
+            setBinFilesBaseUrl('https://example.com/data.trezor.io');
+
+            expect(locate().baseUrl).toBe('https://example.com/data.trezor.io');
         });
     });
 });
