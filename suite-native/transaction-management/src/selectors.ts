@@ -13,6 +13,7 @@ import {
     selectSendSerializedTx,
 } from '@suite-common/wallet-core';
 import {
+    TransactionReviewSummaryOutput,
     type AccountKey,
     type FeeLevelLabel,
     type FormDraftWithSendKeyPrefix,
@@ -32,6 +33,7 @@ import {
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { type NativeSendRootState } from './sendFormSlice';
+import { StatefulReviewOutput } from './types';
 
 const isStakingPrefix = (
     prefix: FormDraftWithSendKeyPrefix,
@@ -138,7 +140,7 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
                 ? 'success'
                 : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests);
 
-            return { ...output, state: outputState };
+            return { ...output, state: outputState } satisfies StatefulReviewOutput;
         });
     },
 );
@@ -271,7 +273,7 @@ export const selectReviewSummaryOutput = createSendMemoizedSelector(
             state: outputState,
             totalSpent: precomposedTx.totalSpent,
             fee: precomposedTx.fee,
-        };
+        } satisfies TransactionReviewSummaryOutput;
     },
 );
 
