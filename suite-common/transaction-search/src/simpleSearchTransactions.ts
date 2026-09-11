@@ -5,13 +5,13 @@ import {
     isNativeTransferMatchesSearch,
     isTokenTransferMatchesSearch,
 } from '@suite-common/wallet-utils';
-import { BigNumber, typedObjectKeys } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils';
 
 import { getTargetAmounts } from './getTargetAmounts';
 import { numberSearchFilter } from './numberSearchFilter';
 import { type SearchAccountLabels } from './searchLabels';
 import { searchOperators } from './searchOperations';
-import { getTransactionSearchIndex } from './transactionSearchIndex';
+import { getLabelSearchLookups, getTransactionSearchLookups } from './transactionSearchIndex';
 
 const searchDateRegex = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
 
@@ -88,12 +88,10 @@ export const simpleSearchTransactions = (
 
     const lowerCaseSearch = search.toLowerCase();
     const txsToSearch: string[] = [];
-    // Built once for as long as the transactions and the labels are the same objects, rather than
-    // once per keystroke and once per term of an advanced query.
-    const { txidsByAddress, txidsByOutputLabel, addressesByLabel } = getTransactionSearchIndex(
-        transactions,
-        accountLabels,
-    );
+    // Both are built once for as long as their input is the same object, rather than once per
+    // keystroke and once per term of an advanced query.
+    const { byAddress } = getTransactionSearchLookups(transactions);
+    const { txidsByOutputLabel, addressesByLabel } = getLabelSearchLookups(accountLabels);
 
     // Searching for an amount (without operator)
     if (getIsNumericSearch(search)) {
@@ -109,37 +107,24 @@ export const simpleSearchTransactions = (
     }
 
     // Find by output label
-    const foundTxsForOutputLabel = typedObjectKeys(txidsByOutputLabel).flatMap(label => {
-        if (label.toLowerCase().includes(lowerCaseSearch)) {
-            return txidsByOutputLabel[label] ?? [];
-        }
-
-        return [];
-    });
+    const foundTxsForOutputLabel = [...txidsByOutputLabel].flatMap(([label, txids]) =>
+        label.toLowerCase().includes(lowerCaseSearch) ? txids : [],
+    );
     txsToSearch.push(...foundTxsForOutputLabel);
 
     // Find by address label
     const foundAddressesForLabel = new Set(
-        typedObjectKeys(addressesByLabel).flatMap(label => {
-            if (label.toLowerCase().includes(lowerCaseSearch)) {
-                return addressesByLabel[label] ?? [];
-            }
-
-            return [];
-        }),
+        [...addressesByLabel].flatMap(([label, addresses]) =>
+            label.toLowerCase().includes(lowerCaseSearch) ? addresses : [],
+        ),
     );
 
     // Find by address
-    const foundTxsForAddress = typedObjectKeys(txidsByAddress).flatMap(address => {
-        if (
-            address.toLowerCase().includes(lowerCaseSearch) ||
-            foundAddressesForLabel.has(address)
-        ) {
-            return [...(txidsByAddress[address] ?? [])];
-        }
-
-        return [];
-    });
+    const foundTxsForAddress = [...byAddress].flatMap(([address, group]) =>
+        address.toLowerCase().includes(lowerCaseSearch) || foundAddressesForLabel.has(address)
+            ? group.ids
+            : [],
+    );
     txsToSearch.push(...foundTxsForAddress);
 
     // Find by token name, symbol or contract

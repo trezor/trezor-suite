@@ -1,9 +1,8 @@
 /* eslint-disable no-console */
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { typedObjectKeys } from '@trezor/utils';
 
 import { getTargetAmounts } from '../getTargetAmounts';
-import { getTransactionSearchIndex } from '../transactionSearchIndex';
+import { getTransactionSearchLookups } from '../transactionSearchIndex';
 
 const COUNT = 5_000;
 const address = (i: number) => `bc1q${i.toString(36).padStart(8, '0')}`;
@@ -18,13 +17,10 @@ const transactions = Array.from({ length: COUNT }, (_, i) => ({
         vout: [{ addresses: [address(i)] }, { addresses: [address(i * 3)] }],
     },
 })) as unknown as WalletAccountTransaction[];
-const labels = { accountLabel: null, outputLabels: new Map(), addressLabels: new Map() };
 
 const search = 'alice';
-const index = getTransactionSearchIndex(transactions, labels);
-console.log(
-    `${COUNT} transactions -> ${Object.keys(index.txidsByAddress).length} distinct addresses\n`,
-);
+const index = getTransactionSearchLookups(transactions);
+console.log(`${COUNT} transactions -> ${index.byAddress.size} distinct addresses\n`);
 
 const time = (label: string, run: () => unknown) => {
     run();
@@ -51,8 +47,8 @@ time('build address map (now memoized away)', () => {
 });
 
 time('scan every address key, per query', () =>
-    typedObjectKeys(index.txidsByAddress).flatMap(a =>
-        a.toLowerCase().includes(search) ? [...(index.txidsByAddress[a] ?? [])] : [],
+    [...index.byAddress].flatMap(([a, group]) =>
+        a.toLowerCase().includes(search) ? group.ids : [],
     ),
 );
 
