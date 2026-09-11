@@ -1,6 +1,7 @@
 import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Card, Column, Paragraph } from '@trezor/components';
 import { CircuitryIcon } from '@trezor/icons';
 
@@ -12,11 +13,17 @@ import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationStepProps = {
+    /** The device this update is on. See `ReconnectDevicePrompt`, which is what needs it. */
+    device: TrezorDevice | undefined;
     install: () => void;
     onSuccess: () => void;
 };
 
-export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstallationStepProps) => {
+export const FirmwareInstallationStep = ({
+    device,
+    install,
+    onSuccess,
+}: FirmwareInstallationStepProps) => {
     const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate();
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
@@ -53,7 +60,7 @@ export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstall
 
     return (
         <>
-            {showReconnectPrompt && <ReconnectDevicePrompt onSuccess={install} />}
+            {showReconnectPrompt && <ReconnectDevicePrompt device={device} onSuccess={install} />}
             <OnboardingCard
                 icon={CircuitryIcon}
                 heading={<Translation id="TR_INSTALL_FIRMWARE" />}

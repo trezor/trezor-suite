@@ -38,9 +38,10 @@ export const FirmwareModal = ({
 }: FirmwareModalProps) => {
     const { resetReducer, status, setStatus, deviceWillBeWiped, error } =
         useFirmwareDesktopUpdate();
-    // The update reboots the device several times under new paths, so the flow addresses it through
-    // the firmware device ref rather than the global selection, which may point at a different
-    const firmwareUpdateDevice = useFirmwareSessionDevice();
+    // Read once, here, and handed to every step below as a prop. The update reboots the device
+    // several times under new paths, so the steps have to be about the session's device rather
+    // than the global selection, which by then may point at a different one.
+    const device = useFirmwareSessionDevice();
 
     const { dispatch } = useServices(selectDispatch);
     const [isChecked, setIsChecked] = useState(false);
@@ -52,8 +53,8 @@ export const FirmwareModal = ({
     const isCancelable = ['initial', 'check-seed', 'done', 'error'].includes(status);
 
     const handleClose = () => {
-        if (firmwareUpdateDevice && firmwareUpdateDevice.status !== 'available') {
-            dispatch(acquireDeviceThunk({ requestedDevice: firmwareUpdateDevice }));
+        if (device && device.status !== 'available') {
+            dispatch(acquireDeviceThunk({ requestedDevice: device }));
         }
         dispatch(closeModal());
         dispatch(closeModalAppThunk());
@@ -67,6 +68,7 @@ export const FirmwareModal = ({
             case 'initial':
                 return (
                     <StepInitial
+                        device={device}
                         onClose={handleClose}
                         install={install}
                         setStatus={setStatus}
@@ -79,6 +81,7 @@ export const FirmwareModal = ({
             case 'check-seed':
                 return (
                     <StepCheckSeed
+                        device={device}
                         resetReducer={resetReducer}
                         onClose={handleClose}
                         deviceWillBeWiped={deviceWillBeWiped}
@@ -101,6 +104,7 @@ export const FirmwareModal = ({
 
                 return (
                     <StepStarted
+                        device={device}
                         modalHeading={heading}
                         install={install}
                         onPromptClose={handleClose}
@@ -113,6 +117,7 @@ export const FirmwareModal = ({
             case 'done':
                 return (
                     <StepDone
+                        device={device}
                         modalHeading={heading}
                         install={install}
                         onClose={handleClose}

@@ -1,5 +1,6 @@
 import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: expose the browser-specific TrezorConnect type via the @trezor/connect barrel and remove this exception (see #27376)
@@ -13,6 +14,8 @@ import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationProps = {
+    /** The device this update is on. See `ReconnectDevicePrompt`, which is what needs it. */
+    device: TrezorDevice | undefined;
     // If true, information about new version is not shown, because we don't know anything about it
     isCustomFirmware?: boolean;
     install: () => void;
@@ -20,6 +23,7 @@ type FirmwareInstallationProps = {
 };
 
 export const FirmwareInstallation = ({
+    device,
     isCustomFirmware,
     install,
     onPromptClose,
@@ -45,7 +49,11 @@ export const FirmwareInstallation = ({
     return (
         <>
             {showReconnectPrompt && (
-                <ReconnectDevicePrompt onClose={onPromptClose} onSuccess={install} />
+                <ReconnectDevicePrompt
+                    device={device}
+                    onClose={onPromptClose}
+                    onSuccess={install}
+                />
             )}
             <Column gap={16}>
                 {isDeviceNotSelected && (

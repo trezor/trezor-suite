@@ -1,12 +1,11 @@
 import { type ReactNode } from 'react';
 
-import { useFirmwareSessionDevice } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectIsDeviceBackedUp } from '@suite-common/device';
-import { selectFirmwareDeviceLabelOrName } from '@suite-common/firmware';
+import { getDeviceLabelOrName, selectIsDeviceBackedUp } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
@@ -14,6 +13,8 @@ import { PrerequisitesGuide } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
 type StepCheckSeedProps = {
+    /** The device this update is on, and whose backup state gates the install. */
+    device: TrezorDevice | undefined;
     deviceWillBeWiped: boolean;
     setIsChecked: (isChecked: boolean) => void;
     isChecked: boolean;
@@ -24,6 +25,7 @@ type StepCheckSeedProps = {
 };
 
 export const StepCheckSeed = ({
+    device,
     deviceWillBeWiped,
     setIsChecked,
     isChecked,
@@ -32,13 +34,12 @@ export const StepCheckSeed = ({
     install,
     modalHeading,
 }: StepCheckSeedProps) => {
-    const firmwareUpdateDevice = useFirmwareSessionDevice();
-    const deviceLabel = useSelector(selectFirmwareDeviceLabelOrName);
+    const deviceLabel = getDeviceLabelOrName(device);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
 
     const { dispatch } = useServices(selectDispatch);
 
-    if (!firmwareUpdateDevice?.connected || !firmwareUpdateDevice?.features) {
+    if (!device?.connected || !device?.features) {
         return <PrerequisitesGuide />;
     }
 
@@ -111,7 +112,7 @@ export const StepCheckSeed = ({
                     <Modal.Button
                         onClick={install}
                         data-testid="@firmware/confirm-seed-button"
-                        isDisabled={!firmwareUpdateDevice?.connected || !isChecked}
+                        isDisabled={!device?.connected || !isChecked}
                         intent={deviceWillBeWiped ? 'critical' : 'brand'}
                     >
                         <Translation

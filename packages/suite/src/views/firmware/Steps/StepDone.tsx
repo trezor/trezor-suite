@@ -1,11 +1,13 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Modal } from '@trezor/components';
 
 import { FirmwareInstallation } from 'src/components/firmware/FirmwareInstallation';
 
 type StepDoneProps = {
+    device: TrezorDevice | undefined;
     onClose: () => void;
     install: () => void;
     isCustomFirmwareUploaded?: boolean;
@@ -13,6 +15,7 @@ type StepDoneProps = {
 };
 
 export const StepDone = ({
+    device,
     onClose,
     modalHeading,
     isCustomFirmwareUploaded,
@@ -32,6 +35,7 @@ export const StepDone = ({
             }
         >
             <FirmwareInstallation
+                device={device}
                 install={install}
                 onPromptClose={onClose}
                 isCustomFirmware={isCustomFirmware}

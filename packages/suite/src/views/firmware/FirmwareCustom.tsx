@@ -44,7 +44,7 @@ export const FirmwareCustom = () => {
                 heading={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
                 install={installCustomFirmware}
             >
-                <SelectCustomFirmware setFirmwareBinary={setFirmwareBinary} />
+                <SelectCustomFirmware device={device} setFirmwareBinary={setFirmwareBinary} />
             </FirmwareModal>
         </FirmwareUpdateSession>
     );

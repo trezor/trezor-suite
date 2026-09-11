@@ -29,19 +29,19 @@ const FirmwareStepContent = () => {
     // which is what the disconnected check below is about.
     const firmwareUpdateDevice = useFirmwareSessionDevice();
     const modal = useSelector(selectModal);
-    const { goToNextStep, updateAnalytics, onboardedDevice } = useOnboarding();
+    const { goToNextStep, updateAnalytics } = useOnboarding();
     const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();
 
     const install = () => {
-        if (!onboardedDevice) {
+        if (!firmwareUpdateDevice) {
             return;
         }
 
-        // Installing onto the device onboarding is pinned to, rather than the selected one, is
-        // what makes the two flows track the same device through the reboots the update forces.
-        firmwareUpdate({ device: onboardedDevice, firmwareType: targetType });
+        // Installing onto this session's device, rather than the selected one, is what keeps the
+        // flow on one physical device through the reboots the update forces.
+        firmwareUpdate({ device: firmwareUpdateDevice, firmwareType: targetType });
     };
     const goToNextStepAndResetReducer = useCallback(() => {
         goToNextStep();
@@ -146,7 +146,7 @@ const FirmwareStepContent = () => {
     switch (status) {
         // check-seed is omitted as it is only relevant in separate fw update flow and it is not used in onboarding since user don't have any seed at that time
         case 'initial':
-            return <FirmwareInitialStep />;
+            return <FirmwareInitialStep device={firmwareUpdateDevice} />;
         case 'started': // called from firmwareUpdate()
         case 'done': // This is shown only for NON-THP devices, THP device goes directly to the next step after successful THP pairing. see onboardingMiddleware
             if (isProgressCheckDisplayed) {
@@ -161,6 +161,7 @@ const FirmwareStepContent = () => {
 
             return (
                 <FirmwareInstallationStep
+                    device={firmwareUpdateDevice}
                     install={install}
                     onSuccess={goToNextStepAndResetReducer}
                 />

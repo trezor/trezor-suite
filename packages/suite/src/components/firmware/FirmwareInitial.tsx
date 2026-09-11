@@ -2,9 +2,9 @@ import {
     FirmwareWarningsList,
     FirmwareWipeWarning,
     useFirmwareDesktopUpdate,
-    useFirmwareSessionDevice,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Banner, Card, Column } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
@@ -45,8 +45,12 @@ const getDescription = ({
     return reinstall ? 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION' : 'TR_FIRMWARE_NEW_FW_DESCRIPTION';
 };
 
-export const FirmwareInitial = () => {
-    const firmwareUpdateDevice = useFirmwareSessionDevice();
+type FirmwareInitialProps = {
+    /** The device this update is on. */
+    device: TrezorDevice | undefined;
+};
+
+export const FirmwareInitial = ({ device: firmwareUpdateDevice }: FirmwareInitialProps) => {
     const { deviceWillBeWiped, switchFirmwareType, targetFirmwareType } =
         useFirmwareDesktopUpdate();
 
