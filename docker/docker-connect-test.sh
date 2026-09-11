@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script runs @trezor/connect tests.
+# This script runs @trezor/connect-core tests.
 # It spins up trezor-user-env and sets required environment variables.
 
 set -euo pipefail
@@ -114,9 +114,9 @@ done
 shift $((OPTIND - 1))
 
 if [[ $ENVIRONMENT == "node" ]]; then
-  SCRIPT="yarn workspace @trezor/connect test:e2e:node"
+  SCRIPT="yarn workspace @trezor/connect-core test:e2e:node"
 else
-  SCRIPT="yarn workspace @trezor/connect test:e2e:web"
+  SCRIPT="yarn workspace @trezor/connect-core test:e2e:web"
 fi
 
 if [[ $FIRMWARE_BTC_ONLY == true && -z $FIRMWARE_BRANCH ]]; then

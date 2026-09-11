@@ -1,10 +1,10 @@
 {
-    "name": "@trezor/connect",
+    "name": "@trezor/connect-core",
     "version": "10.0.0-beta.1",
     "type": "module",
     "author": "Trezor <info@trezor.io>",
-    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect",
-    "description": "High-level javascript interface for Trezor hardware wallet.",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-core",
+    "description": "In-process execution engine for @trezor/connect.",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
         "type": "git",
@@ -70,12 +70,6 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
-        "version:prerelease": "yarn g:tsx scripts/bump-version.ts prerelease",
-        "version:patch": "yarn g:tsx scripts/bump-version.ts patch",
-        "version:prepatch": "yarn g:tsx scripts/bump-version.ts prepatch",
-        "version:minor": "yarn g:tsx scripts/bump-version.ts minor",
-        "version:preminor": "yarn g:tsx scripts/bump-version.ts preminor",
-        "version:major": "yarn g:tsx scripts/bump-version.ts major",
         "test:e2e:web": "yarn g:tsx ./e2e/run.ts web",
         "test:e2e:node": "yarn g:tsx ./e2e/run.ts node",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"

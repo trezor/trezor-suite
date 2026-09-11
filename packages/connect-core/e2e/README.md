@@ -23,7 +23,7 @@ Testing `@trezor/connect` in a browser environment using Vitest with Playwright.
 For local changes to take effect build connect-iframe or connect-web depending where they were made and restart test.
 
 ```
-TESTS_PATTERN="init" yarn workspace @trezor/connect test:e2e:web
+TESTS_PATTERN="init" yarn workspace @trezor/connect-core test:e2e:web
 ```
 
 ## Transactions cache
