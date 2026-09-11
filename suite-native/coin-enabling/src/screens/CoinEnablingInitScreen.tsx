@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
 import { LinearTransition } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { events as commonEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -39,6 +41,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const CoinEnablingInitScreen = () => {
     const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const navigation = useNavigation<NavigationProps>();
     useInterceptNativeNavigation();
 
@@ -67,7 +70,10 @@ export const CoinEnablingInitScreen = () => {
     const hasEnabledCoin = useHasEnabledCoin(form.control);
 
     const handleSubmit = form.handleSubmit((values: CoinEnablingFormValues) => {
-        const enabledCoins = getNetworkSymbolsFromEnabledCoins(values.enabledCoins);
+        const enabledCoins = getNetworkSymbolsFromEnabledCoins(
+            values.enabledCoins,
+            supportedNetworks,
+        );
 
         enabledCoins.forEach(symbol => {
             dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: true }));

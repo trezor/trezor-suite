@@ -1,8 +1,10 @@
 import { type EnhancedStore, combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -43,12 +45,14 @@ const services: NativeAnalyticsDep = {
 describe('BuyPaymentMethodPicker', () => {
     let form: BuyFormType;
     const defaultPreloadedState = {
+        networks: mockNetworksState(mockGetSupportedNetworks()),
         device: deviceInitialState,
         locale: localeInitialState,
         wallet: getWalletState({ tradeType: 'buy' }),
     };
 
     const reducer = {
+        networks: createStaticReducer(mockNetworksState(mockGetSupportedNetworks())),
         device: createStaticReducer(deviceInitialState),
         locale: createStaticReducer(localeInitialState),
         wallet: combineReducers({
@@ -162,6 +166,7 @@ describe('BuyPaymentMethodPicker', () => {
             const store = createLightStore({
                 reducer,
                 preloadedState: {
+                    networks: mockNetworksState(mockGetSupportedNetworks()),
                     device: deviceInitialState,
                     wallet: {
                         trading: getWalletState({ tradeType: 'buy' }).trading,

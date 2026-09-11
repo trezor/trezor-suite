@@ -11,6 +11,7 @@ import {
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { type DeviceRootState } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -38,7 +39,10 @@ import { type PendingConnectionProposalNetwork } from './walletConnectTypes';
 
 let walletKit: IWalletKit;
 
-type SuccessfulAccountsThunkState = AccountsRootState & DeviceRootState & WalletSettingsRootState;
+type SuccessfulAccountsThunkState = AccountsRootState &
+    DeviceRootState &
+    WalletSettingsRootState &
+    NetworksRootState;
 
 type SessionAuthenticateThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
     SuccessfulAccountsThunkState;

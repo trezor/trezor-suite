@@ -1,8 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
-import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NetworksRootState } from '@suite-common/networks';
 import { tradingBuyActions } from '@suite-common/trading';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -31,15 +30,15 @@ import {
     renderWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
 
-type State = TradingRootState & AccountsRootState & FeatureFlagsRootState & DeviceRootState;
+type State = TradingRootState &
+    AccountsRootState &
+    FeatureFlagsRootState &
+    DeviceRootState &
+    NetworksRootState;
 
 const reportMock = jest.fn();
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep = {
     analytics: mockNativeAnalytics(reportMock),
-    networkModuleRepository: {
-        ...mockNetworkModuleRepository(),
-        getSupportedNetworks: () => ['btc', 'eth'],
-    },
 };
 
 const eth1AccountKey = eth1NormalAccount.key;

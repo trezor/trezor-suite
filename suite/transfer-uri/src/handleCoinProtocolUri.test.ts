@@ -1,19 +1,12 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { type FindNetworkSymbolForProtocol } from '@suite-common/networks';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworksRootState, networksActions, networksReducer } from '@suite-common/networks';
+import { mockNetworkMetadata } from '@suite-common/networks/mocks';
 
 import {
     type CoinProtocol,
     type HandleCoinProtocolUriThunkDeps,
     handleCoinProtocolUriThunk,
 } from './handleCoinProtocolUri';
-
-const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol => {
-    if (protocol === 'bitcoin') return asNetworkSymbol('btc');
-    if (protocol === 'ethereum') return asNetworkSymbol('eth');
-
-    return null;
-};
 
 const setup = () => {
     const dispatch = jest.fn();
@@ -26,12 +19,17 @@ const setup = () => {
     const extra: HandleCoinProtocolUriThunkDeps = {
         services: {
             analytics: mockDesktopAnalytics(report),
-            findNetworkSymbolForProtocol,
         },
     };
 
+    const state: NetworksRootState = {
+        networks: networksReducer(
+            null,
+            networksActions.setNetworks([mockNetworkMetadata.btc, mockNetworkMetadata.eth]),
+        ),
+    };
     const run = (uri: string) =>
-        handleCoinProtocolUriThunk(uri, saveCoinProtocol)(dispatch, () => ({}), extra);
+        handleCoinProtocolUriThunk(uri, saveCoinProtocol)(dispatch, () => state, extra);
 
     return { dispatch, report, saveCoinProtocol, run };
 };

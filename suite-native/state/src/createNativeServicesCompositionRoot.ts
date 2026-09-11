@@ -9,8 +9,9 @@ import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-ide
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
 import { notImplementedGetter } from '@suite-common/extra-dependencies';
 import {
-    createFindNetworkSymbolForProtocol,
     createGetNetworkConfig,
+    createGetNetworkConfigs,
+    createLoadNetworkModules,
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
@@ -94,10 +95,6 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
-    const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
-        getNetworkConfig,
-        networkModuleRepository,
-    });
     const addressValidator = createAddressValidator({ networkModuleRepository });
     const getNamedAddressSupport = createGetNamedAddressSupport({ networkModuleRepository });
 
@@ -108,8 +105,10 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
 
     return {
         networkModuleRepository,
-        getNetworkConfig,
-        findNetworkSymbolForProtocol,
+        loadNetworkModules: createLoadNetworkModules({
+            dispatch: deps.dispatch,
+            getNetworkConfigs: createGetNetworkConfigs({ getNetworkConfig }),
+        }),
         addressValidator,
         getNamedAddressSupport,
         suiteSync,

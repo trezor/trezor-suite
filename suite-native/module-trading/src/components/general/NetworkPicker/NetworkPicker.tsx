@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, Text, useBottomSheetControls } from '@suite-native/atoms';
 import {
     type DiscoveryRootState,
@@ -30,14 +30,13 @@ export const NetworkPicker = ({
     onSelectNetwork,
     testID,
 }: NetworkPickerProps) => {
-    const allNetworkSymbols = getSupportedNetworks();
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const { isSheetVisible, hideSheet, showSheet } = useBottomSheetControls();
     const networkSymbols = useSelector((state: DiscoveryRootState) =>
         networkFilterMode === 'discovered'
-            ? selectDeviceEnabledDiscoveryNetworkSymbols(state, allNetworkSymbols)
-            : selectDiscoveryNetworkSymbols(state, allNetworkSymbols),
+            ? selectDeviceEnabledDiscoveryNetworkSymbols(state)
+            : selectDiscoveryNetworkSymbols(state),
     );
 
     const pickerLabel = translate('moduleTrading.tradeableAssetsSheet.networkPickerLabel');

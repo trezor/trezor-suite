@@ -1,8 +1,7 @@
-import { type FindNetworkSymbolForProtocol } from '@suite-common/networks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { err, ok } from '@trezor/type-utils';
 
-import { parseTransferUri } from './parseTransferUri';
+import { type FindNetworkSymbolForProtocol, parseTransferUri } from './parseTransferUri';
 
 const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol => {
     if (protocol === 'bitcoin') return asNetworkSymbol('btc');

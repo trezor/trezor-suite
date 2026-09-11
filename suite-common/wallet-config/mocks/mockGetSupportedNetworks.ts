@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '../src/types';
+import type { NetworkSymbol } from '../src/networkTypes';
 
 export const mockGetSupportedNetworks = (): readonly NetworkSymbol[] => [
     'btc',

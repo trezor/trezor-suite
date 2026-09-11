@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 
-import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
+import { type NetworksRootState } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box } from '@suite-native/atoms';
 import { useScrollDivider } from '@suite-native/scrollview';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -42,16 +43,8 @@ export const AccountsList = ({
     ListFooterComponent,
     isScrollDividerEnabled = false,
 }: AccountsListProps) => {
-    const allNetworkSymbols = getSupportedNetworks();
-
-    const accountListRows = useSelector((state: NativeAccountsRootState) =>
-        selectFilteredDeviceAccountListRows(
-            state,
-            allNetworkSymbols,
-            searchValue,
-            isSendFlow,
-            networkFilter,
-        ),
+    const accountListRows = useSelector((state: NativeAccountsRootState & NetworksRootState) =>
+        selectFilteredDeviceAccountListRows(state, searchValue, isSendFlow, networkFilter),
     );
     const { applyStyle } = useNativeStyles();
     const { scrollDivider, handleScroll } = useScrollDivider();

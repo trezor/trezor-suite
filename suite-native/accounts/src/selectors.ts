@@ -6,6 +6,7 @@ import {
     selectDeviceStaticSessionId,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
+import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
@@ -81,6 +82,10 @@ export type NativeAccountsRootState = AccountsRootState &
     TokenDefinitionsRootState &
     TransactionsRootState;
 
+const createNetworkMemoizedSelector = createWeakMapSelector.withTypes<
+    NativeAccountsRootState & NetworksRootState
+>();
+
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRootState>();
 
 const selectVisibleAccountsWithSuiteSyncLabel = (state: NativeAccountsRootState) =>
@@ -126,21 +131,13 @@ export const selectAccountLabel = (
 
 // TODO: It searches for filterValue even in tokens without fiat rates.
 // These are currently hidden in UI, but they should be made accessible in some way.
-const selectFilteredDeviceAccounts = createMemoizedSelector(
+const selectFilteredDeviceAccounts = createNetworkMemoizedSelector(
     [
         selectVisibleAccountsWithSuiteSyncLabel,
-        (_state, supportedNetworks: readonly NetworkSymbol[]) => supportedNetworks,
-        (
-            _state: NativeAccountsRootState,
-            _supportedNetworks: readonly NetworkSymbol[],
-            filterValue: string,
-        ) => filterValue,
-        (
-            _state: NativeAccountsRootState,
-            _supportedNetworks: readonly NetworkSymbol[],
-            _filterValue: string,
-            isSendFlow: boolean = false,
-        ) => isSendFlow,
+        selectSupportedNetworkSymbols,
+        (_state: NativeAccountsRootState, filterValue: string) => filterValue,
+        (_state: NativeAccountsRootState, _filterValue: string, isSendFlow: boolean = false) =>
+            isSendFlow,
     ],
     (accounts, supportedNetworks, filterValue, isSendFlow) => {
         const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts, supportedNetworks);
@@ -175,12 +172,11 @@ const createFilteredDeviceAccountListRow = weakMapMemoize(
     }),
 );
 
-export const selectFilteredDeviceAccountListRows = createMemoizedSelector(
+export const selectFilteredDeviceAccountListRows = createNetworkMemoizedSelector(
     [
         selectFilteredDeviceAccounts,
         (
             _state: NativeAccountsRootState,
-            _supportedNetworks: readonly NetworkSymbol[],
             _filterValue: string,
             _isSendFlow: boolean = false,
             networkSymbols: NetworkSymbol[],
@@ -215,15 +211,11 @@ const createNetworkFilterOption = weakMapMemoize(
     }),
 );
 
-export const selectNetworkFilterOptions = createMemoizedSelector(
+export const selectNetworkFilterOptions = createNetworkMemoizedSelector(
     [
         selectVisibleAccountsWithSuiteSyncLabel,
-        (_state, supportedNetworks: readonly NetworkSymbol[]) => supportedNetworks,
-        (
-            _state: NativeAccountsRootState,
-            _supportedNetworks: readonly NetworkSymbol[],
-            isSendFlow: boolean = false,
-        ) => isSendFlow,
+        selectSupportedNetworkSymbols,
+        (_state: NativeAccountsRootState, isSendFlow: boolean = false) => isSendFlow,
     ],
     (accounts, supportedNetworks, isSendFlow) => {
         const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts, supportedNetworks);
@@ -247,7 +239,7 @@ export const selectNetworkFilterOptions = createMemoizedSelector(
     },
 );
 
-export const selectIsAccountsListNetworkFilterVisible = createMemoizedSelector(
+export const selectIsAccountsListNetworkFilterVisible = createNetworkMemoizedSelector(
     [selectNetworkFilterOptions],
     networkFilterOptions => networkFilterOptions.length > 1,
 );

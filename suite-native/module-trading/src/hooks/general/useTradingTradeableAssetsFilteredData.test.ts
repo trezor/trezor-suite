@@ -1,5 +1,3 @@
-import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { act } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { selectExchangeBuyTradeableAssets } from '@suite-native/trading-state';
@@ -8,12 +6,6 @@ import { useTradingTradeableAssetsFilteredData } from './useTradingTradeableAsse
 import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 const mockUseWatch = jest.fn();
-const services: NetworkModuleRepositoryDep = {
-    networkModuleRepository: {
-        ...mockNetworkModuleRepository(),
-        getSupportedNetworks: () => ['btc', 'eth'],
-    },
-};
 
 jest.mock('@suite-native/forms', () => ({
     ...jest.requireActual('@suite-native/forms'),
@@ -31,7 +23,7 @@ describe('useTradingTradeableAssetsFilteredData', () => {
     const renderUseTradingTradeableAssetsFilteredData = async () =>
         await renderHookWithTradingProvider(
             () => useTradingTradeableAssetsFilteredData(selectExchangeBuyTradeableAssets),
-            { services, tradeType: 'exchange' },
+            { tradeType: 'exchange' },
         );
 
     beforeEach(() => {

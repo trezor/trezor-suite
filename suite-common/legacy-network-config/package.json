@@ -1,0 +1,22 @@
+{
+    "name": "@suite-common/legacy-network-config",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/earn-stablecoin-defs": "workspace:*",
+        "@trezor/crypto-utils": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/network-cardano": "workspace:*",
+        "@trezor/network-ripple": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
+        "@trezor/network-tron": "workspace:*"
+    }
+}

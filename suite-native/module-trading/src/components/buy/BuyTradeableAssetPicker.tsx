@@ -2,17 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import { HStack } from '@suite-native/atoms';
-import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { useWatch } from '@suite-native/forms';
-import {
-    type TradingRootState,
-    buyActions,
-    selectBuyTradeableAssets,
-} from '@suite-native/trading-state';
+import { buyActions, selectBuyTradeableAssets } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { noop } from '@trezor/utils';
 
@@ -33,12 +26,8 @@ export const BuyTradeableAssetPicker = () => {
         (asset: TradeableAsset) => form.setValue('asset', asset),
         [form],
     );
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
-    const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
-        selectBuyTradeableAssets(state, supportedNetworks),
-    );
+    const assets = useSelector(selectBuyTradeableAssets);
 
     const btcAsset = useMemo(() => assets.find(asset => asset.cryptoId === 'bitcoin'), [assets]);
 

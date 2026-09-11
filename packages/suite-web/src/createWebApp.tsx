@@ -39,6 +39,8 @@ export const createWebApp =
 
         deps.services.hydrateReduxStore(preloadAction);
 
+        deps.services.loadNetworkModules();
+
         root.render(
             <ServicesProvider services={deps.services}>
                 <ReduxProvider store={deps.services.store}>

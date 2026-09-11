@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../legacy-network-config" },
         {
             "path": "../../networks/bitcoin/network-bitcoin-suite-common"
         },

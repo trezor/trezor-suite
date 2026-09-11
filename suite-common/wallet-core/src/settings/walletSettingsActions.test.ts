@@ -1,8 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore, wireEnabledNetworksMock } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 
 import { walletSettingsFixtures } from './__fixtures__/walletSettingsActions.fixtures';
 import { prepareWalletSettingsReducer } from './walletSettingsReducer';
@@ -10,6 +12,7 @@ import { changeCoinVisibilityThunk } from './walletSettingsThunks';
 
 const btcSymbol = asNetworkSymbol('btc');
 const adaSymbol = asNetworkSymbol('ada');
+const networks = mockNetworksState(mockGetSupportedNetworks());
 
 const settingsReducer = prepareWalletSettingsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -20,6 +23,7 @@ const initStore = (state: any) =>
     createTestStore({
         extra: undefined,
         reducer: {
+            networks: () => networks,
             wallet: combineReducers({
                 settings: settingsReducer,
             }),

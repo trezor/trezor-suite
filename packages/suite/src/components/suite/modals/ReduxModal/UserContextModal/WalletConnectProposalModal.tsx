@@ -7,9 +7,9 @@ import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { useDappScan } from '@suite-common/tx-simulation';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
@@ -60,6 +60,7 @@ interface WalletConnectProposalModalProps {
 
 export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalModalProps) => {
     const { dispatch } = useServices(selectDispatch);
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const pendingProposal = useSelector(selectPendingProposal);
     const accounts = useSelector(selectAllAccountsToList);
     const selectableAccounts = useMemo<Account[]>(
@@ -70,20 +71,21 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     .flatMap(network =>
                         accounts.filter(account => account.symbol === network.symbol),
                     ) ?? [],
+                supportedNetworks,
             ),
-        [accounts, pendingProposal?.networks],
+        [accounts, pendingProposal?.networks, supportedNetworks],
     );
-    const requestedNetworks = useMemo(() => {
-        const supportedNetworks = getSupportedNetworks();
-
-        return (pendingProposal?.networks ?? [])
-            .filter(network => network.status !== 'unsupported')
-            .toSorted(
-                (a, b) =>
-                    getNetworkOrder(supportedNetworks, a.symbol) -
-                    getNetworkOrder(supportedNetworks, b.symbol),
-            );
-    }, [pendingProposal?.networks]);
+    const requestedNetworks = useMemo(
+        () =>
+            (pendingProposal?.networks ?? [])
+                .filter(network => network.status !== 'unsupported')
+                .toSorted(
+                    (a, b) =>
+                        getNetworkOrder(supportedNetworks, a.symbol) -
+                        getNetworkOrder(supportedNetworks, b.symbol),
+                ),
+        [pendingProposal?.networks, supportedNetworks],
+    );
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
         selectableAccounts[0] || null,
     );

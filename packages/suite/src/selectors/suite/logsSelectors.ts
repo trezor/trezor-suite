@@ -21,7 +21,6 @@ import {
     REDACTED_REPLACEMENT,
     selectRedactedApplicationInfo,
 } from '@suite-common/logger';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type DeviceState } from '@trezor/connect';
 
 import { selectIsSuiteOnline, selectSuiteTransports } from './suiteSelectors';
@@ -37,13 +36,8 @@ export type SuiteLogsApplicationInfoRootState = SuiteRootState &
 const selectRedactedWallets = (
     state: SuiteLogsApplicationInfoRootState,
     shouldHideSensitiveData: boolean,
-    supportedNetworks: readonly NetworkSymbol[],
 ) => {
-    const commonApplicationInfo = selectRedactedApplicationInfo(
-        state,
-        shouldHideSensitiveData,
-        supportedNetworks,
-    );
+    const commonApplicationInfo = selectRedactedApplicationInfo(state, shouldHideSensitiveData);
 
     return commonApplicationInfo.wallets.map(wallet => ({
         ...wallet,
@@ -56,7 +50,6 @@ const selectRedactedWallets = (
 export const selectRedactedDesktopApplicationInfo = (
     state: SuiteLogsApplicationInfoRootState,
     shouldHideSensitiveData: boolean,
-    supportedNetworks: readonly NetworkSymbol[],
 ) => ({
     debugMenu: selectIsDebugModeActive(state),
     online: selectIsSuiteOnline(state),
@@ -69,5 +62,5 @@ export const selectRedactedDesktopApplicationInfo = (
     transports: selectSuiteTransports(state),
     earlyAccessProgram: selectDesktopUpdateAllowPrerelease(state),
     labeling: selectSelectedLabelsProviderType(state),
-    wallets: selectRedactedWallets(state, shouldHideSensitiveData, supportedNetworks),
+    wallets: selectRedactedWallets(state, shouldHideSensitiveData),
 });

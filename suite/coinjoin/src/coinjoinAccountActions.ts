@@ -7,6 +7,7 @@ import { type RouterRootState, gotoThunk, selectRouteName } from '@suite/router'
 import { type TorRootState } from '@suite/tor';
 import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type Dispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -543,7 +544,7 @@ const handleError = (error: string) => (dispatch: Dispatch) => {
     dispatch(notificationsActions.addToast({ type: 'error', error }));
 };
 
-type CreateCoinjoinAccountThunkState = DeviceRootState;
+type CreateCoinjoinAccountThunkState = DeviceRootState & NetworksRootState;
 
 export const createCoinjoinAccountThunk =
     (network: Network, account: NetworkAccount) =>
@@ -594,22 +595,25 @@ export const createCoinjoinAccountThunk =
 
         // create empty account
         const coinjoinAccount = dispatch(
-            accountsActions.createAccount({
-                deviceState: device!.state!.staticSessionId!,
-                index: 0,
-                path,
-                unlockPath: unlockPath.payload,
-                accountType: account.accountType,
-                backendType: 'coinjoin',
-                status: 'initial',
-                symbol: network.symbol,
-                accountInfo: {
-                    ...EMPTY_ACCOUNT_INFO,
-                    descriptor: publicKey.payload.xpubSegwit || publicKey.payload.xpub,
-                    legacyXpub: publicKey.payload.xpub,
+            accountsActions.createAccount(
+                {
+                    deviceState: device!.state!.staticSessionId!,
+                    index: 0,
+                    path,
+                    unlockPath: unlockPath.payload,
+                    accountType: account.accountType,
+                    backendType: 'coinjoin',
+                    status: 'initial',
+                    symbol: network.symbol,
+                    accountInfo: {
+                        ...EMPTY_ACCOUNT_INFO,
+                        descriptor: publicKey.payload.xpubSegwit || publicKey.payload.xpub,
+                        legacyXpub: publicKey.payload.xpub,
+                    },
+                    visible: true,
                 },
-                visible: true,
-            }),
+                selectSupportedNetworkSymbols(getState()),
+            ),
         );
 
         log(

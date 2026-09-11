@@ -1,4 +1,5 @@
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
+import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type GetTokenDefinitionsEnabledNetworksDep,
@@ -44,7 +45,7 @@ const getAccountTypeFromDescriptor = (descriptor: string, symbol: NetworkSymbol)
     return paymentTypeToAccountType[paymentType];
 };
 
-type ImportAccountThunkState = AccountsRootState & TokenDefinitionsRootState;
+type ImportAccountThunkState = AccountsRootState & TokenDefinitionsRootState & NetworksRootState;
 
 type ImportAccountThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
 
@@ -72,17 +73,20 @@ export const importAccountThunk = createThunk<
             const accountType = getAccountTypeFromDescriptor(accountInfo.descriptor, symbol);
             const imported = true;
             dispatch(
-                accountsActions.createAccount({
-                    deviceState,
-                    index: deviceNetworkAccounts.length, // indexed from 0
-                    path: (accountInfo?.path ?? '') as Bip43Path,
-                    accountType,
-                    symbol,
-                    accountInfo,
-                    imported,
-                    accountLabel,
-                    visible: true,
-                }),
+                accountsActions.createAccount(
+                    {
+                        deviceState,
+                        index: deviceNetworkAccounts.length, // indexed from 0
+                        path: (accountInfo?.path ?? '') as Bip43Path,
+                        accountType,
+                        symbol,
+                        accountInfo,
+                        imported,
+                        accountLabel,
+                        visible: true,
+                    },
+                    selectSupportedNetworkSymbols(getState()),
+                ),
             );
         }
         dispatch(periodicCheckTokenDefinitionsThunk());

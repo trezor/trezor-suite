@@ -1,7 +1,7 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
-import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { type NetworksRootState, selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
@@ -19,9 +19,9 @@ export type CoinProtocol = {
 
 type SaveCoinProtocol = (coinProtocol: CoinProtocol) => UnknownAction;
 
-export type HandleCoinProtocolUriThunkDeps = WithServices<
-    FindNetworkSymbolForProtocolDep & DesktopAnalyticsDep
->;
+export type HandleCoinProtocolUriThunkState = NetworksRootState;
+
+export type HandleCoinProtocolUriThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 /**
  * Fire-and-forget thunk for an incoming transfer URI: decode it, report any
@@ -32,7 +32,11 @@ export type HandleCoinProtocolUriThunkDeps = WithServices<
  */
 export const handleCoinProtocolUriThunk =
     (uri: string, saveCoinProtocol: SaveCoinProtocol) =>
-    (dispatch: Dispatch, _getState: unknown, extra: HandleCoinProtocolUriThunkDeps) => {
+    (
+        dispatch: Dispatch,
+        getState: () => HandleCoinProtocolUriThunkState,
+        extra: HandleCoinProtocolUriThunkDeps,
+    ) => {
         // Report any URI carrying a recognizable scheme (incl. unknown-protocol deeplinks).
         const reportScheme = (scheme: string, amountPresent: boolean) =>
             extra.services.analytics.report({
@@ -40,7 +44,9 @@ export const handleCoinProtocolUriThunk =
                 payload: { scheme, isAmountPresent: amountPresent },
             });
 
-        const result = parseTransferUri(uri, extra.services.findNetworkSymbolForProtocol);
+        const result = parseTransferUri(uri, protocol =>
+            selectNetworkSymbolForProtocol(getState(), protocol),
+        );
 
         if (!result.success) {
             if (result.error.type === 'UNKNOWN_SCHEME') reportScheme(result.error.scheme, false);

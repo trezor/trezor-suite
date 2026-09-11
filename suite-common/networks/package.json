@@ -8,9 +8,12 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/legacy-network-config": "workspace:*",
         "@trezor/network-bitcoin-suite-common": "workspace:*",
         "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",

@@ -6,6 +6,7 @@ import { modalReducer } from '@suite/modal';
 import { routerLocationChange, routerReducer } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { torReducer } from '@suite/tor';
+import { networksReducer } from '@suite-common/networks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -284,6 +285,7 @@ const DEFAULT_FEES: FeesState = {
 // Todo: Replace `any` with an accurate type.
 export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
     combineReducers({
+        networks: networksReducer,
         suite: createReducer(
             {
                 online: true,

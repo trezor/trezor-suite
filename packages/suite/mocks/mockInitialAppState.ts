@@ -24,6 +24,7 @@ import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
 import { type WalletState } from 'src/reducers/wallet';
 
 export const mockInitialAppState: AppState = {
+    networks: null,
     suite: suiteInitialState,
     discreetMode: {
         isActive: false,

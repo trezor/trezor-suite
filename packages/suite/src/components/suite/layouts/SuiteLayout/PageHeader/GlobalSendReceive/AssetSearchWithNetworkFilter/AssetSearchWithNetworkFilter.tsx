@@ -1,9 +1,8 @@
 import { type RefObject, memo } from 'react';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
@@ -26,7 +25,6 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     listRef,
     modal,
 }: AssetSearchWithNetworkFilterProps) {
-    const { findNetworkSymbolForProtocol } = useServices(selectFindNetworkSymbolForProtocolDep);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
 
     const [search, setSearch] = useSearchFilter();
@@ -38,7 +36,9 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
 
-    const protocolSymbol = protocolScheme ? findNetworkSymbolForProtocol(protocolScheme) : null;
+    const protocolSymbol = useSelector(state =>
+        selectNetworkSymbolForProtocol(state, protocolScheme),
+    );
 
     const networks = protocolSymbol ? [protocolSymbol] : enabledNetworks;
 

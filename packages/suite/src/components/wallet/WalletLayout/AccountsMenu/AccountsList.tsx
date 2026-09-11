@@ -8,7 +8,6 @@ import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { getTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn, getAccountTypeName } from '@suite-common/wallet-utils';
@@ -53,8 +52,6 @@ type AccountsListProps = {
 };
 
 export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: AccountsListProps) => {
-    const allNetworkSymbols = getSupportedNetworks();
-
     const device = useSelector(selectSelectedDevice);
     const baseAccounts = useSelector(selectAllAccountsToList);
 
@@ -73,9 +70,7 @@ export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: Account
     const { translationString } = useTranslation();
     const { isSidebarCollapsed } = useResponsiveContext();
     const { coinFilter, searchString } = useAccountSearch();
-    const discoveryStatus = useSelector(state =>
-        selectDiscoveryOverallStatus(state, allNetworkSymbols),
-    );
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus?.status === 'loading';
     const tokenDefinitions = useSelector(selectTokenDefinitions);
 

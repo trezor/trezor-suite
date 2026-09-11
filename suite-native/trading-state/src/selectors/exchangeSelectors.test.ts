@@ -1,6 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol, type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -24,10 +25,11 @@ import {
 const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
 
 describe('exchangeSelectors', () => {
-    let state: TradingRootState & AccountsRootState & FeatureFlagsRootState;
+    let state: TradingRootState & AccountsRootState & FeatureFlagsRootState & NetworksRootState;
 
     beforeEach(() => {
         state = {
+            networks: mockNetworksState(supportedCoins),
             wallet: getWalletState({ tradeType: 'exchange' }),
             featureFlags: {
                 ...featureFlagsInitialState,
@@ -113,7 +115,7 @@ describe('exchangeSelectors', () => {
 
     describe('selectExchangeBuyTradeableAssets', () => {
         it('should select only coins with exchange set to true', () => {
-            expect(selectExchangeBuyTradeableAssets(state, supportedCoins)).toEqual([
+            expect(selectExchangeBuyTradeableAssets(state)).toEqual([
                 expect.objectContaining({
                     cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                 }),
@@ -123,8 +125,8 @@ describe('exchangeSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectExchangeBuyTradeableAssets(state, supportedCoins);
-            const second = selectExchangeBuyTradeableAssets(state, supportedCoins);
+            const first = selectExchangeBuyTradeableAssets(state);
+            const second = selectExchangeBuyTradeableAssets(state);
 
             expect(first).toBe(second);
         });
@@ -132,13 +134,13 @@ describe('exchangeSelectors', () => {
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectExchangeBuyTradeableAssets(state, supportedCoins)).toEqual([]);
+            expect(selectExchangeBuyTradeableAssets(state)).toEqual([]);
         });
 
         it('should be empty array when cryptoIds are not set', () => {
             state.wallet.trading.exchange.exchangeInfo = undefined;
 
-            expect(selectExchangeBuyTradeableAssets(state, supportedCoins)).toEqual([]);
+            expect(selectExchangeBuyTradeableAssets(state)).toEqual([]);
         });
 
         it('should filter out coins with invalid network symbols', () => {
@@ -162,7 +164,7 @@ describe('exchangeSelectors', () => {
                 },
             };
 
-            const result = selectExchangeBuyTradeableAssets(state, supportedCoins);
+            const result = selectExchangeBuyTradeableAssets(state);
 
             expect(result).toEqual([
                 expect.objectContaining({ cryptoId: 'ethereum' }),

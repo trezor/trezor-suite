@@ -1,4 +1,5 @@
 import { type AccountType, type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { type Account } from '@suite-common/wallet-types';
 
 import {
@@ -7,6 +8,8 @@ import {
     compareEarnByNetwork,
     compareEarnByNetworkTokenOrder,
 } from './earnSortUtils';
+
+const supportedNetworks = mockGetSupportedNetworks();
 
 const ethSymbol = asNetworkSymbol('eth');
 const opSymbol = asNetworkSymbol('op');
@@ -46,7 +49,7 @@ describe('compareEarnByNetwork', () => {
             row('eth-0', ethSymbol, 0),
             row('op-1', opSymbol, 1),
             row('eth-1', ethSymbol, 1),
-        ].toSorted(compareEarnByNetwork(getRowSymbol));
+        ].toSorted(compareEarnByNetwork(getRowSymbol, supportedNetworks));
 
         const symbols = sorted.map(r => r.account?.symbol);
         expect(symbols.lastIndexOf(ethSymbol)).toBeLessThan(symbols.indexOf(opSymbol));
@@ -57,7 +60,7 @@ describe('compareEarnByNetwork', () => {
             row('eth-3', ethSymbol, 3),
             row('eth-0', ethSymbol, 0),
             row('eth-2', ethSymbol, 2),
-        ].toSorted(compareEarnByNetwork(getRowSymbol));
+        ].toSorted(compareEarnByNetwork(getRowSymbol, supportedNetworks));
 
         expect(sorted.map(r => r.id)).toEqual(['eth-3', 'eth-0', 'eth-2']);
     });
@@ -104,7 +107,7 @@ describe('compareEarnByNetwork', () => {
 
         const sorted = rows
             .toSorted(compareEarnByAmountDesc(r => r.depositedAmount))
-            .toSorted(compareEarnByNetwork(r => r.account.symbol));
+            .toSorted(compareEarnByNetwork(r => r.account.symbol, supportedNetworks));
 
         expect(sorted.map(r => r.id)).toEqual(['eth-1-100', 'eth-0-50', 'op-0-75', 'op-1-25']);
     });
@@ -117,7 +120,7 @@ describe('compareEarnByNetwork', () => {
             row('eth-1', ethSymbol, 1),
         ];
 
-        const sorted = rows.toSorted(compareEarnByNetwork(getRowSymbol));
+        const sorted = rows.toSorted(compareEarnByNetwork(getRowSymbol, supportedNetworks));
 
         expect(sorted.map(r => r.id)).toEqual(['a', 'eth-0', 'b', 'eth-1']);
     });
@@ -132,7 +135,7 @@ describe('compareEarnByNetworkTokenOrder', () => {
             row('eth-1-normal-usdc', ethSymbol, 1, 'normal', 'usdc'),
             row('eth-9-ledger-usdt', ethSymbol, 9, 'ledger', 'usdt'),
             row('eth-1-normal-usdt', ethSymbol, 1, 'normal', 'usdt'),
-        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey));
+        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey, supportedNetworks));
 
         // ETH accountTypes config: { ledger, legacy }. 'normal' indexOf returns -1 → sorts first.
         // Token (alphabetical) → accountType (normal → ledger → legacy) → index.
@@ -152,7 +155,7 @@ describe('compareEarnByNetworkTokenOrder', () => {
         const sorted = [
             row('eth-1-legacy-usdt', ethSymbol, 1, 'legacy', 'usdt'),
             row('eth-9-normal-usdt', ethSymbol, 9, 'normal', 'usdt'),
-        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey));
+        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey, supportedNetworks));
 
         expect(sorted.map(r => r.id)).toEqual(['eth-9-normal-usdt', 'eth-1-legacy-usdt']);
     });
@@ -161,7 +164,7 @@ describe('compareEarnByNetworkTokenOrder', () => {
         const sorted = [
             row('eth-1-legacy-usdt', ethSymbol, 1, 'legacy', 'usdt'),
             row('eth-9-ledger-usdt', ethSymbol, 9, 'ledger', 'usdt'),
-        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey));
+        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey, supportedNetworks));
 
         expect(sorted.map(r => r.id)).toEqual(['eth-9-ledger-usdt', 'eth-1-legacy-usdt']);
     });
@@ -172,7 +175,7 @@ describe('compareEarnByNetworkTokenOrder', () => {
             row('eth-1-normal-usdc', ethSymbol, 1, 'normal', 'usdc'),
             row('eth-1-normal-usdt', ethSymbol, 1, 'normal', 'usdt'),
             row('eth-5-normal-usdc', ethSymbol, 5, 'normal', 'usdc'),
-        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey));
+        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey, supportedNetworks));
 
         expect(sorted.map(r => r.id)).toEqual([
             'eth-1-normal-usdc',
@@ -190,7 +193,9 @@ describe('compareEarnByNetworkTokenOrder', () => {
             row('eth-1', ethSymbol, 1, 'normal', 'usdc'),
         ];
 
-        const sorted = rows.toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey));
+        const sorted = rows.toSorted(
+            compareEarnByNetworkTokenOrder(getRowNetworkTokenKey, supportedNetworks),
+        );
 
         expect(sorted.map(r => r.id)).toEqual(['a', 'eth-0', 'b', 'eth-1']);
     });
@@ -295,11 +300,13 @@ describe('yield bucket ordering', () => {
         const ordered = [
             ...depositedRows
                 .toSorted(compareEarnByAmountDesc(r => r.depositedAmount))
-                .toSorted(compareEarnByNetwork(r => r.account.symbol)),
+                .toSorted(compareEarnByNetwork(r => r.account.symbol, supportedNetworks)),
             ...depositableRows
                 .toSorted(compareEarnByAmountDesc(getAvailableBalance))
-                .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenKey)),
-            ...noBalanceRows.toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenKey)),
+                .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenKey, supportedNetworks)),
+            ...noBalanceRows.toSorted(
+                compareEarnByNetworkTokenOrder(toNetworkTokenKey, supportedNetworks),
+            ),
         ];
 
         expect(ordered.map(r => r.id)).toEqual([

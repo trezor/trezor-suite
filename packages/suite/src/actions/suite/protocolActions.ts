@@ -11,8 +11,10 @@ import {
     mapAnchorToRoute,
     onLocationChangeThunk,
 } from '@suite/router';
-import { handleCoinProtocolUriThunk } from '@suite/transfer-uri';
-import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import {
+    type HandleCoinProtocolUriThunkState,
+    handleCoinProtocolUriThunk,
+} from '@suite/transfer-uri';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -41,10 +43,12 @@ export const fillSendForm = createAction<boolean>(PROTOCOL.FILL_SEND_FORM);
 
 export const resetProtocol = createAction(PROTOCOL.RESET);
 
-export type HandleProtocolRequestThunkState = GotoThunkState & WalletConnectInitThunkState;
+export type HandleProtocolRequestThunkState = GotoThunkState &
+    WalletConnectInitThunkState &
+    HandleCoinProtocolUriThunkState;
 
 export type HandleProtocolRequestThunkDeps = WithServices<
-    DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep & SuiteRouterHistoryDep
+    DesktopAnalyticsDep & SuiteRouterHistoryDep
 >;
 
 export type HandleProtocolRequestDispatchDeps = HandleProtocolRequestThunkDeps &

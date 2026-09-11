@@ -1,4 +1,5 @@
 import { type DeviceRootState } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { aggregateTradeableAssetBalances } from '@suite-common/trading';
 import {
@@ -11,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 
 type TradeableAssetBalancesRootState = AccountsRootState &
+    NetworksRootState &
     DeviceRootState &
     FiatRatesRootState &
     WalletSettingsRootState;

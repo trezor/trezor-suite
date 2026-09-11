@@ -8,7 +8,6 @@ import {
     type NetworkType,
     type TrezorConnectBackendType,
     getNetwork,
-    getSupportedNetworks,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -278,7 +277,7 @@ export const getAccountTypeUrl = (path: string) => {
 export const compareAccountsByCoin = (
     a: Account,
     b: Account,
-    supportedNetworks: readonly NetworkSymbol[] = getSupportedNetworks(),
+    supportedNetworks: readonly NetworkSymbol[],
 ) => {
     // primary sorting: by order of network keys
     const aSymbolIndex = supportedNetworks.indexOf(a.symbol);
@@ -304,11 +303,10 @@ export const compareAccountsByCoin = (
 /**
  * Sort accounts with `compareAccountsByCoin`. Returns a new array, the input is not mutated.
  */
-export const sortByCoin = <T extends Account>(accounts: T[]) => {
-    const supportedNetworks = getSupportedNetworks();
-
-    return accounts.toSorted((a, b) => compareAccountsByCoin(a, b, supportedNetworks));
-};
+export const sortByCoin = <T extends Account>(
+    accounts: T[],
+    supportedNetworks: readonly NetworkSymbol[],
+) => accounts.toSorted((a, b) => compareAccountsByCoin(a, b, supportedNetworks));
 
 export const findAccountsByNetwork = <T extends Account>(symbol: NetworkSymbol, accounts: T[]) =>
     accounts.filter(a => a.symbol === symbol);

@@ -8,7 +8,6 @@ import {
 } from '@suite/tor-desktop';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { UI_EVENTS } from '@trezor/connect';
@@ -67,10 +66,8 @@ import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {
-    const allNetworkSymbols = getSupportedNetworks();
-
+    const customBackends = useSelector(selectCustomBackends);
     const { dispatch } = useServices(selectDispatch);
-    const customBackends = useSelector(state => selectCustomBackends(state, allNetworkSymbols));
 
     const onCancel = () => dispatch(closeModalAction());
 

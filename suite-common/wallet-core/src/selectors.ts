@@ -1,8 +1,5 @@
-import {
-    type DeviceRootState,
-    selectHasOnlyPortfolioDevice,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { type DeviceRootState, selectHasOnlyPortfolioDevice } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -36,7 +33,7 @@ import {
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
 import { type BlockchainRootState, selectGapLimit } from './blockchain/blockchainReducer';
-import { selectSupportedNetworkByDevice } from './device/deviceSelectors';
+import { selectDeviceSupportedNetworks } from './device/deviceSelectors';
 import { type DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
 import {
@@ -53,13 +50,13 @@ export type WalletCoreCompoundRootState = AccountsRootState &
     DeviceRootState &
     DiscoveryRootState &
     WalletSettingsRootState &
-    BlockchainRootState;
+    BlockchainRootState &
+    NetworksRootState;
 const createMemoizedSelector = createWeakMapSelector.withTypes<WalletCoreCompoundRootState>();
 
 const selectEnabledSupportedNetworks = createMemoizedSelector(
-    [selectEnabledNetworks, selectSelectedDevice],
-    (enabledNetworks, device) => {
-        const deviceNetworks = selectSupportedNetworkByDevice(device, enabledNetworks);
+    [selectEnabledNetworks, selectDeviceSupportedNetworks],
+    (enabledNetworks, deviceNetworks) => {
         const supportedNetworks = enabledNetworks.filter(n => deviceNetworks.includes(n));
 
         return returnStableArrayIfEmpty(supportedNetworks);

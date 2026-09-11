@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectVisibleDeviceAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -21,6 +22,7 @@ export function useSellAssetRows({ networkSymbolFilter }: UseSellAssetRowsProps)
     networks: NetworkSymbol[];
 } {
     const accounts = useSelector(selectVisibleDeviceAccountsWithSuiteSyncLabel);
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const tokenDefinitions = useSelector(selectTokenDefinitions);
@@ -39,6 +41,7 @@ export function useSellAssetRows({ networkSymbolFilter }: UseSellAssetRowsProps)
         }
 
         return buildSellAssetRows({
+            supportedNetworks,
             accounts: throttledAccounts,
             networkSymbolFilter,
             tokenDefinitions,
@@ -52,5 +55,6 @@ export function useSellAssetRows({ networkSymbolFilter }: UseSellAssetRowsProps)
         networkSymbolFilter,
         tokenDefinitions,
         baseCurrencyCode,
+        supportedNetworks,
     ]);
 }

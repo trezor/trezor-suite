@@ -4,7 +4,7 @@ import type { CryptoId } from 'invity-api';
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkModuleRepository, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import {
@@ -133,6 +133,7 @@ describe('ExchangeSendAssetPicker', () => {
         const walletState = getWalletState({ tradeType: 'exchange' });
         store = createLightStore({
             reducer: {
+                networks: createStaticReducer(mockNetworksState(['btc', 'eth'])),
                 discreetMode: createStaticReducer({ isActive: false }),
                 locale: localeReducer,
                 device: createStaticReducer(deviceInitialState),

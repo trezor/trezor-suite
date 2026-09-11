@@ -1,0 +1,29 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
+    "references": [
+        {
+            "path": "../earn-stablecoin-defs"
+        },
+        {
+            "path": "../../packages/crypto-utils"
+        },
+        {
+            "path": "../../packages/device-utils"
+        },
+        {
+            "path": "../../networks/cardano/network-cardano"
+        },
+        {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
+        }
+    ]
+}
