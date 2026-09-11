@@ -35,6 +35,75 @@ const createTestStorage = async (run: Run<EvoluPlatformDeps>) => {
 };
 
 describe(createEvoluStorageFactory.name, () => {
+    it('forces a new sync round using the current relay', async () => {
+        const createWebSocket = testCreateWebSocket();
+        const firstSync = createDeferred<void>();
+        const nextSync = createDeferred<void>();
+        await using run = await testCreateRunWithEvoluDeps({
+            createWebSocket: (url, options) => async taskRun => {
+                const result = await createWebSocket(url, options)(taskRun);
+                if (!result.ok) return result;
+
+                return {
+                    ...result,
+                    value: {
+                        ...result.value,
+                        send: data => {
+                            const sent = result.value.send(data);
+                            if (createWebSocket.sentMessages.length === 1) firstSync.resolve();
+                            if (createWebSocket.sentMessages.length === 3) nextSync.resolve();
+
+                            return sent;
+                        },
+                    },
+                };
+            },
+        });
+        const storage = await createTestStorage(run);
+
+        await storage.updateRelayUrl('ws://relay.example.com');
+        await firstSync.promise;
+        await storage.forceResync();
+        await nextSync.promise;
+
+        // Unsubscribing and subscribing again must send a fresh sync request to the same relay.
+        expect(createWebSocket.sentMessages[2]).toEqual(createWebSocket.sentMessages[0]);
+        await storage.dispose();
+    });
+
+    it('does not enable syncing when forceResync is called before connecting', async () => {
+        await using run = await testCreateRunWithEvoluDeps({
+            createWebSocket: testCreateWebSocket({ throwOnCreate: true }),
+        });
+        const storage = await createTestStorage(run);
+
+        await storage.forceResync();
+
+        await storage.dispose();
+    });
+
+    it('does not resume syncing after disconnecting or disposing the storage', async () => {
+        await using run = await testCreateRunWithEvoluDeps({
+            createWebSocket: testCreateWebSocket(),
+        });
+        const evolu = await createEvoluInstanceFactory({ run })({ suiteSyncOwner });
+        const useOwner = jest.spyOn(evolu, 'useOwner');
+        const storage = await createEvoluStorageFactory({
+            evoluInstanceFactory: () => Promise.resolve(evolu),
+        })({ suiteSyncOwner });
+        await storage.updateRelayUrl('ws://relay.example.com');
+
+        await storage.disconnectRelay();
+        await storage.forceResync();
+
+        expect(useOwner).toHaveBeenCalledTimes(1);
+
+        await storage.dispose();
+        await storage.forceResync();
+
+        expect(useOwner).toHaveBeenCalledTimes(1);
+    });
+
     it('stores wallet data and notifies subscribers', async () => {
         await using run = await testCreateRunWithEvoluDeps({
             createWebSocket: testCreateWebSocket({ throwOnCreate: true }),

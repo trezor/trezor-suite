@@ -20,7 +20,7 @@ export type SuiteSyncInternalErrorHandlerDeps = AllocateOwnerQuotaDep &
     SuiteSyncStorageRepositoryDep &
     SuiteSyncUncontrolledErrorHandlerDep &
     // Todo: temporary, see: https://github.com/trezor/trezor-suite/issues/27049
-    { getSelectedDevice: GetSelectedDevice; getRelayUrl: () => string };
+    { getSelectedDevice: GetSelectedDevice };
 
 /**
  * Responsibility of this service is to map errors from Storage to the SuiteSync
@@ -79,8 +79,8 @@ export const createSuiteSyncInternalErrorHandler =
                 );
                 const storage = deps.suiteSyncStorageRepository.get(storageId);
 
-                // The relay rejected the write; reconnect to sync pending labels after the top-up.
-                await storage?.updateRelayUrl(deps.getRelayUrl());
+                // Retry the rejected label now that the relay has enough quota.
+                await storage?.forceResync();
 
                 return;
             }
