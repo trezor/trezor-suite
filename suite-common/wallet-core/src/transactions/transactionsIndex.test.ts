@@ -10,9 +10,11 @@ import type { StaticSessionId } from '@trezor/device-utils';
 import {
     getTransactionId,
     getTransactionIdFromTransaction,
+    selectAccountTransactionIdsFromIndex,
+    selectAccountTransactionsFromIndex,
     selectTransactionByAccountKeyAndTxidFromIndex,
-    selectTransactionIdsByAccountKey,
     selectTransactionIdsByTxid,
+    selectTransactionsByTxid,
     transactionsIndex,
 } from './transactionsIndex';
 import { type TransactionsRootState } from './transactionsReducerTypes';
@@ -237,14 +239,14 @@ describe('looking transactions up by something other than their id', () => {
             [bobKey]: [mockTransaction(BOB, 'txB')],
         });
 
-        expect(selectTransactionIdsByAccountKey(state, aliceKey)).toEqual([
+        expect(selectAccountTransactionIdsFromIndex(state, aliceKey)).toEqual([
             getTransactionId(aliceKey, 'txA'),
             getTransactionId(aliceKey, 'txA2'),
         ]);
     });
 
     it('gives an account with no transactions nothing', () => {
-        expect(selectTransactionIdsByAccountKey(createState({}), aliceKey)).toEqual([]);
+        expect(selectAccountTransactionIdsFromIndex(createState({}), aliceKey)).toEqual([]);
     });
 
     it('finds both sides of a transfer between the user’s own accounts', () => {
@@ -272,11 +274,11 @@ describe('looking transactions up by something other than their id', () => {
             const aliceTransactions = [mockTransaction(ALICE, 'txA')];
             const bobTransaction = mockTransaction(BOB, 'txB');
 
-            const before = selectTransactionIdsByAccountKey(
+            const before = selectAccountTransactionIdsFromIndex(
                 createState({ [aliceKey]: aliceTransactions, [bobKey]: [bobTransaction] }),
                 aliceKey,
             );
-            const after = selectTransactionIdsByAccountKey(
+            const after = selectAccountTransactionIdsFromIndex(
                 createState({
                     [aliceKey]: aliceTransactions,
                     [bobKey]: [bobTransaction, mockTransaction(BOB, 'txB2')],
@@ -285,6 +287,52 @@ describe('looking transactions up by something other than their id', () => {
             );
 
             expect(after).toBe(before);
+        });
+    });
+});
+
+describe('reading a group as transactions', () => {
+    it('gives an account its own transactions', () => {
+        const aliceFirst = mockTransaction(ALICE, 'txA');
+        const aliceSecond = mockTransaction(ALICE, 'txA2');
+        const state = createState({
+            [aliceKey]: [aliceFirst, aliceSecond],
+            [bobKey]: [mockTransaction(BOB, 'txB')],
+        });
+
+        expect(selectAccountTransactionsFromIndex(state, aliceKey)).toEqual([
+            aliceFirst,
+            aliceSecond,
+        ]);
+    });
+
+    it('gives both sides of a transfer between the user’s own accounts', () => {
+        const sent = mockTransaction(ALICE, 'txShared', '-1');
+        const received = mockTransaction(BOB, 'txShared', '1');
+        const state = createState({ [aliceKey]: [sent], [bobKey]: [received] });
+
+        expect(selectTransactionsByTxid(state, 'txShared')).toEqual([sent, received]);
+    });
+
+    it('leaves one account’s transactions identical when another account receives one', () => {
+        withSubscription(() => {
+            const aliceTransactions = [mockTransaction(ALICE, 'txA')];
+            const bobTransaction = mockTransaction(BOB, 'txB');
+
+            const before = selectAccountTransactionsFromIndex(
+                createState({ [aliceKey]: aliceTransactions, [bobKey]: [bobTransaction] }),
+                aliceKey,
+            );
+
+            expect(
+                selectAccountTransactionsFromIndex(
+                    createState({
+                        [aliceKey]: aliceTransactions,
+                        [bobKey]: [bobTransaction, mockTransaction(BOB, 'txB2')],
+                    }),
+                    aliceKey,
+                ),
+            ).toBe(before);
         });
     });
 });

@@ -436,3 +436,39 @@ describe('looking an entity up by something other than its id', () => {
         expect(byGroup).not.toHaveBeenCalledWith(one);
     });
 });
+
+describe('reading a group as entities', () => {
+    it('gives the entities in a group', () => {
+        const { index } = createGroupedIndex();
+
+        expect(index.getBy({ entities: [one, two, three] }, 'byGroup', 'left')).toEqual([one, two]);
+    });
+
+    it('gives nothing for a key the group does not hold', () => {
+        const { index } = createGroupedIndex();
+
+        expect(index.getBy({ entities: [one] }, 'byGroup', 'nowhere')).toEqual([]);
+    });
+
+    it('hands back the same array for a group whose members did not change', () => {
+        const { index } = createGroupedIndex();
+        index.subscribe();
+        const left = index.getBy({ entities: [one, two, three] }, 'byGroup', 'left');
+
+        expect(
+            index.getBy({ entities: [one, two, { ...three, tags: ['new'] }] }, 'byGroup', 'left'),
+        ).toBe(left);
+    });
+
+    it('hands back a new array when a member of the group was replaced', () => {
+        // The ids did not change, but the entities did — which a consumer reading entities has to
+        // see, and a consumer reading ids has no reason to be woken by.
+        const { index } = createGroupedIndex();
+        index.subscribe();
+        const left = index.getBy({ entities: [one, two] }, 'byGroup', 'left');
+        const state = { entities: [{ ...one, tags: ['changed'] }, two] };
+
+        expect(index.getBy(state, 'byGroup', 'left')).not.toBe(left);
+        expect(index.getIdsBy(state, 'byGroup', 'left')).toEqual(['1', '2']);
+    });
+});
