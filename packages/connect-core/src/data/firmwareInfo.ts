@@ -341,7 +341,9 @@ export const getFirmwareReleaseConfigInfo = (
         versionUtils.isNewer(b.version, a.version) ? 1 : -1,
     );
 
-    let suitableRelease = latestRelease;
+    const deviceIntermediaryReleases = firmwareReleaseStore.getIntermediary(model);
+
+    let intermediary;
     let alternativeRelease;
     if (features.bootloader_mode && bootloaderVersion) {
         if (!versionUtils.isNewerOrEqual(bootloaderVersion, latestRelease.min_bootloader_version)) {
@@ -350,6 +352,9 @@ export const getFirmwareReleaseConfigInfo = (
                 versionUtils.isNewerOrEqual(bootloaderVersion, fw.min_bootloader_version),
             );
         }
+        intermediary = deviceIntermediaryReleases?.find(r =>
+            versionUtils.isNewer(r.min_bootloader_version, bootloaderVersion),
+        );
     } else if (firmwareVersion) {
         if (!versionUtils.isNewerOrEqual(firmwareVersion, latestRelease.min_firmware_version)) {
             // If the target isn't compatible, search for the best alternative.
@@ -357,33 +362,12 @@ export const getFirmwareReleaseConfigInfo = (
                 versionUtils.isNewerOrEqual(firmwareVersion, fw.min_firmware_version),
             );
         }
+        intermediary = deviceIntermediaryReleases?.find(r =>
+            versionUtils.isNewer(r.min_firmware_version, firmwareVersion),
+        );
     }
 
-    // If an alternative is found, use it. Otherwise, we proceed with the original.
-    if (alternativeRelease) {
-        suitableRelease = alternativeRelease;
-    }
-
-    let intermediary;
-    const deviceIntermediaryReleases = firmwareReleaseStore.getIntermediary(model);
-    if (!deviceIntermediaryReleases || deviceIntermediaryReleases.length === 0) {
-        // No intermediary releases are defined for this model.
-        intermediary = undefined;
-    } else {
-        const currentVersion = features.bootloader_mode ? bootloaderVersion : firmwareVersion;
-        const minVersionKey = features.bootloader_mode
-            ? 'min_bootloader_version'
-            : 'min_firmware_version';
-
-        // Find the first intermediary release that requires a newer version than the current one.
-        intermediary = currentVersion
-            ? deviceIntermediaryReleases.find(r =>
-                  versionUtils.isNewer(r[minVersionKey], currentVersion),
-              )
-            : undefined;
-    }
-
-    const release = intermediary ? latestRelease : suitableRelease;
+    const release = (!intermediary && alternativeRelease) || latestRelease;
 
     if (!isValidConditionalRelease(release)) {
         throw new Error(`Release object in unexpected shape.`);
