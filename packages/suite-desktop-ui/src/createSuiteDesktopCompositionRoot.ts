@@ -2,6 +2,7 @@ import { createMemoryHistory } from 'history';
 
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { toGetter } from '@suite-common/dependency-injection';
+import TrezorConnect from '@trezor/connect-electron';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
@@ -43,6 +44,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
         reloadApp,
         thpHostName: undefined,
         getTransportsFactories,
+        getTrezorConnect: () => TrezorConnect,
     });
     const hydrateReduxStore = createHydrateReduxStore({ store, reducer: rootReducer });
     const services = { ...suiteServices, store, hydrateReduxStore };

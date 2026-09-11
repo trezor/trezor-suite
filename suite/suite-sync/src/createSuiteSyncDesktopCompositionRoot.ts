@@ -12,7 +12,7 @@ import {
 import { evoluCreateSuiteSyncOwner } from '@suite-common/suite-sync-evolu';
 import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
 import { type OnStorageEnsured, type SuiteSync } from '@suite-common/suite-sync-types';
-import { type TrezorConnectPrivilegedAPI } from '@trezor/connect';
+import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 
 import { createEvoluDeps } from './evolu/createEvoluDeps';
 import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
@@ -21,9 +21,9 @@ import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 type SuiteSyncDesktopCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
-    trezorConnect: TrezorConnectPrivilegedAPI;
     onStorageEnsured: OnStorageEnsured;
-} & PlatformEncryptionDep &
+} & GetTrezorConnectPrivilegedDep &
+    PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &
     DesktopAnalyticsDep &
     FetchDep;

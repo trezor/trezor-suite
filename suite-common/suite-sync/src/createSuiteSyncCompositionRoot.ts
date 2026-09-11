@@ -28,7 +28,7 @@ import {
 } from '@suite-common/suite-sync-types';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Analytics } from '@trezor/analytics-uploader';
-import type TrezorConnect from '@trezor/connect';
+import { type GetTrezorConnectDep } from '@trezor/connect-common';
 
 import { createEnsureSuiteSyncKeys } from './createEnsureSuiteSyncKeys';
 import { createSuiteSyncInternalErrorHandler } from './createSuiteSyncInternalErrorHandler';
@@ -83,8 +83,8 @@ type CreateSuiteSyncCompositionRootDeps = {
         SuiteSyncDataRootState;
     dispatch: Dispatch;
     subscribeError: SubscribeSuiteSyncInternalErrorHandler;
-    trezorConnect: Pick<typeof TrezorConnect, 'evoluGetNode' | 'evoluSignRegistrationRequest'>;
-} & OnStorageEnsuredDep &
+} & GetTrezorConnectDep<'evoluGetNode' | 'evoluSignRegistrationRequest'> &
+    OnStorageEnsuredDep &
     SuiteSyncAnalyticsDep &
     EnsureDelegatedIdentityKeyDep &
     CreateSuiteStorageDep &
@@ -113,7 +113,7 @@ export const createSuiteSyncCompositionRoot = (
             platformEncryption: deps.platformEncryption,
         }),
         retrieveSuiteSyncOwner: createRetrieveSuiteSyncOwner({
-            trezorConnect: deps.trezorConnect,
+            getTrezorConnect: deps.getTrezorConnect,
             createSuiteSyncOwner: deps.createSuiteSyncOwner,
         }),
         loadSuiteSyncOwnerFromState,
@@ -138,12 +138,14 @@ export const createSuiteSyncCompositionRoot = (
             getDeviceForStaticSessionId,
             getIsUsingTrezorRelay: () => isUsingTrezorServer(getRelayUrl()),
             getIsTorEnabled: deps.getIsTorEnabled,
-            trezorConnect: deps.trezorConnect,
+            getTrezorConnect: deps.getTrezorConnect,
             fetch: deps.fetch,
         });
 
     const suiteSyncInternalErrorHandler = createSuiteSyncInternalErrorHandler({
         getSelectedDevice: toGetter(deps.getState, selectSelectedDevice),
+        getRelayUrl,
+        suiteSyncStorageRepository,
         allocateOwnerQuota,
         ensureDelegatedIdentityKey: deps.ensureDelegatedIdentityKey,
         suiteSyncUncontrolledErrorHandler: deps.suiteSyncUncontrolledErrorHandler,

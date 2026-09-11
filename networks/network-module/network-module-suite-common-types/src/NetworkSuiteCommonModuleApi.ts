@@ -1,4 +1,4 @@
-import type { GetTrezorConnectDep } from './GetTrezorConnect';
+import type { GetTrezorConnectDep } from '@trezor/connect-common';
 
 /**
  * Application capabilities injected into suite-common network modules.

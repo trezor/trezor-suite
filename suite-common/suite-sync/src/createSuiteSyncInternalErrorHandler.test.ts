@@ -2,6 +2,7 @@ import { createMockDeps } from '@suite-common/dependency-injection';
 import { DeviceError } from '@suite-common/device';
 import { type AllocateOwnerQuotaErr } from '@suite-common/suite-sync-quota-manager';
 import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
+import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
 import {
     type DeviceErrorType,
     type TrezorDevice,
@@ -33,6 +34,8 @@ const createDevice = (overrides: Partial<TrezorDevice> = {}): TrezorDevice =>
 describe(createSuiteSyncInternalErrorHandler.name, () => {
     it('propagates a device error when no selected device is available', async () => {
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
+            getRelayUrl: null,
+            suiteSyncStorageRepository: { get: null, set: null, delete: null },
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: null,
             suiteSyncUncontrolledErrorHandler: () => undefined,
@@ -51,14 +54,22 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         expect(deps.allocateOwnerQuota).not.toHaveBeenCalled();
     });
 
-    it('retrieves delegated key and allocates additional owner quota for RelayQuotaExceeded', async () => {
+    it('resumes syncing after allocating additional owner quota for RelayQuotaExceeded', async () => {
         const device = createDevice();
+        const updateRelayUrl = jest.fn(() => Promise.resolve());
+        const storage = mockSuiteSyncStorage({ updateRelayUrl });
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: () => Promise.resolve(ok()),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
             suiteSyncUncontrolledErrorHandler: () => undefined,
             getSelectedDevice: () => device,
+            getRelayUrl: () => 'https://relay.example.com',
+            suiteSyncStorageRepository: {
+                get: () => storage,
+                set: null,
+                delete: null,
+            },
         });
 
         const handleError = createSuiteSyncInternalErrorHandler(deps);
@@ -74,12 +85,32 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
             isWriteMode: true,
         });
         expect(deps.suiteSyncUncontrolledErrorHandler).not.toHaveBeenCalled();
+        expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith(walletDescriptor);
+        expect(updateRelayUrl).toHaveBeenCalledWith('https://relay.example.com');
+    });
+
+    it('does not reconnect when wallet storage was removed during the top-up', async () => {
+        const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
+            allocateOwnerQuota: () => Promise.resolve(ok()),
+            ensureDelegatedIdentityKey: () =>
+                Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
+            suiteSyncUncontrolledErrorHandler: null,
+            getSelectedDevice: () => createDevice(),
+            getRelayUrl: null,
+            suiteSyncStorageRepository: { get: () => null, set: null, delete: null },
+        });
+
+        await createSuiteSyncInternalErrorHandler(deps)({ type: 'RelayQuotaExceeded', ownerId });
+
+        expect(deps.getRelayUrl).not.toHaveBeenCalled();
     });
 
     it('propagates delegated key retrieval failures', async () => {
         const device = createDevice();
         const deviceError: DeviceErrorType = DeviceError('Delegated key failed');
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
+            getRelayUrl: null,
+            suiteSyncStorageRepository: { get: null, set: null, delete: null },
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: () => Promise.resolve(err(deviceError)),
             suiteSyncUncontrolledErrorHandler: () => undefined,
@@ -105,6 +136,8 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         };
 
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
+            getRelayUrl: null,
+            suiteSyncStorageRepository: { get: null, set: null, delete: null },
             allocateOwnerQuota: () => Promise.resolve(err(allocationError)),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
@@ -127,6 +160,8 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         const relayError = { type: 'RelayOther', message: 'relay failed' } as const;
 
         const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
+            getRelayUrl: null,
+            suiteSyncStorageRepository: { get: null, set: null, delete: null },
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: null,
             suiteSyncUncontrolledErrorHandler: () => undefined,

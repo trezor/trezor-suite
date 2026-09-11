@@ -31,7 +31,7 @@ import type {
 } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
-import TrezorConnect, { type ConnectSettings, initLog } from '@trezor/connect';
+import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
 import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
@@ -57,7 +57,8 @@ const transports = transportsPerDeviceType[deviceType];
 
 type NativeAppDeps = Pick<NativeReduxStore, 'getState' | 'dispatch'> &
     EnsureEncryptionKeyDep &
-    NativeStorageDep;
+    NativeStorageDep &
+    GetTrezorConnectPrivilegedDep;
 
 export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): NativeServices => {
     const platformEncryption = createNativePlatformEncryption({
@@ -67,14 +68,14 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         dispatch: deps.dispatch,
         getState: deps.getState,
         platformEncryption,
-        trezorConnect: TrezorConnect,
+        getTrezorConnect: deps.getTrezorConnect,
     });
 
     const suiteSync = createSuiteSyncNativeCompositionRoot({
         dispatch: deps.dispatch,
         getState: deps.getState,
         platformEncryption,
-        trezorConnect: TrezorConnect,
+        getTrezorConnect: deps.getTrezorConnect,
         ensureDelegatedIdentityKey,
         analytics,
         fetch: globalThis.fetch.bind(globalThis),
@@ -88,7 +89,9 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
-    const networkModules = createNetworksCompositionRoot({ getTrezorConnect: () => TrezorConnect });
+    const networkModules = createNetworksCompositionRoot({
+        getTrezorConnect: deps.getTrezorConnect,
+    });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
     const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({

@@ -10,6 +10,7 @@ import {
     prepareRootReducers,
 } from '@suite-native/state';
 import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
+import TrezorConnect from '@trezor/connect';
 
 import { type NativeApp, createNativeApp } from './createNativeApp';
 
@@ -38,6 +39,7 @@ export const createSuiteNativeCompositionRoot = (
         getState: store.getState,
         ensureEncryptionKey,
         mmkvStorage,
+        getTrezorConnect: () => TrezorConnect,
     });
     const storePersistor = createStorePersistor({ store });
     const hydrateReduxStore = createHydrateReduxStore({ storePersistor });
