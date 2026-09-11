@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
@@ -36,13 +36,26 @@ const getTronAccount = () =>
     }) as unknown as Account;
 
 describe('useTronFeeBreakdown', () => {
-    const getPreloadedStateWith = (extraAccounts: Account[] = []) => {
+    const getPreloadedStateWith = (
+        extraAccounts: Account[] = [],
+        normalFeeOverrides: Partial<PrecomposedTransactionFinal> = {},
+    ) => {
         const baseWalletState = getWalletState();
 
         return {
             wallet: {
                 ...baseWalletState,
                 accounts: [...baseWalletState.accounts, ...extraAccounts],
+                send: {
+                    ...baseWalletState.send,
+                    feeLevels: {
+                        ...baseWalletState.send.feeLevels,
+                        normal: {
+                            ...baseWalletState.send.feeLevels.normal,
+                            ...normalFeeOverrides,
+                        },
+                    },
+                },
             },
         };
     };
@@ -83,6 +96,21 @@ describe('useTronFeeBreakdown', () => {
             trxBurned: null,
             areFeesLoading: expect.any(Boolean),
             resourceLabel: expect.any(String),
+            isAccountActivation: false,
         });
+    });
+
+    it('should expose account activation from the composed Tron fee level', async () => {
+        const { result } = await renderHookWithStoreProvider(
+            () => useTronFeeBreakdown({ accountKey: TRON_ACCOUNT_KEY }),
+            {
+                preloadedState: getPreloadedStateWith([getTronAccount()], {
+                    fee: '1000000',
+                    accountActivationFee: '1000000',
+                }),
+            },
+        );
+
+        expect(result.current?.isAccountActivation).toBe(true);
     });
 });

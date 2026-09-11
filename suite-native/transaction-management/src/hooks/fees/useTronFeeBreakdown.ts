@@ -66,5 +66,6 @@ export const useTronFeeBreakdown = ({
         trxBurned,
         areFeesLoading,
         resourceLabel,
+        isAccountActivation: breakdown?.isAccountActivation ?? false,
     };
 };

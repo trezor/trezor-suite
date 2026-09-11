@@ -3,6 +3,7 @@ import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 
 import { FeeLabelTranslation } from '../FeeLabelTranslation';
+import { TronFeeInfoButton } from './TronFeeInfoButton';
 import { TronFeeValue } from './TronFeeValue';
 
 export type TronFeeSummaryRowProps = {
@@ -12,6 +13,7 @@ export type TronFeeSummaryRowProps = {
     trxBurned: string | null;
     areFeesLoading: boolean;
     resourceLabel: string;
+    isAccountActivation: boolean;
 };
 
 export const TronFeeSummaryRow = ({
@@ -21,6 +23,7 @@ export const TronFeeSummaryRow = ({
     trxBurned,
     areFeesLoading,
     resourceLabel,
+    isAccountActivation,
 }: TronFeeSummaryRowProps) => {
     const hasResourceCoverage = !!resourceLabel;
 
@@ -53,6 +56,7 @@ export const TronFeeSummaryRow = ({
                         </Text>
                     )}
                 </VStack>
+                {isAccountActivation && <TronFeeInfoButton />}
                 {supportsAdjustableFees && (
                     <Icon name="caretDown" size="medium" color="contentSecondary" />
                 )}

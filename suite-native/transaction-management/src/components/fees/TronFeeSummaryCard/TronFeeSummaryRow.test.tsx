@@ -14,6 +14,7 @@ const defaultProps: TronFeeSummaryRowProps = {
     trxBurned: '1000000',
     areFeesLoading: false,
     resourceLabel: '',
+    isAccountActivation: false,
 };
 
 describe('TronFeeSummaryRow', () => {
@@ -27,11 +28,12 @@ describe('TronFeeSummaryRow', () => {
         });
 
     it('should render the non-adjustable Tron fee label by default', async () => {
-        const { getByText } = await renderRow();
+        const { getByTestId, getByText } = await renderRow();
 
         expect(
             getByText(getTranslation('transactionManagement.fees.description.title.tron')),
         ).toBeOnTheScreen();
+        expect(getByTestId('@transactionManagement/tron-fee-info-button')).toBeOnTheScreen();
     });
 
     it('should render the adjustable (Maximum fee) label when supportsAdjustableFees is true', async () => {

@@ -4665,6 +4665,9 @@ export const messages = {
                 body: 'Fees are paid directly to validators for processing your transactions.',
                 bodyRipple:
                     'Transaction fees are burned (permanently destroyed), not paid to validators.',
+                bodyTronAccountActivation:
+                    'The fee charged by the Tron network to process your transaction. This also covers a 1\u00a0{networkDisplaySymbol} charge to activate an unused receiving address.',
+                infoAccessibilityLabel: 'Network fee information',
             },
             custom: {
                 addButton: 'Add custom fee',
