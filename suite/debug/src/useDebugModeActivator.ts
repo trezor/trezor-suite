@@ -21,6 +21,7 @@ export const useToggleDebugMode = () => {
         dispatch(debugActions.setShowDebugMenu(shouldEnableDebugMode));
 
         if (desktopApi.available) {
+            desktopApi.setDebugMode(shouldEnableDebugMode);
             desktopApi.configLogger(
                 shouldEnableDebugMode
                     ? {

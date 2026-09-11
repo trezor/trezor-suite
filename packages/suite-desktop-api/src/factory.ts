@@ -158,6 +158,13 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
             ipcRenderer.send('logger/config', config);
         },
 
+        // Debug
+        setDebugMode: isDebugModeActive => {
+            if (validation.isPrimitive('boolean', isDebugModeActive)) {
+                ipcRenderer.send('debug/set-mode', isDebugModeActive);
+            }
+        },
+
         // Bridge
         getBridgeStatus: () => ipcRenderer.invoke('bridge/get-status'),
 
