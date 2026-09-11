@@ -43,6 +43,7 @@ export type TradingTradeInfoMapProps = {
 export interface TradingUseWatchTradeProps<T extends TradingType> {
     account: Account | undefined;
     trade: TradingTradeMapProps[T] | undefined;
+    refreshIntervalSeconds?: number;
 }
 
 export type TradingCoinLogoProps = {
