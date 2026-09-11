@@ -26,6 +26,14 @@ export type SignVerifyRootState = DeviceRootState & WalletSettingsRootState;
 
 const CANCEL_ERROR_CODES: ErrorCode[] = ['Method_Cancel', 'Failure_ActionCancelled'];
 
+/**
+ * What a verification attempt settled on.
+ *
+ * Rejecting the prompt on the device is not a verdict on the signature — the check never ran — so
+ * it is reported apart from a signature that genuinely did not verify.
+ */
+export type VerifyMessageResult = 'verified' | 'failed' | 'cancelled';
+
 const getFailureAttributes = ({ code }: SerializedError) => ({
     status: CANCEL_ERROR_CODES.includes(code) ? ('cancelled' as const) : ('error' as const),
     error: code,
@@ -294,7 +302,11 @@ type VerifyThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const verifyThunk =
     (account: Account, address: string, message: string, signature: string, hex = false) =>
-    async (dispatch: Dispatch, getState: () => VerifyThunkState, extra: VerifyThunkDeps) => {
+    async (
+        dispatch: Dispatch,
+        getState: () => VerifyThunkState,
+        extra: VerifyThunkDeps,
+    ): Promise<VerifyMessageResult> => {
         const { analytics } = extra.services;
 
         try {
@@ -311,7 +323,18 @@ export const verifyThunk =
                     },
                 });
 
-                return onError(dispatch, 'verify-message-error')(new Error(response.error.message));
+                if (CANCEL_ERROR_CODES.includes(response.error.code)) {
+                    // The user backed out on the device, which says nothing about the signature.
+                    // Still say so: the prompt disappearing with the form untouched leaves no other
+                    // sign that the check was dropped rather than quietly failing.
+                    dispatch(notificationsActions.addToast({ type: 'verify-message-cancelled' }));
+
+                    return 'cancelled';
+                }
+
+                onError(dispatch, 'verify-message-error')(new Error(response.error.message));
+
+                return 'failed';
             }
 
             analytics.report({
@@ -319,7 +342,9 @@ export const verifyThunk =
                 payload: { status: 'success', symbol: account.symbol, hex },
             });
 
-            return onVerifySuccess(dispatch)();
+            onVerifySuccess(dispatch)();
+
+            return 'verified';
         } catch (error) {
             analytics.report({
                 type: events.coinVerifyMessageEvent.name,
@@ -331,6 +356,8 @@ export const verifyThunk =
                 },
             });
 
-            return onError(dispatch, 'verify-message-error')(asError(error));
+            onError(dispatch, 'verify-message-error')(asError(error));
+
+            return 'failed';
         }
     };

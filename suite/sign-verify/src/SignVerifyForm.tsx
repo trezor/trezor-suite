@@ -100,7 +100,11 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         } else if (signature !== undefined) {
             const result = await dispatch(verifyThunk(account, address, message, signature, hex));
 
-            setOutcome(result ? 'verified' : 'failed');
+            // Cancelling on the device leaves the form exactly as it was, the way a cancelled
+            // signing does: nothing was verified, and nothing failed to verify either.
+            if (result !== 'cancelled') {
+                setOutcome(result === 'verified' ? 'verified' : 'failed');
+            }
         }
     };
 

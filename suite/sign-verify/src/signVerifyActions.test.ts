@@ -46,6 +46,11 @@ describe('Sign/Verify actions', () => {
         deps = { services: { analytics: mockDesktopAnalytics() } };
     });
 
+    const dispatchedToastTypes = () =>
+        dispatch.mock.calls
+            .map(([action]) => action?.payload?.type)
+            .filter((type): type is string => typeof type === 'string');
+
     it('showAddress', async () => {
         testMocks.setTrezorConnectFixtures({
             success: true,
@@ -78,7 +83,7 @@ describe('Sign/Verify actions', () => {
             MESSAGE,
             SIGNATURE,
         )(dispatch, getState, deps);
-        expect(res).toStrictEqual(true);
+        expect(res).toStrictEqual('verified');
     });
 
     describe('hex format', () => {
@@ -285,6 +290,44 @@ describe('Sign/Verify actions', () => {
                     payload: expect.objectContaining({ status: 'cancelled' }),
                 }),
             );
+        });
+
+        it.each(['Method_Cancel', 'Failure_ActionCancelled'])(
+            'settles a verify rejected with %s as cancelled, not as a failure',
+            async code => {
+                testMocks.setTrezorConnectFixtures({
+                    success: false,
+                    error: { message: 'Cancelled', code },
+                });
+
+                const result = await verifyThunk(
+                    ACCOUNT,
+                    ADDRESS,
+                    MESSAGE,
+                    SIGNATURE,
+                )(dispatch, getState, deps);
+
+                expect(result).toBe('cancelled');
+                // Said out loud, but as a cancellation — never as a failed verification.
+                expect(dispatchedToastTypes()).toEqual(['verify-message-cancelled']);
+            },
+        );
+
+        it('settles a signature that does not verify as failed, and says so', async () => {
+            testMocks.setTrezorConnectFixtures({
+                success: false,
+                error: { message: 'Invalid signature', code: 'Failure_DataError' },
+            });
+
+            const result = await verifyThunk(
+                ACCOUNT,
+                ADDRESS,
+                MESSAGE,
+                SIGNATURE,
+            )(dispatch, getState, deps);
+
+            expect(result).toBe('failed');
+            expect(dispatchedToastTypes()).toEqual(['verify-message-error']);
         });
 
         it('never reports the message, the address or the signature', async () => {

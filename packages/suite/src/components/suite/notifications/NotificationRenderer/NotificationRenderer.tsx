@@ -265,6 +265,12 @@ export const NotificationRenderer = ({
                 message: 'TOAST_VERIFY_MESSAGE_SUCCESS',
             });
 
+        case 'verify-message-cancelled':
+            return renderNotificationView(render, notification, {
+                variant: 'error',
+                message: 'TR_VERIFICATION_CANCELED',
+            });
+
         case 'error':
             return renderNotificationView(render, notification, {
                 variant: 'error',
