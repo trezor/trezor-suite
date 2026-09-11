@@ -1,4 +1,5 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -200,7 +201,10 @@ describe(useYieldTableData.name, () => {
 
         const root = createTestCompositionRoot({
             extra: { services: {} },
-            preloadedState: { device: { selectedDevice: undefined } },
+            preloadedState: {
+                device: { selectedDevice: undefined },
+                networks: mockNetworksState([ethSymbol]),
+            },
         });
         const { result } = renderHookWithStoreProvider(
             () =>

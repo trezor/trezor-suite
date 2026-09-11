@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { getSupportedNetworks } from '@suite-common/wallet-config';
+import { type NetworksRootState } from '@suite-common/networks';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -20,10 +20,9 @@ export const AccountsListFooter = ({
     activeFilterCount,
     onClearFilters,
 }: AccountsListFooterProps) => {
-    const allNetworkSymbols = getSupportedNetworks();
-
-    const isNetworkFilterVisible = useSelector((state: NativeAccountsRootState) =>
-        selectIsAccountsListNetworkFilterVisible(state, allNetworkSymbols, isSendFlow),
+    const isNetworkFilterVisible = useSelector(
+        (state: NativeAccountsRootState & NetworksRootState) =>
+            selectIsAccountsListNetworkFilterVisible(state, isSendFlow),
     );
 
     if (!isNetworkFilterVisible || activeFilterCount === 0) {

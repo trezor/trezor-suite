@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/dependency-injection"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -19,9 +20,6 @@
         },
         {
             "path": "../../suite-common/wallet-core"
-        },
-        {
-            "path": "../../suite-common/wallet-utils"
         },
         { "path": "../analytics" },
         { "path": "../external-links" },

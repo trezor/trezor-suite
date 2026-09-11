@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -17,5 +18,5 @@ export const createMemoizedSelectorWithAccounts = createWeakMapSelector.withType
     TradingRootState & AccountsRootState
 >();
 export const createTradingWithFeatureFlagsMemoizedSelector = createWeakMapSelector.withTypes<
-    TradingRootState & FeatureFlagsRootState
+    TradingRootState & FeatureFlagsRootState & NetworksRootState
 >();

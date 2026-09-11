@@ -9,6 +9,8 @@ import {
     type MessageSystemRootState,
     messageSystemInitialState,
 } from '@suite-common/message-system';
+import { type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import {
@@ -26,6 +28,7 @@ import {
     type TradingRootStateWithDeviceAndAccounts,
     type TradingType,
 } from '@suite-common/trading';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type FeesRootState,
     type FiatRatesRootState,
@@ -73,6 +76,7 @@ const createBaseTradingPreloadedState = (tradeType: TradingType): TradingTestPre
     const wallet = getWalletState({ tradeType });
 
     return {
+        networks: mockNetworksState(mockGetSupportedNetworks()),
         appSettings: appSettingsInitialState,
         bluetooth: bluetoothInitialState,
         device: deviceInitialState,
@@ -100,6 +104,7 @@ const createBaseTradingPreloadedState = (tradeType: TradingType): TradingTestPre
 };
 
 export type TradingTestPreloadedState = TradingRootState &
+    NetworksRootState &
     TradingRootStateWithDeviceAndAccounts &
     WalletSettingsRootState &
     FiatRatesRootState &
@@ -146,6 +151,7 @@ export const createTradingTestStore = (
     const preloadedState = createTradingPreloadedState(args);
 
     const reducer = {
+        networks: createStaticReducer(preloadedState.networks),
         appSettings: createStaticReducer(preloadedState.appSettings),
         bluetooth: createStaticReducer(preloadedState.bluetooth),
         device: createStaticReducer(preloadedState.device),

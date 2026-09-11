@@ -4,6 +4,7 @@ import { type TranslationKey } from '@suite/intl';
 import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -14,6 +15,7 @@ import {
 } from '@suite-common/toast-notifications';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type AccountsState,
     type BlockchainState,
@@ -60,6 +62,7 @@ const getInitialState = (
     { accounts, transactions, blockchain, fees }: Args = {},
     action: any = { type: 'initial' },
 ) => ({
+    networks: mockNetworksState(mockGetSupportedNetworks()),
     wallet: {
         accounts: accountsReducer(accounts, action),
         transactions: transactionsReducer(

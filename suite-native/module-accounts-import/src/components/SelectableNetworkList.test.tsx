@@ -1,8 +1,11 @@
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { SelectableNetworkList } from './SelectableNetworkList';
 
 const getMockPreloadedState = (areTestnetsEnabled: boolean) => ({
+    networks: mockNetworksState(mockGetSupportedNetworks()),
     appSettings: {
         areTestnetsEnabled,
     },

@@ -1,4 +1,4 @@
-import type { FindNetworkSymbolForProtocol } from '@suite-common/networks';
+import type { NetworkSymbol } from '@suite-common/networks';
 import { type Protocol, asProtocol } from '@trezor/network-module-suite-common-types';
 import { err, ok } from '@trezor/type-utils';
 import { safeParseUrl } from '@trezor/utils';
@@ -6,6 +6,8 @@ import { safeParseUrl } from '@trezor/utils';
 import { parseBip321Uri } from './parseBip321Uri';
 import { type Erc681TransferInfo, parseErc681TransferUri } from './parseErc681TransferUri';
 import { type ErcTransferUriInfo, type TransferUriResult } from './transferUtils';
+
+export type FindNetworkSymbolForProtocol = (protocol: Protocol) => NetworkSymbol | null;
 
 const erc681ToTransferUriInfo = (
     erc681: Erc681TransferInfo,

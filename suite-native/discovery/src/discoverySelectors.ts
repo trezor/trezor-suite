@@ -1,6 +1,7 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -36,7 +37,8 @@ export type DiscoveryRootState = DeviceRootState &
     SettingsSliceRootState &
     AccountsRootState &
     WalletSettingsRootState &
-    FeatureFlagsRootState;
+    FeatureFlagsRootState &
+    NetworksRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DiscoveryRootState>();
 
@@ -102,11 +104,7 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
 );
 
 export const selectDiscoveryNetworkSymbols = createMemoizedSelector(
-    [
-        selectDiscoverySupportedNetworks,
-        (_state, _supportedNetworks: readonly NetworkSymbol[], searchQuery: string = '') =>
-            searchQuery,
-    ],
+    [selectDiscoverySupportedNetworks, (_state, searchQuery: string = '') => searchQuery],
     (supportedNetworks, searchQuery) =>
         returnStableArrayIfEmpty(
             filterNetworksByName(supportedNetworks, searchQuery).map(n => n.symbol),
@@ -138,8 +136,7 @@ export const selectDiscoveryNetworkGroups = createMemoizedSelector(
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
         selectAreTestnetsEnabled,
-        (_state, _supportedNetworks: readonly NetworkSymbol[], searchQuery: string = '') =>
-            searchQuery,
+        (_state, searchQuery: string = '') => searchQuery,
     ],
     (
         deviceSupportedNetworks,

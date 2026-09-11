@@ -1,13 +1,12 @@
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { ErrorMessage } from '@suite-native/atoms';
-import { type DiscoveryRootState, selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
     type AccountsImportStackParamList,
@@ -27,8 +26,6 @@ export const AccountImportSummaryScreen = ({
     AccountsImportStackRoutes.AccountImportSummary,
     RootStackParamList
 >) => {
-    const allNetworkSymbols = getSupportedNetworks();
-
     const { accountInfo, networkSymbol } = route.params;
 
     useInterceptNativeNavigation();
@@ -40,9 +37,7 @@ export const AccountImportSummaryScreen = ({
             networkSymbol,
         ),
     );
-    const supportedNetworks = useSelector((state: DiscoveryRootState) =>
-        selectDiscoveryNetworkSymbols(state, allNetworkSymbols),
-    );
+    const supportedNetworks = useSelector(selectDiscoveryNetworkSymbols);
 
     const isAccountImportSupported = supportedNetworks.includes(networkSymbol);
 

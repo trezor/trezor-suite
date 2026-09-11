@@ -42,6 +42,7 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
@@ -50,6 +51,7 @@ import {
     initTokenDefinitionsThunk,
     periodicCheckTokenDefinitionsThunk,
 } from '@suite-common/token-definitions';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     feesActions,
     fetchFiatRatesThunk,
@@ -115,6 +117,7 @@ const getInitialState = (initialRun?: boolean) => {
     const initialFlagsState = flagsReducer(undefined, EMPTY_ACTION);
 
     return {
+        networks: mockNetworksState(mockGetSupportedNetworks()),
         suite: suiteReducer(undefined, EMPTY_ACTION),
         suiteSettings: suiteSettingsInitialState,
         debug: debugInitialState,

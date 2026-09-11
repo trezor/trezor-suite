@@ -1,16 +1,9 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import { HStack } from '@suite-native/atoms';
-import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { useWatch } from '@suite-native/forms';
-import {
-    type TradingRootState,
-    exchangeActions,
-    selectExchangeBuyTradeableAssets,
-} from '@suite-native/trading-state';
+import { exchangeActions, selectExchangeBuyTradeableAssets } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { ExchangeReceiveAmountInput } from './ExchangeReceiveAmountInput';
@@ -32,11 +25,7 @@ const RECEIVE_ASSET_COLLISION = {
 
 export const ExchangeTradeableAssetPicker = () => {
     const form = useExchangeFormContext();
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
-    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
-    const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
-        selectExchangeBuyTradeableAssets(state, supportedNetworks),
-    );
+    const assets = useSelector(selectExchangeBuyTradeableAssets);
     const selectedValue = useWatch({ control: form.control, name: 'receiveAsset' });
     const setSelectedValue = useCallback(
         (asset: TradeableAsset) => form.setValue('receiveAsset', asset),

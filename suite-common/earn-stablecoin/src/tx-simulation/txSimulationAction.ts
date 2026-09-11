@@ -9,6 +9,8 @@ import { type EthereumSignTransaction } from '@trezor/connect-common';
 const partialAccount = z.object({
     key: z.string(),
     networkType: z.enum(networksCollection.map(n => n.networkType)),
+    // TODO(#30572): Build this schema from selected network symbols at validation time.
+    // Module initialization runs before the Redux network metadata is available.
     symbol: z.enum(getSupportedNetworks()),
     descriptor: z.string(),
     path: z.string(),

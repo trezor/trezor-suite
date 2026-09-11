@@ -9,7 +9,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
@@ -33,14 +32,10 @@ const isTypingTarget = (target: EventTarget | null): boolean => {
 };
 
 export const useAppShortcuts = () => {
-    const allNetworkSymbols = getSupportedNetworks();
-
     const selectedDevice = useSelector(selectSelectedDevice);
     const { dispatch } = useServices(selectDispatch);
 
-    const discoveryStatus = useSelector(state =>
-        selectDiscoveryOverallStatus(state, allNetworkSymbols),
-    );
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus?.status === 'loading';
 
     const accounts = useSelector(selectAllAccountsToList);

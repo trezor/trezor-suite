@@ -1,5 +1,6 @@
 import { DefinitionType, type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type Account,
     type RatesByKey,
@@ -79,6 +80,7 @@ const buildRows = ({
     networkSymbolFilter?: NetworkSymbol;
 }) =>
     buildSellAssetRows({
+        supportedNetworks: mockGetSupportedNetworks(),
         accounts,
         networkSymbolFilter,
         tokenDefinitions,

@@ -1,4 +1,6 @@
 import { deviceInitialState } from '@suite-common/device';
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { Form } from '@suite-native/forms';
 import {
     act,
@@ -17,6 +19,7 @@ import { useBuyForm } from '../../hooks/buy/useBuyForm';
 describe('BuyReceiveAccountCryptoBalance', () => {
     let buyForm: BuyFormType;
     const preloadedState = {
+        networks: mockNetworksState(mockGetSupportedNetworks()),
         device: deviceInitialState,
         wallet: getWalletState({ tradeType: 'buy' }),
     };

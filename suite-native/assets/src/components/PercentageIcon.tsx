@@ -1,9 +1,8 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { selectGetNetworkConfigDep } from '@suite-common/networks';
-import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
+import { type NetworksRootState, selectNetworkColor } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { CryptoIconWithPercentage } from '@suite-native/icons';
 
 import { selectAssetFiatValuePercentage } from '../assetsSelectors';
@@ -12,19 +11,17 @@ import { type AssetsRootState } from '../types';
 type PercentageIconProps = { symbol: NetworkSymbol };
 
 export const PercentageIcon = memo(({ symbol }: PercentageIconProps) => {
-    const allNetworkSymbols = getSupportedNetworks();
-
     const assetPercentages = useSelector((state: AssetsRootState) =>
-        selectAssetFiatValuePercentage(state, allNetworkSymbols, symbol),
+        selectAssetFiatValuePercentage(state, symbol),
     );
-    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
-
-    const { color: percentageColor } = getNetworkConfig(symbol);
+    const percentageColor = useSelector((state: NetworksRootState) =>
+        selectNetworkColor(state, symbol),
+    );
 
     return (
         <CryptoIconWithPercentage
             iconName={symbol}
-            percentageColor={percentageColor}
+            percentageColor={percentageColor ?? 'transparent'}
             percentage={assetPercentages.fiatPercentage}
             percentageOffset={assetPercentages.fiatPercentageOffset}
         />

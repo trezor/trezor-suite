@@ -10,6 +10,7 @@ import {
 } from '@suite-native/navigation';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
+import { selectAccountsWithTokensToSellSectionListByTradingType } from '@suite-native/trading-state';
 import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -25,22 +26,23 @@ const bitcoinAsset: MyAsset = {
     isEnabled: true,
 };
 
-const mockUseTradingMyAssets = jest.fn((_tradingType: 'sell' | 'exchange') => [
+const sections = [
     {
         key: 'btc-section',
         label: 'Bitcoin #1',
         sectionData: btc1NormalAccount,
         data: [bitcoinAsset],
     },
-]);
+];
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () => ({ name: RootStackRoutes.TradingMyAsset }),
 }));
 
-jest.mock('../hooks/general/useTradingMyAssets', () => ({
-    useTradingMyAssets: (tradingType: 'sell' | 'exchange') => mockUseTradingMyAssets(tradingType),
+jest.mock('@suite-native/trading-state', () => ({
+    ...jest.requireActual('@suite-native/trading-state'),
+    selectAccountsWithTokensToSellSectionListByTradingType: jest.fn(),
 }));
 
 jest.mock('@suite-common/trading', () => ({
@@ -63,6 +65,9 @@ describe('TradingMyAssetScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        jest.mocked(selectAccountsWithTokensToSellSectionListByTradingType).mockReturnValue(
+            sections,
+        );
     });
 
     it.each(['sell', 'exchange'] as const)(
@@ -74,7 +79,10 @@ describe('TradingMyAssetScreen', () => {
 
             await fireEvent.press(getByText('BTC'));
 
-            expect(mockUseTradingMyAssets).toHaveBeenCalledWith(tradingType);
+            expect(selectAccountsWithTokensToSellSectionListByTradingType).toHaveBeenCalledWith(
+                expect.anything(),
+                tradingType,
+            );
             expect(navigation.popTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.TradeStack,
                 params: {

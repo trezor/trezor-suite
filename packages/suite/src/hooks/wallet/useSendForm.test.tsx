@@ -15,11 +15,12 @@ import { suiteSettingsInitialState } from '@suite/settings';
 import { type AddressValidatorDep, type GetNamedAddressSupportDep } from '@suite-common/address';
 import { mockAddressValidator, mockGetNamedAddressSupport } from '@suite-common/address/mocks';
 import {
-    type FindNetworkSymbolForProtocolDep,
     type NetworkModuleRepositoryDep,
+    networksActions,
+    networksReducer,
 } from '@suite-common/networks';
 import {
-    mockFindNetworkSymbolForProtocol,
+    mockNetworkMetadata,
     mockNetworkModule,
     mockNetworkModuleRepository,
 } from '@suite-common/networks/mocks';
@@ -35,7 +36,6 @@ import {
     initPreloadedState,
     testMocks,
 } from '@suite-common/test-utils';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type SendState } from '@suite-common/wallet-core';
 import { type FormState, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
@@ -98,7 +98,6 @@ const TrezorConnect = testMocks.getTrezorConnectMock();
 type SendFormTestServices = SuiteRouterHistoryDep &
     AddressValidatorDep &
     DesktopAnalyticsDep &
-    FindNetworkSymbolForProtocolDep &
     GetIsWindowVisibleDep &
     GetNamedAddressSupportDep &
     GetTradedAccountKeysDep &
@@ -112,9 +111,6 @@ const services: SendFormTestServices = {
         isAddressValid: address => address !== '' && address !== 'X' && address !== 'FOO',
     }),
     analytics: mockDesktopAnalytics(),
-    findNetworkSymbolForProtocol: mockFindNetworkSymbolForProtocol({
-        [asProtocol('bitcoin')]: asNetworkSymbol('btc'),
-    }),
     getIsWindowVisible: mockGetIsWindowVisible(),
     getNamedAddressSupport: mockGetNamedAddressSupport(),
     getTradedAccountKeys: mockGetTradedAccountKeys(),
@@ -137,6 +133,7 @@ const buildTestCompositionRootParams = ({
     const preloadedState = initPreloadedState({
         rootReducer,
         partialState: {
+            networks: networksReducer(null, networksActions.setNetworks([mockNetworkMetadata.btc])),
             wallet: {
                 send,
                 coinjoin,

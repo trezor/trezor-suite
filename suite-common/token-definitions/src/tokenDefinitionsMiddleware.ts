@@ -1,4 +1,4 @@
-import { type ActionCreatorWithPreparedPayload, type UnknownAction } from '@reduxjs/toolkit';
+import { type PayloadActionCreator, type UnknownAction } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -12,10 +12,7 @@ type TokenDefinitionsMiddlewareState = TokenDefinitionsRootState;
 
 export type TokenDefinitionsMiddlewareDeps = {
     actions: {
-        changeNetworks: ActionCreatorWithPreparedPayload<
-            [payload: NetworkSymbol[]],
-            { enabledNetworks: NetworkSymbol[] }
-        >;
+        changeNetworks: Pick<PayloadActionCreator<{ enabledNetworks: NetworkSymbol[] }>, 'match'>;
     };
 };
 

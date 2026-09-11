@@ -1,4 +1,4 @@
-import { asNetworkSymbol } from './types';
+import { asNetworkSymbol } from './networkTypes';
 import {
     filterNetworksByName,
     getDisplaySymbol,

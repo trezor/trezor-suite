@@ -2,7 +2,8 @@ import { Platform } from 'react-native';
 
 import type { BuyTrade } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol, type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -31,7 +32,7 @@ import {
 const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
 
 describe('buySelectors', () => {
-    let state: TradingRootState & AccountsRootState & FeatureFlagsRootState;
+    let state: TradingRootState & AccountsRootState & FeatureFlagsRootState & NetworksRootState;
 
     beforeEach(() => {
         Platform.OS = 'ios';
@@ -39,6 +40,7 @@ describe('buySelectors', () => {
             (specifics: any) => specifics.ios ?? specifics.default,
         );
         state = {
+            networks: mockNetworksState(supportedCoins),
             wallet: getWalletState(),
             featureFlags: {
                 [FeatureFlag.AreDebugOnlyNetworksEnabled]: false,
@@ -98,7 +100,7 @@ describe('buySelectors', () => {
 
     describe('selectBuyTradeableAssets', () => {
         it('should select only coins with buy set to true', () => {
-            expect(selectBuyTradeableAssets(state, supportedCoins)).toEqual([
+            expect(selectBuyTradeableAssets(state)).toEqual([
                 expect.objectContaining({
                     cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                 }),
@@ -111,8 +113,8 @@ describe('buySelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectBuyTradeableAssets(state, supportedCoins);
-            const second = selectBuyTradeableAssets(state, supportedCoins);
+            const first = selectBuyTradeableAssets(state);
+            const second = selectBuyTradeableAssets(state);
 
             expect(first).toBe(second);
         });
@@ -120,7 +122,7 @@ describe('buySelectors', () => {
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectBuyTradeableAssets(state, supportedCoins)).toEqual([]);
+            expect(selectBuyTradeableAssets(state)).toEqual([]);
         });
 
         describe.skip('debug-only networks', () => {

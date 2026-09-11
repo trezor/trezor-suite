@@ -1,9 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import {
-    createNetworkModuleRepository,
-    createNetworksCompositionRoot,
-} from '@suite-common/networks';
+import { type NetworksRootState, networksReducer } from '@suite-common/networks';
 import {
     type RenderHookOptions,
     createTestCompositionRoot,
@@ -14,7 +11,6 @@ import {
     type WalletSettingsState,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
-import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
 
 import {
     type TradingState,
@@ -44,11 +40,9 @@ export type TradingTestStateWithWalletSettings = {
 };
 
 type RenderHookWithTradingStoreOptions<Props> = RenderHookOptions<Props> & {
-    preloadedState?: Partial<TradingTestStateWithWalletSettings> | Partial<TradingTestState>;
+    preloadedState?: (Partial<TradingTestStateWithWalletSettings> | Partial<TradingTestState>) &
+        Partial<NetworksRootState>;
 };
-
-const networkModules = createNetworksCompositionRoot({ getTrezorConnect: mockGetTrezorConnect });
-const networkModuleRepository = createNetworkModuleRepository({ networkModules });
 
 /**
  * Creates a trading test state with proper structure.
@@ -193,8 +187,8 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
     { preloadedState, ...options }: RenderHookWithTradingStoreOptions<Props> = {},
 ) => {
     const root = createTestCompositionRoot({
-        extra: { services: { networkModuleRepository } },
         reducer: combineReducers({
+            networks: networksReducer,
             wallet: combineReducers({
                 trading: tradingCommonReducer,
                 settings: (state = { localCurrency: 'usd' }) => state,

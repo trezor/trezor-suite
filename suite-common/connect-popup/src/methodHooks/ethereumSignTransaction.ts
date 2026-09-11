@@ -1,4 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
@@ -96,7 +97,9 @@ const preCallHook = async <M extends CallMethodKeys>({
             : null;
         if (!selectedAccount) {
             // Create a new placeholder account
-            const createdAccount = await dispatch(createPlaceholderAccount(network, path));
+            const createdAccount = await dispatch(
+                createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
+            );
             temporaryAccounts.push(createdAccount.payload.account);
             selectedAccount = createdAccount.payload.account;
         }

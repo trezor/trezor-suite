@@ -1,8 +1,8 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { mockLockDevice } from '@suite-common/device/mocks';
-import { type FindNetworkSymbolForProtocol } from '@suite-common/networks';
+import { networksActions, networksReducer } from '@suite-common/networks';
+import { mockNetworkMetadata } from '@suite-common/networks/mocks';
 import { createMockDispatch } from '@suite-common/redux-utils/mocks';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import * as protocolConstants from './constants/protocolConstants';
 import * as protocolActions from './protocolActions';
@@ -10,23 +10,22 @@ import {
     type HandleProtocolRequestDispatchDeps,
     type HandleProtocolRequestThunkState,
 } from './protocolActions';
+import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/walletconnect', () => ({
     walletConnectPairThunk: jest.fn(),
 }));
 
-const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol =>
-    protocol === 'bitcoin' ? asNetworkSymbol('btc') : null;
-
 const createHandleProtocolRequestDeps = () => {
-    const getState = (): HandleProtocolRequestThunkState => {
-        throw new Error('This thunk must not read state in this test.');
+    const state: HandleProtocolRequestThunkState = {
+        ...mockInitialAppState,
+        networks: networksReducer(null, networksActions.setNetworks([mockNetworkMetadata.btc])),
     };
+    const getState = () => state;
     const extra: HandleProtocolRequestDispatchDeps = {
         actions: { lockDevice: mockLockDevice() },
         services: {
             analytics: mockDesktopAnalytics(),
-            findNetworkSymbolForProtocol,
             suiteRouterHistory: {
                 getLocation: jest.fn(),
                 navigate: jest.fn(),

@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     getNetworkByYieldXyzId,
     getNetworkDisplaySymbol,
-    getSupportedNetworks,
 } from '@suite-common/wallet-config';
 import {
     doTokensMatch,
@@ -139,7 +139,7 @@ export const useYieldTableData = ({
     visibleAccounts,
     visibleAccountSymbols,
 }: UseYieldTableDataProps) => {
-    const allNetworkSymbols = getSupportedNetworks();
+    const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
     const yieldAccountOpportunities = useMemo<YieldAccountOpportunity[]>(() => {
         const allOpportunities = availableVaults.flatMap(vault => {
@@ -192,21 +192,24 @@ export const useYieldTableData = ({
         return [
             ...activeOpportunities
                 .toSorted(compareEarnByAmountDesc(opportunity => opportunity.depositedAmount))
-                .toSorted(compareEarnByNetwork(opportunity => opportunity.account?.symbol)),
+                .toSorted(
+                    compareEarnByNetwork(
+                        opportunity => opportunity.account?.symbol,
+                        allNetworkSymbols,
+                    ),
+                ),
             ...depositableOpportunities
                 .toSorted(
                     compareEarnByAmountDesc(opportunity => opportunity.additionalDepositAmount),
                 )
-                .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenSortKey)),
+                .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenSortKey, allNetworkSymbols)),
             ...noBalanceOpportunities.toSorted(
-                compareEarnByNetworkTokenOrder(toNetworkTokenSortKey),
+                compareEarnByNetworkTokenOrder(toNetworkTokenSortKey, allNetworkSymbols),
             ),
         ];
-    }, [availableVaults, visibleAccounts, visibleAccountSymbols]);
+    }, [availableVaults, allNetworkSymbols, visibleAccountSymbols, visibleAccounts]);
 
-    const deviceSupportedNetworkSymbols = useSelector(state =>
-        selectDeviceSupportedNetworks(state, allNetworkSymbols),
-    );
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const yieldInactiveVaultOpportunities = useMemo<YieldInactiveVaultOpportunity[]>(() => {
         const opportunities = availableVaults.flatMap(vault => {
             const network = getNetworkByYieldXyzId(vault.network);

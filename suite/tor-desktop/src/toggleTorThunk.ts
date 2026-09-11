@@ -5,14 +5,17 @@ import { type ModalRootState, openDeferredModal, selectModalType } from '@suite/
 import { type RouterRootState, selectRouterUrl } from '@suite/router';
 import { type TorRootState, isOnionUrl, selectTorBootstrap, torActions } from '@suite/tor';
 import { TorStatus } from '@suite/tor-types';
+import { type NetworksRootState } from '@suite-common/networks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
-import { type BlockchainRootState, selectBlockchainState } from '@suite-common/wallet-core';
-import { getCustomBackends } from '@suite-common/wallet-utils';
+import { type BlockchainRootState, selectCustomBackends } from '@suite-common/wallet-core';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-type ToggleTorThunkState = TorRootState & ModalRootState & RouterRootState & BlockchainRootState;
+type ToggleTorThunkState = TorRootState &
+    ModalRootState &
+    RouterRootState &
+    BlockchainRootState &
+    NetworksRootState;
 
 type ToggleTorThunkDeps = WithServices<DesktopAnalyticsDep>;
 
@@ -32,10 +35,7 @@ export const toggleTorThunk =
         const modal = selectModalType(getState());
         const torBootstrap = selectTorBootstrap(getState());
 
-        const backends = getCustomBackends(
-            selectBlockchainState(getState()),
-            getSupportedNetworks(),
-        );
+        const backends = selectCustomBackends(getState());
 
         // Is there any network with only onion custom backends?
         const hasSomeOnionBackends = backends.some(

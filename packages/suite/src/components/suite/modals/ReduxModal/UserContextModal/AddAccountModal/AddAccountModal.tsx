@@ -7,6 +7,7 @@ import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -72,6 +73,7 @@ export const AddAccountModal = ({
     const isCoinjoinPublic = useSelector(selectIsPublic);
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
     const useTestnetNetworks = useSelector(selectIsTestnetNetworksEnabled);
+    const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
     const { activateNetwork, activatingNetworkSymbols, activationErrors } =
         useNetworkActivationQueue(device);
 
@@ -365,7 +367,10 @@ export const AddAccountModal = ({
                 return;
             }
 
-            const createAccountAction = accountsActions.createAccount(newAccount);
+            const createAccountAction = accountsActions.createAccount(
+                newAccount,
+                allNetworkSymbols,
+            );
             dispatch(createAccountAction);
             finishEnableAccount(createAccountAction.payload.account);
         } finally {
@@ -412,7 +417,10 @@ export const AddAccountModal = ({
                 return;
             }
 
-            const createAccountAction = accountsActions.createAccount(newAccount);
+            const createAccountAction = accountsActions.createAccount(
+                newAccount,
+                allNetworkSymbols,
+            );
             dispatch(createAccountAction);
             const addedAccount = createAccountAction.payload.account;
             resetAccountSearch(addedAccount.symbol);

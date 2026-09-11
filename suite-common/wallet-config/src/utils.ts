@@ -1,7 +1,7 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 import { exhaustive } from '@trezor/type-utils';
 
-import { networks } from './networksConfig';
+import { networks } from './legacyNetworks';
 import {
     type AccountType,
     type Network,
@@ -9,7 +9,7 @@ import {
     type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
-} from './types';
+} from './networkTypes';
 
 export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
 
@@ -23,13 +23,24 @@ export const networksCollection: Network[] = Object.values(networks);
  */
 const networkSymbolCollection = networksCollection.map(n => n.symbol);
 
+/**
+ * @deprecated TODO: Replace with a networks store selector or inject via
+ * deps.getSupportedNetworks() when network configurations are modularized.
+ */
 export const getSupportedNetworks = (): NetworkSymbol[] => networkSymbolCollection;
 
+/**
+ * @deprecated TODO: Replace with a networks store selector or inject via
+ * deps.getNetworks() when network configurations are modularized.
+ */
 export const getNetworks = () => networks;
 
 /**
  * Preserve the inferred fields for a specific symbol (for example, Ethereum's chainId),
  * while keeping the common Network API available to existing callers.
+ *
+ * @deprecated TODO: Replace with a networks store selector or inject via
+ * deps.getNetwork() when network configurations are modularized.
  */
 export const getNetwork = <TSymbol extends NetworkSymbol>(
     symbol: TSymbol,

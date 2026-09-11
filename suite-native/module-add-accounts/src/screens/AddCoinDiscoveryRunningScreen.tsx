@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { getNetwork, getSupportedNetworks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     changeCoinVisibilityThunk,
@@ -20,10 +20,7 @@ import {
     useAddCoinAccount,
 } from '@suite-native/add-coin-account';
 import { Spinner, type SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
-import {
-    type DiscoveryRootState,
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-} from '@suite-native/discovery';
+import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
     type AddCoinAccountStackParamList,
@@ -36,8 +33,6 @@ import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 export const AddCoinDiscoveryRunningScreen = ({
     route,
 }: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.AddCoinDiscoveryRunning>) => {
-    const allNetworkSymbols = getSupportedNetworks();
-
     const { networkSymbol, flowType, earnFlowParams } = route.params;
     const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
@@ -47,9 +42,7 @@ export const AddCoinDiscoveryRunningScreen = ({
     const discoveryInfo = useSelector(selectDiscoveryForSelectedDevice);
     const hasPassphraseFailure = isPassphraseDiscoveryFailure(discoveryInfo);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
-    const enabledNetworkSymbols = useSelector((state: DiscoveryRootState) =>
-        selectDeviceEnabledDiscoveryNetworkSymbols(state, allNetworkSymbols),
-    );
+    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const { navigateToSuccessorScreen, clearNetworkWithTypeToBeAdded } = useAddCoinAccount();
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
