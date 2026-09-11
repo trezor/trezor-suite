@@ -1,6 +1,7 @@
 import { TypedEmitter } from '@trezor/utils';
 
 import { type StrictBrowserWindow } from '../typed-electron';
+import { isMainWindowUsable } from './isMainWindowUsable';
 
 interface MainWindowProxyEvents {
     init: StrictBrowserWindow;
@@ -24,7 +25,7 @@ export class MainWindowProxy extends TypedEmitter<MainWindowProxyEvents> {
     }
 
     getInstance() {
-        if (this.instance?.isDestroyed()) {
+        if (!isMainWindowUsable(this.instance)) {
             this.destroyInstance();
         }
 

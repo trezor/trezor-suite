@@ -7,10 +7,8 @@ import { createDeferred } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
 import { app } from '../typed-electron';
+import { isMainWindowUsable } from './isMainWindowUsable';
 import { type Store } from './store';
-
-const canUseWindowForAutoStartPrompt = (mainWindow: BrowserWindow) =>
-    !mainWindow.isDestroyed() && !mainWindow.webContents.isDestroyed();
 
 // Linux autostart desktop file
 const getLinuxExecutable = () => {
@@ -89,7 +87,7 @@ export const promptForAutoStartBeforeQuit = async (mainWindow: BrowserWindow, st
         isAutoStartEnabled() ||
         store.getConnectSettings().autoStartDontAskAgain ||
         !store.getConnectSettings().hasUsedConnectWs ||
-        !canUseWindowForAutoStartPrompt(mainWindow)
+        !isMainWindowUsable(mainWindow)
     ) {
         return true;
     }
