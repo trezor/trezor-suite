@@ -15,15 +15,15 @@ import {
 import { PureApp } from './App';
 import { disableRTL } from './rtl';
 
-type NativeInitDeps = {
+type NativeAppDeps = {
     services: NativeServices & HydrateReduxStoreDep & NativeReduxStoreDep & StorePersistorDep;
 };
 
-export type NativeInit = () => ComponentType;
+export type NativeApp = () => ComponentType;
 
-export type NativeInitDep = { nativeInit: NativeInit };
+export type NativeAppDep = { nativeApp: NativeApp };
 
-export const createNativeInit = (deps: NativeInitDeps): NativeInit => {
+export const createNativeApp = (deps: NativeAppDeps): NativeApp => {
     let App: ComponentType | null = null;
 
     const initialize = async () => {

@@ -14,10 +14,10 @@ import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFacto
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { type WebInit, createWebInit } from './createWebInit';
+import { type WebApp, createWebApp } from './createWebApp';
 import { getWebThpHostName } from './support/getWebThpHostName';
 
-type SuiteWebCompositionRoot = { init: WebInit };
+type SuiteWebCompositionRoot = { app: WebApp };
 
 export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     const history = createBrowserHistory();
@@ -62,8 +62,8 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     const hydrateReduxStore = createHydrateReduxStore({ store, reducer: rootReducer });
     const services = { ...suiteServices, store, hydrateReduxStore };
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
-    // Inject them after construction to break the cycle, before init can dispatch any actions.
+    // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
 
-    return { init: createWebInit({ services }) };
+    return { app: createWebApp({ services }) };
 };

@@ -2,11 +2,11 @@ import { createSuiteDesktopCompositionRoot } from './createSuiteDesktopCompositi
 
 __webpack_nonce__ = window.cspNonce;
 
-const { init } = createSuiteDesktopCompositionRoot();
+const { app } = createSuiteDesktopCompositionRoot();
 
 window.onload = () => {
     const appElement = document.getElementById('app');
     if (appElement) {
-        init(appElement);
+        app(appElement);
     }
 };

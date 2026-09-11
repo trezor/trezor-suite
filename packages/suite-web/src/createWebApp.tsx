@@ -14,16 +14,16 @@ import { MainWeb } from './MainWeb';
 import { initSentry } from './sentry';
 import { logXssWarning } from './support/xssWarning';
 
-type WebInitDeps = {
+type WebAppDeps = {
     services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep;
 };
 
-export type WebInit = (container: HTMLElement) => Promise<void>;
+export type WebApp = (container: HTMLElement) => Promise<void>;
 
-export type WebInitDep = { webInit: WebInit };
+export type WebAppDep = { webApp: WebApp };
 
-export const createWebInit =
-    (deps: WebInitDeps): WebInit =>
+export const createWebApp =
+    (deps: WebAppDeps): WebApp =>
     async container => {
         logXssWarning();
 

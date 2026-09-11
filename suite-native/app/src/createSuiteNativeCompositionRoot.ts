@@ -11,10 +11,10 @@ import {
 } from '@suite-native/state';
 import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
 
-import { type NativeInit, createNativeInit } from './createNativeInit';
+import { type NativeApp, createNativeApp } from './createNativeApp';
 
 type SuiteNativeCompositionRoot = {
-    init: NativeInit;
+    app: NativeApp;
 };
 
 export const createSuiteNativeCompositionRoot = (
@@ -44,8 +44,8 @@ export const createSuiteNativeCompositionRoot = (
     const services = { ...nativeServices, store, storePersistor, hydrateReduxStore };
 
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
-    // Inject them after construction to break the cycle, before init starts persistence.
+    // Inject them after construction to break the cycle, before the app starts persistence.
     injectServicesIntoReduxExtra(services);
 
-    return { init: createNativeInit({ services }) };
+    return { app: createNativeApp({ services }) };
 };
