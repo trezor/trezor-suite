@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type CryptoId, type FiatCurrencyCode } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
@@ -113,7 +113,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
 
 const TransactionReviewOutputAssetsTo = ({ receive }: TransactionReviewOutputAssetsToProps) => {
     if ('fiatCurrency' in receive) {
-        const fiatCurrencyFlag = getFiatCurrencyFlag(receive.fiatCurrency as FiatCurrencyCode);
+        const fiatCurrencyFlag = getFiatCurrencyFlag(receive.fiatCurrency);
 
         return (
             <InfoItem

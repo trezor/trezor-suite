@@ -33,7 +33,7 @@ export const FiatAmountRow = ({ amount, direction, fiatCurrency }: FiatAmountRow
 
     return (
         <HStack alignItems="center">
-            <FiatCurrencyIcon size="extraSmall" value={fiatCurrency} />
+            <FiatCurrencyIcon size={24} value={fiatCurrency} />
             <Text variant="body-sm" color={color}>
                 {prefix + formattedAmount}
             </Text>

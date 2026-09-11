@@ -86,7 +86,7 @@ describe('useTradingContentBuilder', () => {
 
         expect(getByLabelText('BTC')).toBeOnTheScreen();
         expect(getByText('-1.22 BTC')).toBeOnTheScreen();
-        expect(getByLabelText('flag-US')).toBeOnTheScreen();
+        expect(getByLabelText('flag-US')).toHaveStyle({ height: 24, width: 24 });
         expect(getByText('+$1,500.00')).toBeOnTheScreen();
     });
 
