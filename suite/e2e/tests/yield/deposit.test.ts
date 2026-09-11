@@ -123,7 +123,17 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             await test.step('Approve USDC spending', async () => {
                 await page.clock.install();
                 await yieldMock.mockUsdcDeposit();
+
+                await expect(yieldFlowSection.approveButton).toBeDisabled();
+
+                await yieldFlowSection.amountInput.fill('1001');
+                await expect(yieldFlowSection.approveOverBalanceWarning).toContainTranslation(
+                    'TR_APPROVE_OVER_BALANCE',
+                );
+                await expect(yieldFlowSection.approveButton).toBeEnabled();
+
                 await yieldFlowSection.amountInput.fill('10');
+                await expect(yieldFlowSection.approveOverBalanceWarning).toBeHidden();
                 await yieldFlowSection.approveButton.click();
                 await yieldFlowSection.approveModalContinueButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();

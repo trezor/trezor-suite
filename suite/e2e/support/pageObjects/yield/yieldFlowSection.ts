@@ -9,9 +9,20 @@ export class YieldFlowSection {
     readonly summaryLabel: Locator;
     readonly summaryAmount: Locator;
     readonly approveButton: Locator;
+    readonly approveSkipButton: Locator;
     // Continue button of the shared allowance approve modal opened by the approve step
     readonly approveModalContinueButton: Locator;
     readonly pendingTransactionLabel: Locator;
+    // Wrap step (wrapped-native vaults only)
+    readonly wrapButton: Locator;
+    readonly wrapSkipButton: Locator;
+    readonly wrapReceivingAmount: Locator;
+    // Amount validation warnings shared by the flow steps
+    readonly insufficientFundsWarning: Locator;
+    readonly reserveRecommendationWarning: Locator;
+    readonly approvalTooLowWarning: Locator;
+    readonly approveOverBalanceWarning: Locator;
+    readonly modifyApprovalButton: Locator;
     // Deposit step
     readonly depositButton: Locator;
     readonly depositedToast: Locator;
@@ -44,8 +55,23 @@ export class YieldFlowSection {
         this.summaryLabel = this.page.getByTestId('@yield/form/summary-label');
         this.summaryAmount = this.page.getByTestId('@yield/form/summary-amount-with-symbol');
         this.approveButton = this.page.getByTestId('@yield/form/approve-button');
+        this.approveSkipButton = this.page.getByTestId('@yield/form/approve-skip-button');
         this.approveModalContinueButton = this.page.getByTestId('@modal/approve/continue-button');
         this.pendingTransactionLabel = this.page.getByTestId('@pending-transaction/title');
+        this.wrapButton = this.page.getByTestId('@yield/form/wrap-button');
+        this.wrapSkipButton = this.page.getByTestId('@yield/form/wrap-skip-button');
+        this.wrapReceivingAmount = this.page.getByTestId(
+            '@yield/form/wrap-receiving-amount-with-symbol',
+        );
+        this.insufficientFundsWarning = this.page.getByTestId('@yield/warning/insufficient-funds');
+        this.reserveRecommendationWarning = this.page.getByTestId(
+            '@yield/warning/reserve-recommendation',
+        );
+        this.approvalTooLowWarning = this.page.getByTestId('@yield/warning/approval-too-low');
+        this.approveOverBalanceWarning = this.page.getByTestId(
+            '@yield/warning/approve-over-balance',
+        );
+        this.modifyApprovalButton = this.page.getByTestId('@yield/warning/modify-approval-button');
         this.depositButton = this.page.getByTestId('@yield/form/deposit-button');
         this.depositedToast = this.page.getByTestId('@toast/tx-yield-deposit');
         this.withdrawButton = this.page.getByTestId('@yield/form/withdraw-button');
