@@ -565,3 +565,85 @@ describe('being told when the index changes', () => {
         jest.restoreAllMocks();
     });
 });
+
+describe('a group keeping up with what happened to its entities', () => {
+    it('takes an entity out of the group it left and puts it in the one it joined', () => {
+        // The generic case transactions cannot reach: an entity whose group key changed.
+        const { index } = createGroupedIndex();
+        index.retain();
+        index.read({ entities: [one, two] });
+        const moved = { ...one, group: 'right' };
+
+        const state = { entities: [moved, two] };
+
+        expect(index.getIdsBy(state, 'byGroup', 'left')).toEqual(['2']);
+        expect(index.getIdsBy(state, 'byGroup', 'right')).toEqual(['1']);
+        expect(index.getBy(state, 'byGroup', 'right')).toEqual([moved]);
+    });
+
+    it('empties a group whose last member left it', () => {
+        const { index } = createGroupedIndex();
+        index.retain();
+        index.read({ entities: [one] });
+
+        expect(
+            index.getIdsBy({ entities: [{ ...one, group: 'right' }] }, 'byGroup', 'left'),
+        ).toEqual([]);
+    });
+
+    it('empties a group whose last member was removed', () => {
+        const { index } = createGroupedIndex();
+        index.retain();
+        index.read({ entities: [one, three] });
+
+        expect(index.getIdsBy({ entities: [three] }, 'byGroup', 'left')).toEqual([]);
+    });
+
+    it('opens a group for a key nothing had before', () => {
+        const { index } = createGroupedIndex();
+        index.retain();
+        index.read({ entities: [one] });
+        const arrived = { id: '9', group: 'elsewhere', tags: [] };
+
+        expect(index.getIdsBy({ entities: [one, arrived] }, 'byGroup', 'elsewhere')).toEqual(['9']);
+    });
+
+    it('follows an entity that changed which keys it names', () => {
+        // Multi-key groups: the entity has to leave every key it no longer names.
+        const { index } = createGroupedIndex();
+        index.retain();
+        index.read({ entities: [one] });
+        const retagged = { ...one, tags: ['green'] };
+
+        const state = { entities: [retagged] };
+
+        expect(index.getIdsBy(state, 'byTag', 'red')).toEqual([]);
+        expect(index.getIdsBy(state, 'byTag', 'blue')).toEqual([]);
+        expect(index.getIdsBy(state, 'byTag', 'green')).toEqual(['1']);
+    });
+
+    it('empties every group when the last entity goes', () => {
+        const { index } = createGroupedIndex();
+        index.retain();
+        index.read({ entities: [one, two, three] });
+
+        const state = { entities: [] };
+
+        expect(index.getIdsBy(state, 'byGroup', 'left')).toEqual([]);
+        expect(index.getIdsBy(state, 'byTag', 'red')).toEqual([]);
+        expect(index.getIds(state)).toEqual([]);
+    });
+
+    it('keeps the ids array and replaces the entities array when a member was updated', () => {
+        const { index } = createGroupedIndex();
+        index.retain();
+        const before = { entities: [one, two] };
+        const previousIds = index.getIdsBy(before, 'byGroup', 'left');
+        const previousEntities = index.getBy(before, 'byGroup', 'left');
+
+        const state = { entities: [{ ...one, tags: ['changed'] }, two] };
+
+        expect(index.getIdsBy(state, 'byGroup', 'left')).toEqual(previousIds);
+        expect(index.getBy(state, 'byGroup', 'left')).not.toBe(previousEntities);
+    });
+});

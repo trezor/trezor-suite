@@ -1,4 +1,8 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
+
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import {
+    type Account,
     type AccountDescriptor,
     type AccountKey,
     type WalletAccountTransaction,
@@ -7,6 +11,7 @@ import {
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/device-utils';
 
+import { transactionsActions } from './transactionsActions';
 import {
     getTransactionId,
     getTransactionIdFromTransaction,
@@ -17,7 +22,8 @@ import {
     selectTransactionsByTxid,
     transactionsIndex,
 } from './transactionsIndex';
-import { type TransactionsRootState } from './transactionsReducerTypes';
+import { prepareTransactionsReducer, transactionsInitialState } from './transactionsReducer';
+import { type TransactionsRootState, type TransactionsState } from './transactionsReducerTypes';
 
 const DEVICE_STATE =
     'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0' as StaticSessionId;
@@ -334,5 +340,263 @@ describe('reading a group as transactions', () => {
                 ),
             ).toBe(before);
         });
+    });
+});
+
+describe('keeping up with what the reducer does to an account', () => {
+    const aliceId = (txid: string) => getTransactionId(aliceKey, txid);
+    const bobId = (txid: string) => getTransactionId(bobKey, txid);
+
+    it('holds a transaction that was added', () => {
+        withSubscription(() => {
+            const existing = mockTransaction(ALICE, 'txA');
+            const arrived = mockTransaction(ALICE, 'txA2');
+            transactionsIndex.read(createState({ [aliceKey]: [existing] }));
+
+            const state = createState({ [aliceKey]: [existing, arrived] });
+
+            expect(transactionsIndex.getById(state, aliceId('txA2'))).toBe(arrived);
+            expect(selectAccountTransactionsFromIndex(state, aliceKey)).toEqual([
+                existing,
+                arrived,
+            ]);
+            expect(selectTransactionsByTxid(state, 'txA2')).toEqual([arrived]);
+            expect(transactionsIndex.read(state).changes).toEqual({
+                added: [aliceId('txA2')],
+                removed: [],
+                updated: [],
+            });
+        });
+    });
+
+    it('lets go of a transaction that was removed', () => {
+        withSubscription(() => {
+            const kept = mockTransaction(ALICE, 'txA');
+            const dropped = mockTransaction(ALICE, 'txA2');
+            transactionsIndex.read(createState({ [aliceKey]: [kept, dropped] }));
+
+            const state = createState({ [aliceKey]: [kept] });
+
+            expect(transactionsIndex.getById(state, aliceId('txA2'))).toBeUndefined();
+            expect(selectAccountTransactionsFromIndex(state, aliceKey)).toEqual([kept]);
+            expect(selectTransactionsByTxid(state, 'txA2')).toEqual([]);
+            expect(transactionsIndex.read(state).changes).toEqual({
+                added: [],
+                removed: [aliceId('txA2')],
+                updated: [],
+            });
+        });
+    });
+
+    it('shows the new object when a transaction was replaced', () => {
+        withSubscription(() => {
+            const pending = mockTransaction(ALICE, 'txA', '1');
+            const confirmed = mockTransaction(ALICE, 'txA', '2');
+            transactionsIndex.read(createState({ [aliceKey]: [pending] }));
+
+            const state = createState({ [aliceKey]: [confirmed] });
+
+            expect(transactionsIndex.getById(state, aliceId('txA'))).toBe(confirmed);
+            expect(selectAccountTransactionsFromIndex(state, aliceKey)).toEqual([confirmed]);
+            expect(selectTransactionsByTxid(state, 'txA')).toEqual([confirmed]);
+            // The membership did not change, so a list keyed by id has no reason to be woken.
+            expect(selectAccountTransactionIdsFromIndex(state, aliceKey)).toEqual([aliceId('txA')]);
+        });
+    });
+
+    it('empties every lookup when a whole account is forgotten', () => {
+        withSubscription(() => {
+            const aliceTransactions = [mockTransaction(ALICE, 'txA')];
+            const bobTransaction = mockTransaction(BOB, 'txB');
+            transactionsIndex.read(
+                createState({ [aliceKey]: aliceTransactions, [bobKey]: [bobTransaction] }),
+            );
+
+            const state = createState({ [aliceKey]: aliceTransactions });
+
+            expect(selectAccountTransactionsFromIndex(state, bobKey)).toEqual([]);
+            expect(selectTransactionsByTxid(state, 'txB')).toEqual([]);
+            expect(transactionsIndex.getById(state, bobId('txB'))).toBeUndefined();
+            expect(transactionsIndex.read(state).changes).toEqual({
+                added: [],
+                removed: [bobId('txB')],
+                updated: [],
+            });
+        });
+    });
+
+    it('picks up an account that appeared', () => {
+        withSubscription(() => {
+            const aliceTransactions = [mockTransaction(ALICE, 'txA')];
+            const bobTransaction = mockTransaction(BOB, 'txB');
+            transactionsIndex.read(createState({ [aliceKey]: aliceTransactions }));
+
+            const state = createState({
+                [aliceKey]: aliceTransactions,
+                [bobKey]: [bobTransaction],
+            });
+
+            expect(selectAccountTransactionsFromIndex(state, bobKey)).toEqual([bobTransaction]);
+            expect(transactionsIndex.read(state).changes).toEqual({
+                added: [bobId('txB')],
+                removed: [],
+                updated: [],
+            });
+        });
+    });
+
+    it('leaves the other side of a shared txid alone when one side goes', () => {
+        // Both accounts filed the same transfer. Forgetting one account must not take the other
+        // account's copy out of the txid lookup with it.
+        withSubscription(() => {
+            const sent = mockTransaction(ALICE, 'txShared', '-1');
+            const received = mockTransaction(BOB, 'txShared', '1');
+            transactionsIndex.read(createState({ [aliceKey]: [sent], [bobKey]: [received] }));
+
+            const state = createState({ [bobKey]: [received] });
+
+            expect(selectTransactionsByTxid(state, 'txShared')).toEqual([received]);
+            expect(transactionsIndex.getById(state, aliceId('txShared'))).toBeUndefined();
+            expect(transactionsIndex.getById(state, bobId('txShared'))).toBe(received);
+        });
+    });
+
+    it('leaves an untouched account’s lookups identical through all of it', () => {
+        withSubscription(() => {
+            const aliceTransactions = [mockTransaction(ALICE, 'txA')];
+            const bobTransaction = mockTransaction(BOB, 'txB');
+            const before = createState({
+                [aliceKey]: aliceTransactions,
+                [bobKey]: [bobTransaction],
+            });
+            const aliceEntities = selectAccountTransactionsFromIndex(before, aliceKey);
+            const aliceIds = selectAccountTransactionIdsFromIndex(before, aliceKey);
+
+            const after = createState({
+                [aliceKey]: aliceTransactions,
+                [bobKey]: [mockTransaction(BOB, 'txB2')],
+            });
+
+            expect(selectAccountTransactionsFromIndex(after, aliceKey)).toBe(aliceEntities);
+            expect(selectAccountTransactionIdsFromIndex(after, aliceKey)).toBe(aliceIds);
+        });
+    });
+});
+
+describe('keeping up with the real reducer', () => {
+    // Everything above drives the index with hand-built states. This drives it with the actions
+    // the app dispatches, through the reducer the app runs — which is also what proves the premise
+    // `getParts` rests on: that Immer leaves an account the action did not touch identical.
+    const transactionsReducer = prepareTransactionsReducer({
+        actionTypes: { storageLoad: mockActionType('storageLoad') },
+        reducers: { storageLoadTransactions: mockReducer() },
+    });
+
+    const aliceAccount = { key: aliceKey } as Account;
+    const bobAccount = { key: bobKey } as Account;
+
+    const toState = (transactions: TransactionsState): TransactionsRootState =>
+        ({ wallet: { transactions } }) as unknown as TransactionsRootState;
+
+    const dispatch = (state: TransactionsState, action: UnknownAction) =>
+        transactionsReducer(state, action);
+
+    const withBothAccounts = () =>
+        dispatch(
+            dispatch(transactionsInitialState, {
+                type: transactionsActions.addTransaction.type,
+                payload: { transactions: [mockTransaction(ALICE, 'txA')], account: aliceAccount },
+            }),
+            {
+                type: transactionsActions.addTransaction.type,
+                payload: { transactions: [mockTransaction(BOB, 'txB')], account: bobAccount },
+            },
+        );
+
+    it('sees a transaction the reducer added', () => {
+        withSubscription(() => {
+            const before = withBothAccounts();
+            transactionsIndex.read(toState(before));
+
+            const after = dispatch(before, {
+                type: transactionsActions.addTransaction.type,
+                payload: { transactions: [mockTransaction(ALICE, 'txA2')], account: aliceAccount },
+            });
+
+            expect(
+                selectTransactionByAccountKeyAndTxidFromIndex(toState(after), aliceKey, 'txA2'),
+            ).toBeDefined();
+            expect(transactionsIndex.read(toState(after)).changes.added).toEqual([
+                getTransactionId(aliceKey, 'txA2'),
+            ]);
+        });
+    });
+
+    it('sees a transaction the reducer removed', () => {
+        withSubscription(() => {
+            const before = withBothAccounts();
+            transactionsIndex.read(toState(before));
+
+            const after = dispatch(before, {
+                type: transactionsActions.removeTransaction.type,
+                payload: { account: aliceAccount, txs: [mockTransaction(ALICE, 'txA')] },
+            });
+
+            expect(selectAccountTransactionsFromIndex(toState(after), aliceKey)).toEqual([]);
+            expect(transactionsIndex.read(toState(after)).changes.removed).toEqual([
+                getTransactionId(aliceKey, 'txA'),
+            ]);
+        });
+    });
+
+    it('sees a transaction the reducer replaced', () => {
+        withSubscription(() => {
+            const before = withBothAccounts();
+            transactionsIndex.read(toState(before));
+            const confirmed = mockTransaction(ALICE, 'txA', '2');
+
+            const after = dispatch(before, {
+                type: transactionsActions.replaceTransaction.type,
+                payload: { key: aliceKey, txid: 'txA', tx: confirmed },
+            });
+
+            expect(
+                selectTransactionByAccountKeyAndTxidFromIndex(toState(after), aliceKey, 'txA'),
+            ).toBe(confirmed);
+            expect(transactionsIndex.read(toState(after)).changes.updated).toEqual([
+                getTransactionId(aliceKey, 'txA'),
+            ]);
+        });
+    });
+
+    it('sees an account the reducer reset', () => {
+        withSubscription(() => {
+            const before = withBothAccounts();
+            transactionsIndex.read(toState(before));
+
+            const after = dispatch(before, {
+                type: transactionsActions.resetTransaction.type,
+                payload: { account: bobAccount },
+            });
+
+            expect(selectAccountTransactionsFromIndex(toState(after), bobKey)).toEqual([]);
+            expect(transactionsIndex.read(toState(after)).changes.removed).toEqual([
+                getTransactionId(bobKey, 'txB'),
+            ]);
+        });
+    });
+
+    it('leaves the accounts the action did not touch identical', () => {
+        // The premise of `getParts`. If this ever stops holding, the index is still correct — it
+        // just stops being cheap, silently.
+        const before = withBothAccounts();
+
+        const after = dispatch(before, {
+            type: transactionsActions.addTransaction.type,
+            payload: { transactions: [mockTransaction(ALICE, 'txA2')], account: aliceAccount },
+        });
+
+        expect(after.transactions[bobKey]).toBe(before.transactions[bobKey]);
+        expect(after.transactions[aliceKey]).not.toBe(before.transactions[aliceKey]);
     });
 });
