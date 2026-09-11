@@ -1,17 +1,21 @@
-import { createAction } from '@reduxjs/toolkit';
+import { type ActionCreatorWithPayload, createAction } from '@reduxjs/toolkit';
 
-import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
+import {
+    type StorageCorruptedPayload,
+    type StorageErrorPayload,
+    type StorageLoadPayload,
+} from 'src/storage/StorageLoadPayload';
 
 import { STORAGE } from './constants';
 
-type StorageAction = NonNullable<PreloadStoreAction>;
-type StorageLoadPayload = Extract<StorageAction, { type: typeof STORAGE.LOAD }>['payload'];
-type StorageErrorPayload = Extract<StorageAction, { type: typeof STORAGE.ERROR }>['payload'];
-type StorageCorruptedPayload = Extract<
-    StorageAction,
-    { type: typeof STORAGE.CORRUPTED }
->['payload'];
+export const storageLoad: ActionCreatorWithPayload<StorageLoadPayload, typeof STORAGE.LOAD> =
+    createAction<StorageLoadPayload, typeof STORAGE.LOAD>(STORAGE.LOAD);
+export const storageError = createAction<StorageErrorPayload, typeof STORAGE.ERROR>(STORAGE.ERROR);
+export const storageCorrupted = createAction<StorageCorruptedPayload, typeof STORAGE.CORRUPTED>(
+    STORAGE.CORRUPTED,
+);
 
-export const storageLoad = createAction<StorageLoadPayload>(STORAGE.LOAD);
-export const storageError = createAction<StorageErrorPayload>(STORAGE.ERROR);
-export const storageCorrupted = createAction<StorageCorruptedPayload>(STORAGE.CORRUPTED);
+export type StorageAction = ReturnType<
+    typeof storageLoad | typeof storageError | typeof storageCorrupted
+>;
+export type StorageLoadAction = ReturnType<typeof storageLoad>;

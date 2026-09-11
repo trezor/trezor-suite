@@ -6,4 +6,4 @@ export { type SuiteReduxStore, createReduxStore } from './src/reducers/createRed
 export { type AppState, rootReducer } from './src/reducers/store';
 export { createSuiteServicesCompositionRoot } from './src/support/createSuiteCompositionRoot';
 export { extraDependencies } from './src/support/extraDependencies';
-export { type PreloadStoreAction } from './src/support/suite/preloadStore';
+export { type PreloadStoreAction } from './src/support/suite/createPreloadStore';

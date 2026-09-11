@@ -24,6 +24,7 @@ export class OnboardingPage {
     readonly tutorial: TutorialSection;
 
     readonly welcomeBody: Locator;
+    readonly databaseUpgradeModalHeading: Locator;
     readonly completeOnboardingButton: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
@@ -61,6 +62,7 @@ export class OnboardingPage {
         this.pin = new PinSection(page);
 
         this.welcomeBody = this.page.getByTestId('@welcome-layout/body');
+        this.databaseUpgradeModalHeading = this.page.getByTestId('@modal/database-upgrade/heading');
         this.completeOnboardingButton = this.page.getByTestId('@onboarding/complete-onboarding');
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
         this.authenticityContinueButton = this.page.getByTestId(

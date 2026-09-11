@@ -8,8 +8,10 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
 import { rootReducer } from 'src/reducers/store';
+import { createDb } from 'src/storage/createDb';
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { createPreloadStore } from 'src/support/suite/createPreloadStore';
 
 import { type DesktopApp, createDesktopApp } from './createDesktopApp';
 
@@ -34,7 +36,9 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
         reducer: rootReducer,
         extraDependencies,
     });
+    const db = createDb({ dispatch: store.dispatch, reloadApp });
     const suiteServices = createSuiteServicesCompositionRoot({
+        db,
         dispatch: store.dispatch,
         getState: store.getState,
         history,
@@ -46,7 +50,13 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
         getTransportsFactories,
         getTrezorConnect: () => TrezorConnect,
     });
-    const hydrateReduxStore = createHydrateReduxStore({ store, reducer: rootReducer });
+    const preloadStore = createPreloadStore({ db });
+    const hydrateReduxStore = createHydrateReduxStore({
+        store,
+        reducer: rootReducer,
+        preloadStore,
+        getStatePatch: async () => (await desktopApi.handshake()).statePatch,
+    });
     const services = { ...suiteServices, store, hydrateReduxStore };
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.

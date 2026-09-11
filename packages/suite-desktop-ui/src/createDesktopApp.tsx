@@ -13,7 +13,6 @@ import { type HydrateReduxStoreDep } from 'src/reducers/createHydrateReduxStore'
 import { type SuiteReduxStoreDep } from 'src/reducers/createReduxStore';
 import { type SuiteServices } from 'src/support/createSuiteCompositionRoot';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
-import { preloadStore } from 'src/support/suite/preloadStore';
 import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 
@@ -39,10 +38,7 @@ export const createDesktopApp =
         const root = createRoot(container);
         root.render(<LoadingScreen />);
 
-        const preloadAction = await preloadStore();
-        const { statePatch } = await deps.desktopApi.handshake();
-
-        deps.services.hydrateReduxStore(preloadAction, statePatch);
+        const preloadAction = await deps.services.hydrateReduxStore();
 
         // Expose Redux store for Playwright/e2e tests
         if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {

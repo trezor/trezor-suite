@@ -1,12 +1,13 @@
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import { selectDevices } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type SetDeviceAutoEjectThunkState,
     setDeviceAutoEjectThunk,
 } from '@suite-common/wallet-core';
 
 import * as storageActions from 'src/actions/suite/storageActions';
+import { type DbDep } from 'src/storage/createDb';
 
 const AUTO_EJECT_PREFIX = '@suite/autoEject';
 
@@ -14,7 +15,7 @@ type SetAutoEjectEnabledThunkProps = { shouldEnable: boolean };
 
 type SetAutoEjectEnabledThunkState = GotoThunkState & SetDeviceAutoEjectThunkState;
 
-type SetAutoEjectEnabledThunkDeps = GotoThunkDeps;
+type SetAutoEjectEnabledThunkDeps = GotoThunkDeps & WithServices<DbDep>;
 
 export const setAutoEjectEnabledThunk = createThunk<
     void,

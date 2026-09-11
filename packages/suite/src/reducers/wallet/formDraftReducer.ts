@@ -9,9 +9,7 @@ import {
     formDraftInitialState,
 } from '@suite-common/wallet-core';
 
-import { STORAGE } from 'src/actions/suite/constants';
-
-import type { StorageAction } from '../../actions/suite/storageActions';
+import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
 
 export const FORM_DRAFT = 'formDraft';
 
@@ -21,10 +19,12 @@ export const formDraftSlice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder
-            .addCase(STORAGE.LOAD, (state, action) => {
-                const { payload } = action as StorageAction;
-
-                if (payload == 'blocked' || payload == 'blocking') {
+            .addCase(storageLoad, (state, { payload }) => {
+                // Preserve handling of error payloads sent with STORAGE.LOAD.
+                if (
+                    typeof payload === 'string' &&
+                    (payload === 'blocked' || payload === 'blocking')
+                ) {
                     return;
                 }
 

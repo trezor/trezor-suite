@@ -1,10 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import type { Page } from '@playwright/test';
+
 import { checkEvoluRelayServerRunning } from '@suite-common/e2e-evolu-client';
 import type { PerfMetrics } from '@trezor/perf-e2e';
 
 import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { ClipboardFixture } from './clipboard';
 import { isDesktopProject } from './common';
+import { databaseTabFixture } from './databaseTabFixture';
 import { measurePerformance } from '../performance/perfMeasure';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
@@ -60,6 +63,7 @@ type Fixtures = {
     analytics: AnalyticsFixture;
     analyticsHelper: AnalyticsHelper;
     indexedDb: IndexedDbFixture;
+    databaseTab: Page;
     tradingStore: TradingStoreFixture;
     metadataMock: MetadataMock;
     blockbookMock: BlockbookMock;
@@ -141,6 +145,7 @@ const test = suiteBaseTest.extend<Fixtures>({
     analyticsHelper: async ({ page }, use) => {
         await use(new AnalyticsHelper(page));
     },
+    databaseTab: databaseTabFixture,
     indexedDb: async ({ page }, use) => {
         await use(new IndexedDbFixture(page));
     },

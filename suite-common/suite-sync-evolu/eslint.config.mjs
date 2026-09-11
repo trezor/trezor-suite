@@ -1,18 +1,3 @@
-import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
+import { eslint } from '@trezor/eslint';
 
-export default [
-    ...eslint,
-    {
-        rules: {
-            'import/no-extraneous-dependencies': [
-                'error',
-                {
-                    devDependencies: [
-                        ...globalNoExtraneousDependenciesDevDependencies,
-                        '**/mocks/**',
-                    ],
-                },
-            ],
-        },
-    },
-];
+export default [...eslint];

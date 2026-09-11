@@ -3,12 +3,14 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type ReloadAppDep } from '@suite-common/suite-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
+import { type DbDep } from 'src/storage/createDb';
+
 import { removeDatabaseThunk } from './storageActions';
 
 type ResetSuiteAppThunkState = GotoThunkState;
 
 type ResetSuiteAppThunkDeps = GotoThunkDeps & {
-    services: ReloadAppDep;
+    services: ReloadAppDep & DbDep;
 };
 
 export const resetSuiteAppThunk = createThunk<
