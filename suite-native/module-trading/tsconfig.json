@@ -71,7 +71,6 @@
             "path": "../module-stellar-token-management"
         },
         { "path": "../navigation" },
-        { "path": "../scrollview" },
         { "path": "../tokens" },
         { "path": "../trading-analytics" },
         { "path": "../trading-atoms" },
@@ -85,6 +84,7 @@
         { "path": "../trading-slippage" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
+        { "path": "../transaction-review" },
         {
             "path": "../../packages/analytics-uploader"
         },

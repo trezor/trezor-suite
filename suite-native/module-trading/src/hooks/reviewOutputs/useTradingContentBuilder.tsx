@@ -1,17 +1,39 @@
-import { useCallback } from 'react';
+import { type ReactNode, useCallback } from 'react';
 import { useStore } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountKey,
+    type FormStateTradingCryptoCurrency,
+    type FormStateTradingFiatCurrency,
+    type TokenAddress,
+    type TransactionReviewOutputType,
+} from '@suite-common/wallet-types';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { type ExchangeFlowType } from '@suite-native/navigation';
 import { useReceiveAmountMultiplier } from '@suite-native/trading-quote-utils';
-import { type ReviewOutputItemListProps } from '@suite-native/transaction-management';
+import { type TokenInfo } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CryptoAmountRow } from '../../components/general/CryptoAmountRow';
 
-type ContentBuilderFunction = NonNullable<ReviewOutputItemListProps['contentBuilder']>;
+export type ContentBuilderProps = {
+    accountKey: AccountKey;
+    outputType: TransactionReviewOutputType;
+    value: string;
+    value2?: string;
+    token?: TokenInfo;
+    tokenContract?: TokenAddress;
+    flowType?: ExchangeFlowType;
+    send?: FormStateTradingCryptoCurrency;
+    receive?: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+};
+
+export type ContentBuilderFunction = NonNullable<
+    (props: ContentBuilderProps) => ReactNode | undefined
+>;
 
 const flexStyle = prepareNativeStyle(() => ({
     flexShrink: 1,

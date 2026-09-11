@@ -1,22 +1,27 @@
-import { type YieldFlowResolvedData } from '@suite-common/wallet-core';
-import { Button } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { useCallback } from 'react';
 
-import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
-import { YieldTransactionReviewOutputList } from './YieldTransactionReviewOutputList';
+import { type YieldFlowResolvedData } from '@suite-common/wallet-core';
+import { TransactionReviewScreen } from '@suite-native/transaction-review';
+
+import { YieldTransactionReviewSummaryCard } from './YieldTransactionReviewSummaryCard';
 import { useYieldDepositReview } from '../../hooks/yield/useYieldDepositReview';
 import { useYieldReviewActiveStep } from '../../hooks/yield/useYieldReviewActiveStep';
 import {
     useYieldReviewScreenControls,
     useYieldReviewSheetAutoStart,
 } from '../../hooks/yield/useYieldReviewScreenControls';
-import { type YieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
+import { useYieldTransactionReviewOutputs } from '../../hooks/yield/useYieldTransactionReviewOutputs';
+import {
+    type YieldReviewPreview,
+    getYieldReviewSummaryState,
+    getYieldStatefulReviewOutputs,
+} from '../../utils/yield/yieldReviewOutputUtils';
 
-type YieldDepositReviewContentProps = {
+interface YieldDepositReviewContentProps {
     flowData: YieldFlowResolvedData;
     flowKey: string;
     preview: YieldReviewPreview;
-};
+}
 
 export const YieldDepositReviewContent = ({
     flowData,
@@ -31,10 +36,14 @@ export const YieldDepositReviewContent = ({
         revealConfirmOnTrezorSheet,
     } = useYieldReviewScreenControls();
 
+    const yieldTransactionReviewOutputs = useYieldTransactionReviewOutputs({
+        evmTransactionPurpose: preview.evmTransactionPurpose,
+        account: flowData.account,
+    });
+
     const review = useYieldDepositReview({ flowData, flowKey, onReviewLeave: markReviewLeave });
 
     const isSigned = review.status === 'signed' || review.status === 'sending';
-    const isSending = review.status === 'sending';
     const activeStep = useYieldReviewActiveStep(flowData.account.symbol);
 
     useYieldReviewSheetAutoStart({
@@ -47,24 +56,55 @@ export const YieldDepositReviewContent = ({
         startReview: review.startReview,
     });
 
+    const accountKey = flowData.account.key;
+
+    const reviewOutputs = getYieldStatefulReviewOutputs({
+        activeStep,
+        isSigned,
+        outputs: preview.outputs,
+    });
+
+    const summaryState = getYieldReviewSummaryState({
+        activeStep,
+        isSigned,
+        outputsCount: preview.outputs.length,
+    });
+
+    const sheetController = { closeSheet, confirmOnTrezorRef, revealConfirmOnTrezorSheet };
+
+    const onSendTransaction = useCallback(() => review.submitDeposit(), [review]);
+
+    const onSendTransactionSuccess = useCallback(
+        (txid: string) => {
+            review.finalizeDepositSubmit(txid);
+        },
+        [review],
+    );
+
     return (
-        <YieldReviewScreenLayout
-            confirmOnTrezorRef={confirmOnTrezorRef}
+        <TransactionReviewScreen
+            accountKey={accountKey}
+            reviewOutputs={reviewOutputs}
             titleTranslationId="earn.yieldDepositReviewScreen.title"
-            submitButton={
-                isSigned && (
-                    <Button isLoading={isSending} onPress={review.submit}>
-                        <Translation id="earn.yieldDepositReviewScreen.submitButton" />
-                    </Button>
-                )
-            }
-        >
-            <YieldTransactionReviewOutputList
-                accountKey={flowData.account.key}
-                activeStep={activeStep}
-                isSigned={isSigned}
-                preview={preview}
-            />
-        </YieldReviewScreenLayout>
+            summaryTranslationId="transactionManagement.review.outputs.summary.label"
+            sendButtonTranslationId="earn.yieldDepositReviewScreen.submitButton"
+            isTransactionAlreadySigned={isSigned}
+            onSendTransaction={onSendTransaction}
+            onSendTransactionSuccess={onSendTransactionSuccess}
+            renderSummaryItem={({ onLayout }) => (
+                <YieldTransactionReviewSummaryCard
+                    accountKey={accountKey}
+                    fee={preview.summary.fee}
+                    onLayout={onLayout}
+                    outputState={summaryState}
+                />
+            )}
+            sheetController={sheetController}
+            isManualSheetControlEnabled
+            isBackInterceptorEnabled={false}
+            closeActionType="back"
+            outputTitleOverride={yieldTransactionReviewOutputs.getOutputTitle}
+            outputOverride={yieldTransactionReviewOutputs.getOutputValue}
+        />
     );
 };
