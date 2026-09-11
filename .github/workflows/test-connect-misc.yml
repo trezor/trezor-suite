@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - "packages/connect-common/**"
+      - "packages/connect-core/**"
       - "packages/connect-data/**"
       - "packages/connect-mobile/**"
       - "packages/connect-web/**"
@@ -82,9 +83,11 @@ jobs:
         # `attw` is the binary for @arethetypeswrong/cli; --profile esm-only
         # skips node10/node16-cjs resolutions for our ESM-only packages.
         run: |
-          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-web.tgz --profile esm-only
-          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-mobile.tgz --profile esm-only
-          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-webextension.tgz --profile esm-only
+          for pkg in connect connect-web connect-mobile connect-webextension; do
+            echo "::group::attw @trezor/$pkg"
+            yarn exec attw --pack "./tmp/packed-packages/trezor-$pkg.tgz" --profile esm-only
+            echo "::endgroup::"
+          done
 
       - name: Test local install
         run: ./packages/connect/e2e/test-connect-local.sh
@@ -111,11 +114,16 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      # @trezor/connect (the core package) and its thin wrappers
+      # @trezor/connect (the Node entry point, which pulls in the engine and
+      # @trezor/transport) and its thin wrappers
       # (connect-web / connect-mobile / connect-webextension) are the packages
       # 3rd parties install. A copyleft license (GPL/AGPL/SSPL/...) anywhere in
       # their production closure would impose obligations on every downstream
       # consumer, so it must never be pulled in.
+      #
+      # Note: `usb` (reached through @trezor/transport) is MIT on npm but
+      # vendors libusb (LGPL-2.1) as bundled C sources, which license-checker
+      # reads no license field for and therefore cannot report.
       #
       # We start the scan at the hoisted package directory under the root
       # node_modules (not packages/<pkg>): in a Yarn workspace the package's
