@@ -19,6 +19,7 @@ export type FeesContextType = {
     feeInfo: FeeInfo;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     tronResources?: TronAccountExtraData;
+    isComposing?: boolean;
 };
 
 export const FeesContext = createContext<FeesContextType | null>(null);

@@ -60,6 +60,7 @@ export const TradingExchangeNetworkFeeModal = ({
         feeInfo,
         composedLevels,
         changeFeeLevel,
+        isComposing: isLoading,
     });
     const { isTrc20Transfer, txMaxFee } = useFeeLevels(fees);
 

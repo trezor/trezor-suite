@@ -10,7 +10,7 @@ import { type FeesContextType } from './FeesContext';
 export type UseFeesContextValueParams = {
     account: Pick<Account, 'symbol' | 'networkType' | 'misc'>;
     control: Control<FormState>;
-} & Pick<FeesContextType, 'feeInfo' | 'composedLevels' | 'changeFeeLevel'>;
+} & Pick<FeesContextType, 'feeInfo' | 'composedLevels' | 'changeFeeLevel' | 'isComposing'>;
 
 export const useFeesContextValue = ({
     account: { symbol: networkSymbol, networkType, misc },
@@ -18,6 +18,7 @@ export const useFeesContextValue = ({
     feeInfo,
     composedLevels,
     changeFeeLevel,
+    isComposing,
 }: UseFeesContextValueParams): FeesContextType => {
     const selectedFee =
         useWatch<FormState, 'selectedFee'>({ name: 'selectedFee', control }) ?? 'normal';
@@ -36,5 +37,6 @@ export const useFeesContextValue = ({
         selectedFee,
         selectedFeeLevel,
         tronResources: misc && 'tronResources' in misc ? misc.tronResources : undefined,
+        isComposing,
     };
 };

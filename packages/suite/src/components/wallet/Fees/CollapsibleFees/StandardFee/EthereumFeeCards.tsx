@@ -33,6 +33,7 @@ export const EthereumFeeCards = ({ feeOptions, feeCardAppearance }: EthereumFeeC
         changeFeeLevel,
         selectedFeeLevel,
         composedLevels,
+        isComposing,
     } = useFeesContext();
     const locale = useLocales();
     const isDebug = useSelector(selectIsDebugModeActive);
@@ -74,7 +75,7 @@ export const EthereumFeeCards = ({ feeOptions, feeCardAppearance }: EthereumFeeC
                         key={fee.value}
                         isSelected={selectedFeeLevel.label === fee.value}
                         changeFeeLevel={changeFeeLevel}
-                        isLoading={areFeesLoading}
+                        isLoading={areFeesLoading || isComposing}
                         topLeftChild={
                             <span data-testid={`@fee-card/${fee.value}`}>
                                 <Translation id={feeLevelTranslationMap[fee.value]} />

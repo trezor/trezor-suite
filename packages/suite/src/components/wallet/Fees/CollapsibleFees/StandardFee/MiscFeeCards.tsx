@@ -19,7 +19,7 @@ type MiscFeeCardsProps = {
 
 // Solana, Ripple, Cardano and other networks with only one option
 export const MiscFeeCards = ({ feeOptions, feeCardAppearance }: MiscFeeCardsProps) => {
-    const { networkType, networkSymbol, changeFeeLevel } = useFeesContext();
+    const { networkType, networkSymbol, changeFeeLevel, isComposing } = useFeesContext();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
 
     const isSolanaNetwork = networkType === 'solana';
@@ -37,7 +37,7 @@ export const MiscFeeCards = ({ feeOptions, feeCardAppearance }: MiscFeeCardsProp
                 value={fee.value}
                 isSelected={true}
                 changeFeeLevel={changeFeeLevel}
-                isLoading={areFeesLoading}
+                isLoading={areFeesLoading || isComposing}
                 topLeftChild={
                     <span data-testid={`@fee-card/${fee.value}`}>
                         <Translation id={feeLevelTranslationMap[fee.value]} />
