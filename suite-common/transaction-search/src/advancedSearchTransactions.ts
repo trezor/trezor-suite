@@ -4,7 +4,7 @@ import { type SearchAccountLabels } from './searchLabels';
 import { simpleSearchTransactions } from './simpleSearchTransactions';
 import { getTransactionSearchLookups } from './transactionSearchIndex';
 
-const runAdvancedSearch = (
+export const advancedSearchTransactions = (
     transactions: WalletAccountTransaction[],
     accountLabels: SearchAccountLabels,
     search: string,
@@ -64,34 +64,4 @@ const runAdvancedSearch = (
         .filter(txid => positionByTxid.has(txid))
         .sort((left, right) => (positionByTxid.get(left) ?? 0) - (positionByTxid.get(right) ?? 0))
         .map(txid => transactionsByTxid.get(txid) as WalletAccountTransaction);
-};
-
-/**
- * Times every search and prints it, in development only — not in production, and not in tests,
- * where it would be noise on every run.
- *
- * The search box calls this on every keystroke against the whole account, so it is the one place
- * where a slow query is something a developer can watch happen rather than guess at. The benchmark
- * in `bench/` is the same measurement against generated data; this is the same measurement against
- * the account actually open.
- */
-export const advancedSearchTransactions = (
-    transactions: WalletAccountTransaction[],
-    accountLabels: SearchAccountLabels,
-    search: string,
-) => {
-    if (process.env.NODE_ENV !== 'development') {
-        return runAdvancedSearch(transactions, accountLabels, search);
-    }
-
-    const startedAt = performance.now();
-    const results = runAdvancedSearch(transactions, accountLabels, search);
-    const elapsed = performance.now() - startedAt;
-
-    // eslint-disable-next-line no-console
-    console.log(
-        `[transaction search] "${search}" took ${elapsed.toFixed(1)}ms over ${transactions.length} transactions, ${results.length} matched`,
-    );
-
-    return results;
 };
