@@ -121,8 +121,8 @@ const getOnlineReleaseByPath = async (releasePath: string) => {
         - test-unsigned-stable https://data.trezor.io/dev/firmware/releases/unsigned-stable/t3t1/universal/t3t1-2.8.10-universal.json
         - localhost-unsigned http://localhost:3000/firmware/unsigned/t3t1/universal/t3t1-2.8.10-universal.json
      */
-    const onlineFirmwareBaseUrl = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
-    const url = `${onlineFirmwareBaseUrl.BASE_URL}/${releasePath}`;
+    const { BASE_URL } = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
+    const url = `${BASE_URL}/${releasePath}`;
 
     const response = await httpRequest(url, 'json', {
         signal: AbortSignal.timeout(10000),
@@ -282,7 +282,7 @@ const createRemoteFirmwareConfig = async (releases: ReleasesConfig) => {
     return Object.fromEntries(validEntries);
 };
 
-export const getRemoteFirmwareConfig = async (firmwareChannel?: FirmwareChannel) => {
+export const getRemoteFirmwareConfig = async (firmwareChannel: FirmwareChannel) => {
     const remoteConfig = await fetchFirmwareReleaseConfig(firmwareChannel);
 
     if (remoteConfig && remoteConfig.sequence > firmwareReleaseConfigAssets.sequence) {
@@ -305,8 +305,8 @@ export const getLocalFirmwareConfig = () => ({
 });
 
 export const getLanguage = (languageBinPath: string) => {
-    const baseUrl = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
-    const url = `${baseUrl.BASE_URL}/${languageBinPath}`;
+    const { BASE_URL } = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
+    const url = `${BASE_URL}/${languageBinPath}`;
 
     return httpRequest(url, 'binary');
 };
@@ -682,9 +682,10 @@ export const getFirmwareLocation = ({
         };
     }
 
+    const firmwareChannel = settingsStore.get('firmwareChannel');
     const { firmwareDir, firmwareList } = localFirmwareStore.get();
     if (
-        isFirmwareCacheUsedForSelectedSource(settingsStore.get('firmwareChannel')) &&
+        isFirmwareCacheUsedForSelectedSource(firmwareChannel) &&
         firmwareList.includes(firmwareName)
     ) {
         return {
@@ -693,10 +694,10 @@ export const getFirmwareLocation = ({
         };
     }
 
-    const onlineBaseUrl = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
+    const { BASE_URL } = getOnlineFirmwareBaseUrl(firmwareChannel);
 
     return {
-        baseUrl: onlineBaseUrl.BASE_URL,
+        baseUrl: BASE_URL,
         path: remotePath,
     };
 };

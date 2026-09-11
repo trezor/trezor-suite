@@ -994,7 +994,7 @@ export class Core extends EventEmitter {
             enabledNetworksStore.set(settings.enabledNetworks ?? []);
 
             const config =
-                (await getRemoteFirmwareConfig(settings.firmwareChannel)) ??
+                (await getRemoteFirmwareConfig(settings.firmwareChannel ?? 'production')) ??
                 getLocalFirmwareConfig();
             firmwareReleaseStore.init(config);
 
