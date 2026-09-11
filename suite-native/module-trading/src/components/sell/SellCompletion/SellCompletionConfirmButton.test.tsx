@@ -77,7 +77,7 @@ describe('SellCompletionConfirmButton', () => {
             ),
         );
 
-        expect(mockNavigate).toHaveBeenCalledWith('TradingSellOutputsReview', {
+        expect(mockNavigate).toHaveBeenCalledWith('TradingSellTransactionReview', {
             accountKey: ethAccountKey,
             orderId: banxaCreditCardSellQuote.orderId,
             tokenContract: undefined,

@@ -72,22 +72,35 @@ export const useYieldClaimReview = ({
 
     const onPushSuccess = useCallback(() => navigation.goBack(), [navigation]);
 
-    const review = useEarnTransactionReview({
-        formType: 'yield-claim',
-        isSigned: isClaimSigned,
-        navigation,
-        onPushSuccess,
-        onReviewLeave,
-        reportCancel: reportClaimCancel,
-        reportError: reportClaimError,
-        signAction,
-        pushAction,
-    });
+    const { finalizeSubmit, leaveReviewFromDeviceCancel, startReview, status, submitReview } =
+        useEarnTransactionReview({
+            formType: 'yield-claim',
+            isSigned: isClaimSigned,
+            navigation,
+            onPushSuccess,
+            onReviewLeave,
+            reportCancel: reportClaimCancel,
+            reportError: reportClaimError,
+            signAction,
+            pushAction,
+        });
+
+    const submitClaim = useCallback(async () => {
+        const pushedPayload = await submitReview();
+
+        return pushedPayload?.txid;
+    }, [submitReview]);
+
+    const finalizeClaimSubmit = useCallback(
+        (txid: string) => finalizeSubmit({ txid }),
+        [finalizeSubmit],
+    );
 
     return {
-        status: review.status,
-        submit: review.handleSubmitted,
-        startReview: review.startReview,
-        leaveReviewFromDeviceCancel: review.leaveReviewFromDeviceCancel,
+        finalizeClaimSubmit,
+        leaveReviewFromDeviceCancel,
+        startReview,
+        status,
+        submitClaim,
     };
 };

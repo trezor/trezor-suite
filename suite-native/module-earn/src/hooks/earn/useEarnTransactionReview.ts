@@ -155,9 +155,9 @@ export const useEarnTransactionReview = <TSigned, TPushed>({
         status,
     ]);
 
-    const handleSubmitted = useCallback(async () => {
+    const submitReview = useCallback(async (): Promise<TPushed | undefined> => {
         if (status !== 'signed' || isPushingRef.current) {
-            return;
+            return undefined;
         }
 
         isPushingRef.current = true;
@@ -166,16 +166,15 @@ export const useEarnTransactionReview = <TSigned, TPushed>({
             const pushPromise = pushAction();
 
             if (!pushPromise) {
-                return;
+                return undefined;
             }
 
             setActionStatus('sending');
 
             const pushResponse = await pushPromise;
 
-            setActionStatus('idle');
-
             if (isRejectedThunkResult(pushResponse)) {
+                setActionStatus('idle');
                 reportError?.('push-failed');
                 showReviewAlert(
                     pushResponse.payload?.error === 'push-transaction-pending-conflict'
@@ -183,27 +182,41 @@ export const useEarnTransactionReview = <TSigned, TPushed>({
                         : 'pushFailed',
                 );
 
-                return;
+                return undefined;
             }
 
-            markReviewNavigationSuccess();
-            onPushSuccess(pushResponse.payload);
+            // Stay in 'sending' on success: push thunks discard the signed
+            // transaction before resolving, so resetting to idle here would drop
+            // the signed status (and unmount the submit UI) before finalization
+            // navigates away.
+            return pushResponse.payload;
         } finally {
             isPushingRef.current = false;
         }
-    }, [
-        markReviewNavigationSuccess,
-        onPushSuccess,
-        pushAction,
-        reportError,
-        showReviewAlert,
-        status,
-    ]);
+    }, [pushAction, reportError, showReviewAlert, status]);
+
+    const finalizeSubmit = useCallback(
+        (payload: TPushed) => {
+            markReviewNavigationSuccess();
+            onPushSuccess(payload);
+        },
+        [markReviewNavigationSuccess, onPushSuccess],
+    );
+
+    const handleSubmitted = useCallback(async () => {
+        const pushedPayload = await submitReview();
+
+        if (pushedPayload !== undefined) {
+            finalizeSubmit(pushedPayload);
+        }
+    }, [finalizeSubmit, submitReview]);
 
     return {
+        finalizeSubmit,
         handleSubmitted,
         leaveReviewFromDeviceCancel,
         startReview,
         status,
+        submitReview,
     };
 };
