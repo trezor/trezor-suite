@@ -16,9 +16,9 @@ import {
  *
  * Only worth mounting on its own when a screen reads the index through something other than the
  * hooks below — a thunk, an imperative handler — and wants the build to survive between those
- * reads. The reading hooks subscribe by themselves.
+ * reads. The reading hooks hold it by themselves.
  */
-export const useEntityIndexSubscription = <
+export const useEntityIndexRetention = <
     TState,
     TEntity,
     TId extends EntityId,
@@ -26,7 +26,7 @@ export const useEntityIndexSubscription = <
 >(
     index: EntityIndex<TState, TEntity, TId, TGroups>,
 ) => {
-    useEffect(() => index.subscribe(), [index]);
+    useEffect(() => index.retain(), [index]);
 };
 
 /**
@@ -51,7 +51,7 @@ export const useEntityIndexSelector = <
     selector: (snapshot: EntityIndexSnapshot<TEntity, TId, TGroups>) => TResult,
     equalityFn?: (left: TResult, right: TResult) => boolean,
 ): TResult => {
-    useEntityIndexSubscription(index);
+    useEntityIndexRetention(index);
 
     return useSelector((state: TState) => selector(index.read(state)), equalityFn);
 };

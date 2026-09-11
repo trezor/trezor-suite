@@ -46,20 +46,20 @@ const createState = (
 ): TransactionsRootState =>
     ({ wallet: { transactions: { transactions } } }) as unknown as TransactionsRootState;
 
-// The index is one shared instance, so a test that subscribes has to leave it as it found it.
+// The index is one shared instance, so a test that holds it has to leave it as it found it.
 const withSubscription = (run: () => void) => {
-    const unsubscribe = transactionsIndex.subscribe();
+    const release = transactionsIndex.retain();
     try {
         run();
     } finally {
-        unsubscribe();
+        release();
     }
 };
 
 describe('transactionsIndex', () => {
     afterEach(() => {
         if (transactionsIndex.getSubscriberCount() !== 0) {
-            throw new Error('a test left the shared index subscribed');
+            throw new Error('a test left the shared index held');
         }
     });
 

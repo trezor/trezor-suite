@@ -25,7 +25,7 @@ const createIndex = () => {
 describe('createEntityIndex', () => {
     it('builds nothing until it is read', () => {
         const { index, getEntities } = createIndex();
-        index.subscribe();
+        index.retain();
 
         expect(getEntities).not.toHaveBeenCalled();
     });
@@ -53,7 +53,7 @@ describe('createEntityIndex', () => {
         it('builds once for repeated reads of an unchanged source', () => {
             // The point of the index: a re-render that changed nothing else costs one comparison.
             const { index, getEntities } = createIndex();
-            index.subscribe();
+            index.retain();
             const state = createState([a, b]);
 
             index.read(state);
@@ -64,7 +64,7 @@ describe('createEntityIndex', () => {
 
         it('hands back the same snapshot, so consumers can compare by reference', () => {
             const { index } = createIndex();
-            index.subscribe();
+            index.retain();
             const state = createState([a, b]);
 
             expect(index.read(state)).toBe(index.read(state));
@@ -73,8 +73,8 @@ describe('createEntityIndex', () => {
         it('builds once for two consumers of the same index', () => {
             // Two screens asking the same question in one render pass are one build, not two.
             const { index, getEntities } = createIndex();
-            index.subscribe();
-            index.subscribe();
+            index.retain();
+            index.retain();
             const state = createState([a, b]);
 
             index.read(state);
@@ -85,7 +85,7 @@ describe('createEntityIndex', () => {
 
         it('rebuilds when the source is replaced', () => {
             const { index } = createIndex();
-            index.subscribe();
+            index.retain();
             const updated = { ...b, value: 'changed' };
 
             expect(index.getById(createState([a, b]), 'b')).toBe(b);
@@ -96,7 +96,7 @@ describe('createEntityIndex', () => {
             // Reducers other than this one write on every action; those writes must not cost a
             // rebuild here.
             const { index, getEntities } = createIndex();
-            index.subscribe();
+            index.retain();
             const things = [a, b];
 
             index.read({ things });
@@ -127,11 +127,11 @@ describe('createEntityIndex', () => {
 
         it('drops what it held once the last subscriber leaves', () => {
             const { index, getEntities } = createIndex();
-            const unsubscribe = index.subscribe();
+            const release = index.retain();
             const state = createState([a, b]);
 
             index.read(state);
-            unsubscribe();
+            release();
             index.read(state);
 
             expect(getEntities).toHaveBeenCalledTimes(2);
@@ -139,12 +139,12 @@ describe('createEntityIndex', () => {
 
         it('keeps holding while any subscriber remains', () => {
             const { index, getEntities } = createIndex();
-            const unsubscribe = index.subscribe();
-            index.subscribe();
+            const release = index.retain();
+            index.retain();
             const state = createState([a, b]);
 
             index.read(state);
-            unsubscribe();
+            release();
             index.read(state);
 
             expect(getEntities).toHaveBeenCalledTimes(1);
@@ -153,10 +153,10 @@ describe('createEntityIndex', () => {
         it('ignores a consumer unsubscribing twice', () => {
             // Otherwise one sloppy consumer releases a build another one is still holding.
             const { index, getEntities } = createIndex();
-            const unsubscribe = index.subscribe();
-            index.subscribe();
-            unsubscribe();
-            unsubscribe();
+            const release = index.retain();
+            index.retain();
+            release();
+            release();
             const state = createState([a, b]);
 
             index.read(state);
@@ -215,7 +215,7 @@ describe('an index over a source that is written in parts', () => {
         // are carried over rather than walked.
         const { index, getEntities } = createPartitionedIndex();
         const untouched = [c];
-        index.subscribe();
+        index.retain();
 
         index.read({ byGroup: { left: [a], right: untouched } });
         getEntities.mockClear();
@@ -228,7 +228,7 @@ describe('an index over a source that is written in parts', () => {
     it('still holds the entities of the parts it did not walk', () => {
         const { index } = createPartitionedIndex();
         const untouched = [c];
-        index.subscribe();
+        index.retain();
 
         index.read({ byGroup: { left: [a], right: untouched } });
         const state = { byGroup: { left: [a, b], right: untouched } };
@@ -240,7 +240,7 @@ describe('an index over a source that is written in parts', () => {
     it('walks a part it has not seen before', () => {
         const { index, getEntities } = createPartitionedIndex();
         const untouched = [a];
-        index.subscribe();
+        index.retain();
 
         index.read({ byGroup: { left: untouched } });
         getEntities.mockClear();
@@ -253,7 +253,7 @@ describe('an index over a source that is written in parts', () => {
     it('drops the entities of a part the source no longer has', () => {
         const { index } = createPartitionedIndex();
         const untouched = [a];
-        index.subscribe();
+        index.retain();
 
         index.read({ byGroup: { left: untouched, right: [c] } });
 
@@ -267,7 +267,7 @@ describe('what a rebuild changed', () => {
 
     it('is nothing on the first build, which nobody can have missed', () => {
         const { index } = createIndex();
-        index.subscribe();
+        index.retain();
 
         expect(readChanges(index, createState([a, b]))).toEqual({
             added: [],
@@ -278,7 +278,7 @@ describe('what a rebuild changed', () => {
 
     it('reports an entity that arrived', () => {
         const { index } = createIndex();
-        index.subscribe();
+        index.retain();
         index.read(createState([a]));
 
         expect(readChanges(index, createState([a, b]))).toEqual({
@@ -290,7 +290,7 @@ describe('what a rebuild changed', () => {
 
     it('reports an entity that went away', () => {
         const { index } = createIndex();
-        index.subscribe();
+        index.retain();
         index.read(createState([a, b]));
 
         expect(readChanges(index, createState([a]))).toEqual({
@@ -302,7 +302,7 @@ describe('what a rebuild changed', () => {
 
     it('reports an entity that is a different object than it was', () => {
         const { index } = createIndex();
-        index.subscribe();
+        index.retain();
         index.read(createState([a, b]));
 
         expect(readChanges(index, createState([a, { ...b, value: 'changed' }]))).toEqual({
@@ -314,7 +314,7 @@ describe('what a rebuild changed', () => {
 
     it('says nothing about an entity that is the same object as before', () => {
         const { index } = createIndex();
-        index.subscribe();
+        index.retain();
         index.read(createState([a, b]));
 
         // `a` is carried across untouched, so it is in none of the three lists.
@@ -325,7 +325,7 @@ describe('what a rebuild changed', () => {
 
     it('does not report an entity that only moved between parts as gone', () => {
         const { index } = createPartitionedIndex();
-        index.subscribe();
+        index.retain();
         index.read({ byGroup: { left: [a], right: [] } });
 
         expect(index.read({ byGroup: { left: [], right: [a] } }).changes).toEqual({
@@ -394,7 +394,7 @@ describe('looking an entity up by something other than its id', () => {
         // What keeps a component watching one account from re-rendering when another receives a
         // transaction.
         const { index } = createGroupedIndex();
-        index.subscribe();
+        index.retain();
         const left = index.getIdsBy({ entities: [one, two, three] }, 'byGroup', 'left');
 
         const afterRightChanged = index.getIdsBy(
@@ -408,7 +408,7 @@ describe('looking an entity up by something other than its id', () => {
 
     it('hands back a new array for a group that gained a member', () => {
         const { index } = createGroupedIndex();
-        index.subscribe();
+        index.retain();
         const left = index.getIdsBy({ entities: [one] }, 'byGroup', 'left');
 
         expect(index.getIdsBy({ entities: [one, two] }, 'byGroup', 'left')).not.toBe(left);
@@ -425,7 +425,7 @@ describe('looking an entity up by something other than its id', () => {
             getId: (entity: Grouped) => entity.id,
             groupBy: { byGroup },
         });
-        partitioned.subscribe();
+        partitioned.retain();
 
         partitioned.read({ byGroup: { a: untouched, b: [two] } });
         byGroup.mockClear();
@@ -452,7 +452,7 @@ describe('reading a group as entities', () => {
 
     it('hands back the same array for a group whose members did not change', () => {
         const { index } = createGroupedIndex();
-        index.subscribe();
+        index.retain();
         const left = index.getBy({ entities: [one, two, three] }, 'byGroup', 'left');
 
         expect(
@@ -464,11 +464,104 @@ describe('reading a group as entities', () => {
         // The ids did not change, but the entities did — which a consumer reading entities has to
         // see, and a consumer reading ids has no reason to be woken by.
         const { index } = createGroupedIndex();
-        index.subscribe();
+        index.retain();
         const left = index.getBy({ entities: [one, two] }, 'byGroup', 'left');
         const state = { entities: [{ ...one, tags: ['changed'] }, two] };
 
         expect(index.getBy(state, 'byGroup', 'left')).not.toBe(left);
         expect(index.getIdsBy(state, 'byGroup', 'left')).toEqual(['1', '2']);
+    });
+});
+
+describe('being told when the index changes', () => {
+    it('calls a listener with the new snapshot when a read finds a change', () => {
+        const { index } = createIndex();
+        const listener = jest.fn();
+        index.subscribe(listener);
+        index.read(createState([a]));
+        listener.mockClear();
+
+        index.read(createState([a, b]));
+
+        expect(listener).toHaveBeenCalledTimes(1);
+        expect(listener.mock.calls[0]?.[0].changes).toEqual({
+            added: ['b'],
+            removed: [],
+            updated: [],
+        });
+    });
+
+    it('says nothing when a read finds the source unchanged', () => {
+        const { index } = createIndex();
+        const listener = jest.fn();
+        index.subscribe(listener);
+        const state = createState([a, b]);
+        index.read(state);
+        listener.mockClear();
+
+        index.read(state);
+
+        expect(listener).not.toHaveBeenCalled();
+    });
+
+    it('tells every listener', () => {
+        const { index } = createIndex();
+        const first = jest.fn();
+        const second = jest.fn();
+        index.subscribe(first);
+        index.subscribe(second);
+        index.read(createState([a]));
+
+        expect(first).toHaveBeenCalledTimes(1);
+        expect(second).toHaveBeenCalledTimes(1);
+    });
+
+    it('stops telling a listener that unsubscribed', () => {
+        const { index } = createIndex();
+        const listener = jest.fn();
+        const unsubscribe = index.subscribe(listener);
+        index.read(createState([a]));
+        unsubscribe();
+
+        index.read(createState([a, b]));
+
+        expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    it('says nothing while nothing reads the index', () => {
+        // A read is the only moment the index looks at the source, so an index nothing reads
+        // notifies nothing — the same laziness as everywhere else here.
+        const { index, getEntities } = createIndex();
+        const listener = jest.fn();
+        index.subscribe(listener);
+
+        expect(listener).not.toHaveBeenCalled();
+        expect(getEntities).not.toHaveBeenCalled();
+    });
+
+    it('keeps the build for as long as a listener wants it', () => {
+        const { index, getEntities } = createIndex();
+        const unsubscribe = index.subscribe(jest.fn());
+        const state = createState([a, b]);
+
+        index.read(state);
+        unsubscribe();
+        index.read(state);
+
+        expect(getEntities).toHaveBeenCalledTimes(2);
+    });
+
+    it('carries on when one listener throws', () => {
+        jest.spyOn(console, 'error').mockImplementation();
+        const { index } = createIndex();
+        const survivor = jest.fn();
+        index.subscribe(() => {
+            throw new Error('listener blew up');
+        });
+        index.subscribe(survivor);
+
+        expect(() => index.read(createState([a]))).not.toThrow();
+        expect(survivor).toHaveBeenCalledTimes(1);
+        jest.restoreAllMocks();
     });
 });
