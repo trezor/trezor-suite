@@ -1,0 +1,160 @@
+import {
+    type AccountDescriptor,
+    type AccountKey,
+    type WalletAccountTransaction,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import type { StaticSessionId } from '@trezor/device-utils';
+
+import {
+    getTransactionId,
+    getTransactionIdFromTransaction,
+    selectTransactionByAccountKeyAndTxidFromIndex,
+    transactionsIndex,
+} from './transactionsIndex';
+import { type TransactionsRootState } from './transactionsReducerTypes';
+
+const DEVICE_STATE =
+    'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0' as StaticSessionId;
+
+const ALICE = asAccountDescriptor('aliceDescriptor');
+const BOB = asAccountDescriptor('bobDescriptor');
+
+const aliceKey = mockAccountKey({ descriptor: ALICE });
+const bobKey = mockAccountKey({ descriptor: BOB });
+
+const mockTransaction = (
+    descriptor: AccountDescriptor,
+    txid: string,
+    amount = '1',
+): WalletAccountTransaction =>
+    ({
+        descriptor,
+        symbol: 'btc',
+        deviceState: DEVICE_STATE,
+        txid,
+        amount,
+    }) as WalletAccountTransaction;
+
+const createState = (
+    transactions: Record<string, (WalletAccountTransaction | null | undefined)[]>,
+): TransactionsRootState =>
+    ({ wallet: { transactions: { transactions } } }) as unknown as TransactionsRootState;
+
+// The index is one shared instance, so a test that subscribes has to leave it as it found it.
+const withSubscription = (run: () => void) => {
+    const unsubscribe = transactionsIndex.subscribe();
+    try {
+        run();
+    } finally {
+        unsubscribe();
+    }
+};
+
+describe('transactionsIndex', () => {
+    afterEach(() => {
+        if (transactionsIndex.getSubscriberCount() !== 0) {
+            throw new Error('a test left the shared index subscribed');
+        }
+    });
+
+    it('finds a transaction by its account and txid', () => {
+        const transaction = mockTransaction(ALICE, 'txA');
+        const state = createState({ [aliceKey]: [transaction] });
+
+        expect(selectTransactionByAccountKeyAndTxidFromIndex(state, aliceKey, 'txA')).toBe(
+            transaction,
+        );
+    });
+
+    it('answers with nothing for a txid the account does not have', () => {
+        const state = createState({ [aliceKey]: [mockTransaction(ALICE, 'txA')] });
+
+        expect(
+            selectTransactionByAccountKeyAndTxidFromIndex(state, aliceKey, 'txB'),
+        ).toBeUndefined();
+    });
+
+    it('keeps the two sides of a transfer between the user’s own accounts apart', () => {
+        // Same `txid`, filed under both accounts, each describing the transfer from its own side.
+        // An index keyed on `txid` alone would lose one of them.
+        const sent = mockTransaction(ALICE, 'txShared', '-1');
+        const received = mockTransaction(BOB, 'txShared', '1');
+        const state = createState({ [aliceKey]: [sent], [bobKey]: [received] });
+
+        expect(selectTransactionByAccountKeyAndTxidFromIndex(state, aliceKey, 'txShared')).toBe(
+            sent,
+        );
+        expect(selectTransactionByAccountKeyAndTxidFromIndex(state, bobKey, 'txShared')).toBe(
+            received,
+        );
+    });
+
+    it('skips the holes pagination leaves in an account', () => {
+        const transaction = mockTransaction(ALICE, 'txA');
+        const state = createState({ [aliceKey]: [undefined, transaction, null] });
+
+        expect(transactionsIndex.selectIds(state)).toEqual([getTransactionId(aliceKey, 'txA')]);
+    });
+
+    it('holds transactions from every account', () => {
+        const state = createState({
+            [aliceKey]: [mockTransaction(ALICE, 'txA')],
+            [bobKey]: [mockTransaction(BOB, 'txB')],
+        });
+
+        expect(transactionsIndex.selectIds(state)).toEqual([
+            getTransactionId(aliceKey, 'txA'),
+            getTransactionId(bobKey, 'txB'),
+        ]);
+    });
+
+    it('is empty for a store with no transactions', () => {
+        expect(transactionsIndex.selectIds(createState({}))).toEqual([]);
+    });
+
+    it('derives the same id from a transaction as from its account and txid', () => {
+        // The two ways of naming a transaction have to agree, or a caller holding one would look
+        // up the other and miss.
+        expect(getTransactionIdFromTransaction(mockTransaction(ALICE, 'txA'))).toBe(
+            getTransactionId(aliceKey, 'txA'),
+        );
+    });
+
+    it('reuses its build while the reducer has not written', () => {
+        withSubscription(() => {
+            const state = createState({ [aliceKey]: [mockTransaction(ALICE, 'txA')] });
+
+            expect(transactionsIndex.read(state)).toBe(transactionsIndex.read(state));
+        });
+    });
+
+    it('rebuilds once the reducer replaces the transactions it holds', () => {
+        withSubscription(() => {
+            const before = mockTransaction(ALICE, 'txA', '1');
+            const after = mockTransaction(ALICE, 'txA', '2');
+
+            expect(
+                selectTransactionByAccountKeyAndTxidFromIndex(
+                    createState({ [aliceKey]: [before] }),
+                    aliceKey,
+                    'txA',
+                ),
+            ).toBe(before);
+            expect(
+                selectTransactionByAccountKeyAndTxidFromIndex(
+                    createState({ [aliceKey]: [after] }),
+                    aliceKey,
+                    'txA',
+                ),
+            ).toBe(after);
+        });
+    });
+});
+
+describe('getTransactionId', () => {
+    it('is the account key and the txid', () => {
+        expect(getTransactionId('someKey' as AccountKey, 'txA')).toBe('someKey:txA');
+    });
+});
