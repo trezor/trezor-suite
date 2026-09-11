@@ -69,6 +69,11 @@ on:
         required: false
         default: ""
         type: string
+      edited-specs:
+        description: "Comma-separated list of test files the PR edited (repo-root-relative). Read by the full-run PR configs, which otherwise filter out @optional tests."
+        required: false
+        default: ""
+        type: string
       download-artifact-name:
         description: "Name of the artifact to download (e.g. desktop app build)"
         required: false
@@ -209,6 +214,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token || secrets.github-token || github.token }}
           RELEASE_BUILD: ${{ inputs.release-build }}
           RUN_GITHUB_REPORTER: ${{ inputs.run-reporter }} # Read by playwright-base.config.ts to enable the GitHub reporter
+          E2E_EDITED_SPECS: ${{ inputs.edited-specs }}
           ELECTRON_DISABLE_SANDBOX: 1
           # Keep these two apart. The label keys this job's section of the shared pull request
           # comment and must stay stable across runs, or a re-run adds a section instead of

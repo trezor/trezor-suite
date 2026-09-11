@@ -88,7 +88,7 @@ At the moment, there are these additional tags:
 
 - @desktopOnly
 - @webOnly
-- @nightlyOnly
+- @skipOnPR
 - @optional
 - @specificFirmware
 - @firmware-ready
@@ -109,13 +109,13 @@ Some tests are only applicable for Desktop app or Web and you can use this tag t
 
 Currently, we are also applying @webOnly as a positive filter on Web PR runs. This is done in Web PR workflow definition. Meaning, Web PR runs execute only tests with @WebOnly tag to reduce amount of test run daily and save quota on Currents, where we are paying extra for any test runs over 100 000.
 
-#### @nightlyOnly
+#### @skipOnPR
 
-Tests that must never run on a PR, not even when the LLM test selector or an edited test file targets them. Typical reasons are nonce collisions when two runs overlap, or old app versions that only the nightly setup provides. The PR Playwright configs, including the spec-list (`-pr-all`) ones, filter this tag out. These tests run on nightly, canary and release runs.
+Tests that must never run on a PR, not even when the LLM test selector or an edited test file targets them. Typical reasons are nonce collisions when two runs overlap, or old app versions that only the deployed instances provide. The PR Playwright configs, including the spec-list (`-pr-all`) ones, filter this tag out. These tests run on nightly, canary and release runs.
 
 #### @optional
 
-Tests that are excluded from the full PR run but may run on a PR when a spec list targets them, i.e. when the LLM test selector recommends them or the PR edits the test file itself. Use it for low-priority slow tests, tests that cost real funds, or tests that depend on a flaky backend, and, when the reason is not obvious from the test itself, state it in a one-line comment above the `describe`. Only the full-run PR configs filter this tag out; nightly, canary, release and spec-list runs include it.
+Tests that are excluded from the full PR run but run on a PR when the LLM test selector recommends them or the PR edits the test file itself. Use it for low-priority slow tests or tests that depend on a flaky backend, and, when the reason is not obvious from the test itself, state it in a one-line comment above the `describe`. Only the full-run PR configs filter this tag out; nightly, canary, release and spec-list runs include it.
 
 #### @specificFirmware
 

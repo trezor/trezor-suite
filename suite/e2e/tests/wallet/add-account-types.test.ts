@@ -168,7 +168,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
             annotation: createTestAnnotation({
                 testCase: 'Verifies that a user can add different account types for non-BTC coins.',
                 category: TestCategory.Accounts,
-                priority: TestPriority.High,
+                priority: TestPriority.Medium,
                 stream: TestStream.Wallet,
             }),
         },
