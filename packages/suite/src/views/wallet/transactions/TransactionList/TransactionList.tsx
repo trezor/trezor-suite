@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -56,6 +57,7 @@ export const TransactionList = ({
     const anchor = useSelector(selectRouterAnchor);
     const { dispatch } = useServices(selectDispatch);
     const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);
 
@@ -67,11 +69,22 @@ export const TransactionList = ({
 
     useDebounce(
         () => {
+            const startedAt = performance.now();
             const results = advancedSearchTransactions(transactions, searchLabels, searchQuery);
+
+            if (isDebugModeActive) {
+                // The bundle is always built in production mode, so there is no build-time way to
+                // tell a developer's app apart — debug mode is the switch that can.
+                // eslint-disable-next-line no-console
+                console.log(
+                    `[transaction search] "${searchQuery}" took ${(performance.now() - startedAt).toFixed(1)}ms over ${transactions.length} transactions, ${results.length} matched`,
+                );
+            }
+
             setSearchedTransactions(results);
         },
         200,
-        [transactions, searchQuery, searchLabels],
+        [transactions, searchQuery, searchLabels, isDebugModeActive],
     );
 
     useEffect(() => {
