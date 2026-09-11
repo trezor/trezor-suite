@@ -14,6 +14,7 @@ const defaultProps: TronFeeSummaryRowProps = {
     trxBurned: '1000000',
     areFeesLoading: false,
     resourceLabel: '',
+    isAccountActivation: false,
 };
 
 describe('TronFeeSummaryRow', () => {
@@ -31,6 +32,20 @@ describe('TronFeeSummaryRow', () => {
 
         expect(
             getByText(getTranslation('transactionManagement.fees.description.title.tron')),
+        ).toBeOnTheScreen();
+    });
+
+    it('should render the info button for regular and account activation fees', async () => {
+        const { getByTestId } = await renderRow();
+
+        expect(getByTestId('@transactionManagement/tron-fee-info-button')).toBeOnTheScreen();
+
+        const { getByTestId: getActivationByTestId } = await renderRow({
+            isAccountActivation: true,
+        });
+
+        expect(
+            getActivationByTestId('@transactionManagement/tron-fee-info-button'),
         ).toBeOnTheScreen();
     });
 

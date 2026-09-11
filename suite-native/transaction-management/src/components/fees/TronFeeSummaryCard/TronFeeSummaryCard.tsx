@@ -34,6 +34,7 @@ export const TronFeeSummaryCard = ({
             trxBurned={breakdown.trxBurned}
             areFeesLoading={breakdown.areFeesLoading}
             resourceLabel={breakdown.resourceLabel}
+            isAccountActivation={breakdown.isAccountActivation}
         />
     );
 
