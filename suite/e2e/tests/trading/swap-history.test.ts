@@ -15,6 +15,14 @@ const listStatusTranslationKeys = {
     CONFIRMING: 'TR_EXCHANGE_STATUS_CONFIRMING',
 } as const;
 
+const CSV_BOM = '\uFEFF';
+
+const parseCsvRows = (csvContent: string): string[][] =>
+    csvContent
+        .replace(CSV_BOM, '')
+        .split('\n')
+        .map(line => line.split(','));
+
 const formatTradeDate = (date: string) =>
     new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
@@ -195,6 +203,35 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                 await expect(tradingPage.transactionDetailHeader).toHaveTranslation(
                     'TR_TRADING_HEADER_PROCESSING_TITLE',
                     { values: { type: 'swap' } },
+                );
+            });
+        },
+    );
+
+    test(
+        'User can export trade history as CSV',
+        { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+        async ({ walletPage, tradingPage }) => {
+            await test.step('Navigate to swap/exchange trading section', async () => {
+                await walletPage.openSwapTrading({ symbol: 'btc' });
+            });
+
+            await test.step('Open trading transactions history', async () => {
+                await tradingPage.transactions.menuButton.click();
+                await expect(tradingPage.transactions.heading).toHaveTranslation(
+                    'TR_TRADING_LAST_TRANSACTIONS',
+                );
+                await expect(tradingPage.transactions.rows).toHaveCount(SEEDED_TRADES.length);
+            });
+
+            const csvContent = await test.step('Export the trade history', () =>
+                tradingPage.transactions.downloadExportedCsv());
+
+            await test.step('Verify the exported file holds the seeded trades', () => {
+                const [, ...tradeRows] = parseCsvRows(csvContent);
+
+                expect(tradeRows.map(([orderId]) => orderId).sort()).toEqual(
+                    SEEDED_TRADES.map(trade => trade.orderId).sort(),
                 );
             });
         },
