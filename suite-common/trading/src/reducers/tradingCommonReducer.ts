@@ -16,7 +16,7 @@ import { TRADING_PREFIX } from '../constants';
 import { type TradingExchangeState, exchangeInitialState } from './exchangeReducer';
 import { type TradingSellState, sellInitialState } from './sellReducer';
 
-export interface TradingComposedTransactionInfo {
+export type TradingComposedTransactionInfo = {
     composed?: Pick<
         PrecomposedTransactionFinal,
         | 'fee'
@@ -26,30 +26,31 @@ export interface TradingComposedTransactionInfo {
         | 'maxFeePerGas'
         | 'maxPriorityFeePerGas'
         | 'token'
+        | 'accountActivationFee'
     >;
     selectedFee?: FeeLevel['label'];
-}
+};
 
-export interface TradingInfo {
+export type TradingInfo = {
     platforms?: Platforms;
     coins?: Coins;
-}
+};
 
-export interface TradingPrefilledFromAccount {
+export type TradingPrefilledFromAccount = {
     cryptoId: CryptoId | undefined;
     key: AccountKey | undefined;
-}
+};
 
 // Maximum number of refetch attempts before the interval automatically stops
 export const REFETCH_QUOTES_MAX_COUNT = 40;
 
-export interface QuoteRefetchingState {
+export type QuoteRefetchingState = {
     remainingRefetches: number;
     lastFetchTimestamp: number | undefined;
     status: 'running' | 'stopped';
-}
+};
 
-export interface TradingState {
+export type TradingState = {
     info: TradingInfo;
     buy: TradingBuyState;
     exchange: TradingExchangeState;
@@ -65,7 +66,7 @@ export interface TradingState {
     verifiedAddress: TradingVerifiedAddress;
     currentProviderMetadata?: ProviderMetadata;
     quoteRefetchingState: QuoteRefetchingState;
-}
+};
 
 export type TradingRootState = {
     wallet: {

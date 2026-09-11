@@ -78,15 +78,11 @@ describe('getFeeTooltipTextId', () => {
         ['tron', 'TR_TRON_FEE_DESC'],
         ['bitcoin', 'TR_TRANSACTION_FEE_DESC'],
     ])('%s → %s', (networkType, expected) => {
-        expect(getFeeTooltipTextId({ networkType, composedLevels: levels(finalLevel()) })).toBe(
-            expected,
-        );
+        expect(getFeeTooltipTextId({ networkType })).toBe(expected);
     });
 
     it('announces the activation fee when a Tron account has to be activated', () => {
-        const composedLevels = levels(finalLevel({ accountActivationFee: '1000000' }));
-
-        expect(getFeeTooltipTextId({ networkType: 'tron', composedLevels })).toBe(
+        expect(getFeeTooltipTextId({ networkType: 'tron', isTronAccountActivation: true })).toBe(
             'TR_TRON_FEE_ACTIVATION_DESC',
         );
     });
