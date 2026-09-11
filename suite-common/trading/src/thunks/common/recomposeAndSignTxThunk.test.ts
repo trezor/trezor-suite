@@ -415,6 +415,48 @@ describe('recomposeAndSignTxThunk', () => {
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
     });
 
+    it('should surface the underlying error when the custom limit recalculation is rejected', async () => {
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks({
+            composedTransactionInfo: {
+                ...mockComposedTransactionInfo,
+                selectedFee: 'custom',
+            },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { rejectWithValue }) =>
+                    rejectWithValue({
+                        error: 'fee-levels-compose-failed',
+                        message: 'Method_InvalidParameter',
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.1',
+                recalculateCustomLimit: true,
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('rejected');
+        expect(response.payload).toEqual({
+            type: 'sign-tx-error',
+            error: {
+                id: 'TR_TRADING_COMPOSE_FAILED',
+                values: { error: 'Method_InvalidParameter' },
+            },
+        });
+
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
+    });
+
     it('should return error when selectedFee is not in composedLevels', async () => {
         const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks({
             composedTransactionInfo: {
