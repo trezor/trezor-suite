@@ -182,6 +182,23 @@ export class BlockbookMock {
     }
 
     @step()
+    setBroadcastTxid(txid: string) {
+        const updatedFixtures = this.mockServer.getFixtures().map(fixture => {
+            if (fixture.method !== 'sendTransaction') {
+                return fixture;
+            }
+
+            return {
+                method: 'sendTransaction',
+                default: true,
+                response: { data: { result: txid } },
+            };
+        });
+
+        this.mockServer.setFixtures(updatedFixtures);
+    }
+
+    @step()
     setRpcCallResponse(data: string) {
         this.mockServer.setFixtures([
             { method: 'rpcCall', default: true, response: { data: { data } } },

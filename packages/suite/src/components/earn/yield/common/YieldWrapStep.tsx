@@ -87,7 +87,10 @@ export const YieldWrapStep = ({
                             showNetworkIcon
                             isBordered={false}
                         />
-                        <Box minWidth={0}>
+                        <Box
+                            minWidth={0}
+                            data-testid="@yield/form/wrap-receiving-amount-with-symbol"
+                        >
                             <TruncatedAmount>
                                 <Text typographyStyle="body-md" ellipsisLineCount={1}>
                                     <FormattedCryptoAmount
@@ -109,6 +112,7 @@ export const YieldWrapStep = ({
                 onClick={onSubmit}
                 isLoading={isSubmitting}
                 isDisabled={isSubmitDisabled || !!pendingTransaction}
+                data-testid="@yield/form/wrap-button"
             >
                 <Translation id="TR_EARN_YIELD_WRAP_SUBMIT" values={{ nativeSymbol }} />
             </Button>
@@ -119,6 +123,7 @@ export const YieldWrapStep = ({
                     priority="secondary"
                     onClick={onSkip}
                     isDisabled={isSubmitting || !!pendingTransaction}
+                    data-testid="@yield/form/wrap-skip-button"
                 >
                     <Translation id="TR_SKIP" />
                 </Button>
