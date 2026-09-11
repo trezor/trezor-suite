@@ -6,6 +6,7 @@ export * from './createReducerWithExtraDeps';
 export * from './createSingleInstanceThunk';
 export * from './hooks/useSelectorDeepComparison';
 export * from './indexes/createEntityIndex';
+export * from './indexes/useEntityIndex';
 export * from './selectorsUtils';
 export * from './storeSelectors';
 export * from './extraWithStoreThunkMiddleware';

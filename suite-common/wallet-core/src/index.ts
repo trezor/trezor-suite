@@ -116,6 +116,7 @@ export * from './token/stellarTokenThunks';
 export * from './tokens/tokenSelectors';
 export * from './tokens/tokenUtils';
 export * from './transactions/hooks/useEvmPendingTxStatus';
+export * from './transactions/hooks/useTransaction';
 export * from './transactions/target/createTargets';
 export type * from './transactions/target/Target';
 export * from './transactions/transactionsActions';
