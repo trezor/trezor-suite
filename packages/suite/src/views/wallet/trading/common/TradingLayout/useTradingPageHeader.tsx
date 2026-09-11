@@ -9,11 +9,13 @@ import { CaretLeftIcon } from '@trezor/icons';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useLayout, useSelector } from 'src/hooks/suite';
+import { TradingTransactionsExportButton } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsExportButton';
 
 import {
     getBackRoute,
     getTradingHeaderTitle,
     isTradingTopLevelRoute,
+    isTradingTransactionsRoute,
 } from './tradingPageHeaderUtils';
 
 type TradingPageHeaderProps = {
@@ -27,6 +29,7 @@ const TradingPageHeader = ({ title }: TradingPageHeaderProps) => {
     const activeSection = useSelector(selectTradingActiveSection);
 
     const isTopLevelRoute = isTradingTopLevelRoute(currentRouteName);
+    const isTransactionsRoute = isTradingTransactionsRoute(currentRouteName);
 
     const goToRoute = (route: Route['name']) => () => {
         dispatch(gotoThunk({ routeName: route, preserveParams: true }));
@@ -62,6 +65,11 @@ const TradingPageHeader = ({ title }: TradingPageHeaderProps) => {
                         >
                             <Translation id="TR_TRADING_LAST_TRANSACTIONS" />
                         </Button>
+                    </Box>
+                )}
+                {isTransactionsRoute && (
+                    <Box margin={{ left: 'auto' }}>
+                        <TradingTransactionsExportButton />
                     </Box>
                 )}
             </Row>

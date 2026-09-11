@@ -1,6 +1,8 @@
 import { Locator, Page } from '@playwright/test';
+import { readFileSync } from 'fs';
 
 import { TradingTransactionRow } from './transactionRow';
+import { step } from '../../common';
 
 type TradingTransactionsTab = 'all' | 'exchange' | 'buy' | 'sell';
 
@@ -14,6 +16,7 @@ export class TradingTransactionsSection {
     readonly backToTradeFormButton: Locator;
     readonly typeEmptyState: Locator;
     readonly showAllTradesButton: Locator;
+    readonly exportButton: Locator;
     readonly tab: (tradeType: TradingTransactionsTab) => Locator;
 
     constructor(private page: Page) {
@@ -28,10 +31,20 @@ export class TradingTransactionsSection {
         );
         this.typeEmptyState = page.getByTestId('@trading/transactions/type-empty-state');
         this.showAllTradesButton = page.getByTestId('@trading/transactions/show-all-trades');
+        this.exportButton = page.getByTestId('@trading/transactions/export-button');
         this.tab = tradeType => page.getByTestId(`@trading/transactions/tab/${tradeType}`);
     }
 
     transactionRow(orderId: string): TradingTransactionRow {
         return new TradingTransactionRow(this.page, orderId);
+    }
+
+    @step()
+    async downloadExportedCsv(): Promise<string> {
+        const downloadPromise = this.page.waitForEvent('download');
+        await this.exportButton.click();
+        const download = await downloadPromise;
+
+        return readFileSync(await download.path(), 'utf-8');
     }
 }
