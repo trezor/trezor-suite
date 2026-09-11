@@ -41,6 +41,8 @@ const ALLOWED_TOOLS = new Set([
     'playwright_browser_mouse_wheel',
     'playwright_browser_handle_dialog',
     'playwright_browser_wait_for',
+    // Viewport resizing for responsive checks; per-page and recoverable.
+    'playwright_browser_resize',
     // Tabs are further restricted to list/select below.
     'playwright_browser_tabs',
     // Inspection a black-box tester is allowed: console, network, storage

@@ -101,6 +101,7 @@ mocking/dropping. Items needing those are environment-blocked: list once in
 - **Modals/overlays**: open, close via X / backdrop / Escape, content correct.
 - **Device interactions**: browser prompt ↔ emulator data match (address, amount, fee); confirm advances; reject cancels gracefully.
 - **Navigation**: tab state preserved/reset; back button; sidebar during flows.
+- **Responsive**: resize the viewport (`browser_resize`) across mobile/tablet/desktop widths; layout must not break.
 - **Error states**: validation messages, network errors, insufficient balance.
 
 ## Screenshots (mandatory evidence)
