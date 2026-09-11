@@ -6,13 +6,14 @@ import { type BtcSwapComposeTemplate } from 'invity-api';
 import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     TRADING_EXCHANGE_FROM_ADDRESS,
+    TRADING_FORM_OUTPUT_AMOUNT,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     type TradingTradeSellExchangeType,
     deriveBitcoinSwapFromAddresses,
 } from '@suite-common/trading';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
@@ -57,6 +58,11 @@ const mockGetComposeAddressPlaceholder = getComposeAddressPlaceholder as jest.Mo
 const mockDeriveBitcoinSwapFromAddresses = deriveBitcoinSwapFromAddresses as jest.Mock;
 
 const BTC_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc'), formattedBalance: '2' });
+const BTC_ACCOUNT_B = mockWalletAccount({
+    symbol: asNetworkSymbol('btc'),
+    descriptor: asAccountDescriptor('otherBtcAccount'),
+    formattedBalance: '2',
+});
 const SOL_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('sol'), formattedBalance: '0.4' });
 
 const feeData = (blockTime: number) => ({
@@ -109,7 +115,7 @@ const renderComposeTransaction = ({
         extra: undefined,
         preloadedState: {
             wallet: {
-                accounts: [BTC_ACCOUNT, SOL_ACCOUNT],
+                accounts: [BTC_ACCOUNT, BTC_ACCOUNT_B, SOL_ACCOUNT],
                 fees: {
                     btc: { status: 'preloaded', data: feeData(600) },
                     sol: { status: 'preloaded', data: feeData(-1) },
@@ -227,6 +233,63 @@ describe('useTradingComposeTransaction', () => {
             expect.objectContaining({
                 btcSwapComposeTemplate: BTC_SWAP_COMPOSE_TEMPLATE,
             }),
+        );
+    });
+
+    it('re-derives bitcoin swap fromAddress when the bitcoin account changes', async () => {
+        mockDeriveBitcoinSwapFromAddresses
+            .mockResolvedValueOnce({ addresses: ['from-addr-1'], amount: '1000' })
+            .mockResolvedValueOnce({ addresses: ['from-addr-2'], amount: '1000' });
+
+        const { result, rerender } = renderComposeTransaction({
+            type: 'exchange',
+            btcSwapComposeTemplate: BTC_SWAP_COMPOSE_TEMPLATE,
+            defaultValues: { setMaxOutputId: 0 },
+        });
+
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_EXCHANGE_FROM_ADDRESS)).toBe(
+                'from-addr-1',
+            ),
+        );
+
+        rerender({ account: BTC_ACCOUNT_B });
+
+        await waitFor(() => expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenCalledTimes(2));
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_EXCHANGE_FROM_ADDRESS)).toBe(
+                'from-addr-2',
+            ),
+        );
+        expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenLastCalledWith(
+            expect.objectContaining({ account: BTC_ACCOUNT_B }),
+        );
+    });
+
+    it('clears bitcoin swap fromAddress when derivation fails', async () => {
+        mockDeriveBitcoinSwapFromAddresses
+            .mockResolvedValueOnce({ addresses: ['from-addr'], amount: '1000' })
+            .mockResolvedValueOnce(undefined);
+
+        const { result } = renderComposeTransaction({
+            type: 'exchange',
+            btcSwapComposeTemplate: BTC_SWAP_COMPOSE_TEMPLATE,
+            defaultValues: { setMaxOutputId: 0 },
+        });
+
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_EXCHANGE_FROM_ADDRESS)).toBe(
+                'from-addr',
+            ),
+        );
+
+        act(() => {
+            result.current.methods.setValue(TRADING_FORM_OUTPUT_AMOUNT, '0.2');
+        });
+
+        await waitFor(() => expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenCalledTimes(2));
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_EXCHANGE_FROM_ADDRESS)).toBeUndefined(),
         );
     });
 });

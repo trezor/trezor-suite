@@ -169,7 +169,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             }
 
             const feeLabel = formState.selectedFee || 'normal';
-            resultLevels[feeLabel] = psbtResponse.payload as PrecomposedTransaction;
+            resultLevels[feeLabel] = psbtResponse.payload;
         } else {
             const response = await TrezorConnect.composeTransaction(params);
 

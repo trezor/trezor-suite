@@ -16,6 +16,7 @@ import {
     selectTradingInfo,
     tradingActions,
 } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
     deriveTronColdRecipient,
@@ -23,7 +24,7 @@ import {
     selectAddressDisplayType,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { type AccountDescriptor, AddressDisplayOptions } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     getConvertedOrDefaultFeeInfo,
@@ -44,6 +45,8 @@ import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUt
 import { useBitcoinAmountUnit } from '../../../useBitcoinAmountUnit';
 
 type BitcoinSwapFromAddressInputKeyParams = {
+    symbol: NetworkSymbol;
+    descriptor: AccountDescriptor;
     outputAmount: string | undefined;
     setMaxOutputId: number | undefined;
     availableBalance: string;
@@ -52,6 +55,8 @@ type BitcoinSwapFromAddressInputKeyParams = {
 };
 
 const getBitcoinSwapFromAddressInputKey = ({
+    symbol,
+    descriptor,
     outputAmount,
     setMaxOutputId,
     availableBalance,
@@ -59,6 +64,8 @@ const getBitcoinSwapFromAddressInputKey = ({
     extraOutputs,
 }: BitcoinSwapFromAddressInputKeyParams) =>
     [
+        symbol,
+        descriptor,
         outputAmount ?? '',
         setMaxOutputId ?? '',
         availableBalance,
@@ -362,6 +369,8 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         }
 
         const inputKey = getBitcoinSwapFromAddressInputKey({
+            symbol: account.symbol,
+            descriptor: account.descriptor,
             outputAmount,
             setMaxOutputId,
             availableBalance: account.availableBalance,
@@ -372,6 +381,8 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         prevFromAddressInputs.current = inputKey;
 
         let cancelled = false;
+
+        setValue(TRADING_EXCHANGE_FROM_ADDRESS, undefined, { shouldDirty: true });
 
         deriveBitcoinSwapFromAddresses({
             account,
@@ -384,11 +395,11 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         }).then(result => {
             if (cancelled) return;
 
-            if (result?.addresses) {
-                const fromAddress = result.addresses.join(';');
-                if (fromAddress) {
-                    setValue(TRADING_EXCHANGE_FROM_ADDRESS, fromAddress, { shouldDirty: true });
-                }
+            const fromAddress = result?.addresses?.join(';');
+            if (fromAddress) {
+                setValue(TRADING_EXCHANGE_FROM_ADDRESS, fromAddress, { shouldDirty: true });
+            } else {
+                setValue(TRADING_EXCHANGE_FROM_ADDRESS, undefined, { shouldDirty: true });
             }
 
             // For max amount swaps, update the amount to reflect the true maximum
@@ -401,6 +412,8 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
                 // Pre-update the ref to the inputKey that will result from the new amount,
                 // preventing the effect from re-running when setValue triggers a values change.
                 prevFromAddressInputs.current = getBitcoinSwapFromAddressInputKey({
+                    symbol: account.symbol,
+                    descriptor: account.descriptor,
                     outputAmount: swapAmount,
                     setMaxOutputId,
                     availableBalance: account.availableBalance,
@@ -422,6 +435,8 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         type,
+        account?.symbol,
+        account?.descriptor,
         account?.networkType,
         account?.availableBalance,
         network,
