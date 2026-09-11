@@ -35,9 +35,8 @@ import TrezorConnect, {
     type AccountTransaction,
     type TokenTransfer,
 } from '@trezor/connect';
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- temporary diagnostic
-import { __btcUnknownTxDebug__ } from '@trezor/connect/src/utils/pathUtils';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { __btcUnknownTxDebug__ } from '@trezor/connect-core/src/utils/pathUtils';
 import { BigNumber } from '@trezor/utils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';

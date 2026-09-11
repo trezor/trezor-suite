@@ -21,14 +21,10 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "browser": {
-        "./src/index": "./src/index.browser.ts",
-        "./src/index.ts": "./src/index.browser.ts",
         "./src/utils/assets": "./src/utils/assets.browser.ts",
         "./src/workers/workers": "./src/workers/workers.browser.ts"
     },
     "react-native": {
-        "./src/index": "./src/index.ts",
-        "./src/index.ts": "./src/index.ts",
         "./src/utils/assets": "./src/utils/assets.native.ts",
         "./src/workers/workers": "./src/workers/workers.native.ts"
     },
@@ -43,7 +39,6 @@
             "./lib/*": "./lib/*"
         },
         "browser": {
-            "./lib/index.js": "./lib/index.browser.js",
             "./lib/utils/assets.js": "./lib/utils/assets.browser.js",
             "./lib/workers/workers.js": "./lib/workers/workers.browser.js",
             "./lib/data/*": "./lib/data/*",
@@ -52,7 +47,6 @@
             "./lib/utils/*": "./lib/utils/*"
         },
         "react-native": {
-            "./lib/index.js": "./lib/index.js",
             "./lib/utils/assets.js": "./lib/utils/assets.native.js",
             "./lib/workers/workers.js": "./lib/workers/workers.native.js",
             "./lib/data/*": "./lib/data/*",
@@ -94,7 +88,6 @@
         "@trezor/protocol": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
         "@trezor/transport-common": "workspace:*",
-        "@trezor/transport-web": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",

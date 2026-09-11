@@ -1,4 +1,4 @@
-import TrezorConnect from '../../../../packages/connect/src/index';
+import TrezorConnect from '../../../../packages/connect/src/index.native';
 import { getAccountInfoMockedResponses } from '../fixtures/connect/getAccountInfo';
 
 const originalGetAccountInfo = TrezorConnect.getAccountInfo;

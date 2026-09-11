@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./lib",
+        "rootDir": "./src",
+        "types": ["w3c-web-usb"]
+    },
+    "references": [
+        { "path": "../connect-common" },
+        { "path": "../connect-core" },
+        { "path": "../transport" },
+        { "path": "../transport-common" },
+        { "path": "../transport-web" },
+        { "path": "../eslint" },
+        { "path": "../requirements" }
+    ]
+}
