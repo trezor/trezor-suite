@@ -665,8 +665,9 @@ const constructNewFlow = ({
         const recipientName = isClearSignedExchangeSwap
             ? getClearSignedSwapRecipientName(precomposedTx, trading.recipientName)
             : trading.recipientName;
+        const isSlip24Sell = trading.isSlip24Active && trading.activeSection === 'sell';
 
-        if (recipientName) {
+        if (recipientName && !isSlip24Sell) {
             outputs.push({ type: 'recipient_name', value: recipientName });
         }
         if (isClearSignedExchangeSwap) {
@@ -699,6 +700,10 @@ const constructNewFlow = ({
                     ? trading.receiveAddress
                     : undefined,
         });
+
+        if (recipientName && isSlip24Sell) {
+            outputs.push({ type: 'recipient_name', value: recipientName });
+        }
     } else {
         precomposedTx.outputs.forEach(o => {
             if (typeof o.address === 'string') {
