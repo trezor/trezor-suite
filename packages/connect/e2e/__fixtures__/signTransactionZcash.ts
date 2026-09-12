@@ -228,11 +228,11 @@ const signTransactionZcash: TestCase = {
             skip: ['<1.11.1', '<2.5.1'],
             params: {
                 coin: 'taz',
-                // enhancement for v5 is added automatically
-                // version: 5,
-                // overwintered: true,
-                // versionGroupId: 0x26a7270a,
-                // branchId: 0xc2d6d0b4,
+                // enhancement for v5 is added automatically (version 5,
+                // overwintered, versionGroupId). branchId is pinned to NU5
+                // explicitly so these historical fixtures stay valid regardless
+                // of the mutable fallback in enhanceSignTx (now NU6.2).
+                branchId: 0xc2d6d0b4,
                 inputs: [
                     {
                         address_n: "m/44'/1'/0'/0/7",
@@ -261,11 +261,11 @@ const signTransactionZcash: TestCase = {
             skip: ['<1.11.1', '<2.5.1'],
             params: {
                 coin: 'taz',
-                // enhancement for v5 is added automatically
-                // version: 5,
-                // overwintered: true,
-                // versionGroupId: 0x26a7270a,
-                // branchId: 0xc2d6d0b4,
+                // enhancement for v5 is added automatically (version 5,
+                // overwintered, versionGroupId). branchId is pinned to NU5
+                // explicitly so these historical fixtures stay valid regardless
+                // of the mutable fallback in enhanceSignTx (now NU6.2).
+                branchId: 0xc2d6d0b4,
                 inputs: [
                     {
                         address_n: "m/44'/1'/0'/0/9",
@@ -294,11 +294,11 @@ const signTransactionZcash: TestCase = {
             skip: ['<1.11.1', '<2.5.1'],
             params: {
                 coin: 'taz',
-                // enhancement for v5 is added automatically
-                // version: 5,
-                // overwintered: true,
-                // versionGroupId: 0x26a7270a,
-                // branchId: 0xc2d6d0b4,
+                // enhancement for v5 is added automatically (version 5,
+                // overwintered, versionGroupId). branchId is pinned to NU5
+                // explicitly so these historical fixtures stay valid regardless
+                // of the mutable fallback in enhanceSignTx (now NU6.2).
+                branchId: 0xc2d6d0b4,
                 inputs: [
                     {
                         address_n: "m/44'/1'/0'/0/0",
@@ -332,11 +332,11 @@ const signTransactionZcash: TestCase = {
             skip: ['1', '<2.5.1'], // T1B1 external inputs are not supported in T1B1
             params: {
                 coin: 'taz',
-                // enhancement for v5 is added automatically
-                // version: 5,
-                // overwintered: true,
-                // versionGroupId: 0x26a7270a,
-                // branchId: 0xc2d6d0b4,
+                // enhancement for v5 is added automatically (version 5,
+                // overwintered, versionGroupId). branchId is pinned to NU5
+                // explicitly so these historical fixtures stay valid regardless
+                // of the mutable fallback in enhanceSignTx (now NU6.2).
+                branchId: 0xc2d6d0b4,
                 inputs: [
                     {
                         address_n: "m/44'/1'/0'/0/0",
@@ -375,11 +375,11 @@ const signTransactionZcash: TestCase = {
             skip: ['<1.11.1', '<2.5.1'], // T1B1 external inputs not supported
             params: {
                 coin: 'taz',
-                // enhancement for v5 is added automatically
-                // version: 5,
-                // overwintered: true,
-                // versionGroupId: 0x26a7270a,
-                // branchId: 0xc2d6d0b4,
+                // enhancement for v5 is added automatically (version 5,
+                // overwintered, versionGroupId). branchId is pinned to NU5
+                // explicitly so these historical fixtures stay valid regardless
+                // of the mutable fallback in enhanceSignTx (now NU6.2).
+                branchId: 0xc2d6d0b4,
                 inputs: [
                     {
                         address_n: "m/48'/1'/1'/0'/0/0",
