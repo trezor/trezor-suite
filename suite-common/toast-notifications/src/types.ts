@@ -320,6 +320,7 @@ export type TransactionNotificationType =
     | 'tx-claimed'
     | 'tx-revoked'
     | 'tx-approved'
+    | 'tx-exchange'
     | 'tx-wrap'
     | 'tx-unwrap'
     | 'raw-tx-sent'
