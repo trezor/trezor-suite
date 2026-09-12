@@ -6,7 +6,11 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { addToastOnceThunk } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
-import { type BootstrapTorEvent, type TorStatusEvent, desktopApi } from '@trezor/suite-desktop-api';
+import {
+    type BootstrapTorEvent,
+    type TorStatusEvent,
+    selectDesktopApiDep,
+} from '@trezor/suite-desktop-api';
 
 import { setTorBootstrapSlowThunk } from './bootstrap/setTorBootstrapSlowThunk';
 import { setTorBootstrapThunk } from './bootstrap/setTorBootstrapThunk';
@@ -18,7 +22,7 @@ type UseDesktopTorStatusParams = {
 // On desktop the Tor daemon is controlled locally; status and bootstrap progress
 // arrive as events from the desktop process via `desktopApi`.
 export const useDesktopTorStatus = ({ onStatusChange }: UseDesktopTorStatusParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
     const torBootstrap = useSelector(selectTorBootstrap);
     const isTorEnabling = useSelector(selectIsTorEnabling);
 
@@ -42,7 +46,7 @@ export const useDesktopTorStatus = ({ onStatusChange }: UseDesktopTorStatusParam
         }
 
         return () => desktopApi.removeAllListeners('tor/status');
-    }, [dispatch, onStatusChange, torBootstrap, isTorEnabling]);
+    }, [desktopApi, dispatch, onStatusChange, torBootstrap, isTorEnabling]);
 
     useEffect(() => {
         if (!isDesktop()) {
@@ -76,5 +80,5 @@ export const useDesktopTorStatus = ({ onStatusChange }: UseDesktopTorStatusParam
         });
 
         return () => desktopApi.removeAllListeners('tor/bootstrap');
-    }, [dispatch, onStatusChange, torBootstrap, isTorEnabling]);
+    }, [desktopApi, dispatch, onStatusChange, torBootstrap, isTorEnabling]);
 };

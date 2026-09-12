@@ -24,14 +24,18 @@ import TrezorConnect, {
     UI_REQUESTS,
 } from '@trezor/connect';
 import { isMacOs } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 
 export const useConnectPopupDesktop = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { desktopApi, analytics, dispatch } = useServices(
+        selectDesktopAnalyticsDep,
+        selectDispatch,
+        selectDesktopApiDep,
+    );
     const popupCall = useSelector(selectConnectPopupCall);
     const selectedDevice = useSelector(selectSelectedDevice);
     const selectedDeviceRef = useRef(selectedDevice);
@@ -164,7 +168,7 @@ export const useConnectPopupDesktop = () => {
                 desktopApi.removeAllListeners('app/auto-start/popup-request');
             }
         };
-    }, [dispatch, analytics, lifecycle.status]);
+    }, [desktopApi, dispatch, analytics, lifecycle.status]);
 
     // App focus control
     const callOrigin = popupCall && 'source' in popupCall ? popupCall.source.origin : undefined;
@@ -243,5 +247,5 @@ export const useConnectPopupDesktop = () => {
             }
             setCurrentlyOngoing(false);
         }
-    }, [popupCall, currentlyOngoing, wasVisible, isSilentMode, isUserInputModalOpen]);
+    }, [desktopApi, popupCall, currentlyOngoing, wasVisible, isSilentMode, isUserInputModalOpen]);
 };

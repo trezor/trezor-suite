@@ -4,13 +4,13 @@ import { selectURLSearchParams } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { isDesktop, isWeb } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import * as protocolActions from 'src/actions/suite/protocolActions';
 import { useSelector } from 'src/hooks/suite';
 
 const Protocol = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
 
     const handleProtocolRequestThunk = useCallback(
         (uri: string) => {
@@ -50,7 +50,7 @@ const Protocol = () => {
 
             return () => desktopApi.removeAllListeners('protocol/open');
         }
-    }, [handleProtocolRequestThunk]);
+    }, [desktopApi, handleProtocolRequestThunk]);
 
     return null;
 };

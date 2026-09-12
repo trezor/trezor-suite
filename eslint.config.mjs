@@ -1,4 +1,10 @@
-import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
+import {
+    desktopApiCompositionRootAllowance,
+    desktopApiRestrictedImports,
+    eslint,
+    globalNoExtraneousDependenciesDevDependencies,
+    libDevRestrictedImportPattern,
+} from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -17,16 +23,13 @@ export default [
             'no-restricted-imports': [
                 'error',
                 {
-                    patterns: [
-                        {
-                            regex: '/libDev/src',
-                            message: 'Importing from "*/libDev/src" path is not allowed.',
-                        },
-                    ],
+                    paths: [...desktopApiRestrictedImports],
+                    patterns: [libDevRestrictedImportPattern],
                 },
             ],
         },
     },
+    desktopApiCompositionRootAllowance,
     {
         // TARGET: Storybook files anywhere in the project
         files: ['**/*.stories.@(ts|tsx|js|jsx)'],

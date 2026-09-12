@@ -1,8 +1,8 @@
 import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { type BluetoothDeviceId, type Device } from '@trezor/connect';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {
@@ -15,19 +15,21 @@ type BluetoothConnectDeviceThunkResult = {
     success: boolean;
 };
 
+type BluetoothConnectDeviceThunkDeps = WithServices<DesktopApiDep<'appFocus'>>;
+
 export const bluetoothConnectDeviceThunk = createThunk<
     BluetoothConnectDeviceThunkResult,
     { deviceId: BluetoothDeviceId },
-    void
+    { extra: BluetoothConnectDeviceThunkDeps }
 >(
     `${BLUETOOTH_PREFIX}/bluetoothConnectDeviceThunk`,
-    async ({ deviceId }, { fulfillWithValue, dispatch }) => {
+    async ({ deviceId }, { fulfillWithValue, dispatch, extra }) => {
         dispatch(startConnectingBluetoothDevice({ deviceId }));
 
         const result = await bluetoothIpc.connectDevice(deviceId);
 
         // restore focus in case if OS bluetooth setting is opened above the app (linux/mac)
-        desktopApi.appFocus();
+        extra.services.desktopApi.appFocus();
 
         if (!result.success) {
             // handling for this error: https://github.com/trezor/trezor-suite/blob/837cdf89c70cca80fd5dabb910e9a8509de7c3b1/packages/transport-bluetooth/src/server/platform/linux.rs#L253

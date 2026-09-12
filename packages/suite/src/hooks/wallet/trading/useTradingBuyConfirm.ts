@@ -17,13 +17,18 @@ import {
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
-import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
+import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useSelector } from 'src/hooks/suite';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 export const useTradingBuyConfirm = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { desktopApi, analytics, dispatch } = useServices(
+        selectDesktopApiDep,
+        selectDesktopAnalyticsDep,
+        selectDispatch,
+    );
 
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);
     const receiveAddress = useSelector(selectTradingBuyReceiveAddress);
@@ -45,11 +50,11 @@ export const useTradingBuyConfirm = () => {
         if (!account || !receiveAddress || !selectedQuote) return;
 
         const tradeAccount = receiveAccount ?? account;
-        const returnUrl = await createTxLink(selectedQuote, tradeAccount);
+        const returnUrl = await createTxLink({ desktopApi }, selectedQuote, tradeAccount);
 
         const processResponseData = (response: BuyTradeResponse) => {
             if (response.tradeForm) {
-                dispatch(submitRequestForm(response.tradeForm.form));
+                dispatch(submitRequestFormThunk(response.tradeForm.form));
             }
             if (isDesktop()) {
                 if (response.trade.paymentId) {

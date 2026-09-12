@@ -5,7 +5,7 @@ import { selectDispatch } from '@suite-common/redux-utils';
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectDesktopUserDataDirectory } from 'src/reducers/desktop';
@@ -20,7 +20,11 @@ const UserDataLink = styled.span`
 
 export const WipeData = () => {
     const userDataDir = useSelector(selectDesktopUserDataDirectory);
-    const { reloadApp, dispatch } = useServices(selectReloadAppDep, selectDispatch);
+    const { desktopApi, reloadApp, dispatch } = useServices(
+        selectReloadAppDep,
+        selectDispatch,
+        selectDesktopApiDep,
+    );
 
     const openUserDataDir = async () => {
         const result = await desktopApi.openUserDataDirectory();

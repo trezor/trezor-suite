@@ -347,6 +347,13 @@ const initStore = (state: State) => {
         extra: {
             actions: { lockDevice },
             services: {
+                desktopApi: {
+                    setAutomaticUpdateEnabled: jest.fn(),
+                    getBioAuthSettings: jest.fn().mockResolvedValue({ enabled: false }),
+                    getBioAuthStatus: jest.fn().mockResolvedValue(false),
+                    isBioAuthAvailable: jest.fn().mockResolvedValue(false),
+                    on: jest.fn(),
+                },
                 analytics: mockDesktopAnalytics(),
                 connectInitHooks: mockConnectInitHooks(),
                 connectInitSettings: mockConnectInitSettings(),

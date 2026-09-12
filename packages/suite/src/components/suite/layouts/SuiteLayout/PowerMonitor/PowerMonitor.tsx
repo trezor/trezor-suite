@@ -4,7 +4,7 @@ import { bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { isMacOs } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
@@ -12,7 +12,7 @@ import { isBluetoothDeviceReachable } from 'src/actions/bluetooth/isBluetoothDev
 import { useSelector } from 'src/hooks/suite';
 
 export const PowerMonitorManager = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
     const knownDevices = useSelector(selectKnownDevices<DesktopBluetoothDevice>);
     const isDesktopApiAvailable = desktopApi?.available === true;
 
@@ -34,7 +34,7 @@ export const PowerMonitorManager = () => {
         return () => {
             desktopApi.removeAllListeners('power-monitor/suspend');
         };
-    }, [dispatch, knownDevices, isDesktopApiAvailable]);
+    }, [desktopApi, dispatch, knownDevices, isDesktopApiAvailable]);
 
     return null;
 };

@@ -1,57 +1,68 @@
 # @trezor/suite-desktop-api
 
-Private package providing strongly typed `DesktopApi` used in `@trezor/suite` and `@trezor/suite-desktop`. `DesktopApi` handles [inter-process comumunication](https://www.electronjs.org/docs/latest/tutorial/ipc) inside [Electron](https://www.electronjs.org/) between the `main` context, i.e. native processes running in NodeJS, and `renderer` context, i.e. browser-like processes running on Chromium.
+Private package holding the strongly typed `DesktopApi` contract: the
+[inter-process communication](https://www.electronjs.org/docs/latest/tutorial/ipc) surface between
+Electron's `main` context (Node.js) and its `renderer` context (Chromium).
 
-Exported modules:
+This package contains **types only**, plus the dependency-injection helpers used to pass an
+implementation around. It has no runtime API construction and no environment detection.
 
-- `main` (default) used in `@trezor/suite-desktop/src` in main (NodeJS) context.
-- `renderer` (browser) used in `@trezor/suite` and `@trezor/suite-desktop-ui` in renderer context.
+## Packages
 
-```javascript
-export function getDesktopApi(ipcRenderer?: Electron.IpcRenderer): DesktopApi;
+| Package                              | Contains                                                                                     |
+| ------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `@trezor/suite-desktop-api`          | The `DesktopApi` contract, channel/message types and `DesktopApiDep` / `selectDesktopApiDep` |
+| `@trezor/suite-desktop-api-electron` | `createDesktopApiBridge` (preload side) and `createElectronDesktopApi` (renderer side)       |
+| `@trezor/suite-desktop-api-web`      | `createWebDesktopApi`, where every call is unavailable                                       |
 
-export const desktopApi: DesktopApi;
+Each app's composition root picks one implementation:
+
+```ts
+// packages/suite-desktop-ui/src/createSuiteDesktopCompositionRoot.ts
+const desktopApi = createElectronDesktopApi();
+
+// packages/suite-web/src/createSuiteWebCompositionRoot.ts
+const desktopApi = createWebDesktopApi();
 ```
 
-## Usage examples in main process
+## Consuming the API
 
-- Overload `electron` types. See [typed-electron.ts](../suite-desktop/src/typed-electron.ts)
+Never import an implementation package outside a composition root; ESLint enforces this. Take the
+API as a dependency instead, narrowed to the methods you actually call.
 
-- Create `DesktopApi` instance and expose it to renderer `window.desktopApi` object. See [preload.ts](../suite-desktop/src/preload.ts)
+```ts
+// Redux thunk
+type MyThunkDeps = WithServices<DesktopApiDep<'appFocus'>>;
+// ...
+extra.services.desktopApi.appFocus();
 
-- Receive invoke messages from renderer. See [metadata module](../suite-desktop/src/modules/metadata.ts)
+// React
+const { desktopApi } = useServices(selectDesktopApiDep);
+```
 
-- Receive event messages from renderer. See [theme module](../suite-desktop/src/modules/theme.ts)
+## How to add a new method/channel
 
-- Send event messages to renderer. See `mainWindow.webContents.send` in [autoupdater module](../suite-desktop/src/modules/auto-updater.ts)
-
-## Usage examples in renderer process
-
-- `DesktopApi.invoke`. See [metadata module](../suite/src/services/suite/metadata/FileSystemProvider.ts)
-
-- `DesktopApi.on`. See [AutoUpdater component](../suite-desktop-ui/src/support/DesktopUpdater.tsx)
-
-## How to add new method/channel
-
-To invoke a method on the `main` process and return an asynchronous result to the `renderer` process
+To invoke a method on the `main` process and return an asynchronous result to the `renderer`
 
 - add a channel to `./src/api.ts InvokeChannels`
-- add a channel to validChannels in `./src/validation.ts`
+- add a channel to validChannels in `../suite-desktop-api-electron/src/validation.ts`
 - add a method to `./src/api.ts DesktopApi` as `DesktopApiInvoke<'your-new-channel'>`
-- process incoming request in `@trezor/suite-desktop/src/modules/*` using `ipcMain.handle('your-new-channel', (arg?: string) => { return 1; })`
-- trigger it from `@trezor/suite` using `const r = await desktopApi.yourNewFunction()`
+- implement it in `../suite-desktop-api-electron/src/createDesktopApiBridge.ts`
+- decide the web behaviour in `../suite-desktop-api-web/src/createWebDesktopApi.ts`; that file lists
+  every member explicitly, so it will not compile until you do
+- process incoming requests in `@trezor/suite-desktop-core/src/modules/*` using `ipcMain.handle(...)`
+- call it through an injected `desktopApi`, never through a module-level import
 
-To receive an asynchronous event in `renderer` process
+To receive an asynchronous event in the `renderer` process
 
 - add a channel to `./src/api.ts RendererChannels`
-- add a channel to validChannels in `./src/validation.ts`
-- set a listener in `@trezor/suite` using `await desktopApi.on('your-new-channel', (payload) => {})`
-- trigger an event from `@trezor/suite-desktop/src/modules/*` using `mainWindow.webContents.send('your-new-channel', { foo: 'bar' })`
+- add a channel to validChannels in `../suite-desktop-api-electron/src/validation.ts`
+- listen through an injected `desktopApi.on('your-new-channel', payload => {})`
+- emit it from `@trezor/suite-desktop-core/src/modules/*` using `mainWindow.webContents.send(...)`
 
-To receive an asynchronous event in `main` process
+To receive an asynchronous event in the `main` process
 
 - add a channel to `./src/api.ts MainChannels`
-- add a channel to validChannels in `./src/validation.ts`
+- add a channel to validChannels in `../suite-desktop-api-electron/src/validation.ts`
 - add a method to `./src/api.ts DesktopApi` as `DesktopApiSend<'your-new-channel'>`
-- set a listener in `@trezor/suite-desktop/src/modules/*` using `ipcMain.on('your-new-channel', (_, { foo }) => {})`
-- trigger an event from `@trezor/suite` using `desktopApi.yourNewFunction({ foo: 'bar' })`
+- set a listener in `@trezor/suite-desktop-core/src/modules/*` using `ipcMain.on(...)`

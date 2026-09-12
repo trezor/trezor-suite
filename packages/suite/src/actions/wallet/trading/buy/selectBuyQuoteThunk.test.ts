@@ -10,6 +10,8 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { StaticSessionId } from '@trezor/connect';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
+import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { selectBuyQuoteThunk } from './selectBuyQuoteThunk';
 
@@ -34,10 +36,12 @@ jest.mock('@suite-common/trading', () => ({
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
-type SelectBuyQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
+type SelectBuyQuoteThunkDeps = GotoThunkDeps &
+    WithServices<DesktopAnalyticsDep & DesktopApiDep<'getHttpReceiverAddress'>>;
 
 const createExtra = (report: jest.Mock): SelectBuyQuoteThunkDeps => ({
     services: {
+        desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
         analytics: mockAnalytics(report),
         suiteRouterHistory: {
             getLocation: jest.fn(),

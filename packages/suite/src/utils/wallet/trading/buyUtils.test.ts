@@ -1,10 +1,13 @@
 import { type Account } from '@suite-common/wallet-types';
+import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { createQuoteLink, createTxLink, getStatusMessage } from 'src/utils/wallet/trading/buyUtils';
 
 import { buyUtilsFixtures } from './__fixtures__/buyUtils';
 
 describe('buyUtils', () => {
+    const deps = { desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() } };
+
     const accountMock = {
         index: 1,
         accountType: 'normal',
@@ -14,7 +17,7 @@ describe('buyUtils', () => {
     describe('createQuoteLink', () => {
         it('should create a quote link according to crypto request', async () => {
             expect(
-                await createQuoteLink(buyUtilsFixtures.QUOTE_REQUEST_CRYPTO, accountMock),
+                await createQuoteLink(deps, buyUtilsFixtures.QUOTE_REQUEST_CRYPTO, accountMock),
             ).toStrictEqual(
                 `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qc/CZ/EUR/0.001/bitcoin/creditCard`,
             );
@@ -22,7 +25,7 @@ describe('buyUtils', () => {
 
         it('should create a quote link according to fiat request', async () => {
             expect(
-                await createQuoteLink(buyUtilsFixtures.QUOTE_REQUEST_FIAT, accountMock),
+                await createQuoteLink(deps, buyUtilsFixtures.QUOTE_REQUEST_FIAT, accountMock),
             ).toStrictEqual(
                 `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qf/CZ/EUR/10/bitcoin/creditCard`,
             );
@@ -30,7 +33,7 @@ describe('buyUtils', () => {
     });
 
     it('createTxLink - should create transaction link', async () => {
-        expect(await createTxLink(buyUtilsFixtures.QUOTE, accountMock)).toStrictEqual(
+        expect(await createTxLink(deps, buyUtilsFixtures.QUOTE, accountMock)).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#detail/btc/normal/1/e709df77-ee9e-4d12-98c2-84004a19c546`,
         );
     });

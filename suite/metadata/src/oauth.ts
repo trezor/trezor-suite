@@ -1,9 +1,14 @@
 import z, { ZodError } from 'zod';
 
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
 import * as METADATA_PROVIDER from './metadataProviderConstants';
+
+/** The desktop OAuth flow receives its redirect over IPC instead of a BroadcastChannel. */
+export type OauthDesktopApiDep = DesktopApiDep<
+    'available' | 'getHttpReceiverAddress' | 'once' | 'removeAllListeners'
+>;
 
 // Copy-pasted from packages/suite/src/utils/suite/router.ts to break dependency
 //
@@ -19,7 +24,7 @@ export const getPrefixedURL = (pathname: string) => {
 /**
  * For web, use oauth_receiver.html hosted on the same origin (localhost/sldev/trezor.io)
  */
-export const getOauthReceiverUrl = () => {
+export const getOauthReceiverUrl = ({ desktopApi }: OauthDesktopApiDep) => {
     if (!desktopApi.available) {
         return new URL(
             getPrefixedURL('/static/oauth/oauth_receiver.html'),
@@ -127,6 +132,7 @@ const handleResponse = (
 let desktopHandlerInstance: (message: OAuthResponseMessage) => void;
 
 const getDesktopHandlerInstance = (
+    { desktopApi }: OauthDesktopApiDep,
     dfd: Deferred<OAuthCredentials>,
     originalParams: URLSearchParams,
 ) => {
@@ -174,14 +180,15 @@ const createWebBroadcastChannel = (
 /**
  * Handle extraction of authorization code from Oauth2 protocol
  */
-export const extractCredentialsFromAuthorizationFlow = (url: URL) => {
+export const extractCredentialsFromAuthorizationFlow = (deps: OauthDesktopApiDep, url: URL) => {
+    const { desktopApi } = deps;
     const dfd = createDeferred<OAuthCredentials>();
 
     if (desktopApi.available) {
         // to make sure that there is always only one listener registered remove all listeners before creating a new one
         desktopApi.removeAllListeners('oauth/response');
         // this listener may never be called in some cases
-        desktopApi.once('oauth/response', getDesktopHandlerInstance(dfd, url.searchParams));
+        desktopApi.once('oauth/response', getDesktopHandlerInstance(deps, dfd, url.searchParams));
         window.open(url, METADATA_PROVIDER.AUTH_WINDOW_TITLE, METADATA_PROVIDER.AUTH_WINDOW_PROPS);
     } else {
         const channel = createWebBroadcastChannel(dfd, url.searchParams);

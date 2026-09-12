@@ -27,6 +27,7 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/suite": "workspace:*",
+        "@trezor/suite-desktop-api-web": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/transport-web": "workspace:*",
         "@trezor/utils": "workspace:*",

@@ -25,8 +25,9 @@ import {
     selectSelectedProviderForLabels,
 } from './metadataReducer';
 import { type FetchIntervalTrackingId } from './metadataUtils';
+import { type OauthDesktopApiDep } from './oauth';
 import { DropboxProvider } from './providers/DropboxProvider';
-import { FileSystemProvider } from './providers/FileSystemProvider';
+import { FileSystemProvider, type FileSystemProviderDep } from './providers/FileSystemProvider';
 import { GoogleProvider } from './providers/GoogleProvider';
 import { InMemoryTestProvider } from './providers/InMemoryTestProvider';
 
@@ -41,7 +42,11 @@ export const providerInstance: Record<DataType, ProviderInstance | undefined> = 
 
 export const fetchIntervals: { [id: FetchIntervalTrackingId]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
+/** Every provider that talks to the desktop process, in one dependency. */
+type MetadataProvidersDep = OauthDesktopApiDep & FileSystemProviderDep;
+
 const createProviderInstance = (
+    { desktopApi }: MetadataProvidersDep,
     type: MetadataProvider['type'],
     tokens: Tokens = {},
     environment: OAuthServerEnvironment = 'production',
@@ -50,13 +55,14 @@ const createProviderInstance = (
     switch (type) {
         case 'dropbox':
             return new DropboxProvider({
+                desktopApi,
                 token: tokens?.refreshToken,
                 clientId: clientId || METADATA_PROVIDER.DROPBOX_CLIENT_ID,
             });
         case 'google':
-            return new GoogleProvider(tokens, environment);
+            return new GoogleProvider(tokens, environment, { desktopApi });
         case 'fileSystem':
-            return new FileSystemProvider();
+            return new FileSystemProvider({ desktopApi });
         case 'inMemoryTest':
             return new InMemoryTestProvider();
 
@@ -72,9 +78,15 @@ type GetProviderInstanceThunkState = MetadataRootState;
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
+type GetProviderInstanceThunkDeps = WithServices<MetadataProvidersDep>;
+
 export const getProviderInstanceThunk =
     ({ clientId, dataType = 'labels' }: GetProviderInstanceParams) =>
-    (_dispatch: Dispatch, getState: () => GetProviderInstanceThunkState) => {
+    (
+        _dispatch: Dispatch,
+        getState: () => GetProviderInstanceThunkState,
+        extra: GetProviderInstanceThunkDeps,
+    ) => {
         const { providers } = selectMetadata(getState());
 
         const provider = providers.find(p => p.clientId === clientId);
@@ -89,6 +101,7 @@ export const getProviderInstanceThunk =
         if (providerInstance[dataType]) return providerInstance[dataType];
 
         providerInstance[dataType] = createProviderInstance(
+            extra.services,
             provider.type,
             provider.tokens,
             selectOAuthServerEnvironment(getState()),
@@ -248,7 +261,7 @@ type ConnectProviderParams = {
     clientId?: string;
 };
 
-export type ConnectProviderDeps = WithServices<DesktopAnalyticsDep>;
+export type ConnectProviderDeps = WithServices<DesktopAnalyticsDep & MetadataProvidersDep>;
 
 type ConnectProviderThunkState = MetadataRootState;
 
@@ -262,6 +275,7 @@ export const connectProviderThunk =
         extra: ConnectProviderThunkDeps,
     ) => {
         const providerInstance = createProviderInstance(
+            extra.services,
             type,
             {},
             selectOAuthServerEnvironment(getState()),
