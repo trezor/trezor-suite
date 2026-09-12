@@ -1,4 +1,4 @@
-import { convertTaprootXpub } from './convertTaprootXpub';
+import { convertTaprootXpub, toCanonicalDescriptor } from './convertTaprootXpub';
 
 describe('convertTaprootXpub', () => {
     // Same descriptor, once with `h` and once with `'` for the hardened path parts.
@@ -41,5 +41,27 @@ describe('convertTaprootXpub', () => {
         expect(
             convertTaprootXpub({ xpub: 'tpubDCpt6oCoUgcQEPBU', direction: 'h-to-apostrophe' }),
         ).toBeNull();
+    });
+});
+
+describe('toCanonicalDescriptor', () => {
+    const withH =
+        '[5c9e228d/86h/0h/0h]tpubDCpt6oCoUgcQEPBUnZS4pijgjNySRDaJH8FyztXHnjxCH3z8jjHKGpX3zwtNs1U8ThRDb8ZbnAnZWc1KNLQx8fasQnk3f9Vaqu3JJXcYCF';
+    const withApostrophe =
+        "[5c9e228d/86'/0'/0']tpubDCpt6oCoUgcQEPBUnZS4pijgjNySRDaJH8FyztXHnjxCH3z8jjHKGpX3zwtNs1U8ThRDb8ZbnAnZWc1KNLQx8fasQnk3f9Vaqu3JJXcYCF";
+
+    it('normalizes the firmware `h` form to the canonical apostrophe form', () => {
+        expect(toCanonicalDescriptor(withH)).toEqual(withApostrophe);
+    });
+
+    it('is idempotent on an already-canonical descriptor', () => {
+        expect(toCanonicalDescriptor(withApostrophe)).toEqual(withApostrophe);
+    });
+
+    it('passes non-taproot descriptors through unchanged (address, plain xpub, empty)', () => {
+        const address = '0x1234567890abcdef1234567890abcdef12345678';
+        expect(toCanonicalDescriptor(address)).toEqual(address);
+        expect(toCanonicalDescriptor('tpubDCpt6oCoUgcQEPBU')).toEqual('tpubDCpt6oCoUgcQEPBU');
+        expect(toCanonicalDescriptor('')).toEqual('');
     });
 });

@@ -15,7 +15,7 @@ import {
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
-import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
+import { arrayPartition, getSynchronize, toCanonicalDescriptor, versionUtils } from '@trezor/utils';
 
 import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
@@ -400,7 +400,15 @@ export default class DiscoverAccounts extends AbstractMethod<
         }
 
         const getAccountInfo = (descriptor: string, level = details) =>
-            blockchain.getAccountInfo({ descriptor, details: level, pageSize, protocols, gap });
+            blockchain.getAccountInfo({
+                // Blockbook rejects taproot descriptors that use `h` for hardened parts, so the
+                // backend always receives the canonical form.
+                descriptor: toCanonicalDescriptor(descriptor),
+                details: level,
+                pageSize,
+                protocols,
+                gap,
+            });
 
         let empty = 0;
 
@@ -440,7 +448,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                     ? undefined
                     : info.empty
                       ? []
-                      : await blockchain.getAccountUtxo(descriptor);
+                      : await blockchain.getAccountUtxo(toCanonicalDescriptor(descriptor));
 
                 this.updateProgress(accountKey, index + 1, last);
                 sendProgress({
