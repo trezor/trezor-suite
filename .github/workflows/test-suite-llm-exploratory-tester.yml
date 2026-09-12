@@ -25,14 +25,16 @@ on:
 
 permissions:
   contents: read
+  issues: read
+  pull-requests: read
 
 concurrency:
-  group: agentic-e2e-${{ inputs.target }}
+  group: ${{ inputs.target }}
   cancel-in-progress: true
 
 jobs:
   agentic-e2e:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 240
     if: github.repository == 'trezor/trezor-suite'
     env:
@@ -45,8 +47,6 @@ jobs:
       # untrusted PR branch — it would execute that branch's harness code.
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-        with:
-          fetch-depth: 1
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
@@ -106,11 +106,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: llm-exploratory-tester-report
-          path: |
-            packages/e2e-utils/src/llmExploratoryTester/reports/context.json
-            packages/e2e-utils/src/llmExploratoryTester/reports/test-result.json
-            packages/e2e-utils/src/llmExploratoryTester/reports/browser
-          if-no-files-found: warn
+          path: packages/e2e-utils/src/llmExploratoryTester/reports
 
       - name: Docker Compose Down
         if: always()
