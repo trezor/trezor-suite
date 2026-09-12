@@ -1,9 +1,15 @@
+import { createWebDesktopApi } from './createWebDesktopApi';
 import { factory } from './factory';
 
+// Used by the preload script to build the API around the real `ipcRenderer`.
 export const getDesktopApi = factory;
 
-// desktopApi is available only in ./renderer
-export const desktopApi = factory();
+// The Electron bridge exists only in ./renderer; Node context gets the unavailable implementation.
+export const desktopApi = createWebDesktopApi();
+
+export { createElectronDesktopApi } from './createElectronDesktopApi';
+export { createWebDesktopApi } from './createWebDesktopApi';
+export { type DesktopApiDep, selectDesktopApiDep } from './desktopApiDependency';
 
 export type { DesktopApi, MainChannels, RendererChannels, InvokeChannels } from './api';
 export type { SendMethod, ListenerMethod, InvokeMethod, HandleMethod } from './methods';

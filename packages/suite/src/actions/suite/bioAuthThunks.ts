@@ -1,8 +1,8 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { bioAuthActions } from './bioAuthActions';
 
@@ -23,32 +23,36 @@ const handleError = (error: string, dispatch: Dispatch<UnknownAction>, message: 
     );
 };
 
-export const initBioAuthThunk = createThunk<void, void, void>(
+type InitBioAuthThunkDeps = WithServices<
+    DesktopApiDep<'getBioAuthSettings' | 'on' | 'getBioAuthStatus' | 'isBioAuthAvailable'>
+>;
+
+export const initBioAuthThunk = createThunk<void, void, { extra: InitBioAuthThunkDeps }>(
     `${BIO_AUTH_PREFIX}/init`,
-    (_args, { dispatch }) => {
+    (_args, { dispatch, extra }) => {
         // only fetches settings from electron-store, not dependent on BioAuthModule, see bio-auth/get-bio-auth-settings
-        desktopApi.getBioAuthSettings().then(settings => {
+        extra.services.desktopApi.getBioAuthSettings().then(settings => {
             dispatch(bioAuthActions.setBioAuthEnabled(settings.enabled));
         });
-        desktopApi.on('bio-auth/settings-changed', settings => {
+        extra.services.desktopApi.on('bio-auth/settings-changed', settings => {
             dispatch(bioAuthActions.setBioAuthEnabled(settings.enabled));
         });
 
         const onBioAuthAvailable = (available: boolean) => {
             dispatch(bioAuthActions.setIsBioAuthAvailable(available));
             // ensure this api is called regardlesss if the bio auth is available or not
-            desktopApi.getBioAuthStatus().then(validated => {
+            extra.services.desktopApi.getBioAuthStatus().then(validated => {
                 dispatch(bioAuthActions.setIsBioAuthValidationRequired(!validated));
             });
         };
 
         // We don't know what will be faster, BioAuthModule may initialize before or after this thunk.
         // Fetch api availability if BioAuthModule is initialized (though it may never become available, depending on the system)
-        desktopApi.isBioAuthAvailable().then(onBioAuthAvailable);
+        extra.services.desktopApi.isBioAuthAvailable().then(onBioAuthAvailable);
 
         // If BioAuthModule initializes later, it will emit an event, which will be caught here
-        desktopApi.on('bio-auth/bio-auth-availability-changed', onBioAuthAvailable);
-        desktopApi.on('bio-auth/validation-status-changed', validated => {
+        extra.services.desktopApi.on('bio-auth/bio-auth-availability-changed', onBioAuthAvailable);
+        extra.services.desktopApi.on('bio-auth/validation-status-changed', validated => {
             dispatch(bioAuthActions.setIsBioAuthValidationRequired(!validated));
         });
     },
@@ -60,10 +64,18 @@ interface RequestBioAuthChangeThunkParams {
     messageError: string;
 }
 
-export const requestBioAuthChangeThunk = createThunk<void, RequestBioAuthChangeThunkParams, void>(
+type RequestBioAuthChangeThunkDeps = WithServices<
+    DesktopApiDep<'isBioAuthAvailable' | 'validateBioAuth' | 'setBioAuthSettings'>
+>;
+
+export const requestBioAuthChangeThunk = createThunk<
+    void,
+    RequestBioAuthChangeThunkParams,
+    { extra: RequestBioAuthChangeThunkDeps }
+>(
     `${BIO_AUTH_PREFIX}/requestBioAuthChangeThunk`,
-    async ({ payload, messageSuccess, messageError }, { dispatch }) => {
-        if (!(await desktopApi.isBioAuthAvailable())) {
+    async ({ payload, messageSuccess, messageError }, { dispatch, extra }) => {
+        if (!(await extra.services.desktopApi.isBioAuthAvailable())) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
@@ -74,13 +86,13 @@ export const requestBioAuthChangeThunk = createThunk<void, RequestBioAuthChangeT
             return;
         }
 
-        const result = await desktopApi.validateBioAuth({
+        const result = await extra.services.desktopApi.validateBioAuth({
             message: messageSuccess,
         });
         if (!result.success) {
             return handleError(result.message, dispatch, messageError);
         } else {
-            await desktopApi.setBioAuthSettings({ enabled: payload });
+            await extra.services.desktopApi.setBioAuthSettings({ enabled: payload });
         }
     },
 );
@@ -90,30 +102,37 @@ interface RequestBioAuthValidationThunkParams {
     messageError: string;
 }
 
+type RequestBioAuthValidationThunkDeps = WithServices<
+    DesktopApiDep<'isBioAuthAvailable' | 'validateBioAuth'>
+>;
+
 export const requestBioAuthValidationThunk = createThunk<
     void,
     RequestBioAuthValidationThunkParams,
-    void
->(`${BIO_AUTH_PREFIX}/validateAuth`, async ({ messageSuccess, messageError }, { dispatch }) => {
-    if (!(await desktopApi.isBioAuthAvailable())) {
-        dispatch(
-            notificationsActions.addToast({
-                type: 'error',
-                error: 'Biometric authentication not available',
-            }),
-        );
+    { extra: RequestBioAuthValidationThunkDeps }
+>(
+    `${BIO_AUTH_PREFIX}/validateAuth`,
+    async ({ messageSuccess, messageError }, { dispatch, extra }) => {
+        if (!(await extra.services.desktopApi.isBioAuthAvailable())) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Biometric authentication not available',
+                }),
+            );
 
-        return;
-    }
+            return;
+        }
 
-    dispatch(bioAuthActions.setCancelled(false));
+        dispatch(bioAuthActions.setCancelled(false));
 
-    const result = await desktopApi.validateBioAuth({
-        message: messageSuccess,
-    });
-    if (!result.success) {
-        dispatch(bioAuthActions.setCancelled(true));
+        const result = await extra.services.desktopApi.validateBioAuth({
+            message: messageSuccess,
+        });
+        if (!result.success) {
+            dispatch(bioAuthActions.setCancelled(true));
 
-        return handleError(result.message, dispatch, messageError);
-    }
-});
+            return handleError(result.message, dispatch, messageError);
+        }
+    },
+);

@@ -24,6 +24,7 @@
         { "path": "../connect-common" },
         { "path": "../env-utils" },
         { "path": "../suite" },
+        { "path": "../suite-desktop-api" },
         { "path": "../transport-common" },
         { "path": "../transport-web" },
         { "path": "../utils" },

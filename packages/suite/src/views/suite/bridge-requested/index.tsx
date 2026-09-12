@@ -8,7 +8,7 @@ import { selectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, H3, H4, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { Metadata } from 'src/components/suite';
 import { useLayout, useSelector } from 'src/hooks/suite';
@@ -23,7 +23,7 @@ export const BridgeRequested = () => {
     const [confirmGoToWallet, setConfirmGoToWallet] = useState(false);
     const popupCall = useSelector(selectConnectPopupCall);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
 
     const goToWallet = useCallback(
         () => dispatch(gotoThunk({ routeName: 'wallet-index' })),

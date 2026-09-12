@@ -13,7 +13,7 @@ import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 import { toggleViewThunk as toggleGuideView } from 'src/actions/suite/guideActions';
@@ -36,7 +36,7 @@ export const useAppShortcuts = () => {
     const allNetworkSymbols = getSupportedNetworks();
 
     const selectedDevice = useSelector(selectSelectedDevice);
-    const { dispatch } = useServices(selectDispatch);
+    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
 
     const discoveryStatus = useSelector(state =>
         selectDiscoveryOverallStatus(state, allNetworkSymbols),

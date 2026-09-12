@@ -1,4 +1,8 @@
-import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
+import {
+    desktopApiRestrictedImport,
+    eslint,
+    globalNoExtraneousDependenciesDevDependencies,
+} from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -17,6 +21,7 @@ export default [
             'no-restricted-imports': [
                 'error',
                 {
+                    paths: [desktopApiRestrictedImport],
                     patterns: [
                         {
                             regex: '/libDev/src',

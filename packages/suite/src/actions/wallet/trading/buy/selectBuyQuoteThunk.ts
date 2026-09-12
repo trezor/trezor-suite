@@ -14,16 +14,18 @@ import {
     selectTradingCoinInfoByCryptoId,
     selectTradingFormAccount,
 } from '@suite-common/trading';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { createQuoteLink } from 'src/utils/wallet/trading/buyUtils';
 
-import { submitRequestForm } from '../tradingCommonActions';
+import { submitRequestFormThunk } from '../tradingCommonActions';
 
 type SelectBuyQuoteThunkParams = { quote: BuyTrade };
 
 type SelectBuyQuoteThunkState = GotoThunkState & TradingFormAccountRootState;
 
-type SelectBuyQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
+type SelectBuyQuoteThunkDeps = GotoThunkDeps &
+    WithServices<DesktopAnalyticsDep & DesktopApiDep<'getHttpReceiverAddress'>>;
 
 export const selectBuyQuoteThunk = createThunk<
     void,
@@ -43,6 +45,7 @@ export const selectBuyQuoteThunk = createThunk<
     }
 
     const returnUrl = await createQuoteLink(
+        extra.services,
         { ...quotesRequest, paymentMethod: quote.paymentMethod },
         receiveAccount ?? account,
     );
@@ -73,7 +76,7 @@ export const selectBuyQuoteThunk = createThunk<
             quote,
             returnUrl,
             loginRequest: form => {
-                dispatch(submitRequestForm(form));
+                dispatch(submitRequestFormThunk(form));
             },
             nextStep: () => {
                 dispatch(gotoThunk({ routeName: 'wallet-trading-buy-confirm' }));

@@ -3,7 +3,7 @@ import { createMemoryHistory } from 'history';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { toGetter } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect-electron';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { createElectronDesktopApi } from '@trezor/suite-desktop-api';
 
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
@@ -18,6 +18,7 @@ import { type DesktopApp, createDesktopApp } from './createDesktopApp';
 type SuiteDesktopCompositionRoot = { app: DesktopApp };
 
 export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot => {
+    const desktopApi = createElectronDesktopApi();
     const history = createMemoryHistory();
     const platformEncryption = createElectronPlatformEncryption({ desktopApi });
     const reloadApp = desktopApi.appRestart;
@@ -39,6 +40,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     const db = createDb({ dispatch: store.dispatch, reloadApp });
     const suiteServices = createSuiteServicesCompositionRoot({
         db,
+        desktopApi,
         dispatch: store.dispatch,
         getState: store.getState,
         history,

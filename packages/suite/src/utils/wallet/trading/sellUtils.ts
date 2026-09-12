@@ -2,16 +2,17 @@ import { type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { type Account } from 'src/types/wallet';
 
 export const createQuoteLink = async (
+    { desktopApi }: DesktopApiDep<'getHttpReceiverAddress'>,
     request: SellFiatTradeQuoteRequest,
     account: Account,
     composedInfo: TradingComposedTransactionInfo,
     orderId?: string,
-) => {
+): Promise<string> => {
     const assetPrefix = process.env.ASSET_PREFIX || '';
     const locationOrigin = getLocationOrigin();
     let hash: string;

@@ -26,6 +26,7 @@ import {
     prepareCachedEnvData,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
+import { type WithServices } from '@suite-common/redux-utils';
 import {
     type InitTokenDefinitionsThunkDeps,
     type InitTokenDefinitionsThunkState,
@@ -52,7 +53,7 @@ import {
 } from '@suite-common/walletconnect';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import { isDesktop } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
@@ -81,13 +82,23 @@ type InitThunkDeps = ConnectInitThunkDeps &
     InitBlockchainThunkDeps &
     InitTokenDefinitionsThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
-    WalletConnectInitThunkDeps;
+    WalletConnectInitThunkDeps &
+    WithServices<
+        DesktopApiDep<
+            | 'setAutomaticUpdateEnabled'
+            | 'getBioAuthSettings'
+            | 'getBioAuthStatus'
+            | 'isBioAuthAvailable'
+            | 'on'
+        >
+    >;
 
 export const initThunk =
     () =>
     async (
         dispatch: ThunkDispatch<InitThunkState, InitThunkDeps, UnknownAction>,
         getState: () => InitThunkState,
+        extra: InitThunkDeps,
     ) => {
         const status = selectSuiteLifecycleStatus(getState());
         const language = selectLanguage(getState());
@@ -123,7 +134,7 @@ export const initThunk =
         // 4. turn on auto updates if needed
         if (isDesktop() && enableAutoupdateOnNextRun) {
             dispatch(setFlag({ key: 'enableAutoupdateOnNextRun', value: false }));
-            desktopApi.setAutomaticUpdateEnabled(true);
+            extra.services.desktopApi.setAutomaticUpdateEnabled(true);
         }
 
         // 5. redirecting user into welcome screen (if needed)

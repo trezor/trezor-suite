@@ -10,11 +10,11 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { type BlockchainRootState, selectBlockchainState } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 type ToggleTorThunkState = TorRootState & ModalRootState & RouterRootState & BlockchainRootState;
 
-type ToggleTorThunkDeps = WithServices<DesktopAnalyticsDep>;
+type ToggleTorThunkDeps = WithServices<DesktopAnalyticsDep & DesktopApiDep<'toggleTor'>>;
 
 export type ToggleTorDispatch = ThunkDispatch<
     ToggleTorThunkState,
@@ -58,7 +58,7 @@ export const toggleTorThunk =
             dispatch(torActions.setTorStatus(TorStatus.Enabling));
         }
 
-        const ipcResponse = await desktopApi.toggleTor(shouldEnable);
+        const ipcResponse = await extra.services.desktopApi.toggleTor(shouldEnable);
 
         if (ipcResponse.success) {
             extra.services.analytics.report({

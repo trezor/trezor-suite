@@ -5,6 +5,7 @@ import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-c
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { useTradingBuyConfirm } from './useTradingBuyConfirm';
 
@@ -100,7 +101,10 @@ const buildState = (overrides: StateOverrides = {}) => {
 };
 
 const renderConfirm = (overrides?: StateOverrides) => {
-    const services = { analytics: mockDesktopAnalytics() };
+    const services = {
+        analytics: mockDesktopAnalytics(),
+        desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
+    };
     const root = createTestCompositionRoot({
         extra: { services },
         preloadedState: buildState(overrides),

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
-import { type BridgeSettings, desktopApi } from '@trezor/suite-desktop-api';
+import { type BridgeSettings, selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 interface Process {
     service: boolean;
@@ -9,6 +10,7 @@ interface Process {
 }
 
 export const useBridgeDesktopApi = () => {
+    const { desktopApi } = useServices(selectDesktopApiDep);
     const [bridgeProcess, setBridgeProcess] = useState<Process>({ service: false, process: false });
     const [bridgeSettings, setBridgeSettings] = useState<BridgeSettings | null>(null);
     const [bridgeDesktopApiError, setBridgeDesktopApiError] = useState<string | null>(null);
@@ -44,7 +46,7 @@ export const useBridgeDesktopApi = () => {
             desktopApi.removeAllListeners('bridge/status');
             desktopApi.removeAllListeners('bridge/settings');
         };
-    }, []);
+    }, [desktopApi]);
 
     const changeBridgeSettings = (settings: BridgeSettings) => {
         desktopApi.changeBridgeSettings(settings);

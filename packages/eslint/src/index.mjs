@@ -4,7 +4,11 @@ import playwright from 'eslint-plugin-playwright';
 import globals from 'globals';
 
 import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
-import { globalNoExtraneousDependenciesDevDependencies, importConfig } from './importConfig.mjs';
+import {
+    desktopApiRestrictedImport,
+    globalNoExtraneousDependenciesDevDependencies,
+    importConfig,
+} from './importConfig.mjs';
 import {
     javascriptConfig,
     noCastedObjectHelpersSyntax,
@@ -21,6 +25,7 @@ import { restrictedImportsPatterns, typescriptConfig } from './typescriptConfig.
  */
 
 export {
+    desktopApiRestrictedImport,
     globalNoExtraneousDependenciesDevDependencies,
     noCastedObjectHelpersSyntax,
     noRestrictedSyntax,

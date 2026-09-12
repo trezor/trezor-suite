@@ -1,15 +1,10 @@
-import { type DesktopApi } from './api';
-import { factory } from './factory';
+import { createElectronDesktopApi } from './createElectronDesktopApi';
+import { createWebDesktopApi } from './createWebDesktopApi';
 
-export const getDesktopApi = () => {
-    let api: DesktopApi | undefined;
-    if (typeof window !== 'undefined' && process.env.SUITE_TYPE === 'desktop') {
-        // it's pointless to write type declaration in global.Window since this is the only reference
-        // @ts-expect-error
-        api = window.desktopApi;
-    }
+export { createElectronDesktopApi, createWebDesktopApi };
+export { type DesktopApiDep, selectDesktopApiDep } from './desktopApiDependency';
 
-    return api || factory();
-};
-
-export const desktopApi = getDesktopApi();
+// Legacy singleton kept only for storage and metadata until #32378 moves them into the composition
+// root. Everything else receives `desktopApi` through services (enforced by ESLint).
+export const desktopApi =
+    process.env.SUITE_TYPE === 'desktop' ? createElectronDesktopApi() : createWebDesktopApi();

@@ -1,4 +1,5 @@
 import { AbstractMetadataProvider } from '@suite-common/metadata-types';
+// eslint-disable-next-line no-restricted-imports -- Global provider instances must become root-owned before injecting their API (#32378).
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 export class FileSystemProvider extends AbstractMetadataProvider {

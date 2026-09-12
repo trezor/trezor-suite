@@ -1,5 +1,6 @@
 import z, { ZodError } from 'zod';
 
+// eslint-disable-next-line no-restricted-imports -- OAuth and provider lifetimes will move into the composition root in the metadata follow-up (#32378).
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { type Deferred, createDeferred } from '@trezor/utils';
 

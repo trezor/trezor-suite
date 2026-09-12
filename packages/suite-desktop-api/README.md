@@ -8,10 +8,21 @@ Exported modules:
 - `renderer` (browser) used in `@trezor/suite` and `@trezor/suite-desktop-ui` in renderer context.
 
 ```javascript
-export function getDesktopApi(ipcRenderer?: Electron.IpcRenderer): DesktopApi;
+// main: builds the API around the real ipcRenderer (used by the preload script)
+export function getDesktopApi(ipcRenderer: Electron.IpcRenderer): DesktopApi;
 
-export const desktopApi: DesktopApi;
+// renderer: two implementations of the same contract, chosen by the composition root
+export function createElectronDesktopApi(): DesktopApi; // picks up window.desktopApi exposed by preload
+export function createWebDesktopApi(): DesktopApi; // available: false, every call is a no-op
+
+// renderer: inject it, do not import a singleton
+export type DesktopApiDep<K extends keyof DesktopApi = keyof DesktopApi> = { desktopApi: Pick<DesktopApi, K> };
+export function selectDesktopApiDep(services: DesktopApiDep): DesktopApiDep;
 ```
+
+`desktopApi` is injected: the desktop composition root wires `createElectronDesktopApi()` and the web one
+`createWebDesktopApi()` into services. Thunks declare `WithServices<DesktopApiDep<'method'>>` and React code
+uses `useServices(selectDesktopApiDep)`. Importing the `desktopApi` singleton is blocked by ESLint.
 
 ## Usage examples in main process
 

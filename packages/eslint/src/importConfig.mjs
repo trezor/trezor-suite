@@ -24,6 +24,14 @@ export const globalNoExtraneousDependenciesDevDependencies = [
     '**/*e2e/**', // Todo: This shall be only in packages that has e2e tests
 ];
 
+export const desktopApiRestrictedImport = {
+    name: '@trezor/suite-desktop-api',
+    importNames: ['desktopApi'],
+    allowTypeImports: true,
+    message:
+        'Inject DesktopApiDep through services or function dependencies; use selectDesktopApiDep in React.',
+};
+
 /** @type {Config[]} */
 export const importConfig = [
     // TODO: Remove the compatibility wrapper when eslint-plugin-import supports ESLint 10.
@@ -38,6 +46,8 @@ export const importConfig = [
             },
         },
         rules: {
+            'no-restricted-imports': ['error', { paths: [desktopApiRestrictedImport] }],
+
             // Additional
             'import/no-default-export': 'error', // We don't want to use default exports, always use named exports
             'import/no-anonymous-default-export': [

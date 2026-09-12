@@ -17957,6 +17957,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/suite": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/transport-web": "workspace:*"
     "@trezor/utils": "workspace:*"

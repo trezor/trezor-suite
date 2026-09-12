@@ -1,27 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 const PositionedSwitch = styled.div`
     align-self: center;
 `;
 
 export const ShowOnTray = () => {
+    const { desktopApi } = useServices(selectDesktopApiDep);
     const [showOnTrayEnabled, setShowOnTrayEnabled] = useState(false);
 
-    const updateStatus = () => {
+    const updateStatus = useCallback(() => {
         desktopApi.getTraySettings().then(result => {
             if (result.success) {
                 setShowOnTrayEnabled(result.payload.showOnTray);
             }
         });
-    };
+    }, [desktopApi]);
     // set initial state based on real electron settings
     useEffect(() => {
         updateStatus();
@@ -33,7 +35,7 @@ export const ShowOnTray = () => {
         return () => {
             desktopApi.removeAllListeners('tray/settings');
         };
-    }, []);
+    }, [desktopApi, updateStatus]);
 
     const handleChange = (enabled: boolean) => {
         desktopApi.changeTraySettings({ showOnTray: enabled });
