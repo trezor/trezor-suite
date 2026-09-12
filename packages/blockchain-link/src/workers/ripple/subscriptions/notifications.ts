@@ -23,7 +23,7 @@ export const onTransaction = ({ state, post }: Context, event: TransactionStream
     // ignore transactions other than Payment
     if (event.tx_json?.TransactionType !== 'Payment') return;
 
-    const { tx_json, hash } = event;
+    const { tx_json, hash, meta } = event;
 
     const notify = (descriptor: string) => {
         if (!tx_json || !hash) return;
@@ -35,7 +35,7 @@ export const onTransaction = ({ state, post }: Context, event: TransactionStream
                 type: 'notification',
                 payload: {
                     descriptor,
-                    tx: transformTransaction(hash, tx_json, undefined, descriptor),
+                    tx: transformTransaction(hash, tx_json, meta, descriptor),
                 },
             },
         });

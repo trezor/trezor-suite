@@ -245,6 +245,104 @@ const notifyAddresses = [
             },
         },
     },
+    {
+        // DeliverMax is only the maximum the sender authorised - on a partial payment
+        // (tfPartialPayment) the amount actually delivered can be less, and is only
+        // known from meta.delivered_amount. A live "received" notification must report
+        // what was actually delivered, not the sender's authorised maximum.
+        description: 'address tx notification (recv, partial payment)',
+        method: 'subscribe',
+        params: {
+            type: 'addresses',
+            addresses: ['A'],
+        },
+        notifications: {
+            hash: 'abcd',
+            tx_json: {
+                Account: 'B',
+                Destination: 'A',
+                TransactionType: 'Payment',
+                DeliverMax: '100',
+                DestinationTag: '123',
+                Flags: 131072, // tfPartialPayment
+            },
+            meta: {
+                TransactionIndex: 1,
+                TransactionResult: 'tesSUCCESS',
+                delivered_amount: '42',
+            },
+            Account: 'A',
+            type: 'transaction',
+            validated: true,
+        },
+        result: {
+            descriptor: 'A',
+            tx: {
+                ...tx,
+                amount: '42',
+                type: 'recv',
+                targets: [
+                    {
+                        addresses: ['A'],
+                        isAddress: true,
+                        n: 0,
+                        amount: '42',
+                    },
+                ],
+                rippleSpecific: {
+                    destinationTag: '123',
+                },
+            },
+        },
+    },
+    {
+        // A tec*-failed payment is still validated into a ledger (and charges a fee),
+        // but delivers nothing. It must be classified 'failed', not 'recv' - relying on
+        // meta being plumbed through to the live notification path, not just historical
+        // getAccountInfo/getTransaction reads.
+        description: 'address tx notification (tec-failed payment is not reported as received)',
+        method: 'subscribe',
+        params: {
+            type: 'addresses',
+            addresses: ['A'],
+        },
+        notifications: {
+            hash: 'abcd',
+            tx_json: {
+                Account: 'B',
+                Destination: 'A',
+                TransactionType: 'Payment',
+                DeliverMax: '100',
+                DestinationTag: '123',
+            },
+            meta: {
+                TransactionIndex: 2,
+                TransactionResult: 'tecDST_TAG_NEEDED',
+            },
+            Account: 'A',
+            type: 'transaction',
+            validated: true,
+        },
+        result: {
+            descriptor: 'A',
+            tx: {
+                ...tx,
+                amount: '100',
+                type: 'failed',
+                targets: [
+                    {
+                        addresses: ['A'],
+                        isAddress: true,
+                        n: 0,
+                        amount: '100',
+                    },
+                ],
+                rippleSpecific: {
+                    destinationTag: '123',
+                },
+            },
+        },
+    },
 ] as const;
 
 export default {
