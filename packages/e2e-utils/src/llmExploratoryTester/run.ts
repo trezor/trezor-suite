@@ -1,13 +1,22 @@
+import { config as loadDotenv } from 'dotenv';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { error, log } from '../logger';
 import { killHarnessBrowser, killHarnessBrowserOnExitSignals } from './browserState';
-import { BOT_DIR, BROWSER_DIR, CONTEXT_FILE, TEST_RESULT_FILE, readJson, writeJson } from './paths';
-import { processAgentOutput, runClaude } from './runClaude';
-import { type PrContext, PrContextSchema, TestResultJsonSchema, TestResultSchema } from './schemas';
+import {
+    BOT_DIR,
+    BROWSER_DIR,
+    CONTEXT_FILE,
+    REPO_ROOT,
+    TEST_RESULT_FILE,
+    readJson,
+    writeJson,
+} from './paths';
+import { runOpencode } from './runOpencode';
+import { type PrContext, PrContextSchema } from './schemas';
 
-const DEFAULT_BUDGET_USD = '10';
+const DEFAULT_BUDGET_USD = 10;
 const DEFAULT_TIMEOUT_MIN = 120;
 
 function buildAgentPrompt(context: PrContext): string {
@@ -28,11 +37,19 @@ function buildAgentPrompt(context: PrContext): string {
 }
 
 async function main(): Promise<void> {
+    loadDotenv({ path: join(REPO_ROOT, 'packages/e2e-utils/.env'), quiet: true });
     killHarnessBrowserOnExitSignals();
     try {
-        const budgetUsd = process.env.LLM_EXPLORATORY_TESTER_BUDGET_USD ?? DEFAULT_BUDGET_USD;
+        const budgetUsd = Number(
+            process.env.LLM_EXPLORATORY_TESTER_BUDGET_USD ?? DEFAULT_BUDGET_USD,
+        );
         const timeoutMs =
             Number(process.env.LLM_EXPLORATORY_TESTER_TIMEOUT_MIN ?? DEFAULT_TIMEOUT_MIN) * 60_000;
+        if (!Number.isFinite(budgetUsd) || !Number.isFinite(timeoutMs)) {
+            throw new Error(
+                'LLM_EXPLORATORY_TESTER_BUDGET_USD and TIMEOUT_MIN must be finite numbers',
+            );
+        }
 
         const context = PrContextSchema.parse(readJson(CONTEXT_FILE));
         mkdirSync(BROWSER_DIR, { recursive: true });
@@ -47,42 +64,32 @@ async function main(): Promise<void> {
         log(prompt);
         log('─── End prompt ───');
 
-        const { output, status } = await runClaude({
-            args: [
-                '--print',
-                '--verbose',
-                '--output-format',
-                'stream-json',
-                '--json-schema',
-                JSON.stringify(TestResultJsonSchema),
-                '--settings',
-                join(BOT_DIR, 'settings.json'),
-                '--mcp-config',
-                join(BOT_DIR, 'mcp.json'),
-                '--strict-mcp-config',
-                '--setting-sources',
-                '',
-                '--max-budget-usd',
-                budgetUsd,
-            ],
-            input: prompt,
-            timeoutMs,
-        });
-
-        const result = processAgentOutput(output);
-        const testResult = TestResultSchema.parse(result.structured_output);
+        const testResult = await runOpencode({ prompt, timeoutMs, maxBudgetUsd: budgetUsd });
 
         writeJson(TEST_RESULT_FILE, testResult);
         log(`Result: ${testResult.result} — ${testResult.summary}`);
         log('Agent done.');
 
-        process.exitCode = status ?? 1;
+        // The verdict is the CI signal: a fail must turn the workflow red,
+        // not just the downloaded artifact.
+        if (testResult.result === 'fail') {
+            process.exitCode = 1;
+        }
     } finally {
         await killHarnessBrowser();
     }
 }
 
 main().catch(e => {
-    error(`run failed: ${e instanceof Error ? e.message : e}`);
+    const message = e instanceof Error ? e.message : String(e);
+    error(`run failed: ${message}`);
+    // Leave a result file even when the run broke, so the artifact upload and
+    // the summary step always have a verdict to show.
+    writeJson(TEST_RESULT_FILE, {
+        result: 'blocked',
+        summary: `Harness error: ${message}`,
+        issues: [],
+        unfinished: [],
+    });
     process.exitCode = 1;
 });

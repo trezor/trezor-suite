@@ -6345,6 +6345,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@opencode-ai/sdk@npm:1.18.23":
+  version: 1.18.23
+  resolution: "@opencode-ai/sdk@npm:1.18.23"
+  dependencies:
+    cross-spawn: "npm:7.0.6"
+  checksum: 10/2e292555dd128a32dbd4eff6bdac45da594ad49a85bb82febe56f09e9f9d288c3aa54bf56623ec1e55518487853ac54acc37bfb67b1ca10f8abde460d3b78957
+  languageName: node
+  linkType: hard
+
 "@opentelemetry/api-logs@npm:0.220.0":
   version: 0.220.0
   resolution: "@opentelemetry/api-logs@npm:0.220.0"
@@ -17223,6 +17232,7 @@ __metadata:
     "@currents/mcp": "npm:^2.3.3"
     "@currents/playwright": "npm:^2.5.0"
     "@octokit/rest": "npm:^21.1.1"
+    "@opencode-ai/sdk": "npm:1.18.23"
     "@playwright/test": "npm:1.62.1"
     "@trezor/eslint": "workspace:*"
     "@trezor/node-utils": "workspace:*"
@@ -17231,6 +17241,7 @@ __metadata:
     claude-pretty-printer: "npm:1.5.0"
     dotenv: "npm:17.2.3"
     express: "npm:^5.2.1"
+    opencode-ai: "npm:1.18.23"
     tsx: "npm:^4.21.0"
     ws: "npm:^8.20.0"
     zod: "npm:4.3.6"
@@ -24597,6 +24608,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cross-spawn@npm:7.0.6, cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.3, cross-spawn@npm:^7.0.5, cross-spawn@npm:^7.0.6":
+  version: 7.0.6
+  resolution: "cross-spawn@npm:7.0.6"
+  dependencies:
+    path-key: "npm:^3.1.0"
+    shebang-command: "npm:^2.0.0"
+    which: "npm:^2.0.1"
+  checksum: 10/0d52657d7ae36eb130999dffff1168ec348687b48dd38e2ff59992ed916c88d328cf1d07ff4a4a10bc78de5e1c23f04b306d569e42f7a2293915c081e4dfee86
+  languageName: node
+  linkType: hard
+
 "cross-spawn@npm:^5.0.1":
   version: 5.1.0
   resolution: "cross-spawn@npm:5.1.0"
@@ -24618,17 +24640,6 @@ __metadata:
     shebang-command: "npm:^1.2.0"
     which: "npm:^1.2.9"
   checksum: 10/f07e643b4875f26adffcd7f13bc68d9dff20cf395f8ed6f43a23f3ee24fc3a80a870a32b246fd074e514c8fd7da5f978ac6a7668346eec57aa87bac89c1ed3a1
-  languageName: node
-  linkType: hard
-
-"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.3, cross-spawn@npm:^7.0.5, cross-spawn@npm:^7.0.6":
-  version: 7.0.6
-  resolution: "cross-spawn@npm:7.0.6"
-  dependencies:
-    path-key: "npm:^3.1.0"
-    shebang-command: "npm:^2.0.0"
-    which: "npm:^2.0.1"
-  checksum: 10/0d52657d7ae36eb130999dffff1168ec348687b48dd38e2ff59992ed916c88d328cf1d07ff4a4a10bc78de5e1c23f04b306d569e42f7a2293915c081e4dfee86
   languageName: node
   linkType: hard
 
@@ -38805,6 +38816,138 @@ __metadata:
   languageName: node
   linkType: hard
 
+"opencode-ai@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-ai@npm:1.18.23"
+  dependencies:
+    opencode-darwin-arm64: "npm:1.18.23"
+    opencode-darwin-x64: "npm:1.18.23"
+    opencode-darwin-x64-baseline: "npm:1.18.23"
+    opencode-linux-arm64: "npm:1.18.23"
+    opencode-linux-arm64-musl: "npm:1.18.23"
+    opencode-linux-x64: "npm:1.18.23"
+    opencode-linux-x64-baseline: "npm:1.18.23"
+    opencode-linux-x64-baseline-musl: "npm:1.18.23"
+    opencode-linux-x64-musl: "npm:1.18.23"
+    opencode-windows-arm64: "npm:1.18.23"
+    opencode-windows-x64: "npm:1.18.23"
+    opencode-windows-x64-baseline: "npm:1.18.23"
+  dependenciesMeta:
+    opencode-darwin-arm64:
+      optional: true
+    opencode-darwin-x64:
+      optional: true
+    opencode-darwin-x64-baseline:
+      optional: true
+    opencode-linux-arm64:
+      optional: true
+    opencode-linux-arm64-musl:
+      optional: true
+    opencode-linux-x64:
+      optional: true
+    opencode-linux-x64-baseline:
+      optional: true
+    opencode-linux-x64-baseline-musl:
+      optional: true
+    opencode-linux-x64-musl:
+      optional: true
+    opencode-windows-arm64:
+      optional: true
+    opencode-windows-x64:
+      optional: true
+    opencode-windows-x64-baseline:
+      optional: true
+  bin:
+    opencode: bin/opencode.exe
+  checksum: 10/92368a4c1f2ba72fa60b025dfd4ee146273774d12f492bc457f2260909fcba00baa9af561e9dac7778ae6d7555d3703b53b46bd6112762f7bdeee3b3669b20ba
+  conditions: (os=darwin | os=linux | os=win32) & (cpu=arm64 | cpu=x64)
+  languageName: node
+  linkType: hard
+
+"opencode-darwin-arm64@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-darwin-arm64@npm:1.18.23"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"opencode-darwin-x64-baseline@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-darwin-x64-baseline@npm:1.18.23"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"opencode-darwin-x64@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-darwin-x64@npm:1.18.23"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"opencode-linux-arm64-musl@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-linux-arm64-musl@npm:1.18.23"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"opencode-linux-arm64@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-linux-arm64@npm:1.18.23"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"opencode-linux-x64-baseline-musl@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-linux-x64-baseline-musl@npm:1.18.23"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"opencode-linux-x64-baseline@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-linux-x64-baseline@npm:1.18.23"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"opencode-linux-x64-musl@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-linux-x64-musl@npm:1.18.23"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"opencode-linux-x64@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-linux-x64@npm:1.18.23"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"opencode-windows-arm64@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-windows-arm64@npm:1.18.23"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"opencode-windows-x64-baseline@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-windows-x64-baseline@npm:1.18.23"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"opencode-windows-x64@npm:1.18.23":
+  version: 1.18.23
+  resolution: "opencode-windows-x64@npm:1.18.23"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
 "opener@npm:^1.5.1, opener@npm:^1.5.2":
   version: 1.5.2
   resolution: "opener@npm:1.5.2"
@@ -45763,6 +45906,8 @@ __metadata:
     msgpackr-extract:
       built: true
     nx:
+      built: true
+    opencode-ai:
       built: true
     sharp:
       built: true
