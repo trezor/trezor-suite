@@ -108,6 +108,9 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     if (lifecycle.status === 'db-corrupted') {
         return <DatabaseCorruptedModal />;
     }
+    if (lifecycle.status === 'db-error') {
+        return <DatabaseUpgradeModal variant={lifecycle.error} />;
+    }
 
     if (!isAnalyticsConsentConfirmed) {
         return <AnalyticsConsentScreen />;
@@ -115,9 +118,6 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
 
     if (lifecycle.status === 'error') {
         throw new Error(lifecycle.error);
-    }
-    if (lifecycle.status === 'db-error') {
-        return <DatabaseUpgradeModal variant={lifecycle.error} />;
     }
 
     if (killswitch) {

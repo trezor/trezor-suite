@@ -20,15 +20,17 @@ import {
     prepareWalletConnectMiddleware,
 } from '@suite-common/walletconnect';
 
+import { type DbDep } from 'src/storage/createDb';
+
 import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
-import { storageMiddleware } from './storageMiddleware';
+import { prepareStorageMiddleware } from './storageMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import walletMiddleware from './walletMiddleware';
 
 export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps &
     TokenDefinitionsMiddlewareDeps & {
-        services: SuiteSyncDep;
+        services: SuiteSyncDep & DbDep;
     };
 
 export const getWalletMiddlewares = (
@@ -41,7 +43,7 @@ export const getWalletMiddlewares = (
     prepareFiatRatesMiddleware(getExtra),
     prepareTokenDefinitionsMiddleware(getExtra),
     prepareStakeMiddleware(getExtra),
-    storageMiddleware,
+    prepareStorageMiddleware(getExtra),
     graphMiddleware,
     tradingMiddleware,
     coinjoinMiddleware,

@@ -8,7 +8,7 @@ type DatabaseUpgradeModalProps = {
 
 export const DatabaseUpgradeModal = ({ variant }: DatabaseUpgradeModalProps) => (
     <Modal icon={DatabaseIcon} intent="warning">
-        <H3>
+        <H3 data-testid="@modal/database-upgrade/heading">
             <Translation
                 id={
                     variant === 'blocked'

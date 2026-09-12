@@ -18143,6 +18143,7 @@ __metadata:
     "@types/semver": "npm:^7.7.0"
     "@zxing/library": "npm:^0.21.3"
     date-fns: "npm:^4.1.0"
+    fake-indexeddb: "npm:^6.2.5"
     file-saver: "npm:^2.0.5"
     framer-motion: "npm:^12.33.0"
     history: "npm:^5.3.0"

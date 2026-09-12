@@ -11,9 +11,11 @@ import { WebUsbTransport } from '@trezor/transport-web';
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
 import { rootReducer } from 'src/reducers/store';
+import { createDb } from 'src/storage/createDb';
 import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFactory';
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { createPreloadStore } from 'src/support/suite/createPreloadStore';
 
 import { type WebApp, createWebApp } from './createWebApp';
 import { getWebThpHostName } from './support/getWebThpHostName';
@@ -49,7 +51,9 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         reducer: rootReducer,
         extraDependencies,
     });
+    const db = createDb({ dispatch: store.dispatch, reloadApp });
     const suiteServices = createSuiteServicesCompositionRoot({
+        db,
         dispatch: store.dispatch,
         getState: store.getState,
         history,
@@ -61,7 +65,13 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         getTransportsFactories,
         getTrezorConnect: () => TrezorConnect,
     });
-    const hydrateReduxStore = createHydrateReduxStore({ store, reducer: rootReducer });
+    const preloadStore = createPreloadStore({ db });
+    const hydrateReduxStore = createHydrateReduxStore({
+        store,
+        reducer: rootReducer,
+        preloadStore,
+        getStatePatch: () => Promise.resolve(undefined),
+    });
     const services = { ...suiteServices, store, hydrateReduxStore };
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.

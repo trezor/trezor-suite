@@ -1,5 +1,3 @@
-import '@suite-common/test-utils/globalOverrides';
-
 import { coinjoinReducer } from '@suite/coinjoin';
 import { prepareDesktopDeviceReducer } from '@suite/device';
 import {
@@ -31,7 +29,7 @@ import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
-import { storageMiddleware } from 'src/middlewares/wallet/storageMiddleware';
+import { prepareStorageMiddleware } from 'src/middlewares/wallet/storageMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import {
     accountsReducer,
@@ -43,11 +41,12 @@ import {
     walletSettingsReducer,
 } from 'src/reducers/wallet';
 import graphReducer from 'src/reducers/wallet/graphReducer';
-import { db } from 'src/storage';
-import { preloadStore } from 'src/support/suite/preloadStore';
+import { type Db } from 'src/storage/createDb';
+import { type PreloadStore, createPreloadStore } from 'src/support/suite/createPreloadStore';
 import { type AcquiredDevice, type AppState } from 'src/types/suite';
 
 import * as storageActions from './storageActions';
+import { createInMemoryDbMock } from '../../../mocks/createInMemoryDbMock';
 
 const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');
@@ -207,12 +206,12 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares = [storageMiddleware];
+const mockStore = (db: Db, preloadedState: State) => {
+    const extra = { services: { db } };
 
-const mockStore = (preloadedState: State) =>
-    createTestStore({
-        extra: undefined,
-        middleware: middlewares,
+    return createTestStore({
+        extra,
+        middleware: [prepareStorageMiddleware(() => extra)],
         reducer: (state = preloadedState, action) => {
             const nextState = getInitialState(state, action);
 
@@ -229,6 +228,7 @@ const mockStore = (preloadedState: State) =>
         },
         preloadedState,
     });
+};
 
 const mockFetch = (data: any) =>
     jest.fn().mockImplementation(() =>
@@ -239,12 +239,20 @@ const mockFetch = (data: any) =>
     );
 
 describe('Storage actions', () => {
-    // afterEach(async () => {
-    //     await indexedDB.deleteDatabase('trezor-suite');
-    // });
+    let db: Db;
+    let preloadStore: PreloadStore;
+
+    beforeEach(() => {
+        db = createInMemoryDbMock({ dispatch: jest.fn(), reloadApp: jest.fn() });
+        preloadStore = createPreloadStore({ db });
+    });
+
+    afterEach(async () => {
+        await db.removeDatabase();
+    });
 
     it('should store wallet settings in the db and update them automatically', async () => {
-        const store = mockStore(getInitialState());
+        const store = mockStore(db, getInitialState());
 
         // save wallet settings to the db
         await store.dispatch(storageActions.saveWalletSettingsThunk());
@@ -261,7 +269,7 @@ describe('Storage actions', () => {
     });
 
     it('should store suite settings in the db and update them automatically', async () => {
-        const store = mockStore(getInitialState());
+        const store = mockStore(db, getInitialState());
         const f = global.fetch;
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettingsThunk());
@@ -284,28 +292,29 @@ describe('Storage actions', () => {
     });
 
     it('should store, override and remove send form', async () => {
-        let store = mockStore(getInitialState());
+        let store = mockStore(db, getInitialState());
 
         const accountKey = mockAccountKey({ descriptor: 'accountKey' });
 
         // @ts-expect-error partial params
-        await storageActions.saveDraft({ address: 'a' }, accountKey);
+        await storageActions.saveDraft({ db }, { address: 'a' }, accountKey);
         store.dispatch((await preloadStore())!);
         expect(store.getState().wallet.send.drafts).toEqual({ [accountKey]: { address: 'a' } });
 
         // @ts-expect-error partial params
-        await storageActions.saveDraft({ address: 'b' }, accountKey);
+        await storageActions.saveDraft({ db }, { address: 'b' }, accountKey);
         store.dispatch((await preloadStore())!);
         expect(store.getState().wallet.send.drafts).toEqual({ [accountKey]: { address: 'b' } });
 
-        await storageActions.removeDraft(accountKey);
-        store = mockStore(getInitialState());
+        await storageActions.removeDraft({ db }, accountKey);
+        store = mockStore(db, getInitialState());
         store.dispatch((await preloadStore())!);
         expect(store.getState().wallet.send.drafts).toEqual({});
     });
 
     it('should store remembered device', async () => {
         let store = mockStore(
+            db,
             getInitialState({
                 device: {
                     devices: [dev1, dev2, dev2Instance1],
@@ -368,7 +377,7 @@ describe('Storage actions', () => {
 
         // forget dev1
         await store.dispatch(storageActions.forgetDeviceThunk(dev1));
-        store = mockStore(getInitialState());
+        store = mockStore(db, getInitialState());
         store.dispatch((await preloadStore())!);
 
         const load2 = store.getState();
@@ -397,6 +406,7 @@ describe('Storage actions', () => {
 
     it('should remove all txs for the acc', async () => {
         let store = mockStore(
+            db,
             getInitialState({
                 device: {
                     devices: [dev1, dev2],
@@ -419,8 +429,8 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.rememberDeviceThunk(dev2));
 
         // remove txs for acc 1
-        await storageActions.removeAccountTransactions(acc1);
-        store = mockStore(getInitialState());
+        await storageActions.removeAccountTransactions({ db }, acc1);
+        store = mockStore(db, getInitialState());
         store.dispatch((await preloadStore())!);
 
         const state = store.getState();
@@ -440,6 +450,7 @@ describe('Storage actions', () => {
         // device needs to be connected otherwise devices reducer doesn't update the device
         const dev1Connected = { ...dev1, connected: true } as const;
         const store = mockStore(
+            db,
             getInitialState({
                 device: {
                     devices: [dev1Connected],
@@ -478,6 +489,7 @@ describe('Storage actions', () => {
         });
 
         const store = mockStore(
+            db,
             getInitialState({
                 device: {
                     devices: [dev1],
@@ -535,7 +547,7 @@ describe('Storage actions', () => {
     it('should store SuiteSyncOwner on setSuiteSyncOwner and remove it on forgetDevice', async () => {
         const owner = asEncryptedHex<SuiteSyncOwnerSerialized>('owner-key');
         const deviceStaticId = dev1.state!.staticSessionId!;
-        const store = mockStore(getInitialState());
+        const store = mockStore(db, getInitialState());
 
         store.dispatch(
             setSuiteSyncOwner({
@@ -564,6 +576,7 @@ describe('Storage actions', () => {
         });
 
         let store = mockStore(
+            db,
             getInitialState({
                 metadata: {
                     ...initialMetadataState,
@@ -582,7 +595,7 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.saveMetadataSettingsThunk());
         await store.dispatch(storageActions.forgetDeviceThunk(forgottenDevice));
 
-        store = mockStore(getInitialState());
+        store = mockStore(db, getInitialState());
         store.dispatch((await preloadStore())!);
 
         expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({

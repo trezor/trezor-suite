@@ -1,5 +1,5 @@
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type ForgetDeviceThunkDeps,
@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 
 import * as storageActions from 'src/actions/suite/storageActions';
+import { type DbDep } from 'src/storage/createDb';
 
 import { SUITE_FORGET_DEVICE } from './constants/suiteConstants';
 
@@ -20,7 +21,7 @@ export type ForgetDeviceThunkParams = {
 
 type SuiteForgetDeviceThunkState = ForgetDeviceThunkState;
 
-type SuiteForgetDeviceThunkDeps = ForgetDeviceThunkDeps;
+type SuiteForgetDeviceThunkDeps = ForgetDeviceThunkDeps & WithServices<DbDep>;
 
 export const suiteForgetDeviceThunk = createThunk<
     void,

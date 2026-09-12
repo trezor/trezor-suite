@@ -1,8 +1,11 @@
 import { type IDBPDatabase, type IDBPTransaction, type StoreNames } from 'idb';
 
 import { idbVersionToString } from '@suite/idb-migration-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DispatchDep } from '@suite-common/redux-utils';
+import { type ReloadAppDep } from '@suite-common/suite-types';
 import SuiteDB, { type OnUpgradeFunc } from '@trezor/suite-storage';
+
+import { storageError } from 'src/actions/suite/storageLifecycleActions';
 
 import type { SuiteDBSchema } from './definitions';
 import { runLegacyMigrations } from './migrations';
@@ -67,22 +70,29 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
     await runMigrations(db, oldVersion, transaction);
 };
 
-/**
- * Downgrading is not supported – it resets IDB, that's why we need to reload afterwards.
- * Cannot use services here, because db is instantiated before composition roots are composed.
- * TODO when the statically imported `db` singleton is refactored to DI, use services.reloadApp here.
- */
-const onDowngrade = () => {
-    if (desktopApi.available) {
-        desktopApi.appRestart();
-    } else if (typeof window !== 'undefined') {
-        window.location.reload();
-    }
-};
+export type DbDeps = DispatchDep & ReloadAppDep;
 
-export const db = new SuiteDB<SuiteDBSchema>(
-    'trezor-suite',
-    LATEST_MIGRATION_VERSION,
-    onUpgrade,
-    onDowngrade,
-);
+export type Db = SuiteDB<SuiteDBSchema>;
+
+export type DbDep = { db: Db };
+
+export const selectDbDep = (services: any): DbDep => ({ db: services.db });
+
+export const createDb = (deps: DbDeps): Db => {
+    const db = new SuiteDB<SuiteDBSchema>(
+        'trezor-suite',
+        LATEST_MIGRATION_VERSION,
+        onUpgrade,
+        // Downgrading is not supported – it resets IDB, so reload the app afterwards.
+        () => deps.reloadApp(),
+    );
+
+    // Composition installs these callbacks, but IndexedDB can invoke them after startup, e.g.
+    // when another Suite tab requests a database upgrade. Dispatching the error shows the
+    // database warning instead of leaving the UI unaware that persistence is unavailable.
+    // Preloading temporarily overrides these handlers while opening the DB, then restores them.
+    db.onBlocking = () => deps.dispatch(storageError('blocking'));
+    db.onBlocked = () => deps.dispatch(storageError('blocked'));
+
+    return db;
+};

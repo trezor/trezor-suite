@@ -51,6 +51,7 @@ import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezo
 import { isDesktop } from '@trezor/env-utils';
 
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
+import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 import { createConnectInitHooks } from './createConnectInitHooks';
@@ -69,6 +70,7 @@ const connectInitSettings: ConnectInitSettings = {
 };
 
 export type SuiteServices = CommonServices &
+    DbDep &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
@@ -80,6 +82,7 @@ export type StoreAPIDep = {
 };
 
 export type SuiteAppDeps = StoreAPIDep &
+    DbDep &
     HistoryDep &
     PlatformEncryptionDep &
     CreateLoggerDep &
@@ -170,6 +173,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     };
 
     return {
+        db: deps.db,
         networkModuleRepository,
         getNetworkConfig,
         findNetworkSymbolForProtocol,
