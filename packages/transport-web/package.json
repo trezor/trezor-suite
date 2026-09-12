@@ -1,6 +1,6 @@
 {
     "name": "@trezor/transport-web",
-    "version": "10.0.0-beta.1",
+    "version": "10.0.0-beta.2",
     "description": "Browser-only transports for @trezor/connect: WebUSB and SharedWorker-backed sessions backend.",
     "license": "MIT",
     "repository": {

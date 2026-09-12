@@ -1,6 +1,6 @@
 # @trezor/connect
 
-API version 10.0.0-beta.1
+API version 10.0.0-beta.2
 
 [![NPM](https://img.shields.io/npm/v/@trezor/connect.svg)](https://www.npmjs.org/package/@trezor/connect)
 
