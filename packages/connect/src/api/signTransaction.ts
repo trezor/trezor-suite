@@ -42,7 +42,6 @@ type Params = {
     inputs: PROTO.TxInputType[];
     outputs: PROTO.TxOutputType[];
     paymentRequests: PROTO.PaymentRequest[];
-    coinjoinRequest?: PROTO.CoinJoinRequest;
     refTxs?: RefTransaction[];
     addresses?: AccountAddresses;
     options: TransactionOptions;
