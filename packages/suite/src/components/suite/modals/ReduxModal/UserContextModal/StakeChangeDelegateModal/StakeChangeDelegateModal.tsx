@@ -9,6 +9,7 @@ import { selectDispatch } from '@suite-common/redux-utils';
 import {
     CARDANO_EVERSTAKE_DREP,
     DEFAULT_VOTING_OPTION,
+    areCardanoDrepIdsEqual,
     getCardanoAccountDrepId,
     selectVotingDelegationOption,
     stakeActions,
@@ -53,7 +54,7 @@ export const StakeChangeDelegateModalLoaded = ({
         changeDelegateContextValues;
 
     const currentDrepId = getCardanoAccountDrepId(account);
-    const isEverstake = currentDrepId === CARDANO_EVERSTAKE_DREP.bech32;
+    const isEverstake = areCardanoDrepIdsEqual(currentDrepId, CARDANO_EVERSTAKE_DREP.bech32);
 
     // we don't want to show current delegation option in this modal
     // if it was pre-selected, select the default option instead
@@ -113,7 +114,7 @@ export const StakeChangeDelegateModalLoaded = ({
             case 'another_drep': {
                 const { drepId } = selectedVotingDelegation;
 
-                if (drepId === currentDrepId) {
+                if (areCardanoDrepIdsEqual(drepId, currentDrepId)) {
                     return { isDisabled: true, errorType: 'current_delegate' as const };
                 }
 

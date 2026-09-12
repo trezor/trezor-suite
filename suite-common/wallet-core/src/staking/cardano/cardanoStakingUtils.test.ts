@@ -4,12 +4,17 @@ import { type Account } from '@suite-common/wallet-types';
 import * as fixtures from './__fixtures__/cardanoStakingUtils';
 import { CARDANO_EVERSTAKE_STAKING_POOL } from './cardanoStakingConstants';
 import {
+    areCardanoDrepIdsEqual,
+    decodeCardanoDrepId,
+    getCardanoAccountDrepId,
     hasCardanoLiveVoteDelegation,
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
+    normalizeCardanoDrepId,
     poolBech32ToHex,
     selectBestCardanoPool,
+    validateCardanoDrep,
 } from './cardanoStakingUtils';
 
 describe('cardano staking utils', () => {
@@ -57,6 +62,47 @@ describe('cardano staking utils', () => {
     fixtures.hasCardanoLiveVoteDelegation.forEach(f => {
         it(`hasCardanoLiveVoteDelegation: ${f.description}`, () => {
             expect(hasCardanoLiveVoteDelegation(f.account as Account)).toBe(f.result);
+        });
+    });
+
+    fixtures.validateCardanoDrep.forEach(f => {
+        it(`validateCardanoDrep: ${f.description}`, () => {
+            expect(validateCardanoDrep(f.drepId)).toBe(f.result);
+        });
+    });
+
+    fixtures.decodeCardanoDrepId.forEach(f => {
+        it(`decodeCardanoDrepId: ${f.description}`, () => {
+            expect(decodeCardanoDrepId(f.drepId)).toEqual(f.result);
+        });
+    });
+
+    fixtures.normalizeCardanoDrepId.forEach(f => {
+        it(`normalizeCardanoDrepId: ${f.description}`, () => {
+            expect(normalizeCardanoDrepId(f.drepId)).toBe(f.result);
+        });
+    });
+
+    it('normalizeCardanoDrepId: normalizing a canonical id changes nothing', () => {
+        fixtures.normalizeCardanoDrepId.forEach(f => {
+            const normalizedDrepId = normalizeCardanoDrepId(f.drepId);
+
+            if (normalizedDrepId === null) return;
+
+            expect(normalizeCardanoDrepId(normalizedDrepId)).toBe(normalizedDrepId);
+        });
+    });
+
+    fixtures.areCardanoDrepIdsEqual.forEach(f => {
+        it(`areCardanoDrepIdsEqual: ${f.description}`, () => {
+            expect(areCardanoDrepIdsEqual(f.drepIdA, f.drepIdB)).toBe(f.result);
+            expect(areCardanoDrepIdsEqual(f.drepIdB, f.drepIdA)).toBe(f.result);
+        });
+    });
+
+    fixtures.getCardanoAccountDrepId.forEach(f => {
+        it(`getCardanoAccountDrepId: ${f.description}`, () => {
+            expect(getCardanoAccountDrepId(f.account as Account)).toBe(f.result);
         });
     });
 });
