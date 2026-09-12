@@ -4,6 +4,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import { Assert } from '@trezor/schema-utils';
+import { toCanonicalDescriptor } from '@trezor/utils';
 
 import { assertBackendSupported, initBlockchain } from '../../../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../../../core/AbstractMethod';
@@ -70,13 +71,18 @@ export default class SolanaComposeTransaction extends AbstractMethod<
 
         const { token, toAddress } = this.params;
         const [recipientAccountOwner, recipientTokenAccounts] = token
-            ? await backend.getAccountInfo({ descriptor: toAddress }).then(accountInfo =>
-                  // Fetch data about recipient account owner if this is a token transfer
-                  // We need this in order to validate the address and ensure transfers go through
-                  !accountInfo
-                      ? ([undefined, undefined] as const)
-                      : getAssociatedTokenAccountAddress(toAddress, token.mint, token.program).then(
-                            associatedTokenAccount => {
+            ? await backend
+                  .getAccountInfo({ descriptor: toCanonicalDescriptor(toAddress) })
+                  .then(accountInfo =>
+                      // Fetch data about recipient account owner if this is a token transfer
+                      // We need this in order to validate the address and ensure transfers go through
+                      !accountInfo
+                          ? ([undefined, undefined] as const)
+                          : getAssociatedTokenAccountAddress(
+                                toAddress,
+                                token.mint,
+                                token.program,
+                            ).then(associatedTokenAccount => {
                                 const accountOwner = accountInfo?.misc?.owner;
                                 const tokenInfo = accountInfo?.tokens
                                     ?.find(t => t.contract === token.mint)
@@ -86,9 +92,8 @@ export default class SolanaComposeTransaction extends AbstractMethod<
                                     );
 
                                 return [accountOwner, tokenInfo] as const;
-                            },
-                        ),
-              )
+                            }),
+                  )
             : [undefined, undefined];
 
         const tokenTransferTxAndDestinationAddress = this.params.token?.accounts
