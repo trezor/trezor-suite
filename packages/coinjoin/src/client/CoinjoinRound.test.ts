@@ -100,6 +100,20 @@ describe(`CoinjoinRound`, () => {
         );
     });
 
+    it('onPhaseChange records phaseStartLowerBound and only updates it on an actual phase change', async () => {
+        const round = createCoinjoinRound([], { ...server?.requestOptions, logger });
+
+        // entering the signing phase records the lower bound the client passes (the previous
+        // committed poll's request time) so transactionSigning can size the send window safely
+        await round.onPhaseChange({ ...DEFAULT_ROUND, Phase: 3 }, 70000);
+        expect(round.phaseStartLowerBound).toBe(70000);
+
+        // a later same-phase re-poll must NOT overwrite it (a later poll time is a worse lower
+        // bound); the assignment lives inside the `this.phase !== changed.Phase` guard on purpose
+        await round.onPhaseChange({ ...DEFAULT_ROUND, Phase: 3 }, 90000);
+        expect(round.phaseStartLowerBound).toBe(70000);
+    });
+
     it('catch errored Round', async () => {
         // create CoinjoinRound in phase 2 (OutputRegistration)
         const round = createCoinjoinRound(

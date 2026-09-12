@@ -37,6 +37,7 @@ export class Status extends TypedEmitter<StatusEvents> {
     private statusTimeout?: TimerId;
     private identities: string[]; // registered identities
     private runningAffiliateServer = false;
+    private lastStatusRequestTimestamp?: number;
 
     constructor(settings: CoinjoinClientSettings) {
         super();
@@ -170,7 +171,7 @@ export class Status extends TypedEmitter<StatusEvents> {
         }, timeout);
     }
 
-    private processStatus(status: coordinator.CoinjoinStatus) {
+    private processStatus(status: coordinator.CoinjoinStatus, prevStatusTimestamp?: number) {
         const { affiliationId } = this.settings;
         if (affiliationId) {
             // add matching coinjoinRequest to rounds
@@ -192,6 +193,7 @@ export class Status extends TypedEmitter<StatusEvents> {
         if (changed.length > 0) {
             const statusEvent = {
                 changed,
+                prevStatusTimestamp,
                 ...transformStatus(status),
             };
 
@@ -210,6 +212,9 @@ export class Status extends TypedEmitter<StatusEvents> {
         if (!this.enabled) return Promise.resolve();
 
         const identity = this.identities[getWeakRandomInt(0, this.identities.length)];
+        // request-sent time, captured before the round-trip so response transit does not leak into
+        // the phase-start lower bound (see getSigningSendDeadline / processStatus)
+        const requestTimestamp = Date.now();
         const status = await coordinator.getStatus({
             baseUrl: this.settings.coordinatorUrl,
             signal: this.abortController.signal,
@@ -218,7 +223,15 @@ export class Status extends TypedEmitter<StatusEvents> {
 
         // for easier debugging explicitly catch and log processStatus errors
         try {
-            return this.processStatus(status);
+            // lower bound for the start of any phase first observed now: the request-sent time of the
+            // previous committed poll (see getSigningSendDeadline). Advanced below only after this poll
+            // commits.
+            const prevStatusTimestamp = this.lastStatusRequestTimestamp;
+            const processedStatus = this.processStatus(status, prevStatusTimestamp);
+            // advance the anchor only after the poll is fully committed (processStatus did not throw)
+            this.lastStatusRequestTimestamp = requestTimestamp;
+
+            return processedStatus;
         } catch (error) {
             this.log('error', `Status processing ${error.message}`);
             throw new Error(`Status processing ${error.message}`, { cause: error });

@@ -5,6 +5,12 @@ import { transactionSigning } from './transactionSigning';
 import { createServer } from '../../../mocks/server';
 import { createInput } from '../../__fixtures__/input.fixture';
 import { createCoinjoinRound } from '../../__fixtures__/round.fixture';
+import * as coordinator from '../coordinator';
+
+jest.mock('../coordinator', () => ({
+    ...jest.requireActual('../coordinator'),
+    transactionSignature: jest.fn(jest.requireActual('../coordinator').transactionSignature),
+}));
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {
@@ -587,8 +593,123 @@ describe('transactionSigning signature delay', () => {
             server?.requestOptions,
         );
 
-        // signature is sent in default range 0-1 sec.
-        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+        // signature is sent immediately
+        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 0);
+        expect(response.isSignedSuccessfully()).toBe(true);
+    });
+});
+
+describe('transactionSigning send window (phaseStartLowerBound)', () => {
+    let server: Awaited<ReturnType<typeof createServer>>;
+    const affiliateRequest = Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64');
+
+    beforeAll(async () => {
+        server = await createServer();
+    });
+
+    beforeEach(() => {
+        server?.removeAllListeners('test-request');
+        jest.mocked(getWeakRandomNumberInRange).mockClear();
+        jest.mocked(coordinator.transactionSignature).mockClear().mockResolvedValue(undefined);
+    });
+
+    afterEach(() => {
+        jest.mocked(coordinator.transactionSignature).mockImplementation(
+            jest.requireActual('../coordinator').transactionSignature,
+        );
+        jest.restoreAllMocks();
+    });
+
+    afterAll(() => {
+        server?.close();
+    });
+
+    const signingRound = (roundOverrides: Partial<ReturnType<typeof createCoinjoinRound>>) =>
+        createCoinjoinRound(
+            [
+                createInput(
+                    'account-A',
+                    'a00000000000000000000000000000000000000000000000000000000000000001000000',
+                    {
+                        witness: 'aa',
+                        witnessIndex: 0,
+                        resolved: [{ type: 'signature', timestamp: 5000 }],
+                    },
+                ),
+            ],
+            {
+                ...server?.requestOptions,
+                round: { phase: 3, affiliateRequest, ...roundOverrides },
+            },
+        );
+
+    it('bounds the send spread by phaseStartLowerBound, not the poll-lagged phaseDeadline', async () => {
+        // now = 100s; signing was first detected here, but the previous committed poll was at 70s,
+        // so the real phase start is >= 70s. phaseDeadline (240s budget) is anchored to the later
+        // detection time and is optimistic; the send must be bounded by phaseStartLowerBound +
+        // TransactionSigningTimeout (70s + 60s = 130s) instead.
+        jest.spyOn(Date, 'now').mockReturnValue(100000);
+        const round = signingRound({
+            phaseStartLowerBound: 70000,
+            phaseDeadline: 100000 + 60000 * 4,
+        });
+        round.roundParameters.DelayTransactionSigning = false;
+
+        jest.mocked(getWeakRandomNumberInRange).mockReturnValueOnce(900);
+        const response = await transactionSigning(round, [], server?.requestOptions);
+
+        // budget = sendDeadline(130s) - now(100s) = 30s; reserve 10s -> deadlineOffset 20s
+        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 20000);
+        expect(coordinator.transactionSignature).toHaveBeenCalledWith(
+            round.id,
+            0,
+            'aa',
+            expect.objectContaining({ delay: 900, deadline: round.phaseDeadline }),
+        );
+        expect(response.isSignedSuccessfully()).toBe(true);
+    });
+
+    it.each([-1000, 0, 500, 1000, 5000, 10000])(
+        'sends immediately with %i ms left before the conservative deadline',
+        async remainingTime => {
+            jest.spyOn(Date, 'now').mockReturnValue(100000);
+            const round = signingRound({
+                phaseStartLowerBound: 40000 + remainingTime,
+                phaseDeadline: 100000 + 60000 * 4,
+            });
+            round.roundParameters.DelayTransactionSigning = true;
+
+            const response = await transactionSigning(round, [], server?.requestOptions);
+
+            expect(coordinator.transactionSignature).toHaveBeenCalledWith(
+                round.id,
+                0,
+                'aa',
+                expect.objectContaining({ delay: 0, deadline: round.phaseDeadline }),
+            );
+            expect(getWeakRandomNumberInRange).toHaveBeenCalledWith(0, 0);
+            expect(response.isSignedSuccessfully()).toBe(true);
+        },
+    );
+
+    it('retains randomization with one second left after the request reservation', async () => {
+        jest.spyOn(Date, 'now').mockReturnValue(100000);
+        const round = signingRound({
+            phaseStartLowerBound: 51000,
+            phaseDeadline: 100000 + 60000 * 4,
+        });
+        round.roundParameters.DelayTransactionSigning = true;
+
+        jest.mocked(getWeakRandomNumberInRange).mockReturnValueOnce(1000);
+        const response = await transactionSigning(round, [], server?.requestOptions);
+
+        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(1000, 1000);
+        expect(coordinator.transactionSignature).toHaveBeenCalledWith(
+            round.id,
+            0,
+            'aa',
+            expect.objectContaining({ delay: 1000, deadline: round.phaseDeadline }),
+        );
         expect(response.isSignedSuccessfully()).toBe(true);
     });
 });

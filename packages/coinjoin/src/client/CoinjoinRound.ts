@@ -96,6 +96,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     inputs: Alice[] = []; // list of registered inputs
     failed: Alice[] = []; // list of failed inputs
     phaseDeadline: number; // deadline is inaccurate, phase may change earlier
+    phaseStartLowerBound?: number; // safe lower bound (ms) for when the current phase started (see getSigningSendDeadline)
     roundDeadline: number; // deadline is inaccurate,round may end earlier
     commitmentData: string; // commitment data used for ownership proof and witness requests
     addresses: (AccountAddress & { accountKey: string })[] = []; // list of addresses (outputs) used in this round in outputRegistration phase
@@ -164,7 +165,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         }) as Promise<CoinjoinRound | undefined>;
     }
 
-    async onPhaseChange(changed: Round) {
+    async onPhaseChange(changed: Round, phaseStartLowerBound?: number) {
         if (this.lock) {
             // if round is currently locked and phase was changed in expected order
             // try to interrupt running process and start processing new phase
@@ -206,6 +207,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             });
             this.phaseDeadline = phaseDeadline;
             this.roundDeadline = roundDeadline;
+            this.phaseStartLowerBound = phaseStartLowerBound;
         }
 
         // update affiliateRequest once and keep the value
