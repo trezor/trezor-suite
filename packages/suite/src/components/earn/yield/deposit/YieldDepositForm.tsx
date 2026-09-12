@@ -368,7 +368,6 @@ export const YieldDepositForm = () => {
                                             <FormattedCryptoAmount
                                                 value={maxAmount}
                                                 symbol={token.symbol}
-                                                isBalance
                                             />
                                         }
                                         approvedAmount={allowanceAmount || undefined}
@@ -424,7 +423,6 @@ export const YieldDepositForm = () => {
                                             <FormattedCryptoAmount
                                                 value={maxAmount}
                                                 symbol={token.symbol}
-                                                isBalance
                                             />
                                         }
                                         warning={

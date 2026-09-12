@@ -15,18 +15,19 @@ import {
 } from '@suite-common/wallet-types';
 import {
     analyzeTransactions,
+    asAmountSubunit,
     findAccountDevice,
     formatNetworkAmount,
-    formatTokenAmount,
     getAccountTransactions,
-    getAreSatoshisUsed,
     isAccountOutdated,
     isPending,
     isTrezorConnectBackendType,
+    subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { BigNumber } from '@trezor/utils';
 
 import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
@@ -43,10 +44,7 @@ import {
     selectBlockchainHeightBySymbol,
     selectGapLimit,
 } from '../blockchain/blockchainReducer';
-import {
-    type WalletSettingsRootState,
-    selectBitcoinAmountUnit,
-} from '../settings/walletSettingsReducer';
+import { type WalletSettingsRootState } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import {
@@ -274,17 +272,18 @@ export const fetchAndUpdateAccountThunk = createThunk<
             analyze.newTransactions.forEach(tx => {
                 const token = tx.tokens?.[0];
 
-                const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
-                const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, account);
-
-                const formattedAmount = token
-                    ? formatTokenAmount(token)
-                    : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+                const amount = token
+                    ? subunitsToUnits({
+                          value: asAmountSubunit(new BigNumber(token.amount ?? '0')),
+                          decimals: token.decimals,
+                      }).toString()
+                    : formatNetworkAmount(tx.amount, account.symbol);
 
                 dispatch(
                     notificationsActions.addEvent({
                         type: 'tx-confirmed',
-                        formattedAmount,
+                        amount,
+                        token,
                         device: accountDevice,
                         descriptor: account.descriptor,
                         symbol: account.symbol,

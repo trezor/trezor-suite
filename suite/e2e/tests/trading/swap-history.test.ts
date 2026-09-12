@@ -6,6 +6,7 @@ import { TestStream } from '@trezor/e2e-utils';
 
 import { tradeEndpoint } from '../../fixtures/trading';
 import { PENDING_TRADE, SEEDED_TRADES } from '../../fixtures/trading/swap/swap-history';
+import { toCompactAmount } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -87,12 +88,12 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                     await expect
                         .soft(row.sendAmount)
                         .toHaveText(
-                            `${localizeNumber(trade.data.sendStringAmount)} ${trade.sendSymbol.toUpperCase()}`,
+                            `${toCompactAmount(trade.data.sendStringAmount)} ${trade.sendSymbol.toUpperCase()}`,
                         );
                     await expect
                         .soft(row.receiveAmount)
                         .toHaveText(
-                            `${localizeNumber(trade.data.receiveStringAmount)} ${receiveSymbol}`,
+                            `${toCompactAmount(trade.data.receiveStringAmount)} ${receiveSymbol}`,
                         );
                 }
             });

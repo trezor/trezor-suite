@@ -245,7 +245,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
                 await expect(stakingSection.claimCard).toBeHidden();
                 await expect(walletPage.balanceOfAccount({ symbol: 'eth', atIndex: 0 })).toHaveText(
-                    '4,468',
+                    '4,468.00',
                 );
             });
         },

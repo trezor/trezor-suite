@@ -9,6 +9,8 @@ type EarnRewardsAmountProps = {
     symbol: NetworkSymbol | TokenSymbol;
     rewards: string;
     apy: number | null;
+    /** Decimals of the token the reward is denominated in; a stablecoin reads money-like. */
+    tokenDecimals?: number;
     intent?: TextProps['intent'];
     priority?: TextProps['priority'];
     isDisabled?: TextProps['isDisabled'];
@@ -19,6 +21,7 @@ export const EarnRewardsAmount = ({
     symbol,
     rewards,
     apy,
+    tokenDecimals,
     intent,
     priority,
     isDisabled,
@@ -52,8 +55,8 @@ export const EarnRewardsAmount = ({
                     symbol={symbol}
                     isBalance
                     withSymbol
-                    isEllipsisAppended={false}
-                    maxDisplayedDecimals={8}
+                    formatStyle="compact-balance"
+                    tokenDecimals={tokenDecimals}
                 />
             </HiddenPlaceholder>
         </Text>

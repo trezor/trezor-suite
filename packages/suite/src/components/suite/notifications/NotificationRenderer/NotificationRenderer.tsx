@@ -488,7 +488,6 @@ export const NotificationRenderer = ({
                     variant="info"
                     message="TOAST_TX_RECEIVED"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -517,7 +516,6 @@ export const NotificationRenderer = ({
                     variant="warning"
                     message="TOAST_TX_APPROVED"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         tokenSymbol: notification.token.symbol,
                     }}
                 />
@@ -565,7 +563,6 @@ export const NotificationRenderer = ({
                     variant="warning"
                     message="TOAST_TX_SENT"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -579,7 +576,6 @@ export const NotificationRenderer = ({
                     variant="info"
                     message="TOAST_TX_CONFIRMED"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -630,7 +626,6 @@ export const NotificationRenderer = ({
                     variant="warning"
                     message="TOAST_TX_STAKED"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -645,7 +640,6 @@ export const NotificationRenderer = ({
                     variant="warning"
                     message="TOAST_TX_UNSTAKED"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -660,7 +654,6 @@ export const NotificationRenderer = ({
                     variant="warning"
                     message="TOAST_TX_CLAIMED"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />

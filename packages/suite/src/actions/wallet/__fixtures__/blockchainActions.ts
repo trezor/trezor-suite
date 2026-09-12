@@ -706,9 +706,7 @@ export const onNotification: OnNotificationFixture[] = [
             notification: { descriptor: 'xpub', tx: { type: 'recv', amount: '100000' } },
             coin: { shortcut: 'btc' },
         },
-        actions: [
-            { type: notificationsActions.addEvent.type, payload: { formattedAmount: '0.001 BTC' } },
-        ],
+        actions: [{ type: notificationsActions.addEvent.type, payload: { amount: '0.001' } }],
         getAccountInfo: 1,
     },
     {
@@ -729,7 +727,7 @@ export const onNotification: OnNotificationFixture[] = [
         actions: [
             {
                 type: notificationsActions.addEvent.type,
-                payload: { formattedAmount: '0.001 erc20' },
+                payload: { amount: '0.001' },
             },
         ],
         getAccountInfo: 1,

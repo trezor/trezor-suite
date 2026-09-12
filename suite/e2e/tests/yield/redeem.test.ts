@@ -2,6 +2,7 @@ import { TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
 import ETH_STAKE_CONFIRMED_TX from '../../fixtures/staking/eth-stake-confirmed-tx.json';
+import { toCompactAmount } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { ETH_MOCKED_ACCOUNT } from '../../support/mocks/eth-endpoints';
 import {
@@ -171,7 +172,7 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
 
                 await expect(yieldSection.depositedAmount(usdcPrime.id)).toHaveTranslation(
                     'TR_EARN_YIELD_DASHBOARD_DEPOSITED',
-                    { values: { amount: '6.983177', displaySymbol: 'USDC' } },
+                    { values: { amount: toCompactAmount('6.983177'), displaySymbol: 'USDC' } },
                 );
                 await expect(yieldSection.withdrawButton(usdcPrime.id)).toBeVisible();
             });

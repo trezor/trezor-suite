@@ -1,3 +1,4 @@
+import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -18,8 +19,14 @@ const stakedTotal = (Number(firstStakedAmount) + Number(secondStakedAmount)).toF
 const unstakingTotal = solStakingAccountDeactivating.stakeInSol;
 const stakingAccountTotal = new BigNumber(
     Number(firstStakedAmount) + Number(secondStakedAmount) + Number(unstakingTotal),
-).decimalPlaces(8, BigNumber.ROUND_DOWN);
-const stakingAccountTotalFormatted = `${stakingAccountTotal}… SOL`;
+);
+// An account balance is compact: two decimals from 1 upwards, and no ellipsis.
+const stakingAccountTotalFormatted = `${localizeNumber(
+    stakingAccountTotal.decimalPlaces(2, BigNumber.ROUND_DOWN),
+    'en-US',
+    2,
+    2,
+)} SOL`;
 const totalRewardsInSol = (Number(totalReward.response.total) / 1_000_000_000).toFixed(9);
 
 test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {

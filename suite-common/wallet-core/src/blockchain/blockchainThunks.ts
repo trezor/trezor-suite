@@ -12,18 +12,18 @@ import {
 } from '@suite-common/wallet-config';
 import type { Account, CustomBackend, GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import {
+    asAmountSubunit,
     findAccountDevice,
     findAccountsByDescriptor,
     findAccountsByNetwork,
     formatNetworkAmount,
-    formatTokenAmount,
     getAccountIdentity,
-    getAreSatoshisUsed,
     getBackendFromSettings,
     getCustomBackends,
     isTrezorConnectBackendType,
     shouldSubscribeBlocks,
     shouldUseIdentities,
+    subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type BlockchainBlock,
@@ -32,7 +32,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { TimerId } from '@trezor/type-utils';
-import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
+import { BigNumber, arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import {
@@ -55,7 +55,6 @@ import {
 } from '../fees/feesThunks';
 import {
     type WalletSettingsRootState,
-    selectBitcoinAmountUnit,
     selectEnabledNetworks,
 } from '../settings/walletSettingsReducer';
 
@@ -433,16 +432,18 @@ export const onBlockchainNotificationThunk = createThunk<
         const accountDevice = findAccountDevice(account, selectDevices(getState()));
 
         const token = tx.tokens?.[0];
-        const areSatoshisUsed = getAreSatoshisUsed(selectBitcoinAmountUnit(getState()), account);
 
-        const formattedAmount = token
-            ? formatTokenAmount(token)
-            : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+        const amount = token
+            ? subunitsToUnits({
+                  value: asAmountSubunit(new BigNumber(token.amount ?? '0')),
+                  decimals: token.decimals,
+              }).toString()
+            : formatNetworkAmount(tx.amount, account.symbol);
 
         dispatch(
             notificationsActions.addEvent({
                 type: 'tx-received',
-                formattedAmount,
+                amount,
                 device: accountDevice,
                 token,
                 descriptor: account.descriptor,

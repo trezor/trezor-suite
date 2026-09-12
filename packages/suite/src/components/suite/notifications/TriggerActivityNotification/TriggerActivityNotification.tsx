@@ -11,7 +11,7 @@ import { DEVICE } from '@trezor/connect';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 const MOCK_TX = {
-    formattedAmount: '0.05',
+    amount: '0.05',
     descriptor: 'debug-descriptor',
     symbol: 'btc' as NetworkSymbol,
     txid: 'debug-txid',

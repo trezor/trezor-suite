@@ -25,6 +25,7 @@ import {
     type TransactionNotificationType,
 } from '@trezor/product-components';
 
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
@@ -62,6 +63,11 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     // users think the approve step is the whole transaction. Mirror the trading behavior above.
     const isYieldRoute = routerApp === 'earn-yield';
     const transactionToken = 'token' in props.notification ? props.notification.token : undefined;
+    const notificationAmount =
+        'amount' in props.notification ? props.notification.amount : undefined;
+    // An approval prints the ticker itself, next to the amount.
+    const isSymbolRenderedBesideAmount =
+        props.notification.type === 'tx-approved' || props.notification.type === 'tx-revoked';
     const toastTestIdPrefix = `@toast/${props.notification.type}`;
 
     const handleTransactionClick = () => {
@@ -131,9 +137,20 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                         symbol={props.notification.symbol}
                         token={transactionToken}
                         amount={
-                            'formattedAmount' in props.notification
-                                ? props.notification.formattedAmount
-                                : undefined
+                            notificationAmount !== undefined ? (
+                                <FormattedCryptoAmount
+                                    value={notificationAmount}
+                                    symbol={
+                                        isSymbolRenderedBesideAmount
+                                            ? undefined
+                                            : (transactionToken?.symbol ?? symbol)
+                                    }
+                                    contractAddress={transactionToken?.contract}
+                                    tokenDecimals={transactionToken?.decimals}
+                                    isCompact
+                                    disableHiddenPlaceholder
+                                />
+                            ) : undefined
                         }
                         isInfiniteApproval={
                             props.notification.type === 'tx-approved' &&

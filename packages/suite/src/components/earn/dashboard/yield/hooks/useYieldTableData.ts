@@ -117,6 +117,8 @@ export const getYieldOpportunityData = ({
         depositedContractAddress: isWrappedNativeVault
             ? null
             : (matchedInputToken?.contract ?? vault.token.address ?? null),
+        // Stated decimals of the deposited token, so a stablecoin amount reads money-like.
+        depositedDecimals: matchedInputToken?.decimals ?? vault.token.decimals,
     };
 };
 

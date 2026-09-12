@@ -56,7 +56,11 @@ export const YieldUnwrapStep = ({
             summary={{
                 labelTranslationId: 'TR_BALANCE',
                 value: (
-                    <FormattedCryptoAmount value={tokenBalance} symbol={tokenSymbol} isBalance />
+                    <FormattedCryptoAmount
+                        value={tokenBalance}
+                        symbol={tokenSymbol}
+                        tokenDecimals={tokenDecimals}
+                    />
                 ),
                 onMaxClick: pendingTransaction ? undefined : onMaxClick,
             }}
