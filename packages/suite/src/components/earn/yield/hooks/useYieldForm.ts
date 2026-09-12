@@ -135,7 +135,7 @@ export const useYieldForm = ({
     const pricePerShareState = vault.state?.pricePerShareState;
     const unwrapDefaultAmount = useMemo(() => {
         if (!token || !receiptToken || !isYieldWithdrawFlow(flowType)) {
-            return token?.balance ?? '';
+            return '';
         }
 
         return getYieldUnwrapDefaultAmount({
@@ -144,9 +144,16 @@ export const useYieldForm = ({
             token,
             receiptToken,
             pricePerShareState,
-            fallbackAmount: token.balance,
+            persistedAssetAmount: session.result.completedReceiptAmount,
         });
-    }, [flowType, pricePerShareState, receiptToken, session.result.completedAmount, token]);
+    }, [
+        flowType,
+        pricePerShareState,
+        receiptToken,
+        session.result.completedAmount,
+        session.result.completedReceiptAmount,
+        token,
+    ]);
 
     useEffect(() => {
         const prevStep = prevStepRef.current;

@@ -64,7 +64,10 @@ const flowData = {
     },
 } as unknown as YieldFlowResolvedData;
 
-const dispatchWithdraw = (report: jest.Mock) => {
+const dispatchWithdraw = (
+    report: jest.Mock,
+    overrides: Partial<Parameters<typeof submitYieldWithdrawThunk>[0]> = {},
+) => {
     const store = createTestStore({ extra: createExtra(report), preloadedState: {} });
 
     return store
@@ -74,6 +77,7 @@ const dispatchWithdraw = (report: jest.Mock) => {
                 flowData,
                 amount: '100',
                 flowType: 'withdraw',
+                ...overrides,
             }),
         )
         .unwrap()
@@ -137,6 +141,7 @@ describe('submitYieldWithdrawThunk', () => {
                 fee: '31500000000',
                 submittedAt: expect.any(Number),
             },
+            receiptAmount: '100',
         });
 
         const toast = store
@@ -144,6 +149,34 @@ describe('submitYieldWithdrawThunk', () => {
             .filter(notificationsActions.addToast.match)
             .find(action => action.payload.type === 'tx-yield-withdraw');
         expect(toast?.payload).toMatchObject({ txid: '0xwithdraw' });
+    });
+
+    it('persists the asset output converted at submit for a redeem', async () => {
+        const store = await dispatchWithdraw(jest.fn(), {
+            flowType: 'redeem',
+            flowData: {
+                ...flowData,
+                vault: {
+                    id: 'vault-1',
+                    state: {
+                        pricePerShareState: {
+                            shareToken: { symbol: 'musdc', decimals: 18 },
+                            quoteToken: { symbol: 'usdc', decimals: 6 },
+                            price: '1.05',
+                        },
+                    },
+                },
+            } as unknown as YieldFlowResolvedData,
+        });
+
+        const pendingTxAction = store
+            .getActions()
+            .find(action => action.type === yieldActions.setPendingTx.type);
+
+        expect(pendingTxAction?.payload).toMatchObject({
+            tx: { type: 'redeem', amount: '100' },
+            receiptAmount: '105',
+        });
     });
 
     it('still reports submit-failed when the signing throws', async () => {
