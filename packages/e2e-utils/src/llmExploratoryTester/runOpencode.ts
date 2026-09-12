@@ -106,7 +106,9 @@ async function sendPrompt(run: Run, text: string): Promise<void> {
             model: MODEL,
             variant: REASONING_EFFORT,
             parts: [{ type: 'text', text }],
-            format: { type: 'json_schema', schema: TestResultJsonSchema },
+            // retryCount: the server re-asks the model when its structured
+            // output fails schema validation, instead of failing the run.
+            format: { type: 'json_schema', schema: TestResultJsonSchema, retryCount: 2 },
         },
         { throwOnError: true },
     );

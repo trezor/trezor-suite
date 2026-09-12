@@ -1,7 +1,7 @@
 import { type Config } from '@opencode-ai/sdk/v2';
 import { join } from 'node:path';
 
-import { BOT_DIR } from './paths';
+import { BOT_DIR, REPO_ROOT } from './paths';
 
 export const MODEL = {
     providerID: 'openrouter',
@@ -40,8 +40,9 @@ export const OPENCODE_CONFIG: Config = {
         playwright: {
             type: 'local',
             command: [
-                'npx',
-                'playwright',
+                // The workspace binary directly — npx would pay package
+                // resolution on every server spawn.
+                join(REPO_ROOT, 'node_modules/.bin/playwright'),
                 'mcp',
                 '--cdp-endpoint=http://127.0.0.1:9222',
                 '--output-dir=packages/e2e-utils/src/llmExploratoryTester/reports/browser',
@@ -59,6 +60,14 @@ export const OPENCODE_CONFIG: Config = {
         edit: 'deny',
         webfetch: 'deny',
         external_directory: 'deny',
+        // Nobody answers the agent's questions in a headless run — an
+        // unanswered one would hang the session until the kill timer.
+        question: 'deny',
+    },
+    experimental: {
+        // A denied tool call must not kill the turn; the agent should route
+        // around the sandbox and carry on.
+        continue_loop_on_deny: true,
     },
     // MCP tool denies live in hooks/sandboxGate.mjs — this map does not gate
     // MCP tools in OpenCode 1.18 (denied MCP tools stay callable).
