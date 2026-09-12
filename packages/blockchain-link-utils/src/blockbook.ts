@@ -86,7 +86,7 @@ export const filterTokenTransfers = (
             const tokenTransfer = {
                 ...transfer,
                 type,
-                decimals: transfer.decimals || DEFAULT_TOKEN_DECIMALS,
+                decimals: transfer.decimals ?? DEFAULT_TOKEN_DECIMALS,
                 amount: transfer.value || '',
                 standard: transfer.standard,
             };
@@ -399,7 +399,7 @@ export const transformTokenInfo = (
         return arr.concat([
             {
                 ...token,
-                decimals: token.decimals || DEFAULT_TOKEN_DECIMALS,
+                decimals: token.decimals ?? DEFAULT_TOKEN_DECIMALS,
                 standard: token.standard,
             },
         ]);
