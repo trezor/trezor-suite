@@ -7,6 +7,7 @@ import { BlockchainLink } from '@trezor/blockchain-link';
 import type { CoinInfo, CoreEventMessage, Proxy, PushTransaction } from '@trezor/connect-common';
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { type CanonicalDescriptor } from '@trezor/utils';
 
 import {
     BlockbookWorker,
@@ -210,7 +211,12 @@ export class Blockchain {
         return this.link.getFiatRatesForTimestamps(params);
     }
 
-    getAccountBalanceHistory(params: BlockchainLinkParams<'getAccountBalanceHistory'>) {
+    // Same canonical-descriptor requirement as `getAccountInfo` below.
+    getAccountBalanceHistory(
+        params: Omit<BlockchainLinkParams<'getAccountBalanceHistory'>, 'descriptor'> & {
+            descriptor: CanonicalDescriptor;
+        },
+    ) {
         return this.link.getAccountBalanceHistory(params);
     }
 
@@ -218,11 +224,20 @@ export class Blockchain {
         return this.link.getInfo();
     }
 
-    getAccountInfo(request: BlockchainLinkParams<'getAccountInfo'>) {
+    // Blockbook rejects taproot descriptors that use `h` for hardened parts, so the descriptor sent
+    // to the backend must be canonical (apostrophe form). The CanonicalDescriptor brand forces every
+    // caller to normalize via `toCanonicalDescriptor`, turning that requirement into a compiler check.
+    // The brand is not exhaustive: `getTransactions` and `subscribeAccounts`/`unsubscribeAccounts`
+    // still take plain strings, so read it as a guarantee for the branded methods only.
+    getAccountInfo(
+        request: Omit<BlockchainLinkParams<'getAccountInfo'>, 'descriptor'> & {
+            descriptor: CanonicalDescriptor;
+        },
+    ) {
         return this.link.getAccountInfo(request);
     }
 
-    getAccountUtxo(descriptor: string) {
+    getAccountUtxo(descriptor: CanonicalDescriptor) {
         return this.link.getAccountUtxo(descriptor);
     }
 
