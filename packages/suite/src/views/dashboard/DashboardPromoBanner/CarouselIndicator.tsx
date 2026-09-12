@@ -58,6 +58,7 @@ export const CarouselIndicator = ({ count, activeIndex, onSelect }: CarouselIndi
                 onClick={() => onSelect(index)}
                 aria-label={`Show promo banner ${index + 1} of ${count}`}
                 aria-current={index === activeIndex ? 'page' : undefined}
+                data-testid={`@dashboard/promo-banner/carousel-indicator-${index}`}
             />
         ))}
     </Row>

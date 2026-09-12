@@ -93,6 +93,7 @@ export const BannerCarousel = ({ banners, onClose, onCTAClick }: BannerCarouselP
                             animate="center"
                             exit="exit"
                             transition={slideTransition}
+                            data-testid={`@dashboard/promo-banner/carousel-slide/${activeBanner.key}`}
                         >
                             {activeBanner.render({
                                 onClose: handleClose,
