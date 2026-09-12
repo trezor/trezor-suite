@@ -625,6 +625,79 @@ export default {
                 },
             },
         },
+        {
+            description: 'Drops a null staking block',
+            data: {
+                descriptor: 'descriptor',
+                empty: false,
+                balance: '27429803',
+                availableBalance: '27256514',
+                history: { total: 0, unconfirmed: 0 },
+                misc: { staking: null },
+            },
+            result: {
+                descriptor: 'descriptor',
+                empty: false,
+                balance: '27429803',
+                availableBalance: '27256514',
+                history: { total: 0, unconfirmed: 0, transactions: [] },
+                misc: {},
+            },
+        },
+        {
+            description: 'Drops a partially filled staking block (failed stake-address lookup)',
+            data: {
+                descriptor: 'descriptor',
+                empty: false,
+                balance: '27429803',
+                availableBalance: '27256514',
+                history: { total: 0, unconfirmed: 0 },
+                misc: { staking: { isActive: true, rewards: '173289' } },
+            },
+            result: {
+                descriptor: 'descriptor',
+                empty: false,
+                balance: '27429803',
+                availableBalance: '27256514',
+                history: { total: 0, unconfirmed: 0, transactions: [] },
+                misc: {},
+            },
+        },
+        {
+            description: 'Forwards a complete staking block unchanged',
+            data: {
+                descriptor: 'descriptor',
+                empty: false,
+                balance: '27429803',
+                availableBalance: '27256514',
+                history: { total: 0, unconfirmed: 0 },
+                misc: {
+                    staking: {
+                        address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+                        isActive: true,
+                        rewards: '173289',
+                        poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+                        drep: null,
+                    },
+                },
+            },
+            result: {
+                descriptor: 'descriptor',
+                empty: false,
+                balance: '27429803',
+                availableBalance: '27256514',
+                history: { total: 0, unconfirmed: 0, transactions: [] },
+                misc: {
+                    staking: {
+                        address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+                        isActive: true,
+                        rewards: '173289',
+                        poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+                        drep: null,
+                    },
+                },
+            },
+        },
     ],
 
     transformTransaction: [

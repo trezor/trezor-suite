@@ -4,7 +4,11 @@ import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import {
+    mockAccountToken,
+    mockWalletAccount,
+    networkSpecificDefaultCardano,
+} from '@suite-common/wallet-types/mocks';
 import { type AccountInfo } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
@@ -156,6 +160,100 @@ describe('Account Reducer', () => {
         spyWarn.mockRestore();
 
         expect(store.getState().wallet.accounts.length).toEqual(0);
+    });
+
+    describe('cardano staking', () => {
+        const delegatedStaking: NonNullable<NonNullable<AccountInfo['misc']>['staking']> = {
+            address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+            isActive: true,
+            rewards: '173289',
+            poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+            drep: null,
+        };
+
+        // `mockWalletAccount`'s cardano defaults type `poolId` as the literal `null`.
+        const cardanoAccount: Account = {
+            ...mockWalletAccount(
+                { symbol: asNetworkSymbol('ada'), deviceState: '1stTestnetAddress@device_id:0' },
+                networkSpecificDefaultCardano,
+            ),
+            networkType: 'cardano',
+            marker: undefined,
+            stellarCursor: undefined,
+            page: undefined,
+            misc: { staking: delegatedStaking },
+        };
+
+        it('keeps the delegation when a refresh reports the account without staking data', () => {
+            const store = initStore({
+                preloadedState: { wallet: { accounts: [cardanoAccount] } },
+            });
+
+            store.dispatch(
+                accountsActions.updateAccount(cardanoAccount, {
+                    descriptor: cardanoAccount.descriptor,
+                    balance: '1000',
+                    availableBalance: '1000',
+                    empty: false,
+                    history: { total: 1, unconfirmed: 0, transactions: [] },
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.misc).toEqual({
+                staking: delegatedStaking,
+            });
+        });
+
+        it('honors a de-delegation that the payload actually reports', () => {
+            const store = initStore({
+                preloadedState: { wallet: { accounts: [cardanoAccount] } },
+            });
+
+            store.dispatch(
+                accountsActions.updateAccount(cardanoAccount, {
+                    descriptor: cardanoAccount.descriptor,
+                    balance: '1000',
+                    availableBalance: '1000',
+                    empty: false,
+                    history: { total: 1, unconfirmed: 0, transactions: [] },
+                    misc: { staking: { ...delegatedStaking, isActive: false, poolId: null } },
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.misc).toEqual({
+                staking: { ...delegatedStaking, isActive: false, poolId: null },
+            });
+        });
+
+        it('keeps the delegation when discovery re-creates an account it already knows', () => {
+            const store = initStore({
+                preloadedState: { wallet: { accounts: [cardanoAccount] } },
+            });
+
+            store.dispatch(
+                accountsActions.createAccount({
+                    deviceState: cardanoAccount.deviceState,
+                    index: cardanoAccount.index,
+                    path: cardanoAccount.path,
+                    accountType: cardanoAccount.accountType,
+                    symbol: cardanoAccount.symbol,
+                    visible: true,
+                    accountInfo: {
+                        descriptor: cardanoAccount.descriptor,
+                        balance: '1000',
+                        availableBalance: '1000',
+                        empty: false,
+                        history: { total: 1, unconfirmed: 0, transactions: [] },
+                    },
+                    previousAccount: cardanoAccount,
+                }),
+            );
+
+            expect(store.getState().wallet.accounts.length).toEqual(1);
+            expect(store.getState().wallet.accounts[0]?.misc).toEqual({
+                staking: delegatedStaking,
+            });
+        });
     });
 
     describe('locally tracked tokens', () => {
