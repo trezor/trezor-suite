@@ -165,8 +165,9 @@ function continuationPrompt(unfinished: string[]): string {
         `You reported unfinished coverage: ${unfinished.join('; ')}.`,
         'Continue what remains actionable. Items blocked by the sandbox itself',
         '(fault injection, navigation rules) stay blocked — keep them in',
-        '`unfinished` and do not re-attempt them. End with the structured',
-        'output again.',
+        '`unfinished` and do not re-attempt them. End with the structured output',
+        'for the WHOLE run — summary covering every pass and all issues found',
+        'so far, not just this one.',
     ].join(' ');
 }
 
