@@ -4,6 +4,7 @@ import { selectSelectedAccount } from '@suite/account';
 import {
     hasPendingStakeTypeTransaction,
     selectCardanoPoolsInfo,
+    selectRawNetworkFeeInfo,
     selectStakeVotingDelegation,
 } from '@suite-common/wallet-core';
 import {
@@ -14,6 +15,7 @@ import {
 
 import {
     CardanoComposeError,
+    getCardanoFeePerUnit,
     prepareTxPlan,
 } from 'src/actions/wallet/stake/stakeFormCardanoActions';
 import { useSelector } from 'src/hooks/suite';
@@ -27,6 +29,11 @@ export const useCardanoStaking = (): CardanoStaking => {
     const votingDelegation = useSelector(selectStakeVotingDelegation);
     const hasPendingTx = useSelector(state =>
         account ? hasPendingStakeTypeTransaction(state, account.key) : false,
+    );
+    // `min_fee_a` as reported by the backend. Without it the compose falls back to the value baked
+    // into the coin selection library.
+    const feePerUnit = useSelector(state =>
+        getCardanoFeePerUnit(selectRawNetworkFeeInfo(state, account?.symbol)),
     );
 
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
@@ -60,6 +67,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                     action,
                     cardanoPools,
                     votingDelegation,
+                    feePerUnit,
                 });
                 if (composeRes?.txPlan) {
                     if (composeRes.txPlan.type === 'error') {
@@ -95,7 +103,7 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             setLoading(false);
         },
-        [account, cardanoPools, votingDelegation],
+        [account, cardanoPools, votingDelegation, feePerUnit],
     );
 
     // TODO: improve this hook for non-cardano accounts

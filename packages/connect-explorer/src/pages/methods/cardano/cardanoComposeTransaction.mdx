@@ -14,7 +14,10 @@ import { ParamsTable } from '../../../components/ParamsTable';
     ]}
 />
 
-export const paramDescriptions = {};
+export const paramDescriptions = {
+    protocolParams:
+        'Cardano protocol parameters to compose against. Anything omitted falls back to the values built into `@trezor/network-cardano-coin-selection`. `feeLevels[].feePerUnit` is the same protocol value as `protocolParams.minFeeA` and takes precedence over it.',
+};
 
 ## Cardano: Compose transaction
 

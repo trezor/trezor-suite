@@ -1,0 +1,57 @@
+{
+    "name": "@trezor/network-cardano-coin-selection",
+    "version": "10.0.0-beta.1",
+    "description": "Cardano coin selection, fee, min-UTxO and deposit math (CIP-2), vendored from @fivebinaries/coin-selection",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "cardano",
+        "coin selection"
+    ],
+    "sideEffects": false,
+    "type": "module",
+    "main": "./src/index.ts",
+    "browser": {
+        "@emurgo/cardano-serialization-lib-nodejs": "@emurgo/cardano-serialization-lib-browser"
+    },
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
+            },
+            "./lib/*": "./lib/*"
+        }
+    },
+    "files": [
+        "lib/",
+        "CHANGELOG.md"
+    ],
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
+    },
+    "dependencies": {
+        "@emurgo/cardano-serialization-lib-browser": "13.2.0",
+        "@emurgo/cardano-serialization-lib-nodejs": "13.2.0",
+        "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/eslint": "workspace:*"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
+    }
+}

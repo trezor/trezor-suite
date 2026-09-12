@@ -6,9 +6,7 @@
     },
     "include": ["./src"],
     "references": [
-        {
-            "path": "../network-cardano-coin-selection"
-        },
-        { "path": "../../../packages/utils" }
+        { "path": "../../../packages/utils" },
+        { "path": "../../../packages/eslint" }
     ]
 }
