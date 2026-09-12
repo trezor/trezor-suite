@@ -183,6 +183,7 @@ type DesktopApiSend<K extends keyof MainChannels> = SendMethod<{ 0: MainChannels
 
 type DesktopApiInvoke<K extends keyof InvokeChannels> = InvokeMethod<{ 0: InvokeChannels[K] }>;
 
+/** @serviceContract */
 export type DesktopApi = {
     available: boolean;
     on: DesktopApiListener;

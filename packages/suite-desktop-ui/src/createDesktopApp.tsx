@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect-electron';
-import { type DesktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
@@ -20,8 +20,7 @@ import { MainDesktop } from './MainDesktop';
 import { initSentry } from './sentry';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 
-type DesktopAppDeps = {
-    desktopApi: DesktopApi;
+type DesktopAppDeps = DesktopApiDep & {
     services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep;
 };
 

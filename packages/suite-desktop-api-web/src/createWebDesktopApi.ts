@@ -1,0 +1,74 @@
+import { type DesktopApi } from '@trezor/suite-desktop-api';
+
+const unavailable =
+    (method: string) =>
+    (...args: unknown[]) => {
+        console.error('desktopApi not available:', method, ...args);
+    };
+
+const unavailableAsync =
+    (method: string) =>
+    (...args: unknown[]): Promise<never> =>
+        Promise.reject(new Error(`desktopApi not available: ${[method, ...args].join(',')}`));
+
+export const createWebDesktopApi = (): DesktopApi => ({
+    available: false,
+    on: unavailable('on'),
+    once: unavailable('once'),
+    removeAllListeners: unavailable('removeAllListeners'),
+    appRestart: unavailable('appRestart'),
+    appFocus: unavailable('appFocus'),
+    appHide: unavailable('appHide'),
+    appAutoStart: unavailable('appAutoStart'),
+    checkForUpdates: unavailable('checkForUpdates'),
+    downloadUpdate: unavailable('downloadUpdate'),
+    installUpdate: unavailable('installUpdate'),
+    cancelUpdate: unavailable('cancelUpdate'),
+    allowPrerelease: unavailable('allowPrerelease'),
+    setAutomaticUpdateEnabled: unavailable('setAutomaticUpdateEnabled'),
+    setAutoInstallOnAppQuit: unavailable('setAutoInstallOnAppQuit'),
+    themeChange: unavailable('themeChange'),
+    getTorStatus: unavailable('getTorStatus'),
+    clearStore: unavailable('clearStore'),
+    configLogger: unavailable('configLogger'),
+    getAppAutoStartIsEnabled: unavailableAsync('getAppAutoStartIsEnabled'),
+    appAutoStartPopupAck: unavailableAsync('appAutoStartPopupAck'),
+    appAutoStartPopupResponse: unavailableAsync('appAutoStartPopupResponse'),
+    appIsVisible: unavailableAsync('appIsVisible'),
+    appIsFullScreen: unavailableAsync('appIsFullScreen'),
+    handshake: unavailableAsync('handshake'),
+    loadModules: unavailableAsync('loadModules'),
+    loadTorModule: unavailableAsync('loadTorModule'),
+    metadataWrite: unavailableAsync('metadataWrite'),
+    metadataRead: unavailableAsync('metadataRead'),
+    metadataGetFiles: unavailableAsync('metadataGetFiles'),
+    metadataRenameFile: unavailableAsync('metadataRenameFile'),
+    getHttpReceiverAddress: unavailableAsync('getHttpReceiverAddress'),
+    toggleTor: unavailableAsync('toggleTor'),
+    changeTorSettings: unavailableAsync('changeTorSettings'),
+    getTorSettings: unavailableAsync('getTorSettings'),
+    clearUserData: unavailableAsync('clearUserData'),
+    openUserDataDirectory: unavailableAsync('openUserDataDirectory'),
+    getBridgeStatus: unavailableAsync('getBridgeStatus'),
+    toggleBridge: unavailableAsync('toggleBridge'),
+    changeBridgeSettings: unavailableAsync('changeBridgeSettings'),
+    getBridgeSettings: unavailableAsync('getBridgeSettings'),
+    changeTraySettings: unavailableAsync('changeTraySettings'),
+    getTraySettings: unavailableAsync('getTraySettings'),
+    connectPopupEnabled: unavailableAsync('connectPopupEnabled'),
+    connectPopupSetEnabled: unavailableAsync('connectPopupSetEnabled'),
+    connectPopupReady: unavailableAsync('connectPopupReady'),
+    connectPopupResponse: unavailableAsync('connectPopupResponse'),
+    openSystemSettings: unavailableAsync('openSystemSettings'),
+    setBioAuthSettings: unavailableAsync('setBioAuthSettings'),
+    getBioAuthSettings: unavailableAsync('getBioAuthSettings'),
+    isBioAuthAvailable: unavailableAsync('isBioAuthAvailable'),
+    validateBioAuth: unavailableAsync('validateBioAuth'),
+    getBioAuthStatus: unavailableAsync('getBioAuthStatus'),
+    safeStoreEncrypt: unavailableAsync('safeStoreEncrypt'),
+    safeStoreDecrypt: unavailableAsync('safeStoreDecrypt'),
+    mcpGetSettings: unavailableAsync('mcpGetSettings'),
+    mcpSetEnabled: unavailableAsync('mcpSetEnabled'),
+    mcpRegenerateToken: unavailableAsync('mcpRegenerateToken'),
+    reloadBrowserWindow: unavailableAsync('reloadBrowserWindow'),
+});

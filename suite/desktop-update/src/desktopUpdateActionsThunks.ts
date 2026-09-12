@@ -3,7 +3,7 @@ import { type Dispatch } from 'redux';
 import { AppUpdateEventStatus, type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep, type UpdateInfo } from '@trezor/suite-desktop-api';
 
 import { getAppUpdatePayload } from './appUpdateAnalytics';
 import {
@@ -92,7 +92,9 @@ export const readyThunk =
 
 type InstallUpdateThunkState = DesktopUpdateRootState;
 
-type InstallUpdateThunkDeps = WithServices<DesktopAnalyticsDep>;
+type InstallUpdateThunkDeps = WithServices<
+    DesktopAnalyticsDep & DesktopApiDep<'installUpdate' | 'setAutoInstallOnAppQuit'>
+>;
 
 export const installUpdateThunk =
     ({ installNow }: { installNow: boolean }) =>
@@ -116,11 +118,11 @@ export const installUpdateThunk =
 
         // auto-updater is by default configured to update on quit 'autoUpdater.autoInstallOnAppQuit = true'
         if (installNow) {
-            desktopApi.installUpdate();
+            extra.services.desktopApi.installUpdate();
         } else {
             // To make sure, the update is installed on quit as it may have been disabled
             // by switching off the auto-update (silent-update)
-            desktopApi.setAutoInstallOnAppQuit();
+            extra.services.desktopApi.setAutoInstallOnAppQuit();
         }
     };
 

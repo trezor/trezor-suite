@@ -1,11 +1,15 @@
 import { type BuyTrade, type BuyTradeQuoteRequest, type BuyTradeStatus } from 'invity-api';
 
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { type Account } from 'src/types/wallet';
 
-export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Account) => {
+export const buildQuoteLink = async (
+    deps: DesktopApiDep<'getHttpReceiverAddress'>,
+    request: BuyTradeQuoteRequest,
+    account: Account,
+): Promise<string> => {
     const assetPrefix = process.env.ASSET_PREFIX || '';
     const locationOrigin = getLocationOrigin();
     let hash: string;
@@ -19,7 +23,7 @@ export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Ac
     const params = `offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        const url = await desktopApi.getHttpReceiverAddress('/buy-redirect');
+        const url = await deps.desktopApi.getHttpReceiverAddress('/buy-redirect');
 
         return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }
@@ -27,13 +31,17 @@ export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Ac
     return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
 };
 
-export const createTxLink = async (trade: BuyTrade, account: Account) => {
+export const buildTxLink = async (
+    deps: DesktopApiDep<'getHttpReceiverAddress'>,
+    trade: BuyTrade,
+    account: Account,
+): Promise<string> => {
     const locationOrigin = getLocationOrigin();
     const assetPrefix = process.env.ASSET_PREFIX || '';
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
 
     if (isDesktop()) {
-        const url = await desktopApi.getHttpReceiverAddress('/buy-redirect');
+        const url = await deps.desktopApi.getHttpReceiverAddress('/buy-redirect');
 
         return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }

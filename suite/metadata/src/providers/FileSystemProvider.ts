@@ -1,11 +1,18 @@
 import { AbstractMetadataProvider } from '@suite-common/metadata-types';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
+
+export type FileSystemProviderDep = DesktopApiDep<
+    'metadataGetFiles' | 'metadataRead' | 'metadataRenameFile' | 'metadataWrite'
+>;
 
 export class FileSystemProvider extends AbstractMetadataProvider {
     isCloud = false;
 
-    constructor() {
+    private readonly deps: FileSystemProviderDep;
+
+    constructor(deps: FileSystemProviderDep) {
         super('fileSystem');
+        this.deps = deps;
     }
 
     get clientId() {
@@ -32,7 +39,7 @@ export class FileSystemProvider extends AbstractMetadataProvider {
     }
 
     async getFileContent(file: string) {
-        const result = await desktopApi.metadataRead({ file });
+        const result = await this.deps.desktopApi.metadataRead({ file });
         if (!result.success && result.code !== 'ENOENT') {
             return this.error('PROVIDER_ERROR', result.error);
         }
@@ -43,7 +50,7 @@ export class FileSystemProvider extends AbstractMetadataProvider {
     async setFileContent(file: string, content: Buffer) {
         const hex = content.toString('hex');
 
-        const result = await desktopApi.metadataWrite({
+        const result = await this.deps.desktopApi.metadataWrite({
             file,
             content: hex,
         });
@@ -55,7 +62,7 @@ export class FileSystemProvider extends AbstractMetadataProvider {
     }
 
     async getFilesList() {
-        const response = await desktopApi.metadataGetFiles();
+        const response = await this.deps.desktopApi.metadataGetFiles();
 
         if (!response.success) {
             return this.error('PROVIDER_ERROR', response.error);
@@ -65,7 +72,7 @@ export class FileSystemProvider extends AbstractMetadataProvider {
     }
 
     async renameFile(from: string, to: string) {
-        const response = await desktopApi.metadataRenameFile({
+        const response = await this.deps.desktopApi.metadataRenameFile({
             file: from,
             to,
         });

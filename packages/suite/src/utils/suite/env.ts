@@ -1,7 +1,8 @@
 import { isDesktop } from '@trezor/env-utils';
-import { type SuiteThemeVariant, desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep, type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 export const submitRequestForm = async (
+    deps: DesktopApiDep<'getHttpReceiverAddress'>,
     formMethod: 'GET' | 'POST' | 'IFRAME',
     formAction: string,
     formTarget: '_blank' | '_self',
@@ -26,7 +27,7 @@ export const submitRequestForm = async (
         Object.entries(fields).forEach(([k, v]) => {
             params += `&${k}=${encodeURIComponent(v)}`;
         });
-        const serverUrl = await desktopApi.getHttpReceiverAddress('/buy-post');
+        const serverUrl = await deps.desktopApi.getHttpReceiverAddress('/buy-post');
         window.open(`${serverUrl}?${params}`, '_blank');
     } else {
         const form = document.createElement('form');

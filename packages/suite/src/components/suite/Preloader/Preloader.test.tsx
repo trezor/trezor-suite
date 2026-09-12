@@ -26,6 +26,7 @@ import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
 import { isLinux } from '@trezor/env-utils';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';
@@ -63,18 +64,6 @@ jest.mock('@suite/intl', () => ({
 jest.mock('cross-fetch', () => ({
     __esModule: true,
     default: () => Promise.resolve({ ok: false }),
-}));
-
-// mock desktopApi
-jest.mock('@trezor/suite-desktop-api', () => ({
-    __esModule: true,
-    desktopApi: {
-        getBridgeStatus: () =>
-            Promise.resolve({ success: true, payload: { service: true, process: true } }),
-        getBridgeSettings: () => Promise.resolve({ success: true, payload: { enabled: true } }),
-        on: (_event: string, _cb: any) => {},
-        removeAllListeners: (_event: string) => {},
-    },
 }));
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
@@ -132,6 +121,7 @@ const getInitialState = ({
 });
 
 type PreloaderTestServices = DesktopAnalyticsDep &
+    DesktopApiDep<'getBridgeStatus' | 'getBridgeSettings' | 'on' | 'removeAllListeners'> &
     GetAllowPrereleaseDep &
     ReportSecurityCheckDep &
     RerunFwAuthenticityChecksCallDep &
@@ -139,6 +129,14 @@ type PreloaderTestServices = DesktopAnalyticsDep &
     SuiteRouterHistoryDep;
 
 const services: PreloaderTestServices = {
+    desktopApi: {
+        getBridgeStatus: () =>
+            Promise.resolve({ success: true, payload: { service: true, process: true } }),
+        getBridgeSettings: () =>
+            Promise.resolve({ success: true, payload: { doNotStartOnStartup: false } }),
+        on: () => {},
+        removeAllListeners: () => {},
+    },
     analytics: mockDesktopAnalytics(),
     getAllowPrerelease: mockGetAllowPrerelease(),
     reportSecurityCheck: mockReportSecurityCheck(),

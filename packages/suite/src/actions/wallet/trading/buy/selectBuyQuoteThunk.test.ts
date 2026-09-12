@@ -1,8 +1,5 @@
 import { type BuyTrade, type BuyTradeQuoteRequest, type CryptoId } from 'invity-api';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
-import { type GotoThunkDeps } from '@suite/router';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createTestStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -10,8 +7,9 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { StaticSessionId } from '@trezor/connect';
+import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
-import { selectBuyQuoteThunk } from './selectBuyQuoteThunk';
+import { type SelectBuyQuoteThunkDeps, selectBuyQuoteThunk } from './selectBuyQuoteThunk';
 
 const mockSelectQuoteThunk = jest.fn((args: unknown) =>
     Object.assign(
@@ -34,10 +32,9 @@ jest.mock('@suite-common/trading', () => ({
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
-type SelectBuyQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
-
 const createExtra = (report: jest.Mock): SelectBuyQuoteThunkDeps => ({
     services: {
+        desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
         analytics: mockAnalytics(report),
         suiteRouterHistory: {
             getLocation: jest.fn(),

@@ -10,7 +10,11 @@ import { type OAuthServerEnvironment, type Tokens } from '@suite-common/metadata
 import { isDesktop } from '@trezor/env-utils';
 
 import * as METADATA_PROVIDER from './metadataProviderConstants';
-import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from './oauth';
+import {
+    type OauthDesktopApiDep,
+    extractCredentialsFromAuthorizationFlow,
+    getOauthReceiverUrl,
+} from './oauth';
 import { getCodeChallenge } from './random';
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
@@ -97,6 +101,7 @@ class Client {
     static accessToken: string;
     static refreshToken: string;
     static authServerUrl: (typeof Client.servers)[keyof typeof Client.servers];
+    static deps: OauthDesktopApiDep;
     static servers = {
         production: 'https://suite-auth.trezor.io',
         staging: 'https://staging-suite-auth.trezor.io',
@@ -107,7 +112,12 @@ class Client {
         Client.authServerUrl = Client.servers[environment];
     }
 
-    static init({ accessToken, refreshToken }: Tokens, environment: keyof typeof Client.servers) {
+    static init(
+        { accessToken, refreshToken }: Tokens,
+        environment: keyof typeof Client.servers,
+        deps: OauthDesktopApiDep,
+    ) {
+        Client.deps = deps;
         Client.initPromise = new Promise(resolve => {
             Client.nameIdMap = {};
             Client.setEnvironment(environment);
@@ -179,7 +189,7 @@ class Client {
     static async authorize() {
         await Client.initPromise;
 
-        const redirectUri = await getOauthReceiverUrl();
+        const redirectUri = await getOauthReceiverUrl(Client.deps);
 
         if (!redirectUri) return;
 
@@ -204,7 +214,10 @@ class Client {
 
         url.searchParams.set('state', getCodeChallenge());
 
-        const { access_token, code } = await extractCredentialsFromAuthorizationFlow(url);
+        const { access_token, code } = await extractCredentialsFromAuthorizationFlow(
+            Client.deps,
+            url,
+        );
 
         if (access_token) {
             // implicit flow returns short lived access_token directly

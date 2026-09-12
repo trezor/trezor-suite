@@ -10,13 +10,18 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
-import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
+import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useSelector } from 'src/hooks/suite';
-import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
+import { buildQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
 export const useTradingExchangeTradeRequest = (account: Account | undefined) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { desktopApi, analytics, dispatch } = useServices(
+        selectDesktopApiDep,
+        selectDesktopAnalyticsDep,
+        selectDispatch,
+    );
     const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
@@ -28,7 +33,8 @@ export const useTradingExchangeTradeRequest = (account: Account | undefined) => 
             return;
         }
 
-        const returnUrl = await createQuoteLink(
+        const returnUrl = await buildQuoteLink(
+            { desktopApi },
             quotesRequest,
             account,
             { selectedFee, composed },
@@ -43,7 +49,7 @@ export const useTradingExchangeTradeRequest = (account: Account | undefined) => 
         };
 
         const processResponseData = (response: ExchangeTrade) => {
-            dispatch(submitRequestForm(response.tradeForm?.form));
+            dispatch(submitRequestFormThunk(response.tradeForm?.form));
         };
 
         const nextStep = () => {

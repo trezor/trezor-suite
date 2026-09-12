@@ -24,6 +24,31 @@ export const globalNoExtraneousDependenciesDevDependencies = [
     '**/*e2e/**', // Todo: This shall be only in packages that has e2e tests
 ];
 
+const desktopApiImplementationMessage =
+    'Only a composition root may choose a DesktopApi implementation. Declare DesktopApiDep and take the API as an injected dependency, or use selectDesktopApiDep in React.';
+
+export const desktopApiRestrictedImports = [
+    { name: '@trezor/suite-desktop-api-electron', message: desktopApiImplementationMessage },
+    { name: '@trezor/suite-desktop-api-web', message: desktopApiImplementationMessage },
+];
+
+export const libDevRestrictedImportPattern = {
+    regex: '/libDev/src',
+    message: 'Importing from "*/libDev/src" path is not allowed.',
+};
+
+/** @type {Config} */
+export const desktopApiCompositionRootAllowance = {
+    files: [
+        '**/preload.ts',
+        '**/createSuiteDesktopCompositionRoot.ts',
+        '**/createSuiteWebCompositionRoot.ts',
+    ],
+    rules: {
+        'no-restricted-imports': ['error', { patterns: [libDevRestrictedImportPattern] }],
+    },
+};
+
 /** @type {Config[]} */
 export const importConfig = [
     // TODO: Remove the compatibility wrapper when eslint-plugin-import supports ESLint 10.
@@ -38,6 +63,8 @@ export const importConfig = [
             },
         },
         rules: {
+            'no-restricted-imports': ['error', { paths: [...desktopApiRestrictedImports] }],
+
             // Additional
             'import/no-default-export': 'error', // We don't want to use default exports, always use named exports
             'import/no-anonymous-default-export': [
@@ -91,4 +118,5 @@ export const importConfig = [
             'import/no-unresolved': 'off', // Does not work with Babel react-native to react-native-web
         },
     },
+    desktopApiCompositionRootAllowance,
 ];

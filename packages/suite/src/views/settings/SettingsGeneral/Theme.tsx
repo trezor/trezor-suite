@@ -5,7 +5,7 @@ import { selectAutodetectTheme, selectThemeSettings, suiteSettingsActions } from
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 import { type ThemeColorVariant } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -46,7 +46,11 @@ const useThemeOptions = () => {
 };
 
 export const Theme = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { desktopApi, analytics, dispatch } = useServices(
+        selectDesktopAnalyticsDep,
+        selectDispatch,
+        selectDesktopApiDep,
+    );
     const theme = useSelector(selectThemeSettings);
     const autodetectTheme = useSelector(selectAutodetectTheme);
     const { optionGroups, getOption } = useThemeOptions();

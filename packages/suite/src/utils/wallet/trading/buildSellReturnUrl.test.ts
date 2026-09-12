@@ -4,13 +4,14 @@ import { type TradingSellInfoSelector } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
-import { buildSellReturnUrl } from './buildSellReturnUrl';
+import { type BuildSellReturnUrlParams, buildSellReturnUrl } from './buildSellReturnUrl';
 
-const mockCreateQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
+const mockBuildQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
 jest.mock('src/utils/wallet/trading/sellUtils', () => ({
     ...jest.requireActual('src/utils/wallet/trading/sellUtils'),
-    createQuoteLink: (...args: unknown[]) => mockCreateQuoteLink(...args),
+    buildQuoteLink: (...args: unknown[]) => mockBuildQuoteLink(...args),
 }));
 
 const ACCOUNT: Account = mockWalletAccount({
@@ -41,7 +42,8 @@ const COMPOSED_INFO = { selectedFee: 'normal' as const, composed: undefined };
 const sellInfoWith = (flow: string): TradingSellInfoSelector =>
     ({ providerInfos: { cexdirect: { flow } } }) as unknown as TradingSellInfoSelector;
 
-const PARAMS = {
+const PARAMS: BuildSellReturnUrlParams = {
+    desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
     quote: QUOTE,
     sellInfo: sellInfoWith('PAYMENT_GATE'),
     quotesRequest: QUOTES_REQUEST,
@@ -51,14 +53,15 @@ const PARAMS = {
 
 describe('buildSellReturnUrl', () => {
     beforeEach(() => {
-        mockCreateQuoteLink.mockClear();
+        mockBuildQuoteLink.mockClear();
     });
 
-    it('builds the return url via createQuoteLink with the PAYMENT_GATE order id', async () => {
+    it('builds the return url via buildQuoteLink with the PAYMENT_GATE order id', async () => {
         const returnUrl = await buildSellReturnUrl(PARAMS);
 
         expect(returnUrl).toBe('https://return.url');
-        expect(mockCreateQuoteLink).toHaveBeenCalledWith(
+        expect(mockBuildQuoteLink).toHaveBeenCalledWith(
+            { desktopApi: PARAMS.desktopApi },
             expect.objectContaining({
                 country: 'DE',
                 fiatCurrency: 'EUR',
@@ -74,7 +77,8 @@ describe('buildSellReturnUrl', () => {
     it('passes no order id for a non PAYMENT_GATE provider', async () => {
         await buildSellReturnUrl({ ...PARAMS, sellInfo: sellInfoWith('DEFAULT') });
 
-        expect(mockCreateQuoteLink).toHaveBeenCalledWith(
+        expect(mockBuildQuoteLink).toHaveBeenCalledWith(
+            { desktopApi: PARAMS.desktopApi },
             expect.objectContaining({
                 country: 'DE',
                 fiatCurrency: 'EUR',
@@ -91,14 +95,14 @@ describe('buildSellReturnUrl', () => {
         const returnUrl = await buildSellReturnUrl({ ...PARAMS, quotesRequest: undefined });
 
         expect(returnUrl).toBeUndefined();
-        expect(mockCreateQuoteLink).not.toHaveBeenCalled();
+        expect(mockBuildQuoteLink).not.toHaveBeenCalled();
     });
 
     it('returns undefined when no account is resolved', async () => {
         const returnUrl = await buildSellReturnUrl({ ...PARAMS, account: undefined });
 
         expect(returnUrl).toBeUndefined();
-        expect(mockCreateQuoteLink).not.toHaveBeenCalled();
+        expect(mockBuildQuoteLink).not.toHaveBeenCalled();
     });
 
     it('returns undefined when the provider is unknown', async () => {
@@ -108,6 +112,6 @@ describe('buildSellReturnUrl', () => {
         });
 
         expect(returnUrl).toBeUndefined();
-        expect(mockCreateQuoteLink).not.toHaveBeenCalled();
+        expect(mockBuildQuoteLink).not.toHaveBeenCalled();
     });
 });

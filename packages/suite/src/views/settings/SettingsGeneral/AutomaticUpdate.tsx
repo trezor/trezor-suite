@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import { selectDesktopUpdateEnabled } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -14,6 +15,7 @@ const PositionedSwitch = styled.div`
 `;
 
 export const AutomaticUpdate = () => {
+    const { desktopApi } = useServices(selectDesktopApiDep);
     const isUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
     const isAutomaticUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
 

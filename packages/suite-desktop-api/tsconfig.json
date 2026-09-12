@@ -10,6 +10,9 @@
             "path": "../../suite-common/platform-encryption"
         },
         { "path": "../../suite/tor-types" },
-        { "path": "../type-utils" }
+        { "path": "../type-utils" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        }
     ]
 }

@@ -15,7 +15,7 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, type ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -99,7 +99,7 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
 
 export const VersionWithUpdate = () => {
     const desktopUpdateState = useSelector(selectDesktopUpdate);
-    const { dispatch } = useServices(selectDispatch);
+    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
 
     const checkForUpdates = () => desktopApi.checkForUpdates({ isManual: true });
     const maximizeUpdateModal = () => dispatch(desktopUpdateActions.setIsUpdateModalVisible(true));

@@ -1,10 +1,9 @@
-import { getDesktopApi } from './main';
+import { createDesktopApiBridge } from './createDesktopApiBridge';
 import { ipcRenderer } from '../mocks/mockIpcRenderer';
 
-const api = getDesktopApi(ipcRenderer);
-if (!api) throw new Error('desktopApi not initialized');
+const api = createDesktopApiBridge(ipcRenderer);
 
-describe('DesktopApi', () => {
+describe(createDesktopApiBridge.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
         ipcRenderer.removeAllListeners();

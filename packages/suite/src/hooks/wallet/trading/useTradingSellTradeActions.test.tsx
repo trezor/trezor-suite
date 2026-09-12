@@ -1,11 +1,15 @@
 import type { BankAccount, CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
+import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { useTradingSellTradeActions } from './useTradingSellTradeActions';
 
@@ -143,6 +147,10 @@ const buildState = (overrides: StateOverrides = {}) => {
     };
 };
 
+type UseTradingSellTradeActionsServices = DesktopAnalyticsDep &
+    DesktopApiDep<'getHttpReceiverAddress'> &
+    SuiteRouterHistoryDep;
+
 const renderActions = (overrides?: StateOverrides) => {
     const state = buildState(overrides);
 
@@ -152,9 +160,10 @@ const renderActions = (overrides?: StateOverrides) => {
         cryptoId: BITCOIN_CRYPTO_ID,
     });
 
-    const services = {
+    const services: UseTradingSellTradeActionsServices = {
         analytics: mockDesktopAnalytics(),
         suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
+        desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
     };
     const root = createTestCompositionRoot({
         extra: { services },

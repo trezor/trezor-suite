@@ -1,9 +1,13 @@
 import z, { ZodError } from 'zod';
 
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
 import * as METADATA_PROVIDER from './metadataProviderConstants';
+
+export type OauthDesktopApiDep = DesktopApiDep<
+    'available' | 'getHttpReceiverAddress' | 'once' | 'removeAllListeners'
+>;
 
 // Copy-pasted from packages/suite/src/utils/suite/router.ts to break dependency
 //
@@ -19,15 +23,15 @@ export const getPrefixedURL = (pathname: string) => {
 /**
  * For web, use oauth_receiver.html hosted on the same origin (localhost/sldev/trezor.io)
  */
-export const getOauthReceiverUrl = () => {
-    if (!desktopApi.available) {
+export const getOauthReceiverUrl = (deps: OauthDesktopApiDep) => {
+    if (!deps.desktopApi.available) {
         return new URL(
             getPrefixedURL('/static/oauth/oauth_receiver.html'),
             window.location.origin,
         ).toString();
     }
 
-    return desktopApi.getHttpReceiverAddress('/oauth');
+    return deps.desktopApi.getHttpReceiverAddress('/oauth');
 };
 
 const POPUP_TIMEOUT_MS = 60 * 1000;
@@ -127,6 +131,7 @@ const handleResponse = (
 let desktopHandlerInstance: (message: OAuthResponseMessage) => void;
 
 const getDesktopHandlerInstance = (
+    deps: OauthDesktopApiDep,
     dfd: Deferred<OAuthCredentials>,
     originalParams: URLSearchParams,
 ) => {
@@ -135,11 +140,11 @@ const getDesktopHandlerInstance = (
             message,
             originalParams,
             credentials => {
-                desktopApi.removeAllListeners('oauth/response');
+                deps.desktopApi.removeAllListeners('oauth/response');
                 dfd.resolve(credentials);
             },
             error => {
-                desktopApi.removeAllListeners('oauth/response');
+                deps.desktopApi.removeAllListeners('oauth/response');
                 dfd.reject(error);
             },
         );
@@ -174,14 +179,17 @@ const createWebBroadcastChannel = (
 /**
  * Handle extraction of authorization code from Oauth2 protocol
  */
-export const extractCredentialsFromAuthorizationFlow = (url: URL) => {
+export const extractCredentialsFromAuthorizationFlow = (deps: OauthDesktopApiDep, url: URL) => {
     const dfd = createDeferred<OAuthCredentials>();
 
-    if (desktopApi.available) {
+    if (deps.desktopApi.available) {
         // to make sure that there is always only one listener registered remove all listeners before creating a new one
-        desktopApi.removeAllListeners('oauth/response');
+        deps.desktopApi.removeAllListeners('oauth/response');
         // this listener may never be called in some cases
-        desktopApi.once('oauth/response', getDesktopHandlerInstance(dfd, url.searchParams));
+        deps.desktopApi.once(
+            'oauth/response',
+            getDesktopHandlerInstance(deps, dfd, url.searchParams),
+        );
         window.open(url, METADATA_PROVIDER.AUTH_WINDOW_TITLE, METADATA_PROVIDER.AUTH_WINDOW_PROPS);
     } else {
         const channel = createWebBroadcastChannel(dfd, url.searchParams);
