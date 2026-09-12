@@ -7,7 +7,7 @@ import type {
     GetAccountInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { TypedEmitter } from '@trezor/utils';
+import { TypedEmitter, toCanonicalDescriptor } from '@trezor/utils';
 
 import type { Blockchain } from '../../backend/BlockchainLink';
 import type { DeviceCommands } from '../../device/DeviceCommands';
@@ -145,7 +145,7 @@ export class Discovery extends TypedEmitter<Events> {
 
             // get account info from backend
             const info = await this.blockchain.getAccountInfo({
-                descriptor: account.descriptor,
+                descriptor: toCanonicalDescriptor(account.descriptor),
                 details,
             });
             if (this.interrupted) return;

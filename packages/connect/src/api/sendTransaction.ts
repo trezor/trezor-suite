@@ -15,6 +15,7 @@ import {
     createUiEventMessage,
     createUiRequestMessage,
 } from '@trezor/connect-common';
+import { toCanonicalDescriptor } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
@@ -275,7 +276,7 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         // @ts-expect-error: noUncheckedIndexedAccess
         const account: (typeof accounts)[number] = accounts[accountIndex];
         this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
-        const utxo = await blockchain.getAccountUtxo(account.descriptor);
+        const utxo = await blockchain.getAccountUtxo(toCanonicalDescriptor(account.descriptor));
 
         return { account, utxo };
     }
@@ -306,7 +307,7 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
             const accountIndex = uiResp.payload;
             // @ts-expect-error: noUncheckedIndexedAccess
             const account: (typeof accounts)[number] = accounts[accountIndex];
-            const utxo = await blockchain.getAccountUtxo(account.descriptor);
+            const utxo = await blockchain.getAccountUtxo(toCanonicalDescriptor(account.descriptor));
 
             return { account, utxo };
         }
@@ -380,7 +381,7 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         // @ts-expect-error: noUncheckedIndexedAccess
         const account: (typeof accounts)[number] = accounts[accountIndex];
         this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
-        const utxo = await blockchain.getAccountUtxo(account.descriptor);
+        const utxo = await blockchain.getAccountUtxo(toCanonicalDescriptor(account.descriptor));
 
         return { account, utxo };
     }
