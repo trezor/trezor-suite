@@ -7,6 +7,9 @@ const SINGLE_VALUE_PARAMS = ['amount', 'label', 'message'] as const;
 
 const removeLeadingTrailingSlashes = (text: string) => text.replace(/^\/{0,2}|\/$/g, '');
 
+const isBitcoinBech32AddressUppercase = (address: string) =>
+    /^(bc1|tb1)/.test(address.toLowerCase()) && /[A-Z]/.test(address);
+
 /**
  * Extracts BIP-321 / BIP-21 fields from an already-parsed, scheme-validated URL.
  * The URI/scheme validation is done upstream by `parseTransferUri`.
@@ -17,8 +20,13 @@ export const parseBip321Uri = (uri: URL): Result<BipTransferUriInfo, TransferUri
     const { protocol, pathname, host, searchParams } = uri;
     const scheme = asProtocol(protocol.slice(0, -1));
 
-    const address = removeLeadingTrailingSlashes(pathname) || removeLeadingTrailingSlashes(host);
-    if (!address) return err({ type: 'MISSING_ADDRESS' });
+    const rawAddress = removeLeadingTrailingSlashes(pathname) || removeLeadingTrailingSlashes(host);
+    if (!rawAddress) return err({ type: 'MISSING_ADDRESS' });
+
+    const address =
+        scheme === 'bitcoin' && isBitcoinBech32AddressUppercase(rawAddress)
+            ? rawAddress.toLowerCase()
+            : rawAddress;
 
     // BIP-321: a recognized parameter must not appear more than once — treat it as a malformed URI.
     const hasDuplicateParam = SINGLE_VALUE_PARAMS.some(
