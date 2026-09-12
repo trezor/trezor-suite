@@ -1,0 +1,41 @@
+appId: io.trezor.suite.develop
+name: (subflow) passphrase — persist wallet for the warm-reload measurement
+---
+# Continues the session left by a scenario flow (app on AccountDetail) — no launchApp.
+# Back to Home, disconnect the device, keep balances visible (view-only) so the next
+# cold launch renders the graph from persisted state.
+#
+# AccountDetail hides the bottom tab bar, so pop back to Accounts first, then switch to
+# the Home tab (the auto-eject/view-only prompt fires via a Home focus effect). Token
+# accounts (e.g. ETH) have an extra AccountAssets level, so pop that too when present.
+- pressKey: "back"
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: "@screen/AccountAssets"
+    commands:
+      - pressKey: "back"
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: "@screen/Accounts"
+    timeout: 15000
+- tapOn:
+    id: "@tabBar/HomeStack"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: "@screen/Home"
+    timeout: 30000
+
+# Disconnect; the auto-eject prompt appears — primary keeps balances (view-only),
+# secondary would enable auto-eject and drop the wallet.
+- runScript: ../onboard-and-connect/teardownDevice.js
+- extendedWaitUntil:
+    visible:
+      id: "@home/alert/view-only"
+    timeout: 30000
+- tapOn:
+    id: "@alert-sheet/primary-button"
+    retryTapIfNoChange: true
