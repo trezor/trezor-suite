@@ -10,6 +10,13 @@ const BLOCK_SUBSCRIBE_INTERVAL_MS = 1000 * 15;
 
 export const subscribeBlock = async ({ state, connect, post }: Context) => {
     if (state.getSubscription('block')) return { subscribed: true };
+    // Claim the subscription synchronously before the awaited connect() so a
+    // concurrent subscribeBlock() call sees the guard already set and bails
+    // out, instead of both calls racing past the guard and each creating its
+    // own interval - the second addSubscription('block', interval) call below
+    // would otherwise silently overwrite the first, orphaning it forever
+    // (see e566cc8823 for the same fix in blockbook).
+    state.addSubscription('block');
     const api = await connect();
 
     const fetchBlock = async () => {
