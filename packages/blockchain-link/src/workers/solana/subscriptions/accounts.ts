@@ -1,7 +1,10 @@
 import type { SubscriptionAccountInfo, TokenDetailByMint } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
-import { tokenProgramsInfo } from '@trezor/network-solana/constants';
+import {
+    RPC_MAX_SUPPORTED_TRANSACTION_VERSION,
+    tokenProgramsInfo,
+} from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import type { AccountInfoWithJsonData, Base58EncodedBytes } from '@trezor/network-solana/types';
 
@@ -56,7 +59,7 @@ const handleNotifications = async <T>(
             const lastTx = await api.rpc
                 .getTransaction(lastSignature, {
                     encoding: 'jsonParsed',
-                    maxSupportedTransactionVersion: 0,
+                    maxSupportedTransactionVersion: RPC_MAX_SUPPORTED_TRANSACTION_VERSION,
                     commitment: 'confirmed',
                 })
                 .send();

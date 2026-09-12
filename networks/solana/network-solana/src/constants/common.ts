@@ -23,6 +23,11 @@ export const SOLANA_DECIMALS = 9;
 // genesisHash is a reliable identifier of the network.
 export const SOLANA_MAINNET_GENESIS_HASH = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
 
+// Ceiling passed to getTransaction as `maxSupportedTransactionVersion`. Anything above it comes
+// back as an RPC error rather than null, so this must cover every version we may be sent.
+// Named apart from kit's MAX_SUPPORTED_TRANSACTION_VERSION, which is what its codec can decode.
+export const RPC_MAX_SUPPORTED_TRANSACTION_VERSION = 1;
+
 export const MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT = 16;
 export const MAX_CLAIM_ACCOUNTS = 16;
 

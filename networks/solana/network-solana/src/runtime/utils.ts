@@ -1,4 +1,5 @@
 import {
+    SOLANA_ERROR__JSON_RPC__SERVER_ERROR_UNSUPPORTED_TRANSACTION_VERSION,
     SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED,
     address,
     isSolanaError,
@@ -12,6 +13,9 @@ export { address } from '@solana/kit';
 
 export const isConnectionClosedError = (error: any) =>
     isSolanaError(error, SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED);
+
+export const isUnsupportedTransactionVersionError = (error: any) =>
+    isSolanaError(error, SOLANA_ERROR__JSON_RPC__SERVER_ERROR_UNSUPPORTED_TRANSACTION_VERSION);
 
 type StakeAccountInfo = {
     data: [string, 'base64'];
