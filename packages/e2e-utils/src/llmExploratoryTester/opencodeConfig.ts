@@ -1,4 +1,4 @@
-import { type Config } from '@opencode-ai/sdk';
+import { type Config } from '@opencode-ai/sdk/v2';
 import { join } from 'node:path';
 
 import { BOT_DIR } from './paths';
