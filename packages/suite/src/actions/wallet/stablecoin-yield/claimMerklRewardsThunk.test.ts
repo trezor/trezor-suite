@@ -172,6 +172,15 @@ describe('claimMerklRewardsThunk', () => {
         expect(TrezorConnect.pushTransaction).not.toHaveBeenCalled();
     });
 
+    it('aborts without reporting when the simulation modal is torn down', async () => {
+        const report = jest.fn();
+        mockOpenDeferredModal.mockImplementation(() => () => Promise.resolve(undefined));
+
+        await dispatchClaim(report);
+
+        expect(report).not.toHaveBeenCalled();
+    });
+
     it('stores the pending claim with its fee and submission time', async () => {
         const { store, result } = await dispatchClaim(jest.fn());
 

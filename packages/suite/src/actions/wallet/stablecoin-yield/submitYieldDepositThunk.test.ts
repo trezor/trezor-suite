@@ -114,6 +114,16 @@ describe('submitYieldDepositThunk', () => {
         ).toHaveLength(0);
     });
 
+    it('aborts without reporting when the simulation modal is torn down', async () => {
+        const report = jest.fn();
+        mockOpenDeferredModal.mockImplementation(() => () => Promise.resolve(undefined));
+
+        await dispatchDeposit(report);
+
+        expect(mockSendYieldTransaction).not.toHaveBeenCalled();
+        expect(report).not.toHaveBeenCalled();
+    });
+
     it('stores the broadcast transaction with its fee and submission time', async () => {
         const store = await dispatchDeposit(jest.fn());
 
