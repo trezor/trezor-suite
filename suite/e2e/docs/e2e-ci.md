@@ -19,7 +19,7 @@ Due to the dynamic distribution of tests to the groups, we advise you to always 
 
 #### When to use manual reruns
 
-Please use manual workflow rerun in case you've made significant and dangerous changes in subsequent pushes after your tests already passed once and would be skipped.
+Use a manual rerun only when the run failed for reasons unrelated to the code, such as CI infrastructure. A new push always triggers a fresh run.
 
 #### When to NEVER use manual reruns
 
@@ -29,7 +29,7 @@ You should never need to manually rerun tests, because you think the fail is cau
 
 ### Description and usage
 
-This is the most commonly triggered pipeline, because it runs as part of each PR verification. It is optimized to save resources, when tests already successfully passed.
+This is the most commonly triggered pipeline, because it runs as part of each PR verification. It is optimized to run only the tests the change can affect.
 
 ### Triggers
 
@@ -38,26 +38,33 @@ This is the most commonly triggered pipeline, because it runs as part of each PR
 
 ### Flow
 
-This CI pipeline decides whether to build app and run E2E tests following this logic:
+The pipeline classifies the changed files, resolves a spec list from that, and picks the Playwright config from the spec list. Tag semantics are described in [e2e-playwright-suite.md](./e2e-playwright-suite.md).
 
-#### 🔹 Is First Attempt?
+![PR pipeline flow](./e2e-ci-pr-flow.svg)
 
-- **Yes** (e.g. initial run after a push):
-    - **Check Previous Test Runs**:
-        - ✅ **If a previous successful run exists**:
-            - 🛑 **Skip Build**
-            - 🛑 **Skip Tests**
-        - ❌ **If no successful run exists (failed or incomplete)**:
-            - 🔄 **Run Build**
-            - ✅ **Run All Tests**
+#### 1. Classify the changed files
 
-- **No** (e.g. a manual rerun of the same workflow run):
-    - 🔄 **Run Build**
-    - ✅ **Run All Tests**
+`.github/actions/determine-test-strategy`, first match wins:
 
-#### Flowchart representation:
+| Changed files                                   | Strategy         |
+| ----------------------------------------------- | ---------------- |
+| Any file under `.github/`                       | `run-everything` |
+| Any file under `suite/e2e/` outside `tests/`    | `run-everything` |
+| Any file outside `suite/e2e/` (production code) | `analyze`        |
+| Only files under `suite/e2e/tests/`             | `specific-tests` |
 
-![CI Workflow Diagram](./e2e-ci-diagram.png)
+The action also outputs the test files the PR added, modified or renamed (`edited-specs`). Deleted files are dropped.
+
+#### 2. Resolve the spec list
+
+- `run-everything`: empty.
+- `analyze`: the LLM test selector picks tests for PRs up to 1000 changed lines. Its picks are merged with `edited-specs`. Empty when the PR is larger or the selector picks nothing.
+- `specific-tests`: `edited-specs`.
+
+#### 3. Pick the config
+
+- Empty spec list: `playwright-*-pr.config.ts`. Full run. `@nightlyOnly` and `@optional` are excluded, except `@optional` tests in files the PR edited (passed as `E2E_EDITED_SPECS`).
+- Non-empty spec list: `playwright-*-pr-all.config.ts`. Only the listed files run. `@nightlyOnly` is excluded, `@optional` is not.
 
 ## Nightly and FW canary pipelines
 

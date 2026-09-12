@@ -3,7 +3,7 @@ import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@t
 
 import { expect, test } from '../../support/walletConnectFixtures';
 
-test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly'] }, () => {
+test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@optional'] }, () => {
     let wcUri: string;
 
     const BASE_WC_EVENTS = [EventType.WalletConnectPaired, EventType.WalletConnectProposal];

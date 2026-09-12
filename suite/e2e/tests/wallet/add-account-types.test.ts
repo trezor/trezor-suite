@@ -151,7 +151,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
     test(
         'Add account types ada',
         {
-            tag: ['@nightlyOnly'],
+            tag: ['@optional'],
             annotation: createTestAnnotation({
                 testCase: 'Verifies that a user can add different account types for non-BTC coins.',
                 category: TestCategory.Accounts,

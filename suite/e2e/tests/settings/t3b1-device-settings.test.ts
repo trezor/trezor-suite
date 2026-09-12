@@ -19,6 +19,7 @@ test.describe('T3B1 - Device settings', { tag: ['@T3B1'] }, () => {
     test(
         'change all possible device settings',
         {
+            tag: ['@optional'],
             annotation: createTestAnnotation({
                 testCase: 'Verifies that a user can change all possible device settings.',
                 category: TestCategory.Settings,

@@ -13,7 +13,7 @@ const toastErrorMessage = replaceTemplatesInTranslation(
     { error: 'Passphrase is incorrect' },
 );
 
-test.describe('Passphrase with cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Passphrase with cardano', { tag: ['@optional', '@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true },
         ignoreToastErrors: [toastErrorMessage],

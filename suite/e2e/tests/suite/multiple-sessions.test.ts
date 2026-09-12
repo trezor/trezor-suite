@@ -21,7 +21,7 @@ const stealBridgeSession = async () => {
     });
 };
 
-test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({ deviceSetup: { passphrase_protection: true } });
 
     test(

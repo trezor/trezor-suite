@@ -13,7 +13,7 @@ const FIRMWARE_VERSION_NO_DEVICE = '-/-';
 const CATEGORY_WITH_IMAGE = '2_dashboard-and-coins';
 const ARTICLE_WITH_IMAGE = '2_dashboard-and-coins/5_show-public-key.md';
 
-test.describe('Suite Guide', { tag: ['@noDevice'] }, () => {
+test.describe('Suite Guide', { tag: ['@noDevice', '@optional'] }, () => {
     test.use({ startEmulator: false });
 
     test.beforeEach(async ({ guidePanel }) => {
@@ -89,7 +89,7 @@ test.describe('Suite Guide', { tag: ['@noDevice'] }, () => {
     );
 });
 
-test.describe('Suite Guide with device', { tag: ['@T3W1'] }, () => {
+test.describe('Suite Guide with device', { tag: ['@T3W1', '@optional'] }, () => {
     test(
         'Navigate the guide and verify versions with a device',
         { annotation: createTestAnnotation({ stream: TestStream.Growth }) },

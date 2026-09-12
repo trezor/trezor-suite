@@ -11,7 +11,10 @@ test.describe('Safety Checks Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test(
         'There is button in device settings, that opens safety checks modal.',
-        { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
+        {
+            tag: ['@optional'],
+            annotation: createTestAnnotation({ stream: TestStream.Growth }),
+        },
         async ({ settingsPage }) => {
             await settingsPage.safetyChecksButton.click();
             await expect(settingsPage.safetyChecksConfirmButton).toBeVisible();
@@ -20,7 +23,10 @@ test.describe('Safety Checks Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test(
         'Only one level of Safety Checks is selected at a time',
-        { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
+        {
+            tag: ['@optional'],
+            annotation: createTestAnnotation({ stream: TestStream.Growth }),
+        },
         async ({ settingsPage }) => {
             // Open the safety checks modal.
             await settingsPage.safetyChecksButton.click();
@@ -41,7 +47,10 @@ test.describe('Safety Checks Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test(
         'Confirm button is enabled only when Safety Checks value is changed',
-        { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
+        {
+            tag: ['@optional'],
+            annotation: createTestAnnotation({ stream: TestStream.Growth }),
+        },
         async ({ settingsPage }) => {
             // Open the safety checks modal.
             await settingsPage.safetyChecksButton.click();
