@@ -449,7 +449,6 @@ describe('getTradingFormState', () => {
                 providers,
                 isSlip24Active: true,
                 sendAccountKey,
-                receiveAccountKey,
             });
 
             expect(result).toEqual({
@@ -489,7 +488,6 @@ describe('getTradingFormState', () => {
                 providers,
                 isSlip24Active: true,
                 sendAccountKey,
-                receiveAccountKey,
             });
 
             expect(result).toEqual({

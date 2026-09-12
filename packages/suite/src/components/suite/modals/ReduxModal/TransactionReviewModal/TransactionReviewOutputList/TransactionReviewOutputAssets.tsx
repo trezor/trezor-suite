@@ -1,9 +1,10 @@
 import { type ReactNode } from 'react';
 
-import { type CryptoId } from 'invity-api';
+import { type CryptoId, type FiatCurrencyCode } from 'invity-api';
 
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
+import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -12,7 +13,7 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
+import { Card, Column, Divider, Flag, H4, InfoItem, Row, Text } from '@trezor/components';
 import { TokenIcon, isCoinSymbol, shouldShowNetworkIcon } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -112,16 +113,17 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
 
 const TransactionReviewOutputAssetsTo = ({ receive }: TransactionReviewOutputAssetsToProps) => {
     if ('fiatCurrency' in receive) {
+        const fiatCurrencyFlag = getFiatCurrencyFlag(receive.fiatCurrency as FiatCurrencyCode);
+
         return (
             <InfoItem
                 label={
-                    <Text
-                        margin={{ left: 32 }}
-                        intent="brand"
-                        data-testid="@modal/assets/receive/label"
-                    >
-                        + {localizeNumber(receive.amount, 'en-US')} {receive.fiatCurrency}
-                    </Text>
+                    <Row alignItems="center" gap={12} margin={{ left: 32 }}>
+                        {!!fiatCurrencyFlag && <Flag country={fiatCurrencyFlag} size={24} />}
+                        <Text intent="brand" data-testid="@modal/assets/receive/label">
+                            + {localizeNumber(receive.amount, 'en-US')} {receive.fiatCurrency}
+                        </Text>
+                    </Row>
                 }
                 data-testid="@modal/assets/receive"
                 direction="row"

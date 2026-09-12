@@ -87,7 +87,7 @@ const OutputLabel = ({
             return <Translation id="transactionManagement.review.outputs.transactionDataLabel" />;
         case 'recipient_name':
             return (
-                <Translation id="transactionManagement.review.outputs.recipientNameOutputLabel" />
+                <Translation id="transactionManagement.review.outputs.recipientProviderNameOutputLabel" />
             );
         case 'traded_assets':
             return (

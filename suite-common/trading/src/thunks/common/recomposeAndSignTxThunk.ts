@@ -22,8 +22,8 @@ import {
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
+    isCompleteTradingForm,
     isEvmApprovalTx,
-    isExchangeTradingForm,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -287,7 +287,7 @@ export const recomposeAndSignTxThunk = createThunk<
             ...formState,
             trading: {
                 ...tradingFormState,
-                ...(isPaymentRequestsAllowed && isExchangeTradingForm(tradingFormState)
+                ...(isPaymentRequestsAllowed && isCompleteTradingForm(tradingFormState)
                     ? {
                           send: {
                               ...tradingFormState.send,

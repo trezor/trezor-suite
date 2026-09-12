@@ -79,10 +79,15 @@ describe('useTradingContentBuilder', () => {
         ).toBeNull();
     });
 
-    it('returns undefined when receive is fiat (no cryptoId)', async () => {
-        const { toJSON } = await renderContentBuilder({ receive: mockReceiveFiat });
+    it('renders crypto and fiat icons when receive is fiat', async () => {
+        const { getByLabelText, getByText } = await renderContentBuilder({
+            receive: mockReceiveFiat,
+        });
 
-        expect(toJSON()).toBeNull();
+        expect(getByLabelText('BTC')).toBeOnTheScreen();
+        expect(getByText('-1.22 BTC')).toBeOnTheScreen();
+        expect(getByLabelText('flag-US')).toBeOnTheScreen();
+        expect(getByText('+$1,500.00')).toBeOnTheScreen();
     });
 
     it('renders send amount with minus prefix', async () => {
