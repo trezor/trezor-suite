@@ -17,6 +17,7 @@
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/discreet-mode": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

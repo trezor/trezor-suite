@@ -5,6 +5,7 @@ import {
     calculateAssetsPercentage,
 } from '@suite-common/assets';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -24,10 +25,7 @@ import { type AssetFiatPercentage, type AssetType, type AssetsRootState } from '
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetsRootState>();
 
 export const selectDeviceNetworkSymbolsWithAssets = createMemoizedSelector(
-    [
-        selectVisibleDeviceAccounts,
-        (_state, supportedNetworks: readonly NetworkSymbol[]) => supportedNetworks,
-    ],
+    [selectVisibleDeviceAccounts, selectSupportedNetworkSymbols],
     (accounts, supportedNetworks) => {
         const networkSymbols = new Set(accounts.map(account => account.symbol));
 
@@ -97,12 +95,8 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
     },
 );
 
-export const selectAssetCryptoValue = (
-    state: AssetsRootState,
-    supportedNetworks: readonly NetworkSymbol[],
-    symbol: NetworkSymbol,
-) => {
-    const assets = selectDeviceAssetsWithBalances(state, supportedNetworks);
+export const selectAssetCryptoValue = (state: AssetsRootState, symbol: NetworkSymbol) => {
+    const assets = selectDeviceAssetsWithBalances(state);
     const asset = assets.find(a => a.symbol === symbol);
 
     return asset?.assetBalance ?? '0';
@@ -127,10 +121,7 @@ export const selectSingleDeviceAccountKeyForNetworkSymbol = (
 };
 
 export const selectAssetFiatValue = createMemoizedSelector(
-    [
-        selectDeviceAssetsWithBalances,
-        (_state, _supportedNetworks: readonly NetworkSymbol[], symbol: NetworkSymbol) => symbol,
-    ],
+    [selectDeviceAssetsWithBalances, (_state, symbol: NetworkSymbol) => symbol],
     (assets, symbol) => {
         const asset = assets.find(a => a.symbol === symbol);
 
@@ -145,10 +136,7 @@ const selectAssetsFiatValuePercentage = createMemoizedSelector(
 );
 
 export const selectAssetFiatValuePercentage = createMemoizedSelector(
-    [
-        selectAssetsFiatValuePercentage,
-        (_state, _supportedNetworks: readonly NetworkSymbol[], symbol: NetworkSymbol) => symbol,
-    ],
+    [selectAssetsFiatValuePercentage, (_state, symbol: NetworkSymbol) => symbol],
     (assetsPercentages, symbol): AssetFiatPercentage => {
         const asset = assetsPercentages.find(a => a.symbol === symbol);
 

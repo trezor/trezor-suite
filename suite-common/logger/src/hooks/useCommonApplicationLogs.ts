@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useQuery } from '@suite-common/react-query';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
 
 import {
@@ -15,13 +14,11 @@ import { type LogsSliceRootState } from '../logsSlice';
 import { type LogsEnvironmentInfo, getEnvironmentInfo, startTime } from '../utils';
 
 export const useCommonApplicationLogs = (hideSensitiveInfo: boolean) => {
-    const supportedNetworks = getSupportedNetworks();
-
     const redactedActionsLog = useSelector((state: LogsSliceRootState) =>
         selectRedactedActionsLog(state, hideSensitiveInfo),
     );
     const redactedApplicationInfo = useSelector((state: LogsApplicationInfoRootState) =>
-        selectRedactedApplicationInfo(state, hideSensitiveInfo, supportedNetworks),
+        selectRedactedApplicationInfo(state, hideSensitiveInfo),
     );
 
     const [envInfo, setEnvInfo] = useState<LogsEnvironmentInfo | null>(null);

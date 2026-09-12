@@ -1,4 +1,4 @@
-import { createAction } from '@reduxjs/toolkit';
+import { type ActionCreatorWithPayload, createAction } from '@reduxjs/toolkit';
 
 import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
 
@@ -12,6 +12,7 @@ type StorageCorruptedPayload = Extract<
     { type: typeof STORAGE.CORRUPTED }
 >['payload'];
 
-export const storageLoad = createAction<StorageLoadPayload>(STORAGE.LOAD);
+export const storageLoad: ActionCreatorWithPayload<StorageLoadPayload> =
+    createAction<StorageLoadPayload>(STORAGE.LOAD);
 export const storageError = createAction<StorageErrorPayload>(STORAGE.ERROR);
 export const storageCorrupted = createAction<StorageCorruptedPayload>(STORAGE.CORRUPTED);

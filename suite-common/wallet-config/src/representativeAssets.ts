@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from './types';
+import { type NetworkSymbol } from './networkTypes';
 
 export type RepresentativeAsset = {
     symbol: string;

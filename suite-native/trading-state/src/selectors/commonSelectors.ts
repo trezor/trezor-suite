@@ -6,7 +6,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -77,7 +77,8 @@ export type CombinedSelectorsRootState = TradingRootStateWithDeviceAndAccounts &
     FiatRatesRootState &
     WalletSettingsRootState &
     TokensRootState &
-    FeatureFlagsRootState;
+    FeatureFlagsRootState &
+    NetworksRootState;
 
 const createTradingWithDeviceAndAccountsMemoizedSelector =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
@@ -248,20 +249,11 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             selectTokenDefinitions,
             selectCurrentFiatRates,
             selectBaseCurrency,
-            (
-                state: CombinedSelectorsRootState,
-                tradingType: TradingType,
-                supportedCoins: readonly NetworkSymbol[],
-            ) => selectTradingSupportedSymbols(state, tradingType, supportedCoins),
+            selectTradingSupportedSymbols,
             (state: CombinedSelectorsRootState) =>
                 selectIsFeatureFlagEnabled(state, FeatureFlag.IsCardanoSendEnabled),
             (_state, tradingType: TradingType) => tradingType,
-            (
-                _state,
-                _tradingType: TradingType,
-                _supportedCoins: readonly NetworkSymbol[],
-                supportedNetworks: readonly NetworkSymbol[],
-            ) => supportedNetworks,
+            selectSupportedNetworkSymbols,
         ],
         (
             accounts,
@@ -440,13 +432,9 @@ export const selectTradingAccountKeyByOrderId = (
 };
 
 export const selectVisibleDeviceAccountsByNetworkSymbolSorted = createWeakMapSelector.withTypes<
-    AccountsRootState & DeviceRootState
+    AccountsRootState & DeviceRootState & NetworksRootState
 >()(
-    [
-        selectVisibleDeviceAccountsByNetworkSymbol,
-        (_state, _symbol: NetworkSymbol | null, supportedNetworks: readonly NetworkSymbol[]) =>
-            supportedNetworks,
-    ],
+    [selectVisibleDeviceAccountsByNetworkSymbol, selectSupportedNetworkSymbols],
     (accounts, supportedNetworks) => {
         const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts, supportedNetworks);
 

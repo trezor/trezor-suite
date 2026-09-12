@@ -1,5 +1,6 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -61,6 +62,7 @@ const runFilterReceiveAccouns = ({
     });
 
     return filterReceiveAccounts({
+        supportedNetworks: mockGetSupportedNetworks(),
         accounts,
         deviceState: device.state?.staticSessionId,
         symbol,

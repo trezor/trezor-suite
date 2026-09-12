@@ -19,6 +19,7 @@ const accountsReducer = prepareAccountsReducer({
 });
 const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');
+const supportedNetworks = [btcSymbol, ltcSymbol];
 
 interface InitStoreArgs {
     preloadedState?: AccountsRootState;
@@ -48,27 +49,30 @@ describe('Account Reducer', () => {
     it('Create account', () => {
         const store = initStore();
         store.dispatch(
-            accountsActions.createAccount({
-                deviceState: '1stTestnetAddress@device_id:0',
-                index: 0,
-                path: testBip43Path,
-                accountType: 'normal',
-                symbol: btcSymbol,
-                accountInfo: {
-                    descriptor: 'XPUB',
+            accountsActions.createAccount(
+                {
+                    deviceState: '1stTestnetAddress@device_id:0',
+                    index: 0,
                     path: testBip43Path,
-                    empty: false,
-                    balance: '0',
-                    availableBalance: '0',
-                    tokens: [],
-                    history: {
-                        total: 0,
-                        transactions: [],
-                        unconfirmed: 0,
+                    accountType: 'normal',
+                    symbol: btcSymbol,
+                    accountInfo: {
+                        descriptor: 'XPUB',
+                        path: testBip43Path,
+                        empty: false,
+                        balance: '0',
+                        availableBalance: '0',
+                        tokens: [],
+                        history: {
+                            total: 0,
+                            transactions: [],
+                            unconfirmed: 0,
+                        },
                     },
+                    visible: true,
                 },
-                visible: true,
-            }),
+                supportedNetworks,
+            ),
         );
         expect(store.getState().wallet.accounts.length).toEqual(1);
     });
@@ -101,10 +105,30 @@ describe('Account Reducer', () => {
             visible: true,
         });
 
-        store.dispatch(accountsActions.createAccount(createAccountPayload(ltcSymbol, 'normal', 0)));
-        store.dispatch(accountsActions.createAccount(createAccountPayload(btcSymbol, 'legacy', 0)));
-        store.dispatch(accountsActions.createAccount(createAccountPayload(btcSymbol, 'normal', 1)));
-        store.dispatch(accountsActions.createAccount(createAccountPayload(btcSymbol, 'normal', 0)));
+        store.dispatch(
+            accountsActions.createAccount(
+                createAccountPayload(ltcSymbol, 'normal', 0),
+                supportedNetworks,
+            ),
+        );
+        store.dispatch(
+            accountsActions.createAccount(
+                createAccountPayload(btcSymbol, 'legacy', 0),
+                supportedNetworks,
+            ),
+        );
+        store.dispatch(
+            accountsActions.createAccount(
+                createAccountPayload(btcSymbol, 'normal', 1),
+                supportedNetworks,
+            ),
+        );
+        store.dispatch(
+            accountsActions.createAccount(
+                createAccountPayload(btcSymbol, 'normal', 0),
+                supportedNetworks,
+            ),
+        );
 
         expect(
             store.getState().wallet.accounts.map(a => `${a.symbol}/${a.accountType}/${a.index}`),

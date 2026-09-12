@@ -1,5 +1,5 @@
 import { getEarnYieldClaimContractAddress, isEarnYieldClaimSupported } from './earnRewardsProvider';
-import { asNetworkSymbol } from './types';
+import { asNetworkSymbol } from './networkTypes';
 import { getNetworkFeatures, getSupportedNetworks } from './utils';
 
 const arbSymbol = asNetworkSymbol('arb');

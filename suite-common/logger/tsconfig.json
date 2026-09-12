@@ -5,6 +5,7 @@
         { "path": "../analytics-redux" },
         { "path": "../device" },
         { "path": "../discreet-mode" },
+        { "path": "../networks" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },

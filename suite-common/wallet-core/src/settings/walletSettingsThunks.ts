@@ -1,5 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
+import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect, { PROTO } from '@trezor/connect';
@@ -19,7 +20,7 @@ import {
 import { accountsActions } from '../accounts/accountsActions';
 import { type WalletCoreCompoundRootState, selectAccountsToBeForgotten } from '../selectors';
 
-type ChangeCoinVisibilityThunkState = WalletCoreCompoundRootState;
+type ChangeCoinVisibilityThunkState = WalletCoreCompoundRootState & NetworksRootState;
 
 export const changeCoinVisibilityThunk = createThunk<
     void,
@@ -40,7 +41,7 @@ export const changeCoinVisibilityThunk = createThunk<
         }
         // Suite is the source of truth for its coin settings — update Redux/UI first so the toggle
         // is responsive and never blocks on Connect.
-        dispatch(changeNetworks(enabledNetworks));
+        dispatch(changeNetworks(enabledNetworks, selectSupportedNetworkSymbols(getState())));
 
         // Declare an enabled coin to Connect (one-way widening — disabling is intentionally not
         // propagated; Connect keeps deriving until the next init). Right after the Redux update (not

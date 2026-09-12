@@ -9,6 +9,8 @@ import {
     type SellFiatTrade,
 } from 'invity-api';
 
+import { type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -133,7 +135,7 @@ const supportedCoins: readonly NetworkSymbol[] = [
 ];
 
 describe('tradingSelectors', () => {
-    let state: TradingRootStateWithDeviceAndAccounts;
+    let state: TradingRootStateWithDeviceAndAccounts & NetworksRootState;
 
     const getBuyState = () =>
         ({
@@ -377,7 +379,7 @@ describe('tradingSelectors', () => {
         }) as unknown as TradingRootStateWithDeviceAndAccounts;
 
     beforeEach(() => {
-        state = getState();
+        state = { ...getState(), networks: mockNetworksState(supportedCoins) };
     });
 
     describe(selectTradingBuy.name, () => {
@@ -915,7 +917,7 @@ describe('tradingSelectors', () => {
 
     describe(selectTradingBuySupportedCryptoIds.name, () => {
         it('should select only coins presented in buyInfo and info', () => {
-            expect(selectTradingBuySupportedCryptoIds(state, supportedCoins)).toEqual([
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([
                 'bitcoin',
                 'ethereum',
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -924,8 +926,8 @@ describe('tradingSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectTradingBuySupportedCryptoIds(state, supportedCoins);
-            const second = selectTradingBuySupportedCryptoIds(state, supportedCoins);
+            const first = selectTradingBuySupportedCryptoIds(state);
+            const second = selectTradingBuySupportedCryptoIds(state);
 
             expect(first).toBe(second);
         });
@@ -933,25 +935,25 @@ describe('tradingSelectors', () => {
         it('should be empty array when platforms are not set', () => {
             state.wallet.trading.info.platforms = undefined;
 
-            expect(selectTradingBuySupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectTradingBuySupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when supportedCryptoCurrencies are not set', () => {
             state.wallet.trading.buy.buyInfo = undefined;
 
-            expect(selectTradingBuySupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
     });
 
     describe(selectTradingSellSupportedCryptoIds.name, () => {
         it('should select only coins presented in sellInfo and info', () => {
-            expect(selectTradingSellSupportedCryptoIds(state, supportedCoins)).toEqual([
+            expect(selectTradingSellSupportedCryptoIds(state)).toEqual([
                 'bitcoin',
                 'ethereum',
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -960,8 +962,8 @@ describe('tradingSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectTradingSellSupportedCryptoIds(state, supportedCoins);
-            const second = selectTradingSellSupportedCryptoIds(state, supportedCoins);
+            const first = selectTradingSellSupportedCryptoIds(state);
+            const second = selectTradingSellSupportedCryptoIds(state);
 
             expect(first).toBe(second);
         });
@@ -969,25 +971,25 @@ describe('tradingSelectors', () => {
         it('should be empty array when platforms are not set', () => {
             state.wallet.trading.info.platforms = undefined;
 
-            expect(selectTradingSellSupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectTradingSellSupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when supportedCryptoCurrencies are not set', () => {
             state.wallet.trading.sell.sellInfo = undefined;
 
-            expect(selectTradingSellSupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
         });
     });
 
     describe(selectTradingSellSellCryptoIds.name, () => {
         it('should select only coins presented in sellInfo and info', () => {
-            expect(selectTradingSellSellCryptoIds(state, supportedCoins)).toEqual([
+            expect(selectTradingSellSellCryptoIds(state)).toEqual([
                 'bitcoin',
                 'ethereum',
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -996,8 +998,8 @@ describe('tradingSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectTradingSellSellCryptoIds(state, supportedCoins);
-            const second = selectTradingSellSellCryptoIds(state, supportedCoins);
+            const first = selectTradingSellSellCryptoIds(state);
+            const second = selectTradingSellSellCryptoIds(state);
 
             expect(first).toBe(second);
         });
@@ -1005,25 +1007,25 @@ describe('tradingSelectors', () => {
         it('should be empty array when platforms are not set', () => {
             state.wallet.trading.info.platforms = undefined;
 
-            expect(selectTradingSellSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectTradingSellSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when supportedCryptoCurrencies are not set', () => {
             state.wallet.trading.sell.sellInfo = undefined;
 
-            expect(selectTradingSellSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
     });
 
     describe(selectTradingExchangeSellCryptoIds.name, () => {
         it('should select only coins presented in exchangeInfo and info', () => {
-            expect(selectTradingExchangeSellCryptoIds(state, supportedCoins)).toEqual([
+            expect(selectTradingExchangeSellCryptoIds(state)).toEqual([
                 'bitcoin',
                 'ethereum',
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -1032,8 +1034,8 @@ describe('tradingSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectTradingExchangeSellCryptoIds(state, supportedCoins);
-            const second = selectTradingExchangeSellCryptoIds(state, supportedCoins);
+            const first = selectTradingExchangeSellCryptoIds(state);
+            const second = selectTradingExchangeSellCryptoIds(state);
 
             expect(first).toBe(second);
         });
@@ -1041,30 +1043,30 @@ describe('tradingSelectors', () => {
         it('should be empty array when platforms are not set', () => {
             state.wallet.trading.info.platforms = undefined;
 
-            expect(selectTradingExchangeSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectTradingExchangeSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when sellCryptoIds are not set', () => {
             state.wallet.trading.exchange.exchangeInfo = undefined;
 
-            expect(selectTradingExchangeSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeSellCryptoIds(state)).toEqual([]);
         });
     });
 
     describe(selectTradingExchangeBuyCryptoIds.name, () => {
         it('should select only coins presented in exchangeInfo and info', () => {
-            expect(selectTradingExchangeBuyCryptoIds(state, supportedCoins)).toEqual(['bitcoin']);
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual(['bitcoin']);
         });
 
         it('should be stable', () => {
-            const first = selectTradingExchangeBuyCryptoIds(state, supportedCoins);
-            const second = selectTradingExchangeBuyCryptoIds(state, supportedCoins);
+            const first = selectTradingExchangeBuyCryptoIds(state);
+            const second = selectTradingExchangeBuyCryptoIds(state);
 
             expect(first).toBe(second);
         });
@@ -1072,19 +1074,19 @@ describe('tradingSelectors', () => {
         it('should be empty array when platforms are not set', () => {
             state.wallet.trading.info.platforms = undefined;
 
-            expect(selectTradingExchangeBuyCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectTradingExchangeBuyCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when buyCryptoIds are not set', () => {
             state.wallet.trading.exchange.exchangeInfo = undefined;
 
-            expect(selectTradingExchangeBuyCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
         });
     });
 
@@ -2505,21 +2507,15 @@ describe('tradingSelectors', () => {
         ];
 
         it('should return supported symbols for buy', () => {
-            expect(selectTradingSupportedSymbols(state, 'buy', supportedCoins)).toEqual(
-                supportedSymbols,
-            );
+            expect(selectTradingSupportedSymbols(state, 'buy')).toEqual(supportedSymbols);
         });
 
         it('should return supported symbols for sell', () => {
-            expect(selectTradingSupportedSymbols(state, 'sell', supportedCoins)).toEqual(
-                supportedSymbols,
-            );
+            expect(selectTradingSupportedSymbols(state, 'sell')).toEqual(supportedSymbols);
         });
 
         it('should return supported symbols for exchange', () => {
-            expect(selectTradingSupportedSymbols(state, 'exchange', supportedCoins)).toEqual(
-                supportedSymbols,
-            );
+            expect(selectTradingSupportedSymbols(state, 'exchange')).toEqual(supportedSymbols);
         });
     });
 

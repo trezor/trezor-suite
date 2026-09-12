@@ -5,23 +5,24 @@ import {
     type TokenSymbol,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import { act, renderHook } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { btc1NormalAccount, eth1NormalAccount } from '@suite-native/trading-fixtures';
+import { selectAccountsWithTokensToSellSectionListByTradingType } from '@suite-native/trading-state';
 import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useMyAssetsFilteredData } from './useMyAssetsFilteredData';
 
 const mockUsePreferredCurrencyUsdThreshold = jest.fn();
-const mockUseTradingMyAssets = jest.fn();
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
     usePreferredCurrencyUsdThreshold: () => mockUsePreferredCurrencyUsdThreshold(),
 }));
 
-jest.mock('./useTradingMyAssets', () => ({
-    useTradingMyAssets: (tradingType: 'sell' | 'exchange') => mockUseTradingMyAssets(tradingType),
+jest.mock('@suite-native/trading-state', () => ({
+    ...jest.requireActual('@suite-native/trading-state'),
+    selectAccountsWithTokensToSellSectionListByTradingType: jest.fn(),
 }));
 
 const createAsset = (overrides: Partial<MyAsset> = {}): MyAsset => ({
@@ -89,17 +90,24 @@ describe('useMyAssetsFilteredData', () => {
     const renderFilter = async (
         threshold: BaseCurrencyAmount | null = preferredCurrencyUsdThreshold,
     ) => {
-        mockUseTradingMyAssets.mockReturnValue(sections);
+        jest.mocked(selectAccountsWithTokensToSellSectionListByTradingType).mockReturnValue(
+            sections,
+        );
         mockUsePreferredCurrencyUsdThreshold.mockReturnValue(threshold);
 
-        return await renderHook(() => useMyAssetsFilteredData('sell'));
+        return await renderHookWithStoreProvider(() => useMyAssetsFilteredData('sell'), {
+            preloadedState: {},
+        });
     };
 
     it('groups each account assets by tradeability and low balance', async () => {
         const { result } = await renderFilter();
         const ethSection = result.current.filteredSections[1];
 
-        expect(mockUseTradingMyAssets).toHaveBeenCalledWith('sell');
+        expect(selectAccountsWithTokensToSellSectionListByTradingType).toHaveBeenCalledWith(
+            expect.anything(),
+            'sell',
+        );
         expect(ethSection?.assets).toEqual([
             expect.objectContaining({ name: 'Ethereum' }),
             thresholdAsset,

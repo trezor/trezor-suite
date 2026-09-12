@@ -4,15 +4,12 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import {
-    type DiscoveryRootState,
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-} from '@suite-native/discovery';
+import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
@@ -29,13 +26,11 @@ type CoinEnablingFormProps = {
 };
 
 export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
-    const allNetworkSymbols = getSupportedNetworks();
+    const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
     const navigation = useNavigation();
+    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
-    const enabledNetworkSymbols = useSelector((state: DiscoveryRootState) =>
-        selectDeviceEnabledDiscoveryNetworkSymbols(state, allNetworkSymbols),
-    );
 
     const { showAlert } = useAlert();
 
@@ -60,8 +55,11 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
     });
 
     const handleSubmit = form.handleSubmit((values: CoinEnablingFormValues) => {
-        const enabledCoins = getNetworkSymbolsFromEnabledCoins(values.enabledCoins);
-        const changedCoins = getSupportedNetworks().filter(
+        const enabledCoins = getNetworkSymbolsFromEnabledCoins(
+            values.enabledCoins,
+            allNetworkSymbols,
+        );
+        const changedCoins = allNetworkSymbols.filter(
             symbol => enabledNetworkSymbols.includes(symbol) !== enabledCoins.includes(symbol),
         );
 

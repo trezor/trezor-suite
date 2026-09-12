@@ -18,6 +18,7 @@
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/mev": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",

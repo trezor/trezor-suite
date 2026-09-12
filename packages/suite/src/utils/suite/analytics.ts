@@ -25,6 +25,7 @@ import {
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
+import { type NetworksRootState } from '@suite-common/networks';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     getBrowserName,
@@ -32,9 +33,11 @@ import {
     getCpuArch,
     getOsVersion,
 } from '@suite-common/suite-utils';
-import { getSupportedNetworks } from '@suite-common/wallet-config';
-import { type BlockchainRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
-import { getCustomBackends } from '@suite-common/wallet-utils';
+import {
+    type BlockchainRootState,
+    type WalletSettingsRootState,
+    selectCustomBackends,
+} from '@suite-common/wallet-core';
 import {
     getOsName,
     getPlatformLanguages,
@@ -51,7 +54,8 @@ export type GetSuiteReadyPayloadState = AnalyticsRootState &
     DiscreetModeRootState &
     LegacyLabelingVisibleRootState &
     TorRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 const resolveLabelingType = (
     state: GetSuiteReadyPayloadState,
@@ -97,7 +101,7 @@ export const getSuiteReadyPayload = async (
     return {
         language: selectLanguage(state),
         enabledNetworks: state.wallet.settings.enabledNetworks,
-        customBackends: getCustomBackends(state.wallet.blockchain, getSupportedNetworks())
+        customBackends: selectCustomBackends(state)
             .map(({ symbol }) => symbol)
             .filter(symbol => state.wallet.settings.enabledNetworks.includes(symbol)),
         localCurrency: state.wallet.settings.localCurrency,

@@ -8,6 +8,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
@@ -94,6 +95,7 @@ export const useTradingReceiveAddress = ({
     const prevCryptoIdRef = useRef<CryptoId | undefined>(undefined);
 
     const receiveAccount = useSelector(state => selectAccountByKey(state, selectedAccount?.key));
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
         network => network.symbol === symbol,
@@ -103,11 +105,12 @@ export const useTradingReceiveAddress = ({
         () =>
             filterReceiveAccounts({
                 accounts,
+                supportedNetworks,
                 deviceState: device?.state?.staticSessionId,
                 symbol,
                 isDebug,
             }),
-        [accounts, symbol, device?.state?.staticSessionId, isDebug],
+        [accounts, symbol, device?.state?.staticSessionId, isDebug, supportedNetworks],
     );
 
     const canAddSuiteAccount = !!(device?.connected && isSupportedNetwork);

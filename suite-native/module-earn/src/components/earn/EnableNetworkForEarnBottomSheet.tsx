@@ -1,5 +1,6 @@
-import { useServices } from '@suite-common/dependency-injection';
-import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { useSelector } from 'react-redux';
+
+import { type NetworksRootState, selectNetworkColor } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
@@ -49,10 +50,11 @@ export const EnableNetworkForEarnBottomSheet = ({
     onDismiss,
 }: EnableNetworkForEarnBottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
-    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
+    const networkColor = useSelector((state: NetworksRootState) =>
+        selectNetworkColor(state, symbol),
+    );
 
     const networkName = symbol ? getNetwork(symbol).name : '';
-    const networkColor = symbol ? getNetworkConfig(symbol).color : undefined;
     const translationIds = translationIdByEarnType[type];
 
     return (

@@ -1,9 +1,4 @@
-import {
-    type AccountType,
-    type NetworkSymbol,
-    getNetwork,
-    getSupportedNetworks,
-} from '@suite-common/wallet-config';
+import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { BigNumber, type BigNumberValue, typedObjectKeys } from '@trezor/utils';
 
 export type EarnNetworkTokenSortKey = {
@@ -18,10 +13,12 @@ export type EarnNetworkTokenSortKey = {
  * secondary amount sort (see compareEarnByAmountDesc) so that the within-network order is
  * controlled by the balance/deposited amount.
  */
-export const compareEarnByNetwork = <T>(getSymbol: (item: T) => NetworkSymbol | undefined) => {
-    const supportedNetworks = getSupportedNetworks();
-
-    return (a: T, b: T) => {
+export const compareEarnByNetwork =
+    <T>(
+        getSymbol: (item: T) => NetworkSymbol | undefined,
+        supportedNetworks: readonly NetworkSymbol[],
+    ) =>
+    (a: T, b: T) => {
         const symbolA = getSymbol(a);
         const symbolB = getSymbol(b);
 
@@ -31,18 +28,17 @@ export const compareEarnByNetwork = <T>(getSymbol: (item: T) => NetworkSymbol | 
 
         return supportedNetworks.indexOf(symbolA) - supportedNetworks.indexOf(symbolB);
     };
-};
 
 /**
  * Groups items by network → token symbol → account type → account index. Keeps items on the
  * same network and token together regardless of account type (normal/legacy/ledger).
  */
-export const compareEarnByNetworkTokenOrder = <T>(
-    getKey: (item: T) => EarnNetworkTokenSortKey | undefined,
-) => {
-    const supportedNetworks = getSupportedNetworks();
-
-    return (a: T, b: T) => {
+export const compareEarnByNetworkTokenOrder =
+    <T>(
+        getKey: (item: T) => EarnNetworkTokenSortKey | undefined,
+        supportedNetworks: readonly NetworkSymbol[],
+    ) =>
+    (a: T, b: T) => {
         const keyA = getKey(a);
         const keyB = getKey(b);
 
@@ -76,7 +72,6 @@ export const compareEarnByNetworkTokenOrder = <T>(
 
         return (keyA.index ?? 0) - (keyB.index ?? 0);
     };
-};
 
 /**
  * Sorts by amount in descending order (highest first). The amount is compared with BigNumber

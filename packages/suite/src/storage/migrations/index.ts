@@ -1074,6 +1074,8 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 49) {
+        // TODO(#30572): Migrations run before Redux network metadata is loaded.
+        // Keep the legacy ordering until migration inputs are supplied independently.
         const supportedNetworks = getSupportedNetworks();
 
         await updateAll(transaction, 'walletSettings', walletSettings => {

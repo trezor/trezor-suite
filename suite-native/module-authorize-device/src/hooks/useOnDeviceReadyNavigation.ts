@@ -3,13 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
-import {
-    type DiscoveryRootState,
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-} from '@suite-native/discovery';
+import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
 import {
@@ -31,14 +27,12 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const useOnDeviceReadyNavigation = () => {
-    const allNetworkSymbols = getSupportedNetworks();
-
     const [isTimeoutFinished, setIsTimeoutFinished] = useState(false);
     const navigation = useNavigation<NavigationProp>();
 
     const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
-    const deviceEnabledDiscoveryNetworkSymbols = useSelector((state: DiscoveryRootState) =>
-        selectDeviceEnabledDiscoveryNetworkSymbols(state, allNetworkSymbols),
+    const deviceEnabledDiscoveryNetworkSymbols = useSelector(
+        selectDeviceEnabledDiscoveryNetworkSymbols,
     );
     const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
     const isConnectPopupOpened = useIsConnectPopupOpened();

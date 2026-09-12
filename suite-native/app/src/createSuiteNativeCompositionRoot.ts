@@ -30,6 +30,7 @@ export const createSuiteNativeCompositionRoot = (
         // This is a temporary workaround for redux-persist coupling storage and the network
         // whitelist to reducer construction, not a pattern to follow for other reducers.
         // See https://github.com/trezor/trezor-suite/issues/32215.
+        // Network metadata is loaded after hydration, so it cannot supply this whitelist yet.
         reducer: prepareRootReducers({ mmkvStorage, getSupportedNetworks }),
         extraDependencies,
         preloadedState,

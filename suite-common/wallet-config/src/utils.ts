@@ -1,7 +1,7 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 import { exhaustive } from '@trezor/type-utils';
 
-import { networks } from './networksConfig';
+import { networks } from './legacyNetworks';
 import {
     type AccountType,
     type Network,
@@ -9,7 +9,7 @@ import {
     type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
-} from './types';
+} from './networkTypes';
 
 export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
 

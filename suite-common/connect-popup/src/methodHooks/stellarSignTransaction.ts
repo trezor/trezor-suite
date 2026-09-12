@@ -1,4 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { accountsActions, selectAccountForNetworkSymbolAndPath } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -42,7 +43,9 @@ const preCallHook = async <M extends CallMethodKeys>({
             path,
         );
         if (!selectedAccount) {
-            const createdAccount = await dispatch(createPlaceholderAccount(network, path));
+            const createdAccount = await dispatch(
+                createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
+            );
             temporaryAccounts.push(createdAccount.payload.account);
             selectedAccount = createdAccount.payload.account;
         }

@@ -19,9 +19,9 @@ import {
     toChecksumAddress,
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { useQueryClient } from '@suite-common/react-query';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -93,18 +93,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-    const {
-        analytics,
-        addressValidator,
-        findNetworkSymbolForProtocol,
-        getNamedAddressSupport,
-        dispatch,
-    } = useServices(
+    const { dispatch, getState, analytics, addressValidator, getNamedAddressSupport } = useServices(
+        selectDispatch,
+        selectGetState,
         selectDesktopAnalyticsDep,
         selectAddressValidatorDep,
-        selectFindNetworkSymbolForProtocolDep,
         selectGetNamedAddressSupportDep,
-        selectDispatch,
     );
     const { descriptor, networkType, symbol } = account;
     const namedAddress = getNamedAddressSupport(symbol);
@@ -166,7 +160,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             return;
         }
 
-        const result = parseTransferUri(uri, findNetworkSymbolForProtocol);
+        const result = parseTransferUri(uri, protocol =>
+            selectNetworkSymbolForProtocol(getState(), protocol),
+        );
 
         let parsedScheme: string | undefined;
         if (result.success) {
@@ -214,7 +210,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
         const { scheme, address: parsedAddress } = result.payload;
 
-        if (findNetworkSymbolForProtocol(scheme) !== symbol) {
+        if (selectNetworkSymbolForProtocol(getState(), scheme) !== symbol) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'qr-incorrect-coin-scheme-protocol',
@@ -269,7 +265,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         setValue,
         symbol,
         addressValidator,
-        findNetworkSymbolForProtocol,
+        getState,
     ]);
 
     if (device?.state?.staticSessionId === undefined) {

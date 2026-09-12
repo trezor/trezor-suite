@@ -11,7 +11,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { useExcludedUtxos } from '@suite-common/transaction-search';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
@@ -109,10 +109,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
 
-    const { findNetworkSymbolForProtocol, dispatch } = useServices(
-        selectFindNetworkSymbolForProtocolDep,
-        selectDispatch,
-    );
+    const { dispatch } = useServices(selectDispatch);
 
     const { localCurrencyOption } = state;
 
@@ -296,14 +293,16 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     }, [getValues, composedLevels, dispatch, resetContext, selectedAccount.account]);
 
     const protocol = useSelector(selectProtocol);
+    const protocolNetworkSymbol = useSelector(state =>
+        selectNetworkSymbolForProtocol(state, protocol.sendForm.scheme),
+    );
 
     // fill form using data from URI protocol handler e.g. 'bitcoin:address?amount=0.01'
     useEffect(() => {
         if (
             protocol.sendForm.shouldFill &&
             protocol.sendForm.scheme &&
-            selectedAccount.network.symbol ===
-                findNetworkSymbolForProtocol(protocol.sendForm.scheme)
+            selectedAccount.network.symbol === protocolNetworkSymbol
         ) {
             reset(getLoadedValues());
             // for now we always fill only first output
@@ -371,7 +370,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         reset,
         getLoadedValues,
         trigger,
-        findNetworkSymbolForProtocol,
+        protocolNetworkSymbol,
     ]);
 
     // load draft from reducer and reset current form values, this should be only called once on mount
@@ -391,16 +390,16 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             protocol.sendForm.shouldFill &&
             protocol.sendForm.scheme &&
             protocol.sendForm.address &&
-            selectedAccount.network.symbol ===
-                findNetworkSymbolForProtocol(protocol.sendForm.scheme);
+            selectedAccount.network.symbol === protocolNetworkSymbol;
 
         if (!shouldFillFromProtocol) {
             loadDraftValues();
         }
 
         // composeDraft is excluded because its reference changes with each feeInfo update.
+        // Protocol changes are handled above and must not reload a saved draft after the URI is cleared.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, getLoadedValues, findNetworkSymbolForProtocol, reset]);
+    }, [dispatch, getLoadedValues, reset]);
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {

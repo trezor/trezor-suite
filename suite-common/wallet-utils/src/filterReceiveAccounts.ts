@@ -19,6 +19,7 @@ export const isDebugOnlyAccountType = (
 
 type FilterReceiveAccountsProps = {
     accounts: Account[];
+    supportedNetworks: readonly NetworkSymbol[];
     deviceState?: StaticSessionId;
     symbol?: NetworkSymbol;
     isDebug: boolean;
@@ -26,6 +27,7 @@ type FilterReceiveAccountsProps = {
 
 export const filterReceiveAccounts = ({
     accounts,
+    supportedNetworks,
     deviceState,
     symbol,
     isDebug,
@@ -49,5 +51,5 @@ export const filterReceiveAccounts = ({
         shouldDisplayDebugOnly(account) &&
         (isNotEmptyAccount(account) || isVisibleAccount(account) || isFirstNormalAccount(account));
 
-    return sortByCoin(accounts.filter(isRelevantAccount));
+    return sortByCoin(accounts.filter(isRelevantAccount), supportedNetworks);
 };

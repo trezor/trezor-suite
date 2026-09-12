@@ -12,6 +12,7 @@ import {
     messageSystemPersistedWhitelist,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
+import { networksReducer } from '@suite-common/networks';
 import { prepareReceiveReducer } from '@suite-common/receive';
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
@@ -486,6 +487,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const rootReducer = preparePersistReducer({
         reducer: combineReducers({
+            networks: networksReducer,
             analytics: analyticsPersistedReducer,
             app: appReducer,
             appSettings: appSettingsPersistedReducer,

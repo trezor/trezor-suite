@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type NetworkSymbol, getNetwork, getSupportedNetworks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountBackendSpecific,
@@ -59,10 +59,10 @@ type CoinjoinAccountStatus = CoinjoinAccount['status'];
 
 const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
-    ({
-        accountInfo,
-        ...account
-    }: CreateAccountActionProps): {
+    (
+        { accountInfo, ...account }: CreateAccountActionProps,
+        supportedNetworks: readonly NetworkSymbol[],
+    ): {
         payload: { account: Account; supportedNetworks: readonly NetworkSymbol[] };
     } => {
         const { symbol, index, deviceState } = account;
@@ -105,7 +105,7 @@ const createAccount = createAction(
             };
 
             return {
-                payload: { account: payload, supportedNetworks: [...getSupportedNetworks()] },
+                payload: { account: payload, supportedNetworks },
             };
         } catch (error) {
             console.error('Error creating account payload:', error);

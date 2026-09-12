@@ -16,6 +16,7 @@ import { type DesktopSuiteSyncState, prepareSuiteSyncReducer } from '@suite/suit
 import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
+import { type NetworksState, networksReducer } from '@suite-common/networks';
 import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
 import { type SuiteSyncDataState, suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { type SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
@@ -57,6 +58,7 @@ const suiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer(e
 const receiveReducer = prepareReceiveReducer(extraDependencies);
 
 export type AppState = SuiteReducersState & {
+    networks: NetworksState;
     onboarding: OnboardingState;
     receive: ReceiveState;
     wallet: WalletState;
@@ -79,6 +81,7 @@ export type SuiteRootReducer = Reducer<AppState, UnknownAction, Partial<AppState
 
 export const rootReducer: SuiteRootReducer = combineReducers({
     ...suiteReducers,
+    networks: networksReducer,
     onboarding: onboardingReducers,
     receive: receiveReducer,
     wallet: walletReducers,

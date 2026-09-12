@@ -15,7 +15,11 @@ import {
     selectDeviceFirmwareVersion,
     selectDeviceUnavailableCapabilities,
 } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
+import {
+    type NetworkSymbol,
+    type NetworksRootState,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -153,6 +157,10 @@ export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell
     exchange: TradingExchangeStateSelector;
     sell: TradingSellStateSelector;
 };
+
+const createNetworkMemoizedSelector = createWeakMapSelector.withTypes<
+    TradingRootState & NetworksRootState
+>();
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 const createMemoizedSelectorWithAccounts =
@@ -581,7 +589,7 @@ const getFilteredCryptoIds = (
         });
 };
 
-export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
+export const selectTradingBuySupportedCryptoIds = createNetworkMemoizedSelector(
     [
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
@@ -589,13 +597,13 @@ export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
             returnStableArrayIfEmpty<CryptoId>(
                 wallet.trading.buy.buyInfo?.supportedCryptoCurrencies,
             ),
-        (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+        selectSupportedNetworkSymbols,
     ],
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
 );
 
-export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
+export const selectTradingSellSupportedCryptoIds = createNetworkMemoizedSelector(
     [
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
@@ -603,20 +611,20 @@ export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
             returnStableArrayIfEmpty<CryptoId>(
                 wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
             ),
-        (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+        selectSupportedNetworkSymbols,
     ],
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
 );
 
 const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') =>
-    createMemoizedSelector(
+    createNetworkMemoizedSelector(
         [
             selectTradingCoins,
             ({ wallet }) => wallet.trading.info.platforms,
             ({ wallet }) =>
                 returnStableArrayIfEmpty<CryptoId>(wallet.trading.exchange.exchangeInfo?.[key]),
-            (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+            selectSupportedNetworkSymbols,
         ],
         (coins, platforms, cryptoIds, supportedCoins) =>
             getFilteredCryptoIds(cryptoIds, coins, platforms, supportedCoins),
@@ -625,12 +633,12 @@ const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') 
 export const selectTradingExchangeSellCryptoIds = createExchangeCryptoIdsSelector('sellCryptoIds');
 export const selectTradingExchangeBuyCryptoIds = createExchangeCryptoIdsSelector('buyCryptoIds');
 
-export const selectTradingSellSellCryptoIds = createMemoizedSelector(
+export const selectTradingSellSellCryptoIds = createNetworkMemoizedSelector(
     [
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
         ({ wallet }) => wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
-        (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+        selectSupportedNetworkSymbols,
     ],
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(
@@ -1010,14 +1018,11 @@ export const selectTradingPrefilledFromAccount = (state: TradingRootState) =>
 export const selectTradingActiveSection = (state: TradingRootState) =>
     state.wallet.trading.activeSection;
 
-export const selectTradingSupportedSymbols = createMemoizedSelector(
+export const selectTradingSupportedSymbols = createNetworkMemoizedSelector(
     [
-        (state: TradingRootState, _type: TradingType, supportedCoins: readonly NetworkSymbol[]) =>
-            selectTradingBuySupportedCryptoIds(state, supportedCoins),
-        (state: TradingRootState, _type: TradingType, supportedCoins: readonly NetworkSymbol[]) =>
-            selectTradingExchangeSellCryptoIds(state, supportedCoins),
-        (state: TradingRootState, _type: TradingType, supportedCoins: readonly NetworkSymbol[]) =>
-            selectTradingSellSupportedCryptoIds(state, supportedCoins),
+        selectTradingBuySupportedCryptoIds,
+        selectTradingExchangeSellCryptoIds,
+        selectTradingSellSupportedCryptoIds,
         (_: TradingRootState, type: TradingType) => type,
     ],
     (buyCryptoIds, exchangeCryptoIds, sellCryptoIds, type) => {

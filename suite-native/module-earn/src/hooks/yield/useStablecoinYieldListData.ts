@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
@@ -51,6 +52,7 @@ type UseStablecoinYieldListDataReturn = {
 } & StablecoinYieldClaimSummariesState;
 
 export const useStablecoinYieldListData = () => {
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
     const { data: yieldOpportunities, isLoading, isError, refetch } = useAllYieldOpportunities();
@@ -179,7 +181,7 @@ export const useStablecoinYieldListData = () => {
                     accountType: account?.accountType,
                     index: account?.index,
                 };
-            }),
+            }, supportedNetworks),
         );
 
         const promoListData: EarnPromoListDataItem[] = [
@@ -189,7 +191,7 @@ export const useStablecoinYieldListData = () => {
         ];
 
         return { activeItems: sortedActiveItems, promoListData, isLoading, isError };
-    }, [accounts, yieldOpportunities, isLoading, isError]);
+    }, [isLoading, isError, yieldOpportunities, accounts, supportedNetworks]);
 
     const stablecoinYieldClaimSummariesState = useStablecoinYieldClaimSummaries({
         accounts,
