@@ -11,7 +11,7 @@ import type {
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
-import { convertTaprootXpub } from '@trezor/utils';
+import { toCanonicalDescriptor } from '@trezor/utils';
 
 import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
@@ -223,14 +223,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     throw ERRORS.TypedError('Runtime', 'GetAccountInfo: descriptor not found');
                 }
 
-                // Blockbook rejects taproot descriptors that use `h` for hardened
-                // derivation, so send the `'` form to the backend. The response keeps
-                // the original `descriptor` below, so the API returns the same format
-                // the caller provided.
-                const backendDescriptor =
-                    convertTaprootXpub({ xpub: descriptor, direction: 'h-to-apostrophe' }) ??
-                    descriptor;
-
                 // initialize backend
                 const blockchain = await initBlockchain(
                     request.coinInfo,
@@ -240,9 +232,14 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
                 if (this.disposed) break;
 
+                // Blockbook rejects taproot descriptors that use `h` for hardened parts, so the
+                // backend receives the canonical form. The response keeps the caller's original
+                // `descriptor` below, so the API returns the same format it was given.
+                const canonicalDescriptor = toCanonicalDescriptor(descriptor);
+
                 // get account info from backend
                 const info = await blockchain.getAccountInfo({
-                    descriptor: backendDescriptor,
+                    descriptor: canonicalDescriptor,
                     details: request.details,
                     tokens: request.tokens,
                     page: request.page,
@@ -267,7 +264,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     typeof request.details === 'string' &&
                     request.details !== 'basic'
                 ) {
-                    utxo = await blockchain.getAccountUtxo(backendDescriptor);
+                    utxo = await blockchain.getAccountUtxo(canonicalDescriptor);
                 }
 
                 if (this.disposed) break;
