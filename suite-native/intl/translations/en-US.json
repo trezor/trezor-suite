@@ -2740,6 +2740,7 @@
     "moduleActivityCenter.notifications.txApproved": "Approved in {account}",
     "moduleActivityCenter.notifications.txWrap": "Wrapped in {account}",
     "moduleActivityCenter.notifications.txUnwrap": "Unwrapped in {account}",
+    "moduleActivityCenter.notifications.txExchange": "Traded in {account}",
     "biometricsButton": "Unlock with biometrics",
     "search.noResults": "No results"
 }

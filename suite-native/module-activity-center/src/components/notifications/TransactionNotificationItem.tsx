@@ -39,6 +39,7 @@ const txTypeIconMap = {
     'tx-approved': 'arrowUp',
     'tx-wrap': 'arrowUp',
     'tx-unwrap': 'arrowDown',
+    'tx-exchange': 'swap',
 } as const satisfies Record<TransactionNotificationType, IconName>;
 
 const translationIdMap = {
@@ -56,6 +57,7 @@ const translationIdMap = {
     'tx-approved': 'moduleActivityCenter.notifications.txApproved',
     'tx-wrap': 'moduleActivityCenter.notifications.txWrap',
     'tx-unwrap': 'moduleActivityCenter.notifications.txUnwrap',
+    'tx-exchange': 'moduleActivityCenter.notifications.txExchange',
 } as const satisfies Record<TransactionNotificationType, string>;
 
 const fullWidthDividerStyle = prepareNativeStyle(utils => ({
