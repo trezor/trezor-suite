@@ -15,7 +15,8 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
  * There are projects for all supported device models with the latest firmware version
  * To save Currents quota, T3W1 acts as the representative flagship and runs the full set; T3T1 runs only
  * its exclusive (T3T1-only) tests on PR. Shared T3W1/T3T1 tests get full T3T1 coverage in nightly instead.
- * Only @webOnly tests run on web.
+ * Only @webOnly tests run on web — plus @perf on T3W1, so the per-PR performance report measures the
+ * web target too (T3T1 accrues perf samples in nightly, same quota policy as above).
  */
 const target = PlaywrightTarget.Web;
 const definition: PlaywrightProjectDefinition[] = [
@@ -23,7 +24,7 @@ const definition: PlaywrightProjectDefinition[] = [
         model: Model.T3W1,
         additionalGrepInvert: /@nightlyOnly/,
         currentsTags: tagsPr,
-        grep: /^(?=.*@T3W1)(?=.*@webOnly)/,
+        grep: /^(?=.*@T3W1)(?=.*(@webOnly|@perf))/,
     },
     {
         model: Model.T3T1,

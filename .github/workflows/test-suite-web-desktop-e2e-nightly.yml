@@ -44,6 +44,7 @@ jobs:
       currents-project-id: "4ytF0E"
       currents-ci-build-id: "nightly-desktop-run-${{ github.run_id }}-${{ github.run_attempt }}"
       download-artifact-name: "desktop-app-build-e2e"
+      lighthouse: "true"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
@@ -110,10 +111,78 @@ jobs:
       currents-ci-build-id: "nightly-web-run-${{ github.run_id }}-${{ github.run_attempt }}"
       enable-coverage: "true"
       download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
+      lighthouse: "true"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
       e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
+
+  # ── Performance baseline ────────────────────────────────────────────────────
+
+  # The develop baseline every PR's performance report compares against: collects the shards'
+  # perf-results artifacts and uploads them to the LHCI server as a sealed develop build. No PR to
+  # post to — the script's step summary is the only output. Informative only: the script exits 0 on
+  # every non-programming failure, so a dead server or missing token never reds the nightly run.
+  perf-baseline:
+    name: Performance baseline
+    needs:
+      - run-e2e-suite-desktop-tests
+      - run-e2e-suite-web-tests
+    # !cancelled(): red shards must not cost us the baseline built from the shards that did finish.
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    # Serialize uploads across overlapping runs (cron + a manual dispatch): two writers racing on
+    # the same (branch, hash) would trip over the seal — runs POSTed after the first writer seals
+    # are rejected by the server.
+    concurrency:
+      group: perf-baseline-upload
+      cancel-in-progress: false
+    env:
+      LHCI_SERVER_URL: "https://perf-lhci.sldev.cz"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        with:
+          # Full history (blobless), same shape as the PR perf-report job — the script resolves
+          # ancestry with git either way.
+          fetch-depth: 0
+          filter: tree:0
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
+      - name: Install dependencies
+        shell: bash
+        run: yarn workspaces focus @trezor/suite-e2e
+      - name: Download perf artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: perf-results-*
+          path: perf-artifacts
+      - name: Upload baseline to the Lighthouse server
+        shell: bash
+        env:
+          LHCI_BUILD_TOKEN: ${{ secrets.LHCI_BUILD_TOKEN }}
+          # The real ref, not a hardcoded "develop": a workflow_dispatch from a feature branch
+          # measures that branch's app, and labeling it develop would seal it as the baseline
+          # every PR report diffs against. Scheduled runs only ever happen on develop.
+          PERF_BRANCH: ${{ github.ref_name }}
+          PERF_HASH: ${{ github.sha }}
+          PERF_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          yarn workspace @trezor/suite-e2e perf:report:ci \
+            --mode ci-baseline \
+            --artifacts "${{ github.workspace }}/perf-artifacts"
 
   build-and-publish-coverage-map:
     if: always() && github.repository == 'trezor/trezor-suite' && needs.run-e2e-suite-web-tests.result != 'skipped'

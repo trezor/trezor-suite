@@ -1,0 +1,13 @@
+{
+    "name": "@suite/lhci-server",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "description": "Lighthouse CI server storing Suite perf history. Nothing in the monorepo imports it — the workspace exists so the deps of the Docker image are pinned by the root yarn.lock. See README.md.",
+    "dependencies": {
+        "@lhci/cli": "0.15.1",
+        "@lhci/server": "0.15.1",
+        "pg": "8.23.0",
+        "pg-hstore": "2.3.4"
+    }
+}

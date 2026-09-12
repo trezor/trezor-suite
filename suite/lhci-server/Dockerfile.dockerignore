@@ -1,0 +1,39 @@
+# BuildKit prefers this file over the repo-root .dockerignore for this Dockerfile — which is the
+# point: that one drops whole workspaces (packages/blockchain-link, packages/suite-desktop,
+# suite-native/app), and yarn cannot resolve the lockfile without every workspace manifest.
+#
+# So this list excludes only generated and local files. Nothing here is needed by
+# `yarn workspaces focus`; on a fresh clone the context is the tracked tree (~370 MB).
+
+**/node_modules
+.git
+.nx
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
+
+# Build output and caches of the other workspaces (nx targets write lib/, build/, libDev/).
+**/build
+**/dist
+**/lib
+**/libDev
+**/.next
+**/coverage
+**/*.tsbuildinfo
+**/.eslintcache
+**/.stylelintcache
+
+# Test and mobile-toolchain leftovers.
+**/test-results
+**/playwright-report
+**/ios/Pods
+**/ios/build
+**/android/build
+**/android/.gradle
+
+# Local scratch, IDE and submodule checkouts — no workspaces live here.
+plans
+tmp
+submodules
+.idea
+.vscode

@@ -1,0 +1,37 @@
+# The only public entry to the LHCI server. TLS is automatic (ACME) for {$LHCI_HOST}; the admin
+# surface stays behind an SSH tunnel to the loopback-published LHCI port — see README.md.
+{$LHCI_HOST} {
+	encode gzip
+
+	# Stripped LHRs are well under 1 MB and the server's own body limit is 10 MB — 12 MB keeps
+	# headroom for protocol overhead without inviting arbitrary uploads.
+	request_body {
+		max_size 12MB
+	}
+
+	# Project creation is unauthenticated in LHCI by design — blocked at the edge, the wizard
+	# runs through the SSH tunnel instead.
+	@createProject {
+		method POST
+		path /v1/projects /v1/projects/
+	}
+	respond @createProject 403
+
+	# No remote deletions, build token or not.
+	@deleteAnything {
+		method DELETE
+		path /v1/*
+	}
+	respond @deleteAnything 403
+
+	# Project updates (rename, base branch, token rotation) are admin surface. The regex matches
+	# only the project resource itself — PUT .../builds/<id>/lifecycle (sealing) MUST stay open
+	# for CI uploads.
+	@putProject {
+		method PUT
+		path_regexp ^/v1/projects/[^/]+/?$
+	}
+	respond @putProject 403
+
+	reverse_proxy lhci:9001
+}
