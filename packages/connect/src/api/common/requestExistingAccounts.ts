@@ -32,7 +32,13 @@ export const requestExistingAccounts = async ({
 }): Promise<DiscoveryAccount[] | null> => {
     const dfd = createUiPromise(UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNTS, device);
 
-    postMessage(createUiRequestMessage(UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNTS, { coinInfo }));
+    postMessage(
+        createUiRequestMessage(
+            UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNTS,
+            { coinInfo },
+            { requestId: dfd.requestId },
+        ),
+    );
 
     const result = await Promise.race([
         dfd.promise.then((response: UiResponseDiscoveryAccounts) => response.payload),

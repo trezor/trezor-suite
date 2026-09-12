@@ -1,8 +1,7 @@
 import type { TransportInfo } from './transport';
-import { UI_EVENT } from './ui-event';
+import { type UI_EVENT } from './ui-event';
 import type { PermissionRequest } from '../types/method';
 import type { ConnectDynamicSettings, Manifest } from '../types/settings';
-import type { MessageFactoryFn } from '../types/utils';
 
 export const POPUP = {
     // Message from popup run in "core" mode. Connect core has been loaded, popup is ready to handle messages
@@ -55,10 +54,3 @@ export type PopupEvent =
     | PopupClosedMessage;
 
 export type PopupEventMessage = PopupEvent & { event: typeof UI_EVENT };
-
-export const createPopupMessage: MessageFactoryFn<typeof UI_EVENT, PopupEvent> = (type, payload) =>
-    ({
-        event: UI_EVENT,
-        type,
-        payload,
-    }) as any;

@@ -1,9 +1,9 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore } from '@suite-common/test-utils';
-import { DEVICE, createDeviceMessage } from '@trezor/connect';
+import { DEVICE, type DeviceEventMessage, createDeviceMessage } from '@trezor/connect';
 
 import { createCredential, createDeviceThp } from '../mocks';
 import { thpActions } from './thpActions';
@@ -29,6 +29,9 @@ const initialState: ThpState = {
 const credential1 = createCredential({ credential: '1' });
 const credential2 = createCredential({ credential: '2' });
 const credential3 = createCredential({ credential: '3' });
+
+const createDeviceAction = (...args: Parameters<typeof createDeviceMessage>) =>
+    createDeviceMessage(...args) as DeviceEventMessage & UnknownAction; // cast to UnknownAction to satisfy the reducer type
 
 describe('thpReducer', () => {
     test('finishThpFlow', () => {
@@ -71,7 +74,7 @@ describe('thpReducer', () => {
             });
 
             store.dispatch(
-                createDeviceMessage(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
                     device,
                     status: 'finished',
                 }),
@@ -97,7 +100,7 @@ describe('thpReducer', () => {
             });
 
             store.dispatch(
-                createDeviceMessage(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
                     device,
                     status: 'canceled',
                 }),
@@ -118,7 +121,7 @@ describe('thpReducer', () => {
             });
 
             store.dispatch(
-                createDeviceMessage(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
                     device,
                     status: 'failed',
                     message: 'foo',
@@ -140,7 +143,7 @@ describe('thpReducer', () => {
             });
 
             store.dispatch(
-                createDeviceMessage(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
                     device,
                     status: 'invalid-tag',
                     tag: '1234',

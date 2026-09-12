@@ -122,7 +122,7 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
 
             case UI_REQUEST:
                 this.eventEmitter.emit(event, message);
-                this.eventEmitter.emit(type, payload);
+                this.eventEmitter.emit(type, { ...payload, requestId: message.requestId });
                 break;
 
             default:
