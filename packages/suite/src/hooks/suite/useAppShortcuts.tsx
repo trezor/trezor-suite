@@ -12,7 +12,7 @@ import { selectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 import { toggleViewThunk as toggleGuideView } from 'src/actions/suite/guideActions';
@@ -33,7 +33,7 @@ const isTypingTarget = (target: EventTarget | null): boolean => {
 
 export const useAppShortcuts = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const { dispatch } = useServices(selectDispatch);
+    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
 
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus?.status === 'loading';

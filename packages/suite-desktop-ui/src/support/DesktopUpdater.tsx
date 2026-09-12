@@ -14,7 +14,7 @@ import {
 } from '@suite/desktop-update';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 import { isArrayMember } from '@trezor/utils';
 
 import { Available } from './DesktopUpdater/Available';
@@ -37,7 +37,11 @@ const alwaysOpenStates = [
 
 export const DesktopUpdater = () => {
     const desktopUpdate = useSelector(selectDesktopUpdate);
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { desktopApi, analytics, dispatch } = useServices(
+        selectDesktopAnalyticsDep,
+        selectDispatch,
+        selectDesktopApiDep,
+    );
     const desktopUpdateState = desktopUpdate.state;
 
     useEffect(() => {
@@ -82,7 +86,7 @@ export const DesktopUpdater = () => {
             desktopApi.removeAllListeners('update/downloading');
             desktopApi.removeAllListeners('update/error');
         };
-    }, [desktopUpdate.enabled, dispatch]);
+    }, [desktopApi, desktopUpdate.enabled, dispatch]);
 
     const hideWindow = useCallback(() => {
         dispatch(desktopUpdateActions.setIsUpdateModalVisible(false));

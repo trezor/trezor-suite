@@ -1,0 +1,1 @@
+export { mockGetHttpReceiverAddress } from './mockGetHttpReceiverAddress';

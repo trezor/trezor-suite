@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
-import { type UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
+import { type UpdateInfo, selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { MarkdownWithComponents } from 'src/components/suite';
 
@@ -18,7 +18,7 @@ interface AvailableProps {
 }
 
 export const Available = ({ onCancel, latest }: AvailableProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
     const { enableAutoupdateOnNextRun } = useSelector(selectFlags);
 
     const downloadUpdate = () => {

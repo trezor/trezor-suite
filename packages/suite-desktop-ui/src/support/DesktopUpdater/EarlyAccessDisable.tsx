@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { StarFourIcon } from '@trezor/icons';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 import { SUITE_URL } from '@trezor/urls';
 
 interface EarlyAccessDisableProps {
@@ -14,7 +14,7 @@ interface EarlyAccessDisableProps {
 
 export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
     const [enabled, setEnabled] = useState(true);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { desktopApi, analytics } = useServices(selectDesktopAnalyticsDep, selectDesktopApiDep);
 
     const allowPrerelease = useCallback(() => {
         analytics.report({
@@ -25,7 +25,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
         });
         desktopApi.allowPrerelease(false);
         setEnabled(false);
-    }, [analytics]);
+    }, [desktopApi, analytics]);
 
     return enabled ? (
         <Modal

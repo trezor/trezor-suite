@@ -4,8 +4,9 @@ import { useSelector } from 'react-redux';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsTorEnabled } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
-import { type TorSettings, desktopApi } from '@trezor/suite-desktop-api';
+import { type TorSettings, selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 const options = [
     {
@@ -19,6 +20,7 @@ const options = [
 ];
 
 export const TorExternal = () => {
+    const { desktopApi } = useServices(selectDesktopApiDep);
     const isTorEnabled = useSelector(selectIsTorEnabled);
 
     const [torSettings, setTorSettings] = useState<TorSettings | null>(null);
@@ -43,7 +45,7 @@ export const TorExternal = () => {
         return () => {
             desktopApi.removeAllListeners('tor/settings');
         };
-    }, []);
+    }, [desktopApi]);
 
     useEffect(() => {
         if (!torSettings) return;

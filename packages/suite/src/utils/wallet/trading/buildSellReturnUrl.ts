@@ -5,10 +5,11 @@ import {
     type TradingSellInfoSelector,
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
-import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
+import { buildQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
-type BuildSellReturnUrlParams = {
+export type BuildSellReturnUrlParams = DesktopApiDep<'getHttpReceiverAddress'> & {
     quote: SellFiatTrade;
     sellInfo: TradingSellInfoSelector | undefined;
     quotesRequest: SellFiatTradeQuoteRequest | undefined;
@@ -17,6 +18,7 @@ type BuildSellReturnUrlParams = {
 };
 
 export const buildSellReturnUrl = async ({
+    desktopApi,
     quote,
     sellInfo,
     quotesRequest,
@@ -34,7 +36,8 @@ export const buildSellReturnUrl = async ({
 
     const orderId = provider.flow === 'PAYMENT_GATE' ? quote.orderId : undefined;
 
-    return await createQuoteLink(
+    return await buildQuoteLink(
+        { desktopApi },
         {
             ...quotesRequest,
             country: quotesRequest.country ?? quote.country,

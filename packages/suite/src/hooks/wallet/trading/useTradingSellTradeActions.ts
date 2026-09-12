@@ -21,10 +21,11 @@ import {
     sellThunks,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { requestSellTradeThunk } from 'src/actions/wallet/trading/sell/requestSellTradeThunk';
-import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
+import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
@@ -32,7 +33,11 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { buildSellReturnUrl } from 'src/utils/wallet/trading/buildSellReturnUrl';
 
 export const useTradingSellTradeActions = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { desktopApi, analytics, dispatch } = useServices(
+        selectDesktopApiDep,
+        selectDesktopAnalyticsDep,
+        selectDispatch,
+    );
     const { translationString } = useTranslation();
 
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
@@ -72,6 +77,7 @@ export const useTradingSellTradeActions = () => {
 
         const quote = { ...selectedQuote, bankAccount };
         const returnUrl = await buildSellReturnUrl({
+            desktopApi,
             quote,
             account,
             sellInfo,
@@ -95,7 +101,7 @@ export const useTradingSellTradeActions = () => {
                 returnUrl,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData: response => {
-                    dispatch(submitRequestForm(response.tradeForm?.form));
+                    dispatch(submitRequestFormThunk(response.tradeForm?.form));
                 },
             }),
         );

@@ -6,14 +6,18 @@ import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 export const AutoStartBeforeQuitModal = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { desktopApi, analytics, dispatch } = useServices(
+        selectDesktopAnalyticsDep,
+        selectDispatch,
+        selectDesktopApiDep,
+    );
     const [dontAskAgain, setDontAskAgain] = useState(false);
     useEffect(() => {
         if (desktopApi.available) desktopApi.appAutoStartPopupAck();
-    }, []);
+    }, [desktopApi]);
 
     if (!desktopApi.available) return null;
 

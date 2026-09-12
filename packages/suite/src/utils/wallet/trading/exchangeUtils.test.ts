@@ -2,10 +2,16 @@ import { type CryptoId, type ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
+import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
-import { createQuoteLink } from './exchangeUtils';
+import { buildQuoteLink } from './exchangeUtils';
 
 describe('exchangeUtils', () => {
+    const deps: DesktopApiDep<'getHttpReceiverAddress'> = {
+        desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
+    };
+
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -31,10 +37,11 @@ describe('exchangeUtils', () => {
     } as TradingComposedTransactionInfo;
     const mockQuoteId = 'quoteId';
 
-    describe('createQuoteLink', () => {
+    describe('buildQuoteLink', () => {
         it('should create link for quote', async () => {
             expect(
-                await createQuoteLink(
+                await buildQuoteLink(
+                    deps,
                     mockQuotesRequest,
                     mockAccount,
                     mockComposedInfo,
@@ -47,7 +54,8 @@ describe('exchangeUtils', () => {
 
         it('should create link for quote when selectedFee is high', async () => {
             expect(
-                await createQuoteLink(
+                await buildQuoteLink(
+                    deps,
                     mockQuotesRequest,
                     mockAccount,
                     { ...mockComposedInfo, selectedFee: 'high' },
@@ -60,7 +68,8 @@ describe('exchangeUtils', () => {
 
         it('should create link for quote when selectedFee is custom', async () => {
             expect(
-                await createQuoteLink(
+                await buildQuoteLink(
+                    deps,
                     mockQuotesRequest,
                     mockAccount,
                     { ...mockComposedInfo, selectedFee: 'custom' },
@@ -73,7 +82,8 @@ describe('exchangeUtils', () => {
 
         it('should create link for quote when account network type is solana', async () => {
             expect(
-                await createQuoteLink(
+                await buildQuoteLink(
+                    deps,
                     mockQuotesRequest,
                     {
                         ...mockAccount,

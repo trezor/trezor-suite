@@ -1,5 +1,6 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
+import { type WithServices } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -19,6 +20,7 @@ import {
     parseFormDraftKey,
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 
@@ -27,7 +29,9 @@ type FormState = {
     outputs?: Output[];
 };
 
-export const submitRequestForm =
+type SubmitRequestFormThunkDeps = WithServices<DesktopApiDep<'getHttpReceiverAddress'>>;
+
+export const submitRequestFormThunk =
     (form?: {
         formMethod: 'GET' | 'POST' | 'IFRAME';
         formAction: string;
@@ -36,9 +40,10 @@ export const submitRequestForm =
             [key: string]: string;
         };
     }) =>
-    () => {
+    (_dispatch: Dispatch, _getState: () => unknown, extra: SubmitRequestFormThunkDeps) => {
         if (form) {
             envSubmitRequestForm(
+                extra.services,
                 form.formMethod,
                 form.formAction,
                 form.formTarget || '_self',

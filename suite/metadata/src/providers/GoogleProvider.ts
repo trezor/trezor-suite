@@ -5,14 +5,15 @@ import {
 } from '@suite-common/metadata-types';
 
 import GoogleClient from '../google';
+import { type OauthDesktopApiDep } from '../oauth';
 
 export class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     isCloud = true;
 
-    constructor(tokens: Tokens, environment: OAuthServerEnvironment) {
+    constructor(tokens: Tokens, environment: OAuthServerEnvironment, deps: OauthDesktopApiDep) {
         super('google');
-        GoogleClient.init(tokens, environment);
+        GoogleClient.init(tokens, environment, deps);
     }
 
     get clientId() {

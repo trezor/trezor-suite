@@ -1,31 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 const PositionedSwitch = styled.div`
     align-self: center;
 `;
 
 export const AutoStart = () => {
+    const { desktopApi } = useServices(selectDesktopApiDep);
     const [autoStartEnabled, setAutoStartEnabled] = useState(false);
 
-    const updateAutoStartStatus = () => {
+    const updateAutoStartStatus = useCallback(() => {
         desktopApi.getAppAutoStartIsEnabled().then(result => {
             if (result.success) {
                 setAutoStartEnabled(result.payload);
             }
         });
-    };
+    }, [desktopApi]);
     // set initial state based on real electron settings
     useEffect(() => {
         updateAutoStartStatus();
-    }, []);
+    }, [updateAutoStartStatus]);
 
     const handleChange = (enabled: boolean) => {
         desktopApi.appAutoStart(enabled);

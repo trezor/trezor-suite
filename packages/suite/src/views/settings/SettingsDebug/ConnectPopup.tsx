@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 export const ConnectPopup = () => {
+    const { desktopApi } = useServices(selectDesktopApiDep);
     const [isEnabled, setIsEnabled] = useState(false);
 
     useEffect(() => {
         if (desktopApi.available) {
             desktopApi.connectPopupEnabled().then(enabled => setIsEnabled(enabled));
         }
-    }, []);
+    }, [desktopApi]);
 
     const handleOnChange = async () => {
         if (desktopApi.available) {

@@ -1,6 +1,9 @@
+import { mock } from '@suite-common/dependency-injection';
+import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 import { createDeferred } from '@trezor/utils';
 
 import { DropboxProvider } from './DropboxProvider';
+import { type OauthDesktopApiDep } from '../oauth';
 
 const globalContext = globalThis as typeof globalThis & { window?: typeof globalThis };
 if (!globalContext.window) {
@@ -16,6 +19,15 @@ const emptySearchResult = {
     },
 };
 
+const { desktopApi }: OauthDesktopApiDep = {
+    desktopApi: {
+        available: false,
+        getHttpReceiverAddress: mockGetHttpReceiverAddress(),
+        once: mock(),
+        removeAllListeners: mock(),
+    },
+};
+
 describe(DropboxProvider.name, () => {
     afterEach(() => {
         jest.useRealTimers();
@@ -23,7 +35,7 @@ describe(DropboxProvider.name, () => {
     });
 
     it('runs scheduled API requests one at a time', async () => {
-        const provider = new DropboxProvider({ token: 'token', clientId: 'client-id' });
+        const provider = new DropboxProvider({ desktopApi, token: 'token', clientId: 'client-id' });
         const firstRequest = createDeferred<typeof emptySearchResult>();
         const secondRequest = createDeferred<typeof emptySearchResult>();
         const filesSearchSpy = jest
@@ -51,7 +63,7 @@ describe(DropboxProvider.name, () => {
     it('pauses the request queue according to Dropbox Retry-After', async () => {
         jest.useFakeTimers();
 
-        const provider = new DropboxProvider({ token: 'token', clientId: 'client-id' });
+        const provider = new DropboxProvider({ desktopApi, token: 'token', clientId: 'client-id' });
         const filesSearchSpy = jest
             .spyOn(provider.client, 'filesSearchV2')
             .mockRejectedValueOnce({
@@ -80,7 +92,7 @@ describe(DropboxProvider.name, () => {
     it('applies Retry-After to requests already waiting in the queue', async () => {
         jest.useFakeTimers();
 
-        const provider = new DropboxProvider({ token: 'token', clientId: 'client-id' });
+        const provider = new DropboxProvider({ desktopApi, token: 'token', clientId: 'client-id' });
         const firstRequest = jest
             .fn()
             .mockResolvedValue(provider.error('RATE_LIMIT_ERROR', 'too many requests', 2000));
@@ -113,7 +125,7 @@ describe(DropboxProvider.name, () => {
     it('keeps the fixed retry delay when Retry-After is unavailable', async () => {
         jest.useFakeTimers();
 
-        const provider = new DropboxProvider({ token: 'token', clientId: 'client-id' });
+        const provider = new DropboxProvider({ desktopApi, token: 'token', clientId: 'client-id' });
         const filesSearchSpy = jest
             .spyOn(provider.client, 'filesSearchV2')
             .mockRejectedValueOnce({

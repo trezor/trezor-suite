@@ -43,6 +43,7 @@ import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
 import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
+import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';
@@ -65,6 +66,7 @@ const connectInitSettings: ConnectInitSettings = {
 
 export type SuiteServices = CommonServices &
     DbDep &
+    DesktopApiDep &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
@@ -77,6 +79,7 @@ export type StoreAPIDep = {
 
 export type SuiteAppDeps = StoreAPIDep &
     DbDep &
+    DesktopApiDep &
     HistoryDep &
     PlatformEncryptionDep &
     CreateLoggerDep &
@@ -159,6 +162,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     return {
         db: deps.db,
+        desktopApi: deps.desktopApi,
         networks,
         suiteSync,
         bip329,

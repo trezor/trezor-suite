@@ -33,7 +33,7 @@ import {
     mockGetDebugSettings,
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
-import { asGetter } from '@suite-common/dependency-injection';
+import { asGetter, mock } from '@suite-common/dependency-injection';
 import { prepareDeviceReducer } from '@suite-common/device';
 import {
     fetchConfigThunk,
@@ -70,7 +70,7 @@ import { noopCreateLogger } from '@trezor/connect-common';
 import { initialBreakpointFlags } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { initThunk } from 'src/actions/suite/initAction';
+import { type InitThunkDesktopApiDep, initThunk } from 'src/actions/suite/initAction';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import windowReducer from 'src/reducers/suite/windowReducer';
@@ -341,6 +341,16 @@ const fixtures: Fixture[] = [
     },
 ];
 
+const createDesktopApiDep = (): InitThunkDesktopApiDep => ({
+    desktopApi: {
+        setAutomaticUpdateEnabled: mock(),
+        getBioAuthSettings: mock(() => Promise.resolve({ enabled: false })),
+        getBioAuthStatus: mock(() => Promise.resolve(false)),
+        isBioAuthAvailable: mock(() => Promise.resolve(false)),
+        on: mock(),
+    },
+});
+
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
@@ -350,6 +360,7 @@ const initStore = (state: State) => {
         extra: {
             actions: { lockDevice },
             services: {
+                ...createDesktopApiDep(),
                 analytics: mockDesktopAnalytics(),
                 connectInitHooks: mockConnectInitHooks(),
                 connectInitSettings: mockConnectInitSettings(),

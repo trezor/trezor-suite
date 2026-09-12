@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Card, Column, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { StarFourIcon } from '@trezor/icons';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { CheckItem } from 'src/components/suite';
 
@@ -16,7 +16,7 @@ interface EarlyAccessEnableProps {
 export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
     const [understood, setUnderstood] = useState(false);
     const [enabled, setEnabled] = useState(false);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { desktopApi, analytics } = useServices(selectDesktopAnalyticsDep, selectDesktopApiDep);
     const allowPrerelease = useCallback(() => {
         analytics.report({
             type: events.settingsGeneralEarlyAccessEvent.name,
@@ -26,9 +26,12 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
         });
         desktopApi.allowPrerelease(true);
         setEnabled(true);
-    }, [analytics]);
+    }, [desktopApi, analytics]);
 
-    const checkForUpdates = useCallback(() => desktopApi.checkForUpdates({ isManual: true }), []);
+    const checkForUpdates = useCallback(
+        () => desktopApi.checkForUpdates({ isManual: true }),
+        [desktopApi],
+    );
 
     return enabled ? (
         <Modal

@@ -6,13 +6,14 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
+import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
-import { requestSellTradeThunk } from './requestSellTradeThunk';
+import { type RequestSellTradeThunkDeps, requestSellTradeThunk } from './requestSellTradeThunk';
 
-const mockCreateQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
+const mockBuildQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
 jest.mock('src/utils/wallet/trading/sellUtils', () => ({
     ...jest.requireActual('src/utils/wallet/trading/sellUtils'),
-    createQuoteLink: (...args: unknown[]) => mockCreateQuoteLink(...args),
+    buildQuoteLink: (...args: unknown[]) => mockBuildQuoteLink(...args),
 }));
 
 let redirectResponse: unknown;
@@ -45,7 +46,7 @@ jest.mock('@suite-common/trading', () => {
 const mockSubmitRequestForm = jest.fn((..._args: unknown[]) => () => {});
 jest.mock('../tradingCommonActions', () => ({
     ...jest.requireActual('../tradingCommonActions'),
-    submitRequestForm: (...args: unknown[]) => mockSubmitRequestForm(...args),
+    submitRequestFormThunk: (...args: unknown[]) => mockSubmitRequestForm(...args),
 }));
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
@@ -67,9 +68,13 @@ const QUOTE: SellFiatTrade = {
     amountInCrypto: true,
 };
 
+const createExtra = (): RequestSellTradeThunkDeps => ({
+    services: { desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() } },
+});
+
 const buildStore = (accounts: Account[] = [ACCOUNT]) =>
     createTestStore({
-        extra: undefined,
+        extra: createExtra(),
         preloadedState: {
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             tokenDefinitions: {},
@@ -95,7 +100,7 @@ const buildStore = (accounts: Account[] = [ACCOUNT]) =>
 
 describe('requestSellTradeThunk', () => {
     beforeEach(() => {
-        mockCreateQuoteLink.mockClear();
+        mockBuildQuoteLink.mockClear();
         mockHandleTradeThunk.mockClear();
         mockSubmitRequestForm.mockClear();
         redirectResponse = undefined;
