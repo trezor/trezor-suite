@@ -4,16 +4,7 @@ export default [
     ...eslint,
     {
         rules: {
-            'no-bitwise': 'off', // airbnb-base: used in hardending
-            'no-underscore-dangle': 'off', // underscore is used
-            camelcase: 'off', // camelcase is used
-            'no-console': 'warn',
-            'no-await-in-loop': 'off', // used in legacy trezor-connect codebase
-            'jest/no-standalone-expect': [
-                'error',
-                { additionalTestBlockFunctions: ['conditionalTest'] },
-            ],
-            'import/no-default-export': 'off', // Todo: shall be solved one day, but now its heavily used
+            'import/no-default-export': 'off', // TrezorConnect is the package's default export
             '@typescript-eslint/consistent-type-imports': [
                 'error',
                 { prefer: 'type-imports', fixStyle: 'separate-type-imports' },

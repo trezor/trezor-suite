@@ -1,0 +1,40 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./lib",
+        "rootDir": "./src",
+        "lib": ["webworker", "ES2022"],
+        "types": ["w3c-web-usb"]
+    },
+    "references": [
+        { "path": "../blockchain-link" },
+        { "path": "../blockchain-link-types" },
+        { "path": "../connect-common" },
+        { "path": "../connect-data" },
+        { "path": "../crypto-utils" },
+        { "path": "../device-authenticity" },
+        { "path": "../device-utils" },
+        {
+            "path": "../../networks/cardano/network-cardano"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
+        { "path": "../protobuf" },
+        { "path": "../protocol" },
+        { "path": "../transport-common" },
+        { "path": "../type-utils" },
+        { "path": "../utils" },
+        { "path": "../utxo-lib" },
+        { "path": "../eslint" },
+        { "path": "../requirements" },
+        { "path": "../trezor-user-env-link" }
+    ]
+}

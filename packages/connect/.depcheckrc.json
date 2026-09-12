@@ -1,15 +1,4 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": [
-        "@babel/preset-typescript",
-        "@trezor/connect",
-        "@vitest/browser",
-        "crypto-browserify",
-        "process",
-        "stream-browserify",
-        "tsx",
-        "virtual:common-fixtures",
-        "virtual:txcache",
-        "vm-browserify"
-    ]
+    "ignores": ["tsx"]
 }

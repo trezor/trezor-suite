@@ -199,6 +199,7 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-native/storybook": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
+        "@trezor/connect-core": "workspace:*",
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/eslint": "workspace:*",
         "@types/lodash": "^4.17.16",

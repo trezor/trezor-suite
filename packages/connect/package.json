@@ -22,15 +22,11 @@
     "main": "src/index.ts",
     "browser": {
         "./src/index": "./src/index.browser.ts",
-        "./src/index.ts": "./src/index.browser.ts",
-        "./src/utils/assets": "./src/utils/assets.browser.ts",
-        "./src/workers/workers": "./src/workers/workers.browser.ts"
+        "./src/index.ts": "./src/index.browser.ts"
     },
     "react-native": {
-        "./src/index": "./src/index.ts",
-        "./src/index.ts": "./src/index.ts",
-        "./src/utils/assets": "./src/utils/assets.native.ts",
-        "./src/workers/workers": "./src/workers/workers.native.ts"
+        "./src/index": "./src/index.native.ts",
+        "./src/index.ts": "./src/index.native.ts"
     },
     "publishConfig": {
         "main": "./lib/index.js",
@@ -44,21 +40,11 @@
         },
         "browser": {
             "./lib/index.js": "./lib/index.browser.js",
-            "./lib/utils/assets.js": "./lib/utils/assets.browser.js",
-            "./lib/workers/workers.js": "./lib/workers/workers.browser.js",
-            "./lib/data/*": "./lib/data/*",
-            "./lib/exports.js": "./lib/exports.js",
-            "./lib/impl/*": "./lib/impl/*",
-            "./lib/utils/*": "./lib/utils/*"
+            "./lib/exports.js": "./lib/exports.js"
         },
         "react-native": {
-            "./lib/index.js": "./lib/index.js",
-            "./lib/utils/assets.js": "./lib/utils/assets.native.js",
-            "./lib/workers/workers.js": "./lib/workers/workers.native.js",
-            "./lib/data/*": "./lib/data/*",
-            "./lib/exports.js": "./lib/exports.js",
-            "./lib/impl/*": "./lib/impl/*",
-            "./lib/utils/*": "./lib/utils/*"
+            "./lib/index.js": "./lib/index.native.js",
+            "./lib/exports.js": "./lib/exports.js"
         }
     },
     "files": [
@@ -66,7 +52,7 @@
         "CHANGELOG.md"
     ],
     "scripts": {
-        "test:unit": "jest --version && jest",
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
@@ -76,57 +62,22 @@
         "version:minor": "yarn g:tsx scripts/bump-version.ts minor",
         "version:preminor": "yarn g:tsx scripts/bump-version.ts preminor",
         "version:major": "yarn g:tsx scripts/bump-version.ts major",
-        "test:e2e:web": "yarn g:tsx ./e2e/run.ts web",
-        "test:e2e:node": "yarn g:tsx ./e2e/run.ts node",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@bufbuild/protobuf": "^2.11.0",
-        "@noble/hashes": "^2.0.1",
-        "@scure/base": "^2.0.0",
-        "@scure/bip39": "^1.5.1",
-        "@trezor/blockchain-link": "workspace:*",
-        "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect-common": "workspace:*",
-        "@trezor/connect-data": "workspace:*",
-        "@trezor/crypto-utils": "workspace:*",
-        "@trezor/device-authenticity": "workspace:*",
-        "@trezor/device-utils": "workspace:*",
-        "@trezor/network-cardano": "workspace:*",
-        "@trezor/network-solana": "workspace:*",
-        "@trezor/network-stellar": "workspace:*",
-        "@trezor/network-tron": "workspace:*",
-        "@trezor/protobuf": "workspace:*",
-        "@trezor/protocol": "workspace:*",
-        "@trezor/schema-utils": "workspace:*",
+        "@trezor/connect-core": "workspace:*",
+        "@trezor/transport": "workspace:*",
         "@trezor/transport-common": "workspace:*",
-        "@trezor/transport-web": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "@trezor/utxo-lib": "workspace:*",
-        "cross-fetch": "^4.1.0",
-        "jws": "^4.0.1",
-        "viem": "^2.54.1"
+        "@trezor/transport-web": "workspace:*"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.29.7",
         "@trezor/eslint": "workspace:*",
         "@trezor/requirements": "workspace:*",
-        "@trezor/trezor-user-env-link": "workspace:*",
-        "@types/jws": "^3.2.11",
+        "@types/jest": "30.0.0",
         "@types/node": "22.13.10",
         "@types/w3c-web-usb": "^1.0.14",
-        "@vitest/browser-playwright": "^4.1.10",
-        "crypto-browserify": "3.12.1",
-        "jest": "29.7.0",
-        "process": "^0.11.10",
-        "stream-browserify": "^3.0.0",
-        "tsx": "^4.21.0",
-        "vite-plugin-node-polyfills": "^0.26.0",
-        "vite-plugin-wasm": "^3.6.0",
-        "vitest": "^4.1.10",
-        "vm-browserify": "^1.1.2",
-        "ws": "^8.20.0"
+        "tsx": "^4.21.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

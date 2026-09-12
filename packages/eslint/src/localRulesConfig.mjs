@@ -20,6 +20,7 @@ const publishableTrezorPackages = [
     '@trezor/network-tron',
     '@trezor/connect',
     '@trezor/connect-common',
+    '@trezor/connect-core',
     '@trezor/connect-data',
     '@trezor/connect-mobile',
     '@trezor/connect-plugin-ethereum',

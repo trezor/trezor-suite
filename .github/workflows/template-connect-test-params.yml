@@ -68,7 +68,7 @@ jobs:
         continue-on-error: true
         with:
           version: v0.19.1
-      - run: echo "FOCUS_WORKSPACES=@trezor/connect" >> "$GITHUB_ENV"
+      - run: echo "FOCUS_WORKSPACES=@trezor/connect-core" >> "$GITHUB_ENV"
       - if: ${{ inputs.testEnv == 'web' }}
         run: echo "FOCUS_WORKSPACES=$FOCUS_WORKSPACES @trezor/connect-web" >> "$GITHUB_ENV"
       - if: ${{ inputs.transport && contains(inputs.transport, 'local-suite') }}

@@ -1,22 +1,6 @@
-import {
-    type TrezorConnectPrivilegedAPI,
-    type UpdateConnectSettings,
-    factoryPrivileged,
-} from '@trezor/connect-common';
-import { type AbstractTransportParams, BridgeTransport } from '@trezor/transport-common';
+import { type TrezorConnectPrivilegedAPI, factoryPrivileged } from '@trezor/connect-common';
 
-import { updateProxy } from './backend/BlockchainLink';
-import { CoreInModule } from './impl/core-in-module';
-
-class CoreInModuleNode extends CoreInModule {
-    protected defaultTransports(params: AbstractTransportParams) {
-        return [new BridgeTransport(params)];
-    }
-
-    protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
-        await updateProxy(proxy);
-    }
-}
+import { CoreInModuleNode } from './impl/core-in-module-node';
 
 const TrezorConnect: TrezorConnectPrivilegedAPI = factoryPrivileged(new CoreInModuleNode());
 

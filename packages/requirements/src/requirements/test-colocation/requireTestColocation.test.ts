@@ -68,7 +68,7 @@ describe('isTestColocationViolation', () => {
     });
 
     it.each([
-        'packages/connect/e2e/tests/example.test.ts',
+        'packages/connect-core/e2e/tests/example.test.ts',
         'packages/request-manager/e2e/tests/example.test.ts',
         'packages/transport-test/e2e/tests/example.test.ts',
         'packages/trezor-user-env-link/e2e/tests/example.test.ts',
@@ -81,7 +81,7 @@ describe('isTestColocationViolation', () => {
 
     it.each([
         'packages/example/e2e/tests/example.test.ts',
-        'packages/connect/e2e-other/tests/example.test.ts',
+        'packages/connect-core/e2e-other/tests/example.test.ts',
         'packages/example/playwright/tests/example.test.ts',
         'suite-native/app/detox/tests/example.test.ts',
     ])('does not exempt an unlisted path: %s', path => {
@@ -95,7 +95,7 @@ describe('findTestColocationViolations', () => {
             findTestColocationViolations([
                 'packages/zeta/tests/zeta.test.ts',
                 'packages/alpha/__tests__/alpha.spec.ts',
-                'packages/connect/e2e/tests/example.test.ts',
+                'packages/connect-core/e2e/tests/example.test.ts',
             ]),
         ).toEqual(['packages/alpha/__tests__/alpha.spec.ts', 'packages/zeta/tests/zeta.test.ts']);
     });
@@ -106,7 +106,7 @@ describe('verifyTestColocation', () => {
         expect(
             verifyTestColocation([
                 'packages/example/src/example.test.ts',
-                'packages/connect/e2e/tests/example.test.ts',
+                'packages/connect-core/e2e/tests/example.test.ts',
             ]),
         ).toEqual([]);
     });
