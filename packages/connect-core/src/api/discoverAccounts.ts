@@ -15,7 +15,7 @@ import {
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
-import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
+import { arrayPartition, getSynchronize, toCanonicalDescriptor, versionUtils } from '@trezor/utils';
 
 import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
@@ -366,8 +366,9 @@ export default class DiscoverAccounts extends AbstractMethod<
                 descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index + 1);
                 descPromise.catch(() => {});
 
+                const canonicalDescriptor = toCanonicalDescriptor(descriptor);
                 const info = await blockchain.getAccountInfo({
-                    descriptor,
+                    descriptor: canonicalDescriptor,
                     details,
                     pageSize,
                     protocols,
@@ -379,7 +380,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                     ? undefined
                     : info.empty
                       ? []
-                      : await blockchain.getAccountUtxo(descriptor);
+                      : await blockchain.getAccountUtxo(canonicalDescriptor);
 
                 this.updateProgress(accountKey, index + 1, info.empty || singleAccount);
                 sendProgress({
