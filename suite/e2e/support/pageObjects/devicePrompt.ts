@@ -39,6 +39,7 @@ export class DevicePrompt {
     readonly assetsReceiveAddress: Locator;
     readonly reviewAmount: Locator;
     readonly sendButton: Locator;
+    readonly copyRawTransactionButton: Locator;
     readonly header: DevicePromptHeaderSection;
     readonly acquireDeviceButton: Locator;
     readonly closeButton: Locator;
@@ -61,6 +62,7 @@ export class DevicePrompt {
         this.assetsReceiveAddress = page.getByTestId('@modal/assets/receive/address');
         this.reviewAmount = page.getByTestId('@modal/transaction-review/amount');
         this.sendButton = page.getByTestId('@modal/send');
+        this.copyRawTransactionButton = page.getByTestId('@send/copy-raw-transaction');
         this.header = new DevicePromptHeaderSection(page);
         this.acquireDeviceButton = this.page.getByTestId('@device-acquire');
         this.closeButton = this.page.getByTestId('@confirm-on-device/close-button');
