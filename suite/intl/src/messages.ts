@@ -10851,6 +10851,10 @@ export const messages = defineMessages({
         id: 'TR_STAKING_DREP_ID',
         defaultMessage: 'DRep ID',
     },
+    TR_STAKING_DREP_ID_CONVERTED: {
+        id: 'TR_STAKING_DREP_ID_CONVERTED',
+        defaultMessage: 'Converted to the new DRep ID format',
+    },
     TR_STAKING_CARD_TEXT_FUNDS_STAY: {
         id: 'TR_STAKING_CARD_TEXT_FUNDS_STAY',
         defaultMessage:
