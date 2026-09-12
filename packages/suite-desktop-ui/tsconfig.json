@@ -29,6 +29,9 @@
         { "path": "../icons" },
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },
+        {
+            "path": "../suite-desktop-api-electron"
+        },
         { "path": "../theme" },
         { "path": "../urls" },
         { "path": "../utils" }

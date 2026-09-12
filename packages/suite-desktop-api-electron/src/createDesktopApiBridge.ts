@@ -1,7 +1,11 @@
 import type { IpcRendererEvent } from 'electron';
 
-import { type DesktopApi, type RendererChannels } from './api';
-import { type StrictIpcRenderer } from './ipc';
+import {
+    type DesktopApi,
+    type RendererChannels,
+    type StrictIpcRenderer,
+} from '@trezor/suite-desktop-api';
+
 import * as validation from './validation';
 
 // ipcRenderer.on listener appends additional param `event: Electron.IpcRendererEvent`
@@ -17,7 +21,11 @@ const omitElectronEvent = <
     if (validation.isValidChannel(channel)) on(channel, (_, ...args) => listener(...args)); // call listener without event
 };
 
-export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
+/**
+ * Builds the API the preload script exposes to the renderer through `contextBridge`.
+ * Runs in the preload context, where `ipcRenderer` is reachable.
+ */
+export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
     ipcRenderer: R,
 ): DesktopApi => ({
     available: true,

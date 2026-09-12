@@ -1,0 +1,18 @@
+{
+    "name": "@trezor/suite-desktop-api-web",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "description": "Web implementation of the DesktopApi contract, where no Electron main process exists",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/suite-desktop-api": "workspace:*"
+    }
+}

@@ -39,6 +39,9 @@
         { "path": "../node-utils" },
         { "path": "../request-manager" },
         { "path": "../suite-desktop-api" },
+        {
+            "path": "../suite-desktop-api-electron"
+        },
         { "path": "../suite-desktop-native" },
         { "path": "../theme" },
         { "path": "../transport" },

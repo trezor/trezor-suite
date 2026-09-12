@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "author": "Trezor <info@trezor.io>",
-    "description": "Strongly typed DesktopApi",
+    "description": "Strongly typed DesktopApi contract shared by its web and Electron implementations",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
@@ -11,19 +11,17 @@
     "bugs": {
         "url": "https://github.com/trezor/trezor-suite/issues"
     },
-    "main": "./src/main.ts",
-    "browser": "./src/renderer.ts",
-    "types": "./libDev/src/types.d.ts",
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
     "scripts": {
-        "test:unit": "yarn g:jest",
-        "type-check": "yarn g:tsc --build tsconfig.json",
         "depcheck": "yarn g:depcheck",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build tsconfig.json"
     },
     "dependencies": {
         "@suite-common/platform-encryption": "workspace:*",
         "@suite/tor-types": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
-        "electron": "43.2.0"
+        "@trezor/type-utils": "workspace:*"
     }
 }

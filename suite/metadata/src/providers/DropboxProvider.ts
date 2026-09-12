@@ -4,7 +4,11 @@ import type { users } from 'dropbox';
 import { AbstractMetadataProvider } from '@suite-common/metadata-types';
 import { bufferUtils, getWeakRandomId } from '@trezor/utils';
 
-import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '../oauth';
+import {
+    type OauthDesktopApiDep,
+    extractCredentialsFromAuthorizationFlow,
+    getOauthReceiverUrl,
+} from '../oauth';
 
 // Dropbox messed up types, that's why @ts-expect-error occurs in this file
 
@@ -15,8 +19,16 @@ export class DropboxProvider extends AbstractMetadataProvider {
     isCloud = true;
     clientId: string;
 
-    constructor({ token, clientId }: { token?: string; clientId: string }) {
+    private readonly desktopApi: OauthDesktopApiDep['desktopApi'];
+
+    constructor({
+        token,
+        clientId,
+        desktopApi,
+    }: OauthDesktopApiDep & { token?: string; clientId: string }) {
         super('dropbox');
+
+        this.desktopApi = desktopApi;
 
         const fetch = window.fetch.bind(window);
 
@@ -52,7 +64,7 @@ export class DropboxProvider extends AbstractMetadataProvider {
     }
 
     async connect() {
-        const redirectUrl = await getOauthReceiverUrl();
+        const redirectUrl = await getOauthReceiverUrl({ desktopApi: this.desktopApi });
 
         if (!redirectUrl) return this.error('AUTH_ERROR', 'Failed to get oauth receiver url');
 
@@ -69,7 +81,10 @@ export class DropboxProvider extends AbstractMetadataProvider {
 
         try {
             // dropbox supports authorization code flow for both web and desktop
-            const { code } = await extractCredentialsFromAuthorizationFlow(new URL(url.toString()));
+            const { code } = await extractCredentialsFromAuthorizationFlow(
+                { desktopApi: this.desktopApi },
+                new URL(url.toString()),
+            );
             if (!code)
                 return this.error('AUTH_ERROR', 'Failed to extract code from authorization flow');
 

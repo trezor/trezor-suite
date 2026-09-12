@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 import { exposeIpcProxy } from '@trezor/ipc-proxy';
-import { getDesktopApi } from '@trezor/suite-desktop-api';
+import { createDesktopApiBridge } from '@trezor/suite-desktop-api-electron';
 
 import '@sentry/electron/preload'; // With this only IPCMode.Classic is ever taken into account
 import { hasSwitch } from './libs/process-switches';
@@ -22,7 +22,7 @@ contextBridge.exposeInMainWorld(
     ]),
 );
 
-const desktopApi = getDesktopApi(ipcRenderer);
+const desktopApi = createDesktopApiBridge(ipcRenderer);
 contextBridge.exposeInMainWorld('desktopApi', desktopApi);
 contextBridge.exposeInMainWorld('desktopFlags', {
     exposeStore: hasSwitch('expose-store'),

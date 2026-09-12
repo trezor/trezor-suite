@@ -5,9 +5,11 @@ import globals from 'globals';
 
 import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 import {
-    desktopApiRestrictedImport,
+    desktopApiCompositionRootAllowance,
+    desktopApiRestrictedImports,
     globalNoExtraneousDependenciesDevDependencies,
     importConfig,
+    libDevRestrictedImportPattern,
 } from './importConfig.mjs';
 import {
     javascriptConfig,
@@ -25,8 +27,10 @@ import { restrictedImportsPatterns, typescriptConfig } from './typescriptConfig.
  */
 
 export {
-    desktopApiRestrictedImport,
+    desktopApiCompositionRootAllowance,
+    desktopApiRestrictedImports,
     globalNoExtraneousDependenciesDevDependencies,
+    libDevRestrictedImportPattern,
     noCastedObjectHelpersSyntax,
     noRestrictedSyntax,
     restrictedImportsPatterns,
