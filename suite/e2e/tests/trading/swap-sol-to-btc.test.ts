@@ -1,7 +1,8 @@
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { localizeNumber } from '@suite-common/wallet-utils';
+import { asAmountSubunit, localizeNumber, subunitsToUnits } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { swapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { formatAddressWithNewlines, isWebProject } from '../../support/common';
@@ -67,8 +68,14 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Confirm the Swap trade', async () => {
                 receiveAmount = await tradingPage.quotes.getBestOfferAmount();
-                await tradingPage.fees.waitToBeCalculated();
-                solanaFee = (await tradingPage.fees.getSolanaFee()).toString();
+                await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
+                const composedFee = await page.getReduxObject(
+                    'wallet.trading.composedTransactionInfo.composed.fee',
+                );
+                solanaFee = subunitsToUnits({
+                    value: asAmountSubunit(new BigNumber(composedFee)),
+                    symbol: asNetworkSymbol('sol'),
+                }).toFixed();
                 await tradingPage.swapBestOfferButton.click();
             });
 

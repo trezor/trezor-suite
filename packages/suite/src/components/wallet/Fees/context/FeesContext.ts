@@ -13,11 +13,13 @@ import { throwError } from '@trezor/utils';
 export type FeesContextType = {
     networkSymbol: NetworkSymbol;
     networkType: NetworkType;
+    selectedFee: FeeLevel['label'];
     selectedFeeLevel?: FeeLevel;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano | null;
     feeInfo: FeeInfo;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     tronResources?: TronAccountExtraData;
+    isComposing?: boolean;
 };
 
 export const FeesContext = createContext<FeesContextType | null>(null);

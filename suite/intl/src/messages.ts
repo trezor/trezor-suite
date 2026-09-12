@@ -1313,6 +1313,18 @@ export const messages = defineMessages({
         defaultMessage: 'Network fee',
         id: 'TR_TRADING_NETWORK_FEE',
     },
+    TR_TRADING_NETWORK_FEE_MODAL_DESC: {
+        defaultMessage: 'Paid to the network that processes your transaction, not to Trezor.',
+        id: 'TR_TRADING_NETWORK_FEE_MODAL_DESC',
+    },
+    TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS: {
+        defaultMessage: 'Not enough {networkDisplaySymbol} for the network fee',
+        id: 'TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS',
+    },
+    TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS_DESC: {
+        defaultMessage: 'Select a lower fee, or go back and reduce the send amount in trade form.',
+        id: 'TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS_DESC',
+    },
     TR_TRADING_TREZOR_FEE: {
         defaultMessage: 'Trezor fee (incl.)',
         id: 'TR_TRADING_TREZOR_FEE',

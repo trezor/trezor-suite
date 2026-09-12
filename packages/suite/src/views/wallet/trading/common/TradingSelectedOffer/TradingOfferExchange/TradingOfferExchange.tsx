@@ -1,12 +1,19 @@
+import { useSelector } from 'react-redux';
+
 import { type TradeExchangeAction, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureEnabled,
+} from '@suite-common/message-system';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     getSimulatedReceiveAmount,
+    selectTradingComposedTransactionInfo,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
@@ -16,12 +23,14 @@ import {
     useDexExchangeTxSimulation,
     useExchangeIssue,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column, H2 } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
+import { getSupportsAdjustableFees } from 'src/components/wallet/Fees/feeUtils';
 import { TRADING_DEX_SOURCE_ORIGIN } from 'src/constants/wallet/trading/txSimulation';
-import { useSelector } from 'src/hooks/suite';
+import { useTradingExchangeConfirmFees } from 'src/hooks/wallet/trading/useTradingExchangeConfirmFees';
 import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
 import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
@@ -40,7 +49,7 @@ export const TradingOfferExchange = () => {
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const receiveAccount = useSelector(
-        state => selectAccountByKey(state, receiveAccountKey) ?? undefined,
+        (state: AccountsRootState) => selectAccountByKey(state, receiveAccountKey) ?? undefined,
     );
 
     const {
@@ -48,11 +57,16 @@ export const TradingOfferExchange = () => {
         sendTransaction,
         signDataAndConfirm,
     } = useTradingExchangeTradeActions();
+
+    const { feeInfo, composeFormState, applySelectedFee } =
+        useTradingExchangeConfirmFees(sendAccount);
+    const { composed, selectedFee } = useSelector(selectTradingComposedTransactionInfo);
+
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const trade = useSelector(selectTradingExchangeActiveTrade);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
 
-    const isTxSimulationFeatureEnabled = useSelector(state =>
+    const isTxSimulationFeatureEnabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureEnabled(state, Feature.trading.txSimulation, true),
     );
 
@@ -84,6 +98,17 @@ export const TradingOfferExchange = () => {
     const { exchange, signData } = selectedTrade;
     const isSignData = formStep === 'SIGN_DATA' && !!signData;
 
+    const isNetworkFeeEditable = (account: Account) =>
+        getSupportsAdjustableFees({
+            networkType: account.networkType,
+            isTokenTransfer: !!composed?.token,
+        });
+
+    const networkFeeEdit =
+        sendAccount && feeInfo && composeFormState && isNetworkFeeEditable(sendAccount)
+            ? { account: sendAccount, feeInfo, composeFormState, onConfirm: applySelectedFee }
+            : undefined;
+
     const simulatedReceiveAmount = getSimulatedReceiveAmount(
         simulationResult,
         selectedTrade.receive,
@@ -96,6 +121,7 @@ export const TradingOfferExchange = () => {
                 action,
                 step: 'confirm-and-send',
                 slippage: selectedTrade.swapSlippage,
+                feeLevel: selectedFee,
             },
         });
     };
@@ -156,6 +182,7 @@ export const TradingOfferExchange = () => {
                             exchangeQuote={selectedTrade}
                             providers={providers as TradingExchangeProvidersInfoProps}
                             exchange={exchange}
+                            networkFeeEdit={networkFeeEdit}
                         />
                     )}
 

@@ -5,6 +5,7 @@ import { ExperimentId, ExperimentWrapper } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     cryptoIdToNetwork,
+    selectTradingComposedTransactionInfo,
     selectTradingDisplayComposedFee,
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
@@ -18,6 +19,7 @@ import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { getFeeTooltipTextId } from 'src/components/wallet/Fees/feeUtils';
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -29,7 +31,10 @@ import { TradingExchangeMevProtectionInfoItem } from '../TradingInfo/TradingExch
 import { TradingExchangeMinimumReceivedInfoItem } from '../TradingInfo/TradingExchangeMinimumReceivedInfoItem';
 import { TradingExchangeRateInfoItem } from '../TradingInfo/TradingExchangeRateInfoItem';
 import { TradingExchangeSlippageInfoItem } from '../TradingInfo/TradingExchangeSlippageInfoItem';
-import { TradingNetworkFeeInfoItem } from '../TradingInfo/TradingNetworkFeeInfoItem';
+import {
+    TradingNetworkFeeInfoItem,
+    type TradingNetworkFeeInfoItemProps,
+} from '../TradingInfo/TradingNetworkFeeInfoItem';
 import { TradingProviderInfoItem } from '../TradingInfo/TradingProviderInfoItem';
 import { TradingTrezorFeeInfoItem } from '../TradingInfo/TradingTrezorFeeInfoItem';
 
@@ -38,6 +43,7 @@ type TradingOfferExchangeDetailsProps = {
     exchangeQuote: ExchangeTrade;
     exchange: string | undefined;
     providers: TradingExchangeProvidersInfoProps;
+    networkFeeEdit?: TradingNetworkFeeInfoItemProps['edit'];
 };
 
 export const TradingOfferExchangeDetails = ({
@@ -45,12 +51,14 @@ export const TradingOfferExchangeDetails = ({
     exchangeQuote,
     exchange,
     providers,
+    networkFeeEdit,
 }: TradingOfferExchangeDetailsProps) => {
     const formStep = useSelector(selectTradingExchangeFormStep);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const networkFee = useSelector(state => selectTradingDisplayComposedFee(state, exchangeQuote));
+    const { composed } = useSelector(selectTradingComposedTransactionInfo);
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     const { symbol } = account;
@@ -118,7 +126,15 @@ export const TradingOfferExchangeDetails = ({
 
                 {!exchangeQuote.isDex && <TradingExchangeRateInfoItem rateType={rateType} />}
 
-                <TradingNetworkFeeInfoItem amount={formattedNetworkFee} symbol={symbol} />
+                <TradingNetworkFeeInfoItem
+                    amount={formattedNetworkFee}
+                    symbol={symbol}
+                    tooltipTextId={getFeeTooltipTextId({
+                        networkType: account.networkType,
+                        isTronAccountActivation: !!composed?.accountActivationFee,
+                    })}
+                    edit={networkFeeEdit}
+                />
 
                 {isMevProtectionFeatureEnabled &&
                     exchangeQuote.isDex &&

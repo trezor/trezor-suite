@@ -1,10 +1,11 @@
+import { useSelector } from 'react-redux';
+
 import { Translation } from '@suite/intl';
-import { selectAreFeesLoading } from '@suite-common/wallet-core';
-import { Column, LoadingContent, Text } from '@trezor/components';
+import { type FeesRootState, selectAreFeesLoading } from '@suite-common/wallet-core';
+import { Column, LoadingContent, Skeleton, Text } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 
 import { useFeesContext } from '../context/FeesContext';
 import { type TransactionMaxFee } from './hooks/useTransactionMaxFee';
@@ -15,37 +16,23 @@ export type MaximumFeeProps = {
 };
 
 export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
-    const { networkSymbol } = useFeesContext();
-    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
+    const { networkSymbol, isComposing } = useFeesContext();
+    const areFeesLoading = useSelector((state: FeesRootState) =>
+        selectAreFeesLoading(state, networkSymbol),
+    );
 
-    return (
-        <LoadingContent size={20} isLoading={areFeesLoading} slideContent={false}>
-            {txMaxFee ? (
+    const renderAmount = () => {
+        if (isComposing) {
+            return (
                 <Column alignItems="flex-end">
-                    <Text intent="neutral" typographyStyle={typographyStyle}>
-                        <FormattedCryptoAmount
-                            data-testid="@trading/quote/maximum-fee-amount"
-                            disableHiddenPlaceholder
-                            value={txMaxFee}
-                            symbol={networkSymbol}
-                        />
-                    </Text>
-
-                    <Text
-                        data-testid="@trading/quote/maximum-fee-fiat-amount"
-                        intent="neutral"
-                        priority="secondary"
-                        typographyStyle="body-sm"
-                    >
-                        <BaseCurrencyValue
-                            disableHiddenPlaceholder
-                            amount={txMaxFee}
-                            symbol={networkSymbol}
-                            showApproximationIndicator
-                        />
-                    </Text>
+                    <Skeleton height={16} animate />
+                    <Skeleton height={12} animate />
                 </Column>
-            ) : (
+            );
+        }
+
+        if (!txMaxFee) {
+            return (
                 <Text
                     intent="neutral"
                     priority="secondary"
@@ -54,7 +41,40 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
                 >
                     <Translation id="TO_BE_CALCULATED" />
                 </Text>
-            )}
+            );
+        }
+
+        return (
+            <Column alignItems="flex-end">
+                <Text intent="neutral" typographyStyle={typographyStyle}>
+                    <FormattedCryptoAmount
+                        data-testid="@trading/quote/maximum-fee-amount"
+                        disableHiddenPlaceholder
+                        value={txMaxFee}
+                        symbol={networkSymbol}
+                    />
+                </Text>
+
+                <Text
+                    data-testid="@trading/quote/maximum-fee-fiat-amount"
+                    intent="neutral"
+                    priority="secondary"
+                    typographyStyle="body-sm"
+                >
+                    <BaseCurrencyValue
+                        disableHiddenPlaceholder
+                        amount={txMaxFee}
+                        symbol={networkSymbol}
+                        showApproximationIndicator
+                    />
+                </Text>
+            </Column>
+        );
+    };
+
+    return (
+        <LoadingContent size={20} isLoading={areFeesLoading} slideContent={false}>
+            {renderAmount()}
         </LoadingContent>
     );
 }
