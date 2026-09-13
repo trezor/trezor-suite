@@ -7,7 +7,6 @@ import {
     toHardenedPathPart,
 } from '@trezor/crypto-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
-import { arrayPartition } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import type { CoinInfo } from '../types/coinInfo';
@@ -208,54 +207,4 @@ export const getLabel = (label: string, coinInfo?: CoinInfo) => {
     }
 
     return label.replace('#NETWORK', '');
-};
-
-/** @deprecated Temporary diagnostic method */
-export const __btcUnknownTxDebug__ = (
-    description: string,
-    inputs: { address_n?: number[]; orig_hash?: any }[],
-    addresses:
-        | { used: { path: string }[]; unused: { path: string }[]; change: { path: string }[] }
-        | undefined,
-) => {
-    try {
-        if (inputs.some(i => i.orig_hash)) {
-            // In RBF, account's change addresses are modified so the right change address is selected,
-            // therefore it's expected that the inputs can't be found in account's addresses.
-            return;
-        }
-
-        const accountAddressPaths = new Set(
-            addresses
-                ? addresses.change.concat(addresses.used, addresses.unused).map(({ path }) => path)
-                : [],
-        );
-
-        const [matched, unmatched] = arrayPartition(
-            inputs
-                .map(input => input.address_n)
-                .filter((addr): addr is number[] => Array.isArray(addr) && addr.length > 0),
-            addr => accountAddressPaths.has(getSerializedPath(addr)),
-        );
-
-        const toReadable = (address_n: number[]) =>
-            `${address_n[address_n.length - 2] ? 'change' : 'receive'}/${address_n[address_n.length - 1]}`;
-
-        if (unmatched.length) {
-            // [btc-unknown-tx-debug] the selected account does not contain paths used by the tx inputs.
-            // This can make Connect build a pending tx with wrong or empty vin addresses, which can then
-            // classify the optimistic pending tx incorrectly before the backend response arrives.
-            // Intentionally no paths / addresses / descriptor / txid: these reach Sentry and could
-            // deanonymize the user. accountType + symbol are low-cardinality, non-PII.
-            console.error(`[btc-unknown-tx-debug-v2] ${description}`, {
-                knownUsedCount: addresses?.used.length,
-                knownUnusedCount: addresses?.unused.length,
-                knownChangeCount: addresses?.change.length,
-                matchedInputs: matched.map(toReadable),
-                unmatchedInputs: unmatched.map(toReadable),
-            });
-        }
-    } catch {
-        // empty
-    }
 };
