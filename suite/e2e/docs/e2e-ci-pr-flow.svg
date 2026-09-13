@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" width="1000" height="520" role="img" aria-label="PR e2e pipeline: four ordered questions classify the PR into run-everything, analyze or specific-tests; the resolved spec list then selects either the full-run -pr config or the spec-list -pr-all config.">
+  <style>
+    .t { font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif; font-size: 12.5px; fill: #1A222C; }
+    .b { font-weight: 600; }
+    .m { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 11.5px; }
+    .mu { fill: #5C6B7A; font-size: 11.5px; }
+    .flag { fill: #B4232F; font-size: 11.5px; font-weight: 500; }
+    .box { fill: #FFFFFF; stroke: #AEB9C4; stroke-width: 1.2; }
+    .q { stroke: #D7DEE5; }
+    .outcome { stroke: #0B7A5B; stroke-width: 1.5; }
+    .cfg { fill: #DFF2EA; stroke: #0B7A5B; stroke-width: 1.5; }
+    .edge { stroke: #1A222C; stroke-width: 1.2; fill: none; }
+    .dash { stroke: #B4232F; stroke-dasharray: 5 4; }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A222C"/>
+    </marker>
+    <marker id="arrf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B4232F"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="520" fill="#FFFFFF"/>
+
+  <text x="40" y="26" class="t mu">Classify (first yes wins)</text>
+  <text x="400" y="26" class="t mu">Strategy</text>
+  <text x="760" y="26" class="t mu">Spec list → config</text>
+
+  <rect x="40" y="40" width="290" height="34" rx="3" class="box"/>
+  <text x="185" y="62" text-anchor="middle" class="t b">Files changed in the PR (merge-base…HEAD)</text>
+  <line x1="185" y1="74" x2="185" y2="96" class="edge" marker-end="url(#arr)"/>
+
+  <rect x="40" y="98" width="290" height="44" rx="3" class="box q"/>
+  <text x="56" y="116" class="t">Nothing changed at all?</text>
+  <text x="56" y="132" class="t mu">empty diff, e.g. merged base</text>
+
+  <rect x="40" y="176" width="290" height="44" rx="3" class="box q"/>
+  <text x="56" y="194" class="t">Any file under <tspan class="m">.github/</tspan>?</text>
+  <text x="56" y="210" class="t mu">CI changed, LLM analysis not trusted</text>
+
+  <rect x="40" y="254" width="290" height="44" rx="3" class="box q"/>
+  <text x="56" y="272" class="t">Any <tspan class="m">suite/e2e/</tspan> file outside <tspan class="m">tests/</tspan>?</text>
+  <text x="56" y="288" class="t mu">framework, fixtures, configs</text>
+
+  <rect x="40" y="332" width="290" height="44" rx="3" class="box q"/>
+  <text x="56" y="350" class="t">Any file outside <tspan class="m">suite/e2e/</tspan>?</text>
+  <text x="56" y="366" class="t mu">production code</text>
+
+  <rect x="40" y="410" width="290" height="44" rx="3" class="box q"/>
+  <text x="56" y="428" class="t">Otherwise: only <tspan class="m">suite/e2e/tests/</tspan> changed</text>
+  <text x="56" y="444" class="t mu">test files added, modified, renamed or deleted</text>
+
+  <line x1="185" y1="142" x2="185" y2="174" class="edge" marker-end="url(#arr)"/>
+  <text x="192" y="163" class="t mu">no</text>
+  <line x1="185" y1="220" x2="185" y2="252" class="edge" marker-end="url(#arr)"/>
+  <text x="192" y="241" class="t mu">no</text>
+  <line x1="185" y1="298" x2="185" y2="330" class="edge" marker-end="url(#arr)"/>
+  <text x="192" y="319" class="t mu">no</text>
+  <line x1="185" y1="376" x2="185" y2="408" class="edge" marker-end="url(#arr)"/>
+  <text x="192" y="397" class="t mu">no</text>
+
+  <line x1="330" y1="120" x2="398" y2="120" class="edge" marker-end="url(#arr)"/>
+  <text x="352" y="113" class="t mu">yes</text>
+  <line x1="330" y1="198" x2="398" y2="198" class="edge" marker-end="url(#arr)"/>
+  <text x="352" y="191" class="t mu">yes</text>
+  <line x1="330" y1="276" x2="398" y2="276" class="edge" marker-end="url(#arr)"/>
+  <text x="352" y="269" class="t mu">yes</text>
+  <line x1="330" y1="354" x2="398" y2="354" class="edge" marker-end="url(#arr)"/>
+  <text x="352" y="347" class="t mu">yes</text>
+  <line x1="330" y1="432" x2="398" y2="432" class="edge" marker-end="url(#arr)"/>
+
+  <rect x="400" y="98" width="230" height="200" rx="3" class="box outcome"/>
+  <text x="416" y="120" class="t b m">run-everything</text>
+  <text x="416" y="140" class="t">Spec list stays empty.</text>
+  <text x="416" y="158" class="t">Whole PR suite runs.</text>
+  <text x="416" y="186" class="t mu">Edited test files are still passed</text>
+  <text x="416" y="202" class="t mu">as E2E_EDITED_SPECS so their</text>
+  <text x="416" y="218" class="t mu">@optional tests are not filtered.</text>
+
+  <rect x="400" y="332" width="230" height="44" rx="3" class="box outcome"/>
+  <text x="416" y="350" class="t b m">analyze</text>
+  <text x="416" y="366" class="t mu">LLM selector runs on small PRs only</text>
+
+  <rect x="400" y="410" width="230" height="44" rx="3" class="box outcome"/>
+  <text x="416" y="428" class="t b m">specific-tests</text>
+  <text x="416" y="444" class="t mu">spec list = edited test files</text>
+
+  <rect x="760" y="98" width="230" height="140" rx="3" class="box cfg"/>
+  <text x="776" y="120" class="t b">Spec list empty</text>
+  <text x="776" y="140" class="t m">*-pr.config.ts</text>
+  <text x="776" y="160" class="t">Full run. Filters out @nightlyOnly</text>
+  <text x="776" y="176" class="t">and @optional, except @optional in</text>
+  <text x="776" y="192" class="t">files listed in E2E_EDITED_SPECS.</text>
+  <text x="776" y="216" class="t mu">Web: only @webOnly.</text>
+  <text x="776" y="231" class="t mu">T3T1: exclusive tests only.</text>
+
+  <rect x="760" y="332" width="230" height="122" rx="3" class="box cfg"/>
+  <text x="776" y="354" class="t b">Spec list set</text>
+  <text x="776" y="374" class="t m">*-pr-all.config.ts</text>
+  <text x="776" y="394" class="t">Only listed files. Filters out</text>
+  <text x="776" y="410" class="t">@nightlyOnly. @optional runs.</text>
+  <text x="776" y="434" class="t mu">All models full set, no @webOnly filter.</text>
+
+  <line x1="630" y1="168" x2="758" y2="168" class="edge" marker-end="url(#arr)"/>
+
+  <path d="M630,344 C690,344 790,300 790,240" class="edge" marker-end="url(#arr)"/>
+  <text x="802" y="286" class="t mu">PR too large or</text>
+  <text x="802" y="302" class="t mu">LLM picked nothing</text>
+
+  <line x1="630" y1="366" x2="758" y2="366" class="edge" marker-end="url(#arr)"/>
+  <text x="642" y="384" class="t mu">LLM ∪ edited</text>
+
+  <path d="M630,432 C690,432 700,400 758,400" class="edge" marker-end="url(#arr)"/>
+  <text x="642" y="466" class="t mu">edited files</text>
+
+  <path d="M630,446 L725,446 Q745,446 745,426 L745,222 L758,222" class="edge dash" marker-end="url(#arrf)"/>
+  <text x="400" y="480" class="t flag">deletion-only PR:</text>
+  <text x="400" y="496" class="t flag">empty list → full run</text>
+</svg>

@@ -3,7 +3,7 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Hidden version page', { tag: ['@webOnly', '@noDevice'] }, () => {
+test.describe('Hidden version page', { tag: ['@webOnly', '@noDevice', '@optional'] }, () => {
     test.use({ startEmulator: false });
 
     test(

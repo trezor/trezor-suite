@@ -26,7 +26,7 @@ test.use({
     jsExceptionWatcher: skipFixture,
 });
 
-test.describe('Safari', { tag: ['@webOnly', '@noDevice'] }, () => {
+test.describe('Safari', { tag: ['@webOnly', '@noDevice', '@optional'] }, () => {
     test(
         'Suite does not support Safari',
         { annotation: createTestAnnotation({ stream: TestStream.Growth }) },

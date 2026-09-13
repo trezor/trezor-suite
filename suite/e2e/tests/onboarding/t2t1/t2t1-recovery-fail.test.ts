@@ -3,7 +3,7 @@ import { TestStream } from '@trezor/e2e-utils';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Onboarding - recover wallet T2T1', { tag: ['@T2T1'] }, () => {
+test.describe('Onboarding - recover wallet T2T1', { tag: ['@T2T1', '@optional'] }, () => {
     test.use({
         setupEmulator: false,
     });

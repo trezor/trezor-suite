@@ -5,7 +5,7 @@ import { isDesktopProject } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { PromoBannerType } from '../../support/pageObjects/dashboardPage';
 
-test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'] }, () => {
+test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@optional'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');

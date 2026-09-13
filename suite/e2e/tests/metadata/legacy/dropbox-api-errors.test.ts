@@ -5,7 +5,7 @@ import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all' },
         ignoreToastErrors: [

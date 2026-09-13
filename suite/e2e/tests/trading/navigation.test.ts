@@ -3,7 +3,7 @@ import { TestStream } from '@trezor/e2e-utils';
 import { test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {

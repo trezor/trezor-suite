@@ -8,7 +8,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 //Metadata - In settings, there is enable metadata switch.
 //On enable, it initiates metadata right away (if device already has state).
 //On disable, it throws away all metadata related records from memory.
-test.describe('Remembered device', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Remembered device', { tag: ['@webOnly', '@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all' },
     });

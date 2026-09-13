@@ -10,7 +10,7 @@ const COSE_SIGNATURE =
 const COSE_PUB_KEY =
     'a4010103272006215820bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e';
 
-test.describe('Sign and verify ADA', { tag: ['@T3W1', '@T3T1', '@nightlyOnly'] }, () => {
+test.describe('Sign and verify ADA', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {

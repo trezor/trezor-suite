@@ -3,7 +3,7 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Passphrase numbering', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Passphrase numbering', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({ deviceSetup: { passphrase_protection: true } });
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {

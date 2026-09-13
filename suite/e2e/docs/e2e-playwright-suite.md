@@ -89,6 +89,7 @@ At the moment, there are these additional tags:
 - @desktopOnly
 - @webOnly
 - @nightlyOnly
+- @optional
 - @specificFirmware
 - @firmware-ready
 
@@ -110,7 +111,11 @@ Currently, we are also applying @webOnly as a positive filter on Web PR runs. Th
 
 #### @nightlyOnly
 
-Some tests should run on nighty runs only for specific reasons. This tags is used for reversed filtering in PR and release workflows definitions. This means tests with this tags will run only on nightly and canary runs.
+Tests that must never run on a PR, not even when the LLM test selector or an edited test file targets them. Typical reasons are nonce collisions when two runs overlap, or old app versions that only the nightly setup provides. The PR Playwright configs, including the spec-list (`-pr-all`) ones, filter this tag out. These tests run on nightly, canary and release runs.
+
+#### @optional
+
+Tests that are excluded from the full PR run but run on a PR when the LLM test selector recommends them or the PR edits the test file itself. Use it for low-priority slow tests, tests that cost real funds, or tests that depend on a flaky backend, and, when the reason is not obvious from the test itself, state it in a one-line comment above the `describe`. Only the full-run PR configs filter this tag out; nightly, canary, release and spec-list runs include it.
 
 #### @specificFirmware
 

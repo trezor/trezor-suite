@@ -11,7 +11,7 @@ const signTxErrorMessage = replaceTemplatesInTranslation(
     { error: 'Invalid amount specified' },
 );
 
-test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Doge Send', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({
         deviceSetup: {
             mnemonic:

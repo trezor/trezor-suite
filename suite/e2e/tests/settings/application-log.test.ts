@@ -5,7 +5,7 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Application Logs', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Application Logs', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');

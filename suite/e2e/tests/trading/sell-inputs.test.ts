@@ -10,7 +10,7 @@ const customFeeRate = 1;
 let bitcoinBalance: string;
 let solanaBalance: string;
 
-test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });

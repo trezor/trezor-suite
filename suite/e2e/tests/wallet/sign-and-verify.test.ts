@@ -137,7 +137,7 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     );
 
-    test.describe('Altered message', () => {
+    test.describe('Altered message', { tag: ['@optional'] }, () => {
         test.use({ ignoreToastErrors: ['Message verification error'] });
 
         test(
