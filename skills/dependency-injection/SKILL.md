@@ -62,6 +62,37 @@ export const createServiceName =
     };
 ```
 
+### Dependency access
+
+Take the dependency object whole and read it as `deps.serviceName`. Never destructure it, neither in
+the parameter list nor in the body.
+
+```ts
+// bad
+export const createServiceName =
+    ({ otherService }: ServiceNameDeps): ServiceName =>
+    params =>
+        otherService(params);
+
+// also bad
+export const createServiceName =
+    (deps: ServiceNameDeps): ServiceName =>
+    params => {
+        const { otherService } = deps;
+
+        return otherService(params);
+    };
+
+// good
+export const createServiceName =
+    (deps: ServiceNameDeps): ServiceName =>
+    params =>
+        deps.otherService(params);
+```
+
+The `deps.` prefix is the point: it tells the reader at a glance that the value is an injected
+service rather than a local variable, a parameter or an import.
+
 ### Multiple implementations of a shared contract
 
 Mark shared contracts with `@serviceContract` to allow differently named factories.
