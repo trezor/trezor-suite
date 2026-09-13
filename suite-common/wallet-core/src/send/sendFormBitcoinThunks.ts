@@ -26,8 +26,6 @@ import TrezorConnect, {
     type SignTransaction,
     type SignedTransaction,
 } from '@trezor/connect';
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- temporary diagnostic
-import { __btcUnknownTxDebug__ } from '@trezor/connect/src/utils/pathUtils';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
@@ -340,12 +338,6 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             // nVersion, use 2 as it enables BIP68 + seems to be the most commonly used (= harder to fingerprint the Trezor)
             signEnhancement.version = 2;
         }
-
-        __btcUnknownTxDebug__(
-            'signBitcoin',
-            (signEnhancement.inputs as { address_n?: number[] }[]) ?? precomposedTransaction.inputs,
-            selectedAccount.addresses,
-        );
 
         const signPayload: Params<SignTransaction> = {
             device: {
