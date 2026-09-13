@@ -106,3 +106,48 @@ tests.
          - device.ts
     ```
 - Name the file the same as the exported mock.
+
+## Dependencies in tests
+
+### Always use declared dependency types
+
+Test dependency objects (`deps`, thunk `extra`, provider `services`, etc.) MUST use the subject's
+declared, named dependency type. Reuse its exported type; export it if needed instead of redefining
+it in the test.
+
+When assigning an object literal, annotate the variable explicitly: `const deps: SubjectDeps = { ... }`,
+`const extra: SubjectExtra = { ... }` or `const services: SubjectServices = { ... }`.
+
+```ts
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(mock()),
+};
+```
+
+With `createMockDeps<SubjectDeps>`, the generic argument supplies the dependency type; do not repeat
+it as a variable annotation.
+
+### Use DI mock helpers whenever possible
+
+Tests MUST use `createMockDeps` and `mock` from `@suite-common/dependency-injection` wherever
+applicable. Use bare `jest.fn` only when these helpers cannot represent the required mock.
+
+- `createMockDeps<TDeps>(deps)` recursively mocks dependency functions. Supply every required key;
+  use `null` for functions that must throw if called. Assert directly on the returned mocks.
+- `mock<TFn>(implementation?)` types a function mock from its service signature.
+- `mockNotExpected<TFn>(key)` creates a function mock that throws when called.
+
+```ts
+const deps = createMockDeps<WriteAccountLabelDeps>({
+    analytics: { report: null },
+    getAccountLabel: () => null,
+});
+```
+
+Shared service mock factories in the package's `mocks` directory MUST also use `mock`, using the
+service contract as the type argument:
+
+```ts
+export const mockGetHttpReceiverAddress = (address = 'http://localhost:21325') =>
+    mock<DesktopApi['getHttpReceiverAddress']>(() => Promise.resolve(address));
+```
