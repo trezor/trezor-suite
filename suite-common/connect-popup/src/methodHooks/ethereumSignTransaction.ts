@@ -17,6 +17,7 @@ import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
+import { connectPopupErrorSummary } from '../connectPopupErrorSummary';
 import { createPlaceholderAccount } from './utils';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { selectConnectPopupCall } from '../connectPopupReducer';
@@ -167,7 +168,10 @@ const preCallHook = async <M extends CallMethodKeys>({
         }
     } catch (error) {
         // If an error occurs it's not a problem, we just fall back to generic UI
-        console.error(`Error in Connect Popup ${method} hook:`, error);
+        console.error(
+            `Error in Connect Popup ${method} hook:`,
+            connectPopupErrorSummary(method, error),
+        );
         if (error.code === 'Method_Cancel') {
             // User cancelled the operation
             throw error;
