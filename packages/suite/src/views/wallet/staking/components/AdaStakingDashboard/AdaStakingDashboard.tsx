@@ -82,8 +82,6 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
                                 <StakingCard
                                     account={account}
                                     isValidatorsQueueLoading={undefined}
-                                    daysToAddToPool={CARDANO_EPOCH_DAYS}
-                                    daysToUnstake={CARDANO_EPOCH_DAYS}
                                 />
                                 <DebugOnlyCardanoStakingCard account={account} />
                             </Column>
