@@ -102,6 +102,12 @@ export const createCompositionRoot = (deps: CompositionRootDeps) => {
 };
 ```
 
+## Testing services
+
+Tests MUST use the service's declared dependency type: annotate object literals (`const deps: ServiceDeps`)
+or pass it to `createMockDeps<ServiceDeps>`. Use `createMockDeps` and `mock` wherever possible. See
+[Dependencies in tests](../tests/SKILL.md#dependencies-in-tests).
+
 ## React service selection
 
 `useServices` accepts multiple selectors. Prefer one call with all needed selectors instead of
