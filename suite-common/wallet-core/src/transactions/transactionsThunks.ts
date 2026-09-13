@@ -36,7 +36,6 @@ import TrezorConnect, {
     type TokenTransfer,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { __btcUnknownTxDebug__ } from '@trezor/connect-core/src/utils/pathUtils';
 import { BigNumber } from '@trezor/utils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
@@ -206,13 +205,6 @@ export const addFakePendingTxThunk = createThunk<
                     signedTransaction,
                     affectedAccount.addresses ?? affectedAccount.descriptor,
                 );
-                if (affectedAccountTransaction.type === 'unknown') {
-                    __btcUnknownTxDebug__(
-                        'addFakePendingTxThunk',
-                        precomposedTransaction.inputs,
-                        affectedAccount.addresses,
-                    );
-                }
                 const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
                 dispatch(
                     transactionsActions.addTransaction({
