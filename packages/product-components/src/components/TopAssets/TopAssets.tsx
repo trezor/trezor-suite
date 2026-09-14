@@ -1,7 +1,8 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type ReactNode } from 'react';
+
+import { type NetworkSymbol } from '@suite-common/icons';
 import { Card, Column, GhostContainer, Row, Text } from '@trezor/components';
 
-import { TokenIcon } from '../TokenIcon/TokenIcon';
 import { type TokenIconProps } from '../TokenIcon/tokenIconTypes';
 
 export type Asset = {
@@ -17,6 +18,7 @@ export type Asset = {
 export type TopAssetsProps = {
     assets: Asset[];
     onAssetClick: (asset: Asset) => void;
+    renderIcon: (asset: Asset, size: NonNullable<TokenIconProps['size']>) => ReactNode;
     logoSize?: TokenIconProps['size'];
     'data-testid'?: string;
 };
@@ -25,6 +27,7 @@ export function TopAssets({
     assets,
     logoSize = 40,
     onAssetClick,
+    renderIcon,
     'data-testid': dataTestId,
 }: TopAssetsProps) {
     return (
@@ -46,21 +49,7 @@ export function TopAssets({
                         cursor="pointer"
                     >
                         <Column alignItems="center" justifyContent="center" gap={4}>
-                            {asset.isNativeToken ? (
-                                <TokenIcon
-                                    size={logoSize}
-                                    // @ts-expect-error
-                                    symbol={asset.symbol}
-                                    showNetworkIcon
-                                />
-                            ) : (
-                                <TokenIcon
-                                    size={logoSize}
-                                    symbol={asset.networkSymbol}
-                                    contractAddress={asset.contractAddress}
-                                    placeholder={asset.displaySymbol}
-                                />
-                            )}
+                            {renderIcon(asset, logoSize)}
                             <Text typographyStyle="body-sm" intent="neutral">
                                 {asset.displaySymbol}
                             </Text>

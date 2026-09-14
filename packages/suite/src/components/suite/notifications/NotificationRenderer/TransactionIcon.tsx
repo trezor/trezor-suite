@@ -1,12 +1,11 @@
 import { type ReactNode } from 'react';
 
+import { AssetIcon } from '@suite/asset-icon';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { type TransactionNotificationType } from '@trezor/product-components';
 
-import {
-    type TransactionNotificationToken,
-    type TransactionNotificationType,
-} from './notificationsTypes';
-import { TokenIcon } from '../TokenIcon/TokenIcon';
+type TransactionNotificationToken = Partial<TokenInfo>;
 
 type TransactionIconProps = {
     icon?: ReactNode;
@@ -44,7 +43,7 @@ export const TransactionIcon = ({
 
     if (shouldDisplayAssetLogo({ notificationType, token }) && token) {
         return (
-            <TokenIcon
+            <AssetIcon
                 symbol={symbol}
                 contractAddress={token.contract ?? null}
                 placeholder={token.symbol ?? token.name ?? symbol}
@@ -54,5 +53,5 @@ export const TransactionIcon = ({
         );
     }
 
-    return <TokenIcon symbol={symbol} size={20} />;
+    return <AssetIcon symbol={symbol} size={20} />;
 };

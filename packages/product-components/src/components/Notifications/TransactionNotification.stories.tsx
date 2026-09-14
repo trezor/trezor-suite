@@ -8,6 +8,7 @@ import {
     TransactionNotification,
     type TransactionNotificationProps,
 } from './TransactionNotification';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
 
 const meta: Meta<typeof TransactionNotification> = {
     title: 'Notifications/TransactionNotification',
@@ -29,7 +30,10 @@ const transactionNotificationConfig: Record<
         intent: ToastProps['intent'];
         message: string;
         amount: string;
-        transaction: Pick<TransactionNotificationProps, 'notificationType' | 'symbol' | 'token'>;
+        transaction: Pick<
+            TransactionNotificationProps,
+            'notificationType' | 'icon' | 'displaySymbol'
+        >;
     }
 > = {
     'tx-received': {
@@ -39,7 +43,8 @@ const transactionNotificationConfig: Record<
         amount: '4.6 ETH',
         transaction: {
             notificationType: 'tx-received',
-            symbol: 'eth',
+            displaySymbol: 'ETH',
+            icon: <TokenIcon symbol="eth" size={20} />,
         },
     },
     'tx-confirmed': {
@@ -48,7 +53,8 @@ const transactionNotificationConfig: Record<
         amount: '4.6 ETH',
         transaction: {
             notificationType: 'tx-confirmed',
-            symbol: 'eth',
+            displaySymbol: 'ETH',
+            icon: <TokenIcon symbol="eth" size={20} />,
         },
     },
     'tx-revoked': {
@@ -58,12 +64,16 @@ const transactionNotificationConfig: Record<
         amount: '',
         transaction: {
             notificationType: 'tx-revoked',
-            symbol: 'eth',
-            token: {
-                contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
-                name: 'LINK',
-                symbol: 'LINK',
-            },
+            displaySymbol: 'LINK',
+            icon: (
+                <TokenIcon
+                    symbol="eth"
+                    coingeckoId="ethereum"
+                    contractAddresses={['0x514910771AF9Ca656af840dff83E8264EcF986CA']}
+                    size={20}
+                    placeholder="LINK"
+                />
+            ),
         },
     },
     'tx-claimed': {
@@ -73,7 +83,8 @@ const transactionNotificationConfig: Record<
         amount: '101.6 SOL',
         transaction: {
             notificationType: 'tx-claimed',
-            symbol: 'sol',
+            displaySymbol: 'SOL',
+            icon: <TokenIcon symbol="sol" size={20} />,
         },
     },
     'tx-unstaked': {
@@ -83,7 +94,8 @@ const transactionNotificationConfig: Record<
         amount: '4.6 ETH',
         transaction: {
             notificationType: 'tx-unstaked',
-            symbol: 'eth',
+            displaySymbol: 'ETH',
+            icon: <TokenIcon symbol="eth" size={20} />,
         },
     },
     'tx-staked': {
@@ -93,7 +105,8 @@ const transactionNotificationConfig: Record<
         amount: '4.6 ETH',
         transaction: {
             notificationType: 'tx-staked',
-            symbol: 'eth',
+            displaySymbol: 'ETH',
+            icon: <TokenIcon symbol="eth" size={20} />,
         },
     },
     'tx-approved': {
@@ -103,12 +116,16 @@ const transactionNotificationConfig: Record<
         amount: '0.46024759',
         transaction: {
             notificationType: 'tx-approved',
-            symbol: 'eth',
-            token: {
-                contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
-                name: 'LINK',
-                symbol: 'LINK',
-            },
+            displaySymbol: 'LINK',
+            icon: (
+                <TokenIcon
+                    symbol="eth"
+                    coingeckoId="ethereum"
+                    contractAddresses={['0x514910771AF9Ca656af840dff83E8264EcF986CA']}
+                    size={20}
+                    placeholder="LINK"
+                />
+            ),
         },
     },
     'tx-sent': {
@@ -118,12 +135,16 @@ const transactionNotificationConfig: Record<
         amount: '0.46024759 LINK',
         transaction: {
             notificationType: 'tx-sent',
-            symbol: 'eth',
-            token: {
-                contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
-                name: 'LINK',
-                symbol: 'LINK',
-            },
+            displaySymbol: 'LINK',
+            icon: (
+                <TokenIcon
+                    symbol="eth"
+                    coingeckoId="ethereum"
+                    contractAddresses={['0x514910771AF9Ca656af840dff83E8264EcF986CA']}
+                    size={20}
+                    placeholder="LINK"
+                />
+            ),
         },
     },
     'raw-tx-sent': {
@@ -133,7 +154,8 @@ const transactionNotificationConfig: Record<
         amount: '',
         transaction: {
             notificationType: 'raw-tx-sent',
-            symbol: 'eth',
+            displaySymbol: 'ETH',
+            icon: <TokenIcon symbol="eth" size={20} />,
         },
     },
     'tx-yield-deposit': {
@@ -143,12 +165,16 @@ const transactionNotificationConfig: Record<
         amount: '150 USDC',
         transaction: {
             notificationType: 'tx-yield-deposit',
-            symbol: 'base',
-            token: {
-                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-                name: 'USD Coin',
-                symbol: 'USDC',
-            },
+            displaySymbol: 'USDC',
+            icon: (
+                <TokenIcon
+                    symbol="base"
+                    coingeckoId="base"
+                    contractAddresses={['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913']}
+                    size={20}
+                    placeholder="USDC"
+                />
+            ),
         },
     },
     'tx-yield-withdraw': {
@@ -158,12 +184,16 @@ const transactionNotificationConfig: Record<
         amount: '150 USDC',
         transaction: {
             notificationType: 'tx-yield-withdraw',
-            symbol: 'base',
-            token: {
-                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-                name: 'USD Coin',
-                symbol: 'USDC',
-            },
+            displaySymbol: 'USDC',
+            icon: (
+                <TokenIcon
+                    symbol="base"
+                    coingeckoId="base"
+                    contractAddresses={['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913']}
+                    size={20}
+                    placeholder="USDC"
+                />
+            ),
         },
     },
     'tx-yield-claim': {
@@ -173,12 +203,16 @@ const transactionNotificationConfig: Record<
         amount: '150 USDC',
         transaction: {
             notificationType: 'tx-yield-claim',
-            symbol: 'base',
-            token: {
-                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-                name: 'USD Coin',
-                symbol: 'USDC',
-            },
+            displaySymbol: 'USDC',
+            icon: (
+                <TokenIcon
+                    symbol="base"
+                    coingeckoId="base"
+                    contractAddresses={['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913']}
+                    size={20}
+                    placeholder="USDC"
+                />
+            ),
         },
     },
 };
@@ -187,12 +221,16 @@ export const Default: Story = {
     args: {
         message: 'Sent from Ethereum #1',
         notificationType: 'tx-sent',
-        symbol: 'eth',
-        token: {
-            contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
-            name: 'LINK',
-            symbol: 'LINK',
-        },
+        displaySymbol: 'LINK',
+        icon: (
+            <TokenIcon
+                symbol="eth"
+                coingeckoId="ethereum"
+                contractAddresses={['0x514910771AF9Ca656af840dff83E8264EcF986CA']}
+                size={20}
+                placeholder="LINK"
+            />
+        ),
         amount: '0.46024759 LINK',
     },
 };

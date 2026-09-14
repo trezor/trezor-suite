@@ -3,7 +3,8 @@ import { type FeeInfo } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Icon, Row, Text } from '@trezor/components';
 import { GasPumpIcon, ReceiptIcon } from '@trezor/icons';
-import { FeeRate } from '@trezor/product-components';
+
+import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 
 import { useFeesContext } from '../../context/FeesContext';
 

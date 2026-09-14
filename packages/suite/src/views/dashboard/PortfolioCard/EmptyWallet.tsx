@@ -7,6 +7,7 @@ import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
 import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
@@ -77,7 +78,10 @@ export const EmptyWallet = () => {
                         </Paragraph>
                         <Box height={20}>
                             <NetworkIconSet
-                                networks={enabledNetworks}
+                                networks={enabledNetworks.map(symbol => ({
+                                    symbol,
+                                    name: getNetwork(symbol).name,
+                                }))}
                                 size={20}
                                 gap={16}
                                 maxVisibleIcons={null}

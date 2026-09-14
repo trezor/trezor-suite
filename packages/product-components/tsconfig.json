@@ -25,24 +25,11 @@
         {
             "path": "../../suite-common/toast-notifications"
         },
-        {
-            "path": "../../suite-common/wallet-config"
-        },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../asset-utils" },
         { "path": "../components" },
         { "path": "../device-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
-        {
-            "path": "../../networks/ethereum/network-ethereum"
-        },
-        { "path": "../react-utils" },
         { "path": "../theme" },
         { "path": "../type-utils" },
         { "path": "../utils" },

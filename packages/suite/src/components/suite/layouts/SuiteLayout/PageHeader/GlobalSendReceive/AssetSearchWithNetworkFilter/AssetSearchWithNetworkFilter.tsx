@@ -3,6 +3,7 @@ import { type RefObject, memo } from 'react';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
@@ -49,7 +50,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     const selectConfig = isBitcoinOnlyFirmware
         ? undefined
         : {
-              networks,
+              networks: networks.map(symbol => ({ symbol, name: getNetwork(symbol).name })),
               selectedNetwork: networkFilter,
               onChange: setNetworkFilter,
               includeAllOption: !protocolSymbol,

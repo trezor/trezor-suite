@@ -4,6 +4,7 @@ import { type IconComponent, Toast, type ToastProps } from '@trezor/components';
 import * as generatedIcons from '@trezor/icons';
 
 import { ExchangeInfoNotification } from './ExchangeInfoNotification';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
 
 const meta: Meta<typeof ExchangeInfoNotification> = {
     title: 'Notifications/ExchangeInfoNotification',
@@ -41,12 +42,12 @@ const exchangeInfoContent = (
     <ExchangeInfoNotification
         message="Swap transaction from Solana #1 to Ethereum #1 was broadcast"
         send={{
-            symbol: 'sol',
+            icon: <TokenIcon symbol="sol" size={20} />,
             amount: 3,
             displaySymbol: 'SOL',
         }}
         receive={{
-            symbol: 'eth',
+            icon: <TokenIcon symbol="eth" size={20} />,
             amount: 0.0051663,
             displaySymbol: 'ETH',
         }}

@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { isNetworkIconSymbol } from '@suite-common/icons';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils/src/tokenUtils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {
     type AllowedFrameProps,
@@ -11,7 +10,6 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
-import { useAsyncMemo } from '@trezor/react-utils';
 
 import { TokenInitials } from './TokenInitials';
 import { type TokenIconProps, allowedTokenIconFrameProps } from './tokenIconTypes';
@@ -19,7 +17,6 @@ import {
     type LogoCandidate,
     ZERO_ADDRESS,
     failedAddressesCache,
-    getCoingeckoIdAndContractAddressIncludesNativeTokens,
     makeAddressKey,
     makeCacheKey,
     resolvedLogoCache,
@@ -57,13 +54,15 @@ const Logo = styled.img<{ $size: number; $isTransparent: boolean }>`
         $isTransparent ? 'transparent' : theme.elementFillElevated};
 `;
 
+const EMPTY_CONTRACT_ADDRESSES: readonly string[] = [ZERO_ADDRESS];
+
 type NonNativeTokenIconProps = TokenIconProps & {
     coingeckoId: string;
 };
 
 export const NonNativeTokenIcon = ({
     symbol,
-    contractAddress,
+    contractAddresses = EMPTY_CONTRACT_ADDRESSES,
     coingeckoId,
     size = 32,
     showNetworkIcon = false,
@@ -76,20 +75,6 @@ export const NonNativeTokenIcon = ({
     'data-testid': dataTestId,
     ...rest
 }: NonNativeTokenIconProps) => {
-    // resolves synchronously for everything except the first XLM token after a cold start
-    // so most icons render in the first frame without a placeholder flash
-    const contractAddressArray = useAsyncMemo(
-        () => getAssetLogoContractAddresses(symbol, contractAddress),
-        [symbol, contractAddress],
-    );
-
-    const normalizedAddresses = useMemo(
-        () =>
-            getCoingeckoIdAndContractAddressIncludesNativeTokens(coingeckoId, contractAddressArray),
-        [coingeckoId, contractAddressArray],
-    );
-    const { coingeckoId: coingeckoIdLogo, contractAddresses } = normalizedAddresses;
-
     const canonicalAddresses = useMemo(() => {
         const set = new Set<string>();
         for (const addr of contractAddresses) {
@@ -102,8 +87,8 @@ export const NonNativeTokenIcon = ({
     const addressesKey = useMemo(() => canonicalAddresses.join('|'), [canonicalAddresses]);
 
     const cacheKey = useMemo(
-        () => makeCacheKey(coingeckoIdLogo, addressesKey),
-        [coingeckoIdLogo, addressesKey],
+        () => makeCacheKey(coingeckoId, addressesKey),
+        [coingeckoId, addressesKey],
     );
 
     const [candidateIndex, setCandidateIndex] = useState(0);
@@ -116,7 +101,7 @@ export const NonNativeTokenIcon = ({
 
         if (
             customLogoUrl &&
-            !failedAddressesCache.has(makeAddressKey(coingeckoIdLogo, customLogoUrl))
+            !failedAddressesCache.has(makeAddressKey(coingeckoId, customLogoUrl))
         ) {
             result.push({
                 address: customLogoUrl,
@@ -128,20 +113,20 @@ export const NonNativeTokenIcon = ({
         if (!canonicalAddresses.length) return result;
 
         const filtered = canonicalAddresses.filter(
-            address => !failedAddressesCache.has(makeAddressKey(coingeckoIdLogo, address)),
+            address => !failedAddressesCache.has(makeAddressKey(coingeckoId, address)),
         );
 
         const hasNative = filtered.includes(ZERO_ADDRESS);
 
         for (const address of filtered) {
             const url1x = getAssetLogoUrl({
-                coingeckoId: coingeckoIdLogo,
+                coingeckoId,
                 contractAddress: !hasNative ? address : undefined,
                 density: 1,
                 size,
             });
             const url2x = getAssetLogoUrl({
-                coingeckoId: coingeckoIdLogo,
+                coingeckoId,
                 contractAddress: !hasNative ? address : undefined,
                 density: 2,
                 size,
@@ -150,17 +135,14 @@ export const NonNativeTokenIcon = ({
             result.push({ address, src: url1x, srcSet: `${url1x} 1x, ${url2x} 2x` });
         }
 
-        if (
-            !hasNative &&
-            !failedAddressesCache.has(makeAddressKey(coingeckoIdLogo, ZERO_ADDRESS))
-        ) {
+        if (!hasNative && !failedAddressesCache.has(makeAddressKey(coingeckoId, ZERO_ADDRESS))) {
             const url1x = getAssetLogoUrl({
-                coingeckoId: coingeckoIdLogo,
+                coingeckoId,
                 density: 1,
                 size,
             });
             const url2x = getAssetLogoUrl({
-                coingeckoId: coingeckoIdLogo,
+                coingeckoId,
                 density: 2,
                 size,
             });
@@ -173,7 +155,7 @@ export const NonNativeTokenIcon = ({
         }
 
         return result;
-    }, [shouldTryToFetch, canonicalAddresses, coingeckoIdLogo, size, customLogoUrl]);
+    }, [shouldTryToFetch, canonicalAddresses, coingeckoId, size, customLogoUrl]);
 
     const hasCandidates = candidates.length > 0;
     const hasValidIndex = candidateIndex >= 0 && candidateIndex < candidates.length;
@@ -206,7 +188,7 @@ export const NonNativeTokenIcon = ({
     const handleLoadError = () => {
         if (!current) return;
 
-        failedAddressesCache.add(makeAddressKey(coingeckoIdLogo, current.address));
+        failedAddressesCache.add(makeAddressKey(coingeckoId, current.address));
 
         const nextIndex = candidateIndex + 1;
         if (nextIndex >= candidates.length) {

@@ -61,10 +61,10 @@ export {
     type TokenIconProps,
     type TokenIconSize,
 } from './components/TokenIcon/tokenIconTypes';
-export { shouldShowNetworkIcon } from './components/TokenIcon/tokenIconUtils';
 export * from './components/TokenIconSet/TokenIconSet';
 export { TooltipRow } from './components/TooltipRow/TooltipRow';
 export * from './components/TopAssets/TopAssets';
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export { getLargeModelImagePath, getModelFrontColor } from './utils/getModelFrontColor';
 export { mapTrezorModelToFilledIcon, mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
+export { NetworkIconBadge } from './components/NetworkIcon/NetworkIconBadge';

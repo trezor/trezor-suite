@@ -2,6 +2,7 @@ import { useRef } from 'react';
 
 import { type DexApprovalType } from 'invity-api';
 
+import { AssetIcon } from '@suite/asset-icon';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { type AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -18,7 +19,6 @@ import {
     Text,
 } from '@trezor/components';
 import { CaretDownIcon, WarningIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
 import type { AllowanceModalProvider } from './AllowanceModalProviderInfo';
@@ -119,7 +119,7 @@ export const ApproveModalTypeSelector = ({
         >
             <Column gap={4} flex="1" alignItems="flex-start">
                 <Row gap={8}>
-                    <TokenIcon
+                    <AssetIcon
                         symbol={networkSymbol}
                         contractAddress={token.contract}
                         size={20}
@@ -147,7 +147,7 @@ export const ApproveModalTypeSelector = ({
                         />
                     </Text>
                     <Row gap={8}>
-                        <TokenIcon
+                        <AssetIcon
                             symbol={networkSymbol}
                             contractAddress={token.contract}
                             size={20}

@@ -8,9 +8,9 @@ import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Grid, Row, Text } from '@trezor/components';
-import { FeeRate } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite';
+import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 import { useLocales, useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';

@@ -1,27 +1,22 @@
 import { useMemo } from 'react';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { isNotNull } from '@trezor/utils';
+import { type NetworkSymbol } from '@suite-common/icons';
 
 export interface SearchAssetSelectConfig {
-    networks: NetworkSymbol[];
+    networks: { symbol: NetworkSymbol; name: string }[];
     selectedNetwork: NetworkSymbol | undefined;
     onChange: (network?: NetworkSymbol) => void;
     includeAllOption?: boolean;
     allLabel?: string;
 }
 
+const EMPTY_NETWORKS: SearchAssetSelectConfig['networks'] = [];
+
 export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
-    const { networks = [], includeAllOption, allLabel, selectedNetwork } = config ?? {};
+    const { networks = EMPTY_NETWORKS, includeAllOption, allLabel, selectedNetwork } = config ?? {};
 
     const allOptions = useMemo(() => {
-        const networkOptions = networks
-            .map(symbol => {
-                const network = getNetwork(symbol);
-
-                return network ? { label: network.name, value: network.symbol } : null;
-            })
-            .filter(isNotNull);
+        const networkOptions = networks.map(({ symbol, name }) => ({ label: name, value: symbol }));
 
         return includeAllOption
             ? [{ label: allLabel ?? 'All networks', value: undefined }, ...networkOptions]

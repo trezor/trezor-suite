@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/icons';
 import { Tooltip } from '@trezor/components';
 
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
 import { TokenIcon } from '../TokenIcon/TokenIcon';
 
 export type NetworkIconSetProps = CommonIconSetProps & {
-    networks: NetworkSymbol[];
+    networks: { symbol: NetworkSymbol; name: string }[];
     hasTooltip?: boolean;
 };
 
@@ -27,10 +27,10 @@ export const NetworkIconSet = ({
         const visibleNetworks =
             maxVisibleIcons !== null ? networks.slice(0, maxVisibleIcons) : networks;
 
-        return visibleNetworks.map(network => (
-            <IconWrapper key={network} $size={size} $gap={gap} $length={length}>
-                <Tooltip content={getNetwork(network).name} isActive={hasTooltip}>
-                    <TokenIcon size={size} symbol={network} />
+        return visibleNetworks.map(({ symbol, name }) => (
+            <IconWrapper key={symbol} $size={size} $gap={gap} $length={length}>
+                <Tooltip content={name} isActive={hasTooltip}>
+                    <TokenIcon size={size} symbol={symbol} />
                 </Tooltip>
             </IconWrapper>
         ));

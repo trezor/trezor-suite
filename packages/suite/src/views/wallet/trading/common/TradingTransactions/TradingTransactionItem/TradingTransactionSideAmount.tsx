@@ -1,7 +1,7 @@
+import { shouldShowNetworkIcon } from '@suite/asset-icon';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingUtils } from '@suite-common/trading';
 import { Flag, Row } from '@trezor/components';
-import { shouldShowNetworkIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';

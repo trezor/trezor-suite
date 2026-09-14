@@ -1,0 +1,20 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum"
+        },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/react-utils" }
+    ]
+}

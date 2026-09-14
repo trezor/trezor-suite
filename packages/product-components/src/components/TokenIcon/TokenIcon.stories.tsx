@@ -37,8 +37,8 @@ const meta: Meta<TokenIconProps> = {
             options: NETWORK_SYMBOLS,
             control: { type: 'select' },
         },
-        contractAddress: {
-            control: { type: 'text' },
+        contractAddresses: {
+            control: { type: 'object' },
         },
         size: {
             options: allowedTokenIconSizes,
@@ -80,7 +80,8 @@ export const Token: StoryObj<TokenIconProps> = {
     args: {
         size: 24,
         symbol: 'eth',
-        contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC on Ethereum
+        coingeckoId: 'ethereum',
+        contractAddresses: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'], // USDC on Ethereum
         placeholder: 'USDC',
         shouldTryToFetch: true,
         showNetworkIcon: true,
