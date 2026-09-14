@@ -2,6 +2,7 @@ import { Asset, Keypair, xdr } from '@stellar/stellar-sdk';
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NotFoundError } from '@trezor/network-stellar';
+import { STELLAR_CONTRACT_TOKENS } from '@trezor/network-stellar/constants';
 
 import { BlockchainLink } from '../../index';
 
@@ -17,6 +18,14 @@ const ASSET_ISSUER = 'GBDVX4VELCDSQ54KQJYTNHXAHFLBCA77ZY2USQBM4CSHTTV7DME7KALE';
 const OTHER_ACCOUNT = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 const TX_HASH = '3a44b5d0159890a1e2b3e7ef30ff90e014ee68ac64f23a24a6cbe4c366c088a0';
 
+type Sep41TokenMock = {
+    contract: string;
+    balance: string;
+    decimals?: number;
+    symbol?: string;
+    name?: string;
+};
+
 const mockState: {
     accountError?: unknown;
     ledgerEntriesError?: unknown;
@@ -27,6 +36,8 @@ const mockState: {
     effectRecords: unknown[];
     effectsCursor?: string;
     joinedApplied?: boolean;
+    sep41Tokens: Sep41TokenMock[];
+    readContractIds?: string[];
     ledgerEntries: { val: xdr.LedgerEntryData }[];
     horizonBalances: unknown[];
     /** Merged into the Horizon account record, for the RPC-outage fallback. */
@@ -34,6 +45,7 @@ const mockState: {
 } = {
     operationRecords: [],
     effectRecords: [],
+    sep41Tokens: [],
     ledgerEntries: [],
     horizonBalances: [],
 };
@@ -150,12 +162,16 @@ const mint = (amount: string) => ({
 jest.mock('@trezor/network-stellar/runtime', () => ({
     __esModule: true,
     default: () => {
-        // The runtime entry's default export is a lazy `import()`, so spreading its return value
-        // would spread a promise and silently stub out every function the handler destructures.
         const actual = jest.requireActual('@trezor/network-stellar');
 
         return Promise.resolve({
             ...actual,
+            // Keeps the Soroban contract-token read off the network.
+            readSep41Tokens: (_server: unknown, _holder: string, contractIds: string[]) => {
+                mockState.readContractIds = contractIds;
+
+                return Promise.resolve(mockState.sep41Tokens);
+            },
             getStellarConnection: () =>
                 Promise.resolve({
                     url: 'https://stellar.mock',
@@ -262,9 +278,10 @@ describe('Stellar worker account history', () => {
         mockState.effectsCursor = undefined;
         mockState.ledgerEntries = [{ val: accountEntry() }];
         mockState.horizonBalances = [];
-        mockState.horizonAccount = undefined;
         mockState.operationRecords = [];
         mockState.joinedApplied = false;
+        mockState.sep41Tokens = [];
+        mockState.readContractIds = undefined;
         blockchain = new BlockchainLink({
             name: 'Stellar',
             worker: StellarWorker,
@@ -334,6 +351,7 @@ describe('Stellar worker account history', () => {
             details: 'txs',
         });
 
+        // Contract-token balances live in contract storage, which Horizon cannot see.
         expect(account.balance).toBe('100000000');
         expect(account.tokens?.map(token => token.symbol)).toEqual(['USDC']);
     });
@@ -491,6 +509,41 @@ describe('Stellar worker account history', () => {
         expect(result.history.transactions![0]!.tokens[0]).toEqual(
             expect.objectContaining({ from: DESCRIPTOR, to: POOL_CONTRACT }),
         );
+    });
+
+    it('reads the curated contract tokens', async () => {
+        await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        expect(mockState.readContractIds).toEqual(
+            STELLAR_CONTRACT_TOKENS.map(token => token.contract),
+        );
+    });
+
+    it('drops a curated contract token the account does not hold', async () => {
+        const curated = STELLAR_CONTRACT_TOKENS[0]!;
+        mockState.sep41Tokens = [{ contract: curated.contract, balance: '0' }];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        expect(result.tokens).toEqual([]);
+    });
+
+    it('falls back to the curated metadata when the contract does not report its own', async () => {
+        const curated = STELLAR_CONTRACT_TOKENS[0]!;
+        mockState.sep41Tokens = [{ contract: curated.contract, balance: '42' }];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        expect(result.tokens).toEqual([
+            {
+                standard: 'STELLAR-CONTRACT',
+                contract: curated.contract,
+                balance: '42',
+                name: curated.name,
+                symbol: curated.symbol.toUpperCase(),
+                decimals: curated.decimals,
+            },
+        ]);
     });
 
     it('keeps the page length when a record cannot be described', async () => {

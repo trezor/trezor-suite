@@ -848,6 +848,10 @@ const NFT_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
 export const isNftToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
     NFT_TOKEN_STANDARDS.has(token.standard);
 
+/** A Soroban (SEP-41) contract token, as against a classic Stellar asset. */
+export const isStellarContractToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
+    token.standard === 'STELLAR-CONTRACT';
+
 export const isNftTokenTransfer = <T extends Pick<TokenTransfer, 'standard'>>(transfer: T) =>
     transfer.standard && NFT_TOKEN_STANDARDS.has(transfer.standard);
 

@@ -12,4 +12,5 @@ export * from './rpc/ledgerKeys';
 export * from './rpc/network';
 export * from './rpc/server';
 export * from './rpc/submit';
+export * from './soroban';
 export * from './transactions';

@@ -59,5 +59,55 @@ Scripts:
 ## Naming
 
 - Token definitions: include both coin and nft definitions
-- Coin definitions: contain just tokens ERC20, SPL and Stellar classic assets (`code-issuer` format)
+- Coin definitions: contain just tokens ERC20, SPL and Stellar assets — classic assets in
+  `code-issuer` format, and native SEP-41 contract tokens keyed by their own `C…` contract address
 - NFT definitions: contain just nfts ERC1155 and ERC721
+
+## Stellar: how an asset is keyed
+
+Stellar has three kinds of asset and they are not keyed the same way:
+
+| Kind                         | Key                               | Why                                                                                                                           |
+| ---------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Classic (G-class)            | `CODE-ISSUER`                     | What Horizon reports as a trustline.                                                                                          |
+| Stellar Asset Contract (SAC) | the wrapped classic `CODE-ISSUER` | Horizon already reports the wrapped asset as a trustline; keying the contract separately would double-count the same balance. |
+| Native SEP-41 (C-class)      | its own `C…` contract address     | It has no issuer, so it has no classic form. This is also the key CoinGecko indexes it under.                                 |
+
+`getContractAddress` and `fetchSorobanContractAsset` in `scripts/utils/fetchCoins.ts` implement that
+split: a contract that resolves to an underlying classic asset is collapsed onto it, while one that
+resolves to no asset is a native SEP-41 token and is kept under its own address. A genuine lookup
+failure is skipped rather than being treated as either.
+
+### Sources
+
+The list is CoinGecko-driven; the Stellar-specific enrichment comes from elsewhere:
+
+- `COIN_LIST_URL` — CoinGecko's coin list, the set of candidates.
+- `STELLAR_EXPERT_URL` + `/contract/{address}` — resolves a contract to its underlying classic
+  asset, which is what distinguishes a SAC from a native SEP-41 token.
+- `STELLAR_EXPERT_URL` + `/asset/{address}/rating` — the rating used to drop spam.
+- `STELLAR_HORIZON_URL` + `stellar.toml` — SEP-1 home-domain verification for classic assets.
+
+All four live in `scripts/constants/index.ts`. Output is a signed `.jws` plus an unsigned `.json`
+per platform, written to `files/` by `scripts/index.ts` (`signData`, `validateStructure`).
+
+### Interim allow-list
+
+`STELLAR_CONTRACT_TOKENS` in `networks/stellar/network-stellar/src/constants/soroban.ts` is a
+hardcoded allow-list of native SEP-41 tokens that the worker reads balances for on every account.
+It exists **only** because the hosted definitions did not carry contract tokens yet, and should be
+deleted once they do — it is not a curation mechanism and does not scale.
+
+### Not yet wired
+
+These curated feeds are agreed but not integrated; the pipeline does not read them today:
+
+- Soroswap's static token list
+- `https://lobstr.co/api/v1/sep/assets/curated.json`
+- `https://api.stellar.expert/explorer/public/asset-list/top50`
+
+### Ownership
+
+**Owner: TBD.** Who decides what enters the curated Stellar contract-token set — and who regenerates
+and signs the definitions when a feed changes — is not assigned yet. This needs an owner before the
+allow-list above can be retired.
