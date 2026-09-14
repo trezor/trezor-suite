@@ -7,7 +7,7 @@ import type {
 
 export type TransactionNotificationType = Exclude<
     ToastTransactionNotificationType,
-    'tx-wrap' | 'tx-unwrap'
+    'tx-wrap' | 'tx-unwrap' | 'tx-exchange'
 >;
 
 type ExchangeToastAssetData = Extract<
