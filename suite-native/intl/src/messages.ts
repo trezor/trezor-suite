@@ -4978,6 +4978,7 @@ export const messages = {
             txApproved: 'Approved in {account}',
             txWrap: 'Wrapped in {account}',
             txUnwrap: 'Unwrapped in {account}',
+            txExchange: 'Traded in {account}',
         },
     },
     biometricsButton: 'Unlock with biometrics',
