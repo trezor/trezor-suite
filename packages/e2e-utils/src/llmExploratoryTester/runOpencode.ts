@@ -176,11 +176,13 @@ export async function runOpencode({
     timeoutMs,
     maxBudgetUsd,
 }: RunOpencodeOptions): Promise<TestResult> {
-    // The server inherits our env and reads OPENROUTER_API_KEY itself; fail
+    // The server inherits our env and reads BEAST_API_KEY itself; fail
     // early with a clear message rather than a provider error mid-run.
-    if (!process.env.OPENROUTER_API_KEY) {
-        throw new Error('OPENROUTER_API_KEY is required');
+    if (!process.env.BEAST_API_KEY) {
+        throw new Error('BEAST_API_KEY is required');
     }
+    // OPENCODE_CONFIG is built at import, before dotenv; fill the key now.
+    OPENCODE_CONFIG.provider!.beast!.options!.apiKey = process.env.BEAST_API_KEY;
     isolateServerConfig();
 
     // ESM-only package; this file is loaded as CJS by tsx.
@@ -218,12 +220,6 @@ export async function runOpencode({
         };
 
         let result = await runRound(run, prompt);
-
-        // A zero total means OpenRouter pricing for the model was not
-        // resolved — the budget cap would never trip, so fail loudly.
-        if (totalCostUsd(run.messages) === 0) {
-            throw new Error('OpenCode reported zero cost; the budget cap cannot be enforced');
-        }
 
         // The agent tends to stop early on long checklists; resume the session
         // until it accounts for every area or the continuation budget is out.

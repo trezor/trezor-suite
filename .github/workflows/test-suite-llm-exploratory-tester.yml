@@ -1,7 +1,7 @@
 name: "[Test] LLM Exploratory Tester"
 
-# Run from the Actions tab. Locally, put OPENROUTER_API_KEY=... into
-# packages/e2e-utils/.env (gitignored) and run:
+# Run from the Actions tab. Locally, put BEAST_API_KEY=... into
+# packages/e2e-utils/.env (gitignored, company VPN required) and run:
 # TARGET=<pr-url> DEVICE_MODEL=T3T1 yarn workspace @trezor/e2e-utils llm-exploratory-tester
 
 on:
@@ -80,7 +80,7 @@ jobs:
 
       - name: Run LLM Exploratory Tester
         env:
-          OPENROUTER_API_KEY: ${{ secrets.E2E_SELECTOR_API_KEY }}
+          BEAST_API_KEY: ${{ secrets.BEAST_API_KEY }}
         run: yarn workspace @trezor/e2e-utils llm-exploratory-tester:run
 
       # Surface the verdict on the job page; the run step's exit code already

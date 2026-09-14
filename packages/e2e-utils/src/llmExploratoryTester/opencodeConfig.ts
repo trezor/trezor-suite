@@ -4,28 +4,31 @@ import { join } from 'node:path';
 import { BOT_DIR, REPO_ROOT } from './paths';
 
 export const MODEL = {
-    providerID: 'openrouter',
-    // Overridable for A/B testing, like REASONING_EFFORT below.
-    modelID: process.env.LLM_EXPLORATORY_TESTER_MODEL ?? 'openai/gpt-5.6-luna',
+    providerID: 'beast',
+    modelID: process.env.LLM_EXPLORATORY_TESTER_MODEL ?? 'big',
 };
 
 // Reasoning effort, applied per request as the opencode variant (see
-// runOpencode.ts) — the only path that reaches the model. The provider
-// `options` path is silently ignored for OpenRouter (verified by probe:
-// identical reasoning tokens with/without). Override with
+// runOpencode.ts) — the only path that reaches the model. Override with
 // LLM_EXPLORATORY_TESTER_EFFORT; low/high are the safe variant names.
 export const REASONING_EFFORT = process.env.LLM_EXPLORATORY_TESTER_EFFORT ?? 'high';
 
 // Merged over the user's global opencode.json; enabled_providers must be set
-// here or a global allowlist silently disables OpenRouter.
+// here or a global allowlist silently disables Beast.
 export const OPENCODE_CONFIG: Config = {
     model: `${MODEL.providerID}/${MODEL.modelID}`,
     enabled_providers: [MODEL.providerID],
-    // Sends the opencode session ID as OpenRouter's prompt_cache_key, so the
-    // OpenRouter console groups the run's requests under the ID we log.
     provider: {
-        [MODEL.providerID]: {
-            options: { setCacheKey: true },
+        beast: {
+            npm: '@ai-sdk/openai-compatible',
+            options: {
+                baseURL: 'https://llm.corp.sldev.cz/v1',
+                apiKey: process.env.BEAST_API_KEY,
+            },
+            models: {
+                // Server id is `beast/big`; OpenCode catalog key is provider/model → beast/big.
+                big: { id: 'beast/big' },
+            },
         },
     },
     share: 'disabled',
