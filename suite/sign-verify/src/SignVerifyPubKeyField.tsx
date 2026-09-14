@@ -10,7 +10,7 @@ type SignVerifyPubKeyFieldProps = {
     isCompleted: boolean;
     hasError: boolean;
     errorMessage?: string;
-    registration: UseFormRegisterReturn<'pubKey'>;
+    registration: UseFormRegisterReturn;
     onCopy: (value: string) => void;
 };
 

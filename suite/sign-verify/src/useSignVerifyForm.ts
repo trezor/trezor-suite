@@ -1,5 +1,12 @@
-import { useEffect } from 'react';
-import { useController, useForm, useWatch } from 'react-hook-form';
+import { useEffect, useRef } from 'react';
+import {
+    type DefaultValues,
+    type Path,
+    type Resolver,
+    useController,
+    useForm,
+    useWatch,
+} from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -8,8 +15,6 @@ import { type AddressValidator, selectAddressValidatorDep } from '@suite-common/
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-
-export type SignVerifyFormFields = ReturnType<typeof useSignVerifyForm>;
 
 export const MAX_LENGTH_MESSAGE = 1024;
 export const MAX_LENGTH_SIGNATURE = 255;
@@ -20,19 +25,17 @@ type SignVerifyContext = {
     symbol: NetworkSymbol;
 };
 
-// yup doesn't type properly conditionally required fields → need to declare type rather than infer it
-export type SignVerifyFields = {
+/** The fields every network signs and verifies with; networks add their own on top. */
+export type SignVerifyBaseFields = {
     message: string;
     address: string;
     hex: boolean;
     path?: string;
     signature?: string;
-    isElectrum?: boolean;
-    pubKey?: string;
-    cardanoPubKeyCose?: boolean;
 };
 
-const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
+// yup doesn't type properly conditionally required fields → need to declare type rather than infer it
+export const signVerifyBaseSchema = {
     message: yup
         .string()
         .max(MAX_LENGTH_MESSAGE, 'TR_TOO_LONG')
@@ -61,135 +64,127 @@ const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
         then: schema => schema.required(),
     }),
     hex: yup.boolean().required(),
-    isElectrum: yup.boolean(),
-    pubKey: yup.string(),
-    cardanoPubKeyCose: yup.boolean(),
-});
+};
 
-const DEFAULT_VALUES: SignVerifyFields = {
+export const SIGN_VERIFY_BASE_DEFAULT_VALUES: SignVerifyBaseFields = {
     message: '',
     address: '',
-    isElectrum: false,
     path: '',
     signature: '',
     hex: false,
-    pubKey: '',
-    cardanoPubKeyCose: false,
 };
 
-export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
+type UseSignVerifyFormOptions<TFields extends SignVerifyBaseFields> = {
+    account: Account;
+    isSignPage: boolean;
+    schema: yup.ObjectSchema<TFields>;
+    defaultValues: TFields;
+    /** Values the network pins on the sign page, such as Ethereum's single address. */
+    overrideValues?: Partial<TFields>;
+    isPathDisabled?: boolean;
+    /** Fields carrying the signing result, dropped whenever the signed inputs change. */
+    resultFields?: Path<TFields>[];
+    /** Fields the result was produced from; changing any of them invalidates it. */
+    signedInputFields?: Path<TFields>[];
+};
+
+export const useSignVerifyForm = <TFields extends SignVerifyBaseFields>({
+    account,
+    isSignPage,
+    schema,
+    defaultValues,
+    overrideValues,
+    isPathDisabled = false,
+    resultFields = [],
+    signedInputFields = [],
+}: UseSignVerifyFormOptions<TFields>) => {
     const { addressValidator } = useServices(selectAddressValidatorDep);
     const { register, handleSubmit, formState, reset, setValue, clearErrors, control, trigger } =
-        useForm<SignVerifyFields, SignVerifyContext>({
+        useForm<TFields, SignVerifyContext>({
             mode: 'onBlur',
             reValidateMode: 'onChange',
-            resolver: yupResolver(signVerifySchema),
+            resolver: yupResolver(schema) as Resolver<TFields, SignVerifyContext, TFields>,
             context: {
                 addressValidator,
                 isSignPage,
-                symbol: account?.symbol,
+                symbol: account.symbol,
             },
-            defaultValues: DEFAULT_VALUES,
+            defaultValues: defaultValues as DefaultValues<TFields>,
         });
 
     const { isDirty, errors, isSubmitting } = formState;
 
     const formValues = useWatch({ control });
 
-    const { field: addressField } = useController({
-        control,
-        name: 'address',
-    });
-    const { field: pathField } = useController({
-        control,
-        name: 'path',
-    });
-    const { field: hexField } = useController({
-        control,
-        name: 'hex',
-    });
-    const { field: isElectrumField } = useController({
-        control,
-        name: 'isElectrum',
-    });
-    const { field: cardanoPubKeyCoseField } = useController({
-        control,
-        name: 'cardanoPubKeyCose',
-    });
+    // The controllers below are addressed by a generic field name, so react-hook-form widens their
+    // value to the union of every field's type; `SignVerifyBaseFields` pins what they really are.
+    const { field: addressField } = useController({ control, name: 'address' as Path<TFields> });
+    const { field: pathField } = useController({ control, name: 'path' as Path<TFields> });
+    const { field: hexField } = useController({ control, name: 'hex' as Path<TFields> });
 
     useEffect(() => {
         if (formValues.message) {
-            trigger('message');
+            trigger('message' as Path<TFields>);
         }
     }, [trigger, formValues.message, formValues.hex]);
 
+    // The effects below are keyed on serialized values, so the field lists they read are held in
+    // refs rather than compared by identity — callers build them inline on every render.
+    const resultFieldsRef = useRef(resultFields);
+    resultFieldsRef.current = resultFields;
+
+    const signedInputsKey = JSON.stringify(
+        signedInputFields.map(field => formValues[field as keyof typeof formValues]),
+    );
+
     useEffect(() => {
         if (isSignPage) {
-            setValue('signature', '');
-            setValue('pubKey', '');
+            resultFieldsRef.current.forEach(field => setValue(field, '' as never));
         }
-    }, [
-        setValue,
-        isSignPage,
-        formValues.address,
-        formValues.message,
-        formValues.isElectrum,
-        formValues.cardanoPubKeyCose,
-    ]);
+    }, [setValue, isSignPage, signedInputsKey]);
+
+    const overrideValuesRef = useRef(overrideValues);
+    overrideValuesRef.current = overrideValues;
+
+    const overrideValuesKey = JSON.stringify(overrideValues ?? {});
 
     useEffect(() => {
-        const overrideValues =
-            isSignPage && account?.networkType === 'ethereum'
-                ? {
-                      path: account.path,
-                      address: account.descriptor,
-                  }
-                : {};
-
         reset({
-            ...DEFAULT_VALUES,
-            ...overrideValues,
+            ...defaultValues,
+            ...overrideValuesRef.current,
         });
-    }, [reset, isSignPage, account?.key, account?.networkType, account?.path, account?.descriptor]);
+    }, [reset, defaultValues, isSignPage, account.key, overrideValuesKey]);
 
     return {
+        control,
         isFormDirty: isDirty,
         isSubmitting,
         resetForm: () => reset(),
         formSubmit: handleSubmit,
         formValues,
         formErrors: errors,
-        formSetSignature: ({ signature, pubKey }: { signature: string; pubKey?: string }) => {
-            setValue('signature', signature);
-            setValue('pubKey', pubKey || '');
-        },
+        setValue,
         register,
         hexField: {
-            isChecked: hexField.value,
+            isChecked: hexField.value as boolean,
             onChange: hexField.onChange,
         },
         addressField: {
-            value: addressField.value,
+            value: addressField.value as string,
             onChange: addressField.onChange,
             onBlur: addressField.onBlur,
         },
         pathField: {
-            value: pathField.value,
+            value: pathField.value as string,
             onBlur: pathField.onBlur,
             onChange: (addr: { path: string; address: string } | null) => {
-                clearErrors(['path', 'address']);
+                clearErrors(['path', 'address'] as Path<TFields>[]);
                 pathField.onChange(addr?.path || '');
                 addressField.onChange(addr?.address || '');
             },
-            isDisabled: account?.networkType === 'ethereum',
-        },
-        isElectrumField: {
-            selectedOption: isElectrumField.value,
-            onChange: isElectrumField.onChange,
-        },
-        cardanoPubKeyCoseField: {
-            selectedOption: cardanoPubKeyCoseField.value,
-            onChange: cardanoPubKeyCoseField.onChange,
+            isDisabled: isPathDisabled,
         },
     };
 };
+
+export type SignVerifyFormFields = ReturnType<typeof useSignVerifyForm<SignVerifyBaseFields>>;
