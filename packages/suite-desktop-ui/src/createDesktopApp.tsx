@@ -44,7 +44,7 @@ export const createDesktopApp =
 
         deps.services.hydrateReduxStore(preloadAction, statePatch);
 
-        deps.services.loadNetworkModules();
+        deps.services.networks.loadNetworkModules();
 
         // Expose Redux store for Playwright/e2e tests
         if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {

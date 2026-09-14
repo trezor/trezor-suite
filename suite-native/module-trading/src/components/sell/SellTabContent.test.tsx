@@ -9,9 +9,9 @@ import { SellTabContent } from './SellTabContent';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockUseSellData: jest.Mock;
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
     analytics: mockNativeAnalytics(),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 jest.mock('@react-navigation/native', () => ({

@@ -12,9 +12,10 @@ import { closeModal, openModal } from '@suite/modal';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { type AddressValidatorDep, type GetNamedAddressSupportDep } from '@suite-common/address';
 import { mockAddressValidator, mockGetNamedAddressSupport } from '@suite-common/address/mocks';
 import {
+    type AddressValidatorDep,
+    type GetNamedAddressSupportDep,
     type NetworkModuleRepositoryDep,
     networksActions,
     networksReducer,
@@ -96,26 +97,27 @@ interface Args {
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 type SendFormTestServices = SuiteRouterHistoryDep &
-    AddressValidatorDep &
     DesktopAnalyticsDep &
     GetIsWindowVisibleDep &
-    GetNamedAddressSupportDep &
     GetTradedAccountKeysDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
-    NetworkModuleRepositoryDep &
-    SuiteSyncDep;
+    SuiteSyncDep & {
+        networks: AddressValidatorDep & GetNamedAddressSupportDep & NetworkModuleRepositoryDep;
+    };
 
 const services: SendFormTestServices = {
     suiteRouterHistory: mockSuiteRouterHistory(),
-    addressValidator: mockAddressValidator({
-        isAddressValid: address => address !== '' && address !== 'X' && address !== 'FOO',
-    }),
     analytics: mockDesktopAnalytics(),
     getIsWindowVisible: mockGetIsWindowVisible(),
-    getNamedAddressSupport: mockGetNamedAddressSupport(),
     getTradedAccountKeys: mockGetTradedAccountKeys(),
     migrateSuiteSyncLabelsForRbfTransaction: mockMigrateSuiteSyncLabelsForRbfTransaction(),
-    networkModuleRepository: mockNetworkModuleRepository({ get: () => mockNetworkModule() }),
+    networks: {
+        addressValidator: mockAddressValidator({
+            isAddressValid: address => address !== '' && address !== 'X' && address !== 'FOO',
+        }),
+        getNamedAddressSupport: mockGetNamedAddressSupport(),
+        networkModuleRepository: mockNetworkModuleRepository({ get: () => mockNetworkModule() }),
+    },
     suiteSync: mockSuiteSync(),
 };
 const extraActions: OnModalCancelDep = { onModalCancel: closeModal };

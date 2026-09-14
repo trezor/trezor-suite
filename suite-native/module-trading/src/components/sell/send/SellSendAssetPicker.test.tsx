@@ -39,9 +39,9 @@ jest.mock('@suite-native/trading-state', () => ({
 const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
     selectAccountsWithTokensToSellSectionListByTradingType as unknown as jest.Mock;
 const reportMock = jest.fn();
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
     analytics: mockNativeAnalytics(reportMock),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 const mockNavigate = jest.fn();

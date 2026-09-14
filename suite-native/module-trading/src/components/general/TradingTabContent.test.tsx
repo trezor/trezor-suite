@@ -11,9 +11,9 @@ import { TradingTabContent } from './TradingTabContent';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockIsInternetReachable: boolean | null = true;
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
     analytics: mockNativeAnalytics(),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 jest.mock('@react-native-community/netinfo', () => ({

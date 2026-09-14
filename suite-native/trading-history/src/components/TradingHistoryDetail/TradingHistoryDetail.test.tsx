@@ -7,8 +7,8 @@ import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/tradi
 import { TradingHistoryDetail } from './TradingHistoryDetail';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
-const services: NetworkModuleRepositoryDep = {
-    networkModuleRepository: mockNetworkModuleRepository(),
+const services: { networks: NetworkModuleRepositoryDep } = {
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 describe('TradingHistoryDetail', () => {

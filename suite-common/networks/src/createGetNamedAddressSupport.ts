@@ -1,5 +1,7 @@
-import type { NetworkModuleRepositoryDep, NetworkSymbol } from '@suite-common/networks';
 import type { NamedAddressResolver } from '@trezor/network-module-suite-common-types';
+
+import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
+import type { NetworkSymbol } from './NetworkModules';
 
 export type SymbolNamedAddressResolver = NamedAddressResolver<NetworkSymbol>;
 
@@ -24,7 +26,7 @@ export type GetNamedAddressSupportDep = {
 };
 
 export const selectGetNamedAddressSupportDep = (services: any): GetNamedAddressSupportDep => ({
-    getNamedAddressSupport: services.getNamedAddressSupport,
+    getNamedAddressSupport: services.networks.getNamedAddressSupport,
 });
 
 /**

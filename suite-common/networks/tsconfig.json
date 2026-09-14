@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../earn-stablecoin-defs" },
         { "path": "../legacy-network-config" },
         {
             "path": "../../networks/bitcoin/network-bitcoin-suite-common"
@@ -27,6 +28,7 @@
         {
             "path": "../../networks/tron/network-tron-suite-common"
         },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../dependency-injection" }
     ]
 }

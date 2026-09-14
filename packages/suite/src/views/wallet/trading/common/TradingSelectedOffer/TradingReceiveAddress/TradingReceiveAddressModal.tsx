@@ -1,8 +1,8 @@
 import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectAddressValidatorDep } from '@suite-common/networks';
 import { cryptoIdToNetwork, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';

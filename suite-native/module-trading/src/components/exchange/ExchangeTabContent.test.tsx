@@ -9,9 +9,9 @@ import { ExchangeTabContent } from './ExchangeTabContent';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockUseTradingExchangeData: jest.Mock;
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
     analytics: mockNativeAnalytics(),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 jest.mock('../../hooks/exchange/useExchangeData', () => ({

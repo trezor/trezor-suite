@@ -61,9 +61,9 @@ const overridesWithDisabledTrading: PreloadedStatePartial<TradingTestPreloadedSt
         'trading.concierge': false,
     }),
 };
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
     analytics: mockNativeAnalytics(),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 describe('TradingScreen', () => {

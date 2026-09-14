@@ -12,6 +12,8 @@
     },
     "dependencies": {
         "@trezor/connect-common": "workspace:*",
+        "@trezor/crypto-utils": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     }
 }

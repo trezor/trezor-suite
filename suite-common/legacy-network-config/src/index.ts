@@ -1,3 +1,4 @@
+export { networkDisplayOrder } from './networkDisplayOrder';
 export { networks } from './networksConfig';
 export {
     TREZOR_CONNECT_BACKENDS,

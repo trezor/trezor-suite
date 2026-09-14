@@ -22,9 +22,9 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ params: {} }),
 }));
 
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
     analytics: mockNativeAnalytics(),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 describe('SellCard', () => {

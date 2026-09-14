@@ -37,9 +37,9 @@ jest.mock('../concierge/ConciergeAlert', () => ({
 }));
 
 const reportMock = jest.fn();
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
     analytics: mockNativeAnalytics(reportMock),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 describe('SellForm', () => {

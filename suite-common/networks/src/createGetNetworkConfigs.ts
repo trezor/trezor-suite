@@ -1,36 +1,26 @@
-import { type Network as LegacyNetwork, networks } from '@suite-common/legacy-network-config';
-import { typedObjectValues } from '@trezor/utils';
+import { networkDisplayOrder } from '@suite-common/legacy-network-config';
 
-import { asNetworkSymbol } from './NetworkModules';
+import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
+import type { NetworkSymbol } from './NetworkModules';
 import type { GetNetworkConfigDep } from './createGetNetworkConfig';
 import type { NetworkMetadata } from '../reduxState/NetworkMetadata';
 
-export type GetNetworkConfigsDeps = GetNetworkConfigDep;
+export type GetNetworkConfigsDeps = GetNetworkConfigDep & NetworkModuleRepositoryDep;
 
 export type GetNetworkConfigs = () => readonly NetworkMetadata[];
 
-export type GetNetworkConfigsDep = {
-    getNetworkConfigs: GetNetworkConfigs;
-};
+export type GetNetworkConfigsDep = { getNetworkConfigs: GetNetworkConfigs };
+
+const displayOrderBySymbol = new Map(networkDisplayOrder.map((symbol, index) => [symbol, index]));
+
+const getDisplayOrder = (symbol: NetworkSymbol) =>
+    displayOrderBySymbol.get(symbol) ?? Number.MAX_SAFE_INTEGER;
 
 export const createGetNetworkConfigs =
     (deps: GetNetworkConfigsDeps): GetNetworkConfigs =>
-    () => {
-        const legacyNetworks: readonly LegacyNetwork[] = typedObjectValues(networks);
-
-        return legacyNetworks.map(network => {
-            // The temporary registry uses strings to avoid depending on this package.
-            const symbol = asNetworkSymbol(network.symbol);
-
-            return {
-                symbol,
-                name: network.name,
-                displaySymbol: network.displaySymbol,
-                networkType: network.networkType,
-                decimals: network.decimals,
-                testnet: network.testnet,
-                explorer: { ...network.explorer },
-                ...deps.getNetworkConfig(symbol),
-            };
-        });
-    };
+    () =>
+        deps.networkModuleRepository
+            .getSupportedNetworks()
+            .map(symbol => ({ ...deps.getNetworkConfig(symbol), symbol }))
+            // Hermes does not support toSorted; map creates a new array that is safe to sort.
+            .sort((a, b) => getDisplayOrder(a.symbol) - getDisplayOrder(b.symbol));

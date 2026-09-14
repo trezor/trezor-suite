@@ -3,6 +3,7 @@ import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config
 import { TestStream } from '@trezor/e2e-utils';
 
 import dump from '../../fixtures/remembered-wallet-db-lite.json';
+import { tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 import type { IndexedDbDump } from '../../support/indexedDb';
 import type { TradingPage } from '../../support/pageObjects/trading/tradingPage';
@@ -100,7 +101,7 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice'] }, () =>
     test(
         'Swap form inputs validation',
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
-        async ({ walletPage, tradingPage }) => {
+        async ({ page, walletPage, tradingPage }) => {
             await test.step('Open the funded account and open the Swap form', async () => {
                 await walletPage.openAccount({ symbol: fundedSymbol });
                 await walletPage.swapButton.click();
@@ -117,8 +118,14 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice'] }, () =>
 
             for (const [index, asset] of buyAssets.entries()) {
                 await test.step(`[${asset.label}] Select buy asset and fill amount`, async () => {
+                    // The spinner used by waitForSync no longer exists, so its hidden check
+                    // finishes immediately. A slow quote request can then outlast the five-second
+                    // amount assertion while the UI still shows 0 ETH. Register the response wait
+                    // before changing the form so waitForSync checks the UI after quotes arrive.
+                    const quotesResponse = page.waitForResponse(tradeEndpoint.swapQuotes);
                     await tradingPage.assetPicker.selectBuyAsset(asset.buy);
                     await tradingPage.inputs.cryptoAmount.fill(amount);
+                    await quotesResponse;
                     await tradingPage.quotes.waitForSync();
                 });
 

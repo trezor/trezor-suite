@@ -39,7 +39,7 @@ export const createWebApp =
 
         deps.services.hydrateReduxStore(preloadAction);
 
-        deps.services.loadNetworkModules();
+        deps.services.networks.loadNetworkModules();
 
         root.render(
             <ServicesProvider services={deps.services}>

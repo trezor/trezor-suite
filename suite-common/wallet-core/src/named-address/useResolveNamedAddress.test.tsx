@@ -3,9 +3,12 @@
  */
 import { type ReactNode } from 'react';
 
-import type { GetNamedAddressSupport, SymbolNamedAddressResolver } from '@suite-common/address';
 import { ServicesProvider } from '@suite-common/dependency-injection';
-import type { NetworkSymbol } from '@suite-common/networks';
+import {
+    type GetNamedAddressSupport,
+    type NetworkSymbol,
+    type SymbolNamedAddressResolver,
+} from '@suite-common/networks';
 import { renderHookWithQueryClient, waitFor } from '@suite-common/test-utils';
 
 import { useResolveNamedAddress } from './useResolveNamedAddress';
@@ -41,7 +44,9 @@ const getNamedAddressSupport: GetNamedAddressSupport = symbol => {
 const renderResolveHook = (value: string, symbol: NetworkSymbol | null) =>
     renderHookWithQueryClient(() => useResolveNamedAddress(value, symbol), {
         wrapper: ({ children }: { children: ReactNode }) => (
-            <ServicesProvider services={{ getNamedAddressSupport }}>{children}</ServicesProvider>
+            <ServicesProvider services={{ networks: { getNamedAddressSupport } }}>
+                {children}
+            </ServicesProvider>
         ),
     });
 

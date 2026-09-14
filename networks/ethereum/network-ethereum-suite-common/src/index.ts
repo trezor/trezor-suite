@@ -9,3 +9,5 @@ export {
     getWrappedNativeToken,
     isWrappedNativeToken,
 } from './wrappedNativeToken';
+
+export { networkConfigBySymbol } from './networkConfig';

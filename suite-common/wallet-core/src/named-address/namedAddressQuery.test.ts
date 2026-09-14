@@ -1,5 +1,8 @@
-import type { GetNamedAddressSupport, SymbolNamedAddressResolver } from '@suite-common/address';
-import type { NetworkSymbol } from '@suite-common/networks';
+import {
+    type GetNamedAddressSupport,
+    type NetworkSymbol,
+    type SymbolNamedAddressResolver,
+} from '@suite-common/networks';
 import { QueryClient } from '@suite-common/react-query';
 
 import { getResolveNamedAddressQueryOptions } from './namedAddressQuery';

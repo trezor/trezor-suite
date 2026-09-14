@@ -1,4 +1,7 @@
-import { type GetNamedAddressSupport, type SymbolNamedAddressResolver } from '../src';
+import {
+    type GetNamedAddressSupport,
+    type SymbolNamedAddressResolver,
+} from '@suite-common/networks';
 
 /** No network resolves names until a resolver is passed in. */
 export const mockGetNamedAddressSupport =

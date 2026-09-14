@@ -4,6 +4,9 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../../../packages/device-utils"
+        },
+        {
             "path": "../../network-module/network-module-suite-common-types"
         },
         { "path": "../network-solana" }

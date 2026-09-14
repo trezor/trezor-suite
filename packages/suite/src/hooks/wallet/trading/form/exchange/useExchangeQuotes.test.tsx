@@ -146,7 +146,7 @@ const renderExchangeQuotes = (
     const { receiveAddress, receiveAccountKey, receiveAccountSymbol, resolver } = options;
     const network = 'network' in options ? options.network : getNetwork(btcSymbol);
     const services = {
-        addressValidator: mockAddressValidator,
+        networks: { addressValidator: mockAddressValidator },
         analytics: mockDesktopAnalytics(),
     };
 

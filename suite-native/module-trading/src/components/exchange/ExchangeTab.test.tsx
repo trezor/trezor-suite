@@ -11,9 +11,9 @@ let mockIsDeviceInViewOnlyMode = false;
 let mockIsPortfolioTrackerDevice = false;
 let mockHasBitcoinOnlyFirmware = false;
 let mockIsTradingExchangeEnabled = true;
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
     analytics: mockNativeAnalytics(),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 jest.mock('@suite-common/device', () => ({

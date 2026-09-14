@@ -14,12 +14,14 @@ import {
     checkAddressChecksum,
     isAddressDeprecated,
     isEvmAddress,
-    selectAddressValidatorDep,
-    selectGetNamedAddressSupportDep,
     toChecksumAddress,
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import {
+    selectAddressValidatorDep,
+    selectGetNamedAddressSupportDep,
+    selectNetworkSymbolForProtocol,
+} from '@suite-common/networks';
 import { useQueryClient } from '@suite-common/react-query';
 import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';

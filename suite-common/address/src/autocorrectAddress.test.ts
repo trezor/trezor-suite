@@ -1,11 +1,6 @@
-import {
-    createNetworkModuleRepository,
-    createNetworksCompositionRoot,
-} from '@suite-common/networks';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
+import { createMockDeps } from '@suite-common/dependency-injection';
+import { type AddressValidatorDep, asNetworkSymbol } from '@suite-common/networks';
 
-import { createAddressValidator } from './AddressValidator';
 import { autocorrectAddress } from './autocorrectAddress';
 
 const btcSymbol = asNetworkSymbol('btc');
@@ -13,18 +8,19 @@ const bchSymbol = asNetworkSymbol('bch');
 const ethSymbol = asNetworkSymbol('eth');
 
 describe('autocorrectAddress', () => {
-    const networkModules = createNetworksCompositionRoot({
-        getTrezorConnect: mockGetTrezorConnect,
+    const deps = createMockDeps<AddressValidatorDep>({
+        addressValidator: { isAddressValid: null, getAddressType: null },
     });
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
-    const addressValidator = createAddressValidator({
-        networkModuleRepository,
+
+    beforeEach(() => {
+        deps.addressValidator.isAddressValid.mockReset();
+        deps.addressValidator.isAddressValid.mockReturnValue(true);
     });
 
     it('lowercases uppercase bech32 BTC address', () => {
         expect(
             autocorrectAddress({
-                addressValidator,
+                addressValidator: deps.addressValidator,
                 address: 'BC1QAFK4YHQVJ4WEP57M62DGRMUTLDUSQDE8ADH20D',
                 symbol: btcSymbol,
             }),
@@ -37,7 +33,7 @@ describe('autocorrectAddress', () => {
     it('lowercases uppercase bech32 LTC address', () => {
         expect(
             autocorrectAddress({
-                addressValidator,
+                addressValidator: deps.addressValidator,
                 address: 'LTC1QKZYARPKHDECU5RZEUJ78PWPR5SFM798AFNY4N6',
                 symbol: asNetworkSymbol('ltc'),
             }),
@@ -50,7 +46,7 @@ describe('autocorrectAddress', () => {
     it('lowercases uppercase BCH CashAddr address', () => {
         expect(
             autocorrectAddress({
-                addressValidator,
+                addressValidator: deps.addressValidator,
                 address: 'BITCOINCASH:QZ8GJEXL9X7GAG53XL08MT7QSKVJG8X2WUEEJJMTTC',
                 symbol: bchSymbol,
             }),
@@ -62,7 +58,7 @@ describe('autocorrectAddress', () => {
 
     it('adds bitcoincash: prefix to BCH address without it', () => {
         const result = autocorrectAddress({
-            addressValidator,
+            addressValidator: deps.addressValidator,
             address: 'qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc',
             symbol: bchSymbol,
         });
@@ -74,7 +70,7 @@ describe('autocorrectAddress', () => {
 
     it('adds bitcoincash: prefix and lowercases uppercase BCH address without prefix', () => {
         const result = autocorrectAddress({
-            addressValidator,
+            addressValidator: deps.addressValidator,
             address: 'QZ8GJEXL9X7GAG53XL08MT7QSKVJG8X2WUEEJJMTTC',
             symbol: bchSymbol,
         });
@@ -87,7 +83,7 @@ describe('autocorrectAddress', () => {
     it('returns null for already-correct lowercase bech32 address', () => {
         expect(
             autocorrectAddress({
-                addressValidator,
+                addressValidator: deps.addressValidator,
                 address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
                 symbol: btcSymbol,
             }),
@@ -97,7 +93,7 @@ describe('autocorrectAddress', () => {
     it('returns null for already-correct BCH address with prefix', () => {
         expect(
             autocorrectAddress({
-                addressValidator,
+                addressValidator: deps.addressValidator,
                 address: 'bitcoincash:qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc',
                 symbol: bchSymbol,
             }),
@@ -107,7 +103,7 @@ describe('autocorrectAddress', () => {
     it('returns null for ETH address (no autocorrection needed)', () => {
         expect(
             autocorrectAddress({
-                addressValidator,
+                addressValidator: deps.addressValidator,
                 address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
                 symbol: ethSymbol,
             }),
@@ -117,7 +113,7 @@ describe('autocorrectAddress', () => {
     it('returns null for non-BCH symbol even without prefix', () => {
         expect(
             autocorrectAddress({
-                addressValidator,
+                addressValidator: deps.addressValidator,
                 address: 'qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc',
                 symbol: btcSymbol,
             }),
@@ -125,12 +121,18 @@ describe('autocorrectAddress', () => {
     });
 
     it('does not lowercase bech32-looking address on wrong network', () => {
+        deps.addressValidator.isAddressValid.mockReturnValue(false);
+
         expect(
             autocorrectAddress({
-                addressValidator,
+                addressValidator: deps.addressValidator,
                 address: 'BC1SW50QA3JX3S',
                 symbol: ethSymbol,
             }),
         ).toBeNull();
+        expect(deps.addressValidator.isAddressValid).toHaveBeenCalledWith(
+            'bc1sw50qa3jx3s',
+            ethSymbol,
+        );
     });
 });

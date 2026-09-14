@@ -12,11 +12,13 @@
     },
     "dependencies": {
         "@suite-common/earn-stablecoin-defs": "workspace:*",
-        "@trezor/crypto-utils": "workspace:*",
-        "@trezor/device-utils": "workspace:*",
-        "@trezor/network-cardano": "workspace:*",
-        "@trezor/network-ripple": "workspace:*",
-        "@trezor/network-stellar": "workspace:*",
-        "@trezor/network-tron": "workspace:*"
+        "@trezor/network-bitcoin-suite-common": "workspace:*",
+        "@trezor/network-cardano-suite-common": "workspace:*",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*",
+        "@trezor/network-ripple-suite-common": "workspace:*",
+        "@trezor/network-solana-suite-common": "workspace:*",
+        "@trezor/network-stellar-suite-common": "workspace:*",
+        "@trezor/network-tron-suite-common": "workspace:*"
     }
 }

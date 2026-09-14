@@ -3,15 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    type AddressCorrection,
-    autocorrectAddress,
-    selectAddressValidatorDep,
-    selectGetNamedAddressSupportDep,
-} from '@suite-common/address';
+import { type AddressCorrection, autocorrectAddress } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
-import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import {
+    selectAddressValidatorDep,
+    selectGetNamedAddressSupportDep,
+    selectNetworkSymbolForProtocol,
+} from '@suite-common/networks';
 import { selectGetState } from '@suite-common/redux-utils';
 import { parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';

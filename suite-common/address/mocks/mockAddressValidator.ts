@@ -1,4 +1,4 @@
-import { type AddressValidator } from '../src';
+import { type AddressValidator } from '@suite-common/networks';
 
 export const mockAddressValidator = (
     overrides: Partial<AddressValidator> = {},

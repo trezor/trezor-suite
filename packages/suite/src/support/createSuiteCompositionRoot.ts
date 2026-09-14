@@ -16,7 +16,6 @@ import {
 } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
-import { createAddressValidator, createGetNamedAddressSupport } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
     type ConnectInitSettings,
@@ -29,13 +28,7 @@ import { toGetter } from '@suite-common/dependency-injection';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
-import {
-    createGetNetworkConfig,
-    createGetNetworkConfigs,
-    createLoadNetworkModules,
-    createNetworkModuleRepository,
-    createNetworksCompositionRoot,
-} from '@suite-common/networks';
+import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
@@ -143,15 +136,10 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
     });
-    const networkModules = createNetworksCompositionRoot({
+    const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
+        dispatch: deps.dispatch,
     });
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
-    const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
-    const addressValidator = createAddressValidator({
-        networkModuleRepository,
-    });
-    const getNamedAddressSupport = createGetNamedAddressSupport({ networkModuleRepository });
 
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();
@@ -167,13 +155,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     };
 
     return {
-        networkModuleRepository,
-        loadNetworkModules: createLoadNetworkModules({
-            dispatch: deps.dispatch,
-            getNetworkConfigs: createGetNetworkConfigs({ getNetworkConfig }),
-        }),
-        addressValidator,
-        getNamedAddressSupport,
+        networks,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

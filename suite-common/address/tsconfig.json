@@ -9,6 +9,7 @@
         { "path": "../../packages/crypto-utils" },
         {
             "path": "../../networks/network-module/network-module-suite-common-types"
-        }
+        },
+        { "path": "../dependency-injection" }
     ]
 }
