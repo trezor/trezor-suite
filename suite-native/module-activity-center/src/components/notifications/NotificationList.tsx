@@ -1,4 +1,4 @@
-import { type TransactionEntry } from '@suite-common/toast-notifications';
+import { type TransactionNotification } from '@suite-common/toast-notifications';
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -9,7 +9,7 @@ type SectionProps = {
     titleId:
         | 'moduleActivityCenter.notifications.sectionNew'
         | 'moduleActivityCenter.notifications.sectionRead';
-    notifications: TransactionEntry[];
+    notifications: TransactionNotification[];
     seen: boolean;
 };
 
@@ -42,8 +42,8 @@ const NotificationSection = ({ titleId, notifications, seen }: SectionProps) => 
 };
 
 type Props = {
-    unseenNotifications: TransactionEntry[];
-    seenNotifications: TransactionEntry[];
+    unseenNotifications: TransactionNotification[];
+    seenNotifications: TransactionNotification[];
 };
 
 export const NotificationList = ({ unseenNotifications, seenNotifications }: Props) => {

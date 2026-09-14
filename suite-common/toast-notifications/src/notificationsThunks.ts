@@ -5,11 +5,9 @@ import { selectNotifications } from './notificationsSelectors';
 import { isTransactionNotification } from './notificationsUtils';
 import { type NotificationEntry, type NotificationsRootState } from './types';
 
-export type TransactionEntry = NotificationEntry & { descriptor?: string; txid?: string };
-
 const findTransactionEvents = (descriptor: string, notifications: NotificationEntry[]) =>
     notifications
-        .filter((n): n is TransactionEntry => isTransactionNotification(n))
+        .filter(isTransactionNotification)
         .filter(n => n.descriptor === descriptor || n.txid === descriptor);
 
 type RemoveAccountEventsThunkState = NotificationsRootState;
