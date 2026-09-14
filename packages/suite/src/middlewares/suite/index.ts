@@ -1,5 +1,6 @@
 import type { MiddlewareAPI } from 'redux';
 
+import { prepareBluetoothMiddleware } from '@suite/bluetooth';
 import { metadataMiddleware } from '@suite/metadata';
 import { routerMiddleware } from '@suite/router';
 import { tradingMiddleware } from '@suite/trading';
@@ -30,6 +31,7 @@ export const getSuiteMiddleware = (
     prepareSuiteMiddleware(getExtra),
     prepareAnalyticsMiddleware(getExtra),
     buttonRequest,
+    prepareBluetoothMiddleware(getExtra),
     events,
     preparePushNotificationMiddleware(getExtra),
     metadataMiddleware,

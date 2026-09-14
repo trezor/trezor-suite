@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/bluetooth"
         },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/transport-bluetooth"
