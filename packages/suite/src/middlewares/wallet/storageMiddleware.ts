@@ -200,6 +200,16 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         },
     }),
     defineRememberedDeviceHandler({
+        match: [
+            stellarContractTokensActions.addContractToken.match,
+            stellarContractTokensActions.removeContractToken.match,
+        ],
+        getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
+        save: ({ action }, { dispatch }) => {
+            dispatch(storageActions.saveStellarContractTokensThunk(action.payload.accountKey));
+        },
+    }),
+    defineRememberedDeviceHandler({
         match: [earnOnboardingActions.confirmEarnOnboarding.match],
         getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
         save: ({ action }, { dispatch }) => {
@@ -450,17 +460,6 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
 
             if (deviceActions.forgetDevice.match(action)) {
                 api.dispatch(storageActions.forgetDeviceThunk(action.payload.device));
-            }
-
-            if (
-                isAnyOf(
-                    stellarContractTokensActions.addContractToken,
-                    stellarContractTokensActions.removeContractToken,
-                )(action)
-            ) {
-                api.dispatch(
-                    storageActions.saveStellarContractTokensThunk(action.payload.accountKey),
-                );
             }
 
             if (tokenDefinitionsActions.setTokenStatus.match(action)) {
