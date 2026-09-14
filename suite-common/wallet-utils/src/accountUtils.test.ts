@@ -17,6 +17,7 @@ import {
     findTransactionSenderAccount,
     getAccountIdentifier,
     getBip43Type,
+    getFirmwareDescriptor,
     getNetworkAccountFeatures,
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
@@ -540,5 +541,30 @@ describe(convertAmountUnitsToSubunits.name, () => {
 describe(convertAmountSubunitsToUnits.name, () => {
     it('converts Sats->BTC', () => {
         expect(convertAmountSubunitsToUnits('1', 8)).toEqual('0.00000001');
+    });
+});
+
+describe(getFirmwareDescriptor.name, () => {
+    const taprootApostrophe = asAccountDescriptor(
+        "[5c9e228d/86'/0'/0']tpubDCpt6oCoUgcQEPBUnZS4pijgjNySRDaJH8FyztXHnjxCH3z8jjHKGpX3zwtNs1U8ThRDb8ZbnAnZWc1KNLQx8fasQnk3f9Vaqu3JJXcYCF",
+    );
+    const taprootH =
+        '[5c9e228d/86h/0h/0h]tpubDCpt6oCoUgcQEPBUnZS4pijgjNySRDaJH8FyztXHnjxCH3z8jjHKGpX3zwtNs1U8ThRDb8ZbnAnZWc1KNLQx8fasQnk3f9Vaqu3JJXcYCF';
+
+    it('returns the taproot descriptor in firmware (`h`) form', () => {
+        expect(getFirmwareDescriptor({ descriptor: taprootApostrophe })).toEqual(taprootH);
+    });
+
+    it('appends the checksum only when withChecksum is set', () => {
+        const account = { descriptor: taprootApostrophe, descriptorChecksum: 'tt7fmemp' };
+        expect(getFirmwareDescriptor(account)).toEqual(taprootH);
+        expect(getFirmwareDescriptor(account, { withChecksum: true })).toEqual(
+            `${taprootH}#tt7fmemp`,
+        );
+    });
+
+    it('leaves non-taproot descriptors untouched', () => {
+        const descriptor = asAccountDescriptor('0x1234567890abcdef1234567890abcdef12345678');
+        expect(getFirmwareDescriptor({ descriptor })).toEqual(descriptor);
     });
 });
