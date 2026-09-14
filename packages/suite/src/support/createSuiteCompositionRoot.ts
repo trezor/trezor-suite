@@ -12,6 +12,10 @@ import {
     createMetadataMigrationCompositionRoot,
 } from '@suite/metadata-migration';
 import {
+    type SuiteNetworkModuleRepositoryDep,
+    createSuiteNetworkModuleRepository,
+} from '@suite/networks';
+import {
     type HistoryDep,
     type SuiteRouterHistoryDep,
     createSuiteRouterHistory,
@@ -46,6 +50,13 @@ import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import type { CreateLoggerDep } from '@trezor/logger';
+import { createBitcoinSuiteNetworkModule } from '@trezor/network-bitcoin-suite';
+import { createCardanoSuiteNetworkModule } from '@trezor/network-cardano-suite';
+import { createEthereumSuiteNetworkModule } from '@trezor/network-ethereum-suite';
+import { createRippleSuiteNetworkModule } from '@trezor/network-ripple-suite';
+import { createSolanaSuiteNetworkModule } from '@trezor/network-solana-suite';
+import { createStellarSuiteNetworkModule } from '@trezor/network-stellar-suite';
+import { createTronSuiteNetworkModule } from '@trezor/network-tron-suite';
 
 import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
@@ -73,6 +84,7 @@ export type SuiteServices = CommonServices &
     DesktopApiDep &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
+    SuiteNetworkModuleRepositoryDep &
     SuiteRouterHistoryDep &
     TransportsDep &
     BluetoothDep;
@@ -148,6 +160,17 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
     });
+    const suiteNetworkModuleRepository = createSuiteNetworkModuleRepository({
+        suiteNetworkModules: {
+            bitcoin: createBitcoinSuiteNetworkModule({ getTrezorConnect: deps.getTrezorConnect }),
+            ethereum: createEthereumSuiteNetworkModule({ getTrezorConnect: deps.getTrezorConnect }),
+            cardano: createCardanoSuiteNetworkModule({ getTrezorConnect: deps.getTrezorConnect }),
+            ripple: createRippleSuiteNetworkModule(),
+            solana: createSolanaSuiteNetworkModule(),
+            stellar: createStellarSuiteNetworkModule(),
+            tron: createTronSuiteNetworkModule(),
+        },
+    });
 
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();
@@ -166,6 +189,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,
+        suiteNetworkModuleRepository,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,
