@@ -299,6 +299,12 @@ export const getLowestFeeFromLevels = (levels: FeeLevel[]): BigNumber =>
             .map(({ feePerUnit }) => BigNumber(feePerUnit)),
     );
 
+// Matching the lowest offered level is a legitimate choice, so only a strictly lower
+// custom fee is worth warning about. NaN on either side (blank input, no levels yet)
+// compares false, which keeps the warning hidden until there is something to judge.
+export const isCustomFeeBelowLowestLevel = (feePerUnit: string, levels: FeeLevel[]): boolean =>
+    BigNumber(feePerUnit).isLessThan(getLowestFeeFromLevels(levels));
+
 // Find all validation errors set while composing a transaction
 export const findComposeErrors = <T extends FieldValues>(
     errors: FieldErrors<T>,

@@ -20,6 +20,7 @@ import {
     getExternalComposeOutput,
     getLowestFeeFromLevels,
     isAmountWithinNetworkReserve,
+    isCustomFeeBelowLowestLevel,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
 } from './sendFormUtils';
@@ -560,6 +561,49 @@ describe('sendForm utils', () => {
         });
         it('should return NaN from empty fee levels', () => {
             expect(getLowestFeeFromLevels([])).toEqual(new BigNumber(NaN));
+        });
+    });
+
+    describe(isCustomFeeBelowLowestLevel.name, () => {
+        const levels = [
+            { label: 'custom', feePerUnit: '1' },
+            { label: 'low', feePerUnit: '300' },
+            { label: 'normal', feePerUnit: '500' },
+            { label: 'high', feePerUnit: '999' },
+        ] as FeeLevel[];
+
+        it('should be false when the custom fee matches the lowest level', () => {
+            expect(isCustomFeeBelowLowestLevel('300', levels)).toBe(false);
+        });
+
+        it('should be false when the custom fee is above the lowest level', () => {
+            expect(isCustomFeeBelowLowestLevel('301', levels)).toBe(false);
+        });
+
+        it('should be false for fees between the lowest and the highest level', () => {
+            expect(isCustomFeeBelowLowestLevel('500', levels)).toBe(false);
+            expect(isCustomFeeBelowLowestLevel('999', levels)).toBe(false);
+            expect(isCustomFeeBelowLowestLevel('100000', levels)).toBe(false);
+        });
+
+        it('should be true only once the custom fee drops under the lowest level', () => {
+            expect(isCustomFeeBelowLowestLevel('299', levels)).toBe(true);
+            expect(isCustomFeeBelowLowestLevel('1', levels)).toBe(true);
+            expect(isCustomFeeBelowLowestLevel('0', levels)).toBe(true);
+        });
+
+        it('should ignore the custom level when picking the threshold', () => {
+            // 'custom' sits at 1; were it counted, a fee of 2 would not warn.
+            expect(isCustomFeeBelowLowestLevel('2', levels)).toBe(true);
+        });
+
+        it('should be false for a blank or non-numeric fee', () => {
+            expect(isCustomFeeBelowLowestLevel('', levels)).toBe(false);
+            expect(isCustomFeeBelowLowestLevel('abc', levels)).toBe(false);
+        });
+
+        it('should be false when there are no levels to compare against', () => {
+            expect(isCustomFeeBelowLowestLevel('1', [])).toBe(false);
         });
     });
 

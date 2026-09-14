@@ -12329,10 +12329,10 @@ export const messages = defineMessages({
         id: 'TR_SHOW_ON_TRAY_DESCRIPTION',
         defaultMessage: 'Monitor when Trezor Suite is running in the background.',
     },
-    TR_CUSTOM_FEE_WARNING: {
-        id: 'TR_CUSTOM_FEE_WARNING',
+    TR_CUSTOM_FEE_TOO_LOW_WARNING: {
+        id: 'TR_CUSTOM_FEE_TOO_LOW_WARNING',
         defaultMessage:
-            'Setting a low fee might cause your transaction to fail or experience significant delays.',
+            'A fee this low may leave your transaction pending for a long time, or it may never be confirmed.',
     },
     TR_BUMP_FEE_DISABLED_TOOLTIP: {
         id: 'TR_BUMP_FEE_DISABLED_TOOLTIP',
