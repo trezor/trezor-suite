@@ -23,6 +23,14 @@ export const selectEntropyCheckResultByDeviceId = createMemoizedSelector(
     persistentDeviceData => persistentDeviceData?.lastEntropyCheckResult,
 );
 
+// Selects if a deviceId is eligible for Manual Device Check – hasn't been done before, and the device actually
+// has an Id (otherwise it could not be persisted).
+export const selectShouldDoManualDeviceCheck = createMemoizedSelector(
+    [selectPersistentDeviceDataById, (_state, deviceId: TrezorDevice['id']) => deviceId],
+    (persistentDeviceData, deviceId): boolean =>
+        typeof deviceId === 'string' && persistentDeviceData?.manualCheckResult?.success !== true,
+);
+
 export const selectDeviceAuthenticityByDeviceId = createMemoizedSelector(
     [selectPersistentDeviceDataById],
     persistentDeviceData => persistentDeviceData?.authenticityResult,

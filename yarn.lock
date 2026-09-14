@@ -15383,6 +15383,7 @@ __metadata:
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/persistent-device-data": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite/router": "workspace:*"
