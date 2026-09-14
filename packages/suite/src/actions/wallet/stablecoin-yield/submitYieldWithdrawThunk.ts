@@ -99,22 +99,26 @@ export const submitYieldWithdrawThunk = createThunk<
                 }),
             );
 
+            if (userAcceptedTxSimulation === undefined) {
+                return;
+            }
+
             extra.services.analytics.report({
                 type: events.yieldWithdrawEvent.name,
                 payload: {
                     type: 'tx-simulation-modal',
                     operation: flowType,
-                    action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                    action: userAcceptedTxSimulation.value === false ? 'cancel' : 'continue',
                     networkSymbol: account.symbol,
                     vaultId: flowData.vault.id,
                 },
             });
 
-            if (userAcceptedTxSimulation?.value === false) {
+            if (userAcceptedTxSimulation.value === false) {
                 return;
             }
 
-            const selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
+            const { selectedFee } = userAcceptedTxSimulation;
             const reviewToken = flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
             const result = await sendYieldTransaction({
@@ -129,7 +133,7 @@ export const submitYieldWithdrawThunk = createThunk<
                 selectedFee,
             });
 
-            userAcceptedTxSimulation?.resolve();
+            userAcceptedTxSimulation.resolve();
 
             // A deliberate user cancel — not reported as a failure.
             if (result.status === 'cancelled') {
