@@ -15251,7 +15251,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/bluetooth@workspace:suite/bluetooth"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/bluetooth": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
   languageName: unknown
