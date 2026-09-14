@@ -143,6 +143,7 @@ export const Banner = ({
             </Flex>
             <CloseButtonContainer>
                 <IconButton
+                    data-testid="@dashboard/promo-banner/close-button"
                     icon={XIcon}
                     intent="neutral"
                     priority="secondary"

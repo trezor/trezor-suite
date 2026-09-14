@@ -3,7 +3,7 @@ import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@t
 
 import { isDesktopProject } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
-import { PromoBannerType } from '../../support/pageObjects/dashboardPage';
+import type { PromoBannerType } from '../../support/pageObjects/promoBanner';
 
 test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
@@ -28,7 +28,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'
                     stream: TestStream.Growth,
                 }),
             },
-            async ({ analyticsHelper, dashboardPage, settingsPage, page, target }) => {
+            async ({ analyticsHelper, dashboardPage, promoBanner, settingsPage, page, target }) => {
                 await test.step('Add dashboard promo banner', async () => {
                     await settingsPage.debugTab.addBanner(bannerType);
                 });
@@ -50,7 +50,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'
 
                     if (isDesktopProject(target)) {
                         // Perform the action
-                        await dashboardPage.promoBannerButton(bannerType).click();
+                        await promoBanner.promoCTAButton(bannerType).click();
 
                         // Await the listeners
                         payload = await analyticsPromise;
@@ -62,7 +62,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'
                          */
                         const pagePromise = page.context().waitForEvent('page');
                         // Perform the action
-                        await dashboardPage.promoBannerButton(bannerType).click();
+                        await promoBanner.promoCTAButton(bannerType).click();
 
                         // Await the listeners
                         const [analyticsPayload, newPage] = await Promise.all([
