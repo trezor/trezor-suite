@@ -1,5 +1,7 @@
 import { selectFullSelectedAccount } from '@suite/account';
-import { SignVerify } from '@suite/sign-verify';
+import { useDevice } from '@suite/device';
+import { selectSuiteNetworkModuleRepositoryDep } from '@suite/networks';
+import { useServices } from '@suite-common/dependency-injection';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
@@ -7,25 +9,30 @@ import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/C
 
 export const SignVerifyPage = () => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
+    const { suiteNetworkModuleRepository } = useServices(selectSuiteNetworkModuleRepositoryDep);
+    const { device } = useDevice();
     const { account } = selectedAccount;
 
     if (account === undefined) {
         return null;
     }
 
+    const { signVerify } = suiteNetworkModuleRepository.get(account.symbol);
+
+    if (signVerify === null) {
+        return null;
+    }
+
+    const { Component, title } = signVerify;
+    const isDeviceConnected = device?.connected && device?.available;
+
     return (
-        <SignVerify
-            account={account}
-            network={selectedAccount.network}
-            renderShell={({ title, isDeviceConnected, children }) => (
-                <WalletLayout title={title} isSubpage account={selectedAccount}>
-                    <WalletSubpageHeading title={title} />
+        <WalletLayout title={title} isSubpage account={selectedAccount}>
+            <WalletSubpageHeading title={title} />
 
-                    {!isDeviceConnected && <ConnectDeviceGenericPromo />}
+            {!isDeviceConnected && <ConnectDeviceGenericPromo />}
 
-                    {children}
-                </WalletLayout>
-            )}
-        />
+            <Component account={account} />
+        </WalletLayout>
     );
 };
