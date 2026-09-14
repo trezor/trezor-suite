@@ -54,9 +54,7 @@ const initStore = () =>
             bluetooth: bluetoothReducer,
             device: deviceReducer,
             thp: thpReducer,
-            wallet: combineReducers({
-                persistentDeviceData: persistentDeviceDataReducer,
-            }),
+            persistentDeviceData: persistentDeviceDataReducer,
         }),
         preloadedState: forgetPersistentDataPreloadedStateFixture,
     });
@@ -68,7 +66,7 @@ describe(forgetDevicePersistentDataThunk.name, () => {
         const state = store.getState();
 
         // device-id-1 persistent data is removed, others remain
-        expect(state.wallet.persistentDeviceData.map(d => d.device_id)).toEqual([
+        expect(state.persistentDeviceData.map(d => d.device_id)).toEqual([
             'device-id-2',
             'device-id-3',
         ]);
@@ -83,7 +81,7 @@ describe(forgetDevicePersistentDataThunk.name, () => {
         await store.dispatch(forgetDevicePersistentDataThunk({ deviceId: 'device-id-2' }));
         const state = store.getState();
 
-        expect(state.wallet.persistentDeviceData.map(d => d.device_id)).toEqual([
+        expect(state.persistentDeviceData.map(d => d.device_id)).toEqual([
             'device-id-1',
             'device-id-3',
         ]);
@@ -96,7 +94,7 @@ describe(forgetDevicePersistentDataThunk.name, () => {
         await store.dispatch(forgetDevicePersistentDataThunk({ deviceId: 'device-id-3' }));
         const state = store.getState();
 
-        expect(state.wallet.persistentDeviceData.map(d => d.device_id)).toEqual([
+        expect(state.persistentDeviceData.map(d => d.device_id)).toEqual([
             'device-id-1',
             'device-id-2',
         ]);

@@ -75,6 +75,7 @@ export const mockInitialAppState: AppState = {
     },
     notifications: [],
     receive: receiveInitialState,
+    persistentDeviceData: persistentDeviceDataInitialState,
     wallet: {
         discovery: {},
         accountSearch: {},
@@ -82,7 +83,6 @@ export const mockInitialAppState: AppState = {
             enabledNetworks: [] as NetworkSymbol[],
         },
         blockchain: {},
-        persistentDeviceData: persistentDeviceDataInitialState,
     } as WalletState, // Todo: maybe one day, fix types
     desktopUpdate: desktopUpdateInitialState,
     router: {

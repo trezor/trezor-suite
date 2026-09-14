@@ -18,9 +18,7 @@ import { persistentDeviceDataActions } from './persistentDeviceDataActions';
 export type PersistentDeviceDataState = PersistentDeviceData[];
 
 export type PersistentDeviceDataRootState = {
-    wallet: {
-        persistentDeviceData: PersistentDeviceDataState;
-    };
+    persistentDeviceData: PersistentDeviceDataState;
 };
 
 export const persistentDeviceDataInitialState: PersistentDeviceDataState = [];

@@ -48,8 +48,8 @@ const getInitialState = (
             ...mockInitialAppState.wallet,
             selectedAccount: mockInitialAppState.wallet?.selectedAccount ?? { account: null },
             accounts: mockInitialAppState.wallet?.accounts ?? [],
-            persistentDeviceData,
         },
+        persistentDeviceData,
     }) as AppState;
 
 const defaultDevice = mockSuiteDevice();

@@ -48,26 +48,24 @@ export const forgetPersistentDataPreloadedStateFixture: ForgetPersistentDataPrel
         devices: [DEV1, DEV2, DEV3],
     },
 
-    wallet: {
-        persistentDeviceData: [
-            {
-                ...defaultDevicePersistentData,
-                device_id: DEV1.id!,
-                descriptor: { apiType: 'bluetooth', id: 'bt-id-1' } as const,
-                thp: DEV1.thp,
-            },
-            {
-                ...defaultDevicePersistentData,
-                device_id: DEV2.id!,
-                thp: DEV2.thp,
-            },
-            {
-                ...defaultDevicePersistentData,
-                device_id: DEV3.id!,
-                descriptor: { apiType: 'bluetooth', id: 'bt-id-3' } as const,
-            },
-        ],
-    },
+    persistentDeviceData: [
+        {
+            ...defaultDevicePersistentData,
+            device_id: DEV1.id!,
+            descriptor: { apiType: 'bluetooth', id: 'bt-id-1' } as const,
+            thp: DEV1.thp,
+        },
+        {
+            ...defaultDevicePersistentData,
+            device_id: DEV2.id!,
+            thp: DEV2.thp,
+        },
+        {
+            ...defaultDevicePersistentData,
+            device_id: DEV3.id!,
+            descriptor: { apiType: 'bluetooth', id: 'bt-id-3' } as const,
+        },
+    ],
     bluetooth: {
         ...prepareInitialState<BluetoothDeviceCommon>(),
         knownDevices: [

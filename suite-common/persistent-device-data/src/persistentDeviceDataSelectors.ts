@@ -10,7 +10,7 @@ import type { PersistentDeviceDataRootState } from './persistentDeviceDataReduce
 const createMemoizedSelector = createWeakMapSelector.withTypes<PersistentDeviceDataRootState>();
 
 export const selectPersistentDeviceData = (state: PersistentDeviceDataRootState) =>
-    state.wallet.persistentDeviceData;
+    state.persistentDeviceData;
 
 export const selectPersistentDeviceDataById = createMemoizedSelector(
     [selectPersistentDeviceData, (_state, deviceId: TrezorDevice['id']) => deviceId],

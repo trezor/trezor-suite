@@ -82,6 +82,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     walletConnect: walletConnectInitialState,
     suiteSyncQuotaManager: quotaManagerInitialState,
     featureFeedback: featureFeedbackInitialState,
+    persistentDeviceData: persistentDeviceDataInitialState,
 
     wallet: {
         accounts: accountsInitialState,
@@ -100,7 +101,6 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
         trading: tradingInitialState,
         settings: initialWalletSettingsState,
         formDrafts: formDraftInitialState,
-        persistentDeviceData: persistentDeviceDataInitialState,
     },
 
     ...partialState,

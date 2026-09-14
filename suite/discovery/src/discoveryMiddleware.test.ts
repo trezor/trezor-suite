@@ -85,10 +85,8 @@ type State = {
     router: RouterState;
     suiteSettings: SuiteSettingsState;
     thp: ThpState;
-    wallet: {
-        discovery: Discovery;
-        persistentDeviceData: ReturnType<typeof persistentDeviceDataReducer>;
-    };
+    wallet: { discovery: Discovery };
+    persistentDeviceData: ReturnType<typeof persistentDeviceDataReducer>;
 };
 
 type FixtureState = {
@@ -331,10 +329,8 @@ const getInitialState = (state: FixtureState = {}): State => ({
         ...initialThpState,
         ...state.thp,
     },
-    wallet: {
-        discovery: { ...discoveryInitialState, ...state.discovery },
-        persistentDeviceData: persistentDeviceDataReducer(undefined, { type: 'foo' }),
-    },
+    wallet: { discovery: { ...discoveryInitialState, ...state.discovery } },
+    persistentDeviceData: persistentDeviceDataReducer(undefined, { type: 'foo' }),
 });
 
 const initStore = (state?: FixtureState) =>
@@ -348,10 +344,8 @@ const initStore = (state?: FixtureState) =>
             router: routerReducer,
             suiteSettings: suiteSettingsReducer,
             thp: thpReducer,
-            wallet: combineReducers({
-                discovery: discoveryReducer,
-                persistentDeviceData: persistentDeviceDataReducer,
-            }),
+            wallet: combineReducers({ discovery: discoveryReducer }),
+            persistentDeviceData: persistentDeviceDataReducer,
         },
         preloadedState: getInitialState(state),
     });

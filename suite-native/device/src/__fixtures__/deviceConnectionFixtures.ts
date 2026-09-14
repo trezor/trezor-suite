@@ -67,8 +67,8 @@ type RootState = {
     deviceOnboarding?: Partial<typeof deviceOnboardingSlice.reducer>;
     wallet: {
         settings: ReturnType<typeof walletSettingsReducer>;
-        persistentDeviceData: ReturnType<typeof persistentDeviceDataReducer>;
     };
+    persistentDeviceData: ReturnType<typeof persistentDeviceDataReducer>;
     messageSystem: ReturnType<typeof messageSystemReducer>;
     appSettings: AppSettingsState;
     featureFlags: ReturnType<typeof featureFlagsSlice.reducer>;
@@ -148,9 +148,9 @@ const buildInitialState = ({
             ...walletSettingsReducer(undefined, INIT_ACTION),
             ...walletSettings,
         },
-        persistentDeviceData:
-            persistentDeviceData ?? persistentDeviceDataReducer(undefined, INIT_ACTION),
     },
+    persistentDeviceData:
+        persistentDeviceData ?? persistentDeviceDataReducer(undefined, INIT_ACTION),
     appSettings: {
         ...appSettingsReducer(undefined, INIT_ACTION),
         ...appSettings,

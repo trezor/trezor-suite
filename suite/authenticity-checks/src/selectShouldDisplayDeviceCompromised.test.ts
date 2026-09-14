@@ -35,7 +35,7 @@ const initialState: AuthenticityChecksRootState = {
     messageSystem: messageSystemInitialState,
     router: createRouterStateMock(),
     suiteSettings: suiteSettingsInitialState,
-    wallet: { persistentDeviceData: persistentDeviceDataInitialState },
+    persistentDeviceData: persistentDeviceDataInitialState,
 };
 
 const matchingDevicePersistentData = {
@@ -124,14 +124,12 @@ const fixtures: Fixture[] = [
                     authenticityChecks: authenticityChecksSuccess,
                 },
             },
-            wallet: {
-                persistentDeviceData: [
-                    {
-                        ...matchingDevicePersistentData,
-                        lastEntropyCheckResult: { success: false },
-                    },
-                ],
-            },
+            persistentDeviceData: [
+                {
+                    ...matchingDevicePersistentData,
+                    lastEntropyCheckResult: { success: false },
+                },
+            ],
         },
         result: true,
     },
@@ -146,14 +144,12 @@ const fixtures: Fixture[] = [
                     authenticityChecks: authenticityChecksSuccess,
                 },
             },
-            wallet: {
-                persistentDeviceData: [
-                    {
-                        ...matchingDevicePersistentData,
-                        lastEntropyCheckResult: { success: false },
-                    },
-                ],
-            },
+            persistentDeviceData: [
+                {
+                    ...matchingDevicePersistentData,
+                    lastEntropyCheckResult: { success: false },
+                },
+            ],
             suiteSettings: {
                 ...initialState.suiteSettings,
                 enabledSecurityChecks: {
@@ -190,7 +186,7 @@ const fixtures: Fixture[] = [
                     },
                 },
             },
-            wallet: { persistentDeviceData: [matchingDevicePersistentData] },
+            persistentDeviceData: [matchingDevicePersistentData],
         },
         result: true,
     },

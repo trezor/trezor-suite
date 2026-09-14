@@ -35,8 +35,8 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
     },
     wallet: {
         settings: initialWalletSettingsState,
-        persistentDeviceData: [],
     },
+    persistentDeviceData: [],
     router: {},
     messageSystem: { validMessages: { feature: [] } },
     bluetooth: { knownDevices: [] },
