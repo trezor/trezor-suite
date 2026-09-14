@@ -256,7 +256,12 @@ const overLimitShowcase = (
     ];
 };
 
-const WITHIN_LIMITS_SUMMARY = '🟢 <strong>Within limits.</strong>';
+/**
+ * Deliberately neutral, and it names what was actually measured. Only a handful of e2e flows are
+ * profiled, so a green verdict on the pull request as a whole would claim more than this report
+ * knows; the colon reads into the table of the flows the run did cover.
+ */
+const WITHIN_LIMITS_SUMMARY = '⚪️ <strong>Following e2e flows within limits</strong>:';
 
 const overLimitSummary = (overLimit: readonly ReportedMeasurement[]) => {
     const listed = overLimit.map(measurement => {
