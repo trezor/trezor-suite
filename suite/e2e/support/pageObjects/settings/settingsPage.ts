@@ -40,6 +40,18 @@ const backgroundImageButton = {
 export type NetworkToEnable =
     NetworkSymbol | { symbol: NetworkSymbol; backend: { type: BackendType; url: string } };
 
+const getNetworkSymbol = (network: NetworkToEnable) =>
+    typeof network === 'string' ? network : network.symbol;
+
+type DiscoveredAccount = {
+    symbol: NetworkSymbol;
+    deviceState: string;
+    failed?: boolean;
+    error?: string;
+};
+
+const DISCOVERY_SUCCESS_TIMEOUT = 15_000;
+
 export class SettingsPage {
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
     readonly deviceTab: DeviceTab;
@@ -276,7 +288,7 @@ export class SettingsPage {
         await this.navigateTo('coins');
         for (const entry of options.enableNetworks) {
             const inputWithCustomBackend = typeof entry !== 'string';
-            const symbol = inputWithCustomBackend ? entry.symbol : entry;
+            const symbol = getNetworkSymbol(entry);
             await this.coinsTab.enableNetwork(symbol);
             if (inputWithCustomBackend) {
                 await this.coinsTab.openNetworkAdvanceSettings(symbol);
@@ -294,6 +306,66 @@ export class SettingsPage {
 
         if (options.skipDiscovery) return;
         await this.page.discoveryShouldFinish();
+        await this.expectDiscoverySuccessForNetworks(options.enableNetworks.map(getNetworkSymbol));
+    }
+
+    /**
+     * Discovery reports `complete` even when a single network fails, so the only signal of a
+     * per-network failure is the account it left in the store.
+     */
+    @step()
+    private async expectDiscoverySuccessForNetworks(symbols: NetworkSymbol[]) {
+        await expect(async () => {
+            const { staticSessionId, accounts } = await this.page.evaluate(() => {
+                const state = window.store.getState();
+
+                return {
+                    staticSessionId: state.device.selectedDevice?.state?.staticSessionId as
+                        string | undefined,
+                    // Project the accounts so that the whole store is not serialized out of the
+                    // browser on every retry.
+                    accounts: (state.wallet.accounts as DiscoveredAccount[]).map(
+                        ({ symbol, deviceState, failed, error }) => ({
+                            symbol,
+                            deviceState,
+                            failed,
+                            error,
+                        }),
+                    ),
+                };
+            });
+
+            expect(
+                staticSessionId,
+                'Selected device has no state, so discovery could not have run',
+            ).toBeDefined();
+
+            const accountsFromLastDiscovery = accounts.filter(
+                account => account.deviceState === staticSessionId,
+            );
+
+            const failures = symbols.flatMap(symbol => {
+                const networkAccounts = accountsFromLastDiscovery.filter(
+                    account => account.symbol === symbol,
+                );
+
+                if (networkAccounts.length === 0) {
+                    return `${symbol}: discovery produced no account`;
+                }
+
+                return networkAccounts
+                    .filter(account => account.failed)
+                    .map(
+                        account =>
+                            `${symbol}: account failed to load (${account.error ?? 'no error reported'})`,
+                    );
+            });
+
+            expect(
+                failures,
+                `Discovery ended, but was not successful for all networks:\n${failures.join('\n')}`,
+            ).toHaveLength(0);
+        }).toPass({ timeout: DISCOVERY_SUCCESS_TIMEOUT });
     }
 
     @step()
