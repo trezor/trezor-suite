@@ -43,6 +43,39 @@ const publish = (existingBody: string | undefined, measurements: ReportedMeasure
         ),
     });
 
+const overLimitMeasurement = (key: string): ReportedMeasurement => {
+    const base = measurement(key, 300);
+
+    return {
+        ...base,
+        report: {
+            ...base.report,
+            overLimit: true,
+            metrics: base.report.metrics.map(metric => ({ ...metric, exceededLimit: true })),
+        },
+    };
+};
+
+const summaryOf = (section: string) => section.match(/<summary>(.*)<\/summary>/)?.[1];
+
+describe(formatMarkdownReport.name, () => {
+    // Only a handful of flows are profiled, so a passing run has to stay a statement about those
+    // flows rather than a verdict on the pull request.
+    it('names what it measured instead of passing the pull request', () => {
+        const summary = summaryOf(formatMarkdownReport([measurement('wallet-discovery')]));
+
+        expect(summary).toContain('Following e2e flows within limits');
+        expect(summary).not.toContain('🟢');
+    });
+
+    it('still calls out a scenario that went over its limit', () => {
+        const summary = summaryOf(formatMarkdownReport([overLimitMeasurement('wallet-discovery')]));
+
+        expect(summary).toContain('Over limit');
+        expect(summary).toContain('wallet-discovery');
+    });
+});
+
 describe(readSectionMeasurements.name, () => {
     it('reads back what a section was rendered from', () => {
         const body = publish(undefined, [measurement('wallet-discovery')]);
