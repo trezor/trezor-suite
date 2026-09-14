@@ -16,7 +16,11 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { type Device, type DeviceState, type Features, type KnownDevice } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { getFirmwareVersionArray } from '@trezor/device-utils';
+import {
+    getFirmwareVersionArray,
+    isStaticSessionId,
+    parseStaticSessionId,
+} from '@trezor/device-utils';
 import { type Err } from '@trezor/type-utils';
 
 import { type DeviceStateActionPayload, deviceActions } from './deviceActions';
@@ -67,6 +71,15 @@ const isUnlocked = (features: Features): boolean =>
         : // Older FW (<2.3.2) which doesn't have `unlocked` feature also doesn't have auto-lock and is always unlocked.
           true;
 
+// Two states describe the same wallet when their `walletDescriptor` matches. The `deviceId` may
+// differ for the same wallet: wiping and recovering the same seed mints a new hardware `device_id`
+// while the seed, and therefore the wallet, is unchanged.
+const describesSameWallet = (current: DeviceState, upcoming: DeviceState): boolean =>
+    isStaticSessionId(current.staticSessionId) &&
+    isStaticSessionId(upcoming.staticSessionId) &&
+    parseStaticSessionId(current.staticSessionId).walletDescriptor ===
+        parseStaticSessionId(upcoming.staticSessionId).walletDescriptor;
+
 /**
  * Local utility: get state in DeviceState format from AcquiredDevice in backwards compatible way
  * @param upcoming
@@ -78,14 +91,12 @@ const mergeDeviceState = (
 ): DeviceState | undefined => {
     const currentState = device.state;
 
-    // Device state is set explicitly via addAuthorizedDevice/setDeviceState. For the same session we only
+    // Device state is set explicitly via addAuthorizedDevice/setDeviceState. For the same wallet we only
     // sync the volatile sessionId and deriveCardano from connect, so the cardano-derived session is not
-    // recreated (re-prompting the passphrase) on every cardano call.
-    if (
-        !currentState ||
-        !upcoming.state ||
-        currentState.staticSessionId !== upcoming.state.staticSessionId
-    ) {
+    // recreated (re-prompting the passphrase) on every cardano call. The staticSessionId itself is never
+    // adopted here: the wallet stays keyed by the id it was authorized with, even when connect reports
+    // a new deviceId after the device was wiped and recovered with the same seed.
+    if (!currentState || !upcoming.state || !describesSameWallet(currentState, upcoming.state)) {
         return currentState;
     }
 
@@ -370,7 +381,14 @@ const setDeviceState = (
     const targetDevice = affectedDevice[0];
     if (!targetDevice) return;
 
-    targetDevice.state = state;
+    // Re-authorizing an already authorized wallet must not re-key it: accounts are keyed by the
+    // staticSessionId the wallet was authorized with, and connect reports a new deviceId for the
+    // same wallet after the device was wiped and recovered with the same seed.
+    const currentState = targetDevice.state;
+    targetDevice.state =
+        currentState && describesSameWallet(currentState, state)
+            ? { ...state, staticSessionId: currentState.staticSessionId }
+            : state;
     targetDevice.useEmptyPassphrase = useEmptyPassphrase;
     targetDevice.walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
     delete targetDevice.discovered;
