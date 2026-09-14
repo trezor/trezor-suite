@@ -343,11 +343,26 @@ export const transformTransaction = (
     };
 };
 
+// A half-filled block reads as "not delegated"; nothing validates the response shape.
+const isStakingComplete = (staking: unknown) =>
+    typeof staking === 'object' &&
+    staking !== null &&
+    'address' in staking &&
+    typeof staking.address === 'string' &&
+    'isActive' in staking &&
+    typeof staking.isActive === 'boolean' &&
+    'rewards' in staking &&
+    typeof staking.rewards === 'string' &&
+    // `drep` is not required: backends that predate it still report the delegation.
+    'poolId' in staking;
+
 export const transformAccountInfo = (info: BlockfrostAccountInfo): AccountInfo => {
     const blockfrostTxs = info.history.transactions;
+    const { staking } = info.misc ?? {};
 
     const result = {
         ...info,
+        misc: staking === undefined || isStakingComplete(staking) ? info.misc : {},
         tokens: transformTokenInfo(info.tokens),
         history: {
             ...info.history,

@@ -6,7 +6,12 @@ import {
     asAccountDescriptor,
     createAccountKey,
 } from '@suite-common/wallet-types';
-import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import {
+    mockAccountToken,
+    mockWalletAccount,
+    networkSpecificDefaultCardano,
+} from '@suite-common/wallet-types/mocks';
+import { type AccountInfo } from '@trezor/connect';
 
 import * as fixtures from './__fixtures__/accountUtils';
 import {
@@ -16,11 +21,13 @@ import {
     findAccountsByAddress,
     findTransactionSenderAccount,
     getAccountIdentifier,
+    getAccountSpecific,
     getBip43Type,
     getNetworkAccountFeatures,
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
     hasNetworkFeatures,
+    isAccountOutdated,
     isTestnet,
     sortByBIP44AddressIndex,
     sortByCoin,
@@ -37,6 +44,114 @@ const btcSymbol = asNetworkSymbol('btc');
 const xrpSymbol = asNetworkSymbol('xrp');
 const ethSymbol = asNetworkSymbol('eth');
 const ltcSymbol = asNetworkSymbol('ltc');
+
+type CardanoStaking = NonNullable<NonNullable<AccountInfo['misc']>['staking']>;
+
+describe('cardano staking data from an incomplete payload', () => {
+    const delegatedStaking: CardanoStaking = {
+        address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+        isActive: true,
+        rewards: '173289',
+        poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+        drep: null,
+    };
+
+    // `mockWalletAccount`'s cardano defaults type `poolId` as the literal `null`.
+    const delegatedAccount: Account = {
+        ...mockWalletAccount({ symbol: asNetworkSymbol('ada') }, networkSpecificDefaultCardano),
+        networkType: 'cardano',
+        marker: undefined,
+        stellarCursor: undefined,
+        page: undefined,
+        misc: { staking: delegatedStaking },
+    };
+
+    const adaAccountInfo = (misc?: AccountInfo['misc']): AccountInfo => ({
+        descriptor: delegatedAccount.descriptor,
+        balance: '27429803',
+        availableBalance: '27256514',
+        empty: false,
+        history: { total: 13, unconfirmed: 0 },
+        misc,
+    });
+
+    describe('getAccountSpecific', () => {
+        it('keeps the known delegation when the payload carries no staking data', () => {
+            const result = getAccountSpecific({
+                accountInfo: adaAccountInfo(),
+                networkType: 'cardano',
+                previousAccount: delegatedAccount,
+            });
+
+            expect(result.misc).toEqual({ staking: delegatedStaking });
+        });
+
+        it('fills in only the fields that a partial payload omits', () => {
+            // The declared type cannot express a partially populated block.
+            const partialStaking = { isActive: true, rewards: '200000' } as CardanoStaking;
+
+            const result = getAccountSpecific({
+                accountInfo: adaAccountInfo({ staking: partialStaking }),
+                networkType: 'cardano',
+                previousAccount: delegatedAccount,
+            });
+
+            expect(result.misc).toEqual({
+                staking: { ...delegatedStaking, rewards: '200000' },
+            });
+        });
+
+        it('respects an explicit null poolId as a de-delegation instead of restoring the pool', () => {
+            const result = getAccountSpecific({
+                accountInfo: adaAccountInfo({
+                    staking: { ...delegatedStaking, isActive: false, poolId: null },
+                }),
+                networkType: 'cardano',
+                previousAccount: delegatedAccount,
+            });
+
+            expect(result.misc).toEqual({
+                staking: { ...delegatedStaking, isActive: false, poolId: null },
+            });
+        });
+
+        it('uses empty defaults when there is no previous account', () => {
+            const result = getAccountSpecific({
+                accountInfo: adaAccountInfo(),
+                networkType: 'cardano',
+            });
+
+            expect(result.misc).toEqual({
+                staking: { address: '', isActive: false, rewards: '0', poolId: null, drep: null },
+            });
+        });
+    });
+
+    describe('isAccountOutdated', () => {
+        it('does not report the account outdated when the payload carries no staking data', () => {
+            expect(isAccountOutdated(delegatedAccount, adaAccountInfo())).toBe(false);
+        });
+
+        it('still reports the account outdated when the stake pool changes', () => {
+            expect(
+                isAccountOutdated(
+                    delegatedAccount,
+                    adaAccountInfo({
+                        staking: { ...delegatedStaking, poolId: 'pool1changed' },
+                    }),
+                ),
+            ).toBe(true);
+        });
+
+        it('does not report the account outdated when the payload omits only some staking fields', () => {
+            const partialStaking = { isActive: true, rewards: '173289' } as CardanoStaking;
+
+            expect(
+                isAccountOutdated(delegatedAccount, adaAccountInfo({ staking: partialStaking })),
+            ).toBe(false);
+        });
+    });
+});
 
 describe('account utils', () => {
     fixtures.getUtxoFromSignedTransaction.forEach(f => {

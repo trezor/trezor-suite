@@ -659,6 +659,10 @@ export const getTotalFiatBalance = ({
 
 export const isTestnet = (symbol: NetworkSymbol) => getNetwork(symbol).testnet;
 
+// An unreported field means "not reported", never "changed".
+const isReportedAndDifferent = <T>(freshValue: T | undefined, storedValue: T) =>
+    freshValue !== undefined && freshValue !== storedValue;
+
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     if (
         // if backend/coin supports addrTxCount, compare it instead of total
@@ -678,35 +682,42 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
         case 'ripple':
             // different sequence or balance
             return (
-                freshInfo.misc!.sequence !== account.misc.sequence ||
+                isReportedAndDifferent(freshInfo.misc?.sequence, account.misc.sequence) ||
                 freshInfo.balance !== account.balance ||
-                freshInfo.misc!.reserve !== account.misc.reserve
+                isReportedAndDifferent(freshInfo.misc?.reserve, account.misc.reserve)
             );
         case 'stellar':
             // different sequence or balance
             return (
-                freshInfo.misc!.stellarSequence !== account.misc.stellarSequence ||
+                isReportedAndDifferent(
+                    freshInfo.misc?.stellarSequence,
+                    account.misc.stellarSequence,
+                ) ||
                 freshInfo.balance !== account.balance ||
-                freshInfo.misc!.reserve !== account.misc.reserve ||
+                isReportedAndDifferent(freshInfo.misc?.reserve, account.misc.reserve) ||
                 // compare token balances (detect token balance changes)
                 JSON.stringify(freshInfo.tokens) !== JSON.stringify(account.tokens)
             );
         case 'ethereum':
             return (
-                freshInfo.misc!.nonce !== account.misc.nonce ||
+                isReportedAndDifferent(freshInfo.misc?.nonce, account.misc.nonce) ||
                 freshInfo.balance !== account.balance || // balance can change because of beacon chain/internal txs
+                // An absent `stakingPools` is authoritative: the backend maps an empty list to it.
                 JSON.stringify(freshInfo?.misc?.stakingPools) !==
                     JSON.stringify(account?.misc?.stakingPools)
             );
-        case 'cardano':
+        case 'cardano': {
+            const freshStaking = freshInfo.misc?.staking;
+
             return (
                 // stake address (de)registration
-                freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive ||
+                isReportedAndDifferent(freshStaking?.isActive, account.misc.staking.isActive) ||
                 // changed rewards amount (rewards are distributed every epoch (5 days))
-                freshInfo.misc!.staking?.rewards !== account.misc.staking.rewards ||
+                isReportedAndDifferent(freshStaking?.rewards, account.misc.staking.rewards) ||
                 // changed stake pool
-                freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId
+                isReportedAndDifferent(freshStaking?.poolId, account.misc.staking.poolId)
             );
+        }
         case 'solana':
             return (
                 // compare last transaction signature since the total number of txs may not be fetched fully
@@ -727,8 +738,18 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     }
 };
 
+type GetAccountSpecificParams = {
+    accountInfo: Partial<AccountInfo>;
+    networkType: NetworkType;
+    previousAccount?: Account;
+};
+
 // Used in accountActions and failed accounts
-export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkType: NetworkType) => {
+export const getAccountSpecific = ({
+    accountInfo,
+    networkType,
+    previousAccount,
+}: GetAccountSpecificParams) => {
     const { misc } = accountInfo;
     if (networkType === 'ripple') {
         return {
@@ -757,15 +778,26 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
     }
 
     if (networkType === 'cardano') {
+        const previousStaking =
+            previousAccount?.networkType === 'cardano' ? previousAccount.misc.staking : undefined;
+        const freshStaking = misc?.staking;
+
         return {
             networkType,
             misc: {
                 staking: {
-                    rewards: misc?.staking?.rewards ?? '0',
-                    isActive: misc?.staking?.isActive ?? false,
-                    address: misc?.staking?.address ?? '',
-                    poolId: misc?.staking?.poolId ?? null,
-                    drep: misc?.staking?.drep ?? null,
+                    rewards: freshStaking?.rewards ?? previousStaking?.rewards ?? '0',
+                    isActive: freshStaking?.isActive ?? previousStaking?.isActive ?? false,
+                    address: freshStaking?.address ?? previousStaking?.address ?? '',
+                    // `null` is authoritative, so only an absent field falls back.
+                    poolId:
+                        freshStaking?.poolId !== undefined
+                            ? freshStaking.poolId
+                            : (previousStaking?.poolId ?? null),
+                    drep:
+                        freshStaking?.drep !== undefined
+                            ? freshStaking.drep
+                            : (previousStaking?.drep ?? null),
                 },
             },
             marker: undefined,

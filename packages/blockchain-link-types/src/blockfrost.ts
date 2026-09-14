@@ -169,7 +169,8 @@ export interface BlockfrostAccountInfo {
         total: number;
         index: number;
     };
-    misc: {
+    // The stake-address lookup is separate and can fail, so this may be absent.
+    misc?: {
         staking: {
             address: string;
             isActive: boolean;

@@ -51,6 +51,8 @@ export type CreateAccountActionProps = Pick<
     | 'visible'
 > & {
     accountInfo: AccountInfo;
+    // Carries the last known-good values, so a field the payload does not report is not erased.
+    previousAccount?: Account;
 } & AccountBackendSpecific &
     AccountFailureSpecific;
 
@@ -61,6 +63,7 @@ const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
     ({
         accountInfo,
+        previousAccount,
         ...account
     }: CreateAccountActionProps): {
         payload: { account: Account; supportedNetworks: readonly NetworkSymbol[] };
@@ -101,7 +104,7 @@ const createAccount = createAction(
                 }),
                 utxo: enhanceUtxo(utxo, networkType, index),
                 metadata: { key: metadataKey },
-                ...getAccountSpecific(accountInfo, networkType),
+                ...getAccountSpecific({ accountInfo, networkType, previousAccount }),
             };
 
             return {
@@ -154,7 +157,11 @@ const updateAccount = createAction(
                         utxo: enhanceUtxo(accountInfo.utxo, account.networkType, account.index),
                         addresses: enhanceAddresses(accountInfo, account),
                         tokens: enhanceTokens(accountInfo.tokens),
-                        ...getAccountSpecific(accountInfo, account.networkType),
+                        ...getAccountSpecific({
+                            accountInfo,
+                            networkType: account.networkType,
+                            previousAccount: account,
+                        }),
                     },
                 },
             };

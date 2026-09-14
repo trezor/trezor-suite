@@ -26,7 +26,11 @@ import {
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type TrezorConnectBackendType } from '@suite-common/wallet-config';
-import { type DiscoveryStatus, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type DiscoveryStatus,
+    type GetTradedAccountKeysDep,
+} from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
     type DeviceState,
@@ -186,6 +190,18 @@ export const applyDeviceStatesThunk = createThunk<
         }
     },
 );
+
+// Discovery re-emits known accounts, and `createAccount` replaces the stored one wholesale.
+const findPreviousAccount = (
+    accounts: readonly Account[],
+    accountPayload: CreateAccountActionProps,
+) =>
+    accounts.find(
+        account =>
+            account.symbol === accountPayload.symbol &&
+            account.accountType === accountPayload.accountType &&
+            account.index === accountPayload.index,
+    );
 
 const transformProgressEventData = (
     { response, progress, total }: ProgressEvent,
@@ -445,6 +461,17 @@ export const runDiscoveryThunk = createThunk<
 
             // we do not create empty accounts right away, but store the progress events for later
             const accountQueue: CreateAccountActionProps[] = [];
+            const dispatchCreateAccount = (accountPayload: CreateAccountActionProps) =>
+                dispatch(
+                    accountsActions.createAccount({
+                        ...accountPayload,
+                        previousAccount: findPreviousAccount(
+                            selectAccountsByDeviceState(getState(), deviceState.staticSessionId),
+                            accountPayload,
+                        ),
+                    }),
+                );
+
             const onBundleProgress = (event: ProgressEvent) => {
                 const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
                 if (!currentDiscovery) {
@@ -473,12 +500,10 @@ export const runDiscoveryThunk = createThunk<
                             );
                         }
 
-                        accountQueue.forEach(account =>
-                            dispatch(accountsActions.createAccount(account)),
-                        );
+                        accountQueue.forEach(dispatchCreateAccount);
                         accountQueue.splice(0, accountQueue.length);
                     }
-                    dispatch(accountsActions.createAccount(accountPayload));
+                    dispatchCreateAccount(accountPayload);
                 }
 
                 dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
@@ -751,7 +776,15 @@ export const runAdditionalDiscoveryThunk = createThunk<
                 discovery,
             );
 
-            dispatch(accountsActions.createAccount(accountPayload));
+            dispatch(
+                accountsActions.createAccount({
+                    ...accountPayload,
+                    previousAccount: findPreviousAccount(
+                        selectAccountsByDeviceState(getState(), staticSessionId),
+                        accountPayload,
+                    ),
+                }),
+            );
             dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
         };
 
