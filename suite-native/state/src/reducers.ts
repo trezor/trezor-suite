@@ -294,14 +294,13 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,
-        persistentDeviceData: persistentDeviceDataReducer,
     });
 
     const walletPersistedReducer = preparePersistReducer({
         reducer: walletReducers,
-        persistedKeys: ['accounts', 'transactions', 'persistentDeviceData'],
+        persistedKeys: ['accounts', 'transactions'],
         key: 'wallet',
-        version: 5,
+        version: 4,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState?.accounts) return oldState;
@@ -330,22 +329,6 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                     ...oldState,
                     accounts: sortAccountsByCoin(oldState.accounts, deps.getSupportedNetworks()),
                 };
-            },
-            5: async (oldState: any /* FIXME */) => {
-                // persistentDeviceData used to be persisted as part of the `devices` persist key
-                const oldDevicesState = await getStoredState({
-                    key: 'devices',
-                    storage: deps.mmkvStorage,
-                });
-
-                const persistentDeviceData =
-                    oldDevicesState &&
-                    typeof oldDevicesState === 'object' &&
-                    'persistentDeviceData' in oldDevicesState
-                        ? oldDevicesState.persistentDeviceData
-                        : [];
-
-                return { ...(oldState ?? {}), persistentDeviceData };
             },
         },
         transforms: [walletStopPersistTransform],
@@ -409,8 +392,8 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             },
             6: (oldState: any /* FIXME */) => {
                 if (!oldState) return oldState;
-                // persistentDeviceData was split out into its own `persistentDeviceData` persist
-                // key (nested under `wallet`); see migration 5 of the `wallet` persist key.
+                // persistentDeviceData was split out into its own top-level `persistentDeviceData`
+                // reducer; see migration 6 of the `root` persist key.
                 const { persistentDeviceData: _persistentDeviceData, ...rest } = oldState;
 
                 return rest;
@@ -537,6 +520,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             nativeFirmware: nativeFirmwareReducer,
             notifications: createNotificationsReducer<TxKeyPath>().reducer,
             pendingCoinVisibility: pendingCoinVisibilitySlice.reducer,
+            persistentDeviceData: persistentDeviceDataReducer,
             receive: receivePersistedReducer,
             suiteSync: suiteSyncPersistedReducer,
             suiteSyncData: suiteSyncDataReducer,
@@ -548,7 +532,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.
-        persistedKeys: ['wallet', 'graph', 'tokenDefinitions'],
+        persistedKeys: ['wallet', 'graph', 'tokenDefinitions', 'persistentDeviceData'],
         transforms: [
             walletPersistTransform,
             graphPersistTransform,
@@ -556,7 +540,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         ],
         mergeLevel: 2,
         key: 'root',
-        version: 5,
+        version: 6,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState?.wallet) return oldState;
@@ -637,6 +621,22 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                         ),
                     },
                 };
+            },
+            6: async (oldState: any /* FIXME */) => {
+                // persistentDeviceData used to be persisted as part of the `devices` persist key
+                const oldDevicesState = await getStoredState({
+                    key: 'devices',
+                    storage: deps.mmkvStorage,
+                });
+
+                const persistentDeviceData =
+                    oldDevicesState &&
+                    typeof oldDevicesState === 'object' &&
+                    'persistentDeviceData' in oldDevicesState
+                        ? oldDevicesState.persistentDeviceData
+                        : [];
+
+                return { ...(oldState ?? {}), persistentDeviceData };
             },
         },
         storage: deps.mmkvStorage,
