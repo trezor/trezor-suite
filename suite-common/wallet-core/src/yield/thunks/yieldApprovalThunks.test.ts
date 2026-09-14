@@ -1,4 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks } from '@suite-common/wallet-config';
 
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -54,6 +56,7 @@ const initStore = () =>
     createTestStore({
         extra: undefined,
         reducer: combineReducers({
+            networks: () => getNetworks(mockNetworkConfigDeps()),
             wallet: combineReducers({ stablecoinYield: yieldReducer }),
         }),
     });

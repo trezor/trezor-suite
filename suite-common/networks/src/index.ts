@@ -15,8 +15,13 @@ export {
     selectSupportedNetworkSymbols,
 } from '../reduxState/networksSelectors';
 export { createLoadNetworkModules, type LoadNetworkModulesDep } from './createLoadNetworkModules';
-export { createGetNetworkConfigs } from './createGetNetworkConfigs';
-export { getLegacyNetworkConfigs, type LegacyNetworkConfigs } from './legacyNetworkConfig';
+export {
+    createGetNetworkConfigs,
+    type GetNetworkConfigs,
+    type GetNetworkConfigsDep,
+} from './createGetNetworkConfigs';
+export { type NetworkConfigDeps, selectNetworkConfigDeps } from './NetworkConfigDeps';
+export { selectNetworkConfigAccessors } from '../reduxState/selectNetworkConfigAccessors';
 // Temporary compatibility exports for wallet-config; consumers have not migrated yet.
 export {
     TREZOR_CONNECT_BACKENDS,

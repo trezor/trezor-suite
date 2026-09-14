@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { cryptoIdToNetworkAndContractAddress, getApprovalStatus } from '@suite-common/trading';
 import { findToken, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { HStack, Text, VStack } from '@suite-native/atoms';
@@ -8,18 +10,23 @@ import { ExchangeUsdcPresetButton } from './ExchangeUsdcPresetButton';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 
 export const ExchangeFormQuoteDebugView = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { control } = useExchangeFormContext();
     const [quote, sendAccount] = useWatch({ control, name: ['quote', 'sendAccount'] });
 
-    const approvalStatus = getApprovalStatus(quote);
-    const { contractAddress } = cryptoIdToNetworkAndContractAddress(quote?.send);
+    const approvalStatus = getApprovalStatus(networkConfigDeps, quote);
+    const { contractAddress } = cryptoIdToNetworkAndContractAddress(networkConfigDeps, quote?.send);
     const { decimals } = findToken(sendAccount?.tokens, contractAddress) ?? {};
 
     let preapproved = 'not defined';
     if (quote?.preapprovedStringAmount) {
         const isUnlimited =
             typeof decimals === 'number' &&
-            isAllowanceUnlimited({ amount: quote.preapprovedStringAmount, decimals });
+            isAllowanceUnlimited(networkConfigDeps, {
+                amount: quote.preapprovedStringAmount,
+                decimals,
+            });
 
         preapproved = isUnlimited ? 'unlimited' : quote.preapprovedStringAmount;
     }

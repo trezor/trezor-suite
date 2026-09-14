@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildClaimTransactionReview } from '@suite-common/earn-stablecoin';
 import {
@@ -193,7 +194,8 @@ export const signYieldClaimReviewThunk = createThunk<
 export type PushYieldClaimReviewThunkState = MevProtectionRootState &
     YieldRootState &
     SynchronizeSentTransactionThunkState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 export type PushYieldClaimReviewThunkDeps = SynchronizeSentTransactionThunkDeps;
 
@@ -208,6 +210,8 @@ export const pushYieldClaimReviewThunk = createThunk<
 >(
     `${EARN_MODULE_PREFIX}/pushYieldClaimReviewThunk`,
     async ({ account, flowKey }, { dispatch, getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const session = selectYieldSession(getState(), 'claim', flowKey);
         const txReview = selectYieldTxReview(getState());
         const { precomposedForm, precomposedTx, serializedTx } = txReview;
@@ -232,7 +236,7 @@ export const pushYieldClaimReviewThunk = createThunk<
             });
         }
 
-        const pushResponse = await pushYieldTransaction({
+        const pushResponse = await pushYieldTransaction(networkConfigDeps, {
             tx: serializedTx.tx,
             account,
             isMevProtectionEnabled:

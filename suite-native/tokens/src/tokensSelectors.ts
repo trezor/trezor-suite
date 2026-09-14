@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { A, pipe } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
@@ -103,7 +104,7 @@ export const selectAccountTokenDecimals = createMemoizedSelector(
 );
 
 export const selectIsUnrecognizedToken = (
-    state: TokenDefinitionsRootState & AccountsRootState,
+    state: TokenDefinitionsRootState & AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
 ): boolean => {
@@ -147,10 +148,12 @@ export const selectAccountYieldTypeTransactionsWithTokenTransfers = createMemoiz
 );
 
 export const selectHasDeviceAnyTokensForNetwork = (
-    state: TokensRootState,
+    state: TokensRootState & NetworksRootState,
     symbol: NetworkSymbol,
 ) => {
-    if (!isNetworkWithTokens(symbol)) {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
+    if (!isNetworkWithTokens(networkConfigDeps, symbol)) {
         return false;
     }
 
@@ -159,11 +162,11 @@ export const selectHasDeviceAnyTokensForNetwork = (
     return A.any(accounts, account => (account.tokens ?? []).some(token => !isNftToken(token)));
 };
 
-export const selectNetworkSymbolsOfAccountsWithTokensAllowed = createMemoizedSelector(
-    [selectAccounts],
-    accounts =>
+export const selectNetworkSymbolsOfAccountsWithTokensAllowed = createWeakMapSelector(
+    [selectNetworkConfigAccessors, selectAccounts],
+    (networkConfigDeps, accounts) =>
         accounts
-            .filter(a => isNetworkWithTokens(a.symbol))
+            .filter(a => isNetworkWithTokens(networkConfigDeps, a.symbol))
             .reduce((acc, account) => {
                 if (!acc.includes(account.symbol)) {
                     acc.push(account.symbol);

@@ -12,7 +12,9 @@
     },
     "dependencies": {
         "@suite-common/connect-popup": "workspace:*",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/trading": "workspace:*",

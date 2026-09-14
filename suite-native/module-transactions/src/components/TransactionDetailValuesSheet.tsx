@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { pipe } from '@mobily/ts-belt';
@@ -32,6 +34,8 @@ type TodayHeaderCellProps = {
 };
 
 const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode);
     const currentRates = useSelector((state: FiatRatesRootState) =>
@@ -41,7 +45,7 @@ const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellP
     if (!currentRates || !historicRate) return null;
 
     const fiatTotalHistoryNumeric = pipe(
-        convertCryptoToFiatAmount({
+        convertCryptoToFiatAmount(networkConfigDeps, {
             amount: cryptoValue,
             symbol,
             rate: historicRate,
@@ -49,7 +53,7 @@ const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellP
         Number,
     );
     const fiatTotalActualNumeric = pipe(
-        convertCryptoToFiatAmount({
+        convertCryptoToFiatAmount(networkConfigDeps, {
             amount: cryptoValue,
             symbol,
             rate: currentRates?.rate,

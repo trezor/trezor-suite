@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type RatesByKey } from '@suite-common/wallet-types';
@@ -25,16 +26,19 @@ export type BuildSellAssetRowsProps = {
     fiatRates: RatesByKey;
 };
 
-export const buildSellAssetRows = ({
-    accounts,
-    supportedNetworks,
-    networkSymbolFilter,
-    tokenDefinitions,
-    baseCurrencyCode,
-    fiatRates,
-}: BuildSellAssetRowsProps): { assetRows: AssetRowOption[]; networks: NetworkSymbol[] } => {
+export const buildSellAssetRows = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        accounts,
+        supportedNetworks,
+        networkSymbolFilter,
+        tokenDefinitions,
+        baseCurrencyCode,
+        fiatRates,
+    }: BuildSellAssetRowsProps,
+): { assetRows: AssetRowOption[]; networks: NetworkSymbol[] } => {
     const getTokensWithBalance = (account: AccountWithOptionalLabel) => {
-        const { shownWithBalance, hiddenWithBalance } = getTokens({
+        const { shownWithBalance, hiddenWithBalance } = getTokens(networkConfigDeps, {
             tokens: account.tokens ?? [],
             symbol: account.symbol,
             tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
@@ -44,7 +48,7 @@ export const buildSellAssetRows = ({
     };
 
     const validAccounts = accounts.filter(account => {
-        if (isTestnet(account.symbol) || account.accountType === 'coinjoin') {
+        if (isTestnet(networkConfigDeps, account.symbol) || account.accountType === 'coinjoin') {
             return false;
         }
 

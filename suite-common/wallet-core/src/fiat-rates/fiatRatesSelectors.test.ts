@@ -1,4 +1,7 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks } from '@suite-common/wallet-config';
 import { type DeviceRootState } from '@suite-common/device';
+import type { NetworksRootState } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -36,7 +39,11 @@ const xrpAccount = (deviceState: string): Account =>
         tokens: [],
     }) as unknown as Account;
 
-type State = FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState & DeviceRootState;
+type State = NetworksRootState &
+    FiatRatesRootState &
+    TokenDefinitionsRootState &
+    AccountsRootState &
+    DeviceRootState;
 
 const getState = (
     selectedDevice: TrezorDevice,
@@ -46,6 +53,7 @@ const getState = (
     ],
 ): State =>
     ({
+        networks: getNetworks(mockNetworkConfigDeps()),
         wallet: {
             fiat: { current: {}, lastWeek: {}, historic: {} },
             accounts,

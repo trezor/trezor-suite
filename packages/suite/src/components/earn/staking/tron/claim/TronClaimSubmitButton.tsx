@@ -3,6 +3,7 @@ import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     getTronStakingRewards,
     isTronClaimSupported,
@@ -18,6 +19,8 @@ import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking
 import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronClaimSubmitButton = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { translationString } = useTranslation();
@@ -29,7 +32,7 @@ export const TronClaimSubmitButton = () => {
 
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
 
-    const hasReward = new BigNumber(getTronStakingRewards(account)).gt(0);
+    const hasReward = new BigNumber(getTronStakingRewards(networkConfigDeps, account)).gt(0);
     const isDeviceLocked = !!device?.connected && !!device?.available && isLocked();
     const isClaimFirmwareOutdated = !isTronClaimSupported(device);
 

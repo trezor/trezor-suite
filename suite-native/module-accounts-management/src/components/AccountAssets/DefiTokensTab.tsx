@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -34,7 +35,7 @@ export const DefiTokensTab = ({ accountKey, onSelect }: DefiTokensTabProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const defiTokens = useSelector((state: TokensRootState) =>
+    const defiTokens = useSelector((state: TokensRootState & NetworksRootState) =>
         selectAccountDefiTokens(state, accountKey),
     );
 

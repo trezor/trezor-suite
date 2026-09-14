@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -13,6 +14,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { transactionsReducer } from 'src/reducers/wallet';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = asNetworkSymbol('btc');
 
@@ -34,7 +37,7 @@ describe('Transaction Actions', () => {
         const store = initStore();
         const account = mockWalletAccount({ symbol: btcSymbol });
         store.dispatch(
-            transactionsActions.addTransaction({
+            transactionsActions.addTransaction(networkConfigDeps, {
                 transactions: [getWalletTransaction()],
                 account,
                 page: 1,

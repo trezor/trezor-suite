@@ -11,6 +11,7 @@ import { MODAL_CONTEXT_USER, selectModalContext } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -74,6 +75,8 @@ export const ConfirmValueModal = ({
     isAddress = false,
     value,
 }: ConfirmValueModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [isCopied, setIsCopied] = useState(false);
     const { device } = useDevice();
     const modalContext = useSelector(selectModalContext);
@@ -188,7 +191,10 @@ export const ConfirmValueModal = ({
                                         a: chunks => (
                                             <Link onClick={handleOpenGuide}>{chunks}</Link>
                                         ),
-                                        displaySymbol: getDisplaySymbol(account.symbol),
+                                        displaySymbol: getDisplaySymbol(
+                                            networkConfigDeps,
+                                            account.symbol,
+                                        ),
                                     }}
                                 />
                             }

@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import {
     type SerializedTx,
@@ -58,6 +60,8 @@ export const TransactionReviewModalContent = ({
     isSending,
     isRbfConfirmedError,
 }: TransactionReviewModalContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { symbol, networkType } = account;
     const device = useSelector(selectSelectedDevice);
     const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;
@@ -74,13 +78,13 @@ export const TransactionReviewModalContent = ({
 
     const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
-    const buttonRequestsCount = useSelector((state: DeviceRootState) =>
+    const buttonRequestsCount = useSelector(state =>
         selectSendFormReviewButtonRequestsCount(state, symbol, decreaseOutputId),
     );
 
     const outputs = useMemo(
         () =>
-            constructTransactionReviewOutputsOptional({
+            constructTransactionReviewOutputsOptional(networkConfigDeps, {
                 account,
                 availableRewards,
                 decreaseOutputId,
@@ -91,6 +95,7 @@ export const TransactionReviewModalContent = ({
                 swapSlippage,
             }),
         [
+            networkConfigDeps,
             account,
             availableRewards,
             decreaseOutputId,

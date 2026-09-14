@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useMemo } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -37,6 +38,8 @@ export const useWrappedNativeTokenFees = ({
     flowType,
     isEnabled,
 }: UseWrappedNativeTokenFeesParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
 
     const formDraftKey = useMemo(
@@ -89,8 +92,8 @@ export const useWrappedNativeTokenFees = ({
                     flowType === 'wrap'
                         ? {
                               contractAddress: null,
-                              decimals: getNetwork(account.symbol).decimals,
-                              symbol: getNetworkDisplaySymbol(account.symbol),
+                              decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
+                              symbol: getNetworkDisplaySymbol(networkConfigDeps, account.symbol),
                           }
                         : {
                               contractAddress: wrappedNative.address,
@@ -110,7 +113,7 @@ export const useWrappedNativeTokenFees = ({
                 return { type: 'error' };
             }
         },
-        [account, dispatch, flowType],
+        [networkConfigDeps, account, dispatch, flowType],
     );
 
     const fees = usePreparedTxFees({

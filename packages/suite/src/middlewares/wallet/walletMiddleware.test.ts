@@ -1,6 +1,7 @@
 import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type RouterState } from '@suite/router';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import { createTestStore, testMocks } from '@suite-common/test-utils';
@@ -20,6 +21,8 @@ import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
 import { accountsReducer, blockchainReducer, walletSettingsReducer } from 'src/reducers/wallet';
 
 import * as fixtures from './__fixtures__/walletMiddleware';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const sendFormReducer = prepareSendFormReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -100,7 +103,10 @@ const mockStore = (preloadedState: State) =>
                 getTradedAccountKeys: mockGetTradedAccountKeys(),
             },
         },
-        middleware: [walletMiddleware, prepareBlockchainMiddleware(() => ({}))],
+        middleware: [
+            walletMiddleware.bind(null, networkConfigDeps),
+            prepareBlockchainMiddleware(() => ({})),
+        ],
         // the synced action carries a live timer handle
         serializableCheck: { ignoredActions: [blockchainActions.synced.type] },
         reducer: (state = preloadedState, action) => ({

@@ -6,6 +6,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
@@ -41,6 +42,8 @@ export const YieldApproveModal = ({
     onCancel,
     onSuccess,
 }: YieldApproveModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const {
@@ -48,7 +51,7 @@ export const YieldApproveModal = ({
         tx: { approvalTxid, setApprovalTxid },
     } = useAllowanceContext();
     const handledTxidRef = useRef<string | null>(null);
-    const cryptoId = toTokenCryptoId(account.symbol, contractAddress);
+    const cryptoId = toTokenCryptoId(networkConfigDeps, account.symbol, contractAddress);
     const { networkId, contractAddress: parsedContract } = parseCryptoId(cryptoId);
     const { data: vaultName } = useYieldOpportunity(vaultId, {
         select: yieldOpportunity => yieldOpportunity.metadata.name,
@@ -67,7 +70,11 @@ export const YieldApproveModal = ({
             : getAssetLogoUrl({
                   coingeckoId: networkId,
                   contractAddress: parsedContract
-                      ? getContractAddressForNetworkSymbol(account.symbol, parsedContract)
+                      ? getContractAddressForNetworkSymbol(
+                            networkConfigDeps,
+                            account.symbol,
+                            parsedContract,
+                        )
                       : undefined,
                   size: 80,
               }),

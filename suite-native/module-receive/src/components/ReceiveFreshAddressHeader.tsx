@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -27,6 +29,8 @@ export const ReceiveFreshAddressHeader = ({
     tokenContract,
     closeActionType,
 }: ReceiveFreshAddressHeaderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const symbol = useSelector((state: AccountsRootState) =>
@@ -50,7 +54,9 @@ export const ReceiveFreshAddressHeader = ({
                         {symbol ? (
                             <Translation
                                 id="moduleReceive.screenTitle"
-                                values={{ coinSymbol: getNetworkDisplaySymbol(symbol) }}
+                                values={{
+                                    coinSymbol: getNetworkDisplaySymbol(networkConfigDeps, symbol),
+                                }}
                             />
                         ) : (
                             <Translation id="moduleReceive.receiveTitle" />

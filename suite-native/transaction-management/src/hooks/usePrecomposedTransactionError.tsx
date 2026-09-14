@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode, useMemo } from 'react';
 
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -34,13 +36,16 @@ export const isPrecomposedTransactionError = (
 export const usePrecomposedTransactionError = ({
     error,
     networkSymbol,
-}: UsePrecomposedTransactionErrorProps): ReactNode | null =>
-    useMemo(() => {
+}: UsePrecomposedTransactionErrorProps): ReactNode | null => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    return useMemo(() => {
         if (!error || !isPrecomposedTransactionError(error)) {
             return null;
         }
 
-        const networkDisplaySymbol = networkSymbol ? getNetworkDisplaySymbol(networkSymbol) : '';
+        const networkDisplaySymbol = networkSymbol
+            ? getNetworkDisplaySymbol(networkConfigDeps, networkSymbol)
+            : '';
 
         switch (error) {
             case 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE':
@@ -90,4 +95,5 @@ export const usePrecomposedTransactionError = ({
                     <Translation id="transactionManagement.precomposedTransaction.errors.amountIsNotEnough" />
                 );
         }
-    }, [error, networkSymbol]);
+    }, [networkConfigDeps, error, networkSymbol]);
+};

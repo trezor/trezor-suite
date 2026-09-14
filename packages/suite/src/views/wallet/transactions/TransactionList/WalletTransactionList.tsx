@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import {
     selectAreAllTransactionsLoaded,
@@ -37,12 +39,15 @@ export const WalletTransactionList = ({
     customTotalItems,
     isExportable = true,
 }: TransactionListProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     // NOTE: The number of the displayed pages may be different from the number of the pages for all transactions
     const suspiciousTransactionsHidden = useSelector(state =>
         selectIsHideSuspiciousTransactions(state, symbol),
     );
     const fraudTransactionPossible =
-        suspiciousTransactionsHidden && hasNetworkPotentialFraudTransactions(symbol);
+        suspiciousTransactionsHidden &&
+        hasNetworkPotentialFraudTransactions(networkConfigDeps, symbol);
     const [visiblePages, setVisiblePages] = useState(1);
     const areAllTransactionsLoaded = useSelector(state =>
         Boolean(selectAreAllTransactionsLoaded(state, account.key)),

@@ -3,6 +3,7 @@ import type { MiddlewareAPI } from 'redux';
 import { coinjoinMiddleware } from '@suite/coinjoin';
 import { prepareDiscoveryMiddleware } from '@suite/discovery';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
@@ -32,16 +33,17 @@ export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps &
     };
 
 export const getWalletMiddlewares = (
+    networkConfigDeps: NetworkConfigDeps,
     getExtra: () => GetWalletMiddlewaresDeps | null,
 ): ((api: MiddlewareAPI) => any)[] => [
     prepareBlockchainMiddleware(getExtra),
     prepareAccountsMiddleware(getExtra),
-    walletMiddleware,
+    walletMiddleware.bind(null, networkConfigDeps),
     prepareDiscoveryMiddleware(getExtra),
     prepareFiatRatesMiddleware(getExtra),
     prepareTokenDefinitionsMiddleware(getExtra),
     prepareStakeMiddleware(getExtra),
-    storageMiddleware,
+    storageMiddleware.bind(null, networkConfigDeps),
     graphMiddleware,
     tradingMiddleware,
     coinjoinMiddleware,

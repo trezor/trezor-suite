@@ -2,8 +2,9 @@ import { type Ref, forwardRef, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { useServices } from '@suite-common/dependency-injection';
 
-import { type NetworksRootState } from '@suite-common/networks';
+import { type NetworksRootState, selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
@@ -32,6 +33,8 @@ export const NetworkFilterBottomSheet = forwardRef(
         { selectedNetworks, onApply, onClear, isSendFlow }: NetworkFilterBottomSheetProps,
         ref: Ref<BottomSheetModalMethods>,
     ) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
         const { translate } = useTranslate();
         const [pendingSelection, setPendingSelection] = useState<NetworkSymbol[]>(selectedNetworks);
         const selectedNetworksRef = useRef(selectedNetworks);
@@ -98,7 +101,7 @@ export const NetworkFilterBottomSheet = forwardRef(
                                     <TokenIcon symbol={symbol} />
                                     <VStack flex={1} spacing={0}>
                                         <Text variant="body-md-strong">
-                                            {getNetwork(symbol).name}
+                                            {getNetwork(networkConfigDeps, symbol).name}
                                         </Text>
                                         <Text variant="body-sm" color="contentSecondary">
                                             <Translation

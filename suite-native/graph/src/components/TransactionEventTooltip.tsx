@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { Dimensions } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
@@ -67,6 +69,8 @@ const TokenAmountTooltipFormatter = ({
     symbol: NetworkSymbol;
     value: number;
 }) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenAddress),
     );
@@ -77,7 +81,7 @@ const TokenAmountTooltipFormatter = ({
     }
 
     // We might want to add support for other networks in the future.
-    if (getNetworkType(symbol) === 'ethereum') {
+    if (getNetworkType(networkConfigDeps, symbol) === 'ethereum') {
         return (
             <ExactTokenAmountFormatter
                 color="contentPrimary"

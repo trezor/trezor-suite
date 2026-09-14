@@ -1,8 +1,12 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
 import { getResolvedYieldFlowData } from './getResolvedYieldFlowData';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const accountKey = 'eth-account-key' as AccountKey;
 const underlyingTokenAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
@@ -67,7 +71,7 @@ const vault = {
 
 describe('getResolvedYieldFlowData', () => {
     it('resolves the account token entries for the vault input and receipt tokens', () => {
-        const result = getResolvedYieldFlowData({ account, vault });
+        const result = getResolvedYieldFlowData(networkConfigDeps, { account, vault });
 
         expect(result.resolutionStatus).toBe('resolved');
 
@@ -90,13 +94,13 @@ describe('getResolvedYieldFlowData', () => {
     });
 
     it('keys the flow on the vault input token by default', () => {
-        const result = getResolvedYieldFlowData({ account, vault });
+        const result = getResolvedYieldFlowData(networkConfigDeps, { account, vault });
 
         expect(result.flowKey).toBe(`${accountKey}:${yieldId}:${underlyingTokenAddress}`);
     });
 
     it('keys the flow on the contract it was addressed by', () => {
-        const result = getResolvedYieldFlowData({
+        const result = getResolvedYieldFlowData(networkConfigDeps, {
             account,
             vault,
             tokenContract: receiptTokenAddress,
@@ -110,7 +114,7 @@ describe('getResolvedYieldFlowData', () => {
     });
 
     it('matches account tokens by contract address regardless of letter case', () => {
-        const result = getResolvedYieldFlowData({
+        const result = getResolvedYieldFlowData(networkConfigDeps, {
             account,
             vault,
             tokenContract: receiptTokenAddress.toUpperCase(),
@@ -123,7 +127,10 @@ describe('getResolvedYieldFlowData', () => {
     it('falls back to the vault token data when the account does not hold the token', () => {
         const emptyAccount = { ...account, tokens: [] } as unknown as Account;
 
-        const result = getResolvedYieldFlowData({ account: emptyAccount, vault });
+        const result = getResolvedYieldFlowData(networkConfigDeps, {
+            account: emptyAccount,
+            vault,
+        });
 
         expect(result.token?.symbol).toBe('USDC');
         expect(result.token?.decimals).toBe(6);
@@ -133,7 +140,7 @@ describe('getResolvedYieldFlowData', () => {
     });
 
     it('reports a missing account', () => {
-        const result = getResolvedYieldFlowData({ account: null, vault });
+        const result = getResolvedYieldFlowData(networkConfigDeps, { account: null, vault });
 
         expect(result.resolutionStatus).toBe('missing-account');
         expect(result.flowKey).toBeNull();
@@ -141,7 +148,7 @@ describe('getResolvedYieldFlowData', () => {
     });
 
     it('reports a missing vault', () => {
-        const result = getResolvedYieldFlowData({ account, vault: null });
+        const result = getResolvedYieldFlowData(networkConfigDeps, { account, vault: null });
 
         expect(result.resolutionStatus).toBe('missing-vault');
         expect(result.account).toBe(account);
@@ -154,7 +161,10 @@ describe('getResolvedYieldFlowData', () => {
             outputToken: { ...vault.outputToken, address: undefined },
         } as unknown as YieldDtoV2;
 
-        const result = getResolvedYieldFlowData({ account, vault: vaultWithoutOutputToken });
+        const result = getResolvedYieldFlowData(networkConfigDeps, {
+            account,
+            vault: vaultWithoutOutputToken,
+        });
 
         expect(result.resolutionStatus).toBe('missing-vault');
     });
@@ -165,7 +175,10 @@ describe('getResolvedYieldFlowData', () => {
             network: 'not-a-real-network',
         } as unknown as YieldDtoV2;
 
-        const result = getResolvedYieldFlowData({ account, vault: vaultOnUnknownNetwork });
+        const result = getResolvedYieldFlowData(networkConfigDeps, {
+            account,
+            vault: vaultOnUnknownNetwork,
+        });
 
         expect(result.resolutionStatus).toBe('missing-network');
         expect(result.vaultName).toBe('Steakhouse USDC Prime');

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type HistoricRates, type TickerId } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -46,8 +47,11 @@ const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
 /**
  * Build coinUrl using defined coin ids
  */
-const buildCoinUrls = async (ticker: TickerId) => {
-    const { coingeckoId, tradeCryptoId, settlementLayer, networkType } = getNetwork(ticker.symbol);
+const buildCoinUrls = async (networkConfigDeps: NetworkConfigDeps, ticker: TickerId) => {
+    const { coingeckoId, tradeCryptoId, settlementLayer, networkType } = getNetwork(
+        networkConfigDeps,
+        ticker.symbol,
+    );
     if (!coingeckoId) {
         console.error('buildCoinUrls: cannot find coingeckoId for ', ticker);
 
@@ -60,7 +64,7 @@ const buildCoinUrls = async (ticker: TickerId) => {
             // token on network -> network coingecko id
             baseId = coingeckoId;
         } else if (settlementLayer) {
-            baseId = getNetwork(settlementLayer)?.coingeckoId ?? coingeckoId;
+            baseId = getNetwork(networkConfigDeps, settlementLayer)?.coingeckoId ?? coingeckoId;
         } else {
             // native token on network -> native token coingecko id
             if (!tradeCryptoId) {
@@ -110,10 +114,11 @@ const buildCoinUrls = async (ticker: TickerId) => {
  * @returns
  */
 export const fetchCurrentFiatRates = async (
+    networkConfigDeps: NetworkConfigDeps,
     ticker: TickerId,
     options?: FetchCurrentFiatRatesOptions,
 ) => {
-    const coinUrls = await buildCoinUrls(ticker);
+    const coinUrls = await buildCoinUrls(networkConfigDeps, ticker);
     if (!coinUrls || coinUrls.length === 0) return null;
 
     const urlParams =
@@ -171,11 +176,12 @@ export const findClosestTimestampValue = (
  * @param {BaseCurrencyCode} fiatCurrencyCode
  */
 export const getFiatRatesForTimestamps = async (
+    networkConfigDeps: NetworkConfigDeps,
     ticker: TickerId,
     timestamps: number[],
     fiatCurrencyCode: BaseCurrencyCode,
 ): Promise<HistoricalResponse | null> => {
-    const coinUrls = await buildCoinUrls(ticker); // Assuming this now returns an array of URLs
+    const coinUrls = await buildCoinUrls(networkConfigDeps, ticker); // Assuming this now returns an array of URLs
     const urlEndpoint = `market_chart/range`;
     if (!coinUrls || coinUrls.length === 0) return null;
 
@@ -223,12 +229,13 @@ export const getFiatRatesForTimestamps = async (
  * @returns {(Promise<HistoricalResponse | null>)}
  */
 export const fetchLastWeekRates = async (
+    networkConfigDeps: NetworkConfigDeps,
     ticker: TickerId,
     fiatCurrencyCode: BaseCurrencyCode,
 ): Promise<HistoricalResponse | null> => {
     const urlEndpoint = `market_chart`;
     const urlParams = `vs_currency=${fiatCurrencyCode}&days=7`;
-    const coinUrls = await buildCoinUrls(ticker);
+    const coinUrls = await buildCoinUrls(networkConfigDeps, ticker);
     if (!coinUrls || coinUrls.length === 0) return null;
 
     const { symbol } = ticker;

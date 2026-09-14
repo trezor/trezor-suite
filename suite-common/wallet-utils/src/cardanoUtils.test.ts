@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO, PROTO } from '@trezor/connect';
 
@@ -17,6 +18,8 @@ import {
     isCardanoTx,
     transformUserOutputs,
 } from './cardanoUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 describe('cardano utils', () => {
     let dateSpy: any;
@@ -72,6 +75,7 @@ describe('cardano utils', () => {
         it(`transformUserOutputs: ${f.description}`, () => {
             expect(
                 transformUserOutputs(
+                    networkConfigDeps,
                     // @ts-expect-error params are partial
                     f.outputs,
                     f.accountTokens,
@@ -86,7 +90,7 @@ describe('cardano utils', () => {
         it(`transformUserOutputs: ${f.description}`, () => {
             expect(
                 // @ts-expect-error params are partial
-                formatMaxOutputAmount(f.maxAmount, f.maxOutput, f.account),
+                formatMaxOutputAmount(networkConfigDeps, f.maxAmount, f.maxOutput, f.account),
             ).toBe(f.result);
         });
     });

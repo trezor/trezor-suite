@@ -1,3 +1,8 @@
+import {
+    type NetworkConfigDeps,
+    type NetworksRootState,
+    selectNetworkConfigAccessors,
+} from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -49,8 +54,11 @@ import { selectTransactions } from '../transactions/transactionsSelectors';
 
 type GetSequenceParams = { account: Account; formValues: FormState };
 
-const getSequence = ({ account, formValues }: GetSequenceParams) => {
-    if (hasNetworkFeatures(account, 'rbf')) {
+const getSequence = (
+    networkConfigDeps: NetworkConfigDeps,
+    { account, formValues }: GetSequenceParams,
+) => {
+    if (hasNetworkFeatures(networkConfigDeps, account, 'rbf')) {
         return BTC_RBF_SEQUENCE;
     }
 
@@ -61,7 +69,7 @@ const getSequence = ({ account, formValues }: GetSequenceParams) => {
     return undefined; // Must be undefined for final (non-RBF) transaction with no locktime
 };
 
-type ComposeBitcoinTransactionFeeLevelsThunkState = WalletSettingsRootState;
+type ComposeBitcoinTransactionFeeLevelsThunkState = WalletSettingsRootState & NetworksRootState;
 
 export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
@@ -73,11 +81,14 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { account, excludedUtxos, feeInfo, prison } = composeContext;
 
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
 
-        const isSatoshis = areSatsAmountUnit && hasNetworkFeatures(account, 'amount-unit');
+        const isSatoshis =
+            areSatsAmountUnit && hasNetworkFeatures(networkConfigDeps, account, 'amount-unit');
 
         if (!account.addresses || !account.utxo)
             return rejectWithValue({
@@ -85,7 +96,12 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
                 message: 'Account is missing addresses or utxos.',
             });
 
-        const composeOutputs = getBitcoinComposeOutputs(formState, account.symbol, isSatoshis);
+        const composeOutputs = getBitcoinComposeOutputs(
+            networkConfigDeps,
+            formState,
+            account.symbol,
+            isSatoshis,
+        );
         if (composeOutputs.length < 1)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
@@ -102,7 +118,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             });
         }
 
-        const sequence = getSequence({ account, formValues: formState });
+        const sequence = getSequence(networkConfigDeps, { account, formValues: formState });
 
         // exclude unspendable utxos if coin control is not enabled
         // unspendable utxos are defined in `useSendForm` hook
@@ -218,7 +234,9 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
                 // round to
                 tx.feePerByte = new BigNumber(tx.feePerByte).decimalPlaces(2).toString();
                 if (typeof tx.max === 'string') {
-                    tx.max = isSatoshis ? tx.max : formatNetworkAmount(tx.max, account.symbol);
+                    tx.max = isSatoshis
+                        ? tx.max
+                        : formatNetworkAmount(networkConfigDeps, tx.max, account.symbol);
                 }
             } else if (['MISSING-UTXOS', 'NOT-ENOUGH-FUNDS'].includes(tx.error)) {
                 const getErrorMessage = () => {
@@ -253,7 +271,9 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-type SignBitcoinSendFormTransactionThunkState = TransactionsRootState & WalletSettingsRootState;
+type SignBitcoinSendFormTransactionThunkState = TransactionsRootState &
+    WalletSettingsRootState &
+    NetworksRootState;
 
 export const signBitcoinSendFormTransactionThunk = createThunk<
     SignedTransaction,
@@ -268,6 +288,8 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
         { getState, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
         const transactions = selectTransactions(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
@@ -328,7 +350,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             );
         }
 
-        if (hasNetworkFeatures(selectedAccount, 'amount-unit')) {
+        if (hasNetworkFeatures(networkConfigDeps, selectedAccount, 'amount-unit')) {
             signEnhancement.amountUnit = bitcoinAmountUnit;
         }
 

@@ -9,6 +9,7 @@ import {
 } from '@suite/metadata';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { returnStableArrayIfEmpty, selectDispatch } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
@@ -72,6 +73,8 @@ type UtxoSelectionProps = {
 };
 
 export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         account,
         network,
@@ -215,7 +218,11 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                             </Labeling>
                         </Text>
                         <FormattedCryptoAmount
-                            value={formatNetworkAmount(utxo.amount, account.symbol)}
+                            value={formatNetworkAmount(
+                                networkConfigDeps,
+                                utxo.amount,
+                                account.symbol,
+                            )}
                             symbol={account.symbol}
                         />
                     </Row>
@@ -282,7 +289,12 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                 as="div"
                             >
                                 <BaseCurrencyValue
-                                    amount={formatNetworkAmount(utxo.amount, account.symbol, false)}
+                                    amount={formatNetworkAmount(
+                                        networkConfigDeps,
+                                        utxo.amount,
+                                        account.symbol,
+                                        false,
+                                    )}
                                     symbol={network.symbol}
                                 />
                             </Text>

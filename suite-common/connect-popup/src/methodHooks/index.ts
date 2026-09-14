@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import type { CallMethodKeys } from '@trezor/connect';
 
 import { addressConfirmationModalHooks } from './addressConfirmation';
@@ -30,17 +31,21 @@ export const compatibilityHooks = <M extends CallMethodKeys>(
 
 // Runs before the permissions modal, so a call the host cannot fulfil is rejected up front.
 export const validateCallHooks = <M extends CallMethodKeys>(
+    networkConfigDeps: NetworkConfigDeps,
     params: Pick<PreCallHookParams<M>, 'method' | 'payload'>,
 ) => {
-    selectAccountHooks.validateHook(params);
+    selectAccountHooks.validateHook(networkConfigDeps, params);
 };
 
-export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHookParams<M>) => {
-    await bitcoinSignTransaction.preCallHook(params);
-    await solanaSignTransaction.preCallHook(params);
-    await stellarSignTransaction.preCallHook(params);
+export const preCallHooks = async <M extends CallMethodKeys>(
+    networkConfigDeps: NetworkConfigDeps,
+    params: PreCallHookParams<M>,
+) => {
+    await bitcoinSignTransaction.preCallHook(networkConfigDeps, params);
+    await solanaSignTransaction.preCallHook(networkConfigDeps, params);
+    await stellarSignTransaction.preCallHook(networkConfigDeps, params);
 
-    const ethereumPayload = await ethereumSignTransaction.preCallHook(params);
+    const ethereumPayload = await ethereumSignTransaction.preCallHook(networkConfigDeps, params);
     if (ethereumPayload) return ethereumPayload;
 
     const requestLoginPayload = requestLoginHooks.preCallHook(params);
@@ -52,14 +57,17 @@ export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHook
     return params.payload;
 };
 
-export async function postCallHooks<M extends CallMethodKeys>(params: PostCallHookParams<M>) {
+export async function postCallHooks<M extends CallMethodKeys>(
+    networkConfigDeps: NetworkConfigDeps,
+    params: PostCallHookParams<M>,
+) {
     const hooks = [
         await bitcoinSignTransaction.postCallHook(params),
         await ethereumSignTransaction.postCallHook(params),
         await solanaSignTransaction.postCallHook(params),
         await stellarSignTransaction.postCallHook(params),
         await addressConfirmationModalHooks.postCallHook(params),
-        await selectAccountHooks.postCallHook(params),
+        await selectAccountHooks.postCallHook(networkConfigDeps, params),
         await cardanoGetPublicKeyCompat.postCallHook(params),
     ];
 

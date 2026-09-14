@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type SolanaAssetDiff, getSolanaAssetDiffLabel } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -14,6 +16,8 @@ type SolanaTxSimulationAssetProps = {
 };
 
 export const SolanaTxSimulationAsset = ({ assetDiff, network }: SolanaTxSimulationAssetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     // Unlike EVM, Solana reports at most one transfer per direction.
     const { in: received, out: sent, asset } = assetDiff;
 
@@ -40,6 +44,7 @@ export const SolanaTxSimulationAsset = ({ assetDiff, network }: SolanaTxSimulati
                                     id="moduleConnectPopup.simulation.sendingAsset"
                                     values={{
                                         amount: getSolanaAssetDiffLabel(
+                                            networkConfigDeps,
                                             assetDiff,
                                             sent,
                                             network.symbol,
@@ -65,6 +70,7 @@ export const SolanaTxSimulationAsset = ({ assetDiff, network }: SolanaTxSimulati
                                     id="moduleConnectPopup.simulation.receivingAsset"
                                     values={{
                                         amount: getSolanaAssetDiffLabel(
+                                            networkConfigDeps,
                                             assetDiff,
                                             received,
                                             network.symbol,

@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
@@ -13,11 +14,13 @@ import { useSelector } from 'src/hooks/suite';
 import { type WalletParams } from 'src/types/wallet';
 
 export const AccountNavigation = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectIsNftSectionEnabled);
-    const network = getNetworkOptional(routerParams?.symbol);
+    const network = getNetworkOptional(networkConfigDeps, routerParams?.symbol);
     const goToWithAnalytics = useGoToWithAnalytics(account);
 
     const accountTabs: NavigationItem[] = [
@@ -36,7 +39,7 @@ export const AccountNavigation = () => {
                 goToWithAnalytics({ routeName: 'wallet-tokens', preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
-            isHidden: !hasNetworkFeatures(account, 'tokens'),
+            isHidden: !hasNetworkFeatures(networkConfigDeps, account, 'tokens'),
             activeRoutes: [
                 'wallet-tokens',
                 'wallet-tokens-hidden',
@@ -51,7 +54,7 @@ export const AccountNavigation = () => {
                 goToWithAnalytics({ routeName: 'wallet-nfts', preserveParams: true });
             },
             title: <Translation id="TR_NAV_NFTS" />,
-            isHidden: !hasNetworkFeatures(account, 'nfts') || !enabledNftSection,
+            isHidden: !hasNetworkFeatures(networkConfigDeps, account, 'nfts') || !enabledNftSection,
             activeRoutes: ['wallet-nfts', 'wallet-nfts-hidden'],
             'data-testid': '@wallet/menu/wallet-nfts',
         },
@@ -70,7 +73,7 @@ export const AccountNavigation = () => {
                 });
             },
             title: <Translation id="TR_NAV_STAKING" />,
-            isHidden: !hasNetworkFeatures(account, 'staking'),
+            isHidden: !hasNetworkFeatures(networkConfigDeps, account, 'staking'),
             'data-testid': '@wallet/menu/staking',
         },
         {

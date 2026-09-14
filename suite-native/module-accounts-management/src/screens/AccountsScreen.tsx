@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 
 import { isStakingSymbol } from '@suite-common/wallet-utils';
@@ -22,6 +24,8 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
 >;
 
 export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const networksFilter = useMemo(
         () => route.params?.networksFilter ?? [],
         [route.params?.networksFilter],
@@ -30,7 +34,10 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
     const handleSelectAccount: OnSelectAccount = ({ account }) => {
         const { key: accountKey, symbol } = account;
 
-        if (isNetworkWithTokens(symbol) || isStakingSymbol(symbol)) {
+        if (
+            isNetworkWithTokens(networkConfigDeps, symbol) ||
+            isStakingSymbol(networkConfigDeps, symbol)
+        ) {
             navigation.navigate(RootStackRoutes.AccountAssets, { accountKey });
 
             return;

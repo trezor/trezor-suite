@@ -1,7 +1,7 @@
-import type { LegacyNetworkConfigs } from './networksConfig';
+import type { NetworkSymbol } from './NetworkModules';
 
 // Preserve the existing display order until modules own their ordering (issue #32060).
-export const networkDisplayOrder: readonly (keyof LegacyNetworkConfigs)[] = [
+export const networkDisplayOrder: readonly NetworkSymbol[] = [
     'btc',
     'eth',
     'pol',

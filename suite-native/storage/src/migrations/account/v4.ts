@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 
 type AccountLike = {
@@ -6,8 +7,11 @@ type AccountLike = {
     index: number;
 };
 
-const getAccountTypeOrder = ({ symbol, accountType }: AccountLike) => {
-    const network = getNetworkOptional(symbol);
+const getAccountTypeOrder = (
+    networkConfigDeps: NetworkConfigDeps,
+    { symbol, accountType }: AccountLike,
+) => {
+    const network = getNetworkOptional(networkConfigDeps, symbol);
 
     return network ? Object.keys(network.accountTypes).indexOf(accountType) : -1;
 };
@@ -17,6 +21,7 @@ const getAccountTypeOrder = ({ symbol, accountType }: AccountLike) => {
  * of networks missing from the current config because persisted data may predate it.
  */
 export const sortAccountsByCoin = <T extends AccountLike>(
+    networkConfigDeps: NetworkConfigDeps,
     oldAccounts: T[],
     supportedNetworks: readonly string[],
 ): T[] =>
@@ -25,7 +30,8 @@ export const sortAccountsByCoin = <T extends AccountLike>(
             supportedNetworks.indexOf(a.symbol) - supportedNetworks.indexOf(b.symbol);
         if (networkOrder !== 0) return networkOrder;
 
-        const accountTypeOrder = getAccountTypeOrder(a) - getAccountTypeOrder(b);
+        const accountTypeOrder =
+            getAccountTypeOrder(networkConfigDeps, a) - getAccountTypeOrder(networkConfigDeps, b);
         if (accountTypeOrder !== 0) return accountTypeOrder;
 
         return a.index - b.index;

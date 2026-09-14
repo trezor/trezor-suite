@@ -1,6 +1,10 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import type { CryptoId } from 'invity-api';
 
 import { toCaseAwareCryptoId } from './cryptoIdUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 describe('cryptoIdUtils', () => {
     describe('toCaseAwareCryptoId', () => {
@@ -20,7 +24,7 @@ describe('cryptoIdUtils', () => {
                 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' as CryptoId,
             ],
         ])('should return %s for %s', (expectedValue, cryptoId) => {
-            expect(toCaseAwareCryptoId(cryptoId)).toBe(expectedValue);
+            expect(toCaseAwareCryptoId(networkConfigDeps, cryptoId)).toBe(expectedValue);
         });
     });
 });

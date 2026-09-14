@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import {
     isDustValuePhishingFixtures,
     isFakeTokenPhishingFixtures,
@@ -9,11 +11,13 @@ import { DUST_PHISHING_THRESHOLD } from './constants';
 import { detectors } from './detectors';
 import { isPhishingTransaction } from './phishing';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 describe('isDustValuePhishing', () => {
     isDustValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
             expect(
-                detectors.dustValue.validator({
+                detectors(networkConfigDeps).dustValue.validator({
                     transaction,
                     dustThreshold: DUST_PHISHING_THRESHOLD,
                 }).isPhishing,
@@ -25,7 +29,9 @@ describe('isDustValuePhishing', () => {
 describe('isZeroValuePhishing', () => {
     isZeroValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
-            expect(detectors.zeroValue.validator({ transaction }).isPhishing).toBe(result);
+            expect(
+                detectors(networkConfigDeps).zeroValue.validator({ transaction }).isPhishing,
+            ).toBe(result);
         });
     });
 });
@@ -34,7 +40,8 @@ describe('isFakeTokenPhishing', () => {
     isFakeTokenPhishingFixtures.forEach(({ testName, transaction, tokenDefinitions, result }) => {
         test(testName, () => {
             expect(
-                detectors.fakeToken.validator({ transaction, tokenDefinitions }).isPhishing,
+                detectors(networkConfigDeps).fakeToken.validator({ transaction, tokenDefinitions })
+                    .isPhishing,
             ).toBe(result);
         });
     });
@@ -43,7 +50,9 @@ describe('isFakeTokenPhishing', () => {
 describe('isUnknownTxPhishing', () => {
     isUnknownTxPhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
-            expect(detectors.unknownTx.validator({ transaction }).isPhishing).toBe(result);
+            expect(
+                detectors(networkConfigDeps).unknownTx.validator({ transaction }).isPhishing,
+            ).toBe(result);
         });
     });
 });
@@ -52,7 +61,7 @@ describe('isPhishingTransaction', () => {
     isPhishingTransactionFixtures.forEach(({ testName, transaction, tokenDefinitions, result }) => {
         test(testName, () => {
             expect(
-                isPhishingTransaction({
+                isPhishingTransaction(networkConfigDeps, {
                     transaction,
                     tokenDefinitions,
                     txsMarkedAsNotScam: [],

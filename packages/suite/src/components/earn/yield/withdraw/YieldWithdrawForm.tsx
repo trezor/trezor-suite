@@ -4,6 +4,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getYieldFlowStepSequence,
@@ -26,6 +27,8 @@ import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
 
 export const YieldWithdrawForm = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const {
@@ -78,7 +81,7 @@ export const YieldWithdrawForm = () => {
     const isAmountInvalidDecimals = amountIssues.includes('amount-invalid-decimals');
     const hasBlockingAmountIssue = amountIssues.length > 0;
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const nativeSymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
     const withdrawActionToken = flowType === 'redeem' ? receiptToken : token;
     // Approximate fiat value shown under the amount input, from the token's own rate.
     const actionApproxFiat = {
@@ -292,7 +295,8 @@ export const YieldWithdrawForm = () => {
                                     id="TR_EARN_YIELD_UNWRAP_DESCRIPTION"
                                     values={{
                                         tokenSymbol: token.symbol,
-                                        networkName: getNetwork(account.symbol).name,
+                                        networkName: getNetwork(networkConfigDeps, account.symbol)
+                                            .name,
                                     }}
                                 />
                             ),

@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -62,10 +63,10 @@ export const AccountAssetsScreen = ({
     const sections = useSelector((state: NativeAccountsRootState) =>
         selectAccountListSectionsWithZeroBalanceGroup(state, accountKey),
     );
-    const defiTokenCount = useSelector((state: TokensRootState) =>
+    const defiTokenCount = useSelector((state: TokensRootState & NetworksRootState) =>
         selectAccountDefiTokensCount(state, accountKey),
     );
-    const manuallyHiddenTokens = useSelector((state: TokensRootState) =>
+    const manuallyHiddenTokens = useSelector((state: TokensRootState & NetworksRootState) =>
         selectAccountManuallyHiddenTokensCount(state, accountKey),
     );
 

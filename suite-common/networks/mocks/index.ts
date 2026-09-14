@@ -3,3 +3,4 @@ export { type MockNetworkSymbol, mockNetworkMetadata } from './mockNetworkMetada
 export { mockNetworksState } from './mockNetworksState';
 export { mockNetworkModule } from './mockNetworkModule';
 export { mockNetworkModuleRepository } from './mockNetworkModuleRepository';
+export { mockNetworkConfigDeps } from './mockNetworkConfigDeps';

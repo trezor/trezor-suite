@@ -5,6 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -20,6 +21,8 @@ import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 export const ClaimCard = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const selectedAccount = useSelector(selectSelectedAccount);
     const claimTxs = useSelector(state =>
@@ -32,7 +35,7 @@ export const ClaimCard = () => {
     const isClaimPending = useMemo(() => claimTxs.some(tx => isPending(tx)), [claimTxs]);
 
     const { canClaim = false, claimableAmount = '0' } =
-        getStakingDataForNetwork(selectedAccount) ?? {};
+        getStakingDataForNetwork(networkConfigDeps, selectedAccount) ?? {};
     const isClaimButtonDisabled = isClaimingDisabled || !selectedAccount;
 
     // Show success message when claim tx confirmation is complete.

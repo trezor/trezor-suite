@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -14,7 +17,9 @@ type AssetItemStakingBadgeProps = {
 };
 
 export const AssetItemStakingBadge = memo(({ symbol }: AssetItemStakingBadgeProps) => {
-    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState) =>
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState & NetworksRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, symbol),
     );
     const stakedWithFiveBinariesAccount = useSelector((state: StakeRootState) =>
@@ -25,7 +30,7 @@ export const AssetItemStakingBadge = memo(({ symbol }: AssetItemStakingBadgeProp
         return null;
     }
 
-    if (getNetworkType(symbol) === 'cardano' && stakedWithFiveBinariesAccount) {
+    if (getNetworkType(networkConfigDeps, symbol) === 'cardano' && stakedWithFiveBinariesAccount) {
         return <ZeroApyBadge />;
     }
 

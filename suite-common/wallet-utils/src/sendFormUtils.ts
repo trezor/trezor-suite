@@ -7,6 +7,7 @@ import {
     type Merge,
 } from 'react-hook-form';
 
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type Network,
     type NetworkSymbol,
@@ -339,6 +340,7 @@ export const findToken = (tokens: Account['tokens'], address?: string | null) =>
 // BTC composeTransaction
 // returns ComposeOutput[]
 export const getBitcoinComposeOutputs = (
+    networkConfigDeps: NetworkConfigDeps,
     values: Partial<FormState>,
     symbol: Account['symbol'],
     isSatoshis?: boolean,
@@ -372,7 +374,7 @@ export const getBitcoinComposeOutputs = (
         } else if (output.amount) {
             const amount = isSatoshis
                 ? output.amount
-                : networkAmountToSmallestUnit(output.amount, symbol);
+                : networkAmountToSmallestUnit(networkConfigDeps, output.amount, symbol);
 
             if (address) {
                 result.push({
@@ -616,12 +618,10 @@ interface GetAmountValidationResultParams {
     areSatsUsed?: boolean;
 }
 
-export const getAmountValidationResult = ({
-    amount,
-    contractAddress,
-    account,
-    areSatsUsed,
-}: GetAmountValidationResultParams): AmountValidationResult => {
+export const getAmountValidationResult = (
+    networkConfigDeps: NetworkConfigDeps,
+    { amount, contractAddress, account, areSatsUsed }: GetAmountValidationResultParams,
+): AmountValidationResult => {
     const token = findToken(account.tokens, contractAddress);
     let formattedAvailableBalance: string;
 
@@ -630,7 +630,7 @@ export const getAmountValidationResult = ({
     } else {
         formattedAvailableBalance = areSatsUsed
             ? account.availableBalance
-            : formatNetworkAmount(account.availableBalance, account.symbol);
+            : formatNetworkAmount(networkConfigDeps, account.availableBalance, account.symbol);
     }
 
     const amountBig = new BigNumber(amount ?? '0');
@@ -638,10 +638,13 @@ export const getAmountValidationResult = ({
     if (amountBig.gt(formattedAvailableBalance)) {
         const reserve =
             !token && (account.networkType === 'ripple' || account.networkType === 'stellar')
-                ? formatNetworkAmount(account.misc.reserve, account.symbol)
+                ? formatNetworkAmount(networkConfigDeps, account.misc.reserve, account.symbol)
                 : undefined;
 
-        if (reserve && amountBig.lt(formatNetworkAmount(account.balance, account.symbol))) {
+        if (
+            reserve &&
+            amountBig.lt(formatNetworkAmount(networkConfigDeps, account.balance, account.symbol))
+        ) {
             return { type: 'reserve', reserve };
         }
 
@@ -651,16 +654,21 @@ export const getAmountValidationResult = ({
     return { type: 'ok' };
 };
 
-export const isAmountTooHigh = (params: GetAmountValidationResultParams): boolean =>
-    getAmountValidationResult(params).type !== 'ok';
+export const isAmountTooHigh = (
+    networkConfigDeps: NetworkConfigDeps,
+    params: GetAmountValidationResultParams,
+): boolean => getAmountValidationResult(networkConfigDeps, params).type !== 'ok';
 
 export const getMevProtectedTxData = (
+    networkConfigDeps: NetworkConfigDeps,
     symbol: NetworkSymbol,
     hex: string,
     isMevProtectionEnabled: boolean,
 ) => {
     if (!isMevProtectionEnabled) return { hex, disableAlternativeRPC: true };
-    const isMevSupported = getNetwork(symbol).features.includes('mev-protection');
+    const isMevSupported = getNetwork(networkConfigDeps, symbol).features.includes(
+        'mev-protection',
+    );
     if (!isMevSupported) return hex;
 
     return hex;
@@ -679,17 +687,16 @@ interface GetNetworkReserveProps {
 /**
  * Reserve defined in networksConfig.ts applies to the native token only
  */
-export const getNetworkReserve = ({
-    symbol,
-    contractAddress,
-    isEnabled,
-}: GetNetworkReserveProps) => {
+export const getNetworkReserve = (
+    networkConfigDeps: NetworkConfigDeps,
+    { symbol, contractAddress, isEnabled }: GetNetworkReserveProps,
+) => {
     if (
         (!!contractAddress && contractAddress !== '0x0000000000000000000000000000000000000000') ||
         !isEnabled
     )
         return undefined;
-    const network = getNetwork(symbol);
+    const network = getNetwork(networkConfigDeps, symbol);
 
     return network.nativeTokenReserve;
 };
@@ -703,15 +710,18 @@ interface GetCryptoAmountWithReserveProps {
     isNetworkReserveEnabled?: boolean;
 }
 
-export const getCryptoAmountWithReserve = ({
-    symbol,
-    contractAddress,
-    balance,
-    amount,
-    fee = '0',
-    isNetworkReserveEnabled,
-}: GetCryptoAmountWithReserveProps) => {
-    const networkReserve = getNetworkReserve({
+export const getCryptoAmountWithReserve = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        symbol,
+        contractAddress,
+        balance,
+        amount,
+        fee = '0',
+        isNetworkReserveEnabled,
+    }: GetCryptoAmountWithReserveProps,
+) => {
+    const networkReserve = getNetworkReserve(networkConfigDeps, {
         symbol,
         contractAddress,
         isEnabled: isNetworkReserveEnabled,
@@ -739,15 +749,18 @@ interface GetCryptoMaxAmountWithReserveProps {
     isNetworkReserveEnabled?: boolean;
 }
 
-export const getCryptoMaxAmountWithReserve = ({
-    symbol,
-    contractAddress,
-    balance,
-    amount,
-    fee = '0',
-    isNetworkReserveEnabled,
-}: GetCryptoMaxAmountWithReserveProps) => {
-    const networkReserve = getNetworkReserve({
+export const getCryptoMaxAmountWithReserve = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        symbol,
+        contractAddress,
+        balance,
+        amount,
+        fee = '0',
+        isNetworkReserveEnabled,
+    }: GetCryptoMaxAmountWithReserveProps,
+) => {
+    const networkReserve = getNetworkReserve(networkConfigDeps, {
         symbol,
         contractAddress,
         isEnabled: isNetworkReserveEnabled,

@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type Network } from '@suite-common/wallet-config';
@@ -59,6 +60,8 @@ export const AssetRow = memo(
         accounts,
         isStakeNetwork,
     }: AssetTableRowProps) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
         const { symbol } = network;
         const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
@@ -90,6 +93,7 @@ export const AssetRow = memo(
             shouldRenderStakingRow,
             shouldRenderTokenRow,
         } = handleTokensAndStakingData(
+            networkConfigDeps,
             assetTokens,
             stakingAccountsForAsset,
             isStakingActive,
@@ -198,7 +202,7 @@ export const AssetRow = memo(
                                 </AssetActionButton>
                             )}
 
-                            {!isTestnet(symbol) && (
+                            {!isTestnet(networkConfigDeps, symbol) && (
                                 <AssetActionButton
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"

@@ -1,4 +1,6 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { isCryptoIconSymbol, isNetworkIconSymbol } from '@suite-common/icons';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getCoingeckoId, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     isSupportedEthereumNetwork,
@@ -24,6 +26,8 @@ export const TokenIcon = ({
     wrappedTokenIcon = 'token',
     'data-testid': dataTestId,
 }: TokenIconProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     if (
         wrappedTokenIcon === 'network' &&
         isSupportedEthereumNetwork(symbol) &&
@@ -34,7 +38,7 @@ export const TokenIcon = ({
 
     if (!contractAddress) {
         if (showNetworkIcon) {
-            const network = getNetworkOptional(symbol);
+            const network = getNetworkOptional(networkConfigDeps, symbol);
             const networkSymbol = network?.settlementLayer ?? symbol;
             const displaySymbol = networkSymbol !== symbol ? networkSymbol : symbol;
             const tokenIcon = (
@@ -62,7 +66,9 @@ export const TokenIcon = ({
         return <NativeTokenIcon symbol={symbol} size={size} data-testid={dataTestId} />;
     }
 
-    const coingeckoId = isNetworkSymbol(symbol) ? getCoingeckoId(symbol) : undefined;
+    const coingeckoId = isNetworkSymbol(networkConfigDeps, symbol)
+        ? getCoingeckoId(networkConfigDeps, symbol)
+        : undefined;
 
     if (!coingeckoId) {
         if (isCryptoIconSymbol(symbol)) {

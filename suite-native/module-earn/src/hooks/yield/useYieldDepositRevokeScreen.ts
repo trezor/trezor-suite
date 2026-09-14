@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
@@ -36,6 +37,8 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const useYieldDepositRevokeScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const { dispatch } = useServices(selectDispatch);
@@ -69,7 +72,10 @@ export const useYieldDepositRevokeScreen = () => {
         pendingTransaction: session?.action.pendingTransaction,
         transactionType: 'revoke',
     });
-    const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
+    const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited(networkConfigDeps, {
+        session,
+        token,
+    });
     const intendedDepositAmount = route.params.amount ?? session?.action.amount ?? undefined;
     const revokeRequestAmount = intendedDepositAmount ?? allowanceAmount ?? '';
     const approvedAllowanceAmount = allowanceAmount ?? '';
@@ -311,7 +317,7 @@ export const useYieldDepositRevokeScreen = () => {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetwork(networkConfigDeps, account.symbol).name;
     const feeSelectorProps =
         revokeFeeTransaction !== null
             ? {

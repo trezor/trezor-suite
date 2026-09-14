@@ -1,6 +1,8 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { asBaseCurrencyAmount, toTokenSymbol } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row, Spinner, Text } from '@trezor/components';
@@ -14,6 +16,8 @@ type YieldRewardsListProps = {
 };
 
 export const YieldRewardsList = ({ accountRewards, isLoading }: YieldRewardsListProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     if (isLoading) {
@@ -35,7 +39,7 @@ export const YieldRewardsList = ({ accountRewards, isLoading }: YieldRewardsList
     return (
         <Column gap={16} data-testid="@yield/claim/rewards-list">
             {accountRewards.rewards.map((reward, index) => {
-                const claimableUnits = subunitsToUnits({
+                const claimableUnits = subunitsToUnits(networkConfigDeps, {
                     value: asAmountSubunit(new BigNumber(reward.claimable)),
                     decimals: reward.token.decimals,
                 });

@@ -13,9 +13,13 @@
     },
     "include": [".", "**/*.json"],
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/feedback" },
         { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/jsonl" },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-constants"
         },
@@ -46,6 +50,7 @@
         { "path": "../theme" },
         { "path": "../type-utils" },
         { "path": "../utils" },
+        { "path": "../connect" },
         { "path": "../eslint" }
     ]
 }

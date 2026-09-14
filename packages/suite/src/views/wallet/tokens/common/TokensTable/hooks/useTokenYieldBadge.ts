@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectBestEnabledYieldVault } from '@suite-common/earn-stablecoin';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     getYieldVaultForOutputToken,
@@ -38,6 +40,8 @@ export const useTokenYieldBadge = ({
     type,
     yieldOpportunities,
 }: UseTokenYieldBadgeParams): TokenYieldBadgeData | null => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const matchedVaults = useMemo(() => {
         const heldToken = {
             address: token.contract,
@@ -50,7 +54,7 @@ export const useTokenYieldBadge = ({
         // hidden-tokens tables stay badge-free because they pass no yield opportunities.
         switch (type) {
             case 'defi': {
-                const vault = getYieldVaultForOutputToken({
+                const vault = getYieldVaultForOutputToken(networkConfigDeps, {
                     vaults: yieldOpportunities,
                     networkSymbol,
                     token: heldToken,
@@ -59,7 +63,7 @@ export const useTokenYieldBadge = ({
                 return vault ? [vault] : [];
             }
             case 'default':
-                return getYieldVaultsForInputToken({
+                return getYieldVaultsForInputToken(networkConfigDeps, {
                     vaults: yieldOpportunities,
                     networkSymbol,
                     token: heldToken,
@@ -69,14 +73,22 @@ export const useTokenYieldBadge = ({
             default:
                 return exhaustive(type);
         }
-    }, [yieldOpportunities, networkSymbol, token.contract, token.symbol, token.decimals, type]);
+    }, [
+        networkConfigDeps,
+        yieldOpportunities,
+        networkSymbol,
+        token.contract,
+        token.symbol,
+        token.decimals,
+        type,
+    ]);
 
     const vaultsWithPosition = useMemo(
         () =>
             matchedVaults.filter(vault =>
-                hasYieldVaultPosition({ networkSymbol, vault, accountTokens }),
+                hasYieldVaultPosition(networkConfigDeps, { networkSymbol, vault, accountTokens }),
             ),
-        [matchedVaults, networkSymbol, accountTokens],
+        [networkConfigDeps, matchedVaults, networkSymbol, accountTokens],
     );
 
     // A vault the user already deposited into states the rate they actually earn, so it

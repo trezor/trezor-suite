@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { sortByCoin } from '@suite-common/wallet-utils';
 import { isNotUndefined } from '@trezor/utils';
 
@@ -14,6 +15,8 @@ type UseYieldAccountsVisibilityProps = {
 export const useYieldAccountsVisibility = ({
     yieldAccountOpportunities,
 }: UseYieldAccountsVisibilityProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -43,7 +46,11 @@ export const useYieldAccountsVisibility = ({
             const vaultAccounts = vaultOpportunities
                 .map(opportunity => opportunity.account)
                 .filter(isNotUndefined);
-            const [firstAccountByCoinOrder] = sortByCoin([...vaultAccounts], supportedNetworks);
+            const [firstAccountByCoinOrder] = sortByCoin(
+                networkConfigDeps,
+                [...vaultAccounts],
+                supportedNetworks,
+            );
 
             const fallbackOpportunity = firstAccountByCoinOrder
                 ? vaultOpportunities.find(
@@ -64,7 +71,7 @@ export const useYieldAccountsVisibility = ({
                 opportunity => !visibleOpportunityKeys.has(opportunity.key),
             ),
         };
-    }, [supportedNetworks, yieldAccountOpportunities]);
+    }, [networkConfigDeps, supportedNetworks, yieldAccountOpportunities]);
 
     const displayedYieldAccountOpportunities = useMemo(
         () => (isExpanded ? yieldAccountOpportunities : collapsedYieldAccountOpportunities),

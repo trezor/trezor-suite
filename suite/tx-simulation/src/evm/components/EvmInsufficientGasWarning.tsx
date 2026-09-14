@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
@@ -17,6 +19,8 @@ export function EvmInsufficientGasWarning({
     accountBalance,
     networkSymbol,
 }: EvmInsufficientGasWarningProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const fee = composedLevel?.type === 'final' ? composedLevel.fee : undefined;
     const hasSufficientFunds = useMemo(
         () => !fee || new BigNumber(fee).lte(accountBalance),
@@ -34,7 +38,10 @@ export function EvmInsufficientGasWarning({
                 <Translation
                     id="AMOUNT_NOT_ENOUGH_CURRENCY_FEE"
                     values={{
-                        networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
+                        networkDisplaySymbol: getNetworkDisplaySymbol(
+                            networkConfigDeps,
+                            networkSymbol,
+                        ),
                     }}
                 />
             }

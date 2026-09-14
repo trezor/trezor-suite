@@ -1,5 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type Dispatch } from '@suite-common/redux-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
@@ -59,17 +60,20 @@ export type GraphData = {
     events?: GroupedBalanceMovementEvent[];
 };
 
-export const fetchGraphData = async ({
-    accounts,
-    baseCurrencyCode,
-    endOfTimeFrameDate,
-    startOfTimeFrameDate,
-    eventsAccount,
-    isElectrumBackend,
-    forceRefetch,
-    dispatch,
-}: FetchGraphDataParams): Promise<GraphData> => {
-    const points = await getMultipleAccountBalanceHistoryWithFiat({
+export const fetchGraphData = async (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        accounts,
+        baseCurrencyCode,
+        endOfTimeFrameDate,
+        startOfTimeFrameDate,
+        eventsAccount,
+        isElectrumBackend,
+        forceRefetch,
+        dispatch,
+    }: FetchGraphDataParams,
+): Promise<GraphData> => {
+    const points = await getMultipleAccountBalanceHistoryWithFiat(networkConfigDeps, {
         accounts,
         baseCurrencyCode,
         startOfTimeFrameDate,

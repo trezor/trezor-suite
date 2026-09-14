@@ -39,7 +39,7 @@ export const createDesktopApp =
         const root = createRoot(container);
         root.render(<LoadingScreen />);
 
-        const preloadAction = await preloadStore();
+        const preloadAction = await preloadStore(deps.services.networks);
         const { statePatch } = await deps.desktopApi.handshake();
 
         deps.services.hydrateReduxStore(preloadAction, statePatch);

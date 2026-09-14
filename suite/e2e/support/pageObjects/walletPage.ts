@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksState } from '@suite-common/networks';
 import { Locator, Page, expect } from '@playwright/test';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
@@ -196,7 +197,9 @@ export class WalletPage {
     async openAccount(params: WalletParams = {}) {
         await this.accountButton(params).click();
 
-        if (!params.symbol || !isTestnet(params.symbol)) {
+        const networks: NetworksState = await this.page.getReduxObject('networks');
+        const networkConfigDeps = selectNetworkConfigAccessors({ networks });
+        if (!params.symbol || !isTestnet(networkConfigDeps, params.symbol)) {
             await expect(this.fiatAmount).toBeVisible({ timeout: 25_000 });
         }
     }

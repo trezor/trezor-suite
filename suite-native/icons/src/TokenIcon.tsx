@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
@@ -106,6 +108,8 @@ interface TokenIconProps {
 }
 
 const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIconProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
@@ -132,11 +136,11 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
     const resolvedUrls = useAsyncMemo((): (string | number)[] | Promise<(string | number)[]> => {
         const fallbackIcon = [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
 
-        if (!isNetworkSymbol(symbol)) {
+        if (!isNetworkSymbol(networkConfigDeps, symbol)) {
             return fallbackIcon;
         }
 
-        const coingeckoId = getCoingeckoId(symbol);
+        const coingeckoId = getCoingeckoId(networkConfigDeps, symbol);
         if (!coingeckoId || !contractAddress) {
             return fallbackIcon;
         }
@@ -153,7 +157,11 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
                   )
                 : fallbackIcon;
 
-        const logoAddresses = getAssetLogoContractAddresses(symbol, contractAddress);
+        const logoAddresses = getAssetLogoContractAddresses(
+            networkConfigDeps,
+            symbol,
+            contractAddress,
+        );
 
         return logoAddresses instanceof Promise
             ? logoAddresses.then(toLogoUrls)
@@ -214,21 +222,26 @@ export const TokenIcon = ({
     size = 'small',
     wrappedTokenIcon = 'token',
 }: TokenIconProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
     if (
         wrappedTokenIcon === 'network' &&
-        isNetworkSymbol(symbol) &&
+        isNetworkSymbol(networkConfigDeps, symbol) &&
         isWrappedNativeToken(symbol, contractAddress)
     ) {
         contractAddress = undefined;
     }
 
-    if (!showNetworkIcon || !isNetworkSymbol(symbol)) {
+    if (!showNetworkIcon || !isNetworkSymbol(networkConfigDeps, symbol)) {
         return <TokenIconComponent symbol={symbol} contractAddress={contractAddress} size={size} />;
     }
 
-    const displaySymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
+    const displaySymbol = getNetworkDisplaySymbol(
+        networkConfigDeps,
+        symbol,
+    ) as NetworkDisplaySymbol;
     const showForNativeToken = displaySymbol === 'ETH' && symbol !== 'eth';
     const shouldShowNetwork =
         showForNativeToken || contractAddress || wrappedTokenIcon === 'network';

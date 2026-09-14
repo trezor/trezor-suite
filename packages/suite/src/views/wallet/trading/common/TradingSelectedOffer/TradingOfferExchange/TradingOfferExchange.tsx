@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     getSimulatedReceiveAmount,
@@ -33,6 +34,8 @@ import { useExchangeIssueAnalytics } from './useExchangeIssueAnalytics';
 import { TradingInfoItem } from '../TradingInfo/TradingInfoItem';
 
 export const TradingOfferExchange = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { handleClick, disabled } = useAsyncClickHandler();
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { device } = useDevice();
@@ -85,6 +88,7 @@ export const TradingOfferExchange = () => {
     const isSignData = formStep === 'SIGN_DATA' && !!signData;
 
     const simulatedReceiveAmount = getSimulatedReceiveAmount(
+        networkConfigDeps,
         simulationResult,
         selectedTrade.receive,
     );

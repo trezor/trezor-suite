@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
@@ -8,6 +10,8 @@ import { expect, test } from '../../support/fixtures';
 import type { IndexedDbDump } from '../../support/indexedDb';
 import type { TradingPage } from '../../support/pageObjects/trading/tradingPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const fundedSymbol = 'eth' as const;
 const insufficientCryptoAmount = '1000';
@@ -26,7 +30,10 @@ const buyAssets: {
 }[] = [
     {
         label: 'ETH@ETH',
-        buy: { searchFilter: 'Ethereum', assetCryptoId: getCryptoId(asNetworkSymbol('eth')) },
+        buy: {
+            searchFilter: 'Ethereum',
+            assetCryptoId: getCryptoId(networkConfigDeps, asNetworkSymbol('eth')),
+        },
         receiveNetwork: 'eth',
         accountIndex: 0,
     },
@@ -36,6 +43,7 @@ const buyAssets: {
             searchFilter: 'USDC',
             networkFilter: 'sol',
             assetCryptoId: getCryptoId(
+                networkConfigDeps,
                 asNetworkSymbol('sol'),
                 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
             ),
@@ -49,6 +57,7 @@ const buyAssets: {
             searchFilter: 'USDT',
             networkFilter: 'eth',
             assetCryptoId: getCryptoId(
+                networkConfigDeps,
                 asNetworkSymbol('eth'),
                 '0xdac17f958d2ee523a2206206994597c13d831ec7',
             ),
@@ -61,7 +70,7 @@ const buyAssets: {
         buy: {
             searchFilter: 'ETH',
             networkFilter: 'eth',
-            assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+            assetCryptoId: getCryptoId(networkConfigDeps, asNetworkSymbol('eth')),
         },
         receiveNetwork: 'eth',
         accountIndex: 0,

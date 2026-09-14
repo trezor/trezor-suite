@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getReceiveAddressHistoryList } from '@suite-common/address';
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -20,13 +21,16 @@ type BuildReceiveAddressItemsParams = {
     currentFreshAddress?: { path: string };
 };
 
-export const buildReceiveAddressItems = ({
-    account,
-    touchedAddresses,
-    pendingAddresses,
-    addressLabels,
-    currentFreshAddress,
-}: BuildReceiveAddressItemsParams): ReceiveAddressItem[] =>
+export const buildReceiveAddressItems = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        account,
+        touchedAddresses,
+        pendingAddresses,
+        addressLabels,
+        currentFreshAddress,
+    }: BuildReceiveAddressItemsParams,
+): ReceiveAddressItem[] =>
     getReceiveAddressHistoryList({
         account,
         touchedAddresses,
@@ -39,7 +43,7 @@ export const buildReceiveAddressItems = ({
         address: address.address,
         pathIndex: getAddressPathIndex(address.path),
         received: address.transfers
-            ? formatNetworkAmount(address.received || '0', account.symbol)
+            ? formatNetworkAmount(networkConfigDeps, address.received || '0', account.symbol)
             : undefined,
         label: addressLabels[address.address] ?? undefined,
         isFresh: !address.transfers,

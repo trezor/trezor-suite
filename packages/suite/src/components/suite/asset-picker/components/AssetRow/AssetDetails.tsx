@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { hasOwn } from '@trezor/utils';
@@ -21,8 +23,10 @@ export function AssetDetails({
     isDisabled = false,
     ...props
 }: AssetDetailsProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const badge = hasOwn(props, 'networkSymbol')
-        ? getNetwork(props.networkSymbol).name
+        ? getNetwork(networkConfigDeps, props.networkSymbol).name
         : props.networkName;
 
     return (

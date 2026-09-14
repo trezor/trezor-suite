@@ -4,6 +4,7 @@ import type { CryptoId } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     requiresTokenApproval,
@@ -27,6 +28,8 @@ import { TradingRevokeModal } from 'src/views/wallet/trading/common/TradingForm/
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 export const TradingFormOfferExchangeActions = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const context = useTradingFormContext<'exchange'>();
     const {
@@ -66,11 +69,12 @@ export const TradingFormOfferExchangeActions = () => {
     });
 
     const isReceiveAddressSelected = !!tradingReceiveAddress.receiveAddress;
-    const shouldShowApprovalStep = quote !== undefined && requiresTokenApproval(quote);
+    const shouldShowApprovalStep =
+        quote !== undefined && requiresTokenApproval(networkConfigDeps, quote);
     const isQuoteOutdated = quote?.send !== sendCryptoSelect?.id;
     const isQuoteForSelectedReceive = quote?.receive === receiveCryptoSelect?.id;
     const amountTooHigh = account
-        ? isAmountTooHigh({
+        ? isAmountTooHigh(networkConfigDeps, {
               amount,
               contractAddress: tokenAddress,
               account,

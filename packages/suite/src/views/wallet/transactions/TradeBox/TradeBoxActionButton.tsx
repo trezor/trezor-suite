@@ -4,6 +4,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { type Route, gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { Button } from '@trezor/components';
@@ -30,6 +31,8 @@ export const TradeBoxActionButton = ({
     children,
     isDisabled = false,
 }: TradeBoxActionButtonProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const dataTestId =
@@ -44,7 +47,7 @@ export const TradeBoxActionButton = ({
 
                 dispatch(
                     tradingActions.setTradingFromPrefilledAccount(
-                        getTradingPrefilledFromAccountData(account),
+                        getTradingPrefilledFromAccountData(networkConfigDeps, account),
                     ),
                 );
 

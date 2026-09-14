@@ -1,3 +1,8 @@
+import {
+    type NetworkConfigDeps,
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+} from '@suite-common/networks';
 import { A } from '@mobily/ts-belt';
 import { getDefaultStore } from 'jotai';
 
@@ -79,16 +84,19 @@ const getGraphError = (error: unknown): Error => {
     return new Error(String(error));
 };
 
-const fetchGraphDataToAtoms = async ({
-    instanceId,
-    accounts,
-    eventsAccount,
-    timeframeHours,
-    isElectrumBackend,
-    baseCurrencyCode,
-    forceRefetch,
-    dispatch,
-}: FetchGraphDataToAtomsParams): Promise<RefetchGraphThunkResult> => {
+const fetchGraphDataToAtoms = async (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        instanceId,
+        accounts,
+        eventsAccount,
+        timeframeHours,
+        isElectrumBackend,
+        baseCurrencyCode,
+        forceRefetch,
+        dispatch,
+    }: FetchGraphDataToAtomsParams,
+): Promise<RefetchGraphThunkResult> => {
     const atoms = getGraphAtomsForInstanceId(instanceId);
     const fetchTimestamp = Date.now();
     lastFetchTimestamps.set(atoms, fetchTimestamp);
@@ -96,7 +104,7 @@ const fetchGraphDataToAtoms = async ({
     const { startOfTimeFrameDate, endOfTimeFrameDate } =
         getTimeFrameForHistoryHours(timeframeHours);
 
-    const { points, events } = await fetchGraphData({
+    const { points, events } = await fetchGraphData(networkConfigDeps, {
         accounts,
         baseCurrencyCode,
         startOfTimeFrameDate,
@@ -123,52 +131,57 @@ const fetchGraphDataToAtoms = async ({
     return { status: RefetchGraphThunkStatus.Fetched };
 };
 
-type RefetchGraphThunkState = FetchTransactionsFromNowUntilTimestampThunkState;
+type RefetchGraphThunkState = FetchTransactionsFromNowUntilTimestampThunkState & NetworksRootState;
 
 export const refetchGraphThunk = createThunk<
     RefetchGraphThunkResult,
     RefetchGraphThunkParams,
     { rejectValue: string; state: RefetchGraphThunkState }
->(`${GRAPH_MODULE_PREFIX}/refetchGraph`, async (params, { dispatch, rejectWithValue }) => {
-    const {
-        instanceId,
-        accounts,
-        eventsAccount,
-        isDiscoveryRunning,
-        timeframeHours,
-        isElectrumBackend,
-        baseCurrencyCode,
-        forceRefetch,
-    } = params;
+>(
+    `${GRAPH_MODULE_PREFIX}/refetchGraph`,
+    async (params, { getState, dispatch, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
 
-    // The account list is not final while discovery is running, so the graph just
-    // keeps loading and waits for it to finish before starting to fetch values.
-    if (isDiscoveryRunning) {
-        return { status: RefetchGraphThunkStatus.WaitingForDiscovery };
-    }
-
-    if (A.isEmpty(accounts)) {
-        return rejectWithValue(GRAPH_NOT_AVAILABLE_ERROR_MESSAGE);
-    }
-
-    try {
-        return await fetchGraphDataToAtoms({
+        const {
             instanceId,
             accounts,
             eventsAccount,
+            isDiscoveryRunning,
             timeframeHours,
             isElectrumBackend,
             baseCurrencyCode,
             forceRefetch,
-            dispatch,
-        });
-    } catch (error) {
-        // Preserve the stack trace in the local console while storing only a sanitized message.
-        console.error(error);
+        } = params;
 
-        const graphError = getGraphError(error);
-        checkAndReportGraphError(graphError);
+        // The account list is not final while discovery is running, so the graph just
+        // keeps loading and waits for it to finish before starting to fetch values.
+        if (isDiscoveryRunning) {
+            return { status: RefetchGraphThunkStatus.WaitingForDiscovery };
+        }
 
-        return rejectWithValue(omitErrorMessageSensitiveData(graphError.message));
-    }
-});
+        if (A.isEmpty(accounts)) {
+            return rejectWithValue(GRAPH_NOT_AVAILABLE_ERROR_MESSAGE);
+        }
+
+        try {
+            return await fetchGraphDataToAtoms(networkConfigDeps, {
+                instanceId,
+                accounts,
+                eventsAccount,
+                timeframeHours,
+                isElectrumBackend,
+                baseCurrencyCode,
+                forceRefetch,
+                dispatch,
+            });
+        } catch (error) {
+            // Preserve the stack trace in the local console while storing only a sanitized message.
+            console.error(error);
+
+            const graphError = getGraphError(error);
+            checkAndReportGraphError(graphError);
+
+            return rejectWithValue(omitErrorMessageSensitiveData(graphError.message));
+        }
+    },
+);

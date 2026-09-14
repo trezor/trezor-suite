@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import {
@@ -59,18 +60,24 @@ export const getPushErrorType = (message: string): YieldPushTransactionError['er
 
 export type SignYieldActionReviewThunkState = DeviceRootState &
     YieldRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 export const signYieldActionReviewThunk = createThunk<
     { serializedTx: string },
     YieldActionReviewThunkPayload,
-    { rejectValue: YieldSignTransactionError; state: SignYieldActionReviewThunkState }
+    {
+        rejectValue: YieldSignTransactionError;
+        state: SignYieldActionReviewThunkState;
+    }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/signActionReview`,
     async (
         { flowData, flowKey, flowType, reviewToken, selectedFee },
         { dispatch, getState, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const session = selectYieldSession(getState(), flowType, flowKey);
         const {
             action: { review },
@@ -101,7 +108,7 @@ export const signYieldActionReviewThunk = createThunk<
         let transactionReview: ReturnType<typeof buildStablecoinYieldTransactionReview>;
 
         try {
-            transactionReview = buildStablecoinYieldTransactionReview({
+            transactionReview = buildStablecoinYieldTransactionReview(networkConfigDeps, {
                 amount: review.amount,
                 selectedFee: selectedFee ?? null,
                 symbol: flowData.account.symbol,
@@ -179,7 +186,8 @@ export const signYieldActionReviewThunk = createThunk<
 export type PushYieldActionReviewThunkState = MevProtectionRootState &
     YieldRootState &
     SynchronizeSentTransactionThunkState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 export type PushYieldActionReviewThunkDeps = SynchronizeSentTransactionThunkDeps;
 
@@ -194,6 +202,8 @@ export const pushYieldActionReviewThunk = createThunk<
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/pushActionReview`,
     async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const session = selectYieldSession(getState(), flowType, flowKey);
         const txReview = selectYieldTxReview(getState());
         const { precomposedForm, precomposedTx, serializedTx } = txReview;
@@ -218,7 +228,7 @@ export const pushYieldActionReviewThunk = createThunk<
             });
         }
 
-        const pushResponse = await pushYieldTransaction({
+        const pushResponse = await pushYieldTransaction(networkConfigDeps, {
             tx: serializedTx.tx,
             account: flowData.account,
             isMevProtectionEnabled:

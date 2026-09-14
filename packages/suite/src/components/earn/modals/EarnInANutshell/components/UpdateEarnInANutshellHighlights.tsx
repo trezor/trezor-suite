@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     type StakingNetworkType,
@@ -25,7 +27,9 @@ export const UpdateEarnInANutshellHighlights = ({
     networkSymbol,
     apy,
 }: UpdateEarnInANutshellHighlightsProps) => {
-    const networkDisplaySymbol = getNetworkDisplaySymbol(networkSymbol);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, networkSymbol);
 
     const highlights: EarnInANutshellHighlight[] = [
         {

@@ -16,15 +16,14 @@ import {
     selectDeviceUnavailableCapabilities,
 } from '@suite-common/device';
 import {
+    selectNetworkConfigAccessors,
+    type NetworkConfigDeps,
     type NetworkSymbol,
     type NetworksRootState,
     selectSupportedNetworkSymbols,
 } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import {
-    type TokenDefinitionsRootState,
-    selectTokenDefinitions,
-} from '@suite-common/token-definitions';
+import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import {
     type NetworkSymbolExtended,
     getNetwork,
@@ -113,8 +112,7 @@ export type TradingRootStateWithDeviceAndAccounts = TradingRootStateWithAccounts
     DeviceRootState &
     SelectedAccountRootState;
 
-export type TradingFormAccountRootState = TradingRootStateWithDeviceAndAccounts &
-    TokenDefinitionsRootState;
+export type TradingFormAccountRootState = TradingRootStateWithDeviceAndAccounts;
 
 export type TradingBuyInfoSelector = Omit<
     BuyInfo,
@@ -166,8 +164,6 @@ const createMemoizedSelectorWithAccounts =
 const createMemoizedDeviceSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 const createMemoizedSelectorWithDeviceAndAccounts =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
-const createMemoizedFormAccountSelector =
-    createWeakMapSelector.withTypes<TradingFormAccountRootState>();
 
 export const bestBuyQuotePerPaymentMethodProjection = (quotes: BuyTrade[]) =>
     bestQuotePerPaymentMethodProjection<BuyCryptoPaymentMethod, BuyTrade>(
@@ -558,6 +554,7 @@ export const selectTradingSymbolAndContractAddressByCryptoId: (
 );
 
 const getFilteredCryptoIds = (
+    networkConfigDeps: NetworkConfigDeps,
     supportedCryptoIds: CryptoId[],
     coins: Coins | undefined,
     platforms: Platforms | undefined,
@@ -572,16 +569,16 @@ const getFilteredCryptoIds = (
 
     return uniqueSupportedCryptoIds
         .filter(cryptoId => !!coins[cryptoId])
-        .filter(cryptoId => cryptoIdToNetwork(cryptoId))
+        .filter(cryptoId => cryptoIdToNetwork(networkConfigDeps, cryptoId))
         .filter(cryptoId => {
             const prodCryptoId = testnetToProdCryptoId(cryptoId);
             const nativeCoinSymbol =
-                cryptoIdToNetwork(prodCryptoId)?.symbol ??
+                cryptoIdToNetwork(networkConfigDeps, prodCryptoId)?.symbol ??
                 getTradingNativeCoinSymbolByCryptoId(platforms, coins, prodCryptoId);
 
             return (
                 nativeCoinSymbol !== undefined &&
-                isNetworkSymbol(nativeCoinSymbol) &&
+                isNetworkSymbol(networkConfigDeps, nativeCoinSymbol) &&
                 supportedAddressValidatorSymbols.has(nativeCoinSymbol)
             );
         });
@@ -589,6 +586,7 @@ const getFilteredCryptoIds = (
 
 export const selectTradingBuySupportedCryptoIds = createNetworkMemoizedSelector(
     [
+        selectNetworkConfigAccessors,
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
         ({ wallet }) =>
@@ -597,12 +595,19 @@ export const selectTradingBuySupportedCryptoIds = createNetworkMemoizedSelector(
             ),
         selectSupportedNetworkSymbols,
     ],
-    (coins, platforms, supportedCryptoIds, supportedCoins) =>
-        getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
+    (networkConfigDeps, coins, platforms, supportedCryptoIds, supportedCoins) =>
+        getFilteredCryptoIds(
+            networkConfigDeps,
+            supportedCryptoIds,
+            coins,
+            platforms,
+            supportedCoins,
+        ),
 );
 
 export const selectTradingSellSupportedCryptoIds = createNetworkMemoizedSelector(
     [
+        selectNetworkConfigAccessors,
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
         ({ wallet }) =>
@@ -611,21 +616,28 @@ export const selectTradingSellSupportedCryptoIds = createNetworkMemoizedSelector
             ),
         selectSupportedNetworkSymbols,
     ],
-    (coins, platforms, supportedCryptoIds, supportedCoins) =>
-        getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
+    (networkConfigDeps, coins, platforms, supportedCryptoIds, supportedCoins) =>
+        getFilteredCryptoIds(
+            networkConfigDeps,
+            supportedCryptoIds,
+            coins,
+            platforms,
+            supportedCoins,
+        ),
 );
 
 const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') =>
     createNetworkMemoizedSelector(
         [
+            selectNetworkConfigAccessors,
             selectTradingCoins,
             ({ wallet }) => wallet.trading.info.platforms,
             ({ wallet }) =>
                 returnStableArrayIfEmpty<CryptoId>(wallet.trading.exchange.exchangeInfo?.[key]),
             selectSupportedNetworkSymbols,
         ],
-        (coins, platforms, cryptoIds, supportedCoins) =>
-            getFilteredCryptoIds(cryptoIds, coins, platforms, supportedCoins),
+        (networkConfigDeps, coins, platforms, cryptoIds, supportedCoins) =>
+            getFilteredCryptoIds(networkConfigDeps, cryptoIds, coins, platforms, supportedCoins),
     );
 
 export const selectTradingExchangeSellCryptoIds = createExchangeCryptoIdsSelector('sellCryptoIds');
@@ -633,13 +645,15 @@ export const selectTradingExchangeBuyCryptoIds = createExchangeCryptoIdsSelector
 
 export const selectTradingSellSellCryptoIds = createNetworkMemoizedSelector(
     [
+        selectNetworkConfigAccessors,
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
         ({ wallet }) => wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
         selectSupportedNetworkSymbols,
     ],
-    (coins, platforms, supportedCryptoIds, supportedCoins) =>
+    (networkConfigDeps, coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(
+            networkConfigDeps,
             returnStableArrayIfEmpty<CryptoId>(supportedCryptoIds),
             coins,
             platforms,
@@ -1016,7 +1030,7 @@ export const selectTradingPrefilledFromAccount = (state: TradingRootState) =>
 export const selectTradingActiveSection = (state: TradingRootState) =>
     state.wallet.trading.activeSection;
 
-export const selectTradingSupportedSymbols = createNetworkMemoizedSelector(
+export const selectTradingSupportedSymbols = createWeakMapSelector(
     [
         selectTradingBuySupportedCryptoIds,
         selectTradingExchangeSellCryptoIds,
@@ -1091,8 +1105,9 @@ const selectPreferredTradingAccount = (
  * 3) First eligible visible account (default preselect once discovery is done).
  * 4) Otherwise undefined — no eligible account exists, the form renders empty.
  */
-export const selectTradingFormAccount = createMemoizedFormAccountSelector(
+export const selectTradingFormAccount = createWeakMapSelector(
     [
+        selectNetworkConfigAccessors,
         selectVisibleDeviceAccounts,
         selectTokenDefinitions,
         selectTradingPrefilledFromAccount,
@@ -1100,6 +1115,7 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
         (_state: TradingFormAccountRootState, tradingType: TradingType) => tradingType,
     ],
     (
+        networkConfigDeps,
         visibleDeviceAccounts,
         tokenDefinitions,
         prefilled,
@@ -1109,7 +1125,13 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
         const eligibilityCryptoId = prefilled.key ? prefilled.cryptoId : undefined;
 
         const isEligible = (account: Account, cryptoId?: CryptoId) =>
-            isAccountEligibleForTrade(account, tradingType, tokenDefinitions, cryptoId);
+            isAccountEligibleForTrade(
+                networkConfigDeps,
+                account,
+                tradingType,
+                tokenDefinitions,
+                cryptoId,
+            );
 
         if (preferredAccount && isEligible(preferredAccount, eligibilityCryptoId)) {
             return preferredAccount;
@@ -1129,9 +1151,9 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
     },
 );
 
-export const selectTradingFormCryptoId = createMemoizedFormAccountSelector(
-    [selectTradingFormAccount, selectTradingPrefilledFromAccount],
-    (account, prefilled): CryptoId | undefined => {
+export const selectTradingFormCryptoId = createWeakMapSelector(
+    [selectNetworkConfigAccessors, selectTradingFormAccount, selectTradingPrefilledFromAccount],
+    (networkConfigDeps, account, prefilled): CryptoId | undefined => {
         if (!account) {
             return undefined;
         }
@@ -1140,7 +1162,8 @@ export const selectTradingFormCryptoId = createMemoizedFormAccountSelector(
             return prefilled.cryptoId;
         }
 
-        return (getNetwork(account.symbol).tradeCryptoId ?? 'bitcoin') as CryptoId;
+        return (getNetwork(networkConfigDeps, account.symbol).tradeCryptoId ??
+            'bitcoin') as CryptoId;
     },
 );
 
@@ -1163,26 +1186,27 @@ const selectTradingActiveTradeSendAccount = (
     }
 };
 
-export const selectTradingSendAccount = createMemoizedFormAccountSelector(
+export const selectTradingSendAccount = createWeakMapSelector(
     [selectTradingActiveTradeSendAccount, selectTradingFormAccount],
     (tradeSendAccount, formAccount) => tradeSendAccount ?? formAccount,
 );
 
-export const selectSelectedTradingAsset = createMemoizedFormAccountSelector(
-    [selectTradingSendAccount, selectTradingFormCryptoId],
-    (account, cryptoId): SelectedTradingAsset | undefined => {
+export const selectSelectedTradingAsset = createWeakMapSelector(
+    [selectNetworkConfigAccessors, selectTradingSendAccount, selectTradingFormCryptoId],
+    (networkConfigDeps, account, cryptoId): SelectedTradingAsset | undefined => {
         if (!account || !cryptoId) {
             return undefined;
         }
 
         return {
             symbol: account.symbol,
-            decimals: getNetwork(account.symbol).decimals,
+            decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
             balance: account.balance,
             formattedBalance: account.formattedBalance,
             tokens: account.tokens,
             cryptoId,
-            isToken: !!cryptoIdToNetworkSymbolAndContractAddress(cryptoId).contractAddress,
+            isToken: !!cryptoIdToNetworkSymbolAndContractAddress(networkConfigDeps, cryptoId)
+                .contractAddress,
         };
     },
 );

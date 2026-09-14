@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { parseUnsignedEvmTransactionForSigning } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -186,25 +187,31 @@ export const buildYieldDepositFeePreview = (
     return buildPrecomposedTransaction(tx);
 };
 
-export const buildYieldDepositFeeLevels = ({
-    amount,
-    feeInfo,
-    gasLimit,
-    symbol,
-    token,
-    unsignedTransaction,
-}: BuildYieldDepositFeeLevelsParams): PrecomposedLevels =>
+export const buildYieldDepositFeeLevels = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        amount,
+        feeInfo,
+        gasLimit,
+        symbol,
+        token,
+        unsignedTransaction,
+    }: BuildYieldDepositFeeLevelsParams,
+): PrecomposedLevels =>
     Object.fromEntries(
         feeInfo.levels
             .filter(feeLevel => feeLevel.label !== 'custom')
             .map(feeLevel => {
-                const { precomposedTransaction } = buildStablecoinYieldTransactionReview({
-                    amount,
-                    selectedFee: buildEvmSelectedFee({ feeLevel, gasLimit }),
-                    symbol,
-                    token,
-                    unsignedTransaction,
-                });
+                const { precomposedTransaction } = buildStablecoinYieldTransactionReview(
+                    networkConfigDeps,
+                    {
+                        amount,
+                        selectedFee: buildEvmSelectedFee({ feeLevel, gasLimit }),
+                        symbol,
+                        token,
+                        unsignedTransaction,
+                    },
+                );
 
                 return [feeLevel.label, precomposedTransaction];
             }),
@@ -260,12 +267,12 @@ export const buildYieldDepositFeeFormDraft = ({
     };
 };
 
-export const buildYieldDepositFeeDraftState = ({
-    currentFormDraft,
-    ...feeLevelParams
-}: BuildYieldDepositFeeDraftStateParams): BuildYieldDepositFeeDraftStateResult | null => {
+export const buildYieldDepositFeeDraftState = (
+    networkConfigDeps: NetworkConfigDeps,
+    { currentFormDraft, ...feeLevelParams }: BuildYieldDepositFeeDraftStateParams,
+): BuildYieldDepositFeeDraftStateResult | null => {
     try {
-        const feeLevels = buildYieldDepositFeeLevels(feeLevelParams);
+        const feeLevels = buildYieldDepositFeeLevels(networkConfigDeps, feeLevelParams);
         const { selectedFee } = getYieldDepositFeeState(
             currentFormDraft,
             isYieldDepositEip1559FeeInfo(feeLevelParams.feeInfo),
@@ -292,7 +299,7 @@ export const buildYieldDepositFeeDraftState = ({
             return null;
         }
 
-        const { formState } = buildStablecoinYieldTransactionReview({
+        const { formState } = buildStablecoinYieldTransactionReview(networkConfigDeps, {
             amount: feeLevelParams.amount,
             selectedFee: buildEvmSelectedFee({
                 feeLevel,

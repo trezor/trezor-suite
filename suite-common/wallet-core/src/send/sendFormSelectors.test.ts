@@ -1,7 +1,11 @@
+import type { NetworksRootState } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks, asNetworkSymbol } from '@suite-common/wallet-config';
+
+const networks = getNetworks(mockNetworkConfigDeps());
 import { type DeviceRootState } from '@suite-common/device';
 import { type ButtonRequest } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { PAYMENT_REQUEST_BUTTON_NAMES } from './sendFormConstants';
 import {
@@ -10,12 +14,13 @@ import {
     selectSendFormReviewLastButtonCode,
 } from './sendFormSelectors';
 
-const stateWith = (buttonRequests: ButtonRequest[]): DeviceRootState =>
+const stateWith = (buttonRequests: ButtonRequest[]): DeviceRootState & NetworksRootState =>
     ({
+        networks,
         device: {
             selectedDevice: mockSuiteDevice({ buttonRequests }),
         },
-    }) as unknown as DeviceRootState;
+    }) as unknown as DeviceRootState & NetworksRootState;
 
 const SLIP24_SEQUENCE: ButtonRequest[] = [
     { code: 'ButtonRequest_Other', name: 'confirm_payment_request' },

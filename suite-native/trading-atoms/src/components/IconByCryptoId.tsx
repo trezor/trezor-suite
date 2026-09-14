@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import type { CryptoId } from 'invity-api';
 
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
@@ -11,7 +13,12 @@ export type IconByCryptoIdProps = {
 };
 
 export const IconByCryptoId = ({ cryptoId, size, withNetwork = false }: IconByCryptoIdProps) => {
-    const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(
+        networkConfigDeps,
+        cryptoId,
+    );
 
     if (!symbol) {
         return null;
@@ -21,7 +28,7 @@ export const IconByCryptoId = ({ cryptoId, size, withNetwork = false }: IconByCr
     // this way we can present ETH icon for EVMs instead of network icon
     const adjustedSymbol = contractAddress
         ? symbol
-        : (getDisplaySymbol(symbol) as NetworkDisplaySymbol);
+        : (getDisplaySymbol(networkConfigDeps, symbol) as NetworkDisplaySymbol);
 
     return (
         <TokenIcon

@@ -1,5 +1,6 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { type ExchangeTrade } from 'invity-api';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 
 import { createThunk } from '@suite-common/redux-utils';
 
@@ -28,7 +29,7 @@ export type SendTransactionThunkProps = {
     isSlip24Active?: boolean;
 } & SendDexTransactionThunkProps;
 
-type SendTransactionThunkState = TradingRootState;
+type SendTransactionThunkState = TradingRootState & NetworksRootState;
 
 export const sendTransactionThunk = createThunk<
     undefined,
@@ -55,6 +56,8 @@ export const sendTransactionThunk = createThunk<
         },
         { dispatch, getState, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
@@ -93,7 +96,7 @@ export const sendTransactionThunk = createThunk<
             });
         }
 
-        const tradingFormState = getTradingFormState({
+        const tradingFormState = getTradingFormState(networkConfigDeps, {
             activeSection: 'exchange',
             providers,
             trade: selectedTrade,
@@ -102,7 +105,7 @@ export const sendTransactionThunk = createThunk<
             receiveAccountKey,
         });
 
-        const recomposeInputs = buildRecomposeInputsFromTrade({
+        const recomposeInputs = buildRecomposeInputsFromTrade(networkConfigDeps, {
             sendAddress,
             sendStringAmount: selectedTrade.sendStringAmount,
             partnerPaymentExtraId:

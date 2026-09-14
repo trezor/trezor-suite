@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectNftDefinitions } from '@suite-common/token-definitions';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Banner, Column, H3 } from '@trezor/components';
@@ -21,10 +23,12 @@ export const NftsTablesSection = ({
     searchQuery,
     isShown = true,
 }: EvmNftsTablesProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const nftDefinitions = useSelector(state =>
         selectNftDefinitions(state, selectedAccount.account.symbol),
     );
-    const nfts = getTokens({
+    const nfts = getTokens(networkConfigDeps, {
         tokens: selectedAccount.account.tokens || [],
         symbol: selectedAccount.account.symbol,
         tokenDefinitions: nftDefinitions,

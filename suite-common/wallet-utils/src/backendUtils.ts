@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type BackendType,
     type NetworkSymbol,
@@ -64,9 +65,13 @@ export const isTrezorConnectBackendType = (type?: BackendType) => {
     return !!TREZOR_CONNECT_BACKENDS.find(b => b === type);
 };
 
-export const shouldUseIdentities = (symbol: NetworkSymbol) => getNetworkType(symbol) === 'ethereum';
+export const shouldUseIdentities = (networkConfigDeps: NetworkConfigDeps, symbol: NetworkSymbol) =>
+    getNetworkType(networkConfigDeps, symbol) === 'ethereum';
 
-export const shouldSubscribeBlocks = (symbol: NetworkSymbol) => getNetworkType(symbol) !== 'solana';
+export const shouldSubscribeBlocks = (
+    networkConfigDeps: NetworkConfigDeps,
+    symbol: NetworkSymbol,
+) => getNetworkType(networkConfigDeps, symbol) !== 'solana';
 
 export const getAccountIdentity = (account: Pick<Account, 'deviceState'>) => account.deviceState;
 

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback, useMemo } from 'react';
 import { Dimensions } from 'react-native';
 
@@ -102,6 +104,8 @@ export const NetworksSheet = ({
     onSelectNetwork,
     testID,
 }: NetworksSheetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const networkOptions = useMemo<NetworkOption[]>(
@@ -110,9 +114,12 @@ export const NetworksSheet = ({
                 name: translate('moduleTrading.tradeableAssetsSheet.networksSheet.allNetworks'),
                 symbol: undefined,
             },
-            ...networkSymbols.map(symbol => ({ name: getNetwork(symbol).name, symbol })),
+            ...networkSymbols.map(symbol => ({
+                name: getNetwork(networkConfigDeps, symbol).name,
+                symbol,
+            })),
         ],
-        [networkSymbols, translate],
+        [networkConfigDeps, networkSymbols, translate],
     );
 
     const renderHandle = useCallback(

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { Translation } from '@suite/intl';
 import { type SolanaAssetDiff, getSolanaAssetDiffLabel } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
@@ -12,6 +14,8 @@ interface SolanaTxSimulationAssetProps {
 }
 
 export function SolanaTxSimulationAsset({ assetDiff, network }: SolanaTxSimulationAssetProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     // Unlike EVM, Solana reports at most one transfer per direction.
     const { in: received, out: sent } = assetDiff;
 
@@ -32,7 +36,12 @@ export function SolanaTxSimulationAsset({ assetDiff, network }: SolanaTxSimulati
                     <Translation
                         id="TR_SIMULATION_SENDING_ASSET"
                         values={{
-                            amount: getSolanaAssetDiffLabel(assetDiff, sent, network.symbol),
+                            amount: getSolanaAssetDiffLabel(
+                                networkConfigDeps,
+                                assetDiff,
+                                sent,
+                                network.symbol,
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>
@@ -50,7 +59,12 @@ export function SolanaTxSimulationAsset({ assetDiff, network }: SolanaTxSimulati
                     <Translation
                         id="TR_SIMULATION_RECEIVING_ASSET"
                         values={{
-                            amount: getSolanaAssetDiffLabel(assetDiff, received, network.symbol),
+                            amount: getSolanaAssetDiffLabel(
+                                networkConfigDeps,
+                                assetDiff,
+                                received,
+                                network.symbol,
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>

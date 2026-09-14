@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { Fragment, type ReactNode } from 'react';
 
 import { A, G } from '@mobily/ts-belt';
@@ -31,31 +33,34 @@ const TransactionAddressAmount = ({
     amount,
     symbol,
     decimals,
-}: TransactionAddressAmountProps) => (
-    <Box>
-        <AddressFormatter value={address} variant="body-sm" format="short" />
-        {amount &&
-            (isNetworkSymbol(symbol) ? (
-                <ExactCryptoAmountFormatter
-                    value={amount}
-                    symbol={symbol}
-                    isBalance={false}
-                    variant="body-xs"
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                />
-            ) : (
-                <ExactTokenAmountFormatter
-                    value={convertTokenValueToDecimal(amount, decimals ?? 0)}
-                    tokenSymbol={symbol}
-                    maxDisplayedDecimals={decimals}
-                    variant="body-xs"
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                />
-            ))}
-    </Box>
-);
+}: TransactionAddressAmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    return (
+        <Box>
+            <AddressFormatter value={address} variant="body-sm" format="short" />
+            {amount &&
+                (isNetworkSymbol(networkConfigDeps, symbol) ? (
+                    <ExactCryptoAmountFormatter
+                        value={amount}
+                        symbol={symbol}
+                        isBalance={false}
+                        variant="body-xs"
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                    />
+                ) : (
+                    <ExactTokenAmountFormatter
+                        value={convertTokenValueToDecimal(amount, decimals ?? 0)}
+                        tokenSymbol={symbol}
+                        maxDisplayedDecimals={decimals}
+                        variant="body-xs"
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                    />
+                ))}
+        </Box>
+    );
+};
 
 type TransactionTransferSectionProps = {
     transfers: TransactionTranfer[];

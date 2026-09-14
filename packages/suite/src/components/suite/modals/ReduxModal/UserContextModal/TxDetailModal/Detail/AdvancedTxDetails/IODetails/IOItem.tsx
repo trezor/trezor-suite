@@ -3,6 +3,8 @@ import { type ReactNode } from 'react';
 import { Address } from '@suite/address';
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     type NetworkSymbolExtended,
@@ -49,6 +51,8 @@ export const IOItem = ({
     isPhishingTransaction,
     ownership,
 }: IOItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const explorer = useSelector(state => selectExplorer(state, networkSymbol));
     const explorerUrl = getExplorerUrl(explorer, 'address');
     const explorerLink = useExternalLink(`${explorerUrl}${value}${explorer?.queryString ?? ''}`);
@@ -95,8 +99,12 @@ export const IOItem = ({
                                     <Text intent="neutral" priority="secondary" as="div">
                                         <FormattedCryptoAmount
                                             value={
-                                                isNetworkSymbol(symbol)
-                                                    ? formatNetworkAmount(amount, symbol)
+                                                isNetworkSymbol(networkConfigDeps, symbol)
+                                                    ? formatNetworkAmount(
+                                                          networkConfigDeps,
+                                                          amount,
+                                                          symbol,
+                                                      )
                                                     : amount
                                             }
                                             symbol={symbol}

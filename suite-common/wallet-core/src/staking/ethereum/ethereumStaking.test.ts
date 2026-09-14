@@ -1,4 +1,6 @@
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, {
@@ -60,6 +62,8 @@ import {
     type StakeTxBaseArgs,
 } from './types';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 const ethSymbol = asNetworkSymbol('eth');
 
 describe('transformTx', () => {
@@ -100,14 +104,16 @@ describe('stake', () => {
     stakeFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            const result = await stake(test.args as StakeTxArgs);
+            const result = await stake(networkConfigDeps, test.args as StakeTxArgs);
             expect(result).toEqual(test.result);
         });
     });
     stakeFailedFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            await expect(stake(test.args as StakeTxArgs)).rejects.toThrow(test.result);
+            await expect(stake(networkConfigDeps, test.args as StakeTxArgs)).rejects.toThrow(
+                test.result,
+            );
         });
     });
 });
@@ -179,7 +185,10 @@ describe('getStakeTxGasLimit', () => {
     getStakeTxGasLimitFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            const result = await getStakeTxGasLimit(test.args as GetStakeTxGasLimitParams);
+            const result = await getStakeTxGasLimit(
+                networkConfigDeps,
+                test.args as GetStakeTxGasLimitParams,
+            );
             expect(result).toEqual(test.result);
         });
     });

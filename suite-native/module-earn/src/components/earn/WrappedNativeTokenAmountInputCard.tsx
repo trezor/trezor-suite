@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -47,6 +49,8 @@ export const WrappedNativeTokenAmountInputCard = ({
     tokenDecimals,
     tokenSymbol,
 }: WrappedNativeTokenAmountInputCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { setValue, trigger } = useFormContext<YieldDepositFormValues>();
     const [isMaxSelected, setIsMaxSelected] = useState(false);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -63,7 +67,7 @@ export const WrappedNativeTokenAmountInputCard = ({
                 setValue(
                     'fiat',
                     fiatValue.toFixed(
-                        getDecimalsForBaseCurrency({
+                        getDecimalsForBaseCurrency(networkConfigDeps, {
                             code: baseCurrencyCode,
                             isInSats: isBaseCurrencyInSats,
                         }),
@@ -75,7 +79,7 @@ export const WrappedNativeTokenAmountInputCard = ({
             // amount would keep the submit button disabled until the user typed.
             void trigger('amount');
         },
-        [baseCurrencyCode, converters, isBaseCurrencyInSats, setValue, trigger],
+        [networkConfigDeps, baseCurrencyCode, converters, isBaseCurrencyInSats, setValue, trigger],
     );
 
     useEffect(() => {

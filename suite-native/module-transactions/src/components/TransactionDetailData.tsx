@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -77,7 +78,8 @@ export const TransactionDetailData = ({
             state: TokenDefinitionsRootState &
                 TransactionsRootState &
                 FiatRatesRootState &
-                PhishingRootState,
+                PhishingRootState &
+                NetworksRootState,
         ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 

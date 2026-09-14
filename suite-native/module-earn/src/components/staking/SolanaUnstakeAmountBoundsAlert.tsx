@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -30,12 +32,14 @@ export const SolanaUnstakeAmountBoundsAlert = ({
     account,
     amountValue,
 }: SolanaUnstakeAmountBoundsAlertProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { setValue } = useFormContext<EarnFormValues>();
     const converters = useCryptoFiatConverters({ symbol: account.symbol });
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
 
-    const bounds = getSolanaUnstakeAmountBounds(account, amountValue);
+    const bounds = getSolanaUnstakeAmountBounds(networkConfigDeps, account, amountValue);
 
     const higherFiatValue = useFiatFromCryptoValue({
         cryptoValue: bounds?.closestHigher ?? null,
@@ -50,7 +54,7 @@ export const SolanaUnstakeAmountBoundsAlert = ({
 
     if (!bounds) return null;
 
-    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+    const baseCurrencyDecimals = getDecimalsForBaseCurrency(networkConfigDeps, {
         code: baseCurrencyCode,
         isInSats: isBaseCurrencyInSats,
     });
@@ -64,7 +68,7 @@ export const SolanaUnstakeAmountBoundsAlert = ({
         }
     };
 
-    const symbol = getNetworkDisplaySymbol(account.symbol);
+    const symbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const renderFiatSuffix = (fiatValue: typeof higherFiatValue) =>
         fiatValue ? (

@@ -1,10 +1,11 @@
+import { networksActions } from '@suite-common/networks';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createReducerWithExtraDeps,
 } from '@suite-common/redux-utils';
 import { type Timestamp } from '@suite-common/wallet-types';
-import { getFiatRateKeyFromTicker, isTestnet } from '@suite-common/wallet-utils';
+import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
 import { updateFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
 import { type FiatRatesState } from './fiatRatesTypes';
@@ -21,13 +22,18 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     fiatRatesInitialState,
     (builder, extra: FiatRatesReducerDeps) => {
         builder
+            .addCase(networksActions.setNetworks, (state, action) => {
+                state.testnetSymbols = action.payload
+                    .filter(network => network.testnet)
+                    .map(network => network.symbol);
+            })
             .addCase(updateFiatRatesThunk.pending, (state, action) => {
                 const { tickers, baseCurrencyCode, rateType } = action.meta.arg;
                 tickers.forEach(ticker => {
                     const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
                     let currentRate = state[rateType]?.[fiatRateKey];
 
-                    if (isTestnet(ticker.symbol)) {
+                    if (state.testnetSymbols?.includes(ticker.symbol)) {
                         return;
                     }
 
@@ -63,7 +69,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     // @ts-expect-error: indexing with noUncheckedIndexedAccess
                     const ticker: (typeof tickers)[number] = tickers[index];
 
-                    if (isTestnet(ticker.symbol)) {
+                    if (state.testnetSymbols?.includes(ticker.symbol)) {
                         continue;
                     }
 

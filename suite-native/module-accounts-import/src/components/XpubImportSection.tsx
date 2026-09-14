@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
@@ -29,9 +31,11 @@ export const networkTypeToTitleTxKeyMap: Record<NetworkType, TxKeyPath> = {
 };
 
 export const XpubImportSection = ({ onRequestCamera, symbol }: XpubImportSectionProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType(networkConfigDeps, symbol);
     const buttonTitleTxKey = networkTypeToTitleTxKeyMap[networkType];
 
     return (

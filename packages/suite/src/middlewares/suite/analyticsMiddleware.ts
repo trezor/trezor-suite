@@ -20,6 +20,7 @@ import {
 import { onSuiteReady } from '@suite/suite-lifecycle';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdateThunk } from '@suite-common/firmware';
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
@@ -83,6 +84,8 @@ const createAnalyticsMiddleware = createMiddlewareWithExtraDeps<
 
 export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
     (action: UnknownAction, { extra, next, dispatch, getState }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const prevRouterUrl = selectRouterUrl(getState());
         const prevRouteName = selectRouteName(getState());
         // NOTE: pass action on, keep the result
@@ -187,8 +190,11 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
                 .filter(
                     account =>
                         new BigNumber(account.balance).gt(0) ||
-                        new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0) ||
+                        new BigNumber(
+                            getAccountTotalStakingBalance(networkConfigDeps, account) || 0,
+                        ).gt(0) ||
                         hasVisibleTokens(
+                            networkConfigDeps,
                             account.symbol,
                             account.tokens ?? [],
                             state.tokenDefinitions,
@@ -201,7 +207,7 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
                 .reduce<Record<string, number>>((acc, { symbol, tokens }) => {
                     if (
                         tokens?.length &&
-                        !hasVisibleTokens(symbol, tokens, state.tokenDefinitions)
+                        !hasVisibleTokens(networkConfigDeps, symbol, tokens, state.tokenDefinitions)
                     ) {
                         return acc;
                     }
@@ -211,7 +217,11 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
                 }, {});
 
             const accountsWithStaking = state.wallet.accounts
-                .filter(account => new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0))
+                .filter(account =>
+                    new BigNumber(
+                        getAccountTotalStakingBalance(networkConfigDeps, account) || 0,
+                    ).gt(0),
+                )
                 .reduce(accumulateAccountCountBySymbolAndType, {});
 
             analytics.report({

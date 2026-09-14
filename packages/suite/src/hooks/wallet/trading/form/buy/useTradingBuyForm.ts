@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
@@ -38,6 +39,8 @@ import { useTradingFormAccount } from '../useTradingFormAccount';
 import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 
 export const useTradingBuyForm = (): TradingBuyFormContextProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const type = 'buy';
     const { dispatch } = useServices(selectDispatch);
 
@@ -102,7 +105,10 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
 
     // based on selected cryptoSymbol, because of using for validation cryptoInput
-    const network = getNetwork(cryptoSelect?.networkSymbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY);
+    const network = getNetwork(
+        networkConfigDeps,
+        cryptoSelect?.networkSymbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
+    );
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(
         cryptoSelect?.networkSymbol,
     );

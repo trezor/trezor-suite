@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { act } from 'react';
 
 import type { CryptoId } from 'invity-api';
@@ -20,6 +22,8 @@ import { hasPreapprovedLimit, tradingExchangeFormToTradingExchangeFormProps } fr
 import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 describe('quotesUtils', () => {
     let form: ExchangeFormType;
 
@@ -35,9 +39,9 @@ describe('quotesUtils', () => {
 
     describe('tradingExchangeFormToTradingExchangeFormProps', () => {
         it('should throw when sendAsset is not specified', () => {
-            expect(() => tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toThrow(
-                'sendAsset is required',
-            );
+            expect(() =>
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toThrow('sendAsset is required');
         });
 
         it('should throw when receiveAsset is not specified', async () => {
@@ -45,9 +49,9 @@ describe('quotesUtils', () => {
                 form.setValue('sendAsset', btcAsset);
             });
 
-            expect(() => tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toThrow(
-                'receiveAsset is required',
-            );
+            expect(() =>
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toThrow('receiveAsset is required');
         });
 
         it('should throw when sendCryptoAmount is not specified', async () => {
@@ -56,9 +60,9 @@ describe('quotesUtils', () => {
                 form.setValue('receiveAsset', ethAsset);
             });
 
-            expect(() => tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toThrow(
-                'sendCryptoAmount is required',
-            );
+            expect(() =>
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toThrow('sendCryptoAmount is required');
         });
 
         it('should return correct TradingExchangeFormProps when all values are set', async () => {
@@ -68,7 +72,9 @@ describe('quotesUtils', () => {
                 form.setValue('sendCryptoAmount', '1');
             });
 
-            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+            expect(
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toEqual({
                 sendCryptoSelect: { id: 'bitcoin' as CryptoId },
                 receiveCryptoSelect: { id: 'ethereum' as CryptoId },
                 outputs: [{ amount: '1' }],
@@ -83,7 +89,9 @@ describe('quotesUtils', () => {
                 form.setValue('sendAccount', eth1NormalAccount);
             });
 
-            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+            expect(
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toEqual({
                 sendCryptoSelect: { id: 'ethereum' as CryptoId },
                 receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
                 outputs: [{ amount: '1' }],
@@ -99,7 +107,9 @@ describe('quotesUtils', () => {
                 form.setValue('sendAccount', btc1NormalAccount);
             });
 
-            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+            expect(
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toEqual({
                 sendCryptoSelect: { id: 'bitcoin' as CryptoId },
                 receiveCryptoSelect: { id: 'ethereum' as CryptoId },
                 outputs: [{ amount: '1' }],
@@ -119,7 +129,9 @@ describe('quotesUtils', () => {
                 form.setValue('sendCryptoAmount', '1');
             });
 
-            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+            expect(
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toEqual({
                 sendCryptoSelect: {
                     id: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
                 },
@@ -150,7 +162,9 @@ describe('quotesUtils', () => {
                 form.setValue('receiveAccount', receiveAccount);
             });
 
-            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+            expect(
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toEqual({
                 sendCryptoSelect: { id: 'ethereum' as CryptoId },
                 receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
                 outputs: [{ amount: '1' }],
@@ -171,7 +185,9 @@ describe('quotesUtils', () => {
                 form.setValue('receiveAccount', receiveAccount);
             });
 
-            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+            expect(
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toEqual({
                 sendCryptoSelect: { id: 'ethereum' as CryptoId },
                 receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
                 outputs: [{ amount: '1' }],
@@ -191,7 +207,9 @@ describe('quotesUtils', () => {
                 form.setValue('receiveAccount', receiveAccount);
             });
 
-            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+            expect(
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toEqual({
                 sendCryptoSelect: { id: 'bitcoin' as CryptoId },
                 receiveCryptoSelect: { id: 'ethereum' as CryptoId },
                 outputs: [{ amount: '1' }],
@@ -207,7 +225,9 @@ describe('quotesUtils', () => {
                 form.setValue('sendCryptoAmount', '1');
             });
 
-            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+            expect(
+                tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, form.getValues),
+            ).toEqual({
                 sendCryptoSelect: {
                     id: 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' as CryptoId,
                 },

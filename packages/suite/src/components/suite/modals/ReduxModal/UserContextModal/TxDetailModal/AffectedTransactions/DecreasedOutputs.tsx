@@ -1,6 +1,8 @@
 import { Address } from '@suite/address';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -29,7 +31,11 @@ type AmountRowProps = {
 };
 
 const AmountItem = ({ labelTranslationKey, shouldSendInSats, amount, symbol }: AmountRowProps) => {
-    const value = shouldSendInSats ? formatNetworkAmount(amount, symbol) : amount;
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const value = shouldSendInSats
+        ? formatNetworkAmount(networkConfigDeps, amount, symbol)
+        : amount;
 
     return (
         <Column>

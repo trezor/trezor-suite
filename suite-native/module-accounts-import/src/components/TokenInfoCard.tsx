@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import {
@@ -32,8 +33,9 @@ export const TokenInfoCard = ({
     decimals,
     contract,
 }: TokenInfoCardProps) => {
-    const isSpecificCoinDefinitionKnown = useSelector((state: TokenDefinitionsRootState) =>
-        selectIsSpecificCoinDefinitionKnown(state, symbol, contract),
+    const isSpecificCoinDefinitionKnown = useSelector(
+        (state: TokenDefinitionsRootState & NetworksRootState) =>
+            selectIsSpecificCoinDefinitionKnown(state, symbol, contract),
     );
 
     if (!tokenSymbol || !balance || !name || !isSpecificCoinDefinitionKnown) return null;

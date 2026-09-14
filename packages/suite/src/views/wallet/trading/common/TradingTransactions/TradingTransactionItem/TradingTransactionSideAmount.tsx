@@ -1,4 +1,6 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingUtils } from '@suite-common/trading';
 import { Flag, Row } from '@trezor/components';
 import { shouldShowNetworkIcon } from '@trezor/product-components';
@@ -18,6 +20,8 @@ export const TradingTransactionSideAmount = ({
     side,
     'data-testid': dataTestId,
 }: TradingTransactionSideAmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     switch (side.type) {
@@ -26,6 +30,7 @@ export const TradingTransactionSideAmount = ({
                 side.cryptoId,
             );
             const { symbol: networkSymbol } = cryptoIdToNetworkSymbolAndContractAddress(
+                networkConfigDeps,
                 side.cryptoId,
             );
 
@@ -34,7 +39,11 @@ export const TradingTransactionSideAmount = ({
                     <TradingCoinLogo
                         cryptoId={side.cryptoId}
                         size={32}
-                        showNetworkIcon={shouldShowNetworkIcon(networkSymbol, contractAddress)}
+                        showNetworkIcon={shouldShowNetworkIcon(
+                            networkConfigDeps,
+                            networkSymbol,
+                            contractAddress,
+                        )}
                     />
                     <FormattedCryptoAmount
                         value={side.amount}

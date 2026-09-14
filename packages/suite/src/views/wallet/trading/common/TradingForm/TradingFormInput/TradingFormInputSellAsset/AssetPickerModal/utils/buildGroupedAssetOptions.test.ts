@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import {
     type Account,
     type RatesByKey,
@@ -17,6 +18,8 @@ import { getAssetGroupKey } from 'src/components/suite/asset-picker/utils/assetG
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { buildGroupedAssetOptions } from './buildGroupedAssetOptions';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ETH_CRYPTO_ID = 'ethereum' as CryptoId;
 const USDT_CONTRACT = toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7');
@@ -67,8 +70,8 @@ const buildOptions = ({
     tradableCryptoIds = new Set([ETH_CRYPTO_ID, USDT_CRYPTO_ID]),
     expandedGroupKeys = [],
     fiatRates = ethRates,
-}: Partial<Parameters<typeof buildGroupedAssetOptions>[0]>) =>
-    buildGroupedAssetOptions({
+}: Partial<Parameters<typeof buildGroupedAssetOptions>[1]>) =>
+    buildGroupedAssetOptions(networkConfigDeps, {
         assetRows: assetRows ?? [],
         tradableCryptoIds,
         threshold,

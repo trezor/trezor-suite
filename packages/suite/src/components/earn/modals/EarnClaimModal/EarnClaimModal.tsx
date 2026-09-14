@@ -5,6 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -33,6 +34,8 @@ type EarnClaimModalProps = {
 };
 
 export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { device, isLocked } = useDevice();
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
@@ -58,7 +61,8 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
 
-    const { claimableAmount = '0', restakedReward = '0' } = getStakingDataForNetwork(account) ?? {};
+    const { claimableAmount = '0', restakedReward = '0' } =
+        getStakingDataForNetwork(networkConfigDeps, account) ?? {};
 
     const isFormInputsValid = !isCardanoNetworkType
         ? formIsValid && hasValues
@@ -136,14 +140,19 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
             heading={
                 <Translation
                     id={isCardanoNetworkType ? 'TR_EARN_CLAIM_REWARDS' : 'TR_STAKE_CLAIM_TOKEN'}
-                    values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
+                    values={{ symbol: getNetworkDisplaySymbol(networkConfigDeps, account.symbol) }}
                 />
             }
             description={
                 !isCardanoNetworkType ? (
                     <Translation
                         id="TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED"
-                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+                        values={{
+                            networkDisplaySymbol: getNetworkDisplaySymbol(
+                                networkConfigDeps,
+                                account.symbol,
+                            ),
+                        }}
                     />
                 ) : undefined
             }

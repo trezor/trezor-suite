@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -34,6 +35,8 @@ type StakingBannerProps = {
 };
 
 export const StakingBanner = ({ account }: StakingBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
     const {
@@ -47,8 +50,8 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const earnEthBanner = useEarnEthBanner(account);
 
-    const displaySymbol = getDisplaySymbol(account.symbol);
-    const stakingData = getStakingDataForNetwork(account);
+    const displaySymbol = getDisplaySymbol(networkConfigDeps, account.symbol);
+    const stakingData = getStakingDataForNetwork(networkConfigDeps, account);
 
     const accountBalance = account.formattedBalance;
     const stakingBalance = stakingData?.depositedBalance ?? '0';
@@ -137,7 +140,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         }
     };
 
-    const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
+    const stakingLimits = getStakingLimitsByNetworkSymbol(networkConfigDeps, account.symbol);
 
     if (route?.name !== 'wallet-index' || !account || earnEthBanner.isResolving) {
         return null;

@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { asNetworkSymbol } from './networkTypes';
 import {
     filterNetworksByName,
@@ -13,13 +15,21 @@ import {
     isSingleAccountType,
 } from './utils';
 
-const { btc: bitcoin, eth: ethereum, test: testnet, regtest, sol: solana } = getNetworks();
+const networkConfigDeps = mockNetworkConfigDeps();
+
+const {
+    btc: bitcoin,
+    eth: ethereum,
+    test: testnet,
+    regtest,
+    sol: solana,
+} = getNetworks(networkConfigDeps);
 
 const mockNetworks = [bitcoin, ethereum, testnet, regtest];
 
 describe(getMainnets.name, () => {
     it('returns non-testnet, non-debug-only networks when debug is false', () => {
-        const result = getMainnets({
+        const result = getMainnets(networkConfigDeps, {
             allNetworks: mockNetworks,
         });
         expect(result).toEqual([bitcoin, ethereum]);
@@ -28,7 +38,7 @@ describe(getMainnets.name, () => {
 
 describe(getTestnets.name, () => {
     it('returns testnet, non-debug-only networks when debug is false', () => {
-        const result = getTestnets({
+        const result = getTestnets(networkConfigDeps, {
             useTestnetNetworks: true,
             allNetworks: mockNetworks,
         });
@@ -36,7 +46,7 @@ describe(getTestnets.name, () => {
     });
 
     it('includes all testnets when debug is true', () => {
-        const result = getTestnets({
+        const result = getTestnets(networkConfigDeps, {
             debug: true,
             useTestnetNetworks: true,
             allNetworks: mockNetworks,
@@ -45,7 +55,7 @@ describe(getTestnets.name, () => {
     });
 
     it('returns no testnets when testnet networks feature flag is disabled', () => {
-        const result = getTestnets({
+        const result = getTestnets(networkConfigDeps, {
             allNetworks: mockNetworks,
         });
         expect(result).toEqual([]);
@@ -108,15 +118,17 @@ describe(isSingleAccountType.name, () => {
 
 describe('isAccountBasedNetwork', () => {
     it.each(['btc', 'ada'])('returns false for %s', symbol => {
-        expect(isAccountBasedNetwork(asNetworkSymbol(symbol))).toBe(false);
+        expect(isAccountBasedNetwork(networkConfigDeps, asNetworkSymbol(symbol))).toBe(false);
     });
 
     it.each(['eth', 'sol', 'hype'])('returns true for %s', symbol => {
-        expect(isAccountBasedNetwork(asNetworkSymbol(symbol))).toBe(true);
+        expect(isAccountBasedNetwork(networkConfigDeps, asNetworkSymbol(symbol))).toBe(true);
     });
 
     it('returns throw for unknown network type', () => {
-        expect(() => isAccountBasedNetwork(asNetworkSymbol('unknown'))).toThrow();
+        expect(() =>
+            isAccountBasedNetwork(networkConfigDeps, asNetworkSymbol('unknown')),
+        ).toThrow();
     });
 });
 
@@ -124,18 +136,22 @@ describe(isNetworkUsingExternalBackend.name, () => {
     it.each(['bsc', 'pol', 'op', 'arb', 'base', 'rhc', 'hype', 'avax', 'sol', 'dsol'])(
         'returns true for %s',
         symbol => {
-            expect(isNetworkUsingExternalBackend(asNetworkSymbol(symbol))).toBe(true);
+            expect(isNetworkUsingExternalBackend(networkConfigDeps, asNetworkSymbol(symbol))).toBe(
+                true,
+            );
         },
     );
 
     it.each(['btc', 'eth', 'trx', 'xlm', 'xrp', 'ada'])('returns false for %s', symbol => {
-        expect(isNetworkUsingExternalBackend(asNetworkSymbol(symbol))).toBe(false);
+        expect(isNetworkUsingExternalBackend(networkConfigDeps, asNetworkSymbol(symbol))).toBe(
+            false,
+        );
     });
 });
 
 describe(getNetworksWithMevProtection.name, () => {
     it('returns string with all networks with MEV protection', () => {
-        expect(getNetworksWithMevProtection()).toEqual(
+        expect(getNetworksWithMevProtection(networkConfigDeps)).toEqual(
             'Ethereum, BNB Smart Chain, Arbitrum One, Base, Robinhood Chain',
         );
     });
@@ -143,7 +159,7 @@ describe(getNetworksWithMevProtection.name, () => {
 
 describe(getNetworksWithNativeTokenReserve.name, () => {
     it('returns string with all networks with native token reserve', () => {
-        expect(getNetworksWithNativeTokenReserve()).toEqual(
+        expect(getNetworksWithNativeTokenReserve(networkConfigDeps)).toEqual(
             'Base, Optimism, Robinhood Chain, Solana',
         );
     });
@@ -151,18 +167,24 @@ describe(getNetworksWithNativeTokenReserve.name, () => {
 
 describe(getDisplaySymbol.name, () => {
     it('returns an empty string for an empty symbol', () => {
-        expect(getDisplaySymbol('')).toBe('');
+        expect(getDisplaySymbol(networkConfigDeps, '')).toBe('');
     });
 
     it('returns the network display symbol for a native coin symbol', () => {
-        expect(getDisplaySymbol('eth')).toBe('ETH');
+        expect(getDisplaySymbol(networkConfigDeps, 'eth')).toBe('ETH');
     });
 
     it('returns the token symbol unchanged when it also has a contract address', () => {
-        expect(getDisplaySymbol('USDC', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48')).toBe('USDC');
+        expect(
+            getDisplaySymbol(
+                networkConfigDeps,
+                'USDC',
+                '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            ),
+        ).toBe('USDC');
     });
 
     it('truncates symbols longer than the maximum length', () => {
-        expect(getDisplaySymbol('SUPERLONGTOKEN')).toBe('SUPERLONGT...');
+        expect(getDisplaySymbol(networkConfigDeps, 'SUPERLONGTOKEN')).toBe('SUPERLONGT...');
     });
 });

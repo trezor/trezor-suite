@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -24,17 +26,23 @@ export const EarnWithdrawalFeesBanner = ({
     symbol,
     isMaxSelected,
 }: EarnWithdrawalFeesBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
     const { value: amountValue, hasError } = useField({ name: 'amount' });
 
-    const limits = getStakingLimitsByNetworkSymbol(symbol);
+    const limits = getStakingLimitsByNetworkSymbol(networkConfigDeps, symbol);
 
     if (!limits || !account || hasError || !amountValue) return null;
 
-    const { displaySymbol } = getNetwork(symbol);
-    const formattedBalance = formatNetworkAmount(account.availableBalance, symbol);
+    const { displaySymbol } = getNetwork(networkConfigDeps, symbol);
+    const formattedBalance = formatNetworkAmount(
+        networkConfigDeps,
+        account.availableBalance,
+        symbol,
+    );
 
     const isBelowWithdrawalReserve = new BigNumber(formattedBalance)
         .minus(amountValue)

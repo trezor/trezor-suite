@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useMemo } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
@@ -59,6 +60,8 @@ export const YieldVaultDetailScreenContent = ({
     account,
     yieldToken,
 }: YieldVaultDetailScreenContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -94,7 +97,7 @@ export const YieldVaultDetailScreenContent = ({
             symbol: account.symbol,
             tokenSymbol: toTokenSymbol(vault.token.symbol),
             contractAddress: toTokenAddress(token.contractAddress),
-            balance: getConvertedOutputTokenBalanceToInputTokenAmount({
+            balance: getConvertedOutputTokenBalanceToInputTokenAmount(networkConfigDeps, {
                 networkSymbol: account.symbol,
                 token: vault.token,
                 outputToken: vault.outputToken,
@@ -103,7 +106,7 @@ export const YieldVaultDetailScreenContent = ({
             }),
             decimals: vault.token.decimals,
         };
-    }, [account, depositedSharesAmount, vault, token]);
+    }, [networkConfigDeps, account, depositedSharesAmount, vault, token]);
 
     const yearlyRewards = useMemo(() => {
         if (!depositedPosition?.balance || !vault?.rewardRate?.total) {

@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -42,6 +43,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const candidateQuote = useWatch({ name: 'quote', control: form.control });
     const receiveAsset = useWatch({ name: 'receiveAsset', control: form.control });
@@ -62,14 +65,14 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const analyticsReportCallback = useExchangeAnalyticReportCallback(candidateQuote);
     const isCandidateQuotePrefetchBlocked =
         !!candidateQuote &&
-        requiresTokenApproval(candidateQuote) &&
+        requiresTokenApproval(networkConfigDeps, candidateQuote) &&
         isDexQuoteApprovalPrefetchLoadingForCandidateQuote;
 
     const canProceed =
         !isLoading && !isCandidateQuotePrefetchBlocked && !!candidateQuote && !!sendAccount;
 
     const selectReceiveAccount = () => {
-        const selectedNetworkSymbol = getSymbolFromTradeableAsset(receiveAsset);
+        const selectedNetworkSymbol = getSymbolFromTradeableAsset(networkConfigDeps, receiveAsset);
         if (selectedNetworkSymbol) {
             navigation.navigate(RootStackRoutes.ReceiveAccounts, {
                 symbol: selectedNetworkSymbol,
@@ -86,7 +89,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             return;
         }
 
-        if (!isFullySelectedReceiveAccount(receiveAccount)) {
+        if (!isFullySelectedReceiveAccount(networkConfigDeps, receiveAccount)) {
             selectReceiveAccount();
             analyticsReportCallback('account-selection', analyticsAction);
 
@@ -98,7 +101,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                 quote: candidateQuote,
                 nextStep: () => {
                     clearExchangeFormQuoteData(form);
-                    nextStep(getApprovalStatus(candidateQuote), candidateQuote);
+                    nextStep(getApprovalStatus(networkConfigDeps, candidateQuote), candidateQuote);
                 },
             }),
         );

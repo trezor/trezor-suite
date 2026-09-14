@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { Platform } from 'react-native';
 import {
     FadeInUp,
@@ -21,13 +23,15 @@ const cardEnteringAnimation = Platform.OS === 'android' ? StretchInY : FadeInUp;
 const cardExitingAnimation = Platform.OS === 'android' ? StretchOutY : FadeOutUp;
 
 export const ExchangePickersCard = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const { control } = useExchangeFormContext();
 
     const receiveAsset = useWatch({ name: 'receiveAsset', control });
     const quote = useWatch({ name: 'quote', control });
 
-    const selectedSymbol = getSymbolFromTradeableAsset(receiveAsset);
+    const selectedSymbol = getSymbolFromTradeableAsset(networkConfigDeps, receiveAsset);
     const isReceiveAccountPickerVisible = selectedSymbol !== undefined;
     const isRateAndProviderPickerVisible = quote !== undefined || isLoading;
 

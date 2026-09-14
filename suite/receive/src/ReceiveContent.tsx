@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
@@ -26,6 +27,8 @@ export type ReceiveContentProps = {
 };
 
 export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const { isReceiveDisabled } = useReceiveDisabled();
 
@@ -40,12 +43,12 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
     const disabled = locked || isReceiveDisabled;
 
     const supportsTokens = useMemo(
-        () => getNetworkFeatures(account.symbol).includes('tokens'),
-        [account.symbol],
+        () => getNetworkFeatures(networkConfigDeps, account.symbol).includes('tokens'),
+        [networkConfigDeps, account.symbol],
     );
 
-    const networkName = getNetwork(account.symbol).name;
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkName = getNetwork(networkConfigDeps, account.symbol).name;
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const handleVerifyAddress = async (path: string) => {
         if (verifyingAddressPath !== undefined) {

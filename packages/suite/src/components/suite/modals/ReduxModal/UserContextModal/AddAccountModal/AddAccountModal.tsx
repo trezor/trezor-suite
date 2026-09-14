@@ -7,7 +7,7 @@ import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { selectNetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -68,6 +68,8 @@ export const AddAccountModal = ({
     isCoinjoinDisabled,
     isBackClickDisabled,
 }: AddAccountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const accounts = useSelector(selectAccounts);
     const isDebug = useSelector(selectIsDebugModeActive);
     const isCoinjoinPublic = useSelector(selectIsPublic);
@@ -122,7 +124,7 @@ export const AddAccountModal = ({
     // Applied when only BTC is enabled on bitcoin-only firmware.
     const bitcoinOnlyDefaultNetworkSelection =
         isBitcoinOnlyFirmware && supportedMainnets.length === 1 && allTestnetNetworksDisabled
-            ? getNetwork('btc')
+            ? getNetwork(networkConfigDeps, 'btc')
             : undefined;
 
     const isCoinjoinVisible = (isCoinjoinPublic || isDebug) && !isCoinjoinDisabled;
@@ -133,12 +135,12 @@ export const AddAccountModal = ({
                 return undefined;
             }
 
-            return getAvailableAccountTypes(network.symbol, {
+            return getAvailableAccountTypes(networkConfigDeps, network.symbol, {
                 isCoinjoinVisible,
                 isDebug,
             });
         },
-        [enabledNetworkSymbols, isCoinjoinVisible, isDebug],
+        [networkConfigDeps, enabledNetworkSymbols, isCoinjoinVisible, isDebug],
     );
 
     const defaultAccountTypeSelectionNetwork =
@@ -179,7 +181,7 @@ export const AddAccountModal = ({
     const availableNetworksSymbols = useAvailableNetworkSymbols();
 
     const enabledNetworks = availableNetworksSymbols.map(networkSymbol =>
-        getNetwork(networkSymbol),
+        getNetwork(networkConfigDeps, networkSymbol),
     );
     const disabledNetworks = supportedNetworks.filter(
         network => !availableNetworksSymbols.includes(network.symbol),
@@ -319,7 +321,7 @@ export const AddAccountModal = ({
             dispatch(
                 notificationsActions.addToast({
                     type: 'account-added',
-                    networkName: getNetwork(addedAccount.symbol).name,
+                    networkName: getNetwork(networkConfigDeps, addedAccount.symbol).name,
                 }),
             );
 
@@ -346,7 +348,7 @@ export const AddAccountModal = ({
         }
 
         try {
-            const newAccount = await prepareNewAccountPayload({
+            const newAccount = await prepareNewAccountPayload(networkConfigDeps, {
                 accountType: account.accountType,
                 networkSymbol: account.symbol,
                 index: account.index + 1,
@@ -368,6 +370,7 @@ export const AddAccountModal = ({
             }
 
             const createAccountAction = accountsActions.createAccount(
+                networkConfigDeps,
                 newAccount,
                 allNetworkSymbols,
             );
@@ -396,7 +399,7 @@ export const AddAccountModal = ({
         }
 
         try {
-            const newAccount = await prepareNewAccountPayload({
+            const newAccount = await prepareNewAccountPayload(networkConfigDeps, {
                 accountType: account.accountType,
                 networkSymbol: network.symbol,
                 index: 0,
@@ -418,6 +421,7 @@ export const AddAccountModal = ({
             }
 
             const createAccountAction = accountsActions.createAccount(
+                networkConfigDeps,
                 newAccount,
                 allNetworkSymbols,
             );
@@ -429,7 +433,7 @@ export const AddAccountModal = ({
             dispatch(
                 notificationsActions.addToast({
                     type: 'account-added',
-                    networkName: getNetwork(addedAccount.symbol).name,
+                    networkName: getNetwork(networkConfigDeps, addedAccount.symbol).name,
                 }),
             );
 
@@ -454,7 +458,7 @@ export const AddAccountModal = ({
             return;
         }
 
-        const networkToSelect = getNetwork(networkSymbol);
+        const networkToSelect = getNetwork(networkConfigDeps, networkSymbol);
 
         if (!networkToSelect) {
             return;

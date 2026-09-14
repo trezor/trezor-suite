@@ -1,5 +1,6 @@
 import { D } from '@mobily/ts-belt';
 
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
@@ -15,18 +16,23 @@ import { fetchTokenDefinitions, getSupportedDefinitionTypes } from './tokenDefin
 
 const TOKEN_DEFINITIONS_MODULE = '@common/wallet-core/token-definitions';
 
+type GetTokenDefinitionThunkState = NetworksRootState;
+
 export const getTokenDefinitionThunk = createThunk<
     string[],
     {
         symbol: NetworkSymbol;
         type: DefinitionType;
     },
-    void
+    { state: GetTokenDefinitionThunkState }
 >(
     `${TOKEN_DEFINITIONS_MODULE}/getTokenDefinitionsThunk`,
-    async (params, { fulfillWithValue, rejectWithValue }) => {
+    async (params, { getState, fulfillWithValue, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         try {
             const data: string[] = await fetchTokenDefinitions(
+                networkConfigDeps,
                 params.symbol,
                 params.type,
                 TokenStructureType.SIMPLE,
@@ -39,20 +45,25 @@ export const getTokenDefinitionThunk = createThunk<
     },
 );
 
-export type InitTokenDefinitionsThunkState = TokenDefinitionsRootState;
+export type InitTokenDefinitionsThunkState = TokenDefinitionsRootState & NetworksRootState;
 
 export type InitTokenDefinitionsThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
 
 export const initTokenDefinitionsThunk = createThunk<
     unknown[],
     void,
-    { state: InitTokenDefinitionsThunkState; extra: InitTokenDefinitionsThunkDeps }
+    {
+        state: InitTokenDefinitionsThunkState;
+        extra: InitTokenDefinitionsThunkDeps;
+    }
 >(`${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`, (_, { getState, dispatch, extra }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     const enabledNetworks = extra.services.getTokenDefinitionsEnabledNetworks();
 
     const promises = enabledNetworks
         .map(symbol => {
-            let definitionTypes = getSupportedDefinitionTypes(symbol);
+            let definitionTypes = getSupportedDefinitionTypes(networkConfigDeps, symbol);
 
             const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 

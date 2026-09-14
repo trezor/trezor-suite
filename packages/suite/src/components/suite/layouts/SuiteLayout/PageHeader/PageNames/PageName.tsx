@@ -7,6 +7,7 @@ import {
     selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -16,9 +17,12 @@ import { BasicName } from './BasicName';
 import { SettingsName } from './SettingsName';
 
 export const PageName = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useSelector(selectRoute);
     const { suiteRouterHistory } = useServices(selectSuiteRouterHistoryDep);
     const currentRoute = resolveEffectiveBackgroundRouteName(
+        networkConfigDeps,
         route,
         suiteRouterHistory.getLocation(),
     );

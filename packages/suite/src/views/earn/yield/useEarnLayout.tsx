@@ -5,6 +5,7 @@ import { type EarnParams, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2, useGetVaultByAddress } from '@suite-common/earn-stablecoin-api';
+import { type NetworkConfigDeps, selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type EarnAnalyticsStep } from '@suite-common/suite-types/src/staking';
@@ -59,23 +60,25 @@ const getAnalyticsStep = (type: YieldPositionFlowType): EarnYieldAnalyticsStep =
     }
 };
 
-const isVaultNetworkMismatch = ({ account, vault }: VaultValidationParams): boolean => {
+const isVaultNetworkMismatch = (
+    networkConfigDeps: NetworkConfigDeps,
+    { account, vault }: VaultValidationParams,
+): boolean => {
     if (!vault) {
         return false;
     }
 
-    const vaultNetwork = getNetworkByYieldXyzId(vault.network);
+    const vaultNetwork = getNetworkByYieldXyzId(networkConfigDeps, vault.network);
 
     return vaultNetwork?.symbol !== account.symbol;
 };
 
 // The vault is looked up by the address in the route, so this only guards against a backend
 // returning something other than what was asked for.
-const isVaultAddressMismatch = ({
-    account,
-    routeParams,
-    vault,
-}: VaultAddressValidationParams): boolean => {
+const isVaultAddressMismatch = (
+    networkConfigDeps: NetworkConfigDeps,
+    { account, routeParams, vault }: VaultAddressValidationParams,
+): boolean => {
     if (!vault) {
         return false;
     }
@@ -87,21 +90,28 @@ const isVaultAddressMismatch = ({
     }
 
     return (
-        getContractAddressForNetworkSymbol(account.symbol, vaultAddress) !==
-        getContractAddressForNetworkSymbol(account.symbol, routeParams.vaultAddress)
+        getContractAddressForNetworkSymbol(networkConfigDeps, account.symbol, vaultAddress) !==
+        getContractAddressForNetworkSymbol(
+            networkConfigDeps,
+            account.symbol,
+            routeParams.vaultAddress,
+        )
     );
 };
 
-const getEarnLayoutResult = ({
-    account,
-    device,
-    routeParams,
-    vault,
-    type,
-    isYieldOpportunitiesLoading,
-    isYieldOpportunitiesSuccess,
-    isYieldOpportunitiesError,
-}: GetEarnLayoutResultParams): EarnLayoutState => {
+const getEarnLayoutResult = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        account,
+        device,
+        routeParams,
+        vault,
+        type,
+        isYieldOpportunitiesLoading,
+        isYieldOpportunitiesSuccess,
+        isYieldOpportunitiesError,
+    }: GetEarnLayoutResultParams,
+): EarnLayoutState => {
     if (!routeParams) {
         return { status: 'invalid', reason: 'missing-route-params' };
     }
@@ -126,11 +136,11 @@ const getEarnLayoutResult = ({
         return { status: 'invalid', reason: 'missing-vault' };
     }
 
-    if (isVaultNetworkMismatch({ account, vault })) {
+    if (isVaultNetworkMismatch(networkConfigDeps, { account, vault })) {
         return { status: 'invalid', reason: 'network-mismatch' };
     }
 
-    if (isVaultAddressMismatch({ account, routeParams, vault })) {
+    if (isVaultAddressMismatch(networkConfigDeps, { account, routeParams, vault })) {
         return { status: 'invalid', reason: 'missing-vault' };
     }
 
@@ -148,13 +158,19 @@ const getEarnLayoutResult = ({
 };
 
 export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): EarnLayoutState => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const analyticsStep = getAnalyticsStep(type);
     const { dispatch } = useServices(selectDispatch);
     const { account, routeParams } = useEarnRouteAccount();
     const selectedDevice = useSelector(selectSelectedDevice);
     // Normalized so a hand-written URL resolves the same vault as one the app produced.
     const vaultAddress = routeParams?.vaultAddress
-        ? getContractAddressForNetworkSymbol(routeParams.symbol, routeParams.vaultAddress)
+        ? getContractAddressForNetworkSymbol(
+              networkConfigDeps,
+              routeParams.symbol,
+              routeParams.vaultAddress,
+          )
         : undefined;
     const {
         data: vault,
@@ -164,7 +180,8 @@ export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): E
     } = useGetVaultByAddress({
         enabled: true,
         outputToken: vaultAddress,
-        network: getNetworkOptional(routeParams?.symbol)?.yieldXyzId ?? undefined,
+        network:
+            getNetworkOptional(networkConfigDeps, routeParams?.symbol)?.yieldXyzId ?? undefined,
     });
 
     useEffect(() => {
@@ -173,7 +190,7 @@ export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): E
         }
     }, [dispatch, routeParams]);
 
-    const layoutState = getEarnLayoutResult({
+    const layoutState = getEarnLayoutResult(networkConfigDeps, {
         account,
         device: selectedDevice,
         routeParams,

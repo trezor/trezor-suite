@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -96,6 +98,8 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
     isEnabled,
     symbol,
 }: UsePreparedTxFeesParams<TComposed>) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
@@ -113,7 +117,7 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
     const formDraft = useSelector((state: FormDraftRootState) =>
         formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
     );
-    const feeInfo = useSelector((state: FeesRootState) =>
+    const feeInfo = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeInfo(state, symbol),
     );
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
@@ -204,7 +208,7 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
             return null;
         }
 
-        return buildYieldDepositFeeDraftState({
+        return buildYieldDepositFeeDraftState(networkConfigDeps, {
             currentFormDraft: formDraft,
             amount: baseActionContext.amount,
             feeInfo: currentFeeInfo,
@@ -213,7 +217,7 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
             token: baseActionContext.transaction.token,
             unsignedTransaction: baseActionContext.transaction.unsignedTransaction,
         });
-    }, [baseActionContext, feeInfoRevision, formDraft]);
+    }, [networkConfigDeps, baseActionContext, feeInfoRevision, formDraft]);
 
     const preparedTx = useMemo((): PreparedTx<TComposed> | null => {
         if (!baseActionContext) {

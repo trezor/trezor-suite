@@ -1,7 +1,10 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { err, ok } from '@trezor/type-utils';
 
 import { type FindNetworkSymbolForProtocol, parseTransferUri } from './parseTransferUri';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol => {
     if (protocol === 'bitcoin') return asNetworkSymbol('btc');
@@ -9,7 +12,8 @@ const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol => {
 
     return null;
 };
-const parse = (uri: string) => parseTransferUri(uri, findNetworkSymbolForProtocol);
+const parse = (uri: string) =>
+    parseTransferUri(networkConfigDeps, uri, findNetworkSymbolForProtocol);
 
 describe(parseTransferUri.name, () => {
     // --- ERC-681 dispatch ---

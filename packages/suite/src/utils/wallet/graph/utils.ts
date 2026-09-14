@@ -1,6 +1,7 @@
 import { differenceInMonths, fromUnixTime, getUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { resetTime } from '@suite-common/suite-utils';
 import {
     type BackendType,
@@ -33,18 +34,20 @@ export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSession
 };
 
 export const ensureHistoryRates = async (
+    networkConfigDeps: NetworkConfigDeps,
     symbol: NetworkSymbol,
     data: BlockchainAccountBalanceHistory[],
     baseCurrencyCode: BaseCurrencyCode,
     isElectrumBackend: boolean,
 ): Promise<BlockchainAccountBalanceHistory[]> => {
-    if (!getNetwork(symbol).coingeckoId) return data;
+    if (!getNetwork(networkConfigDeps, symbol).coingeckoId) return data;
 
     const missingRates = data
         .filter(({ rates }) => !Object.keys(rates || {}).length)
         .map(({ time }) => time);
 
     const rateDictionary = await getFiatRatesForTimestamps(
+        networkConfigDeps,
         { symbol },
         missingRates,
         baseCurrencyCode,
@@ -75,8 +78,12 @@ export function getPristineAccounts(graph: AppState['wallet']['graph'], accounts
 /**
  * Does given network has backend type with support for retrieving transactions history, e.g. for showing graph?
  */
-export function isNetworkWithGraphFeature(symbol: NetworkSymbol, backendType?: BackendType) {
-    const hasGraphFeature = getNetworkFeatures(symbol).includes('graph');
+export function isNetworkWithGraphFeature(
+    networkConfigDeps: NetworkConfigDeps,
+    symbol: NetworkSymbol,
+    backendType?: BackendType,
+) {
+    const hasGraphFeature = getNetworkFeatures(networkConfigDeps, symbol).includes('graph');
     if (!hasGraphFeature) {
         return false;
     }
@@ -85,6 +92,7 @@ export function isNetworkWithGraphFeature(symbol: NetworkSymbol, backendType?: B
 }
 
 export const enhanceBlockchainAccountHistory = (
+    networkConfigDeps: NetworkConfigDeps,
     data: BlockchainAccountBalanceHistory[],
     symbol: NetworkSymbol,
     balanceBefore = '0',
@@ -99,8 +107,12 @@ export const enhanceBlockchainAccountHistory = (
             ? new BigNumber(dataPoint.sent).minus(dataPoint.sentToSelf || 0).toFixed()
             : dataPoint.sent;
 
-        const formattedReceived = formatNetworkAmount(normalizedReceived, symbol);
-        const formattedSent = formatNetworkAmount(normalizedSent, symbol);
+        const formattedReceived = formatNetworkAmount(
+            networkConfigDeps,
+            normalizedReceived,
+            symbol,
+        );
+        const formattedSent = formatNetworkAmount(networkConfigDeps, normalizedSent, symbol);
         balance = new BigNumber(balance).plus(formattedReceived).minus(formattedSent).toFixed();
 
         return {

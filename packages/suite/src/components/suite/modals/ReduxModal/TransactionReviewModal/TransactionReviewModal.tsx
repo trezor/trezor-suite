@@ -1,6 +1,7 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
@@ -36,6 +37,8 @@ import { type TxInfoState } from './utils';
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
 export const TransactionReviewModal = ({ type, decision }: TransactionReviewModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const send = useSelector(selectSend);
     const stake = useSelector(selectStake);
     const yieldTxReview = useSelector(selectYieldTxReview);
@@ -108,6 +111,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         dispatch(stakeActions.dispose());
         await dispatch(
             signTransactionThunk(
+                networkConfigDeps,
                 stake.precomposedForm!,
                 stake.precomposedTx as PrecomposedTransactionFinal,
             ),

@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     calculateRewards,
@@ -31,16 +33,18 @@ interface UseEmptyStakingCardDataProps {
 export const useEmptyStakingCardData = ({
     account,
 }: UseEmptyStakingCardDataProps): EmptyStakingCardData => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { CryptoAmountFormatter } = useFormatters();
     const { rate } = useStakingRate({ symbol: account?.symbol, accountKey: account?.key });
     const { isStakingDisabled } = useMessageSystemStaking(account?.symbol);
     const isStartStakingDisabled = isStakingDisabled || !account;
 
-    const stakingData = getStakingDataForNetwork(account);
+    const stakingData = getStakingDataForNetwork(networkConfigDeps, account);
 
     const accountBalance = account?.formattedBalance ?? '0';
     const stakingBalance = stakingData?.depositedBalance ?? '0';
-    const stakingLimits = getStakingLimitsByNetworkSymbol(account?.symbol);
+    const stakingLimits = getStakingLimitsByNetworkSymbol(networkConfigDeps, account?.symbol);
 
     const hasEnoughBalanceForStaking = Boolean(
         stakingLimits && new BigNumber(accountBalance).gte(stakingLimits.MIN_AMOUNT_FOR_STAKING),
@@ -64,7 +68,9 @@ export const useEmptyStakingCardData = ({
 
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
 
-    const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
+    const displaySymbol = account?.symbol
+        ? getNetworkDisplaySymbol(networkConfigDeps, account.symbol)
+        : '';
 
     return {
         rate,

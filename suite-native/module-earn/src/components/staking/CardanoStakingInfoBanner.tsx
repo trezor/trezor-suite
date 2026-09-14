@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -18,6 +20,8 @@ type CardanoStakingInfoBannerProps = {
 };
 
 export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const openLink = useOpenLink();
 
     const networkSymbol = useAccountsSelector(state =>
@@ -62,7 +66,7 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
             title={
                 <Translation
                     id="earn.stakingManagementScreen.cardanoDesktopOnlyBanner"
-                    values={{ symbol: getNetworkDisplaySymbol(networkSymbol) }}
+                    values={{ symbol: getNetworkDisplaySymbol(networkConfigDeps, networkSymbol) }}
                 />
             }
         />

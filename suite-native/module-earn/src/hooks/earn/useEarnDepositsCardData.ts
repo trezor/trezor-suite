@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -50,6 +52,8 @@ export const useEarnDepositsCardData = ({
     stakingActiveItems,
     stablecoinYieldActiveItems,
 }: UseEarnDepositsCardDataProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translate } = useTranslate();
 
     const currentFiatRates = useSelector(selectCurrentFiatRates);
@@ -97,13 +101,19 @@ export const useEarnDepositsCardData = ({
         hasStablecoinYieldFiatRate: hasStablecoinFiatRate,
     } = useMemo(
         () =>
-            calculateEarnDepositsFiatData({
+            calculateEarnDepositsFiatData(networkConfigDeps, {
                 stakingDeposits,
                 stablecoinYieldDeposits,
                 currentFiatRates,
                 baseCurrencyCode: fiatCurrency,
             }),
-        [currentFiatRates, fiatCurrency, stablecoinYieldDeposits, stakingDeposits],
+        [
+            networkConfigDeps,
+            currentFiatRates,
+            fiatCurrency,
+            stablecoinYieldDeposits,
+            stakingDeposits,
+        ],
     );
 
     const stakingRows = useMemo(
@@ -113,7 +123,7 @@ export const useEarnDepositsCardData = ({
                     ({
                         id: deposit.id,
                         type: 'staking',
-                        title: getNetworkDisplaySymbolName(deposit.symbol),
+                        title: getNetworkDisplaySymbolName(networkConfigDeps, deposit.symbol),
                         symbol: deposit.symbol,
                         accountKey: deposit.accountKey,
                         accountLabel: deposit.accountLabel,
@@ -121,7 +131,7 @@ export const useEarnDepositsCardData = ({
                         fiatAmount,
                     }) satisfies EarnDepositsCardActiveItem,
             ),
-        [calculatedStakingDeposits],
+        [networkConfigDeps, calculatedStakingDeposits],
     );
 
     const stablecoinRows = useMemo(

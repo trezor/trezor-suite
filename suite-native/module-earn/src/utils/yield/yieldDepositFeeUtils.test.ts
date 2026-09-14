@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, type FormState } from '@suite-common/wallet-types';
 
@@ -8,6 +10,8 @@ import {
     buildYieldDepositFeePreview,
     buildYieldDepositSelectedFeeUnsignedTransaction,
 } from './yieldDepositFeeUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const baseUnsignedTransaction = {
     from: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
@@ -130,7 +134,7 @@ describe('buildYieldDepositFeePreview', () => {
 
 describe('buildYieldDepositFeeLevels', () => {
     it('derives EIP-1559 fee levels from the base deposit transaction', () => {
-        const result = buildYieldDepositFeeLevels({
+        const result = buildYieldDepositFeeLevels(networkConfigDeps, {
             amount: '1.25',
             feeInfo: eip1559FeeInfo,
             gasLimit: '21000',
@@ -333,7 +337,7 @@ describe('buildYieldDepositFeeFormDraft', () => {
 
 describe('buildYieldDepositFeeDraftState', () => {
     it('adds a custom fee level when the custom fee draft is complete', () => {
-        const result = buildYieldDepositFeeDraftState({
+        const result = buildYieldDepositFeeDraftState(networkConfigDeps, {
             amount: '1.25',
             currentFormDraft: buildFormDraft({
                 selectedFee: 'custom',

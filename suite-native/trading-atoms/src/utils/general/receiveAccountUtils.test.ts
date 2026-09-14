@@ -1,7 +1,11 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 
 import { getReceiveAccountFromAccountAndAddressString } from './receiveAccountUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 describe('receiveAccountUtils', () => {
     describe('getReceiveAccountFromAccountAndAddressString', () => {
@@ -54,25 +58,33 @@ describe('receiveAccountUtils', () => {
         });
 
         it('should return account when no address is specified', () => {
-            expect(getReceiveAccountFromAccountAndAddressString(account)).toEqual({ account });
+            expect(
+                getReceiveAccountFromAccountAndAddressString(networkConfigDeps, account),
+            ).toEqual({ account });
         });
 
         it('should return account and address when used address is specified', () => {
-            expect(getReceiveAccountFromAccountAndAddressString(account, 'USED1')).toEqual({
+            expect(
+                getReceiveAccountFromAccountAndAddressString(networkConfigDeps, account, 'USED1'),
+            ).toEqual({
                 account,
                 address: account.addresses!.used[0],
             });
         });
 
         it('should return account and address when unused address is specified', () => {
-            expect(getReceiveAccountFromAccountAndAddressString(account, 'UNUSED2')).toEqual({
+            expect(
+                getReceiveAccountFromAccountAndAddressString(networkConfigDeps, account, 'UNUSED2'),
+            ).toEqual({
                 account,
                 address: account.addresses!.unused[1],
             });
         });
 
         it('should return account and address when change address is specified', () => {
-            expect(getReceiveAccountFromAccountAndAddressString(account, 'CHANGE')).toEqual({
+            expect(
+                getReceiveAccountFromAccountAndAddressString(networkConfigDeps, account, 'CHANGE'),
+            ).toEqual({
                 account,
                 address: account.addresses!.change[0],
             });
@@ -80,13 +92,23 @@ describe('receiveAccountUtils', () => {
 
         it('should throw when invalid address string is specified', () => {
             expect(() =>
-                getReceiveAccountFromAccountAndAddressString(account, 'NONEXISTING'),
+                getReceiveAccountFromAccountAndAddressString(
+                    networkConfigDeps,
+                    account,
+                    'NONEXISTING',
+                ),
             ).toThrow('Address not found in the account');
         });
 
         it('should throw when address is specified for account without addresses', () => {
             const ethAccount = getEthAccount();
-            expect(getReceiveAccountFromAccountAndAddressString(ethAccount, 'ANYADDRESS')).toEqual({
+            expect(
+                getReceiveAccountFromAccountAndAddressString(
+                    networkConfigDeps,
+                    ethAccount,
+                    'ANYADDRESS',
+                ),
+            ).toEqual({
                 account: ethAccount,
             });
         });

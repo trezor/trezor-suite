@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -12,6 +14,8 @@ import TrezorConnect from '@trezor/connect';
 import { createContractAlert } from './alertBuilders';
 
 export const useContractAddressCheck = (addressValue: string) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         params: { accountKey },
     } = useRoute<RouteProp<SendStackParamList, SendStackRoutes.SendOutputs>>();
@@ -22,7 +26,7 @@ export const useContractAddressCheck = (addressValue: string) => {
 
     const [wasContractAlertDisplayed, setWasContractAlertDisplayed] = useState(false);
 
-    const networkType = symbol ? getNetworkType(symbol) : null;
+    const networkType = symbol ? getNetworkType(networkConfigDeps, symbol) : null;
 
     const resetContractAlert = useCallback(() => setWasContractAlertDisplayed(false), []);
 

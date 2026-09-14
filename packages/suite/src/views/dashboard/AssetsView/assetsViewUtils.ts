@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TokenDefinition } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
@@ -13,6 +14,7 @@ import {
 } from 'src/utils/wallet/tokenUtils';
 
 export const handleTokensAndStakingData = (
+    networkConfigDeps: NetworkConfigDeps,
     assetTokens: TokenInfo[],
     accountsThatStaked: Account[],
     isStakingActive: boolean,
@@ -22,10 +24,11 @@ export const handleTokensAndStakingData = (
     currentFiatRates?: RatesByKey,
 ) => {
     const assetStakingBalance = accountsThatStaked.reduce(
-        (total, account) => total.plus(getAccountTotalStakingBalance(account) ?? '0'),
+        (total, account) =>
+            total.plus(getAccountTotalStakingBalance(networkConfigDeps, account) ?? '0'),
         new BigNumber(0),
     );
-    const tokens = getTokens({
+    const tokens = getTokens(networkConfigDeps, {
         tokens: assetTokens ?? [],
         symbol,
         tokenDefinitions: coinDefinitions,

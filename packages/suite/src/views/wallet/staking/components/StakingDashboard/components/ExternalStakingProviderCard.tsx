@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
@@ -17,8 +19,10 @@ export const ExternalStakingProviderCard = ({
     symbol,
     totalStaked,
 }: ExternalStakingProviderCardProps) => {
-    const displaySymbol = getDisplaySymbol(symbol);
-    const totalStakedInUnits = subunitsToUnits({
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const displaySymbol = getDisplaySymbol(networkConfigDeps, symbol);
+    const totalStakedInUnits = subunitsToUnits(networkConfigDeps, {
         value: asAmountSubunit(new BigNumber(totalStaked || '0')),
         symbol,
     }).toString();

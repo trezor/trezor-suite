@@ -1,5 +1,10 @@
 import { type Dispatch, createAction } from '@reduxjs/toolkit';
 
+import {
+    type NetworkConfigDeps,
+    type NetworksRootState,
+    selectNetworkConfigAccessors,
+} from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { resetTime } from '@suite-common/suite-utils';
 import {
@@ -69,7 +74,11 @@ type FetchAccountGraphDataThunkState = BlockchainRootState &
  * @returns
  */
 export const fetchAccountGraphDataThunk =
-    (account: Account, options: { abortSignal?: AbortSignal }) =>
+    (
+        networkConfigDeps: NetworkConfigDeps,
+        account: Account,
+        options: { abortSignal?: AbortSignal },
+    ) =>
     async (dispatch: Dispatch, getState: () => FetchAccountGraphDataThunkState) => {
         dispatch(
             accountGraphStart({
@@ -104,6 +113,7 @@ export const fetchAccountGraphDataThunk =
 
         if (response?.success) {
             const responseWithRates = await ensureHistoryRates(
+                networkConfigDeps,
                 account.symbol,
                 response.payload,
                 baseCurrencyCode,
@@ -119,6 +129,7 @@ export const fetchAccountGraphDataThunk =
                     : undefined;
 
             const enhancedResponse = enhanceBlockchainAccountHistory(
+                networkConfigDeps,
                 responseWithRates,
                 account.symbol,
                 balanceBeforeFirstFreshPoint,
@@ -163,19 +174,21 @@ export const fetchAccountGraphDataThunk =
         }
     };
 
-type UpdateGraphDataThunkState = FetchAccountGraphDataThunkState;
+type UpdateGraphDataThunkState = FetchAccountGraphDataThunkState & NetworksRootState;
 
 export const updateGraphDataThunk = createThunk<
     void,
     { accounts: Account[]; abortSignal?: AbortSignal },
     { state: UpdateGraphDataThunkState }
 >('wallet/updateGraphData', async ({ accounts, abortSignal }, { dispatch, getState }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     const graph = selectGraph(getState());
 
     const supportedAccounts = accounts.filter(
         a =>
             isTrezorConnectBackendType(a.backendType) &&
-            isNetworkWithGraphFeature(a.symbol, a.backendType),
+            isNetworkWithGraphFeature(networkConfigDeps, a.symbol, a.backendType),
     );
 
     const graphDataPointsByAccount = new Map<AccountKey, AccountHistoryWithBalance[]>(
@@ -211,7 +224,7 @@ export const updateGraphDataThunk = createThunk<
         dispatch(aggregatedGraphStart());
         const promises = accountsToFetch.map(a =>
             dispatch(
-                fetchAccountGraphDataThunk(a, {
+                fetchAccountGraphDataThunk(networkConfigDeps, a, {
                     abortSignal,
                 }),
             ),

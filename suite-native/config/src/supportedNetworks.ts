@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { A } from '@mobily/ts-belt';
 
 import {
@@ -31,10 +32,11 @@ export const sortNetworks = (
     });
 
 export const filterTestnetNetworks = (
+    networkConfigDeps: NetworkConfigDeps,
     networkSymbols: NetworkSymbol[],
     isTestnetEnabled: boolean,
 ) => {
     if (isTestnetEnabled) return networkSymbols;
 
-    return networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol));
+    return networkSymbols.filter(networkSymbol => !isTestnet(networkConfigDeps, networkSymbol));
 };

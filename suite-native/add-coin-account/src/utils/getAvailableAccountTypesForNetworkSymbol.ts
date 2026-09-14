@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
@@ -10,18 +11,21 @@ import { typedObjectKeys } from '@trezor/utils';
 
 const normalOnlyNonEvmNetworkSymbols: NetworkSymbol[] = ['ada', 'sol'];
 
-export const getAvailableAccountTypesForNetworkSymbol = ({
-    symbol,
-}: {
-    symbol: NetworkSymbol;
-}): [AccountType, ...AccountType[]] => {
-    const networkConfig = getNetwork(symbol) as NetworkConfig | undefined;
+export const getAvailableAccountTypesForNetworkSymbol = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        symbol,
+    }: {
+        symbol: NetworkSymbol;
+    },
+): [AccountType, ...AccountType[]] => {
+    const networkConfig = getNetwork(networkConfigDeps, symbol) as NetworkConfig | undefined;
     if (!networkConfig) {
         return [NORMAL_ACCOUNT_TYPE];
     }
 
     const supportsOnlyNormalAccountType =
-        isEvmNetwork(symbol) || normalOnlyNonEvmNetworkSymbols.includes(symbol);
+        isEvmNetwork(networkConfigDeps, symbol) || normalOnlyNonEvmNetworkSymbols.includes(symbol);
     if (supportsOnlyNormalAccountType) {
         return [NORMAL_ACCOUNT_TYPE];
     }

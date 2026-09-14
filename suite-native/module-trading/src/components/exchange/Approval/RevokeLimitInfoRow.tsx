@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import {
@@ -15,6 +17,8 @@ import { UnlimitedAllowanceLabel } from './UnlimitedAllowanceLabel';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
 export const RevokeLimitInfoRow = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
@@ -23,13 +27,16 @@ export const RevokeLimitInfoRow = () => {
     }
 
     const { send, preapprovedStringAmount } = quote;
-    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
+    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(
+        networkConfigDeps,
+        send,
+    );
     const { decimals } = findToken(sendAccount?.tokens, contractAddress) ?? {};
 
     const showUnlimitedAllowanceLabel =
         preapprovedStringAmount &&
         typeof decimals === 'number' &&
-        isAllowanceUnlimited({ amount: preapprovedStringAmount, decimals });
+        isAllowanceUnlimited(networkConfigDeps, { amount: preapprovedStringAmount, decimals });
 
     return (
         <TradeInfoRow testID="ExchangeApproval/LimitRevoke">

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { forwardRef } from 'react';
 import { type TextInput } from 'react-native';
 
@@ -19,13 +21,15 @@ const EXCHANGE_SEND_INPUT_TEST_ID = '@trading/exchange/send-amount-input';
 
 export const ExchangeSendAmountInput = forwardRef<TextInput, ExchangeSendAmountInputProps>(
     ({ onSelectAsset }, ref) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
         const { translate } = useTranslate();
         const { control, setValue } = useExchangeFormContext();
         const [asset, amount, account] = useWatch({
             control,
             name: ['sendAsset', 'sendCryptoAmount', 'sendAccount'],
         });
-        const symbol = getSymbolFromTradeableAsset(asset);
+        const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
         const inputControls = useInputFieldControls('sendCryptoAmount', amount, setValue);
         const decimals = useAmountInputDecimals(account, asset?.contractAddress);

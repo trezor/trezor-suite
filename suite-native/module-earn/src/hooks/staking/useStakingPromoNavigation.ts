@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -26,6 +27,8 @@ import { navigateByAccountState } from '../../utils/staking/navigateByAccountSta
 import { resolveStakingPromoAccounts } from '../../utils/staking/resolveStakingPromoAccounts';
 
 export const useStakingPromoNavigation = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const navigation =
         useNavigation<
             StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>
@@ -67,9 +70,9 @@ export const useStakingPromoNavigation = () => {
             closeChooseAccountModal();
             reportStakingNavigate(account);
 
-            navigateByAccountState(account, navigation.navigate);
+            navigateByAccountState(networkConfigDeps, account, navigation.navigate);
         },
-        [closeChooseAccountModal, navigation.navigate, reportStakingNavigate],
+        [networkConfigDeps, closeChooseAccountModal, navigation.navigate, reportStakingNavigate],
     );
 
     const handleChooseAccountDismiss = useCallback(() => {
@@ -92,7 +95,7 @@ export const useStakingPromoNavigation = () => {
 
     const showViewOnlyEnableNetworkAlert = useCallback(
         (symbol: NetworkSymbol) => {
-            const networkName = getNetwork(symbol).name;
+            const networkName = getNetwork(networkConfigDeps, symbol).name;
 
             showAlert({
                 title: translate('earn.earnScreen.enableNetworkModal.viewOnlyAlert.title', {
@@ -106,7 +109,7 @@ export const useStakingPromoNavigation = () => {
                 onPressPrimaryButton: hideAlert,
             });
         },
-        [hideAlert, showAlert, translate],
+        [networkConfigDeps, hideAlert, showAlert, translate],
     );
 
     const handleEnableNetworkPress = useCallback(() => {
@@ -159,7 +162,10 @@ export const useStakingPromoNavigation = () => {
 
     const handleStakingPromoPress = useCallback(
         (item: StakingEarnItem) => {
-            const resolution = resolveStakingPromoAccounts({ symbol: item.symbol, accounts });
+            const resolution = resolveStakingPromoAccounts(networkConfigDeps, {
+                symbol: item.symbol,
+                accounts,
+            });
 
             if (resolution.isDesktopOnly) {
                 openInfoModal();
@@ -187,7 +193,7 @@ export const useStakingPromoNavigation = () => {
             const singleAccount = navigableAccounts[0];
             if (navigableAccounts.length === 1 && singleAccount) {
                 reportStakingNavigate(singleAccount);
-                navigateByAccountState(singleAccount, navigation.navigate);
+                navigateByAccountState(networkConfigDeps, singleAccount, navigation.navigate);
 
                 return;
             }
@@ -198,6 +204,7 @@ export const useStakingPromoNavigation = () => {
             openChooseAccountModal();
         },
         [
+            networkConfigDeps,
             accounts,
             navigation.navigate,
             isPortfolioTrackerDevice,

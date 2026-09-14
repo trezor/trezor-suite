@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type AccountType,
     type NetworkSymbol,
@@ -21,8 +22,12 @@ import { type PostCallHookParams, type PreCallHookParams } from './types';
 // Resolves one of the network's built-in types (bypassing the "publicly available" filter that
 // getAvailableAccountTypes applies) — an app explicitly requesting a debug-only type, e.g.
 // 'ledger' on eth, should still get it.
-const resolveKnownAccountType = (symbol: NetworkSymbol, accountType: AccountType) => {
-    const network = getNetwork(symbol);
+const resolveKnownAccountType = (
+    networkConfigDeps: NetworkConfigDeps,
+    symbol: NetworkSymbol,
+    accountType: AccountType,
+) => {
+    const network = getNetwork(networkConfigDeps, symbol);
     if (accountType === 'normal') return { accountType, bip43Path: network.bip43Path };
 
     return network.accountTypes[accountType];
@@ -32,11 +37,12 @@ const resolveKnownAccountType = (symbol: NetworkSymbol, accountType: AccountType
 // or a custom { bip43Path, label } descriptor; unknown/unsupported names are dropped. Falls back
 // to the network's full publicly available list when unrequested or nothing requested survives.
 const buildAccountTypeTabs = (
+    networkConfigDeps: NetworkConfigDeps,
     symbol: NetworkSymbol,
     requested: Array<AccountType | { bip43Path: string; label: string }> | undefined,
 ): SelectAccountTypeTab[] => {
     const defaultTabs = () =>
-        getAvailableAccountTypes(symbol).map(({ accountType, bip43Path }) => ({
+        getAvailableAccountTypes(networkConfigDeps, symbol).map(({ accountType, bip43Path }) => ({
             key: accountType,
             accountType,
             bip43Path,
@@ -47,7 +53,7 @@ const buildAccountTypeTabs = (
     const tabs = requested
         .map((entry, index): SelectAccountTypeTab | undefined => {
             if (typeof entry === 'string') {
-                const known = resolveKnownAccountType(symbol, entry);
+                const known = resolveKnownAccountType(networkConfigDeps, symbol, entry);
 
                 return (
                     known && {
@@ -79,12 +85,15 @@ const resolveSelectionType = (selectionType: SelectionType | undefined) => {
     };
 };
 
-const buildOptions = (payload: Record<string, any>): SelectAccountOptions => {
+const buildOptions = (
+    networkConfigDeps: NetworkConfigDeps,
+    payload: Record<string, any>,
+): SelectAccountOptions => {
     const symbol = String(payload.coin).toLowerCase() as NetworkSymbol;
     const { selectionType, minCount, maxCount } = resolveSelectionType(payload.selectionType);
     // Normalize the default so every downstream check compares against a concrete literal instead
     // of `undefined` — irrelevant (and left undefined) for account-based networks.
-    const addressSelection = isUtxoNetwork(symbol)
+    const addressSelection = isUtxoNetwork(networkConfigDeps, symbol)
         ? (payload.addressSelection ?? 'fullAccount')
         : undefined;
 
@@ -93,7 +102,7 @@ const buildOptions = (payload: Record<string, any>): SelectAccountOptions => {
         selectionType,
         minCount,
         maxCount,
-        accountTypeTabs: buildAccountTypeTabs(symbol, payload.accountType),
+        accountTypeTabs: buildAccountTypeTabs(networkConfigDeps, symbol, payload.accountType),
         mode: addressSelection === 'fullAccount' ? 'xpub' : 'address',
         addressSelection,
         requireOnDeviceVerification: payload.requireOnDeviceVerification ?? true,
@@ -104,14 +113,14 @@ const buildOptions = (payload: Record<string, any>): SelectAccountOptions => {
 // access to a coin that would only crash buildOptions afterwards. Connect's `__info` call already
 // rejected unknown/typo'd coins with Method_UnknownCoin, so a non-network symbol here is a
 // Connect-valid coin this host cannot render — hence a distinct code the caller can act on.
-const validateHook = <M extends CallMethodKeys>({
-    method,
-    payload,
-}: Pick<PreCallHookParams<M>, 'method' | 'payload'>) => {
+const validateHook = <M extends CallMethodKeys>(
+    networkConfigDeps: NetworkConfigDeps,
+    { method, payload }: Pick<PreCallHookParams<M>, 'method' | 'payload'>,
+) => {
     if (method !== 'selectAccount') return;
 
     const symbol = String((payload as Record<string, any>).coin).toLowerCase();
-    if (!isNetworkSymbol(symbol)) {
+    if (!isNetworkSymbol(networkConfigDeps, symbol)) {
         throw TypedError('Method_UnsupportedCoinForHost');
     }
 };
@@ -121,15 +130,13 @@ const validateHook = <M extends CallMethodKeys>({
 // picker to fire nested Connect calls (deriving new indices, verifying addresses on device) without
 // colliding with an in-flight call. We keep the call "ongoing" by blocking on getPermissionDeferred,
 // which connectPopupResolveSelectAccountThunk resolves (confirm) or rejects (cancel).
-async function postCallHook<M extends CallMethodKeys>({
-    method,
-    originalPayload,
-    response,
-    dispatch,
-}: PostCallHookParams<M>) {
+async function postCallHook<M extends CallMethodKeys>(
+    networkConfigDeps: NetworkConfigDeps,
+    { method, originalPayload, response, dispatch }: PostCallHookParams<M>,
+) {
     if (method !== 'selectAccount' || !response.success) return false;
 
-    const options = buildOptions(originalPayload);
+    const options = buildOptions(networkConfigDeps, originalPayload);
 
     dispatch(
         connectPopupActions.selectAccount({

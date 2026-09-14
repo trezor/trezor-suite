@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
@@ -6,6 +8,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const sendAmount = '0.03';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
@@ -50,7 +54,7 @@ test.describe('Trading - Swap fees', { tag: ['@T3W1', '@T3T1'] }, () => {
                     buyAsset: {
                         searchFilter: 'Bitcoin',
                         networkFilter: 'btc',
-                        assetCryptoId: getCryptoId(asNetworkSymbol('btc')),
+                        assetCryptoId: getCryptoId(networkConfigDeps, asNetworkSymbol('btc')),
                     },
                 });
                 await tradingPage.fees.setEthereumCustomFees({

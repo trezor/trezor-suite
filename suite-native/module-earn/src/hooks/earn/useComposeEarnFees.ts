@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -84,6 +86,8 @@ export const useComposeEarnFees = ({
     formState,
     formDraftPrefix,
 }: UseComposeEarnFeesParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const debounce = useDebounce();
     const isFocused = useIsFocused();
@@ -99,7 +103,7 @@ export const useComposeEarnFees = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const feeInfo = useSelector((state: FeesRootState) =>
+    const feeInfo = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
     const areFeesLoading = useSelector((state: FeesRootState) =>
@@ -165,7 +169,7 @@ export const useComposeEarnFees = ({
                                   composeContext: {
                                       account,
                                       feeInfo,
-                                      network: getNetwork(account.symbol),
+                                      network: getNetwork(networkConfigDeps, account.symbol),
                                   },
                               }),
                           );
@@ -190,7 +194,16 @@ export const useComposeEarnFees = ({
                 }
             }
         },
-        [dispatch, formState, account, feeInfo, saveDraft, accountKey, formDraftPrefix],
+        [
+            networkConfigDeps,
+            dispatch,
+            formState,
+            account,
+            feeInfo,
+            saveDraft,
+            accountKey,
+            formDraftPrefix,
+        ],
     );
 
     useEffect(() => {

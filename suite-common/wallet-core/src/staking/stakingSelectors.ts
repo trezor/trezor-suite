@@ -1,3 +1,8 @@
+import {
+    type NetworkConfigDeps,
+    type NetworksRootState,
+    selectNetworkConfigAccessors,
+} from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isStakingSymbol } from '@suite-common/wallet-utils';
@@ -57,10 +62,12 @@ import { getTronCryptoBalanceWithStaking } from './tron/tronStakingUtils';
 const EMPTY_ACCOUNT_ARRAY: Account[] = [];
 
 const selectDeviceAccountsWithStaking = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     symbol: NetworkSymbol,
 ): Account[] => {
-    if (!isStakingSymbol(symbol)) {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
+    if (!isStakingSymbol(networkConfigDeps, symbol)) {
         return EMPTY_ACCOUNT_ARRAY;
     }
 
@@ -81,14 +88,17 @@ const selectDeviceAccountsWithStaking = (
 };
 
 export const selectHasAnyDeviceAccountsWithStaking = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     symbol: NetworkSymbol,
 ) => selectDeviceAccountsWithStaking(state, symbol).length > 0;
 
-export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
+export const getAccountCryptoBalanceWithStaking = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account | null,
+) => {
     if (!account) return '0';
 
-    if (!isStakingSymbol(account.symbol)) {
+    if (!isStakingSymbol(networkConfigDeps, account.symbol)) {
         return account.formattedBalance;
     }
 
@@ -98,21 +108,26 @@ export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
             return getEthereumCryptoBalanceWithStaking(account);
         case 'dsol':
         case 'sol':
-            return getSolanaCryptoBalanceWithStaking(account);
+            return getSolanaCryptoBalanceWithStaking(networkConfigDeps, account);
         case 'ada':
             return account.formattedBalance;
         case 'trx':
-            return getTronCryptoBalanceWithStaking(account);
+            return getTronCryptoBalanceWithStaking(networkConfigDeps, account);
         default:
             return exhaustive(account.symbol);
     }
 };
 
-export const selectAccountHasStaking = (state: StakeRootState, accountKey: AccountKey) => {
+export const selectAccountHasStaking = (
+    state: StakeRootState & NetworksRootState,
+    accountKey: AccountKey,
+) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
 
-    if (!symbol || !isStakingSymbol(symbol)) return false;
+    if (!symbol || !isStakingSymbol(networkConfigDeps, symbol)) return false;
 
     switch (symbol) {
         case 'eth':
@@ -131,13 +146,15 @@ export const selectAccountHasStaking = (state: StakeRootState, accountKey: Accou
 };
 
 export const selectIsStakePendingByAccountKey = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     accountKey: AccountKey | null,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
 
-    if (!symbol || !isStakingSymbol(symbol) || !accountKey) return false;
+    if (!symbol || !isStakingSymbol(networkConfigDeps, symbol) || !accountKey) return false;
 
     switch (symbol) {
         case 'eth':
@@ -156,13 +173,15 @@ export const selectIsStakePendingByAccountKey = (
 };
 
 export const selectIsStakeConfirmingByAccountKey = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
 
-    if (!symbol || !isStakingSymbol(symbol)) return false;
+    if (!symbol || !isStakingSymbol(networkConfigDeps, symbol)) return false;
 
     switch (symbol) {
         case 'eth':
@@ -189,11 +208,16 @@ export const selectApy = (
     return selectPoolStatsApy(state, { account, networkSymbol });
 };
 
-export const selectStakedBalanceByAccountKey = (state: StakeRootState, accountKey: AccountKey) => {
+export const selectStakedBalanceByAccountKey = (
+    state: StakeRootState & NetworksRootState,
+    accountKey: AccountKey,
+) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
 
-    if (!symbol || !isStakingSymbol(symbol)) return '0';
+    if (!symbol || !isStakingSymbol(networkConfigDeps, symbol)) return '0';
 
     switch (symbol) {
         case 'eth':
@@ -212,13 +236,15 @@ export const selectStakedBalanceByAccountKey = (state: StakeRootState, accountKe
 };
 
 export const selectRewardsBalanceByAccountKey = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     accountKey: AccountKey | null,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
 
-    if (!symbol || !isStakingSymbol(symbol) || !accountKey) return '0';
+    if (!symbol || !isStakingSymbol(networkConfigDeps, symbol) || !accountKey) return '0';
 
     switch (symbol) {
         case 'eth':
@@ -238,13 +264,15 @@ export const selectRewardsBalanceByAccountKey = (
 };
 
 export const selectTotalStakePendingByAccountKey = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     accountKey: AccountKey | null,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
 
-    if (!symbol || !isStakingSymbol(symbol) || !accountKey) return '0';
+    if (!symbol || !isStakingSymbol(networkConfigDeps, symbol) || !accountKey) return '0';
 
     switch (symbol) {
         case 'eth':
@@ -263,13 +291,15 @@ export const selectTotalStakePendingByAccountKey = (
 };
 
 export const selectClaimableAmountByAccountKey = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
 
-    if (!symbol || !isStakingSymbol(symbol)) return '0';
+    if (!symbol || !isStakingSymbol(networkConfigDeps, symbol)) return '0';
 
     switch (symbol) {
         case 'eth':
@@ -287,11 +317,16 @@ export const selectClaimableAmountByAccountKey = (
     }
 };
 
-export const selectCanClaimByAccountKey = (state: StakeRootState, accountKey: AccountKey) => {
+export const selectCanClaimByAccountKey = (
+    state: StakeRootState & NetworksRootState,
+    accountKey: AccountKey,
+) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
 
-    if (!symbol || !isStakingSymbol(symbol)) return false;
+    if (!symbol || !isStakingSymbol(networkConfigDeps, symbol)) return false;
 
     switch (symbol) {
         case 'eth':
@@ -310,13 +345,15 @@ export const selectCanClaimByAccountKey = (state: StakeRootState, accountKey: Ac
 };
 
 export const selectUnstakingBalanceByAccountKey = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
 
-    if (!symbol || !isStakingSymbol(symbol)) return '0';
+    if (!symbol || !isStakingSymbol(networkConfigDeps, symbol)) return '0';
 
     switch (symbol) {
         case 'eth':
@@ -335,12 +372,14 @@ export const selectUnstakingBalanceByAccountKey = (
 };
 
 export const selectUnstakingPeriodInDaysByAccountKey = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
 
-    if (!account || !isStakingSymbol(account.symbol)) return null;
+    if (!account || !isStakingSymbol(networkConfigDeps, account.symbol)) return null;
 
     const validatorsQueueData = selectEthereumValidatorsQueue(state);
 
@@ -348,10 +387,12 @@ export const selectUnstakingPeriodInDaysByAccountKey = (
 };
 
 export const selectEntryPeriodInDaysBySymbol = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     symbol: NetworkSymbol | undefined,
 ) => {
-    if (!symbol || !isStakingSymbol(symbol)) return undefined;
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
+    if (!symbol || !isStakingSymbol(networkConfigDeps, symbol)) return undefined;
 
     switch (symbol) {
         case 'eth':

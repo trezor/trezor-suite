@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Translation } from '@suite-native/intl';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
@@ -11,13 +12,11 @@ type CreateHowStakeWorksPresetProps = {
     apy: number | null | undefined;
 };
 
-export const createHowStakeWorksPreset = ({
-    symbol,
-    entryPeriodInDays,
-    unstakingPeriodInDays,
-    apy,
-}: CreateHowStakeWorksPresetProps): HowEarnWorksScreenPreset => {
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
+export const createHowStakeWorksPreset = (
+    networkConfigDeps: NetworkConfigDeps,
+    { symbol, entryPeriodInDays, unstakingPeriodInDays, apy }: CreateHowStakeWorksPresetProps,
+): HowEarnWorksScreenPreset => {
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
     const isSolana = symbol === 'sol';
 
     const entryPeriodDescriptionId =

@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { type NetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
@@ -15,23 +15,22 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
-import { createPlaceholderAccount } from './utils';
+import { preparePlaceholderAccount } from './utils';
 
 const temporaryAccounts: Account[] = [];
 
-const preCallHook = async <M extends CallMethodKeys>({
-    method,
-    payload,
-    getState,
-    dispatch,
-    txSigningPrecomposed,
-    source,
-}: PreCallHookParams<M>) => {
+const preCallHook = async <M extends CallMethodKeys>(
+    networkConfigDeps: NetworkConfigDeps,
+    { method, payload, getState, dispatch, txSigningPrecomposed, source }: PreCallHookParams<M>,
+) => {
     try {
         if (method === 'solanaSignTransaction') {
             const typedPayload = payload as any as SolanaSignTransaction;
             const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
-            const network = getNetwork(typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol');
+            const network = getNetwork(
+                networkConfigDeps,
+                typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol',
+            );
             // Try to find matching account
             let selectedAccount = selectAccountForNetworkSymbolAndPath(
                 getState(),
@@ -41,7 +40,8 @@ const preCallHook = async <M extends CallMethodKeys>({
             if (!selectedAccount) {
                 // Create a new placeholder account
                 const createdAccount = await dispatch(
-                    createPlaceholderAccount(
+                    preparePlaceholderAccount(
+                        networkConfigDeps,
                         network,
                         path,
                         selectSupportedNetworkSymbols(getState()),

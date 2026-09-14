@@ -1,9 +1,12 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { type FormState } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 
 import { getTransactionReviewModalActionTranslation } from './transactionReview';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const TOKEN_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const SPENDER = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
@@ -34,7 +37,7 @@ const getTranslation = ({
     source: 'heading' | 'button';
     isBumpFeeRbfAction?: boolean;
 }) =>
-    getTransactionReviewModalActionTranslation({
+    getTransactionReviewModalActionTranslation(networkConfigDeps, {
         symbol: 'eth',
         stakeType: null,
         precomposedForm,

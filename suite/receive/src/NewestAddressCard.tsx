@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -60,6 +61,8 @@ export const NewestAddressCard = ({
     onCopied,
     onVerify,
 }: NewestAddressCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
 
     const account = useSelector((state: NewestAddressCardRootState) =>
@@ -129,7 +132,7 @@ export const NewestAddressCard = ({
     const usedItems = useMemo(
         () =>
             account
-                ? buildReceiveAddressItems({
+                ? buildReceiveAddressItems(networkConfigDeps, {
                       account,
                       touchedAddresses,
                       pendingAddresses,
@@ -137,7 +140,14 @@ export const NewestAddressCard = ({
                       currentFreshAddress,
                   })
                 : [],
-        [account, touchedAddresses, pendingAddresses, addressLabels, currentFreshAddress],
+        [
+            networkConfigDeps,
+            account,
+            touchedAddresses,
+            pendingAddresses,
+            addressLabels,
+            currentFreshAddress,
+        ],
     );
 
     const addressToAdd = useMemo(

@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import type { TokenInfo, TokenTransfer } from '@trezor/blockchain-link-types';
 
 import { getContractAddressForNetworkSymbolFixtures } from './__fixtures__/tokenUtils';
@@ -8,6 +9,8 @@ import {
     isTokenTransferMatchesSearch,
     sortTokensByName,
 } from './tokenUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 describe('isTokenTransferMatchesSearch', () => {
     const usdt = {
@@ -38,7 +41,11 @@ describe('getContractAddressForNetworkSymbol', () => {
     getContractAddressForNetworkSymbolFixtures.forEach(
         ({ testName, symbol, contractAddress, expected }) => {
             test(testName, () => {
-                const result = getContractAddressForNetworkSymbol(symbol, contractAddress);
+                const result = getContractAddressForNetworkSymbol(
+                    networkConfigDeps,
+                    symbol,
+                    contractAddress,
+                );
                 expect(result).toBe(expected);
             });
         },
@@ -49,7 +56,10 @@ describe('getAssetLogoContractAddresses', () => {
     it('returns [policyId, contract] synchronously for ada', () => {
         const policyId = 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc535';
         const contract = `${policyId}41474958`;
-        expect(getAssetLogoContractAddresses('ada', contract)).toEqual([policyId, contract]);
+        expect(getAssetLogoContractAddresses(networkConfigDeps, 'ada', contract)).toEqual([
+            policyId,
+            contract,
+        ]);
     });
 
     it('resolves [contract, sacId] for xlm and returns synchronously once the stellar module is loaded', async () => {
@@ -57,24 +67,29 @@ describe('getAssetLogoContractAddresses', () => {
         const expectedSACId = 'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75';
 
         // the very first Xlm call has to wait for the lazily loaded stellar module
-        const coldResult = getAssetLogoContractAddresses('xlm', classic);
+        const coldResult = getAssetLogoContractAddresses(networkConfigDeps, 'xlm', classic);
         expect(coldResult).toBeInstanceOf(Promise);
         await expect(coldResult).resolves.toEqual([classic, expectedSACId]);
 
         // once the module is cached, the resolution is synchronous
-        expect(getAssetLogoContractAddresses('xlm', classic)).toEqual([classic, expectedSACId]);
+        expect(getAssetLogoContractAddresses(networkConfigDeps, 'xlm', classic)).toEqual([
+            classic,
+            expectedSACId,
+        ]);
     });
 
     it('falls back to [contract] for xlm when the soroban id cannot be derived', async () => {
         const malformed = 'not-a-classic-contract';
         await expect(
-            Promise.resolve(getAssetLogoContractAddresses('xlm', malformed)),
+            Promise.resolve(getAssetLogoContractAddresses(networkConfigDeps, 'xlm', malformed)),
         ).resolves.toEqual([malformed]);
     });
 
     it('returns [contract] synchronously for eth', () => {
         const contract = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-        expect(getAssetLogoContractAddresses('eth', contract)).toEqual([contract.toLowerCase()]);
+        expect(getAssetLogoContractAddresses(networkConfigDeps, 'eth', contract)).toEqual([
+            contract.toLowerCase(),
+        ]);
     });
 });
 

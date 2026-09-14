@@ -6,7 +6,7 @@ import { FadeIn } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectAddressValidatorDep } from '@suite-common/networks';
+import { selectNetworkConfigDeps, selectAddressValidatorDep } from '@suite-common/networks';
 import {
     type XpubFormContext,
     type XpubFormValues,
@@ -62,6 +62,8 @@ export const XpubScanScreen = ({
     navigation,
     route,
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScan>) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const [_, setIsCameraRequested] = useState(false);
@@ -80,10 +82,10 @@ export const XpubScanScreen = ({
     const { addressValidator } = useServices(selectAddressValidatorDep);
 
     const { networkSymbol } = route.params;
-    const networkType = getNetworkType(networkSymbol);
+    const networkType = getNetworkType(networkConfigDeps, networkSymbol);
 
     const form = useForm<XpubFormValues, XpubFormContext>({
-        validation: xpubFormValidationSchema,
+        validation: xpubFormValidationSchema(networkConfigDeps),
         context: { addressValidator, symbol: networkSymbol },
     });
     const { handleSubmit, setValue, control } = form;

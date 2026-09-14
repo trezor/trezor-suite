@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectVisibleDeviceAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -21,6 +22,8 @@ export function useSellAssetRows({ networkSymbolFilter }: UseSellAssetRowsProps)
     assetRows: AssetRowOption[];
     networks: NetworkSymbol[];
 } {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const accounts = useSelector(selectVisibleDeviceAccountsWithSuiteSyncLabel);
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const fiatRates = useSelector(selectCurrentFiatRates);
@@ -40,7 +43,7 @@ export function useSellAssetRows({ networkSymbolFilter }: UseSellAssetRowsProps)
             return { assetRows: [], networks: [] };
         }
 
-        return buildSellAssetRows({
+        return buildSellAssetRows(networkConfigDeps, {
             supportedNetworks,
             accounts: throttledAccounts,
             networkSymbolFilter,
@@ -49,6 +52,7 @@ export function useSellAssetRows({ networkSymbolFilter }: UseSellAssetRowsProps)
             fiatRates: currentFiatRates,
         });
     }, [
+        networkConfigDeps,
         hasFiatRates,
         fiatRatesRef,
         throttledAccounts,

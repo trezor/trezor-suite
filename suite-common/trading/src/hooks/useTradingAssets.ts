@@ -1,3 +1,4 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -9,7 +10,11 @@ import {
     type PlatformsInfo,
 } from 'invity-api';
 
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import {
+    type NetworkConfigDeps,
+    selectNetworkConfigDeps,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
 import {
     type Network,
     type NetworkConfigWithoutTestnets,
@@ -42,9 +47,11 @@ import {
     getTradingPlatformsInfoByCryptoId,
 } from '../utils/infoUtils';
 
-const mainnets = new Set(getMainnets().map(network => network.symbol));
+const mainnets = (networkConfigDeps: NetworkConfigDeps) =>
+    new Set(getMainnets(networkConfigDeps).map(network => network.symbol));
 
 function hasSupportedAddressValidator(
+    networkConfigDeps: NetworkConfigDeps,
     platforms: Platforms,
     coins: Coins,
     cryptoId: CryptoId,
@@ -52,12 +59,12 @@ function hasSupportedAddressValidator(
 ) {
     const prodCryptoId = testnetToProdCryptoId(cryptoId);
     const networkSymbol =
-        cryptoIdToNetwork(prodCryptoId)?.symbol ??
+        cryptoIdToNetwork(networkConfigDeps, prodCryptoId)?.symbol ??
         getTradingNativeCoinSymbolByCryptoId(platforms, coins, prodCryptoId);
 
     return (
         networkSymbol !== undefined &&
-        isNetworkSymbol(networkSymbol) &&
+        isNetworkSymbol(networkConfigDeps, networkSymbol) &&
         supportedAddressValidatorSymbols.has(networkSymbol)
     );
 }
@@ -71,15 +78,20 @@ function getNonTestnetNetworkSymbol(
 }
 
 function isAssetWithSupportedNetwork(
+    networkConfigDeps: NetworkConfigDeps,
     platforms: Platforms,
     coins: Coins,
     cryptoId: CryptoId,
 ): boolean {
     const networkSymbol =
-        cryptoIdToNetwork(cryptoId)?.symbol ??
+        cryptoIdToNetwork(networkConfigDeps, cryptoId)?.symbol ??
         getTradingNativeCoinSymbolByCryptoId(platforms, coins, cryptoId);
 
-    return Boolean(networkSymbol && isNetworkSymbol(networkSymbol) && mainnets.has(networkSymbol));
+    return Boolean(
+        networkSymbol &&
+        isNetworkSymbol(networkConfigDeps, networkSymbol) &&
+        mainnets(networkConfigDeps).has(networkSymbol),
+    );
 }
 
 interface CreateAssetOptionProps {
@@ -88,13 +100,12 @@ interface CreateAssetOptionProps {
     platformInfo?: PlatformsInfo;
 }
 
-export function createAssetOption({
-    cryptoId,
-    coinInfo,
-    platformInfo,
-}: CreateAssetOptionProps): TradingAssetOption | null {
+export function getAssetOption(
+    networkConfigDeps: NetworkConfigDeps,
+    { cryptoId, coinInfo, platformInfo }: CreateAssetOptionProps,
+): TradingAssetOption | null {
     const { contractAddress = null } = parseCryptoId(cryptoId);
-    const network = cryptoIdToNetwork(cryptoId);
+    const network = cryptoIdToNetwork(networkConfigDeps, cryptoId);
     const isNativeToken = Boolean(
         network && (!contractAddress || isCryptoIdForNativeToken(cryptoId)),
     );
@@ -112,18 +123,21 @@ export function createAssetOption({
             contractAddress: contractAddress as TradingAssetOptionNativeToken['contractAddress'],
             networkName: networkConfig.name,
             networkSymbol: networkConfig.symbol,
-            displaySymbolName: getNetworkDisplaySymbolName(networkConfig.symbol),
+            displaySymbolName: getNetworkDisplaySymbolName(networkConfigDeps, networkConfig.symbol),
         } satisfies TradingAssetOptionNativeToken;
     }
 
     const networkSymbol = network ? network.symbol : platformInfo?.nativeCoinSymbol;
 
     // No supported network exists for this token's network symbol, filter it out
-    if (!networkSymbol || !isNetworkSymbol(networkSymbol)) {
+    if (!networkSymbol || !isNetworkSymbol(networkConfigDeps, networkSymbol)) {
         return null;
     }
 
-    const networkConfig = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const networkConfig = getNetwork(
+        networkConfigDeps,
+        networkSymbol,
+    ) as NetworkConfigWithoutTestnets;
 
     const coinInfoSymbol = coinInfo.symbol;
 
@@ -133,7 +147,11 @@ export function createAssetOption({
         name: coinInfo.name,
         symbol: coinInfoSymbol,
         coingeckoId: networkConfig.coingeckoId,
-        displaySymbol: getDisplaySymbol(coinInfoSymbol.toUpperCase(), contractAddress),
+        displaySymbol: getDisplaySymbol(
+            networkConfigDeps,
+            coinInfoSymbol.toUpperCase(),
+            contractAddress,
+        ),
         contractAddress: contractAddress!,
         networkName: networkConfig.name,
         networkSymbol: networkConfig.symbol,
@@ -191,14 +209,15 @@ export function createAssetOption({
  * ```
  */
 
-export function createAssetNativeTokenOption(
+export function getAssetNativeTokenOption(
+    networkConfigDeps: NetworkConfigDeps,
     networkSymbol: NetworkConfigWithoutTestnets['symbol'],
 ): TradingAssetOptionNativeToken {
-    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const network = getNetwork(networkConfigDeps, networkSymbol) as NetworkConfigWithoutTestnets;
 
     return {
         isNativeToken: true,
-        id: getCryptoId(networkSymbol),
+        id: getCryptoId(networkConfigDeps, networkSymbol),
         name: network.name,
         coingeckoId: network.coingeckoId,
         symbol: networkSymbol,
@@ -206,17 +225,19 @@ export function createAssetNativeTokenOption(
         contractAddress: null,
         networkName: network.name,
         networkSymbol: network.symbol,
-        displaySymbolName: getNetworkDisplaySymbolName(network.symbol),
+        displaySymbolName: getNetworkDisplaySymbolName(networkConfigDeps, network.symbol),
     };
 }
 
-export function createAssetTokenOption<
-    Token extends Pick<TokenInfo, 'contract' | 'symbol' | 'name'>,
->(networkSymbol: NetworkSymbol, token: Token): TradingAssetOptionWithContractAddress {
-    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+export function getAssetTokenOption<Token extends Pick<TokenInfo, 'contract' | 'symbol' | 'name'>>(
+    networkConfigDeps: NetworkConfigDeps,
+    networkSymbol: NetworkSymbol,
+    token: Token,
+): TradingAssetOptionWithContractAddress {
+    const network = getNetwork(networkConfigDeps, networkSymbol) as NetworkConfigWithoutTestnets;
 
     return {
-        id: getCryptoId(networkSymbol, token.contract),
+        id: getCryptoId(networkConfigDeps, networkSymbol, token.contract),
         coingeckoId: network.coingeckoId,
 
         isNativeToken: false,
@@ -224,7 +245,7 @@ export function createAssetTokenOption<
         contractAddress: token.contract,
         symbol: token.symbol!,
         name: token.name!,
-        displaySymbol: getDisplaySymbol(token.symbol!, token.contract),
+        displaySymbol: getDisplaySymbol(networkConfigDeps, token.symbol!, token.contract),
 
         networkSymbol,
         networkName: network.name,
@@ -236,6 +257,8 @@ export function createAssetTokenOption<
  * Get flat array of all enabled, supported crypto currencies and their tokens sorted by market cap in descending order.
  */
 export function useTradingAssets() {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const getCoinsAndPlatforms = useCoinsAndPlatforms();
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const supportedAddressValidatorSymbols = useMemo(
@@ -250,8 +273,14 @@ export function useTradingAssets() {
             const assets = Array.from(includedCryptoIds)
                 .filter(
                     cryptoId =>
-                        isAssetWithSupportedNetwork(platforms, coins, cryptoId) &&
+                        isAssetWithSupportedNetwork(
+                            networkConfigDeps,
+                            platforms,
+                            coins,
+                            cryptoId,
+                        ) &&
                         hasSupportedAddressValidator(
+                            networkConfigDeps,
                             platforms,
                             coins,
                             cryptoId,
@@ -263,7 +292,7 @@ export function useTradingAssets() {
                 .flatMap(([cryptoId, coinInfo]) => {
                     if (!coinInfo) return [];
 
-                    return createAssetOption({
+                    return getAssetOption(networkConfigDeps, {
                         cryptoId,
                         coinInfo,
                         platformInfo: getTradingPlatformsInfoByCryptoId(platforms, cryptoId),
@@ -285,21 +314,24 @@ export function useTradingAssets() {
                 networks,
             };
         },
-        [getCoinsAndPlatforms, supportedAddressValidatorSymbols],
+        [networkConfigDeps, getCoinsAndPlatforms, supportedAddressValidatorSymbols],
     );
 
-    const createAssetOptionFromCryptoId = useCallback<(cryptoId?: CryptoId) => TradingAssetOption>(
+    const getAssetOptionFromCryptoId = useCallback<(cryptoId?: CryptoId) => TradingAssetOption>(
         cryptoId => {
             const { coins, platforms } = getCoinsAndPlatforms();
 
-            const network = cryptoIdToNetwork(cryptoId);
+            const network = cryptoIdToNetwork(networkConfigDeps, cryptoId);
             const resolvedNetworkSymbol =
                 getNonTestnetNetworkSymbol(network) ?? TRADING_DEFAULT_CRYPTO_CURRENCY;
-            const defaultAssetOption = createAssetNativeTokenOption(resolvedNetworkSymbol);
+            const defaultAssetOption = getAssetNativeTokenOption(
+                networkConfigDeps,
+                resolvedNetworkSymbol,
+            );
 
             if (cryptoId && coins[cryptoId]) {
                 return (
-                    createAssetOption({
+                    getAssetOption(networkConfigDeps, {
                         cryptoId,
                         coinInfo: coins[cryptoId],
                         platformInfo: getTradingPlatformsInfoByCryptoId(platforms, cryptoId),
@@ -309,7 +341,7 @@ export function useTradingAssets() {
 
             return defaultAssetOption;
         },
-        [getCoinsAndPlatforms],
+        [networkConfigDeps, getCoinsAndPlatforms],
     );
 
     const resolveAssetTokenOption = useCallback(
@@ -318,10 +350,10 @@ export function useTradingAssets() {
             token: Pick<TokenInfo, 'contract' | 'symbol' | 'name'>,
         ): TradingAssetOptionWithContractAddress => {
             const { coins, platforms } = getCoinsAndPlatforms();
-            const cryptoId = getCryptoId(networkSymbol, token.contract);
+            const cryptoId = getCryptoId(networkConfigDeps, networkSymbol, token.contract);
 
             if (coins?.[cryptoId]) {
-                const result = createAssetOption({
+                const result = getAssetOption(networkConfigDeps, {
                     cryptoId,
                     coinInfo: coins[cryptoId],
                     platformInfo: getTradingPlatformsInfoByCryptoId(platforms, cryptoId),
@@ -332,10 +364,10 @@ export function useTradingAssets() {
                 }
             }
 
-            return createAssetTokenOption(networkSymbol, token);
+            return getAssetTokenOption(networkConfigDeps, networkSymbol, token);
         },
-        [getCoinsAndPlatforms],
+        [networkConfigDeps, getCoinsAndPlatforms],
     );
 
-    return { buildAssetOptions, createAssetOptionFromCryptoId, resolveAssetTokenOption };
+    return { buildAssetOptions, getAssetOptionFromCryptoId, resolveAssetTokenOption };
 }

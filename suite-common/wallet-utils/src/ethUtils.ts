@@ -1,4 +1,5 @@
 import { Calldata } from '@suite-common/calldata';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -200,12 +201,11 @@ interface GetAllowanceAmountParams {
     token: TokenInfo;
 }
 
-export const getAllowanceAmount = ({
-    rawAmount,
-    approvalType,
-    token,
-}: GetAllowanceAmountParams) => {
-    const inputAmount = unitsToSubunits({
+export const getAllowanceAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    { rawAmount, approvalType, token }: GetAllowanceAmountParams,
+) => {
+    const inputAmount = unitsToSubunits(networkConfigDeps, {
         value: asAmountUnit(new BigNumber(rawAmount)),
         decimals: token.decimals,
     });

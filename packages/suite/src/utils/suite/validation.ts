@@ -1,5 +1,6 @@
 import { type TranslationFunction } from '@suite/intl';
 import { type Formatter, type Formatters } from '@suite-common/formatters';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     getDisplaySymbol,
     getNetworkDisplaySymbol,
@@ -67,6 +68,7 @@ interface ValidateCryptoLimitsOptions {
 
 export const validateCryptoLimits =
     (
+        networkConfigDeps: NetworkConfigDeps,
         translationString: TranslationFunction,
         { amountLimits, areSatsUsed, formatter }: ValidateCryptoLimitsOptions,
     ) =>
@@ -78,9 +80,13 @@ export const validateCryptoLimits =
 
             if (amountLimits.minCrypto) {
                 minCrypto =
-                    areSatsUsed && isNetworkSymbol(currency)
+                    areSatsUsed && isNetworkSymbol(networkConfigDeps, currency)
                         ? new BigNumber(
-                              networkAmountToSmallestUnit(amountLimits.minCrypto, currency),
+                              networkAmountToSmallestUnit(
+                                  networkConfigDeps,
+                                  amountLimits.minCrypto,
+                                  currency,
+                              ),
                           )
                         : new BigNumber(amountLimits.minCrypto);
             }
@@ -99,9 +105,13 @@ export const validateCryptoLimits =
 
             if (amountLimits.maxCrypto) {
                 maxCrypto =
-                    areSatsUsed && isNetworkSymbol(currency)
+                    areSatsUsed && isNetworkSymbol(networkConfigDeps, currency)
                         ? new BigNumber(
-                              networkAmountToSmallestUnit(amountLimits.maxCrypto, currency),
+                              networkAmountToSmallestUnit(
+                                  networkConfigDeps,
+                                  amountLimits.maxCrypto,
+                                  currency,
+                              ),
                           )
                         : new BigNumber(amountLimits.maxCrypto);
             }
@@ -140,14 +150,18 @@ interface ValidateSolanaUnstakeAmountOptions {
 }
 
 export const validateSolanaUnstakeAmount =
-    (translationString: TranslationFunction, { account }: ValidateSolanaUnstakeAmountOptions) =>
+    (
+        networkConfigDeps: NetworkConfigDeps,
+        translationString: TranslationFunction,
+        { account }: ValidateSolanaUnstakeAmountOptions,
+    ) =>
     (value: string) => {
         if (!value) return;
 
-        const bounds = getSolanaUnstakeAmountBounds(account, value);
+        const bounds = getSolanaUnstakeAmountBounds(networkConfigDeps, account, value);
         if (!bounds) return;
 
-        const symbol = getNetworkDisplaySymbol(account.symbol);
+        const symbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
         // the fiat approximations are only rendered in the rich <Translation> banner
         return bounds.closestLower
@@ -173,6 +187,7 @@ interface ValidateSolanaUnstakeFiatAmountOptions {
 
 export const validateSolanaUnstakeFiatAmount =
     (
+        networkConfigDeps: NetworkConfigDeps,
         translationString: TranslationFunction,
         { account, decimals, rate }: ValidateSolanaUnstakeFiatAmountOptions,
     ) =>
@@ -190,7 +205,7 @@ export const validateSolanaUnstakeFiatAmount =
             toFiatCurrency({ amount: outputAmount, rate })?.toFixed(2, BigNumber.ROUND_FLOOR) ===
                 value;
 
-        return validateSolanaUnstakeAmount(translationString, { account })(
+        return validateSolanaUnstakeAmount(networkConfigDeps, translationString, { account })(
             isFiatOfOutputAmount ? outputAmount : cryptoAmount,
         );
     };
@@ -304,11 +319,12 @@ interface ValidateReserveOrBalanceOptions {
 
 export const validateReserveOrBalance =
     (
+        networkConfigDeps: NetworkConfigDeps,
         translationString: TranslationFunction,
         { account, areSatsUsed, contractAddress }: ValidateReserveOrBalanceOptions,
     ) =>
     (value: string) => {
-        const result = getAmountValidationResult({
+        const result = getAmountValidationResult(networkConfigDeps, {
             amount: value,
             account,
             areSatsUsed,
@@ -318,7 +334,7 @@ export const validateReserveOrBalance =
         if (result.type === 'reserve') {
             return translationString('AMOUNT_IS_MORE_THAN_RESERVE', {
                 reserve: result.reserve,
-                displaySymbol: getDisplaySymbol(account.symbol),
+                displaySymbol: getDisplaySymbol(networkConfigDeps, account.symbol),
             });
         }
 

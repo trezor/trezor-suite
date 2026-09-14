@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -27,6 +28,8 @@ import {
 type NavigationProps = StackProps<RootStackParamList, RootStackRoutes.WalletConnectSwitchAccount>;
 
 export const WalletConnectSwitchAccountScreen = ({ route }: NavigationProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const navigation = useNavigation();
     const { dispatch } = useServices(selectDispatch);
 
@@ -37,13 +40,13 @@ export const WalletConnectSwitchAccountScreen = ({ route }: NavigationProps) => 
     const selectableAccounts = useMemo<Account[]>(
         () =>
             session
-                ? getSessionNetworks(session)
+                ? getSessionNetworks(networkConfigDeps, session)
                       .filter(network => network.status === 'active')
                       .flatMap(network =>
                           accounts.filter(account => account.symbol === network.symbol),
                       )
                 : [],
-        [accounts, session],
+        [networkConfigDeps, accounts, session],
     );
 
     const handleSave = (account: Account) => {

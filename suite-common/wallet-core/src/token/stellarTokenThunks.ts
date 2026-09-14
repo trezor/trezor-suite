@@ -1,6 +1,11 @@
 import { G } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    type NetworkConfigDeps,
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+} from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -25,6 +30,7 @@ export interface TokenThunkPayload {
 const STELLAR_TOKEN_MODULE_PREFIX = '@common/wallet-core/stellar-token';
 
 const manageTrustline = async (
+    networkConfigDeps: NetworkConfigDeps,
     payload: TokenThunkPayload,
     operation: 'activate' | 'deactivate',
     getState: () => DeviceRootState & FeesRootState,
@@ -77,7 +83,7 @@ const manageTrustline = async (
     const transactionBuilder =
         operation === 'activate' ? buildAddTrustlineTransaction : buildRemoveTrustlineTransaction;
 
-    const testnet = isTestnet(account.symbol);
+    const testnet = isTestnet(networkConfigDeps, account.symbol);
     const transaction = transactionBuilder({
         descriptor: account.descriptor,
         sequence: misc.stellarSequence,
@@ -125,7 +131,7 @@ const manageTrustline = async (
     }
 };
 
-type ActivateStellarTokenThunkState = DeviceRootState & FeesRootState;
+type ActivateStellarTokenThunkState = DeviceRootState & FeesRootState & NetworksRootState;
 
 export const activateStellarTokenThunk = createThunk<
     void,
@@ -136,11 +142,14 @@ export const activateStellarTokenThunk = createThunk<
     }
 >(
     `${STELLAR_TOKEN_MODULE_PREFIX}/activateStellarTokenThunk`,
-    (payload, { getState, rejectWithValue }) =>
-        manageTrustline(payload, 'activate', getState, rejectWithValue),
+    (payload, { getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
+        return manageTrustline(networkConfigDeps, payload, 'activate', getState, rejectWithValue);
+    },
 );
 
-type DeactivateStellarTokenThunkState = DeviceRootState & FeesRootState;
+type DeactivateStellarTokenThunkState = DeviceRootState & FeesRootState & NetworksRootState;
 
 export const deactivateStellarTokenThunk = createThunk<
     void,
@@ -151,6 +160,9 @@ export const deactivateStellarTokenThunk = createThunk<
     }
 >(
     `${STELLAR_TOKEN_MODULE_PREFIX}/deactivateStellarTokenThunk`,
-    (payload, { getState, rejectWithValue }) =>
-        manageTrustline(payload, 'deactivate', getState, rejectWithValue),
+    (payload, { getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
+        return manageTrustline(networkConfigDeps, payload, 'deactivate', getState, rejectWithValue);
+    },
 );

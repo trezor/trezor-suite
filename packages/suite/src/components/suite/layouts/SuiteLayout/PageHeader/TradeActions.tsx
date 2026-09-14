@@ -2,6 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -17,6 +18,8 @@ interface TradeActionsProps {
 }
 
 export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const account = selectedAccount?.account;
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
@@ -46,7 +49,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
         if (account) {
             dispatch(
                 tradingActions.setTradingFromPrefilledAccount(
-                    getTradingPrefilledFromAccountData(account),
+                    getTradingPrefilledFromAccountData(networkConfigDeps, account),
                 ),
             );
         }

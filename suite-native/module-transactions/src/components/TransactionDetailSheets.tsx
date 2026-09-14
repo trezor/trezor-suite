@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Card, VStack } from '@suite-native/atoms';
@@ -26,9 +28,12 @@ export const TransactionDetailSheets = ({
     accountKey,
     inputsSheetControls,
 }: TransactionDetailSheetsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
-    const isValuesSheetVisible = !isTestnet(transaction.symbol) && !isTokenTransaction;
+    const isValuesSheetVisible =
+        !isTestnet(networkConfigDeps, transaction.symbol) && !isTokenTransaction;
 
     return (
         <Card style={applyStyle(cardStyle)} borderColor="borderNeutral">

@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type ReactNode, type Ref, forwardRef } from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -107,6 +109,8 @@ export const TokenSettingsBottomSheet = forwardRef(
         { accountKey, tokenContract, onNavigateAway }: TokenSettingsBottomSheetProps,
         ref: Ref<BottomSheetModalMethods>,
     ) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
         const { applyStyle } = useNativeStyles();
         const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
         const navigation =
@@ -123,11 +127,12 @@ export const TokenSettingsBottomSheet = forwardRef(
         const symbol = useSelector((state: AccountsRootState) =>
             selectAccountNetworkSymbol(state, accountKey),
         );
-        const hiddenTokens = useSelector((state: TokensRootState) =>
+        const hiddenTokens = useSelector((state: TokensRootState & NetworksRootState) =>
             selectAccountHiddenTokens(state, accountKey),
         );
-        const isUnrecognized = useSelector((state: TokenDefinitionsRootState & AccountsRootState) =>
-            selectIsUnrecognizedToken(state, accountKey, tokenContract),
+        const isUnrecognized = useSelector(
+            (state: TokenDefinitionsRootState & AccountsRootState & NetworksRootState) =>
+                selectIsUnrecognizedToken(state, accountKey, tokenContract),
         );
         const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
         const { isFirmwareSupported, showFirmwareUpdateAlert } =
@@ -145,11 +150,13 @@ export const TokenSettingsBottomSheet = forwardRef(
 
         if (!account || !symbol) return null;
 
-        const displaySymbol = getDisplaySymbol(account.symbol);
+        const displaySymbol = getDisplaySymbol(networkConfigDeps, account.symbol);
 
         const tokenBalance = token?.balance ?? '0';
-        const tokenSymbol = token?.symbol ? toTokenSymbol(getDisplaySymbol(token.symbol)) : null;
-        const networkName = getNetwork(symbol).name;
+        const tokenSymbol = token?.symbol
+            ? toTokenSymbol(getDisplaySymbol(networkConfigDeps, token.symbol))
+            : null;
+        const networkName = getNetwork(networkConfigDeps, symbol).name;
 
         const isHidden = hiddenTokens.some(
             t => t.contract.toLowerCase() === tokenContract?.toLowerCase(),

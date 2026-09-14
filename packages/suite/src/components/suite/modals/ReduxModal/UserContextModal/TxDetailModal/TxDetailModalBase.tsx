@@ -4,6 +4,7 @@ import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceRemembered } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
@@ -67,6 +68,8 @@ export const TxDetailModalBase = ({
     nonceStatus,
     nextNonce,
 }: TxDetailModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const accountKey = createAccountKey({
         accountDescriptor: tx.descriptor,
         networkSymbol: tx.symbol,
@@ -76,7 +79,7 @@ export const TxDetailModalBase = ({
         selectTransactionConfirmations(state, tx.txid, accountKey),
     );
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
-    const network = getNetwork(account.symbol);
+    const network = getNetwork(networkConfigDeps, account.symbol);
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
 

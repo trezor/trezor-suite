@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Tooltip } from '@trezor/components';
 
@@ -21,6 +23,8 @@ export const NetworkIconSet = ({
     isReversed = true,
     hasTooltip = false,
 }: NetworkIconSetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { length } = networks;
 
     const visibleContent = useMemo(() => {
@@ -29,12 +33,15 @@ export const NetworkIconSet = ({
 
         return visibleNetworks.map(network => (
             <IconWrapper key={network} $size={size} $gap={gap} $length={length}>
-                <Tooltip content={getNetwork(network).name} isActive={hasTooltip}>
+                <Tooltip
+                    content={getNetwork(networkConfigDeps, network).name}
+                    isActive={hasTooltip}
+                >
                     <TokenIcon size={size} symbol={network} />
                 </Tooltip>
             </IconWrapper>
         ));
-    }, [networks, maxVisibleIcons, size, gap, length, hasTooltip]);
+    }, [networkConfigDeps, networks, maxVisibleIcons, size, gap, length, hasTooltip]);
 
     return (
         <IconSetBase

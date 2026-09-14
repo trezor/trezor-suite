@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -9,6 +10,8 @@ import {
     accountsRefreshTimeReducer,
     isAccountStaleSelector,
 } from './accountsRefreshTimeReducer';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = asNetworkSymbol('btc');
 
@@ -44,14 +47,17 @@ describe('accountsRefreshTimeReducer', () => {
         // The reducer only reads the account key from the creation payload.
         const createdAccountAction: ReturnType<typeof accountsActions.createAccount> = {
             type: accountsActions.createAccount.type,
-            payload: { account, supportedNetworks: [account.symbol] },
+            payload: { account, accountTypeOrder: [], supportedNetworks: [account.symbol] },
         };
 
         const created = accountsRefreshTimeReducer({}, createdAccountAction);
         expect(created[account.key]).toBe(NOW);
 
         jest.setSystemTime(NOW + 5000);
-        const updated = accountsRefreshTimeReducer(created, accountsActions.updateAccount(account));
+        const updated = accountsRefreshTimeReducer(
+            created,
+            accountsActions.updateAccount(networkConfigDeps, account),
+        );
         expect(updated[account.key]).toBe(NOW + 5000);
     });
 

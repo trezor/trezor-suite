@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import type {
     ExchangeProviderInfo,
     ExchangeTrade,
@@ -35,16 +36,19 @@ interface CreateFormStateForSendFormParams {
 /**
  * Creates a FormState for transactions from exchange or sell quotes
  */
-export const createFormStateForSendForm = ({
-    quote,
-    providers,
-    feeLevel = { label: 'normal', feePerUnit: '' },
-    extraField,
-    isSlip24Active = false,
-    networkType,
-    sendAccountKey,
-    receiveAccountKey,
-}: CreateFormStateForSendFormParams): FormState => {
+export const createFormStateForSendForm = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        quote,
+        providers,
+        feeLevel = { label: 'normal', feePerUnit: '' },
+        extraField,
+        isSlip24Active = false,
+        networkType,
+        sendAccountKey,
+        receiveAccountKey,
+    }: CreateFormStateForSendFormParams,
+): FormState => {
     if (!isExchangeTrade(quote) && !isSellFiatTrade(quote)) {
         throw new QuoteError('Invalid quote type: must be ExchangeTrade or SellFiatTrade', quote);
     }
@@ -81,13 +85,16 @@ export const createFormStateForSendForm = ({
         }
 
         if (exchangeQuote.send) {
-            const { contractAddress } = cryptoIdToNetworkAndContractAddress(exchangeQuote.send);
+            const { contractAddress } = cryptoIdToNetworkAndContractAddress(
+                networkConfigDeps,
+                exchangeQuote.send,
+            );
             sendTokenContract = contractAddress;
         }
         if (!destinationTag) {
             destinationTag = exchangeQuote.partnerPaymentExtraId;
         }
-        tradingFormState = getTradingFormState({
+        tradingFormState = getTradingFormState(networkConfigDeps, {
             activeSection: 'exchange',
             providers: exchangeProviders,
             trade: exchangeQuote,
@@ -103,6 +110,7 @@ export const createFormStateForSendForm = ({
         outputAmount = sellQuote.cryptoStringAmount || '';
         if (sellQuote.cryptoCurrency) {
             const { contractAddress } = cryptoIdToNetworkAndContractAddress(
+                networkConfigDeps,
                 sellQuote.cryptoCurrency,
             );
             sendTokenContract = contractAddress;
@@ -111,7 +119,7 @@ export const createFormStateForSendForm = ({
         if (!destinationTag) {
             destinationTag = sellQuote.destinationPaymentExtraId;
         }
-        tradingFormState = getTradingFormState({
+        tradingFormState = getTradingFormState(networkConfigDeps, {
             activeSection: 'sell',
             providers: sellProviders,
             trade: sellQuote,

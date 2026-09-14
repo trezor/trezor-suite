@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -32,11 +34,13 @@ export const useYieldDepositForm = ({
     tokenSymbol,
     wrappedAmount,
 }: UseYieldDepositFormParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translate } = useTranslate();
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
-    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+    const baseCurrencyDecimals = getDecimalsForBaseCurrency(networkConfigDeps, {
         code: baseCurrencyCode,
         isInSats: isBaseCurrencyInSats,
     });

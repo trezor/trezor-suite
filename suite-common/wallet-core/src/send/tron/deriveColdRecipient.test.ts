@@ -1,8 +1,11 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
 import { deriveTronColdRecipient } from './deriveColdRecipient';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -13,7 +16,7 @@ const DEVICE_STATE = 'device-a' as Account['deviceState'];
 const DERIVED_ADDRESS = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
 const trxSymbol = asNetworkSymbol('trx');
 const ethSymbol = asNetworkSymbol('eth');
-const network = getNetwork(trxSymbol);
+const network = getNetwork(networkConfigDeps, trxSymbol);
 const device = { state: DEVICE_STATE } as unknown as Parameters<
     typeof deriveTronColdRecipient
 >[0]['device'];

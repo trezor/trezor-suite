@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type NetworkDisplaySymbol,
     type NetworkSymbol,
@@ -63,6 +65,8 @@ export const TransactionIcon = ({
     size = 48,
     isAnimated = false,
 }: TransactionIconProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
     let iconSymbol: NetworkSymbol | NetworkDisplaySymbol | undefined;
@@ -70,7 +74,7 @@ export const TransactionIcon = ({
     if (contractAddress) {
         iconSymbol = symbol;
     } else if (symbol) {
-        iconSymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
+        iconSymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol) as NetworkDisplaySymbol;
     }
 
     const iconName = stakeOperationType

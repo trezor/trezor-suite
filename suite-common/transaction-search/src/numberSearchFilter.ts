@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getTxOperation } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -6,11 +7,12 @@ import { getTargetAmounts } from './getTargetAmounts';
 import { type searchOperators } from './searchOperations';
 
 export const numberSearchFilter = (
+    networkConfigDeps: NetworkConfigDeps,
     transaction: WalletAccountTransaction,
     amount: BigNumber,
     operator: (typeof searchOperators)[number],
 ) => {
-    const targetAmounts = getTargetAmounts(transaction);
+    const targetAmounts = getTargetAmounts(networkConfigDeps, transaction);
     const op = getTxOperation(transaction.type);
     if (!op) {
         return false;

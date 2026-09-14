@@ -1,3 +1,5 @@
+import { getNetworks } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { createTestStore } from '@suite-common/test-utils';
@@ -93,6 +95,7 @@ const buildStore = ({
     createTestStore({
         extra: undefined,
         reducer: combineReducers({
+            networks: () => getNetworks(mockNetworkConfigDeps()),
             wallet: combineReducers({
                 accounts: () => accounts,
                 blockchain: () => blockchain,

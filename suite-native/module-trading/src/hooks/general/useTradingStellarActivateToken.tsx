@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useMemo, useState } from 'react';
 import { FadeIn } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
@@ -37,6 +38,8 @@ export const useTradingStellarActivateToken = ({
     receiveCryptoId,
     buttonTestId,
 }: UseTradingStellarActivateTokenProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
@@ -46,7 +49,7 @@ export const useTradingStellarActivateToken = ({
     const selectedReceiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
 
     const { network: receiveNetwork, contractAddress: receiveContractAddress } =
-        cryptoIdToNetworkAndContractAddress(receiveCryptoId);
+        cryptoIdToNetworkAndContractAddress(networkConfigDeps, receiveCryptoId);
 
     const { inactiveTokens } = useInactiveStellarTokens(selectedReceiveAccount?.account.key);
 

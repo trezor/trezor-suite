@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
@@ -8,6 +10,8 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const sendAmount = '5';
 const tokenSymbol = 'USDT';
@@ -47,7 +51,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                     buyAsset: {
                         searchFilter: 'Ethereum',
                         networkFilter: 'eth',
-                        assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+                        assetCryptoId: getCryptoId(networkConfigDeps, asNetworkSymbol('eth')),
                     },
                     selectReceiveAddress: async () => {
                         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'eth');

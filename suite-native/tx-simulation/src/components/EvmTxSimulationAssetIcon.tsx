@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { Icon, TokenIcon } from '@suite-native/icons';
 
@@ -8,11 +10,13 @@ export const EvmTxSimulationAssetIcon = ({
     assetExposure,
     network,
 }: EvmTxSimulationAssetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const asset = (assetDiff || assetExposure)?.asset;
     const assetType = (assetDiff || assetExposure)?.asset_type;
     const coinSymbol = asset?.symbol?.toLowerCase();
 
-    if (assetType === 'NATIVE' && coinSymbol && isNetworkSymbol(coinSymbol)) {
+    if (assetType === 'NATIVE' && coinSymbol && isNetworkSymbol(networkConfigDeps, coinSymbol)) {
         return <TokenIcon symbol={coinSymbol} size="small" />;
     }
 

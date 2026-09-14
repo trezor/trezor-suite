@@ -1,8 +1,11 @@
 import { base58 } from '@scure/base';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { type TxSimulationAction } from '@suite-common/wallet-types';
 
 import { getTxSimulationParams } from './getTxSimulationParams';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const sourceOrigin = 'https://app.uniswap.org';
 const fromAddress = '0x0000000000000000000000000000000000001234';
@@ -27,24 +30,26 @@ const createEvmAction = (chainId: number): TxSimulationAction => ({
 
 describe('getTxSimulationParams', () => {
     it('returns null without an action', () => {
-        expect(getTxSimulationParams(null)).toBeNull();
+        expect(getTxSimulationParams(networkConfigDeps, null)).toBeNull();
     });
 
     it('resolves the Blockaid chain name from the EVM chainId', () => {
-        expect(getTxSimulationParams(createEvmAction(999))?.params).toMatchObject({
+        expect(
+            getTxSimulationParams(networkConfigDeps, createEvmAction(999))?.params,
+        ).toMatchObject({
             chain: 'hyperevm',
             account_address: fromAddress,
         });
     });
 
     it('returns null for an EVM chain Blockaid cannot scan', () => {
-        expect(getTxSimulationParams(createEvmAction(61))).toBeNull();
+        expect(getTxSimulationParams(networkConfigDeps, createEvmAction(61))).toBeNull();
     });
 
     it('re-encodes the Solana transaction from hex to base58', () => {
         const serializedTx = '0102ab';
 
-        const input = getTxSimulationParams({
+        const input = getTxSimulationParams(networkConfigDeps, {
             method: 'solanaSignTransaction',
             symbol: 'sol',
             fromAddress: 'GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW',
@@ -69,7 +74,7 @@ describe('getTxSimulationParams', () => {
     it('keeps the Solana account address decodable under the declared encoding', () => {
         const solanaAddress = 'GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW';
 
-        const input = getTxSimulationParams({
+        const input = getTxSimulationParams(networkConfigDeps, {
             method: 'solanaSignTransaction',
             symbol: 'sol',
             fromAddress: solanaAddress,
@@ -84,7 +89,7 @@ describe('getTxSimulationParams', () => {
     });
 
     it('sends the Stellar XDR envelope with the network name', () => {
-        const input = getTxSimulationParams({
+        const input = getTxSimulationParams(networkConfigDeps, {
             method: 'stellarSignTransaction',
             symbol: 'xlm',
             fromAddress: 'GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH',
@@ -104,7 +109,7 @@ describe('getTxSimulationParams', () => {
     });
 
     it('targets the Stellar testnet for a testnet account', () => {
-        const input = getTxSimulationParams({
+        const input = getTxSimulationParams(networkConfigDeps, {
             method: 'stellarSignTransaction',
             symbol: 'txlm',
             fromAddress: 'GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH',
@@ -117,7 +122,7 @@ describe('getTxSimulationParams', () => {
 
     it('cannot scan a Stellar payload given as structured operations', () => {
         expect(
-            getTxSimulationParams({
+            getTxSimulationParams(networkConfigDeps, {
                 method: 'stellarSignTransaction',
                 symbol: 'xlm',
                 fromAddress: 'GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH',
@@ -132,7 +137,7 @@ describe('getTxSimulationParams', () => {
     });
 
     it('targets the devnet cluster for a devnet account', () => {
-        const input = getTxSimulationParams({
+        const input = getTxSimulationParams(networkConfigDeps, {
             method: 'solanaSignTransaction',
             symbol: 'dsol',
             fromAddress: 'GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW',

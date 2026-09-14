@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -88,6 +90,8 @@ type PermissionGroupProps = {
 };
 
 const PermissionGroup = ({ coin, permissions, defaultIsOpen }: PermissionGroupProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
     const isOpenedShared = useSharedValue(defaultIsOpen);
 
@@ -122,7 +126,7 @@ const PermissionGroup = ({ coin, permissions, defaultIsOpen }: PermissionGroupPr
                             {coin ? (
                                 <Translation
                                     id="moduleConnectPopup.permissions.coinHeading"
-                                    values={{ coin: getCoinLabel(coin) }}
+                                    values={{ coin: getCoinLabel(networkConfigDeps, coin) }}
                                 />
                             ) : (
                                 <Translation id="moduleConnectPopup.permissions.deviceHeading" />

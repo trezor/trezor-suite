@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { deviceInitialState } from '@suite-common/device';
@@ -14,6 +16,8 @@ import {
     signThunk,
     verifyThunk,
 } from './signVerifyActions';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
@@ -68,7 +72,12 @@ describe('Sign/Verify actions', () => {
                 signature: SIGNATURE,
             },
         });
-        const res = await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+        const res = await signThunk(
+            networkConfigDeps,
+            ACCOUNT,
+            PATH,
+            MESSAGE,
+        )(dispatch, getState, deps);
         expect(res).toStrictEqual({ address: ADDRESS, signature: SIGNATURE });
     });
 
@@ -95,7 +104,13 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
+            await signThunk(
+                networkConfigDeps,
+                ACCOUNT,
+                PATH,
+                MESSAGE,
+                true,
+            )(dispatch, getState, deps);
 
             expect(connect().signMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({ message: MESSAGE, hex: true, no_script_type: false }),
@@ -108,7 +123,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+            await signThunk(networkConfigDeps, ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
 
             expect(connect().signMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({ message: MESSAGE, hex: false }),
@@ -136,7 +151,13 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
+            await signThunk(
+                networkConfigDeps,
+                ACCOUNT,
+                PATH,
+                MESSAGE,
+                true,
+            )(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledWith(
                 expect.objectContaining({ payload: expect.objectContaining({ hex: true }) }),
@@ -151,7 +172,14 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE, true, true)(dispatch, getState, deps);
+            await signThunk(
+                networkConfigDeps,
+                ACCOUNT,
+                PATH,
+                MESSAGE,
+                true,
+                true,
+            )(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -174,7 +202,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(account, PATH, MESSAGE)(dispatch, getState, deps);
+            await signThunk(networkConfigDeps, account, PATH, MESSAGE)(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
                 type: events.coinSignMessageEvent.name,
@@ -188,7 +216,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Signing failed', code: 'Failure_DataError' },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+            await signThunk(networkConfigDeps, ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -211,7 +239,12 @@ describe('Sign/Verify actions', () => {
                     error: { message: 'Cancelled', code },
                 });
 
-                await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+                await signThunk(
+                    networkConfigDeps,
+                    ACCOUNT,
+                    PATH,
+                    MESSAGE,
+                )(dispatch, getState, deps);
 
                 expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
                 expect(deps.services.analytics.report).toHaveBeenCalledWith(
@@ -226,7 +259,12 @@ describe('Sign/Verify actions', () => {
         it('reports a sign that never reached the device as an error', async () => {
             const getStateWithoutDevice = () => createState(undefined);
 
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getStateWithoutDevice, deps);
+            await signThunk(
+                networkConfigDeps,
+                ACCOUNT,
+                PATH,
+                MESSAGE,
+            )(dispatch, getStateWithoutDevice, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -336,7 +374,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+            await signThunk(networkConfigDeps, ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
             await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
 
             const reported = JSON.stringify(deps.services.analytics.report.mock.calls);

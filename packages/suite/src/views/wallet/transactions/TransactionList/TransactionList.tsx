@@ -5,6 +5,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
@@ -53,6 +54,8 @@ export const TransactionList = ({
     isTxFilteringEnabled = true,
     customPageFetching,
 }: TransactionListProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const anchor = useSelector(selectRouterAnchor);
     const { dispatch } = useServices(selectDispatch);
     const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
@@ -67,7 +70,12 @@ export const TransactionList = ({
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, searchLabels, searchQuery);
+            const results = advancedSearchTransactions(
+                networkConfigDeps,
+                transactions,
+                searchLabels,
+                searchQuery,
+            );
             setSearchedTransactions(results);
         },
         200,

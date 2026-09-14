@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isNotNull } from '@trezor/utils';
 
@@ -12,12 +14,14 @@ export interface SearchAssetSelectConfig {
 }
 
 export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { networks = [], includeAllOption, allLabel, selectedNetwork } = config ?? {};
 
     const allOptions = useMemo(() => {
         const networkOptions = networks
             .map(symbol => {
-                const network = getNetwork(symbol);
+                const network = getNetwork(networkConfigDeps, symbol);
 
                 return network ? { label: network.name, value: network.symbol } : null;
             })
@@ -26,7 +30,7 @@ export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
         return includeAllOption
             ? [{ label: allLabel ?? 'All networks', value: undefined }, ...networkOptions]
             : networkOptions;
-    }, [networks, includeAllOption, allLabel]);
+    }, [networkConfigDeps, networks, includeAllOption, allLabel]);
 
     const selectedOption = useMemo(
         () => allOptions.find(option => option.value === selectedNetwork),

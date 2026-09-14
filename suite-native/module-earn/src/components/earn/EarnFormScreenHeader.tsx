@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
@@ -12,6 +14,8 @@ type EarnFormScreenHeaderProps = {
 };
 
 export const EarnFormScreenHeader = ({ accountKey }: EarnFormScreenHeaderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -20,7 +24,7 @@ export const EarnFormScreenHeader = ({ accountKey }: EarnFormScreenHeaderProps) 
         return null;
     }
 
-    const assetName = getNetworkDisplaySymbolName(account.symbol);
+    const assetName = getNetworkDisplaySymbolName(networkConfigDeps, account.symbol);
 
     return (
         <ScreenHeader

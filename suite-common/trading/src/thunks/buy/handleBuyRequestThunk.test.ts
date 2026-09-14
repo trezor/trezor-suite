@@ -1,5 +1,8 @@
+import { getNetworks } from '@suite-common/wallet-config';
+
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
@@ -22,6 +25,8 @@ import {
 import { MIN_MAX_QUOTES_OK } from '../../utils/buy/__fixtures__/buyUtils';
 
 import { buyThunks } from './index';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
@@ -46,6 +51,7 @@ describe('handleBuyRequestThunk', () => {
         const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
+                networks: () => getNetworks(mockNetworkConfigDeps()),
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),
@@ -115,7 +121,7 @@ describe('handleBuyRequestThunk', () => {
         };
         const input: HandleBuyRequestThunkProps = {
             formValues,
-            network: getNetwork(btcSymbol),
+            network: getNetwork(networkConfigDeps, btcSymbol),
             shouldSendInSats: false,
         };
 

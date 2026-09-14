@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -47,12 +49,15 @@ const AccountDetailSettingsRow = ({ title, children }: AccountDetailSettingsRowP
     </Box>
 );
 
-const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
-    <HStack spacing="sp8" flexDirection="row" alignItems="center" justifyContent="flex-end">
-        <Text variant="body-sm">{getNetwork(symbol).name}</Text>
-        <TokenIcon symbol={symbol} size="extraSmall" />
-    </HStack>
-);
+const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    return (
+        <HStack spacing="sp8" flexDirection="row" alignItems="center" justifyContent="flex-end">
+            <Text variant="body-sm">{getNetwork(networkConfigDeps, symbol).name}</Text>
+            <TokenIcon symbol={symbol} size="extraSmall" />
+        </HStack>
+    );
+};
 
 export const AccountSettingsScreen = ({
     route,

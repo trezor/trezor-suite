@@ -1,8 +1,12 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import {
     isAllowanceUnlimited,
     shouldShowRevokeAllowanceBanner,
     tokenSupportsIncreasingAllowance,
 } from './allowanceUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 // USDT requires resetting the allowance to zero before it can be changed.
 const USDT = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
@@ -28,9 +32,11 @@ describe('tokenSupportsIncreasingAllowance', () => {
 
 describe('isAllowanceUnlimited', () => {
     it('treats unit amounts at or above half of UINT256_MAX (in subunits) as unlimited', () => {
-        expect(isAllowanceUnlimited({ amount: '1000', decimals: 6 })).toBe(false);
+        expect(isAllowanceUnlimited(networkConfigDeps, { amount: '1000', decimals: 6 })).toBe(
+            false,
+        );
         expect(
-            isAllowanceUnlimited({
+            isAllowanceUnlimited(networkConfigDeps, {
                 amount: '115792089237316195423570985008687907853269984665640564039457',
                 decimals: 18,
             }),
@@ -40,7 +46,7 @@ describe('isAllowanceUnlimited', () => {
     it('compares subunit amounts directly instead of scaling them again', () => {
         // Unlimited approvals are decoded as UINT256_MAX subunits.
         expect(
-            isAllowanceUnlimited({
+            isAllowanceUnlimited(networkConfigDeps, {
                 amount: '115792089237316195423570985008687907853269984665640564039457584007913129639935',
                 decimals: 18,
                 isSubunit: true,
@@ -50,7 +56,7 @@ describe('isAllowanceUnlimited', () => {
         // A large but finite approval (1e60 subunits) stays finite; without `isSubunit`
         // it would be scaled by 10^18 again and mislabeled as unlimited.
         expect(
-            isAllowanceUnlimited({
+            isAllowanceUnlimited(networkConfigDeps, {
                 amount: `1${'0'.repeat(60)}`,
                 decimals: 18,
                 isSubunit: true,

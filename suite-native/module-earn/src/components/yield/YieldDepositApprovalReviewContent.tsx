@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -39,6 +41,8 @@ export const YieldDepositApprovalReviewContent = ({
     transactionType,
     vaultTokenName,
 }: YieldDepositApprovalReviewContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         closeSheet,
         confirmOnTrezorRef,
@@ -78,7 +82,7 @@ export const YieldDepositApprovalReviewContent = ({
             return null;
         }
 
-        return buildYieldReviewPreview({
+        return buildYieldReviewPreview(networkConfigDeps, {
             account: flowData.account,
             device,
             formState: reviewTransaction.formState,
@@ -86,7 +90,14 @@ export const YieldDepositApprovalReviewContent = ({
             type: transactionType,
             vaultName: vaultTokenName,
         });
-    }, [device, flowData.account, reviewTransaction, transactionType, vaultTokenName]);
+    }, [
+        networkConfigDeps,
+        device,
+        flowData.account,
+        reviewTransaction,
+        transactionType,
+        vaultTokenName,
+    ]);
 
     useYieldReviewSheetAutoStart({
         closeSheet,

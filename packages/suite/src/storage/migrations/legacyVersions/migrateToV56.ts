@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TradingTransaction, cryptoIdToNetwork, toTokenCryptoId } from '@suite-common/trading';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
@@ -34,6 +35,7 @@ const findAccountForBuyTrade = (
 };
 
 const findAccountForTrade = (
+    networkConfigDeps: NetworkConfigDeps,
     accounts: Account[],
     address: string | undefined,
     cryptoId: CryptoId | undefined,
@@ -42,7 +44,7 @@ const findAccountForTrade = (
         return undefined;
     }
 
-    const network = cryptoIdToNetwork(cryptoId);
+    const network = cryptoIdToNetwork(networkConfigDeps, cryptoId);
     if (!network) {
         return undefined;
     }
@@ -57,18 +59,29 @@ const findAccountForTrade = (
         const cryptoIds = [
             ...(account.tokens?.flatMap(token =>
                 toTokenCryptoId(
+                    networkConfigDeps,
                     account.symbol,
-                    getContractAddressForNetworkSymbol(account.symbol, token.contract),
+                    getContractAddressForNetworkSymbol(
+                        networkConfigDeps,
+                        account.symbol,
+                        token.contract,
+                    ),
                 ),
             ) ?? []),
-            getNetwork(account.symbol).tradeCryptoId,
+            getNetwork(networkConfigDeps, account.symbol).tradeCryptoId,
         ].filter(Boolean) as CryptoId[];
 
         return account.descriptor === address && cryptoIds.includes(cryptoId);
     });
 };
 
-export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
+type MigrateToV56 = (
+    deps: NetworkConfigDeps,
+    ...args: Parameters<OnUpgradeFunc<SuiteDBSchema>>
+) => ReturnType<OnUpgradeFunc<SuiteDBSchema>>;
+
+export const migrateToV56: MigrateToV56 = async (
+    networkConfigDeps,
     db,
     oldVersion,
     _newVersion,
@@ -107,6 +120,7 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
         if (trade.tradeType === 'buy') {
             if (trade.receiveAccountKey === undefined) {
                 trade.receiveAccountKey = findAccountForTrade(
+                    networkConfigDeps,
                     accounts,
                     trade.data.receiveAddress,
                     trade.data.receiveCurrency,
@@ -128,6 +142,7 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
 
         if (trade.tradeType === 'sell' && trade.sendAccountKey === undefined) {
             trade.sendAccountKey = findAccountForTrade(
+                networkConfigDeps,
                 accounts,
                 // account may be incorrect because it may not be current, but the default
                 // @ts-expect-error - account deprecated property
@@ -141,6 +156,7 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
         if (trade.tradeType === 'exchange') {
             if (trade.sendAccountKey === undefined) {
                 trade.sendAccountKey = findAccountForTrade(
+                    networkConfigDeps,
                     accounts,
                     // @ts-expect-error - account deprecated property
                     trade.account.descriptor,
@@ -150,6 +166,7 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
 
             if (trade.receiveAccountKey === undefined) {
                 trade.receiveAccountKey = findAccountForTrade(
+                    networkConfigDeps,
                     accounts,
                     trade.data.receiveAddress,
                     trade.data.receive,

@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -109,7 +110,7 @@ export const useNavigateAfterPushedTransaction = ({
     const isTransactionConfirmed = !!transaction && !isTransactionDataPending(transaction);
     const isTransactionFailed = transaction?.type === 'failed';
 
-    const feeInfo = useSelector((state: FeesRootState) =>
+    const feeInfo = useSelector((state: FeesRootState & NetworksRootState) =>
         networkSymbol ? selectConvertedNetworkFeeInfo(state, networkSymbol) : null,
     );
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);

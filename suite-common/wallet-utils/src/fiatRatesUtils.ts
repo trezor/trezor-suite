@@ -1,4 +1,5 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type CryptoBaseCurrencyPair,
@@ -37,12 +38,15 @@ export const getFiatRateKeyFromTicker = (
     return getFiatRateKey(symbol, fiatCurrency, tokenAddress);
 };
 
-export function getTickerFromFiatRateKey(fiatRateKey: CryptoBaseCurrencyPair): TickerId | null {
+export function getTickerFromFiatRateKey(
+    networkConfigDeps: NetworkConfigDeps,
+    fiatRateKey: CryptoBaseCurrencyPair,
+): TickerId | null {
     const parts = fiatRateKey.split('-');
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const [symbol, tokenAddress]: [string, string] = parts;
 
-    if (!isNetworkSymbol(symbol)) {
+    if (!isNetworkSymbol(networkConfigDeps, symbol)) {
         console.error(`Failed to get ticker from fiat rate key: ${fiatRateKey}`);
 
         return null;
@@ -139,6 +143,7 @@ export const selectHistoricRatesByTransactions = (
 };
 
 export const fetchTransactionsRates = async (
+    networkConfigDeps: NetworkConfigDeps,
     tickerId: TickerId,
     timestamps: Timestamp[],
     localCurrency: BaseCurrencyCode,
@@ -150,6 +155,7 @@ export const fetchTransactionsRates = async (
 
     try {
         const results = await getFiatRatesForTimestamps(
+            networkConfigDeps,
             tickerId,
             uniqueTimestamps,
             localCurrency,

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     isFunctionSelectorMatchesSearch,
@@ -75,6 +76,7 @@ const groupAddressesByLabel = (accountLabels: SearchAccountLabels) => {
 };
 
 export const simpleSearchTransactions = (
+    networkConfigDeps: NetworkConfigDeps,
     transactions: WalletAccountTransaction[],
     accountLabels: SearchAccountLabels,
     search: string,
@@ -130,7 +132,9 @@ export const simpleSearchTransactions = (
         if (!Number.isNaN(search)) {
             const amount = new BigNumber(search);
 
-            return transactions.filter(t => numberSearchFilter(t, amount, searchOperator));
+            return transactions.filter(t =>
+                numberSearchFilter(networkConfigDeps, t, amount, searchOperator),
+            );
         }
 
         return [];
@@ -142,7 +146,7 @@ export const simpleSearchTransactions = (
     // Searching for an amount (without operator)
     if (!Number.isNaN(search)) {
         const foundTxsForNumber = transactions.flatMap(transaction => {
-            const targetAmounts = getTargetAmounts(transaction);
+            const targetAmounts = getTargetAmounts(networkConfigDeps, transaction);
             if (targetAmounts.filter(targetAmount => targetAmount.includes(search)).length === 0) {
                 return [];
             }
@@ -192,6 +196,7 @@ export const simpleSearchTransactions = (
     // Find by token name, symbol or contract
     const foundTxsForToken = transactions.flatMap(transaction => {
         const isNativeSymbolSearch = isNativeDisplaySymbolSearch(
+            networkConfigDeps,
             transaction.symbol,
             lowerCaseSearch,
         );
@@ -214,7 +219,7 @@ export const simpleSearchTransactions = (
 
     // Find by native coin symbol
     const foundTxsForNativeSymbol = transactions.flatMap(transaction => {
-        if (isNativeTransferMatchesSearch(transaction, lowerCaseSearch)) {
+        if (isNativeTransferMatchesSearch(networkConfigDeps, transaction, lowerCaseSearch)) {
             return transaction.txid;
         }
 

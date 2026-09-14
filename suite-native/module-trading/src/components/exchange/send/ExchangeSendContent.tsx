@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
@@ -49,10 +51,12 @@ const ExchangeNetworkReserveBanner = ({
 };
 
 export const ExchangeSendContent = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { control } = useExchangeFormContext();
 
     const asset = useWatch({ name: 'sendAsset', control });
-    const symbol = cryptoIdToNetworkSymbol(asset?.cryptoId);
+    const symbol = cryptoIdToNetworkSymbol(networkConfigDeps, asset?.cryptoId);
 
     return (
         <>

@@ -2,6 +2,8 @@ import { useCallback, useMemo } from 'react';
 
 import { type SellFiatTradeQuoteRequest } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     type TradingAssetOption,
     type TradingAssetSellOption,
@@ -25,8 +27,10 @@ export const useTradingSellFormRedirectValues = (
     isFromRedirect: boolean,
     quotesRequest: SellFiatTradeQuoteRequest | undefined,
 ): TradingSellFormProps | null => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { composed, selectedFee } = useSelector(selectTradingComposedTransactionInfo);
-    const { createAssetOptionFromCryptoId } = useTradingAssets();
+    const { getAssetOptionFromCryptoId } = useTradingAssets();
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const findAccount = useCallback(
         (assetOption: TradingAssetOption) =>
@@ -40,19 +44,24 @@ export const useTradingSellFormRedirectValues = (
                     assetOption.contractAddress &&
                     !!account.tokens?.find(
                         token =>
-                            getContractAddressForNetworkSymbol(account.symbol, token.contract) ===
                             getContractAddressForNetworkSymbol(
+                                networkConfigDeps,
+                                account.symbol,
+                                token.contract,
+                            ) ===
+                            getContractAddressForNetworkSymbol(
+                                networkConfigDeps,
                                 assetOption.networkSymbol,
                                 assetOption.contractAddress,
                             ),
                     )
                 );
             }),
-        [accounts],
+        [networkConfigDeps, accounts],
     );
     const findAccountRef = useCurrentRef(findAccount);
     const sendCrypto = useMemo(() => {
-        const assetOption = createAssetOptionFromCryptoId(quotesRequest?.cryptoCurrency);
+        const assetOption = getAssetOptionFromCryptoId(quotesRequest?.cryptoCurrency);
         const account = findAccountRef.current(assetOption);
 
         if (!account) return null;
@@ -64,9 +73,10 @@ export const useTradingSellFormRedirectValues = (
                 accountKey: account.key,
             } satisfies TradingAssetSellOption,
         };
-    }, [createAssetOptionFromCryptoId, findAccountRef, quotesRequest?.cryptoCurrency]);
+    }, [getAssetOptionFromCryptoId, findAccountRef, quotesRequest?.cryptoCurrency]);
 
     const { address, token } = resolveAddressAndToken(
+        networkConfigDeps,
         sendCrypto?.account,
         sendCrypto?.asset?.contractAddress,
     );

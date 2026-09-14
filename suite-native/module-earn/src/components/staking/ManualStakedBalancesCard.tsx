@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -69,7 +70,7 @@ export const ManualStakedBalancesCard = ({
     const { applyStyle } = useNativeStyles();
     const tronVotesModal = useBottomSheetModal();
 
-    const stakedBalance = useSelector((state: StakeRootState) =>
+    const stakedBalance = useSelector((state: StakeRootState & NetworksRootState) =>
         selectStakedBalanceByAccountKey(state, accountKey),
     );
 

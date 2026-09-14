@@ -2,7 +2,11 @@ import { useForm } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectAddressValidatorDep } from '@suite-common/networks';
+import {
+    type NetworkConfigDeps,
+    selectAddressValidatorDep,
+    selectNetworkConfigDeps,
+} from '@suite-common/networks';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
@@ -15,12 +19,15 @@ interface GetDefaultResourceTypeProps {
     flow: TronFlow;
 }
 
-const getDefaultResourceType = ({ account, flow }: GetDefaultResourceTypeProps) => {
+const getDefaultResourceType = (
+    networkConfigDeps: NetworkConfigDeps,
+    { account, flow }: GetDefaultResourceTypeProps,
+) => {
     if (flow !== 'unstake') {
         return 'bandwidth';
     }
 
-    const stakedBandwidthBalance = getStakedBalance(account, 'bandwidth');
+    const stakedBandwidthBalance = getStakedBalance(networkConfigDeps, account, 'bandwidth');
 
     return stakedBandwidthBalance === '0' ? 'energy' : 'bandwidth';
 };
@@ -40,6 +47,8 @@ interface UseTronStakeFormProps {
 }
 
 export const useTronStakeForm = ({ account, flow }: UseTronStakeFormProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
     const { addressValidator } = useServices(selectAddressValidatorDep);
 
@@ -48,7 +57,7 @@ export const useTronStakeForm = ({ account, flow }: UseTronStakeFormProps) => {
         defaultValues: {
             amount: '',
             fiatAmount: '',
-            resourceType: getDefaultResourceType({ account, flow }),
+            resourceType: getDefaultResourceType(networkConfigDeps, { account, flow }),
             selectedFee: 'normal',
             representative: '',
             customRepresentativeAddress: '',

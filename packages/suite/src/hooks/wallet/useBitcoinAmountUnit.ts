@@ -1,4 +1,5 @@
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import {
@@ -11,6 +12,8 @@ import { PROTO } from '@trezor/connect';
 import { useSelector } from 'src/hooks/suite';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);
     const { dispatch } = useServices(selectDispatch);
 
@@ -25,7 +28,10 @@ export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const areSatsDisplayed = bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
     const isBtcSatsAmountUnit = areSatsDisplayed && symbol === 'btc';
 
-    const areUnitsSupportedByNetwork = getNetworkOptional(symbol)?.features.includes('amount-unit');
+    const areUnitsSupportedByNetwork = getNetworkOptional(
+        networkConfigDeps,
+        symbol,
+    )?.features.includes('amount-unit');
 
     return {
         bitcoinAmountUnit,

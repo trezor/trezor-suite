@@ -15,6 +15,7 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/react-query"
         },

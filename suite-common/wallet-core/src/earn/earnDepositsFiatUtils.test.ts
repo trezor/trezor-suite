@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type RatesByKey, type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -7,6 +8,8 @@ import {
     calculateEarnDepositsFiatData,
     getEarnDepositsFiatStatus,
 } from './earnDepositsFiatUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const USDC_CONTRACT_CHECKSUMMED = toTokenAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
 const USDC_CONTRACT_LOWERCASE = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
@@ -26,7 +29,7 @@ const createYieldDeposit = (
 
 describe(calculateEarnDepositsFiatData.name, () => {
     it('calculates staking and stablecoin yield deposits using available rates', () => {
-        const result = calculateEarnDepositsFiatData({
+        const result = calculateEarnDepositsFiatData(networkConfigDeps, {
             stakingDeposits: [{ id: 'staking-1', symbol: 'eth', balance: '2' }],
             stablecoinYieldDeposits: [createYieldDeposit(USDC_CONTRACT_LOWERCASE)],
             currentFiatRates: createRates({
@@ -45,7 +48,7 @@ describe(calculateEarnDepositsFiatData.name, () => {
     });
 
     it('finds a token rate stored under a differently cased contract address', () => {
-        const result = calculateEarnDepositsFiatData({
+        const result = calculateEarnDepositsFiatData(networkConfigDeps, {
             stakingDeposits: [],
             stablecoinYieldDeposits: [createYieldDeposit(USDC_CONTRACT_LOWERCASE)],
             currentFiatRates: createRates({
@@ -59,7 +62,7 @@ describe(calculateEarnDepositsFiatData.name, () => {
     });
 
     it('normalizes and deduplicates tickers for deposits with missing rates', () => {
-        const result = calculateEarnDepositsFiatData({
+        const result = calculateEarnDepositsFiatData(networkConfigDeps, {
             stakingDeposits: [
                 { id: 'staking-1', symbol: 'eth', balance: '2' },
                 { id: 'staking-2', symbol: 'eth', balance: '1' },
@@ -85,7 +88,7 @@ describe(calculateEarnDepositsFiatData.name, () => {
     });
 
     it('keeps only loaded rates in the lower-bound total', () => {
-        const result = calculateEarnDepositsFiatData({
+        const result = calculateEarnDepositsFiatData(networkConfigDeps, {
             stakingDeposits: [{ id: 'staking-1', symbol: 'eth', balance: '2' }],
             stablecoinYieldDeposits: [createYieldDeposit(USDC_CONTRACT_LOWERCASE)],
             currentFiatRates: createRates({
@@ -100,7 +103,7 @@ describe(calculateEarnDepositsFiatData.name, () => {
     });
 
     it('treats a rate of zero as missing', () => {
-        const result = calculateEarnDepositsFiatData({
+        const result = calculateEarnDepositsFiatData(networkConfigDeps, {
             stakingDeposits: [{ id: 'staking-1', symbol: 'eth', balance: '2' }],
             stablecoinYieldDeposits: [createYieldDeposit(USDC_CONTRACT_LOWERCASE)],
             currentFiatRates: createRates({
@@ -120,7 +123,7 @@ describe(calculateEarnDepositsFiatData.name, () => {
     });
 
     it('omits empty deposits from the calculated results', () => {
-        const result = calculateEarnDepositsFiatData({
+        const result = calculateEarnDepositsFiatData(networkConfigDeps, {
             stakingDeposits: [{ id: 'staking-1', symbol: 'eth', balance: null }],
             stablecoinYieldDeposits: [
                 { ...createYieldDeposit(USDC_CONTRACT_LOWERCASE), balance: '0' },

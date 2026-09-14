@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -20,6 +21,8 @@ import {
 } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('../../tradeApi');
 
@@ -149,7 +152,7 @@ describe('loadInitialDataThunk catalog cache', () => {
         const selectedAccount: SelectedAccountStatus = {
             status: 'loaded',
             account,
-            network: getNetwork(account.symbol),
+            network: getNetwork(networkConfigDeps, account.symbol),
             params: undefined,
         };
         getSelectedAccount.mockReturnValue(selectedAccount);

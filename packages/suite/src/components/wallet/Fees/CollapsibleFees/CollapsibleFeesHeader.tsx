@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isTronAccountActivation } from '@suite-common/wallet-utils';
 import { Row, Text, TextButton, Tooltip } from '@trezor/components';
@@ -20,6 +22,8 @@ export function CollapsibleFeesHeader({
     typographyStyle,
     supportsAdjustableFees,
 }: CollapsibleFeesHeaderProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { networkType, networkSymbol, composedLevels } = useFeesContext();
 
     const feeTooltipTextId = useMemo(() => {
@@ -76,7 +80,10 @@ export function CollapsibleFeesHeader({
                         id={feeTooltipTextId}
                         values={{
                             br: <br />,
-                            networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
+                            networkDisplaySymbol: getNetworkDisplaySymbol(
+                                networkConfigDeps,
+                                networkSymbol,
+                            ),
                         }}
                     />
                 }

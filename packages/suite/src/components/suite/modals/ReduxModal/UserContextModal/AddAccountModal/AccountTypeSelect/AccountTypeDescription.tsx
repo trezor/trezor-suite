@@ -1,5 +1,7 @@
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     type AccountType,
     type NetworkSymbol,
@@ -23,13 +25,18 @@ export const AccountTypeDescription = ({
     symbol,
     networkType,
 }: AccountTypeDescriptionProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const accountTypeUrl = getAccountTypeUrl(bip43Path);
     const accountTypeDescId = getAccountTypeDesc({ path: bip43Path, accountType, networkType });
 
     return (
         <Column alignItems="flex-start" gap={12}>
             <Paragraph>
-                <Translation id={accountTypeDescId} values={{ value: getNetwork(symbol).name }} />
+                <Translation
+                    id={accountTypeDescId}
+                    values={{ value: getNetwork(networkConfigDeps, symbol).name }}
+                />
             </Paragraph>
             {accountTypeUrl && <LearnMoreButton url={accountTypeUrl} />}
         </Column>

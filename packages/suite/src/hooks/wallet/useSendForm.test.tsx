@@ -21,6 +21,7 @@ import {
     networksReducer,
 } from '@suite-common/networks';
 import {
+    mockNetworkConfigDeps,
     mockNetworkMetadata,
     mockNetworkModule,
     mockNetworkModuleRepository,
@@ -57,6 +58,8 @@ import SendIndex from 'src/views/wallet/send';
 
 import * as fixtures from './__fixtures__/useSendForm';
 import { useSendForm, useSendFormContext } from './useSendForm';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const TEST_TIMEOUT = 35000;
 
@@ -130,7 +133,7 @@ const buildTestCompositionRootParams = ({
     bitcoinAmountUnit,
     protocol,
 }: Args = {}) => {
-    const rootReducer = fixtures.getRootReducer(selectedAccount, fees);
+    const rootReducer = fixtures.getRootReducer(networkConfigDeps, selectedAccount, fees);
 
     const preloadedState = initPreloadedState({
         rootReducer,

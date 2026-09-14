@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -29,15 +30,20 @@ import {
     selectAddressDisplayType,
 } from '../settings/walletSettingsReducer';
 
-type ComposeCardanoTransactionFeeLevelsThunkState = void;
+type ComposeCardanoTransactionFeeLevelsThunkState = void & NetworksRootState;
 
 export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevelsCardano,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: ComposeCardanoTransactionFeeLevelsThunkState }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeCardanoTransactionFeeLevelsThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeCardanoTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+    async ({ formState, composeContext }, { getState, dispatch, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { account, feeInfo } = composeContext;
         const changeAddress = getUnusedChangeAddress(account);
         if (!changeAddress || !account.utxo || !account.addresses)
@@ -56,6 +62,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
         }
 
         const outputs = transformUserOutputs(
+            networkConfigDeps,
             formState.outputs,
             account.tokens,
             account.symbol,
@@ -73,7 +80,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
             },
             changeAddress,
             addressParameters,
-            testnet: isTestnet(account.symbol),
+            testnet: isTestnet(networkConfigDeps, account.symbol),
         });
 
         if (!response.success) {
@@ -99,6 +106,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
                 case 'final':
                     // convert from lovelace units to ADA
                     tx.max = formatMaxOutputAmount(
+                        networkConfigDeps,
                         tx.max,
                         outputs.find(o => o.setMax),
                         account,
@@ -107,6 +115,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
                 case 'nonfinal':
                     // convert lovelace to ADA (for ADA outputs only)
                     tx.max = formatMaxOutputAmount(
+                        networkConfigDeps,
                         tx.max,
                         outputs.find(o => o.setMax && o.assets.length === 0),
                         account,
@@ -150,7 +159,7 @@ type SignCardanoTransactionThunkArguments = Omit<
     precomposedTransaction: PrecomposedTransactionFinalCardano;
 };
 
-type SignCardanoSendFormTransactionThunkState = WalletSettingsRootState;
+type SignCardanoSendFormTransactionThunkState = WalletSettingsRootState & NetworksRootState;
 
 export const signCardanoSendFormTransactionThunk = createThunk<
     { serializedTx: string },
@@ -165,6 +174,8 @@ export const signCardanoSendFormTransactionThunk = createThunk<
         { precomposedTransaction, selectedAccount, device, paymentRequests },
         { getState, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { symbol, accountType } = selectedAccount;
 
         if (selectedAccount.networkType !== 'cardano')
@@ -189,7 +200,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             outputs: precomposedTransaction.outputs,
             unsignedTx: precomposedTransaction.unsignedTx,
             tagCborSets: true,
-            testnet: isTestnet(symbol),
+            testnet: isTestnet(networkConfigDeps, symbol),
             protocolMagic: getProtocolMagic(symbol),
             networkId: getNetworkId(),
             fee: precomposedTransaction.fee,

@@ -2,6 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetworksWithMevProtection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
@@ -16,10 +17,12 @@ import {
 import { useSelector } from 'src/hooks/suite';
 
 export const MevProtection = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
 
-    const supportedNetworks = getNetworksWithMevProtection();
+    const supportedNetworks = getNetworksWithMevProtection(networkConfigDeps);
 
     const handleSwitchChange = () => {
         const nextIsMevProtectionEnabled = !isMevProtectionEnabled;

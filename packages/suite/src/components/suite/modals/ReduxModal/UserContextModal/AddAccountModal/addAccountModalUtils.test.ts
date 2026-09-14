@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -9,24 +10,29 @@ import {
     getVisibleAccountCounts,
 } from './addAccountModalUtils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 describe('addAccountModalUtils', () => {
     describe(getSortedNetworks.name, () => {
         it('places enabled networks first and disabled networks last.', () => {
             const result = getSortedNetworks({
                 availableNetworks: [
-                    getNetwork('eth'),
-                    getNetwork('btc'),
-                    getNetwork('sol'),
-                    getNetwork('ada'),
+                    getNetwork(networkConfigDeps, 'eth'),
+                    getNetwork(networkConfigDeps, 'btc'),
+                    getNetwork(networkConfigDeps, 'sol'),
+                    getNetwork(networkConfigDeps, 'ada'),
                 ],
-                enabledNetworkSymbols: [getNetwork('btc').symbol, getNetwork('ada').symbol],
+                enabledNetworkSymbols: [
+                    getNetwork(networkConfigDeps, 'btc').symbol,
+                    getNetwork(networkConfigDeps, 'ada').symbol,
+                ],
             });
 
             expect(result).toEqual([
-                getNetwork('btc'),
-                getNetwork('ada'),
-                getNetwork('eth'),
-                getNetwork('sol'),
+                getNetwork(networkConfigDeps, 'btc'),
+                getNetwork(networkConfigDeps, 'ada'),
+                getNetwork(networkConfigDeps, 'eth'),
+                getNetwork(networkConfigDeps, 'sol'),
             ]);
         });
     });
@@ -35,22 +41,22 @@ describe('addAccountModalUtils', () => {
         it('counts only visible accounts belonging to the selected device state', () => {
             const accounts = [
                 mockWalletAccount({
-                    symbol: getNetwork('btc').symbol,
+                    symbol: getNetwork(networkConfigDeps, 'btc').symbol,
                     deviceState: 'state@device:0',
                     visible: true,
                 }),
                 mockWalletAccount({
-                    symbol: getNetwork('btc').symbol,
+                    symbol: getNetwork(networkConfigDeps, 'btc').symbol,
                     deviceState: 'state@device:0',
                     visible: false,
                 }),
                 mockWalletAccount({
-                    symbol: getNetwork('eth').symbol,
+                    symbol: getNetwork(networkConfigDeps, 'eth').symbol,
                     deviceState: 'state@device:0',
                     visible: true,
                 }),
                 mockWalletAccount({
-                    symbol: getNetwork('btc').symbol,
+                    symbol: getNetwork(networkConfigDeps, 'btc').symbol,
                     deviceState: 'other@device:0',
                     visible: true,
                 }),
@@ -66,14 +72,23 @@ describe('addAccountModalUtils', () => {
     describe(enqueueNetworkActivation.name, () => {
         it('does not enqueue a network more than once', () => {
             expect(
-                enqueueNetworkActivation([getNetwork('btc').symbol], getNetwork('btc').symbol),
-            ).toEqual([getNetwork('btc').symbol]);
+                enqueueNetworkActivation(
+                    [getNetwork(networkConfigDeps, 'btc').symbol],
+                    getNetwork(networkConfigDeps, 'btc').symbol,
+                ),
+            ).toEqual([getNetwork(networkConfigDeps, 'btc').symbol]);
         });
 
         it('appends a different network without reordering the queue', () => {
             expect(
-                enqueueNetworkActivation([getNetwork('btc').symbol], getNetwork('eth').symbol),
-            ).toEqual([getNetwork('btc').symbol, getNetwork('eth').symbol]);
+                enqueueNetworkActivation(
+                    [getNetwork(networkConfigDeps, 'btc').symbol],
+                    getNetwork(networkConfigDeps, 'eth').symbol,
+                ),
+            ).toEqual([
+                getNetwork(networkConfigDeps, 'btc').symbol,
+                getNetwork(networkConfigDeps, 'eth').symbol,
+            ]);
         });
     });
 
@@ -81,22 +96,22 @@ describe('addAccountModalUtils', () => {
         it('returns only accounts created for the activated network after discovery started', () => {
             const existingAccount = mockWalletAccount({
                 descriptor: asAccountDescriptor('existingAccount'),
-                symbol: getNetwork('btc').symbol,
+                symbol: getNetwork(networkConfigDeps, 'btc').symbol,
             });
             const newBitcoinAccount = mockWalletAccount({
                 descriptor: asAccountDescriptor('newBitcoinAccount'),
-                symbol: getNetwork('btc').symbol,
+                symbol: getNetwork(networkConfigDeps, 'btc').symbol,
             });
             const newEthereumAccount = mockWalletAccount({
                 descriptor: asAccountDescriptor('newEthereumAccount'),
-                symbol: getNetwork('eth').symbol,
+                symbol: getNetwork(networkConfigDeps, 'eth').symbol,
             });
 
             expect(
                 getNewNetworkAccounts({
                     accounts: [existingAccount, newBitcoinAccount, newEthereumAccount],
                     existingAccountKeys: new Set([existingAccount.key]),
-                    networkSymbol: getNetwork('btc').symbol,
+                    networkSymbol: getNetwork(networkConfigDeps, 'btc').symbol,
                 }),
             ).toEqual([newBitcoinAccount]);
         });

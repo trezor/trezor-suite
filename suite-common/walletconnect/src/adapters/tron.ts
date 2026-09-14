@@ -3,8 +3,9 @@ import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type Network, getNetwork, getNetworksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type CallMethodResponse } from '@trezor/connect';
@@ -37,7 +38,10 @@ const methods = ['tron_signTransaction', 'tron_signMessage'];
 
 export const getChainId = (network: Network): string[] => (network.caipId ? [network.caipId] : []);
 
-export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
+export const getNamespace = (
+    networkConfigDeps: NetworkConfigDeps,
+    accounts: Account[],
+): Record<string, WalletConnectNamespace> => {
     const tron = {
         chains: [],
         accounts: [],
@@ -46,7 +50,7 @@ export const getNamespace = (accounts: Account[]): Record<string, WalletConnectN
     } as WalletConnectNamespace;
 
     accounts.forEach(account => {
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
         const { networkType } = network;
 
         if (!account.visible || networkType !== 'tron') return;
@@ -68,6 +72,7 @@ export const getNamespace = (accounts: Account[]): Record<string, WalletConnectN
 };
 
 const processNamespaces = (
+    networkConfigDeps: NetworkConfigDeps,
     accounts: Account[],
     networks: PendingConnectionProposalNetwork[],
     namespaces: ProposalTypes.RequiredNamespaces,
@@ -77,7 +82,7 @@ const processNamespaces = (
         ([key, namespace]: [string, ProposalTypes.RequiredNamespace]) => {
             if (key === 'tron') {
                 namespace.chains?.forEach(chain => {
-                    const supported = networksCollection
+                    const supported = getNetworksCollection(networkConfigDeps)
                         .filter(nc => nc.networkType === 'tron')
                         .find(nc => getChainId(nc).includes(chain));
                     const alreadyAdded = networks.some(

@@ -3,6 +3,11 @@ import {
     fetchErc4626UnderlyingAsset,
     fetchLastWeekFiatRates,
 } from '@suite-common/fiat-services';
+import {
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+    type NetworkConfigDeps,
+} from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import {
@@ -53,13 +58,10 @@ interface FetchErc4626FiatRateProps {
     skipCache: boolean;
 }
 
-const fetchErc4626FiatRate = async ({
-    ticker,
-    rateType,
-    baseCurrencyCode,
-    backendType,
-    skipCache,
-}: FetchErc4626FiatRateProps): Promise<FiatRatesResult> => {
+const fetchErc4626FiatRate = async (
+    networkConfigDeps: NetworkConfigDeps,
+    { ticker, rateType, baseCurrencyCode, backendType, skipCache }: FetchErc4626FiatRateProps,
+): Promise<FiatRatesResult> => {
     if (!ticker.tokenAddress) {
         throw new Error('Token address is missing from ERC4626 token');
     }
@@ -70,7 +72,9 @@ const fetchErc4626FiatRate = async ({
     });
 
     const fetchFiatRatesFn =
-        rateType === 'current' ? fetchCurrentFiatRates : fetchLastWeekFiatRates;
+        rateType === 'current'
+            ? fetchCurrentFiatRates.bind(null, networkConfigDeps)
+            : fetchLastWeekFiatRates.bind(null, networkConfigDeps);
 
     const underlyingAssetRate = await fetchFiatRatesFn({
         ticker: { symbol: ticker.symbol, tokenAddress: underlyingAsset.contract },
@@ -106,7 +110,8 @@ type UpdateTxsFiatRatesThunkResult = {
 // TODO: Refactor this to batch requests as much as possible
 type UpdateTxsFiatRatesThunkState = AccountsRootState &
     BlockchainRootState &
-    TokenDefinitionsRootState;
+    TokenDefinitionsRootState &
+    NetworksRootState;
 
 export const updateTxsFiatRatesThunk = createThunk<
     UpdateTxsFiatRatesThunkResult,
@@ -115,8 +120,10 @@ export const updateTxsFiatRatesThunk = createThunk<
 >(
     `${FIAT_RATES_MODULE_PREFIX}/updateTxsRates`,
     async ({ accountKey, txs, baseCurrencyCode }, { getState }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const account = selectAccountByKey(getState(), accountKey);
-        if (!account || txs?.length === 0 || isTestnet(account.symbol))
+        if (!account || txs?.length === 0 || isTestnet(networkConfigDeps, account.symbol))
             return { account, rates: [] };
 
         const isElectrumBackend = selectIsElectrumBackendSelected(getState(), account.symbol);
@@ -128,6 +135,7 @@ export const updateTxsFiatRatesThunk = createThunk<
             .filter(isNotUndefined);
 
         await fetchTransactionsRates(
+            networkConfigDeps,
             { symbol: account.symbol },
             timestamps,
             baseCurrencyCode,
@@ -150,9 +158,10 @@ export const updateTxsFiatRatesThunk = createThunk<
                 continue;
             }
 
-            const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes(
-                'coin-definitions',
-            );
+            const hasCoinDefinitions = getNetworkFeatures(
+                networkConfigDeps,
+                account.symbol,
+            ).includes('coin-definitions');
 
             if (hasCoinDefinitions) {
                 const isTokenKnown = selectIsSpecificCoinDefinitionKnown(
@@ -167,6 +176,7 @@ export const updateTxsFiatRatesThunk = createThunk<
             }
 
             await fetchTransactionsRates(
+                networkConfigDeps,
                 {
                     symbol: account.symbol,
                     tokenAddress: toTokenAddress(token),
@@ -191,7 +201,9 @@ type UpdateCurrentFiatRatesThunkPayload = {
     skipCache?: boolean;
 };
 
-export type UpdateFiatRatesThunkState = BlockchainRootState & TokenDefinitionsRootState;
+export type UpdateFiatRatesThunkState = BlockchainRootState &
+    TokenDefinitionsRootState &
+    NetworksRootState;
 
 export const updateFiatRatesThunk = createThunk<
     PromiseSettledResult<FiatRatesResult>[],
@@ -203,8 +215,10 @@ export const updateFiatRatesThunk = createThunk<
         { tickers, baseCurrencyCode, rateType, forceFetchToken, skipCache = false },
         { getState },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const fetchRate = async (ticker: TickerId) => {
-            if (isTestnet(ticker.symbol)) {
+            if (isTestnet(networkConfigDeps, ticker.symbol)) {
                 throw new Error('Testnet');
             }
 
@@ -215,7 +229,7 @@ export const updateFiatRatesThunk = createThunk<
                 ticker.protocols?.includes('erc4626') &&
                 (!backendType || backendType === 'blockbook')
             ) {
-                return fetchErc4626FiatRate({
+                return fetchErc4626FiatRate(networkConfigDeps, {
                     ticker,
                     rateType,
                     baseCurrencyCode,
@@ -224,9 +238,10 @@ export const updateFiatRatesThunk = createThunk<
                 });
             }
 
-            const hasCoinDefinitions = getNetworkFeatures(ticker.symbol).includes(
-                'coin-definitions',
-            );
+            const hasCoinDefinitions = getNetworkFeatures(
+                networkConfigDeps,
+                ticker.symbol,
+            ).includes('coin-definitions');
             if (ticker.tokenAddress && hasCoinDefinitions && !forceFetchToken) {
                 const isTokenKnown = selectIsSpecificCoinDefinitionKnown(
                     getState(),
@@ -242,14 +257,14 @@ export const updateFiatRatesThunk = createThunk<
             const rate = await ((): Promise<FiatRatesResult | null> => {
                 switch (rateType) {
                     case 'current':
-                        return fetchCurrentFiatRates({
+                        return fetchCurrentFiatRates(networkConfigDeps, {
                             ticker,
                             localCurrency: baseCurrencyCode,
                             backendType,
                             skipCache,
                         });
                     case 'lastWeek':
-                        return fetchLastWeekFiatRates({
+                        return fetchLastWeekFiatRates(networkConfigDeps, {
                             ticker,
                             localCurrency: baseCurrencyCode,
                             backendType,
@@ -321,7 +336,8 @@ type FetchFiatRatesThunkPayload = {
     localCurrency: BaseCurrencyCode;
 };
 
-type FetchFiatRatesThunkState = AccountsRootState &
+type FetchFiatRatesThunkState = NetworksRootState &
+    AccountsRootState &
     BlockchainRootState &
     FiatRatesRootState &
     TokenDefinitionsRootState;

@@ -1,5 +1,6 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -50,7 +51,8 @@ export const submitRequestForm =
 type ConvertDraftsThunkState = AccountsRootState & FormDraftRootState & WalletSettingsRootState;
 
 export const convertDraftsThunk =
-    () => (dispatch: Dispatch<UnknownAction>, getState: () => ConvertDraftsThunkState) => {
+    (networkConfigDeps: NetworkConfigDeps) =>
+    (dispatch: Dispatch<UnknownAction>, getState: () => ConvertDraftsThunkState) => {
         const accounts = selectAccounts(getState());
         const formDraftKeys = selectFormDraftKeys(getState());
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
@@ -59,7 +61,10 @@ export const convertDraftsThunk =
             const [_prefix, accountKey] = parseFormDraftKey(formDraftKey);
             const relatedAccount = accounts.find(({ key }) => key === accountKey);
 
-            if (!relatedAccount || !hasNetworkFeatures(relatedAccount, 'amount-unit')) {
+            if (
+                !relatedAccount ||
+                !hasNetworkFeatures(networkConfigDeps, relatedAccount, 'amount-unit')
+            ) {
                 return;
             }
 
@@ -71,7 +76,7 @@ export const convertDraftsThunk =
                 const conversion = areSatsSelected
                     ? convertAmountUnitsToSubunits
                     : convertAmountSubunitsToUnits;
-                const decimals = getAccountDecimals(relatedAccount.symbol);
+                const decimals = getAccountDecimals(networkConfigDeps, relatedAccount.symbol);
 
                 if (draft.cryptoInput) {
                     draft.cryptoInput = conversion(draft.cryptoInput, decimals);

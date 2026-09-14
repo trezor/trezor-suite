@@ -2,9 +2,9 @@ import { type BuyTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
-    type TradingFormAccountRootState,
     buyThunks,
     cryptoIdToNetworkSymbolAndContractAddress,
     selectTradingBuyInfo,
@@ -21,7 +21,7 @@ import { submitRequestForm } from '../tradingCommonActions';
 
 type SelectBuyQuoteThunkParams = { quote: BuyTrade };
 
-type SelectBuyQuoteThunkState = GotoThunkState & TradingFormAccountRootState;
+type SelectBuyQuoteThunkState = GotoThunkState & Parameters<typeof selectTradingFormAccount>[0];
 
 type SelectBuyQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
 
@@ -30,6 +30,8 @@ export const selectBuyQuoteThunk = createThunk<
     SelectBuyQuoteThunkParams,
     { state: SelectBuyQuoteThunkState; extra: SelectBuyQuoteThunkDeps }
 >('trading/buy/selectQuoteWithAnalytics', async ({ quote }, { dispatch, getState, extra }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     const buyInfo = selectTradingBuyInfo(getState());
     const quotesRequest = selectTradingBuyQuotesRequest(getState());
     const receiveAddress = selectTradingBuyReceiveAddress(getState());
@@ -48,7 +50,7 @@ export const selectBuyQuoteThunk = createThunk<
     );
 
     const { symbol: cryptoNetworkSymbol, contractAddress: cryptoContractAddress } =
-        cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.receiveCurrency);
+        cryptoIdToNetworkSymbolAndContractAddress(networkConfigDeps, quotesRequest.receiveCurrency);
     const cryptoLabel = selectTradingCoinInfoByCryptoId(
         getState(),
         quotesRequest.receiveCurrency,

@@ -4,6 +4,7 @@ import {
     type ExchangeTradeSigned,
     type SellFiatTradeSigned,
 } from 'invity-api';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -49,7 +50,8 @@ export type CreatePaymentRequestsThunkState = AccountsRootState &
     GetNonceThunkState &
     GetPurchaseAddressThunkState &
     GetRefundAddressThunkState &
-    TradingRootState;
+    TradingRootState &
+    NetworksRootState;
 
 export const createPaymentRequestsThunk = createThunk<
     PROTO.PaymentRequest[],
@@ -64,6 +66,8 @@ export const createPaymentRequestsThunk = createThunk<
         { type, account, composedLevels, formattedMaxAmount, destinationTag },
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { mac: macRefund, path: pathRefund } = await dispatch(
             getRefundAddressThunk({ account }),
         ).unwrap();
@@ -90,7 +94,7 @@ export const createPaymentRequestsThunk = createThunk<
                 const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
                 const receiveAddress = selectTradingExchangeReceiveAddress(getState());
                 const receiveAccount = selectAccountByKey(getState(), receiveAccountKey);
-                const sendNetwork = cryptoIdToNetwork(quote?.send);
+                const sendNetwork = cryptoIdToNetwork(networkConfigDeps, quote?.send);
 
                 if (
                     !quote?.orderId ||
@@ -146,7 +150,7 @@ export const createPaymentRequestsThunk = createThunk<
                     });
                 }
 
-                const paymentRequest = tradingExchangeCreatePaymentRequest({
+                const paymentRequest = tradingExchangeCreatePaymentRequest(networkConfigDeps, {
                     trade,
                     provider,
                     macPurchase,
@@ -194,7 +198,7 @@ export const createPaymentRequestsThunk = createThunk<
                     });
                 }
 
-                const sendNetwork = cryptoIdToNetwork(quote.cryptoCurrency);
+                const sendNetwork = cryptoIdToNetwork(networkConfigDeps, quote.cryptoCurrency);
                 if (!sendNetwork) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
@@ -246,7 +250,7 @@ export const createPaymentRequestsThunk = createThunk<
                     });
                 }
 
-                const paymentRequest = tradingSellCreatePaymentRequest({
+                const paymentRequest = tradingSellCreatePaymentRequest(networkConfigDeps, {
                     trade,
                     provider,
                     macRefund,

@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -11,7 +12,7 @@ type AssetItemTokensBadgeProps = {
 };
 
 export const AssetItemTokensBadge = memo(({ symbol }: AssetItemTokensBadgeProps) => {
-    const hasAnyTokens = useSelector((state: TokensRootState) =>
+    const hasAnyTokens = useSelector((state: TokensRootState & NetworksRootState) =>
         selectHasDeviceAnyTokensForNetwork(state, symbol),
     );
 

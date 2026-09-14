@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -35,6 +36,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useBuyPreviewFlow = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
@@ -48,7 +51,7 @@ export const useBuyPreviewFlow = () => {
     const coinInfo = useSelector((state: TradingRootState) =>
         selectTradingCoinInfoByCryptoId(state, selectedQuote?.receiveCurrency),
     );
-    const quoteAnalyticsData = getAnalyticsTradingBuyPayload({
+    const quoteAnalyticsData = getAnalyticsTradingBuyPayload(networkConfigDeps, {
         quote: selectedQuote,
         coinInfo,
     });

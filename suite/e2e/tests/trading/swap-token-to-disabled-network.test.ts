@@ -1,9 +1,13 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const sendAmount = '9';
 const accountLabel = 'Stellar #1';
@@ -40,7 +44,7 @@ test.describe(
                         buyAsset: {
                             searchFilter: 'XLM',
                             networkFilter: 'xlm',
-                            assetCryptoId: getCryptoId(asNetworkSymbol('xlm')),
+                            assetCryptoId: getCryptoId(networkConfigDeps, asNetworkSymbol('xlm')),
                         },
                     });
                 });

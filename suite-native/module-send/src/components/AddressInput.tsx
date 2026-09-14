@@ -7,6 +7,7 @@ import { type AddressCorrection, autocorrectAddress } from '@suite-common/addres
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
 import {
+    selectNetworkConfigDeps,
     selectAddressValidatorDep,
     selectGetNamedAddressSupportDep,
     selectNetworkSymbolForProtocol,
@@ -67,6 +68,8 @@ type AddressInputProps = {
 };
 
 export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: AddressInputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const addressFieldName = getOutputFieldName(index, 'address');
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
     const amountFieldName = getOutputFieldName(index, 'amount');
@@ -142,7 +145,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     };
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
-        const parsed = parseTransferUri(qrCodeData, protocol =>
+        const parsed = parseTransferUri(networkConfigDeps, qrCodeData, protocol =>
             selectNetworkSymbolForProtocol(getState(), protocol),
         );
 

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -20,13 +22,15 @@ export const YieldClaimRewardItem = ({
     networkSymbol,
     reward,
 }: YieldClaimRewardItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const claimableAmount = useMemo(
         () =>
-            subunitsToUnits({
+            subunitsToUnits(networkConfigDeps, {
                 value: asAmountSubunit(new BigNumber(reward.claimable)),
                 decimals: reward.token.decimals,
             }).toString(),
-        [reward.claimable, reward.token.decimals],
+        [networkConfigDeps, reward.claimable, reward.token.decimals],
     );
 
     return (

@@ -5,7 +5,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { checkAddressChecksum } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectAddressValidatorDep } from '@suite-common/networks';
+import { selectNetworkConfigDeps, selectAddressValidatorDep } from '@suite-common/networks';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useFormContext, useWatch } from '@suite-native/forms';
@@ -26,6 +26,8 @@ export const useAddressValidationAlerts = ({
     inputIndex,
     resolvedAddress,
 }: UseAddressValidationAlertsArgs) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { addressValidator } = useServices(selectAddressValidatorDep);
     const {
         params: { tokenContract, accountKey },
@@ -52,7 +54,7 @@ export const useAddressValidationAlerts = ({
     const isFilledValidAddress =
         !!checkedAddress && !!symbol && addressValidator.isAddressValid(checkedAddress, symbol);
 
-    const networkType = symbol ? getNetworkType(symbol) : null;
+    const networkType = symbol ? getNetworkType(networkConfigDeps, symbol) : null;
 
     useEffect(() => {
         if (!isFilledValidAddress) {

@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
@@ -16,6 +17,8 @@ import {
 } from './selectors';
 import { isFilterValueMatchingAccount, sortAccountsByNetworksAndAccountTypes } from './utils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 const supportedNetworks = mockGetSupportedNetworks();
 
 const btcSymbol = asNetworkSymbol('btc');
@@ -25,7 +28,7 @@ let mockStakingBalance = '0';
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
-    getAccountTotalStakingBalance: (_: Account) => mockStakingBalance,
+    getAccountTotalStakingBalance: (_deps: unknown, _: Account) => mockStakingBalance,
 }));
 
 describe('isFilterValueMatchingAccountLabelOrNetworkName', () => {
@@ -39,43 +42,43 @@ describe('isFilterValueMatchingAccountLabelOrNetworkName', () => {
     test('should return false if the filter value does not match the account label nor network name.', () => {
         const filterValue = 'not match';
 
-        expect(isFilterValueMatchingAccount(account, filterValue)).toBe(false);
+        expect(isFilterValueMatchingAccount(networkConfigDeps, account, filterValue)).toBe(false);
     });
 
     test('should return false if the filter value does not match the network name.', () => {
         const filterValue = 'bitcoin';
 
-        expect(isFilterValueMatchingAccount(account, filterValue)).toBe(false);
+        expect(isFilterValueMatchingAccount(networkConfigDeps, account, filterValue)).toBe(false);
     });
 
     test('should return true if filter value matches the network name', () => {
         const filterValue = 'ethereum';
 
-        expect(isFilterValueMatchingAccount(account, filterValue)).toBe(true);
+        expect(isFilterValueMatchingAccount(networkConfigDeps, account, filterValue)).toBe(true);
     });
 
     test('should return true if filter value matches the account type: legacy', () => {
         const filterValue = 'legacy';
 
-        expect(isFilterValueMatchingAccount(account, filterValue)).toBe(true);
+        expect(isFilterValueMatchingAccount(networkConfigDeps, account, filterValue)).toBe(true);
     });
 
     test('should return true if filter value matches the account type: taproot', () => {
         const filterValue = 'taproot';
 
-        expect(isFilterValueMatchingAccount(account, filterValue)).toBe(false);
+        expect(isFilterValueMatchingAccount(networkConfigDeps, account, filterValue)).toBe(false);
     });
 
     test('should return true if filter value matches the included token name', () => {
         const filterValue = 'tether';
 
-        expect(isFilterValueMatchingAccount(account, filterValue)).toBe(true);
+        expect(isFilterValueMatchingAccount(networkConfigDeps, account, filterValue)).toBe(true);
     });
 
     test('should return true if filter value does match the account label', () => {
         const filterValue = 'Original account';
 
-        expect(isFilterValueMatchingAccount(account, filterValue)).toBe(true);
+        expect(isFilterValueMatchingAccount(networkConfigDeps, account, filterValue)).toBe(true);
     });
 });
 
@@ -292,7 +295,11 @@ describe('getAccountListSections', () => {
     it('should include only tokens with positive balance', () => {
         mockStakingBalance = '0';
 
-        const sections = getAccountListSections(mockAccount, mockTokenDefinitions);
+        const sections = getAccountListSections(
+            networkConfigDeps,
+            mockAccount,
+            mockTokenDefinitions,
+        );
 
         // Should have account section and two token sections (for Token1 and Token3)
         expect(sections).toHaveLength(3);
@@ -311,7 +318,11 @@ describe('getAccountListSections', () => {
             tokens: [],
         };
 
-        const sections = getAccountListSections(accountWithoutTokens, mockTokenDefinitions);
+        const sections = getAccountListSections(
+            networkConfigDeps,
+            accountWithoutTokens,
+            mockTokenDefinitions,
+        );
 
         // Should only have account section
         expect(sections).toHaveLength(1);
@@ -341,7 +352,11 @@ describe('getAccountListSections', () => {
             ] as TokenInfoBranded[],
         };
 
-        const sections = getAccountListSections(accountWithZeroBalanceTokens, mockTokenDefinitions);
+        const sections = getAccountListSections(
+            networkConfigDeps,
+            accountWithZeroBalanceTokens,
+            mockTokenDefinitions,
+        );
 
         // Should only have account section
         expect(sections).toHaveLength(1);
@@ -351,7 +366,11 @@ describe('getAccountListSections', () => {
     it('should handle account with staking balance', () => {
         mockStakingBalance = '100';
 
-        const sections = getAccountListSections(mockAccount, mockTokenDefinitions);
+        const sections = getAccountListSections(
+            networkConfigDeps,
+            mockAccount,
+            mockTokenDefinitions,
+        );
 
         // Should have account section, staking section, and two token sections
         expect(sections).toHaveLength(4);

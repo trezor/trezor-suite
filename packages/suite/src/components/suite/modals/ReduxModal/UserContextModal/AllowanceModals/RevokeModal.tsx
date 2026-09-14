@@ -5,6 +5,8 @@ import { type CryptoId } from 'invity-api';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited, shouldShowRevokeAllowanceBanner } from '@suite-common/wallet-utils';
@@ -49,6 +51,8 @@ interface RevokeModalProps {
 }
 
 export const RevokeModal = (props: RevokeModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         account,
         provider,
@@ -86,11 +90,14 @@ export const RevokeModal = (props: RevokeModalProps) => {
 
     if (!token?.symbol) return null;
 
-    const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
+    const displaySymbol = getDisplaySymbol(networkConfigDeps, token.symbol, token.contract);
     const hasPreapprovedAmount = !!preapprovedAmount && preapprovedAmount !== '0';
     const isPreapprovedAmountUnlimited =
         !!preapprovedAmount &&
-        isAllowanceUnlimited({ amount: preapprovedAmount, decimals: token.decimals });
+        isAllowanceUnlimited(networkConfigDeps, {
+            amount: preapprovedAmount,
+            decimals: token.decimals,
+        });
 
     const showRevokeBanner = shouldShowRevokeAllowanceBanner({
         followedByApproval,

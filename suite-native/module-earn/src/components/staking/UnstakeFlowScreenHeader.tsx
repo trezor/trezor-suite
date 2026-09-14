@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
@@ -13,6 +15,8 @@ import {
 } from '@suite-native/navigation';
 
 export const UnstakeFlowScreenHeader = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.UnstakeFlow>>();
     const { accountKey } = route.params;
     const account = useSelector((state: AccountsRootState) =>
@@ -21,7 +25,7 @@ export const UnstakeFlowScreenHeader = () => {
 
     if (!account) return null;
 
-    const displaySymbol = getNetworkDisplaySymbolName(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbolName(networkConfigDeps, account.symbol);
 
     return (
         <ScreenHeader

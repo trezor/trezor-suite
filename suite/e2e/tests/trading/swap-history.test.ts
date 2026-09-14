@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { messages } from '@suite/intl';
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -8,6 +10,8 @@ import { tradeEndpoint } from '../../fixtures/trading';
 import { PENDING_TRADE, SEEDED_TRADES } from '../../fixtures/trading/swap/swap-history';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const listStatusTranslationKeys = {
     SUCCESS: 'TR_EXCHANGE_STATUS_SUCCESS',
@@ -80,7 +84,8 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                     const row = tradingPage.transactions.transactionRow(trade.orderId);
                     const receiveSymbol = (
                         cryptoIdToNetworkSymbol(
-                            trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[0],
+                            networkConfigDeps,
+                            trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[1],
                         ) ?? trade.data.receive
                     ).toUpperCase();
 
@@ -127,7 +132,8 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
             for (const trade of SEEDED_TRADES) {
                 const receiveSymbol = (
                     cryptoIdToNetworkSymbol(
-                        trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[0],
+                        networkConfigDeps,
+                        trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[1],
                     ) ?? trade.data.receive
                 ).toUpperCase();
 
@@ -166,7 +172,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                         .toHaveText(`${trade.orderId.slice(0, 8)}...${trade.orderId.slice(-8)}`);
 
                     await expect(tradingPage.transactionDetailSidebar.sendAccount).toContainText(
-                        getNetwork(trade.sendSymbol as NetworkSymbol).name,
+                        getNetwork(networkConfigDeps, trade.sendSymbol as NetworkSymbol).name,
                     );
                     await expect(tradingPage.transactionDetailSidebar.receiveAccount).toBeVisible();
                 });

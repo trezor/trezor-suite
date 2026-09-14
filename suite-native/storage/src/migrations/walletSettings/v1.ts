@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { pipe } from '@mobily/ts-belt';
 import { type PersistedState, type getStoredState } from 'redux-persist';
 
@@ -55,8 +56,11 @@ const migrateBscNetworkSymbol = (oldEnabledDiscoveryNetworkSymbols: string[]): s
         networkSymbol === 'bnb' ? 'bsc' : networkSymbol,
     );
 
-const filterUnknownNetworkSymbols = (networkSymbols: string[]): NetworkSymbol[] =>
-    networkSymbols.filter(networkSymbol => isNetworkSymbol(networkSymbol));
+const filterUnknownNetworkSymbols = (
+    networkConfigDeps: NetworkConfigDeps,
+    networkSymbols: string[],
+): NetworkSymbol[] =>
+    networkSymbols.filter(networkSymbol => isNetworkSymbol(networkConfigDeps, networkSymbol));
 
 /**
  * Migration of discoveryConfig slice, which was declared locally in suite-native,
@@ -64,6 +68,7 @@ const filterUnknownNetworkSymbols = (networkSymbols: string[]): NetworkSymbol[] 
  * All migrations that were done on discoveryConfig are moved here
  */
 const migrateDiscoveryConfigToWalletSettings = (
+    networkConfigDeps: NetworkConfigDeps,
     discoveryConfig: object,
 ): NetworkSymbol[] | undefined => {
     if (!('enabledDiscoveryNetworkSymbols' in discoveryConfig)) {
@@ -77,7 +82,7 @@ const migrateDiscoveryConfigToWalletSettings = (
     return pipe(
         discoveryConfig.enabledDiscoveryNetworkSymbols,
         migrateBscNetworkSymbol,
-        filterUnknownNetworkSymbols,
+        filterUnknownNetworkSymbols.bind(null, networkConfigDeps),
     );
 };
 
@@ -86,7 +91,8 @@ export type MigrationDeps = MMKVStorageDep & {
 };
 
 export const initialMigrateAppSettingsAndDiscoveryConfig =
-    (deps: MigrationDeps) => async (walletSettingsState: unknown) => {
+    (networkConfigDeps: NetworkConfigDeps, deps: MigrationDeps) =>
+    async (walletSettingsState: unknown) => {
         const appSettings = await deps.getStoredState({
             key: 'appSettings',
             storage: deps.mmkvStorage,
@@ -113,7 +119,10 @@ export const initialMigrateAppSettingsAndDiscoveryConfig =
         }
 
         if (discoveryConfig) {
-            const enabledNetworks = migrateDiscoveryConfigToWalletSettings(discoveryConfig);
+            const enabledNetworks = migrateDiscoveryConfigToWalletSettings(
+                networkConfigDeps,
+                discoveryConfig,
+            );
 
             if (enabledNetworks) {
                 newState.enabledNetworks = enabledNetworks;

@@ -4,6 +4,7 @@ import { useFormState } from 'react-hook-form';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -30,6 +31,8 @@ import { TronCurrencySwitchButton } from '../TronCurrencySwitchButton';
 import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronFreezeAmount = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
@@ -49,21 +52,21 @@ export const TronFreezeAmount = () => {
         baseCurrencyCode,
     } = amountInput;
 
-    const availableBalance = subunitsToUnits({
+    const availableBalance = subunitsToUnits(networkConfigDeps, {
         value: asAmountSubunit(new BigNumber(account.availableBalance)),
         symbol: account.symbol,
     }).toString();
 
-    const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
+    const stakingLimits = getStakingLimitsByNetworkSymbol(networkConfigDeps, account.symbol);
     const minStakingAmount = stakingLimits?.MIN_AMOUNT_FOR_STAKING;
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const amount = form.methods.watch('amount');
     const resourceType = form.methods.watch('resourceType');
 
     const maxFreezeAmount = useMemo(async () => {
-        const availableBalanceUnits = subunitsToUnits({
+        const availableBalanceUnits = subunitsToUnits(networkConfigDeps, {
             value: asAmountSubunit(new BigNumber(account.availableBalance)),
             symbol: account.symbol,
         }).toString();
@@ -81,11 +84,11 @@ export const TronFreezeAmount = () => {
         const feeInSun = levels?.normal?.type === 'final' ? levels.normal.fee : '0';
         const maxInSun = BigNumber.max(new BigNumber(account.availableBalance).minus(feeInSun), 0);
 
-        return subunitsToUnits({
+        return subunitsToUnits(networkConfigDeps, {
             value: asAmountSubunit(maxInSun),
             symbol: account.symbol,
         }).toString();
-    }, [account, resourceType, dispatch]);
+    }, [networkConfigDeps, account, resourceType, dispatch]);
 
     const cryptoInputRules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
@@ -100,12 +103,16 @@ export const TronFreezeAmount = () => {
                 }
             },
             decimals: validateDecimals(translationString, {
-                decimals: getNetwork(account.symbol).decimals,
+                decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
             }),
             reserveOrBalance: async (value: string) => {
-                const reserveOrBalanceResult = validateReserveOrBalance(translationString, {
-                    account,
-                })(value);
+                const reserveOrBalanceResult = validateReserveOrBalance(
+                    networkConfigDeps,
+                    translationString,
+                    {
+                        account,
+                    },
+                )(value);
 
                 if (reserveOrBalanceResult) {
                     return reserveOrBalanceResult;

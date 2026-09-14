@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldAllowanceStatus,
@@ -94,7 +95,7 @@ type YieldUnwrapDefaultAmountParams = {
     receiptToken: YieldFlowDisplayToken;
     pricePerShareState?: Parameters<
         typeof getConvertedOutputTokenBalanceToInputTokenAmount
-    >[0]['pricePerShareState'];
+    >[1]['pricePerShareState'];
     /** Fallback used when the withdrawn asset amount can't be resolved (e.g. missing price). */
     fallbackAmount: string;
 };
@@ -108,17 +109,20 @@ type YieldUnwrapDefaultAmountParams = {
  * yields shares, so those are converted to their asset (WETH) equivalent via the vault
  * price-per-share. Falls back to the full balance only when the asset amount can't be resolved.
  */
-export const getYieldUnwrapDefaultAmount = ({
-    flowType,
-    withdrawnAmount,
-    token,
-    receiptToken,
-    pricePerShareState,
-    fallbackAmount,
-}: YieldUnwrapDefaultAmountParams): string => {
+export const getYieldUnwrapDefaultAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        flowType,
+        withdrawnAmount,
+        token,
+        receiptToken,
+        pricePerShareState,
+        fallbackAmount,
+    }: YieldUnwrapDefaultAmountParams,
+): string => {
     const withdrawnAssetAmount =
         flowType === 'redeem'
-            ? getConvertedOutputTokenBalanceToInputTokenAmount({
+            ? getConvertedOutputTokenBalanceToInputTokenAmount(networkConfigDeps, {
                   networkSymbol: token.networkSymbol,
                   token,
                   outputToken: receiptToken,
@@ -189,12 +193,10 @@ type YieldFiatRateTokenParams = {
  *
  * Returns `null` when fiat entry is not possible for the current step.
  */
-export const getYieldFiatRateToken = ({
-    step,
-    flowType,
-    accountSymbol,
-    token,
-}: YieldFiatRateTokenParams): YieldFiatRateToken | null => {
+export const getYieldFiatRateToken = (
+    networkConfigDeps: NetworkConfigDeps,
+    { step, flowType, accountSymbol, token }: YieldFiatRateTokenParams,
+): YieldFiatRateToken | null => {
     if (step === 'wrap' || step === 'unwrap') {
         return { symbol: accountSymbol };
     }
@@ -210,7 +212,11 @@ export const getYieldFiatRateToken = ({
     return {
         symbol: token.networkSymbol,
         tokenAddress: toTokenAddress(
-            getContractAddressForNetworkSymbol(token.networkSymbol, token.contractAddress),
+            getContractAddressForNetworkSymbol(
+                networkConfigDeps,
+                token.networkSymbol,
+                token.contractAddress,
+            ),
         ),
     };
 };

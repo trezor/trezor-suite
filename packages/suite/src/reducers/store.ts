@@ -16,7 +16,11 @@ import { type DesktopSuiteSyncState, prepareSuiteSyncReducer } from '@suite/suit
 import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
-import { type NetworksState, networksReducer } from '@suite-common/networks';
+import {
+    type NetworkConfigDeps,
+    type NetworksState,
+    networksReducer,
+} from '@suite-common/networks';
 import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
 import { type SuiteSyncDataState, suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { type SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
@@ -104,11 +108,14 @@ const loggerExcludedActions = [addLog.type];
 
 type GetCustomMiddlewareDeps = GetSuiteMiddlewareDeps & GetWalletMiddlewaresDeps;
 
-export const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => {
+export const getCustomMiddleware = (
+    networkConfigDeps: NetworkConfigDeps,
+    getExtra: () => GetCustomMiddlewareDeps | null,
+) => {
     const middleware = [
         toastMiddleware,
         ...getSuiteMiddleware(getExtra),
-        ...getWalletMiddlewares(getExtra),
+        ...getWalletMiddlewares(networkConfigDeps, getExtra),
         ...onboardingMiddlewares,
         backupMiddleware,
     ];

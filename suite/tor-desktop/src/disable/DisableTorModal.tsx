@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
@@ -25,6 +27,8 @@ export const DisableTorModal = ({
     onCancel,
     renderCoinSettings,
 }: DisableTorModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [settingsSymbol, setSettingsSymbol] = useState<NetworkSymbol>();
 
     if (settingsSymbol) {
@@ -75,7 +79,9 @@ export const DisableTorModal = ({
                                 <Row key={symbol} gap={16}>
                                     <TokenIcon symbol={symbol} />
                                     <Column>
-                                        <Paragraph>{getNetwork(symbol).name}</Paragraph>
+                                        <Paragraph>
+                                            {getNetwork(networkConfigDeps, symbol).name}
+                                        </Paragraph>
                                         <Paragraph
                                             intent="neutral"
                                             priority="secondary"

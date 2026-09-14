@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -22,10 +24,12 @@ type NetworkReserveBannerProps = {
 };
 
 export const NetworkReserveBanner = ({ symbol, contractAddress }: NetworkReserveBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const navigation = useNavigation<NavigationProps>();
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
-    const networkReserve = getNetworkReserve({
+    const networkReserve = getNetworkReserve(networkConfigDeps, {
         symbol,
         contractAddress,
         isEnabled: isNetworkReserveEnabled,
@@ -33,7 +37,7 @@ export const NetworkReserveBanner = ({ symbol, contractAddress }: NetworkReserve
 
     if (!networkReserve) return null;
 
-    const { displaySymbol } = getNetwork(symbol);
+    const { displaySymbol } = getNetwork(networkConfigDeps, symbol);
 
     const handleManagePress = () => {
         navigation.navigate(RootStackRoutes.SettingsScreenStack, {

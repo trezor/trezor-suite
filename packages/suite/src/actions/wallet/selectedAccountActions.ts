@@ -10,6 +10,7 @@ import {
     selectRouterParams,
 } from '@suite/router';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type DiscoveryRootState,
@@ -40,7 +41,10 @@ type SelectedAccountState = DeviceRootState &
     };
 
 // move to selector!!!!
-export const getAccountState = (state: SelectedAccountState): SelectedAccountStatus => {
+export const getAccountState = (
+    networkConfigDeps: NetworkConfigDeps,
+    state: SelectedAccountState,
+): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
 
     // waiting for device
@@ -81,7 +85,7 @@ export const getAccountState = (state: SelectedAccountState): SelectedAccountSta
               }
     ) as Pick<NonNullable<WalletParams>, 'symbol' | 'accountIndex' | 'accountType'>;
 
-    const network = getNetwork(params.symbol);
+    const network = getNetwork(networkConfigDeps, params.symbol);
 
     // account cannot exists since requested network is not selected in settings/wallet
     if (!enabledNetworks.includes(network.symbol)) {
@@ -201,7 +205,7 @@ const actions = new Set<UnknownAction['type']>([
 type SyncSelectedAccountThunkState = SelectedAccountState;
 
 export const syncSelectedAccountThunk =
-    (action: UnknownAction) =>
+    (networkConfigDeps: NetworkConfigDeps, action: UnknownAction) =>
     (dispatch: Dispatch<UnknownAction>, getState: () => SyncSelectedAccountThunkState) => {
         // ignore not listed actions
         if (!actions.has(action.type)) return;
@@ -224,7 +228,7 @@ export const syncSelectedAccountThunk =
         }
 
         // get new state
-        const newState = getAccountState(state);
+        const newState = getAccountState(networkConfigDeps, state);
         if (!newState) return;
 
         // find differences

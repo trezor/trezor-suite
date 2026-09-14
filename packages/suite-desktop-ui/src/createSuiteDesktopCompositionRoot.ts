@@ -2,11 +2,12 @@ import { createMemoryHistory } from 'history';
 
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { toGetter } from '@suite-common/dependency-injection';
+import { type NetworksServices, createNetworksCompositionRoot } from '@suite-common/networks';
 import TrezorConnect from '@trezor/connect-electron';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
-import { createReduxStore } from 'src/reducers/createReduxStore';
+import { type SuiteReduxStore, createReduxStore } from 'src/reducers/createReduxStore';
 import { rootReducer } from 'src/reducers/store';
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -30,11 +31,23 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
         UdpTransport: () => 'UdpTransport' as const,
     });
 
-    const { store, injectServicesIntoReduxExtra } = createReduxStore({
+    // eslint-disable-next-line prefer-const -- Forward declaration for the network dispatch closure.
+    let store: SuiteReduxStore;
+
+    const networks: NetworksServices = createNetworksCompositionRoot({
+        getTrezorConnect: () => TrezorConnect,
+        dispatch: action => store.dispatch(action),
+    });
+    const networkConfigDeps = networks;
+
+    const reduxStore = createReduxStore({
+        ...networkConfigDeps,
         reducer: rootReducer,
         extraDependencies,
     });
+    store = reduxStore.store;
     const suiteServices = createSuiteServicesCompositionRoot({
+        networks,
         dispatch: store.dispatch,
         getState: store.getState,
         history,
@@ -50,7 +63,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     const services = { ...suiteServices, store, hydrateReduxStore };
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
-    injectServicesIntoReduxExtra(services);
+    reduxStore.injectServicesIntoReduxExtra(services);
 
     return { app: createDesktopApp({ desktopApi, services }) };
 };

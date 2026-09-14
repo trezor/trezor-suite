@@ -6,9 +6,8 @@ import {
     type ReducersDep,
     createReducerWithExtraDeps,
 } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
+import { accountEqualTo, compareAccountsByOrder, enhanceHistory } from '@suite-common/wallet-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { accountsActions } from './accountsActions';
@@ -126,14 +125,15 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 remove(state, action.payload);
             })
             .addCase(accountsActions.createAccount, (state, action) => {
-                const { account: accountPayload, supportedNetworks } = action.payload;
-                const { symbol, index } = accountPayload;
-                const networkName = getNetwork(symbol).name;
-                const accountLabel = accountPayload.accountLabel ?? `${networkName} #${index + 1}`;
+                const {
+                    account: accountPayload,
+                    supportedNetworks,
+                    accountTypeOrder,
+                } = action.payload;
                 // remove "transactions" field, they are stored in "transactionReducer"
                 const history = enhanceHistory(accountPayload.history);
 
-                const account = { ...accountPayload, accountLabel, history };
+                const account = { ...accountPayload, history };
 
                 if (state.some(accountEqualTo(account))) {
                     console.warn(
@@ -145,7 +145,12 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                     // Keep the state sorted by coin so that consumers get the canonical order for free.
                     const insertAtIndex = state.findIndex(
                         existingAccount =>
-                            compareAccountsByCoin(account, existingAccount, supportedNetworks) < 0,
+                            compareAccountsByOrder(
+                                account,
+                                existingAccount,
+                                supportedNetworks,
+                                accountTypeOrder,
+                            ) < 0,
                     );
 
                     if (insertAtIndex === -1) {

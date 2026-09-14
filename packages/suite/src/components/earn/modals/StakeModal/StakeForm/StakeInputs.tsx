@@ -3,6 +3,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
@@ -26,6 +27,8 @@ import {
 import { type FormPercentButtonValue } from 'src/views/wallet/trading/common/TradingForm/tradingFormInputsUtils';
 
 export const StakeInputs = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);
@@ -50,7 +53,7 @@ export const StakeInputs = () => {
         setCurrency,
     } = useStakeFormContext();
 
-    const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
+    const stakingLimits = getStakingLimitsByNetworkSymbol(networkConfigDeps, account.symbol);
 
     if (!stakingLimits) {
         return null;
@@ -85,10 +88,10 @@ export const StakeInputs = () => {
                 maxAmount: stakingLimits.MAX_AMOUNT_FOR_STAKING,
             }),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
-            reserveOrBalance: validateReserveOrBalance(translationString, {
+            reserveOrBalance: validateReserveOrBalance(networkConfigDeps, translationString, {
                 account,
             }),
-            limits: validateCryptoLimits(translationString, {
+            limits: validateCryptoLimits(networkConfigDeps, translationString, {
                 amountLimits,
                 formatter: CryptoAmountFormatter,
             }),
@@ -98,7 +101,7 @@ export const StakeInputs = () => {
     const shouldShowAmountForWithdrawalWarning =
         isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const isFractionButtonDisabled = (divisor: number) => {
         if (!account.formattedBalance || !network.decimals) return false;

@@ -10,12 +10,13 @@ import * as crypto from 'crypto';
 import * as http from 'http';
 
 import { CALL_SOURCE_MCP, type ConnectProcessInfo } from '@suite-common/connect-popup';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits, substituteBip43Path } from '@suite-common/wallet-utils';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
 import { ipcMain } from '../ipcMain';
-import { type ModuleInit } from './module';
+import { type Dependencies, type ModuleInterface } from './module';
 import { addMessage } from '../libs/connect-popup-messages';
 import { getProcessIcon } from '../libs/process-icon';
 
@@ -35,16 +36,24 @@ const nextMessageId = () => `mcp-${++messageIdCounter}`;
 
 const generateToken = () => crypto.randomBytes(32).toString('hex');
 
-const getNetworkTypeForCoin = (coin: string) => getNetworkOptional(coin.toLowerCase())?.networkType;
-const isEvmCoin = (coin: string) => getNetworkTypeForCoin(coin) === 'ethereum';
-const isXrpCoin = (coin: string) => getNetworkTypeForCoin(coin) === 'ripple';
-const isUtxoCoin = (coin: string) => getNetworkTypeForCoin(coin) === 'bitcoin';
+const getNetworkTypeForCoin = (networkConfigDeps: NetworkConfigDeps, coin: string) =>
+    getNetworkOptional(networkConfigDeps, coin.toLowerCase())?.networkType;
+const isEvmCoin = (networkConfigDeps: NetworkConfigDeps, coin: string) =>
+    getNetworkTypeForCoin(networkConfigDeps, coin) === 'ethereum';
+const isXrpCoin = (networkConfigDeps: NetworkConfigDeps, coin: string) =>
+    getNetworkTypeForCoin(networkConfigDeps, coin) === 'ripple';
+const isUtxoCoin = (networkConfigDeps: NetworkConfigDeps, coin: string) =>
+    getNetworkTypeForCoin(networkConfigDeps, coin) === 'bitcoin';
 
 /**
  * Convert a human-readable coin value to the smallest unit as a string.
  */
-const coinToSmallestUnit = (value: string, coin: string): string => {
-    const decimals = getNetworkOptional(coin)?.decimals ?? 18;
+const coinToSmallestUnit = (
+    networkConfigDeps: NetworkConfigDeps,
+    value: string,
+    coin: string,
+): string => {
+    const decimals = getNetworkOptional(networkConfigDeps, coin)?.decimals ?? 18;
 
     return convertAmountUnitsToSubunits(value, decimals);
 };
@@ -64,7 +73,7 @@ const toHex = (value: string | number): string => {
  * MCP tool definitions. Each tool maps to a TrezorConnect method
  * and defines the JSON schema for its parameters.
  */
-const MCP_TOOLS = [
+const MCP_TOOLS = (networkConfigDeps: NetworkConfigDeps) => [
     {
         name: 'trezor_get_address',
         description:
@@ -100,7 +109,7 @@ const MCP_TOOLS = [
         },
         toConnectCall: (params: { coin: string; path: string; showOnTrezor?: boolean }) => {
             const coin = params.coin.toLowerCase();
-            const isEthereum = isEvmCoin(coin);
+            const isEthereum = isEvmCoin(networkConfigDeps, coin);
 
             return {
                 method: isEthereum ? 'ethereumGetAddress' : 'getAddress',
@@ -227,7 +236,7 @@ const MCP_TOOLS = [
         },
         toConnectCall: (params: { coin: string; path: string; message: string }) => {
             const coin = params.coin.toLowerCase();
-            const isEthereum = isEvmCoin(coin);
+            const isEthereum = isEvmCoin(networkConfigDeps, coin);
 
             return {
                 method: isEthereum ? 'ethereumSignMessage' : 'signMessage',
@@ -277,7 +286,7 @@ const MCP_TOOLS = [
             signature: string;
         }) => {
             const coin = params.coin.toLowerCase();
-            const isEthereum = isEvmCoin(coin);
+            const isEthereum = isEvmCoin(networkConfigDeps, coin);
 
             return {
                 method: isEthereum ? 'ethereumVerifyMessage' : 'verifyMessage',
@@ -336,7 +345,7 @@ const MCP_TOOLS = [
             metamask_v4_compat?: boolean;
         }) => {
             const accountIndex = params.accountIndex ?? 0;
-            const network = getNetworkOptional('eth');
+            const network = getNetworkOptional(networkConfigDeps, 'eth');
             const defaultPath = network
                 ? substituteBip43Path(network.bip43Path, accountIndex)
                 : "m/44'/60'/0'/0/0";
@@ -589,6 +598,7 @@ const autoBroadcast = async (
  * Handle EVM transaction: auto-fill nonce and fees (EIP-1559 by default), sign, broadcast.
  */
 const handleEvmSend = async (
+    networkConfigDeps: NetworkConfigDeps,
     params: Record<string, unknown>,
     sendPopupCall: PopupCallFn,
     coin: string,
@@ -673,7 +683,8 @@ const handleEvmSend = async (
     // 21000 for simple ETH transfers, 100000 for contract calls (ERC-20 etc.)
     const defaultGasLimit = params.data ? '100000' : '21000';
     const gasLimit = (params.gasLimit as string) ?? defaultGasLimit;
-    const chainId = (params.chainId as number) ?? getNetworkOptional(coin)?.chainId ?? 1;
+    const chainId =
+        (params.chainId as number) ?? getNetworkOptional(networkConfigDeps, coin)?.chainId ?? 1;
 
     // Auto-fill nonce (silent — no popup UI needed)
     if (nonce === undefined) {
@@ -694,7 +705,7 @@ const handleEvmSend = async (
     // Build transaction object
     const transaction: Record<string, unknown> = {
         to,
-        value: '0x' + BigInt(coinToSmallestUnit(value, coin)).toString(16),
+        value: '0x' + BigInt(coinToSmallestUnit(networkConfigDeps, value, coin)).toString(16),
         nonce: toHex(nonce ?? '0'),
         chainId,
         data: params.data ?? '0x',
@@ -763,6 +774,7 @@ const handleEvmSend = async (
  * Handle XRP transaction: auto-fill sequence and fee, sign, broadcast.
  */
 const handleXrpSend = async (
+    networkConfigDeps: NetworkConfigDeps,
     params: Record<string, unknown>,
     sendPopupCall: PopupCallFn,
     coin: string,
@@ -811,7 +823,7 @@ const handleXrpSend = async (
             fee,
             sequence,
             payment: {
-                amount: coinToSmallestUnit(value, coin),
+                amount: coinToSmallestUnit(networkConfigDeps, value, coin),
                 destination: to,
                 ...(params.destinationTag !== undefined
                     ? { destinationTag: params.destinationTag as number }
@@ -829,6 +841,7 @@ const handleXrpSend = async (
  * UTXO selection, fee level selection, signing, and broadcasting.
  */
 const handleUtxoSend = (
+    networkConfigDeps: NetworkConfigDeps,
     params: Record<string, unknown>,
     sendPopupCall: PopupCallFn,
     coin: string,
@@ -847,7 +860,7 @@ const handleUtxoSend = (
             {
                 type: 'payment',
                 address: to,
-                amount: coinToSmallestUnit(value, coin),
+                amount: coinToSmallestUnit(networkConfigDeps, value, coin),
             },
         ],
         coin,
@@ -861,12 +874,13 @@ const handleUtxoSend = (
  * Falls back to generic signTransaction for other chains.
  */
 const handleSendTransaction = async (
+    networkConfigDeps: NetworkConfigDeps,
     params: Record<string, unknown>,
     sendPopupCall: PopupCallFn,
 ): Promise<PopupResult> => {
     const coin = (params.coin as string).toLowerCase();
     const accountIndex = (params.accountIndex as number) ?? 0;
-    const network = getNetworkOptional(coin);
+    const network = getNetworkOptional(networkConfigDeps, coin);
     const defaultPath = network ? substituteBip43Path(network.bip43Path, accountIndex) : undefined;
     const path = (params.path as string) ?? defaultPath;
     if (!path) {
@@ -876,15 +890,15 @@ const handleSendTransaction = async (
         };
     }
 
-    if (isEvmCoin(coin)) {
-        return handleEvmSend(params, sendPopupCall, coin, path);
+    if (isEvmCoin(networkConfigDeps, coin)) {
+        return handleEvmSend(networkConfigDeps, params, sendPopupCall, coin, path);
     }
 
-    if (isXrpCoin(coin)) {
-        return handleXrpSend(params, sendPopupCall, coin, path);
+    if (isXrpCoin(networkConfigDeps, coin)) {
+        return handleXrpSend(networkConfigDeps, params, sendPopupCall, coin, path);
     }
 
-    if (isUtxoCoin(coin)) {
+    if (isUtxoCoin(networkConfigDeps, coin)) {
         // If user provided a full transaction object, sign it directly (advanced mode)
         if (params.transaction) {
             const signResult = await callPopup(sendPopupCall, 'signTransaction', {
@@ -897,7 +911,7 @@ const handleSendTransaction = async (
         }
 
         // Otherwise, single sendTransaction call — TrezorConnect handles everything
-        return handleUtxoSend(params, sendPopupCall, coin);
+        return handleUtxoSend(networkConfigDeps, params, sendPopupCall, coin);
     }
 
     // Generic fallback for other chains (Solana, Cardano, Stellar, Tron):
@@ -935,6 +949,7 @@ const handleSendTransaction = async (
  * Handle a JSON-RPC request and return a JSON-RPC response.
  */
 const handleJsonRpcRequest = async (
+    networkConfigDeps: NetworkConfigDeps,
     request: { id?: string | number; method: string; params?: Record<string, unknown> },
     sendPopupCall: PopupCallFn,
 ): Promise<Record<string, unknown>> => {
@@ -962,7 +977,7 @@ const handleJsonRpcRequest = async (
             jsonrpc: '2.0',
             id,
             result: {
-                tools: MCP_TOOLS.map(tool => ({
+                tools: MCP_TOOLS(networkConfigDeps).map(tool => ({
                     name: tool.name,
                     description: tool.description,
                     inputSchema: tool.inputSchema,
@@ -975,7 +990,7 @@ const handleJsonRpcRequest = async (
     if (method === 'tools/call') {
         const toolName = (params as { name?: string })?.name;
         const toolArgs = (params as { arguments?: Record<string, unknown> })?.arguments ?? {};
-        const tool = MCP_TOOLS.find(t => t.name === toolName);
+        const tool = MCP_TOOLS(networkConfigDeps).find(t => t.name === toolName);
 
         if (!tool) {
             return {
@@ -993,7 +1008,7 @@ const handleJsonRpcRequest = async (
 
             if (tool.name === 'trezor_send_transaction') {
                 // Multi-step flow: auto-fill → sign → broadcast
-                result = await handleSendTransaction(toolArgs, sendPopupCall);
+                result = await handleSendTransaction(networkConfigDeps, toolArgs, sendPopupCall);
             } else {
                 // Single-call tools
                 const { method: connectMethod, payload } = (
@@ -1096,7 +1111,10 @@ const readJsonBody = (req: http.IncomingMessage): Promise<unknown> =>
         req.on('error', reject);
     });
 
-export const init: ModuleInit = ({ mainWindowProxy, store }) => {
+export const init = (
+    networkConfigDeps: NetworkConfigDeps,
+    { mainWindowProxy, store }: Dependencies,
+): ModuleInterface => {
     const { logger } = global;
     let server: http.Server | null = null;
     let sessionId: string | null = null;
@@ -1314,7 +1332,11 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                     );
                 }
 
-                const response = await handleJsonRpcRequest(jsonRpcRequest, sendPopupCall);
+                const response = await handleJsonRpcRequest(
+                    networkConfigDeps,
+                    jsonRpcRequest,
+                    sendPopupCall,
+                );
 
                 // For notifications (no id), return 202 with no body
                 if (jsonRpcRequest.id === undefined) {

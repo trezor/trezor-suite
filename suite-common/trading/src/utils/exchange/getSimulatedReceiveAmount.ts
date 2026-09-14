@@ -1,4 +1,5 @@
 import { type CryptoId } from 'invity-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
 import {
     type AccountSummary,
@@ -36,6 +37,7 @@ const isReceiveAssetDiff = (
  * fall back to the quote data.
  */
 export const getSimulatedReceiveAmount = (
+    networkConfigDeps: NetworkConfigDeps,
     result: NetworkTxSimulationResult | undefined,
     quoteReceiveCryptoId: CryptoId | undefined,
 ): string | null => {
@@ -65,7 +67,7 @@ export const getSimulatedReceiveAmount = (
     let total = new BigNumber(0);
 
     for (const transfer of assetDiff.in) {
-        const amount = getAssetDiffTransferAmount(transfer, decimals);
+        const amount = getAssetDiffTransferAmount(networkConfigDeps, transfer, decimals);
 
         // Do not display a partial amount when any incoming transfer cannot be valued.
         if (amount === null || amount.isNaN()) {

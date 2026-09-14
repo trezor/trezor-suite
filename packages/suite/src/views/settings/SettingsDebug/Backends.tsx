@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
@@ -121,6 +122,8 @@ const BackendItem = ({
 };
 
 const CoinItem = ({ symbol }: CoinItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { url, error, connected, reconnectionTime, identityConnections } = useSelector(state =>
         selectNetworkBlockchainInfo(state, symbol),
     );
@@ -142,7 +145,7 @@ const CoinItem = ({ symbol }: CoinItemProps) => {
                 <div>
                     <CoinCell>
                         <TokenIcon symbol={symbol} />
-                        <Title>{getNetwork(symbol).name}</Title>
+                        <Title>{getNetwork(networkConfigDeps, symbol).name}</Title>
                     </CoinCell>
                     <Button size="small" intent="neutral" priority="secondary" onClick={onSettings}>
                         <Translation id="TR_SETTINGS" />

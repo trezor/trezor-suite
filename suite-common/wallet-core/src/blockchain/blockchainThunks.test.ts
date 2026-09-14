@@ -1,16 +1,19 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 
-import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
+import { createBlockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
 import { setCustomBackendThunk } from './blockchainThunks';
 import {
     initialWalletSettingsState,
     prepareWalletSettingsReducer,
 } from '../settings/walletSettingsReducer';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const blockchainReducer = prepareBlockchainReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -34,9 +37,9 @@ const initStore = (enabledNetworks: NetworkSymbol[]) =>
         preloadedState: {
             wallet: {
                 blockchain: {
-                    ...blockchainInitialState,
+                    ...createBlockchainInitialState(networkConfigDeps.getNetworkConfigs()),
                     btc: {
-                        ...blockchainInitialState.btc,
+                        ...createBlockchainInitialState(networkConfigDeps.getNetworkConfigs()).btc,
                         backends: {
                             selected: 'electrum' as const,
                             urls: { electrum: [electrumUrl] },

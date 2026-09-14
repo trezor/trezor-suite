@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import {
@@ -33,6 +35,8 @@ type EarnAccountCardProps = {
 };
 
 export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isStakingItem = item.type === 'staking';
     const isDefiYieldItem = item.type === 'stablecoin-yield';
 
@@ -80,7 +84,7 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
     const contractAddress = isDefiYieldItem ? item.tokenContractAddress : undefined;
 
     const secondaryDescription = isDefiYieldItem
-        ? item.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)
+        ? item.accountLabel || getNetworkDisplaySymbolName(networkConfigDeps, item.networkSymbol)
         : item.accountLabel || null;
 
     return (

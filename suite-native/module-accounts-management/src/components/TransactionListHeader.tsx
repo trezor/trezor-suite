@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -51,11 +52,11 @@ const TransactionListHeaderContent = ({
     const hasAccountTransactions = useSelector((state: AccountsRootState & TransactionsRootState) =>
         selectHasAccountAnyTransactionsForToken(state, accountKey, tokenContract),
     );
-    const isTestnetAccount = useSelector((state: AccountsRootState) =>
+    const isTestnetAccount = useSelector((state: AccountsRootState & NetworksRootState) =>
         selectIsTestnetAccount(state, accountKey),
     );
     const isUnrecognizedToken = useSelector(
-        (state: TokenDefinitionsRootState & AccountsRootState) =>
+        (state: TokenDefinitionsRootState & AccountsRootState & NetworksRootState) =>
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
     );
 
@@ -84,7 +85,7 @@ export const TransactionListHeader = memo(
             selectAccountTokenInfo(state, accountKey, tokenContract),
         );
         const isUnrecognizedToken = useSelector(
-            (state: TokenDefinitionsRootState & AccountsRootState) =>
+            (state: TokenDefinitionsRootState & AccountsRootState & NetworksRootState) =>
                 selectIsUnrecognizedToken(state, accountKey, tokenContract),
         );
 

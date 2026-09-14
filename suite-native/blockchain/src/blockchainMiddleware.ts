@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createMiddleware } from '@suite-common/redux-utils';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -19,13 +20,18 @@ import {
 
 // Be very careful when adding new stuff here, it could affect performance a lot on mobile
 export const blockchainMiddleware = createMiddleware((action, { dispatch, next, getState }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT)) {
         dispatch(onBlockchainConnectThunk({ symbol: action.payload.coin.shortcut }));
     } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK)) {
         const networksWithPendingTransactions = selectNetworksWithPendingTxs(getState());
         const symbol = action.payload.coin.shortcut.toLowerCase();
 
-        if (isNetworkSymbol(symbol) && networksWithPendingTransactions.has(symbol)) {
+        if (
+            isNetworkSymbol(networkConfigDeps, symbol) &&
+            networksWithPendingTransactions.has(symbol)
+        ) {
             dispatch(syncAccountsWithBlockchainThunk({ symbol }));
         }
     } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION)) {

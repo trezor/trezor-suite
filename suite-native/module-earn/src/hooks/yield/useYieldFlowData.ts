@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps, type NetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -24,30 +26,35 @@ type FindYieldFlowVaultParams = {
     yieldOpportunities: YieldDtoV2[];
 };
 
-const findYieldFlowVault = ({
-    account,
-    tokenContract,
-    yieldId,
-    yieldOpportunities,
-}: FindYieldFlowVaultParams): YieldDtoV2 | null => {
+const findYieldFlowVault = (
+    networkConfigDeps: NetworkConfigDeps,
+    { account, tokenContract, yieldId, yieldOpportunities }: FindYieldFlowVaultParams,
+): YieldDtoV2 | null => {
     if (!account) return null;
 
     if (yieldId) {
         return yieldOpportunities.find(opportunity => opportunity.id === yieldId) ?? null;
     }
 
-    const normalizedContract = getContractAddressForNetworkSymbol(account.symbol, tokenContract);
+    const normalizedContract = getContractAddressForNetworkSymbol(
+        networkConfigDeps,
+        account.symbol,
+        tokenContract,
+    );
 
     const vault = yieldOpportunities.find(
         opportunity =>
             opportunity.outputToken?.address &&
-            getContractAddressForNetworkSymbol(account.symbol, opportunity.outputToken.address) ===
-                normalizedContract,
+            getContractAddressForNetworkSymbol(
+                networkConfigDeps,
+                account.symbol,
+                opportunity.outputToken.address,
+            ) === normalizedContract,
     );
 
     if (!vault) return null;
 
-    const holdsReceiptToken = !!getMatchedAccountToken({
+    const holdsReceiptToken = !!getMatchedAccountToken(networkConfigDeps, {
         account,
         contractAddress: normalizedContract,
         token: vault.outputToken,
@@ -111,6 +118,8 @@ export const useYieldFlowData = ({
     displayError = true,
     yieldId,
 }: UseYieldFlowDataProps): ResolvedYieldFlowData => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -120,18 +129,18 @@ export const useYieldFlowData = ({
 
     const vault = useMemo(
         () =>
-            findYieldFlowVault({
+            findYieldFlowVault(networkConfigDeps, {
                 account,
                 tokenContract,
                 yieldId,
                 yieldOpportunities,
             }),
-        [account, tokenContract, yieldId, yieldOpportunities],
+        [networkConfigDeps, account, tokenContract, yieldId, yieldOpportunities],
     );
 
     const yieldFlowData = useMemo(
-        () => getResolvedYieldFlowData({ account, vault, tokenContract }),
-        [account, vault, tokenContract],
+        () => getResolvedYieldFlowData(networkConfigDeps, { account, vault, tokenContract }),
+        [networkConfigDeps, account, vault, tokenContract],
     );
 
     useYieldNotAvailableAlert({ yieldFlowData, displayError, isFetchingYieldOpportunities });

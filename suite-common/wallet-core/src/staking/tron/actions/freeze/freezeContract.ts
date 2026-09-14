@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type FormState, type TronResourceType } from '@suite-common/wallet-types';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
@@ -31,6 +32,7 @@ export const buildFreezeBalanceV2Contract = ({
 export type TronFreezeContract = ReturnType<typeof buildFreezeBalanceV2Contract>;
 
 export const buildFreezeContract = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     amount: string,
     resourceType: TronResourceType,
@@ -41,9 +43,9 @@ export const buildFreezeContract = (
         return null;
     }
 
-    const balance = unitsToSubunits({
+    const balance = unitsToSubunits(networkConfigDeps, {
         value: asAmountUnit(new BigNumber(amount)),
-        decimals: getNetwork(account.symbol).decimals,
+        decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
     }).toNumber();
 
     return buildFreezeBalanceV2Contract({

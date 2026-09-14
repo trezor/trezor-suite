@@ -1,11 +1,15 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { useTranslation } from '@suite/intl';
 import { selectIsLabelingAvailable } from '@suite/metadata';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const useExampleCSV = (): string => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { account, network } = useSelector(selectFullSelectedAccount);
     const isLabelingAvailable = useSelector(selectIsLabelingAvailable);
     const { translationString } = useTranslation();
@@ -23,7 +27,7 @@ export const useExampleCSV = (): string => {
     const headerLine = `address,amount,currency${isLabelingAvailable ? ',label' : ''}`;
 
     // Create example lines
-    const example1 = `${addresses[0]},0.31337,${getNetworkDisplaySymbol(account.symbol)}${
+    const example1 = `${addresses[0]},0.31337,${getNetworkDisplaySymbol(networkConfigDeps, account.symbol)}${
         isLabelingAvailable ? `,${translationString('TR_SENDFORM_LABELING_EXAMPLE_1')}` : ''
     }`;
     const lines = [headerLine, example1];

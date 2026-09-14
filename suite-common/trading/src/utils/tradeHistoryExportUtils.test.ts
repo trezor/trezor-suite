@@ -1,4 +1,5 @@
 import { type BuyTrade, type Coins, type CryptoId, type SellFiatTrade } from 'invity-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import coins from '../__fixtures__/coins.json';
 import { type TradingRootState, initialState } from '../reducers/tradingCommonReducer';
@@ -17,6 +18,8 @@ import {
     prepareTradingHistoryCsv,
     sanitizeTradingCsvValue,
 } from './tradeHistoryExportUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const labels: TradingHistoryCsvColumnLabels = {
     orderId: 'Trade ID',
@@ -145,7 +148,7 @@ describe('tradeHistoryExportUtils', () => {
 
     describe('getTradingHistoryCsvRow', () => {
         it('maps a buy trade (fiat spent, crypto received, no spend tx)', () => {
-            expect(getTradingHistoryCsvRow(buyTrade, resolvers)).toEqual({
+            expect(getTradingHistoryCsvRow(networkConfigDeps, buyTrade, resolvers)).toEqual({
                 orderId: 'buy-order',
                 date: '2025-04-10T20:21:25.042Z',
                 type: 'buy',
@@ -164,7 +167,7 @@ describe('tradeHistoryExportUtils', () => {
         });
 
         it('maps a sell trade (crypto spent, fiat received, no receive tx)', () => {
-            expect(getTradingHistoryCsvRow(sellTrade, resolvers)).toEqual({
+            expect(getTradingHistoryCsvRow(networkConfigDeps, sellTrade, resolvers)).toEqual({
                 orderId: 'sell-order',
                 date: '2025-01-01T20:12:25.042Z',
                 type: 'sell',
@@ -183,7 +186,7 @@ describe('tradeHistoryExportUtils', () => {
         });
 
         it('maps an exchange trade to swap (crypto-to-crypto, no payment id)', () => {
-            expect(getTradingHistoryCsvRow(exchangeTrade, resolvers)).toEqual({
+            expect(getTradingHistoryCsvRow(networkConfigDeps, exchangeTrade, resolvers)).toEqual({
                 orderId: 'exchange-order',
                 date: '2025-02-12T20:11:03.042Z',
                 type: 'swap',
@@ -207,7 +210,9 @@ describe('tradeHistoryExportUtils', () => {
                 data: { ...exchangeTrade.data, send: 'unknown-coin' as CryptoId },
             };
 
-            expect(getTradingHistoryCsvRow(trade, resolvers).spendTicker).toBe('unknown-coin');
+            expect(getTradingHistoryCsvRow(networkConfigDeps, trade, resolvers).spendTicker).toBe(
+                'unknown-coin',
+            );
         });
 
         it('uses empty strings for missing optional values', () => {
@@ -224,7 +229,7 @@ describe('tradeHistoryExportUtils', () => {
                 receiveAccountKey: undefined,
             };
 
-            expect(getTradingHistoryCsvRow(trade, resolvers)).toEqual({
+            expect(getTradingHistoryCsvRow(networkConfigDeps, trade, resolvers)).toEqual({
                 orderId: 'only-order',
                 date: '2025-02-12T20:11:03.042Z',
                 type: 'swap',
@@ -247,12 +252,14 @@ describe('tradeHistoryExportUtils', () => {
         const header = TRADING_HISTORY_CSV_COLUMNS.map(column => labels[column]).join(',');
 
         it('returns only the header for an empty trade list', () => {
-            expect(buildTradingHistoryCsv(labels)([], resolvers)).toBe(CSV_BOM + header);
+            expect(buildTradingHistoryCsv(networkConfigDeps, labels)([], resolvers)).toBe(
+                CSV_BOM + header,
+            );
         });
 
         it('builds a header plus one line per trade', () => {
             const trades: TradingTransaction[] = [buyTrade, sellTrade, exchangeTrade];
-            const csv = buildTradingHistoryCsv(labels)(trades, resolvers);
+            const csv = buildTradingHistoryCsv(networkConfigDeps, labels)(trades, resolvers);
             const lines = csv.split('\n');
 
             expect(lines).toHaveLength(4);
@@ -267,7 +274,10 @@ describe('tradeHistoryExportUtils', () => {
                 TRADING_HISTORY_CSV_COLUMNS.map(column => [column, `cs:${column}`]),
             ) as TradingHistoryCsvColumnLabels;
 
-            const [headerRow] = buildTradingHistoryCsv(czLabels)([], resolvers).split('\n');
+            const [headerRow] = buildTradingHistoryCsv(networkConfigDeps, czLabels)(
+                [],
+                resolvers,
+            ).split('\n');
 
             expect(headerRow).toBe(
                 CSV_BOM + TRADING_HISTORY_CSV_COLUMNS.map(column => `cs:${column}`).join(','),
@@ -279,7 +289,7 @@ describe('tradeHistoryExportUtils', () => {
                 ...buyTrade,
                 data: { ...buyTrade.data, orderId: 'a,b' } as BuyTrade,
             };
-            const csv = buildTradingHistoryCsv(labels)([trade], resolvers);
+            const csv = buildTradingHistoryCsv(networkConfigDeps, labels)([trade], resolvers);
             const [, row] = csv.split('\n');
 
             expect(row?.startsWith('"a,b",')).toBe(true);
@@ -297,7 +307,7 @@ describe('tradeHistoryExportUtils', () => {
         };
 
         it('resolves coin tickers from state and falls back to the raw provider name', () => {
-            const csv = prepareTradingHistoryCsv(labels)(state, [sellTrade]);
+            const csv = prepareTradingHistoryCsv(networkConfigDeps, labels)(state, [sellTrade]);
             const [, row] = csv.split('\n');
 
             // BTC ticker resolved from state coins, provider name falls back to the raw exchange id.

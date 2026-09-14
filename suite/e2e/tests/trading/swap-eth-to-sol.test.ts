@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
@@ -7,6 +9,8 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const sendAmount = '0.01';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
@@ -43,7 +47,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                     },
                     buyAsset: {
                         searchFilter: 'Solana',
-                        assetCryptoId: getCryptoId('sol'),
+                        assetCryptoId: getCryptoId(networkConfigDeps, 'sol'),
                     },
                     selectReceiveAddress: async () => {
                         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'sol');

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -17,6 +19,8 @@ import { useMaxSpendableAmount } from '@suite-native/transaction-management';
 import { useConvertFormValueToBaseUnit } from '../useConvertFormValueToBaseUnit';
 
 export const useContextForTradingForm = (limits: TradingAmountLimitProps | undefined) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translate } = useTranslate();
 
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
@@ -41,7 +45,7 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
     });
 
     const networkReserve = sendNetworkSymbol
-        ? getNetworkReserve({
+        ? getNetworkReserve(networkConfigDeps, {
               symbol: sendNetworkSymbol,
               contractAddress,
               isEnabled: isNetworkReserveEnabled,

@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -16,9 +18,11 @@ interface AccountSectionProps {
 }
 
 export const AccountSection = ({ account, tokens, selected }: AccountSectionProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { symbol, accountType, index, descriptor, formattedBalance } = account;
 
-    const showGroup = hasNetworkFeatures(account, 'tokens');
+    const showGroup = hasNetworkFeatures(networkConfigDeps, account, 'tokens');
 
     const isStakeShown = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;

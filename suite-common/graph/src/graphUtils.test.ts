@@ -1,5 +1,6 @@
 import { fromUnixTime } from 'date-fns';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TimestampedRates } from '@suite-common/wallet-types';
 
@@ -16,6 +17,8 @@ import type {
     FiatGraphPointWithCryptoBalance,
     FiatRatesItem,
 } from './types';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
@@ -94,7 +97,7 @@ describe(mapTickersToFiatRatesItems.name, () => {
         const balanceHistory: AccountHistoryBalancePoint[] = [{ time: 100, cryptoBalance: '100' }];
 
         const fiatRates = mapTickersToFiatRatesItems(tickers, [0, 5, 10, 15, 20]);
-        const result = mapCryptoBalanceMovementToFixedTimeFrame({
+        const result = mapCryptoBalanceMovementToFixedTimeFrame(networkConfigDeps, {
             balanceHistory,
             fiatRates,
             baseCurrencyCode: 'usd',
@@ -208,7 +211,7 @@ describe(mapCryptoBalanceMovementToFixedTimeFrame.name, () => {
             },
         ];
         expect(
-            mapCryptoBalanceMovementToFixedTimeFrame({
+            mapCryptoBalanceMovementToFixedTimeFrame(networkConfigDeps, {
                 balanceHistory,
                 fiatRates,
                 baseCurrencyCode: 'eur',
@@ -306,7 +309,7 @@ describe(mapCryptoBalanceMovementToFixedTimeFrame.name, () => {
             },
         ];
         expect(
-            mapCryptoBalanceMovementToFixedTimeFrame({
+            mapCryptoBalanceMovementToFixedTimeFrame(networkConfigDeps, {
                 balanceHistory,
                 fiatRates,
                 baseCurrencyCode: 'eur',
@@ -375,7 +378,7 @@ describe(mapCryptoBalanceMovementToFixedTimeFrame.name, () => {
             },
         ];
         expect(
-            mapCryptoBalanceMovementToFixedTimeFrame({
+            mapCryptoBalanceMovementToFixedTimeFrame(networkConfigDeps, {
                 balanceHistory,
                 fiatRates,
                 baseCurrencyCode: 'eur',

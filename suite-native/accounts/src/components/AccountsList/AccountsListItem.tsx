@@ -1,5 +1,7 @@
+import { useServices } from '@suite-common/dependency-injection';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { type NetworksRootState, selectNetworkConfigDeps } from '@suite-common/networks';
 
 import {
     type AccountsRootState,
@@ -68,6 +70,8 @@ const AccountsListItemComponent = ({
     showDivider = false,
     badges,
 }: AccountListItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );
@@ -75,7 +79,7 @@ const AccountsListItemComponent = ({
         (state: NativeAccountsRootState) => selectActiveAndDefiTokensCount(state, account.key) > 0,
     );
 
-    const accountHasStaking = useSelector((state: StakeRootState) =>
+    const accountHasStaking = useSelector((state: StakeRootState & NetworksRootState) =>
         selectAccountHasStaking(state, account.key),
     );
 
@@ -94,7 +98,7 @@ const AccountsListItemComponent = ({
         });
     }, [account, accountHasKnownTokensWithBalance, onPress]);
 
-    const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
+    const isNetworkSupportingTokens = isNetworkWithTokens(networkConfigDeps, account.symbol);
     const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
     const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;

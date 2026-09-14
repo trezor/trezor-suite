@@ -7,7 +7,9 @@ import {
     useTranslation,
 } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
+import { type NetworkConfigDeps, selectNetworkConfigDeps } from '@suite-common/networks';
 import { type Locale, type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
@@ -304,21 +306,24 @@ interface GetOutputLinesParams {
     locale: Locale;
 }
 
-const getOutputLines = ({
-    type,
-    account,
-    value,
-    value2 = '',
-    label = '',
-    stakeType,
-    evmTxType,
-    device,
-    token,
-    nativeToken,
-    rewards,
-    translationString,
-    locale,
-}: GetOutputLinesParams): OutputElementLine[] => {
+const getOutputLines = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        type,
+        account,
+        value,
+        value2 = '',
+        label = '',
+        stakeType,
+        evmTxType,
+        device,
+        token,
+        nativeToken,
+        rewards,
+        translationString,
+        locale,
+    }: GetOutputLinesParams,
+): OutputElementLine[] => {
     const { networkType, symbol } = account;
 
     switch (type) {
@@ -450,7 +455,7 @@ const getOutputLines = ({
                         id: 'data',
                         type: 'default',
                         value: translationString(translation, {
-                            symbol: getNetworkDisplaySymbol(symbol),
+                            symbol: getNetworkDisplaySymbol(networkConfigDeps, symbol),
                         }),
                     },
                 ];
@@ -489,7 +494,7 @@ const getOutputLines = ({
                     type: 'data',
                     value: isWrappedNativeAction(evmTxType)
                         ? translationString(wrappedNativeIntentStrings[evmTxType], {
-                              nativeSymbol: getNetworkDisplaySymbol(symbol),
+                              nativeSymbol: getNetworkDisplaySymbol(networkConfigDeps, symbol),
                               tokenSymbol: getWrappedNativeSymbol(symbol),
                           })
                         : '',
@@ -552,7 +557,11 @@ const getOutputLines = ({
         case 'approve_data': {
             const isMaxApproval =
                 typeof token?.decimals === 'number' &&
-                isAllowanceUnlimited({ amount: value, decimals: token.decimals, isSubunit: true });
+                isAllowanceUnlimited(networkConfigDeps, {
+                    amount: value,
+                    decimals: token.decimals,
+                    isSubunit: true,
+                });
             const isApprovalTx = evmTxType === 'approve';
             const type = isMaxApproval || !isApprovalTx ? 'data' : 'amount';
             const getValue = () => {
@@ -651,6 +660,8 @@ export type TransactionReviewOutputProps = {
 } & ReviewOutput;
 
 export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         type,
         state,
@@ -678,7 +689,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
     const { translationString } = useTranslation();
     const isFiatVisible =
         ['fee', 'amount', 'gas', 'fee-replace', 'reduce-output'].includes(type) &&
-        !isTestnet(symbol) &&
+        !isTestnet(networkConfigDeps, symbol) &&
         !nativeToken;
 
     const outputTitle = getOutputTitle(
@@ -693,7 +704,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         isTronStakeFreeze,
     );
 
-    const outputLines = getOutputLines({
+    const outputLines = getOutputLines(networkConfigDeps, {
         type,
         account,
         value: value ?? '',

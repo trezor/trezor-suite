@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
@@ -11,13 +13,15 @@ import { ReceiveAccountPicker } from '../../general/ReceiveAccount/ReceiveAccoun
 const RECEIVE_ACCOUNT_PICKER_TEST_ID = '@trading/exchange/receive-account';
 
 export const ExchangeReceiveAccountPicker = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { control } = useExchangeFormContext();
     const selectedReceiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
 
     const receiveAsset = useWatch({ name: 'receiveAsset', control });
     const quote = useWatch({ name: 'quote', control });
-    const selectedSymbol = getSymbolFromTradeableAsset(receiveAsset);
+    const selectedSymbol = getSymbolFromTradeableAsset(networkConfigDeps, receiveAsset);
     const noBottomBorder = !isLoading && !quote;
 
     return (

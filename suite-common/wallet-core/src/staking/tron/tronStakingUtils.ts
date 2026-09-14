@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -49,17 +50,23 @@ export const isTronStakingActive = (account: Account | null): boolean => {
     return new BigNumber(stakingInfo.stakedBalance).isGreaterThan(0);
 };
 
-export const getTronCryptoBalanceWithStaking = (account: Account): string => {
-    const stakingBalance = getTronAccountTotalStakingBalance(account) ?? '0';
+export const getTronCryptoBalanceWithStaking = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+): string => {
+    const stakingBalance = getTronAccountTotalStakingBalance(networkConfigDeps, account) ?? '0';
 
     return new BigNumber(account.formattedBalance).plus(stakingBalance).toString();
 };
 
-export const getTronStakingRewards = (account: Account): string => {
+export const getTronStakingRewards = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+): string => {
     const stakingInfo = getTronStakingInfo(account);
     if (!stakingInfo) return '0';
 
-    return sunToTrx(stakingInfo.unclaimedReward, account.symbol);
+    return sunToTrx(networkConfigDeps, stakingInfo.unclaimedReward, account.symbol);
 };
 
 export const TRON_REWARD_CLAIM_COOLDOWN_SECONDS = 24 * 60 * 60;
@@ -79,6 +86,7 @@ export const isTronRewardClaimOnCooldown = (account: Account): boolean => {
 };
 
 const sumUnstakingBatchesSun = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     predicate: (batch: TronUnstakingBatch) => boolean,
 ): string => {
@@ -90,22 +98,38 @@ const sumUnstakingBatchesSun = (
         new BigNumber(0),
     );
 
-    return sunToTrx(totalSun.toString(), account.symbol);
+    return sunToTrx(networkConfigDeps, totalSun.toString(), account.symbol);
 };
 
-export const getTronUnstakingBalance = (account: Account): string =>
-    sumUnstakingBatchesSun(account, () => true);
+export const getTronUnstakingBalance = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+): string => sumUnstakingBatchesSun(networkConfigDeps, account, () => true);
 
-export const getTronWithdrawableBalance = (account: Account): string => {
+export const getTronWithdrawableBalance = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+): string => {
     const nowSeconds = Date.now() / 1000;
 
-    return sumUnstakingBatchesSun(account, batch => batch.expireTime <= nowSeconds);
+    return sumUnstakingBatchesSun(
+        networkConfigDeps,
+        account,
+        batch => batch.expireTime <= nowSeconds,
+    );
 };
 
-export const getTronPendingUnstakeBalance = (account: Account): string => {
+export const getTronPendingUnstakeBalance = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+): string => {
     const nowSeconds = Date.now() / 1000;
 
-    return sumUnstakingBatchesSun(account, batch => batch.expireTime > nowSeconds);
+    return sumUnstakingBatchesSun(
+        networkConfigDeps,
+        account,
+        batch => batch.expireTime > nowSeconds,
+    );
 };
 
 export const getTronVotes = (account?: Account): TronVote[] =>

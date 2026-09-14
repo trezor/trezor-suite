@@ -1,4 +1,6 @@
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
@@ -18,6 +20,8 @@ interface DestinationTagProps {
 }
 
 export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         register,
         getDefaultValue,
@@ -30,7 +34,7 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
     const { translationString } = useTranslation();
     const { openNodeById } = useGuideOpenNode();
 
-    const { networkType, name } = getNetwork(networkSymbol);
+    const { networkType, name } = getNetwork(networkConfigDeps, networkSymbol);
 
     if (networkType !== 'ripple' && networkType !== 'stellar') {
         return null;

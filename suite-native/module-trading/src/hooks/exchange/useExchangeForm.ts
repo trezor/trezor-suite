@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -87,13 +89,15 @@ const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType
 };
 
 const useExchangeQuoteChangeEffect = ({ control, setValue }: ExchangeFormType) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [selectedQuote, receiveAsset] = useWatch({
         control,
         name: ['quote', 'receiveAsset'],
     });
-    const symbol = getSymbolFromTradeableAsset(receiveAsset);
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, receiveAsset);
 
-    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
+    const isAmountInSats = useSelector((state: WalletSettingsRootState & NetworksRootState) =>
         selectIsAmountInSats(state, symbol),
     );
 
@@ -109,10 +113,14 @@ const useExchangeQuoteChangeEffect = ({ control, setValue }: ExchangeFormType) =
 
         const value =
             isAmountInSats && amount && symbol
-                ? convertAmountUnitsToSubunits(amount, getNetwork(symbol).decimals)
+                ? convertAmountUnitsToSubunits(
+                      amount,
+                      getNetwork(networkConfigDeps, symbol).decimals,
+                  )
                 : amount;
         setValue('receiveCryptoAmount', value, { shouldValidate: true });
     }, [
+        networkConfigDeps,
         selectedQuote,
         isQuoteMatchingAsset,
         amount,
@@ -128,6 +136,8 @@ const useDexQuoteApprovalInfoChangeEffect = ({
     getValues,
     setValue,
 }: ExchangeFormType) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const quote = useWatch({ control, name: 'quote' });
@@ -147,7 +157,12 @@ const useDexQuoteApprovalInfoChangeEffect = ({
             return;
         }
 
-        if (!quote || !quoteId || !sendAccount || !requiresTokenApproval(quote)) {
+        if (
+            !quote ||
+            !quoteId ||
+            !sendAccount ||
+            !requiresTokenApproval(networkConfigDeps, quote)
+        ) {
             return;
         }
 
@@ -184,7 +199,7 @@ const useDexQuoteApprovalInfoChangeEffect = ({
         return () => {
             isMounted = false;
         };
-    }, [dispatch, getValues, quote, sendAccount, setValue]);
+    }, [networkConfigDeps, dispatch, getValues, quote, sendAccount, setValue]);
 };
 
 type UseValidationsParams = {
@@ -219,6 +234,8 @@ const useValidations = ({
 };
 
 export const useExchangeForm = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const limits = useSelector(selectExchangeAmountLimits);
     const {
         context,
@@ -230,7 +247,7 @@ export const useExchangeForm = () => {
     } = useContextForTradingForm(limits);
 
     const form = useForm<ExchangeFormValues>({
-        validation: exchangeFormValidationSchema,
+        validation: exchangeFormValidationSchema(networkConfigDeps),
         context,
     });
     const { control, setValue } = form;

@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import {
     bnbAsset,
     btcAsset,
@@ -11,13 +13,15 @@ import {
 
 import { getAssetByEnabledNetworksFilter, getFormDraftKeyByTradeType } from './utils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 jest.mock('@suite-common/wallet-config', () => {
     const actual = jest.requireActual('@suite-common/wallet-config');
 
     return {
         ...actual,
-        getNetworkByTradeCryptoId: (tradeCryptoId: string) => {
-            const network = actual.getNetworkByTradeCryptoId(tradeCryptoId);
+        getNetworkByTradeCryptoId: (deps: unknown, tradeCryptoId: string) => {
+            const network = actual.getNetworkByTradeCryptoId(deps, tradeCryptoId);
 
             switch (network?.symbol) {
                 case 'trx':
@@ -38,8 +42,8 @@ jest.mock('@suite-common/wallet-config', () => {
                     return network;
             }
         },
-        getNetworkByCoingeckoId: (coingeckoId: string) => {
-            const network = actual.getNetworkByCoingeckoId(coingeckoId);
+        getNetworkByCoingeckoId: (deps: unknown, coingeckoId: string) => {
+            const network = actual.getNetworkByCoingeckoId(deps, coingeckoId);
 
             switch (network?.symbol) {
                 case 'trx':
@@ -80,7 +84,11 @@ describe('utils', () => {
         it.each([btcAsset, usdtAsset, tronTetherAsset, tronAsset, bnbAsset, usdtOnBscAsset])(
             `should return true for asset [$symbol] if areDebugOnlyNetworksEnabled FF is enabled`,
             asset => {
-                const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(true, false);
+                const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(
+                    networkConfigDeps,
+                    true,
+                    false,
+                );
 
                 expect(assetByEnabledNetworksFilter(asset)).toBe(true);
             },
@@ -89,7 +97,11 @@ describe('utils', () => {
         it.each([btcAsset, usdtAsset, rippleAsset])(
             `should return true for asset [$symbol] if areExperimentalOnlyNetworksEnable FF is enabled`,
             asset => {
-                const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(false, true);
+                const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(
+                    networkConfigDeps,
+                    false,
+                    true,
+                );
 
                 expect(assetByEnabledNetworksFilter(asset)).toBe(true);
             },
@@ -98,7 +110,11 @@ describe('utils', () => {
         it.each([btcAsset, usdtAsset])(
             `should return true for asset [$symbol] if areDebugOnlyNetworksEnabled and areExperimentalOnlyNetworksEnable FFs are disabled`,
             asset => {
-                const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(false, false);
+                const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(
+                    networkConfigDeps,
+                    false,
+                    false,
+                );
 
                 expect(assetByEnabledNetworksFilter(asset)).toBe(true);
             },
@@ -107,20 +123,32 @@ describe('utils', () => {
         it.each([tronTetherAsset, tronAsset])(
             `should return false for asset [$symbol] if areDebugOnlyNetworksEnabled  FF is disabled`,
             asset => {
-                const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(false, true);
+                const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(
+                    networkConfigDeps,
+                    false,
+                    true,
+                );
 
                 expect(assetByEnabledNetworksFilter(asset)).toBe(false);
             },
         );
 
         it(`should return false for asset [XRP] if areExperimentalOnlyNetworksEnable FF is disabled`, () => {
-            const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(true, false);
+            const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(
+                networkConfigDeps,
+                true,
+                false,
+            );
 
             expect(assetByEnabledNetworksFilter(rippleAsset)).toBe(false);
         });
 
         it('should return false for unknown asset', () => {
-            const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(true, true);
+            const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(
+                networkConfigDeps,
+                true,
+                true,
+            );
 
             expect(assetByEnabledNetworksFilter(unknownAsset)).toBe(false);
         });

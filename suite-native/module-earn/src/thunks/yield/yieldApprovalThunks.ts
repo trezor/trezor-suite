@@ -1,3 +1,8 @@
+import {
+    type NetworkConfigDeps,
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+} from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type FormDraftRootState,
@@ -60,20 +65,23 @@ type GetYieldAllowanceReviewAmountParams = {
     tokenContract: TokenAddress;
 };
 
-const getYieldAllowanceReviewAmount = ({
-    amount,
-    approvalLimitType,
-    flowData,
-    modalTxType,
-    tokenContract,
-}: GetYieldAllowanceReviewAmountParams) => {
+const getYieldAllowanceReviewAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        amount,
+        approvalLimitType,
+        flowData,
+        modalTxType,
+        tokenContract,
+    }: GetYieldAllowanceReviewAmountParams,
+) => {
     switch (modalTxType) {
         case 'approve':
             if (!amount || !approvalLimitType) {
                 return null;
             }
 
-            return getYieldApprovalAllowanceAmount({
+            return getYieldApprovalAllowanceAmount(networkConfigDeps, {
                 amount,
                 approvalLimitType,
                 tokenContract,
@@ -100,18 +108,24 @@ const isExpectedAllowanceModalTxType = (
 
 export type PrepareYieldAllowanceReviewTransactionThunkState = FormDraftRootState &
     YieldRootState &
-    NativeSendRootState;
+    NativeSendRootState &
+    NetworksRootState;
 
 export const prepareYieldAllowanceReviewTransactionThunk = createThunk<
     void,
     PrepareYieldAllowanceReviewTransactionParams,
-    { rejectValue: string; state: PrepareYieldAllowanceReviewTransactionThunkState }
+    {
+        rejectValue: string;
+        state: PrepareYieldAllowanceReviewTransactionThunkState;
+    }
 >(
     `${EARN_MODULE_PREFIX}/prepareYieldAllowanceReviewTransactionThunk`,
     (
         { amount, approvalLimitType, flowData, flowKey, transactionType, tokenContract },
         { dispatch, getState, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         dispatch(sendFormActions.discardTransaction());
 
         const formDraftKey = getYieldAllowanceFormDraftKey(flowKey, transactionType);
@@ -136,7 +150,7 @@ export const prepareYieldAllowanceReviewTransactionThunk = createThunk<
             return rejectWithValue('Selected allowance fee is not composed.');
         }
 
-        const allowanceAmount = getYieldAllowanceReviewAmount({
+        const allowanceAmount = getYieldAllowanceReviewAmount(networkConfigDeps, {
             amount,
             approvalLimitType,
             flowData,

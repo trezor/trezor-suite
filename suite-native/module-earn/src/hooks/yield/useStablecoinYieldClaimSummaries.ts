@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -35,6 +37,8 @@ type UseStablecoinYieldClaimSummariesProps = {
 export const useStablecoinYieldClaimSummaries = ({
     accounts,
 }: UseStablecoinYieldClaimSummariesProps): StablecoinYieldClaimSummariesState => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const fiatCurrency = useSelector(selectBaseCurrency);
 
@@ -60,11 +64,11 @@ export const useStablecoinYieldClaimSummaries = ({
 
     const stablecoinYieldClaimSummaries = useMemo(
         () =>
-            buildStablecoinYieldClaimSummaries({
+            buildStablecoinYieldClaimSummaries(networkConfigDeps, {
                 accounts,
                 chainsRewardsWithFiat,
             }),
-        [accounts, chainsRewardsWithFiat],
+        [networkConfigDeps, accounts, chainsRewardsWithFiat],
     );
     const totalFiatClaimableAmount = useMemo(
         () => getTotalFiatClaimableAmount(stablecoinYieldClaimSummaries),

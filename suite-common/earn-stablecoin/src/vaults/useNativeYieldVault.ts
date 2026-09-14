@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsYieldFeatureDisabled,
 } from '@suite-common/message-system';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 
@@ -21,6 +23,8 @@ interface UseNativeYieldVaultProps {
 }
 
 export const useNativeYieldVault = ({ account }: UseNativeYieldVaultProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     // Only the feature flag matters here, so this reads the selector directly rather than going
     // through `useMessageSystemYield`, whose message content needs a platform-specific locale.
     const isYieldDepositDisabled = useSelector((state: MessageSystemRootState) =>
@@ -37,12 +41,12 @@ export const useNativeYieldVault = ({ account }: UseNativeYieldVaultProps) => {
     const wrappedNativeVaults = useMemo(
         () =>
             isYieldOptionRelevant && networkSymbol !== undefined
-                ? getWrappedNativeYieldVaults({
+                ? getWrappedNativeYieldVaults(networkConfigDeps, {
                       vaults: availableVaults,
                       networkSymbol,
                   })
                 : [],
-        [availableVaults, isYieldOptionRelevant, networkSymbol],
+        [networkConfigDeps, availableVaults, isYieldOptionRelevant, networkSymbol],
     );
 
     const hasYieldOption = useSelector((state: MessageSystemRootState) =>

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -10,17 +12,19 @@ import { selectAreSatsAmountUnit } from '@suite-common/wallet-core';
 import { satoshiAmountToBtc } from '@suite-common/wallet-utils';
 
 export const useConvertFormValueToBaseUnit = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const areSatsAmountUnit = useSelector(selectAreSatsAmountUnit);
 
     const getIsAmountInSats = useCallback(
         (symbol: NetworkSymbolExtended) => {
             // this is copy of selectIsAmountInSats logic
-            const network = getNetwork(symbol as NetworkSymbol);
+            const network = getNetwork(networkConfigDeps, symbol as NetworkSymbol);
             const isAmountUnitSupported = !!network && network.features.includes('amount-unit');
 
             return isAmountUnitSupported && areSatsAmountUnit;
         },
-        [areSatsAmountUnit],
+        [networkConfigDeps, areSatsAmountUnit],
     );
 
     const convertStrToBaseUnit = useCallback(

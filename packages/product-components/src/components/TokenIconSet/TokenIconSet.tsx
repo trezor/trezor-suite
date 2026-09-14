@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
@@ -28,6 +30,8 @@ export const TokenIconSet = ({
     isReversed = false,
     isTransparent = false,
 }: TokenIconSetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { length } = tokens;
 
     const visibleTokensContent = useMemo(() => {
@@ -37,7 +41,8 @@ export const TokenIconSet = ({
             const tokenNetworkSymbol = token.networkSymbol ?? symbol;
             const key = `${tokenNetworkSymbol}-${token.contract ?? token.symbol ?? symbol}`;
             const nativeCoinSymbol =
-                getNetwork(tokenNetworkSymbol).settlementLayer ?? tokenNetworkSymbol;
+                getNetwork(networkConfigDeps, tokenNetworkSymbol).settlementLayer ??
+                tokenNetworkSymbol;
 
             return (
                 <IconWrapper key={key} $size={size} $gap={gap} $length={length}>
@@ -58,7 +63,7 @@ export const TokenIconSet = ({
                 </IconWrapper>
             );
         });
-    }, [tokens, maxVisibleIcons, symbol, size, gap, length, isTransparent]);
+    }, [networkConfigDeps, tokens, maxVisibleIcons, symbol, size, gap, length, isTransparent]);
 
     return (
         <IconSetBase

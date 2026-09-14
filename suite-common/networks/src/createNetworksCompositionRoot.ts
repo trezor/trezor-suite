@@ -27,6 +27,7 @@ export const createNetworksCompositionRoot = (
     return {
         networkModuleRepository,
         getNetworkConfig,
+        getNetworkConfigs,
         addressValidator: createAddressValidator({ networkModuleRepository }),
         getNamedAddressSupport: createGetNamedAddressSupport({ networkModuleRepository }),
         loadNetworkModules: createLoadNetworkModules({

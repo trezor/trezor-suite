@@ -32,7 +32,7 @@ const mockGetTransactionReviewOutputState = jest.fn();
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
     isClearSignedEvmTradingSwapTransaction: jest.fn().mockReturnValue(false),
-    constructTransactionReviewOutputs: (...args: unknown[]) =>
+    constructTransactionReviewOutputs: (_deps: unknown, ...args: unknown[]) =>
         mockConstructTransactionReviewOutputs(...args),
     getTransactionReviewOutputState: (...args: unknown[]) =>
         mockGetTransactionReviewOutputState(...args),

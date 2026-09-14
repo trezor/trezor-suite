@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import {
@@ -64,7 +65,9 @@ type PushWrappedNativeTokenPayload = {
     signedTransaction: SignedWrappedNativeTokenTransaction;
 };
 
-export type SignWrappedNativeTokenThunkState = DeviceRootState & WalletSettingsRootState;
+export type SignWrappedNativeTokenThunkState = DeviceRootState &
+    WalletSettingsRootState &
+    NetworksRootState;
 
 /**
  * Signs a composed wrap/unwrap transaction on the device. Unlike the yield action review thunks,
@@ -75,10 +78,15 @@ export type SignWrappedNativeTokenThunkState = DeviceRootState & WalletSettingsR
 export const signWrappedNativeTokenThunk = createThunk<
     SignedWrappedNativeTokenTransaction,
     SignWrappedNativeTokenPayload,
-    { rejectValue: WrappedNativeTokenSignError; state: SignWrappedNativeTokenThunkState }
+    {
+        rejectValue: WrappedNativeTokenSignError;
+        state: SignWrappedNativeTokenThunkState;
+    }
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/sign`,
     async ({ account, token, amount, unsignedTransaction }, { getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const device = selectSelectedDevice(getState());
 
         if (!device || account.networkType !== 'ethereum') {
@@ -98,7 +106,7 @@ export const signWrappedNativeTokenThunk = createThunk<
         let transactionReview: ReturnType<typeof buildStablecoinYieldTransactionReview>;
 
         try {
-            transactionReview = buildStablecoinYieldTransactionReview({
+            transactionReview = buildStablecoinYieldTransactionReview(networkConfigDeps, {
                 amount,
                 selectedFee: null,
                 symbol: account.symbol,
@@ -143,7 +151,8 @@ export const signWrappedNativeTokenThunk = createThunk<
 
 export type PushWrappedNativeTokenThunkState = MevProtectionRootState &
     SynchronizeSentTransactionThunkState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 export type PushWrappedNativeTokenThunkDeps = SynchronizeSentTransactionThunkDeps;
 
@@ -158,7 +167,9 @@ export const pushWrappedNativeTokenThunk = createThunk<
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/push`,
     async ({ account, flowType, signedTransaction }, { dispatch, getState, rejectWithValue }) => {
-        const pushResponse = await pushYieldTransaction({
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
+        const pushResponse = await pushYieldTransaction(networkConfigDeps, {
             tx: signedTransaction.serializedTx,
             account,
             isMevProtectionEnabled:

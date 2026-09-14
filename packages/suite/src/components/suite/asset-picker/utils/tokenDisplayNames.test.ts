@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import {
     type TradingAssetOption,
     type TradingAssetOptionWithContractAddress,
@@ -11,6 +12,8 @@ import {
     getTokenDisplaySymbolName,
     getTokensDisplaySymbolNames,
 } from './tokenDisplayNames';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ethSymbol = toNetworkSymbolNonTestnet('eth');
 
@@ -42,7 +45,7 @@ describe('tokenDisplayNames', () => {
         };
         const tokens = [tokenSource];
 
-        const tokenDisplaySymbolNames = getTokensDisplaySymbolNames({
+        const tokenDisplaySymbolNames = getTokensDisplaySymbolNames(networkConfigDeps, {
             assets: [
                 createAsset({
                     id: 'ethereum--0x1' as CryptoId,
@@ -53,7 +56,7 @@ describe('tokenDisplayNames', () => {
         });
 
         expect(
-            getTokenDisplaySymbolName({
+            getTokenDisplaySymbolName(networkConfigDeps, {
                 tokenDisplaySymbolNames,
                 account: tokenSource.account,
                 token: tokenSource.token,
@@ -68,7 +71,7 @@ describe('tokenDisplayNames', () => {
         };
         const tokens = [tokenSource];
 
-        const tokenDisplaySymbolNames = getTokensDisplaySymbolNames({
+        const tokenDisplaySymbolNames = getTokensDisplaySymbolNames(networkConfigDeps, {
             assets: [
                 createAsset({
                     id: 'ethereum--0x1' as CryptoId,
@@ -79,7 +82,7 @@ describe('tokenDisplayNames', () => {
         });
 
         expect(
-            getTokenDisplaySymbolName({
+            getTokenDisplaySymbolName(networkConfigDeps, {
                 tokenDisplaySymbolNames,
                 account: tokenSource.account,
                 token: tokenSource.token,
@@ -94,13 +97,13 @@ describe('tokenDisplayNames', () => {
         };
         const tokens = [tokenSource];
 
-        const tokenDisplaySymbolNames = getTokensDisplaySymbolNames({
+        const tokenDisplaySymbolNames = getTokensDisplaySymbolNames(networkConfigDeps, {
             assets: [createAsset({ id: 'ethereum--0x2' as CryptoId })],
             tokens,
         });
 
         expect(
-            getTokenDisplaySymbolName({
+            getTokenDisplaySymbolName(networkConfigDeps, {
                 tokenDisplaySymbolNames,
                 account: tokenSource.account,
                 token: tokenSource.token,
@@ -109,6 +112,8 @@ describe('tokenDisplayNames', () => {
     });
 
     it('handles empty assets and tokens', () => {
-        expect(getTokensDisplaySymbolNames({ assets: [], tokens: [] })).toEqual(new Map());
+        expect(getTokensDisplaySymbolNames(networkConfigDeps, { assets: [], tokens: [] })).toEqual(
+            new Map(),
+        );
     });
 });

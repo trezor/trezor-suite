@@ -2,6 +2,7 @@ import { type ExchangeTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
@@ -19,17 +20,22 @@ type SelectExchangeQuoteThunkProps = {
     fractionButton?: number;
 };
 
-type SelectExchangeQuoteThunkState = GotoThunkState & TradingRootState;
+type SelectExchangeQuoteThunkState = GotoThunkState & TradingRootState & NetworksRootState;
 
 type SelectExchangeQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
 
 export const selectExchangeQuoteThunk = createThunk<
     void,
     SelectExchangeQuoteThunkProps,
-    { state: SelectExchangeQuoteThunkState; extra: SelectExchangeQuoteThunkDeps }
+    {
+        state: SelectExchangeQuoteThunkState;
+        extra: SelectExchangeQuoteThunkDeps;
+    }
 >(
     'trading/exchange/selectQuoteWithAnalytics',
     async ({ quote, exchangeType, rateType, fractionButton }, { dispatch, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const exchangeInfo = selectTradingExchangeInfo(getState());
         const quotesRequest = selectTradingExchangeQuotesRequest(getState());
 
@@ -43,11 +49,11 @@ export const selectExchangeQuoteThunk = createThunk<
         }
 
         const { symbol: sendCryptoNetworkSymbol, contractAddress: sendCryptoContractAddress } =
-            cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.send);
+            cryptoIdToNetworkSymbolAndContractAddress(networkConfigDeps, quotesRequest.send);
         const {
             symbol: receiveCryptoNetworkSymbol,
             contractAddress: receiveCryptoContractAddress,
-        } = cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.receive);
+        } = cryptoIdToNetworkSymbolAndContractAddress(networkConfigDeps, quotesRequest.receive);
 
         extra.services.analytics.report({
             type: events.tradeExchangeEvent.name,

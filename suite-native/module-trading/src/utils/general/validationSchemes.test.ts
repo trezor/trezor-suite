@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { useFormatters } from '@suite-common/formatters';
 import { type yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -11,6 +13,8 @@ import {
     fiatAmountInputValidationSchema,
     sendCryptoAmountValidationSchema,
 } from './validationSchemes';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 let formatters: ReturnType<typeof useFormatters>;
 
@@ -122,7 +126,11 @@ describe('validationSchemes', () => {
     describe('sendCryptoAmountValidationSchema', () => {
         it('passes when value is undefined', async () => {
             await expect(
-                validate(sendCryptoAmountValidationSchema, undefined, createContext()),
+                validate(
+                    sendCryptoAmountValidationSchema(networkConfigDeps),
+                    undefined,
+                    createContext(),
+                ),
             ).resolves.toBeUndefined();
         });
 
@@ -134,14 +142,14 @@ describe('validationSchemes', () => {
                 balance: '0',
             });
 
-            await expect(validate(sendCryptoAmountValidationSchema, 1000, context)).resolves.toBe(
-                1000,
-            );
+            await expect(
+                validate(sendCryptoAmountValidationSchema(networkConfigDeps), 1000, context),
+            ).resolves.toBe(1000);
         });
 
         it('rejects negative values', async () => {
             await expect(
-                validate(sendCryptoAmountValidationSchema, -1, createContext()),
+                validate(sendCryptoAmountValidationSchema(networkConfigDeps), -1, createContext()),
             ).rejects.toThrow('Invalid value');
         });
 
@@ -150,7 +158,11 @@ describe('validationSchemes', () => {
 
             it('rejects when value is below min', async () => {
                 await expect(
-                    validate(sendCryptoAmountValidationSchema, 5, buildContext()),
+                    validate(
+                        sendCryptoAmountValidationSchema(networkConfigDeps),
+                        5,
+                        buildContext(),
+                    ),
                 ).rejects.toThrow(
                     getTranslation('moduleTrading.validators.min', {
                         min: formatCrypto('10', 'btc'),
@@ -160,13 +172,21 @@ describe('validationSchemes', () => {
 
             it('accepts when value equals min', async () => {
                 await expect(
-                    validate(sendCryptoAmountValidationSchema, 10, buildContext()),
+                    validate(
+                        sendCryptoAmountValidationSchema(networkConfigDeps),
+                        10,
+                        buildContext(),
+                    ),
                 ).resolves.toBe(10);
             });
 
             it('accepts when value is above min', async () => {
                 await expect(
-                    validate(sendCryptoAmountValidationSchema, 11, buildContext()),
+                    validate(
+                        sendCryptoAmountValidationSchema(networkConfigDeps),
+                        11,
+                        buildContext(),
+                    ),
                 ).resolves.toBe(11);
             });
         });
@@ -176,7 +196,11 @@ describe('validationSchemes', () => {
 
             it('rejects when value is above max', async () => {
                 await expect(
-                    validate(sendCryptoAmountValidationSchema, 101, buildContext()),
+                    validate(
+                        sendCryptoAmountValidationSchema(networkConfigDeps),
+                        101,
+                        buildContext(),
+                    ),
                 ).rejects.toThrow(
                     getTranslation('moduleTrading.validators.max', {
                         max: formatCrypto('100', 'btc'),
@@ -186,13 +210,21 @@ describe('validationSchemes', () => {
 
             it('accepts when value equals max', async () => {
                 await expect(
-                    validate(sendCryptoAmountValidationSchema, 100, buildContext()),
+                    validate(
+                        sendCryptoAmountValidationSchema(networkConfigDeps),
+                        100,
+                        buildContext(),
+                    ),
                 ).resolves.toBe(100);
             });
 
             it('accepts when value is below max', async () => {
                 await expect(
-                    validate(sendCryptoAmountValidationSchema, 99, buildContext()),
+                    validate(
+                        sendCryptoAmountValidationSchema(networkConfigDeps),
+                        99,
+                        buildContext(),
+                    ),
                 ).resolves.toBe(99);
             });
         });
@@ -205,7 +237,7 @@ describe('validationSchemes', () => {
                 const convertNumberToBaseUnit = jest.fn((amount: number | undefined) => amount);
 
                 await validate(
-                    sendCryptoAmountValidationSchema,
+                    sendCryptoAmountValidationSchema(networkConfigDeps),
                     5,
                     buildContext({ convertNumberToBaseUnit }),
                 );
@@ -216,7 +248,7 @@ describe('validationSchemes', () => {
             it('reports min in the token symbol', async () => {
                 await expect(
                     validate(
-                        sendCryptoAmountValidationSchema,
+                        sendCryptoAmountValidationSchema(networkConfigDeps),
                         5,
                         buildContext({ minCrypto: '10' }),
                     ),
@@ -228,7 +260,7 @@ describe('validationSchemes', () => {
             it('reports max in the token symbol', async () => {
                 await expect(
                     validate(
-                        sendCryptoAmountValidationSchema,
+                        sendCryptoAmountValidationSchema(networkConfigDeps),
                         101,
                         buildContext({ maxCrypto: '100' }),
                     ),
@@ -254,7 +286,7 @@ describe('validationSchemes', () => {
                 } as TradingFormContext;
 
                 await expect(
-                    validate(sendCryptoAmountValidationSchema, 5, context),
+                    validate(sendCryptoAmountValidationSchema(networkConfigDeps), 5, context),
                 ).rejects.toThrow(
                     getTranslation('moduleTrading.validators.min', { min: '10 BTC' }),
                 );
@@ -270,7 +302,7 @@ describe('validationSchemes', () => {
             it('passes when balance is undefined', async () => {
                 await expect(
                     validate(
-                        sendCryptoAmountValidationSchema,
+                        sendCryptoAmountValidationSchema(networkConfigDeps),
                         1000,
                         createContext({ sendAssetSymbol: 'BTC', balance: undefined }),
                     ),
@@ -281,7 +313,7 @@ describe('validationSchemes', () => {
                 const context = createContext({ sendAssetSymbol: 'BTC', balance: '50' });
 
                 await expect(
-                    validate(sendCryptoAmountValidationSchema, 51, context),
+                    validate(sendCryptoAmountValidationSchema(networkConfigDeps), 51, context),
                 ).rejects.toThrow(getTranslation('moduleTrading.validators.insufficientBalance'));
             });
 
@@ -294,7 +326,7 @@ describe('validationSchemes', () => {
                 });
 
                 await expect(
-                    validate(sendCryptoAmountValidationSchema, 95, context),
+                    validate(sendCryptoAmountValidationSchema(networkConfigDeps), 95, context),
                 ).rejects.toThrow(
                     getTranslation('moduleTrading.validators.networkReserve', {
                         displaySymbol: 'ETH',
@@ -310,9 +342,9 @@ describe('validationSchemes', () => {
                     maxSpendableAmount: '90',
                 });
 
-                await expect(validate(sendCryptoAmountValidationSchema, 90, context)).resolves.toBe(
-                    90,
-                );
+                await expect(
+                    validate(sendCryptoAmountValidationSchema(networkConfigDeps), 90, context),
+                ).resolves.toBe(90);
             });
 
             it('passes when maxSpendableAmount is undefined and value is within balance', async () => {
@@ -323,9 +355,9 @@ describe('validationSchemes', () => {
                     maxSpendableAmount: undefined,
                 });
 
-                await expect(validate(sendCryptoAmountValidationSchema, 50, context)).resolves.toBe(
-                    50,
-                );
+                await expect(
+                    validate(sendCryptoAmountValidationSchema(networkConfigDeps), 50, context),
+                ).resolves.toBe(50);
             });
         });
     });

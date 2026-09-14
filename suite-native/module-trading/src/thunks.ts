@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 
@@ -151,7 +152,8 @@ type ComposeTradingTransactionThunkParams = {
 
 export type ComposeTradingTransactionThunkState = TradingRootState &
     ComposeSendFormTransactionFeeLevelsThunkState &
-    EnhancePrecomposedTransactionThunkState;
+    EnhancePrecomposedTransactionThunkState &
+    NetworksRootState;
 
 export const composeTradingTransactionThunk = createThunk<
     PrecomposedLevels | PrecomposedLevelsCardano,
@@ -174,6 +176,8 @@ export const composeTradingTransactionThunk = createThunk<
         },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         try {
             const selectedQuote =
                 tradeType === 'exchange'
@@ -198,7 +202,7 @@ export const composeTradingTransactionThunk = createThunk<
                 return rejectWithValue('Network and feeInfo are required');
             }
 
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote: selectedQuote,
                 providers,
                 feeLevel: {
@@ -304,7 +308,9 @@ type ComposeEvmApprovalFeeLevelsThunkParams = {
     approvalTypeOverride?: DexApprovalType;
 };
 
-export type ComposeEvmApprovalFeeLevelsThunkState = TokensRootState & FormDraftRootState;
+export type ComposeEvmApprovalFeeLevelsThunkState = TokensRootState &
+    FormDraftRootState &
+    NetworksRootState;
 
 export const composeEvmApprovalFeeLevelsThunk = createThunk<
     PrecomposedLevels,
@@ -316,6 +322,8 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk<
         { quote, account, feeInfo, selectedFeeLevel = 'normal', customFee, approvalTypeOverride },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         try {
             const { dexTx, send, sendStringAmount, approvalType: quoteApprovalType } = quote;
 
@@ -341,7 +349,7 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk<
             }
 
             const approvalType = approvalTypeOverride ?? quoteApprovalType ?? 'INFINITE';
-            const { allowanceAmount } = getAllowanceAmount({
+            const { allowanceAmount } = getAllowanceAmount(networkConfigDeps, {
                 rawAmount: sendStringAmount,
                 approvalType,
                 token,

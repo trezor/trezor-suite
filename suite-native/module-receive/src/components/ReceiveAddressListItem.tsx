@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AddressLabel } from '@suite-native/address';
@@ -19,6 +21,8 @@ export const ReceiveAddressListItem = ({
     symbol,
     deviceStaticSessionId,
 }: ReceiveAddressListItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const addressIndex = getAddressPathIndex(address.path);
     const isUsed = !!address.transfers;
 
@@ -48,7 +52,11 @@ export const ReceiveAddressListItem = ({
             <HStack spacing="sp12" alignItems="center">
                 {isUsed ? (
                     <ExactCryptoAmountFormatter
-                        value={formatNetworkAmount(address.received ?? '0', symbol)}
+                        value={formatNetworkAmount(
+                            networkConfigDeps,
+                            address.received ?? '0',
+                            symbol,
+                        )}
                         symbol={symbol}
                         variant="body-md"
                         color="contentPrimary"

@@ -3,8 +3,12 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/networks" },
         { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-core"

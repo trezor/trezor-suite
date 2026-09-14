@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { Translation } from '@suite/intl';
 import { type StellarAssetDiff, getStellarAssetDiffLabel } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
@@ -12,6 +14,8 @@ interface StellarTxSimulationAssetProps {
 }
 
 export function StellarTxSimulationAsset({ assetDiff, network }: StellarTxSimulationAssetProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { asset, in: received, out: sent } = assetDiff;
 
     return (
@@ -31,7 +35,12 @@ export function StellarTxSimulationAsset({ assetDiff, network }: StellarTxSimula
                     <Translation
                         id="TR_SIMULATION_SENDING_ASSET"
                         values={{
-                            amount: getStellarAssetDiffLabel(assetDiff, sent, network.symbol),
+                            amount: getStellarAssetDiffLabel(
+                                networkConfigDeps,
+                                assetDiff,
+                                sent,
+                                network.symbol,
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>
@@ -49,7 +58,12 @@ export function StellarTxSimulationAsset({ assetDiff, network }: StellarTxSimula
                     <Translation
                         id="TR_SIMULATION_RECEIVING_ASSET"
                         values={{
-                            amount: getStellarAssetDiffLabel(assetDiff, received, network.symbol),
+                            amount: getStellarAssetDiffLabel(
+                                networkConfigDeps,
+                                assetDiff,
+                                received,
+                                network.symbol,
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>

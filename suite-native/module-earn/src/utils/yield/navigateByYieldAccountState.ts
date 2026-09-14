@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type StablecoinYieldVaultToken, type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -19,6 +20,7 @@ export type YieldAccountNavigationDestination =
     'vault-detail' | 'deposit-in-a-nutshell-modal' | 'firmware-update-alert';
 
 export const navigateByYieldAccountState = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     item: YieldNavigationItem,
     navigate: YieldNavigateFn,
@@ -30,7 +32,10 @@ export const navigateByYieldAccountState = (
 ): YieldAccountNavigationDestination => {
     const { yieldId, underlyingTokenContract, receiptTokenContract } = item;
 
-    if (receiptTokenContract && hasPositiveContractTokenBalance(account, receiptTokenContract)) {
+    if (
+        receiptTokenContract &&
+        hasPositiveContractTokenBalance(networkConfigDeps, account, receiptTokenContract)
+    ) {
         navigate(RootStackRoutes.YieldVaultDetail, {
             accountKey: account.key,
             tokenContract: receiptTokenContract,

@@ -1,5 +1,6 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -113,7 +114,9 @@ export const reportWalletBalanceThunk = createThunk<
     });
 });
 
-export type ReportAccountInfoThunkState = AccountsRootState & TokenDefinitionsRootState;
+export type ReportAccountInfoThunkState = AccountsRootState &
+    TokenDefinitionsRootState &
+    NetworksRootState;
 
 export type ReportAccountInfoThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
@@ -122,13 +125,15 @@ export const reportAccountInfoThunk = createThunk<
     AccountKey,
     { state: ReportAccountInfoThunkState; extra: ReportAccountInfoThunkDeps }
 >(`${ACCOUNTS_MODULE_PREFIX}/reportAccountInfo`, (accountKey, { getState, extra }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     const account = selectAccountByKey(getState(), accountKey);
     if (!account || !isAccountActiveForAnalytics(account)) return;
 
     const tokenDefinitions = selectCoinDefinitions(getState(), account.symbol);
     // wait for token definitions before reporting, otherwise the account would be deduped with an
     // incorrect token list with phishing tokens could be reported
-    const requiresTokenDefinitions = getNetworkFeatures(account.symbol).includes(
+    const requiresTokenDefinitions = getNetworkFeatures(networkConfigDeps, account.symbol).includes(
         'coin-definitions',
     );
     if (requiresTokenDefinitions && !tokenDefinitions?.data) return;
@@ -137,7 +142,12 @@ export const reportAccountInfoThunk = createThunk<
 
     extra.services.analytics.report({
         type: events.accountsInfoEvent.name,
-        payload: getAccountInfoAnalyticsPayload(account, tokenDefinitions, hasTraded),
+        payload: getAccountInfoAnalyticsPayload(
+            networkConfigDeps,
+            account,
+            tokenDefinitions,
+            hasTraded,
+        ),
     });
 });
 
@@ -152,17 +162,23 @@ export type FetchAndUpdateAccountThunkState = AccountsRootState &
     DeviceRootState &
     TokenDefinitionsRootState &
     TransactionsRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 export type FetchAndUpdateAccountThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 export const fetchAndUpdateAccountThunk = createThunk<
     void,
     FetchAndUpdateAccountThunkParams,
-    { state: FetchAndUpdateAccountThunkState; extra: FetchAndUpdateAccountThunkDeps }
+    {
+        state: FetchAndUpdateAccountThunkState;
+        extra: FetchAndUpdateAccountThunkDeps;
+    }
 >(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
     async ({ accountKey }, { dispatch, getState }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || account.failed || account.accountType === 'placeholder') return;
@@ -262,7 +278,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
                 });
 
                 dispatch(
-                    transactionsActions.addTransaction({
+                    transactionsActions.addTransaction(networkConfigDeps, {
                         transactions: enrichedAdd.reverse(),
                         account,
                     }),
@@ -275,11 +291,21 @@ export const fetchAndUpdateAccountThunk = createThunk<
                 const token = tx.tokens?.[0];
 
                 const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
-                const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, account);
+                const areSatoshisUsed = getAreSatoshisUsed(
+                    networkConfigDeps,
+                    bitcoinAmountUnit,
+                    account,
+                );
 
                 const formattedAmount = token
                     ? formatTokenAmount(token)
-                    : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+                    : formatNetworkAmount(
+                          networkConfigDeps,
+                          tx.amount,
+                          account.symbol,
+                          true,
+                          areSatoshisUsed,
+                      );
 
                 dispatch(
                     notificationsActions.addEvent({
@@ -308,7 +334,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
             ) {
                 // updateAccount restarts the throttle window via the accountsRefreshTime slice
                 // (mirrors old account.ts)
-                dispatch(accountsActions.updateAccount(account, payload));
+                dispatch(accountsActions.updateAccount(networkConfigDeps, account, payload));
                 dispatch(reportAccountInfoThunk(account.key));
             } else {
                 // refreshed, nothing changed - restart the throttle window directly

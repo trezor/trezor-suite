@@ -1,4 +1,9 @@
 import { type BuyTrade, type BuyTradeQuoteRequest } from 'invity-api';
+import {
+    type NetworkConfigDeps,
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+} from '@suite-common/networks';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
@@ -37,12 +42,10 @@ type GetQuoteRequestData = {
     shouldSendInSats: boolean | undefined;
 };
 
-const getQuoteRequestData = ({
-    formValues,
-    quotesRequest,
-    network,
-    shouldSendInSats,
-}: GetQuoteRequestData): BuyTradeQuoteRequest | undefined => {
+const getQuoteRequestData = (
+    networkConfigDeps: NetworkConfigDeps,
+    { formValues, quotesRequest, network, shouldSendInSats }: GetQuoteRequestData,
+): BuyTradeQuoteRequest | undefined => {
     const {
         fiatInput,
         cryptoInput,
@@ -53,7 +56,7 @@ const getQuoteRequestData = ({
         countrySubdivisionSelect,
     } = formValues;
 
-    const decimals = getNetworkDecimalsWithFallback(network.symbol);
+    const decimals = getNetworkDecimalsWithFallback(networkConfigDeps, network.symbol);
     const cryptoStringAmount =
         cryptoInput && shouldSendInSats
             ? convertAmountSubunitsToUnits(cryptoInput, decimals)
@@ -87,7 +90,7 @@ const getQuoteRequestData = ({
     };
 };
 
-type HandleBuyRequestThunkState = TradingRootState;
+type HandleBuyRequestThunkState = TradingRootState & NetworksRootState;
 
 export const handleBuyRequestThunk = createThunk<
     BuyTrade[],
@@ -102,9 +105,11 @@ export const handleBuyRequestThunk = createThunk<
         { formValues, network, shouldSendInSats },
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const quotesRequest = selectTradingBuyQuotesRequest(getState());
 
-        const requestData = getQuoteRequestData({
+        const requestData = getQuoteRequestData(networkConfigDeps, {
             formValues,
             quotesRequest,
             network,

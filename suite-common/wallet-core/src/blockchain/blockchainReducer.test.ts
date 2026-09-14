@@ -1,9 +1,13 @@
+import { networksActions } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type BackendSettings } from '@suite-common/wallet-types';
 
 import { type SetBackendPayload, blockchainActions } from './blockchainActions';
-import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
+import { createBlockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const blockchainReducer = prepareBlockchainReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -50,9 +54,11 @@ describe('blockchain reducer', () => {
                 expect(
                     blockchainReducer(
                         {
-                            ...blockchainInitialState,
+                            ...createBlockchainInitialState(networkConfigDeps.getNetworkConfigs()),
                             [payload.symbol]: {
-                                ...blockchainInitialState[payload.symbol],
+                                ...createBlockchainInitialState(
+                                    networkConfigDeps.getNetworkConfigs(),
+                                )[payload.symbol],
                                 backends,
                             },
                         },
@@ -62,4 +68,22 @@ describe('blockchain reducer', () => {
             });
         });
     });
+});
+
+it('initializes only loaded networks and preserves custom backends on reload', () => {
+    const bitcoin = networkConfigDeps.getNetworkConfig('btc');
+    const loaded = blockchainReducer(undefined, networksActions.setNetworks([bitcoin]));
+    expect(Object.keys(loaded)).toEqual(['btc']);
+    expect(loaded.btc.connected).toBe(false);
+
+    const configured = blockchainReducer(
+        loaded,
+        blockchainActions.setBackend({
+            symbol: bitcoin.symbol,
+            type: 'electrum',
+            urls: ['https://custom.example'],
+        }),
+    );
+    const reloaded = blockchainReducer(configured, networksActions.setNetworks([bitcoin]));
+    expect(reloaded.btc.backends).toEqual(configured.btc.backends);
 });

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import type { CryptoId } from 'invity-api';
 
 import {
@@ -7,17 +8,27 @@ import {
 } from '@suite-common/trading';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
-export const toCaseAwareCryptoId = (cryptoId: CryptoId): CryptoId => {
+export const toCaseAwareCryptoId = (
+    networkConfigDeps: NetworkConfigDeps,
+    cryptoId: CryptoId,
+): CryptoId => {
     if (isCryptoIdForNativeToken(cryptoId)) {
         return cryptoId;
     }
 
-    const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+    const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(
+        networkConfigDeps,
+        cryptoId,
+    );
     if (!contractAddress) {
         return cryptoId;
     }
 
-    const adjustedContractAddress = getContractAddressForNetworkSymbol(symbol, contractAddress);
+    const adjustedContractAddress = getContractAddressForNetworkSymbol(
+        networkConfigDeps,
+        symbol,
+        contractAddress,
+    );
 
-    return toTokenCryptoId(symbol, adjustedContractAddress);
+    return toTokenCryptoId(networkConfigDeps, symbol, adjustedContractAddress);
 };

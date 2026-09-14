@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -46,6 +47,8 @@ type BroadcastWrap = {
 };
 
 export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNativeTokenProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
     const {
@@ -80,7 +83,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         networkSymbol: account.symbol,
     });
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const nativeSymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
     const nativeToken: YieldFlowDisplayToken = {
         networkSymbol: account.symbol,
         symbol: nativeSymbol,

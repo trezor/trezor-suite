@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getTronWithdrawableBalance } from '@suite-common/wallet-core';
 import { Card, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -10,8 +12,10 @@ import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
 
 export const TronWithdrawAmount = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { account } = useTronStakeContext();
-    const amount = getTronWithdrawableBalance(account);
+    const amount = getTronWithdrawableBalance(networkConfigDeps, account);
 
     return (
         <Card paddingType="none">

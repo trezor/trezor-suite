@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
 import {
     type NetworkSymbol,
@@ -29,15 +30,13 @@ type FormatCryptoAmountParams = Pick<
     symbol: string;
 };
 
-export const formatCryptoAmount = ({
-    amount,
-    symbol,
-    contractAddress,
-    CryptoAmountFormatter,
-}: FormatCryptoAmountParams) =>
+export const formatCryptoAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    { amount, symbol, contractAddress, CryptoAmountFormatter }: FormatCryptoAmountParams,
+) =>
     CryptoAmountFormatter.format(amount, {
         symbol:
-            !contractAddress && isNetworkSymbol(symbol.toLowerCase())
+            !contractAddress && isNetworkSymbol(networkConfigDeps, symbol.toLowerCase())
                 ? (symbol.toLowerCase() as NetworkSymbol)
                 : (symbol as NetworkSymbol | TokenSymbol),
         isBalance: true,
@@ -82,123 +81,127 @@ export const fiatAmountInputValidationSchema = yup
         });
     });
 
-export const sendCryptoAmountValidationSchema = yup
-    .number()
-    // This (untranslated) error will be hopefully never displayed to user,
-    // but let's keep it here just to be safe
-    .typeError('Invalid number')
-    .min(0, 'Invalid value')
-    .test('send-crypto-min', (value, testContext) => {
-        const {
-            sendAssetSymbol,
-            minCrypto,
-            translate,
-            CryptoAmountFormatter,
-            convertNumberToBaseUnit,
-            sendNetworkSymbol,
-            contractAddress,
-        } = getAmountLimitContext(testContext);
-        if (sendAssetSymbol === undefined || sendNetworkSymbol === undefined) {
-            return true;
-        }
+export const sendCryptoAmountValidationSchema = (networkConfigDeps: NetworkConfigDeps) =>
+    yup
+        .number()
+        // This (untranslated) error will be hopefully never displayed to user,
+        // but let's keep it here just to be safe
+        .typeError('Invalid number')
+        .min(0, 'Invalid value')
+        .test('send-crypto-min', (value, testContext) => {
+            const {
+                sendAssetSymbol,
+                minCrypto,
+                translate,
+                CryptoAmountFormatter,
+                convertNumberToBaseUnit,
+                sendNetworkSymbol,
+                contractAddress,
+            } = getAmountLimitContext(testContext);
+            if (sendAssetSymbol === undefined || sendNetworkSymbol === undefined) {
+                return true;
+            }
 
-        const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
+            const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
 
-        if (
-            convertedValue === undefined ||
-            minCrypto === undefined ||
-            convertedValue >= parseFloat(minCrypto)
-        ) {
-            return true;
-        }
+            if (
+                convertedValue === undefined ||
+                minCrypto === undefined ||
+                convertedValue >= parseFloat(minCrypto)
+            ) {
+                return true;
+            }
 
-        return testContext.createError({
-            message: translate('moduleTrading.validators.min', {
-                min: formatCryptoAmount({
-                    amount: minCrypto,
-                    symbol: sendAssetSymbol,
-                    contractAddress,
-                    CryptoAmountFormatter,
-                }),
-            }),
-        });
-    })
-    .test('send-crypto-max', (value, testContext) => {
-        const {
-            sendAssetSymbol,
-            maxCrypto,
-            translate,
-            CryptoAmountFormatter,
-            convertNumberToBaseUnit,
-            sendNetworkSymbol,
-            contractAddress,
-        } = getAmountLimitContext(testContext);
-        if (sendAssetSymbol === undefined || sendNetworkSymbol === undefined) {
-            return true;
-        }
-
-        const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
-
-        if (
-            convertedValue === undefined ||
-            maxCrypto === undefined ||
-            convertedValue <= parseFloat(maxCrypto)
-        ) {
-            return true;
-        }
-
-        return testContext.createError({
-            message: translate('moduleTrading.validators.max', {
-                max: formatCryptoAmount({
-                    amount: maxCrypto,
-                    symbol: sendAssetSymbol,
-                    contractAddress,
-                    CryptoAmountFormatter,
-                }),
-            }),
-        });
-    })
-    .test('send-crypto-balance', (value, testContext) => {
-        const {
-            balance,
-            translate,
-            convertNumberToBaseUnit,
-            sendAssetSymbol,
-            sendNetworkSymbol,
-            maxSpendableAmount,
-        } = getAmountLimitContext(testContext);
-
-        if (sendAssetSymbol === undefined || sendNetworkSymbol === undefined) {
-            return true;
-        }
-
-        const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
-
-        if (convertedValue === undefined || convertedValue === 0 || balance === undefined) {
-            return true;
-        }
-
-        if (convertedValue > parseFloat(balance)) {
             return testContext.createError({
-                type: 'insufficient-balance',
-                message: translate('moduleTrading.validators.insufficientBalance'),
-            });
-        }
-
-        // undefined means the max amount is unknown (still loading or its calculation
-        // failed), there is nothing to validate against
-        if (maxSpendableAmount === undefined) {
-            return true;
-        }
-
-        if (convertedValue > parseFloat(maxSpendableAmount)) {
-            return testContext.createError({
-                type: 'network-reserve',
-                message: translate('moduleTrading.validators.networkReserve', {
-                    displaySymbol: getNetworkDisplaySymbol(sendNetworkSymbol),
+                message: translate('moduleTrading.validators.min', {
+                    min: formatCryptoAmount(networkConfigDeps, {
+                        amount: minCrypto,
+                        symbol: sendAssetSymbol,
+                        contractAddress,
+                        CryptoAmountFormatter,
+                    }),
                 }),
             });
-        }
+        })
+        .test('send-crypto-max', (value, testContext) => {
+            const {
+                sendAssetSymbol,
+                maxCrypto,
+                translate,
+                CryptoAmountFormatter,
+                convertNumberToBaseUnit,
+                sendNetworkSymbol,
+                contractAddress,
+            } = getAmountLimitContext(testContext);
+            if (sendAssetSymbol === undefined || sendNetworkSymbol === undefined) {
+                return true;
+            }
 
-        return true;
-    });
+            const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
+
+            if (
+                convertedValue === undefined ||
+                maxCrypto === undefined ||
+                convertedValue <= parseFloat(maxCrypto)
+            ) {
+                return true;
+            }
+
+            return testContext.createError({
+                message: translate('moduleTrading.validators.max', {
+                    max: formatCryptoAmount(networkConfigDeps, {
+                        amount: maxCrypto,
+                        symbol: sendAssetSymbol,
+                        contractAddress,
+                        CryptoAmountFormatter,
+                    }),
+                }),
+            });
+        })
+        .test('send-crypto-balance', (value, testContext) => {
+            const {
+                balance,
+                translate,
+                convertNumberToBaseUnit,
+                sendAssetSymbol,
+                sendNetworkSymbol,
+                maxSpendableAmount,
+            } = getAmountLimitContext(testContext);
+
+            if (sendAssetSymbol === undefined || sendNetworkSymbol === undefined) {
+                return true;
+            }
+
+            const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
+
+            if (convertedValue === undefined || convertedValue === 0 || balance === undefined) {
+                return true;
+            }
+
+            if (convertedValue > parseFloat(balance)) {
+                return testContext.createError({
+                    type: 'insufficient-balance',
+                    message: translate('moduleTrading.validators.insufficientBalance'),
+                });
+            }
+
+            // undefined means the max amount is unknown (still loading or its calculation
+            // failed), there is nothing to validate against
+            if (maxSpendableAmount === undefined) {
+                return true;
+            }
+
+            if (convertedValue > parseFloat(maxSpendableAmount)) {
+                return testContext.createError({
+                    type: 'network-reserve',
+                    message: translate('moduleTrading.validators.networkReserve', {
+                        displaySymbol: getNetworkDisplaySymbol(
+                            networkConfigDeps,
+                            sendNetworkSymbol,
+                        ),
+                    }),
+                });
+            }
+
+            return true;
+        });

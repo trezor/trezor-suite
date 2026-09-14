@@ -1,8 +1,13 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-export const getStakedBalance = (account: Account, resourceType: TronResourceType): string => {
+export const getStakedBalance = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+    resourceType: TronResourceType,
+): string => {
     const stakingInfo =
         account.networkType === 'tron' ? account.misc.tronResources?.stakingInfo : undefined;
 
@@ -18,7 +23,7 @@ export const getStakedBalance = (account: Account, resourceType: TronResourceTyp
 
     const unstakeable = BigNumber.max(new BigNumber(staked ?? 0).minus(delegated ?? 0), 0);
 
-    return subunitsToUnits({
+    return subunitsToUnits(networkConfigDeps, {
         value: asAmountSubunit(unstakeable),
         symbol: account.symbol,
     }).toString();

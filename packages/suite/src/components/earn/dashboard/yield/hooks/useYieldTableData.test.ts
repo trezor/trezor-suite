@@ -1,11 +1,13 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockNetworkConfigDeps, mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getYieldOpportunityData, useYieldTableData } from './useYieldTableData';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -75,7 +77,7 @@ describe(getYieldOpportunityData.name, () => {
                 ],
             });
 
-            const data = getYieldOpportunityData({
+            const data = getYieldOpportunityData(networkConfigDeps, {
                 account,
                 networkSymbol: ethSymbol,
                 vault: wethVault,
@@ -90,7 +92,7 @@ describe(getYieldOpportunityData.name, () => {
                 formattedBalance: '1',
             });
 
-            const data = getYieldOpportunityData({
+            const data = getYieldOpportunityData(networkConfigDeps, {
                 account,
                 networkSymbol: ethSymbol,
                 vault: wethVault,
@@ -107,7 +109,7 @@ describe(getYieldOpportunityData.name, () => {
                 formattedBalance: '0.003',
             });
 
-            const data = getYieldOpportunityData({
+            const data = getYieldOpportunityData(networkConfigDeps, {
                 account,
                 networkSymbol: ethSymbol,
                 vault: wethVault,
@@ -131,7 +133,7 @@ describe(getYieldOpportunityData.name, () => {
                 ],
             });
 
-            const data = getYieldOpportunityData({
+            const data = getYieldOpportunityData(networkConfigDeps, {
                 account,
                 networkSymbol: ethSymbol,
                 vault: wethVault,
@@ -157,7 +159,7 @@ describe(getYieldOpportunityData.name, () => {
                 ],
             });
 
-            const data = getYieldOpportunityData({
+            const data = getYieldOpportunityData(networkConfigDeps, {
                 account,
                 networkSymbol: ethSymbol,
                 vault: usdcVault,
@@ -174,7 +176,7 @@ describe(getYieldOpportunityData.name, () => {
                 formattedBalance: '5',
             });
 
-            const data = getYieldOpportunityData({
+            const data = getYieldOpportunityData(networkConfigDeps, {
                 account,
                 networkSymbol: ethSymbol,
                 vault: usdcVault,

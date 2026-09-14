@@ -2,6 +2,7 @@ import { type UseControllerProps } from 'react-hook-form';
 
 import { type TranslationFunction } from '@suite/intl';
 import { type Formatter } from '@suite-common/formatters';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type RatesByKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -40,22 +41,25 @@ type FiatInputRulesProps = {
     rates: RatesByKey | undefined;
 };
 
-export const getFiatInputRules = ({
-    isExchangeContext,
-    isSellContext,
-    translationString,
-    fiatAmount,
-    isNetworkReserveEnabled,
-    networkReserveFiatAmount,
-    feeFiatAmount,
-    normalizedCryptoAmount,
-    amountLimits,
-    accountSymbol,
-    selectedCurrencyCode,
-    tokenAddress,
-    rates,
-}: FiatInputRulesProps): UseControllerProps['rules'] => {
-    const fiatInputDecimals = getDecimalsForBaseCurrency({
+export const getFiatInputRules = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        isExchangeContext,
+        isSellContext,
+        translationString,
+        fiatAmount,
+        isNetworkReserveEnabled,
+        networkReserveFiatAmount,
+        feeFiatAmount,
+        normalizedCryptoAmount,
+        amountLimits,
+        accountSymbol,
+        selectedCurrencyCode,
+        tokenAddress,
+        rates,
+    }: FiatInputRulesProps,
+): UseControllerProps['rules'] => {
+    const fiatInputDecimals = getDecimalsForBaseCurrency(networkConfigDeps, {
         code: selectedCurrencyCode,
         isInSats: false,
     });
@@ -168,38 +172,41 @@ type CryptoInputRulesProps = {
     feeInUnits: string | undefined;
 };
 
-export const getCryptoInputRules = ({
-    isBuyContext,
-    translationString,
-    shouldSendInSats,
-    decimals,
-    amountLimits,
-    formatter,
-    validationAccount,
-    outputToken,
-    isNetworkReserveEnabled,
-    contractAddress,
-    feeInUnits,
-}: CryptoInputRulesProps): UseControllerProps['rules'] => ({
+export const getCryptoInputRules = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        isBuyContext,
+        translationString,
+        shouldSendInSats,
+        decimals,
+        amountLimits,
+        formatter,
+        validationAccount,
+        outputToken,
+        isNetworkReserveEnabled,
+        contractAddress,
+        feeInUnits,
+    }: CryptoInputRulesProps,
+): UseControllerProps['rules'] => ({
     validate: {
         min: validateMin(translationString),
         integer: validateInteger(translationString, { except: !shouldSendInSats }),
         decimals: validateDecimals(translationString, { decimals }),
-        limits: validateCryptoLimits(translationString, {
+        limits: validateCryptoLimits(networkConfigDeps, translationString, {
             amountLimits,
             areSatsUsed: !!shouldSendInSats,
             formatter,
         }),
         ...(!isBuyContext
             ? {
-                  reserveOrBalance: validateReserveOrBalance(translationString, {
+                  reserveOrBalance: validateReserveOrBalance(networkConfigDeps, translationString, {
                       account: validationAccount,
                       areSatsUsed: !!shouldSendInSats,
                       contractAddress: outputToken ?? undefined,
                   }),
                   networkReserve: isNetworkReserveEnabled
                       ? validateNetworkReserve(translationString, {
-                            reserve: getNetworkReserve({
+                            reserve: getNetworkReserve(networkConfigDeps, {
                                 symbol: validationAccount.symbol,
                                 contractAddress,
                                 isEnabled: isNetworkReserveEnabled,

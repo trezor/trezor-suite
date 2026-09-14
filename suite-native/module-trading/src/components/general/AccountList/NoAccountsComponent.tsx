@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceInViewOnlyMode, selectIsPortfolioTrackerDevice } from '@suite-common/device';
@@ -35,6 +37,8 @@ const NoAccountDescription = ({
 };
 
 export const NoAccountsComponent = ({ symbol, onActivateAccount }: NoAccountsComponentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
@@ -61,7 +65,7 @@ export const NoAccountsComponent = ({ symbol, onActivateAccount }: NoAccountsCom
                     <Button onPress={onActivateAccount}>
                         <Translation
                             id="moduleTrading.accountScreen.accountEmpty.activate"
-                            values={{ network: getNetwork(symbol).name }}
+                            values={{ network: getNetwork(networkConfigDeps, symbol).name }}
                         />
                     </Button>
                 )}

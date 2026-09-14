@@ -7,7 +7,7 @@ import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
 import { notImplementedGetter } from '@suite-common/extra-dependencies';
-import { createNetworksCompositionRoot } from '@suite-common/networks';
+import { type NetworksDep } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
@@ -49,7 +49,8 @@ const transportsPerDeviceType = {
 
 const transports = transportsPerDeviceType[deviceType];
 
-type NativeAppDeps = Pick<NativeReduxStore, 'getState' | 'dispatch'> &
+type NativeAppDeps = NetworksDep &
+    Pick<NativeReduxStore, 'getState' | 'dispatch'> &
     EnsureEncryptionKeyDep &
     NativeStorageDep &
     GetTrezorConnectPrivilegedDep;
@@ -83,18 +84,13 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
-    const networks = createNetworksCompositionRoot({
-        getTrezorConnect: deps.getTrezorConnect,
-        dispatch: deps.dispatch,
-    });
-
     const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
         initLog(prefix, false);
 
     const logger = createLogger('native-transport');
 
     return {
-        networks,
+        networks: deps.networks,
         suiteSync,
         bip329,
         ensureDelegatedIdentityKey,

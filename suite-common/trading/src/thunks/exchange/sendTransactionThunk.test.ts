@@ -1,5 +1,8 @@
+import { getNetworks } from '@suite-common/wallet-config';
+
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
@@ -17,6 +20,8 @@ import { type TradingTransactionExchange } from '../../types';
 import { tradingThunks } from '../common';
 
 import { exchangeThunks } from './index';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('./sendDexTransactionThunk', () => {
     const actual = jest.requireActual('./sendDexTransactionThunk');
@@ -80,6 +85,7 @@ describe('sendTransactionThunk', () => {
         const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
+                networks: () => getNetworks(mockNetworkConfigDeps()),
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),
@@ -142,7 +148,7 @@ describe('sendTransactionThunk', () => {
                     trade: undefined,
                     returnUrl,
                     setMaxOutputId: undefined,
-                    decimals: getNetwork(account.symbol).decimals,
+                    decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                     shouldSendInSats: false,
                     nextStep: jest.fn(),
                     processResponseData: jest.fn(),
@@ -185,7 +191,7 @@ describe('sendTransactionThunk', () => {
                 trade: undefined,
                 returnUrl,
                 setMaxOutputId: undefined,
-                decimals: getNetwork(account.symbol).decimals,
+                decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                 shouldSendInSats: false,
                 nextStep: jest.fn(),
                 processResponseData: jest.fn(),
@@ -221,7 +227,7 @@ describe('sendTransactionThunk', () => {
                         ...(tradeTest.trade as ExchangeTrade),
                     },
                     returnUrl,
-                    decimals: getNetwork(account.symbol).decimals,
+                    decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                     shouldSendInSats: false,
                     nextStep: jest.fn(),
                     triggerAnalyticsTradeConfirmation: jest.fn(),
@@ -272,7 +278,7 @@ describe('sendTransactionThunk', () => {
                     account,
                     trade: trade.data,
                     returnUrl,
-                    decimals: getNetwork(account.symbol).decimals,
+                    decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                     shouldSendInSats: false,
                     nextStep: jest.fn(),
                     triggerAnalyticsTradeConfirmation: jest.fn(),
@@ -319,7 +325,7 @@ describe('sendTransactionThunk', () => {
                     partnerPaymentExtraId: undefined,
                 },
                 returnUrl,
-                decimals: getNetwork(account.symbol).decimals,
+                decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                 shouldSendInSats: true,
                 nextStep: mockNextStep,
                 triggerAnalyticsTradeConfirmation: jest.fn(),

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import type { BuyTrade, CoinInfo, SellFiatTrade } from 'invity-api';
 
 import { cryptoIdToNetwork } from '@suite-common/trading';
@@ -8,16 +9,20 @@ export type GetAnalyticsTradingBuyPayloadProps = {
     coinInfo: CoinInfo | undefined;
 };
 
-export const getAnalyticsTradingBuyPayload = ({
-    quote,
-    coinInfo,
-}: GetAnalyticsTradingBuyPayloadProps) => {
+export const getAnalyticsTradingBuyPayload = (
+    networkConfigDeps: NetworkConfigDeps,
+    { quote, coinInfo }: GetAnalyticsTradingBuyPayloadProps,
+) => {
     if (!coinInfo || !quote?.receiveCurrency) {
         return null;
     }
 
-    const tradeableAsset = coinInfoToTradeableAsset(quote.receiveCurrency, coinInfo);
-    const symbol = cryptoIdToNetwork(quote.receiveCurrency)?.symbol;
+    const tradeableAsset = coinInfoToTradeableAsset(
+        networkConfigDeps,
+        quote.receiveCurrency,
+        coinInfo,
+    );
+    const symbol = cryptoIdToNetwork(networkConfigDeps, quote.receiveCurrency)?.symbol;
 
     if (!tradeableAsset) {
         return null;
@@ -38,16 +43,20 @@ export type GetAnalyticsTradingSellPayloadProps = {
     coinInfo: CoinInfo | undefined;
 };
 
-export const getAnalyticsTradingSellPayload = ({
-    quote,
-    coinInfo,
-}: GetAnalyticsTradingSellPayloadProps) => {
+export const getAnalyticsTradingSellPayload = (
+    networkConfigDeps: NetworkConfigDeps,
+    { quote, coinInfo }: GetAnalyticsTradingSellPayloadProps,
+) => {
     if (!coinInfo || !quote?.cryptoCurrency) {
         return null;
     }
 
-    const tradeableAsset = coinInfoToTradeableAsset(quote.cryptoCurrency, coinInfo);
-    const symbol = cryptoIdToNetwork(quote.cryptoCurrency)?.symbol;
+    const tradeableAsset = coinInfoToTradeableAsset(
+        networkConfigDeps,
+        quote.cryptoCurrency,
+        coinInfo,
+    );
+    const symbol = cryptoIdToNetwork(networkConfigDeps, quote.cryptoCurrency)?.symbol;
 
     return {
         cryptoLabel: tradeableAsset.symbol,

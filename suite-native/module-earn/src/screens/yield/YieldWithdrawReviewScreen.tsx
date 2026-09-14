@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -42,6 +44,8 @@ const isYieldWithdrawScreenReview = (
 ): actionReview is YieldWithdrawScreenReview => actionReview?.type === flowType;
 
 export const YieldWithdrawReviewScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
 
@@ -76,7 +80,7 @@ export const YieldWithdrawReviewScreen = () => {
             return null;
         }
 
-        return buildYieldReviewPreview({
+        return buildYieldReviewPreview(networkConfigDeps, {
             device,
             flowData,
             review,
@@ -85,7 +89,7 @@ export const YieldWithdrawReviewScreen = () => {
             type: 'withdraw',
             vaultName,
         });
-    }, [device, flowData, review, reviewToken, selectedFee, vaultName]);
+    }, [networkConfigDeps, device, flowData, review, reviewToken, selectedFee, vaultName]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {

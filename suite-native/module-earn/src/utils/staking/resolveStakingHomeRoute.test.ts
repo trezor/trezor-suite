@@ -1,9 +1,13 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { RootStackRoutes } from '@suite-native/navigation';
 
 import { resolveStakingHomeRoute } from './resolveStakingHomeRoute';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
@@ -28,7 +32,7 @@ describe('resolveStakingHomeRoute', () => {
         const account = createMockAccount();
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000000');
 
-        expect(resolveStakingHomeRoute(account)).toEqual({
+        expect(resolveStakingHomeRoute(networkConfigDeps, account)).toEqual({
             name: RootStackRoutes.StakingManagement,
             params: { accountKey: account.key },
         });
@@ -38,7 +42,7 @@ describe('resolveStakingHomeRoute', () => {
         const account = createMockAccount({ symbol: 'ada' });
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000');
 
-        expect(resolveStakingHomeRoute(account)).toEqual({
+        expect(resolveStakingHomeRoute(networkConfigDeps, account)).toEqual({
             name: RootStackRoutes.StakingManagement,
             params: { accountKey: account.key },
         });
@@ -48,7 +52,7 @@ describe('resolveStakingHomeRoute', () => {
         const account = createMockAccount({ symbol: 'ada' });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-        expect(resolveStakingHomeRoute(account)).toEqual({
+        expect(resolveStakingHomeRoute(networkConfigDeps, account)).toEqual({
             name: RootStackRoutes.HowStakeWorksScreen,
             params: { symbol: account.symbol, accountKey: account.key },
         });
@@ -58,7 +62,7 @@ describe('resolveStakingHomeRoute', () => {
         const account = createMockAccount({ symbol: 'sol' });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-        expect(resolveStakingHomeRoute(account)).toEqual({
+        expect(resolveStakingHomeRoute(networkConfigDeps, account)).toEqual({
             name: RootStackRoutes.HowStakeWorksScreen,
             params: { symbol: 'sol', accountKey: account.key },
         });
@@ -68,7 +72,7 @@ describe('resolveStakingHomeRoute', () => {
         const account = createMockAccount({ symbol: 'eth' });
         mockGetAccountTotalStakingBalance.mockReturnValue(null);
 
-        expect(resolveStakingHomeRoute(account)).toEqual({
+        expect(resolveStakingHomeRoute(networkConfigDeps, account)).toEqual({
             name: RootStackRoutes.HowStakeWorksScreen,
             params: { symbol: 'eth', accountKey: account.key },
         });

@@ -1,5 +1,7 @@
 import { Address } from '@suite/address';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -28,15 +30,17 @@ export const TradingUtxoReceiveAddressOption = ({
     address,
     label,
 }: TradingUtxoReceiveAddressOptionProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { tradingReceiveAddress } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
 
-    const network = getNetwork(account.symbol);
+    const network = getNetwork(networkConfigDeps, account.symbol);
 
     const baseCurrency = useSelector(selectBaseCurrency);
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
-    const balanceInUnits = subunitsToUnits({
+    const balanceInUnits = subunitsToUnits(networkConfigDeps, {
         value: asAmountSubunit(new BigNumber(address.received ?? '0')),
         symbol: account.symbol,
         decimals: network?.decimals,

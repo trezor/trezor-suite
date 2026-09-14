@@ -15,6 +15,7 @@ import {
     type HandleCoinProtocolUriThunkState,
     handleCoinProtocolUriThunk,
 } from '@suite/transfer-uri';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -55,7 +56,7 @@ export type HandleProtocolRequestDispatchDeps = HandleProtocolRequestThunkDeps &
     WalletConnectInitThunkDeps;
 
 export const handleProtocolRequestThunk =
-    (uri: string) =>
+    (networkConfigDeps: NetworkConfigDeps, uri: string) =>
     (
         dispatch: ThunkDispatch<
             HandleProtocolRequestThunkState,
@@ -65,7 +66,7 @@ export const handleProtocolRequestThunk =
         _getState: () => HandleProtocolRequestThunkState,
         extra: HandleProtocolRequestThunkDeps,
     ) => {
-        dispatch(handleCoinProtocolUriThunk(uri, saveCoinProtocol));
+        dispatch(handleCoinProtocolUriThunk(networkConfigDeps, uri, saveCoinProtocol));
 
         if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
             dispatch(

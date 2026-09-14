@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { Context } from '@suite-common/message-system';
@@ -26,6 +28,8 @@ type StakingManagementListHeaderProps = {
 };
 
 export const StakingManagementListHeader = ({ accountKey }: StakingManagementListHeaderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { networkSymbol } = parseAccountKey(accountKey);
 
     const hasAdaStaked = useSelector((state: StakeRootState) =>
@@ -46,7 +50,7 @@ export const StakingManagementListHeader = ({ accountKey }: StakingManagementLis
             {isSupportedEthStakingNetworkSymbol(networkSymbol) && (
                 <InstantUnstakeConfirmationBanner accountKey={accountKey} />
             )}
-            {isStakingSymbol(networkSymbol) && (
+            {isStakingSymbol(networkConfigDeps, networkSymbol) && (
                 <ContextMessage context={Context.getStaking(networkSymbol)} />
             )}
             <StakingManagementPendingSection accountKey={accountKey} />

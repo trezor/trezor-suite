@@ -1,4 +1,5 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -45,20 +46,23 @@ type YieldWithdrawCompletedValues = {
  * `withdraw`. The receipt (shares) amount for the `withdraw` unit is therefore derived from the
  * vault price-per-share, mirroring how the deposit flow derives its received receipt amount.
  */
-export const getYieldWithdrawCompletedValues = ({
-    networkSymbol,
-    flowType,
-    completedAmount,
-    unwrappedAmount,
-    token,
-    receiptToken,
-    pricePerShareState,
-}: GetYieldWithdrawCompletedValuesParams): YieldWithdrawCompletedValues => {
+export const getYieldWithdrawCompletedValues = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        networkSymbol,
+        flowType,
+        completedAmount,
+        unwrappedAmount,
+        token,
+        receiptToken,
+        pricePerShareState,
+    }: GetYieldWithdrawCompletedValuesParams,
+): YieldWithdrawCompletedValues => {
     const isSharesInput = flowType === 'redeem';
 
     const sentReceiptAmount = isSharesInput
         ? completedAmount
-        : (getWithdrawRequestAmount({
+        : (getWithdrawRequestAmount(networkConfigDeps, {
               networkSymbol,
               amount: completedAmount,
               token,
@@ -77,8 +81,8 @@ export const getYieldWithdrawCompletedValues = ({
             output: {
                 token: {
                     networkSymbol,
-                    symbol: getNetworkDisplaySymbol(networkSymbol),
-                    decimals: getNetwork(networkSymbol).decimals,
+                    symbol: getNetworkDisplaySymbol(networkConfigDeps, networkSymbol),
+                    decimals: getNetwork(networkConfigDeps, networkSymbol).decimals,
                 },
                 amount: unwrappedAmount,
             },
@@ -91,7 +95,7 @@ export const getYieldWithdrawCompletedValues = ({
             token,
             amount:
                 isSharesInput && pricePerShareState
-                    ? getConvertedOutputTokenBalanceToInputTokenAmount({
+                    ? getConvertedOutputTokenBalanceToInputTokenAmount(networkConfigDeps, {
                           networkSymbol,
                           token,
                           outputToken: receiptToken,

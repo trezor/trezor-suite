@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -21,6 +22,8 @@ export interface ExportActionProps {
 }
 
 export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [isExportRunning, setIsExportRunning] = useState(false);
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { translationString } = useTranslation();
@@ -31,10 +34,10 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
         }
 
         return translationString('LABELING_ACCOUNT', {
-            networkName: getNetwork(account.symbol).name,
+            networkName: getNetwork(networkConfigDeps, account.symbol).name,
             index: account.index + 1,
         });
-    }, [account, translationString]);
+    }, [networkConfigDeps, account, translationString]);
 
     const runExport = useCallback(
         async (type: ExportFileType) => {

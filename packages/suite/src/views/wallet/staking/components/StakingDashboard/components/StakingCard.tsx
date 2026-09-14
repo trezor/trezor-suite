@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -94,6 +95,8 @@ export const StakingCard = ({
     daysToUnstake,
     account,
 }: StakingCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { isBelowLaptop } = useLayoutSize();
 
@@ -102,6 +105,7 @@ export const StakingCard = ({
 
     const solanaRewardsTotalQuery = useSolanaRewardsTotal(account);
     const { totalRewards, isTotalRewardsLoading } = getStakingTotalRewards(
+        networkConfigDeps,
         account,
         solanaRewardsTotalQuery,
     );
@@ -124,7 +128,7 @@ export const StakingCard = ({
         withdrawTotalAmount = '0',
         claimableAmount = '0',
         restakedReward = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    } = getStakingDataForNetwork(networkConfigDeps, account) ?? {};
 
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
 
@@ -261,6 +265,7 @@ export const StakingCard = ({
                                     id="TR_STAKE_FUNDS_FULLY_ACCESSIBLE"
                                     values={{
                                         networkDisplaySymbol: getNetworkDisplaySymbol(
+                                            networkConfigDeps,
                                             account.symbol,
                                         ),
                                     }}
@@ -300,6 +305,7 @@ export const StakingCard = ({
                                             id="TR_STAKE_ETH_REWARDS_EARN_APY"
                                             values={{
                                                 networkDisplaySymbol: getNetworkDisplaySymbol(
+                                                    networkConfigDeps,
                                                     account.symbol,
                                                 ),
                                             }}

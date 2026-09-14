@@ -2,6 +2,7 @@ import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type Dispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestampThunk } from '@suite-common/wallet-core';
@@ -99,16 +100,19 @@ const getLatestAccountInfo = async ({
     return accountInfo.payload;
 };
 
-const getBalanceFromAccountInfo = ({
-    accountInfo,
-    symbol,
-    contractId,
-}: {
-    accountInfo: AccountInfo;
-    symbol: NetworkSymbol;
-    contractId?: string;
-}) => {
-    const networkType = getNetworkType(symbol);
+const getBalanceFromAccountInfo = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        accountInfo,
+        symbol,
+        contractId,
+    }: {
+        accountInfo: AccountInfo;
+        symbol: NetworkSymbol;
+        contractId?: string;
+    },
+) => {
+    const networkType = getNetworkType(networkConfigDeps, symbol);
 
     const findTokenBalance = () => {
         const token = accountInfo.tokens?.find(t => t.contract === contractId);
@@ -139,21 +143,24 @@ const getBalanceFromAccountInfo = ({
 
 const accountBalanceHistoryCache: Record<string, AccountBalanceHistoryWithTokens> = {};
 
-const getAccountBalanceHistory = async ({
-    accountItem,
-    endOfTimeFrameDate,
-    startOfTimeFrameDate,
-    forceRefetch,
-    // We pass dispatch because we need to fetch all transactions using redux thunk. This is a workaround for now to keep things simple.
-    // In future we should convert this to proper thunk so we can use dispatch and selectors from thunkAPI.
-    dispatch,
-}: {
-    accountItem: AccountItem;
-    endOfTimeFrameDate: Date;
-    startOfTimeFrameDate: Date | null;
-    forceRefetch?: boolean;
-    dispatch: Dispatch;
-}): Promise<AccountBalanceHistoryWithTokens> => {
+const getAccountBalanceHistory = async (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        accountItem,
+        endOfTimeFrameDate,
+        startOfTimeFrameDate,
+        forceRefetch,
+        // We pass dispatch because we need to fetch all transactions using redux thunk. This is a workaround for now to keep things simple.
+        // In future we should convert this to proper thunk so we can use dispatch and selectors from thunkAPI.
+        dispatch,
+    }: {
+        accountItem: AccountItem;
+        endOfTimeFrameDate: Date;
+        startOfTimeFrameDate: Date | null;
+        forceRefetch?: boolean;
+        dispatch: Dispatch;
+    },
+): Promise<AccountBalanceHistoryWithTokens> => {
     const { symbol, identity, descriptor, accountKey, tokensFilter } = accountItem;
     const endTimeFrameTimestamp = getUnixTime(endOfTimeFrameDate);
     const startOfTimeFrameDateTimestamp = startOfTimeFrameDate
@@ -259,7 +266,7 @@ const getAccountBalanceHistory = async ({
 
     const mainMovements = splitMovementsAtEndOfTimeFrame(accountMovementHistory.main);
     const mainBalanceAtEndOfTimeFrame = unapplyMovements(
-        getBalanceFromAccountInfo({ accountInfo: latestAccountInfo, symbol }),
+        getBalanceFromAccountInfo(networkConfigDeps, { accountInfo: latestAccountInfo, symbol }),
         mainMovements.afterFrame,
     );
 
@@ -268,7 +275,7 @@ const getAccountBalanceHistory = async ({
         mainBalanceAtEndOfTimeFrame,
     ).map(point => ({
         ...point,
-        cryptoBalance: formatNetworkAmount(point.cryptoBalance, symbol),
+        cryptoBalance: formatNetworkAmount(networkConfigDeps, point.cryptoBalance, symbol),
     }));
 
     const tokens: Array<readonly [TokenAddress, AccountHistoryMovementItem[]]> = pipe(
@@ -291,7 +298,7 @@ const getAccountBalanceHistory = async ({
             // Token movements and getBalanceFromAccountInfo are both already in decimal units, so
             // unlike the native coin no subunit conversion may be applied to token points.
             const balanceAtEndOfTimeFrame = unapplyMovements(
-                getBalanceFromAccountInfo({
+                getBalanceFromAccountInfo(networkConfigDeps, {
                     accountInfo: latestAccountInfo,
                     symbol,
                     contractId: contractId.toString(),
@@ -316,7 +323,7 @@ const getAccountBalanceHistory = async ({
     // TODO: We can get value from redux account info instead of fetching it again which could cause minor inconsistency.
     accountMovementHistoryWithBalance.push({
         time: endTimeFrameTimestamp,
-        cryptoBalance: formatNetworkAmount(mainBalanceAtEndOfTimeFrame, symbol),
+        cryptoBalance: formatNetworkAmount(networkConfigDeps, mainBalanceAtEndOfTimeFrame, symbol),
     });
 
     const result: AccountBalanceHistoryWithTokens = {
@@ -340,14 +347,17 @@ type GetFiatRatesForNetworkInTimeFrame = {
     isElectrumBackend: boolean;
 };
 
-const getFiatRatesForNetworkInTimeFrame = async ({
-    timestamps,
-    symbol,
-    contractId,
-    baseCurrencyCode,
-    forceRefetch,
-    isElectrumBackend,
-}: GetFiatRatesForNetworkInTimeFrame) => {
+const getFiatRatesForNetworkInTimeFrame = async (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        timestamps,
+        symbol,
+        contractId,
+        baseCurrencyCode,
+        forceRefetch,
+        isElectrumBackend,
+    }: GetFiatRatesForNetworkInTimeFrame,
+) => {
     const cacheKey = `${symbol}-${contractId}-${baseCurrencyCode}-${JSON.stringify(timestamps)}`;
 
     if (fiatRatesCache[cacheKey] && !forceRefetch) {
@@ -355,6 +365,7 @@ const getFiatRatesForNetworkInTimeFrame = async ({
     }
 
     const fiatRates = await getFiatRatesForTimestamps(
+        networkConfigDeps,
         { symbol, tokenAddress: contractId },
         timestamps,
         baseCurrencyCode,
@@ -380,25 +391,26 @@ type GetMultipleAccountBalanceHistoryWithFiatParams = {
     dispatch: Dispatch;
 };
 
-export const getMultipleAccountBalanceHistoryWithFiat = async ({
-    accounts,
-    startOfTimeFrameDate,
-    endOfTimeFrameDate,
-    numberOfPoints = NUMBER_OF_POINTS,
-    baseCurrencyCode,
-    forceRefetch,
-    isElectrumBackend,
-    dispatch,
-}: GetMultipleAccountBalanceHistoryWithFiatParams): Promise<
-    FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]
-> => {
+export const getMultipleAccountBalanceHistoryWithFiat = async (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        accounts,
+        startOfTimeFrameDate,
+        endOfTimeFrameDate,
+        numberOfPoints = NUMBER_OF_POINTS,
+        baseCurrencyCode,
+        forceRefetch,
+        isElectrumBackend,
+        dispatch,
+    }: GetMultipleAccountBalanceHistoryWithFiatParams,
+): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
     const accountsWithBalanceHistory = await Promise.all(
         accounts
             .filter(a => !isIgnoredBalanceHistoryCoin(a.symbol))
             .map(accountItem => {
                 const { symbol } = accountItem;
 
-                return getAccountBalanceHistory({
+                return getAccountBalanceHistory(networkConfigDeps, {
                     endOfTimeFrameDate,
                     startOfTimeFrameDate,
                     forceRefetch,
@@ -517,7 +529,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 
     const pairs = await Promise.all(
         coins.map(({ symbol, contractId }) =>
-            getFiatRatesForNetworkInTimeFrame({
+            getFiatRatesForNetworkInTimeFrame(networkConfigDeps, {
                 timestamps,
                 symbol,
                 contractId,
@@ -558,7 +570,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         const { symbol, contractId, balanceHistory } = firstAccount;
         const coinKey = getCoinKey({ symbol, contractId });
 
-        return mapCryptoBalanceMovementToFixedTimeFrame({
+        return mapCryptoBalanceMovementToFixedTimeFrame(networkConfigDeps, {
             fiatRates: coinsFiatRates[coinKey] ?? [],
             baseCurrencyCode,
             balanceHistory,
@@ -576,7 +588,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                 return O.None;
             }
 
-            const m = mapCryptoBalanceMovementToFixedTimeFrame({
+            const m = mapCryptoBalanceMovementToFixedTimeFrame(networkConfigDeps, {
                 fiatRates: coinFiatRates,
                 baseCurrencyCode,
                 balanceHistory,

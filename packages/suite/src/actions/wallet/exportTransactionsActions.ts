@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -35,7 +36,8 @@ type ExportTransactionsThunkState = FiatRatesRootState &
     SelectAccountLabelsForSearchState &
     TokenDefinitionsRootState &
     TransactionsRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 type ExportTransactionsThunkDeps = WithServices<{
     saveAs: (data: Blob, fileName: string) => void;
@@ -48,6 +50,8 @@ export const exportTransactionsThunk = createThunk<
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/exportTransactions`,
     async ({ account, defaultAccountName, type, searchQuery }, { getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { services } = extra;
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
@@ -76,7 +80,12 @@ export const exportTransactionsThunk = createThunk<
 
         const filteredTransaction =
             searchQuery.trim() !== ''
-                ? advancedSearchTransactions(transactions, accountLabels, searchQuery)
+                ? advancedSearchTransactions(
+                      networkConfigDeps,
+                      transactions,
+                      accountLabels,
+                      searchQuery,
+                  )
                 : transactions;
 
         // getAccountTransactions doesn't guarantee transactions will be sorted
@@ -84,6 +93,7 @@ export const exportTransactionsThunk = createThunk<
 
         // Prepare data in right format
         const data = await formatData(
+            networkConfigDeps,
             {
                 symbol: account.symbol,
                 accountName,

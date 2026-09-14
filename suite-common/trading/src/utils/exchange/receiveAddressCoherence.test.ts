@@ -1,9 +1,12 @@
 import { type CryptoId } from 'invity-api';
 
 import { type AddressValidator } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { isReceiveAddressCoherent, isReceiveAddressValid } from './receiveAddressCoherence';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 // Vitalik's address, all lowercase so no EIP-55 checksum is required.
 const VALID_ETH_ADDRESS = '0xab5801a7d398351b8be11c439e05c5b3259aec9b';
@@ -34,7 +37,7 @@ describe('isReceiveAddressValid', () => {
 describe('isReceiveAddressCoherent', () => {
     it('treats an empty receive address as coherent', () => {
         expect(
-            isReceiveAddressCoherent({
+            isReceiveAddressCoherent(networkConfigDeps, {
                 addressValidator,
                 receiveAddress: undefined,
                 receiveCryptoId: BTC_CRYPTO_ID,
@@ -46,7 +49,7 @@ describe('isReceiveAddressCoherent', () => {
 
     it('returns false when the receive crypto id cannot be resolved to a symbol', () => {
         expect(
-            isReceiveAddressCoherent({
+            isReceiveAddressCoherent(networkConfigDeps, {
                 addressValidator,
                 receiveAddress: VALID_ETH_ADDRESS,
                 receiveCryptoId: undefined,
@@ -58,7 +61,7 @@ describe('isReceiveAddressCoherent', () => {
 
     it('returns false when the address is invalid for the resolved symbol', () => {
         expect(
-            isReceiveAddressCoherent({
+            isReceiveAddressCoherent(networkConfigDeps, {
                 addressValidator,
                 receiveAddress: VALID_ETH_ADDRESS,
                 receiveCryptoId: BTC_CRYPTO_ID,
@@ -70,7 +73,7 @@ describe('isReceiveAddressCoherent', () => {
 
     it('returns true for a valid address without a bound receive account', () => {
         expect(
-            isReceiveAddressCoherent({
+            isReceiveAddressCoherent(networkConfigDeps, {
                 addressValidator,
                 receiveAddress: VALID_ETH_ADDRESS,
                 receiveCryptoId: ETH_CRYPTO_ID,
@@ -82,7 +85,7 @@ describe('isReceiveAddressCoherent', () => {
 
     it('returns true when a bound account symbol matches the resolved receive symbol', () => {
         expect(
-            isReceiveAddressCoherent({
+            isReceiveAddressCoherent(networkConfigDeps, {
                 addressValidator,
                 receiveAddress: VALID_ETH_ADDRESS,
                 receiveCryptoId: ETH_CRYPTO_ID,
@@ -94,7 +97,7 @@ describe('isReceiveAddressCoherent', () => {
 
     it('returns false when a bound account belongs to a different network than the receive asset', () => {
         expect(
-            isReceiveAddressCoherent({
+            isReceiveAddressCoherent(networkConfigDeps, {
                 addressValidator,
                 receiveAddress: VALID_ETH_ADDRESS,
                 receiveCryptoId: ETH_CRYPTO_ID,

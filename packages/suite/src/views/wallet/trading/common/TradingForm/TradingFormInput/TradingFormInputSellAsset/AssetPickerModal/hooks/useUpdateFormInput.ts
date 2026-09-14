@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     type TradingAssetSellOption,
-    createAssetNativeTokenOption,
+    getAssetNativeTokenOption,
     useTradingAssets,
 } from '@suite-common/trading';
 import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
@@ -16,12 +18,15 @@ export interface UseUpdateFormInputProps {
 }
 
 export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormInputProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { resolveAssetTokenOption } = useTradingAssets();
 
     const handleAccountClick = useCallback(
         (account: Account) => {
             onAssetSelect({
-                ...createAssetNativeTokenOption(
+                ...getAssetNativeTokenOption(
+                    networkConfigDeps,
                     account.symbol as NetworkConfigWithoutTestnets['symbol'],
                 ),
                 accountKey: account.key,
@@ -29,7 +34,7 @@ export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormI
 
             closeModal();
         },
-        [closeModal, onAssetSelect],
+        [networkConfigDeps, closeModal, onAssetSelect],
     );
 
     const handleTokenClick = useCallback(

@@ -1,3 +1,8 @@
+import {
+    type NetworkConfigDeps,
+    type NetworksRootState,
+    selectNetworkConfigAccessors,
+} from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -36,6 +41,7 @@ import {
 } from '../settings/walletSettingsReducer';
 
 const calculate = (
+    networkConfigDeps: NetworkConfigDeps,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -47,7 +53,7 @@ const calculate = (
     let amount: string;
     let max: string | undefined;
     const availableTokenBalance = token
-        ? unitsToSubunits({
+        ? unitsToSubunits(networkConfigDeps, {
               value: asAmountUnit(new BigNumber(token.balance!)),
               decimals: token.decimals,
           }).toString()
@@ -112,7 +118,7 @@ const calculate = (
     return payloadData;
 };
 
-type ComposeRippleStellarTransactionFeeLevelsThunkState = void;
+type ComposeRippleStellarTransactionFeeLevelsThunkState = void & NetworksRootState;
 
 export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
@@ -123,7 +129,9 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     }
 >(
     `${SEND_MODULE_PREFIX}/composeRippleStellarTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { rejectWithValue }) => {
+    async ({ formState, composeContext }, { getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { account, network, feeInfo } = composeContext;
         const composeOutputs = getExternalComposeOutput(formState, account, network);
         if (!composeOutputs)
@@ -176,7 +184,14 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const resultLevels: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
-            calculate(availableBalance, output, level, requiredAmount, tokenInfo),
+            calculate(
+                networkConfigDeps,
+                availableBalance,
+                output,
+                level,
+                requiredAmount,
+                tokenInfo,
+            ),
         );
         response.forEach((tx, index) => {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -202,7 +217,14 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             }
 
             const customLevelsResponse = customLevels.map(level =>
-                calculate(availableBalance, output, level, requiredAmount, tokenInfo),
+                calculate(
+                    networkConfigDeps,
+                    availableBalance,
+                    output,
+                    level,
+                    requiredAmount,
+                    tokenInfo,
+                ),
             );
 
             const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
@@ -220,7 +242,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const tx: (typeof resultLevels)[string] = resultLevels[key];
             if (tx.type !== 'error' && tx.max) {
-                tx.max = formatNetworkAmount(tx.max, account.symbol);
+                tx.max = formatNetworkAmount(networkConfigDeps, tx.max, account.symbol);
             }
             if (
                 tx.type === 'error' &&
@@ -230,8 +252,12 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
                 tx.errorMessage = {
                     id: 'AMOUNT_IS_LESS_THAN_RESERVE',
                     values: {
-                        reserve: formatNetworkAmount(requiredAmount.toString(), account.symbol),
-                        displaySymbol: getDisplaySymbol(account.symbol),
+                        reserve: formatNetworkAmount(
+                            networkConfigDeps,
+                            requiredAmount.toString(),
+                            account.symbol,
+                        ),
+                        displaySymbol: getDisplaySymbol(networkConfigDeps, account.symbol),
                     },
                 };
             }
@@ -239,7 +265,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
                 tx.errorMessage = {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
                     values: {
-                        networkDisplaySymbol: getDisplaySymbol(network.symbol),
+                        networkDisplaySymbol: getDisplaySymbol(networkConfigDeps, network.symbol),
                     },
                 };
             }
@@ -249,7 +275,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-type SignRippleStellarSendFormTransactionThunkState = WalletSettingsRootState;
+type SignRippleStellarSendFormTransactionThunkState = WalletSettingsRootState & NetworksRootState;
 
 export const signRippleStellarSendFormTransactionThunk = createThunk<
     { serializedTx: string },
@@ -264,6 +290,8 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
         { getState, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const addressDisplayType = selectAddressDisplayType(getState());
 
         let response;
@@ -275,7 +303,11 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
         if (selectedAccount.networkType === 'ripple') {
             const payment: RipplePayment = {
                 destination: firstSignOutput.address,
-                amount: networkAmountToSmallestUnit(firstSignOutput.amount, selectedAccount.symbol),
+                amount: networkAmountToSmallestUnit(
+                    networkConfigDeps,
+                    firstSignOutput.amount,
+                    selectedAccount.symbol,
+                ),
             };
 
             if (formState.destinationTag) {
@@ -332,7 +364,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
 
             const { buildSendTransaction } = await stellar();
 
-            const testnet = isTestnet(selectedAccount.symbol);
+            const testnet = isTestnet(networkConfigDeps, selectedAccount.symbol);
             const transaction = buildSendTransaction({
                 descriptor: selectedAccount.descriptor,
                 sequence: selectedAccount.misc.stellarSequence,

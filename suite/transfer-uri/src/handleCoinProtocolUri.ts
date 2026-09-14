@@ -1,7 +1,11 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
-import { type NetworksRootState, selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import {
+    type NetworkConfigDeps,
+    type NetworksRootState,
+    selectNetworkSymbolForProtocol,
+} from '@suite-common/networks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
@@ -31,7 +35,7 @@ export type HandleCoinProtocolUriThunkDeps = WithServices<DesktopAnalyticsDep>;
  * action is injected to keep this package free of an app import cycle.
  */
 export const handleCoinProtocolUriThunk =
-    (uri: string, saveCoinProtocol: SaveCoinProtocol) =>
+    (networkConfigDeps: NetworkConfigDeps, uri: string, saveCoinProtocol: SaveCoinProtocol) =>
     (
         dispatch: Dispatch,
         getState: () => HandleCoinProtocolUriThunkState,
@@ -44,7 +48,7 @@ export const handleCoinProtocolUriThunk =
                 payload: { scheme, isAmountPresent: amountPresent },
             });
 
-        const result = parseTransferUri(uri, protocol =>
+        const result = parseTransferUri(networkConfigDeps, uri, protocol =>
             selectNetworkSymbolForProtocol(getState(), protocol),
         );
 

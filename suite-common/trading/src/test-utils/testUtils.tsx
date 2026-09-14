@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks } from '@suite-common/wallet-config';
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { type NetworksRootState, networksReducer } from '@suite-common/networks';
@@ -60,7 +62,8 @@ type RenderHookWithTradingStoreOptions<Props> = RenderHookOptions<Props> & {
  */
 export const createTradingTestState = (
     overrides: Partial<TradingState> = {},
-): TradingTestState => ({
+): TradingTestState & NetworksRootState => ({
+    networks: getNetworks(mockNetworkConfigDeps()),
     wallet: {
         trading: {
             ...initialState,
@@ -71,7 +74,8 @@ export const createTradingTestState = (
 
 export const createTestStateWithWalletSettings = (
     overrides: Partial<TradingTestStateWithWalletSettings['wallet']> = {},
-): TradingTestStateWithWalletSettings => ({
+): TradingTestStateWithWalletSettings & NetworksRootState => ({
+    networks: getNetworks(mockNetworkConfigDeps()),
     wallet: {
         trading: initialState,
         settings: initialWalletSettingsState,
@@ -201,7 +205,10 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
                 ) => state,
             }),
         }),
-        preloadedState: preloadedState || createTradingTestState(),
+        preloadedState: {
+            networks: getNetworks(mockNetworkConfigDeps()),
+            ...(preloadedState || createTradingTestState()),
+        },
     });
 
     return {

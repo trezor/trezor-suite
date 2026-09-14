@@ -1,8 +1,12 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getChooseAccountBalanceData } from './chooseAccountBalanceUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -16,7 +20,7 @@ describe(getChooseAccountBalanceData.name, () => {
             formattedBalance: '1.5',
         });
 
-        expect(getChooseAccountBalanceData(account)).toEqual({
+        expect(getChooseAccountBalanceData(networkConfigDeps, account)).toEqual({
             type: 'account',
             value: '1.5',
         });
@@ -30,7 +34,7 @@ describe(getChooseAccountBalanceData.name, () => {
         });
 
         expect(
-            getChooseAccountBalanceData(account, {
+            getChooseAccountBalanceData(networkConfigDeps, account, {
                 tokenContractAddress: WETH_ADDRESS,
                 tokenSymbol: toTokenSymbol('WETH'),
             }),
@@ -47,7 +51,7 @@ describe(getChooseAccountBalanceData.name, () => {
         });
 
         expect(
-            getChooseAccountBalanceData(account, {
+            getChooseAccountBalanceData(networkConfigDeps, account, {
                 tokenContractAddress: WETH_ADDRESS,
                 tokenSymbol: toTokenSymbol('WETH'),
             }),
@@ -65,7 +69,7 @@ describe(getChooseAccountBalanceData.name, () => {
         });
 
         expect(
-            getChooseAccountBalanceData(account, {
+            getChooseAccountBalanceData(networkConfigDeps, account, {
                 tokenContractAddress: USDC_ADDRESS,
                 tokenDecimals: 6,
                 tokenSymbol: toTokenSymbol('USDC'),

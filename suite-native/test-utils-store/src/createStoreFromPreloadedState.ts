@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks } from '@suite-common/wallet-config';
 import { configureStore } from '@reduxjs/toolkit';
 
 import { mergeDeepObject } from '@trezor/utils';
@@ -16,6 +18,7 @@ export const createStoreFromPreloadedState = <TState extends object = object>(
     preloadedState?: TState,
 ) => {
     const defaultState = {
+        networks: getNetworks(mockNetworkConfigDeps()),
         discreetMode: { isActive: false },
         wallet: {
             settings: { localCurrency: 'usd', bitcoinAmountUnit: 0, addressDisplayType: 'chunked' },

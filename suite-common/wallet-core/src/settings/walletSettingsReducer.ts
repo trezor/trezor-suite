@@ -1,6 +1,7 @@
 import { A } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -159,14 +160,16 @@ export const selectAreSatsAmountUnit = (state: WalletSettingsRootState) => {
 };
 
 export const selectIsAmountInSats = (
-    state: WalletSettingsRootState,
+    state: WalletSettingsRootState & NetworksRootState,
     symbol: NetworkSymbol | null | undefined,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     if (!symbol) {
         return false;
     }
 
-    const network = getNetwork(symbol);
+    const network = getNetwork(networkConfigDeps, symbol);
     const isAmountUnitSupported = network?.features.includes('amount-unit');
 
     return isAmountUnitSupported && selectAreSatsAmountUnit(state);

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -19,20 +21,22 @@ import { type EarnFormValues, earnFormValidationSchema } from '../../utils/earn/
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
 
 export const useEarnForm = (accountKey: AccountKey) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
 
-    const network = account ? getNetwork(account.symbol) : null;
+    const network = account ? getNetwork(networkConfigDeps, account.symbol) : null;
 
     const form = useForm<EarnFormValues>({
-        validation: earnFormValidationSchema,
+        validation: earnFormValidationSchema(networkConfigDeps),
         mode: 'onTouched',
         context: {
             symbol: account?.symbol,
             availableBalance: account
-                ? formatNetworkAmount(account.availableBalance, account.symbol)
+                ? formatNetworkAmount(networkConfigDeps, account.availableBalance, account.symbol)
                 : undefined,
             decimals: network?.decimals,
             translate,

@@ -2,6 +2,8 @@ import { AccountLabel } from '@suite/account';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
@@ -60,12 +62,14 @@ export const TransactionReviewSummary = ({
     stakeType,
     timer,
 }: TransactionReviewSummaryProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const drafts = useSelector(selectSendFormDrafts);
     const currentAccountKey = useSelector(selectCurrentAccountKey) as string;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const locale = useLocales();
     const { symbol, networkType } = account;
-    const network = getNetwork(symbol);
+    const network = getNetwork(networkConfigDeps, symbol);
     const fee = getFee(account.networkType, tx);
     const estimateTime = getEstimatedTime(networkType, rawFeeInfo, tx);
     const connectPopupCall = useSelector(selectConnectPopupCall);
@@ -164,7 +168,7 @@ export const TransactionReviewSummary = ({
                         CU Price
                         {': '}
                         <FeeRate
-                            feeRate={unitsToSubunits({
+                            feeRate={unitsToSubunits(networkConfigDeps, {
                                 value: asAmountUnit(new BigNumber(tx.feePerByte)),
                                 decimals: -6,
                             })}

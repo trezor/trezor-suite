@@ -2,6 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import {
@@ -18,12 +19,16 @@ interface AccountEmptyProps {
 }
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
-    const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
+    const isTokensNetwork = getNetworkFeatures(networkConfigDeps, account.symbol).includes(
+        'tokens',
+    );
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-    const networkName = getNetwork(account.symbol).name;
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
+    const networkName = getNetwork(networkConfigDeps, account.symbol).name;
 
     const handleNavigateToReceivePage = () => {
         dispatch(gotoThunk({ routeName: 'wallet-receive', preserveParams: true }));
@@ -37,7 +42,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const handleNavigateToBuyPage = () => {
         dispatch(
             tradingActions.setTradingFromPrefilledAccount(
-                getTradingPrefilledFromAccountData(account),
+                getTradingPrefilledFromAccountData(networkConfigDeps, account),
             ),
         );
         dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));

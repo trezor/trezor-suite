@@ -1,6 +1,12 @@
 import { type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
 
-import { type AddressValidatorDep, selectAddressValidatorDep } from '@suite-common/networks';
+import {
+    type AddressValidatorDep,
+    type NetworkConfigDeps,
+    type NetworksRootState,
+    selectAddressValidatorDep,
+    selectNetworkConfigAccessors,
+} from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -37,14 +43,13 @@ type GetQuoteRequestData = {
     shouldSendInSats: boolean | undefined;
 };
 
-export const getQuoteRequestData = ({
-    formValues,
-    network,
-    shouldSendInSats,
-}: GetQuoteRequestData): ExchangeTradeQuoteRequest | undefined => {
+export const getQuoteRequestData = (
+    networkConfigDeps: NetworkConfigDeps,
+    { formValues, network, shouldSendInSats }: GetQuoteRequestData,
+): ExchangeTradeQuoteRequest | undefined => {
     const { outputs, receiveCryptoSelect, sendCryptoSelect, receiveAddress, fromAddress } =
         formValues;
-    const decimals = getNetworkDecimalsWithFallback(network.symbol);
+    const decimals = getNetworkDecimalsWithFallback(networkConfigDeps, network.symbol);
 
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const firstOutput: (typeof outputs)[number] = outputs[0];
@@ -75,7 +80,7 @@ export const getQuoteRequestData = ({
     return request;
 };
 
-type HandleExchangeRequestThunkState = AccountsRootState & TradingRootState;
+type HandleExchangeRequestThunkState = AccountsRootState & TradingRootState & NetworksRootState;
 
 type HandleExchangeRequestThunkDeps = WithServices<{ networks: AddressValidatorDep }>;
 
@@ -93,7 +98,9 @@ export const handleExchangeRequestThunk = createThunk<
         { formValues, network, shouldSendInSats, composeRequestCallback },
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal, extra },
     ) => {
-        const requestData = getQuoteRequestData({
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
+        const requestData = getQuoteRequestData(networkConfigDeps, {
             formValues,
             network,
             shouldSendInSats,
@@ -111,7 +118,7 @@ export const handleExchangeRequestThunk = createThunk<
             : undefined;
 
         if (
-            !isReceiveAddressCoherent({
+            !isReceiveAddressCoherent(networkConfigDeps, {
                 addressValidator: selectAddressValidatorDep(extra.services).addressValidator,
                 receiveAddress: requestData.receiveAddress,
                 receiveCryptoId: requestData.receive,

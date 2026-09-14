@@ -1,4 +1,5 @@
-import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { asNetworkSymbol, getNetwork, getNetworksCollection } from '@suite-common/wallet-config';
 import {
     mockWalletAccount,
     networkSpecificDefaultRipple,
@@ -23,6 +24,8 @@ import {
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
 } from './sendFormUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
@@ -107,15 +110,15 @@ describe('sendForm utils', () => {
 
     it('getBitcoinComposeOutputs', () => {
         // @ts-expect-error: invalid params
-        expect(getBitcoinComposeOutputs(null, 'btc')).toEqual([]);
+        expect(getBitcoinComposeOutputs(networkConfigDeps, null, 'btc')).toEqual([]);
         // @ts-expect-error: invalid params
-        expect(getBitcoinComposeOutputs(true, 'btc')).toEqual([]);
+        expect(getBitcoinComposeOutputs(networkConfigDeps, true, 'btc')).toEqual([]);
         // @ts-expect-error: invalid params
-        expect(getBitcoinComposeOutputs(1, 'btc')).toEqual([]);
+        expect(getBitcoinComposeOutputs(networkConfigDeps, 1, 'btc')).toEqual([]);
         // @ts-expect-error: invalid params
-        expect(getBitcoinComposeOutputs('A', 'btc')).toEqual([]);
+        expect(getBitcoinComposeOutputs(networkConfigDeps, 'A', 'btc')).toEqual([]);
 
-        expect(getBitcoinComposeOutputs({ outputs: [] }, btcSymbol)).toEqual([]);
+        expect(getBitcoinComposeOutputs(networkConfigDeps, { outputs: [] }, btcSymbol)).toEqual([]);
 
         let outputs: any[] = [
             null,
@@ -123,10 +126,10 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '' },
             { type: 'payment', amount: '1' },
         ];
-        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol)).toEqual([
+        expect(getBitcoinComposeOutputs(networkConfigDeps, { outputs }, btcSymbol)).toEqual([
             { type: 'payment-noaddress', amount: '100000000' },
         ]);
-        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol, true)).toEqual([
+        expect(getBitcoinComposeOutputs(networkConfigDeps, { outputs }, btcSymbol, true)).toEqual([
             { type: 'payment-noaddress', amount: '1' },
         ]);
 
@@ -142,6 +145,7 @@ describe('sendForm utils', () => {
         ];
         expect(
             getBitcoinComposeOutputs(
+                networkConfigDeps,
                 {
                     setMaxOutputId: 2,
                     outputs,
@@ -158,6 +162,7 @@ describe('sendForm utils', () => {
         outputs = [{ type: 'payment', amount: '' }];
         expect(
             getBitcoinComposeOutputs(
+                networkConfigDeps,
                 {
                     setMaxOutputId: 0,
                     outputs,
@@ -169,6 +174,7 @@ describe('sendForm utils', () => {
         outputs = [{ type: 'payment', amount: '', address: 'A' }];
         expect(
             getBitcoinComposeOutputs(
+                networkConfigDeps,
                 {
                     setMaxOutputId: 0,
                     outputs,
@@ -182,7 +188,7 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '', address: 'A' },
             { type: 'payment', amount: '1', address: 'B' },
         ];
-        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol)).toEqual([
+        expect(getBitcoinComposeOutputs(networkConfigDeps, { outputs }, btcSymbol)).toEqual([
             { type: 'payment-noaddress', amount: '100000000', address: 'B' },
         ]);
 
@@ -193,6 +199,7 @@ describe('sendForm utils', () => {
         ];
         expect(
             getBitcoinComposeOutputs(
+                networkConfigDeps,
                 {
                     setMaxOutputId: 1,
                     outputs,
@@ -205,7 +212,7 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '', address: 'A' },
             { type: 'payment', amount: '1' },
         ];
-        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol)).toEqual([
+        expect(getBitcoinComposeOutputs(networkConfigDeps, { outputs }, btcSymbol)).toEqual([
             { type: 'payment-noaddress', amount: '100000000' },
         ]);
     });
@@ -259,8 +266,8 @@ describe('sendForm utils', () => {
                 },
             ],
         });
-        const EthNetwork = getNetwork('eth');
-        const XrpNetwork = getNetwork('xrp');
+        const EthNetwork = getNetwork(networkConfigDeps, 'eth');
+        const XrpNetwork = getNetwork(networkConfigDeps, 'xrp');
 
         expect(getExternalComposeOutput({ outputs: [] }, EthAccount, EthNetwork)).toEqual(
             undefined,
@@ -440,17 +447,32 @@ describe('sendForm utils', () => {
             });
 
             it('returns ok when amount is within available balance', () => {
-                expect(getAmountValidationResult({ amount: '0.05', account: btcAccount })).toEqual({
+                expect(
+                    getAmountValidationResult(networkConfigDeps, {
+                        amount: '0.05',
+                        account: btcAccount,
+                    }),
+                ).toEqual({
                     type: 'ok',
                 });
 
-                expect(getAmountValidationResult({ amount: '0.1', account: btcAccount })).toEqual({
+                expect(
+                    getAmountValidationResult(networkConfigDeps, {
+                        amount: '0.1',
+                        account: btcAccount,
+                    }),
+                ).toEqual({
                     type: 'ok',
                 });
             });
 
             it('returns not_enough when amount exceeds available balance', () => {
-                expect(getAmountValidationResult({ amount: '0.11', account: btcAccount })).toEqual({
+                expect(
+                    getAmountValidationResult(networkConfigDeps, {
+                        amount: '0.11',
+                        account: btcAccount,
+                    }),
+                ).toEqual({
                     type: 'not_enough',
                 });
             });
@@ -469,7 +491,10 @@ describe('sendForm utils', () => {
 
             it('returns reserve when amount is above available but below total balance', () => {
                 expect(
-                    getAmountValidationResult({ amount: '9.9', account: rippleAccount }),
+                    getAmountValidationResult(networkConfigDeps, {
+                        amount: '9.9',
+                        account: rippleAccount,
+                    }),
                 ).toEqual({
                     type: 'reserve',
                     reserve: '1',
@@ -477,9 +502,12 @@ describe('sendForm utils', () => {
             });
 
             it('returns not_enough when amount exceeds total balance', () => {
-                expect(getAmountValidationResult({ amount: '10', account: rippleAccount })).toEqual(
-                    { type: 'not_enough' },
-                );
+                expect(
+                    getAmountValidationResult(networkConfigDeps, {
+                        amount: '10',
+                        account: rippleAccount,
+                    }),
+                ).toEqual({ type: 'not_enough' });
             });
         });
 
@@ -498,7 +526,10 @@ describe('sendForm utils', () => {
 
             it('returns reserve when amount exceeds available but below total', () => {
                 expect(
-                    getAmountValidationResult({ amount: '9.9', account: stellarAccount }),
+                    getAmountValidationResult(networkConfigDeps, {
+                        amount: '9.9',
+                        account: stellarAccount,
+                    }),
                 ).toEqual({
                     type: 'reserve',
                     reserve: '0.5',
@@ -507,7 +538,10 @@ describe('sendForm utils', () => {
 
             it('returns not_enough when amount exceeds total balance', () => {
                 expect(
-                    getAmountValidationResult({ amount: '10', account: stellarAccount }),
+                    getAmountValidationResult(networkConfigDeps, {
+                        amount: '10',
+                        account: stellarAccount,
+                    }),
                 ).toEqual({ type: 'not_enough' });
             });
         });
@@ -529,7 +563,7 @@ describe('sendForm utils', () => {
 
             it('returns ok when amount is within token balance', () => {
                 expect(
-                    getAmountValidationResult({
+                    getAmountValidationResult(networkConfigDeps, {
                         amount: '150',
                         account: tokenAccount,
                         contractAddress: '0xabc',
@@ -539,7 +573,7 @@ describe('sendForm utils', () => {
 
             it('returns not_enough when amount exceeds token balance', () => {
                 expect(
-                    getAmountValidationResult({
+                    getAmountValidationResult(networkConfigDeps, {
                         amount: '250',
                         account: tokenAccount,
                         contractAddress: '0xabc',
@@ -564,10 +598,10 @@ describe('sendForm utils', () => {
     });
 
     describe('getCryptoAmountWithReserve', () => {
-        const NETWORKS_WITH_RESERVE = networksCollection.filter(
+        const NETWORKS_WITH_RESERVE = getNetworksCollection(networkConfigDeps).filter(
             network => !!network.nativeTokenReserve,
         );
-        const NETWORKS_WITHOUT_RESERVE = networksCollection.filter(
+        const NETWORKS_WITHOUT_RESERVE = getNetworksCollection(networkConfigDeps).filter(
             network => !network.nativeTokenReserve,
         );
 
@@ -578,7 +612,7 @@ describe('sendForm utils', () => {
                 const amount = '95';
                 const fee = '10';
 
-                const adjustedAmount = getCryptoAmountWithReserve({
+                const adjustedAmount = getCryptoAmountWithReserve(networkConfigDeps, {
                     symbol: network.symbol,
                     contractAddress: undefined,
                     balance,
@@ -598,7 +632,7 @@ describe('sendForm utils', () => {
                 const amount = '95';
                 const fee = '10';
 
-                const adjustedAmount = getCryptoAmountWithReserve({
+                const adjustedAmount = getCryptoAmountWithReserve(networkConfigDeps, {
                     symbol: network.symbol,
                     contractAddress: undefined,
                     balance,
@@ -618,7 +652,7 @@ describe('sendForm utils', () => {
                 const amount = '95';
                 const fee = '10';
 
-                const adjustedAmount = getCryptoAmountWithReserve({
+                const adjustedAmount = getCryptoAmountWithReserve(networkConfigDeps, {
                     symbol: network.symbol,
                     contractAddress: '0x123',
                     balance,
@@ -646,7 +680,7 @@ describe('sendForm utils', () => {
                     .plus('1')
                     .toString();
 
-                const adjustedAmount = getCryptoAmountWithReserve({
+                const adjustedAmount = getCryptoAmountWithReserve(networkConfigDeps, {
                     symbol: network.symbol,
                     contractAddress: undefined,
                     balance,
@@ -674,7 +708,7 @@ describe('sendForm utils', () => {
                     .plus('1')
                     .toString();
 
-                const adjustedAmount = getCryptoAmountWithReserve({
+                const adjustedAmount = getCryptoAmountWithReserve(networkConfigDeps, {
                     symbol: network.symbol,
                     contractAddress: undefined,
                     balance,
@@ -706,7 +740,7 @@ describe('sendForm utils', () => {
                     .plus('1')
                     .toString();
 
-                const adjustedAmount = getCryptoAmountWithReserve({
+                const adjustedAmount = getCryptoAmountWithReserve(networkConfigDeps, {
                     symbol: network.symbol,
                     contractAddress: undefined,
                     balance,
@@ -721,10 +755,10 @@ describe('sendForm utils', () => {
     });
 
     describe('getCryptoMaxAmountWithReserve', () => {
-        const NETWORKS_WITH_RESERVE = networksCollection.filter(
+        const NETWORKS_WITH_RESERVE = getNetworksCollection(networkConfigDeps).filter(
             network => !!network.nativeTokenReserve,
         );
-        const NETWORKS_WITHOUT_RESERVE = networksCollection.filter(
+        const NETWORKS_WITHOUT_RESERVE = getNetworksCollection(networkConfigDeps).filter(
             network => !network.nativeTokenReserve,
         );
 
@@ -735,7 +769,7 @@ describe('sendForm utils', () => {
                 const amount = '95';
                 const fee = '10';
 
-                const adjustedAmount = getCryptoMaxAmountWithReserve({
+                const adjustedAmount = getCryptoMaxAmountWithReserve(networkConfigDeps, {
                     symbol: network.symbol,
                     contractAddress: undefined,
                     balance,
@@ -755,7 +789,7 @@ describe('sendForm utils', () => {
                 const amount = '95';
                 const fee = '10';
 
-                const adjustedAmount = getCryptoMaxAmountWithReserve({
+                const adjustedAmount = getCryptoMaxAmountWithReserve(networkConfigDeps, {
                     symbol: network.symbol,
                     contractAddress: undefined,
                     balance,
@@ -775,7 +809,7 @@ describe('sendForm utils', () => {
                 const amount = '95';
                 const fee = '10';
 
-                const adjustedAmount = getCryptoMaxAmountWithReserve({
+                const adjustedAmount = getCryptoMaxAmountWithReserve(networkConfigDeps, {
                     symbol: network.symbol,
                     contractAddress: '0x123',
                     balance,
@@ -803,7 +837,7 @@ describe('sendForm utils', () => {
                     .plus('1')
                     .toString();
 
-                const adjustedAmount = getCryptoMaxAmountWithReserve({
+                const adjustedAmount = getCryptoMaxAmountWithReserve(networkConfigDeps, {
                     symbol: network.symbol,
                     contractAddress: undefined,
                     balance,

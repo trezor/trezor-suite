@@ -1,4 +1,5 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     getDisplaySymbol,
@@ -21,17 +22,20 @@ type GetTransactionReviewModalActionTranslationParams = {
     source: 'heading' | 'button';
 };
 
-export const getTransactionReviewModalActionTranslation = ({
-    symbol,
-    stakeType,
-    precomposedForm,
-    approvalToken,
-    routeName,
-    isBumpFeeRbfAction,
-    isCancelRbfAction,
-    isSending,
-    source,
-}: GetTransactionReviewModalActionTranslationParams): ExtendedMessageDescriptor => {
+export const getTransactionReviewModalActionTranslation = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        symbol,
+        stakeType,
+        precomposedForm,
+        approvalToken,
+        routeName,
+        isBumpFeeRbfAction,
+        isCancelRbfAction,
+        isSending,
+        source,
+    }: GetTransactionReviewModalActionTranslationParams,
+): ExtendedMessageDescriptor => {
     const txPurpose = getEvmTransactionPurpose({
         networkSymbol: symbol,
         to: precomposedForm.outputs?.[0]?.address,
@@ -42,17 +46,17 @@ export const getTransactionReviewModalActionTranslation = ({
         case 'stake':
             return {
                 id: source === 'heading' ? 'TR_EARN_STAKE_TOKEN' : 'TR_STAKE_STAKE',
-                values: { symbol: getNetworkDisplaySymbol(symbol) },
+                values: { symbol: getNetworkDisplaySymbol(networkConfigDeps, symbol) },
             };
         case 'unstake':
             return {
                 id: source === 'heading' ? 'TR_STAKE_UNSTAKE_TOKEN' : 'TR_STAKE_UNSTAKE',
-                values: { symbol: getNetworkDisplaySymbol(symbol) },
+                values: { symbol: getNetworkDisplaySymbol(networkConfigDeps, symbol) },
             };
         case 'claim':
             return {
                 id: source === 'heading' ? 'TR_STAKE_CLAIM_TOKEN' : 'TR_STAKE_CLAIM',
-                values: { symbol: getNetworkDisplaySymbol(symbol) },
+                values: { symbol: getNetworkDisplaySymbol(networkConfigDeps, symbol) },
             };
         // no default
     }
@@ -71,7 +75,7 @@ export const getTransactionReviewModalActionTranslation = ({
     if (txPurpose === 'approve' || txPurpose === 'revoke') {
         const isApprove = txPurpose === 'approve';
         const displaySymbol = approvalToken?.symbol
-            ? getDisplaySymbol(approvalToken.symbol, approvalToken.contract)
+            ? getDisplaySymbol(networkConfigDeps, approvalToken.symbol, approvalToken.contract)
             : undefined;
 
         if (source === 'button' || !displaySymbol) {
@@ -102,7 +106,7 @@ export const getTransactionReviewModalActionTranslation = ({
                         ? 'TR_EARN_YIELD_WRAP_TITLE'
                         : 'TR_EARN_YIELD_UNWRAP_TITLE',
                 values: {
-                    nativeSymbol: getNetworkDisplaySymbol(symbol),
+                    nativeSymbol: getNetworkDisplaySymbol(networkConfigDeps, symbol),
                     tokenSymbol: getWrappedNativeSymbol(symbol),
                 },
             };

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type LayoutChangeEvent, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -100,6 +102,8 @@ export const ReviewOutputSummaryItem = ({
     flowType,
     prefix,
 }: ReviewOutputSummaryItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translate } = useTranslate();
 
     const isClearSignedTradingSwap = useSelector((state: TransactionReviewOutputsState) =>
@@ -110,7 +114,7 @@ export const ReviewOutputSummaryItem = ({
         return null;
     }
     const { state, totalSpent, fee } = summaryOutput;
-    const isNetworkSupportingTokens = isNetworkWithTokens(symbol);
+    const isNetworkSupportingTokens = isNetworkWithTokens(networkConfigDeps, symbol);
 
     return (
         <View onLayout={onLayout}>

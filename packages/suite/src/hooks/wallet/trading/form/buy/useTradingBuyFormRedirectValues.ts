@@ -14,13 +14,13 @@ export const useTradingBuyFormRedirectValues = (
     isFromRedirect: boolean,
     quotesRequest: BuyTradeQuoteRequest | undefined,
 ): TradingBuyFormProps | null => {
-    const { createAssetOptionFromCryptoId } = useTradingAssets();
+    const { getAssetOptionFromCryptoId } = useTradingAssets();
 
     if (!isFromRedirect || !quotesRequest) return null;
 
     return {
         amountInCrypto: quotesRequest.wantCrypto,
-        cryptoSelect: createAssetOptionFromCryptoId(quotesRequest.receiveCurrency),
+        cryptoSelect: getAssetOptionFromCryptoId(quotesRequest.receiveCurrency),
         currencySelect: buildTradingFiatOption(
             getSupportedFiatCurrencyWithFallback(quotesRequest.fiatCurrency),
         ),

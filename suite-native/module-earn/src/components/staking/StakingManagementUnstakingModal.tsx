@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
@@ -59,14 +60,14 @@ export const StakingManagementUnstakingModal = ({
     const { applyStyle } = useNativeStyles();
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
     const claimableAmount =
-        useSelector((state: StakeRootState) =>
+        useSelector((state: StakeRootState & NetworksRootState) =>
             selectClaimableAmountByAccountKey(state, accountKey),
         ) ?? '0';
     const unstakingBalance =
-        useSelector((state: StakeRootState) =>
+        useSelector((state: StakeRootState & NetworksRootState) =>
             selectUnstakingBalanceByAccountKey(state, accountKey),
         ) ?? '0';
-    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
+    const unstakingPeriodInDays = useSelector((state: StakeRootState & NetworksRootState) =>
         selectUnstakingPeriodInDaysByAccountKey(state, accountKey),
     );
 

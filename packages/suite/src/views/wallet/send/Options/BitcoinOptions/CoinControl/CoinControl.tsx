@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
@@ -47,6 +48,8 @@ type CoinControlProps = {
 };
 
 export const CoinControl = ({ close }: CoinControlProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [currentPage, setSelectedPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const {
@@ -77,7 +80,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const getTotal = (amounts: number[]) =>
         amounts.reduce((previous, current) => previous + current, 0);
     const getFormattedAmount = (amount: number) =>
-        formatNetworkAmount(amount.toString(), account.symbol);
+        formatNetworkAmount(networkConfigDeps, amount.toString(), account.symbol);
 
     // calculate and format amounts
     const inputs = isCoinControlEnabled ? selectedUtxos : composedInputs;

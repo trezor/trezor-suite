@@ -2,6 +2,7 @@ import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } 
 
 import { useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
@@ -35,6 +36,8 @@ export const TransactionListActions = ({
     isExportable = true,
     isTxFilteringEnabled = true,
 }: TransactionListActionsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
     const transactionHistoryPrefill = useSelector(selectTransactionHistoryPrefill);
@@ -101,9 +104,10 @@ export const TransactionListActions = ({
                     />
                 }
             />
-            {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (
-                <FilterAction symbol={account.symbol} />
-            )}
+            {isTxFilteringEnabled &&
+                hasNetworkPotentialFraudTransactions(networkConfigDeps, account.symbol) && (
+                    <FilterAction symbol={account.symbol} />
+                )}
             {isExportable && <ExportAction account={account} searchQuery={searchQuery} />}
         </Row>
     );

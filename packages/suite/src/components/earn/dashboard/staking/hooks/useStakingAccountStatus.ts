@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     getStakingLimitsByNetworkSymbol,
     getTronAvailableVotingPower,
@@ -24,6 +26,8 @@ export type StakingAccountStatus =
     | 'staking-remaining-votes';
 
 export const useStakingAccountStatus = (account: Account): StakingAccountStatus => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const isNewProviderBannerEnabled = useSelector(state =>
@@ -31,9 +35,10 @@ export const useStakingAccountStatus = (account: Account): StakingAccountStatus 
     );
 
     const accountBalance = account.formattedBalance;
-    const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
+    const stakingBalance = getAccountTotalStakingBalance(networkConfigDeps, account) ?? '0';
     const isCardanoNetworkType = account.networkType === 'cardano';
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
+        networkConfigDeps,
         account.symbol,
     )?.MIN_AMOUNT_FOR_STAKING_DASHBOARD;
 

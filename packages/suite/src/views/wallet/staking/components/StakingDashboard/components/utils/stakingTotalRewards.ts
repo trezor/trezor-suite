@@ -1,14 +1,16 @@
 import { type SolanaRewardsTotalQueryResult } from '@suite-common/earn-staking-api/src/staking';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getStakingDataForNetwork } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 export const getStakingTotalRewards = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     solanaRewardsTotalQuery: SolanaRewardsTotalQueryResult,
 ) => {
-    const { restakedReward = '0' } = getStakingDataForNetwork(account) ?? {};
+    const { restakedReward = '0' } = getStakingDataForNetwork(networkConfigDeps, account) ?? {};
 
     switch (account.networkType) {
         case 'ethereum':
@@ -17,7 +19,7 @@ export const getStakingTotalRewards = (
                 isTotalRewardsLoading: false,
             };
         case 'solana': {
-            const formattedTotal = subunitsToUnits({
+            const formattedTotal = subunitsToUnits(networkConfigDeps, {
                 value: asAmountSubunit(new BigNumber(solanaRewardsTotalQuery.data ?? '0')),
                 symbol: account.symbol,
             });

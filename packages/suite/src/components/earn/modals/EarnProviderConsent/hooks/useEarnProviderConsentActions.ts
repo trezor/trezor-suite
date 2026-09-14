@@ -2,6 +2,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     EarnFlow,
@@ -43,6 +44,8 @@ export const useEarnProviderConsentActions = ({
     networkSymbol,
     yieldContext,
 }: UseEarnProviderConsentActionsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const selectedVotingDelegation = useSelector(state =>
         selectVotingDelegationOption(state, account.key),
@@ -87,7 +90,7 @@ export const useEarnProviderConsentActions = ({
                     dispatch(
                         gotoThunk({
                             routeName: 'earn-yield-deposit',
-                            params: getEarnRouteParams({
+                            params: getEarnRouteParams(networkConfigDeps, {
                                 account,
                                 vaultAddress: yieldContext.vaultAddress,
                             }),

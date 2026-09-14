@@ -1,3 +1,5 @@
+import { type NetworksRootState, selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -39,8 +41,10 @@ export const useCryptoFiatConverters = ({
     historicRate,
     useHistoricRate,
 }: UseConvertFiatToCryptoParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const symbolHelper = symbol ?? 'btc'; // handles passing the value to selectors
-    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
+    const isAmountInSats = useSelector((state: WalletSettingsRootState & NetworksRootState) =>
         selectIsAmountInSats(state, symbolHelper),
     );
 
@@ -52,7 +56,7 @@ export const useCryptoFiatConverters = ({
     );
 
     const rate = useHistoricRate ? historicRate : currentRate?.rate;
-    const isTestnetCoin = isTestnet(symbolHelper);
+    const isTestnetCoin = isTestnet(networkConfigDeps, symbolHelper);
 
     if (!rate || currentRate?.error || isTestnetCoin || !symbol) return null;
 
@@ -63,7 +67,7 @@ export const useCryptoFiatConverters = ({
             // 1. If the Base Currency is in sats (BTC only), we first unify it to whole Unit
             const baseCurrencyUnitAmount = isBaseCurrencyInSats
                 ? asBaseCurrencyAmount(
-                      subunitsToUnits({
+                      subunitsToUnits(networkConfigDeps, {
                           value: asAmountSubunit(baseCurrencyAmount),
                           symbol: 'btc',
                       }),
@@ -81,13 +85,13 @@ export const useCryptoFiatConverters = ({
 
             // 2. If the Crypto Amount is in Sats, we now need to convert it back
             return isAmountInSats
-                ? unitsToSubunits({ value: cryptoUnitAmount, symbol })
+                ? unitsToSubunits(networkConfigDeps, { value: cryptoUnitAmount, symbol })
                 : cryptoUnitAmount;
         },
         convertCryptoToFiat: (amount: BigNumber) => {
             // 1. Crypto Amount may be in Sats or not
             const amountUnit = isAmountInSats
-                ? subunitsToUnits({ value: asAmountSubunit(amount), symbol })
+                ? subunitsToUnits(networkConfigDeps, { value: asAmountSubunit(amount), symbol })
                 : asAmountUnit(amount);
 
             const baseCurrency = toFiatCurrency({ amount: amountUnit, rate });
@@ -99,7 +103,10 @@ export const useCryptoFiatConverters = ({
             // 2. If BaseUnits are Sats (BTC only), we have to convert it to sats
             return isBaseCurrencyInSats
                 ? asBaseCurrencyAmount(
-                      unitsToSubunits({ value: asAmountUnit(baseCurrency), symbol: 'btc' }),
+                      unitsToSubunits(networkConfigDeps, {
+                          value: asAmountUnit(baseCurrency),
+                          symbol: 'btc',
+                      }),
                   )
                 : baseCurrency;
         },

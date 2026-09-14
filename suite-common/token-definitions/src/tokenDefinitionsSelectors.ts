@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
@@ -25,24 +26,31 @@ export const selectNftDefinitions = (state: TokenDefinitionsRootState, symbol: N
     state.tokenDefinitions?.[symbol]?.nft;
 
 export const selectCoinDefinition = (
-    state: TokenDefinitionsRootState,
+    state: TokenDefinitionsRootState & NetworksRootState,
     symbol: NetworkSymbol,
     contractAddress: TokenAddress,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const coinDefinitions = state.tokenDefinitions?.[symbol]?.coin?.data;
-    const isKnown = isTokenDefinitionKnown(coinDefinitions, symbol, contractAddress);
+    const isKnown = isTokenDefinitionKnown(
+        networkConfigDeps,
+        coinDefinitions,
+        symbol,
+        contractAddress,
+    );
 
     return isKnown;
 };
 
 export const selectIsSpecificCoinDefinitionKnown = (
-    state: TokenDefinitionsRootState,
+    state: TokenDefinitionsRootState & NetworksRootState,
     symbol: NetworkSymbol,
     contractAddress: TokenAddress,
 ) => !!selectCoinDefinition(state, symbol, contractAddress);
 
 export const selectFilterKnownTokens = (
-    state: TokenDefinitionsRootState,
+    state: TokenDefinitionsRootState & NetworksRootState,
     symbol: NetworkSymbol,
     tokens: TokenInfo[],
 ) =>

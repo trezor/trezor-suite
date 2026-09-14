@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -51,6 +53,8 @@ export const useTradingCryptoAssetChange = <T extends TradingSellExchangeFormPro
     setComposedLevels,
     setAccountOnChange,
 }: UseTradingCryptoAssetChangeProps<T>) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     // TODO: drop this cast via capability callbacks instead of methods: UseFormReturn<T>
     const { getValues, setValue, clearErrors, control } =
         methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;
@@ -66,7 +70,11 @@ export const useTradingCryptoAssetChange = <T extends TradingSellExchangeFormPro
 
         if (!selectedAccount || isSameCryptoSelected) return;
 
-        const { token } = resolveAddressAndToken(selectedAccount, selected.contractAddress);
+        const { token } = resolveAddressAndToken(
+            networkConfigDeps,
+            selectedAccount,
+            selected.contractAddress,
+        );
 
         setValue(TRADING_FORM_CRYPTO_TOKEN, token);
         setValue(TRADING_FORM_OUTPUT_MAX, undefined);

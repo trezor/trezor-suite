@@ -7,7 +7,7 @@ import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { selectNetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -59,6 +59,8 @@ interface WalletConnectProposalModalProps {
 }
 
 export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const pendingProposal = useSelector(selectPendingProposal);
@@ -66,6 +68,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     const selectableAccounts = useMemo<Account[]>(
         () =>
             sortByCoin(
+                networkConfigDeps,
                 pendingProposal?.networks
                     .filter(network => network.status === 'active')
                     .flatMap(network =>
@@ -73,7 +76,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     ) ?? [],
                 supportedNetworks,
             ),
-        [accounts, pendingProposal?.networks, supportedNetworks],
+        [networkConfigDeps, accounts, pendingProposal?.networks, supportedNetworks],
     );
     const requestedNetworks = useMemo(
         () =>

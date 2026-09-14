@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { A, G, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
@@ -53,17 +54,25 @@ const selectTransactionTargetAddresses = createMemoizedSelector(
     },
 );
 
-export const selectTransactionAddresses = createMemoizedSelector(
+export const selectTransactionAddresses = createWeakMapSelector.withTypes<
+    TransactionsRootState & TokenDefinitionsRootState & NetworksRootState
+>()(
     [
+        selectNetworkConfigAccessors,
         selectTransactionByAccountKeyAndTxid,
         selectTransactionTargetAddresses,
         (_state, _accountKey: AccountKey, _txid: string, addressesType: AddressesType) =>
             addressesType,
     ],
-    (transaction, transactionTargetAddresses, addressesType): VinVoutAddress[] => {
+    (
+        networkConfigDeps,
+        transaction,
+        transactionTargetAddresses,
+        addressesType,
+    ): VinVoutAddress[] => {
         if (G.isNullable(transaction)) return [];
 
-        const networkType = getNetworkType(transaction.symbol);
+        const networkType = getNetworkType(networkConfigDeps, transaction.symbol);
 
         if (networkType === 'ripple') {
             // For ripple, we don't have inputs (input is always the same address - account descriptor)
@@ -107,9 +116,10 @@ export type TransactionTranfer = {
     decimals?: number;
 };
 
-export const selectTransactionInputAndOutputTransfers = createMemoizedSelector(
-    [selectTransactionByAccountKeyAndTxid, selectTokenDefinitions],
+export const selectTransactionInputAndOutputTransfers = createWeakMapSelector(
+    [selectNetworkConfigAccessors, selectTransactionByAccountKeyAndTxid, selectTokenDefinitions],
     (
+        networkConfigDeps,
         transaction,
         tokenDefinitions,
     ): {
@@ -119,7 +129,7 @@ export const selectTransactionInputAndOutputTransfers = createMemoizedSelector(
     } | null => {
         if (G.isNullable(transaction)) return null;
 
-        const networkType = getNetworkType(transaction.symbol);
+        const networkType = getNetworkType(networkConfigDeps, transaction.symbol);
 
         if (networkType === 'ripple') {
             const externalTransfers: TransactionTranfer[] = [
@@ -167,6 +177,7 @@ export const selectTransactionInputAndOutputTransfers = createMemoizedSelector(
             A.filter(
                 ({ contract }) =>
                     !!isTokenDefinitionKnown(
+                        networkConfigDeps,
                         tokenDefinitionsForNetwork,
                         transaction.symbol,
                         contract,

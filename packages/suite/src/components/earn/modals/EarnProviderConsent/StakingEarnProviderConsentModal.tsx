@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     EarnFlow,
     type EarnProvider,
@@ -29,6 +31,8 @@ export const StakingEarnProviderConsentModal = ({
     provider,
     yieldContext,
 }: StakingEarnProviderConsentModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Stake,
         onCancel,
@@ -46,7 +50,7 @@ export const StakingEarnProviderConsentModal = ({
         ),
     );
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
     const providerName = getEarnProviderName(provider);
 
     return (

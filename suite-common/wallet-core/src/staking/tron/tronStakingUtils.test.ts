@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -28,6 +29,8 @@ import {
     isTronRewardClaimOnCooldown,
     isTronStakingActive,
 } from './tronStakingUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const TRX = 1_000_000;
 const NOW_SECONDS = 1_700_000_000;
@@ -120,7 +123,7 @@ describe('isTronStakingActive', () => {
 describe('getTronCryptoBalanceWithStaking', () => {
     it('returns the spendable balance when there is no stakingInfo', () => {
         const account = buildTronAccount({ formattedBalance: '10' });
-        expect(getTronCryptoBalanceWithStaking(account)).toBe('10');
+        expect(getTronCryptoBalanceWithStaking(networkConfigDeps, account)).toBe('10');
     });
 
     it('adds the staked balance (in TRX) to the spendable balance', () => {
@@ -128,20 +131,20 @@ describe('getTronCryptoBalanceWithStaking', () => {
             formattedBalance: '10',
             stakingInfo: buildStakingInfo({ stakedBalance: String(5 * TRX) }),
         });
-        expect(getTronCryptoBalanceWithStaking(account)).toBe('15');
+        expect(getTronCryptoBalanceWithStaking(networkConfigDeps, account)).toBe('15');
     });
 });
 
 describe('getTronStakingRewards', () => {
     it('returns 0 when there is no stakingInfo', () => {
-        expect(getTronStakingRewards(buildTronAccount())).toBe('0');
+        expect(getTronStakingRewards(networkConfigDeps, buildTronAccount())).toBe('0');
     });
 
     it('converts the unclaimed reward from Sun to TRX', () => {
         const account = buildTronAccount({
             stakingInfo: buildStakingInfo({ unclaimedReward: String(2 * TRX) }),
         });
-        expect(getTronStakingRewards(account)).toBe('2');
+        expect(getTronStakingRewards(networkConfigDeps, account)).toBe('2');
     });
 });
 
@@ -221,17 +224,17 @@ describe('Tron unstaking balances', () => {
 
     describe('getTronUnstakingBalance', () => {
         it('returns 0 when there is no stakingInfo', () => {
-            expect(getTronUnstakingBalance(buildTronAccount())).toBe('0');
+            expect(getTronUnstakingBalance(networkConfigDeps, buildTronAccount())).toBe('0');
         });
 
         it('sums all unstaking batches regardless of expiry', () => {
-            expect(getTronUnstakingBalance(accountWithBatches)).toBe('10');
+            expect(getTronUnstakingBalance(networkConfigDeps, accountWithBatches)).toBe('10');
         });
     });
 
     describe('getTronWithdrawableBalance', () => {
         it('sums only batches whose expireTime has passed', () => {
-            expect(getTronWithdrawableBalance(accountWithBatches)).toBe('4');
+            expect(getTronWithdrawableBalance(networkConfigDeps, accountWithBatches)).toBe('4');
         });
 
         it('treats a batch expiring exactly now as withdrawable', () => {
@@ -240,13 +243,13 @@ describe('Tron unstaking balances', () => {
                     unstakingBatches: [buildBatch(String(3 * TRX), NOW_SECONDS)],
                 }),
             });
-            expect(getTronWithdrawableBalance(account)).toBe('3');
+            expect(getTronWithdrawableBalance(networkConfigDeps, account)).toBe('3');
         });
     });
 
     describe('getTronPendingUnstakeBalance', () => {
         it('sums only batches that have not yet expired', () => {
-            expect(getTronPendingUnstakeBalance(accountWithBatches)).toBe('6');
+            expect(getTronPendingUnstakeBalance(networkConfigDeps, accountWithBatches)).toBe('6');
         });
     });
 });

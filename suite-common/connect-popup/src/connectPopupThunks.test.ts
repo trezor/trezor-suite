@@ -2,6 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
 import { mockLockDevice } from '@suite-common/device/mocks';
+import { networksActions, networksReducer } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore } from '@suite-common/test-utils';
@@ -11,6 +13,8 @@ import * as walletUtils from '@suite-common/wallet-utils';
 import { connectPopupActions } from './connectPopupActions';
 import { prepareConnectPopupReducer, selectConnectPopupCallWithState } from './connectPopupReducer';
 import { connectPopupLoadSelectAccountPageThunk } from './connectPopupThunks';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
 // manual address-phase path these tests exercise (the account-index path loops it per row). Mocking
@@ -73,11 +77,16 @@ const initStore = () =>
     createTestStore({
         extra,
         reducer: combineReducers({
+            networks: networksReducer,
             connectPopup: connectPopupReducer,
             device: (state = { ...deviceInitialState, selectedDevice: fakeDevice }) => state,
             wallet: (state = { accounts: accountsInitialState }) => state,
         }),
         preloadedState: {
+            networks: networksReducer(
+                undefined,
+                networksActions.setNetworks(networkConfigDeps.getNetworkConfigs()),
+            ),
             connectPopup: { activeCall: selectAccountState, permissions: [] },
             device: { ...deviceInitialState, selectedDevice: fakeDevice },
             wallet: { accounts: accountsInitialState },

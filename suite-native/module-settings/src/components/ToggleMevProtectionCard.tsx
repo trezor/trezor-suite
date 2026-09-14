@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -8,6 +9,8 @@ import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const ToggleMevProtectionCard = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const { dispatch } = useServices(selectDispatch);
 
@@ -24,7 +27,7 @@ export const ToggleMevProtectionCard = () => {
             additionalInfo={
                 <Translation
                     id="moduleSettings.availableOn"
-                    values={{ supportedNetworks: getNetworksWithMevProtection() }}
+                    values={{ supportedNetworks: getNetworksWithMevProtection(networkConfigDeps) }}
                 />
             }
             isChecked={isMevProtectionEnabled}

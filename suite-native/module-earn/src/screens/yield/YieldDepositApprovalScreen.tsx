@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback } from 'react';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
@@ -59,6 +60,8 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const YieldDepositApprovalScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const isFocused = useIsFocused();
@@ -100,7 +103,10 @@ export const YieldDepositApprovalScreen = () => {
         isWrappedNativeVault: yieldFlowData.isWrappedNativeVault,
         shouldDisposeOnGoBack: true,
     });
-    const isAllowanceAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
+    const isAllowanceAmountUnlimited = isYieldApprovalAllowanceUnlimited(networkConfigDeps, {
+        session,
+        token,
+    });
     const defaultApprovalLimitType = isAllowanceAmountUnlimited ? 'unlimited' : 'per-deposit';
     const { approvalLimitTitle, approvalLimitType, setApprovalLimitType } =
         useYieldApprovalLimit(defaultApprovalLimitType);
@@ -336,7 +342,7 @@ export const YieldDepositApprovalScreen = () => {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetwork(networkConfigDeps, account.symbol).name;
     const pendingModalAmount = approvalPendingTransaction?.isAmountUnlimited ? (
         <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
     ) : (

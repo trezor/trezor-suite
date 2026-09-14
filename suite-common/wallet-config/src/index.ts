@@ -1,6 +1,6 @@
 export * from './backends';
 export * from './earnRewardsProvider';
-export * from './legacyNetworks';
+export * from './networkConfigTypes';
 export * from './representativeAssets';
 export * from './stakingProviderConstants';
 export * from './stakingProviders';

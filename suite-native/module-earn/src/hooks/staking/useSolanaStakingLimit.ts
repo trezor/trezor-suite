@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -28,6 +30,8 @@ export const useSolanaStakingLimit = ({
     type,
     amount,
 }: UseSolanaStakingLimitParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -44,8 +48,10 @@ export const useSolanaStakingLimit = ({
         const value = new BigNumber(amount ?? '');
         if (!value.isFinite() || value.lte(0)) return undefined;
 
-        return unitsToSubunits({ value: asAmountUnit(value), symbol }).toFixed(0);
-    }, [amount, symbol]);
+        return unitsToSubunits(networkConfigDeps, { value: asAmountUnit(value), symbol }).toFixed(
+            0,
+        );
+    }, [networkConfigDeps, amount, symbol]);
 
     const debouncedOutputAmount = useDebouncedValue(outputAmount);
     const deactivatedRentReservesKey = useMemo(
@@ -89,7 +95,11 @@ export const useSolanaStakingLimit = ({
 
                 setLimit({
                     isLimitExceeded: resolved.isLimitExceeded,
-                    formattedAmount: formatNetworkAmount(resolved.estimatedAmount, symbol),
+                    formattedAmount: formatNetworkAmount(
+                        networkConfigDeps,
+                        resolved.estimatedAmount,
+                        symbol,
+                    ),
                 });
             })
             .catch(() => {
@@ -102,6 +112,7 @@ export const useSolanaStakingLimit = ({
             isActive = false;
         };
     }, [
+        networkConfigDeps,
         descriptor,
         symbol,
         isSolanaAccount,

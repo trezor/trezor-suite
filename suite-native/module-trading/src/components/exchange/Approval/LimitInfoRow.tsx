@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import type { PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -21,6 +23,8 @@ type LimitInfoRowProps = PropsWithChildren<{
 }>;
 
 export const LimitInfoRow = ({ onPress, testID, withCaret, children }: LimitInfoRowProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     if (!quote?.send) {
@@ -28,7 +32,10 @@ export const LimitInfoRow = ({ onPress, testID, withCaret, children }: LimitInfo
     }
 
     const { send, sendStringAmount, approvalType } = quote;
-    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
+    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(
+        networkConfigDeps,
+        send,
+    );
 
     return (
         <TradeInfoRow onPress={onPress} testID={testID}>

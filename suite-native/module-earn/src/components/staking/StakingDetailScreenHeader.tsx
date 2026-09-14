@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
@@ -25,6 +27,8 @@ const headerTextStyle = prepareNativeStyle(() => ({
 }));
 
 export const StakingDetailScreenHeader = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.StakingDetail>>();
@@ -34,7 +38,7 @@ export const StakingDetailScreenHeader = () => {
 
     const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
 
-    const { networkType } = getNetwork(networkSymbol);
+    const { networkType } = getNetwork(networkConfigDeps, networkSymbol);
     const hasHowItWorks = networkType === 'ethereum' || networkType === 'solana';
 
     return (

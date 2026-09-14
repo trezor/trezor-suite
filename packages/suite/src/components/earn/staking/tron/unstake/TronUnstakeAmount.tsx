@@ -2,6 +2,8 @@ import { useFormState, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
@@ -19,6 +21,8 @@ import { useTronStakeContext } from '../TronStakeContext';
 import { getStakedBalance } from './unstakeUtils';
 
 export const TronUnstakeAmount = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
     const { account, form, actions, amountInput } = useTronStakeContext();
@@ -36,16 +40,16 @@ export const TronUnstakeAmount = () => {
     } = amountInput;
 
     const resourceType = useWatch({ control, name: 'resourceType' });
-    const stakedBalance = getStakedBalance(account, resourceType);
+    const stakedBalance = getStakedBalance(networkConfigDeps, account, resourceType);
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const cryptoInputRules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
             min: validateMin(translationString),
             decimals: validateDecimals(translationString, {
-                decimals: getNetwork(account.symbol).decimals,
+                decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
             }),
             staked: (value: string) =>
                 new BigNumber(value || 0).lte(stakedBalance) ||

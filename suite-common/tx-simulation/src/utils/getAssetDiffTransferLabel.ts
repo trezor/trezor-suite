@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
 
@@ -8,11 +9,12 @@ type SolanaTransfer = NonNullable<SolanaAssetDiff['in'] | SolanaAssetDiff['out']
 type StellarTransfer = NonNullable<StellarAssetDiff['in'] | StellarAssetDiff['out']>;
 
 const composeLabel = (
+    networkConfigDeps: NetworkConfigDeps,
     transfer: { raw_value: string | number; value?: string | number | null },
     decimals: number | undefined,
     code: string,
 ) => {
-    const amount = getAssetDiffTransferAmount(transfer, decimals);
+    const amount = getAssetDiffTransferAmount(networkConfigDeps, transfer, decimals);
 
     return amount === null ? code : `${amount.toString()} ${code}`;
 };
@@ -25,14 +27,16 @@ const composeLabel = (
  * amount the user gets.
  */
 export const getSolanaAssetDiffLabel = (
+    networkConfigDeps: NetworkConfigDeps,
     { asset }: SolanaAssetDiff,
     transfer: SolanaTransfer,
     symbol: NetworkSymbol,
 ) =>
     composeLabel(
+        networkConfigDeps,
         transfer,
         'decimals' in asset ? asset.decimals : undefined,
-        ('symbol' in asset && asset.symbol) || getNetworkDisplaySymbol(symbol),
+        ('symbol' in asset && asset.symbol) || getNetworkDisplaySymbol(networkConfigDeps, symbol),
     );
 
 /**
@@ -41,12 +45,15 @@ export const getSolanaAssetDiffLabel = (
  * everywhere else in Suite (`getStellarInactiveTokens`).
  */
 export const getStellarAssetDiffLabel = (
+    networkConfigDeps: NetworkConfigDeps,
     { asset }: StellarAssetDiff,
     transfer: StellarTransfer,
     symbol: NetworkSymbol,
 ) =>
     composeLabel(
+        networkConfigDeps,
         transfer,
         STELLAR_DECIMALS,
-        ('symbol' in asset ? asset.symbol : asset.code) || getNetworkDisplaySymbol(symbol),
+        ('symbol' in asset ? asset.symbol : asset.code) ||
+            getNetworkDisplaySymbol(networkConfigDeps, symbol),
     );

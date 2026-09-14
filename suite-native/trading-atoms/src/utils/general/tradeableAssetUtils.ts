@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import type { CoinInfo, CryptoId } from 'invity-api';
 
 import {
@@ -10,6 +11,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 export const coinInfoToTradeableAsset = (
+    networkConfigDeps: NetworkConfigDeps,
     cryptoId: CryptoId,
     coinInfo: CoinInfo,
 ): TradeableAsset => {
@@ -21,12 +23,14 @@ export const coinInfoToTradeableAsset = (
 
     return {
         cryptoId,
-        symbol: getDisplaySymbol(symbol.toUpperCase(), tokenContractAddress),
+        symbol: getDisplaySymbol(networkConfigDeps, symbol.toUpperCase(), tokenContractAddress),
         contractAddress: tokenContractAddress,
         networkId,
         ...info,
     };
 };
 
-export const getSymbolFromTradeableAsset = (asset: TradeableAsset | undefined) =>
-    asset?.cryptoId ? cryptoIdToNetworkSymbol(asset.cryptoId) : undefined;
+export const getSymbolFromTradeableAsset = (
+    networkConfigDeps: NetworkConfigDeps,
+    asset: TradeableAsset | undefined,
+) => (asset?.cryptoId ? cryptoIdToNetworkSymbol(networkConfigDeps, asset.cryptoId) : undefined);

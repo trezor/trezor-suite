@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -23,12 +26,16 @@ export type CustomFeeInputsProps = {
 };
 
 export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translate } = useTranslate();
-    const feeInfo = useSelector((state: FeesRootState) =>
+    const feeInfo = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeInfo(state, symbol),
     );
 
-    const isEip1559Fee = useSelector((state: FeesRootState) => selectIsEip1559Fee(state, symbol));
+    const isEip1559Fee = useSelector((state: FeesRootState & NetworksRootState) =>
+        selectIsEip1559Fee(state, symbol),
+    );
     const debounce = useDebounce();
     const {
         formState: { errors },
@@ -38,7 +45,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
 
     const hasFeePerByteError = isNotNullOrUndefined(errors[FEE_PER_UNIT_FIELD_NAME]);
 
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType(networkConfigDeps, symbol);
     const feeUnits = getFeeUnits(networkType);
     const formattedFeePerUnit = `${feeInfo?.minFee} ${feeUnits}`;
 

@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type RefObject, useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -112,10 +114,12 @@ const useSellQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const asset = useWatch({ control, name: 'sendAsset' });
-    const symbol = getSymbolFromTradeableAsset(asset);
-    const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
+    const shouldSendInSats = useSelector((state: WalletSettingsRootState & NetworksRootState) =>
         selectIsAmountInSats(state, symbol),
     );
     const {
@@ -132,7 +136,7 @@ const useSellQuotesThunk = (
     const fetchQuotes = useCallback(() => {
         const selectedAsset = getValues('sendAsset');
         invariant(selectedAsset, 'Asset is not defined');
-        const network = cryptoIdToNetwork(selectedAsset.cryptoId);
+        const network = cryptoIdToNetwork(networkConfigDeps, selectedAsset.cryptoId);
         invariant(network, `Network not found for [${selectedAsset.cryptoId}]`);
 
         const payload: HandleSellRequestThunkProps = {
@@ -142,7 +146,7 @@ const useSellQuotesThunk = (
             composeRequestCallback: noop,
         };
         quotesPromiseRef.current = dispatch(sellThunks.handleRequestThunk(payload));
-    }, [getValues, shouldSendInSats, quotesPromiseRef, dispatch]);
+    }, [networkConfigDeps, getValues, shouldSendInSats, quotesPromiseRef, dispatch]);
 
     const requestQuotes = useEffectEvent(() => {
         if (quotesPromiseRef.current?.abort) {

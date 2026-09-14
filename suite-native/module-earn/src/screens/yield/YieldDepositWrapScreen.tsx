@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect } from 'react';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
@@ -45,6 +46,8 @@ type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositWr
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldDepositWrap>;
 
 export const YieldDepositWrapScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const isFocused = useIsFocused();
@@ -92,7 +95,9 @@ export const YieldDepositWrapScreen = () => {
         variant: wrapDisabledVariant,
     } = useMessageSystemWrappedNative('wrap');
 
-    const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
+    const nativeSymbol = toTokenSymbol(
+        account ? getNetworkDisplaySymbol(networkConfigDeps, account.symbol) : '',
+    );
     const nativeBalance = account?.formattedBalance ?? '0';
 
     const handleSkipAnalytics = useCallback(() => {
@@ -126,7 +131,7 @@ export const YieldDepositWrapScreen = () => {
     const step = useYieldWrappedNativeStep({
         account,
         availableBalance: nativeBalance,
-        decimals: account ? getNetwork(account.symbol).decimals : 0,
+        decimals: account ? getNetwork(networkConfigDeps, account.symbol).decimals : 0,
         flowKey,
         flowType: 'deposit',
         isDisabled: isWrapDisabled || isDepositDisabled,
@@ -160,7 +165,7 @@ export const YieldDepositWrapScreen = () => {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetwork(networkConfigDeps, account.symbol).name;
     const wrappedTokenSymbol = toTokenSymbol(token.symbol);
     const hasWrappedTokenBalance = isPositiveBalance(token.balance);
     const isReserveRecommended = shouldRecommendWrapReserve(amountValue ?? '', nativeBalance);

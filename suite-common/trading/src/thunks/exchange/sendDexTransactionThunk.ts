@@ -1,5 +1,6 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { type ExchangeTrade } from 'invity-api';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
@@ -33,7 +34,7 @@ export type SendDexTransactionThunkProps = {
     signAndPushSendFormTransaction: RecomposeAndSignTxThunkProps['signAndPushSendFormTransaction'];
 };
 
-type SendDexTransactionThunkState = TradingRootState;
+type SendDexTransactionThunkState = TradingRootState & NetworksRootState;
 
 export const sendDexTransactionThunk = createThunk<
     undefined,
@@ -56,6 +57,8 @@ export const sendDexTransactionThunk = createThunk<
         },
         { dispatch, getState, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
@@ -74,7 +77,7 @@ export const sendDexTransactionThunk = createThunk<
             });
         }
 
-        const tradingFormState = getTradingFormState({
+        const tradingFormState = getTradingFormState(networkConfigDeps, {
             activeSection: 'exchange',
             providers,
             trade: selectedQuote,
@@ -100,7 +103,7 @@ export const sendDexTransactionThunk = createThunk<
             }
         }
 
-        const recomposeInputs = buildRecomposeInputsFromTrade({
+        const recomposeInputs = buildRecomposeInputsFromTrade(networkConfigDeps, {
             dexTx: selectedQuote.dexTx,
             partnerPaymentExtraId: selectedQuote.partnerPaymentExtraId,
             serializedTx,

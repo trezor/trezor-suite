@@ -1,6 +1,10 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { type FeesFormContext, feesFormValidationSchema } from './feesFormSchema';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
@@ -31,9 +35,9 @@ describe('feesFormValidationSchema', () => {
             };
             const context = createContext();
 
-            await expect(feesFormValidationSchema.validate(data, { context })).resolves.toEqual(
-                data,
-            );
+            await expect(
+                feesFormValidationSchema(networkConfigDeps).validate(data, { context }),
+            ).resolves.toEqual(data);
         });
 
         it('should validate a complete valid form for bitcoin', async () => {
@@ -44,9 +48,9 @@ describe('feesFormValidationSchema', () => {
             };
             const context = createContext({ symbol: btcSymbol });
 
-            await expect(feesFormValidationSchema.validate(data, { context })).resolves.toEqual(
-                data,
-            );
+            await expect(
+                feesFormValidationSchema(networkConfigDeps).validate(data, { context }),
+            ).resolves.toEqual(data);
         });
     });
 
@@ -59,9 +63,9 @@ describe('feesFormValidationSchema', () => {
             };
             const context = createContext({ minimalFeeLimit: '21000' });
 
-            await expect(feesFormValidationSchema.validate(data, { context })).resolves.toEqual(
-                data,
-            );
+            await expect(
+                feesFormValidationSchema(networkConfigDeps).validate(data, { context }),
+            ).resolves.toEqual(data);
         });
 
         it('should reject fee limit too low for ethereum', async () => {
@@ -76,9 +80,9 @@ describe('feesFormValidationSchema', () => {
                 translate: () => 'Value is too low.',
             });
 
-            await expect(feesFormValidationSchema.validate(data, { context })).rejects.toThrow(
-                'Value is too low.',
-            );
+            await expect(
+                feesFormValidationSchema(networkConfigDeps).validate(data, { context }),
+            ).rejects.toThrow('Value is too low.');
         });
 
         it('should pass for non-ethereum networks', async () => {
@@ -89,9 +93,9 @@ describe('feesFormValidationSchema', () => {
             };
             const context = createContext({ symbol: btcSymbol, minimalFeeLimit: '21000' });
 
-            await expect(feesFormValidationSchema.validate(data, { context })).resolves.toEqual(
-                data,
-            );
+            await expect(
+                feesFormValidationSchema(networkConfigDeps).validate(data, { context }),
+            ).resolves.toEqual(data);
         });
     });
 
@@ -100,9 +104,9 @@ describe('feesFormValidationSchema', () => {
             const data = { feeLevel: 'custom', customFeePerUnit: '100.50' };
             const context = createContext({ symbol: btcSymbol });
 
-            await expect(feesFormValidationSchema.validate(data, { context })).resolves.toEqual(
-                data,
-            );
+            await expect(
+                feesFormValidationSchema(networkConfigDeps).validate(data, { context }),
+            ).resolves.toEqual(data);
         });
 
         it('should reject too many decimals for bitcoin', async () => {
@@ -112,18 +116,18 @@ describe('feesFormValidationSchema', () => {
                 translate: () => 'Too many decimals.',
             });
 
-            await expect(feesFormValidationSchema.validate(data, { context })).rejects.toThrow(
-                'Too many decimals.',
-            );
+            await expect(
+                feesFormValidationSchema(networkConfigDeps).validate(data, { context }),
+            ).rejects.toThrow('Too many decimals.');
         });
 
         it('should pass for non-bitcoin/ethereum networks', async () => {
             const data = { feeLevel: 'custom', customFeePerUnit: '100.123456789012345' };
             const context = createContext({ symbol: adaSymbol });
 
-            await expect(feesFormValidationSchema.validate(data, { context })).resolves.toEqual(
-                data,
-            );
+            await expect(
+                feesFormValidationSchema(networkConfigDeps).validate(data, { context }),
+            ).resolves.toEqual(data);
         });
     });
 });

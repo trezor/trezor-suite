@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -22,6 +24,8 @@ export const ReceiveDestinationTagInfo = ({
     tokenContract,
     accountKey,
 }: ReceiveDestinationTagInfoProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
@@ -56,7 +60,8 @@ export const ReceiveDestinationTagInfo = ({
                                 textPressedColor="contentSecondary"
                             />
                         ),
-                        coinSymbol: tokenSymbol ?? getDisplaySymbol(accountSymbol),
+                        coinSymbol:
+                            tokenSymbol ?? getDisplaySymbol(networkConfigDeps, accountSymbol),
                     }}
                 />
             }

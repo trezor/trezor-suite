@@ -4,6 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -53,12 +54,14 @@ type UseWithdrawalFormProps = {
 };
 
 export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): WithdrawalContextValues => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );
 
-    const network = getNetwork(account.symbol);
+    const network = getNetwork(networkConfigDeps, account.symbol);
     const { symbol } = account;
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -74,7 +77,8 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, baseCurrencyCode), 'current'),
     );
 
-    const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
+    const { autocompoundBalance = '0' } =
+        getStakingDataForNetwork(networkConfigDeps, account) ?? {};
     const amountLimits: AmountLimitProps = {
         currency: symbol,
         maxCrypto: autocompoundBalance,
@@ -275,7 +279,9 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
             try {
-                const result = await dispatch(signTransactionThunk(values, composedTx));
+                const result = await dispatch(
+                    signTransactionThunk(networkConfigDeps, values, composedTx),
+                );
 
                 if (result?.success) {
                     clearForm();
@@ -288,7 +294,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
                 console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [networkConfigDeps, getValues, composedLevels, dispatch, clearForm, selectedFee]);
 
     return {
         ...methods,

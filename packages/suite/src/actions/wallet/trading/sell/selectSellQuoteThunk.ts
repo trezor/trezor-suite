@@ -2,6 +2,7 @@ import { type SellFiatTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     cryptoIdToNetworkSymbolAndContractAddress,
@@ -16,7 +17,7 @@ import { type RequestSellTradeThunkState, requestSellTradeThunk } from './reques
 
 type SelectSellQuoteThunkParams = { quote: SellFiatTrade; fractionButton?: number };
 
-type SelectSellQuoteThunkState = GotoThunkState & RequestSellTradeThunkState;
+type SelectSellQuoteThunkState = GotoThunkState & RequestSellTradeThunkState & NetworksRootState;
 
 type SelectSellQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
 
@@ -27,6 +28,8 @@ export const selectSellQuoteThunk = createThunk<
 >(
     'trading/sell/selectQuoteWithAnalytics',
     async ({ quote, fractionButton }, { dispatch, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const sellInfo = selectTradingSellInfo(getState());
         const quotesRequest = selectTradingSellQuotesRequest(getState());
 
@@ -42,6 +45,7 @@ export const selectSellQuoteThunk = createThunk<
                 quotesRequest.cryptoCurrency,
             );
         const { symbol: cryptoNetworkSymbol } = cryptoIdToNetworkSymbolAndContractAddress(
+            networkConfigDeps,
             quotesRequest.cryptoCurrency,
         );
 

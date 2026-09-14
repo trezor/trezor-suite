@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -88,10 +91,12 @@ const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
 };
 
 const useBuyQuoteChangeEffect = ({ control, getValues, setValue }: BuyFormType) => {
-    const [asset, quote] = useWatch({ control, name: ['asset', 'quote'] });
-    const symbol = getSymbolFromTradeableAsset(asset);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
 
-    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
+    const [asset, quote] = useWatch({ control, name: ['asset', 'quote'] });
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
+
+    const isAmountInSats = useSelector((state: WalletSettingsRootState & NetworksRootState) =>
         selectIsAmountInSats(state, symbol),
     );
 
@@ -121,12 +126,12 @@ const useBuyQuoteChangeEffect = ({ control, getValues, setValue }: BuyFormType) 
                 isAmountInSats && truncatedCryptoAmount && symbol
                     ? convertAmountUnitsToSubunits(
                           truncatedCryptoAmount,
-                          getNetwork(symbol).decimals,
+                          getNetwork(networkConfigDeps, symbol).decimals,
                       )
                     : truncatedCryptoAmount;
             setValue('cryptoValue', value);
         }
-    }, [asset?.cryptoId, quote, isAmountInSats, symbol, getValues, setValue]);
+    }, [networkConfigDeps, asset?.cryptoId, quote, isAmountInSats, symbol, getValues, setValue]);
 };
 
 const useValidations = (
@@ -152,13 +157,15 @@ const useValidations = (
 };
 
 export const useBuyForm = (): BuyFormType => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const defaultValues = useSelector(selectBuyFormDefaultValues);
     const limits = useSelector(selectBuyAmountLimits);
     const { context, setContractAddress, setSendNetworkSymbol } = useContextForTradingForm(limits);
 
     const form = useForm<BuyFormValues>({
         defaultValues,
-        validation: buyFormValidationSchema,
+        validation: buyFormValidationSchema(networkConfigDeps),
         context,
     });
     const { control, setValue } = form;
@@ -166,8 +173,14 @@ export const useBuyForm = (): BuyFormType => {
 
     useEffect(() => {
         setContractAddress(asset?.contractAddress);
-        setSendNetworkSymbol(cryptoIdToNetwork(asset?.cryptoId)?.symbol);
-    }, [asset?.contractAddress, asset?.cryptoId, setContractAddress, setSendNetworkSymbol]);
+        setSendNetworkSymbol(cryptoIdToNetwork(networkConfigDeps, asset?.cryptoId)?.symbol);
+    }, [
+        networkConfigDeps,
+        asset?.contractAddress,
+        asset?.cryptoId,
+        setContractAddress,
+        setSendNetworkSymbol,
+    ]);
 
     useReceiveAccountChangeEffect(setValue, selectBuySelectedReceiveAccount);
     useTradeableAssetValidityEffect(setValue, asset?.cryptoId);

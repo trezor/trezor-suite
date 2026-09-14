@@ -4,6 +4,7 @@ import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     TRADING_EXCHANGE_FORM_CEX,
@@ -21,6 +22,8 @@ import {
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useExchangeQuotes } from './useExchangeQuotes';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = toNetworkSymbolNonTestnet('btc');
 const ethSymbol = toNetworkSymbolNonTestnet('eth');
@@ -144,7 +147,8 @@ const renderExchangeQuotes = (
     } = {},
 ) => {
     const { receiveAddress, receiveAccountKey, receiveAccountSymbol, resolver } = options;
-    const network = 'network' in options ? options.network : getNetwork(btcSymbol);
+    const network =
+        'network' in options ? options.network : getNetwork(networkConfigDeps, btcSymbol);
     const services = {
         networks: { addressValidator: mockAddressValidator },
         analytics: mockDesktopAnalytics(),
@@ -327,7 +331,7 @@ describe('useExchangeQuotes', () => {
         mockSaveSelectedQuote.mockClear();
 
         rerender({
-            currentNetwork: getNetwork(btcSymbol),
+            currentNetwork: getNetwork(networkConfigDeps, btcSymbol),
             currentReceiveAccountKey: mockAccountKey({
                 descriptor: 'receiveaccount2',
                 symbol: ethSymbol,
@@ -353,7 +357,7 @@ describe('useExchangeQuotes', () => {
         expect(mockHandleRequest).not.toHaveBeenCalled();
 
         rerender({
-            currentNetwork: getNetwork(btcSymbol),
+            currentNetwork: getNetwork(networkConfigDeps, btcSymbol),
             currentReceiveAccountKey: undefined,
         });
 

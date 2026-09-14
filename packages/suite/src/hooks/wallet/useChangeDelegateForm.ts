@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import { useForm } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     getStakeFormsDefaultValues,
@@ -36,6 +37,8 @@ type UseChangeDelegateFormsProps = {
 export const useChangeDelegateForm = ({
     selectedAccount,
 }: UseChangeDelegateFormsProps): ChangeDelegateContextValues => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
 
     const { account, network } = selectedAccount;
@@ -121,13 +124,15 @@ export const useChangeDelegateForm = ({
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransactionThunk(values, composedTx));
+            const result = await dispatch(
+                signTransactionThunk(networkConfigDeps, values, composedTx),
+            );
 
             if (result?.success) {
                 clearForm();
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [networkConfigDeps, getValues, composedLevels, dispatch, clearForm, selectedFee]);
 
     return {
         ...methods,

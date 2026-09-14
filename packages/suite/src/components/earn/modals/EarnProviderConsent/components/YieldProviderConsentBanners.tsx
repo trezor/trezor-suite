@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
@@ -14,7 +16,9 @@ export const YieldProviderConsentBanners = ({
     networkType,
     providerName,
 }: YieldProviderConsentBannersProps) => {
-    if (!isStakingNetworkType(networkType)) return null;
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    if (!isStakingNetworkType(networkConfigDeps, networkType)) return null;
 
     switch (networkType) {
         case 'ethereum':

@@ -1,8 +1,9 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { PROD_STAKING_SYMBOLS, STAKING_SYMBOLS } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { getProdStakingSymbols, getStakingSymbols } from '@suite-common/wallet-config';
 import {
     isCardanoStakedWithFiveBinaries,
     selectVisibleDeviceAccounts,
@@ -34,16 +35,21 @@ type UseStakingListDataReturn = {
 };
 
 export const useStakingListData = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
     return useMemo<UseStakingListDataReturn>(() => {
         const stakingAccounts = sortByCoin(
-            accounts.filter(acc => isStakingSymbol(acc.symbol)),
+            networkConfigDeps,
+            accounts.filter(acc => isStakingSymbol(networkConfigDeps, acc.symbol)),
             supportedNetworks,
         );
-        const stakingSymbols = areTestnetsEnabled ? STAKING_SYMBOLS : PROD_STAKING_SYMBOLS;
+        const stakingSymbols = areTestnetsEnabled
+            ? getStakingSymbols(networkConfigDeps)
+            : getProdStakingSymbols(networkConfigDeps);
 
         const accountStakedWithFiveBinaries = stakingAccounts.find(
             account => account.visible && isCardanoStakedWithFiveBinaries(account),
@@ -67,11 +73,12 @@ export const useStakingListData = () => {
                     return;
                 }
 
-                if (!hasAccountActiveStaking(account)) {
+                if (!hasAccountActiveStaking(networkConfigDeps, account)) {
                     return;
                 }
 
-                const stakedAmount = getAccountTotalStakingBalance(account) ?? '0';
+                const stakedAmount =
+                    getAccountTotalStakingBalance(networkConfigDeps, account) ?? '0';
 
                 activeItems.push({
                     id: `${symbol}-${account.key}`,
@@ -95,5 +102,5 @@ export const useStakingListData = () => {
             promoListData,
             accountStakedWithFiveBinaries,
         };
-    }, [accounts, areTestnetsEnabled, supportedNetworks]);
+    }, [networkConfigDeps, accounts, areTestnetsEnabled, supportedNetworks]);
 };

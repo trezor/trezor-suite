@@ -2,7 +2,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectAddressValidatorDep } from '@suite-common/networks';
+import { selectAddressValidatorDep, selectNetworkConfigDeps } from '@suite-common/networks';
 import { cryptoIdToNetwork, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
@@ -15,6 +15,8 @@ import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/
 import { useTradingReceiveAddressValues } from './useTradingReceiveAddressValues';
 
 export const TradingReceiveAddressModal = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { tradingReceiveAddress, cryptoId, extraFieldDescription } =
         useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
@@ -42,12 +44,13 @@ export const TradingReceiveAddressModal = () => {
         validate: value => {
             if (cryptoId) {
                 const symbol =
-                    cryptoIdToNetwork(cryptoId)?.symbol ?? cryptoIdToNativeCoinSymbol(cryptoId);
+                    cryptoIdToNetwork(networkConfigDeps, cryptoId)?.symbol ??
+                    cryptoIdToNativeCoinSymbol(cryptoId);
                 let isValid: boolean;
 
                 try {
                     isValid =
-                        value && symbol !== undefined && isNetworkSymbol(symbol)
+                        value && symbol !== undefined && isNetworkSymbol(networkConfigDeps, symbol)
                             ? addressValidator.isAddressValid(value, symbol)
                             : true;
                 } catch {

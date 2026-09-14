@@ -4,6 +4,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 import { type ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM_DEX,
@@ -51,6 +52,8 @@ export const useExchangeDexQuote = ({
     dexQuotes,
     composeRequest,
 }: UseExchangeDexQuoteProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const { setValue, control } = methods;
 
@@ -82,10 +85,12 @@ export const useExchangeDexQuote = ({
             return;
         }
 
-        const fromAddress = isAccountBasedNetwork(account.symbol) ? account.descriptor : undefined;
+        const fromAddress = isAccountBasedNetwork(networkConfigDeps, account.symbol)
+            ? account.descriptor
+            : undefined;
 
         setValue('fromAddress', fromAddress);
-    }, [account, setValue]);
+    }, [networkConfigDeps, account, setValue]);
 
     // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {
@@ -99,7 +104,9 @@ export const useExchangeDexQuote = ({
             return;
         }
 
-        const quote = requiresErc20Approval(sendCryptoSelect.id) ? selectedQuote : dexQuotes[0];
+        const quote = requiresErc20Approval(networkConfigDeps, sendCryptoSelect.id)
+            ? selectedQuote
+            : dexQuotes[0];
 
         if (!quote?.dexTx) {
             setValue('transactionData', '');
@@ -110,10 +117,11 @@ export const useExchangeDexQuote = ({
 
         const { dexTx } = quote;
 
-        setValue('transactionData', getDexEstimationData(quote) ?? '');
+        setValue('transactionData', getDexEstimationData(networkConfigDeps, quote) ?? '');
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
     }, [
+        networkConfigDeps,
         dexQuotes,
         selectedQuote,
         exchangeType,

@@ -4,6 +4,7 @@ import { act, waitFor } from '@testing-library/react';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingAssetOption,
@@ -16,6 +17,8 @@ import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
 import { useBuyQuotes } from './useBuyQuotes';
 import { DEBOUNCE_DELAY_MS } from '../common/useTradingQuoteRequest';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = asNetworkSymbol('btc');
 
@@ -101,7 +104,11 @@ const renderBuyQuotes = (
                 defaultValues,
                 resolver,
             });
-            useBuyQuotes({ methods, network: getNetwork(btcSymbol), shouldSendInSats: false });
+            useBuyQuotes({
+                methods,
+                network: getNetwork(networkConfigDeps, btcSymbol),
+                shouldSendInSats: false,
+            });
 
             return methods;
         },

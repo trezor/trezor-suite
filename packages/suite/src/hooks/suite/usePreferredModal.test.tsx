@@ -4,9 +4,12 @@ import { render } from '@testing-library/react';
 
 import { MODAL_CONTEXT_NONE, MODAL_CONTEXT_USER, type State as ModalState } from '@suite/modal';
 import { type PathString, getAppWithParams } from '@suite/router';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 
 import { usePreferredModal } from './usePreferredModal';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 type Result = ReturnType<typeof usePreferredModal>;
 
@@ -30,7 +33,7 @@ const renderPreferredModal = ({
     const store = createTestStore({
         extra: undefined,
         preloadedState: {
-            router: { loaded: true, ...getAppWithParams({ pathname, hash }) },
+            router: { loaded: true, ...getAppWithParams(networkConfigDeps, { pathname, hash }) },
             modal,
         },
     });

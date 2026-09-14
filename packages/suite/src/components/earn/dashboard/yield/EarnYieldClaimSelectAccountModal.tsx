@@ -12,7 +12,11 @@ import {
     type YieldAccountsRewards,
 } from '@suite-common/earn-stablecoin-api';
 import { getCompactAmount, useFormatters } from '@suite-common/formatters';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import {
+    type NetworkConfigDeps,
+    selectNetworkConfigDeps,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { toTokenSymbol } from '@suite-common/wallet-types';
 import {
@@ -28,7 +32,10 @@ import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 
-const getRewardTokenAmounts = ({ rewards }: YieldAccountRewards) => {
+const getRewardTokenAmounts = (
+    networkConfigDeps: NetworkConfigDeps,
+    { rewards }: YieldAccountRewards,
+) => {
     const tokenAmounts = new Map<string, { amount: BigNumber; decimals: number; symbol: string }>();
 
     for (const reward of rewards) {
@@ -49,7 +56,10 @@ const getRewardTokenAmounts = ({ rewards }: YieldAccountRewards) => {
     }
 
     return [...tokenAmounts.values()].map(({ amount, decimals, symbol }) => ({
-        amount: subunitsToUnits({ value: asAmountSubunit(amount), decimals }).toString(),
+        amount: subunitsToUnits(networkConfigDeps, {
+            value: asAmountSubunit(amount),
+            decimals,
+        }).toString(),
         decimals,
         symbol: toTokenSymbol(symbol),
     }));
@@ -133,6 +143,8 @@ export const EarnYieldClaimSelectAccountModal = ({
     onSelect,
     onClose,
 }: EarnYieldClaimSelectAccountModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
@@ -140,7 +152,7 @@ export const EarnYieldClaimSelectAccountModal = ({
 
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const sortedAccountsRewards = [...accountsRewards].sort((a, b) =>
-        compareAccountsByCoin(a.account, b.account, supportedNetworks),
+        compareAccountsByCoin(networkConfigDeps, a.account, b.account, supportedNetworks),
     );
 
     const handleOnSelect = (account: YieldAccountsRewards[number]) => {
@@ -179,7 +191,10 @@ export const EarnYieldClaimSelectAccountModal = ({
         >
             <CardList>
                 {sortedAccountsRewards.map(accountRewards => {
-                    const rewardTokenAmounts = getRewardTokenAmounts(accountRewards);
+                    const rewardTokenAmounts = getRewardTokenAmounts(
+                        networkConfigDeps,
+                        accountRewards,
+                    );
 
                     return (
                         <CardList.Item

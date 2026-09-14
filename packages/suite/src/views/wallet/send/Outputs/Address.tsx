@@ -20,6 +20,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import {
     selectAddressValidatorDep,
     selectGetNamedAddressSupportDep,
+    selectNetworkConfigDeps,
     selectNetworkSymbolForProtocol,
 } from '@suite-common/networks';
 import { useQueryClient } from '@suite-common/react-query';
@@ -74,6 +75,8 @@ type AddressProps = {
 };
 
 export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [addressDeprecatedUrl, setAddressDeprecatedUrl] =
         useState<ReturnType<typeof isAddressDeprecated>>(undefined);
     const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
@@ -162,7 +165,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             return;
         }
 
-        const result = parseTransferUri(uri, protocol =>
+        const result = parseTransferUri(networkConfigDeps, uri, protocol =>
             selectNetworkSymbolForProtocol(getState(), protocol),
         );
 
@@ -257,6 +260,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
         composeTransaction(amountInputName);
     }, [
+        networkConfigDeps,
         account.tokens,
         amountInputName,
         analytics,

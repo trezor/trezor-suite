@@ -5,6 +5,7 @@ import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkConfigDeps, selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
@@ -100,6 +101,7 @@ const getAccountError = (accountError: string, networkType: NetworkType) => {
 };
 
 const discoveryFailedMessage = (
+    networkConfigDeps: NetworkConfigDeps,
     discovery: DiscoveryStatus | undefined,
     failed: FailedAccount[],
 ) => {
@@ -110,7 +112,7 @@ const discoveryFailedMessage = (
     const networkError: string[] = [];
 
     const details = failed.reduce((value, account) => {
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
         if (networkError.includes(account.symbol)) return value;
         networkError.push(account.symbol);
 
@@ -139,6 +141,8 @@ export const PortfolioCardException = ({
     discovery,
     failed,
 }: PortfolioCardExceptionProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     switch (exception.type) {
@@ -173,7 +177,13 @@ export const PortfolioCardException = ({
                     description={
                         <Translation
                             id="TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC"
-                            values={{ details: discoveryFailedMessage(discovery, failed) }}
+                            values={{
+                                details: discoveryFailedMessage(
+                                    networkConfigDeps,
+                                    discovery,
+                                    failed,
+                                ),
+                            }}
                         />
                     }
                     cta={{
@@ -190,7 +200,13 @@ export const PortfolioCardException = ({
                     description={
                         <Translation
                             id="TR_ACCOUNT_PASSPHRASE_DISABLED"
-                            values={{ details: discoveryFailedMessage(discovery, failed) }}
+                            values={{
+                                details: discoveryFailedMessage(
+                                    networkConfigDeps,
+                                    discovery,
+                                    failed,
+                                ),
+                            }}
                         />
                     }
                     cta={{

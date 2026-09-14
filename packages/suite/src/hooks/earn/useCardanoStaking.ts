@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     hasPendingStakeTypeTransaction,
     selectCardanoPoolsInfo,
@@ -19,6 +21,8 @@ import {
 import { useSelector } from 'src/hooks/suite';
 
 export const useCardanoStaking = (): CardanoStaking => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector(selectSelectedAccount);
 
     const isCardano = account?.networkType === 'cardano';
@@ -55,7 +59,7 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             setLoading(true);
             try {
-                const composeRes = await prepareTxPlan({
+                const composeRes = await prepareTxPlan(networkConfigDeps, {
                     account,
                     action,
                     cardanoPools,
@@ -95,7 +99,7 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             setLoading(false);
         },
-        [account, cardanoPools, votingDelegation],
+        [networkConfigDeps, account, cardanoPools, votingDelegation],
     );
 
     // TODO: improve this hook for non-cardano accounts

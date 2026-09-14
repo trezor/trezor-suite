@@ -4,6 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -45,8 +46,10 @@ type UseStakeFormProps = {
 };
 
 export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
-    const network = getNetwork(account.symbol);
+    const network = getNetwork(networkConfigDeps, account.symbol);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
@@ -62,8 +65,8 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
     );
 
     const stakingLimits = useMemo(
-        () => getStakingLimitsByNetworkSymbol(account.symbol),
-        [account.symbol],
+        () => getStakingLimitsByNetworkSymbol(networkConfigDeps, account.symbol),
+        [networkConfigDeps, account.symbol],
     );
 
     const defaultValues = useMemo(() => {
@@ -297,7 +300,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         setValue('setMaxOutputId', 0, { shouldDirty: true });
         clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
 
-        const amount = getMaxStakeAmount({
+        const amount = getMaxStakeAmount(networkConfigDeps, {
             balance: account.formattedBalance,
             symbol: account.symbol,
         });
@@ -306,6 +309,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
 
         await onCryptoAmountChange(amount, 'max');
     }, [
+        networkConfigDeps,
         account.formattedBalance,
         account.symbol,
         clearErrors,
@@ -355,7 +359,9 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         if (composedTx?.type === 'final') {
             setIsLoading(true);
             try {
-                const result = await dispatch(signTransactionThunk(values, composedTx));
+                const result = await dispatch(
+                    signTransactionThunk(networkConfigDeps, values, composedTx),
+                );
 
                 if (result?.success) {
                     clearForm();
@@ -371,7 +377,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
                 setIsLoading(false);
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [networkConfigDeps, getValues, composedLevels, dispatch, clearForm, selectedFee]);
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const closeConfirmModal = () => {

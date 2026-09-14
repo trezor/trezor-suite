@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     asAmountSubunit,
@@ -19,6 +21,8 @@ export function useTransactionMaxFee({
     composedLevels,
     selectedFeeLevel,
 }: TransactionMaxFeeProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const transactionInfo = selectedFeeLevel ? composedLevels?.[selectedFeeLevel.label] : null;
     const txFee = transactionInfo?.type !== 'error' ? transactionInfo?.fee : null;
 
@@ -28,14 +32,14 @@ export function useTransactionMaxFee({
         }
 
         return roundToNonZeroFractionDigits(
-            subunitsToUnits({
+            subunitsToUnits(networkConfigDeps, {
                 value: asAmountSubunit(new BigNumber(txFee)),
                 symbol: networkSymbol,
-                decimals: getNetwork(networkSymbol)?.decimals,
+                decimals: getNetwork(networkConfigDeps, networkSymbol)?.decimals,
             }),
             4,
         ).toString();
-    }, [networkSymbol, txFee]);
+    }, [networkConfigDeps, networkSymbol, txFee]);
 }
 
 export type TransactionMaxFee = ReturnType<typeof useTransactionMaxFee>;

@@ -1,3 +1,5 @@
+import { networksActions, networksReducer } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import {
     type StakingBatchDataItem,
     type StakingBatchErrorsItem,
@@ -63,6 +65,10 @@ const initStore = ({
     createTestStore({
         extra: undefined,
         preloadedState: {
+            networks: networksReducer(
+                null,
+                networksActions.setNetworks(mockNetworkConfigDeps().getNetworkConfigs()),
+            ),
             wallet: {
                 settings: { enabledNetworks },
                 stake,

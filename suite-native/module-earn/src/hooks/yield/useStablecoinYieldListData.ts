@@ -1,8 +1,9 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { selectNetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
@@ -52,6 +53,8 @@ type UseStablecoinYieldListDataReturn = {
 } & StablecoinYieldClaimSummariesState;
 
 export const useStablecoinYieldListData = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
@@ -84,7 +87,7 @@ export const useStablecoinYieldListData = () => {
         const promoItems: YieldEarnItem[] = [];
 
         for (const vault of yieldOpportunities) {
-            const network = getNetworkByYieldXyzId(vault.network);
+            const network = getNetworkByYieldXyzId(networkConfigDeps, vault.network);
 
             if (!network) {
                 continue;
@@ -110,7 +113,11 @@ export const useStablecoinYieldListData = () => {
                 ? accounts.filter(
                       account =>
                           account.symbol === network.symbol &&
-                          hasPositiveContractTokenBalance(account, receiptTokenContract),
+                          hasPositiveContractTokenBalance(
+                              networkConfigDeps,
+                              account,
+                              receiptTokenContract,
+                          ),
                   )
                 : [];
 
@@ -152,13 +159,16 @@ export const useStablecoinYieldListData = () => {
                         contractAddress: toTokenAddress(outputToken.contract),
                         accountKey: account.key,
                         accountLabel: account.accountLabel,
-                        tokenBalance: getConvertedOutputTokenBalanceToInputTokenAmount({
-                            networkSymbol: network.symbol,
-                            token: vault.token,
-                            outputToken: vault.outputToken,
-                            outputTokenBalance: outputToken.balance,
-                            pricePerShareState: vault.state?.pricePerShareState,
-                        }),
+                        tokenBalance: getConvertedOutputTokenBalanceToInputTokenAmount(
+                            networkConfigDeps,
+                            {
+                                networkSymbol: network.symbol,
+                                token: vault.token,
+                                outputToken: vault.outputToken,
+                                outputTokenBalance: outputToken.balance,
+                                pricePerShareState: vault.state?.pricePerShareState,
+                            },
+                        ),
                     });
                 }
             }
@@ -172,16 +182,20 @@ export const useStablecoinYieldListData = () => {
         // account type → account index), matching the desktop DeFi table.
         const accountByKey = new Map(accounts.map(account => [account.key, account]));
         const sortedActiveItems = [...activeItems].sort(
-            compareEarnByNetworkTokenOrder(item => {
-                const account = item.accountKey ? accountByKey.get(item.accountKey) : undefined;
+            compareEarnByNetworkTokenOrder(
+                networkConfigDeps,
+                item => {
+                    const account = item.accountKey ? accountByKey.get(item.accountKey) : undefined;
 
-                return {
-                    symbol: item.networkSymbol,
-                    tokenSymbol: item.tokenSymbol,
-                    accountType: account?.accountType,
-                    index: account?.index,
-                };
-            }, supportedNetworks),
+                    return {
+                        symbol: item.networkSymbol,
+                        tokenSymbol: item.tokenSymbol,
+                        accountType: account?.accountType,
+                        index: account?.index,
+                    };
+                },
+                supportedNetworks,
+            ),
         );
 
         const promoListData: EarnPromoListDataItem[] = [
@@ -191,7 +205,7 @@ export const useStablecoinYieldListData = () => {
         ];
 
         return { activeItems: sortedActiveItems, promoListData, isLoading, isError };
-    }, [isLoading, isError, yieldOpportunities, accounts, supportedNetworks]);
+    }, [networkConfigDeps, isLoading, isError, yieldOpportunities, accounts, supportedNetworks]);
 
     const stablecoinYieldClaimSummariesState = useStablecoinYieldClaimSummaries({
         accounts,

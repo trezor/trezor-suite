@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
@@ -27,26 +29,31 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => (
-    <HStack alignItems="center" flexShrink={1}>
-        <TokenIcon symbol={account.symbol} size="small" showNetworkIcon />
-        <VStack spacing={0} flexShrink={1}>
-            <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
-                {getNetworkDisplaySymbolName(account.symbol)}
-            </Text>
-            <AccountLabel
-                account={account}
-                variant="body-xs"
-                color="contentSecondary"
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                showAccountTypeBadge
-            />
-        </VStack>
-    </HStack>
-);
+export const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    return (
+        <HStack alignItems="center" flexShrink={1}>
+            <TokenIcon symbol={account.symbol} size="small" showNetworkIcon />
+            <VStack spacing={0} flexShrink={1}>
+                <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
+                    {getNetworkDisplaySymbolName(networkConfigDeps, account.symbol)}
+                </Text>
+                <AccountLabel
+                    account={account}
+                    variant="body-xs"
+                    color="contentSecondary"
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    showAccountTypeBadge
+                />
+            </VStack>
+        </HStack>
+    );
+};
 
 export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeaderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const navigation = useNavigation<AccountDetailNavigationProps>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
@@ -55,7 +62,10 @@ export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeader
     const { bottomSheetRef, closeModal, openModal } = useBottomSheetModal();
 
     const handleSettingsNavigation = () => {
-        if (isNetworkWithTokens(account.symbol) || isStakingSymbol(account.symbol)) {
+        if (
+            isNetworkWithTokens(networkConfigDeps, account.symbol) ||
+            isStakingSymbol(networkConfigDeps, account.symbol)
+        ) {
             openModal();
         } else {
             navigation.navigate(RootStackRoutes.AccountSettings, {

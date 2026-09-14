@@ -1,5 +1,7 @@
 import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Row, Text } from '@trezor/components';
@@ -16,7 +18,9 @@ export const GlobalReceiveAccountListItem = ({
     dataTestId,
     onClick,
 }: GlobalReceiveAccountListItemProps) => {
-    const supportsTokens = getNetworkFeatures(account.symbol).includes('tokens');
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const supportsTokens = getNetworkFeatures(networkConfigDeps, account.symbol).includes('tokens');
 
     return (
         <CardList.Item onClick={() => onClick(account)}>

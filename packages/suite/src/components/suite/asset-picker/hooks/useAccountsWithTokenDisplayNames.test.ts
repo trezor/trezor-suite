@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
     type TradingAssetOption,
@@ -21,6 +22,8 @@ import {
     getTokenDisplayNameSources,
     useAccountsWithTokenDisplayNames,
 } from './useAccountsWithTokenDisplayNames';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -110,6 +113,7 @@ describe('useAccountsWithTokenDisplayNames', () => {
 
     it('returns accounts with canonical token display names', () => {
         const accountsWithDisplayNames = getAccountsWithTokenDisplayNames(
+            networkConfigDeps,
             accountsWithTokens,
             new Map<CryptoId, string>([
                 ['ethereum--0x1' as CryptoId, 'Canonical One'],

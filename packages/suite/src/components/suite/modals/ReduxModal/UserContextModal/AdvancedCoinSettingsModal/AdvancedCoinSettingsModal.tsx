@@ -5,6 +5,7 @@ import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
 import { TorModal, type TorResult, toggleTorThunk } from '@suite/tor-desktop';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectNetworkExplorers } from '@suite-common/wallet-core';
@@ -42,7 +43,9 @@ export const AdvancedCoinSettingsModal = ({
     onCancel,
     onBackClick,
 }: AdvancedCoinSettingsModalProps) => {
-    const network = getNetwork(symbol);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const network = getNetwork(networkConfigDeps, symbol);
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const { dispatch } = useServices(selectDispatch);
     const [torModalOpen, setTorModalOpen] = useState(false);

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getYieldDepositableBalance } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
@@ -6,11 +7,13 @@ import { BigNumber } from '@trezor/utils';
 type AccountToken = NonNullable<Account['tokens']>[number];
 
 const isAccountTokenContractMatch = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     normalizedContract: string,
     accountTokenContract: string,
 ) => {
     const normalizedAccountTokenContract = getContractAddressForNetworkSymbol(
+        networkConfigDeps,
         account.symbol,
         accountTokenContract,
     );
@@ -19,6 +22,7 @@ const isAccountTokenContractMatch = (
 };
 
 export const getAccountTokenByContract = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     tokenContract: string | null,
 ): AccountToken | null => {
@@ -26,11 +30,20 @@ export const getAccountTokenByContract = (
         return null;
     }
 
-    const normalizedContract = getContractAddressForNetworkSymbol(account.symbol, tokenContract);
+    const normalizedContract = getContractAddressForNetworkSymbol(
+        networkConfigDeps,
+        account.symbol,
+        tokenContract,
+    );
 
     return (
         account.tokens?.find(token =>
-            isAccountTokenContractMatch(account, normalizedContract, token.contract),
+            isAccountTokenContractMatch(
+                networkConfigDeps,
+                account,
+                normalizedContract,
+                token.contract,
+            ),
         ) ?? null
     );
 };
@@ -41,6 +54,7 @@ export const getAccountTokenByContract = (
  * wrap step's available-to-wrap amount.
  */
 export const getYieldVaultDepositableBalance = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     vaultTokenContract: TokenAddress | null,
 ): string =>
@@ -49,11 +63,12 @@ export const getYieldVaultDepositableBalance = (
         nativeFormattedBalance: account.formattedBalance,
         vaultTokenAddress: vaultTokenContract,
         matchedTokenBalance: vaultTokenContract
-            ? getAccountTokenByContract(account, vaultTokenContract)?.balance
+            ? getAccountTokenByContract(networkConfigDeps, account, vaultTokenContract)?.balance
             : null,
     });
 
 export const hasPositiveContractTokenBalance = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     tokenContract: TokenAddress | null,
 ): boolean => {
@@ -61,13 +76,21 @@ export const hasPositiveContractTokenBalance = (
         return false;
     }
 
-    const normalizedContract = getContractAddressForNetworkSymbol(account.symbol, tokenContract);
+    const normalizedContract = getContractAddressForNetworkSymbol(
+        networkConfigDeps,
+        account.symbol,
+        tokenContract,
+    );
 
     return (
         account.tokens?.some(
             token =>
-                isAccountTokenContractMatch(account, normalizedContract, token.contract) &&
-                new BigNumber(token.balance ?? '0').gt(0),
+                isAccountTokenContractMatch(
+                    networkConfigDeps,
+                    account,
+                    normalizedContract,
+                    token.contract,
+                ) && new BigNumber(token.balance ?? '0').gt(0),
         ) ?? false
     );
 };

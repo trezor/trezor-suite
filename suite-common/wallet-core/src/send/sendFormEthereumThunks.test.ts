@@ -1,10 +1,15 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import * as fixtures from './__fixtures__/sendFormEthereumThunks.fixtures';
 import { calculate } from './sendFormEthereumThunks';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 describe(calculate.name, () => {
     fixtures.calculate.forEach(f => {
         it(`${f.description}`, () => {
             const result = calculate(
+                networkConfigDeps,
                 f.input.availableBalance,
                 f.input.output,
                 f.input.feeLevel,

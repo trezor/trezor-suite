@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -21,6 +23,8 @@ export const WrapTransactionName = ({
     kind,
     ...textProps
 }: WrapTransactionNameProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
 
@@ -31,7 +35,8 @@ export const WrapTransactionName = ({
             ? transaction.amount
             : getUnwrapAmountByEthereumDataHex(transaction.ethereumSpecific?.data);
 
-    const wrappedSymbol = getWrappedNativeSymbol(symbol) ?? getNetworkDisplaySymbol(symbol);
+    const wrappedSymbol =
+        getWrappedNativeSymbol(symbol) ?? getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
     // The formatter's `symbol` drives both the subunit→unit conversion and the appended ticker, and
     // the wrapped symbol (WETH) is not a NetworkSymbol. So convert using the native symbol's decimals
@@ -54,7 +59,10 @@ export const WrapTransactionName = ({
         <Text {...textProps}>
             <Translation
                 id={kind === 'wrap' ? 'transactions.name.wrap' : 'transactions.name.unwrap'}
-                values={{ nativeSymbol: getNetworkDisplaySymbol(symbol), wrappedAmount }}
+                values={{
+                    nativeSymbol: getNetworkDisplaySymbol(networkConfigDeps, symbol),
+                    wrappedAmount,
+                }}
             />
         </Text>
     );

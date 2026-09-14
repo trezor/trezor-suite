@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
@@ -5,6 +7,8 @@ import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const tenMinutes = 10 * 60 * 1000;
 const sendAmount = '0.053329';
@@ -54,7 +58,7 @@ test.describe(
                     },
                     buyAsset: {
                         searchFilter: 'Solana',
-                        assetCryptoId: getCryptoId(asNetworkSymbol('sol')),
+                        assetCryptoId: getCryptoId(networkConfigDeps, asNetworkSymbol('sol')),
                     },
 
                     selectReceiveAddress: async () => {
@@ -92,6 +96,7 @@ test.describe(
                             searchFilter: 'USDC',
                             networkFilter: 'base',
                             assetCryptoId: getCryptoId(
+                                networkConfigDeps,
                                 asNetworkSymbol('base'),
                                 '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
                             ),

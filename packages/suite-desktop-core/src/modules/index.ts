@@ -1,5 +1,6 @@
 import path from 'path';
 
+import type { NetworkConfigDeps } from '@suite-common/networks';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { isNotUndefined } from '@trezor/utils';
 
@@ -47,7 +48,7 @@ import * as windowControls from './window-controls';
 
 export * from './module';
 
-const MODULES: Module[] = [
+const getModules = (networkConfigDeps: NetworkConfigDeps): Module[] => [
     // Event Logging
     eventLogging,
     eventLoggingProcess,
@@ -77,7 +78,10 @@ const MODULES: Module[] = [
     bluetooth,
     firmware,
     powerMonitor,
-    mcpServer,
+    {
+        SERVICE_NAME: mcpServer.SERVICE_NAME,
+        init: dependencies => mcpServer.init(networkConfigDeps, dependencies),
+    },
     responseHeaders,
 ];
 
@@ -172,11 +176,11 @@ const initModulesInner = <
     return { loadModules, quitModules };
 };
 
-export const initModules = (dependencies: Dependencies) => {
+export const initModules = (networkConfigDeps: NetworkConfigDeps, dependencies: Dependencies) => {
     const { loadModules: loadModulesInner, quitModules } = initModulesInner(
         dependencies,
         false,
-        MODULES,
+        getModules(networkConfigDeps),
     );
 
     const loadModules = (handshake: HandshakeClient) =>

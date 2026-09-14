@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import { selectURLSearchParams } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -10,13 +11,15 @@ import * as protocolActions from 'src/actions/suite/protocolActions';
 import { useSelector } from 'src/hooks/suite';
 
 const Protocol = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
 
     const handleProtocolRequestThunk = useCallback(
         (uri: string) => {
-            dispatch(protocolActions.handleProtocolRequestThunk(uri));
+            dispatch(protocolActions.handleProtocolRequestThunk(networkConfigDeps, uri));
         },
-        [dispatch],
+        [networkConfigDeps, dispatch],
     );
 
     const searchParams = useSelector(selectURLSearchParams);

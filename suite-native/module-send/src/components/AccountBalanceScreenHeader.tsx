@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -17,6 +19,8 @@ export const AccountBalanceScreenHeader = ({
     accountKey,
     tokenContract,
 }: AccountBalanceScreenHeaderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -29,7 +33,8 @@ export const AccountBalanceScreenHeader = ({
         return;
     }
 
-    const assetName = tokenInfo?.symbol ?? getNetworkDisplaySymbol(account.symbol);
+    const assetName =
+        tokenInfo?.symbol ?? getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     return (
         <ScreenHeader

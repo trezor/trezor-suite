@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
@@ -19,8 +21,10 @@ type ExchangeSendFiatAmountBadgeProps = {
 };
 
 const ExchangeSendFiatAmountBadge = ({ amount, asset }: ExchangeSendFiatAmountBadgeProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
-    const symbol = getSymbolFromTradeableAsset(asset);
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
     invariant(symbol, 'Asset symbol is undefined');
 
     const convertedAmount = convertStrToBaseUnit(amount, symbol);

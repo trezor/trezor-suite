@@ -1,15 +1,18 @@
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { Button, Column, Divider, H2, Paragraph, Row } from '@trezor/components';
 import { RepeatIcon } from '@trezor/icons';
 
-import { db } from 'src/storage';
+import { getSuiteDB } from 'src/storage';
 
 type ErrorProps = {
     error: string;
 };
 
 export const Error = ({ error }: ErrorProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { reloadApp } = useServices(selectReloadAppDep);
 
     return (
@@ -46,7 +49,7 @@ export const Error = ({ error }: ErrorProps) => {
                     intent="neutral"
                     priority="secondary"
                     onClick={() => {
-                        db.removeDatabase();
+                        getSuiteDB(networkConfigDeps).removeDatabase();
                         reloadApp();
                     }}
                 >

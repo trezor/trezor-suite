@@ -4,6 +4,7 @@ import { isRejected } from '@reduxjs/toolkit';
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import {
     type ActionsFromAsyncThunk,
     type WithServices,
@@ -125,7 +126,8 @@ type ConvertSendFormDraftsBtcAmountUnitsThunkParams = {
 
 type ConvertSendFormDraftsBtcAmountUnitsThunkState = AccountsRootState &
     SendRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk<
     void,
@@ -134,6 +136,8 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
     ({ selectedAccountKey, isOnSendPage }, { dispatch, getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const sendFormDrafts = selectSendFormDrafts(getState());
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
 
@@ -153,7 +157,11 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk<
                 return;
             }
 
-            const areSatsSupported = hasNetworkFeatures(relatedAccount, 'amount-unit');
+            const areSatsSupported = hasNetworkFeatures(
+                networkConfigDeps,
+                relatedAccount,
+                'amount-unit',
+            );
 
             const amountFormatter =
                 areSatsAmountUnit && areSatsSupported
@@ -161,7 +169,7 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk<
                     : convertAmountSubunitsToUnits;
 
             const updatedDraft = cloneObject(draft);
-            const amountDecimals = getAccountDecimals(relatedAccount.symbol);
+            const amountDecimals = getAccountDecimals(networkConfigDeps, relatedAccount.symbol);
 
             updatedDraft.outputs.forEach(output => {
                 if (output.amount && areSatsSupported) {
@@ -311,7 +319,8 @@ type SynchronizeSentTransactionThunkParams = {
 
 export type SynchronizeSentTransactionThunkState = FeesRootState &
     SendRootState &
-    SyncAccountsWithBlockchainThunkState;
+    SyncAccountsWithBlockchainThunkState &
+    NetworksRootState;
 
 export type SynchronizeSentTransactionThunkDeps = WithServices<
     AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
@@ -328,12 +337,14 @@ export const synchronizeSentTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/synchronizePendingTransactionsThunk`,
     (
         { selectedAccount, precomposedTransaction, precomposedForm, txid, ethereumNonce },
-        { dispatch },
+        { getState, dispatch },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         // notification from the backend may be delayed.
         // modify affected account balance.
         if (isCardanoTx(selectedAccount, precomposedTransaction)) {
-            const pendingAccount = getPendingAccount({
+            const pendingAccount = getPendingAccount(networkConfigDeps, {
                 account: selectedAccount,
                 tx: precomposedTransaction,
                 txid,
@@ -347,7 +358,7 @@ export const synchronizeSentTransactionThunk = createThunk<
                         account: selectedAccount,
                     }),
                 );
-                dispatch(accountsActions.updateAccount(pendingAccount));
+                dispatch(accountsActions.updateAccount(networkConfigDeps, pendingAccount));
             }
 
             return;
@@ -375,7 +386,7 @@ export const synchronizeSentTransactionThunk = createThunk<
                         ethereumNonce,
                     }),
                 );
-                dispatch(accountsActions.updateAccount(selectedAccount));
+                dispatch(accountsActions.updateAccount(networkConfigDeps, selectedAccount));
 
                 // EVM cancel/bump: when the precomposed tx replaces a prior pending tx (identified by
                 // prevTxid), evict the old tx from the store immediately. The backend notification is
@@ -430,7 +441,8 @@ export const synchronizeSentTransactionThunk = createThunk<
     },
 );
 
-export type PushSendFormTransactionThunkState = SynchronizeSentTransactionThunkState;
+export type PushSendFormTransactionThunkState = SynchronizeSentTransactionThunkState &
+    NetworksRootState;
 
 export type PushSendFormTransactionThunkDeps = {
     actions: OnModalCancelDep;
@@ -451,6 +463,8 @@ export const pushSendFormTransactionThunk = createThunk<
         { selectedAccount, isMevProtectionEnabled },
         { dispatch, getState, extra, rejectWithValue, fulfillWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const {
             actions: { onModalCancel },
         } = extra;
@@ -473,6 +487,7 @@ export const pushSendFormTransactionThunk = createThunk<
             });
 
         const txData = getMevProtectedTxData(
+            networkConfigDeps,
             serializedTx.symbol,
             serializedTx.tx,
             isMevProtectionEnabled,
@@ -494,7 +509,11 @@ export const pushSendFormTransactionThunk = createThunk<
                   .toString()
             : '0';
 
-        const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, selectedAccount);
+        const areSatoshisUsed = getAreSatoshisUsed(
+            networkConfigDeps,
+            bitcoinAmountUnit,
+            selectedAccount,
+        );
         const evmApprovalData = Calldata.evm.erc20.approve.decode(precomposedForm?.transactionData);
 
         if (pushTxResponse.success) {
@@ -502,12 +521,12 @@ export const pushSendFormTransactionThunk = createThunk<
 
             if (evmApprovalData && token) {
                 const amountString = evmApprovalData.amount.toString();
-                const isInfiniteApproval = isAllowanceUnlimited({
+                const isInfiniteApproval = isAllowanceUnlimited(networkConfigDeps, {
                     amount: amountString,
                     decimals: token.decimals,
                     isSubunit: true,
                 });
-                const amount = subunitsToUnits({
+                const amount = subunitsToUnits(networkConfigDeps, {
                     value: asAmountSubunit(new BigNumber(amountString)),
                     decimals: token.decimals,
                 }).toString();
@@ -540,7 +559,7 @@ export const pushSendFormTransactionThunk = createThunk<
                 );
             } else {
                 const amount = token
-                    ? subunitsToUnits({
+                    ? subunitsToUnits(networkConfigDeps, {
                           value: asAmountSubunit(new BigNumber(precomposedTransaction.totalSpent)),
                           decimals: token.decimals,
                       })
@@ -551,6 +570,7 @@ export const pushSendFormTransactionThunk = createThunk<
                     token && amount
                         ? `${amount} ${token.symbol}`
                         : formatNetworkAmount(
+                              networkConfigDeps,
                               spentWithoutFee,
                               selectedAccount.symbol,
                               true,
@@ -614,7 +634,9 @@ type PushSendFormRawTransactionThunkParams = {
     isMevProtectionEnabled: boolean;
 };
 
-type PushSendFormRawTransactionThunkState = DeviceRootState & SyncAccountsWithBlockchainThunkState;
+type PushSendFormRawTransactionThunkState = DeviceRootState &
+    SyncAccountsWithBlockchainThunkState &
+    NetworksRootState;
 
 type PushSendFormRawTransactionThunkDeps = WithServices<
     AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
@@ -631,7 +653,10 @@ export const pushSendFormRawTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
     async (payload, { dispatch, getState, fulfillWithValue, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const txData = getMevProtectedTxData(
+            networkConfigDeps,
             payload.symbol,
             payload.tx,
             payload.isMevProtectionEnabled,
@@ -800,7 +825,7 @@ export const signTransactionThunk = createThunk<
     },
 );
 
-export type EnhancePrecomposedTransactionThunkState = DeviceRootState;
+export type EnhancePrecomposedTransactionThunkState = DeviceRootState & NetworksRootState;
 
 export const enhancePrecomposedTransactionThunk = createThunk<
     GeneralPrecomposedTransactionFinal,
@@ -816,8 +841,10 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         { transactionFormValues: formValues, precomposedTransaction, selectedAccount },
         { getState, dispatch, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const device = selectSelectedDevice(getState());
-        const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
+        const selectedAccountNetwork = getNetwork(networkConfigDeps, selectedAccount.symbol);
         if (!device) return rejectWithValue('Device not found');
 
         const createRbfEnhancedTransaction = (): GeneralPrecomposedTransactionFinal => {

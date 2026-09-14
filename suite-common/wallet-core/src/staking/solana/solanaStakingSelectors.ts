@@ -1,3 +1,5 @@
+import type { NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -25,17 +27,17 @@ export const selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol = creat
         ),
 );
 
-export const selectSolStakingAccountsInfoByAccountKey = createMemoizedSelector(
-    [selectAccountByKey],
-    account => {
+export const selectSolStakingAccountsInfoByAccountKey = createWeakMapSelector(
+    [selectNetworkConfigAccessors, selectAccountByKey],
+    (networkConfigDeps, account) => {
         if (!account) return null;
 
-        return getSolStakingAccountsInfo(account);
+        return getSolStakingAccountsInfo(networkConfigDeps, account);
     },
 );
 
 export const selectSolanaIsStakePendingByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
@@ -56,7 +58,7 @@ export const selectSolanaAPYByAccountKey = (
 };
 
 export const selectSolanaStakedBalanceByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
@@ -67,7 +69,7 @@ export const selectSolanaStakedBalanceByAccountKey = (
 };
 
 export const selectExpectedRewardsForEpoch = (
-    state: StakeRootState & AccountsRootState,
+    state: StakeRootState & AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
@@ -83,7 +85,7 @@ export const selectExpectedRewardsForEpoch = (
 };
 
 export const selectSolanaTotalStakePendingByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
@@ -94,7 +96,7 @@ export const selectSolanaTotalStakePendingByAccountKey = (
 };
 
 export const selectSolanaClaimableAmountByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
@@ -105,7 +107,7 @@ export const selectSolanaClaimableAmountByAccountKey = (
 };
 
 export const selectSolanaCanClaimByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
@@ -116,7 +118,7 @@ export const selectSolanaCanClaimByAccountKey = (
 };
 
 export const selectSolanaUnstakingBalanceByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);

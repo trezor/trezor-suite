@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -45,8 +46,9 @@ export const AccountDetailActionButtons = ({
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
-    const isNetworkSendFlowEnabled = useSelector((state: FeatureFlagsRootState) =>
-        selectIsNetworkSendFlowEnabled(state, account?.symbol),
+    const isNetworkSendFlowEnabled = useSelector(
+        (state: FeatureFlagsRootState & NetworksRootState) =>
+            selectIsNetworkSendFlowEnabled(state, account?.symbol),
     );
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(

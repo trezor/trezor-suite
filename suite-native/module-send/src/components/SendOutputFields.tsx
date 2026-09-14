@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useState } from 'react';
 import { useFieldArray } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -40,6 +42,8 @@ export const SendOutputFields = ({
     tokenContract,
     maxAmount,
 }: SendOutputFieldsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const { control } = useFormContext<SendOutputsFormValues>();
     const [qrNetworkSymbol, setQrNetworkSymbol] = useState<NetworkSymbol | null>(null);
@@ -90,8 +94,12 @@ export const SendOutputFields = ({
                 </VStack>
             </Card>
 
-            {symbol && getNetworkType(symbol) === 'tron' && <TronNoteInput symbol={symbol} />}
-            {symbol && getNetworkType(symbol) === 'solana' && <SolanaMemoInput />}
+            {symbol && getNetworkType(networkConfigDeps, symbol) === 'tron' && (
+                <TronNoteInput symbol={symbol} />
+            )}
+            {symbol && getNetworkType(networkConfigDeps, symbol) === 'solana' && (
+                <SolanaMemoInput />
+            )}
         </VStack>
     );
 };

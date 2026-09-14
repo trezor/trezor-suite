@@ -1,3 +1,5 @@
+import { getNetworks } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import {
     AddressDisplayOptions,
@@ -35,6 +37,7 @@ const initStore = (txs = confirmedNonces(6)) =>
     createTestStore({
         extra: undefined,
         preloadedState: {
+            networks: getNetworks(mockNetworkConfigDeps()),
             wallet: {
                 transactions: { transactions: { [ethAccount.key]: txs } },
                 settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL },

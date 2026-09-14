@@ -1,4 +1,6 @@
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type SignOperator } from '@suite-common/suite-types';
 import { selectBaseCurrency, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
 import { type Timestamp } from '@suite-common/wallet-types';
@@ -92,16 +94,20 @@ export const WithdrawalRow = ({
 }: {
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
-}) => (
-    <CustomRow
-        {...baseLayoutProps}
-        title="TR_TX_WITHDRAWAL"
-        sign="positive"
-        amount={formatCardanoWithdrawal(transaction) ?? '0'}
-        transaction={transaction}
-        useFiatValues={useFiatValues}
-    />
-);
+}) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    return (
+        <CustomRow
+            {...baseLayoutProps}
+            title="TR_TX_WITHDRAWAL"
+            sign="positive"
+            amount={formatCardanoWithdrawal(networkConfigDeps, transaction) ?? '0'}
+            transaction={transaction}
+            useFiatValues={useFiatValues}
+        />
+    );
+};
 
 export const DepositRow = ({
     transaction,
@@ -110,16 +116,20 @@ export const DepositRow = ({
 }: {
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
-}) => (
-    <CustomRow
-        {...baseLayoutProps}
-        title="TR_TX_DEPOSIT"
-        sign={getCardanoStakingSignValue(transaction)}
-        amount={formatCardanoDeposit(transaction) ?? '0'}
-        transaction={transaction}
-        useFiatValues={useFiatValues}
-    />
-);
+}) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    return (
+        <CustomRow
+            {...baseLayoutProps}
+            title="TR_TX_DEPOSIT"
+            sign={getCardanoStakingSignValue(transaction)}
+            amount={formatCardanoDeposit(networkConfigDeps, transaction) ?? '0'}
+            transaction={transaction}
+            useFiatValues={useFiatValues}
+        />
+    );
+};
 
 type CoinjoinRowProps = {
     transaction: WalletAccountTransaction;
@@ -127,6 +137,8 @@ type CoinjoinRowProps = {
 };
 
 export const CoinjoinRow = ({ transaction, useFiatValues }: CoinjoinRowProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(transaction.symbol, baseCurrencyCode);
     const historicRate = useSelector(state =>
@@ -139,6 +151,7 @@ export const CoinjoinRow = ({ transaction, useFiatValues }: CoinjoinRowProps) =>
                 useFiatValues ? (
                     <BaseCurrencyValue
                         amount={formatNetworkAmount(
+                            networkConfigDeps,
                             new BigNumber(transaction.amount).abs().toString(),
                             transaction.symbol,
                         )}

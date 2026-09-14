@@ -3,7 +3,9 @@ import { type FieldErrors, type UseFormReturn, useWatch } from 'react-hook-form'
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_MAX,
@@ -51,6 +53,8 @@ const TradingFormInputCryptoAmountContent = ({
     labelLeft,
     labelRight,
 }: TradingFormInputCryptoAmountContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
@@ -83,17 +87,17 @@ const TradingFormInputCryptoAmountContent = ({
     const outputToken = getValues('outputs')?.[0]?.token;
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoSelect?.id);
     const displaySymbol = tradingGetAccountLabel(
-        getDisplaySymbol(coinSymbol ?? '', contractAddress),
+        getDisplaySymbol(networkConfigDeps, coinSymbol ?? '', contractAddress),
         shouldSendInSats,
     );
     const decimals = isBuyContext
-        ? getNetworkDecimalsWithFallback(network?.symbol)
+        ? getNetworkDecimalsWithFallback(networkConfigDeps, network?.symbol)
         : getAssetDecimals({
               accountKey: getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT)?.accountKey,
               cryptoId: cryptoSelect?.id,
           });
     const feeInUnits = isExchangeOrSellContext
-        ? getFeeInUnits({
+        ? getFeeInUnits(networkConfigDeps, {
               symbol: validationAccount.symbol,
               composedLevels: context.composedLevels,
               selectedFee: composedTransactionInfo?.selectedFee,
@@ -108,7 +112,7 @@ const TradingFormInputCryptoAmountContent = ({
 
     const cryptoInputRules = useMemo(
         () =>
-            getCryptoInputRules({
+            getCryptoInputRules(networkConfigDeps, {
                 isBuyContext,
                 translationString,
                 shouldSendInSats,
@@ -122,6 +126,7 @@ const TradingFormInputCryptoAmountContent = ({
                 feeInUnits,
             }),
         [
+            networkConfigDeps,
             isBuyContext,
             translationString,
             shouldSendInSats,

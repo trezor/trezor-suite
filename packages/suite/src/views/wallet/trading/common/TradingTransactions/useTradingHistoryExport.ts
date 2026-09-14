@@ -2,6 +2,7 @@ import { useStore } from 'react-redux';
 
 import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -41,6 +42,8 @@ const getCsvColumnLabels = (
 });
 
 export const useTradingHistoryExport = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const store = useStore<TradingRootStateWithDeviceAndAccounts>();
     const { dispatch } = useServices(selectDispatch);
     const { translationString } = useTranslation();
@@ -49,10 +52,10 @@ export const useTradingHistoryExport = () => {
         try {
             const state = store.getState();
             const trades = selectDeviceTradingTradesOrderedByDate(state);
-            const csvContent = prepareTradingHistoryCsv(getCsvColumnLabels(translationString))(
-                state,
-                trades,
-            );
+            const csvContent = prepareTradingHistoryCsv(
+                networkConfigDeps,
+                getCsvColumnLabels(translationString),
+            )(state, trades);
 
             triggerWebDownloadFile(
                 new Blob([csvContent], { type: CSV_MIME_TYPE }),

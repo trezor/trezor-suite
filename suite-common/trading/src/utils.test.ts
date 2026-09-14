@@ -5,6 +5,7 @@ import {
     type ExchangeTrade,
     type SellFiatTrade,
 } from 'invity-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
@@ -34,6 +35,8 @@ import {
     testnetToProdCryptoId,
     toTokenCryptoId,
 } from './utils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const sendAccountKey = mockAccountKey({ descriptor: 'sendAccountKey' });
 const receiveAccountKey = mockAccountKey({ descriptor: 'receiveAccountKey' });
@@ -184,7 +187,7 @@ describe('cryptoIdToNetworkSymbol', () => {
     ] as [CryptoId, NetworkSymbol][])(
         'should return correct symbol for %s',
         (cryptoId, expectedSymbol) => {
-            expect(cryptoIdToNetworkSymbol(cryptoId)).toBe(expectedSymbol);
+            expect(cryptoIdToNetworkSymbol(networkConfigDeps, cryptoId)).toBe(expectedSymbol);
         },
     );
 });
@@ -202,12 +205,12 @@ describe('cryptoIdToNetworkAndContractAddress', () => {
     ] as [CryptoId | undefined, NetworkSymbol | undefined, string | undefined][])(
         'should return correct symbol and contract for %s',
         (cryptoId, expectedSymbol, expectedContract) => {
-            expect(cryptoIdToNetworkAndContractAddress(cryptoId).network?.symbol).toBe(
-                expectedSymbol,
-            );
-            expect(cryptoIdToNetworkAndContractAddress(cryptoId).contractAddress).toBe(
-                expectedContract,
-            );
+            expect(
+                cryptoIdToNetworkAndContractAddress(networkConfigDeps, cryptoId).network?.symbol,
+            ).toBe(expectedSymbol);
+            expect(
+                cryptoIdToNetworkAndContractAddress(networkConfigDeps, cryptoId).contractAddress,
+            ).toBe(expectedContract);
         },
     );
 });
@@ -220,21 +223,27 @@ describe('cryptoIdToNetwork', () => {
     ] as [CryptoId, NetworkSymbol | undefined][])(
         'should return correct symbol for %s',
         (cryptoId, expectedSymbol) => {
-            expect(cryptoIdToNetwork(cryptoId)?.symbol).toBe(expectedSymbol);
+            expect(cryptoIdToNetwork(networkConfigDeps, cryptoId)?.symbol).toBe(expectedSymbol);
         },
     );
 });
 
 describe('isCrossChainTrade', () => {
     it('should return true when send and receive assets are on different networks', () => {
-        expect(isCrossChainTrade('ethereum' as CryptoId, 'bitcoin' as CryptoId)).toBe(true);
+        expect(
+            isCrossChainTrade(networkConfigDeps, 'ethereum' as CryptoId, 'bitcoin' as CryptoId),
+        ).toBe(true);
     });
 });
 
 describe('toTokenCryptoId', () => {
     it('should return correct token cryptoId', () => {
         expect(
-            toTokenCryptoId(asNetworkSymbol('eth'), '0x1234123412341234123412341234123412341234'),
+            toTokenCryptoId(
+                networkConfigDeps,
+                asNetworkSymbol('eth'),
+                '0x1234123412341234123412341234123412341234',
+            ),
         ).toBe('ethereum--0x1234123412341234123412341234123412341234');
     });
 });
@@ -368,7 +377,7 @@ describe('getTradingFormState', () => {
                 'test-exchange': mockProvider,
             };
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade: incompleteTrade,
                 providers,
@@ -390,7 +399,7 @@ describe('getTradingFormState', () => {
                 cryptoStringAmount: '0.025',
             } as SellFiatTrade;
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade,
                 providers: {},
@@ -416,7 +425,7 @@ describe('getTradingFormState', () => {
                 'test-exchange': mockProvider,
             };
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade,
                 providers,
@@ -443,7 +452,7 @@ describe('getTradingFormState', () => {
                 'test-exchange': mockProvider,
             };
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade,
                 providers,
@@ -483,7 +492,7 @@ describe('getTradingFormState', () => {
                 'test-exchange': mockProvider,
             };
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade,
                 providers,
@@ -524,7 +533,7 @@ describe('getTradingFormState', () => {
                 'test-exchange': mockProvider,
             };
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade: incompleteTrade,
                 providers,
@@ -547,7 +556,7 @@ describe('getTradingFormState', () => {
                 sendStringAmount: '0.025',
             } as ExchangeTrade;
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade,
                 providers: {},
@@ -574,7 +583,7 @@ describe('getTradingFormState', () => {
                 'test-exchange': mockProvider,
             };
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade,
                 providers,
@@ -601,7 +610,7 @@ describe('getTradingFormState', () => {
                 'test-exchange': mockProvider,
             };
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade,
                 providers,
@@ -628,7 +637,7 @@ describe('getTradingFormState', () => {
                 'test-exchange': mockProvider,
             };
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade,
                 providers,
@@ -671,7 +680,7 @@ describe('getTradingFormState', () => {
                 'test-exchange': mockProvider,
             };
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade,
                 providers,
@@ -711,7 +720,7 @@ describe('getTradingFormState', () => {
                 receiveAddress: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
             } as ExchangeTrade;
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection,
                 trade,
                 providers: { 'test-exchange': mockProvider },
@@ -736,7 +745,7 @@ describe('getTradingFormState', () => {
                 cryptoStringAmount: '0.025',
             } as SellFiatTrade;
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection: 'sell',
                 trade,
                 providers: undefined,
@@ -759,7 +768,7 @@ describe('getTradingFormState', () => {
                 cryptoStringAmount: '0.025',
             } as SellFiatTrade;
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection: 'sell',
                 trade,
                 providers: { 'test-exchange': mockProvider },
@@ -786,7 +795,7 @@ describe('getTradingFormState', () => {
                 'test-exchange': mockProvider,
             };
 
-            const result = getTradingFormState({
+            const result = getTradingFormState(networkConfigDeps, {
                 activeSection: 'sell',
                 trade,
                 providers,

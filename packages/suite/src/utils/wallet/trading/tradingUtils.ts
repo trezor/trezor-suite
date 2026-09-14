@@ -1,4 +1,5 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import type { TradingType } from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
@@ -166,13 +167,14 @@ interface ResolveAddressAndTokenProps {
 }
 
 export const resolveAddressAndToken = <A extends Pick<Account, 'symbol' | 'descriptor'>>(
+    networkConfigDeps: NetworkConfigDeps,
     account: A | undefined | null,
     tokenContractAddress: TokenInfo['contract'] | undefined | null,
 ): ResolveAddressAndTokenProps => {
     if (!account) {
         return { address: '', token: null };
     }
-    const networkType = getNetworkType(account.symbol);
+    const networkType = getNetworkType(networkConfigDeps, account.symbol);
 
     // set token address for ERC20 transaction to estimate the fees more precisely
     if (networkType === 'ethereum') {
@@ -195,11 +197,10 @@ interface GetFeeInUnitsProps {
     selectedFee?: FeeLevel['label'];
 }
 
-export const getFeeInUnits = ({
-    symbol,
-    composedLevels,
-    selectedFee = 'normal',
-}: GetFeeInUnitsProps): string => {
+export const getFeeInUnits = (
+    networkConfigDeps: NetworkConfigDeps,
+    { symbol, composedLevels, selectedFee = 'normal' }: GetFeeInUnitsProps,
+): string => {
     const selectedFeeLevel = composedLevels?.[selectedFee];
     if (!selectedFeeLevel) return '0';
 
@@ -209,7 +210,7 @@ export const getFeeInUnits = ({
 
     const { fee } = selectedFeeLevel;
 
-    const feeInUnits = subunitsToUnits({
+    const feeInUnits = subunitsToUnits(networkConfigDeps, {
         value: asAmountSubunit(new BigNumber(fee)),
         symbol,
     }).toString();

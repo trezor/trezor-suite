@@ -1,4 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { networksActions } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
@@ -7,9 +9,11 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { explorerActions } from './explorerActions';
 import {
     type ExplorerConfig,
-    explorerInitialState,
+    createExplorerInitialState,
     prepareExplorerReducer,
 } from './explorerReducer';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const explorerReducer = prepareExplorerReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -27,7 +31,10 @@ const initStore = (state: Partial<ExplorerConfig> = {}) =>
         },
         preloadedState: {
             wallet: {
-                explorer: { ...explorerInitialState, ...state },
+                explorer: {
+                    ...createExplorerInitialState(networkConfigDeps.getNetworkConfigs()),
+                    ...state,
+                },
             },
         },
     });
@@ -80,4 +87,19 @@ describe('setExplorer', () => {
 
         expect(store.getState().wallet.explorer.btc.custom).toEqual(undefined);
     });
+});
+
+it('loads module explorer defaults while preserving custom explorers', () => {
+    const bitcoin = networkConfigDeps.getNetworkConfig('btc');
+    const loaded = explorerReducer(undefined, networksActions.setNetworks([bitcoin]));
+    expect(Object.keys(loaded)).toEqual(['btc']);
+
+    const custom = { base: 'https://custom.example', tx: 'tx', address: 'address' };
+    const configured = explorerReducer(
+        loaded,
+        explorerActions.setExplorer({ symbol: 'btc', explorer: custom }),
+    );
+    const reloaded = explorerReducer(configured, networksActions.setNetworks([bitcoin]));
+    expect(reloaded.btc.custom).toEqual(custom);
+    expect(reloaded.btc.default).toEqual(loaded.btc.default);
 });

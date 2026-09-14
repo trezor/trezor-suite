@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksState } from '@suite-common/networks';
 import { Locator, Page } from '@playwright/test';
 
 import { type TradingCountryCode, getCountrySubdivisionByCode } from '@suite-common/trading';
@@ -103,7 +104,9 @@ export class TradingFormInputs {
 
     @step()
     async expectInputToBe(params: PercentageOfBalanceParams) {
-        const expectedValue = calculatePercentageOfBalance(params);
+        const networks: NetworksState = await this.page.getReduxObject('networks');
+        const networkConfigDeps = selectNetworkConfigAccessors({ networks });
+        const expectedValue = calculatePercentageOfBalance(networkConfigDeps, params);
         await expect.soft(this.cryptoAmount).toHaveValue(expectedValue);
     }
 

@@ -39,7 +39,7 @@ jest.mock('@suite-native/intl', () => ({
 }));
 
 jest.mock('@suite-common/trading', () => ({
-    cryptoIdToNetworkAndContractAddress: (cryptoId?: string) =>
+    cryptoIdToNetworkAndContractAddress: (_deps: unknown, cryptoId?: string) =>
         mockCryptoIdToNetworkAndContractAddress(cryptoId),
 }));
 

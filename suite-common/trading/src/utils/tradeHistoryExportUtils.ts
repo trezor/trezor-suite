@@ -1,4 +1,5 @@
 import { type CryptoId } from 'invity-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
 import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import {
@@ -59,6 +60,7 @@ export const getTradingHistoryCsvType = (tradeType: TradingType): string =>
     tradeType === 'exchange' ? 'swap' : tradeType;
 
 export const getTradingHistoryCsvRow = (
+    networkConfigDeps: NetworkConfigDeps,
     trade: TradingTransaction,
     { getCoinSymbol, getProviderName }: TradingHistoryCsvResolvers,
 ): TradingHistoryCsvRow => {
@@ -80,7 +82,10 @@ export const getTradingHistoryCsvRow = (
     const resolveNetwork = (
         currency: string | CryptoId | undefined,
         isCrypto: boolean | undefined,
-    ) => (isCrypto && currency ? (cryptoIdToNetwork(currency as CryptoId)?.name ?? '') : '');
+    ) =>
+        isCrypto && currency
+            ? (cryptoIdToNetwork(networkConfigDeps, currency as CryptoId)?.name ?? '')
+            : '';
 
     const spendTransactionId = isSellFiatTrade(data) ? (data.txid ?? '') : '';
     const receiveTransactionId =
@@ -105,14 +110,14 @@ export const getTradingHistoryCsvRow = (
 };
 
 export const buildTradingHistoryCsv =
-    (labels: TradingHistoryCsvColumnLabels) =>
+    (networkConfigDeps: NetworkConfigDeps, labels: TradingHistoryCsvColumnLabels) =>
     (trades: TradingTransaction[], resolvers: TradingHistoryCsvResolvers): string => {
         const header = TRADING_HISTORY_CSV_COLUMNS.map(column =>
             sanitizeTradingCsvValue(labels[column]),
         ).join(CSV_SEPARATOR);
 
         const rows = trades.map(trade => {
-            const row = getTradingHistoryCsvRow(trade, resolvers);
+            const row = getTradingHistoryCsvRow(networkConfigDeps, trade, resolvers);
 
             return TRADING_HISTORY_CSV_COLUMNS.map(column =>
                 sanitizeTradingCsvValue(row[column]),
@@ -123,9 +128,9 @@ export const buildTradingHistoryCsv =
     };
 
 export const prepareTradingHistoryCsv =
-    (labels: TradingHistoryCsvColumnLabels) =>
+    (networkConfigDeps: NetworkConfigDeps, labels: TradingHistoryCsvColumnLabels) =>
     (state: TradingRootState, trades: TradingTransaction[]): string =>
-        buildTradingHistoryCsv(labels)(trades, {
+        buildTradingHistoryCsv(networkConfigDeps, labels)(trades, {
             getCoinSymbol: cryptoId => selectTradingCoinSymbolByCryptoId(state, cryptoId),
             getProviderName: (name, tradeType) =>
                 selectTradingProviderCompanyName(state, name, tradeType),

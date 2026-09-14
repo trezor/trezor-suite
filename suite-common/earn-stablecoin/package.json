@@ -14,8 +14,10 @@
     },
     "dependencies": {
         "@suite-common/calldata": "workspace:^",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/earn-stablecoin-api": "workspace:^",
         "@suite-common/message-system": "workspace:^",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/schemas": "workspace:^",
         "@suite-common/wallet-config": "workspace:^",
         "@suite-common/wallet-core": "workspace:^",

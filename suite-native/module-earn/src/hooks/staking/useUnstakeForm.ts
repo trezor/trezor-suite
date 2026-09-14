@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -29,25 +32,27 @@ import { unstakeFormValidationSchema } from '../../utils/staking/unstakeFormSche
 import { useComposeEarnFees } from '../earn/useComposeEarnFees';
 
 export const useUnstakeForm = (accountKey: AccountKey) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const stakedBalance = useSelector((state: StakeRootState) =>
+    const stakedBalance = useSelector((state: StakeRootState & NetworksRootState) =>
         selectStakedBalanceByAccountKey(state, accountKey),
     );
-    const canClaim = useSelector((state: StakeRootState) =>
+    const canClaim = useSelector((state: StakeRootState & NetworksRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
     );
     const claimableAmount =
-        useSelector((state: StakeRootState) =>
+        useSelector((state: StakeRootState & NetworksRootState) =>
             selectClaimableAmountByAccountKey(state, accountKey),
         ) ?? '0';
 
-    const network = account ? getNetwork(account.symbol) : null;
+    const network = account ? getNetwork(networkConfigDeps, account.symbol) : null;
 
     const form = useForm<EarnFormValues>({
-        validation: unstakeFormValidationSchema,
+        validation: unstakeFormValidationSchema(networkConfigDeps),
         mode: 'onTouched',
         context: {
             account,
@@ -96,7 +101,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
 
     if (!account) return null;
 
-    const limits = getStakingLimitsByNetworkSymbol(account.symbol);
+    const limits = getStakingLimitsByNetworkSymbol(networkConfigDeps, account.symbol);
     const networkFeeWarningThreshold = limits?.MIN_BALANCE_FOR_FEE_BUFFER.times(
         NETWORK_FEE_WARNING_MULTIPLIER,
     );

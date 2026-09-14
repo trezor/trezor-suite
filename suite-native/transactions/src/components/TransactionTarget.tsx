@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -50,7 +51,7 @@ export const TransactionListItemValues = ({
     amount,
     operation,
 }: TransactionListItemValuesProps) => {
-    const isTestnetAccount = useSelector((state: AccountsRootState) =>
+    const isTestnetAccount = useSelector((state: AccountsRootState & NetworksRootState) =>
         selectIsTestnetAccount(state, accountKey),
     );
 

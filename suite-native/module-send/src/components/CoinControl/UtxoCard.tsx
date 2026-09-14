@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -66,6 +68,8 @@ export const UtxoCard = ({
     symbol,
     isSelected = false,
 }: Props) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { DateFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<TransactionDetailNavigation>();
@@ -91,7 +95,7 @@ export const UtxoCard = ({
         });
     };
 
-    const fiatAmount = convertCryptoToFiatAmount({
+    const fiatAmount = convertCryptoToFiatAmount(networkConfigDeps, {
         amount: utxo.amount,
         symbol,
         rate: currentRates?.rate,

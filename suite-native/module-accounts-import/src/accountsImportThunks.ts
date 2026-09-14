@@ -1,5 +1,9 @@
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
-import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
+import {
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type GetTokenDefinitionsEnabledNetworksDep,
@@ -56,6 +60,8 @@ export const importAccountThunk = createThunk<
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/importAccountThunk`,
     ({ accountInfo, accountLabel, symbol }, { dispatch, getState }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const deviceState = PORTFOLIO_TRACKER_DEVICE_STATE;
 
         const deviceNetworkAccounts = selectAccountsByNetworkAndDeviceState(
@@ -68,12 +74,15 @@ export const importAccountThunk = createThunk<
         );
 
         if (existingAccount) {
-            dispatch(accountsActions.updateAccount(existingAccount, accountInfo));
+            dispatch(
+                accountsActions.updateAccount(networkConfigDeps, existingAccount, accountInfo),
+            );
         } else {
             const accountType = getAccountTypeFromDescriptor(accountInfo.descriptor, symbol);
             const imported = true;
             dispatch(
                 accountsActions.createAccount(
+                    networkConfigDeps,
                     {
                         deviceState,
                         index: deviceNetworkAccounts.length, // indexed from 0
@@ -93,7 +102,7 @@ export const importAccountThunk = createThunk<
     },
 );
 
-type GetAccountInfoThunkState = UpdateFiatRatesThunkState;
+type GetAccountInfoThunkState = UpdateFiatRatesThunkState & NetworksRootState;
 
 export const getAccountInfoThunk = createThunk<
     AccountInfo,
@@ -102,6 +111,8 @@ export const getAccountInfoThunk = createThunk<
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
     async ({ symbol, baseCurrencyCode, xpubAddress }, { dispatch, rejectWithValue, getState }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         // Connect requires apostrophe in Taproot descriptors thus a conversion is necessary.
         const taprootXpubWithApostrophes = convertTaprootXpub({
             xpub: xpubAddress,
@@ -112,7 +123,7 @@ export const getAccountInfoThunk = createThunk<
             const [fetchedAccountInfo] = await Promise.all([
                 TrezorConnect.getAccountInfo({
                     coin: symbol,
-                    identity: shouldUseIdentities(symbol)
+                    identity: shouldUseIdentities(networkConfigDeps, symbol)
                         ? getAccountIdentity({
                               deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
                           })
@@ -120,7 +131,10 @@ export const getAccountInfoThunk = createThunk<
                     descriptor: taprootXpubWithApostrophes ?? xpubAddress,
                     details: 'txs',
                     suppressBackupWarning: true,
-                    protocols: getNetworkType(symbol) === 'ethereum' ? ['erc4626'] : undefined,
+                    protocols:
+                        getNetworkType(networkConfigDeps, symbol) === 'ethereum'
+                            ? ['erc4626']
+                            : undefined,
                 }),
                 dispatch(
                     updateFiatRatesThunk({
@@ -140,8 +154,8 @@ export const getAccountInfoThunk = createThunk<
                 const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
                 // fetch token definitions for this network in case they are needed
-                if (!tokenDefinitions && isNetworkWithTokens(symbol)) {
-                    const definitionTypes = getSupportedDefinitionTypes(symbol);
+                if (!tokenDefinitions && isNetworkWithTokens(networkConfigDeps, symbol)) {
+                    const definitionTypes = getSupportedDefinitionTypes(networkConfigDeps, symbol);
 
                     const promises = definitionTypes.map(async type => {
                         await dispatch(

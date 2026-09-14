@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -11,6 +12,7 @@ type AssetDiffTransfer = {
  * Amount of a single asset-diff transfer in main units.
  */
 export const getAssetDiffTransferAmount = (
+    networkConfigDeps: NetworkConfigDeps,
     transfer: AssetDiffTransfer,
     decimals: number | undefined,
 ): BigNumber | null => {
@@ -18,7 +20,10 @@ export const getAssetDiffTransferAmount = (
         const rawValue = new BigNumber(transfer.raw_value);
 
         if (!rawValue.isNaN()) {
-            return subunitsToUnits({ value: asAmountSubunit(rawValue), decimals });
+            return subunitsToUnits(networkConfigDeps, {
+                value: asAmountSubunit(rawValue),
+                decimals,
+            });
         }
     }
 

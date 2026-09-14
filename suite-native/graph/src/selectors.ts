@@ -1,3 +1,5 @@
+import type { NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import { A } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
@@ -23,17 +25,16 @@ import { deepEqual } from '@trezor/utils';
 type GraphCommonRootState = DeviceRootState & AccountsRootState & TokenDefinitionsRootState;
 type PortfolioGraphRootState = GraphCommonRootState & DiscoveryRootState;
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<GraphCommonRootState>();
-
-export const selectPortfolioGraphAccountItems = createMemoizedSelector(
-    [selectDeviceMainnetAccounts, selectTokenDefinitions],
-    (accounts, tokenDefinitions): AccountItem[] =>
+export const selectPortfolioGraphAccountItems = createWeakMapSelector(
+    [selectNetworkConfigAccessors, selectDeviceMainnetAccounts, selectTokenDefinitions],
+    (networkConfigDeps, accounts, tokenDefinitions): AccountItem[] =>
         returnStableArrayIfEmpty(
             accounts
                 .filter(account => !account.failed)
                 .map(account => {
                     const knownTokens = account.tokens
                         ? filterKnownTokens(
+                              networkConfigDeps,
                               tokenDefinitions?.[account.symbol]?.coin?.data,
                               account.symbol,
                               account.tokens,
@@ -61,7 +62,7 @@ export const selectPortfolioGraphAccountItems = createMemoizedSelector(
 );
 
 export const selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning = (
-    state: PortfolioGraphRootState,
+    state: PortfolioGraphRootState & NetworksRootState,
 ): AccountItem[] => {
     if (selectHasRunningDiscovery(state)) {
         return returnStableArrayIfEmpty<AccountItem>();
@@ -70,16 +71,17 @@ export const selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning = (
     return selectPortfolioGraphAccountItems(state);
 };
 
-export const selectHasPortfolioGraphAccounts = (state: PortfolioGraphRootState): boolean =>
-    A.isNotEmpty(selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning(state));
+export const selectHasPortfolioGraphAccounts = (
+    state: PortfolioGraphRootState & NetworksRootState,
+): boolean => A.isNotEmpty(selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning(state));
 
-export const selectHasDeviceHistoryEnabledAccounts = createMemoizedSelector(
+export const selectHasDeviceHistoryEnabledAccounts = createWeakMapSelector(
     [selectDeviceMainnetAccounts],
     (accounts): boolean =>
         A.isNotEmpty(accounts.filter(a => !isIgnoredBalanceHistoryCoin(a.symbol))),
 );
 
-export const selectDeviceHistoryIgnoredNetworkSymbols = createMemoizedSelector(
+export const selectDeviceHistoryIgnoredNetworkSymbols = createWeakMapSelector(
     [selectDeviceMainnetAccounts],
     (accounts): readonly NetworkSymbol[] =>
         A.uniq(accounts.filter(a => isIgnoredBalanceHistoryCoin(a.symbol)).map(a => a.symbol)),

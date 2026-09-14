@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkFeature, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
@@ -34,6 +35,8 @@ import {
     networkAmountToSmallestUnit,
 } from './amountUtils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 const supportedNetworks = mockGetSupportedNetworks();
 
 const btcSymbol = asNetworkSymbol('btc');
@@ -53,7 +56,7 @@ describe('account utils', () => {
         it('accountUtils.sortByCoin', () => {
             const input = [...(f.accounts as Account[])];
 
-            expect(sortByCoin(input, supportedNetworks)).toEqual(f.result);
+            expect(sortByCoin(networkConfigDeps, input, supportedNetworks)).toEqual(f.result);
             // The input array is not mutated.
             expect(input).toEqual(f.accounts);
         });
@@ -78,23 +81,37 @@ describe('account utils', () => {
     });
 
     it('format network amount', () => {
-        expect(formatNetworkAmount('1', btcSymbol)).toEqual('0.00000001');
-        expect(formatNetworkAmount('1', xrpSymbol)).toEqual('0.000001');
-        expect(formatNetworkAmount('1', xrpSymbol, true)).toEqual('0.000001 XRP');
-        expect(formatNetworkAmount('1', ethSymbol)).toEqual('0.000000000000000001');
-        expect(formatNetworkAmount('1', btcSymbol, true)).toEqual('0.00000001 BTC');
-        expect(formatNetworkAmount('1', btcSymbol, true, true)).toEqual('1 sat BTC');
-        expect(formatNetworkAmount('', btcSymbol)).toEqual('0');
-        expect(formatNetworkAmount('', btcSymbol, true)).toEqual('0 BTC');
-        expect(formatNetworkAmount('', btcSymbol, true, true)).toEqual('0 sat BTC');
-        expect(() => formatNetworkAmount('aaa', ethSymbol)).toThrow();
+        expect(formatNetworkAmount(networkConfigDeps, '1', btcSymbol)).toEqual('0.00000001');
+        expect(formatNetworkAmount(networkConfigDeps, '1', xrpSymbol)).toEqual('0.000001');
+        expect(formatNetworkAmount(networkConfigDeps, '1', xrpSymbol, true)).toEqual(
+            '0.000001 XRP',
+        );
+        expect(formatNetworkAmount(networkConfigDeps, '1', ethSymbol)).toEqual(
+            '0.000000000000000001',
+        );
+        expect(formatNetworkAmount(networkConfigDeps, '1', btcSymbol, true)).toEqual(
+            '0.00000001 BTC',
+        );
+        expect(formatNetworkAmount(networkConfigDeps, '1', btcSymbol, true, true)).toEqual(
+            '1 sat BTC',
+        );
+        expect(formatNetworkAmount(networkConfigDeps, '', btcSymbol)).toEqual('0');
+        expect(formatNetworkAmount(networkConfigDeps, '', btcSymbol, true)).toEqual('0 BTC');
+        expect(formatNetworkAmount(networkConfigDeps, '', btcSymbol, true, true)).toEqual(
+            '0 sat BTC',
+        );
+        expect(() => formatNetworkAmount(networkConfigDeps, 'aaa', ethSymbol)).toThrow();
     });
 
     it('format amount to satoshi', () => {
-        expect(networkAmountToSmallestUnit('0.00000001', btcSymbol)).toEqual('1');
-        expect(networkAmountToSmallestUnit('0.000001', xrpSymbol)).toEqual('1');
-        expect(networkAmountToSmallestUnit('0.000000000000000001', ethSymbol)).toEqual('1');
-        expect(networkAmountToSmallestUnit('aaa', ethSymbol)).toEqual('-1');
+        expect(networkAmountToSmallestUnit(networkConfigDeps, '0.00000001', btcSymbol)).toEqual(
+            '1',
+        );
+        expect(networkAmountToSmallestUnit(networkConfigDeps, '0.000001', xrpSymbol)).toEqual('1');
+        expect(
+            networkAmountToSmallestUnit(networkConfigDeps, '0.000000000000000001', ethSymbol),
+        ).toEqual('1');
+        expect(networkAmountToSmallestUnit(networkConfigDeps, 'aaa', ethSymbol)).toEqual('-1');
     });
 
     it('findAccountDevice', () => {
@@ -230,14 +247,14 @@ describe('account utils', () => {
     });
 
     it('isTestnet', () => {
-        expect(isTestnet(asNetworkSymbol('test'))).toEqual(true);
-        expect(isTestnet(asNetworkSymbol('tsep'))).toEqual(true);
-        expect(isTestnet(asNetworkSymbol('thod'))).toEqual(true);
-        expect(isTestnet(asNetworkSymbol('txrp'))).toEqual(true);
-        expect(isTestnet(asNetworkSymbol('txlm'))).toEqual(true);
-        expect(isTestnet(btcSymbol)).toEqual(false);
-        expect(isTestnet(ltcSymbol)).toEqual(false);
-        expect(isTestnet(asNetworkSymbol('xlm'))).toEqual(false);
+        expect(isTestnet(networkConfigDeps, asNetworkSymbol('test'))).toEqual(true);
+        expect(isTestnet(networkConfigDeps, asNetworkSymbol('tsep'))).toEqual(true);
+        expect(isTestnet(networkConfigDeps, asNetworkSymbol('thod'))).toEqual(true);
+        expect(isTestnet(networkConfigDeps, asNetworkSymbol('txrp'))).toEqual(true);
+        expect(isTestnet(networkConfigDeps, asNetworkSymbol('txlm'))).toEqual(true);
+        expect(isTestnet(networkConfigDeps, btcSymbol)).toEqual(false);
+        expect(isTestnet(networkConfigDeps, ltcSymbol)).toEqual(false);
+        expect(isTestnet(networkConfigDeps, asNetworkSymbol('xlm'))).toEqual(false);
     });
 
     it('getAccountIdentifier', () => {
@@ -276,49 +293,71 @@ describe('account utils', () => {
             },
         });
 
-        expect(accountSearchFn(btcAcc, 'btc', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'btc', { accountLabel: '' })).toBe(true);
         expect(
-            accountSearchFn(btcAcc, '', {
+            accountSearchFn(networkConfigDeps, btcAcc, '', {
                 coinsFilter: btcSymbol,
                 accountLabel: '',
             }),
         ).toBe(true);
         expect(
             accountSearchFn(
+                networkConfigDeps,
                 btcAcc,
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                 { coinsFilter: btcSymbol, accountLabel: '' },
             ),
         ).toBe(true);
         expect(
-            accountSearchFn(btcAcc, '', {
+            accountSearchFn(networkConfigDeps, btcAcc, '', {
                 coinsFilter: ltcSymbol,
                 accountLabel: '',
             }),
         ).toBe(false);
-        expect(accountSearchFn(btcAcc, 'bitcoin', { accountLabel: '' })).toBe(true);
-        expect(accountSearchFn(btcAcc, 'legacy', { accountLabel: '' })).toBe(true);
-        expect(accountSearchFn(btcAcc, 'bitco', { accountLabel: '' })).toBe(true);
-        expect(accountSearchFn(btcAcc, 'ltc', { accountLabel: '' })).toBe(false);
-        expect(accountSearchFn(btcAcc, 'litecoin', { accountLabel: '' })).toBe(false);
-        expect(accountSearchFn(btcAcc, 'meow', { accountLabel: 'meow' })).toBe(true);
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'bitcoin', { accountLabel: '' })).toBe(
+            true,
+        );
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'legacy', { accountLabel: '' })).toBe(
+            true,
+        );
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'bitco', { accountLabel: '' })).toBe(
+            true,
+        );
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'ltc', { accountLabel: '' })).toBe(false);
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'litecoin', { accountLabel: '' })).toBe(
+            false,
+        );
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'meow', { accountLabel: 'meow' })).toBe(
+            true,
+        );
         expect(
-            accountSearchFn(btcAcc, 'wuff', {
+            accountSearchFn(networkConfigDeps, btcAcc, 'wuff', {
                 accountLabel: 'wuff',
             }),
         ).toBe(true);
-        expect(accountSearchFn(btcAcc, 'meo', { accountLabel: 'meow' })).toBe(true);
-        expect(accountSearchFn(btcAcc, 'eow', { accountLabel: 'meow' })).toBe(true);
-        expect(accountSearchFn(btcAcc, 'MEOW', { accountLabel: 'meow' })).toBe(true);
-        expect(accountSearchFn(btcAcc, 'wuff', { accountLabel: '' })).toBe(false);
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'meo', { accountLabel: 'meow' })).toBe(
+            true,
+        );
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'eow', { accountLabel: 'meow' })).toBe(
+            true,
+        );
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'MEOW', { accountLabel: 'meow' })).toBe(
+            true,
+        );
+        expect(accountSearchFn(networkConfigDeps, btcAcc, 'wuff', { accountLabel: '' })).toBe(
+            false,
+        );
         expect(
             accountSearchFn(
+                networkConfigDeps,
                 btcAcc,
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                 { accountLabel: '' },
             ),
         ).toBe(true);
-        expect(accountSearchFn(btcAcc, '#1', { accountLabel: 'Bitcoin #1' })).toBe(true);
+        expect(
+            accountSearchFn(networkConfigDeps, btcAcc, '#1', { accountLabel: 'Bitcoin #1' }),
+        ).toBe(true);
     });
 
     it('accountSearchFn matches displayed account type name', () => {
@@ -329,26 +368,28 @@ describe('account utils', () => {
 
         // Matched only via the displayed name, the raw account type key alone would not match.
         expect(
-            accountSearchFn(segwitAcc, 'legacy segwit', {
+            accountSearchFn(networkConfigDeps, segwitAcc, 'legacy segwit', {
                 accountLabel: '',
                 accountTypeName: 'Legacy SegWit',
             }),
         ).toBe(true);
         expect(
-            accountSearchFn(segwitAcc, 'legacy', {
+            accountSearchFn(networkConfigDeps, segwitAcc, 'legacy', {
                 accountLabel: '',
                 accountTypeName: 'Legacy SegWit',
             }),
         ).toBe(true);
         expect(
-            accountSearchFn(segwitAcc, 'LEGACY SEGWIT', {
+            accountSearchFn(networkConfigDeps, segwitAcc, 'LEGACY SEGWIT', {
                 accountLabel: '',
                 accountTypeName: 'Legacy SegWit',
             }),
         ).toBe(true);
-        expect(accountSearchFn(segwitAcc, 'legacy segwit', { accountLabel: '' })).toBe(false);
         expect(
-            accountSearchFn(segwitAcc, 'taproot', {
+            accountSearchFn(networkConfigDeps, segwitAcc, 'legacy segwit', { accountLabel: '' }),
+        ).toBe(false);
+        expect(
+            accountSearchFn(networkConfigDeps, segwitAcc, 'taproot', {
                 accountLabel: '',
                 accountTypeName: 'Legacy SegWit',
             }),
@@ -364,8 +405,10 @@ describe('account utils', () => {
             ],
         });
 
-        expect(accountSearchFn(ethAcc, 'test', { accountLabel: '' })).toBe(true);
-        expect(accountSearchFn(ethAcc, 'test2', { accountLabel: '' })).toBe(false);
+        expect(accountSearchFn(networkConfigDeps, ethAcc, 'test', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(networkConfigDeps, ethAcc, 'test2', { accountLabel: '' })).toBe(
+            false,
+        );
     });
 
     it('accountSearchFn empty tokens pepe-like', () => {
@@ -377,8 +420,10 @@ describe('account utils', () => {
             ],
         });
 
-        expect(accountSearchFn(ethAcc, 'test', { accountLabel: '' })).toBe(true);
-        expect(accountSearchFn(ethAcc, 'pepe', { accountLabel: '' })).toBe(false);
+        expect(accountSearchFn(networkConfigDeps, ethAcc, 'test', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(networkConfigDeps, ethAcc, 'pepe', { accountLabel: '' })).toBe(
+            false,
+        );
     });
 
     it('accountSearchFn hidden tokens excluded via searchableTokens', () => {
@@ -389,15 +434,17 @@ describe('account utils', () => {
             tokens: [shownToken, hiddenToken],
         });
 
-        expect(accountSearchFn(ethAcc, 'hidden-spam', { accountLabel: '' })).toBe(true);
         expect(
-            accountSearchFn(ethAcc, 'hidden-spam', {
+            accountSearchFn(networkConfigDeps, ethAcc, 'hidden-spam', { accountLabel: '' }),
+        ).toBe(true);
+        expect(
+            accountSearchFn(networkConfigDeps, ethAcc, 'hidden-spam', {
                 accountLabel: '',
                 searchableTokens: [shownToken],
             }),
         ).toBe(false);
         expect(
-            accountSearchFn(ethAcc, 'shown', {
+            accountSearchFn(networkConfigDeps, ethAcc, 'shown', {
                 accountLabel: '',
                 searchableTokens: [shownToken],
             }),
@@ -420,14 +467,17 @@ describe('account utils', () => {
             accountType: 'coinjoin',
         });
 
-        expect(getNetworkAccountFeatures(btcAcc)).toEqual([
+        expect(getNetworkAccountFeatures(networkConfigDeps, btcAcc)).toEqual([
             'rbf',
             'sign-verify',
             'amount-unit',
             'graph',
         ] satisfies NetworkFeature[]);
-        expect(getNetworkAccountFeatures(btcTaprootAcc)).toEqual(['rbf', 'amount-unit']);
-        expect(getNetworkAccountFeatures(ethAcc)).toEqual([
+        expect(getNetworkAccountFeatures(networkConfigDeps, btcTaprootAcc)).toEqual([
+            'rbf',
+            'amount-unit',
+        ]);
+        expect(getNetworkAccountFeatures(networkConfigDeps, ethAcc)).toEqual([
             'rbf',
             'sign-verify',
             'tokens',
@@ -440,9 +490,14 @@ describe('account utils', () => {
             'graph',
             'claim-rewards',
         ]);
-        expect(getNetworkAccountFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);
+        expect(getNetworkAccountFeatures(networkConfigDeps, coinjoinAcc)).toEqual([
+            'rbf',
+            'amount-unit',
+        ]);
         // when account does not have features defined, take them from root network object
-        expect(getNetworkAccountFeatures(btcLegacy)).toEqual(getNetworkAccountFeatures(btcAcc));
+        expect(getNetworkAccountFeatures(networkConfigDeps, btcLegacy)).toEqual(
+            getNetworkAccountFeatures(networkConfigDeps, btcAcc),
+        );
     });
 
     it('hasNetworkFeatures', () => {
@@ -450,12 +505,16 @@ describe('account utils', () => {
 
         const ethAcc = mockWalletAccount({ symbol: ethSymbol });
 
-        expect(hasNetworkFeatures(btcAcc, 'amount-unit')).toEqual(true);
-        expect(hasNetworkFeatures(btcAcc, ['amount-unit', 'sign-verify'])).toEqual(true);
-        expect(hasNetworkFeatures(ethAcc, 'tokens')).toEqual(true);
-        expect(hasNetworkFeatures(ethAcc, 'amount-unit')).toEqual(false);
-        expect(hasNetworkFeatures(ethAcc, ['amount-unit', 'sign-verify'])).toEqual(false);
-        expect(hasNetworkFeatures(ethAcc, ['tokens', 'rbf'])).toEqual(true);
+        expect(hasNetworkFeatures(networkConfigDeps, btcAcc, 'amount-unit')).toEqual(true);
+        expect(
+            hasNetworkFeatures(networkConfigDeps, btcAcc, ['amount-unit', 'sign-verify']),
+        ).toEqual(true);
+        expect(hasNetworkFeatures(networkConfigDeps, ethAcc, 'tokens')).toEqual(true);
+        expect(hasNetworkFeatures(networkConfigDeps, ethAcc, 'amount-unit')).toEqual(false);
+        expect(
+            hasNetworkFeatures(networkConfigDeps, ethAcc, ['amount-unit', 'sign-verify']),
+        ).toEqual(false);
+        expect(hasNetworkFeatures(networkConfigDeps, ethAcc, ['tokens', 'rbf'])).toEqual(true);
     });
 
     it('getUtxoOutpoint', () => {

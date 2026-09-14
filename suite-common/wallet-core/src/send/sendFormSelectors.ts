@@ -1,6 +1,7 @@
 import { G } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectDeviceButtonRequests } from '@suite-common/device';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
@@ -13,8 +14,6 @@ import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 
 import { PAYMENT_REQUEST_BUTTON_NAMES } from './sendFormConstants';
 import { type SendFormDrafts, type SendRootState } from './sendFormReducer';
-
-const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
 export const selectSendPrecomposedTx = (state: SendRootState) => state.wallet.send.precomposedTx;
 export const selectSend = (state: SendRootState) => state.wallet.send;
@@ -51,10 +50,14 @@ export const selectSendFormDraftOutputsByAccountKey = (
     return draft?.outputs ?? null;
 };
 
-export const selectSendFormButtonRequestCodes = createMemoizedSelector(
-    [selectDeviceButtonRequests, (_state: DeviceRootState, symbol: NetworkSymbol) => symbol],
-    (buttonRequests, symbol) => {
-        const networkType = getNetworkType(symbol);
+export const selectSendFormButtonRequestCodes = createWeakMapSelector(
+    [
+        selectNetworkConfigAccessors,
+        selectDeviceButtonRequests,
+        (_state: DeviceRootState, symbol: NetworkSymbol) => symbol,
+    ],
+    (networkConfigDeps, buttonRequests, symbol) => {
+        const networkType = getNetworkType(networkConfigDeps, symbol);
 
         const isCardano = networkType === 'cardano';
         const isEthereum = networkType === 'ethereum';
@@ -83,13 +86,15 @@ export const selectSendFormButtonRequestCodes = createMemoizedSelector(
 );
 
 export const selectSendFormReviewButtonRequestsCount = (
-    state: DeviceRootState,
+    state: DeviceRootState & NetworksRootState,
     symbol?: NetworkSymbol,
     decreaseOutputId?: number,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     if (symbol === undefined) return 0;
 
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType(networkConfigDeps, symbol);
     const isCardano = networkType === 'cardano';
 
     const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
@@ -109,7 +114,7 @@ export const selectSendFormReviewButtonRequestsCount = (
 };
 
 export const selectSendFormReviewLastButtonCode = (
-    state: DeviceRootState,
+    state: DeviceRootState & NetworksRootState,
     symbol?: NetworkSymbol,
 ) => {
     if (symbol === undefined) return null;

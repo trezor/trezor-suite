@@ -9,6 +9,7 @@
         {
             "path": "../../suite-common/delegated-identity-key"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/platform-encryption"
         },

@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -28,13 +29,17 @@ export interface FreezeThunkArguments {
     resourceType: TronResourceType;
 }
 
+export type ComposeTronFreezeFeeLevelsThunkState = NetworksRootState;
+
 export const composeTronFreezeFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     FreezeThunkArguments,
-    { rejectValue: TronStakeError }
+    { state: ComposeTronFreezeFeeLevelsThunkState; rejectValue: TronStakeError }
 >(
     `${TRON_STAKE_MODULE}/composeTronFreezeFeeLevelsThunk`,
-    async ({ account, amount, resourceType }, { rejectWithValue }) => {
+    async ({ account, amount, resourceType }, { getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (account.networkType !== 'tron') {
             return rejectWithValue({ kind: 'compose-failed', message: 'Invalid network type.' });
         }
@@ -45,7 +50,7 @@ export const composeTronFreezeFeeLevelsThunk = createThunk<
             return rejectWithValue({ kind: 'compose-failed', message: 'Invalid amount.' });
         }
 
-        const contract = buildFreezeContract(account, amount, resourceType);
+        const contract = buildFreezeContract(networkConfigDeps, account, amount, resourceType);
 
         if (!contract) {
             return rejectWithValue({ kind: 'compose-failed', message: 'Invalid owner address.' });
@@ -70,9 +75,9 @@ export const composeTronFreezeFeeLevelsThunk = createThunk<
         });
 
         const feeInSun = feeLevel.feePerTx || '0';
-        const amountInSun = unitsToSubunits({
+        const amountInSun = unitsToSubunits(networkConfigDeps, {
             value: asAmountUnit(new BigNumber(amount)),
-            decimals: getNetwork(account.symbol).decimals,
+            decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
         }).toString();
 
         const tx: PrecomposedTransactionFinal = {

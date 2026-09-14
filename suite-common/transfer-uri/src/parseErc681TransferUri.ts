@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import { safeParseUrl } from '@trezor/utils';
 
@@ -33,7 +34,10 @@ const ensureDoubleSlashScheme = (uri: string): string => {
  *
  * @returns Parsed info, or `null` if the URI is not a recognized ERC-681 URI.
  */
-export const parseErc681TransferUri = (uri: string): Erc681TransferInfo | null => {
+export const parseErc681TransferUri = (
+    networkConfigDeps: NetworkConfigDeps,
+    uri: string,
+): Erc681TransferInfo | null => {
     const url = safeParseUrl(ensureDoubleSlashScheme(uri));
     if (!url) return null;
 
@@ -47,7 +51,7 @@ export const parseErc681TransferUri = (uri: string): Erc681TransferInfo | null =
 
         const chainId = url.host;
         if (!DIGITS_REGEXP.test(chainId)) return null;
-        networkSymbol = getNetworkByEvmChainId(Number(chainId))?.symbol;
+        networkSymbol = getNetworkByEvmChainId(networkConfigDeps, Number(chainId))?.symbol;
         if (!networkSymbol) return null;
     } else {
         address = url.host;

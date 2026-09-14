@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -23,6 +25,8 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const YieldDepositReviewScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const yieldFlowData = useYieldFlowData(route.params);
@@ -48,14 +52,14 @@ export const YieldDepositReviewScreen = () => {
             return null;
         }
 
-        return buildYieldReviewPreview({
+        return buildYieldReviewPreview(networkConfigDeps, {
             device,
             flowData,
             review,
             type: 'deposit',
             vaultName,
         });
-    }, [device, flowData, review, vaultName]);
+    }, [networkConfigDeps, device, flowData, review, vaultName]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {

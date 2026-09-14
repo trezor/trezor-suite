@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
@@ -96,10 +98,12 @@ export const TransactionDetailParametersSheet = ({
     transaction,
     accountKey,
 }: TransactionDetailParametersSheetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
 
-    const { networkType } = getNetwork(transaction.symbol);
+    const { networkType } = getNetwork(networkConfigDeps, transaction.symbol);
     const displayedParameters = networkTypeToDisplayedParametersMap[networkType];
     const parametersCardIsDisplayed = displayedParameters.length !== 0;
 

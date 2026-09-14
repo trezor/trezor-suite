@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
@@ -49,6 +50,8 @@ import { useTradingFormAccount } from '../useTradingFormAccount';
 import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const type = 'exchange';
     const { dispatch } = useServices(selectDispatch);
     const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
@@ -73,7 +76,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
 
     const symbol = account?.symbol;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const network = symbol ? getNetwork(symbol) : undefined;
+    const network = symbol ? getNetwork(networkConfigDeps, symbol) : undefined;
 
     const { defaultValues } = useTradingExchangeFormDefaultValues(accountKey, cryptoId);
 

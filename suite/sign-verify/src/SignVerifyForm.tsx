@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 
@@ -29,6 +30,8 @@ type SignVerifyFormProps = {
 };
 
 export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVerifyFormProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
 
     const { dispatch } = useServices(selectDispatch);
@@ -91,7 +94,15 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
 
         if (isSignPage && path !== undefined) {
             const result = await dispatch(
-                signThunk(account, path, message, hex, isElectrum, cardanoPubKeyCose),
+                signThunk(
+                    networkConfigDeps,
+                    account,
+                    path,
+                    message,
+                    hex,
+                    isElectrum,
+                    cardanoPubKeyCose,
+                ),
             );
 
             if (result) {
@@ -109,7 +120,7 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         }
     };
 
-    const signFormatsDiffer = getHasSelectableSignatureFormat(account);
+    const signFormatsDiffer = getHasSelectableSignatureFormat(networkConfigDeps, account);
     const canVerify = isVerifySupported(account);
     const isCardano = network?.networkType === 'cardano';
 

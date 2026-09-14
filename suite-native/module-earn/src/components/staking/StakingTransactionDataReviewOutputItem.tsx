@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type LayoutChangeEvent, View } from 'react-native';
 
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -42,7 +44,9 @@ export const StakingTransactionDataReviewOutputItem = ({
     outputState,
     onLayout,
 }: StakingTransactionDataReviewOutputItemProps) => {
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
     const isEverstakeStaking = stakeType !== 'stake' && isSupportedEthStakingNetworkSymbol(symbol);
 

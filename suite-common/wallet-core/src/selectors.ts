@@ -1,13 +1,13 @@
 import { type DeviceRootState, selectHasOnlyPortfolioDevice } from '@suite-common/device';
-import { type NetworksRootState } from '@suite-common/networks';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type Network,
     type NetworkSymbol,
     getNetwork,
+    getNetworksCollection,
     isSingleAccountType,
-    networksCollection,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -127,12 +127,14 @@ const getAccountChainsPerAccountType = (network: Network, accounts: Account[]) =
     );
 
 export const selectDiscoveryAccountsParam = (
-    state: WalletCoreCompoundRootState,
+    state: WalletCoreCompoundRootState & NetworksRootState,
     deviceState: StaticSessionId,
     knownOnly?: boolean,
-): DiscoveryAccountsParam =>
-    getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
-        const network = getNetwork(symbol);
+): DiscoveryAccountsParam => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
+    return getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
+        const network = getNetwork(networkConfigDeps, symbol);
         const { networkType } = network;
         const identity = tryGetAccountIdentity({ networkType, deviceState });
         const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
@@ -169,6 +171,7 @@ export const selectDiscoveryAccountsParam = (
             gap: bitcoinGap,
         } as DiscoveryAccountsParam[number];
     });
+};
 
 export const selectShowRediscoverButton = (
     state: WalletCoreCompoundRootState,
@@ -192,9 +195,11 @@ export const selectShowRediscoverButton = (
  * it depends on every account (with frequent account updates, it would fire too often to be practical).
  */
 export const selectShouldRediscover = (
-    state: WalletCoreCompoundRootState,
+    state: WalletCoreCompoundRootState & NetworksRootState,
     device: TrezorDevice,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     if (selectHasRunningDiscovery(state)) return false;
 
     const staticSessionId = device.state?.staticSessionId;
@@ -205,7 +210,7 @@ export const selectShouldRediscover = (
     return getDeviceAccountsPerEnabledNetwork(state, staticSessionId).some(
         ({ symbol, accounts }) =>
             !accounts ||
-            getAccountChainsPerAccountType(getNetwork(symbol), accounts).some(
+            getAccountChainsPerAccountType(getNetwork(networkConfigDeps, symbol), accounts).some(
                 ({ lastAccount, canDiscoverNextAccount }) =>
                     !lastAccount.failed && canDiscoverNextAccount,
             ),
@@ -213,12 +218,14 @@ export const selectShouldRediscover = (
 };
 
 export const selectAccountsToBeForgotten = (
-    state: DiscoveryRootState & AccountsRootState & WalletSettingsRootState,
+    state: DiscoveryRootState & AccountsRootState & WalletSettingsRootState & NetworksRootState,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const accounts = selectAccounts(state);
     const enabledNetworks = selectEnabledNetworks(state);
     // find disabled networks
-    const disabledNetworks = networksCollection
+    const disabledNetworks = getNetworksCollection(networkConfigDeps)
         .filter(n => !enabledNetworks.includes(n.symbol) || n.isHidden)
         .map(n => n.symbol);
     // find accounts for disabled networks

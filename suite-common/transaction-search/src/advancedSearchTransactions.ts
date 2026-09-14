@@ -1,16 +1,18 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { type SearchAccountLabels } from './searchLabels';
 import { simpleSearchTransactions } from './simpleSearchTransactions';
 
 export const advancedSearchTransactions = (
+    networkConfigDeps: NetworkConfigDeps,
     transactions: WalletAccountTransaction[],
     accountLabels: SearchAccountLabels,
     search: string,
 ) => {
     // No AND/OR operators, just run a simple search
     if (!search.includes('&') && !search.includes('|')) {
-        return simpleSearchTransactions(transactions, accountLabels, search);
+        return simpleSearchTransactions(networkConfigDeps, transactions, accountLabels, search);
     }
 
     // Split by OR operator first
@@ -26,6 +28,7 @@ export const advancedSearchTransactions = (
             const andSplit = or.split('&');
             if (!andSplit || andSplit.length === 1) {
                 return simpleSearchTransactions(
+                    networkConfigDeps,
                     transactions,
                     accountLabels,
                     or.replace('&', ''),
@@ -33,7 +36,9 @@ export const advancedSearchTransactions = (
             }
 
             const andTxs = andSplit.flatMap(and =>
-                simpleSearchTransactions(transactions, accountLabels, and).map(t => t.txid),
+                simpleSearchTransactions(networkConfigDeps, transactions, accountLabels, and).map(
+                    t => t.txid,
+                ),
             );
 
             const transactionCount: { [txid: string]: number } = {};

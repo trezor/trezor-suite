@@ -4,6 +4,7 @@ import { type ThunkDispatch } from 'redux-thunk';
 import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -41,6 +42,7 @@ import {
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 
 const calculateStakingTransaction = (
+    networkConfigDeps: NetworkConfigDeps,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -60,6 +62,7 @@ const calculateStakingTransaction = (
     };
 
     return calculateStakeFormTransaction(
+        networkConfigDeps,
         availableBalance,
         output,
         feeLevel,
@@ -70,7 +73,12 @@ const calculateStakingTransaction = (
 };
 
 export const composeTransaction =
-    (formValues: StakeFormState, formState: ComposeActionContext) => async () => {
+    (
+        networkConfigDeps: NetworkConfigDeps,
+        formValues: StakeFormState,
+        formState: ComposeActionContext,
+    ) =>
+    async () => {
         const { account, feeInfo } = formState;
         if (!account || !feeInfo) return;
 
@@ -80,7 +88,7 @@ export const composeTransaction =
 
         // gasLimit calculation based on account.descriptor and amount
         const { stakeType } = formValues;
-        const stakeTxGasLimit = await getStakeTxGasLimit({
+        const stakeTxGasLimit = await getStakeTxGasLimit(networkConfigDeps, {
             stakeType,
             from: account.descriptor,
             amount,
@@ -112,10 +120,11 @@ export const composeTransaction =
         }
 
         return composeStakingTransaction(
+            networkConfigDeps,
             formValues,
             formState,
             predefinedLevels,
-            calculateStakingTransaction,
+            calculateStakingTransaction.bind(null, networkConfigDeps),
             undefined,
             customFeeLimit,
         );
@@ -129,7 +138,11 @@ type SignTransactionThunkState = DeviceRootState &
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const signTransactionThunk =
-    (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
+    (
+        networkConfigDeps: NetworkConfigDeps,
+        formValues: StakeFormState,
+        transactionInfo: PrecomposedTransactionFinal,
+    ) =>
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
         getState: () => SignTransactionThunkState,
@@ -165,7 +178,7 @@ export const signTransactionThunk =
         if (stakeType === 'stake') {
             const amount = formValues.outputs[0]?.amount ?? '0';
 
-            txData = await prepareStakeEthTx({
+            txData = await prepareStakeEthTx(networkConfigDeps, {
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,

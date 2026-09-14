@@ -1,6 +1,7 @@
 import { type IDBPDatabase, type IDBPTransaction, type StoreNames } from 'idb';
 
 import { idbVersionToString } from '@suite/idb-migration-utils';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import SuiteDB, { type OnUpgradeFunc } from '@trezor/suite-storage';
 
@@ -49,28 +50,33 @@ const runMigrations = async (
  *  If the object stores don't already exist then creates them.
  *  Otherwise runs a migration function that transform the data to new scheme version if necessary
  */
-const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersion, transaction) => {
-    if (oldVersion > 0 && oldVersion < 13) {
-        // just delete whole db as migrations from version older than 13 (internal releases) are not implemented
-        try {
-            SuiteDB.removeStores(db);
-        } catch (err) {
-            console.error('Storage: Error during removing all stores', err);
-            throw err;
+type OnUpgradeDeps = NetworkConfigDeps;
+
+type OnUpgrade = OnUpgradeFunc<SuiteDBSchema>;
+
+const createOnUpgrade =
+    (deps: OnUpgradeDeps): OnUpgrade =>
+    async (db, oldVersion, newVersion, transaction) => {
+        if (oldVersion > 0 && oldVersion < 13) {
+            // just delete whole db as migrations from version older than 13 (internal releases) are not implemented
+            try {
+                SuiteDB.removeStores(db);
+            } catch (err) {
+                console.error('Storage: Error during removing all stores', err);
+                throw err;
+            }
         }
-    }
 
-    if (oldVersion < LAST_LEGACY_VERSION) {
-        await runLegacyMigrations(db, oldVersion, newVersion, transaction);
-    }
+        if (oldVersion < LAST_LEGACY_VERSION) {
+            await runLegacyMigrations(deps, db, oldVersion, newVersion, transaction);
+        }
 
-    await runMigrations(db, oldVersion, transaction);
-};
+        await runMigrations(db, oldVersion, transaction);
+    };
 
 /**
  * Downgrading is not supported – it resets IDB, that's why we need to reload afterwards.
- * Cannot use services here, because db is instantiated before composition roots are composed.
- * TODO when the statically imported `db` singleton is refactored to DI, use services.reloadApp here.
+ * TODO: Inject reloadApp when the database singleton becomes a service.
  */
 const onDowngrade = () => {
     if (desktopApi.available) {
@@ -80,9 +86,10 @@ const onDowngrade = () => {
     }
 };
 
-export const db = new SuiteDB<SuiteDBSchema>(
-    'trezor-suite',
-    LATEST_MIGRATION_VERSION,
-    onUpgrade,
-    onDowngrade,
-);
+export const getSuiteDB = (networkConfigDeps: NetworkConfigDeps) =>
+    new SuiteDB<SuiteDBSchema>(
+        'trezor-suite',
+        LATEST_MIGRATION_VERSION,
+        createOnUpgrade(networkConfigDeps),
+        onDowngrade,
+    );

@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { type NetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
@@ -18,7 +18,7 @@ import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
-import { createPlaceholderAccount } from './utils';
+import { preparePlaceholderAccount } from './utils';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { selectConnectPopupCall } from '../connectPopupReducer';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
@@ -55,14 +55,10 @@ const _storePrecomposedTransaction = ({
         },
     });
 
-const preCallHook = async <M extends CallMethodKeys>({
-    method,
-    payload,
-    getState,
-    dispatch,
-    txSigningPrecomposed,
-    source,
-}: PreCallHookParams<M>) => {
+const preCallHook = async <M extends CallMethodKeys>(
+    networkConfigDeps: NetworkConfigDeps,
+    { method, payload, getState, dispatch, txSigningPrecomposed, source }: PreCallHookParams<M>,
+) => {
     try {
         // Parse common parameters (path, chainId) from payload
         let path: Bip43Path;
@@ -84,7 +80,7 @@ const preCallHook = async <M extends CallMethodKeys>({
         }
 
         // Prepare selected account
-        const network = getNetworkByEvmChainId(chainId) || {
+        const network = getNetworkByEvmChainId(networkConfigDeps, chainId) || {
             // Placeholder for chains not supported in Suite
             networkType: 'ethereum',
             symbol: 'eth',
@@ -98,7 +94,12 @@ const preCallHook = async <M extends CallMethodKeys>({
         if (!selectedAccount) {
             // Create a new placeholder account
             const createdAccount = await dispatch(
-                createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
+                preparePlaceholderAccount(
+                    networkConfigDeps,
+                    network,
+                    path,
+                    selectSupportedNetworkSymbols(getState()),
+                ),
             );
             temporaryAccounts.push(createdAccount.payload.account);
             selectedAccount = createdAccount.payload.account;

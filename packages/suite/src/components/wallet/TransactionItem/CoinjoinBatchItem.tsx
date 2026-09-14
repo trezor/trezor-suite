@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { IconCircle, Link } from '@trezor/components';
@@ -20,6 +21,8 @@ type CoinjoinBatchItemProps = {
 };
 
 export const CoinjoinBatchItem = ({ transactions, isPending }: CoinjoinBatchItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
 
     return (
@@ -73,6 +76,7 @@ export const CoinjoinBatchItem = ({ transactions, isPending }: CoinjoinBatchItem
                         amount={
                             <FormattedCryptoAmount
                                 value={formatNetworkAmount(
+                                    networkConfigDeps,
                                     transactionAmount.abs().toString(),
                                     transaction.symbol,
                                 )}

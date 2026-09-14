@@ -1,10 +1,11 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     type NetworkType,
-    STAKING_SYMBOLS,
-    STAKING_TYPES,
     type StakingNetworkSymbol,
     type StakingNetworkType,
+    getStakingSymbols,
+    getStakingTypes,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -31,11 +32,17 @@ import { fromWei } from './ethConverter';
 
 export const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
-export const isStakingNetworkType = (type: NetworkType): type is StakingNetworkType =>
-    (STAKING_TYPES as readonly string[]).includes(type);
+export const isStakingNetworkType = (
+    networkConfigDeps: NetworkConfigDeps,
+    type: NetworkType,
+): type is StakingNetworkType =>
+    (getStakingTypes(networkConfigDeps) as readonly string[]).includes(type);
 
-export const isStakingSymbol = (symbol: NetworkSymbol): symbol is StakingNetworkSymbol =>
-    (STAKING_SYMBOLS as readonly string[]).includes(symbol);
+export const isStakingSymbol = (
+    networkConfigDeps: NetworkConfigDeps,
+    symbol: NetworkSymbol,
+): symbol is StakingNetworkSymbol =>
+    (getStakingSymbols(networkConfigDeps) as readonly string[]).includes(symbol);
 
 const getEverstakePool = (account?: Account) => {
     if (account?.networkType !== 'ethereum') {
@@ -98,7 +105,10 @@ export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAc
     return totalAmount.toString();
 };
 
-export const getSolAccountTotalStakingBalance = (account: Account) => {
+export const getSolAccountTotalStakingBalance = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+) => {
     if (!account?.misc || account.networkType !== 'solana') {
         return null;
     }
@@ -109,19 +119,26 @@ export const getSolAccountTotalStakingBalance = (account: Account) => {
     const totalStakingBalance = calculateTotalSolStakingBalance(solStakingAccounts);
     if (!totalStakingBalance) return null;
 
-    return formatNetworkAmount(totalStakingBalance, account.symbol);
+    return formatNetworkAmount(networkConfigDeps, totalStakingBalance, account.symbol);
 };
 
-export const getAdaAccountTotalStakingBalance = (account: Account) =>
+export const getAdaAccountTotalStakingBalance = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+) =>
     account?.networkType === 'cardano' && account.misc?.staking?.isActive
-        ? subunitsToUnits({
+        ? subunitsToUnits(networkConfigDeps, {
               value: asAmountSubunit(new BigNumber(account.balance)),
               symbol: account.symbol,
           }).toString()
         : null;
 
-export const sunToTrx = (sun: string, symbol: NetworkSymbol) =>
-    subunitsToUnits({
+export const sunToTrx = (
+    networkConfigDeps: NetworkConfigDeps,
+    sun: string,
+    symbol: NetworkSymbol,
+) =>
+    subunitsToUnits(networkConfigDeps, {
         value: asAmountSubunit(new BigNumber(sun)),
         symbol,
     }).toString();
@@ -132,23 +149,30 @@ export const getTronResources = (account?: Account): TronAccountExtraData | unde
 export const getTronStakingInfo = (account?: Account): TronStakingInfo | undefined =>
     getTronResources(account)?.stakingInfo;
 
-export const getTronAccountTotalStakingBalance = (account: Account): string | null => {
+export const getTronAccountTotalStakingBalance = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+): string | null => {
     const stakingInfo = getTronStakingInfo(account);
     if (!stakingInfo) return null;
 
-    return sunToTrx(stakingInfo.stakedBalance, account.symbol);
+    return sunToTrx(networkConfigDeps, stakingInfo.stakedBalance, account.symbol);
 };
 
-const STAKING_BALANCE_BY_TYPE = {
-    ethereum: getEthAccountTotalStakingBalance,
-    solana: getSolAccountTotalStakingBalance,
-    cardano: getAdaAccountTotalStakingBalance,
-    tron: getTronAccountTotalStakingBalance,
-} satisfies Record<StakingNetworkType, (a: Account) => string | null>;
+const STAKING_BALANCE_BY_TYPE = (networkConfigDeps: NetworkConfigDeps) =>
+    ({
+        ethereum: getEthAccountTotalStakingBalance,
+        solana: getSolAccountTotalStakingBalance.bind(null, networkConfigDeps),
+        cardano: getAdaAccountTotalStakingBalance.bind(null, networkConfigDeps),
+        tron: getTronAccountTotalStakingBalance.bind(null, networkConfigDeps),
+    }) satisfies Record<StakingNetworkType, (a: Account) => string | null>;
 
-export const getAccountTotalStakingBalance = (account: Account) =>
-    isStakingNetworkType(account.networkType)
-        ? STAKING_BALANCE_BY_TYPE[account.networkType]?.(account)
+export const getAccountTotalStakingBalance = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+) =>
+    isStakingNetworkType(networkConfigDeps, account.networkType)
+        ? STAKING_BALANCE_BY_TYPE(networkConfigDeps)[account.networkType]?.(account)
         : null;
 
 const STAKE_SIGNATURE = '0x3a29dbae';

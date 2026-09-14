@@ -2,7 +2,9 @@ import { useMemo } from 'react';
 
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { isSignValuePositive } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type SignValue } from '@suite-common/suite-types';
 import {
     type NetworkSymbolExtended,
@@ -56,6 +58,8 @@ export const FormattedCryptoAmount = ({
     className,
     'data-testid': dataTest,
 }: FormattedCryptoAmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const locale = useSelector(selectLanguage);
 
     const { areSatsDisplayed } = useBitcoinAmountUnit();
@@ -76,18 +80,22 @@ export const FormattedCryptoAmount = ({
         features: networkFeatures,
         testnet: isTestnet,
         symbol: networkSymbol,
-    } = getNetworkOptional(lowerCaseSymbol) ?? {};
+    } = getNetworkOptional(networkConfigDeps, lowerCaseSymbol) ?? {};
 
     const areSatsSupported = !!networkFeatures?.includes('amount-unit');
 
     let formattedValue = value;
-    let formattedSymbol = symbol && getDisplaySymbol(symbol, contractAddress);
+    let formattedSymbol = symbol && getDisplaySymbol(networkConfigDeps, symbol, contractAddress);
 
     const isSatoshis = areSatsSupported && areSatsDisplayed;
 
     // convert to satoshis if needed
     if (isSatoshis && networkSymbol) {
-        formattedValue = networkAmountToSmallestUnit(String(value), networkSymbol);
+        formattedValue = networkAmountToSmallestUnit(
+            networkConfigDeps,
+            String(value),
+            networkSymbol,
+        );
 
         formattedSymbol = isTestnet ? `sat ${formattedSymbol}` : 'sat';
     }

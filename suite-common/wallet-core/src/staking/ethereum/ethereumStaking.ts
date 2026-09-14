@@ -2,6 +2,7 @@ import { decodeFunctionResult } from 'viem';
 
 import { Calldata, EVM_ABI, Verifier, type VerifyIssue } from '@suite-common/calldata';
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
@@ -305,20 +306,23 @@ export const getAdjustedGasLimitConsumption = (estimatedFee: Ok<BlockchainEstima
         .integerValue(BigNumber.ROUND_DOWN)
         .toNumber();
 
-export const stake = async ({
-    from,
-    amount,
-    symbol,
-    identity,
-    feeLimit,
-}: StakeTxBaseArgs & {
-    amount: string;
-}) => {
+export const stake = async (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        from,
+        amount,
+        symbol,
+        identity,
+        feeLimit,
+    }: StakeTxBaseArgs & {
+        amount: string;
+    },
+) => {
     const amountWei = fromEther(amount).toWei();
 
     if (new BigNumber(amount).lt(MIN_ETH_AMOUNT_FOR_STAKING)) {
         throw new Error(
-            `Min amount ${MIN_ETH_AMOUNT_FOR_STAKING} ${getNetworkDisplaySymbol(symbol)}`,
+            `Min amount ${MIN_ETH_AMOUNT_FOR_STAKING} ${getNetworkDisplaySymbol(networkConfigDeps, symbol)}`,
         );
     }
 
@@ -574,20 +578,23 @@ type PrepareStakeEthTxResponse =
           errorMessage: string;
       };
 
-export const prepareStakeEthTx = async ({
-    symbol,
-    from,
-    amount,
-    gasPrice,
-    nonce,
-    chainId,
-    feeLimit,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    identity,
-}: PrepareStakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
+export const prepareStakeEthTx = async (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        symbol,
+        from,
+        amount,
+        gasPrice,
+        nonce,
+        chainId,
+        feeLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        identity,
+    }: PrepareStakeEthTxParams,
+): Promise<PrepareStakeEthTxResponse> => {
     try {
-        const tx = await stake({
+        const tx = await stake(networkConfigDeps, {
             from,
             amount,
             symbol,
@@ -710,17 +717,14 @@ type GetStakeTxGasLimitResponse =
           error: PrecomposedLevels; // TODO: wrong error
       };
 
-export const getStakeTxGasLimit = async ({
-    stakeType,
-    from,
-    amount,
-    symbol,
-    identity,
-}: GetStakeTxGasLimitParams): Promise<GetStakeTxGasLimitResponse> => {
+export const getStakeTxGasLimit = async (
+    networkConfigDeps: NetworkConfigDeps,
+    { stakeType, from, amount, symbol, identity }: GetStakeTxGasLimitParams,
+): Promise<GetStakeTxGasLimitResponse> => {
     try {
         let txData;
         if (stakeType === 'stake') {
-            txData = await stake({ from, amount, symbol, identity });
+            txData = await stake(networkConfigDeps, { from, amount, symbol, identity });
         }
         if (stakeType === 'unstake') {
             // Increase allowedInterchangeNum to enable instant unstaking.

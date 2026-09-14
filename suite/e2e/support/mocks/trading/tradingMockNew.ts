@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { Page } from '@playwright/test';
 import type { CryptoId } from 'invity-api';
 
@@ -8,7 +10,9 @@ import { TradingChainBackend, createTradingChainBackend } from './tradingChainBa
 import { tradeEndpoint } from '../../../fixtures/trading';
 import { step } from '../../common';
 
-type TxSimulationResult = NonNullable<Parameters<typeof getSimulatedReceiveAmount>[0]>;
+const networkConfigDeps = mockNetworkConfigDeps();
+
+type TxSimulationResult = NonNullable<Parameters<typeof getSimulatedReceiveAmount>[1]>;
 type EvmTxSimulationResult = Extract<TxSimulationResult, { method: 'ethereumSignTransaction' }>;
 type TxSimulationScan = Omit<EvmTxSimulationResult['payload'], 'needsDisclaimer'>;
 
@@ -145,7 +149,11 @@ export class TradingMockNew {
             );
         }
 
-        const amount = getSimulatedReceiveAmount(this.capturedTxSimulation, receive);
+        const amount = getSimulatedReceiveAmount(
+            networkConfigDeps,
+            this.capturedTxSimulation,
+            receive,
+        );
 
         if (!amount) {
             throw new Error(

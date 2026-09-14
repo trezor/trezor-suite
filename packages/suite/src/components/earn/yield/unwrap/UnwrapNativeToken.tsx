@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -56,6 +57,8 @@ export const UnwrapNativeToken = ({
     tokenContractAddress,
     onFlowCompleteChange,
 }: UnwrapNativeTokenProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
     const {
@@ -103,7 +106,7 @@ export const UnwrapNativeToken = ({
 
     const shouldCheckUnwrapAmount = !broadcast;
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const nativeSymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const baseCurrency = useSelector(selectBaseCurrency);
     // The wrapped-native token (WETH) is not held as a balance, so its fiat rate is not fetched by

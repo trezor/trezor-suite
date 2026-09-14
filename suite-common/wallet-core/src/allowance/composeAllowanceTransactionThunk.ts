@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
@@ -31,13 +32,20 @@ export interface ComposeAllowanceTransactionThunkParams {
     };
 }
 
+export type ComposeAllowanceTransactionThunkState = NetworksRootState;
+
 export const composeAllowanceTransactionThunk = createThunk<
     PrecomposedLevels,
     ComposeAllowanceTransactionThunkParams,
-    { rejectValue: ComposeFeeLevelsError }
+    { state: ComposeAllowanceTransactionThunkState; rejectValue: ComposeFeeLevelsError }
 >(
     `${ALLOWANCE_MODULE_PREFIX}/composeAllowanceTransactionThunk`,
-    async ({ feeInfo, account, contract, selectedFee, customFee, data }, { rejectWithValue }) => {
+    async (
+        { feeInfo, account, contract, selectedFee, customFee, data },
+        { getState, rejectWithValue },
+    ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const token = findToken(account.tokens, contract);
 
         if (!token) {
@@ -99,7 +107,7 @@ export const composeAllowanceTransactionThunk = createThunk<
                     account.availableBalance,
                     contract,
                     level,
-                    getNetworkDisplaySymbol(account.symbol),
+                    getNetworkDisplaySymbol(networkConfigDeps, account.symbol),
                     token,
                     adjustedGasLimit.toFixed(0),
                 ),

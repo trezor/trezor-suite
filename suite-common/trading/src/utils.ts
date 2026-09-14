@@ -10,6 +10,7 @@ import {
     type SellProviderInfo,
     type SellTradeFinalStatus,
 } from 'invity-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
 import {
     type Network,
@@ -115,15 +116,16 @@ export function composeCryptoId(coingeckoId: string, contractAddress?: string | 
  * Get the crypto id for an account or token of non-testnet network
  */
 export function getCryptoId(
+    networkConfigDeps: NetworkConfigDeps,
     networkSymbol: NetworkSymbol,
     tokenContract?: TokenInfo['contract'],
 ): CryptoId {
-    const network = getNetwork(networkSymbol);
+    const network = getNetwork(networkConfigDeps, networkSymbol);
 
     if (tokenContract) {
         return composeCryptoId(
             network.coingeckoId!,
-            getContractAddressForNetworkSymbol(networkSymbol, tokenContract),
+            getContractAddressForNetworkSymbol(networkConfigDeps, networkSymbol, tokenContract),
         );
     }
 
@@ -137,6 +139,7 @@ export const isCryptoIdForNativeToken = (cryptoId: CryptoId) => {
 };
 
 export const cryptoIdToNetworkAndContractAddress = (
+    networkConfigDeps: NetworkConfigDeps,
     cryptoId: CryptoId | undefined,
 ): NetworkAndContractAddress => {
     if (!cryptoId) {
@@ -145,21 +148,30 @@ export const cryptoIdToNetworkAndContractAddress = (
 
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const network = contractAddress
-        ? getNetworkByCoingeckoId(networkId)
-        : getNetworkByTradeCryptoId(networkId);
+        ? getNetworkByCoingeckoId(networkConfigDeps, networkId)
+        : getNetworkByTradeCryptoId(networkConfigDeps, networkId);
 
     return { network, contractAddress };
 };
 
-export const cryptoIdToNetwork = (cryptoId: CryptoId | undefined): Network | undefined =>
-    cryptoIdToNetworkAndContractAddress(cryptoId)?.network;
+export const cryptoIdToNetwork = (
+    networkConfigDeps: NetworkConfigDeps,
+    cryptoId: CryptoId | undefined,
+): Network | undefined => cryptoIdToNetworkAndContractAddress(networkConfigDeps, cryptoId)?.network;
 
 export const cryptoIdToNetworkSymbol = (
+    networkConfigDeps: NetworkConfigDeps,
     cryptoId: CryptoId | undefined,
-): NetworkSymbol | undefined => cryptoIdToNetwork(cryptoId)?.symbol;
+): NetworkSymbol | undefined => cryptoIdToNetwork(networkConfigDeps, cryptoId)?.symbol;
 
-export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId | undefined) => {
-    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
+export const cryptoIdToNetworkSymbolAndContractAddress = (
+    networkConfigDeps: NetworkConfigDeps,
+    cryptoId: CryptoId | undefined,
+) => {
+    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(
+        networkConfigDeps,
+        cryptoId,
+    );
     if (!network || !cryptoId) {
         return { symbol: undefined, contractAddress: undefined };
     }
@@ -172,8 +184,12 @@ export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId | u
     return { symbol, contractAddress };
 };
 
-export const toTokenCryptoId = (symbol: NetworkSymbol, contractAddress: string): CryptoId =>
-    `${getCoingeckoId(symbol)}${CRYPTO_PLATFORM_SEPARATOR}${contractAddress}` as CryptoId;
+export const toTokenCryptoId = (
+    networkConfigDeps: NetworkConfigDeps,
+    symbol: NetworkSymbol,
+    contractAddress: string,
+): CryptoId =>
+    `${getCoingeckoId(networkConfigDeps, symbol)}${CRYPTO_PLATFORM_SEPARATOR}${contractAddress}` as CryptoId;
 
 /** Convert testnet cryptoId to prod cryptoId (test-bitcoin -> bitcoin) */
 export const testnetToProdCryptoId = (cryptoId: CryptoId): CryptoId => {
@@ -270,9 +286,10 @@ export const addIdsToQuotes = <T extends TradingType>(
 };
 
 export const getNetworkDecimalsWithFallback = (
+    networkConfigDeps: NetworkConfigDeps,
     symbol: NetworkSymbol | undefined,
-    fallback = getNetwork('btc').decimals,
-): number => (symbol ? (getNetwork(symbol).decimals ?? fallback) : fallback);
+    fallback = getNetwork(networkConfigDeps, 'btc').decimals,
+): number => (symbol ? (getNetwork(networkConfigDeps, symbol).decimals ?? fallback) : fallback);
 
 export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellType>(
     quotes: TradingTradeMapProps[T][],
@@ -288,14 +305,17 @@ export const getTradingQuotesDedupedByProvider = <T extends TradingTradeType>(qu
     ...new Map(quotes.map(quote => [quote.exchange, quote])).values(),
 ];
 
-export const getTradingFormState = ({
-    activeSection,
-    trade,
-    providers,
-    isSlip24Active = false,
-    sendAccountKey,
-    receiveAccountKey,
-}: TradingGetFormStateProps): FormStateTrading => {
+export const getTradingFormState = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        activeSection,
+        trade,
+        providers,
+        isSlip24Active = false,
+        sendAccountKey,
+        receiveAccountKey,
+    }: TradingGetFormStateProps,
+): FormStateTrading => {
     const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
 
     // Support for SLIP-24
@@ -317,7 +337,10 @@ export const getTradingFormState = ({
                 return defaultState;
             }
 
-            const networkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
+            const networkData = cryptoIdToNetworkAndContractAddress(
+                networkConfigDeps,
+                trade.cryptoCurrency,
+            );
 
             if (!networkData?.network) {
                 return defaultState;
@@ -356,8 +379,14 @@ export const getTradingFormState = ({
                 return defaultState;
             }
 
-            const receiveNetworkData = cryptoIdToNetworkAndContractAddress(trade.receive);
-            const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
+            const receiveNetworkData = cryptoIdToNetworkAndContractAddress(
+                networkConfigDeps,
+                trade.receive,
+            );
+            const sendNetworkData = cryptoIdToNetworkAndContractAddress(
+                networkConfigDeps,
+                trade.send,
+            );
 
             if (!receiveNetworkData?.network || !sendNetworkData?.network) {
                 return defaultState;
@@ -391,10 +420,11 @@ export const getTradingFormState = ({
 };
 
 export const getTradingPrefilledFromAccountData = (
+    networkConfigDeps: NetworkConfigDeps,
     { symbol, key }: Account,
     cryptoId?: CryptoId | undefined,
 ) => {
-    const defaultCryptoId = getNetwork(symbol).tradeCryptoId as CryptoId;
+    const defaultCryptoId = getNetwork(networkConfigDeps, symbol).tradeCryptoId as CryptoId;
 
     return {
         cryptoId: cryptoId ?? defaultCryptoId,
@@ -415,9 +445,13 @@ export const getStatusUrl = (provider?: TradingProviderInfo, trade?: TradingTrad
     return tradeStatusUrl || provider?.statusUrl;
 };
 
-export const isCrossChainTrade = (sendCryptoId?: CryptoId, receiveCryptoId?: CryptoId) => {
-    const sendNetworkSymbol = cryptoIdToNetworkSymbol(sendCryptoId);
-    const receiveNetworkSymbol = cryptoIdToNetworkSymbol(receiveCryptoId);
+export const isCrossChainTrade = (
+    networkConfigDeps: NetworkConfigDeps,
+    sendCryptoId?: CryptoId,
+    receiveCryptoId?: CryptoId,
+) => {
+    const sendNetworkSymbol = cryptoIdToNetworkSymbol(networkConfigDeps, sendCryptoId);
+    const receiveNetworkSymbol = cryptoIdToNetworkSymbol(networkConfigDeps, receiveCryptoId);
 
     if (!sendNetworkSymbol || !receiveNetworkSymbol) {
         return false;

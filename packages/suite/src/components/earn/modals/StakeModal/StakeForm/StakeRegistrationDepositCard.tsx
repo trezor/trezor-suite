@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import {
@@ -17,6 +19,8 @@ type StakeRegistrationDepositCardProps = {
 };
 
 export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepositCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { symbol, key } = account;
 
     const selectedVotingDelegation = useSelector(state => selectVotingDelegationOption(state, key));
@@ -52,7 +56,8 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                             data-testid="@modal/staking/registration-deposit-amount-with-symbol"
                             typographyStyle="body-md-strong"
                         >
-                            {CARDANO_STAKING_REGISTRATION_DEPOSIT} {getNetworkDisplaySymbol(symbol)}
+                            {CARDANO_STAKING_REGISTRATION_DEPOSIT}{' '}
+                            {getNetworkDisplaySymbol(networkConfigDeps, symbol)}
                         </Paragraph>
                     </Row>
                     <Row gap={20} justifyContent="space-between">
@@ -95,7 +100,10 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                                 : 'TR_STAKE_FUNDS_WARNING'
                         }
                         values={{
-                            networkDisplaySymbol: getNetworkDisplaySymbol(symbol),
+                            networkDisplaySymbol: getNetworkDisplaySymbol(
+                                networkConfigDeps,
+                                symbol,
+                            ),
                         }}
                     />
                 }

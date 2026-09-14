@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type ResponseTypes, type TronAccountExtraData } from '@trezor/blockchain-link-types';
@@ -51,10 +52,11 @@ export type TronFeeBreakdown = {
 export const isTronAccountActivation = (tx: GeneralPrecomposedTransaction | undefined) =>
     !!tx && 'accountActivationFee' in tx && !!tx.accountActivationFee;
 
-const toTrx = (sun: BigNumber, symbol: NetworkSymbol) =>
-    new BigNumber(subunitsToUnits({ value: asAmountSubunit(sun), symbol }));
+const toTrx = (networkConfigDeps: NetworkConfigDeps, sun: BigNumber, symbol: NetworkSymbol) =>
+    new BigNumber(subunitsToUnits(networkConfigDeps, { value: asAmountSubunit(sun), symbol }));
 
 export const calculateTronFeeBreakdown = (
+    networkConfigDeps: NetworkConfigDeps,
     tx: GeneralPrecomposedTransaction | undefined,
     tronResources: TronAccountExtraData | undefined,
     symbol: NetworkSymbol,
@@ -79,7 +81,7 @@ export const calculateTronFeeBreakdown = (
 
     if (!isContractCall) {
         return {
-            trxBurned: toTrx(new BigNumber(tx.fee), symbol),
+            trxBurned: toTrx(networkConfigDeps, new BigNumber(tx.fee), symbol),
             coveredEnergy,
             coveredBandwidth,
             isAccountActivation,
@@ -102,7 +104,11 @@ export const calculateTronFeeBreakdown = (
               )
             : new BigNumber(energyConsumed - coveredEnergy.toNumber()).multipliedBy(energyPrice);
 
-    const trxBurned = toTrx(energyBurnSun.plus(bandwidthBurnSun).plus(memoFeeSun), symbol);
+    const trxBurned = toTrx(
+        networkConfigDeps,
+        energyBurnSun.plus(bandwidthBurnSun).plus(memoFeeSun),
+        symbol,
+    );
 
     return { trxBurned, coveredEnergy, coveredBandwidth, isAccountActivation };
 };

@@ -3,6 +3,7 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetworksWithNativeTokenReserve } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
@@ -18,10 +19,12 @@ import { NETWORK_RESERVE_URL } from '@trezor/urls';
 import { useSelector } from 'src/hooks/suite';
 
 export const NetworkReserve = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
-    const supportedNetworks = getNetworksWithNativeTokenReserve();
+    const supportedNetworks = getNetworksWithNativeTokenReserve(networkConfigDeps);
 
     const handleSwitchChange = () => {
         const nextIsNetworkReserveEnabled = !isNetworkReserveEnabled;

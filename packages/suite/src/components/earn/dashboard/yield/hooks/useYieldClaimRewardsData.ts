@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountWithNetworkType,
@@ -51,6 +53,8 @@ type TokenMap = {
 export const useYieldClaimRewardsData = ({
     rewards,
 }: UseYieldClaimRewardsDataProps): UseYieldClaimRewardsDataResult => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const allRewards = useMemo(
         () =>
             rewards.data.accountsRewards.flatMap(({ account, rewards: accountRewards }) =>
@@ -92,7 +96,7 @@ export const useYieldClaimRewardsData = ({
         }
 
         return Object.values(tokenMap).map(({ decimals, crypto: cryptoSubunits, ...entry }) => {
-            const crypto = subunitsToUnits({
+            const crypto = subunitsToUnits(networkConfigDeps, {
                 value: asAmountSubunit(cryptoSubunits),
                 decimals,
             });
@@ -101,7 +105,7 @@ export const useYieldClaimRewardsData = ({
 
             return { ...entry, crypto, fiat };
         }) satisfies TokenRewards;
-    }, [allRewards]);
+    }, [networkConfigDeps, allRewards]);
 
     return { accountRewards, tokenRewards };
 };

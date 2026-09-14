@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { isNetworkIconSymbol } from '@suite-common/icons';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils/src/tokenUtils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {
@@ -76,17 +78,23 @@ export const NonNativeTokenIcon = ({
     'data-testid': dataTestId,
     ...rest
 }: NonNativeTokenIconProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     // resolves synchronously for everything except the first XLM token after a cold start
     // so most icons render in the first frame without a placeholder flash
     const contractAddressArray = useAsyncMemo(
-        () => getAssetLogoContractAddresses(symbol, contractAddress),
-        [symbol, contractAddress],
+        () => getAssetLogoContractAddresses(networkConfigDeps, symbol, contractAddress),
+        [networkConfigDeps, symbol, contractAddress],
     );
 
     const normalizedAddresses = useMemo(
         () =>
-            getCoingeckoIdAndContractAddressIncludesNativeTokens(coingeckoId, contractAddressArray),
-        [coingeckoId, contractAddressArray],
+            getCoingeckoIdAndContractAddressIncludesNativeTokens(
+                networkConfigDeps,
+                coingeckoId,
+                contractAddressArray,
+            ),
+        [networkConfigDeps, coingeckoId, contractAddressArray],
     );
     const { coingeckoId: coingeckoIdLogo, contractAddresses } = normalizedAddresses;
 

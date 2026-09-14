@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { getNetwork } from '@suite-common/wallet-config';
@@ -8,6 +10,8 @@ export const useAmountInputDecimals = (
     account?: Account,
     contractAddress?: TokenAddress,
 ): number | undefined => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const tokenDecimals = useSelector((state: TokensRootState) =>
         selectAccountTokenDecimals(state, account?.key, contractAddress),
     );
@@ -16,5 +20,5 @@ export const useAmountInputDecimals = (
         return tokenDecimals === null ? undefined : tokenDecimals;
     }
 
-    return account?.symbol ? getNetwork(account.symbol).decimals : undefined;
+    return account?.symbol ? getNetwork(networkConfigDeps, account.symbol).decimals : undefined;
 };

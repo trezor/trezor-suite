@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -7,6 +8,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { useSelectedTradingAsset } from './useSelectedTradingAsset';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -67,11 +70,11 @@ describe('useSelectedTradingAsset', () => {
 
         expect(result.current).toEqual({
             symbol: 'eth',
-            decimals: getNetwork(ethSymbol).decimals,
+            decimals: getNetwork(networkConfigDeps, ethSymbol).decimals,
             balance: ELIGIBLE_ACCOUNT.balance,
             formattedBalance: ELIGIBLE_ACCOUNT.formattedBalance,
             tokens: ELIGIBLE_ACCOUNT.tokens,
-            cryptoId: getNetwork(ethSymbol).tradeCryptoId,
+            cryptoId: getNetwork(networkConfigDeps, ethSymbol).tradeCryptoId,
             isToken: false,
         });
     });

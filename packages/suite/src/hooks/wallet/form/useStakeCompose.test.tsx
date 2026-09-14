@@ -3,6 +3,7 @@ import { IntlProvider } from 'react-intl';
 
 import { act } from '@testing-library/react';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type ComposeActionContext, type StakeFormState } from '@suite-common/wallet-types';
@@ -12,6 +13,8 @@ import { composeTransaction } from 'src/actions/wallet/stakeActions';
 
 import { useStakeCompose } from './useStakeCompose';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 jest.mock('src/actions/wallet/stakeActions', () => ({
     composeTransaction: jest.fn(),
 }));
@@ -20,7 +23,7 @@ const composeTransactionMock = composeTransaction as jest.Mock;
 
 const composeActionContext = (): ComposeActionContext => ({
     account: mockWalletAccount({ symbol: asNetworkSymbol('ada') }, networkSpecificDefaultCardano),
-    network: getNetwork(asNetworkSymbol('ada')),
+    network: getNetwork(networkConfigDeps, asNetworkSymbol('ada')),
     feeInfo: {
         blockHeight: 0,
         blockTime: 20,

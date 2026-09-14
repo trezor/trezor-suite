@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
@@ -63,16 +64,16 @@ export const StakingManagementPendingStakeModal = ({
         selectAccountStakeTransactions(state, accountKey),
     );
 
-    const isStakeConfirming = useSelector((state: StakeRootState) =>
+    const isStakeConfirming = useSelector((state: StakeRootState & NetworksRootState) =>
         selectIsStakeConfirmingByAccountKey(state, accountKey),
     );
 
-    const isStakePending = useSelector((state: StakeRootState) =>
+    const isStakePending = useSelector((state: StakeRootState & NetworksRootState) =>
         selectIsStakePendingByAccountKey(state, accountKey),
     );
 
     const totalStakePending =
-        useSelector((state: StakeRootState) =>
+        useSelector((state: StakeRootState & NetworksRootState) =>
             selectTotalStakePendingByAccountKey(state, accountKey),
         ) ?? '0';
 

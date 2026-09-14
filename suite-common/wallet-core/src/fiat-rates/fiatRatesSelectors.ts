@@ -1,4 +1,5 @@
 import { A, F, pipe } from '@mobily/ts-belt';
+import type { NetworksRootState } from '@suite-common/networks';
 
 import {
     type TokenDefinitionsRootState,
@@ -89,7 +90,7 @@ export const selectShouldUpdateFiatRate = (
 };
 
 export const selectTickerFromAccounts = (
-    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
+    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState & NetworksRootState,
 ): TickerId[] => {
     // Use accounts of all remembered devices/wallets, not just the selected one, so that
     // token fiat rates are fetched for every wallet. Otherwise tokens that exist only on a
@@ -128,7 +129,7 @@ export const selectTickerFromAccounts = (
 };
 
 export const selectTickersToBeUpdated = (
-    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
+    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState & NetworksRootState,
     currentTimestamp: Timestamp,
     fiatCurrency: BaseCurrencyCode,
     rateType: RateTypeWithoutHistoric,

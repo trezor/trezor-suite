@@ -34,3 +34,17 @@ it('preserves display order without mutating registered networks on Hermes', () 
 
     expect(createGetNetworkConfigs(deps)().map(network => network.symbol)).toEqual(['btc', 'eth']);
 });
+
+it('keeps the configured collection stable for consumers', () => {
+    const deps = createMockDeps<GetNetworkConfigsDeps>({
+        networkModuleRepository: {
+            getSupportedNetworks: () => ['btc'],
+            get: null,
+            isSupportedNetwork: null,
+        },
+        getNetworkConfig: () => mockNetworkMetadata.btc,
+    });
+    const getNetworkConfigs = createGetNetworkConfigs(deps);
+
+    expect(getNetworkConfigs()).toBe(getNetworkConfigs());
+});

@@ -6,6 +6,7 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
@@ -112,6 +113,8 @@ export const TokensNavigation = ({
     onManualActivation,
     showManualActivation = false,
 }: TokensNavigationProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { account } = selectedAccount;
     const routeName = useSelector(selectRouteName);
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
@@ -123,7 +126,7 @@ export const TokensNavigation = ({
     const isDebug = useSelector(selectIsDebugModeActive);
     const { translationString } = useTranslation();
 
-    const tokens = getTokens({
+    const tokens = getTokens(networkConfigDeps, {
         tokens: selectedAccount.account.tokens || [],
         symbol: selectedAccount.account.symbol,
         tokenDefinitions,

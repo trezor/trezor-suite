@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { type ExchangeInfoAsset } from './notificationsTypes';
@@ -8,7 +10,10 @@ type ExchangeAssetWithFallbackProps = {
 };
 
 export const ExchangeAssetWithFallback = ({ asset }: ExchangeAssetWithFallbackProps) => {
-    const resolvedDisplaySymbol = asset.displaySymbol ?? getDisplaySymbol(asset.symbol);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const resolvedDisplaySymbol =
+        asset.displaySymbol ?? getDisplaySymbol(networkConfigDeps, asset.symbol);
 
     return (
         asset.icon ?? (

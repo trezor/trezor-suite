@@ -7,6 +7,8 @@ import {
     selectLabelingDataForAccount,
     selectLabelingValueBeingEdited,
 } from '@suite/metadata';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
@@ -57,6 +59,8 @@ export const TransactionTarget = ({
     targetId,
     ...baseLayoutProps
 }: TransactionTargetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
 
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, accountKey));
@@ -94,15 +98,18 @@ export const TransactionTarget = ({
 
         switch (type) {
             case 'target':
-                return getTargetAmount(payload, transaction);
+                return getTargetAmount(networkConfigDeps, payload, transaction);
             case 'internal':
-                return payload.amount && formatNetworkAmount(payload.amount, transaction.symbol);
+                return (
+                    payload.amount &&
+                    formatNetworkAmount(networkConfigDeps, payload.amount, transaction.symbol)
+                );
             case 'token':
                 return convertAmountSubunitsToUnits(payload.amount, payload.decimals);
             default:
                 return exhaustive(type);
         }
-    }, [type, payload, transaction, isSolanaUnstakeTx]);
+    }, [networkConfigDeps, type, payload, transaction, isSolanaUnstakeTx]);
 
     const operation = getTxOperation(type === 'target' ? transaction.type : payload.type);
 

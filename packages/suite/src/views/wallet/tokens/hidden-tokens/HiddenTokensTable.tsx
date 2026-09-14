@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
@@ -16,19 +18,21 @@ interface HiddenTokensTableProps {
 }
 
 export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokensTableProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { account, network } = selectedAccount;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
 
     const sortedTokens = account.tokens?.toSorted(sortTokensByName) ?? [];
 
-    const filteredTokens = getTokens({
+    const filteredTokens = getTokens(networkConfigDeps, {
         tokens: sortedTokens,
         symbol: account.symbol,
         tokenDefinitions: coinDefinitions,
         searchQuery,
     });
-    const tokens = getTokens({
+    const tokens = getTokens(networkConfigDeps, {
         tokens: sortedTokens,
         symbol: account.symbol,
         tokenDefinitions: coinDefinitions,
@@ -51,7 +55,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
             )}
             {hiddenTokensCount > 0 && (
                 <TokensTable
-                    hideRates={isTestnet(account.symbol)}
+                    hideRates={isTestnet(networkConfigDeps, account.symbol)}
                     account={account}
                     tokenStatusType={TokenManagementAction.SHOW}
                     tokensWithBalance={filteredTokens.hiddenWithBalance}

@@ -1,3 +1,5 @@
+import { getNetworks } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import {
     type FeeInfo,
@@ -80,6 +82,7 @@ const initStore = (levels?: FeeInfo['levels']) =>
     createTestStore({
         extra: undefined,
         preloadedState: {
+            networks: getNetworks(mockNetworkConfigDeps()),
             device: { selectedDevice: undefined },
             wallet: {
                 settings: { networkReserve: false },

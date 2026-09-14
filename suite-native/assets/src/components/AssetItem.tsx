@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -47,10 +48,10 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const singleAccountKey = useSelector((state: AssetsRootState) =>
         selectSingleDeviceAccountKeyForNetworkSymbol(state, cryptoCurrencySymbol),
     );
-    const hasAnyTokens = useSelector((state: TokensRootState) =>
+    const hasAnyTokens = useSelector((state: TokensRootState & NetworksRootState) =>
         selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
-    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState) =>
+    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState & NetworksRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
     );
     const hasAnyFailedAccount = useSelector((state: NativeAccountsRootState) =>

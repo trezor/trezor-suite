@@ -3,6 +3,7 @@ import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device'
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS,
@@ -48,6 +49,8 @@ export const useTronStakeActions = ({
     form,
     flow,
 }: UseTronStakeActionsProps): TronStakeActions => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { device } = useDevice();
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { stats } = useTronStakingStats();
@@ -186,7 +189,10 @@ export const useTronStakeActions = ({
             case 'withdraw':
                 if (isWithdrawingDisabled) break;
 
-                form.methods.setValue('amount', getTronWithdrawableBalance(account));
+                form.methods.setValue(
+                    'amount',
+                    getTronWithdrawableBalance(networkConfigDeps, account),
+                );
                 dispatch(
                     submitTronWithdrawThunk({
                         account,
@@ -203,7 +209,7 @@ export const useTronStakeActions = ({
             case 'claim':
                 if (isClaimingDisabled) break;
 
-                form.methods.setValue('amount', getTronStakingRewards(account));
+                form.methods.setValue('amount', getTronStakingRewards(networkConfigDeps, account));
                 dispatch(
                     submitTronClaimThunk({
                         account,

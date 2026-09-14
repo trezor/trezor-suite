@@ -1,4 +1,5 @@
 import { asEvmAddress } from '@suite-common/calldata';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 
@@ -33,7 +34,8 @@ type ComposeYieldWithdrawTransactionPayload = {
 export const isYieldWithdrawFeeError = (reason: ComposeYieldWithdrawErrorReason) =>
     reason === 'fee-estimation-failed' || reason === 'missing-fee-level';
 
-export type ComposeYieldWithdrawTransactionThunkState = ComposeYieldEvmTransactionThunkState;
+export type ComposeYieldWithdrawTransactionThunkState = ComposeYieldEvmTransactionThunkState &
+    NetworksRootState;
 
 export const composeYieldWithdrawTransactionThunk = createThunk<
     ComposeYieldWithdrawResult,
@@ -43,7 +45,9 @@ export const composeYieldWithdrawTransactionThunk = createThunk<
     }
 >(
     `${YIELD_PREFIX}/thunk/composeWithdrawTransaction`,
-    async ({ flowData, amount, flowType }, { dispatch }) => {
+    async ({ flowData, amount, flowType }, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { account, vault } = flowData;
 
         if (account.networkType !== 'ethereum') {
@@ -56,7 +60,7 @@ export const composeYieldWithdrawTransactionThunk = createThunk<
             return { type: 'error', reason: 'missing-vault-address' } as const;
         }
 
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
 
         if (!network.chainId) {
             return { type: 'error', reason: 'missing-chain-id' } as const;
@@ -68,7 +72,7 @@ export const composeYieldWithdrawTransactionThunk = createThunk<
 
         const ownerAddress = asEvmAddress(account.descriptor);
 
-        const calldata = buildYieldWithdrawCalldata({
+        const calldata = buildYieldWithdrawCalldata(networkConfigDeps, {
             amount,
             flowData,
             ownerAddress,

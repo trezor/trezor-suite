@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { useTxSimulation } from '@suite-common/tx-simulation';
@@ -9,6 +11,8 @@ import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
 import { initialState } from '../reducers/tradingCommonReducer';
 import { createTradingTestState, renderHookWithTradingStore } from '../test-utils/testUtils';
 import { composeDexTxSimulationAction } from '../utils/exchange/composeDexTxSimulationAction';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('@suite-common/tx-simulation', () => ({
     useTxSimulation: jest.fn(),
@@ -90,7 +94,7 @@ describe('useDexExchangeTxSimulation', () => {
         mockedComposeDexTxSimulationAction.mockReturnValue(action);
         mockedUseTxSimulation.mockReturnValue({
             txSimulationQuery,
-            network: getNetwork(ethSymbol),
+            network: getNetwork(networkConfigDeps, ethSymbol),
             targetContract: account.descriptor,
         } as unknown as NonNullable<ReturnType<typeof useTxSimulation>>);
 
@@ -108,7 +112,7 @@ describe('useDexExchangeTxSimulation', () => {
             },
         );
 
-        expect(mockedComposeDexTxSimulationAction).toHaveBeenCalledWith({
+        expect(mockedComposeDexTxSimulationAction).toHaveBeenCalledWith(expect.any(Object), {
             quote,
             account,
             sourceOrigin: SOURCE_ORIGIN,

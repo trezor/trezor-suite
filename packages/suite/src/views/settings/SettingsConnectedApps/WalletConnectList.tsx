@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     getSessionNetworks,
@@ -19,6 +20,8 @@ import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useSelector } from 'src/hooks/suite';
 
 export const WalletConnectList = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const sessions = useSelector(selectSessions);
 
@@ -73,7 +76,7 @@ export const WalletConnectList = () => {
                             </Row>
 
                             <Text intent="neutral" priority="secondary">
-                                {getSessionNetworks(session)
+                                {getSessionNetworks(networkConfigDeps, session)
                                     .map(network => network.name)
                                     .join(', ')}
                             </Text>

@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -42,7 +43,8 @@ export const TransactionListItem = ({
             state: TokenDefinitionsRootState &
                 TransactionsRootState &
                 FiatRatesRootState &
-                PhishingRootState,
+                PhishingRootState &
+                NetworksRootState,
         ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 

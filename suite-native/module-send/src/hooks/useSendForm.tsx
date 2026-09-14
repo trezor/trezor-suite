@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
@@ -9,7 +10,12 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceRemembered } from '@suite-common/device';
-import { selectAddressValidatorDep, selectGetNamedAddressSupportDep } from '@suite-common/networks';
+import {
+    selectNetworkConfigDeps,
+    type NetworkConfigDeps,
+    selectAddressValidatorDep,
+    selectGetNamedAddressSupportDep,
+} from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
@@ -94,7 +100,11 @@ const getDefaultValues = ({
         ],
     }) as const;
 
-const getRippleReserve = (account: Account, networkType: NetworkType) => {
+const getRippleReserve = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+    networkType: NetworkType,
+) => {
     const reserve =
         account.misc && 'reserve' in account.misc && account.misc.reserve
             ? account.misc.reserve
@@ -102,7 +112,7 @@ const getRippleReserve = (account: Account, networkType: NetworkType) => {
 
     if (networkType !== 'ripple' || !reserve) return undefined;
 
-    return formatNetworkAmount(reserve, account.symbol);
+    return formatNetworkAmount(networkConfigDeps, reserve, account.symbol);
 };
 
 type SendFormNavigationProp = StackToStackCompositeNavigationProps<
@@ -112,6 +122,8 @@ type SendFormNavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
     const { addressValidator, getNamedAddressSupport, dispatch } = useServices(
@@ -132,13 +144,13 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 
-    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
+    const isAmountInSats = useSelector((state: WalletSettingsRootState & NetworksRootState) =>
         selectIsAmountInSats(state, account?.symbol),
     );
     const isNetworkReserveEnabled = useSelector((state: WalletSettingsRootState) =>
         selectIsNetworkReserveEnabled(state),
     );
-    const networkFeeInfo = useSelector((state: FeesRootState) =>
+    const networkFeeInfo = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
     const sendFormDraft = useSelector((state: SendRootState) =>
@@ -157,12 +169,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     useSubscribeForSolanaBlockUpdates(account);
 
-    const network = account ? getNetwork(account.symbol) : null;
+    const network = account ? getNetwork(networkConfigDeps, account.symbol) : null;
 
     const namedAddress = getNamedAddressSupport(account?.symbol);
 
     const networkReserve = account
-        ? getNetworkReserve({
+        ? getNetworkReserve(networkConfigDeps, {
               symbol: account.symbol,
               contractAddress: tokenContract,
               isEnabled: isNetworkReserveEnabled,
@@ -170,10 +182,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         : undefined;
 
     const rippleReserve =
-        account && network ? getRippleReserve(account, network.networkType) : undefined;
+        account && network
+            ? getRippleReserve(networkConfigDeps, account, network.networkType)
+            : undefined;
 
     const form = useForm<SendOutputsFormValues>({
-        validation: sendOutputsFormValidationSchema,
+        validation: sendOutputsFormValidationSchema(networkConfigDeps),
         // If the form is prefilled with the draft values, we want to revalidate the draft on every change.
         mode: sendFormDraft ? 'onChange' : 'onTouched',
         context: {
@@ -241,7 +255,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
                 if (isReserveError) {
                     setError('outputs.0.amount', {
-                        message: `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(account.symbol)} to activate.`,
+                        message: `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(networkConfigDeps, account.symbol)} to activate.`,
                     });
                 }
 
@@ -272,6 +286,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             }
         }
     }, [
+        networkConfigDeps,
         accountKey,
         dispatch,
         getValues,

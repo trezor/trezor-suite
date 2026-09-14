@@ -1,6 +1,8 @@
+import { getNetworks } from '@suite-common/wallet-config';
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -10,7 +12,12 @@ import TrezorConnect from '@trezor/connect';
 import { DEFAULT_FEE_INFO } from './feesConstants';
 import { feesReducer } from './feesReducer';
 import { getOrFetchRawFeeInfoThunk, updateFeeInfoThunk } from './feesThunks';
-import { blockchainInitialState, prepareBlockchainReducer } from '../blockchain/blockchainReducer';
+import {
+    createBlockchainInitialState,
+    prepareBlockchainReducer,
+} from '../blockchain/blockchainReducer';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('@trezor/connect', () => {
     const actual = jest.requireActual('@trezor/connect');
@@ -63,6 +70,7 @@ const initStore = (fees: FeesState = {}) =>
     createTestStore({
         extra: undefined,
         reducer: combineReducers({
+            networks: () => getNetworks(mockNetworkConfigDeps()),
             device: deviceReducer,
             wallet: combineReducers({
                 fees: feesReducer,
@@ -73,7 +81,7 @@ const initStore = (fees: FeesState = {}) =>
             device: deviceInitialState,
             wallet: {
                 fees,
-                blockchain: blockchainInitialState,
+                blockchain: createBlockchainInitialState(networkConfigDeps.getNetworkConfigs()),
             },
         },
     });

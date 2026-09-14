@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
 import {
@@ -25,6 +27,8 @@ export type MyAssetListItemProps = {
 };
 
 export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const { animatedStyle, handlePressIn, handlePressOut } = useTradingAssetPressStyle();
     const { symbol, name, balance, fiatBalance, tokenSymbol, contract, isEnabled, decimals } =
@@ -70,7 +74,7 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
                 <TradingAsset
                     assetType="crypto"
                     name={name}
-                    symbol={tokenSymbol ?? getNetworkDisplaySymbol(symbol)}
+                    symbol={tokenSymbol ?? getNetworkDisplaySymbol(networkConfigDeps, symbol)}
                     contractAddress={contract}
                     networkSymbol={symbol}
                     rightContent={

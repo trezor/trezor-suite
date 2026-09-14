@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { Box, HStack } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -22,10 +24,12 @@ type BuyCardProps = {
 const BUY_CARD_TEST_ID = '@trading/buyCard';
 
 export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { control } = useBuyFormContext();
     const [cryptoValue, asset] = useWatch({ control, name: ['cryptoValue', 'asset'] });
     const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
-    const symbol = getSymbolFromTradeableAsset(asset);
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
     const cryptoValueInBaseUnit = symbol ? convertStrToBaseUnit(cryptoValue, symbol) : cryptoValue;
 
     return (

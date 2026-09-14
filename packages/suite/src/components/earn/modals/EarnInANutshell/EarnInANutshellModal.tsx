@@ -4,6 +4,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type EarnAnalyticsStep,
@@ -60,6 +61,8 @@ export const EarnInANutshellModal = ({
     yieldContext,
     onCancel,
 }: EarnInANutshellModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
     const opportunity =
@@ -88,7 +91,7 @@ export const EarnInANutshellModal = ({
             dispatch(
                 gotoThunk({
                     routeName: 'earn-yield-deposit',
-                    params: getEarnRouteParams({
+                    params: getEarnRouteParams(networkConfigDeps, {
                         account,
                         vaultAddress: yieldContext.vaultAddress,
                     }),
@@ -103,7 +106,16 @@ export const EarnInANutshellModal = ({
                 dispatch(openModal({ type: 'stake', flow, account }));
             }
         }
-    }, [shouldSkip, flow, yieldContext?.vaultAddress, onCancel, account, provider, dispatch]);
+    }, [
+        networkConfigDeps,
+        shouldSkip,
+        flow,
+        yieldContext?.vaultAddress,
+        onCancel,
+        account,
+        provider,
+        dispatch,
+    ]);
 
     useEffect(() => {
         switch (flow) {

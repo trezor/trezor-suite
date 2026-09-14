@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
@@ -5,15 +6,20 @@ import { type StakingNavigateFrom } from '@suite-native/analytics';
 import { BigNumber } from '@trezor/utils';
 
 export const getStakingAnalyticsNavigateFrom = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
 ): StakingNavigateFrom | undefined => {
-    const limits = getStakingLimitsByNetworkSymbol(account.symbol);
+    const limits = getStakingLimitsByNetworkSymbol(networkConfigDeps, account.symbol);
 
     if (!limits) return undefined;
 
-    const stakedBalance = getAccountTotalStakingBalance(account);
+    const stakedBalance = getAccountTotalStakingBalance(networkConfigDeps, account);
     const hasStakedBalance = !!stakedBalance && new BigNumber(stakedBalance).gt(0);
-    const formattedAvailableBalance = formatNetworkAmount(account.availableBalance, account.symbol);
+    const formattedAvailableBalance = formatNetworkAmount(
+        networkConfigDeps,
+        account.availableBalance,
+        account.symbol,
+    );
     const hasEnoughBalanceForStaking = new BigNumber(formattedAvailableBalance).gte(
         limits.MIN_AMOUNT_FOR_STAKING,
     );

@@ -8,6 +8,7 @@ import {
 } from '@suite-common/earn-stablecoin';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
@@ -83,17 +84,20 @@ export type SendYieldTransactionParams = {
     selectedFee: EvmSelectedFee | null;
 };
 
-export const sendYieldTransaction = async ({
-    account,
-    amount,
-    token,
-    unsignedTransaction,
-    flowKey,
-    flowType,
-    dispatch,
-    getState,
-    selectedFee,
-}: SendYieldTransactionParams): Promise<SendYieldTransactionResult> => {
+export const sendYieldTransaction = async (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        account,
+        amount,
+        token,
+        unsignedTransaction,
+        flowKey,
+        flowType,
+        dispatch,
+        getState,
+        selectedFee,
+    }: SendYieldTransactionParams,
+): Promise<SendYieldTransactionResult> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -105,7 +109,7 @@ export const sendYieldTransaction = async ({
         throw new Error('Yield actions currently support only EVM accounts.');
     }
 
-    const transactionReview = buildStablecoinYieldTransactionReview({
+    const transactionReview = buildStablecoinYieldTransactionReview(networkConfigDeps, {
         unsignedTransaction,
         selectedFee,
         amount,
@@ -176,6 +180,7 @@ export const sendYieldTransaction = async ({
 
         const pushResponse = await TrezorConnect.pushTransaction({
             tx: getMevProtectedTxData(
+                networkConfigDeps,
                 account.symbol,
                 signingResponse.payload.serializedTx,
                 isMevProtectionEnabled && isMevProtectionFeatureEnabled,

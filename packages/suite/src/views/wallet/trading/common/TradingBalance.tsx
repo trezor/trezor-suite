@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkDecimalsWithFallback } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
@@ -27,8 +29,12 @@ export const TradingBalance = ({
     tokenAddress,
     showOnlyAmount,
     amountInCrypto,
-    decimals: networkDecimals = getNetworkDecimalsWithFallback(symbol),
+    decimals: providedDecimals,
 }: TradingBalanceProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const networkDecimals =
+        providedDecimals ?? getNetworkDecimalsWithFallback(networkConfigDeps, symbol);
+
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const balanceCurrency = tradingGetAccountLabel(displaySymbol ?? '', shouldSendInSats);
     const stringBalance = !isNaN(Number(balance)) ? balance : '0';

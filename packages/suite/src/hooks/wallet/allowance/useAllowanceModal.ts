@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
 import { type TranslationKey, isTranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { parseCryptoId } from '@suite-common/trading';
 import { REVOKE_ALLOWANCE_AMOUNT } from '@suite-common/wallet-core';
 import { type Account, type AllowanceType } from '@suite-common/wallet-types';
@@ -35,6 +37,8 @@ export const useAllowanceModal = ({
     onConfirm,
     onCancel,
 }: UseAllowanceModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { state, tx } = useAllowanceContext();
     const closeModal = type === 'APPROVE' ? state.closeApproveModal : state.closeRevokeModal;
     const openModal = type === 'APPROVE' ? state.openApproveModal : state.openRevokeModal;
@@ -48,7 +52,7 @@ export const useAllowanceModal = ({
     const {
         inputAmount = asAmountSubunit(new BigNumber(0)),
         allowanceAmount = REVOKE_ALLOWANCE_AMOUNT,
-    } = token ? getAllowanceAmount({ rawAmount, approvalType, token }) : {};
+    } = token ? getAllowanceAmount(networkConfigDeps, { rawAmount, approvalType, token }) : {};
 
     const {
         data,

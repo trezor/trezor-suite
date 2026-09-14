@@ -2,6 +2,7 @@ import { type MouseEvent, type ReactNode } from 'react';
 
 import { type Route, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -28,6 +29,8 @@ export const AssetActionButton = ({
     routeName,
     'data-testid': dataTest,
 }: AssetActionButtonProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const { toggleCoinFilter, setSearchString } = useAccountSearch();
     const accounts = useSelector(selectVisibleDeviceAccounts);
@@ -56,7 +59,7 @@ export const AssetActionButton = ({
                 if (account) {
                     dispatch(
                         tradingActions.setTradingFromPrefilledAccount(
-                            getTradingPrefilledFromAccountData(account),
+                            getTradingPrefilledFromAccountData(networkConfigDeps, account),
                         ),
                     );
                 }

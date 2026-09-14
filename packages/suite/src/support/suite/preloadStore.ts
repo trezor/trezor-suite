@@ -1,11 +1,13 @@
-import { getSupportedNetworks } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps } from '@suite-common/networks';
+import { getNetworks, getSupportedNetworks } from '@suite-common/wallet-config';
 
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
-import { db } from 'src/storage';
+import { getSuiteDB } from 'src/storage';
 
 // Load persisted state before rendering the Redux-connected app. The store is created
 // synchronously during composition and hydrated with this result during initialization.
-export const preloadStore = async () => {
+export const preloadStore = async (networkConfigDeps: NetworkConfigDeps) => {
+    const db = getSuiteDB(networkConfigDeps);
     if (!db.isSupported()) return;
 
     try {
@@ -105,9 +107,8 @@ export const preloadStore = async () => {
         return {
             type: STORAGE.LOAD,
             payload: {
-                // Hydration runs before network metadata is loaded into Redux.
-                // TODO(#30572): Supply migration ordering without the legacy registry.
-                supportedNetworks: getSupportedNetworks(),
+                supportedNetworks: getSupportedNetworks(networkConfigDeps),
+                networks: getNetworks(networkConfigDeps),
                 suiteSettings,
                 walletSettings,
                 devices,

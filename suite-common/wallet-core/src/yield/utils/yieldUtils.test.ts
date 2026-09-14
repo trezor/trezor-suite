@@ -1,5 +1,6 @@
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import type { YieldPendingTransactionState } from '../yieldTypes';
@@ -24,6 +25,8 @@ import {
     shouldRecommendWrapReserve,
     splitYieldPendingTransaction,
 } from './yieldUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ACCOUNT_DESCRIPTOR = asEvmAddress('0x9ea3721b5bf3b64b4418c38b603154d2d597fae3');
 const VAULT_ADDRESS = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
@@ -53,12 +56,12 @@ const flowData = {
         networkSymbol: ethSymbol,
         symbol: 'trUSDC',
     },
-} as unknown as Parameters<typeof buildYieldWithdrawCalldata>[0]['flowData'];
+} as unknown as Parameters<typeof buildYieldWithdrawCalldata>[1]['flowData'];
 
 describe('yieldUtils', () => {
     describe('buildYieldWithdrawCalldata', () => {
         it('builds ERC4626 withdraw calldata for asset input', () => {
-            const calldata = buildYieldWithdrawCalldata({
+            const calldata = buildYieldWithdrawCalldata(networkConfigDeps, {
                 amount: '10',
                 flowData,
                 ownerAddress: ACCOUNT_DESCRIPTOR,
@@ -74,7 +77,7 @@ describe('yieldUtils', () => {
         });
 
         it('builds ERC4626 redeem calldata for shares input', () => {
-            const calldata = buildYieldWithdrawCalldata({
+            const calldata = buildYieldWithdrawCalldata(networkConfigDeps, {
                 amount: '10',
                 flowData,
                 ownerAddress: ACCOUNT_DESCRIPTOR,
@@ -91,12 +94,12 @@ describe('yieldUtils', () => {
 
         it('throws when calldata cannot be encoded', () => {
             expect(() =>
-                buildYieldWithdrawCalldata({
+                buildYieldWithdrawCalldata(networkConfigDeps, {
                     amount: '10',
                     flowData,
                     ownerAddress: 'not-an-address' as unknown as Parameters<
                         typeof buildYieldWithdrawCalldata
-                    >[0]['ownerAddress'],
+                    >[1]['ownerAddress'],
                     receiverAddress: ACCOUNT_DESCRIPTOR,
                     flowType: 'withdraw',
                 }),
@@ -228,7 +231,7 @@ describe('yieldUtils', () => {
 
     describe('buildYieldDepositCalldata', () => {
         it('builds ERC4626 deposit calldata', () => {
-            const calldata = buildYieldDepositCalldata({
+            const calldata = buildYieldDepositCalldata(networkConfigDeps, {
                 amount: '10',
                 flowData,
                 ownerAddress: ACCOUNT_DESCRIPTOR,
@@ -243,7 +246,7 @@ describe('yieldUtils', () => {
 
         it('throws when calldata cannot be encoded', () => {
             expect(() =>
-                buildYieldDepositCalldata({
+                buildYieldDepositCalldata(networkConfigDeps, {
                     amount: '0',
                     flowData,
                     ownerAddress: ACCOUNT_DESCRIPTOR,
@@ -330,7 +333,9 @@ describe('yieldUtils', () => {
 
     describe('buildYieldWrapTransactionData', () => {
         it('encodes the WETH deposit() selector and carries the amount in the value', () => {
-            expect(buildYieldWrapTransactionData({ wrapAmount: '1', decimals: 18 })).toEqual({
+            expect(
+                buildYieldWrapTransactionData(networkConfigDeps, { wrapAmount: '1', decimals: 18 }),
+            ).toEqual({
                 data: '0xd0e30db0',
                 value: '0xde0b6b3a7640000',
             });
@@ -339,7 +344,10 @@ describe('yieldUtils', () => {
 
     describe('buildYieldUnwrapTransactionData', () => {
         it('encodes WETH withdraw(uint256) calldata for the amount', () => {
-            const { data } = buildYieldUnwrapTransactionData({ unwrapAmount: '1', decimals: 18 });
+            const { data } = buildYieldUnwrapTransactionData(networkConfigDeps, {
+                unwrapAmount: '1',
+                decimals: 18,
+            });
 
             expect(Calldata.evm.weth.withdraw.decode(data)).toEqual({
                 wad: 1_000_000_000_000_000_000n,
@@ -348,7 +356,10 @@ describe('yieldUtils', () => {
 
         it('throws for a zero amount', () => {
             expect(() =>
-                buildYieldUnwrapTransactionData({ unwrapAmount: '0', decimals: 18 }),
+                buildYieldUnwrapTransactionData(networkConfigDeps, {
+                    unwrapAmount: '0',
+                    decimals: 18,
+                }),
             ).toThrow('Failed to encode WETH withdraw calldata');
         });
     });
@@ -618,7 +629,7 @@ describe('yieldUtils', () => {
                 });
 
                 expect(
-                    getYieldVaultsForInputToken({
+                    getYieldVaultsForInputToken(networkConfigDeps, {
                         vaults: [usdcVault, usdtVault],
                         networkSymbol: ethSymbol,
                         token: heldUsdc,
@@ -633,7 +644,7 @@ describe('yieldUtils', () => {
                 });
 
                 expect(
-                    getYieldVaultsForInputToken({
+                    getYieldVaultsForInputToken(networkConfigDeps, {
                         vaults: [polygonVault],
                         networkSymbol: ethSymbol,
                         token: heldUsdc,
@@ -652,7 +663,7 @@ describe('yieldUtils', () => {
                 });
 
                 expect(
-                    getYieldVaultsForInputToken({
+                    getYieldVaultsForInputToken(networkConfigDeps, {
                         vaults: [maintainedVault, deprecatedVault],
                         networkSymbol: ethSymbol,
                         token: heldUsdc,
@@ -667,7 +678,7 @@ describe('yieldUtils', () => {
                 });
 
                 expect(
-                    getYieldVaultsForInputToken({
+                    getYieldVaultsForInputToken(networkConfigDeps, {
                         vaults: [closedVault],
                         networkSymbol: ethSymbol,
                         token: heldUsdc,
@@ -679,7 +690,7 @@ describe('yieldUtils', () => {
                 const addresslessVault = createVaultFixture({});
 
                 expect(
-                    getYieldVaultsForInputToken({
+                    getYieldVaultsForInputToken(networkConfigDeps, {
                         vaults: [addresslessVault],
                         networkSymbol: ethSymbol,
                         token: { address: USDC_ADDRESS, symbol: 'usdc', decimals: 6 },
@@ -689,7 +700,7 @@ describe('yieldUtils', () => {
 
             it('returns an empty array when vaults are not loaded', () => {
                 expect(
-                    getYieldVaultsForInputToken({
+                    getYieldVaultsForInputToken(networkConfigDeps, {
                         vaults: undefined,
                         networkSymbol: ethSymbol,
                         token: heldUsdc,
@@ -713,7 +724,7 @@ describe('yieldUtils', () => {
 
             it('reports a position when the receipt token is held with a balance', () => {
                 expect(
-                    hasYieldVaultPosition({
+                    hasYieldVaultPosition(networkConfigDeps, {
                         networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, '1.5')],
@@ -723,7 +734,7 @@ describe('yieldUtils', () => {
 
             it('matches the receipt token regardless of address case', () => {
                 expect(
-                    hasYieldVaultPosition({
+                    hasYieldVaultPosition(networkConfigDeps, {
                         networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: [
@@ -738,7 +749,7 @@ describe('yieldUtils', () => {
 
             it('reports no position when the receipt token balance is zero', () => {
                 expect(
-                    hasYieldVaultPosition({
+                    hasYieldVaultPosition(networkConfigDeps, {
                         networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, '0')],
@@ -748,7 +759,7 @@ describe('yieldUtils', () => {
 
             it('reports no position when the receipt token has no balance yet', () => {
                 expect(
-                    hasYieldVaultPosition({
+                    hasYieldVaultPosition(networkConfigDeps, {
                         networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, undefined)],
@@ -758,7 +769,7 @@ describe('yieldUtils', () => {
 
             it('does not treat holding the deposit token as a position', () => {
                 expect(
-                    hasYieldVaultPosition({
+                    hasYieldVaultPosition(networkConfigDeps, {
                         networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: [
@@ -775,7 +786,7 @@ describe('yieldUtils', () => {
 
             it('reports no position for a vault without a receipt token', () => {
                 expect(
-                    hasYieldVaultPosition({
+                    hasYieldVaultPosition(networkConfigDeps, {
                         networkSymbol: ethSymbol,
                         vault: createVaultFixture({ tokenAddress: USDC_ADDRESS }),
                         accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, '1')],
@@ -785,7 +796,7 @@ describe('yieldUtils', () => {
 
             it('reports no position when the account has no tokens', () => {
                 expect(
-                    hasYieldVaultPosition({
+                    hasYieldVaultPosition(networkConfigDeps, {
                         networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: undefined,
@@ -804,7 +815,7 @@ describe('yieldUtils', () => {
                 });
 
                 expect(
-                    getYieldVaultForOutputToken({
+                    getYieldVaultForOutputToken(networkConfigDeps, {
                         vaults: [vault],
                         networkSymbol: ethSymbol,
                         token: heldReceiptToken,
@@ -819,7 +830,7 @@ describe('yieldUtils', () => {
                 });
 
                 expect(
-                    getYieldVaultForOutputToken({
+                    getYieldVaultForOutputToken(networkConfigDeps, {
                         vaults: [vault],
                         networkSymbol: ethSymbol,
                         token: heldUsdc,
@@ -835,7 +846,7 @@ describe('yieldUtils', () => {
                 });
 
                 expect(
-                    getYieldVaultForOutputToken({
+                    getYieldVaultForOutputToken(networkConfigDeps, {
                         vaults: [vault],
                         networkSymbol: ethSymbol,
                         token: heldReceiptToken,
@@ -851,7 +862,7 @@ describe('yieldUtils', () => {
                 });
 
                 expect(
-                    getYieldVaultForOutputToken({
+                    getYieldVaultForOutputToken(networkConfigDeps, {
                         vaults: [closedVault],
                         networkSymbol: ethSymbol,
                         token: heldReceiptToken,
@@ -861,7 +872,7 @@ describe('yieldUtils', () => {
 
             it('returns undefined when vaults are not loaded', () => {
                 expect(
-                    getYieldVaultForOutputToken({
+                    getYieldVaultForOutputToken(networkConfigDeps, {
                         vaults: undefined,
                         networkSymbol: ethSymbol,
                         token: heldReceiptToken,

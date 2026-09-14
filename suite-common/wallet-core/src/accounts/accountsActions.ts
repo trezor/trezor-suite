@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountBackendSpecific,
@@ -18,7 +19,7 @@ import {
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
 import { type AccountInfo, type StaticSessionId } from '@trezor/connect';
-import { isArrayMember } from '@trezor/utils';
+import { isArrayMember, typedObjectKeys } from '@trezor/utils';
 
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 
@@ -60,23 +61,32 @@ type CoinjoinAccountStatus = CoinjoinAccount['status'];
 const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
     (
+        networkConfigDeps: NetworkConfigDeps,
         { accountInfo, ...account }: CreateAccountActionProps,
         supportedNetworks: readonly NetworkSymbol[],
     ): {
-        payload: { account: Account; supportedNetworks: readonly NetworkSymbol[] };
+        payload: {
+            account: Account;
+            supportedNetworks: readonly NetworkSymbol[];
+            accountTypeOrder: AccountType[];
+        };
     } => {
         const { symbol, index, deviceState } = account;
         const { descriptor, descriptorChecksum, legacyXpub } = accountInfo;
         const { empty, balance, availableBalance, addresses, history, utxo, tokens } = accountInfo;
 
         try {
-            const { chainId, networkType } = getNetwork(symbol);
+            const { chainId, networkType, name, accountTypes } = getNetwork(
+                networkConfigDeps,
+                symbol,
+            );
 
             const isNonEthEvm = networkType === 'ethereum' && symbol !== 'eth';
             const metadataKey = isNonEthEvm ? `${descriptor}-${chainId}` : legacyXpub || descriptor;
 
             const payload: Account = {
                 ...account,
+                accountLabel: account.accountLabel ?? `${name} #${index + 1}`,
                 descriptor: asAccountDescriptor(descriptor),
                 descriptorChecksum,
                 empty,
@@ -89,6 +99,7 @@ const createAccount = createAction(
                     deviceStaticSessionId: deviceState,
                 }),
                 formattedBalance: formatNetworkAmount(
+                    networkConfigDeps,
                     // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
                     isArrayMember(networkType, ['ripple', 'stellar']) ? balance : availableBalance,
                     symbol,
@@ -105,7 +116,13 @@ const createAccount = createAction(
             };
 
             return {
-                payload: { account: payload, supportedNetworks },
+                payload: {
+                    account: payload,
+                    supportedNetworks,
+                    accountTypeOrder: typedObjectKeys(
+                        accountTypes as Partial<Record<AccountType, unknown>>,
+                    ),
+                },
             };
         } catch (error) {
             console.error('Error creating account payload:', error);
@@ -131,6 +148,7 @@ const createAccountFromAccountInfo = createAction(
 const updateAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/updateAccount`,
     (
+        networkConfigDeps: NetworkConfigDeps,
         account: Account,
         accountInfo: AccountInfo | null = null,
     ): { payload: { account: Account } } => {
@@ -145,6 +163,7 @@ const updateAccount = createAction(
                         empty: accountInfo.empty,
                         visible: account.visible || !accountInfo.empty,
                         formattedBalance: formatNetworkAmount(
+                            networkConfigDeps,
                             // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
                             ['ripple', 'stellar'].includes(account.networkType)
                                 ? accountInfo.balance

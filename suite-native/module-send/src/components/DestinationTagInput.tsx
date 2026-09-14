@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useRef, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -38,6 +40,8 @@ interface DestinationTagInputProps {
 }
 
 export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const inputRef = useRef<InputType | null>(null);
     const { applyStyle } = useNativeStyles();
 
@@ -102,7 +106,7 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                 <AnimatedVStack spacing="sp8" entering={FadeIn} exiting={FadeOut}>
                     <TextInputField
                         valueTransformer={
-                            getNetworkType(networkSymbol) === 'ripple'
+                            getNetworkType(networkConfigDeps, networkSymbol) === 'ripple'
                                 ? integerTransformer
                                 : undefined
                         }
@@ -126,7 +130,9 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                         title={
                             <Translation
                                 id="moduleSend.outputs.recipients.destinationTag.warning"
-                                values={{ network: getNetwork(networkSymbol).name }}
+                                values={{
+                                    network: getNetwork(networkConfigDeps, networkSymbol).name,
+                                }}
                             />
                         }
                     />

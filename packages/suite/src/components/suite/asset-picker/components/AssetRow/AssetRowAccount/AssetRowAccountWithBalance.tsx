@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
@@ -21,6 +23,8 @@ export function AssetRowAccountWithBalance({
     isFiatPrimary = false,
     isInsideGroup = false,
 }: AssetRowAccountWithBalanceProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isDisabled = !onClick;
 
     return (
@@ -40,7 +44,7 @@ export function AssetRowAccountWithBalance({
                         maxWidth="100%"
                         isDisabled={isDisabled}
                     >
-                        {getNetworkDisplaySymbolName(account.symbol)}
+                        {getNetworkDisplaySymbolName(networkConfigDeps, account.symbol)}
                     </Text>
                     <Text
                         intent="neutral"
@@ -48,7 +52,7 @@ export function AssetRowAccountWithBalance({
                         typographyStyle="body-sm"
                         isDisabled={isDisabled}
                     >
-                        {getDisplaySymbol(account.symbol)}
+                        {getDisplaySymbol(networkConfigDeps, account.symbol)}
                     </Text>
                 </Column>
             </Row>

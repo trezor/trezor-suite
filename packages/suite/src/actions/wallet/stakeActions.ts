@@ -13,6 +13,7 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -61,20 +62,42 @@ import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState & StakeRootState;
 
 export const composeTransaction =
-    (formValues: StakeFormState, formState: ComposeActionContext) =>
+    (
+        networkConfigDeps: NetworkConfigDeps,
+        formValues: StakeFormState,
+        formState: ComposeActionContext,
+    ) =>
     (dispatch: ThunkDispatch<ComposeTransactionThunkState, unknown, UnknownAction>) => {
         const { account } = formState;
 
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormEthereumActions.composeTransaction(formValues, formState));
+            return dispatch(
+                stakeFormEthereumActions.composeTransaction(
+                    networkConfigDeps,
+                    formValues,
+                    formState,
+                ),
+            );
         }
 
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormSolanaActions.composeTransactionThunk(formValues, formState));
+            return dispatch(
+                stakeFormSolanaActions.composeTransactionThunk(
+                    networkConfigDeps,
+                    formValues,
+                    formState,
+                ),
+            );
         }
 
         if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormCardanoActions.composeTransactionThunk(formValues, formState));
+            return dispatch(
+                stakeFormCardanoActions.composeTransactionThunk(
+                    networkConfigDeps,
+                    formValues,
+                    formState,
+                ),
+            );
         }
 
         return Promise.resolve(undefined);
@@ -124,7 +147,11 @@ type PushTransactionThunkDeps = WithServices<DesktopAnalyticsDep> &
 
 // private, called from signTransaction only
 const pushTransactionThunk =
-    (stakeType: StakeType, cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload) =>
+    (
+        networkConfigDeps: NetworkConfigDeps,
+        stakeType: StakeType,
+        cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload,
+    ) =>
     async (
         dispatch: ThunkDispatch<PushTransactionThunkState, PushTransactionThunkDeps, UnknownAction>,
         getState: () => PushTransactionThunkState,
@@ -139,6 +166,7 @@ const pushTransactionThunk =
         if (!serializedTx || !precomposedTx || !account) return;
 
         const txData = getMevProtectedTxData(
+            networkConfigDeps,
             serializedTx.symbol,
             serializedTx.tx,
             isMevProtectionEnabled && isMevProtectionFeatureEnabled,
@@ -158,7 +186,13 @@ const pushTransactionThunk =
             .toString();
 
         // get total amount without fee
-        const formattedAmount = formatNetworkAmount(spentWithoutFee, account.symbol, true, false);
+        const formattedAmount = formatNetworkAmount(
+            networkConfigDeps,
+            spentWithoutFee,
+            account.symbol,
+            true,
+            false,
+        );
 
         if (sentTx.success) {
             const { txid } = sentTx.payload;
@@ -291,7 +325,11 @@ type SignTransactionThunkState = DeviceRootState &
 type SignTransactionThunkDeps = PushTransactionThunkDeps;
 
 export const signTransactionThunk =
-    (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
+    (
+        networkConfigDeps: NetworkConfigDeps,
+        formValues: StakeFormState,
+        transactionInfo: PrecomposedTransactionFinal,
+    ) =>
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
         getState: () => SignTransactionThunkState,
@@ -322,7 +360,11 @@ export const signTransactionThunk =
         let serializedTx: undefined | string | Err<SerializedError>;
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
-                stakeFormEthereumActions.signTransactionThunk(formValues, enhancedTxInfo),
+                stakeFormEthereumActions.signTransactionThunk(
+                    networkConfigDeps,
+                    formValues,
+                    enhancedTxInfo,
+                ),
             );
         }
 
@@ -335,7 +377,11 @@ export const signTransactionThunk =
         let cardanoPoolDelegation: StakingCardanoPoolDelegationPayload | undefined;
         if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
             const signResult = await dispatch(
-                stakeFormCardanoActions.signTransactionThunk(formValues, enhancedTxInfo),
+                stakeFormCardanoActions.signTransactionThunk(
+                    networkConfigDeps,
+                    formValues,
+                    enhancedTxInfo,
+                ),
             );
 
             if (signResult && 'serializedTx' in signResult) {
@@ -377,13 +423,19 @@ export const signTransactionThunk =
         );
 
         if (account?.networkType === 'cardano') {
-            return dispatch(pushTransactionThunk(formValues.stakeType, cardanoPoolDelegation));
+            return dispatch(
+                pushTransactionThunk(
+                    networkConfigDeps,
+                    formValues.stakeType,
+                    cardanoPoolDelegation,
+                ),
+            );
         }
 
         // Open a deferred modal and get the decision
         const decision = await dispatch(openDeferredModal({ type: 'review-transaction' }));
         if (decision) {
             // push tx to the network
-            return dispatch(pushTransactionThunk(formValues.stakeType));
+            return dispatch(pushTransactionThunk(networkConfigDeps, formValues.stakeType));
         }
     };

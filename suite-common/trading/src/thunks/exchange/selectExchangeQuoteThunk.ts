@@ -1,4 +1,5 @@
 import { type ExchangeTrade } from 'invity-api';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 
 import { createThunk } from '@suite-common/redux-utils';
 
@@ -13,13 +14,15 @@ export type SelectExchangeQuoteThunkProps = {
     nextStep: () => void;
 };
 
-type SelectExchangeQuoteThunkState = TradingRootState;
+type SelectExchangeQuoteThunkState = TradingRootState & NetworksRootState;
 
 export const selectExchangeQuoteThunk = createThunk<
     void,
     SelectExchangeQuoteThunkProps,
     { state: SelectExchangeQuoteThunkState }
 >(`${TRADING_EXCHANGE_THUNK_PREFIX}/selectQuote`, ({ quote, nextStep }, { dispatch, getState }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     const exchangeInfo = selectTradingExchangeInfo(getState());
     const provider =
         exchangeInfo?.providerInfos && quote.exchange
@@ -36,7 +39,7 @@ export const selectExchangeQuoteThunk = createThunk<
         !quote.isDex ||
         quote.status === 'CONFIRM' ||
         quote.status === 'SIGN_DATA' ||
-        !requiresTokenApproval(quote)
+        !requiresTokenApproval(networkConfigDeps, quote)
     ) {
         dispatch(tradingExchangeActions.saveSelectedQuote(quote));
     }

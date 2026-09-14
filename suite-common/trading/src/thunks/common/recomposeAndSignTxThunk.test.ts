@@ -1,6 +1,9 @@
+import { getNetworks } from '@suite-common/wallet-config';
+
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { type DeviceReducerState, prepareDeviceReducer } from '@suite-common/device';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -8,8 +11,8 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    blockchainInitialState,
     composeSendFormTransactionFeeLevelsThunk,
+    createBlockchainInitialState,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
 import { type Account, type FeesState } from '@suite-common/wallet-types';
@@ -20,6 +23,8 @@ import { type TradingState, initialState } from '../../reducers/tradingCommonRed
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 
 import { tradingThunks } from './index';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('@suite-common/wallet-core', () => {
     const actualModule = jest.requireActual('@suite-common/wallet-core');
@@ -155,9 +160,11 @@ describe('recomposeAndSignTxThunk', () => {
         const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
+                networks: () => getNetworks(mockNetworkConfigDeps()),
                 wallet: combineReducers({
                     accounts: () => [account],
-                    blockchain: () => blockchainInitialState,
+                    blockchain: () =>
+                        createBlockchainInitialState(networkConfigDeps.getNetworkConfigs()),
                     fees: mockedSuiteReducer,
                     settings: () => initialWalletSettingsState,
                     trading: tradingReducer,

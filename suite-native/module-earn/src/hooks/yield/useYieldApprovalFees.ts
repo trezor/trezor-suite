@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 
 import { type ResolvedYieldFlowData, getApprovalContractAddress } from '@suite-common/wallet-core';
@@ -22,12 +24,14 @@ export const useYieldApprovalFees = ({
     isEnabled,
     tokenContract,
 }: UseYieldApprovalFeesParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const approvalTransaction = useMemo<YieldAllowanceFeeTransaction | null>(() => {
         if (!amount || !flowData) {
             return null;
         }
 
-        const allowanceAmount = getYieldApprovalAllowanceAmount({
+        const allowanceAmount = getYieldApprovalAllowanceAmount(networkConfigDeps, {
             amount,
             approvalLimitType,
             tokenContract,
@@ -53,7 +57,7 @@ export const useYieldApprovalFees = ({
                 txType: 'approve',
             },
         };
-    }, [amount, approvalLimitType, flowData, tokenContract]);
+    }, [networkConfigDeps, amount, approvalLimitType, flowData, tokenContract]);
 
     return useYieldAllowanceFees({
         flowData,

@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { type NetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { accountsActions, selectAccountForNetworkSymbolAndPath } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -11,17 +11,14 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
-import { createPlaceholderAccount } from './utils';
+import { preparePlaceholderAccount } from './utils';
 
 const temporaryAccounts: Account[] = [];
 
-const preCallHook = async <M extends CallMethodKeys>({
-    method,
-    payload,
-    getState,
-    dispatch,
-    source,
-}: PreCallHookParams<M>) => {
+const preCallHook = async <M extends CallMethodKeys>(
+    networkConfigDeps: NetworkConfigDeps,
+    { method, payload, getState, dispatch, source }: PreCallHookParams<M>,
+) => {
     try {
         if (method !== 'stellarSignTransaction') {
             return;
@@ -35,7 +32,7 @@ const preCallHook = async <M extends CallMethodKeys>({
         }
 
         const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
-        const network = getNetwork(typedPayload.testnet ? 'txlm' : 'xlm');
+        const network = getNetwork(networkConfigDeps, typedPayload.testnet ? 'txlm' : 'xlm');
 
         let selectedAccount = selectAccountForNetworkSymbolAndPath(
             getState(),
@@ -44,7 +41,12 @@ const preCallHook = async <M extends CallMethodKeys>({
         );
         if (!selectedAccount) {
             const createdAccount = await dispatch(
-                createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
+                preparePlaceholderAccount(
+                    networkConfigDeps,
+                    network,
+                    path,
+                    selectSupportedNetworkSymbols(getState()),
+                ),
             );
             temporaryAccounts.push(createdAccount.payload.account);
             selectedAccount = createdAccount.payload.account;

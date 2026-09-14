@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -43,49 +44,57 @@ export const selectTronAccountHasStaked = (state: AccountsRootState, accountKey:
 };
 
 export const selectTronStakedBalanceByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'tron') return null;
 
-    const stakingData = getStakingDataForNetwork(account);
+    const stakingData = getStakingDataForNetwork(networkConfigDeps, account);
 
     return stakingData?.autocompoundBalance ?? '0';
 };
 
 export const selectTronRewardsBalanceByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'tron') return null;
 
-    const stakingData = getStakingDataForNetwork(account);
+    const stakingData = getStakingDataForNetwork(networkConfigDeps, account);
 
     return stakingData?.restakedReward ?? '0';
 };
 
 /** TRX whose unfreeze window has elapsed and is ready to be withdrawn. */
 export const selectTronUnstakedBalanceByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'tron') return '0';
 
-    return getTronWithdrawableBalance(account);
+    return getTronWithdrawableBalance(networkConfigDeps, account);
 };
 
 /** TRX still in the unfreeze queue (being unstaked, not yet withdrawable). */
 export const selectTronPendingUnstakeBalanceByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'tron') return '0';
 
-    return getTronPendingUnstakeBalance(account);
+    return getTronPendingUnstakeBalance(networkConfigDeps, account);
 };
 
 export const selectTronVotesByAccountKey = (state: AccountsRootState, accountKey: AccountKey) => {

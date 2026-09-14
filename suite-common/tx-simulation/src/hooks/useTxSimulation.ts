@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type TxSimulationAction } from '@suite-common/wallet-types';
 
 import {
@@ -14,9 +16,11 @@ export function useTxSimulation(
     action: TxSimulationAction | null,
     { onSuccess }: Pick<UseTxSimulationProps, 'onSuccess'> = {},
 ) {
-    const input = getTxSimulationParams(action);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const input = getTxSimulationParams(networkConfigDeps, action);
     const txSimulationQuery = useNetworkTxSimulation(input, { onSuccess });
-    const network = action ? getNetworkFromTxSimulationAction(action) : null;
+    const network = action ? getNetworkFromTxSimulationAction(networkConfigDeps, action) : null;
     const targetContract = action ? getTargetContractFromTxSimulationAction(action) : null;
 
     if (!network || !input) {

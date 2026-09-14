@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -36,6 +37,8 @@ const ButtonStyleOverride = prepareNativeStyle(({ spacings }) => ({
 }));
 
 export const ExchangeUsdcPresetButton = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const { getValues, setValue } = useExchangeFormContext();
     const { dispatch } = useServices(selectDispatch);
@@ -56,8 +59,11 @@ export const ExchangeUsdcPresetButton = () => {
     }
 
     const handlePress = () => {
-        const previousReceiveSymbol = cryptoIdToNetworkSymbol(getValues('receiveAsset')?.cryptoId);
-        const receiveSymbol = cryptoIdToNetworkSymbol(USDT_ETH.cryptoId);
+        const previousReceiveSymbol = cryptoIdToNetworkSymbol(
+            networkConfigDeps,
+            getValues('receiveAsset')?.cryptoId,
+        );
+        const receiveSymbol = cryptoIdToNetworkSymbol(networkConfigDeps, USDT_ETH.cryptoId);
 
         setValue('sendAsset', USDC_ETH);
         setValue('sendAccount', debugAccount);

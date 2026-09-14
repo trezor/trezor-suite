@@ -3,7 +3,15 @@ import { BrowserWindow, app, nativeTheme } from 'electron';
 import debounce from 'lodash/debounce';
 import path from 'path';
 
+import {
+    type NetworkConfigDeps,
+    createGetNetworkConfig,
+    createGetNetworkConfigs,
+    createNetworkModuleRepository,
+    createNetworkModulesCompositionRoot,
+} from '@suite-common/networks';
 import { isDevEnv } from '@suite-common/suite-utils';
+import TrezorConnect from '@trezor/connect';
 import { isMacOs } from '@trezor/env-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { colorVariants } from '@trezor/theme';
@@ -245,7 +253,17 @@ const init = async () => {
     logger.debug('init', `Create Browser Window (${winBounds.width}x${winBounds.height})`);
 
     // init modules
-    const { loadModules, quitModules } = initModules({
+    const networkModuleRepository = createNetworkModuleRepository({
+        networkModules: createNetworkModulesCompositionRoot({
+            getTrezorConnect: () => TrezorConnect,
+        }),
+    });
+    const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+    const networkConfigDeps: NetworkConfigDeps = {
+        getNetworkConfig,
+        getNetworkConfigs: createGetNetworkConfigs({ getNetworkConfig, networkModuleRepository }),
+    };
+    const { loadModules, quitModules } = initModules(networkConfigDeps, {
         mainWindowProxy,
         store,
         interceptor,

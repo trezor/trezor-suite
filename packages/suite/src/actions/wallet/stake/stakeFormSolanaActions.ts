@@ -3,6 +3,7 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -27,7 +28,11 @@ import TrezorConnect from '@trezor/connect';
 type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState;
 
 export const composeTransactionThunk =
-    (formValues: StakeFormState, formState: ComposeActionContext) =>
+    (
+        networkConfigDeps: NetworkConfigDeps,
+        formValues: StakeFormState,
+        formState: ComposeActionContext,
+    ) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
         const selectedAccount = selectFullSelectedAccount(getState());
         const blockchain = selectBlockchainState(getState());
@@ -40,7 +45,7 @@ export const composeTransactionThunk =
         const blockchainUrl = blockchain[account.symbol]?.url;
         if (!blockchainUrl) return;
 
-        return await composeSolanaStakingTransaction({
+        return await composeSolanaStakingTransaction(networkConfigDeps, {
             formValues,
             composeContext: formState,
             blockchainUrl,

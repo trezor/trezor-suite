@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type RefObject } from 'react';
 import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -39,13 +41,15 @@ export const EarnCryptoAmountInput = ({
     isDisabled = false,
     onPress,
 }: EarnCryptoAmountInputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { setValue, trigger } = useFormContext<EarnFormValues>();
     const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
     const { DisplaySymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
-    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+    const baseCurrencyDecimals = getDecimalsForBaseCurrency(networkConfigDeps, {
         code: baseCurrencyCode,
         isInSats: isBaseCurrencyInSats,
     });
@@ -59,7 +63,7 @@ export const EarnCryptoAmountInput = ({
     const handleChangeValue = (newValue: string) => {
         const transformedValue = cryptoAmountTransformer(newValue);
 
-        const decimals = tokenDecimals ?? getNetwork(symbol).decimals;
+        const decimals = tokenDecimals ?? getNetwork(networkConfigDeps, symbol).decimals;
         if (!isAmountInputValueValid({ value: transformedValue, decimals })) {
             return;
         }

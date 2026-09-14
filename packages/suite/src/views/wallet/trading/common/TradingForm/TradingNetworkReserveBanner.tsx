@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
@@ -18,6 +19,8 @@ export const TradingNetworkReserveBanner = ({
     symbol,
     contractAddress,
 }: TradingNetworkReserveBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
@@ -33,14 +36,14 @@ export const TradingNetworkReserveBanner = ({
 
     if (!isNetworkReserveEnabled) return null;
 
-    const networkReserve = getNetworkReserve({
+    const networkReserve = getNetworkReserve(networkConfigDeps, {
         symbol,
         contractAddress,
         isEnabled: isNetworkReserveEnabled,
     });
     if (!networkReserve) return null;
 
-    const network = getNetwork(symbol);
+    const network = getNetwork(networkConfigDeps, symbol);
 
     return (
         <Banner

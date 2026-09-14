@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback } from 'react';
 
 import { FlashList } from '@shopify/flash-list';
@@ -29,9 +31,11 @@ export const ChooseStakingAccountBottomSheet = ({
     onDismiss,
     tokenBalance,
 }: ChooseStakingAccountBottomSheetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const renderItem = useCallback(
         ({ item }: { item: Account }) => {
-            const balanceData = getChooseAccountBalanceData(item, tokenBalance);
+            const balanceData = getChooseAccountBalanceData(networkConfigDeps, item, tokenBalance);
 
             return (
                 <ChooseAccountItem
@@ -41,7 +45,7 @@ export const ChooseStakingAccountBottomSheet = ({
                 />
             );
         },
-        [onAccountSelected, tokenBalance],
+        [networkConfigDeps, onAccountSelected, tokenBalance],
     );
 
     return (

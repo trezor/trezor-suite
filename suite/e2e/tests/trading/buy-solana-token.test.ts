@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
@@ -6,12 +8,15 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 // Below ~50 USDC no live provider quotes the pair for US/CA.
 const cryptoAmount = '100';
 const cryptoTicker = 'USDC';
 // Not every provider honours the exact crypto amount typed, so only the ticker is pinned.
 const cryptoAmountPattern = new RegExp(String.raw`^[\d,]+(\.\d+)? ${cryptoTicker}$`);
 const usdcCryptoId = getCryptoId(
+    networkConfigDeps,
     asNetworkSymbol('sol'),
     'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
 );

@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { type AccountItem } from '@suite-common/graph';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -53,7 +54,7 @@ export const selectAccountItemForGraph = createAccountsMemoizedSelector(
 );
 
 export const selectAssetTabOfAccountToken = (
-    state: TokensRootState & FiatRatesRootState & WalletSettingsRootState,
+    state: TokensRootState & FiatRatesRootState & WalletSettingsRootState & NetworksRootState,
     accountKey: AccountKey,
     tokenContract: TokenAddress,
 ): AccountAssetsTab => {
@@ -89,11 +90,13 @@ export const selectHasAccountOrTokenSpendableBalance = (
 };
 
 export const selectIsNetworkSendFlowEnabled = (
-    state: FeatureFlagsRootState,
+    state: FeatureFlagsRootState & NetworksRootState,
     symbol?: NetworkSymbol,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     if (!symbol) return false;
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType(networkConfigDeps, symbol);
 
     const isCardanoSendEnabled = selectIsFeatureFlagEnabled(
         state,

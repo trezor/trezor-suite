@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -32,6 +33,8 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const YieldWithdrawCompleteScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
@@ -95,7 +98,7 @@ export const YieldWithdrawCompleteScreen = () => {
 
         const { completedAmount, unwrappedAmount } = session.result;
 
-        const { input, output } = getYieldWithdrawCompletedValues({
+        const { input, output } = getYieldWithdrawCompletedValues(networkConfigDeps, {
             networkSymbol: account.symbol,
             flowType,
             completedAmount,
@@ -120,7 +123,16 @@ export const YieldWithdrawCompleteScreen = () => {
                 tokenSymbol: input.token.symbol,
             },
         });
-    }, [account, flowType, receiptToken, resolutionStatus, session, token, vault]);
+    }, [
+        networkConfigDeps,
+        account,
+        flowType,
+        receiptToken,
+        resolutionStatus,
+        session,
+        token,
+        vault,
+    ]);
 
     if (resolutionStatus !== 'resolved' || session?.step !== 'complete') {
         return null;

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useState } from 'react';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -7,6 +9,8 @@ import { useTranslate } from '@suite-native/intl';
 import TrezorConnect from '@trezor/connect';
 
 export const useSolAssociatedTokenAddress = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [isSolATA, setIsSolATA] = useState(false);
     const { translate } = useTranslate();
     const { setError } = useFormContext();
@@ -20,7 +24,7 @@ export const useSolAssociatedTokenAddress = () => {
         symbol: NetworkSymbol;
         fieldName: string;
     }) => {
-        const networkType = getNetworkType(symbol);
+        const networkType = getNetworkType(networkConfigDeps, symbol);
         if (networkType !== 'solana') return;
         const response = await TrezorConnect.getAccountInfo({
             descriptor: value,

@@ -8,6 +8,7 @@ import { closeModal, openModal } from '@suite/modal';
 import { type SuiteSettingsState } from '@suite/settings';
 import { type DeviceReducerState } from '@suite-common/device';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import { type ReceiveState } from '@suite-common/receive';
 import { type WithServices } from '@suite-common/redux-utils';
 import {
@@ -15,7 +16,6 @@ import {
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainState,
     type EarnOnboardingState,
@@ -30,6 +30,7 @@ import {
 import { createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 
@@ -118,8 +119,8 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
         ) => {
             if (payload.tokenManagement) {
                 const tokenDefinitions = buildTokenDefinitionsFromStorage(payload.tokenManagement);
-                Object.keys(tokenDefinitions).forEach(symbol => {
-                    if (isNetworkSymbol(symbol)) {
+                typedObjectKeys(tokenDefinitions).forEach(symbol => {
+                    if (payload.supportedNetworks.includes(symbol)) {
                         state[symbol] = tokenDefinitions[symbol];
                     }
                 });
@@ -128,6 +129,7 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
             // Storage returns accounts in IndexedDB key order, sort them like the reducer does.
             sortByCoin(
+                selectNetworkConfigAccessors({ networks: payload.networks }),
                 payload.accounts.map(acc =>
                     acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
                 ),

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -28,6 +30,8 @@ export const TokenOfNetworkAlertBody = ({
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
 }) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
@@ -37,7 +41,7 @@ export const TokenOfNetworkAlertBody = ({
 
     if (!tokenContract || !symbol) return null;
 
-    const networkName = getNetwork(symbol).name;
+    const networkName = getNetwork(networkConfigDeps, symbol).name;
 
     return (
         <VStack spacing="sp24">

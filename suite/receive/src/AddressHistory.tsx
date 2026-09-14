@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { Fragment, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -46,6 +48,8 @@ export const AddressHistory = ({
     onCopied,
     onVerify,
 }: AddressHistoryProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AddressHistoryRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -81,7 +85,7 @@ export const AddressHistory = ({
     const usedItems = useMemo(
         () =>
             account
-                ? buildReceiveAddressItems({
+                ? buildReceiveAddressItems(networkConfigDeps, {
                       account,
                       touchedAddresses,
                       pendingAddresses,
@@ -89,7 +93,14 @@ export const AddressHistory = ({
                       currentFreshAddress,
                   })
                 : [],
-        [account, touchedAddresses, pendingAddresses, addressLabels, currentFreshAddress],
+        [
+            networkConfigDeps,
+            account,
+            touchedAddresses,
+            pendingAddresses,
+            addressLabels,
+            currentFreshAddress,
+        ],
     );
 
     // With no fresh address left, the newest card shows the most recent used address, so drop it here

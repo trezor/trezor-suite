@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -67,6 +70,8 @@ export const useFeesForm = ({
     defaultFeeLevel,
     defaultFeePerUnit,
 }: UseFeesFormProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -75,15 +80,15 @@ export const useFeesForm = ({
 
     const feeLevels = useSelector(selectFeeLevels);
 
-    const networkFeeInfo = useSelector((state: FeesRootState) =>
+    const networkFeeInfo = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
 
-    const isEip1559Fee = useSelector((state: FeesRootState) =>
+    const isEip1559Fee = useSelector((state: FeesRootState & NetworksRootState) =>
         selectIsEip1559Fee(state, account?.symbol),
     );
 
-    const trimmedFeePerUnit = getFeeValue({
+    const trimmedFeePerUnit = getFeeValue(networkConfigDeps, {
         feeRate: defaultFeePerUnit,
         symbol: account?.symbol,
     });
@@ -97,10 +102,12 @@ export const useFeesForm = ({
         ? feeLevels.normal
         : undefined;
 
-    const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;
+    const networkType = account?.symbol
+        ? getNetworkType(networkConfigDeps, account.symbol)
+        : undefined;
 
     const form = useForm<FeesFormValues>({
-        validation: feesFormValidationSchema,
+        validation: feesFormValidationSchema(networkConfigDeps),
         defaultValues: {
             feeLevel: defaultFeeLevel,
             customFeePerUnit: trimmedFeePerUnit,

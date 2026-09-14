@@ -15,7 +15,9 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/flags": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

@@ -14,6 +14,7 @@ import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
@@ -101,6 +102,8 @@ const TokenRowBasicActions = ({
     yieldOpportunities,
     setShowDeactivateModal,
 }: TokenRowBasicActionsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const device = useSelector(selectSelectedDevice);
     const { isLocked } = useDevice();
@@ -118,8 +121,12 @@ const TokenRowBasicActions = ({
     const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
     const explorerUrl = useExternalLink(getTokenExplorerUrl(explorer, network.networkType, token));
 
-    const contractAddress = getContractAddressForNetworkSymbol(account.symbol, token.contract);
-    const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);
+    const contractAddress = getContractAddressForNetworkSymbol(
+        networkConfigDeps,
+        account.symbol,
+        token.contract,
+    );
+    const tokenCryptoId = toTokenCryptoId(networkConfigDeps, account.symbol, contractAddress);
     const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
 
     const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
@@ -130,7 +137,7 @@ const TokenRowBasicActions = ({
 
     const availableVault = useMemo(
         () =>
-            getYieldVaultForOutputToken({
+            getYieldVaultForOutputToken(networkConfigDeps, {
                 vaults: yieldOpportunities,
                 networkSymbol: account.symbol,
                 token: {
@@ -139,7 +146,14 @@ const TokenRowBasicActions = ({
                     decimals: token.decimals,
                 },
             }),
-        [yieldOpportunities, account.symbol, token.contract, token.symbol, token.decimals],
+        [
+            networkConfigDeps,
+            yieldOpportunities,
+            account.symbol,
+            token.contract,
+            token.symbol,
+            token.decimals,
+        ],
     );
     const availableVaultAddress = availableVault
         ? getYieldVaultContractAddress(availableVault)
@@ -218,7 +232,7 @@ const TokenRowBasicActions = ({
         dispatch(
             gotoThunk({
                 routeName: 'earn-yield-withdraw',
-                params: getEarnRouteParams({
+                params: getEarnRouteParams(networkConfigDeps, {
                     account,
                     vaultAddress: availableVaultAddress,
                 }),
@@ -229,7 +243,7 @@ const TokenRowBasicActions = ({
     const onTradeButtonClick = (type: TradingType, ...[payload]: Parameters<typeof gotoThunk>) => {
         dispatch(
             tradingActions.setTradingFromPrefilledAccount(
-                getTradingPrefilledFromAccountData(account, tokenCryptoId),
+                getTradingPrefilledFromAccountData(networkConfigDeps, account, tokenCryptoId),
             ),
         );
 

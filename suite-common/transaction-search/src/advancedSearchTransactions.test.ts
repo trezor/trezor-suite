@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { typedObjectEntries } from '@trezor/utils';
 
@@ -5,6 +6,8 @@ import { searchTransactionsFixture } from './__fixtures__/searchTransactions.fix
 import stMock from './__fixtures__/searchTransactions.json';
 import { advancedSearchTransactions } from './advancedSearchTransactions';
 import { type SearchAccountLabels, type SearchOutputLabels } from './searchLabels';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 // Original Fixtures were create with legacy metadata structure,
 // so we need to transform them to fit the new SearchAccountLabels structure used in the tests
@@ -36,7 +39,12 @@ describe(advancedSearchTransactions.name, () => {
 
     searchTransactionsFixture.forEach(f => {
         it(f.description, () => {
-            const search = advancedSearchTransactions(transactions, accountLabels, f.search);
+            const search = advancedSearchTransactions(
+                networkConfigDeps,
+                transactions,
+                accountLabels,
+                f.search,
+            );
 
             if (f.result) {
                 // expect(search.length).toBe(f.result.length);

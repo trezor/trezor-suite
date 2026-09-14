@@ -1,6 +1,8 @@
+import { getNetworks } from '@suite-common/wallet-config';
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -10,12 +12,14 @@ import { BigNumber } from '@trezor/utils';
 import { composeYieldDepositTransactionThunk } from './yieldDepositThunks';
 import { accountsInitialState } from '../../accounts/accountsReducer';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
-import { blockchainInitialState } from '../../blockchain/blockchainReducer';
+import { createBlockchainInitialState } from '../../blockchain/blockchainReducer';
 import { feesReducer } from '../../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
 import { transactionsInitialState } from '../../transactions/transactionsReducer';
 import { estimateYieldFeeLevel } from '../utils/yieldFeeEstimation';
 import { type YieldFlowResolvedData } from '../yieldTypes';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('../../allowance/fetchAllowance', () => ({
     fetchAllowance: jest.fn(),
@@ -75,10 +79,12 @@ const initStore = () =>
     createTestStore({
         extra: undefined,
         reducer: combineReducers({
+            networks: () => getNetworks(mockNetworkConfigDeps()),
             device: () => deviceInitialState,
             wallet: combineReducers({
                 accounts: () => accountsInitialState,
-                blockchain: () => blockchainInitialState,
+                blockchain: () =>
+                    createBlockchainInitialState(networkConfigDeps.getNetworkConfigs()),
                 fees: feesReducer,
                 transactions: () => transactionsInitialState,
             }),
@@ -87,7 +93,7 @@ const initStore = () =>
             device: deviceInitialState,
             wallet: {
                 accounts: accountsInitialState,
-                blockchain: blockchainInitialState,
+                blockchain: createBlockchainInitialState(networkConfigDeps.getNetworkConfigs()),
                 fees: { eth: { status: 'loaded', data: ethFeeInfo } },
                 transactions: transactionsInitialState,
             },

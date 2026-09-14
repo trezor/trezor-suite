@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { getUnixTime } from 'date-fns';
@@ -47,6 +49,8 @@ export const useDayCoinPriceChange = ({
     tokenContract,
     isErc4626Token,
 }: UseDayCoinPriceChangeProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, symbol ?? 'btc'),
@@ -87,6 +91,7 @@ export const useDayCoinPriceChange = ({
                         : null;
 
                 const timestampedFiatRates = await getFiatRatesForTimestamps(
+                    networkConfigDeps,
                     { symbol, tokenAddress: underlyingAsset?.contract ?? tokenContract },
                     [weekAgoTimestamp, currentTimestamp],
                     fiatCurrencyCode,

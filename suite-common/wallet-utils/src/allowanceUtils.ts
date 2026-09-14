@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { BigNumber } from '@trezor/utils';
 
@@ -13,14 +14,18 @@ type IsAllowanceUnlimitedParams = {
     isSubunit?: boolean;
 };
 
-export const isAllowanceUnlimited = ({
-    amount,
-    decimals,
-    isSubunit = false,
-}: IsAllowanceUnlimitedParams): boolean => {
+export const isAllowanceUnlimited = (
+    networkConfigDeps: NetworkConfigDeps,
+    { amount, decimals, isSubunit = false }: IsAllowanceUnlimitedParams,
+): boolean => {
     const subunits = isSubunit
         ? new BigNumber(amount)
-        : new BigNumber(unitsToSubunits({ value: asAmountUnit(new BigNumber(amount)), decimals }));
+        : new BigNumber(
+              unitsToSubunits(networkConfigDeps, {
+                  value: asAmountUnit(new BigNumber(amount)),
+                  decimals,
+              }),
+          );
 
     return subunits.gte(new BigNumber(UINT256_MAX).dividedBy(2).integerValue());
 };

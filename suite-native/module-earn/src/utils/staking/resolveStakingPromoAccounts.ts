@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     isSupportedAdaStakingNetworkSymbol,
@@ -15,10 +16,10 @@ type ResolveStakingPromoAccountsParams = {
 type StakingPromoAccountsResolution =
     { isDesktopOnly: true } | { isDesktopOnly: false; navigableAccounts: Account[] };
 
-export const resolveStakingPromoAccounts = ({
-    symbol,
-    accounts,
-}: ResolveStakingPromoAccountsParams): StakingPromoAccountsResolution => {
+export const resolveStakingPromoAccounts = (
+    networkConfigDeps: NetworkConfigDeps,
+    { symbol, accounts }: ResolveStakingPromoAccountsParams,
+): StakingPromoAccountsResolution => {
     const isCardanoStaking = isSupportedAdaStakingNetworkSymbol(symbol);
 
     if (!isSupportedNativeStakingManagementSymbol(symbol) && !isCardanoStaking) {
@@ -31,7 +32,9 @@ export const resolveStakingPromoAccounts = ({
         return { isDesktopOnly: false, navigableAccounts: accountsForSymbol };
     }
 
-    const delegatedAccounts = accountsForSymbol.filter(hasAccountActiveStaking);
+    const delegatedAccounts = accountsForSymbol.filter(
+        hasAccountActiveStaking.bind(null, networkConfigDeps),
+    );
 
     if (delegatedAccounts.length === 0) {
         return { isDesktopOnly: true };

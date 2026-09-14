@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
@@ -118,7 +119,8 @@ type ComposeStellarTrustlineFeesParams = {
 
 export type ComposeStellarTrustlineFeesThunkState = AccountsRootState &
     FeesRootState &
-    ComposeSendFormTransactionFeeLevelsThunkState;
+    ComposeSendFormTransactionFeeLevelsThunkState &
+    NetworksRootState;
 
 /**
  * Composes fee levels for Stellar trustline operations (activation/deactivation).
@@ -135,6 +137,8 @@ export const composeStellarTrustlineFeesThunk = createThunk<
         { accountKey, tokenContract },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
             return rejectWithValue('Account not found');
@@ -152,7 +156,7 @@ export const composeStellarTrustlineFeesThunk = createThunk<
             return rejectWithValue('Fee info not available');
         }
 
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
         const normalFeeLevel = feeInfo.levels.find(level => level.label === 'normal');
         const normalFeePerUnit = normalFeeLevel?.feePerUnit ?? STELLAR_DEFAULT_FEE_STROOPS;
 

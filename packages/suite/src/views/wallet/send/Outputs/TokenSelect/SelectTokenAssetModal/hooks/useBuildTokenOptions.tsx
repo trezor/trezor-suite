@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkConfigDeps, selectNetworkConfigDeps } from '@suite-common/networks';
 import { type TokenDefinitions, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -20,12 +22,13 @@ import {
 } from 'src/utils/wallet/tokenUtils';
 
 const buildTokenOptions = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     accountTokens: EnahncedTokenInfoWithFiat[],
     coinDefinitions: TokenDefinitions['coin'],
     expandedHiddenTokensGroups: AccountKey[],
 ): AccountWithTokensOption[] => {
-    const tokens = getTokens<EnahncedTokenInfoWithFiat>({
+    const tokens = getTokens<EnahncedTokenInfoWithFiat>(networkConfigDeps, {
         tokens: accountTokens,
         symbol: account.symbol,
         tokenDefinitions: coinDefinitions,
@@ -61,6 +64,8 @@ export function useBuildTokenOptions({
     account,
     expandedHiddenTokensGroups,
 }: UseBuildTokenOptionsParams): AccountWithTokensOption[] {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRates = useSelector(selectCurrentFiatRates);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
@@ -76,10 +81,18 @@ export function useBuildTokenOptions({
         const sortedTokensWithRates = tokensWithRates.sort(sortTokensWithRates);
 
         return buildTokenOptions(
+            networkConfigDeps,
             account,
             sortedTokensWithRates,
             coinDefinitions,
             expandedHiddenTokensGroups,
         );
-    }, [account, baseCurrencyCode, fiatRates, coinDefinitions, expandedHiddenTokensGroups]);
+    }, [
+        networkConfigDeps,
+        account,
+        baseCurrencyCode,
+        fiatRates,
+        coinDefinitions,
+        expandedHiddenTokensGroups,
+    ]);
 }

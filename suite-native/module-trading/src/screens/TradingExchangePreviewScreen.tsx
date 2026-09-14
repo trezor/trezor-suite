@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useSelector, useStore } from 'react-redux';
 
@@ -50,6 +51,8 @@ const TradingExchangePreviewScreenContent = ({
     navigation,
     route: { params },
 }: TradingExchangePreviewScreenProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { isApproved } = params;
     const { showAlert } = useAlert();
     const { dispatch } = useServices(selectDispatch);
@@ -81,7 +84,7 @@ const TradingExchangePreviewScreenContent = ({
 
     const handleConfirmTrade = useCallback(async () => {
         const currentQuote = selectTradingExchangeSelectedQuote(store.getState());
-        const addressText = getReceiveAccountAddressText(toAccount);
+        const addressText = getReceiveAccountAddressText(networkConfigDeps, toAccount);
 
         if (!addressText) {
             console.warn('receiveAddress is not defined', currentQuote);
@@ -109,7 +112,7 @@ const TradingExchangePreviewScreenContent = ({
 
             console.error('Failed to confirm trade', e);
         }
-    }, [confirmTrade, debounce, composeTradingTransaction, store, toAccount]);
+    }, [networkConfigDeps, confirmTrade, debounce, composeTradingTransaction, store, toAccount]);
 
     const onSignTransactionNavigation = useCallback(() => {
         hasRequestedTradeConfirmation.current = false;
