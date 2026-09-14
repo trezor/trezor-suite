@@ -1,3 +1,5 @@
+import { type Branded } from '@trezor/type-utils';
+
 // Todo: one day, we shall purify the @trezor/utils and remove domain-specific stuff from it
 
 export type ConvertTaprootXpubParams = {
@@ -28,3 +30,19 @@ export const convertTaprootXpub = ({ xpub, direction }: ConvertTaprootXpubParams
 
     return null;
 };
+
+/**
+ * A taproot-capable account descriptor in the canonical form Suite and blockbook use
+ * internally: hardened path parts are written with `'` (apostrophe), never firmware's `h`.
+ * Mint one only through {@link toCanonicalDescriptor}.
+ */
+export type CanonicalDescriptor = string & Branded<'CanonicalDescriptor'>;
+
+/**
+ * Normalizes any descriptor to the canonical (`'`) form. Idempotent and total: descriptors
+ * that are already canonical, and every non-taproot descriptor (addresses, plain xpubs), pass
+ * through unchanged because {@link convertTaprootXpub} only rewrites a bracketed derivation path.
+ */
+export const toCanonicalDescriptor = (descriptor: string): CanonicalDescriptor =>
+    (convertTaprootXpub({ xpub: descriptor, direction: 'h-to-apostrophe' }) ??
+        descriptor) as CanonicalDescriptor;
