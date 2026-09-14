@@ -13,9 +13,11 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { networksReducer } from '@suite-common/networks';
+import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
 import { prepareReceiveReducer } from '@suite-common/receive';
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
+import type { PersistentDeviceData } from '@suite-common/suite-types';
 import { prepareThpReducer } from '@suite-common/thp';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
@@ -96,6 +98,7 @@ const explorerReducer = prepareExplorerReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
+const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
@@ -352,7 +355,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const devicePersistedReducer = preparePersistReducer({
         reducer: deviceReducer,
-        persistedKeys: ['devices', 'persistentDeviceData'],
+        persistedKeys: ['devices'],
         key: 'devices',
         version: 5,
         transforms: [devicePersistTransform],
@@ -380,13 +383,35 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
                 return { ...oldState, devices: migratedDevices };
             },
-            5: (oldState: any /* FIXME */) => {
-                if (!oldState?.persistentDeviceData) return oldState;
-                const migratedPersistentDeviceData = backfillManualCheckResult(
-                    oldState.persistentDeviceData,
-                );
+            // v5 was deleted – it modified state.device.persistentDeviceData, which was migrated (data not explicitely deleted here).
+            // Migration 1 of the `persistentDeviceData` persist key also includes does the job of the former v5 here.
+        },
+        storage: deps.mmkvStorage,
+    });
 
-                return { ...oldState, persistentDeviceData: migratedPersistentDeviceData };
+    const persistentDeviceDataPersistedReducer = preparePersistReducer({
+        reducer: persistentDeviceDataReducer,
+        persistedKeys: ['devices'],
+        key: 'persistentDeviceData',
+        version: 1,
+        migrations: {
+            1: async (oldState: any /* FIXME */) => {
+                // persistentDeviceData used to be persisted as part of the `devices` persist key
+                const oldDevicesState = await getStoredState({
+                    key: 'devices',
+                    storage: deps.mmkvStorage,
+                });
+
+                const rawPersistentDeviceData: PersistentDeviceData[] =
+                    oldDevicesState &&
+                    typeof oldDevicesState === 'object' &&
+                    'persistentDeviceData' in oldDevicesState
+                        ? (oldDevicesState.persistentDeviceData as PersistentDeviceData[])
+                        : [];
+                // This does the job of the former v5 migration of the `devicePersistedReducer`.
+                const devices = backfillManualCheckResult(rawPersistentDeviceData);
+
+                return { ...(oldState ?? {}), devices };
             },
         },
         storage: deps.mmkvStorage,
@@ -510,6 +535,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             nativeFirmware: nativeFirmwareReducer,
             notifications: createNotificationsReducer<TxKeyPath>().reducer,
             pendingCoinVisibility: pendingCoinVisibilitySlice.reducer,
+            persistentDeviceData: persistentDeviceDataPersistedReducer,
             receive: receivePersistedReducer,
             suiteSync: suiteSyncPersistedReducer,
             suiteSyncData: suiteSyncDataReducer,
@@ -519,8 +545,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             walletConnect: walletConnectReducer,
             suiteSyncQuotaManager: quotaManagerPersistedReducer,
         } as const),
-        // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
-        // is accessible for transformation.
+        // Try to avoid listing reducers as persisted keys of the root reducer, rather encapsulate them as persisted reducers with their own version and migration.
+        // Note that it's impossible with a reducer of Array type, because redux-persist works only with object type reducer.
+        // 'wallet' and 'graph' need to be persisted at the top level to ensure device state is accessible for transformation.
+        // TODO maybe tokenDefinitions could be refactored?
         persistedKeys: ['wallet', 'graph', 'tokenDefinitions'],
         transforms: [
             walletPersistTransform,
