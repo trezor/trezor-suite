@@ -197,7 +197,7 @@ export const setAffectedValues = (state: MethodState, field: Field<unknown>) => 
             const affectedField = root?.find(f => f.name === af);
             if (affectedField && isFieldBasic(affectedField)) {
                 affectedField.value = values[index];
-                if (state.name === 'composeTransaction') {
+                if (state.name === 'sendTransaction') {
                     affectedField.value = values;
                 }
             }
