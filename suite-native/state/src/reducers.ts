@@ -17,6 +17,7 @@ import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-dev
 import { prepareReceiveReducer } from '@suite-common/receive';
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
+import type { PersistentDeviceData } from '@suite-common/suite-types';
 import { prepareThpReducer } from '@suite-common/thp';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
@@ -382,14 +383,9 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
                 return { ...oldState, devices: migratedDevices };
             },
-            5: (oldState: any /* FIXME */) => {
-                if (!oldState?.persistentDeviceData) return oldState;
-                const migratedPersistentDeviceData = backfillManualCheckResult(
-                    oldState.persistentDeviceData,
-                );
-
-                return { ...oldState, persistentDeviceData: migratedPersistentDeviceData };
-            },
+            // v5 was deleted, because it modified the state.device.persistentDeviceData, which is removed in v6.
+            // The order of execution is not guaranteed when the migrations are on different reducers,
+            // so the v6 of the `root` persist key does the job of the former v5 here.
             6: (oldState: any /* FIXME */) => {
                 if (!oldState) return oldState;
                 // persistentDeviceData was split out into its own top-level `persistentDeviceData`
@@ -629,12 +625,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                     storage: deps.mmkvStorage,
                 });
 
-                const persistentDeviceData =
+                const rawPersistentDeviceData: PersistentDeviceData[] =
                     oldDevicesState &&
                     typeof oldDevicesState === 'object' &&
                     'persistentDeviceData' in oldDevicesState
-                        ? oldDevicesState.persistentDeviceData
+                        ? (oldDevicesState.persistentDeviceData as PersistentDeviceData[])
                         : [];
+                // This does the job of deleted migration 5 of the `devicePersistedReducer`.
+                const persistentDeviceData = backfillManualCheckResult(rawPersistentDeviceData);
 
                 return { ...(oldState ?? {}), persistentDeviceData };
             },
