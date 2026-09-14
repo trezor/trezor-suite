@@ -178,24 +178,22 @@ export const getContractTokenMetadata = (
     const cached = metadataCache.get(cacheKey);
     if (cached) return cached;
 
-    const pending = readContractTokenMetadata(server, contractId, networkPassphrase).then(
-        metadata => {
-            // A failed read says nothing about the contract, so only a real answer is kept.
-            if (metadata.decimals == null) {
-                metadataCache.delete(cacheKey);
-            }
+    const read = readContractTokenMetadata(server, contractId, networkPassphrase);
 
-            return metadata;
-        },
-        error => {
+    metadataCache.set(cacheKey, read);
+
+    // A failed read says nothing about the contract, so only a real answer is kept — and only this
+    // read's own entry is dropped: `readSep41Tokens` caches under the same key from its batch, so
+    // deleting by key alone would let a read still in flight discard a newer answer.
+    const dropUnlessAnswered = (metadata?: Sep41Metadata) => {
+        if (metadata?.decimals == null && metadataCache.get(cacheKey) === read) {
             metadataCache.delete(cacheKey);
-            throw error;
-        },
-    );
+        }
+    };
 
-    metadataCache.set(cacheKey, pending);
+    void read.then(dropUnlessAnswered, () => dropUnlessAnswered());
 
-    return pending;
+    return read;
 };
 
 export interface Sep41Token extends Sep41Metadata {
@@ -316,12 +314,18 @@ const readContractLedgerEntries = async (
     }
 
     try {
+        // Settled, not all: a chunk that fails says nothing about the ones that answered, and
+        // discarding them would push every contract into the fallback on the budget that is left.
         const responses = await withTimeout(
-            Promise.all(chunks.map(chunk => server.getLedgerEntries(...chunk))),
+            Promise.allSettled(chunks.map(chunk => server.getLedgerEntries(...chunk))),
             SEP41_BATCH_TIMEOUT_MS,
         );
 
-        return parseLedgerEntries(responses?.flatMap(response => response.entries) ?? []);
+        return parseLedgerEntries(
+            responses?.flatMap(response =>
+                response.status === 'fulfilled' ? response.value.entries : [],
+            ) ?? [],
+        );
     } catch {
         // Nothing may escape this best-effort tier: one unreadable entry throws out of
         // `parseLedgerEntries`, and an rpc client without `getLedgerEntries` throws synchronously.
@@ -370,7 +374,10 @@ export const readSep41Tokens = async (
     const batched = await Promise.all(
         contractIds.map(async (contract): Promise<Sep41Token | undefined> => {
             const result = ledgerEntries.get(contract);
-            const metadata = result?.metadata ?? (await knownMetadata.get(contract));
+            // A cached read that rejects is this contract's problem alone — unguarded it would
+            // reject the whole batch and take every other token's holding with it.
+            const metadata =
+                result?.metadata ?? (await knownMetadata.get(contract)?.catch(() => undefined));
 
             // A missing entry is not a zero balance — the contract has to answer for itself.
             if (result?.balance == null || metadata?.decimals == null) return undefined;
