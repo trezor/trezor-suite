@@ -1,100 +1,35 @@
 import { useMemo } from 'react';
 
 import { type ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
-import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
-import { getStakingPath } from '@suite-common/wallet-utils';
+
+import { type SignAddresses } from './types';
 
 export type AddressItem = {
     label: string;
     value: string;
 };
 
-export const useSignAddressOptions = (
-    account: Account | undefined,
-    touchedAddresses: ReceiveInfo[],
-) => {
-    const reduceAddresses = (
-        addresses: { address: string; path: string }[],
-        category: ExtendedMessageDescriptor['id'],
-    ) =>
-        addresses.reduce(
-            (prev, { address, path }) => ({
-                ...prev,
-                [path]: {
-                    path,
-                    address,
-                    category,
-                },
-            }),
-            {},
-        );
+export const toSignAddresses = (
+    addresses: { address: string; path: string }[],
+    category: ExtendedMessageDescriptor['id'] | '',
+): SignAddresses =>
+    addresses.reduce(
+        (prev, { address, path }) => ({
+            ...prev,
+            [path]: {
+                path,
+                address,
+                category,
+            },
+        }),
+        {},
+    );
 
-    const signAddresses = useMemo(() => {
-        switch (account?.networkType) {
-            case 'bitcoin':
-                return {
-                    ...reduceAddresses(
-                        touchedAddresses.length
-                            ? touchedAddresses
-                            : (account.addresses?.unused || []).slice(0, 1),
-                        'TR_ADDRESSES_FRESH',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.used?.slice().reverse() || [],
-                        'TR_ADDRESSES_USED',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.change?.slice().reverse() || [],
-                        'TR_ADDRESSES_CHANGE',
-                    ),
-                };
-            case 'cardano': {
-                const stakingPath = getStakingPath(account);
-
-                return {
-                    ...reduceAddresses(
-                        [
-                            {
-                                path: stakingPath,
-                                address: account.misc.staking.address,
-                            },
-                        ],
-                        'TR_STAKING_STAKE_ADDRESS',
-                    ),
-                    ...reduceAddresses(
-                        touchedAddresses.length
-                            ? touchedAddresses
-                            : (account.addresses?.unused || []).slice(0, 1),
-                        'TR_ADDRESSES_FRESH',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.used?.slice().reverse() || [],
-                        'TR_ADDRESSES_USED',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.change?.slice().reverse() || [],
-                        'TR_ADDRESSES_CHANGE',
-                    ),
-                };
-            }
-            case 'ethereum':
-                return {
-                    [account.path]: {
-                        path: account.path,
-                        address: account.descriptor,
-                        category: '',
-                    },
-                };
-            default:
-                return {};
-        }
-    }, [account, touchedAddresses]);
-
+export const useSignAddressOptions = (signAddresses: SignAddresses) => {
     const { translationString } = useTranslation();
 
     const groupedOptions = useMemo(() => {
-        const signAddressesValues = Object.values(signAddresses);
-        const groupedAddresses = signAddressesValues.reduce<{
+        const groupedAddresses = Object.values(signAddresses).reduce<{
             [category: string]: AddressItem[];
         }>(
             (grouped, { address, path, category }) => ({

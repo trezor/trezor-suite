@@ -14,7 +14,7 @@ type SignVerifyMessageFieldProps = {
     hasError: boolean;
     errorMessage?: string;
     hexField: SignVerifyFormFields['hexField'];
-    registration: UseFormRegisterReturn<'message'>;
+    registration: UseFormRegisterReturn;
     onCopy: (value: string) => void;
 };
 
