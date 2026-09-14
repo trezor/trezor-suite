@@ -9,25 +9,19 @@ import { type AssetGroupKey } from 'src/components/suite/asset-picker/utils/asse
 
 import { useGroupedAssetOptions } from './useGroupedAssetOptions';
 import { useSellAssetRows } from './useSellAssetRows';
-import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
 
-export interface UseBuildTradingAssetOptionsProps {
+export type UseBuildTradingAssetOptionsProps = {
     search: string;
     networkSymbol: NetworkSymbol | undefined;
     expandedGroupKeys: AssetGroupKey[];
-}
+};
 
 export function useBuildTradingAssetOptions({
     search,
     networkSymbol,
     expandedGroupKeys,
 }: UseBuildTradingAssetOptionsProps) {
-    const { excludedCryptoIds } = useAssetsContext();
-
-    const { networks, assetRows } = useSellAssetRows({
-        networkSymbolFilter: networkSymbol,
-        excludedCryptoIds,
-    });
+    const { networks, assetRows } = useSellAssetRows({ networkSymbolFilter: networkSymbol });
 
     const assetRowsWithDisplayNames = useAccountsWithTokenDisplayNames(assetRows);
     const filteredAssetRows = useFilterAccountsWithTokens(assetRowsWithDisplayNames, search);

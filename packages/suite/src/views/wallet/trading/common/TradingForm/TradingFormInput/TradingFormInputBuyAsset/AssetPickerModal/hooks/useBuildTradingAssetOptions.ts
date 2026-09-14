@@ -41,16 +41,15 @@ export function useBuildTradingAssetOptions({
     search,
     networkSymbol,
 }: UseBuildTradingAssetOptionsProps) {
-    const { includedCryptoIds, excludedCryptoIds } = useAssetsContext();
+    const { includedCryptoIds } = useAssetsContext();
     const { buildAssetOptions } = useTradingAssets();
     const balances = useSelector(selectTradeableAssetBalances);
     const preferredCurrencyUsdThreshold = usePreferredCurrencyUsdThreshold();
 
-    const includedAssets = useMemo(() => {
-        const { assets } = buildAssetOptions({ includedCryptoIds });
-
-        return assets.filter(asset => !excludedCryptoIds.has(asset.id));
-    }, [buildAssetOptions, includedCryptoIds, excludedCryptoIds]);
+    const includedAssets = useMemo(
+        () => buildAssetOptions({ includedCryptoIds }).assets,
+        [buildAssetOptions, includedCryptoIds],
+    );
 
     const searchIndex = useMemo(
         () =>

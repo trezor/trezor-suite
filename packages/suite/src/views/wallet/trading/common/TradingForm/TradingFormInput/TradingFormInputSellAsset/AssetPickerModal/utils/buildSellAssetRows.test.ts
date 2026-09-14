@@ -1,5 +1,3 @@
-import { type CryptoId } from 'invity-api';
-
 import { DefinitionType, type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -18,9 +16,6 @@ const USDT_CONTRACT = toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7
 const USDC_CONTRACT = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const SHIB_CONTRACT = toTokenAddress('0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce');
 const FAKE_CONTRACT = toTokenAddress('0x1111111111111111111111111111111111111111');
-
-const ETH_CRYPTO_ID = 'ethereum' as CryptoId;
-const USDT_CRYPTO_ID = `ethereum--${USDT_CONTRACT}` as CryptoId;
 
 const createToken = (contract: string, symbol: string, balance: string) =>
     mockAccountToken({ name: symbol, symbol, contract: toTokenAddress(contract), balance });
@@ -79,16 +74,13 @@ const tokenDefinitions: TokenDefinitionsState = {
 const buildRows = ({
     accounts,
     networkSymbolFilter,
-    excludedCryptoIds = new Set<CryptoId>(),
 }: {
     accounts: Account[];
     networkSymbolFilter?: NetworkSymbol;
-    excludedCryptoIds?: Set<CryptoId>;
 }) =>
     buildSellAssetRows({
         accounts,
         networkSymbolFilter,
-        excludedCryptoIds,
         tokenDefinitions,
         baseCurrencyCode: 'usd',
         fiatRates,
@@ -160,30 +152,6 @@ describe('buildSellAssetRows', () => {
                 token: expect.objectContaining({ symbol: 'SHIB' }),
             }),
         ]);
-    });
-
-    it('hides the rows of excluded crypto ids but keeps the account listed', () => {
-        const account = createAccount({
-            descriptor: 'richAccount',
-            balance: '1',
-            tokens: [
-                createToken(USDT_CONTRACT, 'USDT', '20'),
-                createToken(SHIB_CONTRACT, 'SHIB', '1000'),
-            ],
-        });
-
-        const { assetRows, networks } = buildRows({
-            accounts: [account],
-            excludedCryptoIds: new Set([ETH_CRYPTO_ID, USDT_CRYPTO_ID]),
-        });
-
-        expect(assetRows).toEqual([
-            expect.objectContaining({
-                type: 'token',
-                token: expect.objectContaining({ symbol: 'SHIB' }),
-            }),
-        ]);
-        expect(networks).toEqual(['eth']);
     });
 
     it('includes a hidden token with a balance and skips an unverified one', () => {
