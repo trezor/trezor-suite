@@ -1,21 +1,20 @@
-import { type ReactNode } from 'react';
+import { Modal, type ModalProps } from '@trezor/components';
 
-import { Modal, type ModalProps, type ModalWidth, type Padding } from '@trezor/components';
-
-interface AssetsModalProps {
-    children: ReactNode;
-    heading: ReactNode;
-    description?: ReactNode;
-    onClose: () => void;
-    onBackClick?: () => void;
-    width?: ModalWidth;
-    height?: ModalProps['height'];
-    maxHeight?: ModalProps['maxHeight'];
-    padding?: Padding;
-    bottomContent?: ReactNode;
-    shadowBottom?: boolean;
-    'data-testid'?: string;
-}
+type AssetsModalProps = Required<Pick<ModalProps, 'children' | 'heading'>> &
+    Pick<
+        ModalProps,
+        | 'description'
+        | 'onBackClick'
+        | 'width'
+        | 'height'
+        | 'maxHeight'
+        | 'padding'
+        | 'bottomContent'
+        | 'shadowBottom'
+        | 'data-testid'
+    > & {
+        onClose: NonNullable<ModalProps['onCancel']>;
+    };
 
 export function AssetsModal({
     children,

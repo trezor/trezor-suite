@@ -3,7 +3,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { useTranslation } from '@suite/intl';
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
@@ -38,7 +39,7 @@ export const useGlobalReceiveNetworkSetup = ({
     onSetupFailure,
     submitSelection,
 }: UseGlobalReceiveNetworkSetupParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(selectDispatch);
     const { translationString } = useTranslation();
     const setupRequestRef = useRef<{ abort: () => void; requestId: string } | undefined>(undefined);
     const [completedSetup, setCompletedSetup] = useState<

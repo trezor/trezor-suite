@@ -1,18 +1,20 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { useThrottle } from 'react-use';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import {
+    type SuiteSyncDataRootState,
+    selectAccountsWithSuiteSyncLabel,
+} from '@suite-common/suite-sync';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 
-import { type AppState } from 'src/types/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export function useAccountsOptions() {
     const baseAccounts = useSelector(selectAllAccountsToList);
     const device = useSelector(selectSelectedDevice);
 
-    const accounts = useSelector((state: AppState) =>
+    const accounts = useSelector((state: SuiteSyncDataRootState) =>
         selectAccountsWithSuiteSyncLabel(
             state,
             baseAccounts,

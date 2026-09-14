@@ -16,17 +16,17 @@ import { ItemClickableContainer } from 'src/components/suite/asset-picker/compon
 type GlobalReceiveAccountListItemProps = {
     account: Account;
     dataTestId: string;
-    iconSize?: 24 | 40;
+    iconSize: 24 | 40;
     onClick: (account: Account) => void;
-    variant?: 'card' | 'plain';
+    variant: 'card' | 'plain';
 };
 
 export const GlobalReceiveAccountListItem = ({
     account,
     dataTestId,
-    iconSize = 40,
+    iconSize,
     onClick,
-    variant = 'card',
+    variant,
 }: GlobalReceiveAccountListItemProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const baseCurrencyCode = useSelector(selectBaseCurrency);

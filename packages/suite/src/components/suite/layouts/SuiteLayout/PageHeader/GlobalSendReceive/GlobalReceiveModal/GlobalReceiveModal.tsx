@@ -6,8 +6,8 @@ import { type CryptoId } from 'invity-api';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
-import { type TranslationKey } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { selectAccounts, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -37,19 +37,6 @@ type GlobalReceiveModalProps = {
     onSubmit: (account: Account, filledSearch: boolean) => void;
 };
 
-const getAssetDisabledMessage = (
-    isDeviceConnected: boolean | undefined,
-    isDiscoveryRunning: boolean,
-): TranslationKey | undefined => {
-    if (isDeviceConnected === false) {
-        return 'TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT';
-    }
-
-    if (isDiscoveryRunning) {
-        return 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY';
-    }
-};
-
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { device } = useDevice();
@@ -62,6 +49,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
 
     const accounts = useSelector(selectAccounts);
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const isDebug = useSelector(selectIsDebugModeActive);
     const search = useSelector(globalSendReceiveFiltersSelectors.selectSearch);
     const selectedNetworkSymbol = useSelector(
@@ -86,11 +74,12 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
 
         return filterReceiveAccounts({
             accounts,
+            supportedNetworks,
             deviceState: staticSessionId,
             symbol: selectedAsset.networkSymbol,
             isDebug,
         });
-    }, [accounts, isDebug, selectedAsset, staticSessionId]);
+    }, [accounts, isDebug, selectedAsset, staticSessionId, supportedNetworks]);
     const assetSections = useMemo(
         () =>
             getGlobalReceiveAssetSections({
@@ -136,6 +125,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
         (asset: TradingAssetOption) => {
             const eligibleAccounts = filterReceiveAccounts({
                 accounts,
+                supportedNetworks,
                 deviceState: staticSessionId,
                 symbol: asset.networkSymbol,
                 isDebug,
@@ -172,6 +162,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
             isNetworkSetupAvailable,
             staticSessionId,
             submitSelection,
+            supportedNetworks,
         ],
     );
 
@@ -183,6 +174,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
 
             const eligibleAccounts = filterReceiveAccounts({
                 accounts,
+                supportedNetworks,
                 deviceState: staticSessionId,
                 symbol: asset.networkSymbol,
                 isDebug,
@@ -190,7 +182,14 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
 
             return !enabledNetworks.includes(asset.networkSymbol) || eligibleAccounts.length === 0;
         },
-        [accounts, enabledNetworks, isDebug, isNetworkSetupAvailable, staticSessionId],
+        [
+            accounts,
+            enabledNetworks,
+            isDebug,
+            isNetworkSetupAvailable,
+            staticSessionId,
+            supportedNetworks,
+        ],
     );
 
     const handleTabChange = (tab: GlobalReceiveTab) => {
@@ -221,8 +220,6 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     };
 
     const handleCancel = () => onCancel(filledSearch);
-    const isAddAccountDisabled = isDiscoveryRunning || !device?.connected || !device?.available;
-    const assetDisabledMessage = getAssetDisabledMessage(device?.connected, isDiscoveryRunning);
 
     const renderReceiveModal = () => {
         switch (receiveStep) {
@@ -231,13 +228,10 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                     <GlobalReceiveSearchStep
                         activeTab={activeTab}
                         accountNetworks={enabledNetworks}
-                        assetDisabledMessage={assetDisabledMessage}
                         assetNetworks={networks}
                         assetSections={assetSections}
                         catalogStatus={catalogStatus}
-                        filledSearch={filledSearch}
                         filteredAccountOptions={filteredAccountOptions}
-                        isAddAccountDisabled={isAddAccountDisabled}
                         isAssetDisabled={isAssetDisabled}
                         onAccountClick={handleAccountTabSelection}
                         onAddAccountClick={handleAddAccount}

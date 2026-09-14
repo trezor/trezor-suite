@@ -1,4 +1,5 @@
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -82,6 +83,7 @@ const createState = ({
         persistentDeviceData: [],
     },
     tokenDefinitions: tokenDefinitionsInitialState,
+    networks: mockNetworksState(['eth']),
 });
 
 const createExtra = (): ActivateNetworkWithDiscoveryThunkDeps => ({

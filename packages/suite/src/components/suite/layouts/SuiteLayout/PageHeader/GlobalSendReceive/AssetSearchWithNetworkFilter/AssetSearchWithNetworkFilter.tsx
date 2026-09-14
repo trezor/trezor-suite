@@ -1,5 +1,4 @@
 import { type RefObject, memo } from 'react';
-import { useSelector } from 'react-redux';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
@@ -10,6 +9,7 @@ import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
 
 import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
+import { useSelector } from 'src/hooks/suite';
 import { selectProtocolSendFormScheme } from 'src/selectors/suite/protocolSelectors';
 
 import { useNetworkFilter } from './hooks/useNetworkFilter';
@@ -56,7 +56,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     const selectConfig = isBitcoinOnlyFirmware
         ? undefined
         : {
-              networks: [...networks],
+              networks,
               selectedNetwork: networkFilter,
               onChange: setNetworkFilter,
               includeAllOption: !protocolSymbol,

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 
-import { useDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradeableAssetBalances,
     type TradingAssetOption,
@@ -9,11 +10,11 @@ import {
     tradingThunks,
     useTradingAssets,
 } from '@suite-common/trading';
-import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
+import { useSelector } from 'src/hooks/suite';
 import { selectTradeableAssetBalances } from 'src/selectors/wallet/tradeableAssetBalancesSelectors';
-import { type AppState } from 'src/types/suite';
 
 export type GlobalReceiveAssetCatalogStatus = 'loading' | 'ready' | 'error';
 
@@ -26,14 +27,10 @@ type UseGlobalReceiveAssetsReturn = {
 };
 
 export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
-    const dispatch = useDispatch();
-    const allNetworkSymbols = getSupportedNetworks();
-    const supportedNetworkSymbols = useSelector((state: AppState) =>
-        selectDeviceSupportedNetworks(state, allNetworkSymbols),
-    );
-    const includedCryptoIds = useSelector((state: AppState) =>
-        selectTradingExchangeBuyCryptoIds(state, supportedNetworkSymbols),
-    );
+    const { dispatch } = useServices(selectDispatch);
+    const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
+    const supportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const includedCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
     const balances = useSelector(selectTradeableAssetBalances);
     const { buildAssetOptions } = useTradingAssets();
 
@@ -70,8 +67,11 @@ export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
     }, [dispatch, includedCryptoIds.length, retryCounter]);
 
     const assets = useMemo(
-        () => buildAssetOptions({ includedCryptoIds: new Set(includedCryptoIds) }).assets,
-        [buildAssetOptions, includedCryptoIds],
+        () =>
+            buildAssetOptions({ includedCryptoIds: new Set(includedCryptoIds) }).assets.filter(
+                asset => supportedNetworkSymbols.includes(asset.networkSymbol),
+            ),
+        [buildAssetOptions, includedCryptoIds, supportedNetworkSymbols],
     );
     const networks = useMemo(() => {
         const networkSymbolsInList = new Set(assets.map(asset => asset.networkSymbol));

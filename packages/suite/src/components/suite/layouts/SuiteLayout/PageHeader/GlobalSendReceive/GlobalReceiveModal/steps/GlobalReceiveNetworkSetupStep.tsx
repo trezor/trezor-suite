@@ -5,6 +5,7 @@ import { Column, H4, Paragraph, Spinner } from '@trezor/components';
 import { AssetsModal } from 'src/components/suite/asset-picker/components';
 
 import { GlobalReceiveAssetDescription } from '../components/GlobalReceiveAssetDescription';
+import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
 
 type GlobalReceiveNetworkSetupStepProps = {
     asset: TradingAssetOption | undefined;
@@ -22,7 +23,7 @@ export const GlobalReceiveNetworkSetupStep = ({
         description={<GlobalReceiveAssetDescription asset={asset} />}
         onBackClick={onBack}
         onClose={onCancel}
-        maxHeight={670}
+        maxHeight={GLOBAL_RECEIVE_MODAL_HEIGHT}
         padding={16}
         data-testid="@global-receive/modal"
     >

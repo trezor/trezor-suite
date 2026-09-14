@@ -7,6 +7,7 @@ import { AssetsModal } from 'src/components/suite/asset-picker/components';
 
 import { GlobalReceiveAccountListItem } from '../components/GlobalReceiveAccountListItem';
 import { GlobalReceiveAssetDescription } from '../components/GlobalReceiveAssetDescription';
+import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
 
 type GlobalReceiveAccountStepProps = {
     accounts: Account[];
@@ -28,7 +29,7 @@ export const GlobalReceiveAccountStep = ({
         description={<GlobalReceiveAssetDescription asset={asset} />}
         onBackClick={onBack}
         onClose={onCancel}
-        maxHeight={670}
+        maxHeight={GLOBAL_RECEIVE_MODAL_HEIGHT}
         padding={16}
         data-testid="@global-receive/modal"
     >
@@ -44,6 +45,7 @@ export const GlobalReceiveAccountStep = ({
                         dataTestId={`@global-receive-account/${account.accountType}/${account.symbol}/${account.index}`}
                         iconSize={24}
                         onClick={onAccountClick}
+                        variant="card"
                     />
                 ))}
             </CardList>
