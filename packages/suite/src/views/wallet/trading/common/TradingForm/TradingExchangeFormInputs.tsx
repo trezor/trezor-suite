@@ -158,7 +158,6 @@ export const TradingExchangeFormInputs = () => {
                             />
                         }
                         includedCryptoIds={exchangeSellSupportedCryptoIds}
-                        excludedCryptoId={receiveCryptoSelect?.id}
                         inputPlaceholder="TR_SELECT_TOKEN"
                         onAssetSelect={handleSellAssetSelect}
                     />
@@ -198,7 +197,6 @@ export const TradingExchangeFormInputs = () => {
                         inputLabel="TR_TO"
                         inputName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
                         includedCryptoIds={exchangeBuySupportedCryptoIds}
-                        excludedCryptoId={sendCryptoSelect?.id}
                         onAssetSelect={handleReceiveAssetSelect}
                     />
                 </TradingFormSection>

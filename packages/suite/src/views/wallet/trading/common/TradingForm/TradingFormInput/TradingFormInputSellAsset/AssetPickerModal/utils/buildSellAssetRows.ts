@@ -1,7 +1,4 @@
-import { type CryptoId } from 'invity-api';
-
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
-import { getCryptoId } from '@suite-common/trading';
 import { type NetworkSymbol, getSupportedNetworks } from '@suite-common/wallet-config';
 import { type RatesByKey } from '@suite-common/wallet-types';
 import { filterAccountsByNetworkSymbol, isTestnet } from '@suite-common/wallet-utils';
@@ -22,7 +19,6 @@ import {
 export type BuildSellAssetRowsProps = {
     accounts: readonly AccountWithOptionalLabel[];
     networkSymbolFilter: NetworkSymbol | undefined;
-    excludedCryptoIds: Set<CryptoId>;
     tokenDefinitions: TokenDefinitionsState | undefined;
     baseCurrencyCode: BaseCurrencyCode;
     fiatRates: RatesByKey;
@@ -31,7 +27,6 @@ export type BuildSellAssetRowsProps = {
 export const buildSellAssetRows = ({
     accounts,
     networkSymbolFilter,
-    excludedCryptoIds,
     tokenDefinitions,
     baseCurrencyCode,
     fiatRates,
@@ -60,10 +55,7 @@ export const buildSellAssetRows = ({
     const assetRows: AssetRowOption[] = [];
 
     for (const account of filterAccountsByNetworkSymbol(validAccounts, networkSymbolFilter)) {
-        if (
-            new BigNumber(account.balance).gt(0) &&
-            !excludedCryptoIds.has(getCryptoId(account.symbol))
-        ) {
+        if (new BigNumber(account.balance).gt(0)) {
             assetRows.push(createAccountOption(account));
         }
 
@@ -73,7 +65,6 @@ export const buildSellAssetRows = ({
             account.symbol,
             fiatRates,
         )
-            .filter(token => !excludedCryptoIds.has(getCryptoId(account.symbol, token.contract)))
             .sort(sortTokensWithRates)
             .forEach(token => {
                 assetRows.push(createTokenOption(account, token));

@@ -6,27 +6,17 @@ import { throwError } from '@trezor/utils';
 
 const AssetOptionsContext = createContext<{
     includedCryptoIds: Set<CryptoId>;
-    excludedCryptoIds: Set<CryptoId>;
 }>({
     includedCryptoIds: new Set(),
-    excludedCryptoIds: new Set(),
 });
 
-export interface AssetOptionsContextProps {
+export type AssetOptionsContextProps = {
     includedCryptoIds: Set<CryptoId>;
-    excludedCryptoIds: Set<CryptoId>;
     children: ReactNode;
-}
+};
 
-export function AssetOptionsProvider({
-    includedCryptoIds,
-    excludedCryptoIds,
-    children,
-}: AssetOptionsContextProps) {
-    const contextValue = useMemo(
-        () => ({ includedCryptoIds, excludedCryptoIds }),
-        [includedCryptoIds, excludedCryptoIds],
-    );
+export function AssetOptionsProvider({ includedCryptoIds, children }: AssetOptionsContextProps) {
+    const contextValue = useMemo(() => ({ includedCryptoIds }), [includedCryptoIds]);
 
     return (
         <AssetOptionsContext.Provider value={contextValue}>{children}</AssetOptionsContext.Provider>

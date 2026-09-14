@@ -11,7 +11,7 @@ import {
 } from '../TradingFormInputAssetPicker';
 import { AssetPickerModal, type AssetPickerModalProps } from './AssetPickerModal/AssetPickerModal';
 
-export interface TradingFormInputSellAssetProps {
+export type TradingFormInputSellAssetProps = {
     inputPlaceholder?: AssetPickerInputProps['placeholder'];
     inputLabel: AssetPickerInputProps['label'];
     inputName: AssetPickerInputProps['name'];
@@ -24,8 +24,7 @@ export interface TradingFormInputSellAssetProps {
     onAssetSelect: AssetPickerModalProps['onAssetSelect'];
 
     includedCryptoIds: CryptoId[] | undefined;
-    excludedCryptoId?: CryptoId | undefined;
-}
+};
 
 export const TradingFormInputSellAsset = memo(function TradingFormInputSellAssetInner({
     inputPlaceholder,
@@ -35,20 +34,12 @@ export const TradingFormInputSellAsset = memo(function TradingFormInputSellAsset
     inputBottomText,
     onAssetSelect,
     includedCryptoIds,
-    excludedCryptoId,
 }: TradingFormInputSellAssetProps) {
     const modal = useTradingAssetPickerModal();
     const includedCryptoIdsSet = useMemo(() => new Set(includedCryptoIds), [includedCryptoIds]);
-    const excludedCryptoIdsSet = useMemo(
-        () => (excludedCryptoId ? new Set([excludedCryptoId]) : new Set<CryptoId>()),
-        [excludedCryptoId],
-    );
 
     return (
-        <AssetOptionsProvider
-            includedCryptoIds={includedCryptoIdsSet}
-            excludedCryptoIds={excludedCryptoIdsSet}
-        >
+        <AssetOptionsProvider includedCryptoIds={includedCryptoIdsSet}>
             <AssetPickerInput
                 name={inputName}
                 label={inputLabel}

@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
-import { type CryptoId } from 'invity-api';
-
 import { selectVisibleDeviceAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -16,13 +14,9 @@ import { buildSellAssetRows } from '../utils/buildSellAssetRows';
 
 export type UseSellAssetRowsProps = {
     networkSymbolFilter: NetworkSymbol | undefined;
-    excludedCryptoIds: Set<CryptoId>;
 };
 
-export function useSellAssetRows({
-    networkSymbolFilter,
-    excludedCryptoIds,
-}: UseSellAssetRowsProps): {
+export function useSellAssetRows({ networkSymbolFilter }: UseSellAssetRowsProps): {
     assetRows: AssetRowOption[];
     networks: NetworkSymbol[];
 } {
@@ -47,7 +41,6 @@ export function useSellAssetRows({
         return buildSellAssetRows({
             accounts: throttledAccounts,
             networkSymbolFilter,
-            excludedCryptoIds,
             tokenDefinitions,
             baseCurrencyCode,
             fiatRates: currentFiatRates,
@@ -57,7 +50,6 @@ export function useSellAssetRows({
         fiatRatesRef,
         throttledAccounts,
         networkSymbolFilter,
-        excludedCryptoIds,
         tokenDefinitions,
         baseCurrencyCode,
     ]);
