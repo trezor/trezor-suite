@@ -274,13 +274,26 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
+    const fiatRatesPersistedReducer = preparePersistReducer({
+        reducer: fiatRatesReducer,
+        // Its own `fiat` key keeps the per-timestamp historic writes off the root blob;
+        // current/lastWeek refresh on their own timer and are not persisted.
+        persistedKeys: ['historic'],
+        key: 'fiat',
+        version: 1,
+        // The whole map is one storage value, so coalesce the per-account rate updates of a
+        // refresh burst into one serialization instead of one per updateTxsFiatRatesThunk.
+        throttle: 1000,
+        storage: deps.mmkvStorage,
+    });
+
     const walletReducers = combineReducers({
         accounts: accountsReducer,
         earnOnboarding: earnOnboardingReducer,
         accountsRefreshTime: accountsRefreshTimeReducer,
         blockchain: blockchainPersistedReducer,
         explorer: explorerPersistedReducer,
-        fiat: fiatRatesReducer,
+        fiat: fiatRatesPersistedReducer,
         transactions: transactionsReducer,
         phishing: phishingPersistedReducer,
         discovery: discoveryReducer,
