@@ -178,6 +178,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
         connectInitHooks,
+        getTrezorConnect: deps.getTrezorConnect,
         createLogger: deps.createLogger,
         thpHostName: deps.thpHostName,
         createTransports,

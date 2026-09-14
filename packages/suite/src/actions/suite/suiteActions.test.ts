@@ -15,6 +15,7 @@ import {
     mockCreateTransports,
     mockGetDebugSettings,
     mockGetThpSettings,
+    mockGetTrezorConnect,
 } from '@suite-common/connect-init/mocks';
 import {
     acquireDeviceThunk,
@@ -87,6 +88,7 @@ const extra: SuiteActionsTestDeps = {
         getDebugSettings: mockGetDebugSettings(),
         getThpSettings: mockGetThpSettings(),
         getTradedAccountKeys: mockGetTradedAccountKeys(),
+        getTrezorConnect: mockGetTrezorConnect,
     },
     thunks: {
         fetchAndSaveMetadata: mockFetchAndSaveMetadata(),
