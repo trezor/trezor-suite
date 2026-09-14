@@ -1,14 +1,11 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
-    TRADING_FORM_OUTPUT_AMOUNT_FIELDS,
     TRADING_FORM_OUTPUT_FIAT,
-    TRADING_FORM_PROVIDER_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeFormProps,
@@ -20,12 +17,10 @@ import {
     selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
     selectTradingSendAccount,
-    tradingActions,
 } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row } from '@trezor/components';
-import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -40,24 +35,16 @@ import { TradingFormFees } from './TradingFormFees';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
-import {
-    TradingFormInputBuyAsset,
-    type TradingFormInputBuyAssetProps,
-} from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
-import {
-    TradingFormInputSellAsset,
-    type TradingFormInputSellAssetProps,
-} from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
+import { TradingFormInputBuyAsset } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
+import { TradingFormInputSellAsset } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 import { TradingFormSection } from './TradingFormSection';
 import { TradingFractionButtons } from './TradingFractionButtons';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
+import { useTradingExchangeAssetSelect } from './useTradingExchangeAssetSelect';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
-    const { networkModuleRepository, dispatch } = useServices(
-        selectNetworkModuleRepositoryDep,
-        selectDispatch,
-    );
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
     const quotes = useSelector(selectTradingExchangeQuotes);
@@ -80,7 +67,8 @@ export const TradingExchangeFormInputs = () => {
         () => getDisplayComposedLevels(selectedQuote, composedLevels),
         [selectedQuote, composedLevels],
     );
-    const { getValues, setValue, clearErrors } = useFormContext<TradingExchangeFormProps>();
+    const methods = useFormContext<TradingExchangeFormProps>();
+    const { getValues } = methods;
     const {
         [TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: sendCryptoSelect,
         [TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT]: receiveCryptoSelect,
@@ -109,33 +97,11 @@ export const TradingExchangeFormInputs = () => {
               }).toString()
             : output?.amount;
 
-    // `useTradingExchangeForm` has some re-rendering issues, use refs to avoid them
-    const setAmountLimitsRef = useCurrentRef(setAmountLimits);
-    const setValueRef = useCurrentRef(setValue);
-    const clearErrorsRef = useCurrentRef(clearErrors);
-
-    const onCryptoCurrencyChangeRef = useCurrentRef(helpers.onCryptoCurrencyChange);
-    const handleSellAssetSelect = useCallback<TradingFormInputSellAssetProps['onAssetSelect']>(
-        async asset => {
-            await onCryptoCurrencyChangeRef.current(asset);
-
-            setValueRef.current(TRADING_FORM_PROVIDER_SELECT, undefined, { shouldDirty: true });
-        },
-        [onCryptoCurrencyChangeRef, setValueRef],
-    );
-
-    const handleReceiveAssetSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
-        asset => {
-            setValueRef.current(TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, asset, {
-                shouldDirty: true,
-            });
-            clearErrorsRef.current(TRADING_FORM_OUTPUT_AMOUNT_FIELDS);
-            setAmountLimitsRef.current(undefined);
-            dispatch(tradingActions.setModalCryptoCurrency(asset.id));
-            setValueRef.current(TRADING_FORM_PROVIDER_SELECT, undefined, { shouldDirty: true });
-        },
-        [dispatch, setAmountLimitsRef, setValueRef, clearErrorsRef],
-    );
+    const { handleSellAssetSelect, handleReceiveAssetSelect } = useTradingExchangeAssetSelect({
+        methods,
+        onCryptoCurrencyChange: helpers.onCryptoCurrencyChange,
+        setAmountLimits,
+    });
 
     const supportedNetworks = networkModuleRepository.getSupportedNetworks();
     const exchangeBuySupportedCryptoIds = useSelector(state =>
