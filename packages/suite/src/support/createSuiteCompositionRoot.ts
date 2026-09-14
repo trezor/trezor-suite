@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
+import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
 import { selectLabelingDataForAccount } from '@suite/metadata';
 import {
@@ -70,7 +71,8 @@ export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
-    TransportsDep;
+    TransportsDep &
+    BluetoothDep;
 
 export type StoreAPIDep = {
     getState: () => AppState;
@@ -100,6 +102,10 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     const analytics = createAnalytics();
+    const bluetooth = createBluetoothCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+    });
 
     const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
     const getAccountsByDeviceState = toGetter(deps.getState, selectAccountsByDeviceState);
@@ -170,6 +176,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         ensureDelegatedIdentityKey,
         platformEncryption: deps.platformEncryption,
         analytics,
+        bluetooth,
         suiteRouterHistory: createSuiteRouterHistory({
             history: deps.history,
         }),

@@ -1,6 +1,6 @@
 import type { MiddlewareAPI } from 'redux';
 
-import { prepareBluetoothMiddleware } from '@suite/bluetooth';
+import { type PrepareBluetoothMiddlewareDeps, prepareBluetoothMiddleware } from '@suite/bluetooth';
 import { metadataMiddleware } from '@suite/metadata';
 import { routerMiddleware } from '@suite/router';
 import { tradingMiddleware } from '@suite/trading';
@@ -20,7 +20,9 @@ import redirect from './redirectMiddleware';
 import sentry from './sentryMiddleware';
 import { type PrepareSuiteMiddlewareDeps, prepareSuiteMiddleware } from './suiteMiddleware';
 
-export type GetSuiteMiddlewareDeps = PrepareSuiteMiddlewareDeps & PrepareAnalyticsMiddlewareDeps;
+export type GetSuiteMiddlewareDeps = PrepareSuiteMiddlewareDeps &
+    PrepareAnalyticsMiddlewareDeps &
+    PrepareBluetoothMiddlewareDeps;
 
 export const getSuiteMiddleware = (
     getExtra: () => GetSuiteMiddlewareDeps | null,
