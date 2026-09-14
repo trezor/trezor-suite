@@ -107,6 +107,8 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 const { exchange } = await tradingResponses.buy.trade();
                 providerName = await tradingResponses.buy.companyName(exchange);
 
+                await tradingPage.waitForRedirectCompletion('buy');
+
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                     'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',
                 );
