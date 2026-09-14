@@ -10,7 +10,7 @@
  * Three properties make it usable from React:
  *
  * - **Lazy.** Nothing is built until someone reads it. An index that no screen is using costs
- *   nothing but the definition, and the last consumer leaving releases what was built.
+ *   nothing but the definition, and what it builds is kept only until the source changes.
  * - **Shared.** The index is one object, so every consumer of it reads the same build. Ten
  *   components asking for a transaction by id in the same render pass build the map once.
  * - **Stable.** A read against an unchanged source returns the very same snapshot object, so
@@ -155,16 +155,6 @@ export type EntityIndex<
 > = {
     readonly name: string;
     /**
-     * Keeps the index's build alive until the returned function is called, without asking to be
-     * told anything. For a consumer that reads the index itself — through `useSelector`, or a
-     * thunk — and only wants its work not thrown away between reads.
-     *
-     * Retaining builds nothing on its own: the index stays lazy until something reads it.
-     *
-     * @returns release
-     */
-    retain: () => () => void;
-    /**
      * Calls `listener` with the new snapshot whenever a read finds the index changed, so a
      * consumer can react to entities without reading them itself — `snapshot.changes` says what
      * happened.
@@ -180,8 +170,8 @@ export type EntityIndex<
      * @returns unsubscribe
      */
     subscribe: (listener: EntityIndexListener<TEntity, TId, TGroups>) => () => void;
-    /** How many consumers are holding the build. Exposed for tests and dev tooling. */
-    getSubscriberCount: () => number;
+    /** How many listeners are subscribed. Exposed for tests and dev tooling. */
+    getListenerCount: () => number;
     /** The index as of this state. Same object for as long as the source is unchanged. */
     read: (state: TState) => EntityIndexSnapshot<TEntity, TId, TGroups>;
     getById: (state: TState, id: TId) => TEntity | undefined;
@@ -278,7 +268,6 @@ export const createEntityIndex = <
         getParts ??
         ((source: TSource) => [[WHOLE_SOURCE_KEY, source as unknown as TPart]] as const);
 
-    let holderCount = 0;
     const listeners = new Set<EntityIndexListener<TEntity, TId, TGroups>>();
     let notifiedSnapshot: EntityIndexSnapshot<TEntity, TId, TGroups> | undefined;
     // The build, the source it was built from and the parts it was assembled from, kept together
@@ -462,55 +451,28 @@ export const createEntityIndex = <
             return cached.snapshot;
         }
 
-        // Built whether or not anyone is holding it. A list of a hundred rows reads the index a
-        // hundred times on its first render, before a single effect has run, and those have to be
-        // one build. Holders decide when the build is *released*, not when it is made.
+        // A list of a hundred rows reads the index a hundred times on its first render; those
+        // have to be one build. What is built is then kept until the source is replaced, whether
+        // or not anything is subscribed — a reader is never made to pay for a rebuild because a
+        // listener came or went.
         const snapshot = build(source);
         notify(snapshot);
 
         return snapshot;
     };
 
-    const retain = () => {
-        holderCount += 1;
-        let isHeld = true;
-
-        return () => {
-            // Guard against a consumer releasing twice, which would throw away the build while
-            // someone else is still holding it.
-            if (!isHeld) {
-                return;
-            }
-            isHeld = false;
-            holderCount -= 1;
-
-            if (holderCount === 0) {
-                cached = undefined;
-                notifiedSnapshot = undefined;
-            }
-        };
-    };
-
     return {
         name,
 
-        retain,
-
         subscribe: listener => {
-            // Holding the build too: a listener that was told the index changed will be read
-            // sooner or later, and rebuilding it in between would be work nobody asked for.
-            const release = retain();
             listeners.add(listener);
 
             return () => {
-                if (!listeners.delete(listener)) {
-                    return;
-                }
-                release();
+                listeners.delete(listener);
             };
         },
 
-        getSubscriberCount: () => holderCount,
+        getListenerCount: () => listeners.size,
 
         read,
 
