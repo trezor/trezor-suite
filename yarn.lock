@@ -11193,6 +11193,7 @@ __metadata:
     "@trezor/network-bitcoin-suite-common": "workspace:*"
     "@trezor/network-cardano-suite-common": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-ripple-suite-common": "workspace:*"
     "@trezor/network-solana-suite-common": "workspace:*"
@@ -17345,6 +17346,7 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@trezor/network-bitcoin": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -17365,6 +17367,7 @@ __metadata:
     "@scure/base": "npm:^2.0.0"
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-cardano": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     cbor: "npm:^10.0.12"
     crc: "npm:^4.3.2"
@@ -17390,6 +17393,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/utils": "workspace:*"
     viem: "npm:^2.54.1"
@@ -17412,6 +17416,15 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/network-module": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-module@workspace:*, @trezor/network-module@workspace:networks/network-module/network-module":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-module@workspace:networks/network-module/network-module"
+  dependencies:
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -17422,6 +17435,7 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-ripple": "workspace:*"
   languageName: unknown
@@ -17442,6 +17456,7 @@ __metadata:
   dependencies:
     "@scure/base": "npm:^2.0.0"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
   languageName: unknown
@@ -17471,6 +17486,7 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     crc: "npm:^4.3.2"
@@ -17493,6 +17509,7 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-tron": "workspace:*"
   languageName: unknown

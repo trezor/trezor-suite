@@ -1,38 +1,25 @@
-import type { BitcoinNetworkSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
-import type { CardanoNetworkSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
-import type { EthereumNetworkSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
-import type { RippleNetworkSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
-import type { SolanaNetworkSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
-import type { StellarNetworkSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
-import type { TronNetworkSuiteCommonNetworkModule } from '@trezor/network-tron-suite-common';
+
+/**
+ * The symbol is intentionally open: it is a branded string, not a union derived from the
+ * registered modules. A network family should be added by registering its module, without a
+ * central type having to enumerate every symbol it may contribute.
+ */
+export { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module/constants';
 
 // When adding a new Network Module, you have to
 //    1. register it here to have the static typing
 //    2. create the runtime object for DI in `createNetworkModulesCompositionRoot`
 export type NetworkModules = {
-    bitcoin: BitcoinNetworkSuiteCommonNetworkModule;
-    ethereum: EthereumNetworkSuiteCommonNetworkModule;
-    ripple: RippleNetworkSuiteCommonNetworkModule;
-    cardano: CardanoNetworkSuiteCommonNetworkModule;
-    solana: SolanaNetworkSuiteCommonNetworkModule;
-    stellar: StellarNetworkSuiteCommonNetworkModule;
-    tron: TronNetworkSuiteCommonNetworkModule;
+    bitcoin: SuiteCommonNetworkModule;
+    ethereum: SuiteCommonNetworkModule;
+    ripple: SuiteCommonNetworkModule;
+    cardano: SuiteCommonNetworkModule;
+    solana: SuiteCommonNetworkModule;
+    stellar: SuiteCommonNetworkModule;
+    tron: SuiteCommonNetworkModule;
 };
 
 export type StaticNetworkModulesDep = {
     networkModules: NetworkModules;
 };
-
-// This is a tool that extracts the union type of all supported network symbols
-// from the NetworkModules.
-//
-// With this, we are able to statically type the NetworkSymbol, while
-// preserving the modular aspect.
-//
-type NetworkModuleSymbol<TNetworkModule> =
-    TNetworkModule extends SuiteCommonNetworkModule<infer TSymbol> ? TSymbol : never;
-
-export type NetworkSymbol = NetworkModuleSymbol<NetworkModules[keyof NetworkModules]>;
-
-export const asNetworkSymbol = (symbol: string): NetworkSymbol => symbol as NetworkSymbol;

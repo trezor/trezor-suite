@@ -11,6 +11,7 @@
         {
             "path": "../../../packages/device-utils"
         },
+        { "path": "../network-module" },
         { "path": "../../../packages/type-utils" }
     ]
 }

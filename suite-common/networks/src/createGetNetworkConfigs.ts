@@ -11,7 +11,10 @@ export type GetNetworkConfigs = () => readonly NetworkMetadata[];
 
 export type GetNetworkConfigsDep = { getNetworkConfigs: GetNetworkConfigs };
 
-const displayOrderBySymbol = new Map(networkDisplayOrder.map((symbol, index) => [symbol, index]));
+// Keyed by plain string: the display order is a legacy list, while the symbol is now open.
+const displayOrderBySymbol = new Map<string, number>(
+    networkDisplayOrder.map((symbol, index) => [symbol, index]),
+);
 
 const getDisplayOrder = (symbol: NetworkSymbol) =>
     displayOrderBySymbol.get(symbol) ?? Number.MAX_SAFE_INTEGER;

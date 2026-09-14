@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@trezor/network-module/constants';
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 
 import type { NetworkMetadata } from '../reduxState/NetworkMetadata';
@@ -34,7 +35,7 @@ export type MockNetworkSymbol =
 
 export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMetadata>> = {
     btc: {
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -54,7 +55,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     eth: {
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -75,7 +76,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     pol: {
-        symbol: 'pol',
+        symbol: asNetworkSymbol('pol'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -96,7 +97,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     bsc: {
-        symbol: 'bsc',
+        symbol: asNetworkSymbol('bsc'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -117,7 +118,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     arb: {
-        symbol: 'arb',
+        symbol: asNetworkSymbol('arb'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -143,7 +144,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     base: {
-        symbol: 'base',
+        symbol: asNetworkSymbol('base'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -164,7 +165,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     op: {
-        symbol: 'op',
+        symbol: asNetworkSymbol('op'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -185,7 +186,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     rhc: {
-        symbol: 'rhc',
+        symbol: asNetworkSymbol('rhc'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -206,7 +207,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     hype: {
-        symbol: 'hype',
+        symbol: asNetworkSymbol('hype'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -227,7 +228,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     avax: {
-        symbol: 'avax',
+        symbol: asNetworkSymbol('avax'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -248,7 +249,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     sol: {
-        symbol: 'sol',
+        symbol: asNetworkSymbol('sol'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -269,7 +270,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     trx: {
-        symbol: 'trx',
+        symbol: asNetworkSymbol('trx'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -291,7 +292,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     ada: {
-        symbol: 'ada',
+        symbol: asNetworkSymbol('ada'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -312,7 +313,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     etc: {
-        symbol: 'etc',
+        symbol: asNetworkSymbol('etc'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -333,7 +334,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     xrp: {
-        symbol: 'xrp',
+        symbol: asNetworkSymbol('xrp'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -353,7 +354,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     xlm: {
-        symbol: 'xlm',
+        symbol: asNetworkSymbol('xlm'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -374,7 +375,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     ltc: {
-        symbol: 'ltc',
+        symbol: asNetworkSymbol('ltc'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -394,7 +395,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     bch: {
-        symbol: 'bch',
+        symbol: asNetworkSymbol('bch'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -414,7 +415,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     doge: {
-        symbol: 'doge',
+        symbol: asNetworkSymbol('doge'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -434,7 +435,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     zec: {
-        symbol: 'zec',
+        symbol: asNetworkSymbol('zec'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -454,7 +455,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     test: {
-        symbol: 'test',
+        symbol: asNetworkSymbol('test'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -474,7 +475,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     regtest: {
-        symbol: 'regtest',
+        symbol: asNetworkSymbol('regtest'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -494,7 +495,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     tsep: {
-        symbol: 'tsep',
+        symbol: asNetworkSymbol('tsep'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -515,7 +516,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     thod: {
-        symbol: 'thod',
+        symbol: asNetworkSymbol('thod'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -536,7 +537,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     dsol: {
-        symbol: 'dsol',
+        symbol: asNetworkSymbol('dsol'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -557,7 +558,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     txrp: {
-        symbol: 'txrp',
+        symbol: asNetworkSymbol('txrp'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -577,7 +578,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     txlm: {
-        symbol: 'txlm',
+        symbol: asNetworkSymbol('txlm'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -598,7 +599,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
     ttrx: {
-        symbol: 'ttrx',
+        symbol: asNetworkSymbol('ttrx'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],

@@ -1,19 +1,29 @@
 import {
-    type BitcoinNetworkSymbol,
     isSupportedBitcoinNetwork,
     supportedBitcoinNetworks,
+    toBitcoinNetworkSymbol,
 } from '@trezor/network-bitcoin/constants';
-import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
+import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module/constants';
+import type {
+    AddressValidator,
+    SuiteCommonNetworkModule,
+} from '@trezor/network-module-suite-common-types';
 
 import { bitcoinValidator } from './addressValidator/bitcoinAddressValidator';
 import { getNetworkConfig } from './networkConfig';
 
-export type BitcoinNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<BitcoinNetworkSymbol>;
+const supportedNetworks = asNetworkSymbols(supportedBitcoinNetworks);
 
-export const createBitcoinSuiteCommonNetworkModule =
-    (): BitcoinNetworkSuiteCommonNetworkModule => ({
-        addressValidator: bitcoinValidator,
-        getSupportedNetworks: () => supportedBitcoinNetworks,
-        isSupportedNetwork: isSupportedBitcoinNetwork,
-        getNetworkConfig,
-    });
+const addressValidator: AddressValidator<NetworkSymbol> = {
+    isAddressValid: (address, symbol) =>
+        bitcoinValidator.isAddressValid(address, toBitcoinNetworkSymbol(symbol)),
+    getAddressType: (address, symbol) =>
+        bitcoinValidator.getAddressType(address, toBitcoinNetworkSymbol(symbol)),
+};
+
+export const createBitcoinSuiteCommonNetworkModule = (): SuiteCommonNetworkModule => ({
+    addressValidator,
+    getSupportedNetworks: () => supportedNetworks,
+    isSupportedNetwork: isSupportedBitcoinNetwork,
+    getNetworkConfig: symbol => getNetworkConfig(toBitcoinNetworkSymbol(symbol)),
+});

@@ -13,7 +13,7 @@ const getExplorerUrls = (baseUrl: string, isDevnet = false): Explorer => ({
     queryString: isDevnet ? `?cluster=devnet` : '',
 });
 
-type NetworkConfig = SuiteCommonNetworkConfig<SolanaNetworkSymbol> & {
+type NetworkConfig = SuiteCommonNetworkConfig & {
     readonly networkType: 'solana';
 };
 

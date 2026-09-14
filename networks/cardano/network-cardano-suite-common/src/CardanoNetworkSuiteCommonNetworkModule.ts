@@ -1,19 +1,29 @@
 import {
-    type CardanoNetworkSymbol,
     isSupportedCardanoNetwork,
     supportedCardanoNetworks,
+    toCardanoNetworkSymbol,
 } from '@trezor/network-cardano/constants';
-import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
+import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module/constants';
+import type {
+    AddressValidator,
+    SuiteCommonNetworkModule,
+} from '@trezor/network-module-suite-common-types';
 
 import { adaValidator } from './addressValidator/cardanoAddressValidator';
 import { getNetworkConfig } from './networkConfig';
 
-export type CardanoNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<CardanoNetworkSymbol>;
+const supportedNetworks = asNetworkSymbols(supportedCardanoNetworks);
 
-export const createCardanoSuiteCommonNetworkModule =
-    (): CardanoNetworkSuiteCommonNetworkModule => ({
-        addressValidator: adaValidator,
-        getSupportedNetworks: () => supportedCardanoNetworks,
-        isSupportedNetwork: isSupportedCardanoNetwork,
-        getNetworkConfig,
-    });
+const addressValidator: AddressValidator<NetworkSymbol> = {
+    isAddressValid: (address, symbol) =>
+        adaValidator.isAddressValid(address, toCardanoNetworkSymbol(symbol)),
+    getAddressType: (address, symbol) =>
+        adaValidator.getAddressType(address, toCardanoNetworkSymbol(symbol)),
+};
+
+export const createCardanoSuiteCommonNetworkModule = (): SuiteCommonNetworkModule => ({
+    addressValidator,
+    getSupportedNetworks: () => supportedNetworks,
+    isSupportedNetwork: isSupportedCardanoNetwork,
+    getNetworkConfig: symbol => getNetworkConfig(toCardanoNetworkSymbol(symbol)),
+});

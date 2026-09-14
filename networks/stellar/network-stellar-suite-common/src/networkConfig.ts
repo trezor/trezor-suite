@@ -12,7 +12,7 @@ const getExplorerUrls = (baseUrl: string): Explorer => ({
     token: `${baseUrl}/asset/`,
 });
 
-type NetworkConfig = SuiteCommonNetworkConfig<StellarNetworkSymbol> & {
+type NetworkConfig = SuiteCommonNetworkConfig & {
     readonly networkType: 'stellar';
 };
 

@@ -1,18 +1,29 @@
-import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
+import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module/constants';
+import type {
+    AddressValidator,
+    SuiteCommonNetworkModule,
+} from '@trezor/network-module-suite-common-types';
 import {
-    type SolanaNetworkSymbol,
     isSupportedSolanaNetwork,
     supportedSolanaNetworks,
+    toSolanaNetworkSymbol,
 } from '@trezor/network-solana/constants';
 
 import { solanaValidator } from './addressValidator/solanaAddressValidator';
 import { getNetworkConfig } from './networkConfig';
 
-export type SolanaNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<SolanaNetworkSymbol>;
+const supportedNetworks = asNetworkSymbols(supportedSolanaNetworks);
 
-export const createSolanaSuiteCommonNetworkModule = (): SolanaNetworkSuiteCommonNetworkModule => ({
-    addressValidator: solanaValidator,
-    getSupportedNetworks: () => supportedSolanaNetworks,
+const addressValidator: AddressValidator<NetworkSymbol> = {
+    isAddressValid: (address, symbol) =>
+        solanaValidator.isAddressValid(address, toSolanaNetworkSymbol(symbol)),
+    getAddressType: (address, symbol) =>
+        solanaValidator.getAddressType(address, toSolanaNetworkSymbol(symbol)),
+};
+
+export const createSolanaSuiteCommonNetworkModule = (): SuiteCommonNetworkModule => ({
+    addressValidator,
+    getSupportedNetworks: () => supportedNetworks,
     isSupportedNetwork: isSupportedSolanaNetwork,
-    getNetworkConfig,
+    getNetworkConfig: symbol => getNetworkConfig(toSolanaNetworkSymbol(symbol)),
 });

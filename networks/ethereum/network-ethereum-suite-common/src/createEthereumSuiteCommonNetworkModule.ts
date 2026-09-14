@@ -1,9 +1,14 @@
 import {
-    type EthereumNetworkSymbol,
     isSupportedEthereumNetwork,
     supportedEthereumNetworks,
+    toEthereumNetworkSymbol,
 } from '@trezor/network-ethereum/constants';
-import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
+import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module/constants';
+import type {
+    AddressValidator,
+    NamedAddressResolver,
+    SuiteCommonNetworkModule,
+} from '@trezor/network-module-suite-common-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
 import {
@@ -14,10 +19,16 @@ import { getNetworkConfig } from './networkConfig';
 
 type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps;
 
-export type EthereumNetworkSuiteCommonNetworkModule =
-    SuiteCommonNetworkModule<EthereumNetworkSymbol>;
+type EthereumSuiteCommonNetworkModule = SuiteCommonNetworkModule;
 
-type EthereumSuiteCommonNetworkModule = EthereumNetworkSuiteCommonNetworkModule;
+const supportedNetworks = asNetworkSymbols(supportedEthereumNetworks);
+
+const addressValidator: AddressValidator<NetworkSymbol> = {
+    isAddressValid: (address, symbol) =>
+        ethereumValidator.isAddressValid(address, toEthereumNetworkSymbol(symbol)),
+    getAddressType: (address, symbol) =>
+        ethereumValidator.getAddressType(address, toEthereumNetworkSymbol(symbol)),
+};
 
 export const createEthereumSuiteCommonNetworkModule = (
     deps: EthereumSuiteCommonNetworkModuleDeps,
@@ -25,11 +36,28 @@ export const createEthereumSuiteCommonNetworkModule = (
     const { ethereumNamedAddressResolver } =
         createEthereumNamedAddressResolverCompositionRoot(deps);
 
+    const namedAddressResolver: NamedAddressResolver<NetworkSymbol> = {
+        supportsNamedAddress: symbol =>
+            ethereumNamedAddressResolver.supportsNamedAddress(toEthereumNetworkSymbol(symbol)),
+        isNameLike: ethereumNamedAddressResolver.isNameLike,
+        isAddressLike: ethereumNamedAddressResolver.isAddressLike,
+        resolveNamedAddress: (value, symbol) =>
+            ethereumNamedAddressResolver.resolveNamedAddress(
+                value,
+                toEthereumNetworkSymbol(symbol),
+            ),
+        reverseResolveAddress: (address, symbol) =>
+            ethereumNamedAddressResolver.reverseResolveAddress(
+                address,
+                toEthereumNetworkSymbol(symbol),
+            ),
+    };
+
     return {
-        addressValidator: ethereumValidator,
-        namedAddressResolver: ethereumNamedAddressResolver,
-        getSupportedNetworks: () => supportedEthereumNetworks,
+        addressValidator,
+        namedAddressResolver,
+        getSupportedNetworks: () => supportedNetworks,
         isSupportedNetwork: isSupportedEthereumNetwork,
-        getNetworkConfig,
+        getNetworkConfig: symbol => getNetworkConfig(toEthereumNetworkSymbol(symbol)),
     };
 };
