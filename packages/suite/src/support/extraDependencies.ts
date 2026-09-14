@@ -72,16 +72,20 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
         },
         storageLoadExplorer: (state: ExplorerConfig, { payload }: StorageLoadAction) => {
             payload.explorer.forEach(({ symbol, explorer }) => {
+                // Removing a network does not remove its stored explorer config, so a record can
+                // outlive the network it names — and this runs before hydration, where a throw
+                // costs the whole store.
+                const config = state[symbol];
+
+                if (!config) return;
+
                 // A config stored before a new explorer path existed has no value for it, which
                 // would build `<base>/undefined/<id>`; unset paths fall back to the defaults.
                 const storedPaths = Object.fromEntries(
                     Object.entries(explorer).filter(([, value]) => value !== undefined),
                 );
 
-                state[symbol] = {
-                    ...state[symbol],
-                    custom: { ...state[symbol].default, ...storedPaths },
-                };
+                config.custom = { ...config.default, ...storedPaths };
             });
         },
         storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
