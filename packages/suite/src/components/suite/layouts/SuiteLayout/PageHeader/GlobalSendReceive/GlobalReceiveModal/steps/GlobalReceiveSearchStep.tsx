@@ -2,6 +2,8 @@ import { useRef } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -10,6 +12,7 @@ import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import { AssetsModal } from 'src/components/suite/asset-picker/components';
 import { useDiscovery } from 'src/hooks/suite';
+import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { AssetSearchWithNetworkFilter } from '../../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
@@ -66,9 +69,14 @@ export const GlobalReceiveSearchStep = ({
 }: GlobalReceiveSearchStepProps) => {
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
+    const { dispatch } = useServices(selectDispatch);
     const listRef = useRef<HTMLDivElement>(null);
     const isAddAccountDisabled = isDiscoveryRunning || !device?.connected || !device?.available;
     const assetDisabledMessage = getAssetDisabledMessage(device?.connected, isDiscoveryRunning);
+    const handleViewAccountsClick = () => {
+        dispatch(globalSendReceiveFiltersActions.setSearch(''));
+        onTabChange('accounts');
+    };
 
     return (
         <AssetsModal
@@ -127,6 +135,7 @@ export const GlobalReceiveSearchStep = ({
                         listRef={listRef}
                         onAssetClick={onAssetClick}
                         onRetry={onRetry}
+                        onViewAccountsClick={handleViewAccountsClick}
                     />
                 ) : (
                     <GlobalReceiveAccountsTab

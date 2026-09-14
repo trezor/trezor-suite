@@ -1,13 +1,33 @@
 import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
-import { Column, IconCircle, Row, Text } from '@trezor/components';
+import { Column, H4, IconCircle, Paragraph, Row, Text } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 
 import { ItemClickableContainer } from 'src/components/suite/asset-picker/components/AssetRow/ItemClickableContainer';
 
-import { GlobalReceiveNoResults } from './GlobalReceiveNoResults';
 import { GlobalReceiveAccountListItem } from '../components/GlobalReceiveAccountListItem';
+import { GLOBAL_RECEIVE_LIST_HEIGHT } from '../constants';
 import { type AccountOption } from '../hooks/useAccountsOptions';
+
+const AccountsNoResults = () => (
+    <Column
+        height={GLOBAL_RECEIVE_LIST_HEIGHT}
+        width="100%"
+        maxWidth={380}
+        alignSelf="center"
+        alignItems="center"
+        justifyContent="center"
+        // Adjust for optical center.
+        padding={{ bottom: 16 }}
+    >
+        <H4 typographyStyle="body-md" align="center">
+            <Translation id="TR_GLOBAL_RECEIVE_NO_RESULTS" />
+        </H4>
+        <Paragraph typographyStyle="body-sm" priority="secondary" intent="neutral" align="center">
+            <Translation id="TR_GLOBAL_RECEIVE_NO_RESULTS_DESCRIPTION" />
+        </Paragraph>
+    </Column>
+);
 
 type GlobalReceiveAccountsTabProps = {
     accountOptions: AccountOption[];
@@ -23,7 +43,7 @@ export const GlobalReceiveAccountsTab = ({
     onAddAccountClick,
 }: GlobalReceiveAccountsTabProps) => {
     if (accountOptions.length === 0) {
-        return <GlobalReceiveNoResults />;
+        return <AccountsNoResults />;
     }
 
     return (

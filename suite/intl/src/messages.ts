@@ -3380,6 +3380,11 @@ export const messages = defineMessages({
         defaultMessage: 'No receive account was found for the selected network.',
         id: 'TR_GLOBAL_RECEIVE_NO_ACCOUNT_FOUND',
     },
+    TR_GLOBAL_RECEIVE_NO_ASSETS_RESULTS_DESCRIPTION: {
+        defaultMessage:
+            'If the token uses a network supported by Trezor Suite, you can receive it using that network account instead.',
+        id: 'TR_GLOBAL_RECEIVE_NO_ASSETS_RESULTS_DESCRIPTION',
+    },
     TR_GLOBAL_RECEIVE_NO_RESULTS: {
         defaultMessage: 'No results',
         id: 'TR_GLOBAL_RECEIVE_NO_RESULTS',
@@ -3400,6 +3405,10 @@ export const messages = defineMessages({
     TR_GLOBAL_RECEIVE_SETUP_DESCRIPTION: {
         defaultMessage: 'Turning on the {network} network and checking for your account.',
         id: 'TR_GLOBAL_RECEIVE_SETUP_DESCRIPTION',
+    },
+    TR_GLOBAL_RECEIVE_VIEW_ACCOUNTS: {
+        defaultMessage: 'View accounts',
+        id: 'TR_GLOBAL_RECEIVE_VIEW_ACCOUNTS',
     },
     TR_RECEIVE_SEARCH: {
         defaultMessage: 'Search account',

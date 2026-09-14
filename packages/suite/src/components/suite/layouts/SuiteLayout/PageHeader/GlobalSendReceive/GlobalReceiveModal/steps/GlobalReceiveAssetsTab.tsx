@@ -2,11 +2,11 @@ import { type RefObject } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type TradingAssetOption } from '@suite-common/trading';
-import { Button, Column, Paragraph, Row, Skeleton } from '@trezor/components';
+import { Button, Column, H4, Link, Paragraph, Row, Skeleton } from '@trezor/components';
 
 import { GlobalReceiveAssetList } from '../components/GlobalReceiveAssetList';
+import { GLOBAL_RECEIVE_LIST_HEIGHT } from '../constants';
 import { type GlobalReceiveAssetSections } from '../globalReceiveAssetUtils';
-import { GlobalReceiveNoResults } from './GlobalReceiveNoResults';
 import { type GlobalReceiveAssetCatalogStatus } from '../hooks/useGlobalReceiveAssets';
 
 const ItemSkeleton = () => (
@@ -23,6 +23,30 @@ const ItemSkeleton = () => (
     </Row>
 );
 
+const AssetsNoResults = ({ onViewAccountsClick }: { onViewAccountsClick: () => void }) => (
+    <Column
+        height={GLOBAL_RECEIVE_LIST_HEIGHT}
+        width="100%"
+        maxWidth={380}
+        alignSelf="center"
+        alignItems="center"
+        justifyContent="center"
+        gap={8}
+        // Adjust for optical center.
+        padding={{ bottom: 16 }}
+    >
+        <H4 typographyStyle="body-md" align="center">
+            <Translation id="TR_GLOBAL_RECEIVE_NO_RESULTS" />
+        </H4>
+        <Paragraph typographyStyle="body-sm" priority="secondary" intent="neutral" align="center">
+            <Translation id="TR_GLOBAL_RECEIVE_NO_ASSETS_RESULTS_DESCRIPTION" />
+        </Paragraph>
+        <Link onClick={onViewAccountsClick}>
+            <Translation id="TR_GLOBAL_RECEIVE_VIEW_ACCOUNTS" />
+        </Link>
+    </Column>
+);
+
 type GlobalReceiveAssetsTabProps = {
     assetSections: GlobalReceiveAssetSections;
     catalogStatus: GlobalReceiveAssetCatalogStatus;
@@ -31,6 +55,7 @@ type GlobalReceiveAssetsTabProps = {
     listRef: RefObject<HTMLDivElement | null>;
     onAssetClick: (asset: TradingAssetOption) => void;
     onRetry: () => void;
+    onViewAccountsClick: () => void;
 };
 
 export const GlobalReceiveAssetsTab = ({
@@ -41,6 +66,7 @@ export const GlobalReceiveAssetsTab = ({
     listRef,
     onAssetClick,
     onRetry,
+    onViewAccountsClick,
 }: GlobalReceiveAssetsTabProps) => {
     const isAssetListEmpty =
         assetSections.assetsWithBalance.length === 0 && assetSections.allAssets.length === 0;
@@ -69,7 +95,7 @@ export const GlobalReceiveAssetsTab = ({
     }
 
     if (isAssetListEmpty) {
-        return <GlobalReceiveNoResults />;
+        return <AssetsNoResults onViewAccountsClick={onViewAccountsClick} />;
     }
 
     return (

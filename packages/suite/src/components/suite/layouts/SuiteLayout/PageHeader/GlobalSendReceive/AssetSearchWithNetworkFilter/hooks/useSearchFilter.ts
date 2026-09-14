@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebounce } from 'react-use';
 
@@ -14,6 +14,10 @@ export function useSearchFilter() {
     const defaultSearch = useSelector(globalSendReceiveFiltersSelectors.selectSearch);
     const [search, setSearch] = useState(defaultSearch);
     const { dispatch } = useServices(selectDispatch);
+
+    useEffect(() => {
+        setSearch(defaultSearch);
+    }, [defaultSearch]);
 
     useDebounce(
         () => {
