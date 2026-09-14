@@ -95,6 +95,28 @@ export const transformTransaction = (
                   };
         case 'token-transfer':
             return transformTokenTransfers(baseTx, parsed.transfers, descriptor, tokenDetailByMint);
+        case 'contract-call': {
+            const { invocation, transfers } = parsed;
+            const contractTx: Omit<Transaction, 'type'> = invocation
+                ? {
+                      ...baseTx,
+                      stellarSpecific: { ...baseTx.stellarSpecific!, contractCall: invocation },
+                  }
+                : baseTx;
+
+            const transferTx = transformTokenTransfers(
+                contractTx,
+                transfers,
+                descriptor,
+                tokenDetailByMint,
+            );
+
+            // Only a Stellar Asset Contract reports its transfers as balance changes, so a call
+            // moving contract tokens has none; the decoded call at least says what ran.
+            return transferTx.type === 'unknown' && invocation
+                ? { ...contractTx, type: 'contract' }
+                : transferTx;
+        }
         default: {
             if (descriptor !== parsed.fromAddress && descriptor !== parsed.toAddress)
                 // Transaction does not involve the user's address

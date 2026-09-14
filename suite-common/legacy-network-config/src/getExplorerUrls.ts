@@ -50,6 +50,7 @@ export const getExplorerUrls = (
             tx: `${baseUrl}/tx/`,
             address: `${baseUrl}/account/`,
             token: `${baseUrl}/asset/`,
+            contract: `${baseUrl}/contract/`,
         },
     };
 

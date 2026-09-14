@@ -7,6 +7,7 @@ export type * from './account';
 export type * from './rpc';
 
 export type { TokenTransferInfo } from '../runtime/transactions/identify';
+export type { StellarContractCallInfo } from '../runtime/transactions/decodeContractCall';
 
 export type StellarHorizonServer = Horizon.Server;
 

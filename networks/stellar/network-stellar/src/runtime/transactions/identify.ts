@@ -2,6 +2,7 @@ import { Horizon, StrKey, extractBaseAddress } from '@stellar/stellar-sdk';
 
 import { BigNumber } from '@trezor/utils';
 
+import { decodeSorobanInvocation } from './decodeContractCall';
 import { toStroops } from '../../constants';
 
 type OperationRecord = Horizon.ServerApi.OperationRecord;
@@ -70,7 +71,11 @@ const identifyBalanceChanges = (changes: BalanceChange[] | null): TokenTransferI
             toAddress: toBaseAddress(change.to ?? change.asset_issuer),
         }));
 
-/** Maps one transaction's operations onto the shape `transformTransaction` consumes. */
+/**
+ * Maps one transaction's operations onto the shape `transformTransaction` consumes. Horizon
+ * pre-decodes classic operations, but a host function is reported only through its balance
+ * changes, so its call is read from the envelope XDR the same record already carries.
+ */
 export const identifyTransaction = (operations: OperationRecord[], rawTx: TransactionRecord) => {
     // For fee-bump transactions the fee is paid by fee_account, not by the inner source_account
     const feeSource = extractBaseAddress(rawTx.fee_account || rawTx.source_account);
@@ -150,12 +155,13 @@ export const identifyTransaction = (operations: OperationRecord[], rawTx: Transa
         }
         case Horizon.HorizonApi.OperationResponseType.invokeHostFunction: {
             const transfers = identifyBalanceChanges(operation.asset_balance_changes);
+            const invocation = decodeSorobanInvocation(rawTx.envelope_xdr);
 
-            if (transfers.length === 0) {
+            if (transfers.length === 0 && !invocation) {
                 return { type: 'unknown', ...common } as const;
             }
 
-            return { type: 'token-transfer', ...common, transfers } as const;
+            return { type: 'contract-call', ...common, transfers, invocation } as const;
         }
         default:
             return { type: 'unknown', ...common } as const;
