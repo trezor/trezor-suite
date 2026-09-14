@@ -2,7 +2,7 @@ import { act } from '@testing-library/react';
 
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { stakeInitialState } from '@suite-common/wallet-core';
+import { feesInitialState, stakeInitialState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
@@ -54,6 +54,7 @@ const renderCardanoStaking = (account: Account) => {
         extra: { services: {} },
         preloadedState: {
             wallet: {
+                fees: feesInitialState,
                 selectedAccount: { account },
                 stake: stakeInitialState,
                 transactions: { transactions: {} },

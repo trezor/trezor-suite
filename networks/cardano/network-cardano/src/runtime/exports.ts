@@ -1,7 +1,8 @@
-import { CoinSelectionError } from '@fivebinaries/coin-selection';
 import * as cbor from 'cbor';
 
-export { trezorUtils, coinSelection } from '@fivebinaries/coin-selection';
+import { CoinSelectionError } from '@trezor/network-cardano-coin-selection';
+
+export { trezorUtils, coinSelection } from '@trezor/network-cardano-coin-selection';
 
 export const asCoinSelectionError = (error: unknown) => {
     if (error instanceof CoinSelectionError) {

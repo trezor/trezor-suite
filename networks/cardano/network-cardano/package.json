@@ -49,7 +49,7 @@
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
     "dependencies": {
-        "@fivebinaries/coin-selection": "3.0.0",
+        "@trezor/network-cardano-coin-selection": "workspace:*",
         "@trezor/utils": "workspace:*",
         "cbor": "^10.0.12"
     }

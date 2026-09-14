@@ -4,6 +4,7 @@ import {
     CardanoComposeTransactionParamsSchema,
     type PrecomposedTransactionCardano,
 } from '@trezor/connect-common/src/types/api/cardano/cardanoComposeTransaction';
+import { getProtocolParamsDrift } from '@trezor/network-cardano/constants';
 import cardano from '@trezor/network-cardano/runtime';
 import { Assert } from '@trezor/schema-utils';
 
@@ -43,9 +44,22 @@ export default class CardanoComposeTransaction extends AbstractMethod<
             changeAddress,
             addressParameters,
             testnet,
+            protocolParams,
         } = this.params;
 
         const { trezorUtils, asCoinSelectionError, coinSelection } = await cardano();
+
+        // Only `minFeeA` has a live source; sampling the first level warns once per request.
+        const drift = getProtocolParamsDrift({
+            ...protocolParams,
+            ...(feeLevels[0]?.feePerUnit ? { minFeeA: feeLevels[0].feePerUnit } : {}),
+        });
+        if (drift.length > 0) {
+            console.warn(
+                'TrezorConnect.cardanoComposeTransaction: protocol parameters differ from the compiled-in defaults',
+                drift,
+            );
+        }
 
         const result = feeLevels.map<PrecomposedTransactionCardano>(({ feePerUnit }) => {
             try {
@@ -59,7 +73,12 @@ export default class CardanoComposeTransaction extends AbstractMethod<
                         changeAddress.address,
                         !!testnet,
                     ),
-                    { feeParams: feePerUnit ? { a: feePerUnit } : undefined },
+                    {
+                        protocolParams: {
+                            ...protocolParams,
+                            ...(feePerUnit ? { minFeeA: feePerUnit } : {}),
+                        },
+                    },
                 );
 
                 return {

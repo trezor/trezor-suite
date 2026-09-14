@@ -13,6 +13,7 @@ const publishableTrezorPackages = [
     '@trezor/blockchain-link-utils',
     '@trezor/network-bitcoin',
     '@trezor/network-cardano',
+    '@trezor/network-cardano-coin-selection',
     '@trezor/network-ethereum',
     '@trezor/network-ripple',
     '@trezor/network-solana',

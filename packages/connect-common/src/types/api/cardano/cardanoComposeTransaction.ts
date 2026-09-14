@@ -1,4 +1,5 @@
 import type { Utxo as AccountUtxo } from '@trezor/blockchain-link-types';
+import type { CardanoProtocolParams } from '@trezor/network-cardano/constants';
 import type { CardanoAddressParameters, types } from '@trezor/network-cardano/types';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
@@ -73,6 +74,7 @@ export type CardanoComposeTransactionParams = {
     changeAddress: { address: string; path: string };
     addressParameters: CardanoAddressParameters;
     testnet?: boolean;
+    protocolParams?: Partial<CardanoProtocolParams>;
 };
 
 // Typebox schema for CardanoComposeTransactionParams, used in Explorer
@@ -176,6 +178,20 @@ export const CardanoComposeTransactionParamsSchema = Type.Object({
         { $id: 'CardanoAddressParameters' },
     ),
     testnet: Type.Optional(Type.Boolean()),
+    protocolParams: Type.Optional(
+        Type.Object(
+            {
+                minFeeA: Type.Optional(Type.String()),
+                minFeeB: Type.Optional(Type.String()),
+                keyDeposit: Type.Optional(Type.String()),
+                poolDeposit: Type.Optional(Type.String()),
+                coinsPerUtxoByte: Type.Optional(Type.String()),
+                maxValueSize: Type.Optional(Type.Number()),
+                maxTxSize: Type.Optional(Type.Number()),
+            },
+            { $id: 'CardanoProtocolParams' },
+        ),
+    ),
 });
 
 // TS - Assert type of CardanoComposeTransactionParams is compatible with CardanoComposeTransactionParamsSchema

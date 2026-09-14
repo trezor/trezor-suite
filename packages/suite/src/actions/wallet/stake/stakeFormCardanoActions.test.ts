@@ -5,7 +5,11 @@ import { type Account, type AccountKey, type CardanoAction } from '@suite-common
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 import TrezorConnect, { type CardanoCertificate, PROTO } from '@trezor/connect';
 
-import { CardanoComposeError, prepareTxPlan } from './stakeFormCardanoActions';
+import {
+    CardanoComposeError,
+    getCardanoFeePerUnit,
+    prepareTxPlan,
+} from './stakeFormCardanoActions';
 
 jest.mock('@trezor/connect', () => {
     const actual = jest.requireActual('@trezor/connect');
@@ -193,6 +197,33 @@ describe('prepareTxPlan', () => {
         );
     });
 
+    it('forwards the backend fee rate so the compose does not fall back to a hardcoded min_fee_a', async () => {
+        mockComposeSuccess();
+
+        await prepareTxPlan({
+            account: mockNeverStakedAccount(),
+            action: 'delegate',
+            cardanoPools,
+            feePerUnit: '57',
+        });
+
+        expect(cardanoComposeTransactionMock.mock.calls[0][0].feeLevels).toEqual([
+            { feePerUnit: '57' },
+        ]);
+    });
+
+    it('omits fee levels when no fee rate is known, leaving the library defaults in charge', async () => {
+        mockComposeSuccess();
+
+        await prepareTxPlan({
+            account: mockNeverStakedAccount(),
+            action: 'delegate',
+            cardanoPools,
+        });
+
+        expect(cardanoComposeTransactionMock.mock.calls[0][0]).not.toHaveProperty('feeLevels');
+    });
+
     it('rejects with the error code only, so a rejected payload cannot leave the device', async () => {
         const utxoAddress = 'addr1q9utxo';
         cardanoComposeTransactionMock.mockResolvedValue({
@@ -370,5 +401,38 @@ describe('prepareTxPlan', () => {
             ).resolves.not.toBeNull();
             expect(getVoteDelegationCertificate()?.dRep).toEqual(everstakeDrep);
         });
+    });
+});
+
+describe('getCardanoFeePerUnit', () => {
+    it('picks the normal level the backend fills in', () => {
+        expect(
+            getCardanoFeePerUnit({
+                levels: [{ label: 'normal', feePerUnit: '57', blocks: -1 }],
+            }),
+        ).toBe('57');
+    });
+
+    it('skips the placeholder custom level rather than composing against a zero min_fee_a', () => {
+        expect(
+            getCardanoFeePerUnit({
+                levels: [{ label: 'custom', feePerUnit: '0', blocks: -1 }],
+            }),
+        ).toBeUndefined();
+    });
+
+    it('falls back to the first predefined level when none is labelled normal', () => {
+        expect(
+            getCardanoFeePerUnit({
+                levels: [
+                    { label: 'high', feePerUnit: '99', blocks: -1 },
+                    { label: 'custom', feePerUnit: '0', blocks: -1 },
+                ],
+            }),
+        ).toBe('99');
+    });
+
+    it('returns nothing when there is no fee info at all', () => {
+        expect(getCardanoFeePerUnit(undefined)).toBeUndefined();
     });
 });

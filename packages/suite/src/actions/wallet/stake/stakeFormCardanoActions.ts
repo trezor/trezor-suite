@@ -14,6 +14,7 @@ import { EVERSTAKE_POOL_NAMES, type NetworkSymbol } from '@suite-common/wallet-c
 import {
     type AccountVotingDelegation,
     CARDANO_EVERSTAKE_DREP,
+    type FeesRootState,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
@@ -26,6 +27,7 @@ import {
     parseDrepBech32,
     selectBestCardanoPool,
     selectCardanoPoolsInfo,
+    selectRawNetworkFeeInfo,
     selectStakeVotingDelegation,
     validateCardanoDrep,
 } from '@suite-common/wallet-core';
@@ -34,6 +36,7 @@ import {
     type CardanoAction,
     type ComposeActionContext,
     type ExternalOutput,
+    type FeeInfo,
     type PrecomposedTransaction,
     type PrecomposedTransactionFinal,
     type SelectedAccountStatus,
@@ -115,11 +118,20 @@ const calculateTransaction = (
     );
 };
 
+// `custom` is skipped: the form synthesizes it with a placeholder `feePerUnit` of '0'.
+export const getCardanoFeePerUnit = (feeInfo?: Pick<FeeInfo, 'levels'>) => {
+    const levels = (feeInfo?.levels ?? []).filter(({ label }) => label !== 'custom');
+    const level = levels.find(({ label }) => label === 'normal') ?? levels[0];
+
+    return level?.feePerUnit;
+};
+
 type PrepareTxPlanParams = {
     account: Account;
     action: CardanoAction;
     cardanoPools: AdaPools['pools'];
     votingDelegation?: AccountVotingDelegation;
+    feePerUnit?: string;
 };
 
 export const prepareTxPlan = async ({
@@ -127,6 +139,7 @@ export const prepareTxPlan = async ({
     action,
     cardanoPools,
     votingDelegation,
+    feePerUnit,
 }: PrepareTxPlanParams) => {
     if (account?.networkType !== 'cardano') return;
 
@@ -221,6 +234,7 @@ export const prepareTxPlan = async ({
         changeAddress,
         addressParameters,
         testnet: isTestnet(account.symbol),
+        ...(feePerUnit ? { feeLevels: [{ feePerUnit }] } : {}),
     });
 
     if (!response.success) throw new CardanoComposeError(response.error.code);
@@ -228,12 +242,21 @@ export const prepareTxPlan = async ({
     return { txPlan: response.payload[0], certificates, withdrawals, selectedPool };
 };
 
-const getTransactionData = (
-    formValues: StakeFormState,
-    selectedAccount: SelectedAccountStatus,
-    cardanoPools: AdaPools['pools'],
-    votingDelegation?: AccountVotingDelegation,
-) => {
+type GetTransactionDataParams = {
+    formValues: StakeFormState;
+    selectedAccount: SelectedAccountStatus;
+    cardanoPools: AdaPools['pools'];
+    votingDelegation?: AccountVotingDelegation;
+    feePerUnit?: string;
+};
+
+const getTransactionData = ({
+    formValues,
+    selectedAccount,
+    cardanoPools,
+    votingDelegation,
+    feePerUnit,
+}: GetTransactionDataParams) => {
     const { stakeType } = formValues;
 
     if (selectedAccount.status !== 'loaded' || selectedAccount.account.networkType !== 'cardano') {
@@ -241,21 +264,22 @@ const getTransactionData = (
     }
 
     const { account } = selectedAccount;
+    const params = { account, cardanoPools, votingDelegation, feePerUnit };
 
     if (stakeType === 'stake') {
-        return prepareTxPlan({ account, action: 'delegate', cardanoPools, votingDelegation });
+        return prepareTxPlan({ ...params, action: 'delegate' });
     }
 
     if (stakeType === 'unstake') {
-        return prepareTxPlan({ account, action: 'deregister', cardanoPools, votingDelegation });
+        return prepareTxPlan({ ...params, action: 'deregister' });
     }
 
     if (stakeType === 'claim') {
-        return prepareTxPlan({ account, action: 'withdrawal', cardanoPools, votingDelegation });
+        return prepareTxPlan({ ...params, action: 'withdrawal' });
     }
 
     if (stakeType === 'change-delegate') {
-        return prepareTxPlan({ account, action: 'voteDelegate', cardanoPools, votingDelegation });
+        return prepareTxPlan({ ...params, action: 'voteDelegate' });
     }
 };
 
@@ -297,12 +321,13 @@ export const composeTransactionThunk =
 
         if (selectedAccount.status !== 'loaded') return;
 
-        const txData = await getTransactionData(
+        const txData = await getTransactionData({
             formValues,
             selectedAccount,
             cardanoPools,
             votingDelegation,
-        );
+            feePerUnit: getCardanoFeePerUnit(formState.feeInfo),
+        });
         const { txPlan } = txData || {};
         if (txPlan?.type !== 'final') return;
 
@@ -378,7 +403,10 @@ const getPoolDelegation = (
     };
 };
 
-type SignTransactionThunkState = DeviceRootState & SelectedAccountRootState & StakeRootState;
+type SignTransactionThunkState = DeviceRootState &
+    FeesRootState &
+    SelectedAccountRootState &
+    StakeRootState;
 
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
@@ -404,12 +432,13 @@ export const signTransactionThunk =
             return;
         }
 
-        const txData = await getTransactionData(
+        const txData = await getTransactionData({
             formValues,
             selectedAccount,
             cardanoPools,
             votingDelegation,
-        );
+            feePerUnit: getCardanoFeePerUnit(selectRawNetworkFeeInfo(getState(), account.symbol)),
+        });
 
         if (!txData) {
             dispatch(

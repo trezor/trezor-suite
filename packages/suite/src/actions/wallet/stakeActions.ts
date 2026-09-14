@@ -19,6 +19,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type BlockchainRootState,
     type EthereumGetCurrentNonceThunkState,
+    type FeesRootState,
     type ReplaceTransactionThunkState,
     type StakeRootState,
     type SyncAccountsWithBlockchainThunkDeps,
@@ -281,6 +282,7 @@ const pushTransactionThunk =
 
 type SignTransactionThunkState = DeviceRootState &
     EthereumGetCurrentNonceThunkState &
+    FeesRootState &
     MevProtectionRootState &
     ReplaceTransactionThunkState &
     SelectedAccountRootState &

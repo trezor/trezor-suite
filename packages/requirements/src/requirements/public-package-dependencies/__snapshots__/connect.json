@@ -1,7 +1,8 @@
 {
     "prod": [
         "@bufbuild/protobuf",
-        "@fivebinaries/coin-selection",
+        "@emurgo/cardano-serialization-lib-browser",
+        "@emurgo/cardano-serialization-lib-nodejs",
         "@noble/curves",
         "@noble/hashes",
         "@noble/post-quantum",
@@ -29,6 +30,7 @@
         "@trezor/device-utils",
         "@trezor/env-utils",
         "@trezor/network-cardano",
+        "@trezor/network-cardano-coin-selection",
         "@trezor/network-ripple",
         "@trezor/network-solana",
         "@trezor/network-stellar",
