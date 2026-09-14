@@ -30,12 +30,13 @@ import {
     isScopedCallId,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import TrezorConnect, {
+import {
     BLOCKCHAIN_EVENT,
     type CallMethodPayload,
     type CreateLoggerDep,
     DEVICE,
     DEVICE_EVENT,
+    type GetTrezorConnectPrivilegedDep,
     TRANSPORT_EVENT,
     UI_EVENT,
     UI_REQUEST,
@@ -72,6 +73,7 @@ export type ConnectInitThunkDeps = {
         GetBinFilesBaseUrlDep &
         GetDebugSettingsDep &
         GetThpSettingsDep &
+        GetTrezorConnectPrivilegedDep &
         ThpHostNameDep &
         TransportsDep;
 };
@@ -100,8 +102,11 @@ export const connectInitThunk = createThunk<
             getBinFilesBaseUrl,
             getDebugSettings,
             getThpSettings,
+            getTrezorConnect,
         },
     } = extra;
+
+    const TrezorConnect = getTrezorConnect();
 
     // set event listeners and dispatch as
     TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {
