@@ -201,6 +201,7 @@ export const initialRedirectionThunk = createThunk<
 
     if (route.isForegroundApp) {
         dispatch(gotoThunk({ routeName: route.name }));
+        // TODO MAYBE DELETE THIS???
     } else if (isInitialRun) {
         dispatch(gotoThunk({ routeName: 'suite-start' }));
     }

@@ -10,7 +10,7 @@ import { DEVICE } from '@trezor/connect';
 import { type NewContentIndicatorId } from './flagsConstants';
 
 export type FlagsState = {
-    initialRun: boolean;
+    initialRun: boolean; // TODO MAYBE DELETE THIS
     taprootBannerClosed: boolean;
     firmwareTypeBannerClosed: boolean;
     discreetModeCompleted: boolean;

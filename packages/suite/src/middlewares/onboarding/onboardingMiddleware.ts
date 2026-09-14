@@ -3,13 +3,15 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
-import { deviceActions } from '@suite-common/device';
-import { firmwareActions } from '@suite-common/firmware';
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { firmwareActions, selectFirmware } from '@suite-common/firmware';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { type Dispatch } from '@suite-common/redux-utils';
 import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
 import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { selectOnboarding } from 'src/selectors/onboarding/onboardingSelectors';
 import { type AppState } from 'src/types/suite';
 
 const onboardingMiddleware =
@@ -19,14 +21,24 @@ const onboardingMiddleware =
         const isFwInstallationDone =
             firmwareActions.setStatus.match(action) && action.payload === 'done';
 
-        const { firmware, onboarding } = api.getState();
+        const firmware = selectFirmware(api.getState());
+        const onboarding = selectOnboarding(api.getState());
+        const deviceId = selectSelectedDevice(api.getState())?.id;
 
-        if (isFwInstallationDone && onboarding.isActive && firmware.status === 'thp-pairing') {
-            // After the THP pairing is finished we want to jump to the next step automatically.
-            // User already drifted away from the installation flow and is not aware that THP is actually in the middle
-            // of the Firmware installation.
-            api.dispatch(onboardingActions.goToNextStepThunk());
-            api.dispatch(firmwareActions.resetReducer());
+        if (isFwInstallationDone && onboarding.isActive) {
+            // Firmware installation finished = it is not a device that just connected with FW already install, we can
+            // consider it known and skip the "Firmware already installed, have you used this device before?" modal.
+            if (deviceId) {
+                api.dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
+            }
+
+            if (firmware.status === 'thp-pairing') {
+                // After the THP pairing is finished we want to jump to the next step automatically.
+                // User already drifted away from the installation flow and is not aware that THP is actually in the middle
+                // of the Firmware installation.
+                api.dispatch(onboardingActions.goToNextStepThunk());
+                api.dispatch(firmwareActions.resetReducer());
+            }
         } else {
             // pass action
             next(action);
