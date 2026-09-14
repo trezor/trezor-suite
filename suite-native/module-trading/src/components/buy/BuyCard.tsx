@@ -1,4 +1,4 @@
-import { Box, HStack } from '@suite-native/atoms';
+import { HStack } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -36,11 +36,7 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                 bottomBorder
                 testID={`${BUY_CARD_TEST_ID}/fiatSection`}
                 title={<Translation id="moduleTrading.selectFiat.buy.title" />}
-                titleAction={
-                    <Box alignItems="flex-end">
-                        <BuyFormFieldErrorBadge fieldName="fiatValue" />
-                    </Box>
-                }
+                titleAction={<BuyFormFieldErrorBadge fieldName="fiatValue" />}
             >
                 <BuyFiatCurrencyPicker />
             </TradingCardSection>

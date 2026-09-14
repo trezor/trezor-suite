@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import { Box } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { type TradingRootState, selectAmountInBaseFiatCurrency } from '@suite-native/trading-state';
@@ -40,7 +41,7 @@ export const SellSendFiatAmountBadge = () => {
     });
 
     if (!amount || !asset) {
-        return null;
+        return <Box />;
     }
 
     return <SellSendFiatAmountBadgeContent amount={amount} asset={asset} />;

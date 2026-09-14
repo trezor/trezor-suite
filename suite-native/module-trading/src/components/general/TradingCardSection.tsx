@@ -13,7 +13,7 @@ const tradingCardSectionStyle = prepareNativeStyle<TradingCardSectionStyleProps>
     ({ borders, colors, spacings }, { bottomBorder, readOnly }) => ({
         borderBottomWidth: 0,
         borderBottomColor: colors.surfaceBorderRaised,
-        paddingHorizontal: spacings.sp12,
+        paddingHorizontal: spacings.sp20,
         paddingTop: spacings.sp12,
         paddingBottom: spacings.sp12,
         gap: spacings.sp4,

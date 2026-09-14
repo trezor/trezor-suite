@@ -1,7 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
-import { Text, type TextProps } from '@suite-native/atoms';
+import { Box, Text, type TextProps } from '@suite-native/atoms';
 
 import { useTradingFiatValues } from '../hooks/useTradingFiatValues';
 
@@ -19,7 +19,7 @@ export const CryptoToFiatValueBadge = ({
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     if (!baseCurrencyAmount) {
-        return null;
+        return <Box />;
     }
 
     return (
