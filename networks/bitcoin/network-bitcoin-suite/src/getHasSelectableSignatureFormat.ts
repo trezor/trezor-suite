@@ -7,6 +7,5 @@ import { type Account } from '@suite-common/wallet-types';
  * produce the same signature.
  */
 export const getHasSelectableSignatureFormat = (account: Account): boolean =>
-    account.networkType === 'bitcoin' &&
     account.accountType !== 'legacy' &&
     Object.keys(getNetwork(account.symbol).accountTypes).length >= 1;

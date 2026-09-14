@@ -1,34 +1,62 @@
 import { useEffect, useState } from 'react';
-import { type FieldError } from 'react-hook-form';
+import { type FieldError, useController } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import {
+    FormatSwitch,
+    SIGN_VERIFY_BASE_DEFAULT_VALUES,
+    SignVerifyAddressField,
+    type SignVerifyBaseFields,
+    SignVerifyMessageField,
+    type SignVerifyOutcome,
+    type SignVerifyPage,
+    SignVerifySignatureField,
+    SignVerifyTabs,
+    signVerifyBaseSchema,
+    useSignVerifyCopyValue,
+    useSignVerifyForm,
+} from '@suite/sign-verify';
 import { useServices } from '@suite-common/dependency-injection';
+import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { type Network } from '@suite-common/wallet-config';
+import { yup } from '@suite-common/validators';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
+import { type SignVerifyProps } from '@trezor/network-module-suite-types';
 
-import { FormatSwitch } from './FormatSwitch';
-import { SignVerifyAddressField } from './SignVerifyAddressField';
-import { SignVerifyMessageField } from './SignVerifyMessageField';
-import { SignVerifyPubKeyField } from './SignVerifyPubKeyField';
-import { SignVerifySignatureField } from './SignVerifySignatureField';
-import { SignVerifyTabs } from './SignVerifyTabs';
-import { isVerifySupported, signThunk, verifyThunk } from './signVerifyActions';
-import { getHasSelectableSignatureFormat } from './signVerifyUtils';
-import { type SignVerifyOutcome, type SignVerifyPage } from './types';
-import { useSignVerifyCopyValue } from './useSignVerifyCopyValue';
-import { type SignVerifyFields, useSignVerifyForm } from './useSignVerifyForm';
+import { type BitcoinSignVerifyActions } from './bitcoinSignVerifyActions';
+import { getBitcoinSignAddresses } from './getBitcoinSignAddresses';
+import { getHasSelectableSignatureFormat } from './getHasSelectableSignatureFormat';
 
-type SignVerifyFormProps = {
+type BitcoinSignVerifyFields = SignVerifyBaseFields & {
+    isElectrum?: boolean;
+};
+
+const bitcoinSignVerifySchema: yup.ObjectSchema<BitcoinSignVerifyFields> = yup.object({
+    ...signVerifyBaseSchema,
+    isElectrum: yup.boolean(),
+});
+
+const DEFAULT_VALUES: BitcoinSignVerifyFields = {
+    ...SIGN_VERIFY_BASE_DEFAULT_VALUES,
+    isElectrum: false,
+};
+
+type BitcoinSignVerifyFormProps = {
     account: Account;
-    network?: Network;
+    actions: BitcoinSignVerifyActions;
     page: SignVerifyPage;
     onPageChange: (page: SignVerifyPage) => void;
 };
 
-export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVerifyFormProps) => {
+const BitcoinSignVerifyForm = ({
+    account,
+    actions,
+    page,
+    onPageChange,
+}: BitcoinSignVerifyFormProps) => {
     const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
 
     const { dispatch } = useServices(selectDispatch);
@@ -36,19 +64,31 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
     const isSignPage = page === 'sign';
 
     const {
+        control,
         register,
         isSubmitting,
         resetForm,
         formSubmit,
         formValues,
         formErrors,
-        formSetSignature,
+        setValue,
         hexField,
         addressField,
         pathField,
-        isElectrumField,
-        cardanoPubKeyCoseField,
-    } = useSignVerifyForm(isSignPage, account);
+    } = useSignVerifyForm<BitcoinSignVerifyFields>({
+        account,
+        isSignPage,
+        schema: bitcoinSignVerifySchema,
+        defaultValues: DEFAULT_VALUES,
+        resultFields: ['signature'],
+        signedInputFields: ['address', 'message', 'isElectrum'],
+    });
+
+    const { field: isElectrumField } = useController({ control, name: 'isElectrum' });
+
+    const touchedAddresses = useSelector((state: ReceiveRootState) =>
+        selectTouchedAddresses(state, account.key),
+    );
 
     const { isLocked } = useDevice();
     const { translationString } = useTranslation();
@@ -86,20 +126,22 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         setOutcome('idle');
     };
 
-    const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex, isElectrum, cardanoPubKeyCose } = data;
+    const onSubmit = async (data: BitcoinSignVerifyFields) => {
+        const { address, path, message, signature, hex, isElectrum } = data;
 
         if (isSignPage && path !== undefined) {
             const result = await dispatch(
-                signThunk(account, path, message, hex, isElectrum, cardanoPubKeyCose),
+                actions.signThunk(account, path, message, hex, isElectrum),
             );
 
             if (result) {
-                formSetSignature(result);
+                setValue('signature', result.signature);
                 setOutcome('signed');
             }
         } else if (signature !== undefined) {
-            const result = await dispatch(verifyThunk(account, address, message, signature, hex));
+            const result = await dispatch(
+                actions.verifyThunk(account, address, message, signature, hex),
+            );
 
             // Cancelling on the device leaves the form exactly as it was, the way a cancelled
             // signing does: nothing was verified, and nothing failed to verify either.
@@ -109,21 +151,12 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         }
     };
 
-    const signFormatsDiffer = getHasSelectableSignatureFormat(account);
-    const canVerify = isVerifySupported(account);
-    const isCardano = network?.networkType === 'cardano';
-
     return (
         <Card>
-            <SignVerifyTabs
-                page={page}
-                canVerify={canVerify}
-                outcome={outcome}
-                onPageChange={onPageChange}
-            />
+            <SignVerifyTabs page={page} canVerify outcome={outcome} onPageChange={onPageChange} />
             <form onSubmit={formSubmit(onSubmit)}>
                 <Column gap={16} margin={{ bottom: 32 }}>
-                    {isSignPage && signFormatsDiffer && !isCompleted && (
+                    {isSignPage && getHasSelectableSignatureFormat(account) && !isCompleted && (
                         <FormatSwitch
                             options={[
                                 { value: false, label: <Translation id="TR_BIP_SIG_FORMAT" /> },
@@ -142,22 +175,13 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
                                 />
                             }
                             data-testid="@sign-verify/format"
-                            {...isElectrumField}
-                        />
-                    )}
-                    {isSignPage && isCardano && (
-                        <FormatSwitch
-                            options={[
-                                { value: false, label: <Translation id="TR_PUBLIC_KEY_RAW" /> },
-                                { value: true, label: <Translation id="TR_PUBLIC_KEY_COSE" /> },
-                            ]}
-                            isDisabled={isCompleted}
-                            data-testid="@sign-verify/cardano-pubkey-format"
-                            {...cardanoPubKeyCoseField}
+                            selectedOption={isElectrumField.value}
+                            onChange={isElectrumField.onChange}
                         />
                     )}
                     <SignVerifyAddressField
                         account={account}
+                        signAddresses={getBitcoinSignAddresses(account, touchedAddresses)}
                         isSignPage={isSignPage}
                         isCompleted={isCompleted}
                         address={formValues.address}
@@ -187,16 +211,6 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
                         registration={register('signature')}
                         onCopy={copyValue}
                     />
-                    {isSignPage && isCardano && (
-                        <SignVerifyPubKeyField
-                            pubKey={formValues.pubKey}
-                            isCompleted={isCompleted}
-                            hasError={!!formErrors.pubKey}
-                            errorMessage={getErrorMessage(formErrors.pubKey)}
-                            registration={register('pubKey')}
-                            onCopy={copyValue}
-                        />
-                    )}
                 </Column>
                 {isCompleted ? (
                     <Button
@@ -223,5 +237,25 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
                 )}
             </form>
         </Card>
+    );
+};
+
+type BitcoinSignVerifyProps = SignVerifyProps & {
+    actions: BitcoinSignVerifyActions;
+};
+
+export const BitcoinSignVerify = ({ account, actions }: BitcoinSignVerifyProps) => {
+    const [page, setPage] = useState<SignVerifyPage>('sign');
+
+    return (
+        // Each tab of each account is a form of its own: keying it throws away everything the
+        // previous one was in the middle of, including the outcome it had reached.
+        <BitcoinSignVerifyForm
+            key={`${page}-${account.key}`}
+            account={account}
+            actions={actions}
+            page={page}
+            onPageChange={setPage}
+        />
     );
 };
