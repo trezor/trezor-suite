@@ -9,10 +9,12 @@ import {
     type SuiteSyncWallet,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
+    createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { asWalletDescriptor } from '@trezor/device-utils';
+import { err } from '@trezor/type-utils';
 import { createDeferred } from '@trezor/utils';
 
 import { createEvoluInstanceFactory } from './createEvoluInstance';
@@ -105,6 +107,27 @@ describe(createEvoluStorageFactory.name, () => {
         ]);
 
         unsubscribe();
+        await storage.dispose();
+    });
+
+    it('rejects an oversized label without echoing the rejected row', async () => {
+        await using run = await testCreateRunWithEvoluDeps({
+            createWebSocket: testCreateWebSocket({ throwOnCreate: true }),
+        });
+        const storage = await createTestStorage(run);
+        const oversizedLabel = 'Savings for the house '.repeat(50);
+
+        const updateResult = storage.data.accounts.update({
+            accountDescriptor: asAccountDescriptor('xpub123'),
+            networkSymbol: btcSymbol,
+            label: oversizedLabel,
+        });
+
+        expect(updateResult).toEqual(
+            err(createSuiteSyncUpdateError('Object.Props.label.Union.Null,MaxLength')),
+        );
+        expect(JSON.stringify(updateResult)).not.toContain('Savings for the house');
+
         await storage.dispose();
     });
 

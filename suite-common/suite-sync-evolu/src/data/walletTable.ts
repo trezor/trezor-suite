@@ -19,6 +19,7 @@ import {
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
+import { describeEvoluTypeError } from './describeEvoluTypeError';
 import { normalizeLabel } from './normalizeLabel';
 
 export const WalletLabelId = id('WalletLabelId');
@@ -49,7 +50,7 @@ export class EvoluWalletTable implements WalletTable {
         const idResult = WalletLabelId.from(createIdFromString(walletDescriptor));
 
         if (!idResult.ok) {
-            return err(createSuiteSyncUpdateError(idResult.error));
+            return err(createSuiteSyncUpdateError(describeEvoluTypeError(idResult.error)));
         }
 
         const normalizedLabel = normalizeLabel(label);
@@ -61,7 +62,7 @@ export class EvoluWalletTable implements WalletTable {
         });
 
         if (!validated.ok) {
-            return err(createSuiteSyncUpdateError({ caused: validated.error }));
+            return err(createSuiteSyncUpdateError(describeEvoluTypeError(validated.error)));
         }
 
         this.evolu.upsert('wallet', validated.value);

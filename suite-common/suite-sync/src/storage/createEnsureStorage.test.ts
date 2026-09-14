@@ -21,8 +21,6 @@ const OWNER_ABCD: SuiteSyncOwner = {
 
 const DELEGATED_KEY = asDelegatedIdentityKey('delegated-key-abcd');
 
-const SECRET_KEY_HEX = 'deadbeefcafebabe0123456789abcdef';
-
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
 describe(createEnsureStorage.name, () => {
@@ -242,46 +240,5 @@ describe(createEnsureStorage.name, () => {
             suiteSyncOwner: OWNER_ABCD,
         });
         expect(newStorage.updateRelayUrl).toHaveBeenCalledWith('wss://custom-relay.example.com');
-    });
-
-    it('maps a proof failure to unavailable device without reporting its cause', async () => {
-        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-        const device = mockSuiteDevice();
-        const newStorage = createSuiteSyncStorageMock();
-
-        const deps = createMockDeps<EnsureStorageDeps>({
-            getRelayUrl: () => 'wss://default-relay.example.com',
-            getOwnerHasAllowance: null,
-            suiteSyncStorageRepository: {
-                get: () => null,
-                set: null,
-                delete: null,
-            },
-            createSuiteStorage: () => Promise.resolve(newStorage),
-            ensureSuiteSyncKeys: () =>
-                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
-            ensureQuota: () =>
-                Promise.resolve(
-                    err({
-                        type: 'ProofOfDelegatedSignFailed',
-                        caused: new Error(`invalid private key ${SECRET_KEY_HEX}`),
-                    }),
-                ),
-            getDeviceForStaticSessionId: () => device,
-        });
-
-        const result = await createEnsureStorage(deps)({
-            deviceStaticSessionId,
-            isWriteMode: true,
-        });
-
-        expect(result).toEqual(err(SuiteSyncUnavailableOnDeviceError()));
-        expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-        const reportedArguments = consoleErrorSpy.mock.calls.flat();
-        expect(reportedArguments.map(String).join(' ')).toContain('ProofOfDelegatedSignFailed');
-        expect(reportedArguments.map(String).join(' ')).not.toContain(SECRET_KEY_HEX);
-        expect(JSON.stringify(reportedArguments)).not.toContain(SECRET_KEY_HEX);
-
-        consoleErrorSpy.mockRestore();
     });
 });

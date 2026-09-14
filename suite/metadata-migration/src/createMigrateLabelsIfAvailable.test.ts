@@ -227,7 +227,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
     });
 
     it('reports migration errors and does not dispatch success actions', async () => {
-        const cause = createSuiteSyncUpdateError(new Error('migration failed'));
+        const cause = createSuiteSyncUpdateError('migration failed');
 
         const dispatch: Dispatch = jest.fn();
         const deps = createMockDeps<MigrateLabelsIfAvailableDeps>({
