@@ -4921,7 +4921,8 @@ export const messages = {
         },
         manualInput: {
             title: 'Activate token manually',
-            subtitle: 'To activate a token, enter its asset code and issuer address.',
+            subtitle:
+                'To activate a token, enter its contract ID, or its asset code and issuer address.',
             assetCode: 'Asset code or contract ID',
             assetCodePlaceholder: 'e.g. SHX',
             assetCodeError: 'Invalid asset code. Enter 1-12 alphanumeric characters.',

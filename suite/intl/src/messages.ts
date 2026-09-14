@@ -5589,7 +5589,8 @@ export const messages = defineMessages({
     },
     TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION: {
         id: 'TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION',
-        defaultMessage: 'To activate a token, enter its asset code and issuer address.',
+        defaultMessage:
+            'To activate a token, enter its contract ID, or its asset code and issuer address.',
     },
     TR_MAKE_SURE_NO_ONE_CAN_PEEK: {
         id: 'TR_MAKE_SURE_NO_ONE_CAN_PEEK',
