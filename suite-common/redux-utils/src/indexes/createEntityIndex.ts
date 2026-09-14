@@ -360,8 +360,8 @@ export const createEntityIndex = <
 
         for (const [partKey, part] of toParts(source)) {
             const previousPart = previous?.parts.get(partKey);
-            const isUntouched = previousPart !== undefined && previousPart.part === part;
-            const builtPart = isUntouched ? previousPart : buildPart(part);
+            const isUntouched = previousPart?.part === part;
+            const builtPart = isUntouched && previousPart ? previousPart : buildPart(part);
 
             parts.set(partKey, builtPart);
 
@@ -432,7 +432,7 @@ export const createEntityIndex = <
         // listing every entity in the store.
         const changes: EntityIndexChanges<TId> = previous
             ? { added, removed, updated }
-            : (NO_CHANGES as EntityIndexChanges<TId>);
+            : NO_CHANGES;
 
         cached = {
             source,
@@ -527,10 +527,9 @@ export const createEntityIndex = <
         getIds: state => read(state).ids,
 
         getBy: (state, groupName, key) =>
-            read(state).groups[groupName].get(key)?.entities ??
-            (EMPTY_ENTITIES as readonly TEntity[]),
+            read(state).groups[groupName].get(key)?.entities ?? EMPTY_ENTITIES,
 
         getIdsBy: (state, groupName, key) =>
-            read(state).groups[groupName].get(key)?.ids ?? (EMPTY_ENTITY_IDS as readonly TId[]),
+            read(state).groups[groupName].get(key)?.ids ?? EMPTY_ENTITY_IDS,
     };
 };
