@@ -11,7 +11,11 @@ import {
     selectAccountUnrecognizedTokens,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { isPositiveBalance, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import {
+    isPositiveBalance,
+    isStellarContractToken,
+    tryGetAccountIdentity,
+} from '@suite-common/wallet-utils';
 import {
     FeatureFlag,
     type FeatureFlagsRootState,
@@ -82,7 +86,11 @@ export const selectHasAccountOrTokenSpendableBalance = (
     if (tokenContract) {
         const token = selectAccountTokenInfo(state, accountKey, tokenContract);
 
-        return isPositiveBalance(token?.balance ?? '0');
+        // Sending contract tokens is desktop-only for now: native has no add path and no compose
+        // path for a host-function transfer.
+        if (!token || isStellarContractToken(token)) return false;
+
+        return isPositiveBalance(token.balance ?? '0');
     }
 
     return isPositiveBalance(account.availableBalance);

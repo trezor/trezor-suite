@@ -73,7 +73,7 @@ export function useBuildTokenOptions({
             fiatRates,
         );
 
-        const sortedTokensWithRates = tokensWithRates.sort(sortTokensWithRates);
+        const sortedTokensWithRates = tokensWithRates.toSorted(sortTokensWithRates);
 
         return buildTokenOptions(
             account,

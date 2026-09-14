@@ -2,6 +2,80 @@ import type { Account, StellarTokenInfo } from '@suite-common/wallet-types';
 import type { TokenDetailByMint } from '@trezor/blockchain-link-types';
 import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import stellar from '@trezor/network-stellar/runtime';
+import { createLazy } from '@trezor/utils';
+
+export const lazyStellarTokenMetadata = createLazy(getTokenMetadata);
+
+// Deriving a SAC id from an asset is a one-way hash, so the only way back is to derive the id of
+// every asset we know of and match. The in-flight promise is cached rather than the map, so two
+// lookups racing the first build share it instead of both hashing.
+const contractIndexes = new WeakMap<TokenDetailByMint, Promise<Map<string, string>>>();
+
+// Hashing hundreds of assets uninterrupted would drop frames on the paste that asks for it.
+const SAC_INDEX_CHUNK_SIZE = 100;
+
+const buildSacContractIndex = async (tokenMetadata: TokenDetailByMint) => {
+    const { computeSorobanAssetContractId } = await stellar();
+    const index = new Map<string, string>();
+    const contracts = Object.keys(tokenMetadata);
+
+    for (let offset = 0; offset < contracts.length; offset += SAC_INDEX_CHUNK_SIZE) {
+        if (offset > 0) {
+            await new Promise(resolve => {
+                setTimeout(resolve, 0);
+            });
+        }
+
+        contracts.slice(offset, offset + SAC_INDEX_CHUNK_SIZE).forEach(contract => {
+            try {
+                index.set(computeSorobanAssetContractId(contract).sorobanAssetContractId, contract);
+            } catch {
+                // The definitions can hold entries that are not classic `CODE-ISSUER` assets.
+            }
+        });
+    }
+
+    return index;
+};
+
+const getSacContractIndex = (tokenMetadata: TokenDetailByMint) => {
+    const cached = contractIndexes.get(tokenMetadata);
+    if (cached) return cached;
+
+    const pending = buildSacContractIndex(tokenMetadata).catch(error => {
+        // A failed build says nothing about the definitions, so it must not be cached.
+        contractIndexes.delete(tokenMetadata);
+        throw error;
+    });
+
+    contractIndexes.set(tokenMetadata, pending);
+
+    return pending;
+};
+
+/**
+ * Resolves a Stellar Asset Contract id (`C…`) to the classic asset it wraps. Only assets in the
+ * token definitions resolve; anything else has to be entered as an asset code and issuer.
+ */
+export const resolveStellarAssetFromContractId = async (
+    contractId: string,
+    tokenMetadata: TokenDetailByMint,
+): Promise<{ assetCode: string; assetIssuer: string } | undefined> => {
+    const { isValidContractId } = await stellar();
+
+    if (!isValidContractId(contractId)) return undefined;
+
+    const classicContract = (await getSacContractIndex(tokenMetadata)).get(contractId);
+    if (!classicContract) return undefined;
+
+    const [assetCode, assetIssuer] = classicContract.split('-');
+
+    return assetCode && assetIssuer ? { assetCode, assetIssuer } : undefined;
+};
+
+export const resolveStellarContractId = async (contractId: string) =>
+    resolveStellarAssetFromContractId(contractId, await lazyStellarTokenMetadata.getOrInit());
 
 /** Get the list of inactive Stellar tokens for the user account */
 export const getStellarInactiveTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
