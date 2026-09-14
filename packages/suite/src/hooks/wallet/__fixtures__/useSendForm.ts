@@ -1,4 +1,4 @@
-import { combineReducers, createReducer } from '@reduxjs/toolkit';
+import { type PayloadAction, combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { debugInitialState } from '@suite/debug';
 import { locksReducer } from '@suite/locks';
@@ -312,7 +312,12 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
                 ],
                 () => ({}),
             ),
-            selectedAccount: createReducer(selectedAccount, () => ({})),
+            selectedAccount: createReducer(selectedAccount, builder =>
+                builder.addCase(
+                    accountsActions.updateSelectedAccount.type as string,
+                    (_, action: PayloadAction<typeof selectedAccount>) => action.payload,
+                ),
+            ),
             coinjoin: createReducer({ accounts: [] }, () => ({})),
             stake: createReducer(stakeInitialState, () => ({})),
             discovery: createReducer([], () => ({})),

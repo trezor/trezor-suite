@@ -50,7 +50,7 @@ export const useSendFormCompose = ({
     getValues,
     setValue,
     setError,
-    formState: { errors, isDirty },
+    formState: { errors },
     clearErrors,
     state,
     feeInfo,
@@ -64,6 +64,10 @@ export const useSendFormCompose = ({
 }: Props) => {
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
+    const composedLevelsRef = useRef(composedLevels);
+    useEffect(() => {
+        composedLevelsRef.current = composedLevels;
+    }, [composedLevels]);
     const [composeField, setComposeField] = useState<FieldPath<FormState> | undefined>(undefined);
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
@@ -76,9 +80,14 @@ export const useSendFormCompose = ({
 
     const composeDraft = useCallback(
         async (formState: FormState) => {
-            // start composing without debounce
-            setLoading(true);
-            setComposedLevels(undefined);
+            // This runs whenever the account or the fee info changes, not because the user touched
+            // the form. The form values still match the previous result, so it stays on screen and
+            // the form stays out of its loading state while the new one is composed — otherwise the
+            // review button is disabled again on every incoming transaction. Only the very first
+            // compose, with nothing to show yet, uses the loader.
+            if (!composedLevelsRef.current) {
+                setLoading(true);
+            }
 
             const result = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
@@ -338,35 +347,9 @@ export const useSendFormCompose = ({
         ) {
             return; // account didn't change
         }
-        if (!isDirty) {
-            // there was no interaction with the form, just update state.account
-            updateContext({ account });
-
-            return;
-        }
-
-        // reset precomposed transactions
-        setComposedLevels(undefined);
-        // set ref for later use in processComposeRequest function
-        composeRequestID.current++;
-        // clear errors from compose process
-        const composeErrors = findComposeErrors(errors);
-        if (composeErrors.length > 0) {
-            clearErrors(composeErrors);
-        }
-        // start composing
-        setLoading(true);
+        // Publishing the account re-creates composeDraft, whose effect recomposes against it.
         updateContext({ account });
-    }, [
-        state.account,
-        feeInfo.dustLimit,
-        isDirty,
-        account,
-        clearErrors,
-        errors,
-        updateContext,
-        setLoading,
-    ]);
+    }, [state.account, feeInfo.dustLimit, account, updateContext]);
 
     // Subscribe to blocks for Solana, since they are not fetched globally
     useSolanaSubscribeBlocks(state.account);

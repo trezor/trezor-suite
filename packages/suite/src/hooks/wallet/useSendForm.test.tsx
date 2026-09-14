@@ -3,7 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { useEffect, useState } from 'react';
 import { type DeepPartial } from 'react-hook-form';
 
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
@@ -34,6 +34,7 @@ import {
     testMocks,
 } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { accountsActions } from '@suite-common/wallet-core';
 import { type FormState, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
 import { type PROTO } from '@trezor/connect';
@@ -342,6 +343,65 @@ describe('useSendForm hook', () => {
                     ],
                 });
             });
+
+            unmount();
+        },
+        TEST_TIMEOUT,
+    );
+
+    it(
+        'recomposes in the background when the account changes, keeping the previous result usable',
+        async () => {
+            testMocks.setTrezorConnectFixtures({
+                success: true,
+                payload: [{ type: 'final', totalSpent: '100000100', fee: '100' }],
+            });
+            const root = createTestCompositionRoot(buildTestCompositionRootParams());
+            const callback: TestCallback = {};
+            const { unmount } = renderWithProviders(
+                root,
+                <SendIndex>
+                    <Component callback={callback} />
+                </SendIndex>,
+            );
+
+            await waitForLoader();
+            await waitForOutputsRender();
+            await actionSequence(
+                [
+                    {
+                        type: 'input',
+                        element: 'outputs.0.address',
+                        value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                    },
+                    { type: 'input', element: 'outputs.0.amount', value: '1' },
+                ],
+                () => {},
+            );
+
+            await waitFor(() => expect(callback.getContextValues?.().composedLevels).toBeDefined());
+            const composeCallsBefore = TrezorConnect.composeTransaction.mock.calls.length;
+
+            const selected = root.store.getState().wallet.selectedAccount;
+            act(() => {
+                root.store.dispatch(
+                    accountsActions.updateSelectedAccount({
+                        ...selected,
+                        account: { ...selected.account, availableBalance: '200000000000' },
+                    }),
+                );
+            });
+
+            // The review button reads composedLevels and isLoading, so both have to survive an
+            // account change for it to stay clickable while transactions keep arriving.
+            expect(callback.getContextValues?.().composedLevels).toBeDefined();
+            expect(callback.getContextValues?.().isLoading).toBe(false);
+
+            await waitFor(() =>
+                expect(TrezorConnect.composeTransaction).toHaveBeenCalledTimes(
+                    composeCallsBefore + 1,
+                ),
+            );
 
             unmount();
         },
