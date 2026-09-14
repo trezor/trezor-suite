@@ -1,6 +1,14 @@
 import { useSetAtom } from 'jotai';
 
-import { Box, Button, Card, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import {
+    Box,
+    Button,
+    Card,
+    IconList,
+    IconListTitledItem,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type DeviceOnboardingStackParamList,
@@ -12,7 +20,6 @@ import {
 
 import { updateOnboardingAnalyticsAtom } from '../../atoms';
 import { RecoveryCardSvg } from '../assets/RecoveryCardSvg';
-import { RecoveryInfoRow } from '../components/RecoveryInfoRow';
 import { RecoveryInstructionsBottomSheet } from '../components/RecoveryInstructionsBottomSheet';
 import { WalletEntropyLearnMoreLink } from '../components/WalletEntropyLearnMoreLink';
 
@@ -40,31 +47,29 @@ export const RecoveryInstructionsScreen = ({
         <Screen header={<ScreenHeader closeAction={handleGoBack} />}>
             <VStack paddingTop="sp16" spacing="sp32" justifyContent="space-between" flex={1}>
                 <Card>
-                    <VStack spacing="sp24">
-                        <RecoveryInfoRow
-                            iconName="recoverySeed"
+                    <IconList verticalAlign="flex-start">
+                        <IconListTitledItem
+                            icon="recoverySeed"
                             title={
                                 <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bullet1.title" />
                             }
-                            description={
-                                <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bullet1.description" />
-                            }
-                        />
-                        <RecoveryInfoRow
-                            iconName="shieldWarning"
+                        >
+                            <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bullet1.description" />
+                        </IconListTitledItem>
+                        <IconListTitledItem
+                            icon="shieldWarning"
                             title={
                                 <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bullet2.title" />
                             }
-                            description={
-                                <Translation
-                                    id="moduleDeviceOnboarding.recoveryInstructionsScreen.bullet2.description"
-                                    values={{
-                                        link: chunk => <WalletEntropyLearnMoreLink label={chunk} />,
-                                    }}
-                                />
-                            }
-                        />
-                    </VStack>
+                        >
+                            <Translation
+                                id="moduleDeviceOnboarding.recoveryInstructionsScreen.bullet2.description"
+                                values={{
+                                    link: chunk => <WalletEntropyLearnMoreLink label={chunk} />,
+                                }}
+                            />
+                        </IconListTitledItem>
+                    </IconList>
                 </Card>
                 <Box alignItems="center">
                     <RecoveryCardSvg />

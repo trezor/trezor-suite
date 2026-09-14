@@ -1,14 +1,8 @@
-import { Button, IconListTextItem, type IconListTextItemProps, VStack } from '@suite-native/atoms';
+import { Button, IconList, IconListTextItem, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { useForgetDevice } from '../hooks/useForgetDevice';
-
-const ListItem = ({ icon, children }: Pick<IconListTextItemProps, 'icon' | 'children'>) => (
-    <IconListTextItem icon={icon} variant="warning" textVariant="body-md">
-        {children}
-    </IconListTextItem>
-);
 
 export const ForgetDeviceScreen = () => {
     const { isKnownBluetoothDevice, forgetDevice } = useForgetDevice();
@@ -22,19 +16,19 @@ export const ForgetDeviceScreen = () => {
             }
         >
             <VStack justifyContent="space-between" flex={1}>
-                <VStack spacing="sp24">
-                    <ListItem icon="linkBreak">
+                <IconList iconIntent="warning" textVariant="body-md">
+                    <IconListTextItem icon="linkBreak">
                         <Translation id="moduleDeviceSettings.forgetDevice.info.list.item1" />
-                    </ListItem>
+                    </IconListTextItem>
                     {isKnownBluetoothDevice && (
-                        <ListItem icon="bluetoothSlash">
+                        <IconListTextItem icon="bluetoothSlash">
                             <Translation id="moduleDeviceSettings.forgetDevice.info.list.item2" />
-                        </ListItem>
+                        </IconListTextItem>
                     )}
-                    <ListItem icon="scroll">
+                    <IconListTextItem icon="scroll">
                         <Translation id="moduleDeviceSettings.forgetDevice.info.list.item3" />
-                    </ListItem>
-                </VStack>
+                    </IconListTextItem>
+                </IconList>
                 <Button onPress={forgetDevice} intent="warning">
                     <Translation id="moduleDeviceSettings.forgetDevice.info.submitButton" />
                 </Button>

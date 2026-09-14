@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
-import { IconListTextItem, VStack } from '@suite-native/atoms';
+import { IconList, IconListTextItem } from '@suite-native/atoms';
 import { ConnectAndUnlockDeviceScreenContent } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -31,25 +31,17 @@ export const ConnectAndUnlockDeviceScreen = () => {
                 secondaryButtonColorProps: { intent: 'info', priority: 'secondary' },
                 onPressSecondaryButton: () => openLink(`${TREZOR_SUPPORT_DEVICE_URL}#open-chat`),
                 appendix: (
-                    <VStack spacing="sp12">
-                        <IconListTextItem
-                            icon="trezorPassword"
-                            variant="info"
-                            textVariant="body-md"
-                        >
+                    <IconList iconIntent="info" textVariant="body-md">
+                        <IconListTextItem icon="trezorPassword">
                             <Translation id="moduleConnectDevice.helpModal.connect.hint1" />
                         </IconListTextItem>
-                        <IconListTextItem icon="cableUsbC" variant="info" textVariant="body-md">
+                        <IconListTextItem icon="cableUsbC">
                             <Translation id="moduleConnectDevice.helpModal.connect.hint2" />
                         </IconListTextItem>
-                        <IconListTextItem
-                            icon="arrowsClockwise"
-                            variant="info"
-                            textVariant="body-md"
-                        >
+                        <IconListTextItem icon="arrowsClockwise">
                             <Translation id="moduleConnectDevice.helpModal.connect.hint3" />
                         </IconListTextItem>
-                    </VStack>
+                    </IconList>
                 ),
             }),
         [showAlert, openLink],

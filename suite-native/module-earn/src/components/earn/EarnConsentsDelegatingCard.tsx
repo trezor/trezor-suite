@@ -5,10 +5,18 @@ import {
     getNetwork,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
-import { Box, Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    Box,
+    Button,
+    Card,
+    CheckBox,
+    HStack,
+    IconList,
+    IconListTextItem,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-
-import { EarnConsentsItem } from './EarnConsentsItem';
 
 type EarnConsentsDelegatingCardProps = {
     symbol: NetworkSymbol;
@@ -29,18 +37,20 @@ export const EarnConsentsDelegatingCard = ({
                 <Text variant="body-md">
                     <Translation id="earn.earnConsentsScreen.maintained" />
                 </Text>
-                <EarnConsentsItem iconName="everstakeLogo" color="contentPrimary">
-                    <Translation
-                        id={`earn.earnConsentsScreen.delegatingCard.${itemsTranslationKey}.firstItem`}
-                        values={{ displaySymbol }}
-                    />
-                </EarnConsentsItem>
-                <EarnConsentsItem iconName="lock" color="contentPrimary">
-                    <Translation
-                        id={`earn.earnConsentsScreen.delegatingCard.${itemsTranslationKey}.secondItem`}
-                        values={{ displaySymbol }}
-                    />
-                </EarnConsentsItem>
+                <IconList iconIntent="info" textVariant="body-sm-strong">
+                    <IconListTextItem icon="everstakeLogo">
+                        <Translation
+                            id={`earn.earnConsentsScreen.delegatingCard.${itemsTranslationKey}.firstItem`}
+                            values={{ displaySymbol }}
+                        />
+                    </IconListTextItem>
+                    <IconListTextItem icon="lock">
+                        <Translation
+                            id={`earn.earnConsentsScreen.delegatingCard.${itemsTranslationKey}.secondItem`}
+                            values={{ displaySymbol }}
+                        />
+                    </IconListTextItem>
+                </IconList>
                 <HStack spacing="sp12" alignItems="center">
                     <CheckBox
                         isChecked={hasAgreed}

@@ -1,25 +1,5 @@
-import { Card, IconListItem, Text, VStack } from '@suite-native/atoms';
-import { type IconName } from '@suite-native/icons';
-import { Translation, type TxKeyPath } from '@suite-native/intl';
-
-type InfoItemProps = {
-    icon: IconName;
-    titleId: TxKeyPath;
-    descriptionId: TxKeyPath;
-};
-
-const InfoItem = ({ icon, titleId, descriptionId }: InfoItemProps) => (
-    <IconListItem icon={icon} variant="brand" verticalAlign="flex-start">
-        <VStack spacing="sp4">
-            <Text variant="body-sm-strong">
-                <Translation id={titleId} />
-            </Text>
-            <Text variant="body-sm" color="contentSecondary">
-                <Translation id={descriptionId} />
-            </Text>
-        </VStack>
-    </IconListItem>
-);
+import { Card, IconList, IconListTitledItem, Text, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
 export const ConciergeInfoCard = () => (
     <Card>
@@ -32,24 +12,32 @@ export const ConciergeInfoCard = () => (
                     <Translation id="moduleTrading.tradingScreen.concierge.infoCard.description" />
                 </Text>
             </VStack>
-
-            <VStack spacing="sp20">
-                <InfoItem
+            <IconList iconIntent="brand" verticalAlign="flex-start">
+                <IconListTitledItem
                     icon="money"
-                    titleId="moduleTrading.tradingScreen.concierge.infoCard.items.pricing.title"
-                    descriptionId="moduleTrading.tradingScreen.concierge.infoCard.items.pricing.description"
-                />
-                <InfoItem
+                    title={
+                        <Translation id="moduleTrading.tradingScreen.concierge.infoCard.items.pricing.title" />
+                    }
+                >
+                    <Translation id="moduleTrading.tradingScreen.concierge.infoCard.items.pricing.description" />
+                </IconListTitledItem>
+                <IconListTitledItem
                     icon="user"
-                    titleId="moduleTrading.tradingScreen.concierge.infoCard.items.specialist.title"
-                    descriptionId="moduleTrading.tradingScreen.concierge.infoCard.items.specialist.description"
-                />
-                <InfoItem
+                    title={
+                        <Translation id="moduleTrading.tradingScreen.concierge.infoCard.items.specialist.title" />
+                    }
+                >
+                    <Translation id="moduleTrading.tradingScreen.concierge.infoCard.items.specialist.description" />
+                </IconListTitledItem>
+                <IconListTitledItem
                     icon="arrowFatLinesRight"
-                    titleId="moduleTrading.tradingScreen.concierge.infoCard.items.execution.title"
-                    descriptionId="moduleTrading.tradingScreen.concierge.infoCard.items.execution.description"
-                />
-            </VStack>
+                    title={
+                        <Translation id="moduleTrading.tradingScreen.concierge.infoCard.items.execution.title" />
+                    }
+                >
+                    <Translation id="moduleTrading.tradingScreen.concierge.infoCard.items.execution.description" />
+                </IconListTitledItem>
+            </IconList>
         </VStack>
     </Card>
 );

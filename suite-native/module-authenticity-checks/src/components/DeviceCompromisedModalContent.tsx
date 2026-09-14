@@ -1,24 +1,22 @@
 import { type ReactNode } from 'react';
 
-import { Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
+import { Button, IconList, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { Screen } from '@suite-native/navigation';
 
 const InformativeList = () => (
-    <VStack spacing="sp24">
-        <IconListTextItem icon="plugs" variant="critical" iconSize={36}>
+    <IconList iconIntent="critical" iconSize={36}>
+        <IconListTextItem icon="plugs">
             <Translation id="moduleAuthenticityChecks.deviceCompromised.steps.disconnectDevice" />
         </IconListTextItem>
-
-        <IconListTextItem icon="handPalm" variant="critical" iconSize={36}>
+        <IconListTextItem icon="handPalm">
             <Translation id="moduleAuthenticityChecks.deviceCompromised.steps.avoidUsingDevice" />
         </IconListTextItem>
-
-        <IconListTextItem icon="chatCircle" variant="critical" iconSize={36}>
+        <IconListTextItem icon="chatCircle">
             <Translation id="moduleAuthenticityChecks.deviceCompromised.steps.contactSupport" />
         </IconListTextItem>
-    </VStack>
+    </IconList>
 );
 
 type DeviceCompromisedModalContentProps = {

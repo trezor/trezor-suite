@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useAlert } from '@suite-native/alerts';
-import { Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
+import { Button, IconList, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
 import { useWipeDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -53,19 +53,14 @@ export const BackupFailedModalScreen = () => {
                         <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.subtitle" />
                     }
                 />
-                <VStack spacing="sp24">
-                    <IconListTextItem icon="plugs" variant="critical" textVariant="body-md-strong">
+                <IconList iconIntent="critical" textVariant="body-md-strong">
+                    <IconListTextItem icon="plugs">
                         <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.steps.wipe" />
                     </IconListTextItem>
-
-                    <IconListTextItem
-                        icon="chatCircle"
-                        variant="critical"
-                        textVariant="body-md-strong"
-                    >
+                    <IconListTextItem icon="chatCircle">
                         <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.steps.contact" />
                     </IconListTextItem>
-                </VStack>
+                </IconList>
             </VStack>
             <VStack spacing="sp12">
                 <Button intent="critical" priority="primary" onPress={showWipeDeviceAlert}>

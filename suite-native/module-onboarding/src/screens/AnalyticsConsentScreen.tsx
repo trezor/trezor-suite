@@ -11,6 +11,8 @@ import {
     Box,
     Button,
     Card,
+    IconList,
+    IconListTitledItem,
     PressableOpacity,
     Switch,
     Text,
@@ -28,8 +30,6 @@ import {
 import { type Analytics } from '@trezor/analytics-uploader';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { DATA_PRIVACY_URL } from '@trezor/urls';
-
-import { AnalyticsInfoRow } from '../components/AnalyticsInfoRow';
 
 const consentWrapperStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
@@ -99,27 +99,25 @@ export const AnalyticsConsentScreen = ({
                     />
                     <Card>
                         <Box>
-                            <VStack flex={1}>
-                                <VStack spacing="sp24" paddingBottom="sp16">
-                                    <AnalyticsInfoRow
-                                        iconName="eyeSlash"
+                            <VStack flex={1} spacing="sp24">
+                                <IconList iconSize={36} verticalAlign="flex-start">
+                                    <IconListTitledItem
+                                        icon="eyeSlash"
                                         title={
                                             <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.privacy.title" />
                                         }
-                                        description={
-                                            <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.privacy.description" />
-                                        }
-                                    />
-                                    <AnalyticsInfoRow
-                                        iconName="bugBeetle"
+                                    >
+                                        <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.privacy.description" />
+                                    </IconListTitledItem>
+                                    <IconListTitledItem
+                                        icon="bugBeetle"
                                         title={
                                             <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.dataCollection.title" />
                                         }
-                                        description={
-                                            <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.dataCollection.description" />
-                                        }
-                                    />
-                                </VStack>
+                                    >
+                                        <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.dataCollection.description" />
+                                    </IconListTitledItem>
+                                </IconList>
                                 <PressableOpacity onPress={toggleAnalyticsConsent}>
                                     <Box
                                         flexDirection="row"

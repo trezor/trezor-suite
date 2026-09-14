@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, IconListTextItem, VStack } from '@suite-native/atoms';
+import { Box, Button, IconList, IconListTextItem, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type DeviceAuthenticityStackParamList,
@@ -37,14 +37,14 @@ export const DeviceAuthenticityScreen = () => {
             }
         >
             <VStack justifyContent="space-between" flex={1}>
-                <VStack spacing="sp24">
-                    <IconListTextItem icon="cpu" textVariant="body-md-strong">
+                <IconList textVariant="body-md-strong">
+                    <IconListTextItem icon="cpu">
                         <Translation id="moduleDeviceSettings.authenticity.info.item1" />
                     </IconListTextItem>
-                    <IconListTextItem icon="check" textVariant="body-md-strong">
+                    <IconListTextItem icon="check">
                         <Translation id="moduleDeviceSettings.authenticity.info.item2" />
                     </IconListTextItem>
-                </VStack>
+                </IconList>
                 <Box>
                     <Button
                         onPress={navigateToDeviceAuthenticityStack}

@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectHasDeviceFirmwareInstalled } from '@suite-common/device';
-import { IconListTextItem, Text, VStack } from '@suite-native/atoms';
+import { IconList, IconListTextItem, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const FirmwareInfoScreenContent = () => {
@@ -17,22 +17,22 @@ export const FirmwareInfoScreenContent = () => {
         : 'firmware.firmwareInfoScreen.list.item3.install';
 
     return (
-        <VStack spacing="sp24">
-            <IconListTextItem icon="clock" textVariant="body-md">
+        <IconList textVariant="body-md">
+            <IconListTextItem icon="clock">
                 <Translation id={item1TranslationId} />
             </IconListTextItem>
-            <IconListTextItem icon="prohibit" textVariant="body-md">
+            <IconListTextItem icon="prohibit">
                 <Translation
                     id="firmware.firmwareInfoScreen.list.item2"
                     values={{ b: chunks => <Text variant="body-md-strong">{chunks}</Text> }}
                 />
             </IconListTextItem>
-            <IconListTextItem icon="check" textVariant="body-md">
+            <IconListTextItem icon="check">
                 <Translation
                     id={item3TranslationId}
                     values={{ b: chunks => <Text variant="body-md-strong">{chunks}</Text> }}
                 />
             </IconListTextItem>
-        </VStack>
+        </IconList>
     );
 };

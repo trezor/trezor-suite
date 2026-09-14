@@ -1,6 +1,15 @@
 import { type ReactNode } from 'react';
 
-import { Box, Card, Divider, HStack, IconListTextItem, Text, VStack } from '@suite-native/atoms';
+import {
+    Box,
+    Card,
+    Divider,
+    HStack,
+    IconList,
+    IconListTextItem,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { TrezorDeviceSvg } from '@suite-native/device';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -90,12 +99,14 @@ export const WalletBackupTutorialStep3 = ({
                             descriptionColor="contentBrand"
                             image={<TrezorDeviceSvg />}
                         />
-                        <IconListTextItem spacing="sp16" icon="arrowsLeftRight" iconSize={36}>
-                            <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section1.bullet1" />
-                        </IconListTextItem>
-                        <IconListTextItem spacing="sp16" icon="lock" iconSize={36}>
-                            <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section1.bullet2" />
-                        </IconListTextItem>
+                        <IconList iconSize={36}>
+                            <IconListTextItem icon="arrowsLeftRight">
+                                <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section1.bullet1" />
+                            </IconListTextItem>
+                            <IconListTextItem icon="lock">
+                                <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section1.bullet2" />
+                            </IconListTextItem>
+                        </IconList>
                         <Divider style={applyStyle(dividerStyle)} />
                     </VStack>
                     <VStack spacing="sp16">
@@ -105,9 +116,11 @@ export const WalletBackupTutorialStep3 = ({
                             descriptionColor="contentWarning"
                             image={<RecoveryCardSvg width={IMAGE_WIDTH} height={IMAGE_HEIGHT} />}
                         />
-                        <IconListTextItem spacing="sp16" icon="arrowCounterClockwise" iconSize={36}>
-                            <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section2.bullet1" />
-                        </IconListTextItem>
+                        <IconList iconSize={36}>
+                            <IconListTextItem icon="arrowCounterClockwise">
+                                <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section2.bullet1" />
+                            </IconListTextItem>
+                        </IconList>
                     </VStack>
                 </Card>
             </Box>
