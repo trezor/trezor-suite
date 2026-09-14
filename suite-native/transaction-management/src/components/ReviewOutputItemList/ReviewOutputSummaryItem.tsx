@@ -1,11 +1,13 @@
 import { type LayoutChangeEvent, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type SendRootState, selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type FormDraftWithSendKeyPrefix,
     type TokenAddress,
+    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
@@ -105,6 +107,11 @@ export const ReviewOutputSummaryItem = ({
     const isClearSignedTradingSwap = useSelector((state: TransactionReviewOutputsState) =>
         selectIsClearSignedTradingSwap(state, accountKey, prefix),
     );
+    const composedTokenContract = useSelector(
+        (state: SendRootState) => selectSendPrecomposedTx(state)?.token?.contract,
+    );
+    const amountTokenContract =
+        getNetwork(symbol).networkType === 'ethereum' ? composedTokenContract : tokenContract;
 
     if (!summaryOutput) {
         return null;
@@ -124,7 +131,11 @@ export const ReviewOutputSummaryItem = ({
                             accountKey={accountKey}
                             totalSpent={totalSpent}
                             fee={fee}
-                            tokenContract={tokenContract}
+                            tokenContract={
+                                amountTokenContract
+                                    ? toTokenAddress(amountTokenContract)
+                                    : undefined
+                            }
                             flowType={flowType}
                             isClearSignedTradingSwap={isClearSignedTradingSwap}
                         />
