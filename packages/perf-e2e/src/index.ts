@@ -4,6 +4,5 @@ export * from './compare';
 export * from './measurement';
 export * from './aggregate';
 export * from './report';
-export * from './markdown';
 export * from './suggestLimits';
 export * from './instrumentation';

@@ -14,6 +14,16 @@ export default [
     },
     playwrightEslintFlat,
     {
+        // The report pipeline's jest unit tests — not Playwright tests, despite the .test.ts name
+        // (see jest.config.cjs, which is scoped to exactly this directory).
+        files: ['performance/report/**/*.test.ts'],
+        rules: {
+            'playwright/no-standalone-expect': 'off',
+            // Misfires on jest's beforeEach/afterEach pair.
+            'playwright/no-duplicate-hooks': 'off',
+        },
+    },
+    {
         rules: {
             'no-restricted-syntax': [
                 'error',

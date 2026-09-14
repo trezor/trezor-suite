@@ -1,0 +1,1 @@
+../../../suite/e2e/docs/e2e-lighthouse.md

@@ -1,0 +1,441 @@
+{
+    "gatherMode": "timespan",
+    "fetchTime": "2026-08-26T10:51:18.092Z",
+    "requestedUrl": null,
+    "finalDisplayedUrl": "http://localhost:8000/accounts#/btc/0/normal",
+    "categories": {
+        "performance": {
+            "id": "performance",
+            "score": 0.53
+        }
+    },
+    "audits": {
+        "total-blocking-time": {
+            "id": "total-blocking-time",
+            "title": "Total Blocking Time",
+            "description": "Sum of all time periods between FCP and Time to Interactive, when task length exceeded 50ms, expressed in milliseconds. [Learn more about the Total Blocking Time metric](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/).",
+            "score": 0.16,
+            "scoreDisplayMode": "numeric",
+            "numericValue": 672.4640000000002,
+            "numericUnit": "millisecond",
+            "displayValue": "670 ms",
+            "scoringOptions": {
+                "p10": 150,
+                "median": 350
+            }
+        },
+        "mainthread-work-breakdown": {
+            "id": "mainthread-work-breakdown",
+            "title": "Minimizes main-thread work",
+            "description": "Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to minimize main-thread work](https://developer.chrome.com/docs/lighthouse/performance/mainthread-work-breakdown/)",
+            "score": 1,
+            "scoreDisplayMode": "metricSavings",
+            "numericValue": 1248.0319999999451,
+            "numericUnit": "millisecond",
+            "displayValue": "1.2 s",
+            "metricSavings": {
+                "TBT": 650
+            },
+            "details": {
+                "type": "table",
+                "headings": [
+                    {
+                        "key": "groupLabel",
+                        "valueType": "text",
+                        "label": "Category"
+                    },
+                    {
+                        "key": "duration",
+                        "valueType": "ms",
+                        "granularity": 1,
+                        "label": "Time Spent"
+                    }
+                ],
+                "items": [
+                    {
+                        "group": "scriptEvaluation",
+                        "groupLabel": "Script Evaluation",
+                        "duration": 958.1329999999446
+                    },
+                    {
+                        "group": "other",
+                        "groupLabel": "Other",
+                        "duration": 184.7280000000005
+                    },
+                    {
+                        "group": "styleLayout",
+                        "groupLabel": "Style & Layout",
+                        "duration": 58.866000000000014
+                    },
+                    {
+                        "group": "garbageCollection",
+                        "groupLabel": "Garbage Collection",
+                        "duration": 30.354000000000006
+                    },
+                    {
+                        "group": "paintCompositeRender",
+                        "groupLabel": "Rendering",
+                        "duration": 14.766999999999973
+                    },
+                    {
+                        "group": "scriptParseCompile",
+                        "groupLabel": "Script Parsing & Compilation",
+                        "duration": 1.1840000000000002
+                    }
+                ],
+                "sortedBy": ["duration"]
+            },
+            "guidanceLevel": 1
+        },
+        "bootup-time": {
+            "id": "bootup-time",
+            "title": "JavaScript execution time",
+            "description": "Consider reducing the time spent parsing, compiling, and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to reduce Javascript execution time](https://developer.chrome.com/docs/lighthouse/performance/bootup-time/).",
+            "score": 1,
+            "scoreDisplayMode": "metricSavings",
+            "numericValue": 940.2609999999548,
+            "numericUnit": "millisecond",
+            "displayValue": "0.9 s",
+            "metricSavings": {
+                "TBT": 600
+            },
+            "details": {
+                "type": "table",
+                "headings": [
+                    {
+                        "key": "url",
+                        "valueType": "url",
+                        "label": "URL"
+                    },
+                    {
+                        "key": "total",
+                        "granularity": 1,
+                        "valueType": "ms",
+                        "label": "Total CPU Time"
+                    },
+                    {
+                        "key": "scripting",
+                        "granularity": 1,
+                        "valueType": "ms",
+                        "label": "Script Evaluation"
+                    },
+                    {
+                        "key": "scriptParseCompile",
+                        "granularity": 1,
+                        "valueType": "ms",
+                        "label": "Script Parse"
+                    }
+                ],
+                "items": [
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/node_modules/.vite/deps/react-dom_client.js?v=eb0e808d",
+                        "total": 923.452999999955,
+                        "scripting": 873.283999999955,
+                        "scriptParseCompile": 0
+                    },
+                    {
+                        "url": "Unattributable",
+                        "total": 117.16200000000048,
+                        "scripting": 21.56600000000001,
+                        "scriptParseCompile": 0
+                    },
+                    {
+                        "url": "http://localhost:8000/",
+                        "total": 77.512,
+                        "scripting": 4.415999999999984,
+                        "scriptParseCompile": 0
+                    },
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/suite-common/suite-utils/src/pollingController.ts",
+                        "total": 73.74399999999991,
+                        "scripting": 40.994999999999905,
+                        "scriptParseCompile": 0
+                    }
+                ],
+                "summary": {
+                    "wastedMs": 940.2609999999548
+                },
+                "sortedBy": ["total"]
+            },
+            "guidanceLevel": 1
+        },
+        "cumulative-layout-shift": {
+            "id": "cumulative-layout-shift",
+            "title": "Cumulative Layout Shift",
+            "description": "Cumulative Layout Shift measures the movement of visible elements within the viewport. [Learn more about the Cumulative Layout Shift metric](https://web.dev/articles/cls).",
+            "score": 0.97,
+            "scoreDisplayMode": "numeric",
+            "numericValue": 0.06726328531901044,
+            "numericUnit": "unitless",
+            "displayValue": "0.067",
+            "scoringOptions": {
+                "p10": 0.1,
+                "median": 0.25
+            },
+            "details": {
+                "type": "debugdata",
+                "items": [
+                    {
+                        "cumulativeLayoutShiftMainFrame": 0.06726328531901044,
+                        "newEngineResultDiffered": false
+                    }
+                ]
+            }
+        },
+        "total-byte-weight": {
+            "id": "total-byte-weight",
+            "title": "Avoids enormous network payloads",
+            "description": "Large network payloads cost users real money and are highly correlated with long load times. [Learn how to reduce payload sizes](https://developer.chrome.com/docs/lighthouse/performance/total-byte-weight/).",
+            "score": 1,
+            "scoreDisplayMode": "metricSavings",
+            "numericValue": 801598,
+            "numericUnit": "byte",
+            "displayValue": "Total size was 783 KiB",
+            "details": {
+                "type": "table",
+                "headings": [
+                    {
+                        "key": "url",
+                        "valueType": "url",
+                        "label": "URL"
+                    },
+                    {
+                        "key": "totalBytes",
+                        "valueType": "bytes",
+                        "label": "Transfer Size"
+                    }
+                ],
+                "items": [
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/node_modules/.vite/deps/polished.js?v=eb0e808d",
+                        "totalBytes": 114434
+                    },
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/packages/suite/src/utils/wallet/exportTransactionsUtils.ts",
+                        "totalBytes": 51765
+                    },
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/packages/suite/src/views/wallet/transactions/TransactionList/TransactionList.tsx",
+                        "totalBytes": 32591
+                    },
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/FilterAction.tsx",
+                        "totalBytes": 31841
+                    },
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/packages/suite/src/views/wallet/transactions/CoinjoinSummary/CoinjoinStatusWheel/CoinjoinProgressWheel.tsx",
+                        "totalBytes": 29764
+                    },
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/packages/suite/src/views/wallet/transactions/CoinjoinSummary/CoinjoinStatusWheel/CoinjoinProgressContent.tsx",
+                        "totalBytes": 27183
+                    },
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/packages/suite/src/views/wallet/transactions/TransactionList/useFetchTransactions.ts",
+                        "totalBytes": 25010
+                    },
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/packages/suite/src/views/wallet/transactions/components/TransactionSummary.tsx",
+                        "totalBytes": 24201
+                    },
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/packages/suite/src/views/wallet/transactions/components/SummaryCards.tsx",
+                        "totalBytes": 23434
+                    },
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/packages/suite/src/views/wallet/transactions/TradeBox/TradeBox.tsx",
+                        "totalBytes": 22232
+                    }
+                ],
+                "sortedBy": ["totalBytes"]
+            },
+            "guidanceLevel": 1
+        },
+        "long-tasks": {
+            "id": "long-tasks",
+            "title": "Avoid long main-thread tasks",
+            "description": "Lists the longest tasks on the main thread, useful for identifying worst contributors to input delay. [Learn how to avoid long main-thread tasks](https://web.dev/articles/optimize-long-tasks)",
+            "score": 1,
+            "scoreDisplayMode": "informative",
+            "displayValue": "2 long tasks found",
+            "metricSavings": {
+                "TBT": 650
+            },
+            "details": {
+                "type": "table",
+                "headings": [
+                    {
+                        "key": "url",
+                        "valueType": "url",
+                        "label": "URL"
+                    },
+                    {
+                        "key": "startTime",
+                        "valueType": "ms",
+                        "granularity": 1,
+                        "label": "Start Time"
+                    },
+                    {
+                        "key": "duration",
+                        "valueType": "ms",
+                        "granularity": 1,
+                        "label": "Duration"
+                    }
+                ],
+                "items": [
+                    {
+                        "url": "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/suite-common/suite-utils/src/pollingController.ts",
+                        "duration": 443.391,
+                        "startTime": 709.269
+                    },
+                    {
+                        "url": "http://localhost:8000/",
+                        "duration": 329.073,
+                        "startTime": 29.109
+                    }
+                ],
+                "sortedBy": ["duration"],
+                "skipSumming": ["startTime"],
+                "debugData": {
+                    "type": "debugdata",
+                    "urls": [
+                        "http://localhost:8000/@fs/Users/jiri.cermak/dev/satoshilabs/trezor/trezor-suite/suite-common/suite-utils/src/pollingController.ts",
+                        "http://localhost:8000/"
+                    ],
+                    "tasks": [
+                        {
+                            "urlIndex": 0,
+                            "startTime": 709.3,
+                            "duration": 443.4,
+                            "garbageCollection": 7.8,
+                            "other": 25.8,
+                            "scriptEvaluation": 392.4,
+                            "styleLayout": 17.3
+                        },
+                        {
+                            "urlIndex": 1,
+                            "startTime": 29.1,
+                            "duration": 329.1,
+                            "garbageCollection": 12.7,
+                            "other": 1.7,
+                            "paintCompositeRender": 0.6,
+                            "scriptEvaluation": 309.2,
+                            "styleLayout": 4.9
+                        }
+                    ]
+                }
+            },
+            "guidanceLevel": 1
+        },
+        "user-timings": {
+            "id": "user-timings",
+            "title": "User Timing marks and measures",
+            "description": "Consider instrumenting your app with the User Timing API to measure your app's real-world performance during key user experiences. [Learn more about User Timing marks](https://developer.chrome.com/docs/lighthouse/performance/user-timings/).",
+            "score": 1,
+            "scoreDisplayMode": "informative",
+            "displayValue": "1,541 user timings",
+            "details": {
+                "type": "table",
+                "headings": [
+                    {
+                        "key": "name",
+                        "valueType": "text",
+                        "label": "Name"
+                    },
+                    {
+                        "key": "timingType",
+                        "valueType": "text",
+                        "label": "Type"
+                    },
+                    {
+                        "key": "startTime",
+                        "valueType": "ms",
+                        "granularity": 0.01,
+                        "label": "Start Time"
+                    },
+                    {
+                        "key": "duration",
+                        "valueType": "ms",
+                        "granularity": 0.01,
+                        "label": "Duration"
+                    }
+                ],
+                "items": [
+                    {
+                        "name": "​Content",
+                        "startTime": 30.942,
+                        "duration": 0.2,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "​FloatingPortal",
+                        "startTime": 31.242,
+                        "duration": 0.5,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "​ForwardRef(FloatingArrow)",
+                        "startTime": 31.342,
+                        "duration": 0.3,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "​TooltipArrow",
+                        "startTime": 31.342,
+                        "duration": 0.3,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "​Content",
+                        "startTime": 34.242,
+                        "duration": 0.2,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "​FloatingPortal",
+                        "startTime": 34.742,
+                        "duration": 0.8,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "​ForwardRef(FloatingArrow)",
+                        "startTime": 35.042,
+                        "duration": 0.4,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "​TooltipArrow",
+                        "startTime": 35.042,
+                        "duration": 0.4,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "​FloatingPortal",
+                        "startTime": 36.942,
+                        "duration": 0.3,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "Update Blocked",
+                        "startTime": 47.042,
+                        "duration": 71.2,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "​_HelmetProvider",
+                        "startTime": 121.042,
+                        "duration": 165.1,
+                        "timingType": "Measure"
+                    },
+                    {
+                        "name": "​ThemeProvider",
+                        "startTime": 121.242,
+                        "duration": 164.9,
+                        "timingType": "Measure"
+                    }
+                ]
+            },
+            "guidanceLevel": 2
+        }
+    }
+}

@@ -1,0 +1,74 @@
+name: "Post Performance Report to PR"
+description: >
+  Reads the rendered performance report markdown from the workspace and overwrites the
+  Performance report section in the PR description (marker splice — updated in place,
+  never appended twice).
+inputs:
+  report-file:
+    description: "Path to the rendered markdown report"
+    required: false
+    default: "perf-report.md"
+  trezor-bot-app-id:
+    description: "Trezor Bot GitHub App ID"
+    required: true
+  trezor-bot-private-key:
+    description: "Trezor Bot GitHub App private key"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Generate GitHub App token
+      id: trezor-bot-token
+      uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+      with:
+        app-id: ${{ inputs.trezor-bot-app-id }}
+        private-key: ${{ inputs.trezor-bot-private-key }}
+
+    - name: Update PR description with performance report
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      env:
+        # Through env rather than interpolated into the script source, where a path with a quote
+        # would become code.
+        REPORT_FILE: ${{ inputs.report-file }}
+      with:
+        github-token: ${{ steps.trezor-bot-token.outputs.token }}
+        script: |
+          const fs = require('fs');
+          const report = fs.readFileSync(process.env.REPORT_FILE, 'utf8').trim();
+
+          const START_MARKER = '<!-- PERF-REPORT:START -->';
+          const END_MARKER = '<!-- PERF-REPORT:END -->';
+
+          const newSection = [
+            START_MARKER,
+            report,
+            `_Updated: ${new Date().toISOString()}_`,
+            END_MARKER,
+          ].join('\n');
+
+          const pr = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+          });
+
+          let body = pr.data.body || '';
+
+          let newBody;
+          if (body.includes(START_MARKER) && body.includes(END_MARKER)) {
+            const before = body.slice(0, body.indexOf(START_MARKER));
+            const after = body.slice(body.indexOf(END_MARKER) + END_MARKER.length);
+            newBody = before + newSection + after;
+          } else {
+            const sep = body.endsWith('\n\n') ? '' : body.endsWith('\n') ? '\n' : '\n\n';
+            newBody = body + sep + newSection;
+          }
+
+          await github.rest.pulls.update({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            body: newBody,
+          });
+
+          console.log('PR description updated with the performance report.');
