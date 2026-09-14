@@ -1,6 +1,7 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import {
     type CoinjoinRootState,
     selectCoinjoinAccountByKey,
@@ -108,7 +109,6 @@ import { serializeCoinjoinAccount, serializeDevice } from 'src/utils/suite/stora
 import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 
 import { STORAGE } from './constants';
-import { type DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice';
 
 export type StorageAction = ReturnType<
     typeof storageLoad | typeof storageError | typeof storageCorrupted

@@ -2,6 +2,7 @@ import { type FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import { type CoinjoinAccount, type CoinjoinDebugSettings } from '@suite/coinjoin';
 import { type DebugState } from '@suite/debug';
 import type { FlagsState } from '@suite/flags';
@@ -42,7 +43,6 @@ import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 
-import { type DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
 import { type GraphData } from '../types/wallet/graph';
 
 export interface DBWalletAccountTransaction {

@@ -1,8 +1,8 @@
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import { type BluetoothManufacturerData } from '@suite-common/bluetooth';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { remapKnownDevicesForLinuxAndWindows } from './remapKnownDevicesForLinuxAndWindows';
 
 const manufacturerData: BluetoothManufacturerData = {
