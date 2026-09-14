@@ -1,3 +1,4 @@
+import { setIsUnpairingDevice } from '@suite/bluetooth';
 import {
     BLUETOOTH_PREFIX,
     type ForgetBluetoothDeviceThunkParams,
@@ -10,7 +11,6 @@ import TrezorConnect from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
-import { setIsUnpairingDevice } from './desktopBluetoothReducer';
 
 export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDeviceThunkParams, void>(
     `${BLUETOOTH_PREFIX}/forgetBluetoothDevice`,

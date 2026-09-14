@@ -1,6 +1,8 @@
 import {
     type DesktopBluetoothDevice,
+    type WithBluetoothRootState,
     fromBluetoothDevice,
+    selectConnectingDevices,
     toBluetoothDevice,
 } from '@suite/bluetooth';
 import {
@@ -21,8 +23,6 @@ import { resolveAfter } from '@trezor/utils';
 
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
-import { type WithBluetoothRootState } from './desktopBluetoothReducer';
-import { selectConnectingDevices } from './desktopBluetoothSelectors';
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
 import { isBluetoothDeviceReachable } from './isBluetoothDeviceReachable';
 import { remapKnownDevicesForLinuxAndWindows } from './remapKnownDevicesForLinuxAndWindows';

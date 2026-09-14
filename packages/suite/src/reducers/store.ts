@@ -11,6 +11,7 @@ import {
 import { createLogger } from 'redux-logger';
 
 import { type BackupState, backupMiddleware, backupReducer } from '@suite/backup';
+import { type DesktopBluetoothState, prepareDesktopBluetoothReducer } from '@suite/bluetooth';
 import { type RecoveryState, recoveryReducer } from '@suite/recovery';
 import { type DesktopSuiteSyncState, prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
@@ -43,10 +44,6 @@ import {
 
 import { type BioAuthState, prepareBioAuthReducer } from './bioAuth';
 import { type DesktopState, desktopReducer } from './desktop';
-import {
-    type DesktopBluetoothState,
-    prepareDesktopBluetoothReducer,
-} from '../actions/bluetooth/desktopBluetoothReducer';
 import { extraDependencies } from '../support/extraDependencies';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);

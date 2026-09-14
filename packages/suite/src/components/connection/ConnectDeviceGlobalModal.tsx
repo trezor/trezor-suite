@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectIsManualPairingRequired, selectIsUnpairingDevice } from '@suite/bluetooth';
 import { Translation } from '@suite/intl';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
@@ -26,10 +27,6 @@ import { isDesktop } from '@trezor/env-utils';
 import { BluetoothIcon, CableUsbCIcon, QuestionIcon } from '@trezor/icons';
 import { getLargeModelImagePath } from '@trezor/product-components';
 
-import {
-    selectIsManualPairingRequired,
-    selectIsUnpairingDevice,
-} from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from 'src/hooks/suite';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';

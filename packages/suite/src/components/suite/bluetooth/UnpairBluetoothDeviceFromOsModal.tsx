@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { selectIsUnpairingDevice } from '@suite/bluetooth';
 import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { bluetoothActions } from '@suite-common/bluetooth';
@@ -7,7 +8,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
 
-import { selectIsUnpairingDevice } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
 import { useSelector } from 'src/hooks/suite';
 

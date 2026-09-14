@@ -4,3 +4,5 @@ export {
     fromBluetoothDevice,
     toBluetoothDevice,
 } from './DesktopBluetoothDevice';
+export * from './desktopBluetoothReducer';
+export * from './desktopBluetoothSelectors';
