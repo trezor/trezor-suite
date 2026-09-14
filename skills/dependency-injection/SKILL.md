@@ -49,6 +49,10 @@ export type ServiceNameDeps = {
 
 Do not repeat `ServiceParams` in factory (`(params)` only). It is inferred from `ServiceName`.
 
+Always access injected services through `deps.serviceName`. Do not destructure `deps` in factory
+parameters or function bodies, or alias injected services with `const serviceName = deps.serviceName`.
+The `deps.` prefix makes injected dependencies visible at each use.
+
 Service factory:
 
 File shall be named: `createServiceName.ts`.
