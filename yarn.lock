@@ -15252,7 +15252,10 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/bluetooth": "workspace:*"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
   languageName: unknown

@@ -8,6 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
@@ -16,5 +17,10 @@
         "@suite-common/redux-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/transport-bluetooth": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*"
     }
 }

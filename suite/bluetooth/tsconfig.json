@@ -11,6 +11,15 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/transport-bluetooth"
+        },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
         }
     ]
 }
