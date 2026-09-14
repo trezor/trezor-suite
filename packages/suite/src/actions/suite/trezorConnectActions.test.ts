@@ -46,6 +46,7 @@ const extra: ConnectInitThunkDeps = {
         getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
         getDebugSettings: mockGetDebugSettings(),
         getThpSettings: mockGetThpSettings(),
+        getTrezorConnect: testMocks.getTrezorConnectSingleton,
     },
 };
 

@@ -72,6 +72,7 @@ const createThunkDeps = (
             })),
             getThpSettings: asGetter(() => ({ pairingMethods: ['CodeEntry'] })),
             thpHostName: undefined,
+            getTrezorConnect: testMocks.getTrezorConnectSingleton,
             ...services,
         },
     };

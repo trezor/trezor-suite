@@ -46,7 +46,7 @@ import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestStore, testMocks } from '@suite-common/test-utils';
 import {
     initTokenDefinitionsThunk,
     periodicCheckTokenDefinitionsThunk,
@@ -371,6 +371,7 @@ const initStore = (state: State) => {
                 getDebugSettings: mockGetDebugSettings(),
                 getIsWindowVisible: asGetter(() => true),
                 getThpSettings: mockGetThpSettings(),
+                getTrezorConnect: testMocks.getTrezorConnectSingleton,
                 getTokenDefinitionsEnabledNetworks: asGetter(
                     () => state.wallet.settings.enabledNetworks,
                 ),
