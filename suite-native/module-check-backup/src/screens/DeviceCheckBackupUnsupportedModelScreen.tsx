@@ -1,6 +1,6 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { Box, Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
+import { Box, Button, IconList, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
@@ -58,22 +58,18 @@ export const DeviceCheckBackupUnsupportedModelScreen = () => {
                     titleSpacing="sp12"
                 />
             </Box>
-            <VStack justifyContent="space-between" flex={1}>
-                <VStack spacing="sp16" marginTop="sp32">
-                    <IconListTextItem textVariant="body-md-strong" icon="browsers">
+            <VStack marginTop="sp32" justifyContent="space-between" flex={1}>
+                <IconList textVariant="body-md-strong">
+                    <IconListTextItem icon="browsers">
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.step1" />
                     </IconListTextItem>
-                    <IconListTextItem textVariant="body-md-strong" icon="trezorBackup">
+                    <IconListTextItem icon="trezorBackup">
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.step2" />
                     </IconListTextItem>
-                    <IconListTextItem
-                        textVariant="body-md-strong"
-                        variant="brand"
-                        icon="checkCircle"
-                    >
+                    <IconListTextItem icon="checkCircle" intent="brand">
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.step3" />
                     </IconListTextItem>
-                </VStack>
+                </IconList>
                 <VStack spacing="sp12">
                     <Button iconLeft="arrowSquareOut" onPress={redirectToWeb}>
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.redirectButton" />

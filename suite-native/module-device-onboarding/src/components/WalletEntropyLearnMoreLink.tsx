@@ -1,6 +1,7 @@
 import {
     BottomSheetModal,
     Button,
+    IconList,
     IconListTextItem,
     VStack,
     useBottomSheetModal,
@@ -25,20 +26,20 @@ export const WalletEntropyLearnMoreLink = ({ label }: WalletEntropyLearnMoreLink
                 }
             >
                 <VStack spacing="sp24">
-                    <VStack spacing="sp16">
-                        <IconListTextItem icon="encryptionKey" verticalAlign="flex-start">
+                    <IconList verticalAlign="flex-start">
+                        <IconListTextItem icon="encryptionKey">
                             <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.walletEntropyInfo.bullet1" />
                         </IconListTextItem>
-                        <IconListTextItem icon="dualCpu" verticalAlign="flex-start">
+                        <IconListTextItem icon="dualCpu">
                             <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.walletEntropyInfo.bullet2" />
                         </IconListTextItem>
-                        <IconListTextItem icon="eggCrack" verticalAlign="flex-start">
+                        <IconListTextItem icon="eggCrack">
                             <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.walletEntropyInfo.bullet3" />
                         </IconListTextItem>
-                        <IconListTextItem icon="wallet" verticalAlign="flex-start">
+                        <IconListTextItem icon="wallet">
                             <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.walletEntropyInfo.bullet4" />
                         </IconListTextItem>
-                    </VStack>
+                    </IconList>
                     <Button onPress={closeModal}>
                         <Translation id="generic.buttons.gotIt" />
                     </Button>

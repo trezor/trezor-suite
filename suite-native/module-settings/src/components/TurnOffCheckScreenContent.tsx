@@ -10,7 +10,8 @@ import {
     Card,
     CheckBox,
     HStack,
-    IconListItem,
+    IconList,
+    IconListTitledItem,
     Text,
     TitleHeader,
     VStack,
@@ -28,28 +29,20 @@ import { useToast } from '@suite-native/toasts';
 const CHECKBOX_ANIMATION_DURATION = 200; // same as in useAccordionAnimation
 
 const InformativeList = () => (
-    <VStack spacing="sp24">
-        <IconListItem icon="warning" variant="warning" verticalAlign="flex-start">
-            <VStack spacing="sp4">
-                <Text variant="body-md-strong">
-                    <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1" />
-                </Text>
-                <Text variant="body-sm" color="contentSecondary">
-                    <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1Explanation" />
-                </Text>
-            </VStack>
-        </IconListItem>
-        <IconListItem icon="code" variant="warning" verticalAlign="flex-start">
-            <VStack spacing="sp4">
-                <Text variant="body-md-strong">
-                    <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2" />
-                </Text>
-                <Text variant="body-sm" color="contentSecondary">
-                    <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2Explanation" />
-                </Text>
-            </VStack>
-        </IconListItem>
-    </VStack>
+    <IconList iconIntent="warning" verticalAlign="flex-start">
+        <IconListTitledItem
+            icon="warning"
+            title={<Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1" />}
+        >
+            <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1Explanation" />
+        </IconListTitledItem>
+        <IconListTitledItem
+            icon="code"
+            title={<Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2" />}
+        >
+            <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2Explanation" />
+        </IconListTitledItem>
+    </IconList>
 );
 
 type NavigationProp = StackNavigationProps<

@@ -1,8 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { HStack, IconSquare, Text, VStack } from '@suite-native/atoms';
+import { IconList, IconListTitledItem } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type HowEarnWorksBenefitItem = {
     id: string;
@@ -15,46 +14,12 @@ type HowEarnWorksBenefitsSectionProps = {
     items: HowEarnWorksBenefitItem[];
 };
 
-const benefitRowStyle = prepareNativeStyle(() => ({
-    width: '100%',
-    alignItems: 'flex-start',
-}));
-
-const benefitTextContainerStyle = prepareNativeStyle(() => ({
-    flex: 1,
-    minWidth: 0,
-}));
-
-const benefitTitleStyle = prepareNativeStyle(() => ({
-    flexShrink: 1,
-}));
-
-const benefitDescriptionStyle = prepareNativeStyle(() => ({
-    flexShrink: 1,
-}));
-
-export const HowEarnWorksBenefitsSection = ({ items }: HowEarnWorksBenefitsSectionProps) => {
-    const { applyStyle } = useNativeStyles();
-
-    return (
-        <VStack spacing="sp16">
-            {items.map(item => (
-                <HStack key={item.id} spacing="sp12" style={applyStyle(benefitRowStyle)}>
-                    <IconSquare iconName={item.icon} intent="brand" />
-                    <VStack spacing={0} style={applyStyle(benefitTextContainerStyle)}>
-                        <Text variant="body-md-strong" style={applyStyle(benefitTitleStyle)}>
-                            {item.title}
-                        </Text>
-                        <Text
-                            variant="body-sm"
-                            color="contentSecondary"
-                            style={applyStyle(benefitDescriptionStyle)}
-                        >
-                            {item.description}
-                        </Text>
-                    </VStack>
-                </HStack>
-            ))}
-        </VStack>
-    );
-};
+export const HowEarnWorksBenefitsSection = ({ items }: HowEarnWorksBenefitsSectionProps) => (
+    <IconList iconIntent="brand" verticalAlign="flex-start">
+        {items.map(item => (
+            <IconListTitledItem key={item.id} icon={item.icon} title={item.title}>
+                {item.description}
+            </IconListTitledItem>
+        ))}
+    </IconList>
+);

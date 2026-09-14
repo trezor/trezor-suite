@@ -5,7 +5,9 @@ import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescrip
 import {
     BottomSheetModal,
     Button,
+    IconList,
     IconListItem,
+    IconListTextItem,
     Text,
     TextButton,
     VStack,
@@ -15,24 +17,20 @@ import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { TREZOR_SUITE_TOS_URL, TREZOR_SUPPORT_UNDERSTANDING_FEES } from '@trezor/urls';
 
-type ListItemProps = {
+type IconListTextButtonItemProps = {
     icon: IconName;
+    href: string;
     children: ReactNode;
-    href?: string;
 };
 
-const ListItem = ({ icon, children, href }: ListItemProps) => {
+const IconListTextButtonItem = ({ icon, href, children }: IconListTextButtonItemProps) => {
     const openLink = useOpenLink();
 
     return (
-        <IconListItem icon={icon} variant="brand">
-            {href ? (
-                <TextButton iconRight="arrowSquareOut" isUnderlined onPress={() => openLink(href)}>
-                    {children}
-                </TextButton>
-            ) : (
-                <Text>{children}</Text>
-            )}
+        <IconListItem icon={icon}>
+            <TextButton iconRight="arrowSquareOut" isUnderlined onPress={() => openLink(href)}>
+                {children}
+            </TextButton>
         </IconListItem>
     );
 };
@@ -51,14 +49,14 @@ export const HowTradingWorksSheet = ({ ref, closeModal }: HowTradingWorksSheetPr
         }
     >
         <VStack spacing="sp24">
-            <VStack spacing="sp16">
-                <ListItem icon="piggyBank">
+            <IconList iconIntent="brand" textVariant="body-md">
+                <IconListTextItem icon="piggyBank">
                     <Translation id="moduleTrading.tradingScreen.footer.howTradingWorksSheet.item1" />
-                </ListItem>
-                <ListItem icon="mapPin">
+                </IconListTextItem>
+                <IconListTextItem icon="mapPin">
                     <Translation id="moduleTrading.tradingScreen.footer.howTradingWorksSheet.item2" />
-                </ListItem>
-                <ListItem icon="identificationCard">
+                </IconListTextItem>
+                <IconListTextItem icon="identificationCard">
                     <Translation
                         id="moduleTrading.tradingScreen.footer.howTradingWorksSheet.item3"
                         values={{
@@ -69,14 +67,14 @@ export const HowTradingWorksSheet = ({ ref, closeModal }: HowTradingWorksSheetPr
                             ),
                         }}
                     />
-                </ListItem>
-                <ListItem icon="percent" href={TREZOR_SUPPORT_UNDERSTANDING_FEES}>
+                </IconListTextItem>
+                <IconListTextButtonItem icon="percent" href={TREZOR_SUPPORT_UNDERSTANDING_FEES}>
                     <Translation id="moduleTrading.tradingScreen.footer.howTradingWorksSheet.item4" />
-                </ListItem>
-                <ListItem icon="scroll" href={TREZOR_SUITE_TOS_URL}>
+                </IconListTextButtonItem>
+                <IconListTextButtonItem icon="scroll" href={TREZOR_SUITE_TOS_URL}>
                     <Translation id="moduleTrading.tradingScreen.footer.howTradingWorksSheet.item5" />
-                </ListItem>
-            </VStack>
+                </IconListTextButtonItem>
+            </IconList>
             <Button onPress={closeModal}>
                 <Translation id="generic.buttons.gotIt" />
             </Button>

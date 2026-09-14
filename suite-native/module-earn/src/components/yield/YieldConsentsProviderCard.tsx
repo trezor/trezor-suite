@@ -1,13 +1,21 @@
 import { useState } from 'react';
 
-import { Box, Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    Box,
+    Button,
+    Card,
+    CheckBox,
+    HStack,
+    IconList,
+    IconListTextItem,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
-
-import { EarnConsentsItem } from '../earn/EarnConsentsItem';
 
 const headerSectionStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,
@@ -58,24 +66,26 @@ export const YieldConsentsProviderCard = ({
                 </Text>
             </HStack>
             <VStack spacing="sp16" style={applyStyle(itemsSectionStyle)}>
-                <EarnConsentsItem iconName="file" color="contentPrimary">
-                    <Translation
-                        id="earn.yieldConsentsScreen.providerCard.firstItem"
-                        values={{ providerName, tokenSymbol }}
-                    />
-                </EarnConsentsItem>
-                <EarnConsentsItem iconName="shieldWarning" color="contentPrimary">
-                    <Translation
-                        id="earn.yieldConsentsScreen.providerCard.secondItem"
-                        values={{ providerName }}
-                    />
-                </EarnConsentsItem>
-                <EarnConsentsItem iconName="warningCircle" color="contentPrimary">
-                    <Translation
-                        id="earn.yieldConsentsScreen.providerCard.thirdItem"
-                        values={{ providerName }}
-                    />
-                </EarnConsentsItem>
+                <IconList iconIntent="info" textVariant="body-sm-strong">
+                    <IconListTextItem icon="file">
+                        <Translation
+                            id="earn.yieldConsentsScreen.providerCard.firstItem"
+                            values={{ providerName, tokenSymbol }}
+                        />
+                    </IconListTextItem>
+                    <IconListTextItem icon="shieldWarning">
+                        <Translation
+                            id="earn.yieldConsentsScreen.providerCard.secondItem"
+                            values={{ providerName }}
+                        />
+                    </IconListTextItem>
+                    <IconListTextItem icon="warningCircle">
+                        <Translation
+                            id="earn.yieldConsentsScreen.providerCard.thirdItem"
+                            values={{ providerName }}
+                        />
+                    </IconListTextItem>
+                </IconList>
                 <HStack spacing="sp12" alignItems="center">
                     <CheckBox
                         isChecked={hasAgreed}

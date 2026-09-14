@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsNoPhysicalDeviceConnected } from '@suite-common/device';
-import { Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
+import { Button, IconList, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
@@ -78,29 +78,17 @@ export const SuspiciousDeviceScreen = ({
                             <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.subtitle" />
                         }
                     />
-                    <VStack spacing="sp24">
-                        <IconListTextItem
-                            variant="warning"
-                            textVariant="body-md-strong"
-                            icon="plugs"
-                        >
+                    <IconList iconIntent="warning" textVariant="body-md-strong">
+                        <IconListTextItem icon="plugs">
                             <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet1" />
                         </IconListTextItem>
-                        <IconListTextItem
-                            variant="warning"
-                            textVariant="body-md-strong"
-                            icon="handPalm"
-                        >
+                        <IconListTextItem icon="handPalm">
                             <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet2" />
                         </IconListTextItem>
-                        <IconListTextItem
-                            variant="warning"
-                            textVariant="body-md-strong"
-                            icon="chatCircle"
-                        >
+                        <IconListTextItem icon="chatCircle">
                             <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet3" />
                         </IconListTextItem>
-                    </VStack>
+                    </IconList>
                 </VStack>
                 <Button
                     testID="@deviceOnboarding/SuspiciousDeviceScreen/contactSupportBtn"
