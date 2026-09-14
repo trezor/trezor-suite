@@ -76,7 +76,7 @@ const symbolsInfo: InfoResponse = {
             },
         },
     },
-    config: {},
+    config: { btcSwapComposeTemplate: { extraOutputs: [] } },
 };
 
 const composedTransactionInfo: TradingComposedTransactionInfo = {
