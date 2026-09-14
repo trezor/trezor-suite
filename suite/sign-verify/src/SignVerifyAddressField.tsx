@@ -1,16 +1,15 @@
-import { useSelector } from 'react-redux';
-
 import { Translation } from '@suite/intl';
-import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
 import { type Account } from '@suite-common/wallet-types';
 import { Input } from '@trezor/components';
 
 import { CopyFieldButton } from './CopyFieldButton';
 import { SignAddressInput } from './SignAddressInput';
+import { type SignAddresses } from './types';
 import { type SignVerifyFormFields } from './useSignVerifyForm';
 
 type SignVerifyAddressFieldProps = {
     account: Account;
+    signAddresses: SignAddresses;
     isSignPage: boolean;
     isCompleted: boolean;
     address?: string;
@@ -25,6 +24,7 @@ type SignVerifyAddressFieldProps = {
 
 export const SignVerifyAddressField = ({
     account,
+    signAddresses,
     isSignPage,
     isCompleted,
     address,
@@ -36,10 +36,6 @@ export const SignVerifyAddressField = ({
     hasAddressError,
     onCopy,
 }: SignVerifyAddressFieldProps) => {
-    const touchedAddresses = useSelector((state: ReceiveRootState) =>
-        selectTouchedAddresses(state, account.key),
-    );
-
     if (isCompleted) {
         return (
             <Input
@@ -64,7 +60,7 @@ export const SignVerifyAddressField = ({
                 name="path"
                 label={<Translation id="TR_ADDRESS" />}
                 account={account}
-                touchedAddresses={touchedAddresses}
+                signAddresses={signAddresses}
                 hasError={hasPathError}
                 bottomText={pathError || null}
                 data-testid="@sign-verify/sign-address"

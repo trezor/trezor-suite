@@ -1,17 +1,23 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
     "references": [
         {
             "path": "../../suite-common/dependency-injection"
         },
-        { "path": "../../suite-common/networks" },
-        { "path": "../../suite-common/receive" },
+        {
+            "path": "../../suite-common/device"
+        },
+        {
+            "path": "../../suite-common/networks"
+        },
         {
             "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/sign-verify"
+            "path": "../../suite-common/suite-types"
         },
         {
             "path": "../../suite-common/toast-notifications"
@@ -23,16 +29,37 @@
             "path": "../../suite-common/wallet-config"
         },
         {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
             "path": "../../suite-common/wallet-types"
         },
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../address" },
-        { "path": "../device" },
-        { "path": "../intl" },
-        { "path": "../../packages/components" },
-        { "path": "../../packages/dom-utils" },
-        { "path": "../../packages/icons" }
+        {
+            "path": "../address"
+        },
+        {
+            "path": "../analytics"
+        },
+        {
+            "path": "../intl"
+        },
+        {
+            "path": "../../packages/components"
+        },
+        {
+            "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dom-utils"
+        },
+        {
+            "path": "../../packages/icons"
+        },
+        {
+            "path": "../../suite-common/sign-verify"
+        }
     ]
 }
