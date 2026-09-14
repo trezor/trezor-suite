@@ -53,11 +53,14 @@ describe('handleExchangeRequestThunk', () => {
         const store = createTestStore({
             extra: {
                 services: {
-                    addressValidator: {
-                        getAddressType: jest.fn(),
-                        isAddressValid: jest.fn(
-                            (address, symbol) => address === validEthAddress && symbol === 'eth',
-                        ),
+                    networks: {
+                        addressValidator: {
+                            getAddressType: jest.fn(),
+                            isAddressValid: jest.fn(
+                                (address, symbol) =>
+                                    address === validEthAddress && symbol === 'eth',
+                            ),
+                        },
                     },
                 },
             },

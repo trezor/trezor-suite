@@ -1,5 +1,7 @@
 import { type SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
+import { mockNetworkMetadata } from './mockNetworkMetadata';
+
 export const mockNetworkModule = <TSymbol extends string>(
     overrides: Partial<SuiteCommonNetworkModule<TSymbol>> = {},
 ): SuiteCommonNetworkModule<TSymbol> => ({
@@ -9,6 +11,6 @@ export const mockNetworkModule = <TSymbol extends string>(
     },
     getSupportedNetworks: () => [],
     isSupportedNetwork: (_symbol: string): _symbol is TSymbol => false,
-    getNetworkConfig: () => ({ color: '#000000', protocols: [] }),
+    getNetworkConfig: () => ({ ...mockNetworkMetadata.btc, color: '#000000', protocols: [] }),
     ...overrides,
 });

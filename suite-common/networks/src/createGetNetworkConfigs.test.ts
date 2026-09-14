@@ -1,23 +1,36 @@
-import { networks } from '@suite-common/legacy-network-config';
-import { asProtocol } from '@trezor/network-module-suite-common-types';
+import { createMockDeps } from '@suite-common/dependency-injection';
 
-import type { GetNetworkConfig } from './createGetNetworkConfig';
-import { createGetNetworkConfigs } from './createGetNetworkConfigs';
+import { type NetworkSymbol } from './NetworkModules';
+import { type GetNetworkConfigsDeps, createGetNetworkConfigs } from './createGetNetworkConfigs';
+import { mockNetworkMetadata } from '../mocks/mockNetworkMetadata';
 
-it('combines legacy metadata with all modularized configuration fields', () => {
-    const protocols = [asProtocol('bitcoin')];
-    const getNetworkConfig: GetNetworkConfig = () => ({ color: '#123456', protocols });
-    const getNetworkConfigs = createGetNetworkConfigs({ getNetworkConfig });
-
-    expect(getNetworkConfigs().find(network => network.symbol === 'btc')).toEqual({
-        symbol: 'btc',
-        name: networks.btc.name,
-        displaySymbol: networks.btc.displaySymbol,
-        networkType: networks.btc.networkType,
-        decimals: networks.btc.decimals,
-        testnet: networks.btc.testnet,
-        explorer: networks.btc.explorer,
-        color: '#123456',
-        protocols,
+it('loads only registered networks and takes their metadata from the module', () => {
+    const config = { ...mockNetworkMetadata.btc, name: 'Registered Bitcoin' };
+    const deps = createMockDeps<GetNetworkConfigsDeps>({
+        networkModuleRepository: {
+            getSupportedNetworks: () => ['btc'],
+            get: null,
+            isSupportedNetwork: null,
+        },
+        getNetworkConfig: () => config,
     });
+
+    expect(createGetNetworkConfigs(deps)()).toEqual([config]);
+});
+
+it('preserves display order without mutating registered networks on Hermes', () => {
+    const supportedNetworks: NetworkSymbol[] = ['eth', 'btc'];
+    Object.defineProperty(supportedNetworks, 'toSorted', { value: undefined });
+    Object.freeze(supportedNetworks);
+
+    const deps = createMockDeps<GetNetworkConfigsDeps>({
+        networkModuleRepository: {
+            getSupportedNetworks: () => supportedNetworks,
+            get: null,
+            isSupportedNetwork: null,
+        },
+        getNetworkConfig: symbol => mockNetworkMetadata[symbol],
+    });
+
+    expect(createGetNetworkConfigs(deps)().map(network => network.symbol)).toEqual(['btc', 'eth']);
 });

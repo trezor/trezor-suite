@@ -2,11 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../suite-common/address" },
         {
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/networks" },
         { "path": "../../suite-common/receive" },
         {
             "path": "../../suite-common/redux-utils"

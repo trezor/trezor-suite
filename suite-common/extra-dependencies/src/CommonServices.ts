@@ -1,9 +1,8 @@
-import type { AddressValidatorDep, GetNamedAddressSupportDep } from '@suite-common/address';
 import type { AnalyticsDep } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type Getter } from '@suite-common/dependency-injection';
-import type { LoadNetworkModulesDep, NetworkModuleRepositoryDep } from '@suite-common/networks';
+import type { NetworksDep } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
@@ -29,10 +28,7 @@ import {
 import { type CreateLoggerDep, type ThpSettings } from '@trezor/connect';
 
 export type CommonServices = SuiteSyncDep &
-    AddressValidatorDep &
-    GetNamedAddressSupportDep &
-    LoadNetworkModulesDep &
-    NetworkModuleRepositoryDep &
+    NetworksDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
     PlatformEncryptionDep &

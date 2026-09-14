@@ -48,5 +48,5 @@ export const createNetworkModuleRepository = (
 };
 
 export const selectNetworkModuleRepositoryDep = (services: any): NetworkModuleRepositoryDep => ({
-    networkModuleRepository: services.networkModuleRepository,
+    networkModuleRepository: services.networks.networkModuleRepository,
 });

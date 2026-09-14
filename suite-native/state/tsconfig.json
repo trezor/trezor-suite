@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../suite-common/address" },
         {
             "path": "../../suite-common/analytics-redux"
         },

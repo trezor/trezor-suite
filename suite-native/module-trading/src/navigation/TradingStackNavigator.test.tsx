@@ -13,9 +13,9 @@ import {
     renderWithTradingProvider,
 } from '../test-utils/tradingTestUtils';
 
-const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
     analytics: mockNativeAnalytics(),
-    networkModuleRepository: mockNetworkModuleRepository(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 const renderTradingStackNavigator = (

@@ -9,7 +9,7 @@ import type { TronNetworkSuiteCommonNetworkModule } from '@trezor/network-tron-s
 
 // When adding a new Network Module, you have to
 //    1. register it here to have the static typing
-//    2. create the runtime object for DI in `createNetworksCompositionRoot`
+//    2. create the runtime object for DI in `createNetworkModulesCompositionRoot`
 export type NetworkModules = {
     bitcoin: BitcoinNetworkSuiteCommonNetworkModule;
     ethereum: EthereumNetworkSuiteCommonNetworkModule;

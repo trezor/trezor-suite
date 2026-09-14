@@ -1,4 +1,7 @@
-export { createNetworksCompositionRoot } from './createNetworksCompositionRoot';
+export {
+    createNetworksCompositionRoot,
+    type NetworksCompositionRootDeps,
+} from './createNetworksCompositionRoot';
 export {
     networksReducer,
     networksActions,
@@ -13,12 +16,7 @@ export {
 } from '../reduxState/networksSelectors';
 export { createLoadNetworkModules, type LoadNetworkModulesDep } from './createLoadNetworkModules';
 export { createGetNetworkConfigs } from './createGetNetworkConfigs';
-export {
-    getLegacyNetworkConfigs,
-    type LegacyNetworkConfigs,
-    type Network,
-    type Networks,
-} from './legacyNetworkConfig';
+export { getLegacyNetworkConfigs, type LegacyNetworkConfigs } from './legacyNetworkConfig';
 // Temporary compatibility exports for wallet-config; consumers have not migrated yet.
 export {
     TREZOR_CONNECT_BACKENDS,
@@ -31,7 +29,7 @@ export {
     type NetworkType,
     type ServerType,
     type TrezorConnectBackendType,
-} from '@suite-common/legacy-network-config';
+} from '@trezor/network-module-suite-common-types';
 export {
     createGetNetworkConfig,
     type GetNetworkConfig,
@@ -51,3 +49,26 @@ export {
     type NetworkModules,
     type StaticNetworkModulesDep,
 } from './NetworkModules';
+
+export {
+    createAddressValidator,
+    selectAddressValidatorDep,
+    type AddressValidator,
+    type AddressValidatorDep,
+    type AddressValidatorDeps,
+} from './createAddressValidator';
+
+export {
+    createGetNamedAddressSupport,
+    selectGetNamedAddressSupportDep,
+    type GetNamedAddressSupport,
+    type GetNamedAddressSupportDep,
+    type GetNamedAddressSupportDeps,
+    type NamedAddressSupport,
+    type SymbolNamedAddressResolver,
+} from './createGetNamedAddressSupport';
+
+export { createNetworkModulesCompositionRoot } from './createNetworkModulesCompositionRoot';
+export type { NetworksServices, NetworksDep } from './NetworksServices';
+
+export type { Network, Networks } from './Network';

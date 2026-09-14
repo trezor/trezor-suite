@@ -1,0 +1,33 @@
+import type { LegacyNetworkConfigs } from './networksConfig';
+
+// Preserve the existing display order until modules own their ordering (issue #32060).
+export const networkDisplayOrder: readonly (keyof LegacyNetworkConfigs)[] = [
+    'btc',
+    'eth',
+    'pol',
+    'bsc',
+    'arb',
+    'base',
+    'op',
+    'rhc',
+    'hype',
+    'avax',
+    'sol',
+    'trx',
+    'ada',
+    'etc',
+    'xrp',
+    'xlm',
+    'ltc',
+    'bch',
+    'doge',
+    'zec',
+    'test',
+    'regtest',
+    'tsep',
+    'thod',
+    'dsol',
+    'txrp',
+    'txlm',
+    'ttrx',
+];

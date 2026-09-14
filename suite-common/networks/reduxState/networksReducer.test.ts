@@ -3,6 +3,11 @@ import { networksActions, networksReducer } from './networksReducer';
 
 const bitcoin: NetworkMetadata = {
     symbol: 'btc',
+    bip43Path: "m/84'/0'/i'",
+    accountTypes: {},
+    features: [],
+    backendOptions: [],
+    yieldXyzId: null,
     name: 'Bitcoin',
     displaySymbol: 'BTC',
     networkType: 'bitcoin',

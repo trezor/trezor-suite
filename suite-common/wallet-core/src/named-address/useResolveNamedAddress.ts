@@ -1,6 +1,5 @@
-import { selectGetNamedAddressSupportDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol, selectGetNamedAddressSupportDep } from '@suite-common/networks';
 import { useQuery } from '@suite-common/react-query';
 import { useDebouncedValue } from '@trezor/react-utils';
 

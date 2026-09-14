@@ -138,7 +138,7 @@ const buildState = () => ({
 });
 
 const renderModal = () => {
-    const services = { addressValidator: mockAddressValidator() };
+    const services = { networks: { addressValidator: mockAddressValidator() } };
     const root = createTestCompositionRoot({
         extra: { services },
         preloadedState: buildState(),

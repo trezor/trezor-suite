@@ -18,8 +18,8 @@ import { TradingHistoryDetailInfo } from './TradingHistoryDetailInfo';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
 const mockCopyToClipboard = jest.fn(() => Promise.resolve());
-const services: NetworkModuleRepositoryDep = {
-    networkModuleRepository: mockNetworkModuleRepository(),
+const services: { networks: NetworkModuleRepositoryDep } = {
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
 };
 
 jest.mock('@suite-native/clipboard', () => ({
