@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { type FeeInfo } from '@suite-common/wallet-types';
-import { isEip1559 } from '@suite-common/wallet-utils';
+import { getBaseFeePerGasFromLevels, isEip1559 } from '@suite-common/wallet-utils';
 import { Icon, Row, Text } from '@trezor/components';
 import { GasPumpIcon, ReceiptIcon } from '@trezor/icons';
 
@@ -12,7 +12,7 @@ const getCurrentFeeRate = (feeInfo: FeeInfo) => {
     const { levels } = feeInfo;
 
     if (isEip1559(levels.at(0))) {
-        return levels.at(0)?.baseFeePerGas;
+        return getBaseFeePerGasFromLevels(levels);
     }
 
     const middleIndex = Math.floor((levels.length - 1) / 2);
@@ -21,9 +21,7 @@ const getCurrentFeeRate = (feeInfo: FeeInfo) => {
 };
 
 const getCurrentFeeRateLabel = (feeInfo: FeeInfo) => {
-    const { levels } = feeInfo;
-
-    if (levels.at(0)?.baseFeePerGas) {
+    if (getBaseFeePerGasFromLevels(feeInfo.levels)) {
         return 'TR_CURRENT_BASE_FEE';
     }
 
