@@ -1,16 +1,22 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { firmwareAssets, firmwareReleaseConfigAssets } from '@trezor/connect-data';
-import type { FirmwareRelease } from '@trezor/device-utils';
+import type { ConditionalRelease, FirmwareRelease } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/protobuf/src/definitions';
-import { versionUtils } from '@trezor/utils';
+import { getIntegerInRangeFromString, versionUtils } from '@trezor/utils';
 
 import {
+    calculateShouldOfferRelease,
     getFirmwareLocation,
     getFirmwareReleaseConfigInfo,
     getFirmwareStatus,
     getLocalFirmwareConfig,
+    selectFirmwareRelease,
 } from './firmwareInfo';
+import {
+    selectFirmwareReleaseErrorFixtures,
+    selectFirmwareReleaseFixtures,
+} from './firmwareInfo.fixture';
 import * as firmwareReleaseStore from './firmwareReleaseStore';
 import * as settingsStore from './settingsStore';
 import { getDeviceFeatures } from '../../setupJest';
@@ -35,12 +41,105 @@ describe('data/firmwareInfo', () => {
             ).toEqual('unknown');
         });
     });
+
+    describe('selectFirmwareRelease', () => {
+        it.each(selectFirmwareReleaseFixtures)(
+            '$desc',
+            ({ features, release, releasesOfDevice, intermediaries, result }) => {
+                expect(
+                    selectFirmwareRelease(features, release, [...releasesOfDevice], intermediaries),
+                ).toStrictEqual(result);
+            },
+        );
+
+        it.each(selectFirmwareReleaseErrorFixtures)(
+            'throws in $desc',
+            ({ features, release, releasesOfDevice, intermediaries, error }) => {
+                expect(() =>
+                    selectFirmwareRelease(features, release, [...releasesOfDevice], intermediaries),
+                ).toThrow(error);
+            },
+        );
+    });
+
+    describe('calculateShouldOfferRelease', () => {
+        const deviceId = '36647600C9CEB95187D31BC5';
+        const deviceBucket = getIntegerInRangeFromString(deviceId, 100);
+        const mockConditionalRelease = (rolloutProbability: number): ConditionalRelease => ({
+            firmware_type: FirmwareType.Universal,
+            releasePath: 'firmware/release.json',
+            conditions: {
+                environment: { min_suite_version: '0.0.0', min_suite_native_version: '0.0.0' },
+                rollout_probability: rolloutProbability,
+            },
+        });
+
+        it.each([
+            {
+                desc: 'does not offer a release at 0% rollout',
+                rolloutProbability: 0,
+                deviceId,
+                shouldBeOffered: false,
+            },
+            {
+                desc: 'offers a release at 100% rollout to a device in the formerly excluded bucket',
+                rolloutProbability: 100,
+                deviceId,
+                shouldBeOffered: true,
+            },
+            {
+                desc: 'does not offer a release when the device bucket equals the rollout threshold',
+                rolloutProbability: deviceBucket,
+                deviceId,
+                shouldBeOffered: false,
+            },
+            {
+                desc: 'offers a release when the device bucket is below the rollout threshold',
+                rolloutProbability: deviceBucket + 1,
+                deviceId,
+                shouldBeOffered: true,
+            },
+            {
+                desc: 'does not offer a release without a device id at 0% rollout',
+                rolloutProbability: 0,
+                deviceId: null,
+                shouldBeOffered: false,
+            },
+            {
+                desc: 'offers a release without a device id at a positive rollout',
+                rolloutProbability: 1,
+                deviceId: null,
+                shouldBeOffered: true,
+            },
+        ])('$desc', ({ rolloutProbability, deviceId: testDeviceId, shouldBeOffered }) => {
+            expect(
+                calculateShouldOfferRelease(
+                    mockConditionalRelease(rolloutProbability),
+                    testDeviceId,
+                ),
+            ).toBe(shouldBeOffered);
+        });
+
+        it.each([-1, 101])(
+            'rejects an out-of-range rollout probability of %i',
+            rolloutProbability => {
+                expect(() =>
+                    calculateShouldOfferRelease(
+                        mockConditionalRelease(rolloutProbability),
+                        deviceId,
+                    ),
+                ).toThrow('Probability must be between 0 and 100.');
+            },
+        );
+    });
+
     describe('getFirmwareReleaseConfigInfo', () => {
-        beforeAll(() => {
+        beforeEach(() => {
             const settings = parseConnectSettings({});
             settingsStore.set(settings);
             firmwareReleaseStore.init(getLocalFirmwareConfig());
         });
+
         it('should offer latest compatible relase when latest one is not compatible', () => {
             const features = getDeviceFeatures({
                 bootloader_mode: null,
@@ -75,7 +174,7 @@ describe('data/firmwareInfo', () => {
                 features,
                 FirmwareType.Universal,
             );
-            expect(firmwareReleaseConfigInfo?.intermediary).toBeTruthy();
+            expect(firmwareReleaseConfigInfo?.intermediary?.version).toBe(2);
             expect(firmwareReleaseConfigInfo?.release.version).toEqual(latestRelase.version);
         });
     });
