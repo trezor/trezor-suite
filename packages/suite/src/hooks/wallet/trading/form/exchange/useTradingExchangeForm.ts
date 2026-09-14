@@ -114,7 +114,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     });
 
     const formIsValid = Object.keys(formState.errors).length === 0;
-    const hasValues = !!outputAmount && !!receiveCryptoSelect;
+    const hasValues = !!outputAmount && !!receiveCryptoSelect && !!sendCryptoSelect;
     const isAmountEmpty = outputAmount === '';
     const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;

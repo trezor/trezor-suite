@@ -50,8 +50,6 @@ export const useTradingExchangeAssetSelect = ({
                 TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
             );
 
-            await onCryptoCurrencyChangeRef.current(asset);
-
             if (receiveCryptoSelect?.id === asset.id) {
                 setValueRef.current(TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, null, {
                     shouldDirty: true,
@@ -59,6 +57,8 @@ export const useTradingExchangeAssetSelect = ({
             }
 
             setValueRef.current(TRADING_FORM_PROVIDER_SELECT, undefined, { shouldDirty: true });
+
+            await onCryptoCurrencyChangeRef.current(asset);
         },
         [onCryptoCurrencyChangeRef, getValuesRef, setValueRef],
     );

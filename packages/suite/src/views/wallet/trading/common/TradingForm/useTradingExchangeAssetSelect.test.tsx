@@ -11,11 +11,16 @@ import {
 } from '@suite-common/trading';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { createDeferred } from '@trezor/utils';
 
-import { useTradingExchangeAssetSelect } from './useTradingExchangeAssetSelect';
+import {
+    type UseTradingExchangeAssetSelectParams,
+    useTradingExchangeAssetSelect,
+} from './useTradingExchangeAssetSelect';
 
 const btcSymbol = toNetworkSymbolNonTestnet('btc');
 const ethSymbol = toNetworkSymbolNonTestnet('eth');
+const solSymbol = toNetworkSymbolNonTestnet('sol');
 
 const BTC_ASSET: TradingAssetOption = {
     id: 'bitcoin' as CryptoId,
@@ -39,6 +44,18 @@ const ETH_ASSET: TradingAssetOption = {
     displaySymbol: 'ETH',
     networkName: 'Ethereum',
     networkSymbol: ethSymbol,
+};
+
+const SOL_ASSET: TradingAssetOption = {
+    id: 'solana' as CryptoId,
+    isNativeToken: true,
+    name: 'Solana',
+    coingeckoId: 'solana',
+    contractAddress: null,
+    symbol: solSymbol,
+    displaySymbol: 'SOL',
+    networkName: 'Solana',
+    networkSymbol: solSymbol,
 };
 
 const asSellOption = (
@@ -78,9 +95,13 @@ const buildDefaults = ({
     amountInCrypto: true,
 });
 
-const renderAssetSelect = (defaultValues: DefaultValues<TradingExchangeFormProps>) => {
+const renderAssetSelect = (
+    defaultValues: DefaultValues<TradingExchangeFormProps>,
+    changeImplementation: UseTradingExchangeAssetSelectParams['onCryptoCurrencyChange'] = () =>
+        Promise.resolve(),
+) => {
     const root = createTestCompositionRoot({});
-    const onCryptoCurrencyChange = jest.fn(() => Promise.resolve());
+    const onCryptoCurrencyChange = jest.fn(changeImplementation);
     const setAmountLimits = jest.fn();
 
     const { result } = renderHookWithStoreProvider(
@@ -117,6 +138,55 @@ describe('useTradingExchangeAssetSelect', () => {
         expect(onCryptoCurrencyChange).toHaveBeenCalledWith(pickedAsset);
         expect(result.current.methods.getValues('receiveCryptoSelect')).toBeNull();
         expect(result.current.methods.getValues('provider')).toBeUndefined();
+    });
+
+    it('clears the colliding receive asset before the send asset change settles', async () => {
+        const pendingChange = createDeferred<void>();
+        const { result } = renderAssetSelect(
+            buildDefaults({
+                sendCryptoSelect: asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
+                receiveCryptoSelect: ETH_ASSET,
+            }),
+            () => pendingChange.promise,
+        );
+
+        act(() => {
+            result.current.handlers.handleSellAssetSelect(asSellOption(ETH_ASSET, ETH_ACCOUNT_KEY));
+        });
+
+        expect(result.current.methods.getValues('receiveCryptoSelect')).toBeNull();
+        expect(result.current.methods.getValues('provider')).toBeUndefined();
+
+        await act(async () => {
+            pendingChange.resolve();
+            await pendingChange.promise;
+        });
+    });
+
+    it('keeps a receive asset picked while the send asset change is pending', async () => {
+        const pendingChange = createDeferred<void>();
+        const { result } = renderAssetSelect(
+            buildDefaults({
+                sendCryptoSelect: asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
+                receiveCryptoSelect: ETH_ASSET,
+            }),
+            () => pendingChange.promise,
+        );
+
+        act(() => {
+            result.current.handlers.handleSellAssetSelect(asSellOption(ETH_ASSET, ETH_ACCOUNT_KEY));
+        });
+
+        act(() => {
+            result.current.handlers.handleReceiveAssetSelect(SOL_ASSET);
+        });
+
+        await act(async () => {
+            pendingChange.resolve();
+            await pendingChange.promise;
+        });
+
+        expect(result.current.methods.getValues('receiveCryptoSelect')).toEqual(SOL_ASSET);
     });
 
     it('keeps the receive asset when the picked send asset differs from it', async () => {

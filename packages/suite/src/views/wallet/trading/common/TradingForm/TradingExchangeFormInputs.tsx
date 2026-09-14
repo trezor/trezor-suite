@@ -135,7 +135,7 @@ export const TradingExchangeFormInputs = () => {
                             currencySelectLabel={currencySelect?.value.toUpperCase()}
                             cryptoCurrencyLabel={sendCryptoSelect?.id}
                         />
-                        {amountInCrypto && asset && (
+                        {amountInCrypto && !!sendCryptoSelect && asset && (
                             <Row justifyContent="space-between" alignItems="center" gap={8}>
                                 <TradingFractionButtons />
                                 <TradingBalance
@@ -151,7 +151,7 @@ export const TradingExchangeFormInputs = () => {
                         )}
                     </Column>
 
-                    {showReserveBanner && asset && (
+                    {showReserveBanner && !!sendCryptoSelect && asset && (
                         <TradingNetworkReserveBanner
                             symbol={asset.symbol}
                             contractAddress={tokenAddress}
