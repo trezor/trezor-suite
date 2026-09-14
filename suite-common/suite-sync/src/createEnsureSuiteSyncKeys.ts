@@ -10,6 +10,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { err, exhaustive, ok } from '@trezor/type-utils';
 
 import { type GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
+import { serializeSuiteSyncErrorForReport } from './serializeSuiteSyncErrorForReport';
 
 /**
  * Device is not connected or device is in a state/configuration, that does not
@@ -84,7 +85,7 @@ export const createEnsureSuiteSyncKeys =
                 case 'CreateSuiteSyncOwnerError':
                 case 'ProofOfDelegatedSignFailed':
                 case 'RefreshDeviceFailed':
-                    console.error(result.error);
+                    console.error(serializeSuiteSyncErrorForReport(result.error));
                     // Todo: dispatch better notification
                     deps.dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));
 

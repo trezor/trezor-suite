@@ -1,7 +1,7 @@
 import { createMockDeps as createDependencyMocks } from '@suite-common/dependency-injection';
 import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
-import { ok } from '@trezor/type-utils';
+import { err, ok } from '@trezor/type-utils';
 
 import {
     type EnsureSuiteSyncKeysDeps,
@@ -15,6 +15,8 @@ const createMockDeps = () =>
         ensureDelegatedIdentityKey: null,
         getDeviceForStaticSessionId: null,
     });
+
+const SECRET_KEY_HEX = 'deadbeefcafebabe0123456789abcdef';
 
 const OWNER_1 = {
     ownerId: asSuiteSyncOwnerId('new-owner-id'),
@@ -133,5 +135,38 @@ describe(createEnsureSuiteSyncKeys.name, () => {
             },
             delegatedKey: asDelegatedIdentityKey('delegated-key-value'),
         });
+    });
+
+    it('maps an owner retrieval failure to unavailable device without reporting its cause', async () => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const deps = createMockDeps();
+        deps.dispatch.mockImplementation(() => Promise.resolve(ok()));
+        deps.ensureDelegatedIdentityKey.mockResolvedValue(
+            ok(asDelegatedIdentityKey('delegated-key-value')),
+        );
+        deps.ensureSuiteSyncOwner.mockResolvedValue(
+            err({
+                type: 'ProofOfDelegatedSignFailed',
+                caused: new Error(`invalid private key ${SECRET_KEY_HEX}`),
+            }),
+        );
+
+        const mockDevice = createDevice();
+        deps.getDeviceForStaticSessionId.mockImplementation(() => mockDevice);
+
+        const ensureSuiteSyncKeys = createEnsureSuiteSyncKeys(deps);
+        const result = await ensureSuiteSyncKeys({
+            device: mockDevice,
+        });
+
+        expect(result.success).toBe(false);
+        expect(!result.success && result.error.type).toBe('SuiteSyncUnavailableOnDeviceError');
+        expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+        const reportedArguments = consoleErrorSpy.mock.calls.flat();
+        expect(reportedArguments.map(String).join(' ')).toContain('ProofOfDelegatedSignFailed');
+        expect(reportedArguments.map(String).join(' ')).not.toContain(SECRET_KEY_HEX);
+        expect(JSON.stringify(reportedArguments)).not.toContain(SECRET_KEY_HEX);
+
+        consoleErrorSpy.mockRestore();
     });
 });

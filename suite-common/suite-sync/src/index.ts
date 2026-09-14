@@ -104,6 +104,7 @@ export {
     getIsSuiteSyncLabelingActionEnabled,
 } from './suiteSyncUtils';
 export { createSuiteSyncInternalErrorHandler } from './createSuiteSyncInternalErrorHandler';
+export { serializeSuiteSyncErrorForReport } from './serializeSuiteSyncErrorForReport';
 export type {
     SuiteSyncUncontrolledError,
     SuiteSyncUncontrolledErrorHandlerDep,

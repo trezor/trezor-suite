@@ -26,6 +26,7 @@ import { isNotNull } from '@trezor/utils';
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';
 import { type GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
+import { serializeSuiteSyncErrorForReport } from '../serializeSuiteSyncErrorForReport';
 
 export type EnsureStorageDeps = {
     getRelayUrl: () => string;
@@ -114,7 +115,7 @@ export const createEnsureStorage =
             switch (type) {
                 // Probably bug in the code or data corruption
                 case 'ProofOfDelegatedSignFailed': {
-                    console.error(quotaResult.error);
+                    console.error(serializeSuiteSyncErrorForReport(quotaResult.error));
 
                     return err(SuiteSyncUnavailableOnDeviceError());
                 }

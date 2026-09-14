@@ -1,13 +1,15 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { messages } from '@suite/intl';
-import { type SuiteSyncUncontrolledError } from '@suite-common/suite-sync';
+import {
+    type SuiteSyncUncontrolledError,
+    serializeSuiteSyncErrorForReport,
+} from '@suite-common/suite-sync';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
-import { serializeError } from '@trezor/utils';
 
 import { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';
 import { updateShowEnableSuiteSyncModal } from './suiteSyncSlice';
@@ -32,7 +34,7 @@ export const suiteSyncErrorHandler = ({
     //       It unfortunately can happen, if we are not able to map OwnerId to the Device
     //       See: https://github.com/trezor/trezor-suite/issues/27049
     if (deviceStaticSessionId === null) {
-        console.error('Unexpected SuiteSync error', serializeError(error));
+        console.error('Unexpected SuiteSync error', serializeSuiteSyncErrorForReport(error));
 
         dispatch(
             notificationsActions.addToast({
@@ -92,7 +94,7 @@ export const suiteSyncErrorHandler = ({
         // We want those errors to come to Sentry
         case 'SuiteSyncUpdateError':
         case 'QuotaManagerCommunicationFailed':
-            console.error('Unexpected SuiteSync error', serializeError(error));
+            console.error('Unexpected SuiteSync error', serializeSuiteSyncErrorForReport(error));
 
             dispatch(
                 notificationsActions.addToast({

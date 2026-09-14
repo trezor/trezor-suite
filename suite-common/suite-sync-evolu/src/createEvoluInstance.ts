@@ -29,17 +29,13 @@ export const createEvoluInstanceFactory =
         const owner = createEvoluAppOwnerFromTrezorData({ data: suiteSyncOwner.ownerSecret });
 
         if (!owner.ok) {
-            console.error(owner.error);
-
-            throw owner.error;
+            throw new Error(`Evolu app owner creation failed: ${owner.error.type}`);
         }
 
         const appName = AppName.from(`trezor-suite-v${VERSION}`);
 
         if (!appName.ok) {
-            console.error(appName.error);
-
-            throw appName.error;
+            throw new Error(`Evolu app name creation failed: ${appName.error.type}`);
         }
 
         return getOrThrow(
