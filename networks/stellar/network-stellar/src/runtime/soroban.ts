@@ -16,49 +16,30 @@ import {
 import { isNotNullOrUndefined, resolveAfter } from '@trezor/utils';
 
 /**
- * Soroban (Stellar) JSON-RPC helpers for reading SEP-41 contract-token balances.
- *
- * Contract tokens (`C…` addresses) live in Soroban contract storage and are invisible to
- * Horizon, so they are read from a Stellar RPC node over JSON-RPC. No signing, no fees, no
- * ledger change. The read has two tiers:
- *
- * 1. One `getLedgerEntries` call reads every contract at once, straight out of the ledger. It
- *    relies on the storage layout the reference token contracts share — balances under
- *    `Vec[Symbol("Balance"), Address]`, descriptive metadata under `METADATA` in instance
- *    storage — which SEP-41 does not mandate, so it is a fast path and not the contract.
- * 2. Anything the batch cannot answer falls back to a read-only `simulateTransaction` of the
- *    token's SEP-41 functions, which works for any compliant token whatever its storage layout.
- *
- * A ledger entry that is simply absent is ambiguous — an empty balance and a contract that keys
- * its balances differently look identical — so tier 1 never turns a miss into a zero; it defers
- * to tier 2, which asks the contract itself.
+ * Reads SEP-41 contract-token balances over Soroban JSON-RPC — `C…` tokens live in contract
+ * storage, invisible to Horizon. Tier 1 batches every contract into one `getLedgerEntries`,
+ * relying on the storage layout the reference tokens share rather than anything SEP-41 mandates;
+ * tier 2 simulates the token's own functions for whatever tier 1 could not describe. A missing
+ * ledger entry is ambiguous, so tier 1 never reads a miss as a zero.
  */
 
-// A read-only simulation still needs a syntactically valid ed25519 (`G…`) source
-// account, but its existence and sequence are irrelevant. Derive a deterministic
-// all-zero placeholder rather than depend on a real funded account.
+// A read-only simulation needs a syntactically valid `G…` source, but not one that exists.
 const SIMULATION_SOURCE_ACCOUNT = StrKey.encodeEd25519PublicKey(Buffer.alloc(32));
 
-// Upper bound for reading contract tokens from the RPC, batch and fallback together, so adding
-// the batch in front of the simulations cannot push out account loading.
+// Bounds batch and fallback together, so contract tokens cannot stall account loading.
 const SEP41_READ_TIMEOUT_MS = 10_000;
 
-// The batch's slice of that budget. Whatever it leaves is what the fallback simulations get.
+// The batch's slice of that budget; the fallback gets whatever is left.
 const SEP41_BATCH_TIMEOUT_MS = 4_000;
 
-// `getLedgerEntries` accepts at most 200 keys per request.
 // https://developers.stellar.org/docs/data/apis/rpc/api-reference/methods/getLedgerEntries
 const MAX_LEDGER_KEYS_PER_REQUEST = 200;
 
-// Where `soroban-token-sdk` keeps `TokenMetadata { decimal, name, symbol }`, in instance storage.
+// Where `soroban-token-sdk` keeps `TokenMetadata`, in instance storage.
 const SEP41_METADATA_STORAGE_KEY = 'METADATA';
 
-/**
- * Resolves to `undefined` when `read` outruns `timeoutMs`.
- *
- * `Promise.race` settles but does not cancel, so the timer is aborted once the read answers —
- * otherwise every contract read would leave a pending timeout keeping the worker awake.
- */
+// `Promise.race` settles but does not cancel, so the timer is aborted once the read answers —
+// otherwise every read would leave a pending timeout keeping the worker awake.
 const withTimeout = async <T>(read: Promise<T>, timeoutMs: number): Promise<T | undefined> => {
     const expiry = new AbortController();
     try {
@@ -104,11 +85,7 @@ const simulateContractRead = async (
     return retval ? scValToNative(retval) : undefined;
 };
 
-/**
- * Reads a single SEP-41 `balance(holder)` from a contract token.
- * Returns the balance as a base-unit string, or `undefined` when it cannot be
- * read (not a token / no balance entry / RPC failure).
- */
+/** Reads `balance(holder)` as a base-unit string, `undefined` when it cannot be read. */
 export const getContractTokenBalance = async (
     server: SorobanServer,
     contractId: string,
@@ -123,18 +100,13 @@ export const getContractTokenBalance = async (
         networkPassphrase,
     );
 
-    // SEP-41 `balance` returns an i128 -> scValToNative yields a bigint. A watched contract can
-    // be anything the user pasted, so a non-numeric return value must not become a balance.
+    // A watched contract is whatever the user pasted; a non-numeric return is not a balance.
     return typeof balance === 'bigint' || typeof balance === 'number'
         ? balance.toString()
         : undefined;
 };
 
-/**
- * Raised when the network says a contract call would fail. Carries the contract's own
- * diagnostic, which is the only account of *why* — an insufficient balance, a missing
- * authorization, a contract that has no `transfer` at all.
- */
+/** Carries the contract's own diagnostic, the only account of *why* a call would fail. */
 export class SorobanSimulationError extends Error {
     constructor(public readonly diagnostic: string) {
         super(`Soroban simulation failed: ${diagnostic}`);
@@ -143,16 +115,10 @@ export class SorobanSimulationError extends Error {
 }
 
 /**
- * Fills in what a Soroban transaction cannot know about itself: the ledger entries the call will
- * touch and the resource fee for touching them. Both come out of simulating it, and the network
- * rejects a host-function transaction carrying neither.
- *
- * Simulating is also the only way to learn the call would fail *before* asking the user to
- * approve it on their device.
- *
- * The returned transaction costs more than the one passed in — the resource fee is added on top
- * of the inclusion fee — and it is tied to the ledger it was simulated against, so it should be
- * signed and submitted promptly rather than held.
+ * Simulates the transaction to fill in the ledger footprint and resource fee it cannot know about
+ * itself — the network rejects a host-function transaction carrying neither — and to learn it
+ * would fail before the device prompt. The result costs more than its input and is tied to the
+ * ledger it simulated against, so sign and submit it promptly.
  */
 export const prepareContractTransaction = async (
     server: SorobanServer,
@@ -174,11 +140,9 @@ export interface Sep41Metadata {
     name?: string;
 }
 
-// A token's decimals/symbol/name never change, while balances are re-read on every account
-// refresh — so the descriptive half of the read is kept for the lifetime of the worker. Three of
-// the four simulations per token would otherwise repeat on every refresh, for every watched
-// contract, against a rate-limited public endpoint. The in-flight promise is cached rather than
-// the value, so concurrent account refreshes share one read instead of stampeding the RPC.
+// Decimals/symbol/name never change, while balances are re-read on every account refresh — three
+// of the four simulations per token would otherwise repeat against a rate-limited endpoint. The
+// in-flight promise is cached rather than the value, so concurrent refreshes share one read.
 const metadataCache = new Map<string, Promise<Sep41Metadata>>();
 
 const metadataCacheKey = (contractId: string, networkPassphrase: string) =>
@@ -195,7 +159,6 @@ const readContractTokenMetadata = async (
         simulateContractRead(server, contractId, 'name', [], networkPassphrase),
     ]);
 
-    // `decimals` is a u32 -> number; be tolerant of a bigint too.
     const isNumeric = typeof decimals === 'number' || typeof decimals === 'bigint';
 
     return {
@@ -205,10 +168,7 @@ const readContractTokenMetadata = async (
     };
 };
 
-/**
- * Reads a token's SEP-41 metadata (`decimals`/`symbol`/`name`) from the contract.
- * Makes tokens self-describing, so callers need only supply contract addresses.
- */
+/** Reads a token's SEP-41 metadata from the contract itself, so callers need only its address. */
 export const getContractTokenMetadata = (
     server: SorobanServer,
     contractId: string,
@@ -238,18 +198,14 @@ export const getContractTokenMetadata = (
     return pending;
 };
 
-/** A fully-described SEP-41 token holding for an account. */
 export interface Sep41Token extends Sep41Metadata {
     contract: string;
     balance: string;
 }
 
 /**
- * Reads a contract's full SEP-41 data (balance + metadata) for `holder`.
- * Returns `undefined` when the balance could not be read — either the contract does not behave
- * like a SEP-41 token, or the read failed. An unread balance is not a zero balance, and
- * reporting it as one is indistinguishable from a holding the user really spent, so no token is
- * reported at all rather than a fabricated amount.
+ * Reads a contract's balance and metadata for `holder`, `undefined` when the balance could not be
+ * read — reported as a zero it would be indistinguishable from a holding the user really spent.
  */
 export const getSep41Token = async (
     server: SorobanServer,
@@ -269,13 +225,6 @@ export const getSep41Token = async (
     return { contract: contractId, balance, ...metadata };
 };
 
-/**
- * The ledger keys a contract token is read from: its instance (which carries the descriptive
- * metadata) and the holder's balance entry.
- *
- * Both are the layout the reference implementations use — the Stellar Asset Contract and the
- * `soroban-examples` token — not something SEP-41 requires, so a contract is free not to match.
- */
 const contractLedgerKeys = (contractId: string, holder: string, withInstance: boolean) => {
     const balance = xdr.LedgerKey.contractData(
         new xdr.LedgerKeyContractData({
@@ -289,10 +238,8 @@ const contractLedgerKeys = (contractId: string, holder: string, withInstance: bo
     return withInstance ? [new Contract(contractId).getFootprint(), balance] : [balance];
 };
 
-/**
- * A Stellar Asset Contract wraps the balance in `{ amount, authorized, clawback }`; the
- * `soroban-examples` token stores a bare i128. Anything else is not a balance we can read.
- */
+// A Stellar Asset Contract wraps the balance in `{ amount, authorized, clawback }`; the
+// `soroban-examples` token stores a bare i128.
 const readLedgerBalance = (value: unknown): string | undefined => {
     const amount =
         value !== null && typeof value === 'object' && 'amount' in value ? value.amount : value;
@@ -320,12 +267,10 @@ const readLedgerMetadata = (instance: xdr.ScContractInstance): Sep41Metadata | u
     };
 };
 
-/** What one contract's ledger entries said, as far as they could be read. */
 type LedgerReadResult = { balance?: string; metadata?: Sep41Metadata };
 
 const parseLedgerEntries = (entries: rpc.Api.LedgerEntryResult[]) => {
-    // Entries come back unordered and misses are omitted, so they are indexed by the contract
-    // they name rather than by their position in the request.
+    // Entries come back unordered with misses omitted, so they are keyed by contract, not slot.
     const byContract = new Map<string, LedgerReadResult>();
 
     entries.forEach(({ val }) => {
@@ -348,11 +293,6 @@ const parseLedgerEntries = (entries: rpc.Api.LedgerEntryResult[]) => {
     return byContract;
 };
 
-/**
- * Reads every contract's ledger entries in one request, or as few as the key limit allows.
- * Returns an empty map when the read fails or outruns its slice of the budget — the caller
- * treats that the same as a contract the batch could not describe.
- */
 const readContractLedgerEntries = async (
     server: SorobanServer,
     holder: string,
@@ -363,7 +303,7 @@ const readContractLedgerEntries = async (
         try {
             return contractLedgerKeys(contract, holder, !contractsWithKnownMetadata.has(contract));
         } catch {
-            // A contract id that cannot even be encoded has nothing to read
+            // A contract id that cannot even be encoded has nothing to read.
             return [];
         }
     });
@@ -383,23 +323,16 @@ const readContractLedgerEntries = async (
 
         return parseLedgerEntries(responses?.flatMap(response => response.entries) ?? []);
     } catch {
-        // A rejected request is not the only way the batch can fail to answer: an entry that
-        // will not decode throws out of `parseLedgerEntries`, and an rpc client that does not
-        // serve `getLedgerEntries` at all throws before there is a promise to reject. Either way
-        // this is the best-effort tier, so nothing may escape it — one unreadable entry would
-        // otherwise take the whole account read down with it.
+        // Nothing may escape this best-effort tier: one unreadable entry throws out of
+        // `parseLedgerEntries`, and an rpc client without `getLedgerEntries` throws synchronously.
         return new Map();
     }
 };
 
 /**
- * Reads full SEP-41 token data for a fixed allow-list of contracts held by `holder`. There is no
- * on-chain registry of contract-token holdings, so discovery is an explicit allow-list rather
- * than auto-discovery, and tokens are self-describing: metadata comes from each contract.
- *
- * One ledger read covers every contract; only the ones it cannot fully describe are asked
- * directly, so the steady state is a single request per account refresh. Failed reads are
- * dropped rather than reported as an empty holding.
+ * Reads full SEP-41 data for an explicit allow-list of contracts — there is no on-chain registry
+ * of contract-token holdings. One ledger read covers every contract; only what it cannot fully
+ * describe is asked directly, so the steady state is one request per account refresh.
  */
 export const readSep41Tokens = async (
     rpcUrl: string,
@@ -410,8 +343,7 @@ export const readSep41Tokens = async (
     const server = getSorobanServer(rpcUrl);
     const startedAt = Date.now();
 
-    // Metadata cannot change, so a contract that has already been described keeps its instance
-    // key out of the batch.
+    // Metadata cannot change, so an already-described contract keeps its instance key out.
     const knownMetadata = new Map<string, Promise<Sep41Metadata>>();
     contractIds.forEach(contract => {
         const cached = metadataCache.get(metadataCacheKey(contract, networkPassphrase));
@@ -425,8 +357,7 @@ export const readSep41Tokens = async (
         new Set(knownMetadata.keys()),
     );
 
-    // A contract the batch described is described for good, so a fallback read of it — now or on
-    // a later refresh — no longer has to ask for its metadata.
+    // Seeding the cache keeps later fallback reads from asking for metadata again.
     ledgerEntries.forEach((result, contract) => {
         if (result.metadata?.decimals != null) {
             metadataCache.set(
@@ -441,8 +372,7 @@ export const readSep41Tokens = async (
             const result = ledgerEntries.get(contract);
             const metadata = result?.metadata ?? (await knownMetadata.get(contract));
 
-            // A missing entry is not a zero balance and a missing `decimal` is not seven decimals
-            // — either way the contract has to answer for itself.
+            // A missing entry is not a zero balance — the contract has to answer for itself.
             if (result?.balance == null || metadata?.decimals == null) return undefined;
 
             return { contract, balance: result.balance, ...metadata };
@@ -451,9 +381,7 @@ export const readSep41Tokens = async (
 
     const unresolved = contractIds.filter((_, index) => !batched[index]);
 
-    // A slow or unreachable RPC must never stall account loading, so what the batch left over is
-    // capped at the rest of the budget and falls back to no token. Capping per token keeps one
-    // slow contract from discarding the tokens that did resolve in time.
+    // Capped per token, so one slow contract cannot discard the tokens that did resolve.
     const remainingBudget = Math.max(0, SEP41_READ_TIMEOUT_MS - (Date.now() - startedAt));
     const simulated = await Promise.all(
         unresolved.map(contract =>
@@ -469,6 +397,5 @@ export const readSep41Tokens = async (
         if (token) tokens.set(token.contract, token);
     });
 
-    // Reported in the order they were asked for, whichever tier answered.
     return contractIds.map(contract => tokens.get(contract)).filter(isNotNullOrUndefined);
 };

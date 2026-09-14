@@ -51,9 +51,8 @@ const isUnchangedAccount = (prev: Account, next: Account) => {
 
 type UpdateOptions = {
     /**
-     * Whether the update was built without knowledge of the account's locally-tracked tokens.
      * Discovery reports an account from the chain alone, so anything Suite tracks on its own must
-     * survive it; a targeted account fetch is told about them and its answer is authoritative.
+     * survive it; a targeted fetch is told about those tokens and its answer is authoritative.
      */
     isTokenTrackingBlind?: boolean;
 };
@@ -78,9 +77,8 @@ const update = (state: Account[], account: Account, options: UpdateOptions = {})
         // Locally tracked tokens must survive an update built from an older account snapshot
         // (e.g. a concurrent sync). A wrapped-native (WETH) balance exists only as a local entry:
         // wrapping emits no ERC-20 Transfer, so the backend never reports the token on its own.
-        // A Soroban contract token is local-only in the same way — no trustline to enumerate, so
-        // it is reported only for a fetch that was handed the account's watch list — but only a
-        // watch-list-blind update may keep it, or removing one would never take effect.
+        // A Soroban contract token is local-only in the same way, but only a watch-list-blind
+        // update may keep it, or removing one would never take effect.
         const keepsLocalTokens =
             next.networkType === 'ethereum' ||
             (next.networkType === 'stellar' && !!options.isTokenTrackingBlind);
@@ -90,8 +88,7 @@ const update = (state: Account[], account: Account, options: UpdateOptions = {})
             const locallyTrackedTokens = prevUnwrapped.tokens.filter(
                 token =>
                     !nextContracts.has(token.contract.toLowerCase()) &&
-                    // On Stellar only contract tokens are Suite's own; a classic trustline the
-                    // chain stopped reporting is genuinely closed.
+                    // A classic trustline the chain stopped reporting is genuinely closed.
                     (next.networkType !== 'stellar' || token.standard === 'STELLAR-CONTRACT'),
             );
 
@@ -160,8 +157,8 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                         // do not log the whole account: descriptor/addresses/balance are confidential and would leak into Sentry breadcrumbs
                         `Duplicated account found, updating instead (symbol: ${account.symbol}, type: ${account.accountType}, index: ${account.index})`,
                     );
-                    // Discovery does not carry the Soroban watch list, so its report of a known
-                    // account must not take the watched contract tokens off it.
+                    // Discovery does not carry the Soroban watch list, so it must not take the
+                    // watched contract tokens off a known account.
                     update(state, account, { isTokenTrackingBlind: true });
                 } else {
                     // Keep the state sorted by coin so that consumers get the canonical order for free.

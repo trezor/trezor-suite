@@ -15,7 +15,7 @@ import { transformTransaction } from './transform';
 const SOURCE = 'GBRF6PKZYP4J4WI2A3NF4CGF23SL34GRKA5LTQZCQFEUT2YJDZO2COXH';
 const HOLDER = 'GC2GT6BHYJUKD7SVAKXVLBYBCELCHY577CAXJM5QNVLERDGFF37LR35K';
 const CONTRACT = 'CAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRVEAM';
-// larger than Number.MAX_SAFE_INTEGER, like a real Soroban replay-protection nonce
+// Larger than `Number.MAX_SAFE_INTEGER`, like a real Soroban replay-protection nonce.
 const NONCE = '7223372036854775807';
 
 const contractArgs = (args: xdr.ScVal[] = []) =>
@@ -131,7 +131,7 @@ describe('transformTransaction with a Soroban operation', () => {
                 },
             },
             { type: 13, bytes: 'c0ffee' },
-            // stellar-sdk 17 keeps SCString as hex, since its bytes need not be valid UTF-8
+            // stellar-sdk 17 keeps SCString as hex, since its bytes need not be valid UTF-8.
             { type: 14, string: Buffer.from('a string', 'utf8').toString('hex') },
             { type: 15, symbol: 'a_symbol' },
             { type: 16, vec: [{ type: 3, u32: 1 }] },
@@ -189,9 +189,8 @@ describe('transformTransaction with a Soroban operation', () => {
         });
     });
 
-    // An unsigned entry is passed through rather than rejected: the signature of a custom
-    // account whose `__check_auth` takes none is legitimately void, and the transform cannot
-    // tell that apart from an entry nobody has signed yet.
+    // The signature of a custom account whose `__check_auth` takes none is legitimately void, and
+    // the transform cannot tell that apart from an entry nobody has signed yet.
     it('passes an unsigned authorization entry through', () => {
         const auth = [
             new xdr.SorobanAuthorizationEntry({

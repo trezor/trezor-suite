@@ -518,10 +518,8 @@ const TokenRowBasicActions = ({
                         onClick: onViewInExplorerButtonClick,
                     },
                     {
-                        // A contract token has no trustline to deactivate; it is only dropped
-                        // from the list of contracts the account reads balances for. Curated
-                        // contract tokens the user never added have nothing to remove — the
-                        // worker would resurface them — so they only offer the hide action.
+                        // A contract token has no trustline to deactivate, only the watch list to
+                        // drop from; a curated one the user never added can just be hidden.
                         label: (
                             <Translation
                                 id={isContractToken ? 'TR_REMOVE_TOKEN' : 'TR_DEACTIVATE_TOKEN'}

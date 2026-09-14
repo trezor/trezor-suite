@@ -213,9 +213,8 @@ describe('Stellar', () => {
 
     it('Horizon decodes Stellar Asset Contract transfers', async () => {
         // The account history depends on Horizon pre-decoding SAC transfers into
-        // asset_balance_changes; the amounts are not recoverable from the envelope. Most host
-        // function calls move no balances at all, and Horizon reports those as `null` rather
-        // than an empty array, so keep paging until one that actually carries changes shows up.
+        // `asset_balance_changes` — not recoverable from the envelope — and most host function
+        // calls move nothing, so keep paging until one that carries changes shows up.
         const maxPages = 10;
         const balanceChangesOf = (record: unknown) =>
             (record as { asset_balance_changes?: unknown[] | null }).asset_balance_changes;

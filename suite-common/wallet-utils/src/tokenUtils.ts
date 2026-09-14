@@ -107,8 +107,7 @@ const getTokenExplorerSuffix = (
     networkType: NetworkType,
     token: Pick<TokenInfo, 'standard'>,
 ): keyof Explorer => {
-    // A Soroban contract token is identified by its `C…` contract id, which lives under the
-    // explorer's contract path rather than the classic CODE-ISSUER asset path.
+    // A `C…` contract id lives under the explorer's contract path, not the classic asset path.
     if (networkType === 'stellar') {
         return token.standard === 'STELLAR-CONTRACT' ? 'contract' : 'token';
     }

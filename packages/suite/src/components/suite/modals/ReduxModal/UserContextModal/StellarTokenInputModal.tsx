@@ -34,7 +34,7 @@ const validateAssetCode = (translate: (id: TranslationKey) => string) => async (
 const validateAssetIssuer =
     (translate: (id: TranslationKey) => string, isContractToken: boolean) =>
     async (value: string) => {
-        // A contract token is identified by its contract id alone
+        // A contract token is identified by its contract id alone.
         if (isContractToken) return true;
         if (!value) return false;
 
@@ -43,10 +43,6 @@ const validateAssetIssuer =
         return isValidAddress(value) || translate('TR_ISSUER_ADDRESS_INVALID');
     };
 
-/**
- * A pasted contract id is a Soroban contract token unless the definitions resolve it to the
- * classic asset it wraps, and that answer only arrives asynchronously.
- */
 type ContractIdState = 'none' | 'resolving' | 'contract-token';
 
 export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInputModalProps) => {
@@ -86,8 +82,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
         validate: validateAssetIssuer(translationString, isContractToken),
     });
 
-    // A pasted Stellar Asset Contract id is swapped for the classic asset it wraps, so the rest
-    // of the activation flow keeps working with an asset code and issuer. Anything else that is a
+    // A pasted Stellar Asset Contract id is swapped for the classic asset it wraps; any other
     // valid contract id is a Soroban contract token, added by its id alone.
     useEffect(() => {
         let isStale = false;
@@ -100,8 +95,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
                 return;
             }
 
-            // Every valid contract id is a contract token until resolved otherwise, so a slow or
-            // failed definitions fetch cannot leave a contract id classified as a classic asset.
+            // A slow or failed definitions fetch must not leave a contract id filed as an asset.
             if (!isStale) setContractIdState('resolving');
 
             const resolved = await resolveStellarContractId(assetCode).catch(() => undefined);
@@ -125,10 +119,8 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
         };
     }, [assetCode, setValue]);
 
-    // The issuer stops being required the moment the input turns into a contract id, so the
-    // already-computed validity has to be recomputed against the new rule. Not on mount though:
-    // an empty issuer is invalid, and validating it before the user has typed anything paints the
-    // pristine field red with nothing to explain it.
+    // A contract id makes the issuer optional, so validity has to be recomputed against the new
+    // rule — but not on mount, which would paint the pristine, still-empty issuer red.
     const hasClassifiedContractId = useRef(false);
     useEffect(() => {
         if (!hasClassifiedContractId.current) {
@@ -142,8 +134,8 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
 
     const handleContinue = handleSubmit(
         async ({ assetCode: code, assetIssuer: issuer }: FormData) => {
-            // Derived from the submitted value rather than the async classification state, so a
-            // submit racing the classification can never file a contract id as a classic asset.
+            // Derived from the submitted value, so a submit racing the classification cannot
+            // file a contract id as a classic asset.
             const { isValidContractId } = await stellar();
 
             onSubmit(
@@ -164,9 +156,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
                     <Button
                         onClick={handleContinue}
                         // A contract id makes the issuer optional, so the form turns valid before
-                        // it is known whether the id is a Soroban token or the Stellar Asset
-                        // Contract of a classic asset. Submitting in that window would file the
-                        // asset as a contract token.
+                        // the id is known to be a Soroban token or a classic asset's SAC.
                         isDisabled={!isValid || contractIdState === 'resolving'}
                         intent="brand"
                     >

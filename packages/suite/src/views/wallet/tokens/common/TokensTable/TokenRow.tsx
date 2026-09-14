@@ -73,13 +73,11 @@ export const TokenRow = ({
     const [showDeactivateModal, setShowDeactivateModal] = useState(false);
 
     const watchedContracts = useSelector(state => selectStellarContractTokens(state, account.key));
-    // A curated contract token was never added by the user, so there is nothing to remove — the
-    // worker would surface it again on the next fetch. Only watched ones offer the action.
+    // A curated contract token was never added by the user, and the worker would surface it again.
     const isRemovableContractToken =
         token.standard === 'STELLAR-CONTRACT' && watchedContracts.includes(token.contract);
 
-    // A contract token is only watched locally — there is no trustline to close, so removing it
-    // from the watch list is the whole operation and nothing has to be signed.
+    // There is no trustline to close, so dropping it from the watch list is the whole operation.
     const handleDeactivateToken = () => {
         if (token.standard !== 'STELLAR-CONTRACT') {
             setShowDeactivateModal(true);

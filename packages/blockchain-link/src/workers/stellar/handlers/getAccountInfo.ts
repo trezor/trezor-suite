@@ -113,17 +113,9 @@ export const getAccountInfo = async (
             };
         });
 
-    // Soroban contract (type-C / SEP-41) tokens.
-    // Horizon cannot see these, so they are read from a Stellar RPC node.
-    // Tokens are self-describing: balance + metadata (decimals/symbol/name) are
-    // read from each contract's SEP-41 interface. There is no on-chain registry of
-    // contract-token holdings, so the contracts to read are a curated list plus
-    // whatever the user added themselves.
-    // Enabled on mainnet only (the PoC RPC endpoint is mainnet).
     const watchedContracts = payload.stellarContractTokens ?? [];
 
-    // A Stellar Asset Contract mirrors the classic trustline balance Horizon already reported,
-    // so a watched SAC of an asset the account holds would double-count the holding.
+    // A watched SAC would double-count the classic trustline Horizon already reported.
     const classicSacIds = new Set(
         (account.tokens ?? []).flatMap(token => {
             try {
@@ -142,11 +134,8 @@ export const getAccountInfo = async (
 
         try {
             const sep41Tokens = await readSep41Tokens(
-                // The Stellar backend serves stellar-rpc JSON-RPC on `POST /` from the same
-                // origin as Horizon's REST paths, so contract storage is read from whichever
-                // backend the account is already on rather than a second, fixed endpoint the
-                // user never chose. A backend that does not proxy JSON-RPC reports no contract
-                // tokens, which is the honest answer for it.
+                // The backend serves stellar-rpc JSON-RPC on `POST /` from the same origin as
+                // Horizon's REST paths, so contract storage comes from the account's own backend.
                 api.serverURL.toString(),
                 payload.descriptor,
                 contractsToRead,
@@ -158,18 +147,15 @@ export const getAccountInfo = async (
 
             return (
                 sep41Tokens
-                    // The curated list is only a discovery hint, so surface just the ones the
-                    // account actually holds. A contract the user added stays visible at a zero
-                    // balance, the way an opted-in trustline does.
+                    // The curated list is only a discovery hint, so just the held ones surface; a
+                    // contract the user added stays visible at zero, as an opted-in trustline does.
                     .filter(token => token.balance !== '0' || watched.has(token.contract))
                     .flatMap((token): TokenInfo[] => {
-                        // Prefer on-chain SEP-41 metadata; fall back to the curated entry.
                         const fallback = fallbackByContract.get(token.contract);
                         const decimals = token.decimals ?? fallback?.decimals;
 
                         // Without decimals the balance cannot be scaled, and defaulting to the
                         // classic 7 would render an 18-decimal holding 10^11 times too large.
-                        // A token that cannot describe itself is left out until it can.
                         if (decimals == null) return [];
 
                         return [
@@ -192,8 +178,7 @@ export const getAccountInfo = async (
         }
     };
 
-    // Kicked off here and awaited only when the response is assembled, so the RPC read runs
-    // concurrently with the Horizon history fetch instead of stalling it.
+    // Awaited only at assembly, so the RPC read overlaps the Horizon history fetch.
     const contractTokensPromise = readContractTokens();
     const mergeContractTokens = async () => {
         account.tokens = [...(account.tokens ?? []), ...(await contractTokensPromise)];
@@ -212,10 +197,9 @@ export const getAccountInfo = async (
 
     const pageSize = payload.pageSize || DEFAULT_TXS_PER_PAGE;
 
-    // A Stellar Asset Contract reports its transfers as `asset_balance_changes` on the
-    // host-function operation, which only the operations resource exposes. `join('transactions')`
-    // embeds the transaction in the same response — without it, reading `operation.transaction()`
-    // would fire one HTTP request per operation.
+    // A SAC reports its transfers as `asset_balance_changes` on the host-function operation, which
+    // only the operations resource exposes. `join('transactions')` embeds the transaction in the
+    // same response — without it, `operation.transaction()` costs one HTTP request each.
     const fetchOperationGroups = async (limit: number, cursor: string | undefined) => {
         const requestBuilder = api
             .operations()
@@ -238,10 +222,8 @@ export const getAccountInfo = async (
 
     let groups: Awaited<ReturnType<typeof fetchOperationGroups>>['groups'] = [];
     try {
-        // The page consumers assume exactly `pageSize` transactions per page — a shorter page
-        // reads as the end of the history — while an operation window can hold arbitrarily few
-        // complete transactions, so windows are accumulated until the page fills up or the
-        // history ends.
+        // Consumers read a page shorter than `pageSize` as the end of the history, while an
+        // operation window can hold arbitrarily few complete transactions.
         let cursor = payload.page && payload.page !== 1 ? payload.pageCursor : undefined;
         let limit = Math.min(HORIZON_MAX_LIMIT, pageSize * 2);
 
@@ -251,10 +233,8 @@ export const getAccountInfo = async (
 
             if (groups.length >= pageSize || !window.isWindowFull) break;
 
-            // A single transaction can fill a whole window, dropping its trailing group with
-            // nothing complete before it. The protocol caps operations per transaction at 100,
-            // so the largest window Horizon allows always completes at least one group — the
-            // guard only protects against a Horizon response violating that cap.
+            // The protocol caps operations per transaction at 100, so the largest window always
+            // completes a group; this only guards a Horizon response violating that cap.
             if (window.groups.length === 0 && limit === HORIZON_MAX_LIMIT) break;
 
             limit = HORIZON_MAX_LIMIT;
@@ -263,7 +243,7 @@ export const getAccountInfo = async (
     } catch (error) {
         if (isNotFoundError(error)) {
             // Horizon retains limited history; accounts without activity in the retained
-            // window return 404 on the operations endpoint even though they exist
+            // window return 404 on the operations endpoint even though they exist.
             account.history.transactions = [];
             await mergeContractTokens();
 
@@ -287,11 +267,8 @@ export const getAccountInfo = async (
         }
     };
 
-    // Everything `transformTransaction` needs for an `unknown` transaction, read off the
-    // operation alone — the transaction record is exactly what is unavailable here. This is the
-    // fallback of a parse that already failed, so every field it reads is one a degraded record
-    // may not carry: it has to produce a row for anything at all rather than throw in turn,
-    // which would take down the whole page it exists to keep intact.
+    // Everything `transformTransaction` needs for an `unknown` transaction, read off the operation
+    // alone — the fallback of a parse that already failed, so it must not throw in turn.
     const describeUnparseableOperation = (
         operation: (typeof pageGroups)[number]['operations'][number],
     ) => {
@@ -321,11 +298,8 @@ export const getAccountInfo = async (
                     tokenMetadata,
                 );
             } catch (error) {
-                // A single unparseable record must not fail the whole account history, and must
-                // not shorten the page either: a short page reads as the end of the history, and
-                // the empty slot it leaves keeps the page from ever counting as fetched. So the
-                // record keeps its slot as an `unknown` transaction, the same shape an
-                // unrecognised operation already produces.
+                // A short page reads as the end of the history and its empty slot never counts as
+                // fetched, so the record keeps its slot as an `unknown` transaction.
                 console.warn('Stellar: failed to parse a transaction record', error);
 
                 return utils.transformTransaction(

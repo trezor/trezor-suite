@@ -37,8 +37,7 @@ const invokedFunction = (transaction: Transaction) => {
     return String(invocation?.functionName);
 };
 
-// Answers each SEP-41 read by the function the simulated call invokes, so a single read can be
-// made to fail without disturbing the others.
+// Answers each SEP-41 read by the function the call invokes, so one read can fail on its own.
 const mockTokenServer = (retvals: Record<string, xdr.ScVal | undefined>) => {
     const simulateTransaction = jest.fn((transaction: Transaction) =>
         Promise.resolve({ result: { retval: retvals[invokedFunction(transaction)] } }),
@@ -54,7 +53,7 @@ describe('getContractTokenMetadata', () => {
         const first = await getContractTokenMetadata(server, CONTRACT);
         const second = await getContractTokenMetadata(server, CONTRACT);
 
-        // decimals + symbol + name, from the first read only
+        // decimals + symbol + name, from the first read only.
         expect(simulateTransaction).toHaveBeenCalledTimes(3);
         expect(second).toEqual(first);
         expect(second.decimals).toBe(7);
@@ -189,7 +188,7 @@ describe('readSep41Tokens', () => {
 
     const bareBalance = (amount: bigint) => nativeToScVal(amount, { type: 'i128' });
 
-    // What a Stellar Asset Contract stores instead of a bare amount
+    // What a Stellar Asset Contract stores instead of a bare amount.
     const sacBalance = (amount: bigint) =>
         nativeToScVal(
             { amount, authorized: true, clawback: false },
@@ -252,7 +251,6 @@ describe('readSep41Tokens', () => {
     });
 
     it('asks the contract itself when no balance entry came back, rather than reporting zero', async () => {
-        // A contract that keys its balances differently is indistinguishable from an empty one
         getLedgerEntries.mockResolvedValue({
             latestLedger: 1,
             entries: [instanceEntry(NO_BALANCE_ENTRY, metadataScVal(18, 'DEJ', 'deJTRSY'))],
@@ -270,7 +268,7 @@ describe('readSep41Tokens', () => {
                 name: 'deJTRSY',
             },
         ]);
-        // The batch already described it, so only the balance had to be simulated
+        // The batch already described it, so only the balance had to be simulated.
         expect(simulateTransaction).toHaveBeenCalledTimes(1);
     });
 
@@ -282,7 +280,7 @@ describe('readSep41Tokens', () => {
                 balanceEntry(NO_METADATA_ENTRY, bareBalance(5n)),
             ],
         });
-        // The contract does not answer `decimals` either
+        // The contract does not answer `decimals` either.
         respondToSimulations({ balance: bareBalance(5n) });
 
         const tokens = await readSep41Tokens(RPC_URL, HOLDER, [NO_METADATA_ENTRY]);
@@ -331,7 +329,7 @@ describe('readSep41Tokens', () => {
         });
 
         const pending = readSep41Tokens(RPC_URL, HOLDER, [BATCH_TIMES_OUT]);
-        // the batch's slice of SEP41_READ_TIMEOUT_MS
+        // The batch's slice of `SEP41_READ_TIMEOUT_MS`.
         await jest.advanceTimersByTimeAsync(4_000);
         const tokens = await pending;
         jest.useRealTimers();
@@ -359,7 +357,7 @@ describe('readSep41Tokens', () => {
         await readSep41Tokens(RPC_URL, HOLDER, [WARM_CACHE]);
         await readSep41Tokens(RPC_URL, HOLDER, [WARM_CACHE]);
 
-        // instance + balance on the cold read, balance alone on the warm one
+        // instance + balance on the cold read, balance alone on the warm one.
         expect(getLedgerEntries.mock.calls[0]).toHaveLength(2);
         expect(getLedgerEntries.mock.calls[1]).toHaveLength(1);
         expect(simulateTransaction).not.toHaveBeenCalled();
@@ -386,8 +384,8 @@ describe('prepareContractTransaction', () => {
             .mockResolvedValue({ error: 'HostError: Error(Contract, #1)' });
         const server = { simulateTransaction } as unknown as SorobanServer;
 
-        // Learning this before the device prompt is the point: the user is never asked to
-        // approve a transfer that cannot succeed.
+        // The point of simulating: the user is never asked to approve a transfer that cannot
+        // succeed.
         await expect(prepareContractTransaction(server, transfer())).rejects.toBeInstanceOf(
             SorobanSimulationError,
         );

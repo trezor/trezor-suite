@@ -43,9 +43,8 @@ const calculate = (
     feeLevel: FeeLevel,
     requiredAmount?: BigNumber,
     token?: TokenInfo, // Only when sending non-native tokens.
-    // Soroban only: what the network will charge for the ledger entries the contract touches,
-    // on top of the inclusion fee. `feePerByte` stays the inclusion fee, because that is what
-    // the transaction is built with before preparing adds this back on.
+    // Soroban only: what the ledger entries the contract touches cost on top of the inclusion
+    // fee. `feePerByte` stays the inclusion fee, since that is what the transaction is built with.
     resourceFee?: string,
 ): PrecomposedTransaction => {
     const feeInSatoshi = new BigNumber(feeLevel.feePerUnit).plus(resourceFee ?? 0).toFixed();
@@ -164,8 +163,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             });
         }
 
-        // A Soroban transfer is priced in two parts: the inclusion fee, which the fee levels
-        // already carry, and a resource fee for the ledger entries the contract touches, which
+        // A Soroban transfer also owes a resource fee for the ledger entries it touches, which
         // only simulating the call can tell us. Without it every number on the form is short.
         let resourceFee: string | undefined;
         if (account.networkType === 'stellar' && tokenInfo?.standard === 'STELLAR-CONTRACT') {
@@ -182,9 +180,8 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
 
             const backendUrl = selectBlockchainUrl(getState(), account.symbol);
 
-            // Simulating needs a real recipient. Until the form has one it cannot be submitted
-            // anyway, so the levels stand on the inclusion fee alone and correct themselves as
-            // soon as an address is entered.
+            // Simulating needs a real recipient. Until the form has one the levels stand on the
+            // inclusion fee alone and correct themselves as soon as an address is entered.
             if (address && backendUrl && new BigNumber(amountToSend).isGreaterThan(0)) {
                 const {
                     buildContractTokenTransferTransaction,
@@ -212,8 +209,6 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
                     // Preparing returns the inclusion fee with the resource fee added on.
                     resourceFee = new BigNumber(prepared.fee).minus(inclusionFee).toFixed();
                 } catch (error) {
-                    // The contract itself has said the transfer cannot succeed - too little of
-                    // the token, or a contract that does not implement SEP-41 transfer at all.
                     return rejectWithValue({
                         error: 'fee-levels-compose-failed',
                         message: error instanceof Error ? error.message : 'Simulation failed.',
@@ -388,8 +383,8 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 const transfer = buildContractTokenTransferTransaction({
                     descriptor: selectedAccount.descriptor,
                     sequence: selectedAccount.misc.stellarSequence,
-                    // The inclusion fee only. Preparing adds the resource fee on top, which is
-                    // what `precomposedTransaction.fee` already showed the user.
+                    // The inclusion fee only; preparing adds the resource fee that the displayed
+                    // `fee` already carries.
                     fee: precomposedTransaction.feePerByte,
                     contract: sentToken.contract,
                     destination: firstSignOutput.address,
@@ -407,8 +402,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                         transfer,
                     );
                 } catch (error) {
-                    // The network has told us the transfer cannot succeed, so there is nothing
-                    // worth putting in front of the user to approve.
+                    // Nothing worth asking the user to approve on the device.
                     return rejectWithValue({
                         error: 'sign-transaction-failed',
                         message: error instanceof Error ? error.message : 'Simulation failed.',

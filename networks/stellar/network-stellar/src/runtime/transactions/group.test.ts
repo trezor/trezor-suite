@@ -54,7 +54,7 @@ describe('groupOperationsByTransaction', () => {
     });
 
     it('treats a transaction hash that reappears out of order as a separate group', () => {
-        // Horizon orders by TOID, so operations of one transaction are always adjacent
+        // Horizon orders by TOID, so operations of one transaction are always adjacent.
         const groups = groupOperationsByTransaction(
             [operation('tx1', '30'), operation('tx2', '20'), operation('tx1', '10')],
             false,

@@ -9,11 +9,9 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 
 /**
- * Soroban contract (SEP-41) tokens the user added by hand, per account.
- *
- * Unlike classic assets, a contract token has no trustline to opt into and no on-chain registry
- * to discover holdings from, so the only way an account knows to read one is this list. It is
- * passed to the Stellar worker with every account fetch.
+ * Soroban contract (SEP-41) tokens the user added by hand, per account. A contract token has no
+ * trustline to opt into and no on-chain registry to discover holdings from, so this list is the
+ * only way an account knows to read one; it goes to the worker with every account fetch.
  */
 export interface StellarContractTokensState {
     [accountKey: AccountKey]: string[];
@@ -69,8 +67,7 @@ const stellarContractTokensSlice = createSliceWithExtraDeps({
     },
 });
 
-// Read straight from a component, so an account with no watched contracts must not hand back a
-// fresh array on every call — that never reference-matches and re-renders every token row.
+// Read straight from a component, so a fresh array per call would re-render every token row.
 export const selectStellarContractTokens = (
     { wallet }: StellarContractTokensRootState,
     accountKey: AccountKey,

@@ -62,8 +62,7 @@ export const Tokens = () => {
         setShowManualInput(false);
 
         if (token.standard === 'STELLAR-CONTRACT') {
-            // A contract token needs no trustline, so there is nothing to sign — it is only
-            // added to the list the account reads balances for, then re-fetched to pick it up.
+            // No trustline to sign: the contract only joins the list the account reads.
             const { key: accountKey, symbol } = selectedAccount.account;
             dispatch(
                 stellarContractTokensActions.addContractToken({
@@ -71,8 +70,7 @@ export const Tokens = () => {
                     contract: token.contract,
                 }),
             );
-            // A contract token is absent from the coin definitions, which would file it under
-            // unverified tokens; the user asked for this one, so show it with the rest.
+            // Absent from the coin definitions, it would otherwise be filed as unverified.
             dispatch(
                 tokenDefinitionsActions.setTokenStatus({
                     symbol,

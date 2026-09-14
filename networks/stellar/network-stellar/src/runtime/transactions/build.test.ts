@@ -22,14 +22,14 @@ describe('buildContractTokenTransferTransaction', () => {
     it('builds the transfer as the only operation of the transaction', () => {
         const { operations } = build('4200000');
 
-        // Stellar does not allow a host function alongside anything else, and connect rejects it
+        // Stellar does not allow a host function alongside anything else, and connect rejects it.
         expect(operations).toHaveLength(1);
         expect(operations[0]?.type).toBe('invokeHostFunction');
     });
 
     it('carries the contract, the function and both parties through to the device', () => {
-        // The protobuf the device signs is built from the parsed XDR, so going through it is
-        // what proves the built call is the call that gets approved.
+        // The protobuf the device signs is built from the parsed XDR, so this is what proves the
+        // built call is the call that gets approved.
         const [operation] = transformTransaction(
             parseTransactionFromXDR(build('4200000').toXdr(), false),
         ).operations;
@@ -51,7 +51,7 @@ describe('buildContractTokenTransferTransaction', () => {
     });
 
     it('keeps an eighteen-decimal amount exact, where a double would not', () => {
-        // 1.5 of an 18-decimal token: past 2^53, so anything that touches a number loses it
+        // 1.5 of an 18-decimal token: past 2^53, so anything that touches a number loses it.
         const amount = '1500000000000000000';
 
         const [operation] = transformTransaction(
@@ -65,8 +65,7 @@ describe('buildContractTokenTransferTransaction', () => {
     });
 
     it('needs preparing before it can be signed', () => {
-        // The footprint and resource fee only come from a simulation, and connect refuses a
-        // Soroban transaction without them.
+        // The footprint and resource fee come only from a simulation, which connect requires.
         expect(
             transformTransaction(parseTransactionFromXDR(build('1').toXdr(), false)),
         ).not.toHaveProperty('sorobanData');

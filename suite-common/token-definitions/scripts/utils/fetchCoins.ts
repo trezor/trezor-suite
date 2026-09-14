@@ -30,13 +30,9 @@ type StellarExpertContractData = {
     asset?: string;
 };
 
-type SorobanContractLookup =
-    // SAC exposing a classic asset -> its normalized `CODE-ISSUER`
-    | { type: 'classic'; address: string }
-    // contract (SEP-41) token with no underlying classic asset
-    | { type: 'native' }
-    // lookup failed (e.g. StellarExpert error) -> caller should skip
-    | undefined;
+// `undefined` means the lookup itself failed, which is not the same as a contract that wraps
+// nothing — the caller skips the address rather than trusting it.
+type SorobanContractLookup = { type: 'classic'; address: string } | { type: 'native' } | undefined;
 
 const fetchSorobanContractAsset = async (
     contractAddress: string,
@@ -53,7 +49,6 @@ const fetchSorobanContractAsset = async (
 
         const data = (await response.json()) as StellarExpertContractData;
 
-        // No underlying classic asset -> this is a native contract token, kept as-is.
         if (typeof data.asset !== 'string') {
             return { type: 'native' };
         }
@@ -76,13 +71,11 @@ const fetchSorobanContractAsset = async (
 };
 
 /**
- * Resolve a Stellar address to the key used in the definitions:
- * - classic assets (CODE-ISSUER / CODE:ISSUER) -> normalized `CODE-ISSUER`
- * - a Soroban Asset Contract wrapping a classic asset -> that asset's `CODE-ISSUER`
- * - a native contract (SEP-41) token with no classic asset -> its own `C...` address
+ * Resolves a Stellar address to the key the definitions use: a classic asset and the SAC wrapping
+ * one both normalize to `CODE-ISSUER`, a native contract token keeps its own `C…` address.
  *
- * Native contract tokens have no issuer, so they cannot be verified via stellar.toml;
- * their trust rests on being CoinGecko-listed (plus the StellarExpert rating added later).
+ * Contract tokens have no issuer, so they cannot be verified via stellar.toml; their trust rests
+ * on being CoinGecko-listed, plus the StellarExpert rating added later.
  */
 const resolveStellarAddress = async (address: string): Promise<string | undefined> => {
     const normalizedAssetAddress = normalizeStellarAssetAddress(address);
@@ -96,17 +89,15 @@ const resolveStellarAddress = async (address: string): Promise<string | undefine
 
     const lookup = await fetchSorobanContractAsset(address);
 
-    // SAC exposing a classic asset -> collapse onto the classic `CODE-ISSUER`.
     if (lookup?.type === 'classic') {
         return lookup.address;
     }
 
-    // Native contract token -> keep it, keyed by its own contract address.
     if (lookup?.type === 'native') {
         return address;
     }
 
-    // Lookup failed -> skip rather than keep an unverified address.
+    // A failed lookup is skipped rather than kept as an unverified address.
     return undefined;
 };
 

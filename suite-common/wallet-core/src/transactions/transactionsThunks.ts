@@ -692,8 +692,7 @@ export const fetchTransactionsPageThunk = createThunk<
             // if back on first page, the marker is reset
             ...(marker && !isFirstPage ? { marker } : {}),
             suppressBackupWarning: true,
-            // The response replaces account.tokens wholesale, so without the watched contracts
-            // this call would wipe the user's Soroban contract tokens from the account.
+            // The response replaces `account.tokens` wholesale, which would wipe the watch list.
             stellarContractTokens:
                 account.networkType === 'stellar'
                     ? selectStellarContractTokens(getState(), account.key)

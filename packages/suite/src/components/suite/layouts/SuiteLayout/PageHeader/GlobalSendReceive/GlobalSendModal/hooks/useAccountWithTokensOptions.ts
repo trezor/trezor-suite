@@ -72,7 +72,6 @@ export function useAccountWithTokensOptions({
         return networkAccounts
             .map(account => {
                 const { shownWithBalance, hiddenWithBalance } = getTokens({
-                    // Read-only tokens cannot be spent, so they are not offered as a send source.
                     tokens: account.tokens ?? [],
                     symbol: account.symbol,
                     tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,

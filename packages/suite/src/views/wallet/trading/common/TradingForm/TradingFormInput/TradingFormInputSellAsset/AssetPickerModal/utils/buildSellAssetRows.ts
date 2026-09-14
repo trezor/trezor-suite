@@ -39,8 +39,7 @@ export const buildSellAssetRows = ({
 }: BuildSellAssetRowsProps): { assetRows: AssetRowOption[]; networks: NetworkSymbol[] } => {
     const getTokensWithBalance = (account: AccountWithOptionalLabel) => {
         const { shownWithBalance, hiddenWithBalance } = getTokens({
-            // Read-only tokens cannot be spent, so they are not offered as a sell source.
-            // No trading provider quotes Soroban contract tokens, whatever Suite can sign
+            // No trading provider quotes Soroban contract tokens, whatever Suite can sign.
             tokens: (account.tokens ?? []).filter(token => !isStellarContractToken(token)),
             symbol: account.symbol,
             tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,

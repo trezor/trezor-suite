@@ -4,20 +4,16 @@ type OperationRecord = Horizon.ServerApi.OperationRecord;
 
 export type OperationGroup = {
     transactionHash: string;
-    /** never empty — a group exists only because an operation created it */
     operations: [OperationRecord, ...OperationRecord[]];
     /** `paging_token` of the last operation in the group */
     cursor: string;
 };
 
 /**
- * Horizon paginates operations, not transactions, so a fetch window can cut a transaction in
- * half. Operations are ordered by TOID, which makes every operation of one transaction
- * adjacent, so consecutive records can be grouped and a possibly-truncated trailing group
- * dropped — it is re-fetched at the head of the next page.
- *
- * Pass `isWindowFull` when Horizon returned as many records as were requested; a shorter
- * response means the end of the account history was reached and every group is complete.
+ * Horizon paginates operations, not transactions, so a window can cut a transaction in half.
+ * Operations are ordered by TOID, which makes one transaction's operations adjacent, so a
+ * possibly-truncated trailing group is dropped and re-fetched at the head of the next page.
+ * `isWindowFull` says Horizon filled the request; a shorter response means every group is whole.
  */
 export const groupOperationsByTransaction = (
     operations: OperationRecord[],

@@ -10,8 +10,8 @@ const SOURCE = 'GBRF6PKZYP4J4WI2A3NF4CGF23SL34GRKA5LTQZCQFEUT2YJDZO2COXH';
 const CONTRACT = 'CAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRVEAM';
 const SIGNED_TX = { public_key: 'pubkey', signature: 'signature' };
 
-// transfer(holder, contract, i128, symbol) with one signed address-credentials auth entry,
-// soroban data and a nonce wider than Number.MAX_SAFE_INTEGER
+// `transfer(holder, contract, i128, symbol)` with one signed address-credentials auth entry,
+// soroban data and a nonce wider than `Number.MAX_SAFE_INTEGER`.
 const SOROBAN_XDR =
     'AAAAAgAAAABiXz1Zw/ieWRoG2l4IxdbkvfDRUDq5wyKBSUnrCR5doQAAMJ0Bb2zHAAAFkQAAAAEAAAAAX14QAAAAAABlU/EAAAAAAAAAAAEAAAAAAAAAGAAAAAAAAAABJbKv015UMxpIkMNjGfee2xjweJ5H/Dh7OzDvLmmlTRoAAAAIdHJhbnNmZXIAAAAEAAAAEgAAAAAAAAAAtGn4J8Joof5VAq9VhwERFiPjv/iBdLOwbVZIjMUu/rgAAAASAAAAASWyr9NeVDMaSJDDYxn3ntsY8HieR/w4ezsw7y5ppU0aAAAACgAAAAAAAQVuDzamRD3i33kAAAAPAAAABG1lbW8AAAABAAAAAgAAAAAAAAAAtGn4J8Joof5VAq9VhwERFiPjv/iBdLOwbVZIjMUu/rhkPpKYsTf//wAPEgYAAAAQAAAAAQAAAAEAAAAPAAAAA3NpZwAAAAAAAAAAASWyr9NeVDMaSJDDYxn3ntsY8HieR/w4ezsw7y5ppU0aAAAACHRyYW5zZmVyAAAABAAAABIAAAAAAAAAALRp+CfCaKH+VQKvVYcBERYj47/4gXSzsG1WSIzFLv64AAAAEgAAAAElsq/TXlQzGkiQw2MZ957bGPB4nkf8OHs7MO8uaaVNGgAAAAoAAAAAAAEFbg82pkQ94t95AAAADwAAAARtZW1vAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwOQAAAAA=';
 
@@ -31,7 +31,7 @@ const invokeContractOperation = {
     auth: [],
 };
 
-/** Answers each call with the response the device would send at that point of the flow. */
+// Answers each call with the response the device would send at that point of the flow.
 const mockTypedCall = (responses: string[]) => {
     const calls: { type: string; message: unknown }[] = [];
     const typedCall = jest.fn((type: string, _resType: unknown, message: unknown) => {
@@ -104,8 +104,7 @@ describe('stellarSignTx', () => {
             'StellarSignedTx',
         ]);
 
-        // every message is validated against the protobuf schema on the way out, so this covers
-        // the whole chain: XDR -> device messages
+        // Every message is validated against the protobuf schema on the way out.
         await stellarSignTx(typedCall, ADDRESS_N, NETWORK_PASSPHRASE, transaction);
 
         expect(calls.map(call => call.type)).toEqual([

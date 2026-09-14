@@ -86,9 +86,8 @@ export const selectHasAccountOrTokenSpendableBalance = (
     if (tokenContract) {
         const token = selectAccountTokenInfo(state, accountKey, tokenContract);
 
-        // A read-only token cannot be spent, so its balance must not enable the send flow.
-        // Sending Soroban contract tokens is desktop-only for now: native has no way to add
-        // one, and no compose path for a host-function transfer.
+        // Sending contract tokens is desktop-only for now: native has no add path and no compose
+        // path for a host-function transfer.
         if (!token || isStellarContractToken(token)) return false;
 
         return isPositiveBalance(token.balance ?? '0');

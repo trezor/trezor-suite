@@ -1,12 +1,7 @@
 /**
- * Soroban (contract / type-C token) configuration.
- *
- * There is no RPC endpoint here: the Stellar backend serves `stellar-rpc` JSON-RPC on `POST /`
- * from the same origin as Horizon's REST paths, so contract reads go to whichever backend the
- * account is on.
- *
- * The token allow-list below is still local; it moves to the hosted definitions pipeline once
- * that carries contract tokens.
+ * No RPC endpoint lives here: the Stellar backend serves `stellar-rpc` JSON-RPC on `POST /` from
+ * the same origin as Horizon's REST paths, so contract reads go to the backend the account is on.
+ * The allow-list below is local until the hosted definitions pipeline carries contract tokens.
  */
 
 export interface StellarContractToken {
@@ -17,12 +12,8 @@ export interface StellarContractToken {
 }
 
 /**
- * Curated allow-list of Soroban contract (SEP-41 / type-C) tokens to look up.
- *
- * There is no on-chain registry of an account's contract-token holdings, so
- * discovery is an explicit allow-list rather than auto-discovery. Every entry
- * has been verified as a native contract token (its address is NOT the Stellar
- * Asset Contract of any classic asset).
+ * There is no on-chain registry of an account's contract-token holdings, so discovery is an
+ * explicit allow-list. Every entry is a native contract token, not the SAC of a classic asset.
  */
 export const STELLAR_CONTRACT_TOKENS: StellarContractToken[] = [
     {

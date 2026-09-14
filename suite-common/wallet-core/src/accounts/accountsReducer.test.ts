@@ -283,8 +283,7 @@ describe('Account Reducer', () => {
         it('keeps a watched contract token when discovery reports the account without it', () => {
             const store = initStoreWithContractToken();
 
-            // Discovery is never handed the watch list, so its report cannot be read as the
-            // token no longer being held.
+            // Discovery is never handed the watch list, so it cannot mean the token is gone.
             store.dispatch(
                 accountsActions.createAccount({
                     deviceState: stellarAccount.deviceState,
@@ -305,8 +304,8 @@ describe('Account Reducer', () => {
         it('drops a contract token a targeted account fetch no longer reports', () => {
             const store = initStoreWithContractToken();
 
-            // Removing a contract token takes it off the watch list and refetches, so this
-            // answer is authoritative — preserving the token would make removal a no-op.
+            // Removing a contract token refetches, so this answer is authoritative — preserving
+            // the token would make removal a no-op.
             store.dispatch(accountsActions.updateAccount(stellarAccount, stellarAccountInfo));
 
             expect(store.getState().wallet.accounts[0]?.tokens).toEqual([]);

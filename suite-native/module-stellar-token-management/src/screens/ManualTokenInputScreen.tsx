@@ -24,7 +24,7 @@ import stellar from '@trezor/network-stellar/runtime';
 
 import { composeStellarTrustlineFeesThunk } from '../thunks';
 
-// A Stellar Asset Contract id is 56 characters, an asset code at most 12
+// A Stellar Asset Contract id is 56 characters, an asset code at most 12.
 const ASSET_CODE_INPUT_MAX_LENGTH = 56;
 
 type RouteProps = StackProps<
@@ -68,8 +68,8 @@ export const ManualTokenInputScreen = () => {
         });
     }, [assetCode]);
 
-    // A pasted Stellar Asset Contract id is swapped for the classic asset it wraps, so the rest
-    // of the activation flow keeps working with an asset code and issuer.
+    // A pasted Stellar Asset Contract id is swapped for the classic asset it wraps, so the rest of
+    // the flow keeps working with an asset code and issuer.
     useEffect(() => {
         let isStale = false;
 
@@ -91,8 +91,7 @@ export const ManualTokenInputScreen = () => {
             }
         };
 
-        // A failed definitions fetch cannot resolve the id, so it surfaces the same way as an
-        // unknown contract instead of dead-ending silently with a disabled button.
+        // A failed fetch surfaces as an unknown contract rather than a silently disabled button.
         fillFromContractId().catch(() => {
             if (!isStale) setIsContractIdUnknown(true);
         });
@@ -108,9 +107,8 @@ export const ManualTokenInputScreen = () => {
             .then(setIsIssuerAddressValid);
     }, [issuerAddress]);
 
-    // A contract id is not an asset code, so the asset code error would be misleading there — the
-    // contract path reports its own outcome through `isContractIdUnknown`. Anything that is
-    // neither, however long, is a mistyped asset code and has to say so.
+    // A contract id is not an asset code, so the asset code error would be misleading there; the
+    // contract path reports its own outcome through `isContractIdUnknown`.
     const hasAssetCodeError = assetCodeTouched && !!assetCode && !isContractId && !isAssetCodeValid;
     const hasIssuerAddressError = issuerAddressTouched && !!issuerAddress && !isIssuerAddressValid;
 

@@ -7,15 +7,12 @@ import { createLazy } from '@trezor/utils';
 
 export const lazyStellarTokenMetadata = createLazy(getTokenMetadata);
 
-// Deriving a Stellar Asset Contract id from an asset is a one-way hash, so the only way back
-// is to derive the id of every asset we know of and match. Keyed on the metadata object so
-// the work happens once per definitions payload; the in-flight promise is cached rather than
-// the map, so two lookups racing the first build share it instead of both hashing.
+// Deriving a SAC id from an asset is a one-way hash, so the only way back is to derive the id of
+// every asset we know of and match. The in-flight promise is cached rather than the map, so two
+// lookups racing the first build share it instead of both hashing.
 const contractIndexes = new WeakMap<TokenDetailByMint, Promise<Map<string, string>>>();
 
-// Hashing the whole definitions list is hundreds of assets of uninterrupted work, and the first
-// lookup lands on a paste into the token input. Yielding between chunks keeps that paste from
-// dropping frames.
+// Hashing hundreds of assets uninterrupted would drop frames on the paste that asks for it.
 const SAC_INDEX_CHUNK_SIZE = 100;
 
 const buildSacContractIndex = async (tokenMetadata: TokenDetailByMint) => {
@@ -34,7 +31,7 @@ const buildSacContractIndex = async (tokenMetadata: TokenDetailByMint) => {
             try {
                 index.set(computeSorobanAssetContractId(contract).sorobanAssetContractId, contract);
             } catch {
-                // The definitions can hold entries that are not classic `CODE-ISSUER` assets
+                // The definitions can hold entries that are not classic `CODE-ISSUER` assets.
             }
         });
     }
@@ -47,7 +44,7 @@ const getSacContractIndex = (tokenMetadata: TokenDetailByMint) => {
     if (cached) return cached;
 
     const pending = buildSacContractIndex(tokenMetadata).catch(error => {
-        // A failed build says nothing about the definitions, so it must not be cached
+        // A failed build says nothing about the definitions, so it must not be cached.
         contractIndexes.delete(tokenMetadata);
         throw error;
     });
@@ -58,10 +55,8 @@ const getSacContractIndex = (tokenMetadata: TokenDetailByMint) => {
 };
 
 /**
- * Resolves a Stellar Asset Contract id (`C…`) to the classic asset it wraps. Only assets
- * present in the token definitions can be resolved; anything else has to be entered as an
- * asset code and issuer. Contract ids are network specific and this covers mainnet only,
- * matching the rest of the Stellar token management flow.
+ * Resolves a Stellar Asset Contract id (`C…`) to the classic asset it wraps. Only assets in the
+ * token definitions resolve; anything else has to be entered as an asset code and issuer.
  */
 export const resolveStellarAssetFromContractId = async (
     contractId: string,
@@ -79,7 +74,6 @@ export const resolveStellarAssetFromContractId = async (
     return assetCode && assetIssuer ? { assetCode, assetIssuer } : undefined;
 };
 
-/** As `resolveStellarAssetFromContractId`, reading the token definitions through the shared holder. */
 export const resolveStellarContractId = async (contractId: string) =>
     resolveStellarAssetFromContractId(contractId, await lazyStellarTokenMetadata.getOrInit());
 

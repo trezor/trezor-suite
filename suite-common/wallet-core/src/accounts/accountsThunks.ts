@@ -185,8 +185,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
             account.networkType === 'solana'
                 ? account.tokens?.flatMap(t => t.accounts ?? []).map(a => a.publicKey)
                 : undefined;
-        // Soroban contract tokens are invisible to Horizon and have no trustline to discover
-        // them by, so the account only learns about the ones the user added themselves.
+        // Contract tokens have no trustline to discover them by, only the list the user added.
         const stellarContractTokens =
             account.networkType === 'stellar'
                 ? selectStellarContractTokens(getState(), account.key)

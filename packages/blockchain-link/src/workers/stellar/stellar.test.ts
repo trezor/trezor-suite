@@ -83,7 +83,7 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
 
         return Promise.resolve({
             ...actual,
-            // keeps the Soroban contract-token read off the network
+            // Keeps the Soroban contract-token read off the network.
             readSep41Tokens: (rpcUrl: string, _holder: string, contractIds: string[]) => {
                 mockState.readContractIds = contractIds;
                 mockState.readRpcUrl = rpcUrl;
@@ -191,7 +191,7 @@ describe('Stellar worker account history', () => {
     it('joins the transaction into the operations request', async () => {
         mockState.operationRecords = [sacOperation([mint('0.1447280')])];
         await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
-        // Without the join, reading operation.transaction() costs one request per operation
+        // Without the join, reading `operation.transaction()` costs one request per operation.
         expect(mockState.joinedApplied).toBe(true);
     });
 
@@ -212,7 +212,7 @@ describe('Stellar worker account history', () => {
         expect(transaction!.txid).toBe(TX_HASH);
         expect(transaction!.type).toBe('recv');
         expect(transaction!.fee).toBe('35602');
-        // fee-bumped: paid by fee_account, not by the inner source_account
+        // Fee-bumped: paid by `fee_account`, not by the inner `source_account`.
         expect(transaction!.stellarSpecific?.feeSource).toBe(mockTransaction.fee_account);
         expect(transaction!.tokens).toEqual([
             expect.objectContaining({
@@ -221,7 +221,7 @@ describe('Stellar worker account history', () => {
                 contract: `KALE-${ASSET_ISSUER}`,
                 symbol: 'KALE',
                 decimals: 7,
-                // mint has no `from`, so the issuer stands in
+                // `mint` has no `from`, so the issuer stands in.
                 from: ASSET_ISSUER,
                 to: DESCRIPTOR,
                 amount: '1447280',
@@ -328,13 +328,12 @@ describe('Stellar worker account history', () => {
             stellarContractTokens: [WATCHED_CONTRACT],
         });
 
-        // The backend serves JSON-RPC on the same origin as Horizon, so there is no second
-        // endpoint to configure - and a custom backend is not bypassed.
+        // JSON-RPC shares Horizon's origin, so a custom backend is not bypassed.
         expect(mockState.readRpcUrl).toBe('https://mocked/');
     });
 
     it('drops a contract token whose decimals no source can supply', async () => {
-        // Not curated, so nothing can stand in for a `decimals` read that failed
+        // Not curated, so nothing can stand in for a `decimals` read that failed.
         mockState.sep41Tokens = [{ contract: WATCHED_CONTRACT, balance: '42', symbol: 'dejtrsy' }];
 
         const result = await blockchain.getAccountInfo({
@@ -355,13 +354,12 @@ describe('Stellar worker account history', () => {
 
         const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
 
-        // A dropped record would shorten the page, which reads as the end of the history and
-        // leaves a slot the page can never fill.
+        // A dropped record would shorten the page, which reads as the end of the history.
         expect(result.history.transactions).toEqual([
             expect.objectContaining({
                 type: 'unknown',
                 txid: TX_HASH,
-                // the ledger sequence encoded in the operation's TOID
+                // The ledger sequence encoded in the operation's TOID.
                 blockHeight: 64100363,
             }),
         ]);
@@ -378,8 +376,7 @@ describe('Stellar worker account history', () => {
 
         const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
 
-        // The fallback of a failed parse must not fail in turn - that would take down the whole
-        // page it exists to keep intact.
+        // The fallback of a failed parse must not fail in turn.
         expect(result.history.transactions).toEqual([
             expect.objectContaining({ type: 'unknown', txid: TX_HASH }),
         ]);

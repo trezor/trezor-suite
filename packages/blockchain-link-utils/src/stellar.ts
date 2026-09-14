@@ -3,10 +3,8 @@ import { isCodesignBuild } from '@trezor/env-utils';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
 import type { IdentifiedTransaction, TokenTransferInfo } from '@trezor/network-stellar/types';
 
-/**
- * One host-function operation can move several assets at once, so only the transfers the
- * account takes part in are kept — the rest belong to other participants of the same call.
- */
+// One host-function operation can move several assets at once, so only the transfers the account
+// takes part in are kept — the rest belong to other participants of the same call.
 const transformTokenTransfers = (
     baseTx: Omit<Transaction, 'type'>,
     transfers: readonly TokenTransferInfo[],
@@ -108,7 +106,6 @@ export const transformTransaction = (
 
     const type = descriptor === fromAddress ? 'sent' : 'recv';
 
-    // Native asset transfer
     const nativeAmount = parsed.amount.toString();
 
     return {

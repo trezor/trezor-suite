@@ -40,7 +40,7 @@ const convertMemo = ({ memo, memo_type: memoType }: TransactionRecord): string |
             return memo;
         case 'hash':
         case 'return':
-            // Horizon returns these base64-encoded, the rest of Suite expects hex
+            // Horizon returns these base64-encoded, the rest of Suite expects hex.
             return Buffer.from(memo, 'base64').toString('hex');
         default:
             return undefined;
@@ -50,18 +50,12 @@ const convertMemo = ({ memo, memo_type: memoType }: TransactionRecord): string |
 const isClassicAsset = (assetType: string) =>
     assetType === 'credit_alphanum4' || assetType === 'credit_alphanum12';
 
-// `extractBaseAddress` throws for anything that is not a `G…`/`M…` key, and a balance-change
-// counterparty can be a `C…` contract (any DeFi interaction), so only muxed addresses are unwrapped.
+// A balance-change counterparty can be a `C…` contract, which `extractBaseAddress` throws on.
 const toBaseAddress = (address: string): string =>
     StrKey.isValidMed25519PublicKey(address) ? extractBaseAddress(address) : address;
 
-/**
- * A Stellar Asset Contract reports transfers as balance changes on the host-function
- * operation. `mint` has no `from` and `burn`/`clawback` have no `to`, so the asset issuer
- * stands in for the missing side.
- */
-// Horizon marshals a host function call that moved no balances as `null`, not `[]`,
-// though the SDK types the field as a plain array.
+// `mint` has no `from` and `burn`/`clawback` have no `to`, so the issuer stands in for the missing
+// side. Horizon also marshals a call that moved nothing as `null`, though the SDK types an array.
 const identifyBalanceChanges = (changes: BalanceChange[] | null): TokenTransferInfo[] =>
     (changes ?? [])
         .filter(
@@ -76,11 +70,7 @@ const identifyBalanceChanges = (changes: BalanceChange[] | null): TokenTransferI
             toAddress: toBaseAddress(change.to ?? change.asset_issuer),
         }));
 
-/**
- * Maps the operations of a single transaction that the account participates in onto the
- * shape `transformTransaction` consumes. Horizon pre-decodes every operation, so no
- * envelope XDR is parsed here.
- */
+/** Maps one transaction's operations onto the shape `transformTransaction` consumes. */
 export const identifyTransaction = (operations: OperationRecord[], rawTx: TransactionRecord) => {
     // For fee-bump transactions the fee is paid by fee_account, not by the inner source_account
     const feeSource = extractBaseAddress(rawTx.fee_account || rawTx.source_account);
@@ -99,8 +89,7 @@ export const identifyTransaction = (operations: OperationRecord[], rawTx: Transa
     const operation = operations[0];
 
     if (!operation || operations.length !== 1) {
-        // The account taking part in several operations of one transaction cannot be
-        // expressed as a single transfer, so it stays unknown.
+        // Several operations of one transaction cannot be expressed as a single transfer.
         return { type: 'unknown', ...common } as const;
     }
 

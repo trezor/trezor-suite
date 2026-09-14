@@ -12,8 +12,7 @@ type StorageCorruptedPayload = Extract<
     { type: typeof STORAGE.CORRUPTED }
 >['payload'];
 
-// The payload types are annotated explicitly so declaration emit keeps the aliases
-// instead of inlining the whole preloaded store shape.
+// Annotated explicitly so declaration emit keeps the aliases instead of inlining the store shape.
 export const storageLoad: ActionCreatorWithPayload<StorageLoadPayload, typeof STORAGE.LOAD> =
     createAction(STORAGE.LOAD);
 export const storageError: ActionCreatorWithPayload<StorageErrorPayload, typeof STORAGE.ERROR> =

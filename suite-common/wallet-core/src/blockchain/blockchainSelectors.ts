@@ -13,9 +13,8 @@ export const selectActiveBackendType = (
 ): BackendType | undefined => state.wallet.blockchain[symbol].backends.selected;
 
 /**
- * The backend the network is currently connected to, as the worker reported it — a custom
- * backend if the user set one, the coin's default otherwise. `undefined` until the first
- * connection has been made.
+ * The backend the worker reported for the network — a custom one if the user set it, the coin's
+ * default otherwise; `undefined` until the first connection.
  */
 export const selectBlockchainUrl = (
     state: BlockchainRootState,

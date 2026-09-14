@@ -136,16 +136,12 @@ type BuildContractTokenTransferParams = CreateTransactionBuilderParams & {
 };
 
 /**
- * A SEP-41 `transfer(from, to, amount)` call, as the sole operation of a transaction.
+ * A SEP-41 `transfer(from, to, amount)` call, necessarily the sole operation of the transaction —
+ * Stellar does not let a host function share one. The sender is the transaction source, so the
+ * operation needs no authorization entries of its own.
  *
- * The sender is the transaction source, so the contract's authorization is covered by the
- * source account and the operation needs no authorization entries of its own. Stellar does not
- * allow a host function to share a transaction with other operations, and `@trezor/connect`
- * rejects one that tries.
- *
- * The transaction this returns is **not yet submittable**: a Soroban transaction also needs the
- * ledger footprint and resource fee that only a simulation can determine. Pass it through
- * `prepareContractTransaction` before signing.
+ * The result is **not yet submittable**: pass it through `prepareContractTransaction`, which adds
+ * the ledger footprint and resource fee only a simulation can determine.
  */
 export const buildContractTokenTransferTransaction = ({
     descriptor,

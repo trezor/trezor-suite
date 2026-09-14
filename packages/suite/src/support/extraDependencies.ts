@@ -72,10 +72,8 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
         },
         storageLoadExplorer: (state: ExplorerConfig, { payload }: StorageLoadAction) => {
             payload.explorer.forEach(({ symbol, explorer }) => {
-                // A config stored before a new path was added to the network's explorer has no
-                // value for it, which would build `<base>/undefined/<id>` — and the settings form
-                // only renders the paths the stored config already has, so the user could not
-                // repair it either. Unset paths fall back to the current defaults.
+                // A config stored before a new explorer path existed has no value for it, which
+                // would build `<base>/undefined/<id>`; unset paths fall back to the defaults.
                 const storedPaths = Object.fromEntries(
                     Object.entries(explorer).filter(([, value]) => value !== undefined),
                 );
