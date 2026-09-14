@@ -17,10 +17,12 @@ import {
     getBitcoinComposeOutputs,
     getCryptoAmountWithReserve,
     getCryptoMaxAmountWithReserve,
+    getCustomFeeWarning,
     getExternalComposeOutput,
     getLowestFeeFromLevels,
     isAmountWithinNetworkReserve,
     isCustomFeeBelowLowestLevel,
+    isMaxFeePerGasBelowBaseFee,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
 } from './sendFormUtils';
@@ -565,45 +567,165 @@ describe('sendForm utils', () => {
     });
 
     describe(isCustomFeeBelowLowestLevel.name, () => {
-        const levels = [
+        const legacyLevels = [
             { label: 'custom', feePerUnit: '1' },
             { label: 'low', feePerUnit: '300' },
             { label: 'normal', feePerUnit: '500' },
             { label: 'high', feePerUnit: '999' },
         ] as FeeLevel[];
 
-        it('should be false when the custom fee matches the lowest level', () => {
-            expect(isCustomFeeBelowLowestLevel('300', levels)).toBe(false);
+        const eip1559Levels = [
+            { label: 'low', feePerUnit: '20', maxFeePerGas: '30', maxPriorityFeePerGas: '1' },
+            { label: 'normal', feePerUnit: '20', maxFeePerGas: '50', maxPriorityFeePerGas: '2' },
+            { label: 'high', feePerUnit: '20', maxFeePerGas: '90', maxPriorityFeePerGas: '3' },
+            { label: 'custom', feePerUnit: '0' },
+        ] as FeeLevel[];
+
+        describe('legacy levels', () => {
+            it('should be false when the custom fee matches the lowest level', () => {
+                expect(isCustomFeeBelowLowestLevel({ feePerUnit: '300' }, legacyLevels)).toBe(
+                    false,
+                );
+            });
+
+            it('should be false when the custom fee is above the lowest level', () => {
+                expect(isCustomFeeBelowLowestLevel({ feePerUnit: '301' }, legacyLevels)).toBe(
+                    false,
+                );
+                expect(isCustomFeeBelowLowestLevel({ feePerUnit: '999' }, legacyLevels)).toBe(
+                    false,
+                );
+            });
+
+            it('should be true only once the custom fee drops under the lowest level', () => {
+                expect(isCustomFeeBelowLowestLevel({ feePerUnit: '299' }, legacyLevels)).toBe(true);
+                expect(isCustomFeeBelowLowestLevel({ feePerUnit: '0' }, legacyLevels)).toBe(true);
+            });
+
+            it('should ignore the custom level when picking the threshold', () => {
+                expect(isCustomFeeBelowLowestLevel({ feePerUnit: '2' }, legacyLevels)).toBe(true);
+            });
+
+            it('should be false for a blank or non-numeric fee', () => {
+                expect(isCustomFeeBelowLowestLevel({ feePerUnit: '' }, legacyLevels)).toBe(false);
+                expect(isCustomFeeBelowLowestLevel({ feePerUnit: 'abc' }, legacyLevels)).toBe(
+                    false,
+                );
+            });
+
+            it('should be false when there are no levels to compare against', () => {
+                expect(isCustomFeeBelowLowestLevel({ feePerUnit: '1' }, [])).toBe(false);
+            });
         });
 
-        it('should be false when the custom fee is above the lowest level', () => {
-            expect(isCustomFeeBelowLowestLevel('301', levels)).toBe(false);
+        describe('EIP-1559 levels', () => {
+            it('should compare maxFeePerGas against the lowest level, not feePerUnit', () => {
+                expect(
+                    isCustomFeeBelowLowestLevel(
+                        { feePerUnit: '20', maxFeePerGas: '29' },
+                        eip1559Levels,
+                    ),
+                ).toBe(true);
+                expect(
+                    isCustomFeeBelowLowestLevel(
+                        { feePerUnit: '20', maxFeePerGas: '30' },
+                        eip1559Levels,
+                    ),
+                ).toBe(false);
+            });
+
+            it('should not be swayed by feePerUnit, which the form never edits here', () => {
+                expect(
+                    isCustomFeeBelowLowestLevel(
+                        { feePerUnit: '0', maxFeePerGas: '90' },
+                        eip1559Levels,
+                    ),
+                ).toBe(false);
+            });
+
+            it('should be false when maxFeePerGas is blank or missing', () => {
+                expect(isCustomFeeBelowLowestLevel({ feePerUnit: '20' }, eip1559Levels)).toBe(
+                    false,
+                );
+                expect(
+                    isCustomFeeBelowLowestLevel(
+                        { feePerUnit: '20', maxFeePerGas: '' },
+                        eip1559Levels,
+                    ),
+                ).toBe(false);
+            });
+        });
+    });
+
+    describe(getCustomFeeWarning.name, () => {
+        const levels = [
+            { label: 'low', feePerUnit: '20', maxFeePerGas: '30', baseFeePerGas: '25' },
+            { label: 'normal', feePerUnit: '20', maxFeePerGas: '50', baseFeePerGas: '25' },
+            { label: 'custom', feePerUnit: '0' },
+        ] as FeeLevel[];
+
+        const legacyLevels = [
+            { label: 'low', feePerUnit: '300' },
+            { label: 'normal', feePerUnit: '500' },
+        ] as FeeLevel[];
+
+        it('should not warn at or above the lowest level', () => {
+            expect(getCustomFeeWarning({ feePerUnit: '20', maxFeePerGas: '30' }, levels)).toBe(
+                undefined,
+            );
+            expect(getCustomFeeWarning({ feePerUnit: '20', maxFeePerGas: '50' }, levels)).toBe(
+                undefined,
+            );
         });
 
-        it('should be false for fees between the lowest and the highest level', () => {
-            expect(isCustomFeeBelowLowestLevel('500', levels)).toBe(false);
-            expect(isCustomFeeBelowLowestLevel('999', levels)).toBe(false);
-            expect(isCustomFeeBelowLowestLevel('100000', levels)).toBe(false);
+        it('should warn about the lowest level between it and the base fee', () => {
+            expect(getCustomFeeWarning({ feePerUnit: '20', maxFeePerGas: '29' }, levels)).toBe(
+                'belowLowestLevel',
+            );
+            expect(getCustomFeeWarning({ feePerUnit: '20', maxFeePerGas: '25' }, levels)).toBe(
+                'belowLowestLevel',
+            );
         });
 
-        it('should be true only once the custom fee drops under the lowest level', () => {
-            expect(isCustomFeeBelowLowestLevel('299', levels)).toBe(true);
-            expect(isCustomFeeBelowLowestLevel('1', levels)).toBe(true);
-            expect(isCustomFeeBelowLowestLevel('0', levels)).toBe(true);
+        it('should escalate to the base fee once below it', () => {
+            expect(getCustomFeeWarning({ feePerUnit: '20', maxFeePerGas: '24' }, levels)).toBe(
+                'belowBaseFee',
+            );
+            expect(getCustomFeeWarning({ feePerUnit: '20', maxFeePerGas: '0' }, levels)).toBe(
+                'belowBaseFee',
+            );
         });
 
-        it('should ignore the custom level when picking the threshold', () => {
-            // 'custom' sits at 1; were it counted, a fee of 2 would not warn.
-            expect(isCustomFeeBelowLowestLevel('2', levels)).toBe(true);
+        it('should stay quiet for a blank max fee', () => {
+            expect(getCustomFeeWarning({ feePerUnit: '20', maxFeePerGas: '' }, levels)).toBe(
+                undefined,
+            );
+            expect(getCustomFeeWarning({ feePerUnit: '20' }, levels)).toBe(undefined);
         });
 
-        it('should be false for a blank or non-numeric fee', () => {
-            expect(isCustomFeeBelowLowestLevel('', levels)).toBe(false);
-            expect(isCustomFeeBelowLowestLevel('abc', levels)).toBe(false);
+        it('should fall back to the level comparison without a base fee', () => {
+            expect(getCustomFeeWarning({ feePerUnit: '299' }, legacyLevels)).toBe(
+                'belowLowestLevel',
+            );
+            expect(getCustomFeeWarning({ feePerUnit: '300' }, legacyLevels)).toBe(undefined);
+        });
+    });
+
+    describe(isMaxFeePerGasBelowBaseFee.name, () => {
+        it('should be true only strictly below the base fee', () => {
+            expect(isMaxFeePerGasBelowBaseFee('0.2', '0.3')).toBe(true);
+            expect(isMaxFeePerGasBelowBaseFee('0.3', '0.3')).toBe(false);
+            expect(isMaxFeePerGasBelowBaseFee('0.4', '0.3')).toBe(false);
         });
 
-        it('should be false when there are no levels to compare against', () => {
-            expect(isCustomFeeBelowLowestLevel('1', [])).toBe(false);
+        it('should compare numerically, not as strings', () => {
+            expect(isMaxFeePerGasBelowBaseFee('9', '10')).toBe(true);
+            expect(isMaxFeePerGasBelowBaseFee('100', '20')).toBe(false);
+        });
+
+        it('should be false for a blank or non-numeric max fee', () => {
+            expect(isMaxFeePerGasBelowBaseFee('', '0.3')).toBe(false);
+            expect(isMaxFeePerGasBelowBaseFee('abc', '0.3')).toBe(false);
         });
     });
 

@@ -12334,6 +12334,11 @@ export const messages = defineMessages({
         defaultMessage:
             'A fee this low may leave your transaction pending for a long time, or it may never be confirmed.',
     },
+    TR_CUSTOM_FEE_BELOW_BASE_FEE_WARNING: {
+        id: 'TR_CUSTOM_FEE_BELOW_BASE_FEE_WARNING',
+        defaultMessage:
+            "This is below the current base fee of {baseFee}. Until the base fee drops, the network can't include your transaction at all.",
+    },
     TR_BUMP_FEE_DISABLED_TOOLTIP: {
         id: 'TR_BUMP_FEE_DISABLED_TOOLTIP',
         defaultMessage:
