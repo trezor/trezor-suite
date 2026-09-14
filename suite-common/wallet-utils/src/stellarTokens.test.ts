@@ -1,8 +1,14 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
+import stellar from '@trezor/network-stellar/runtime';
 
-import { getStellarInactiveTokens } from './stellarTokens';
+import {
+    getStellarInactiveTokens,
+    getStellarTrustlineMemo,
+    getStellarTrustlineMemoFromMetadata,
+    resolveStellarAssetFromContractId,
+} from './stellarTokens';
 
 const xlmSymbol = asNetworkSymbol('xlm');
 
@@ -93,5 +99,111 @@ describe(getStellarInactiveTokens.name, () => {
         ]);
 
         expect(result[2]?.rating).toBeUndefined();
+    });
+});
+
+const USDC_ISSUER = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+const CATCOIN_ISSUER = 'GDJVFDG5OCW5PYWHB64MGTHGFF57DRRJEDUEFDEL2SLNIOONHYJWHA3Z';
+const USDC = `USDC-${USDC_ISSUER}`;
+const CATCOIN = `CATCOIN12345-${CATCOIN_ISSUER}`;
+
+const definitionsOf = (...contracts: string[]) =>
+    Object.fromEntries(contracts.map(contract => [contract, { name: contract, symbol: contract }]));
+
+describe(resolveStellarAssetFromContractId.name, () => {
+    let usdcContractId: string;
+    let catcoinContractId: string;
+
+    beforeAll(async () => {
+        const { computeSorobanAssetContractId } = await stellar();
+        usdcContractId = computeSorobanAssetContractId(USDC).sorobanAssetContractId;
+        catcoinContractId = computeSorobanAssetContractId(CATCOIN).sorobanAssetContractId;
+    });
+
+    it('resolves a contract id to the asset it wraps', async () => {
+        await expect(
+            resolveStellarAssetFromContractId(usdcContractId, definitionsOf(USDC, CATCOIN)),
+        ).resolves.toEqual({ assetCode: 'USDC', assetIssuer: USDC_ISSUER });
+    });
+
+    it('resolves an asset with a 12 character code', async () => {
+        await expect(
+            resolveStellarAssetFromContractId(catcoinContractId, definitionsOf(USDC, CATCOIN)),
+        ).resolves.toEqual({ assetCode: 'CATCOIN12345', assetIssuer: CATCOIN_ISSUER });
+    });
+
+    it('returns nothing for an asset missing from the definitions', async () => {
+        await expect(
+            resolveStellarAssetFromContractId(usdcContractId, definitionsOf(CATCOIN)),
+        ).resolves.toBeUndefined();
+    });
+
+    it('returns nothing for values that are not contract ids', async () => {
+        const definitions = definitionsOf(USDC);
+
+        await expect(
+            resolveStellarAssetFromContractId('USDC', definitions),
+        ).resolves.toBeUndefined();
+        await expect(
+            resolveStellarAssetFromContractId(USDC_ISSUER, definitions),
+        ).resolves.toBeUndefined();
+        await expect(resolveStellarAssetFromContractId('', definitions)).resolves.toBeUndefined();
+    });
+
+    it('ignores definition entries that are not classic assets', async () => {
+        const definitions = {
+            ...definitionsOf(USDC),
+            ...definitionsOf('not-an-asset'),
+            ...definitionsOf(usdcContractId),
+        };
+
+        await expect(
+            resolveStellarAssetFromContractId(usdcContractId, definitions),
+        ).resolves.toEqual({ assetCode: 'USDC', assetIssuer: USDC_ISSUER });
+    });
+});
+
+describe(getStellarTrustlineMemoFromMetadata.name, () => {
+    const metadataOf = (name: string) => ({ [USDC]: { name, symbol: 'USDC' } });
+
+    it('uses the token name from the definitions', () => {
+        expect(getStellarTrustlineMemoFromMetadata(USDC, metadataOf('USD Coin'))).toBe('USD Coin');
+    });
+
+    it('trims a name that does not fit into a 28 byte text memo', () => {
+        expect(
+            getStellarTrustlineMemoFromMetadata(USDC, metadataOf('A token with a very long name')),
+        ).toBe('A token with a very long nam');
+    });
+
+    it('trims multi byte characters whole', () => {
+        // Ten three byte characters do not fit, nine do.
+        expect(getStellarTrustlineMemoFromMetadata(USDC, metadataOf('求'.repeat(10)))).toBe(
+            '求'.repeat(9),
+        );
+    });
+
+    it('returns nothing for a token missing from the definitions', () => {
+        expect(
+            getStellarTrustlineMemoFromMetadata(CATCOIN, metadataOf('USD Coin')),
+        ).toBeUndefined();
+    });
+
+    it('returns nothing for a blank name', () => {
+        expect(getStellarTrustlineMemoFromMetadata(USDC, metadataOf('   '))).toBeUndefined();
+    });
+});
+
+describe(getStellarTrustlineMemo.name, () => {
+    it('gives up on definitions that never arrive, rather than holding up the device prompt', async () => {
+        jest.useFakeTimers();
+        mockedGetTokenMetadata.mockReturnValue(new Promise(() => {}));
+
+        const memo = getStellarTrustlineMemo(USDC);
+        await jest.advanceTimersByTimeAsync(10_000);
+
+        await expect(memo).resolves.toBeUndefined();
+
+        jest.useRealTimers();
     });
 });

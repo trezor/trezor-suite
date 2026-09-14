@@ -102,7 +102,9 @@ export const getAccountInfo = async (
         };
     });
 
-    // Reading a SAC as a contract token would double-count the classic trustline reported above.
+    const watchedContracts = payload.stellarContractTokens ?? [];
+
+    // A watched SAC would double-count the classic trustline already reported above.
     const classicSacIds = new Set(
         (account.tokens ?? []).flatMap(token => {
             try {
@@ -115,7 +117,11 @@ export const getAccountInfo = async (
     // The hosted definitions are the allow-list; the curated constants are the fallback.
     const definedContracts = Object.keys(tokenMetadata).filter(isValidContractId);
     const contractsToRead = [
-        ...new Set([...definedContracts, ...STELLAR_CONTRACT_TOKENS.map(token => token.contract)]),
+        ...new Set([
+            ...definedContracts,
+            ...STELLAR_CONTRACT_TOKENS.map(token => token.contract),
+            ...watchedContracts,
+        ]),
     ].filter(contract => !classicSacIds.has(contract));
 
     const readContractTokens = async (): Promise<TokenInfo[]> => {
@@ -137,12 +143,13 @@ export const getAccountInfo = async (
                     contract => [contract, tokenMetadata[contract] ?? {}] as const,
                 ),
             ]);
+            const watched = new Set(watchedContracts);
 
             return (
                 sep41Tokens
-                    // The list is a discovery hint, not a holding, so only what the account
-                    // actually holds surfaces.
-                    .filter(token => token.balance !== '0')
+                    // The curated list is only a discovery hint, so just the held ones surface; a
+                    // contract the user added stays visible at zero, as an opted-in trustline does.
+                    .filter(token => token.balance !== '0' || watched.has(token.contract))
                     .flatMap((token): TokenInfo[] => {
                         const fallback = fallbackByContract.get(token.contract);
                         const decimals = token.decimals ?? fallback?.decimals;

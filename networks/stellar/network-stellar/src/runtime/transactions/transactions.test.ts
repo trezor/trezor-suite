@@ -13,7 +13,12 @@ import { BigNumber } from '@trezor/utils';
 import { toStroops } from '../../constants';
 import * as fixtures from './__fixtures__/transactions.fixture';
 
-import { buildSendTransaction, transformTransaction } from './index';
+import {
+    buildAddTrustlineTransaction,
+    buildRemoveTrustlineTransaction,
+    buildSendTransaction,
+    transformTransaction,
+} from './index';
 
 const SOURCE = 'GBRF6PKZYP4J4WI2A3NF4CGF23SL34GRKA5LTQZCQFEUT2YJDZO2COXH';
 const CONTRACT = 'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE';
@@ -105,7 +110,7 @@ describe('transactions', () => {
                     destination: input.destination,
                     amount: input.amount,
                     asset: input.asset,
-                    destinationTag: input.destinationTag,
+                    memo: input.memo,
                     isTestnet: input.isTestnet,
                 });
                 expect(result).toEqual(expectedOutput);
@@ -172,5 +177,39 @@ describe('transactions', () => {
             const expected = ext.type === 'sorobanData' ? ext.sorobanData.toXdr('hex') : undefined;
             expect(result.sorobanData).toBe(expected);
         });
+    });
+
+    describe('buildAddTrustlineTransaction', () => {
+        fixtures.buildAddTrustlineTransaction.forEach(({ description, input, expectedOutput }) => {
+            it(description, () => {
+                const result = buildAddTrustlineTransaction({
+                    descriptor: input.descriptor,
+                    sequence: input.sequence,
+                    fee: input.fee,
+                    asset: input.asset,
+                    memo: input.memo,
+                    isTestnet: input.isTestnet,
+                });
+                expect(result).toEqual(expectedOutput);
+            });
+        });
+    });
+
+    describe('buildRemoveTrustlineTransaction', () => {
+        fixtures.buildRemoveTrustlineTransaction.forEach(
+            ({ description, input, expectedOutput }) => {
+                it(description, () => {
+                    const result = buildRemoveTrustlineTransaction({
+                        descriptor: input.descriptor,
+                        sequence: input.sequence,
+                        fee: input.fee,
+                        asset: input.asset,
+                        memo: input.memo,
+                        isTestnet: input.isTestnet,
+                    });
+                    expect(result).toEqual(expectedOutput);
+                });
+            },
+        );
     });
 });

@@ -18,6 +18,8 @@ const ASSET_ISSUER = 'GBDVX4VELCDSQ54KQJYTNHXAHFLBCA77ZY2USQBM4CSHTTV7DME7KALE';
 const OTHER_ACCOUNT = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 const TX_HASH = '3a44b5d0159890a1e2b3e7ef30ff90e014ee68ac64f23a24a6cbe4c366c088a0';
 
+const WATCHED_CONTRACT = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRW';
+
 type Sep41TokenMock = {
     contract: string;
     balance: string;
@@ -511,12 +513,40 @@ describe('Stellar worker account history', () => {
         );
     });
 
-    it('reads the curated contract tokens', async () => {
-        await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+    it('reads the contracts the account watches on top of the curated ones', async () => {
+        await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT, STELLAR_CONTRACT_TOKENS[0]!.contract],
+        });
 
-        expect(mockState.readContractIds).toEqual(
-            STELLAR_CONTRACT_TOKENS.map(token => token.contract),
-        );
+        expect(mockState.readContractIds).toEqual([
+            ...STELLAR_CONTRACT_TOKENS.map(token => token.contract),
+            WATCHED_CONTRACT,
+        ]);
+    });
+
+    it('keeps a watched contract token with no balance, the way an opted-in trustline is kept', async () => {
+        mockState.sep41Tokens = [
+            { contract: WATCHED_CONTRACT, balance: '0', decimals: 18, symbol: 'dejtrsy' },
+        ];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(result.tokens).toEqual([
+            {
+                standard: 'STELLAR-CONTRACT',
+                contract: WATCHED_CONTRACT,
+                balance: '0',
+                name: undefined,
+                symbol: 'DEJTRSY',
+                decimals: 18,
+            },
+        ]);
     });
 
     it('drops a curated contract token the account does not hold', async () => {
@@ -544,6 +574,19 @@ describe('Stellar worker account history', () => {
                 decimals: curated.decimals,
             },
         ]);
+    });
+
+    it('drops a contract token whose decimals no source can supply', async () => {
+        // Not curated, so nothing can stand in for a `decimals` read that failed.
+        mockState.sep41Tokens = [{ contract: WATCHED_CONTRACT, balance: '42', symbol: 'dejtrsy' }];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(result.tokens).toEqual([]);
     });
 
     it('keeps the page length when a record cannot be described', async () => {

@@ -49,7 +49,15 @@ const isUnchangedAccount = (prev: Account, next: Account) => {
     );
 };
 
-const update = (state: Account[], account: Account) => {
+type UpdateOptions = {
+    /**
+     * Discovery reports an account from the chain alone, so anything Suite tracks on its own must
+     * survive it; a targeted fetch is told about those tokens and its answer is authoritative.
+     */
+    isTokenTrackingBlind?: boolean;
+};
+
+const update = (state: Account[], account: Account, options: UpdateOptions = {}) => {
     const accountIndex = state.findIndex(accountEqualTo(account));
     const prev = state[accountIndex];
 
@@ -69,10 +77,19 @@ const update = (state: Account[], account: Account) => {
         // Locally tracked tokens must survive an update built from an older account snapshot
         // (e.g. a concurrent sync). A wrapped-native (WETH) balance exists only as a local entry:
         // wrapping emits no ERC-20 Transfer, so the backend never reports the token on its own.
-        if (next.networkType === 'ethereum' && prevUnwrapped.tokens?.length) {
+        // A Soroban contract token is local-only in the same way, but only a watch-list-blind
+        // update may keep it, or removing one would never take effect.
+        const keepsLocalTokens =
+            next.networkType === 'ethereum' ||
+            (next.networkType === 'stellar' && !!options.isTokenTrackingBlind);
+
+        if (keepsLocalTokens && prevUnwrapped.tokens?.length) {
             const nextContracts = new Set(next.tokens?.map(token => token.contract.toLowerCase()));
             const locallyTrackedTokens = prevUnwrapped.tokens.filter(
-                token => !nextContracts.has(token.contract.toLowerCase()),
+                token =>
+                    !nextContracts.has(token.contract.toLowerCase()) &&
+                    // A classic trustline the chain stopped reporting is genuinely closed.
+                    (next.networkType !== 'stellar' || token.standard === 'STELLAR-CONTRACT'),
             );
 
             if (locallyTrackedTokens.length > 0) {
@@ -140,7 +157,9 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                         // do not log the whole account: descriptor/addresses/balance are confidential and would leak into Sentry breadcrumbs
                         `Duplicated account found, updating instead (symbol: ${account.symbol}, type: ${account.accountType}, index: ${account.index})`,
                     );
-                    update(state, account);
+                    // Discovery does not carry the Soroban watch list, so it must not take the
+                    // watched contract tokens off a known account.
+                    update(state, account, { isTokenTrackingBlind: true });
                 } else {
                     // Keep the state sorted by coin so that consumers get the canonical order for free.
                     const insertAtIndex = state.findIndex(
