@@ -8,6 +8,18 @@ import { BigNumber } from '@trezor/utils';
 import { RESERVE } from '../reserve';
 import type { Request } from '../types';
 
+const DEFAULT_TXS_PER_PAGE = 20;
+
+// Horizon operation ids are TOIDs, whose high 32 bits are the ledger sequence:
+// https://github.com/stellar/go/blob/master/services/horizon/internal/docs/reference/toid.md
+const toLedgerSequence = (operationId: string) => {
+    try {
+        return Number(BigInt(operationId) >> 32n);
+    } catch {
+        return 0;
+    }
+};
+
 export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
 
@@ -32,7 +44,7 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
     };
 
     const api = await request.connect();
-    const { identifyTransaction, isNotFoundError } = await stellar();
+    const { identifyTransaction, isNotFoundError, readAccountHistory } = await stellar();
     let info;
     try {
         info = await api.accounts().accountId(payload.descriptor).call();
@@ -103,45 +115,62 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
         } as const;
     }
 
-    const requestBuilder = await api
-        .transactions()
-        .forAccount(payload.descriptor)
-        .includeFailed(true)
-        .limit(payload.pageSize || 20)
-        .order('desc');
-    if (payload.page && payload.page !== 1 && payload.pageCursor) {
-        requestBuilder.cursor(payload.pageCursor);
-    }
-    let transactions;
-    try {
-        transactions = await requestBuilder.call();
-    } catch (error) {
-        if (isNotFoundError(error)) {
-            // Horizon retains limited history; accounts without activity in the retained
-            // window return 404 on the transactions endpoint even though they exist
-            account.history.transactions = [];
+    const pageGroups = await readAccountHistory({
+        horizon: api,
+        descriptor: payload.descriptor,
+        pageSize: payload.pageSize || DEFAULT_TXS_PER_PAGE,
+        cursor: payload.page && payload.page !== 1 ? payload.pageCursor : undefined,
+    });
 
-            return {
-                type: RESPONSES.GET_ACCOUNT_INFO,
-                payload: { ...account, stellarCursor: undefined },
-            } as const;
-        }
-        throw error;
-    }
+    // Everything `transformTransaction` needs for an `unknown` transaction, read off the operation
+    // alone — the fallback of a parse that already failed, so it must not throw in turn.
+    const describeUnparseableOperation = (
+        operation: (typeof pageGroups)[number]['operations'][number],
+    ) => {
+        const createdAt = Date.parse(operation.created_at);
 
-    account.history.transactions = transactions.records
-        .map(identifyTransaction)
-        .map(identified =>
-            utils.transformTransaction(identified, payload.descriptor, tokenMetadata),
-        );
+        return {
+            type: 'unknown' as const,
+            hash: operation.transaction_hash,
+            // The fee is charged per transaction and only the transaction record reports it.
+            fee: '0',
+            feeSource: '',
+            ledgerAttr: toLedgerSequence(operation.id),
+            createdAt: Number.isFinite(createdAt) ? Math.floor(createdAt / 1000) : 0,
+            memo: undefined,
+        };
+    };
 
-    const cursor = transactions.records[transactions.records.length - 1]?.paging_token;
+    account.history.transactions = await Promise.all(
+        pageGroups.map(async ({ operations }) => {
+            try {
+                // Resolved from the joined response, so this does not hit the network.
+                const rawTx = await operations[0].transaction();
+
+                return utils.transformTransaction(
+                    identifyTransaction(operations, rawTx),
+                    payload.descriptor,
+                    tokenMetadata,
+                );
+            } catch (error) {
+                // A short page reads as the end of the history and its empty slot never counts as
+                // fetched, so the record keeps its slot as an `unknown` transaction.
+                console.warn('Stellar: failed to parse a transaction record', error);
+
+                return utils.transformTransaction(
+                    describeUnparseableOperation(operations[0]),
+                    payload.descriptor,
+                    tokenMetadata,
+                );
+            }
+        }),
+    );
 
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
         payload: {
             ...account,
-            stellarCursor: cursor,
+            stellarCursor: pageGroups[pageGroups.length - 1]?.cursor,
         },
     } as const;
 };
