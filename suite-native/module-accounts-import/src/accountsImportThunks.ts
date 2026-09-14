@@ -23,7 +23,7 @@ import { isNetworkWithTokens } from '@suite-native/tokens';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
-import { convertTaprootXpub } from '@trezor/utils';
+import { toCanonicalDescriptor } from '@trezor/utils';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 
 import { paymentTypeToAccountType } from './constants';
@@ -98,12 +98,6 @@ export const getAccountInfoThunk = createThunk<
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
     async ({ symbol, baseCurrencyCode, xpubAddress }, { dispatch, rejectWithValue, getState }) => {
-        // Connect requires apostrophe in Taproot descriptors thus a conversion is necessary.
-        const taprootXpubWithApostrophes = convertTaprootXpub({
-            xpub: xpubAddress,
-            direction: 'h-to-apostrophe',
-        });
-
         try {
             const [fetchedAccountInfo] = await Promise.all([
                 TrezorConnect.getAccountInfo({
@@ -113,7 +107,8 @@ export const getAccountInfoThunk = createThunk<
                               deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
                           })
                         : undefined,
-                    descriptor: taprootXpubWithApostrophes ?? xpubAddress,
+                    // Connect/Blockbook require the canonical apostrophe form of taproot descriptors.
+                    descriptor: toCanonicalDescriptor(xpubAddress),
                     details: 'txs',
                     suppressBackupWarning: true,
                     protocols: getNetworkType(symbol) === 'ethereum' ? ['erc4626'] : undefined,
