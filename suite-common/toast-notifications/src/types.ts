@@ -310,18 +310,10 @@ export type TransactionNotification = Extract<
     { type: TransactionNotificationType }
 >;
 
-export type TransactionNotificationType =
-    | 'tx-sent'
-    | 'tx-received'
-    | 'tx-confirmed'
-    | 'tx-staked'
-    | 'tx-unstaked'
-    | 'tx-claimed'
-    | 'tx-revoked'
-    | 'tx-approved'
-    | 'tx-wrap'
-    | 'tx-unwrap'
-    | 'raw-tx-sent'
-    | 'tx-yield-deposit'
-    | 'tx-yield-withdraw'
-    | 'tx-yield-claim';
+// Derived from the payload union so every new `tx-*` notification is forced through
+// the `satisfies Record<TransactionNotificationType, ...>` maps in consumers.
+// Must stay in sync with the runtime check in `isTransactionNotification`.
+export type TransactionNotificationType = Extract<
+    NotificationEntry['type'],
+    `tx-${string}` | 'raw-tx-sent'
+>;

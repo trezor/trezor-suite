@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type DeviceRootState } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
 import {
-    type TransactionEntry,
+    type TransactionNotification,
     type TransactionNotificationType,
 } from '@suite-common/toast-notifications';
 import {
@@ -19,7 +19,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { getTxNotificationFields } from './utils';
 
 type Props = {
-    notification: TransactionEntry;
+    notification: TransactionNotification;
     seen: boolean;
     index: number;
 };
@@ -39,6 +39,7 @@ const txTypeIconMap = {
     'tx-approved': 'arrowUp',
     'tx-wrap': 'arrowUp',
     'tx-unwrap': 'arrowDown',
+    'tx-exchange': 'arrowUp',
 } as const satisfies Record<TransactionNotificationType, IconName>;
 
 const translationIdMap = {
@@ -56,6 +57,7 @@ const translationIdMap = {
     'tx-approved': 'moduleActivityCenter.notifications.txApproved',
     'tx-wrap': 'moduleActivityCenter.notifications.txWrap',
     'tx-unwrap': 'moduleActivityCenter.notifications.txUnwrap',
+    'tx-exchange': 'moduleActivityCenter.notifications.txExchange',
 } as const satisfies Record<TransactionNotificationType, string>;
 
 const fullWidthDividerStyle = prepareNativeStyle(utils => ({
@@ -80,7 +82,7 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
     const iconName = txTypeIconMap[type];
     const contentColor = seen ? 'contentSecondary' : ('contentPrimary' as const);
 
-    const canNavigate = txid !== undefined && accountKey !== undefined;
+    const canNavigate = accountKey !== undefined;
 
     const handleNavigate = () => {
         if (!canNavigate) return;
@@ -103,7 +105,7 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
                             values={accountLabel ? { account: accountLabel } : undefined}
                         />
                     </Text>
-                    {formattedAmount !== undefined && symbol !== undefined && (
+                    {formattedAmount !== undefined && (
                         <HStack spacing="sp8" alignItems="center">
                             <TokenIcon
                                 symbol={symbol}
