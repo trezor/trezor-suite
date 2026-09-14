@@ -1,6 +1,8 @@
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { typedObjectTransformValues } from '@trezor/utils';
 
+import { type FeeLevelsMaxAmount } from '../types/fees';
+
 export const createFeeLevel = (
     overrides: Partial<PrecomposedTransactionFinal> = {},
 ): PrecomposedTransactionFinal => ({
@@ -23,3 +25,14 @@ export const createFeeLevels = <T extends Record<string, Partial<PrecomposedTran
     typedObjectTransformValues<T, PrecomposedTransactionFinal>(levels, value =>
         createFeeLevel(value),
     );
+
+export const createFeeLevelsMaxAmount = (
+    overrides: Partial<FeeLevelsMaxAmount> = {},
+): FeeLevelsMaxAmount => ({
+    custom: undefined,
+    economy: undefined,
+    high: undefined,
+    low: undefined,
+    normal: undefined,
+    ...overrides,
+});

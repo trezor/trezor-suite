@@ -11,11 +11,30 @@ import {
     pushSendFormTransactionThunk,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type GeneralPrecomposedLevels,
+    type SendFormDraftKey,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
+import { getSendFormDraftKey } from '@suite-common/wallet-utils';
+
+import { type FeeLevelsMaxAmount } from './types/fees';
+
+type FeeLevelsMaxAmountBySendKey = Partial<Record<SendFormDraftKey, FeeLevelsMaxAmount>>;
+
+type StoreFeeLevelsMaxAmountPayload = {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+    feeLevelsMaxAmount: FeeLevelsMaxAmount;
+};
+
+type ClearFeeLevelsMaxAmountPayload = Omit<StoreFeeLevelsMaxAmountPayload, 'feeLevelsMaxAmount'>;
 
 type NativeSendState = CommonSendState & {
     error: null | SendFormError;
     feeLevels: GeneralPrecomposedLevels;
+    feeLevelsMaxAmount: FeeLevelsMaxAmountBySendKey;
 };
 
 export type NativeSendRootState = {
@@ -28,6 +47,7 @@ export const sendFormInitialState: NativeSendState = {
     ...commonInitialState,
     error: null,
     feeLevels: {},
+    feeLevelsMaxAmount: {},
 };
 
 const sendFormSlice = createSliceWithExtraDeps({
@@ -42,6 +62,23 @@ const sendFormSlice = createSliceWithExtraDeps({
             { payload }: PayloadAction<{ feeLevels: GeneralPrecomposedLevels }>,
         ) => {
             state.feeLevels = payload.feeLevels;
+        },
+        storeFeeLevelsMaxAmount: (
+            state: NativeSendState,
+            { payload }: PayloadAction<StoreFeeLevelsMaxAmountPayload>,
+        ) => {
+            const { accountKey, tokenContract, feeLevelsMaxAmount } = payload;
+
+            state.feeLevelsMaxAmount[getSendFormDraftKey(accountKey, tokenContract)] =
+                feeLevelsMaxAmount;
+        },
+        clearFeeLevelsMaxAmount: (
+            state: NativeSendState,
+            { payload }: PayloadAction<ClearFeeLevelsMaxAmountPayload>,
+        ) => {
+            delete state.feeLevelsMaxAmount[
+                getSendFormDraftKey(payload.accountKey, payload.tokenContract)
+            ];
         },
     },
     extraReducers: (builder, extra: SendFormReducerDeps) => {

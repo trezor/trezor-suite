@@ -1,14 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
-import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { D, pipe } from '@mobily/ts-belt';
-import { useNavigation } from '@react-navigation/native';
-import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectIsDeviceRemembered } from '@suite-common/device';
 import { selectAddressValidatorDep, selectGetNamedAddressSupportDep } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
@@ -34,46 +31,21 @@ import {
     selectSendFormDraftByKey,
     sendFormActions,
     updateFeeInfoThunk,
-    useResolveNamedAddress,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type FeeLevelLabel,
-    type GeneralPrecomposedTransactionFinal,
-    type TokenAddress,
-    isFinalPrecomposedTransaction,
-} from '@suite-common/wallet-types';
-import {
-    convertAmountUnitsToSubunits,
-    formatNetworkAmount,
-    getNetworkReserve,
-} from '@suite-common/wallet-utils';
-import { useAlert } from '@suite-native/alerts';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { formatNetworkAmount, getNetworkReserve } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
-import { Translation } from '@suite-native/intl';
-import {
-    AuthorizeDeviceStackRoutes,
-    type RootStackParamList,
-    RootStackRoutes,
-    type SendStackParamList,
-    SendStackRoutes,
-    type StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
-import { signTransactionNativeThunk } from '@suite-native/send';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import {
-    type FeeLevelsMaxAmount,
     type NativeSendRootState,
     calculateFeeLevelsMaxAmountThunk,
-    selectFeeLevels,
+    selectFeeLevelsMaxAmountBySendKey,
     transactionManagementActions,
     useSubscribeForSolanaBlockUpdates,
 } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
-import { TRANSPORT_ERROR } from '@trezor/transport-common';
 
 import {
-    selectDestinationTagFromDraft,
     selectSendFormAccountAnonymitySet,
     selectSendFormAccountRippleReserve,
     selectSendFormAccountUtxos,
@@ -83,8 +55,6 @@ import {
     sendOutputsFormValidationSchema,
 } from '../sendOutputsFormSchema';
 import { constructFormDraft } from '../utils';
-import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
-import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from './useUtxoSelection';
 
 const getDefaultValues = ({
@@ -116,15 +86,8 @@ const getRippleReserve = (
     return formatNetworkAmount(reserve, accountSymbol);
 };
 
-type SendFormNavigationProp = StackToStackCompositeNavigationProps<
-    SendStackParamList,
-    SendStackRoutes.SendOutputs,
-    RootStackParamList
->;
-
 export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
     const debounce = useDebounce();
-    const navigation = useNavigation<SendFormNavigationProp>();
     const { addressValidator, getNamedAddressSupport, dispatch } = useServices(
         selectAddressValidatorDep,
         selectGetNamedAddressSupportDep,
@@ -132,9 +95,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     );
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
-
-    const [feeAdjustedMaxSendAmountByLevel, setFeeAdjustedMaxSendAmountByLevel] =
-        useState<FeeLevelsMaxAmount>();
 
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -173,6 +133,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     );
     const sendFormDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
+    );
+    const feeAdjustedMaxSendAmountByLevel = useSelector((state: NativeSendRootState) =>
+        selectFeeLevelsMaxAmountBySendKey(state, accountKey, tokenContract),
     );
 
     const excludedUtxos = useMemo(
@@ -234,17 +197,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         }),
     });
 
-    const { handleSubmit, control, getValues, trigger, setError } = form;
+    const { control, getValues, trigger, setError } = form;
     const watchedFormValues = useWatch({ control });
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
-
-    const { mode: namedAddressMode, isResolving } = useResolveNamedAddress(
-        watchedAddress ?? '',
-        accountSymbol ?? undefined,
-    );
-    // Submitting before a name resolves would compose against the name itself. Reverse lookups
-    // run on an already-valid address, so they do not block.
-    const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
 
     const updateFormState = useCallback(async () => {
         if (accountSymbol && network && networkFeeInfo) {
@@ -330,9 +285,15 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         );
 
         if (isFulfilled(response)) {
-            setFeeAdjustedMaxSendAmountByLevel(response.payload);
+            dispatch(
+                transactionManagementActions.storeFeeLevelsMaxAmount({
+                    accountKey,
+                    tokenContract,
+                    feeLevelsMaxAmount: response.payload,
+                }),
+            );
         }
-    }, [getValues, accountKey, dispatch, selectedUtxos]);
+    }, [getValues, accountKey, dispatch, selectedUtxos, tokenContract]);
 
     useEffect(() => {
         const prefillValuesFromStoredDraft = async () => {
@@ -379,194 +340,20 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     // TODO: Fetch periodically. So if the user stays on the screen for a long time, the fee info is updated in the background.
     useEffect(() => {
-        if (accountSymbol) dispatch(updateFeeInfoThunk({ networkSymbol: accountSymbol }));
-    }, [accountSymbol, dispatch]);
-
-    const destinationTag = useSelector((state: NativeSendRootState) =>
-        selectDestinationTagFromDraft(state, accountKey, tokenContract),
-    );
-    const isViewOnlyDevice = useSelector(selectIsDeviceRemembered);
-    const { showAlert } = useAlert();
-    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
-
-    const requestDelayedNavigationToOutputsReview = useRequestDelayedNavigationToOutputsReview({
-        accountKey,
-        tokenContract,
-    });
-
-    const feeLevels = useSelector(selectFeeLevels);
-
-    const navigateToAddressReview = useCallback(
-        ({ transaction }: { transaction: GeneralPrecomposedTransactionFinal }) => {
-            navigation.navigate(SendStackRoutes.SendAddressReview, {
-                accountKey,
-                tokenContract,
-                transaction,
-            });
-        },
-        [accountKey, tokenContract, navigation],
-    );
-
-    const navigateToDestinationTagReview = useCallback(
-        (params: { destinationTag: string; transaction: GeneralPrecomposedTransactionFinal }) => {
-            navigation.navigate(SendStackRoutes.SendDestinationTagReview, {
-                destinationTag: params.destinationTag,
-                accountKey,
-                tokenContract,
-                transaction: params.transaction,
-            });
-        },
-        [accountKey, navigation, tokenContract],
-    );
-
-    const startStellarSigningFlow = useCallback(
-        ({ transaction }: { transaction: GeneralPrecomposedTransactionFinal }) => {
-            // The first review entry of Stellar is neither a destination address nor a destination tag.
-            // We need to wait for device button requests before navigating to the review screen.
+        if (accountSymbol) {
             dispatch(
-                signTransactionNativeThunk({
+                transactionManagementActions.clearFeeLevelsMaxAmount({
                     accountKey,
                     tokenContract,
-                    feeLevel: transaction,
                 }),
-            ).then(signingResponse => {
-                if (isRejected(signingResponse)) {
-                    const errorCode = signingResponse.payload?.errorCode;
-                    const message = signingResponse.payload?.message;
-
-                    if (
-                        errorCode === 'Failure_PinCancelled' || // User cancelled the pin entry on device
-                        errorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
-                        errorCode === 'Failure_ActionCancelled' // User canceled the review on device OR device got locked before the review was finished.
-                    ) {
-                        navigation.popTo(SendStackRoutes.SendOutputs, {
-                            accountKey,
-                            tokenContract,
-                        });
-
-                        return;
-                    }
-
-                    if (
-                        errorCode === 'Device_InvalidState' || // Incorrect Passphrase submitted.
-                        errorCode === 'Method_Interrupted' // Passphrase modal closed.
-                    ) {
-                        showAlert({
-                            title: <Translation id="modulePassphrase.featureAuthorizationError" />,
-                            pictogramVariant: 'critical',
-                            primaryButtonTitle: <Translation id="generic.buttons.close" />,
-                            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
-                        });
-
-                        return;
-                    }
-
-                    // Device disconnected during the review.
-                    if (
-                        message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
-                        message === TRANSPORT_ERROR.UNEXPECTED_ERROR
-                    ) {
-                        if (isViewOnlyDevice) {
-                            navigation.popTo(SendStackRoutes.SendOutputs, {
-                                accountKey,
-                                tokenContract,
-                                postNavigationAction: 'deviceDisconnectedAlert',
-                            });
-                        } else {
-                            showDeviceDisconnectedAlert();
-                        }
-
-                        return;
-                    }
-
-                    dispatch(sendFormActions.discardTransaction());
-                    navigation.navigate(RootStackRoutes.AccountDetail, {
-                        accountKey,
-                        tokenContract,
-                        closeActionType: 'back',
-                    });
-                }
-            });
-
-            requestDelayedNavigationToOutputsReview();
-        },
-        [
-            dispatch,
-            accountKey,
-            tokenContract,
-            requestDelayedNavigationToOutputsReview,
-            navigation,
-            showAlert,
-            isViewOnlyDevice,
-            showDeviceDisconnectedAlert,
-        ],
-    );
+            );
+            dispatch(updateFeeInfoThunk({ networkSymbol: accountSymbol }));
+        }
+    }, [accountKey, accountSymbol, dispatch, tokenContract]);
 
     if (!accountSymbol || !networkFeeInfo) return null;
 
-    const handleSubmitSendForm = handleSubmit(() => {
-        Keyboard.dismiss();
-
-        if (!network) return;
-
-        const selectedFee: FeeLevelLabel = sendFormDraft?.selectedFee ?? 'normal';
-        const selectedFeeLevelTransaction = feeLevels[selectedFee];
-        if (!isFinalPrecomposedTransaction(selectedFeeLevelTransaction)) {
-            return;
-        }
-
-        const { networkType } = network;
-
-        switch (networkType) {
-            case 'ripple': {
-                if (destinationTag) {
-                    navigateToDestinationTagReview({
-                        destinationTag,
-                        transaction: selectedFeeLevelTransaction,
-                    });
-                } else {
-                    navigateToAddressReview({ transaction: selectedFeeLevelTransaction });
-                }
-
-                break;
-            }
-            case 'stellar': {
-                startStellarSigningFlow({ transaction: selectedFeeLevelTransaction });
-
-                break;
-            }
-            default: {
-                navigateToAddressReview({ transaction: selectedFeeLevelTransaction });
-
-                break;
-            }
-        }
-
-        // In case that view only device is not connected, show connect screen first.
-        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
-            params: {
-                onCancelNavigationTarget: {
-                    name: RootStackRoutes.SendStack,
-                    params: {
-                        screen: SendStackRoutes.SendOutputs,
-                        params: { accountKey, tokenContract },
-                    },
-                },
-            },
-        });
-    });
-
-    const amount = isAmountInSats
-        ? getValues('outputs.0.amount')
-        : convertAmountUnitsToSubunits(getValues('outputs.0.amount'), network?.decimals ?? 0);
-
     return {
-        handleSubmitSendForm,
         form,
-        network,
-        amount,
-        feeLevelsMaxAmount: feeAdjustedMaxSendAmountByLevel,
-        isResolvingNamedAddress,
     };
 };

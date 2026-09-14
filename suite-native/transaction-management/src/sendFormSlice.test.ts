@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { toTokenAddress } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
-import { createFeeLevels } from './__fixtures__/feeLevels';
+import { createFeeLevels, createFeeLevelsMaxAmount } from './__fixtures__/feeLevels';
 import { prepareSendFormReducer, transactionManagementActions } from './sendFormSlice';
 
 describe('sendFormSlice', () => {
@@ -100,6 +102,86 @@ describe('sendFormSlice', () => {
             // Clear fee levels (should remain empty)
             store.dispatch(transactionManagementActions.clearFeeLevels());
             expect(store.getState().send.feeLevels).toEqual({});
+        });
+    });
+
+    describe('storeFeeLevelsMaxAmount', () => {
+        it('should store maximum amounts by send form', () => {
+            const store = createTestStore();
+            const accountKey = mockAccountKey();
+            const feeLevelsMaxAmount = createFeeLevelsMaxAmount({
+                economy: '100',
+                normal: '90',
+                high: '80',
+            });
+
+            store.dispatch(
+                transactionManagementActions.storeFeeLevelsMaxAmount({
+                    accountKey,
+                    feeLevelsMaxAmount,
+                }),
+            );
+
+            expect(store.getState().send.feeLevelsMaxAmount).toEqual({
+                [accountKey]: feeLevelsMaxAmount,
+            });
+        });
+
+        it('should keep maximum amounts for other send forms', () => {
+            const store = createTestStore();
+            const accountKey = mockAccountKey();
+            const tokenContract = toTokenAddress('token');
+
+            store.dispatch(
+                transactionManagementActions.storeFeeLevelsMaxAmount({
+                    accountKey,
+                    feeLevelsMaxAmount: createFeeLevelsMaxAmount({ normal: '90' }),
+                }),
+            );
+            store.dispatch(
+                transactionManagementActions.storeFeeLevelsMaxAmount({
+                    accountKey,
+                    tokenContract,
+                    feeLevelsMaxAmount: createFeeLevelsMaxAmount({ normal: '190' }),
+                }),
+            );
+
+            expect(store.getState().send.feeLevelsMaxAmount).toEqual({
+                [accountKey]: createFeeLevelsMaxAmount({ normal: '90' }),
+                [`${accountKey}-${tokenContract}`]: createFeeLevelsMaxAmount({ normal: '190' }),
+            });
+        });
+    });
+
+    describe('clearFeeLevelsMaxAmount', () => {
+        it('should clear only the requested send form maximum amounts', () => {
+            const store = createTestStore();
+            const firstAccountKey = mockAccountKey({ descriptor: 'first' });
+            const secondAccountKey = mockAccountKey({ descriptor: 'second' });
+            const secondFeeLevelsMaxAmount = createFeeLevelsMaxAmount({ normal: '190' });
+
+            store.dispatch(
+                transactionManagementActions.storeFeeLevelsMaxAmount({
+                    accountKey: firstAccountKey,
+                    feeLevelsMaxAmount: createFeeLevelsMaxAmount({ normal: '90' }),
+                }),
+            );
+            store.dispatch(
+                transactionManagementActions.storeFeeLevelsMaxAmount({
+                    accountKey: secondAccountKey,
+                    feeLevelsMaxAmount: secondFeeLevelsMaxAmount,
+                }),
+            );
+
+            store.dispatch(
+                transactionManagementActions.clearFeeLevelsMaxAmount({
+                    accountKey: firstAccountKey,
+                }),
+            );
+
+            expect(store.getState().send.feeLevelsMaxAmount).toEqual({
+                [secondAccountKey]: secondFeeLevelsMaxAmount,
+            });
         });
     });
 });
