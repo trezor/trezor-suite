@@ -214,6 +214,9 @@ describe('readSep41Tokens', () => {
     });
 
     afterEach(() => {
+        // In teardown, not inline: a failing assertion would otherwise leave fake timers
+        // installed for every test after it.
+        jest.useRealTimers();
         jest.restoreAllMocks();
     });
 
@@ -332,7 +335,6 @@ describe('readSep41Tokens', () => {
         // The batch's slice of `SEP41_READ_TIMEOUT_MS`.
         await jest.advanceTimersByTimeAsync(4_000);
         const tokens = await pending;
-        jest.useRealTimers();
 
         expect(tokens).toEqual([
             {

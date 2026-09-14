@@ -23,8 +23,14 @@ describe('GetAccountInfo stellarContractTokens', () => {
         expect(() => createMethod([])).not.toThrow();
     });
 
+    // Asserted on the parsed value, not just on not throwing: dropping the parameter from the
+    // validated params altogether would satisfy `not.toThrow()` and still refresh every Stellar
+    // account with no contract tokens.
     it('accepts a populated watch list', () => {
-        expect(() => createMethod([CONTRACT])).not.toThrow();
+        const method = createMethod([CONTRACT]);
+
+        // `params` is protected; element access is how TypeScript lets a test read one.
+        expect(method['params'][0]!.stellarContractTokens).toEqual([CONTRACT]);
     });
 
     it('accepts an omitted watch list', () => {

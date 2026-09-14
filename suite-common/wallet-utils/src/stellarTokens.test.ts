@@ -100,7 +100,7 @@ describe(getStellarInactiveTokens.name, () => {
 const USDC_ISSUER = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 const CATCOIN_ISSUER = 'GDJVFDG5OCW5PYWHB64MGTHGFF57DRRJEDUEFDEL2SLNIOONHYJWHA3Z';
 const USDC = `USDC-${USDC_ISSUER}`;
-const CATCOIN = `CATCOIN-${CATCOIN_ISSUER}`;
+const CATCOIN = `CATCOIN12345-${CATCOIN_ISSUER}`;
 
 const definitionsOf = (...contracts: string[]) =>
     Object.fromEntries(contracts.map(contract => [contract, { name: contract, symbol: contract }]));
@@ -124,7 +124,7 @@ describe(resolveStellarAssetFromContractId.name, () => {
     it('resolves an asset with a 12 character code', async () => {
         await expect(
             resolveStellarAssetFromContractId(catcoinContractId, definitionsOf(USDC, CATCOIN)),
-        ).resolves.toEqual({ assetCode: 'CATCOIN', assetIssuer: CATCOIN_ISSUER });
+        ).resolves.toEqual({ assetCode: 'CATCOIN12345', assetIssuer: CATCOIN_ISSUER });
     });
 
     it('returns nothing for an asset missing from the definitions', async () => {
